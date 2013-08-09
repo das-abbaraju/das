@@ -91,6 +91,16 @@ public class ReportAccountAudits extends ReportAccount {
 						+ Strings.implode(accountIds) + ") ");
 				sql.addField("GROUP_CONCAT(DISTINCT ot.tag ORDER BY ot.tag SEPARATOR ', ') AS tag");
 			}
+
+            String operatorVisibility = permissions.getAccountIdString();
+
+            if (includeLinkedClientsInVisibility()) {
+                operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
+            }
+
+            sql.addJoin("LEFT JOIN flag_data_override fdo on fdo.conID=a.id "
+                    + "AND fdo.forceEnd > NOW() and fdo.opID IN (" + operatorVisibility + ")");
+            sql.addField("fdo.forceEnd as 'dataForceEnd'");
 		}
 
 		sql.addField("c.score");
@@ -98,6 +108,10 @@ public class ReportAccountAudits extends ReportAccount {
 
 		filteredDefault = true;
 	}
+
+    private boolean includeLinkedClientsInVisibility() {
+        return permissions.isGeneralContractor() && permissions.getLinkedClients() != null && !permissions.getLinkedClients().isEmpty();
+    }
 
 	public boolean isPqfVisible() {
 		return permissions.canSeeAudit(new AuditType(AuditType.PQF));

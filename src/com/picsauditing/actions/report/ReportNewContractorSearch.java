@@ -158,8 +158,11 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 				// Get the data right now for all contractors
 				// this will build up the contractor ids we need
+
+                setLimit(100000);
 				run(sql);
-				calculateOverallFlags();
+                setLimit(100);
+                calculateOverallFlags();
 
 				String conIDs = "0";
 				for (Integer conID : byConID.keySet()) {
@@ -337,15 +340,13 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@Override
 	protected String returnResult() throws IOException {
-		calculateOverallFlags();
 		return super.returnResult();
 	}
 
 	@Override
 	protected void addExcelColumns() {
 		if (permissions.isOperatorCorporate()) {
-			calculateOverallFlags();
-
+            calculateOverallFlags();
 			for (BasicDynaBean d : data) {
 				Integer conID = Integer.parseInt(d.get("id").toString());
 

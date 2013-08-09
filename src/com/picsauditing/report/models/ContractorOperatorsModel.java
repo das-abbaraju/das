@@ -3,6 +3,7 @@ package com.picsauditing.report.models;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
@@ -41,11 +42,22 @@ public class ContractorOperatorsModel extends AbstractModel {
         accountManagerUser.alias = "AccountManagerUser";
         accountManagerUser.category = FieldCategory.CustomerService;
 
+        ModelSpec salesRep = opAccount.join(AccountTable.SalesRep);
+        salesRep.category = FieldCategory.CustomerService;
+
+        ModelSpec salesRepUser = salesRep.join(AccountUserTable.User);
+        salesRepUser.category = FieldCategory.CustomerService;
+
         ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
 		contractor.alias = "Contractor";
 		contractor.minimumImportance = FieldImportance.Average;
 
         contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
+
+        ModelSpec csr = contractor.join(ContractorTable.CustomerService);
+        csr.alias = "CustomerService";
+        ModelSpec csrUser = csr.join(AccountUserTable.User);
+        csrUser.alias = "CustomerServiceUser";
 
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = "Account";
@@ -85,16 +97,22 @@ public class ContractorOperatorsModel extends AbstractModel {
 			return "";
 		}
 
+        String approvedWorkStatus = "";
+
+        if (!permissions.hasPermission(OpPerms.ViewUnApproved)) {
+            approvedWorkStatus = CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND ";
+        }
+
 		if (permissions.isContractor()) {
 			return CONTRACTOR_OPERATOR + ".subID = " + permissions.getAccountId();
 		}
 
 		if (permissions.isOperator()) {
-			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID = " + permissions.getAccountId();
+			return approvedWorkStatus + CONTRACTOR_OPERATOR + ".genID = " + permissions.getAccountId();
 		}
 
 		if (permissions.isCorporate()) {
-			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
+            return approvedWorkStatus + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
 		}
 
 		return "1 = 0";

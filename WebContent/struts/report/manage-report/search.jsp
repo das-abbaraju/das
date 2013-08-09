@@ -15,7 +15,7 @@
 
 <div id="report_search">
     <form id="report_search_form" class="form-inline" action="${manage_report_search_url}">
-        <input type="text" name="searchTerm" value="${searchTerm}" placeholder="${search_term_placeholder}" class="search-query span4" />
+        <input type="text" name="searchTerm" value="${searchTerm}" placeholder="${search_term_placeholder}" class="search-query span4" autocomplete="off" />
         <i class="icon-search"></i>
     </form>
 </div>

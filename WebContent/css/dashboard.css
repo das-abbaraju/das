@@ -236,3 +236,11 @@ table.report tr.hurdle td {
 .telecommunications p.tabbed {
     padding-left: 10px;
 } 
+
+[data-widget-type=Chart] {
+	text-align: center;
+}
+
+[data-widget-type=Chart] > div {
+	display: inline-block;
+}

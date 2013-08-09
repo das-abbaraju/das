@@ -207,6 +207,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			}
 		}
 
+		safetyManualUploadStatusAdjustments(auditData);
+
 		return SUCCESS;
 	}
 

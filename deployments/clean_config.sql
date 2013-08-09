@@ -1,5 +1,5 @@
 -- Clean up the application data in config that was just copied from Yesterday (Live)
-update users set password = SHA1(CONCAT('v7Rep0rts',id)) WHERE accountID != 1100;
+update users set password = SHA1(CONCAT('Wait7Lib',id)) WHERE accountID != 1100;
 update users set email = 'tester@picsauditing.com' WHERE accountID != 1100 AND email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
 -- Clean up the email data in config that was just copied from Yesterday (Live)

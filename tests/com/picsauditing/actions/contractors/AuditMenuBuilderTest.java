@@ -1,25 +1,11 @@
 package com.picsauditing.actions.contractors;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.URLUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,20 +13,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.access.MenuComponent;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.OperatorTagCategory;
-import com.picsauditing.util.URLUtils;
+import java.util.*;
+
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
 public class AuditMenuBuilderTest extends PicsTranslationTest {
@@ -48,7 +30,6 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 	@Mock
 	private ContractorAccount contractorAccount;
-
 	@Mock
 	private Permissions permissions;
 	@Mock
@@ -60,6 +41,8 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		super.resetTranslationService();
 
 		auditMenuBuilder = new AuditMenuBuilder(contractorAccount, permissions);
+
+		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Active);
 
 		Whitebox.setInternalState(auditMenuBuilder, "locale", Locale.US);
 		Whitebox.setInternalState(auditMenuBuilder, "urlUtils", urlUtils);
@@ -93,8 +76,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Requested);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 
-		Set<ContractorAudit> sortedAudits = (Set<ContractorAudit>) Whitebox.getInternalState(auditMenuBuilder,
-				"sortedAudits");
+		Set<ContractorAudit> sortedAudits = Whitebox.getInternalState(auditMenuBuilder, "sortedAudits");
 
 		assertTrue(auditMenuBuilder.buildAuditMenuFrom(audits).isEmpty());
 		assertNull(sortedAudits);
@@ -106,7 +88,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
@@ -118,7 +100,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	public void testBuildAuditMenuFrom_PQFAndTradeMenuNotIncludedForNonSafetyContractorUser() throws Exception {
 		when(permissions.isContractor()).thenReturn(true);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertTrue(menuComponents.isEmpty());
 
@@ -132,7 +114,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits(false));
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits(false));
 		assertNotNull(menuComponents);
 
 		verify(urlUtils, atLeast(2)).getActionUrl(actionCaptor.capture(), anyString(), any());
@@ -145,7 +127,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
@@ -158,7 +140,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	public void testBuildAuditMenuFrom_AnnualUpdateLink() throws Exception {
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
@@ -169,10 +151,10 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	public void testBuildAuditMenuFrom_NoInsureGUARDForNonInsuranceContractorUser() throws Exception {
 		when(permissions.isContractor()).thenReturn(true);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 
-		verify(translationService, never()).getText(eq("global.InsureGUARD"), any(Locale.class));
+		verify(translationService, never()).getText(eq(AuditMenuBuilder.SUMMARY), any(Locale.class));
 	}
 
 	@Test
@@ -181,14 +163,14 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> translationKeyCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
 		verify(translationService, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
-		assertTrue(translationKeyCaptor.getAllValues().contains("global.InsureGUARD"));
-		assertTrue(translationKeyCaptor.getAllValues().contains("ContractorActionSupport.ManageCertificates"));
+		assertTrue(translationKeyCaptor.getAllValues().contains(AuditMenuBuilder.SUMMARY));
+		assertTrue(translationKeyCaptor.getAllValues().contains("ContractorSubmenu.MenuItem.CertificatesManager"));
 	}
 
 	@Test
@@ -198,7 +180,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
@@ -214,7 +196,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
@@ -231,7 +213,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
@@ -249,7 +231,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
@@ -265,13 +247,13 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> translationKeyCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
 		verify(translationService, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
-		assertTrue(translationKeyCaptor.getAllValues().contains("global.AuditGUARD"));
+		assertTrue(translationKeyCaptor.getAllValues().contains(AuditMenuBuilder.SUMMARY));
 	}
 
 	@Test
@@ -281,18 +263,18 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		ArgumentCaptor<String> translationKeyCaptor = ArgumentCaptor.forClass(String.class);
 
-		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
 		verify(translationService, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
-		assertTrue(translationKeyCaptor.getAllValues().contains("global.ClientReviews"));
+		assertTrue(translationKeyCaptor.getAllValues().contains(AuditMenuBuilder.SUMMARY));
 	}
 
 	@Test
 	public void testCompetencyRequiresDocumentation_NoTagsNoOperatorCompetencyRequiringDocumentation() throws Exception {
-		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag> emptyList());
+		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag>emptyList());
 		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(false);
 
 		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder,
@@ -323,7 +305,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	@Test
 	public void testCompetencyRequiresDocumentation_NoTagsHasOperatorCompetencyRequiringDocumentation()
 			throws Exception {
-		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag> emptyList());
+		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag>emptyList());
 		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
 
 		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder,

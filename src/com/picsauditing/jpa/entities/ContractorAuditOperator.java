@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.ContractorAuditOperatorBuilder;
+import com.picsauditing.jpa.entities.builders.ContractorOperatorBuilder;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.picsauditing.access.Permissions;
@@ -289,4 +291,8 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	public int compareTo(ContractorAuditOperator o) {
 		return this.getOperator().getName().compareTo(o.getOperator().getName());
 	}
+
+    public static ContractorAuditOperatorBuilder builder() {
+        return new ContractorAuditOperatorBuilder();
+    }
 }

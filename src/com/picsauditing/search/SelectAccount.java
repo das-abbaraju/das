@@ -173,10 +173,6 @@ public class SelectAccount extends SelectSQL {
 			this.addField(String.format(flag, "gc.flag", "flag"));
 			this.addField(String.format(flag, "lower(gc.flag)", "lflag"));
 			this.addField("gc.forceEnd");
-
-			this.addJoin("LEFT JOIN flag_data_override fdo on fdo.conID=a.id "
-					+ "AND fdo.forceEnd > NOW() and fdo.opID IN (" + operatorVisibility + ")");
-			this.addField("fdo.forceEnd as 'dataForceEnd'");
 		}
 
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);

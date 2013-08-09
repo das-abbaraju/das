@@ -14,7 +14,6 @@ public class ContractorTable extends AbstractTable {
     public static final String CustomerService = "CustomerService";
     public static final String InsideSales = "InsideSales";
     public static final String RecommendedCSR = "RecommendedCSR";
-    public static final String PQF = "PQF";
     public static final String Flag = "Flag";
     public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
     public static final String RequestedBy = "RequestedBy";
@@ -23,7 +22,14 @@ public class ContractorTable extends AbstractTable {
     public static final String ContractorStatistics = "ContractorStatistics";
     public static final String ContractorTrade = "ContractorTrade";
     public static final String ContractorFee = "ContractorFee";
+
+    public static final String CemexPostEval = "CemexPostEval";
+    public static final String PQF = "PQF";
     public static final String WelcomeCall = "WelcomeCall";
+    public static final String GeneralLiability = "GeneralLiability";
+    public static final String AutoLiability = "AutoLiability";
+    public static final String WorkersComp = "WorkersComp";
+    public static final String ExcessLiability = "ExcessLiability";
 
     public ContractorTable() {
         super("contractor_info");
@@ -70,6 +76,10 @@ public class ContractorTable extends AbstractTable {
         insideSalesRep.setCategory(FieldCategory.CustomerService);
         insideSalesRep.setMinimumImportance(FieldImportance.Average);
 
+        ReportForeignKey cemexPostEval = addRequiredKey(new ReportForeignKey(CemexPostEval, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 456")));
+        cemexPostEval.setMinimumImportance(FieldImportance.Required);
+
         ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));
         pqfKey.setMinimumImportance(FieldImportance.Required);
@@ -77,6 +87,22 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey welcomeCallKey = addOptionalKey(new ReportForeignKey(WelcomeCall, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.WELCOME)));
         welcomeCallKey.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey generalLiability = addOptionalKey(new ReportForeignKey(GeneralLiability, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 13 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
+        generalLiability.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey autoLiability = addOptionalKey(new ReportForeignKey(AutoLiability, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 15 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
+        autoLiability.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey workersComp = addOptionalKey(new ReportForeignKey(WorkersComp, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 14 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
+        workersComp.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey excessLiability = addOptionalKey(new ReportForeignKey(ExcessLiability, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 16 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
+        excessLiability.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey requestedBy = addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
                 new ReportOnClause("requestedByID")));
@@ -97,7 +123,6 @@ public class ContractorTable extends AbstractTable {
 
         ReportForeignKey trade = new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id",
                 "conID"));
-//        trade.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(trade);
 
         ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),

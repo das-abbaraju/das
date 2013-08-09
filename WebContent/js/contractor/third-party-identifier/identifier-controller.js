@@ -31,7 +31,7 @@
                         });
 
                         modal_element.on('click', '.negative', function () {
-                             PICS.getClass('modal.Modal').hide();
+                             PICS.getClass('widget.Modal').hide();
                         });
                     }
                 }
@@ -66,7 +66,7 @@
                     url : form.attr('action'),
                     data : form.serialize(),
                     success : function(data, textStatus, jqXHR) {
-                        var modal = PICS.getClass('modal.Modal');
+                        var modal = PICS.getClass('widget.Modal');
 
                         if (data.indexOf('error') > 0) {
                             modal.update({
@@ -96,7 +96,7 @@
                         number: data_number
                     },
                     success: function (data, textStatus, jqXHR) {
-                        var modal = PICS.getClass('modal.Modal');
+                        var modal = PICS.getClass('widget.Modal');
 
                         modal.update({
                             body: data

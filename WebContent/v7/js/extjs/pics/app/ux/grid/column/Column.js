@@ -37,14 +37,14 @@ Ext.define('PICS.ux.grid.column.Column', {
         if (url) {
             var href = grid_column.getHref(url, record);
             
-            return '<a href="' + href + '" target="_blank">' + value + '</a>';
+            return "<a href='" + href + "' target='_blank'>" + value + "</a>";
         }
         
         return value;
     },
     
     getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
+        return url.replace(/\{(.[^"]*?)\}/g, function (match, p1) {
             // raw attribute is to get data from the record that is not observed in the model
             return record.raw[p1];
         });

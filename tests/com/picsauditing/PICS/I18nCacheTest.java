@@ -13,8 +13,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.powermock.reflect.Whitebox;
 
 import com.google.common.collect.Table;
@@ -31,14 +30,15 @@ public class I18nCacheTest extends PicsActionTest {
 
 	private final Locale FOREIGN_LOCALE = Locale.CANADA;
 
-	private static AppTranslationDAO appTranslationDAO = Mockito.mock(AppTranslationDAO.class);
+    @Mock
+	private AppTranslationDAO appTranslationDAO;
+
 	private static FeatureToggle featureToggle = Mockito.mock(FeatureToggle.class);
 
 	@BeforeClass
 	public static void classSetUp() {
-		Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", appTranslationDAO);
 		Whitebox.setInternalState(I18nCache.class, "featureToggle", featureToggle);
-	}
+    }
 
 	@AfterClass
 	public static void classTearDown() {
@@ -50,17 +50,19 @@ public class I18nCacheTest extends PicsActionTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		super.setupMocks();
-		Mockito.reset(appTranslationDAO);
 		Mockito.reset(featureToggle);
+
+        Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", appTranslationDAO);
 
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION)).thenReturn(false);
 
 		i18nCache = I18nCache.getInstance();
+
 	}
 
 	@After
-	public void tearDown() {
-		I18nCache.getInstance().clear();
+	public void tearDown() throws Exception {
+        Whitebox.invokeMethod(i18nCache, "buildCache");
 	}
 
 	// This is a locking test

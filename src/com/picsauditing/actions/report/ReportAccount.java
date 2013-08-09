@@ -485,10 +485,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
         if (filterOn(getFilter().getOperator())) {
             if (getFilter().isShowAnyOperator()) {
                 String opIDs = Strings.implode(getFilter().getOperator());
-                sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN (SELECT opID FROM facilities WHERE corporateID = (" + opIDs + ") OR opID IN (" + opIDs + ")))");
+                sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN (SELECT opID FROM facilities WHERE corporateID IN (" + opIDs + ") OR opID IN (" + opIDs + ")))");
             } else {
                 for (int opID : getFilter().getOperator()) {
-                    sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN (SELECT opID FROM facilities WHERE corporateID = (" + opID + ") OR opID IN (" + opID + ")))");
+                    sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN (SELECT opID FROM facilities WHERE corporateID IN (" + opID + ") OR opID IN (" + opID + ")))");
                 }
             }
 

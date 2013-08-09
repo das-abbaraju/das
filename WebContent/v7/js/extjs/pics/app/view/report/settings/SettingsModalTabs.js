@@ -6,8 +6,8 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
         'PICS.view.report.settings.CopySetting',
         'PICS.view.report.settings.EditSetting',
         'PICS.view.report.settings.ExportSetting',
-        'PICS.view.report.settings.PrintSetting',
-        'PICS.view.report.settings.share.ShareSetting'
+        'PICS.view.report.settings.share.ShareSetting',
+        'PICS.view.report.settings.SubscribeSetting'
     ],
 
     border: false,
@@ -20,7 +20,7 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
     }, {
         xtype: 'reportexportsetting'
     }, {
-        xtype: 'reportprintsetting'
+        xtype: 'reportsubscribesetting'
     }],
     tabBar: {
         border: false,

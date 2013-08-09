@@ -94,6 +94,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         var grid_columns = [{
             xtype: 'rownumberer',
             height: 23,
+            resizable: true,
             width: 50
         }];
         

@@ -197,13 +197,14 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	}
 
 	public Permissions getPermissions() {
-		if (permissions == null) {
-			try {
-				permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
-			} catch (Exception e) {
-				logger.warn("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
-			}
-		}
+        if (permissions == null) {
+            try {
+                permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+            } catch (Exception e) {
+                logger.warn("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
+            }
+        }
+
 		return permissions;
 	}
 

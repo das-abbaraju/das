@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<s:set var="currency"><s:property value="invoice.currency.display"/></s:set>
+
 <div class="registration-header">
 	<section>
 		<s:include value="/struts/contractors/registrationStep.jsp">
@@ -30,7 +32,9 @@
 	<div class="membership">
 		<section>
 			<table class="invoice" cellpadding="0" cellspacing="0" border="0">
-				<thead>
+				<tbody>
+					<%-- Membership Fees --%>
+
 					<tr>
 						<th class="annual-membership">
 							<s:text name="RegistrationMakePayment.AnnualMembership" />
@@ -39,23 +43,13 @@
 							<s:text name="RegistrationMakePayment.Price" />
 						</th>
 					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							<span class="total"><s:text name="RegistrationMakePayment.Total" />:</span> <s:property value="invoice.currency.symbol"/><s:property value="invoice.totalAmount" /> 
-						</td>
-					</tr>
-				</tfoot>
-				<tbody>
-				
-					<%-- Displaying Membership Fees First --%>					
+
 					<s:iterator value="invoice.items" status="stat">
 						<s:if test="invoiceFee.membership">
 							<tr>
 								<td>
 									<s:property	value="invoiceFee.fee" />
-									<a 
+									<a
 										href="javascript:;" 
 										class="help" 
 										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />" 
@@ -63,26 +57,26 @@
 									><img src="images/help-icon.png" /></a>
 								</td>
 								<td class="price">
-									<s:property value="invoice.currency.symbol"/><s:property value="amount" />
+									<s:property value="amount" /> ${currency}
 								</td>
 							</tr>
 						</s:if>
 					</s:iterator>
+
+					<%-- One Time Fees --%>
 					
-					<%-- Displaying Non-Memberships Fees Seperately --%>		
 					<tr>
 						<th colspan="2">
 							<s:text name="RegistrationMakePayment.OneTimeFees" />
 						</th>
 					</tr>
 					
-					<%-- one time fees --%>
 					<s:iterator value="invoice.items" status="stat">
-						<s:if test="!invoiceFee.membership">
+						<s:if test="!invoiceFee.membership && !invoiceFee.tax">
 							<tr>
 								<td>
 									<s:property	value="invoiceFee.fee" />
-									<a 
+									<a
 										href="javascript:;" 
 										class="help" 
 										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />" 
@@ -97,25 +91,25 @@
 									</s:if>
 								</td>
 								<td class="price">
-									<s:property value="invoice.currency.symbol"/><s:property value="amount" />
+									<s:property value="amount" /> ${currency}
 								</td>
 							</tr>
 						</s:if>
 					</s:iterator>
-					
+
 					<%-- Import Fee being hard coded to toggle on/off --%>
-					<s:if test="contractor.eligibleForImportPQF 
+					<s:if test="contractor.eligibleForImportPQF
 									&& (!contractor.fees.get(importFee.feeClass) || contractor.fees.get(importFee.feeClass).newLevel.free)">
 						<tr>
 							<td>
 								<s:property	value="importFee.fee" />
-								<a 
-									href="javascript:;" 
-									class="help" 
-									data-title="<s:text	name="%{importFee.feeClass.i18nKey}" />" 
+								<a
+									href="javascript:;"
+									class="help"
+									data-title="<s:text	name="%{importFee.feeClass.i18nKey}" />"
 									data-content="<s:text name="%{importFee.feeClass.getI18nKey('help')}" />"
 								><img src="images/help-icon.png" /></a>
-								
+
 								<%-- add import fee --%>
 								<s:form cssClass="data-import-form">
 									<s:submit method="addImportFee" cssClass="btn success" value="%{getText('button.Add')}" />
@@ -126,6 +120,64 @@
 							</td>
 						</tr>
 					</s:if>
+
+					<%-- Taxes --%>
+
+					<s:if test="invoice.hasTax()">
+
+						<%-- Subtotal (i.e., pre-tax total) --%>
+						<s:set var="subtotal_label"><s:text name="RegistrationMakePayment.Subtotal" /></s:set>
+						<s:set var="subtotal_amount" value="invoice.taxlessSubtotal" />
+						<s:set var="taxes_label"><s:text name="RegistrationMakePayment.Taxes" /></s:set>
+
+						<tr class="total">
+							<td colspan="2">
+								<span class="total">${subtotal_label}:</span> ${subtotal_amount} ${currency}
+							</td>
+						</tr>
+
+						<%-- List of Tax Items --%>
+
+						<tr>
+							<th colspan="2">
+								${taxes_label}
+							</th>
+						</tr>
+
+						<s:iterator value="invoice.items" status="stat">
+							<s:if test="invoiceFee.isTax()">
+
+								<s:set var="fee_name" value="invoiceFee.fee" />
+								<s:set var="fee_amount" value="amount" />
+
+								<tr>
+									<td>
+										${fee_name}
+										<a
+											href="javascript:;"
+											class="help"
+											data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />"
+											data-content="<s:text name="%{invoiceFee.feeClass.getI18nKey('help')}" />"
+										><img src="images/help-icon.png" /></a>
+									</td>
+									<td class="price">
+										${fee_amount} ${currency}
+									</td>
+								</tr>
+							</s:if>
+						</s:iterator>
+					</s:if>
+
+					<%-- Grand Total --%>
+
+					<s:set var="total_label"><s:text name="RegistrationMakePayment.Total" /></s:set>
+					<s:set var="total_amount"><s:property value="invoice.totalAmount" /></s:set>
+
+					<tr class="total">
+						<td colspan="2">
+							<span class="total">${total_label}:</span> ${total_amount} ${currency}
+						</td>
+					</tr>
 				</tbody>
 	 		</table>
 	 		
@@ -144,8 +196,12 @@
 		 				<s:a href="#" cssClass="contractor-agreement modal-link" data-url="ContractorAgreement.action"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
 		 			</li>
 		 		</ul>
+                <p class="phone">
+                    <s:text name="ContractorRegistration.title" />:
+                    ${contractor.country.salesPhone}
+                </p>
 	 		</div>
-	 		
+
 	 		<div class="modal hide fade">
 				<div class="modal-header">
 					<a href="#" class="close">×</a>

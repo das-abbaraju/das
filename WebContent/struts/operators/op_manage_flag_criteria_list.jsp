@@ -13,7 +13,7 @@
 						<s:text name="ManageFlagCriteriaOperator.header.Category" />
 					</th>
 				</s:if>
-				
+
 				<th>
 					<s:text name="global.Description" />
 				</th>
@@ -28,7 +28,7 @@
 						<s:text name="ManageFlagCriteriaOperator.header.NumberAffected" />
 					</nobr>
 				</th>
-				
+
 				<s:if test="canEdit">
 					<th>
 						<s:text name="ManageFlagCriteriaOperator.header.Updated" />
@@ -53,7 +53,7 @@
 							<s:property value="criteria.category" />
 						</td>
 					</s:if>
-					
+
 					<td>
 						<s:if test="canEdit">
 							<span class="editable">
@@ -61,9 +61,9 @@
 								<s:select list="#{'Red':getTextNullSafe('FlagColor.Red'),'Amber':getTextNullSafe('FlagColor.Amber')}" name="newFlag" value="flag" />
 								<s:text name="ManageFlagCriteriaOperator.text.FlagOn" />
 							</span>
-							
+
 							<s:property value="criteria.descriptionBeforeHurdle" />
-							
+
 							<s:if test="criteria.dataType != 'boolean' && criteria.allowCustomValue">
 								<s:if test="criteria.question.questionType == 'AMBest'">
 									<s:if test="criteria.label.contains('Class')">
@@ -72,7 +72,7 @@
 										</span>
 										<s:select name="newHurdle" list="@com.picsauditing.jpa.entities.AmBest@financialMap" value="criteriaValue()" cssClass="editable"></s:select>
 									</s:if>
-									
+
 									<s:if test="criteria.label.contains('Rating')">
 										<span class="hurdle">
 											<b><s:property value="getAmBestRating(criteriaValue())" /></b>
@@ -84,30 +84,30 @@
 									<span class="hurdle">
 										<b><s:property value="getFormatted(criteriaValue())" /></b>
 									</span>
-									
-									<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">	
+
+									<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">
 										<input type="text" value="<s:property value="getFormatted(criteriaValue())" />" name="newHurdle" size="10" class="editable" onkeyup="wait(<s:property value="id" />, <s:property value="account.id" />, this.value, 500);" <s:if test="criteria.dataType == 'date'">class="datepicker"</s:if> />
 									</s:if>
 									<s:elseif test="criteria.dataType == 'string'">
 										<span class="editable">
-											<s:radio 
-												list="#{'Yes':getTextNullSafe('YesNo.Yes'),'No':getTextNullSafe('YesNo.No')}" 
-												value="criteriaValue()" 
+											<s:radio
+												list="#{'Yes':getTextNullSafe('YesNo.Yes'),'No':getTextNullSafe('YesNo.No')}"
+												value="criteriaValue()"
 												onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
 												theme="pics"
-												cssClass="inline" 
+												cssClass="inline"
 											/>
 										</span>
 									</s:elseif>
 								</s:else>
 							</s:if>
-							
+
 							<s:property value="criteria.descriptionAfterHurdle" />
 						</s:if>
 						<s:else>
 							<s:property value="replaceHurdle" />
 						</s:else>
-						
+
 						<s:if test="flag.toString() == 'Green'">
 							<div class="alert">
 								<s:text name="ManageFlagCriteria.alert.GreenFlagCriteria" />
@@ -117,7 +117,7 @@
 					<td class="center">
 						<span class="viewable"><s:property value="tag.tag" /></span>
 						<span class="editable">
-							<s:select list="operator.tags" name="operatorTag" headerKey="0" headerValue="- %{getText('OperatorTag')} -" listKey="id" listValue="tag" value="tag.id" />
+							<s:select list="tags" name="operatorTag" headerKey="0" headerValue="- %{getText('OperatorTag')} -" listKey="id" listValue="tag" value="tag.id" />
 						</span>
 					</td>
 					<td class="center">
@@ -127,7 +127,7 @@
 						<a href="#" title="<s:text name="ManageFlagCriteriaOperator.title.ClickToSeeList" />" class="viewable oldImpact getImpact"><s:property value="affected" /></a>
 						<span class="newImpact"></span>
 					</td>
-					
+
 					<s:if test="canEdit">
 						<td class="nobr">
 							<s:text name="ManageFlagCriteriaOperator.text.UpdatedByOn">
@@ -149,16 +149,16 @@
 			</s:iterator>
 		</tbody>
 	</table>
-	
+
 	<input type="button" value="<s:text name="ManageFlagCriteriaOperator.button.UpdateAffectedCounts" />" class="picsbutton" id="recalculateAll" />
-	
+
 	<s:if test="canEdit">
 		<pics:permission perm="ManageAudits">
 			<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
 		</pics:permission>
-		
+
 		<a href="#" class="add newCriteria"><s:text name="ManageFlagCriteriaOperator.link.AddNewCriteria" /></a>
-		
+
 		<div id="addCriteria"></div>
 	</s:if>
 </s:if>
@@ -171,14 +171,14 @@
 			<s:text name="ManageFlagCriteriaOperator.alert.OperatorHasNoFlagCriteria" />
 		</s:else>
 	</div>
-	
+
 	<s:if test="canEdit">
 		<pics:permission perm="ManageAudits">
 			<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
 		</pics:permission>
-		
+
 		<a href="#" class="add newCriteria"><s:text name="ManageFlagCriteriaOperator.link.AddNewCriteria" /></a>
-		
+
 		<div id="addCriteria"></div>
 	</s:if>
 </s:else>

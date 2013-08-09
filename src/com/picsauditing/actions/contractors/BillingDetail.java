@@ -76,7 +76,7 @@ public class BillingDetail extends ContractorActionSupport {
 			}
 
 			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems,
-					new User(permissions.getUserId()));
+					new User(permissions.getUserId()), contractor.getBillingStatus());
 
 			invoice = invoiceService.saveInvoice(invoice);
 

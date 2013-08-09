@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,20 +25,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.models.audits.AuditEditModel;
 
 public class AuditActionSupportTest extends PicsTest {
@@ -51,6 +38,12 @@ public class AuditActionSupportTest extends PicsTest {
 	Permissions permissions;
 	@Mock
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
+	@Mock
+	protected ContractorAudit conAudit;
+	@Mock
+	protected AuditType auditType;
+	@Mock
+	protected Workflow workflow;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,6 +66,45 @@ public class AuditActionSupportTest extends PicsTest {
 
 		PicsTestUtil.forceSetPrivateField(test, "auditEditModel", new AuditEditModel());
 
+	}
+
+	@Test
+	public void testCalculateRefreshAudit() throws Exception {
+		PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
+		when(conAudit.getAuditType()).thenReturn(auditType);
+		when(auditType.getWorkFlow()).thenReturn(workflow);
+
+		// normal audit
+		when(workflow.isUseStateForEdit()).thenReturn(false);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(false);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertFalse(test.isRefreshAudit());
+
+		// work state audit
+		when(workflow.isUseStateForEdit()).thenReturn(true);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(false);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertTrue(test.isRefreshAudit());
+
+		// policy nobody submitted
+		when(workflow.isUseStateForEdit()).thenReturn(false);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(false);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertTrue(test.isRefreshAudit());
+
+		// policy someone submitted
+		when(workflow.isUseStateForEdit()).thenReturn(false);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(true);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertFalse(test.isRefreshAudit());
 	}
 
 	@Test
@@ -294,7 +326,98 @@ public class AuditActionSupportTest extends PicsTest {
 		assertFalse(value);
 	}
 
-	private ContractorAudit createOperatorAudit(int auditorGroupId) {
+    @Test
+    public void testCanPerformAction_stateEdit() throws Exception {
+        Boolean value;
+
+        ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
+        audit.getAuditType().setCanContractorEdit(true);
+        EntityFactory.addCao(audit, operator);
+        createEditStateWorkFlow(audit);
+        ContractorAuditOperator cao = audit.getOperators().get(0);
+        cao.setPercentComplete(100);
+        cao.setPercentVerified(100);
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        caop.setOperator(cao.getOperator());
+        caop.setCao(cao);
+        cao.getCaoPermissions().add(caop);
+
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+
+        // test contractor
+        when(permissions.isContractor()).thenReturn(true);
+        cao.changeStatus(AuditStatus.Pending, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Pending, AuditStatus.Submitted));
+        assertTrue(value);
+
+        cao.changeStatus(AuditStatus.Submitted, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Submitted, AuditStatus.Incomplete));
+        assertFalse(value);
+
+        cao.changeStatus(AuditStatus.Incomplete, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Incomplete, AuditStatus.Resubmitted));
+        assertTrue(value);
+
+        cao.changeStatus(AuditStatus.Resubmitted, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Resubmitted, AuditStatus.Complete));
+        assertFalse(value);
+
+        // test operator
+        when(permissions.isContractor()).thenReturn(false);
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+        when(permissions.getAccountId()).thenReturn(caop.getOperator().getId());
+        cao.changeStatus(AuditStatus.Pending, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Pending, AuditStatus.Submitted));
+        assertFalse(value);
+
+        cao.changeStatus(AuditStatus.Submitted, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Submitted, AuditStatus.Incomplete));
+        assertTrue(value);
+
+        cao.changeStatus(AuditStatus.Incomplete, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Incomplete, AuditStatus.Resubmitted));
+        assertTrue(value);
+
+        cao.changeStatus(AuditStatus.Resubmitted, null);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, createWorkflowStep(AuditStatus.Resubmitted, AuditStatus.Complete));
+        assertTrue(value);
+    }
+
+    private void createEditStateWorkFlow(ContractorAudit audit) {
+        Workflow workflow = new Workflow();
+        workflow.setId(3);
+        workflow.setUseStateForEdit(true);
+
+        List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
+        steps.add(createWorkflowStep(null, AuditStatus.Pending));
+        steps.add(createWorkflowStep(AuditStatus.Pending, AuditStatus.Submitted));
+        steps.add(createWorkflowStep(AuditStatus.Submitted, AuditStatus.Incomplete));
+        steps.add(createWorkflowStep(AuditStatus.Submitted, AuditStatus.Complete));
+        steps.add(createWorkflowStep(AuditStatus.Incomplete, AuditStatus.Resubmitted));
+        steps.add(createWorkflowStep(AuditStatus.Resubmitted, AuditStatus.Incomplete));
+        steps.add(createWorkflowStep(AuditStatus.Resubmitted, AuditStatus.Complete));
+        workflow.setSteps(steps);
+
+        List<WorkflowState> states = new ArrayList<WorkflowState>();
+        states.add(createWorkflowState(AuditStatus.Pending, true, false));
+        states.add(createWorkflowState(AuditStatus.Submitted, false, true));
+        states.add(createWorkflowState(AuditStatus.Incomplete, true, true));
+        states.add(createWorkflowState(AuditStatus.Resubmitted, false, true));
+        states.add(createWorkflowState(AuditStatus.Complete, false, false));
+        workflow.setStates(states);
+
+        audit.getAuditType().setWorkFlow(workflow);
+    }
+
+    private WorkflowState createWorkflowState(AuditStatus status, boolean contractorEdit, boolean operatorEdit) {
+        WorkflowState state = new WorkflowState();
+        state.setStatus(status);
+        state.setContractorCanEdit(contractorEdit);
+        state.setOperatorCanEdit(operatorEdit);
+        return state;
+    }
+
+    private ContractorAudit createOperatorAudit(int auditorGroupId) {
 		ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
 
 		User group = EntityFactory.makeUser();

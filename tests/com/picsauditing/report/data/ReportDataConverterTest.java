@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
@@ -20,6 +21,8 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
 
 public class ReportDataConverterTest extends PicsTranslationTest {
+
+    TimeZone defaultTimezone = TimeZone.getTimeZone("America/Chicago");
 
 	Permissions permissions;
 
@@ -77,10 +80,11 @@ public class ReportDataConverterTest extends PicsTranslationTest {
 	private JSONArray runJsonConverter(List<BasicDynaBean> queryResults) {
 		List<Column> columns = DynaBeanBuilder.makeColumns(permissions);
 
-		ReportDataConverter converter = new ReportDataConverter(columns, queryResults);
+        ReportResults reportResults = ReportResultsFromDynaBean.build(columns, queryResults);
+        ReportDataConverter converter = new ReportDataConverterForExtJS(reportResults);
 		converter.setLocale(Locale.FRENCH);
-		converter.convertForExtJS(null);
-		JSONArray json = converter.getReportResults().toJson();
+		converter.convert(defaultTimezone);
+		JSONArray json = reportResults.toJson();
 
 		return json;
 	}
@@ -88,10 +92,11 @@ public class ReportDataConverterTest extends PicsTranslationTest {
 	private ReportResults runConverterForPrinting(List<BasicDynaBean> queryResults) {
 		List<Column> columns = DynaBeanBuilder.makeColumns(permissions);
 
-		ReportDataConverter converter = new ReportDataConverter(columns, queryResults);
+        ReportResults reportResults = ReportResultsFromDynaBean.build(columns, queryResults);
+		ReportDataConverter converter = new ReportDataConverterForPrinting(reportResults);
 		converter.setLocale(Locale.FRENCH);
-		converter.convertForPrinting();
+        converter.convert(defaultTimezone);
 
-		return converter.getReportResults();
+		return reportResults;
 	}
 }

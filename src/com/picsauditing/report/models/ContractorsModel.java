@@ -28,6 +28,19 @@ public class ContractorsModel extends AbstractModel {
 		}
 		contractor.join(ContractorTable.PQF);
 
+        ModelSpec general = contractor.join(ContractorTable.GeneralLiability);
+        general.join(ContractorAuditTable.GLEachOccurrence);
+        general.join(ContractorAuditTable.GLGeneralAggregate);
+
+        ModelSpec auto = contractor.join(ContractorTable.AutoLiability);
+        auto.join(ContractorAuditTable.ALCombinedSingle);
+
+        ModelSpec workers = contractor.join(ContractorTable.WorkersComp);
+        workers.join(ContractorAuditTable.WCEachAccident);
+
+        ModelSpec excess = contractor.join(ContractorTable.ExcessLiability);
+        excess.join(ContractorAuditTable.EXEachOccurrence);
+
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
@@ -115,7 +128,7 @@ public class ContractorsModel extends AbstractModel {
         accountManager.setCategory(FieldCategory.CustomerService);
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
-        Field clientSite = new Field("ClientSite","Account.id",FieldType.Operator);
+        Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
         clientSite.setVisible(false);
         clientSite.setPrefixValue("SELECT co.subID " +
                 "FROM generalcontractors co " +
@@ -124,7 +137,7 @@ public class ContractorsModel extends AbstractModel {
         clientSite.setCategory(FieldCategory.ReportingClientSite);
         fields.put(clientSite.getName().toUpperCase(), clientSite);
 
-        Field reportingClient = new Field("ReportingClient","Account.id",FieldType.Operator);
+        Field reportingClient = new Field("ContractorWorksForReportingClient","Account.id",FieldType.Operator);
         reportingClient.setVisible(false);
         reportingClient.setPrefixValue("SELECT co.subID " +
                 "FROM generalcontractors co " +
@@ -133,6 +146,66 @@ public class ContractorsModel extends AbstractModel {
         reportingClient.setSuffixValue("");
         reportingClient.setCategory(FieldCategory.ReportingClientSite);
         fields.put(reportingClient.getName().toUpperCase(), reportingClient);
+
+        Field supplierDiversity = new Field("ContractorSupplierDiversity","ContractorPQF.id",FieldType.SupplierDiversity);
+        supplierDiversity.setVisible(false);
+        supplierDiversity.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "WHERE (pd.answer = 'X' OR pd.answer = 'Yes') AND questionID IN ");
+        supplierDiversity.setSuffixValue("");
+        supplierDiversity.setCategory(FieldCategory.ReportingClientSite);
+        supplierDiversity.setRequiredJoin("ContractorPQF");
+        fields.put(supplierDiversity.getName().toUpperCase(), supplierDiversity);
+
+        Field worksPeriodicIn = new Field("ContractorWorksPeriodicIn","ContractorPQF.id",FieldType.CountrySubdivision);
+        worksPeriodicIn.setVisible(false);
+        worksPeriodicIn.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "JOIN audit_question aq ON pd.questionID = aq.id AND pd.answer = 'YesPeriodicWithoutOffice' " +
+                "WHERE aq.uniqueCode IN ");
+        worksPeriodicIn.setSuffixValue("");
+        worksPeriodicIn.setRequiredJoin("ContractorPQF");
+        fields.put(worksPeriodicIn.getName().toUpperCase(), worksPeriodicIn);
+
+        Field worksPermanentIn = new Field("ContractorWorksPermanentIn","ContractorPQF.id",FieldType.CountrySubdivision);
+        worksPermanentIn.setVisible(false);
+        worksPermanentIn.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "JOIN audit_question aq ON pd.questionID = aq.id AND pd.answer = 'Yes' " +
+                "WHERE aq.uniqueCode IN ");
+        worksPermanentIn.setSuffixValue("");
+        worksPermanentIn.setRequiredJoin("ContractorPQF");
+        fields.put(worksPermanentIn.getName().toUpperCase(), worksPermanentIn);
+
+        Field officeIn = new Field("ContractorOfficeIn","ContractorPQF.id",FieldType.CountrySubdivision);
+        officeIn.setVisible(false);
+        officeIn.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "JOIN audit_question aq ON pd.questionID = aq.id AND pd.answer = 'YesWithOffice' " +
+                "WHERE aq.uniqueCode IN ");
+        officeIn.setSuffixValue("");
+        officeIn.setRequiredJoin("ContractorPQF");
+        fields.put(officeIn.getName().toUpperCase(), officeIn);
+
+        Field GLEachOccurrence = fields.get("ContractorGeneralLiabilityGLEachOccurrenceAnswer".toUpperCase());
+        GLEachOccurrence.setType(FieldType.Number);
+        GLEachOccurrence.setDatabaseColumnName("REPLACE(" + GLEachOccurrence.getDatabaseColumnName() + ",',','')");
+
+        Field GLGeneralAggregate = fields.get("ContractorGeneralLiabilityGLGeneralAggregateAnswer".toUpperCase());
+        GLGeneralAggregate.setType(FieldType.Number);
+        GLGeneralAggregate.setDatabaseColumnName("REPLACE(" + GLGeneralAggregate.getDatabaseColumnName() + ",',','')");
+
+        Field ALCombinedSingle = fields.get("ContractorAutoLiabilityALCombinedSingleAnswer".toUpperCase());
+        ALCombinedSingle.setType(FieldType.Number);
+        ALCombinedSingle.setDatabaseColumnName("REPLACE(" + ALCombinedSingle.getDatabaseColumnName() + ",',','')");
+
+        Field WCEachAccident = fields.get("ContractorWorkersCompWCEachAccidentAnswer".toUpperCase());
+        WCEachAccident.setType(FieldType.Number);
+        WCEachAccident.setDatabaseColumnName("REPLACE(" + WCEachAccident.getDatabaseColumnName() + ",',','')");
+
+        Field EXEachOccurrence = fields.get("ContractorExcessLiabilityEXEachOccurrenceAnswer".toUpperCase());
+        EXEachOccurrence.setType(FieldType.Number);
+        EXEachOccurrence.setDatabaseColumnName("REPLACE(" + EXEachOccurrence.getDatabaseColumnName() + ",',','')");
 
         return fields;
 	}

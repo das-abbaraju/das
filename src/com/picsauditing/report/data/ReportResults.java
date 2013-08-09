@@ -6,6 +6,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ReportResults {
@@ -17,12 +18,26 @@ public class ReportResults {
     }
 
     public void setColumns(List<Column> columns) {
+        Collections.sort(columns);
         this.columns = columns;
+    }
+
+    public int getReportId() {
+        if (columns.isEmpty()) {
+            return 0;
+        }
+        else {
+            return columns.get(0).getReport().getId();
+        }
     }
 
     @Deprecated
     public void addRow(ReportRow row) {
         rows.add(row);
+    }
+
+    public void setRows(List<ReportRow> rows) {
+        this.rows = rows;
     }
 
     public List<ReportRow> getRows() {

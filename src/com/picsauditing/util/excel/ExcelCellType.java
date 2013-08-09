@@ -1,9 +1,10 @@
 package com.picsauditing.util.excel;
 
-import com.picsauditing.report.fields.Field;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.report.fields.*;
 
 public enum ExcelCellType {
-	String, Integer("0"), Double("#,##0.00"), Money("($#,##0_);($#,##0)"), Date("yyyy-mm-dd"), Enum, Translated;
+	String, Integer("0"), Double("#,##0.00"), Money("($#,##0_);($#,##0)"), Date("m/d/yyyy"), Enum, Translated;
 
 	private String format = "@";
 
@@ -28,16 +29,63 @@ public enum ExcelCellType {
 		return false;
 	}
 
-	public static ExcelCellType convert(Field field) {
-		switch (field.getType()) {
-		case Date:
-			return Date;
-		case Integer:
-			return Integer;
-		case Float:
-			return Double;
-		default:
-			return String;
-		}
+	public static ExcelCellType convert(Column column) {
+        FieldType type = column.getField().getType();
+        SqlFunction sqlFunction = column.getSqlFunction();
+        if (!column.hasNoSqlFunction()) {
+            switch (sqlFunction) {
+                case Average:
+                case Round:
+                case StdDev:
+                case Sum:
+                    return Double;
+                case Count:
+                case CountDistinct:
+                case DaysFromNow:
+                case Hour:
+                case Length:
+                case Month:
+                case Year:
+                    return Integer;
+                case Date:
+                    return Date;
+                case GroupConcat:
+                case LowerCase:
+                case UpperCase:
+                case WeekDay:
+                case YearMonth:
+                    return String;
+            }
+        }
+
+        switch (type) {
+            case Date:
+            case DateTime:
+                return Date;
+            case AccountID:
+            case Integer:
+            case UserID:
+                return Integer;
+            case Float:
+            case Number:
+                return Double;
+            default:
+                return String;
+        }
+
+//		switch (column.getDisplayType()) {
+//            case Date:
+//            case DateTime:
+//                return Date;
+//            case AccountID:
+//            case Integer:
+//            case UserID:
+//                return Integer;
+//            case Float:
+//            case Number:
+//                return Double;
+//            default:
+//                return String;
+//		}
 	}
 }

@@ -231,6 +231,8 @@ public class UsersManage extends PicsActionSupport {
 
         updateShadowCSR();
 
+        user.updateDisplayNameBasedOnFirstAndLastName();
+
         // Send activation email if set
         if (sendActivationEmail && user.getId() == 0) {
             setUserResetHash();
@@ -244,8 +246,6 @@ public class UsersManage extends PicsActionSupport {
         if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
             user.setUsingDynamicReports(isUsingVersion7Menus());
         }
-
-        user.updateDisplayNameBasedOnFirstAndLastName();
 
         try {
             user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);

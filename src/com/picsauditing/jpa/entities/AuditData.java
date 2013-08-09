@@ -109,7 +109,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Low)
 	public Date getDateVerified() {
 		return dateVerified;
 	}

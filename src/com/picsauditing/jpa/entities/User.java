@@ -412,6 +412,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return result;
 	}
 
+    @ReportField(type = FieldType.Integer)
 	public int getAssignmentCapacity() {
 		return assignmentCapacity;
 	}
@@ -428,6 +429,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public void setGroups(List<UserGroup> groups) {
 		this.groups = groups;
 	}
+
+    @Transient
+    public Set<UserGroup> getAllInheritedGroups() {
+        Set<UserGroup> userGroups = new HashSet<UserGroup>();
+        for (UserGroup group : groups) {
+            userGroups.add(group);
+            userGroups.addAll(group.getGroup().getAllInheritedGroups());
+        }
+
+        return userGroups;
+    }
 
 	@OneToMany(mappedBy = "group", cascade = { CascadeType.ALL })
 	public List<UserGroup> getMembers() {

@@ -1,13 +1,17 @@
 package com.picsauditing.report.models;
 
 public enum ModelType {
-	Accounts,
+	AccountNotes,
+    Accounts,
     AuditTypes,
     ContractorAudits,
     ContractorAuditDatas,
     ContractorAuditFiles,
+    ContractorAuditOperatorCemex,
     ContractorAuditOperators,
+    ContractorAuditOperatorWorkflows,
     ContractorFees,
+    ContractorFlagCriteriaDatas,
     ContractorFlagDatas,
     ContractorNumbers,
     ContractorOperators,
@@ -25,6 +29,7 @@ public enum ModelType {
     OperatorAccountUsers,
     OperatorUsers,
     PaymentCommissions,
+    Payments,
     Reports,
     ReportColumns,
     ReportFilters,

@@ -27,12 +27,12 @@ public class SqlFunctionTest {
 		assertEquals(DisplayType.Number, SqlFunction.StdDev.getDisplayType(field));
 		assertEquals(DisplayType.Number, SqlFunction.Length.getDisplayType(field));
 		assertEquals(DisplayType.Number, SqlFunction.Year.getDisplayType(field));
-		assertEquals(DisplayType.Number, SqlFunction.YearMonth.getDisplayType(field));
 		assertEquals(DisplayType.Number, SqlFunction.WeekDay.getDisplayType(field));
 		assertEquals(DisplayType.Number, SqlFunction.Hour.getDisplayType(field));
         assertEquals(DisplayType.Number, SqlFunction.DaysFromNow.getDisplayType(field));
 
 		assertEquals(DisplayType.String, SqlFunction.GroupConcat.getDisplayType(field));
+        assertEquals(DisplayType.String, SqlFunction.YearMonth.getDisplayType(field));
 		assertEquals(DisplayType.String, SqlFunction.Month.getDisplayType(field));
 		assertEquals(DisplayType.String, SqlFunction.Date.getDisplayType(field));
 	}
@@ -76,12 +76,12 @@ public class SqlFunctionTest {
 		assertEquals(FilterType.Number, SqlFunction.StdDev.getFilterType(field));
 		assertEquals(FilterType.Number, SqlFunction.Length.getFilterType(field));
 		assertEquals(FilterType.Number, SqlFunction.Year.getFilterType(field));
-		assertEquals(FilterType.Number, SqlFunction.YearMonth.getFilterType(field));
 		assertEquals(FilterType.Number, SqlFunction.WeekDay.getFilterType(field));
 		assertEquals(FilterType.Number, SqlFunction.Hour.getFilterType(field));
         assertEquals(FilterType.Number, SqlFunction.DaysFromNow.getFilterType(field));
 
 		assertEquals(FilterType.String, SqlFunction.GroupConcat.getFilterType(field));
+        assertEquals(FilterType.Date, SqlFunction.YearMonth.getFilterType(field));
 		assertEquals(FilterType.String, SqlFunction.Month.getFilterType(field));
 		assertEquals(FilterType.String, SqlFunction.Date.getFilterType(field));
 	}

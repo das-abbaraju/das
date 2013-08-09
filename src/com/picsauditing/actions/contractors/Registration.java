@@ -74,47 +74,45 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			return SUCCESS;
 		}
 
-		if ("request".equalsIgnoreCase(button)) {
-			// check for basic rID...?
-			if (getParameter("rID") > 0) {
-				requestID = getParameter("rID");
-			}
-			// Check for new requestID
-			if (requestID == 0) {
-				requestID = getParameter("requestID");
-			}
+		// check for basic rID...?
+		if (getParameter("rID") > 0) {
+			requestID = getParameter("rID");
+		}
+		// Check for new requestID
+		if (requestID == 0) {
+			requestID = getParameter("requestID");
+		}
 
-			if (requestID > 0) {
-				// Set the session variable
-				ActionContext.getContext().getSession().put("requestID", requestID);
-				ContractorRegistrationRequest crr = requestDAO.find(requestID);
+		if (requestID > 0) {
+			// Set the session variable
+			ActionContext.getContext().getSession().put("requestID", requestID);
+			ContractorRegistrationRequest crr = requestDAO.find(requestID);
 
-				if (crr.getContractor() == null) {
-					contractor = new ContractorAccount();
-					contractor.setName(crr.getName());
-					contractor.setPhone(crr.getPhone());
-					contractor.setTaxId(crr.getTaxID());
-					contractor.setAddress(crr.getAddress());
-					contractor.setCity(crr.getCity());
-					contractor.setZip(crr.getZip());
-					contractor.setCountry(crr.getCountry());
-					if (crr.getCountrySubdivision() != null) {
-						contractor.setCountrySubdivision(crr.getCountrySubdivision());
-					} else {
-						contractor.setCountrySubdivision(null);
-					}
-
-					contractor.setRequestedBy(crr.getRequestedBy());
-					contractor.setTaxId(crr.getTaxID());
-
-					user = new User();
-					user.setName(crr.getContact());
-					user.setEmail(EmailAddressUtils.validate(crr.getEmail()));
-					user.setPhone(crr.getPhone());
+			if (crr.getContractor() == null) {
+				contractor = new ContractorAccount();
+				contractor.setName(crr.getName());
+				contractor.setPhone(crr.getPhone());
+				contractor.setTaxId(crr.getTaxID());
+				contractor.setAddress(crr.getAddress());
+				contractor.setCity(crr.getCity());
+				contractor.setZip(crr.getZip());
+				contractor.setCountry(crr.getCountry());
+				if (crr.getCountrySubdivision() != null) {
+					contractor.setCountrySubdivision(crr.getCountrySubdivision());
 				} else {
-					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
-					return SUCCESS;
+					contractor.setCountrySubdivision(null);
 				}
+
+				contractor.setRequestedBy(crr.getRequestedBy());
+				contractor.setTaxId(crr.getTaxID());
+
+				user = new User();
+				user.setName(crr.getContact());
+				user.setEmail(EmailAddressUtils.validate(crr.getEmail()));
+				user.setPhone(crr.getPhone());
+			} else {
+				addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
+				return SUCCESS;
 			}
 		}
 

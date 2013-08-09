@@ -118,6 +118,13 @@ public class AllModelsTest {
         Approvals.verify(getJoin());
     }
 
+    @Test
+    public void testPaymentModel() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+        model = new PaymentsModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
     private String getJoin() {
         List<String> fieldValues = new ArrayList<String>();
 

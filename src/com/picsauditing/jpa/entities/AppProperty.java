@@ -13,8 +13,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "app_properties")
 public class AppProperty implements java.io.Serializable {
-	
-	public static final String LIVECHAT = "PICS.liveChat";
+
 	public static final String SYSTEM_MESSAGE = "PICS.showSystemMessage";
 	public static final String BETA_LEVEL = "BETA_maxLevel";
 	public static final String QB_JAXB_ENCODING = "QuickBooks.JAXB.ASCII.Encoding";

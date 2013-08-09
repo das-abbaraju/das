@@ -11,7 +11,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.util.Strings;
 
 public class ReportRow {
-	private Map<Column, ReportCell> cells = new HashMap<Column, ReportCell>();
+	private Map<Column, ReportCell> cells = new LinkedHashMap<Column, ReportCell>();
 
 	public ReportRow(Map<Column, Object> rowData) {
 		for (Column column : rowData.keySet()) {

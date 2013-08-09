@@ -60,7 +60,7 @@ public abstract class SubscriptionBuilder {
         tokens.clear();
     }
 
-	protected abstract Map<String, Object> process(EmailSubscription subscription) throws IOException;
+	public abstract Map<String, Object> process(EmailSubscription subscription) throws IOException;
 
 	private EmailQueue buildEmail(EmailSubscription subscription, Map<String, Object> tokens) throws IOException {
 		if (tokens.size() > 0) {

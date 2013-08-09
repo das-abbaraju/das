@@ -5,7 +5,7 @@
 <%--
 Note: 1.7.2 version affects the website in the followings ways, upgrading jquery.ui may effect the following
 
-- Including multiple jquery.ui will break plugins 
+- Including multiple jquery.ui will break plugins
 - UI calendar z-index
 - MySchedule calendar plugin
 
@@ -15,6 +15,19 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <%-- DO NOT MODIFY --%>
 <script type="text/javascript" src="v7/js/pics/core/core.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/widget/modal.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/mibew.js?v=${version}"></script>
+
+<%-- v7 Chart Classes --%>
+<script type="text/javascript" src="v7/js/pics/widget/chart/Chart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/BasicChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/StackedColumnChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/CustomColorChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/_child/flags-chart/FlagsChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/_child/flags-chart/_child/StackedFlagsChart.js?v=${version}"></script>
+<%-- END v7 Chart Classes --%>
+
+<script src="v7/js/vendor/select2.js?v=${version}"></script>
+<script src="v7/js/pics/widget/session-timer.js?v=${version}"></script>
 <%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>
@@ -66,7 +79,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>
 <script type="text/javascript" src="TranslateJS.action"></script>
 
-<script src="v7/js/vendor/select2.js?v=${version}"></script>
-
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>google.load('visualization', '1.0', {'packages':['corechart']});</script>
 <!--[if IE 6]><script src="js/jquery/supersleight/supersleight.plugin.js?v=${version}"></script><![endif]-->
 <!--[if IE 6]><script>$('body').supersleight({shim: 'images/x.gif'});</script><![endif]-->

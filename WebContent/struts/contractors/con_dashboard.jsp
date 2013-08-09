@@ -196,7 +196,7 @@
 </s:if>
 
 <s:if test="co != null">
-	<s:include value="_con-dashboard-message.jsp"/>
+	    <s:include value="_con-dashboard-message.jsp"/>
 
 	<div class="co_flag">
 		<s:url action="ContractorFlag" var="contractor_flag">
@@ -478,7 +478,7 @@
 				<div class="clear" style="height: 0px; overflow: hidden"></div>
 
 				<s:iterator value="criteriaList.categories" id="datacat">
-					<s:if test="#datacat != 'Insurance Criteria'">
+					<s:if test="shouldShowFlagCriteriaCategory(#datacat)">
 						<div class="flagData">
 							<strong><s:property value='%{getText("FlagCriteria.Category." + #datacat)}'/></strong>
 

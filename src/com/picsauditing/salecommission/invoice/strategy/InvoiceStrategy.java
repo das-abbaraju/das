@@ -162,9 +162,9 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			}
 		}
 
-		double totalCommissionEligible = invoice.getTotalCommissionEligibleInvoice(true).doubleValue();
+		double totalCommissionEligible = invoice.getCommissionableAmount().doubleValue();
 		if (totalCommissionEligible > 0) {
-			result /= invoice.getTotalCommissionEligibleInvoice(true).doubleValue();
+			result /= totalCommissionEligible;
 		}
 
 		return result;
@@ -275,7 +275,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		try {
 			Database.executeBatch(sql, clientSiteServices, new CommissionAuditQueryMapper());
 		} catch (Exception e) {
-			logger.error("An error occurred while performing a batch insert for invoice commissions", e);
+			logger.debug("An error occurred while performing a batch insert for invoice commissions", e);
 		}
 	}
 

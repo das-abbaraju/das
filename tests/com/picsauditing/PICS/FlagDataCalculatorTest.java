@@ -17,6 +17,7 @@ import java.util.Map;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -69,7 +70,7 @@ public class FlagDataCalculatorTest {
 
 		fc = new FlagCriteria();
 		fc.setId(1);
-		fc.setCategory("Safety");
+		fc.setCategory(FlagCriteriaCategory.Safety);
 		
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.getAuditType().setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
@@ -264,7 +265,7 @@ public class FlagDataCalculatorTest {
 		FlagCriteria fc = new FlagCriteria();
 		fc.setId(id);
 		fc.setMultiYearScope(scope);
-		fc.setCategory((scope != null)?scope.toString():"null");
+		fc.setCategory(null);
 		
 		return fc;
 	}
@@ -452,7 +453,7 @@ public class FlagDataCalculatorTest {
 	
 	@Test
 	public void testInsuranceCriteria() {
-		FlagDataCalculator calculator =setupInsuranceCriteria();
+		FlagDataCalculator calculator = setupInsuranceCriteria();
 		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
 		Whitebox.setInternalState(calculator, "dao", dao);
 
@@ -463,9 +464,10 @@ public class FlagDataCalculatorTest {
 	}
 	
 	private FlagDataCalculator setupInsuranceCriteria() {
-		FlagCriteria fc = EntityFactory.makeFlagCriteriaAuditQuestion();
+        AuditType auditType = AuditType.builder().id(5).build();
+		FlagCriteria fc = EntityFactory.makeFlagCriteriaAuditQuestion(auditType);
 		fc.setInsurance(true);
-		fc.setCategory("Insurance Criteria");
+		fc.setCategory(FlagCriteriaCategory.InsuranceCriteria);
 		fc.setComparison("<");
 		fc.setDataType("number");
 		fc.setAllowCustomValue(true);
@@ -476,13 +478,17 @@ public class FlagDataCalculatorTest {
 		FlagCriteriaContractor fcc = EntityFactory.makeFlagCriteriaContractor("5");
 		fcc.setContractor(contractor);
 		fcc.setCriteria(fc);
-		
-		OperatorAccount operator = EntityFactory.makeOperator();
+
+        ContractorAudit contractorAudit = ContractorAudit.builder().auditType(auditType).build();
+        addCaoAndCaopToAudit(contractorAudit, operator);
+        contractor.setAudits(Arrays.asList(contractorAudit));
+
 		FlagCriteriaOperator fco = EntityFactory.makeFlagCriteriaOperator("10");
 		fco.setOperator(operator);
 		fco.setCriteria(fc);
 		
 		calculator = new FlagDataCalculator(fcc, fco);
+        calculator.setOperator(operator);
 		
 		return calculator;
 	}
@@ -778,12 +784,14 @@ public class FlagDataCalculatorTest {
 	}
 	
 	@Test
-	public void testIsFlagged_AuditCompleteAuditQuestionNoVerificationOrSubmittedWorkflow() throws Exception {		
-		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
+	public void testIsFlagged_AuditCompleteAuditQuestionNoVerificationOrSubmittedWorkflow() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType();
+        ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete, auditType);
 		
 		FlagCriteria flagCriteria = buildFakeFlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		question.getCategory().setAuditType(EntityFactory.makeAuditType());
+
+        question.getCategory().setAuditType(auditType);
 		
 		flagCriteria.setAuditType(null);
 		flagCriteria.setQuestion(question);
@@ -797,7 +805,7 @@ public class FlagDataCalculatorTest {
 
 		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
 		
-		assertNotNull(result);
+		assertNull(result);
 	}
 	
 	@Test
@@ -826,8 +834,8 @@ public class FlagDataCalculatorTest {
 		
 		assertNull(result);
 	}
-	
-	@Test
+
+    @Test
 	public void testIsFlagged_AuditApprovedAuditQuestionVerifiedWithSubmittedWorkflow() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Approved);
 		
@@ -880,6 +888,9 @@ public class FlagDataCalculatorTest {
 	
 	@Test
 	public void testIsFlagged_AuditPendingAuditQuestionNoVerificationButWithSubmittedWorkflow() throws Exception {
+        operator = EntityFactory.makeOperator();
+        operator.setId(OPERATOR_ID_FOR_CAOP);
+
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Pending);
 		
 		FlagCriteria flagCriteria = buildFakeFlagCriteria();
@@ -895,9 +906,7 @@ public class FlagDataCalculatorTest {
 		
 		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
 		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
-		
-		OperatorAccount operator = EntityFactory.makeOperator();
-		operator.setId(OPERATOR_ID_FOR_CAOP);
+
 		calculator.setOperator(operator);
 
 		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
@@ -932,8 +941,8 @@ public class FlagDataCalculatorTest {
 		
 		assertNull(result);
 	}
-	
-	@Test
+
+    @Test
 	public void testIsFlagged_AuditCompleteFailsCPIQuestionCheck() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
 		
@@ -965,8 +974,8 @@ public class FlagDataCalculatorTest {
 		
 		assertTrue(result);
 	}
-	
-	@Test
+
+    @Test
 	public void testIsFlagged_AuditCompleteSucceedsCPIQuestionCheck() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
 		
@@ -1004,12 +1013,15 @@ public class FlagDataCalculatorTest {
     public void testIsFlagged_AnnualUpdateQuestion() throws Exception {
         ContractorAudit annualUpdate2012 = EntityFactory.makeAnnualUpdate(11, contractor, "2012");
         mockContractorAuditOperator(annualUpdate2012, AuditStatus.Complete);
+        addCaoAndCaopToAudit(annualUpdate2012, operator);
 
         ContractorAudit annualUpdate2011 = EntityFactory.makeAnnualUpdate(11, contractor, "2011");
         mockContractorAuditOperator(annualUpdate2011, AuditStatus.Pending);
+        addCaoAndCaopToAudit(annualUpdate2011, operator);
 
         ContractorAudit annualUpdate2010 = EntityFactory.makeAnnualUpdate(11, contractor, "2010");
         mockContractorAuditOperator(annualUpdate2010, AuditStatus.Pending);
+        addCaoAndCaopToAudit(annualUpdate2010, operator);
 
 
         List<ContractorAudit> annualUpdatesInSpecificOrder = new ArrayList<ContractorAudit>();
@@ -1034,6 +1046,21 @@ public class FlagDataCalculatorTest {
         assertTrue(result);
     }
 
+    private void addCaoAndCaopToAudit(ContractorAudit audit, OperatorAccount operator) {
+        ArrayList<ContractorAuditOperator> caos = new ArrayList<>();
+
+        ContractorAuditOperator cao = ContractorAuditOperator.builder()
+                .operator(operator)
+                .caop(ContractorAuditOperatorPermission.builder()
+                        .operator(operator)
+                        .build())
+                .status(AuditStatus.Approved)
+                .visible()
+                .build();
+        caos.add(cao);
+        audit.setOperators(caos);
+    }
+
     private void mockContractorAuditOperator(ContractorAudit contractorAudit, AuditStatus auditStatus) {
         ContractorAuditOperator contractorAuditOperator2012 = Mockito.mock(ContractorAuditOperator.class);
 
@@ -1047,16 +1074,20 @@ public class FlagDataCalculatorTest {
 
 
     private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus) {
-		ContractorAccount contractor = EntityFactory.makeContractor();
-		contractor.setAccountLevel(AccountLevel.Full);
-		ContractorAudit mockAudit = buildMockAudit(1000, yearForCurrentWCB(), caoStatus);
-		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-		audits.add(mockAudit);
-		contractor.setAudits(audits);
-		
-		
-		return contractor;
+        return buildFakeContractorAccount(caoStatus, EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
 	}
+
+    private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus, AuditType auditType) {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+        contractor.setAccountLevel(AccountLevel.Full);
+        ContractorAudit mockAudit = buildMockAudit(1000, yearForCurrentWCB(), caoStatus, auditType);
+        List<ContractorAudit> audits = new ArrayList<>();
+        audits.add(mockAudit);
+        contractor.setAudits(audits);
+
+
+        return contractor;
+    }
 	
 	private ContractorAccount buildFakeContractorAccountWithWCBs(AuditStatus caoStatus) {
 		int yearForCurrentWCB = yearForCurrentWCB();
@@ -1092,6 +1123,7 @@ public class FlagDataCalculatorTest {
 		FlagCriteriaOperator operatorFlagCriteria = EntityFactory.makeFlagCriteriaOperator(null);
 		operatorFlagCriteria.setTag(null);
 		operatorFlagCriteria.setCriteria(flagCriteria);
+        operatorFlagCriteria.setOperator(operator);
 		
 		return operatorFlagCriteria;
 	}
@@ -1137,19 +1169,27 @@ public class FlagDataCalculatorTest {
 	 * @return ContractorAudit with list that has one CAO with an ID that is the same as the 
 	 * auditForYear for the purpose of verifying the proper CAO was returned in tests.
 	 */
-	private ContractorAudit buildMockAudit(int id, int auditForYear, AuditStatus caoStatus) {
+    private ContractorAudit buildMockAudit(int id, int auditForYear, AuditStatus caoStatus) {
+        return buildMockAudit(id, auditForYear, caoStatus, EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
+    }
+	private ContractorAudit buildMockAudit(int id, int auditForYear, AuditStatus caoStatus, AuditType auditType) {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		when(audit.getId()).thenReturn(id);
 		when(audit.getAuditFor()).thenReturn(Integer.toString(auditForYear));
 		
-		when(audit.getAuditType()).thenReturn(EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
+		when(audit.getAuditType()).thenReturn(auditType);
 		
 		ContractorAuditOperator cao = Mockito.mock(ContractorAuditOperator.class);
+		ContractorAuditOperatorPermission caop = Mockito.mock(ContractorAuditOperatorPermission.class);
 		when(cao.getId()).thenReturn(auditForYear);
 		when(cao.isVisible()).thenReturn(true);
 		when(audit.getOperators()).thenReturn(Arrays.asList(cao));
 		when(cao.hasCaop(OPERATOR_ID_FOR_CAOP)).thenReturn(true);
 		when(cao.getStatus()).thenReturn(caoStatus);
+        when(cao.getOperator()).thenReturn(operator);
+		when(caop.getOperator()).thenReturn(operator);
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		when(cao.getCaoPermissions()).thenReturn(Arrays.asList(caop));
 				
 		return audit;
 	}

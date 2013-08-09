@@ -211,7 +211,7 @@ public class BillingDetailTest extends PicsActionTest {
 		when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
-		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))
+		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()), contractor.getBillingStatus()))
 				.thenReturn(invoice);
 	}
 
@@ -222,7 +222,7 @@ public class BillingDetailTest extends PicsActionTest {
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
 		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
-		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))
+		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()), contractor.getBillingStatus()))
 				.thenReturn(invoice);
 	}
 
@@ -233,7 +233,7 @@ public class BillingDetailTest extends PicsActionTest {
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))
+		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()), contractor.getBillingStatus()))
 				.thenReturn(invoice);
 	}
 
@@ -299,7 +299,7 @@ public class BillingDetailTest extends PicsActionTest {
 
 		String actionResult = billingDetail.execute();
 
-		verify(billingService).createInvoiceWithItems(eq(contractor), eq(invoiceItems), any(User.class));
+		verify(billingService).createInvoiceWithItems(eq(contractor), eq(invoiceItems), any(User.class), any(BillingStatus.class));
 		assertEquals(PicsActionSupport.BLANK, actionResult);
 	}
 

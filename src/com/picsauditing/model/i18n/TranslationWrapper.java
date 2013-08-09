@@ -2,13 +2,22 @@ package com.picsauditing.model.i18n;
 
 public class TranslationWrapper {
 
+	private int keyID;
 	private String key;
 	private String translation;
 	private String locale;
 	private int createdBy;
 	private int updatedBy;
 
-	public String getKey() {
+    public int getKeyID() {
+        return keyID;
+    }
+
+    public void setKeyID(int keyID) {
+        this.keyID = keyID;
+    }
+
+    public String getKey() {
 		return key;
 	}
 
@@ -29,14 +38,19 @@ public class TranslationWrapper {
 	}
 
 	public static class Builder {
-
+        private int keyID;
 		private String key;
 		private String translation;
 		private String locale;
 		private int createdBy;
 		private int updatedBy;
 
-		public Builder key(String key) {
+        public Builder keyID(int keyID) {
+            this.keyID = keyID;
+            return this;
+        }
+
+        public Builder key(String key) {
 			this.key = key;
 			return this;
 		}
@@ -63,6 +77,7 @@ public class TranslationWrapper {
 
 		public TranslationWrapper build() {
 			TranslationWrapper translationWrapper = new TranslationWrapper();
+			translationWrapper.keyID = keyID;
 			translationWrapper.key = key;
 			translationWrapper.translation = translation;
 			translationWrapper.locale = locale;

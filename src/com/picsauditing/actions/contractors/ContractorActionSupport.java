@@ -10,9 +10,8 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.PermissionToViewContractor;
+import com.picsauditing.util.URLUtils;
 import org.apache.struts2.ServletActionContext;
-import org.perf4j.StopWatch;
-import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,22 +236,64 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 *
 	 * @return
 	 */
+	@Deprecated
 	public List<MenuComponent> getAuditMenu() {
-		Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
-		logger.info("Found [{}] total active audits", auditList.size());
-
-		Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
-		StopWatch stopwatch = new Slf4JStopWatch(profiler);
-		stopwatch.start("ContractorActionSupport.getAuditMenu");
-
 		AuditMenuBuilder auditMenuBuilder = new AuditMenuBuilder(contractor, permissions);
-		auditMenuBuilder.setManuallyAddedAuditTypes(getManuallyAddAudits());
 		auditMenuBuilder.setClientReviewsUnderAuditGUARD(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD));
-		List<MenuComponent> menu = auditMenuBuilder.buildAuditMenuFrom(auditList);
+		List<MenuComponent> v6 = getV6MenuComponents(auditMenuBuilder.buildAuditMenu());
 
-		stopwatch.stop();
 		resetActiveAudits();
-		return menu;
+		return v6;
+	}
+
+	@Deprecated
+	private List<MenuComponent> getV6MenuComponents(Map<AuditMenuBuilder.Service, List<MenuComponent>> menu) {
+		List<MenuComponent> v6 = new ArrayList<>();
+		MenuComponent annualUpdates = null;
+		String annualUpdateText = getText("AuditType.11.name");
+
+		for (AuditMenuBuilder.Service service : menu.keySet()) {
+			MenuComponent header = menu.get(service).remove(0);
+
+			switch (service) {
+				case DOCUGUARD:
+					header.setName(getText("AuditType.1.name"));
+					break;
+				case INSUREGUARD:
+					header.setName(getText("global.InsureGUARD"));
+					break;
+				case EMPLOYEEGUARD:
+					header.setName(getText("global.EmployeeGUARD"));
+					break;
+				case AUDITGUARD:
+					header.setName(getText("global.AuditGUARD"));
+					break;
+			}
+
+			Iterator<MenuComponent> menuComponentIterator = menu.get(service).iterator();
+			while (menuComponentIterator.hasNext()) {
+				MenuComponent subItem = menuComponentIterator.next();
+				// Separate Annual Updates from DocuGUARD
+				if (service == AuditMenuBuilder.Service.DOCUGUARD && subItem.getName().startsWith(annualUpdateText)) {
+					addToAnnualUpdateMenu(annualUpdates, subItem);
+				} else {
+					header.addChild(subItem);
+				}
+			}
+
+			v6.add(header);
+		}
+		return v6;
+	}
+
+	private void addToAnnualUpdateMenu(MenuComponent annualUpdates, MenuComponent child) {
+		if (annualUpdates == null) {
+			URLUtils urlUtils = new URLUtils();
+			String url = urlUtils.getActionUrl("ContractorDocuments", "id", 14766) + "#annual_update";
+			annualUpdates = new MenuComponent(getText("AuditType.11.name"), url);
+		}
+
+		annualUpdates.addChild(child);
 	}
 
 	/**
@@ -262,8 +303,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 */
 
 	public boolean isShowHeader() {
-		if (permissions.isContractor())
-			return true;
+		if (permissions.isContractor()) {
+			return !permissions.isUsingVersion7Menus();
+		}
+
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
 		if (permissions.isOperator())

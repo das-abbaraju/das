@@ -43,7 +43,7 @@
 	</listener>
 	<listener>
     	<listener-class>com.tacitknowledge.util.migration.jdbc.WebAppJNDIMigrationLauncher</listener-class>
-	</listener>	
+	</listener>
 	<filter>
 		<filter-name>pageLogger</filter-name>
 		<filter-class>

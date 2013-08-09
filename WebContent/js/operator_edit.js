@@ -86,7 +86,7 @@
 
                             // bind approve save event
                             $('.operator-approve-relationship-modal').delegate('.approve-relationship', 'click', function (event) {
-                                var modal = PICS.getClass('modal.Modal');
+                                var modal = PICS.getClass('widget.Modal');
                                 modal.hide();
                             });
 
@@ -94,7 +94,7 @@
                             $('.operator-approve-relationship-modal').delegate('.cancel-relationship', 'click', function (event) {
                                 element.attr('checked', false);
 
-                                var modal = PICS.getClass('modal.Modal');
+                                var modal = PICS.getClass('widget.Modal');
                                 modal.hide();
                             });
                         }

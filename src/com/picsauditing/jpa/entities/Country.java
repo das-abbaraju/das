@@ -16,7 +16,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -45,6 +47,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public static final String UAE_ISO_CODE = "AE";
 	public static final String CANADA_ISO_CODE = "CA";
 	public static final String US_ISO_CODE = "US";
+	public static final String CHINA_ISO_CODE = "CN";
 
 	public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays
 			.asList(US_ISO_CODE, CANADA_ISO_CODE)));
@@ -88,6 +91,8 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	protected String fax;
 	protected Double corruptionPerceptionIndex;
 	protected boolean proforma;
+	protected String picsEmail;
+	protected BusinessUnit businessUnit;
 
 	protected Currency currency = Currency.USD;
 
@@ -208,6 +213,24 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	public void setProforma(boolean proforma) {
 		this.proforma = proforma;
+	}
+
+	public String getPicsEmail() {
+		return picsEmail;
+	}
+
+	public void setPicsEmail(String picsEmail) {
+		this.picsEmail = picsEmail;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="businessUnitID")
+	public BusinessUnit getBusinessUnit() {
+		return businessUnit;
+	}
+
+	public void setBusinessUnit(BusinessUnit businessUnit) {
+		this.businessUnit = businessUnit;
 	}
 
 	@OneToMany(mappedBy = "country")
@@ -336,4 +359,21 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 		return invoiceFee.getAmount();
 	}
+
+    @Transient
+    public boolean isTaxable() {
+        return (getTaxFeeClass() != null);
+    }
+
+    @Transient
+    public FeeClass getTaxFeeClass() {
+        if(isCanada()) {
+            return FeeClass.CanadianTax;
+        }
+        else if (isUK()) {
+            return FeeClass.VAT;
+        }
+
+        return null;
+    }
 }

@@ -2,9 +2,12 @@ package com.picsauditing.report.converter;
 
 import static com.picsauditing.report.ReportJson.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,11 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportElement;
-import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.PermissionService;
 import com.picsauditing.service.ReportPreferencesService;
@@ -26,16 +24,19 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class JsonReportBuilder {
 
+    private static int reportID;
 	private static final Logger logger = LoggerFactory.getLogger(JsonReportBuilder.class);
 
 	// FOR TESTING ONLY
 	protected static PermissionService permissionService;
 	protected static ReportPreferencesService reportPreferencesService;
 
-	public static JSONObject buildReportJson(Report report, Permissions permissions) {
+	public static JSONObject buildReportJson(Report report, Permissions permissions, List<EmailSubscription> subscriptions) {
 		JSONObject json = new JSONObject();
 
-		addReportLevelData(json, report, permissions);
+        reportID = report.getId();
+
+		addReportLevelData(json, report, permissions, subscriptions);
 
 		addColumns(json, report.getColumns());
 		addFilters(json, report.getFilters());
@@ -44,7 +45,7 @@ public class JsonReportBuilder {
 		return json;
 	}
 
-	private static void addReportLevelData(JSONObject json, Report report, Permissions permissions) {
+	private static void addReportLevelData(JSONObject json, Report report, Permissions permissions, List<EmailSubscription> subscriptions) {
 		json.put(REPORT_ID, report.getId());
 		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
 		json.put(REPORT_NAME, report.getName());
@@ -53,6 +54,14 @@ public class JsonReportBuilder {
 
 		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
 		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions.getUserId(), report.getId()));
+
+        SubscriptionTimePeriod frequency;
+        if (!subscriptions.isEmpty())
+            frequency = subscriptions.get(0).getTimePeriod();
+        else
+            frequency = SubscriptionTimePeriod.None;
+
+        json.put(REPORT_SUBSCRIPTION_FREQUENCY, frequency.toString());
 	}
 
 	public static PermissionService getPermissionService() {
@@ -72,6 +81,7 @@ public class JsonReportBuilder {
 
 		Collections.sort(columns);
 		assignColumnIds(columns);
+        setDrillDownURL(columns);
 
 		for (Column column : columns) {
 			try {
@@ -84,7 +94,31 @@ public class JsonReportBuilder {
 		json.put(REPORT_COLUMNS, jsonArray);
 	}
 
-	protected static void assignColumnIds(List<Column> columns) {
+    private static void setDrillDownURL(List<Column> columns) {
+        List <Column> aggregateColumns = new ArrayList<Column>();
+        JSONArray dynamicParameters = new JSONArray();
+
+        for (Column column : columns) {
+            if (column.getSqlFunction() != null && column.getSqlFunction().isAggregate()) {
+                aggregateColumns.add(column);
+            }
+            else {
+                JSONObject param = new JSONObject();
+                param.put(REPORT_ELEMENT_FIELD_ID,column.getName());
+                param.put(FILTER_OPERATOR,column.getField().getFilterType().defaultOperator.toString());
+                param.put(FILTER_VALUE,"{" + column.getName() + "}");
+                dynamicParameters.add(param);
+            }
+        }
+
+        String drillDownURL = "Report.action?report=" + reportID + "&removeAggregates=true&dynamicParameters=" + dynamicParameters;
+
+        for (Column aggregateColumn : aggregateColumns) {
+            aggregateColumn.getField().setUrl(drillDownURL);
+        }
+    }
+
+    protected static void assignColumnIds(List<Column> columns) {
 		for (int i = 0; i < columns.size(); i++) {
 			Column column = columns.get(i);
 			column.setColumnId(COLUMN_ID_PREFIX + i);

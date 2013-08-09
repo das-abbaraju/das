@@ -1,13 +1,7 @@
 package com.picsauditing.access;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
@@ -19,9 +13,13 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @UseReporter(DiffReporter.class)
 public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
@@ -50,111 +48,10 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testAddCompanyMenu_defaultCase() throws Exception {
-		MenuComponent menubar = new MenuComponent();
-
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddCompanyMenu_admin() throws Exception {
-		when(permissions.isAdmin()).thenReturn(true);
-		MenuComponent menubar = new MenuComponent();
-
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddCompanyMenu_adminAndDemo() throws Exception {
-		when(permissions.isAdmin()).thenReturn(true);
-		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Demo);
-		MenuComponent menubar = new MenuComponent();
-
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddCompanyMenu_contractor() throws Exception {
-		when(permissions.isContractor()).thenReturn(true);
-		MenuComponent menubar = new MenuComponent();
-
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddCompanyMenu_generalContractor() throws Exception {
-		when(permissions.isGeneralContractor()).thenReturn(true);
-		MenuComponent menubar = new MenuComponent();
-
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddDocuguardMenu_defaultCase() throws Exception {
-		MenuComponent menubar = new MenuComponent();
-		List<MenuComponent> auditMenu = buildTestAuditMenu();
-
-		menubar = contractorSubmenuBuilder.addDocuguardMenu(menubar, permissions, contractorAccount, auditMenu);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddAuditguardMenu_defaultCase() throws Exception {
-		MenuComponent menubar = new MenuComponent();
-		List<MenuComponent> auditMenu = buildTestAuditMenu();
-
-		menubar = contractorSubmenuBuilder.addAuditguardMenu(menubar, permissions, contractorAccount, auditMenu);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddInsureguardMenu_defaultCase() throws Exception {
-		MenuComponent menubar = new MenuComponent();
-		List<MenuComponent> auditMenu = buildTestAuditMenu();
-
-		menubar = contractorSubmenuBuilder.addInsureguardMenu(menubar, permissions, contractorAccount, auditMenu);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
 	public void testAddSupportMenu_defaultCase() throws Exception {
 		MenuComponent menubar = new MenuComponent();
 
 		menubar = contractorSubmenuBuilder.addSupportMenu(menubar, permissions, contractorAccount, true);
-
-		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
-		Approvals.verify(result.toString());
-	}
-
-	@Test
-	public void testAddEmployeeguardMenu_defaultCase() throws Exception {
-		when(contractorAccount.isHasEmployeeGUARDTag()).thenReturn(true);
-		when(permissions.isContractor()).thenReturn(false);
-		when(permissions.isAdmin()).thenReturn(true);
-		MenuComponent menubar = new MenuComponent();
-
-		menubar = contractorSubmenuBuilder.addEmployeeguardMenu(menubar, permissions, contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());

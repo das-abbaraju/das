@@ -19,10 +19,8 @@ public interface TranslationService {
 
 	String getText(String key, String locale);
 
-	@Deprecated
 	String getText(String key, Locale locale, Object... args);
 
-	@Deprecated
 	String getText(String key, String locale, Object... args);
 
 	Map<String, String> getText(String key);

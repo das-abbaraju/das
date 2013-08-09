@@ -3,17 +3,12 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 
 @Entity
 @Table(name = "loginlog")
@@ -28,6 +23,7 @@ public class UserLoginLog {
 	private String browser;
 	private String fullUserAgent;
 	private String targetIP;
+	private LoginMethod loginMethod;
 
 	public UserLoginLog() {
 	}
@@ -146,4 +142,13 @@ public class UserLoginLog {
 	public void setTargetIP(String targetIP) {
 		this.targetIP = targetIP;
 	}
+
+    @Enumerated(EnumType.STRING)
+    public LoginMethod getLoginMethod() {
+        return loginMethod;
+    }
+
+    public void setLoginMethod(LoginMethod loginMethod) {
+        this.loginMethod = loginMethod;
+    }
 }

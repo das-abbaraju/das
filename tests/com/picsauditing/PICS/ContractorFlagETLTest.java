@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,16 +41,6 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OshaType;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ContractorFlagETL.class)
@@ -128,7 +119,7 @@ public class ContractorFlagETLTest {
 			when(auditQuestion.getAuditType()).thenReturn(auditType);
 			FlagCriteria flagCriteria = mock(FlagCriteria.class);
 			when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-			when(flagCriteria.getCategory()).thenReturn("test category");
+			when(flagCriteria.getCategory()).thenReturn(FlagCriteriaCategory.Audits);
 			when(flagCriteria.getDescription()).thenReturn("test description");
 			when(flagCriteria.includeExcess()).thenReturn(null);
 

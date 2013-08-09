@@ -509,7 +509,9 @@ public class PicsMenu {
 
 		subMenu = menu.addChild(getText("menu.Reports"));
 
-		subMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
+        if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
+            subMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
+        }
 
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp", "SiteOrientationReport");

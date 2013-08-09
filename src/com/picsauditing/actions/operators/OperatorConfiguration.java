@@ -110,7 +110,12 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
                 if (auditType == null) {
                     throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
                 }
-                AuditCategory cat = InsuranceCategoryBuilder.build(typeDAO, auditType, permissions, operator);
+                AuditCategory cat = InsuranceCategoryBuilder.builder().build(
+                    typeDAO,
+                    auditType,
+                    permissions,
+                    operator
+                );
 
                 auditCategoryRuleCache.clear();
                 flagClearCache();

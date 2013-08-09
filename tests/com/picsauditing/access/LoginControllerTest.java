@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import javax.servlet.http.Cookie;
 
+import com.picsauditing.dao.ReportUserDAO;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +78,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private UserService userService;
 	@Mock
 	private LanguageModel languageModel;
+    @Mock
+    private ReportUserDAO reportUserDAO;
 
 	private LoginService loginService = new LoginService();
 
@@ -95,7 +98,8 @@ public class LoginControllerTest extends PicsActionTest {
 				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
 
 		MockitoAnnotations.initMocks(this);
-		loginController = new LoginController();
+        LoginController.reportUserDAO = reportUserDAO;
+        loginController = new LoginController();
 		super.setUp(loginController);
 
 		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggleChecker);
@@ -324,6 +328,7 @@ public class LoginControllerTest extends PicsActionTest {
 		loginController.setSwitchToUser(SWITCH_USER_ID);
 		when(userDAO.find(SWITCH_USER_ID)).thenReturn(switchUser);
 		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
+        when(switchUser.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUserId()).thenReturn(NOT_ZERO);
 		when(switchUser.getLocale()).thenReturn(Locale.ENGLISH);
 
@@ -405,49 +410,6 @@ public class LoginControllerTest extends PicsActionTest {
 		loginController.execute();
 
 		assertTrue(loginController.getActionErrors().contains("Password incorrect"));
-	}
-
-	@Test
-	public void testLogAttempt_NullUserDoesNotPersistLog() throws Exception {
-		Whitebox.setInternalState(loginController, "user", (User) null);
-
-		Whitebox.invokeMethod(loginController, "logAttempt");
-
-		verify(loginLogDAO, never()).save((UserLoginLog) any());
-	}
-
-	@Test
-	public void testLogAttempt_BigIpCookieIpGetsPersisted() throws Exception {
-		Whitebox.setInternalState(loginController, "user", user);
-		Cookie cookie1 = mock(Cookie.class);
-		when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
-		when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
-		when(request.getCookies()).thenReturn(new Cookie[] { cookie1 });
-
-		Whitebox.invokeMethod(loginController, "logAttempt");
-		ArgumentCaptor<UserLoginLog> captor = ArgumentCaptor.forClass(UserLoginLog.class);
-
-		verify(loginLogDAO).save(captor.capture());
-
-		UserLoginLog log = captor.getValue();
-
-		assertThat(log.getTargetIP(), is(equalTo("74.205.45.70")));
-	}
-
-	@Test
-	public void testExtractTargetIpFromCookie() throws Exception {
-		Cookie cookie1 = mock(Cookie.class);
-		when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
-		when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
-		Cookie cookie2 = mock(Cookie.class);
-		when(cookie2.getName()).thenReturn("from");
-		when(cookie2.getValue()).thenReturn("/Home.action");
-
-		when(request.getCookies()).thenReturn(new Cookie[] { cookie1, cookie2 });
-
-		String targetIp = Whitebox.invokeMethod(loginController, "extractTargetIpFromCookie");
-
-		assertTrue("74.205.45.70".equals(targetIp));
 	}
 
 	@Test

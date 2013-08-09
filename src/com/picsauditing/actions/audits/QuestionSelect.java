@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Utilities;
@@ -64,7 +65,7 @@ public class QuestionSelect extends PicsActionSupport {
 
 		if (!Strings.isEmpty(questionName)) {
 			List<AuditQuestion> questionList = auditQuestionDAO.findByTranslatableField(AuditQuestion.class, where, "name",
-				"%" + Strings.escapeQuotes(questionName) + "%", null);
+				"%" + StringUtils.trim(Strings.escapeQuotes(questionName)) + "%", null);
 			Collections.sort(questionList, AuditQuestion.getComparator());
 			questions.addAll(questionList);
 		}

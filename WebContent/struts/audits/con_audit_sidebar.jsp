@@ -21,7 +21,16 @@
 		</a>
 	</li>
 
-	<s:if test="canVerifyPqf">
+    <s:if test="showEmailReminder">
+        <li>
+            <a class="email2" href="Audit!emailReminder.action?auditID=<s:property value="auditID" />">
+                <s:text name="Audit.button.EmailReminder" />
+            </a>
+        </li>
+    </s:if>
+
+
+    <s:if test="canVerifyPqf">
 		<li>
 			<a class="verify" href="VerifyView.action?id=<s:property value="id" />">
 				<s:text name="button.Verify" />

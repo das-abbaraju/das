@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -39,6 +42,7 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+    @ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Required)
 	public AuditStatus getStatus() {
 		return status;
 	}
@@ -48,6 +52,7 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
+    @ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Average)
 	public AuditStatus getPreviousStatus() {
 		return previousStatus;
 	}
@@ -57,6 +62,7 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	}
 
 	@Column(length = 1000)
+    @ReportField(importance = FieldImportance.Average)
 	public String getNotes() {
 		return notes;
 	}

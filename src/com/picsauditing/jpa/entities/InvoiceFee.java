@@ -49,7 +49,7 @@ public class InvoiceFee extends BaseTable {
 	private Integer displayOrder = 999;
 	private boolean commissionEligible;
 	private List<InvoiceFeeCountry> invoiceFeeCountries = new ArrayList<InvoiceFeeCountry>();
-	private InvoiceFeeCountry subdivisionFee;
+	private InvoiceFeeCountry regionalFee;
 
 	public InvoiceFee() {
 	}
@@ -97,7 +97,12 @@ public class InvoiceFee extends BaseTable {
 		this.ratePercent = ratePercent;
 	}
 
-	public boolean isVisible() {
+    @Transient
+    public BigDecimal getRateDecimal() {
+        return ratePercent.divide(new BigDecimal(100));
+    }
+
+    public boolean isVisible() {
 		return visible;
 	}
 
@@ -220,7 +225,12 @@ public class InvoiceFee extends BaseTable {
 		return getId() == GST;
 	}
 
-	@Transient
+    @Transient
+    public boolean isCanadianTax() {
+        return this.getFeeClass() == FeeClass.CanadianTax;
+    }
+
+    @Transient
 	public boolean isVAT() {
 		return getId() == VAT;
 	}
@@ -232,18 +242,15 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public BigDecimal getTax(BigDecimal amountToTax) {
-		if (feeClass.equals(FeeClass.CanadianTax)) {
-			BigDecimal provinceTaxRate = getSubdivisionFee().getRatePercent().divide(new BigDecimal(100));
-			BigDecimal gstTaxRate = getRatePercent().divide(new BigDecimal(100));
-			BigDecimal totalTaxRate = provinceTaxRate.add(gstTaxRate);
-			return amountToTax.multiply(totalTaxRate).setScale(2, BigDecimal.ROUND_UP);
-		} else if (isLegacyGST()) {
-			return amountToTax.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
-		} else if (isVAT()) {
-			return amountToTax.multiply(BigDecimal.valueOf(0.20)).setScale(2, BigDecimal.ROUND_UP);
-		} else {
-			return BigDecimal.ZERO;
-		}
+        BigDecimal subdivisionTaxRate = BigDecimal.ZERO;
+        if (getRegionalFee() != null) {
+            subdivisionTaxRate = getRegionalFee().getRateDecimal();
+        }
+
+        BigDecimal feeTaxRate = getRateDecimal();
+        BigDecimal totalTaxRate = subdivisionTaxRate.add(feeTaxRate);
+
+        return amountToTax.multiply(totalTaxRate).setScale(2, BigDecimal.ROUND_UP);
 	}
 
 	@Transient
@@ -252,12 +259,12 @@ public class InvoiceFee extends BaseTable {
 	}
 
 	@Transient
-	public InvoiceFeeCountry getSubdivisionFee() {
-		return subdivisionFee;
+	public InvoiceFeeCountry getRegionalFee() {
+		return regionalFee;
 	}
 
-	public void setSubdivisionFee(InvoiceFeeCountry subdivisionFee) {
-		this.subdivisionFee = subdivisionFee;
+	public void setRegionalFee(InvoiceFeeCountry regionalFee) {
+		this.regionalFee = regionalFee;
 	}
 
 	@Transient

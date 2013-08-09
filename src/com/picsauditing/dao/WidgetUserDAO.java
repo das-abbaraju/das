@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,9 @@ public class WidgetUserDAO extends PicsDAO {
     protected static final int ONLY_AUDITOR_WIDGETS_TO_INHERIT = 910;
     protected static final int OPERATOR_WIDGETS_TO_INHERIT = 616;
     protected static final int CORPORATE_WIDGETS_TO_INHERIT = 646;
+
+    @Autowired
+    private FeatureToggle featureToggleChecker;
 
     @Transactional(propagation = Propagation.NESTED)
 	public WidgetUser save(WidgetUser o) {
@@ -60,10 +66,19 @@ public class WidgetUserDAO extends PicsDAO {
 		if (permissions.isOnlyAuditor()) {
 			query.setParameter(1, ONLY_AUDITOR_WIDGETS_TO_INHERIT); // ddooly
         }
-		if (permissions.isOperator()) {
+
+        if (permissions.isOperator() && featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7CHARTS)) {
+            query.setParameter(1, 618); // george.orlando
+        }
+        else if (permissions.isOperator()) {
 			query.setParameter(1, OPERATOR_WIDGETS_TO_INHERIT); // kevin.dyer
         }
-		if (permissions.isCorporate()) {
+
+
+        if (permissions.isCorporate() && featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7CHARTS)) {
+            query.setParameter(1, 1728); // corporate.demo
+        }
+        else if (permissions.isCorporate()) {
 			query.setParameter(1, CORPORATE_WIDGETS_TO_INHERIT); // shellcorporate
         }
         // TODO: I think this can be removed as Contractors go to ContractorView and don't come through here

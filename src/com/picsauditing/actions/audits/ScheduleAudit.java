@@ -563,6 +563,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setTotalAmount(contractor.getCountry().getAmount(fee));
 		invoice.setNotes(notes);
 		invoice.setAuditColumns(permissions);
+        invoice.setInvoiceType(InvoiceType.OtherFees);
 		AccountingSystemSynchronization.setToSynchronize(invoice);
 		invoice = invoiceService.saveInvoice(invoice);
 
@@ -649,15 +650,24 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		return BLANK;
 	}
 
-	public String cancelAudit() {
-		conAudit.setLatitude(0);
-		conAudit.setLongitude(0);
-		conAudit.setScheduledDate(null);
-		auditDao.save(conAudit);
+	public String cancelAudit() throws Exception {
+		if (conAudit.getScheduledDate() != null && isNeedsReschedulingFee() ) {
+			// Create invoice
+			String notes = "Fee for cancelling " + getText(conAudit.getAuditType().getI18nKey("name"))
+					+ " within 48 hours of scheduled date "
+					+ DateBean.format(conAudit.getScheduledDate(), "MMM dd, yyyy");
+
+			createInvoice(rescheduling, notes);
+		}
 
 		String noteSummary = permissions.getName() + " canceled the " + conAudit.getAuditType().getName();
 		addNote(contractor, noteSummary, NoteCategory.Audits,
 				getViewableByAccount(conAudit.getAuditType().getAccount()));
+
+		conAudit.setLatitude(0);
+		conAudit.setLongitude(0);
+		conAudit.setScheduledDate(null);
+		auditDao.save(conAudit);
 
 		return "edit";
 	}

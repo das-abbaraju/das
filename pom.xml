@@ -62,11 +62,17 @@
         <compileSource>1.6</compileSource>
         <drools.version>5.5.0.Final</drools.version>
         <jacoco.version>0.6.2.201302030002</jacoco.version>
+        <jersey.version>1.17</jersey.version>
     </properties>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
         <testSourceDirectory>tests</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>resources/test</directory>
+            </testResource>
+        </testResources>
         <outputDirectory>target/classes</outputDirectory>
         <testOutputDirectory>target/test-classes</testOutputDirectory>
         <resources>
@@ -1057,6 +1063,11 @@
             <groupId>ApprovalTests</groupId>
             <artifactId>ApprovalTests</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
     </dependencies>
 </project>

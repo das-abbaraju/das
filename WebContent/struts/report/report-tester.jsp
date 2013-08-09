@@ -23,34 +23,11 @@ td.fail {
 	<thead>
 	<tr>
 		<th>Model Type</th>
-		<th>Result</th>
 	</tr>
 	</thead>
 	<s:iterator value="@com.picsauditing.report.models.ModelType@values()" var="modelType">
 		<tr id="models-row-<s:property value="#modelType" />">
-			<td><s:property value="#modelType"/></td>
-			<td class="results waiting"><s:property value="#modelType"/></td>
-		</tr>
-	</s:iterator>
-</table>
-
-<h3>Reports</h3>
-
-<table id="reports">
-	<thead>
-	<tr>
-		<th>Model Type</th>
-		<th>Report</th>
-		<th>Drill Down</th>
-		<th>Result</th>
-	</tr>
-	</thead>
-	<s:iterator value="reports">
-		<tr id="reports-row-<s:property value="id" />">
-			<td><s:property value="modelType" /></td>
-			<td><a href="Report.action?report=<s:property value="id" />"><s:property value="name" /></a></td>
-			<td><a href="ReportTester.action?reportID=<s:property value="id" />">Expand</a></td>
-			<td class="results waiting"><s:property value="id" /></td>
+			<td><a href="ReportTester.action?modelType=<s:property value="#modelType"/>"><s:property value="#modelType"/></a></td>
 		</tr>
 	</s:iterator>
 </table>

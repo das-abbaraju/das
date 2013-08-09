@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
@@ -55,18 +52,11 @@ public class ReportContractorResources extends ReportActionSupport {
 
 		if (contractor != null) {
 			ids.add(Account.PicsID);
-			List<OperatorAccount> pics = operatorDao.findWhere(true, "inPicsConsortium=true");
-			for (OperatorAccount op:pics) {
-				ids.add(op.getId());
-			}
 
-			for (OperatorAccount op:contractor.getOperatorAccounts()) {
-				ids.add(op.getId());
-				while (op.getParent() != null) {
-					op = op.getParent();
-					ids.add(op.getId());
-				}
-			}
+            for (ContractorOperator conOp : contractor.getOperators()) {
+                if (!conOp.isWorkStatusRejected())
+                    ids.add(conOp.getOperatorAccount().getId());
+            }
 		}
 
 		if (ids.size() > 0) {

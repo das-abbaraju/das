@@ -1,23 +1,33 @@
 package com.picsauditing.actions;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.inject.Inject;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.MainPage;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.*;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import com.picsauditing.access.*;
-import com.picsauditing.actions.users.ChangePassword;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectUser;
-import com.picsauditing.security.CookieSupport;
-import com.picsauditing.security.SessionCookie;
-import com.picsauditing.security.SessionSecurity;
-import com.picsauditing.strutsutil.AdvancedValidationAware;
-import com.picsauditing.strutsutil.FileDownloadContainer;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.*;
-import com.picsauditing.util.system.PicsEnvironment;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -28,27 +38,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Transient;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.MainPage;
+import com.picsauditing.actions.users.ChangePassword;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectUser;
+import com.picsauditing.security.CookieSupport;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.strutsutil.FileDownloadContainer;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.AppVersion;
+import com.picsauditing.util.JSONUtilities;
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
+import com.picsauditing.util.system.PicsEnvironment;
 
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware {
 
-	protected static final int DELETE_COOKIE_AGE = 0;
+    private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
+            + CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
+
+    protected static final int DELETE_COOKIE_AGE = 0;
 	protected static final int SESSION_COOKIE_AGE = -1;
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
@@ -65,7 +83,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String CHART_XML = "chartXML";
 	public static final String REDIRECT = "redirect";
 	public static final String INPUT_ERROR = "inputError";
-	public static final String[] DATAFEED_FORMATS = {JSON, XML};
+	public static final String[] DATAFEED_FORMATS = { JSON, XML };
 
 	@Autowired
 	protected AppPropertyDAO propertyDAO;
@@ -77,8 +95,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected UserDAO userDAO;
 	@Autowired
 	protected FeatureToggle featureToggleChecker;
-	@Autowired
+    @Autowired
+    protected UserLoginLogDAO loginLogDAO;
+    @Autowired
 	private PermissionBuilder permissionBuilder;
+	@Autowired
+	protected NoteDAO noteDao;
 
 	protected Collection<String> alertMessages;
 
@@ -96,7 +118,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * String that is used for simple messages.
 	 * <p/>
 	 * This is also used for plain-text type results.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -112,28 +134,28 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
 
 	/**
 	 * Container to hold a file being downloaded by the user.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.FileResult
 	 */
 	protected FileDownloadContainer fileContainer = null;
@@ -180,7 +202,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isConfigEnvironment() {
-		// FIXME How is this different than isConfigurationEnvironment()?  Is this one deprecated?
+		// FIXME How is this different than isConfigurationEnvironment()? Is
+		// this one deprecated?
 		if (CONFIG == null) {
 			CONFIG = "1".equals(propertyDAO.getProperty("PICS.config"));
 		}
@@ -204,7 +227,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return getEnvironmentDeterminer().isConfiguration();
 	}
 
-	public boolean isLiveEnvironment() throws UnknownHostException {
+	public boolean isLiveEnvironment() {
 		return getEnvironmentDeterminer().isStable();
 	}
 
@@ -214,10 +237,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isI18nReady() {
 		return "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
-	}
-
-	public boolean isLiveChatEnabled() {
-		return "1".equals(propertyDAO.getProperty("PICS.liveChat"));
 	}
 
 	public String getVersion() {
@@ -255,7 +274,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
 		} else {
-			permissions = (Permissions) ActionContext.getContext().getSession().get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
+			permissions = (Permissions) ActionContext.getContext().getSession()
+					.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 		}
 
 		if (permissions == null) {
@@ -266,6 +286,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return;
 		}
 
+        // This happens when the server has been restarted and their HttpSession is gone, or they've moved between
+        // servers in a server cookie cluster and the session was not clustered, possibly because of being completely
+        // different application instances. We will still honor the cookie in these cases. We do not want to log
+        // this case in loginlog. See PICS-11696
 		int clientSessionUserID = getClientSessionUserID();
 		if (clientSessionUserID > 0) {
 			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
@@ -423,7 +447,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public OperatorAccount getOperatorAccount() {
 		Account operator = getAccount();
-		if (Account.OPERATOR_ACCOUNT_TYPE.equals(operator.getType()) || Account.CORPORATE_ACCOUNT_TYPE.equals(operator.getType())) {
+		if (Account.OPERATOR_ACCOUNT_TYPE.equals(operator.getType())
+				|| Account.CORPORATE_ACCOUNT_TYPE.equals(operator.getType())) {
 			return (OperatorAccount) operator;
 		}
 
@@ -536,7 +561,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return ServletActionContext.getRequest().getServerName();
 	}
 
-
 	public String getRequestHost() {
 		String requestURL = getRequestURL().toString();
 		String requestURI = getRequestURI();
@@ -619,7 +643,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 *
+	 * 
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -709,8 +733,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 *
-	 * @param name Name of the parameter you want to check in the map
+	 * 
+	 * @param name
+	 *            Name of the parameter you want to check in the map
 	 */
 	protected void parameterCleanUp(String name) {
 		String[] para = (String[]) ActionContext.getContext().getParameters().get(name);
@@ -834,7 +859,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected boolean isRememberMeSetInCookie() {
-		SessionCookie sessionCookie = validSessionCookie();
+        return isRememberMeSetInCookie(validSessionCookie());
+    }
+
+    private boolean isRememberMeSetInCookie(SessionCookie sessionCookie) {
 		if (sessionCookie == null) {
 			return false;
 		}
@@ -851,31 +879,38 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * persistently remembered then return true If the cookie is valid and the
 	 * user is not being persistently remembered then check to see if the cookie
 	 * session (in the cookie itself) is expired
-	 *
+	 * 
 	 * @see
 	 * com.picsauditing.access.SecurityAware#sessionCookieIsValidAndNotExpired()
 	 */
 	@Override
 	public boolean sessionCookieIsValidAndNotExpired() {
-		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-			return true;
-		}
-		String sessionCookieValue = clientSessionCookieValue();
-		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
+        SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
 			return false;
-		} else if (isRememberMeSetInCookie()) {
-			return true;
 		} else {
-			loadPermissions();
-			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
-			long nowInSeconds = new Date().getTime() / 1000;
-			long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
-			return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
-					.getSessionCookieTimeoutInSeconds());
-		}
+            boolean cookieIsTimedOut = !cookieIsNotTimedOut(sessionCookie);
+            if (isRememberMeSetInCookie(sessionCookie)) {
+                if (cookieIsTimedOut) {
+                    logRememberMeLogin(getUser());
+                }
+                return true;
+            } else {
+                return !cookieIsTimedOut;
+            }
+        }
 	}
 
-	private SessionCookie validSessionCookie() {
+    private boolean cookieIsNotTimedOut(SessionCookie sessionCookie) {
+        // in case the http session was reset
+        loadPermissions();
+        long nowInSeconds = new Date().getTime() / 1000;
+        long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
+        return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
+                .getSessionCookieTimeoutInSeconds());
+    }
+
+    private SessionCookie validSessionCookie() {
 		String sessionCookieValue = clientSessionCookieValue();
 		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
 			clearPicsOrgCookie();
@@ -965,23 +1000,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		doSetCookie(sessionCookieContent, maxAge);
 	}
 
-	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
-		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-			Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
-			cookie.setMaxAge(maxAge);
-			if (!isLocalhostEnvironment()) {
-				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
-			}
-			ServletActionContext.getResponse().addCookie(cookie);
-		}
-	}
+    private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
+        Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
+        cookie.setMaxAge(maxAge);
+        if (!isLocalhostEnvironment()) {
+            cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+        }
+        ServletActionContext.getResponse().addCookie(cookie);
+    }
 
-	private String sessionCookieContent(boolean rememberMe, int switchToUser) {
+    private String sessionCookieContent(boolean rememberMe, int switchToUser) {
 		SessionCookie sessionCookie = new SessionCookie();
 		Date now = new Date();
 		sessionCookie.setUserID(permissions.getUserId());
 		sessionCookie.setCookieCreationTime(now);
-		if (switchToUser > 0) {
+		if (switchToUser > 0 && switchToUser != permissions.getUserId()) {
 			sessionCookie.putData("switchTo", switchToUser);
 		}
 		sessionCookie.putData("rememberMe", rememberMe);
@@ -1007,42 +1040,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isStringEmpty(String s) {
 		return Strings.isEmpty(s);
-	}
-
-	@Transient
-	public String getHelpURL() {
-		String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
-
-		if (permissions.isOperatorCorporate()) {
-			helpUrl += "os_username=operator&os_password=oper456ator";
-		} else if (permissions.isContractor()) {
-			helpUrl += "os_username=contractor&os_password=con123tractor";
-		} else {
-			helpUrl += "os_username=admin&os_password=ad9870mins";
-		}
-
-		return helpUrl;
-	}
-
-	public String getChatUrl() {
-		String scheme = getRequest().getScheme();
-		Locale locale = TranslationActionSupport.getLocaleStatic();
-
-		// We're using a whitelist strategy because we don't want to pass junk downstream
-		String language = Locale.ENGLISH.getDisplayLanguage();
-
-		if (supportedLanguages.isLanguageVisible(locale)) {
-			language = locale.getDisplayLanguage();
-		}
-
-		String chatUrl = scheme + "://server.iad.liveperson.net/hc/90511184/" +
-				"?cmd=file" +
-				"&amp;file=visitorWantsToChat" +
-				"&amp;site=90511184" +
-				"&amp;imageUrl=" + scheme + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + language + "/General/3a" +
-				"&amp;referrer=";
-
-		return chatUrl;
 	}
 
 	public String getActionName() {
@@ -1175,21 +1172,91 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		String number = null;
 		switch (type) {
-			case FAX:
-				number = mainPage.getFaxNumber(country);
-				break;
-			case MAIN:
-				number = mainPage.getPhoneNumber(country);
-				break;
-			case SALES:
-				number = mainPage.getSalesPhoneNumber(country);
-				break;
+		case FAX:
+			number = mainPage.getFaxNumber(country);
+			break;
+		case MAIN:
+			number = mainPage.getPhoneNumber(country);
+			break;
+		case SALES:
+			number = mainPage.getSalesPhoneNumber(country);
+			break;
 		}
 
 		return number;
 	}
 
-	private enum PhoneNumberType {
+    protected void logSwitchToAttempt(User user) {
+        UserLoginLog loginLog = new UserLoginLog();
+        loginLog.setLoginMethod(LoginMethod.SwitchTo);
+        loginLog.setUser(user);
+        logLoginAttempt(loginLog);
+    }
+
+    protected void logCredentialLoginAttempt(User user) {
+        UserLoginLog loginLog = new UserLoginLog();
+        loginLog.setLoginMethod(LoginMethod.Credentials);
+        loginLog.setUser(user);
+        logLoginAttempt(loginLog);
+    }
+
+    protected void logRememberMeLogin(User user) {
+        UserLoginLog loginLog = new UserLoginLog();
+        loginLog.setLoginMethod(LoginMethod.RememberMeCookie);
+        loginLog.setUser(user);
+        logLoginAttempt(loginLog);
+    }
+
+    private void logLoginAttempt(UserLoginLog loginLog) {
+        if (loginLog.getUser() == null) {
+            return;
+        }
+
+        loginLog.setLoginDate(new Date());
+        loginLog.setRemoteAddress(getRequest().getRemoteAddr());
+        String serverName = getRequest().getLocalName();
+        UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
+        loginLog.setBrowser(uap.getBrowserName() + " " + uap.getBrowserVersion());
+        loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
+        if (isLiveEnvironment() || isBetaEnvironment()) {
+            // Need computer name instead of www
+            try {
+                serverName = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                logger.error("Error determining host: {}", e);
+                serverName = "Live or Beta";
+            }
+        }
+
+        loginLog.setServerAddress(serverName);
+
+
+        String targetIp = extractTargetIpFromCookie();
+        if (!Strings.isEmpty(targetIp)) {
+            loginLog.setTargetIP(targetIp);
+        }
+
+        loginLog.setSuccessful((permissions == null) ? false : permissions.isLoggedIn());
+        if (permissions != null && permissions.getAdminID() > 0) {
+            loginLog.setAdmin(new User(permissions.getAdminID()));
+        }
+
+        loginLogDAO.save(loginLog);
+    }
+
+    private String extractTargetIpFromCookie() {
+        List<Cookie> matchingCookies = CookieSupport.cookiesFromRequestThatStartWith(getRequest(),
+                CookieSupport.TARGET_IP_COOKIE_NAME);
+        for (Cookie cookie : matchingCookies) {
+            Matcher matcher = TARGET_IP_PATTERN.matcher(cookie.getName());
+            if (matcher.matches()) {
+                return matcher.group(1);
+            }
+        }
+        return "";
+    }
+
+    private enum PhoneNumberType {
 		FAX, MAIN, SALES
 	}
 

@@ -74,5 +74,9 @@
 		<action name="NewYearMailer" class="com.picsauditing.mail.NewYearMailer">
 			<result>struts/mail/new_year_mailer.jsp</result>
 		</action>
+
+        <action name="PreviewEmail" class="com.picsauditing.mail.PreviewEmail">
+            <result>struts/mail/preview_email.jsp</result>
+        </action>
 	</package>
 </struts>

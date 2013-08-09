@@ -15,13 +15,10 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.models.audits.AuditEditModel;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,15 +40,6 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.PicsDateFormat;
 
@@ -83,6 +71,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	private ContractorAccount contractor;
 	private AuditData auditData;
 	private ContractorAudit audit;
+    private AuditEditModel auditEditModel;
 
 	private AnswerMap answerMap;
 	private AuditCatData catData;
@@ -125,9 +114,13 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
 		catData = EntityFactory.makeAuditCatData();
 
+        auditEditModel = new AuditEditModel();
+
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditCategoryRuleCache", categoryRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditPercentCalculator", auditPercentCalculatior);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "conAudit", audit);
+        PicsTestUtil.forceSetPrivateField(auditDataSave, "auditEditModel", auditEditModel);
+
 
 		when(auditDataDao.findAnswers(anyInt(), (Collection<Integer>) Matchers.anyObject())).thenReturn(answerMap);
 		when(auditDao.find(anyInt())).thenReturn(audit);
@@ -246,6 +239,8 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
 		when(questionDao.find(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
 
+        when(permissions.seesAllContractors()).thenReturn(true);
+
 		when(auditDataDao.find(anyInt())).thenReturn(oldData);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "button", "verify");
 		assertEquals("success", auditDataSave.execute());
@@ -255,6 +250,65 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	}
 
 	@Test
+	public void testExecute_ContractorEditingSiteSpecificWhileStatusIsComplete() throws Exception {
+		AuditData oldData = EntityFactory.makeAuditData("No");
+		oldData.setId(auditData.getId());
+
+		AuditType siteSpecific = EntityFactory.makeAuditType();
+        siteSpecific.setClassType(AuditTypeClass.PQF);
+        siteSpecific.setCanContractorEdit(true);
+		audit.setAuditType(siteSpecific);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Complete)
+                                .visible()
+                                .build()
+                )
+        );
+
+		oldData.setAudit(auditData.getAudit());
+		oldData.setQuestion(auditData.getQuestion());
+
+		when(questionDao.find(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
+        when(permissions.isContractor()).thenReturn(true);
+		when(auditDataDao.find(anyInt())).thenReturn(oldData);
+
+		assertEquals("success", auditDataSave.execute());
+		assertEquals("No", oldData.getAnswer());
+	}
+    @Test
+    public void testExecute_ContractorEditingSiteSpecificWhileStatusIsPending() throws Exception {
+        AuditData oldData = EntityFactory.makeAuditData("No");
+        oldData.setId(auditData.getId());
+
+        AuditType siteSpecific = EntityFactory.makeAuditType();
+        siteSpecific.setClassType(AuditTypeClass.PQF);
+        siteSpecific.setCanContractorEdit(true);
+        audit.setAuditType(siteSpecific);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Pending)
+                                .visible()
+                                .build()
+                )
+        );
+
+        oldData.setAudit(auditData.getAudit());
+        oldData.setQuestion(auditData.getQuestion());
+
+        when(questionDao.find(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
+        when(permissions.isContractor()).thenReturn(true);
+        when(auditDataDao.find(anyInt())).thenReturn(oldData);
+
+        assertEquals("success", auditDataSave.execute());
+        assertEquals("Yes", oldData.getAnswer());
+    }
+
+    @Test
 	public void testDates() throws Exception {
 		Boolean result = null;
 		AuditQuestion question = EntityFactory.makeAuditQuestion();

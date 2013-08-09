@@ -167,9 +167,12 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.BadDebt);
         PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions), payment.getTotalAmount());
+        payment.setStatus(TransactionStatus.BadDebt);
         payment.setAuditColumns(getUser());
         AccountingSystemSynchronization.setToSynchronize(payment);
         paymentDAO.save(payment);
+        invoice.setStatus(TransactionStatus.Paid);
+        invoiceDAO.save(invoice);
 //        contractor.syncBalance();
         contractor.setBalance(BigDecimal.ZERO);
         contractorAccountDao.save(contractor);
@@ -357,7 +360,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         }
 
         AccountingSystemSynchronization.setToSynchronize(invoice);
-        invoice.updateAmount();
+        invoice.updateTotalAmount();
         invoice.updateAmountApplied();
         invoiceService.saveInvoice(invoice);
 
@@ -395,8 +398,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private void updateTotals() {
 		if (!invoice.getStatus().isPaid()) {
 			invoice.setTotalAmount(BigDecimal.ZERO);
+            invoice.setCommissionableAmount(BigDecimal.ZERO);
+
 			for (InvoiceItem item : invoice.getItems()) {
 				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
+
+                if (item.getInvoiceFee().isCommissionEligible()) {
+                    invoice.setCommissionableAmount(invoice.getCommissionableAmount().add(item.getAmount()));
+                }
 			}
 		}
 	}

@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-		
+
 <s:text name="%{contractorCountry.i18nKey}" var="phone_country" />
 
 <header>
 	<img src="images/logo_sm.png" alt="Home" class="logo" />
-	
+
 	<ul class="header-menu">
 		<li>
 			<s:if test="permissions.loggedIn">
@@ -16,14 +16,12 @@
 			</s:else>
 		</li>
 	</ul>
-	
+
 	<s:if test="permissions.loggedIn">
 		<span class="welcome-message"><s:text name="Header.Welcome" />, ${permissions.name}</span>
 	</s:if>
-	
-	<span id="pics_phone_number" class="phone" title="${phone_country}">${picsPhoneNumber}</span>
-	
-	<s:if test="liveChatEnabled">
-		<s:include value="/struts/layout/chat.jsp" />
-	</s:if>
+
+	<span class="phone pics_phone_number" title="${phone_country}">${salesPhoneNumber}</span>
+
+	<s:include value="/struts/layout/chat.jsp" />
 </header>

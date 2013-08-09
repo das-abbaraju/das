@@ -1049,7 +1049,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		Date now = new Date();
 		for (FlagDataOverride fdo : co.getOverrides()) {
-			if (fdo.getForceEnd() != null && fdo.getForceEnd().after(now)) {
+			if (fdo.getForceEnd() != null && fdo.getForceEnd().after(now) && !fdo.getCriteria().isInsurance()) {
 				individualFlagOverrideCount++;
 				if (earliestIndividualFlagOverride == null
 						|| fdo.getForceEnd().before(
@@ -1127,5 +1127,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 
         profiler.debug("ContractorDashboard.getOperatorUsersWithPermission took " + stopwatch.getElapsedTime() + "ms");
         return result;
+    }
+
+    public boolean shouldShowFlagCriteriaCategory(FlagCriteriaCategory category) {
+        return category != FlagCriteriaCategory.InsuranceCriteria;
     }
 }

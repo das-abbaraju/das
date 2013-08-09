@@ -22,6 +22,8 @@ ContractorAuditGUARD
 ContractorBalance
 ContractorDocuGUARD
 ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
@@ -29,10 +31,11 @@ ContractorRenew
 ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
+InvoiceCreationDate
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
+InvoiceInvoiceType
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber

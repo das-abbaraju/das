@@ -1,0 +1,12 @@
+{
+  "data": {
+    "cols": [
+          {"id":"","label":"Age","pattern":"","type":"number","p":{}},
+          {"id":"","label":"Weight","pattern":"","type":"number","p":{}}
+        ],
+    "rows": [
+          {"c":[{"v":8},{"v":12}]},
+          {"c":[{"v":4},{"v":5.5}]}
+        ]
+  }
+}

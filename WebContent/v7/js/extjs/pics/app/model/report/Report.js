@@ -26,6 +26,9 @@ Ext.define('PICS.model.report.Report', {
     }, {
         name: 'is_favorite',
         type: 'boolean'
+    }, {
+        name: 'subscription_frequency',
+        type: 'string'
     }],
 
     hasMany: [{

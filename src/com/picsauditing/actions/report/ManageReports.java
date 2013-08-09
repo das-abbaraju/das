@@ -517,18 +517,6 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	/**
-	 * Exclusively to export Columns for translations
-	 *
-	 * @return
-	 * @throws Exception
-	 */
-	public String columnsToTranslate() throws Exception {
-		List<Report> allReports = reportDao.findAll(Report.class);
-		ReportUtil.findColumnsToTranslate(allReports);
-		return SUCCESS;
-	}
-
 	private String redirectToPreviousView() {
 		try {
 			String referer = getRequest().getHeader("Referer");

@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Locale;
 
 public interface LanguageProvider {
-	public Language find(String id);
-	public Language find(Locale locale);
-	public List<Language> findAll();
-	public List<Language> findByStatus(LanguageStatus status);
-	public List<Language> findByStatuses(LanguageStatus[] statuses);
-	public List<Language> findWhere(String where);
-	public List<Language> findDialectsByLanguage(String language);
+	Language find(String id);
+	Language find(Locale locale);
+	List<Language> findAll();
+	List<Language> findByStatus(LanguageStatus status);
+	List<Language> findByStatuses(LanguageStatus[] statuses);
+	List<Language> findWhere(String where);
+	List<Language> findDialectsByLanguage(String language);
 }

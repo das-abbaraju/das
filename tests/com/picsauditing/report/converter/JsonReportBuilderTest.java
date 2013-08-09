@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -44,10 +45,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
@@ -92,6 +89,7 @@ public class JsonReportBuilderTest {
 		String filterExpression = "{1} AND {2}";
 		boolean editable = false;
 		boolean favorite = false;
+        List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 
 		when(report.getId()).thenReturn(reportId);
 		when(report.getName()).thenReturn(reportName);
@@ -101,7 +99,7 @@ public class JsonReportBuilderTest {
 		when(permissionService.canUserEditReport(permissions, reportId)).thenReturn(editable);
 		when(reportPreferencesService.isUserFavoriteReport(USER_ID, reportId)).thenReturn(favorite);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions, subscriptions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, reportId, jsonString);
@@ -133,10 +131,12 @@ public class JsonReportBuilderTest {
 
 		// Column specific properties
 		String url = "www.picsauditing.com";
+        String expectedURL = "Report.action?report=0&removeAggregates=true&dynamicParameters=[]";
 		SqlFunction sqlFunction = SqlFunction.Max;
 		int width = 123;
 		boolean sortable = true;
 		String columnType = "String";
+        List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 
 		Column column = new Column();
 		column.setId(id);
@@ -151,7 +151,7 @@ public class JsonReportBuilderTest {
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions, subscriptions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ELEMENT_DB_ID, id, jsonString);
@@ -162,7 +162,7 @@ public class JsonReportBuilderTest {
 
 		assertContains(REPORT_COLUMNS, jsonString);
 		assertJson(COLUMN_TYPE, columnType, jsonString);
-		assertJson(COLUMN_URL, url, jsonString);
+		assertJson(COLUMN_URL, expectedURL, jsonString);
 		assertJson(COLUMN_SQL_FUNCTION, sqlFunction, jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
 		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
@@ -192,6 +192,7 @@ public class JsonReportBuilderTest {
 		QueryFilterOperator operator = QueryFilterOperator.BeginsWith;
 		String value = "value";
 		String columnCompareId = "column compare";
+        List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 
 		Filter filter = new Filter();
 		filter.setId(id);
@@ -206,7 +207,7 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions, subscriptions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ELEMENT_DB_ID, id, jsonString);
@@ -229,6 +230,7 @@ public class JsonReportBuilderTest {
 		// ReportElement common properties
 		int id = 321;
 		String fieldName = "Field Name";
+        List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 
 		// Sort specific properties
 		boolean ascending = true;
@@ -242,7 +244,7 @@ public class JsonReportBuilderTest {
 		sorts.add(sort);
 		when(report.getSorts()).thenReturn(sorts);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions, subscriptions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -253,20 +255,23 @@ public class JsonReportBuilderTest {
 
 	@Test
 	public void testBuildReportJson_WhenColumnsFieldIsNull_ThenNoExceptionIsThrown() {
+        List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 		mockMinimalReport();
 
 		Column column = new Column();
-		column.setField(null);
+        Field field = new Field("Name", "name", FieldType.String);
+        column.setField(field);
 
 		List<Column> columns = new ArrayList<Column>();
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JsonReportBuilder.buildReportJson(report, permissions);
+		JsonReportBuilder.buildReportJson(report, permissions, subscriptions);
 	}
 
 	@Test
 	public void testBuildReportJson_WhenFiltersFieldIsNull_ThenNoExceptionIsThrown() {
+        List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 		mockMinimalReport();
 
 		Filter filter = new Filter();
@@ -276,7 +281,7 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JsonReportBuilder.buildReportJson(report, permissions);
+		JsonReportBuilder.buildReportJson(report, permissions, subscriptions);
 	}
 
 	@Test

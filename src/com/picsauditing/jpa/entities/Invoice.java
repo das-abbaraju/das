@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,23 +10,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import javax.persistence.Column;
 
-import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.access.OpPerms;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.velocity.tools.generic.DateTool;
 
 import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.TaxService;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.PicsDateFormat;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Parameter;
 
 @SuppressWarnings("serial")
 @Entity
@@ -38,13 +38,36 @@ public class Invoice extends Transaction {
 	private String notes;
 	private Date paidDate; // MAX(Payment.creationDate)
 	private Map<FeeClass, BigDecimal> commissionEligibleFeeMap;
-	private BigDecimal totalCommissionEligibleFees;
 	protected boolean qbSyncWithTax;
+
+    private InvoiceType invoiceType;
+    protected BigDecimal commissionableAmount = BigDecimal.ZERO;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
 
 	@Transient
+	public boolean hasTax() {
+        return (getTaxItem() != null);
+	}
+
+    @Transient
+    public InvoiceItem getTaxItem() {
+        for (InvoiceItem item : items) {
+            InvoiceFee invoiceFee = item.getInvoiceFee();
+            if (invoiceFee == null) {
+                continue;
+            }
+
+            if (InvoiceService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    @Transient
 	public boolean isOverdue() {
 		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
 			return false;
@@ -125,7 +148,7 @@ public class Invoice extends Transaction {
 	/**
 	 * This is used by the QBWebConnector Adaptor to ensure that all Tax items
 	 * come before any other Fee item in an invoice for proper tax handling.
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -161,10 +184,16 @@ public class Invoice extends Transaction {
 	}
 
 	@Transient
-	public void updateAmount() {
+	public void updateTotalAmount() {
 		totalAmount = BigDecimal.ZERO;
+        commissionableAmount = BigDecimal.ZERO;
+
 		for (InvoiceItem item : items) {
 			totalAmount = totalAmount.add(item.getAmount());
+
+            if (item.getInvoiceFee().isCommissionEligible()) {
+                commissionableAmount = commissionableAmount.add(item.getAmount());
+            }
 		}
 	}
 
@@ -217,28 +246,46 @@ public class Invoice extends Transaction {
 			return Collections.emptyMap();
 		}
 
-		this.totalCommissionEligibleFees = new BigDecimal(0.00);
-
 		this.commissionEligibleFeeMap = new HashMap<FeeClass, BigDecimal>();
 		for (InvoiceItem invoiceItem : this.getItems()) {
 			InvoiceFee invoiceFee = invoiceItem.getInvoiceFee();
 			if (invoiceFee != null && invoiceItem.getInvoiceFee().isCommissionEligible()) {
 				FeeClass feeClass = invoiceFee.getFeeClass();
 				this.commissionEligibleFeeMap.put(feeClass, invoiceItem.getAmount());
-				this.totalCommissionEligibleFees = this.totalCommissionEligibleFees.add(invoiceItem.getAmount());
 			}
 		}
 
 		return this.commissionEligibleFeeMap;
 	}
 
-	@Transient
-	public BigDecimal getTotalCommissionEligibleInvoice(boolean forceRecalc) {
-		if (this.totalCommissionEligibleFees == null || forceRecalc) {
-			this.getCommissionEligibleFees(true);
-		}
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.InvoiceType") })
+    @Enumerated(EnumType.STRING)
+    @Column(name = "invoiceType", nullable = false)
+    @ReportField(category = FieldCategory.Invoicing, type = FieldType.InvoiceType, importance = FieldImportance.Required)
+    public InvoiceType getInvoiceType() {
+        return invoiceType;
+    }
 
-		return this.totalCommissionEligibleFees;
+    public void setInvoiceType(InvoiceType invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    @ReportField(category = FieldCategory.Commission, type = FieldType.Float, importance = FieldImportance.Required, requiredPermissions = OpPerms.SalesCommission)
+    public BigDecimal getCommissionableAmount() {
+        return commissionableAmount;
+    }
+
+    public void setCommissionableAmount(BigDecimal commissionableAmount) {
+        this.commissionableAmount = commissionableAmount;
 	}
 
+	@Transient
+	public BigDecimal getTaxlessSubtotal() {
+		BigDecimal subtotal = BigDecimal.ZERO.setScale(2, RoundingMode.UP);
+		for (InvoiceItem item : items)
+			if (!item.getInvoiceFee().isTax()) {
+				subtotal = subtotal.add(item.getAmount());
+			}
+		return subtotal;
+	}
 }

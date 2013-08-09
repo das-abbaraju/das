@@ -6,31 +6,7 @@ import java.util.List;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
-public class AccountDeleter {
-	
-	String IDs;
-
-	public AccountDeleter(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs);
-	}
-	
-	public AccountDeleter(int ID) {
-		IDs = String.valueOf(ID);
-	}
-	
-	public AccountDeleter() {
-	}
-	
-	public AccountDeleter setAccountIDs(List<Integer> IDNumbers) {
-		this.IDs = Strings.implodeForDB(IDNumbers);
-		return this;
-	}
-	
-	public AccountDeleter setAccountID(int ID) {
-		IDs = String.valueOf(ID);
-		return this;
-	}
-	
+public class AccountDeleter extends Deleter {
 	public void execute() throws SQLException {
 		if (null == IDs || IDs.isEmpty()) return;
 		
@@ -57,10 +33,12 @@ public class AccountDeleter {
 		}
 		{
 			Delete t = new Delete("contractor_audit");
-			t.addJoin("WHERE t.conID IN (" + IDs + ")");
-			t.delete(db);
-			t.table = "contractor_fee";
-			t.delete(db);
+			t.addJoin("WHERE conID IN (" + IDs + ") ORDER BY id DESC");
+			t.deleteSingleTable(db);
+
+			t = new Delete("contractor_fee");
+            t.addJoin("WHERE t.conID IN (" + IDs + ")");
+            t.delete(db);
 			t.table = "email_queue";
 			t.delete(db);
 			t.table = "contractor_trade";

@@ -22,7 +22,7 @@ import com.picsauditing.search.QueryMapper;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
-public class AppTranslationDAO extends PicsDAO {
+public class AppTranslationDAO extends PicsDAO implements TranslationDAO {
 
 	private static final String I18N_CACHE_QUERY = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 	private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM app_translation WHERE msgKey IN (%s)";
@@ -33,17 +33,19 @@ public class AppTranslationDAO extends PicsDAO {
 
 	private static final Logger logger = LoggerFactory.getLogger(AppTranslationDAO.class);
 
-	public List<BasicDynaBean> getTranslationsForI18nCache() throws SQLException {
+	@Override
+    public List<BasicDynaBean> getTranslationsForI18nCache() throws SQLException {
 		return database.select(I18N_CACHE_QUERY, false);
 	}
 
-	@Deprecated
+    @Deprecated
 	public List<BasicDynaBean> findTranslationsForJSOldStyle(Set<String> locales) throws SQLException {
 		String sql = buildQuery(locales);
 		return database.select(sql.toString(), false);
 	}
 
-	public void updateTranslationLastUsed(String key) {
+	@Override
+    public void updateTranslationLastUsed(String key) {
 		try {
 			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key)
 					+ "'";
@@ -67,7 +69,8 @@ public class AppTranslationDAO extends PicsDAO {
 		return sql.toString();
 	}
 
-	public List<ContextTranslation> findAllForJS() {
+	@Override
+    public List<ContextTranslation> findAllForJS() {
 		try {
 			// return loadTranslationsUsingStoredProc();q
 			return loadTranslationsFromTableDirectly();
@@ -78,7 +81,8 @@ public class AppTranslationDAO extends PicsDAO {
 		return Collections.emptyList();
 	}
 
-	public void removeTranslations(List<String> keys) throws Exception {
+	@Override
+    public void removeTranslations(List<String> keys) throws Exception {
 		String query = String.format(REMOVE_TRANSLATIONS_BY_KEY, Strings.implodeForDB(keys));
 		database.execute(query);
 	}
@@ -103,7 +107,8 @@ public class AppTranslationDAO extends PicsDAO {
 				+ ",	@USE_dm		:= null" + ",	@Key_cd		:= null" + ");";
 	}
 
-	@SuppressWarnings("static-access")
+	@Override
+    @SuppressWarnings("static-access")
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception {
 		if (CollectionUtils.isEmpty(requiredLanguages)) {
 			return;

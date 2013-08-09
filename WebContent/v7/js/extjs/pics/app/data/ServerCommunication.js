@@ -141,7 +141,7 @@ Ext.define('PICS.data.ServerCommunication', {
             exportReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
 
-                this.sendReportViaForm(url, '_self');
+                this.sendReportViaForm(url, '_blank');
             },
 
             favoriteReport: function () {
@@ -184,6 +184,9 @@ Ext.define('PICS.data.ServerCommunication', {
     
                             loadDataTableStore(json);
     
+                            // TODO: Find a better place for non-report data like this.
+                            PICS.export_limit = json.export_limit;
+
                             success_callback.apply(scope, arguments);
                         }
                     }
@@ -428,6 +431,17 @@ Ext.define('PICS.data.ServerCommunication', {
                                 failure_callback(response);
                             }
                         }
+                    }
+                });
+            },
+
+            requestSubscription: function (frequency) {
+                var url = PICS.data.ServerCommunicationUrl.getRequestSubscriptionUrl();
+
+                Ext.Ajax.request({
+                    url: url,
+                    params: {
+                        frequency: frequency
                     }
                 });
             },

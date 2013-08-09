@@ -27,14 +27,12 @@
 		<s:include value="conHeader.jsp" />
 		
 		<s:if test="caowList.size > 0">
-			<s:form>
-				<s:hidden name="contractor" />
+            <s:form>
+                <s:hidden name="contractor" />
 				<div id="emailPreview">
+                    <s:property value="previewEmail.subject" />
 					<br/>
-					<label>Subject:</label>
-					<s:textfield id="subject" name="subject" value="%{previewEmail.subject}" size="100" />
-					<br/>
-					<s:textarea id="body" name="body" value="%{previewEmail.body}" rows="15" cols="100"/>
+                        <iframe width="80%" height="500px" srcdoc="<s:property value='previewEmail.body' />" ></iframe>
 				</div>
 				<s:submit value="Send Email" method="sendEmail" cssClass="picsbutton positive" />
 			</s:form>

@@ -290,6 +290,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private boolean isLcCorTaskNeeded() {
+		featureToggleChecker.addToggleVariable("contractor", contractor);
 		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
 			return false;
 		if (contractor.getLcCorPhase() != null && !contractor.getLcCorPhase().equals(LcCorPhase.Done)) {

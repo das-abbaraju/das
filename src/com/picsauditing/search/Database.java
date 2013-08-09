@@ -34,48 +34,34 @@ public class Database {
 
 	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> select(String sql, boolean countRows) throws SQLException {
-		Connection Conn = null;
-		Statement stmt = null;
-		ResultSet tempRS = null;
-		ResultSet rs = null;
-		RowSetDynaClass rsdc;
-
-		try {
-			Conn = DBBean.getDBConnection();
-
-			stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			rs = stmt.executeQuery(sql);
-			rsdc = new RowSetDynaClass(rs, false, true);
-			if (countRows) {
-				tempRS = stmt.executeQuery("SELECT FOUND_ROWS()");
-				tempRS.next();
-				allRows = tempRS.getInt(1);
-			}
-
-			return rsdc.getRows();
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-			throw e;
-		} finally {
-			DatabaseUtil.closeResultSet(rs);
-			DatabaseUtil.closeResultSet(tempRS);
-			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
-		}
+        Connection connection = null;
+        try {
+            connection = DBBean.getDBConnection();
+            return select(connection, sql, countRows);
+        } finally {
+            DatabaseUtil.closeConnection(connection);
+        }
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> selectReadOnly(String sql, boolean countRows) throws SQLException {
-		Connection Conn = null;
+        Connection connection = null;
+        try {
+            connection = DBBean.getReadOnlyConnection();
+            return select(connection, sql, countRows);
+        } finally {
+            DatabaseUtil.closeConnection(connection);
+        }
+    }
+
+    public List<BasicDynaBean> select(Connection connection, String sql, boolean countRows) throws SQLException {
 		Statement stmt = null;
 		ResultSet tempRS = null;
 		ResultSet rs = null;
 		RowSetDynaClass rsdc;
 
 		try {
-			Conn = DBBean.getReadOnlyConnection();
-
-			stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(sql);
 			rsdc = new RowSetDynaClass(rs, false, true);
 			if (countRows) {
@@ -92,24 +78,31 @@ public class Database {
 			DatabaseUtil.closeResultSet(rs);
 			DatabaseUtil.closeResultSet(tempRS);
 			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
 		}
 	}
 
 	public long executeInsert(String sql) throws SQLException {
-		Connection Conn = null;
+        Connection connection = null;
+        try {
+            connection = DBBean.getDBConnection();
+            return executeInsert(connection, sql);
+        } finally {
+            DatabaseUtil.closeConnection(connection);
+        }
+    }
+
+	public long executeInsert(Connection connection, String sql) throws SQLException {
 		Statement stmt = null;
 		ResultSet rs = null;
 
 		try {
-			Conn = DBBean.getDBConnection();
-			stmt = Conn.createStatement();
+			stmt = connection.createStatement();
 
 			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();
 
 			long id = -1;
-			while (rs.next()) {
+			if (rs.next()) {
 				id = rs.getLong(1);
 			}
 
@@ -117,50 +110,61 @@ public class Database {
 		} finally {
 			DatabaseUtil.closeResultSet(rs);
 			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
 		}
 	}
 
 	public int executeUpdate(String sql) throws SQLException {
-		Connection Conn = null;
+        Connection connection = null;
+        try {
+            connection = DBBean.getDBConnection();
+            return executeUpdate(connection, sql);
+        } finally {
+            DatabaseUtil.closeConnection(connection);
+        }
+    }
+
+	public int executeUpdate(Connection connection, String sql) throws SQLException {
 		Statement stmt = null;
-
 		try {
-			Conn = DBBean.getDBConnection();
-			stmt = Conn.createStatement();
-
+			stmt = connection.createStatement();
 			return stmt.executeUpdate(sql);
 		} finally {
 			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
 		}
 	}
 
 	public boolean execute(String sql) throws SQLException {
-		Connection Conn = null;
+        Connection connection = null;
+        try {
+            connection = DBBean.getDBConnection();
+            return execute(connection, sql);
+        } finally {
+            DatabaseUtil.closeConnection(connection);
+        }
+
+    }
+
+    public boolean execute(Connection connection, String sql) throws SQLException {
 		Statement stmt = null;
 		try {
-			Conn = DBBean.getDBConnection();
-			stmt = Conn.createStatement();
-
+			stmt = connection.createStatement();
 			return stmt.execute(sql);
 		} finally {
 			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
 		}
 	}
 
 	public boolean executeReadOnly(String sql) throws SQLException {
-		Connection Conn = null;
+		Connection connection = null;
 		Statement stmt = null;
 		try {
-			Conn = DBBean.getReadOnlyConnection();
-			stmt = Conn.createStatement();
+			connection = DBBean.getReadOnlyConnection();
+			stmt = connection.createStatement();
 
 			return stmt.execute(sql);
 		} finally {
 			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
+			DatabaseUtil.closeConnection(connection);
 		}
 	}
 
@@ -204,13 +208,21 @@ public class Database {
 	}
 
 	public <T> List<T> select(String sql, RowMapper<T> rowMapper) throws SQLException {
-		Connection connection = null;
+        Connection connection = null;
+        try {
+            connection = DBBean.getDBConnection();
+            return select(connection, sql, rowMapper);
+        } finally {
+            DatabaseUtil.closeConnection(connection);
+        }
+    }
+
+	public <T> List<T> select(Connection connection, String sql, RowMapper<T> rowMapper) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 
 		List<T> results = new ArrayList<T>();
 		try {
-			connection = DBBean.getDBConnection();
 			Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			resultSet = statement.executeQuery(sql);
 
@@ -222,7 +234,6 @@ public class Database {
 		} finally {
 			DatabaseUtil.closeResultSet(resultSet);
 			DatabaseUtil.closeStatement(preparedStatement);
-			DatabaseUtil.closeConnection(connection);
 		}
 
 		return results;
@@ -257,15 +268,22 @@ public class Database {
 	}
 
 	public static <T> void executeBatch(String sql, List<T> items, QueryMapper<T> queryMapper) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DBBean.getDBConnection();
+            executeBatch(connection, sql, items, queryMapper);
+        } finally {
+            DatabaseUtil.closeConnection(connection);
+        }
+
+    }
+	public static <T> void executeBatch(Connection connection, String sql, List<T> items, QueryMapper<T> queryMapper) throws SQLException {
 		if (Strings.isEmpty(sql) || CollectionUtils.isEmpty(items) || queryMapper == null) {
 			return;
 		}
-
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = DBBean.getDBConnection();
 			preparedStatement = connection.prepareStatement(sql);
 
 			int count = 0;
@@ -282,7 +300,6 @@ public class Database {
 			preparedStatement.executeBatch();
 		} finally {
 			DatabaseUtil.closeStatement(preparedStatement);
-			DatabaseUtil.closeConnection(connection);
 		}
 	}
 

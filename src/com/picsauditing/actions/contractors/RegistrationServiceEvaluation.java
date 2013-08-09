@@ -171,15 +171,23 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		loadSsipAudit();
 
 		if (!validatePqfAuditAnswers() || !validateSsipAuditAnswers()) {
-			addActionError("All Questions Must Be Answered.");
+			addActionError(getText("RegistrationServiceEvaluation.MustAnswerAllQuestions"));
 			return SUCCESS;
 		}
 
 		saveAnswersForPqfAudit();
-		saveAnswersForSsipAudit();
-
 		loadPqfAnswers();
-		loadSsipAnswers();
+
+        if (shouldShowSsip()) {
+            saveAnswersForSsipAudit();
+            loadSsipAnswers();
+        }
+        else {
+            auditDao.remove(ssipAudit);
+            for (AuditData data : ssipAnswerMap.values()) {
+                auditDataDAO.remove(data);
+            }
+        }
 
 		recalculateAuditPercentages();
 

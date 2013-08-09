@@ -73,6 +73,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		sql.addField("cr.id");
 		sql.addField("cr.name");
+		sql.addField("NULL AS status");
+		sql.addField("NULL AS reason");
 		sql.addField("cr.contact AS Contact");
 		sql.addField("cr.phone AS Phone");
 		sql.addField("cr.email AS Email");

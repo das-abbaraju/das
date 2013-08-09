@@ -82,7 +82,43 @@ public class ContractorDashboardApprovalMessageTest {
         assertDisplayResult(Result.ShowListAccountManager, user, contractorOperator, EMPTY_LIST, EMPTY_LIST);
     }
 
-    @Test
+	@Test
+	public void testSingleApprovedContractorCorporateView() throws Exception {
+		OperatorAccountBuilder corporateAccount = OperatorAccount.builder();
+		OperatorAccountBuilder clientSiteAccount = OperatorAccount.builder();
+
+		corporateAccount.child(clientSiteAccount.build());
+		corporateAccount.build().setPrimaryCorporate(true);
+		corporateAccount.build().setId(3);
+		clientSiteAccount.build().getParentOperators().add(corporateAccount.build());
+
+		UserBuilder user = standardUser(corporateAccount).permission(OpPerms.ViewUnApproved);
+
+		ContractorOperatorBuilder contractorOperator = standardOperator(clientSiteAccount).workStatus(ApprovalStatus.Approved);
+
+		assertDisplayResult(Result.ShowNothing, user, contractorOperator, new ArrayList<User>());
+	}
+
+	@Test
+	public void testSingleUnApprovedContractorCorporateView() throws Exception {
+		OperatorAccountBuilder corporateAccount = OperatorAccount.builder();
+		OperatorAccountBuilder clientSiteAccount = OperatorAccount.builder();
+
+		corporateAccount.child(clientSiteAccount.build());
+		corporateAccount.build().setPrimaryCorporate(true);
+		corporateAccount.build().setId(3);
+		clientSiteAccount.build().getParentOperators().add(corporateAccount.build());
+
+		UserBuilder user = standardUser(corporateAccount).permission(OpPerms.ViewUnApproved);
+
+		ContractorOperatorBuilder contractorOperator = standardOperator(clientSiteAccount).workStatus(ApprovalStatus.Pending);
+
+		List<User> corpUserList = new ArrayList<User>();
+		corpUserList.add(user.build());
+		assertDisplayResult(Result.ShowListCorporate, user, contractorOperator, new ArrayList<User>(), corpUserList);
+	}
+
+	@Test
     public void testNotApproved() throws Exception {
         OperatorAccountBuilder account = OperatorAccount.builder();
 
@@ -152,7 +188,7 @@ public class ContractorDashboardApprovalMessageTest {
 
         List<ContractorOperator> childAccounts = new ArrayList<>();
         childAccounts.add(contractorOperator.build());
-        when(contractorOperatorDAO.findByContractorAndWorkStatus(contractor, ApprovalStatus.Approved)).thenReturn(childAccounts);
+        when(contractorOperatorDAO.findDecendentsByStatus(contractorOperator.build(), ApprovalStatus.Approved)).thenReturn(childAccounts);
 
         assertDisplayResult(Result.ContractorNotApprovedExpectSomeSites, user, contractorOperator, EMPTY_LIST, APPROVERS);
     }
@@ -211,7 +247,7 @@ public class ContractorDashboardApprovalMessageTest {
         ContractorOperatorBuilder contractorOperator = standardOperator(account).contractor(contractor).workStatus(ApprovalStatus.Approved);
         List<ContractorOperator> childAccounts = new ArrayList<>();
         childAccounts.add(contractorOperator.build());
-        when(contractorOperatorDAO.findByContractorAndWorkStatus(contractor, ApprovalStatus.Rejected, ApprovalStatus.Pending)).thenReturn(childAccounts);
+        when(contractorOperatorDAO.findDecendentsByStatus(contractorOperator.build(), ApprovalStatus.Rejected, ApprovalStatus.Pending)).thenReturn(childAccounts);
         assertDisplayResult(Result.ShowEverySiteExceptApprovedOnes, user, contractorOperator, EMPTY_LIST, EMPTY_LIST);
     }
 

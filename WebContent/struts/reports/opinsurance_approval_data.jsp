@@ -89,7 +89,7 @@
 				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'Limits')">
 						<s:property value="getFormattedDollarAmount(answer)"/> =
-						<span><s:property value="question.columnHeader.toString()"/></span>
+						<span><s:property value="question.name.toString()"/></span>
 						<br/>
 					</s:iterator>
 				</td>

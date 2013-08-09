@@ -80,7 +80,7 @@ public class InvoiceModel {
 		commissionDetail.setClientSiteId(accountUser.getAccount().getId());
 		commissionDetail.setPoints(invoiceCommission.getPoints().doubleValue());
 		commissionDetail.setRevenue(invoiceCommission.getRevenuePercent().doubleValue()
-				* invoice.getTotalCommissionEligibleInvoice(false).doubleValue());
+				* invoice.getCommissionableAmount().doubleValue());
 		commissionDetail.setRole(invoiceCommission.getAccountUser().getRole());
 		commissionDetail.setServiceLevels(getServiceLevels(clientServices, invoiceCommission));
 		commissionDetail.setWeight(invoiceCommission.getAccountUser().getOwnerPercent());

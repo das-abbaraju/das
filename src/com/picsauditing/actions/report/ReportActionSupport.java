@@ -104,6 +104,10 @@ public class ReportActionSupport extends PicsActionSupport {
 		this.report = report;
 	}
 
+    public void setLimit (int value) {
+        report.setLimit(value);
+    }
+
 	public ColorAlternater getColor() {
 		return color;
 	}

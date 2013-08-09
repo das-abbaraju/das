@@ -1,6 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<s:set var="mibew_language_code" value="getText('Mibew.LanguageCode')"/>
+
+<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_href">
+    <s:param name="locale">${mibew_language_code}</s:param>
+    <s:param name="style">PICS</s:param>
+    <s:param name="name">${User.name}</s:param>
+    <s:param name="email">${User.email}</s:param>
+    <s:param name="url">${requestURL}</s:param>
+    <s:param name="referrer">${referer}</s:param>
+</s:url>
+
+
 <title><s:text name="ContractorRegistration.title" /></title>
 
 <%-- toggle display flags for form display --%>
@@ -38,18 +50,18 @@
 		</header>
 	</section>
 </div>
-					
+
 <div class="registration">
-    <%--<s:if test="!isLiveEnvironment()" >--%>
-        <%--<a class="btn" id="autofill">Autofill</a>--%>
-    <%--</s:if>--%>
+    <s:if test="isLocalhostEnvironment() || isAlphaEnvironment()">
+        <a class="btn" id="autofill">Autofill</a>
+    </s:if>
 	<aside class="registration-side-bar">
 		<div class="info-join">
 			<section>
 				<h1><s:text name="Registration.JoinInfo" /></h1>
 			</section>
 		</div>
-		
+
 		<div class="info-qualify">
 			<section>
 				<h1><s:text name="Registration.Qualify" /></h1>
@@ -66,7 +78,7 @@
 				</ul>
 			</section>
 		</div>
-		
+
 		<div class="info-choice">
 			<section>
 				<h1><s:text name="Registration.Why" /></h1>
@@ -96,7 +108,7 @@
 			</section>
 		</div>
 	</aside>
-	
+
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
 		<s:if test="contractor.status.requested">
@@ -104,14 +116,14 @@
 			<s:hidden name="user" />
 			<s:hidden name="registrationKey" />
 		</s:if>
-		
+
 		<div class="company-information">
 			<section>
 				<h1>
 					<span><s:text name="Number.1" /></span>
 					<s:text name="Registration.CompanyInformation" />
 				</h1>
-				
+
 				<ul>
                     <li>
                         <s:select
@@ -148,11 +160,11 @@
                     		<p>
                     			<span class="icon warn"></span><s:text name="Registration.Error.PersonalizedHelp" />
                     			<ul>
-                    				<li><s:text name="Registration.Error.CallUs" /></li>
                     				<li>
-                    					<a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-                    					   <s:text name="Registration.Error.LiveChat" />
-                                        </a>
+                    					<s:text name="Registration.Error.CallUs" />
+                    					<span class="phone pics_phone_number" title="United States">${salesPhoneNumber}</span>
+                    				<li>
+                                        <a class="chat-link" href="${mibew_href}" target="_blank"><s:text name="Header.Chat" /></a>
                                         <s:text name="Registration.Error.PicsRep" />
                                     </li>
                     			</ul>
@@ -201,14 +213,14 @@
                 </ul>
 			</section>
 		</div>
-		
+
 		<div class="contact-information">
 			<section>
 				<h1>
 					<span><s:text name="Number.2" /></span>
 					<s:text name="Registration.ContactInformation" />
 				</h1>
-				
+
 				<ul>
                     <li>
                         <s:textfield name="user.firstName" />
@@ -225,14 +237,14 @@
 				</ul>
 			</section>
 		</div>
-		
+
 		<div class="account-information">
 			<section>
 				<h1>
 					<span><s:text name="Number.3" /></span>
 					<s:text name="Registration.AccountInformation" />
 				</h1>
-				
+
 				<ul>
 					<li>
 						<s:textfield name="user.username" label="global.Username" autocomplete="off" />
@@ -246,20 +258,20 @@
 				</ul>
 			</section>
 		</div>
-		
+
 		<div class="actions">
 			<div class="info-agreement">
 				<p>
 					<s:text name="Registration.AgreeTC" />
 				</p>
 			</div>
-			
-			<s:submit 
+
+			<s:submit
 				method="createAccount"
 				key="button.GetStarted"
-				cssClass="btn success" 
+				cssClass="btn success"
 			/>
-			
+
 			<div class="modal hide fade">
 				<div class="modal-header">
 					<a href="#" class="close">×</a>
@@ -269,13 +281,13 @@
 					<p><s:text name="Registration.ModalBody" /></p>
 				</div>
 				<div class="modal-footer">
-					
+
 				</div>
 			</div>
-			
+
 			<br style="clear: both" />
 		</div>
 	</s:form>
-	
+
 	<br style="clear: both" />
 </div>

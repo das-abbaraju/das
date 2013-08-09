@@ -17,6 +17,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
         ref: 'shareSetting',
         selector: 'reportsharesetting'
     }, {
+        ref: 'exportSetting',
+        selector: 'reportexportsetting'
+    }, {
+        ref: 'subscribeSetting',
+        selector: 'reportsubscribesetting'
+    }, {
         ref: 'reportInfoSetting',
         selector: 'reportinfosetting'
     }, {
@@ -36,6 +42,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         this.control({
             'reportsettingsmodal': {
                 beforerender: this.beforeSettingsModalRender,
+                beforeshow: this.beforeSettingsModalShow,
                 close: this.closeSettingsModal
             },
 
@@ -77,7 +84,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 click: this.exportReport
             },
 
-            'reportsettingsmodal reportprintsetting button[action=print-preview]':  {
+            'reportsettingsmodal reportexportsetting button[action=print-preview]':  {
                 click: this.printReport
             },
 
@@ -89,6 +96,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsharesetting button[action=share]': {
                 click: this.onReportModalShareClick
+            },
+
+            'reportsettingsmodal reportsubscribesetting radiogroup': {
+                change: this.requestSubscription
             }
         });
 
@@ -121,15 +132,27 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     beforeSettingsModalRender: function (cmp, eOpts) {
             var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            edit_setting_view = this.getEditSetting(),
-            edit_setting_form = edit_setting_view.getForm();
+                report = report_store.first(),
+                edit_setting_view = this.getEditSetting(),
+                edit_setting_form = edit_setting_view.getForm(),
+                subscribe_setting_view = this.getSubscribeSetting(),
+                subscribe_setting_form = subscribe_setting_view.getForm();
     
         if (edit_setting_form) {
             edit_setting_form.loadRecord(report);
         }
+
+        if (subscribe_setting_form) {
+            subscribe_setting_form.loadRecord(report);
+        }
     },
-    
+
+    beforeSettingsModalShow: function (cmp, eOpts) {
+        var export_setting_view = this.getExportSetting();
+
+        export_setting_view.update(this.getRecordCount());
+    },
+
     closeSettingsModal: function (cmp, eOpts) {
         var settings_modal_tabs_view = this.getSettingsModalTabs(),
             edit_setting_view = this.getEditSetting(),
@@ -226,6 +249,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (edit_setting_view.isVisible()) {
             PICS.data.ServerCommunication.favoriteReport();
         }
+    },
+
+    getRecordCount: function () {
+        var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
+            data_table_store = data_table_view.getStore();
+
+        return data_table_store.getTotalCount();
     },
 
     openSettingsModal: function (action) {
@@ -420,5 +450,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
         };
 
         PICS.data.ServerCommunication.shareReport(options);
+    },
+
+    requestSubscription: function (cmp, e, eOpts) {
+        var subscribe_setting_view = this.getSubscribeSetting(),
+            subscribe_setting_form = subscribe_setting_view.getForm(),
+            subscription_frequency = subscribe_setting_form.getValues().subscription_frequency;
+
+        PICS.data.ServerCommunication.requestSubscription(subscription_frequency);
     }
 });

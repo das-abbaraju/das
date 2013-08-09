@@ -25,6 +25,9 @@
 			<td>
 				<s:text name="RequestedContractorsAjax.header.LastContacted" />
 			</td>
+            <td>
+                <s:text name="RequestedContractorsAjax.header.Status" />
+            </td>
 		</tr>
 	</thead>
 	<s:if test="requestedContractors.size  == 0">
@@ -82,13 +85,16 @@
 						<s:date name="get('lastContactDate')" />
 					</nobr>
 				</td>
+                <td>
+                    <nobr>
+                        <s:property value="get('status')" />
+                    </nobr>
+                </td>
 			</tr>
 		</s:iterator>
 	</s:else>
 </table>
 
-<s:if test="total > 10">
-	<a href="${requested_contractor_report}" class="preview">
-		<s:text name="RequestedContractorsAjax.SeeAllOpenRequests" />
-	</a>
-</s:if>
+<a href="${requested_contractor_report}" class="preview">
+	<s:text name="RequestedContractorsAjax.SeeAllOpenRequests" />
+</a>

@@ -47,6 +47,15 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 		account.minimumImportance = FieldImportance.Average;
 		account.category = FieldCategory.AccountInformation;
 
+        ModelSpec customerService = contractor.join(ContractorTable.CustomerService);
+        customerService.alias = "CustomerService";
+        customerService.category = FieldCategory.CustomerService;
+        customerService.minimumImportance = FieldImportance.Required;
+
+        ModelSpec customerServiceUser = customerService.join(AccountUserTable.User);
+        customerServiceUser.alias = "CustomerServiceUser";
+        customerServiceUser.category = FieldCategory.CustomerService;
+
         ModelSpec pqf = contractor.join(ContractorTable.PQF);
         pqf.alias = "PQF";
         pqf.minimumImportance = FieldImportance.Required;
@@ -67,6 +76,8 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 
         ModelSpec trir = conAudit.join(ContractorAuditTable.Trir);
         trir.alias = "Trir";
+
+        conAudit.join(ContractorAuditTable.Lwcr);
 
         ModelSpec emr = conAudit.join(ContractorAuditTable.Emr);
         emr.alias = "Emr";
@@ -114,6 +125,8 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         trir.setType(FieldType.Number);
         Field emr = fields.get("EmrAnswer".toUpperCase());
         emr.setType(FieldType.Number);
+        Field lwcr = fields.get("AuditLwcrAnswer".toUpperCase());
+        lwcr.setType(FieldType.Number);
 
         Field contractorsRequiringAnnualUpdateEmail = new Field(
 				CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL,
@@ -124,6 +137,15 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 		contractorsRequiringAnnualUpdateEmail.requirePermission(OpPerms.DevelopmentEnvironment);
 		fields.put(CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL.toUpperCase(), contractorsRequiringAnnualUpdateEmail);
 
-		return fields;
+        Field clientSite = new Field("ClientSite","Account.id",FieldType.Operator);
+        clientSite.setVisible(false);
+        clientSite.setPrefixValue("SELECT co.subID " +
+                "FROM generalcontractors co " +
+                "WHERE co.genID IN ");
+        clientSite.setSuffixValue("");
+        clientSite.setCategory(FieldCategory.ReportingClientSite);
+        fields.put(clientSite.getName().toUpperCase(), clientSite);
+
+        return fields;
 	}
 }

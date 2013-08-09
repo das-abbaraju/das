@@ -1225,8 +1225,8 @@
                     "path": "app/view/report/settings/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.PrintSetting",
-                    "name": "PrintSetting.js",
+                    "clsName": "PICS.view.report.settings.SubscribeSetting",
+                    "name": "SubscribeSetting.js",
                     "path": "app/view/report/settings/"
                 },
                 {

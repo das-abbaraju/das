@@ -84,29 +84,3 @@ function augment (oSelf, oOther) {
     }
     return oSelf;
 }
-
-/**
- * Chat - solutions.liveperson.com
- */
-
-$(function() {
-	$('.liveperson-chat-toggle').bind('mouseover', function() {
-		var element = $('.liveperson-chat');
-		
-		if (!element.is(':visible')) {
-			element.css({
-				display: 'block'
-			});
-		}
-	});
-	
-	$('#helpbox').bind('mouseleave', function(event) {
-		var element = $('.liveperson-chat');
-		
-		if (element.is(':visible')) {
-			element.css({
-				display: 'none'
-			});
-		}
-	});
-});

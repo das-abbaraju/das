@@ -1,4 +1,4 @@
-update users set password = SHA1(CONCAT('v7Rep0rts',id));
+update users set password = SHA1(CONCAT('Wait7Lib',id));
 update contractor_info set taxID = '123456789';
 update users set email = 'tester@picsauditing.com' where email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';

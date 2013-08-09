@@ -74,7 +74,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected Map<ContractorAuditOperator, String> problems = new TreeMap<ContractorAuditOperator, String>();
 	// Policy verification (next/first buttons)
 	private boolean policy;
-	private boolean refreshAudit = false;
 
 	private int auditTypeId;
 	private AuditType auditType;
@@ -86,7 +85,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	public String execute() throws Exception {
 		if (auditID > 0) {
 			this.findConAudit();
-			refreshAudit = conAudit.getAuditType().getWorkFlow().isUseStateForEdit();
 		}
 
 		if ("ViewAll".equals(mode) && auditTypeId != 0) {
@@ -402,14 +400,6 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		checkMode();
 		return setUrlForRedirect("Audit.action?auditID=" + auditID);
-	}
-
-	public boolean isRefreshAudit() {
-		return refreshAudit;
-	}
-
-	public void setRefreshAudit(boolean refreshAudit) {
-		this.refreshAudit = refreshAudit;
 	}
 
 	public List<MenuComponent> getAuditMenu() {

@@ -337,7 +337,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		for (AuditType aType : auditTypeDAO.findAll()) {
 			if (!aType.isAnnualAddendum()
 					&& (aType.getClassType().equals(AuditTypeClass.Audit)
-							|| aType.getClassType().equals(AuditTypeClass.Employee) || aType.getClassType().equals(
+							|| aType.getClassType().equals(AuditTypeClass.Review)
+                    || aType.getClassType().equals(AuditTypeClass.Employee) || aType.getClassType().equals(
 							AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}

@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.picsauditing.dao.TranslationDAO;
+import com.picsauditing.dao.jdbc.TranslationsDAO;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.perf4j.StopWatch;
@@ -52,7 +54,7 @@ public class I18nCache implements TranslationService, Serializable {
 
 	// This is for JUnit testing
 	static AtomicInteger instantiationCount = new AtomicInteger(0);
-	private static AppTranslationDAO appTranslationDAO;
+	private static TranslationDAO appTranslationDAO;
 	private static FeatureToggle featureToggle;
 
 	private I18nCache() {
@@ -153,6 +155,7 @@ public class I18nCache implements TranslationService, Serializable {
 
 	public void clear() {
 		synchronized (this) {
+            appTranslationDAO = null;
 			buildCache();
 		}
 	}
@@ -166,7 +169,7 @@ public class I18nCache implements TranslationService, Serializable {
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
 			Table<String, String, String> newTranslationsForJS = TreeBasedTable.create();
 
-			List<BasicDynaBean> messages = getAppTranslationDAO().getTranslationsForI18nCache();
+			List<BasicDynaBean> messages = appTranslationDAO().getTranslationsForI18nCache();
 			for (BasicDynaBean message : messages) {
 				String key = String.valueOf(message.get("msgKey"));
 				newCache.put(TranslationUtil.prepareKeyForCache(key), String.valueOf(message.get("locale")),
@@ -175,14 +178,17 @@ public class I18nCache implements TranslationService, Serializable {
 				newCacheUsage.put(key, lastUsed);
 			}
 
-			List<ContextTranslation> contextTranslations = getAppTranslationDAO().findAllForJS();
-			for (ContextTranslation contextTranslation : contextTranslations) {
-				String key = contextTranslation.getI18nKey();
-				String translation = contextTranslation.getTranslaton();
-				newCache.put(TranslationUtil.prepareKeyForCache(key), contextTranslation.getLocale(), translation);
-				newCacheUsage.put(key, contextTranslation.getLastUsed());
-				newTranslationsForJS.put(buildKeyForJS(contextTranslation), key, translation);
-			}
+            List<ContextTranslation> contextTranslations = appTranslationDAO().findAllForJS();
+            for (ContextTranslation contextTranslation : contextTranslations) {
+                String key = contextTranslation.getI18nKey();
+                String translation = contextTranslation.getTranslaton();
+                if (Strings.isEmpty(key) || Strings.isEmpty(translation)) {
+                    continue;
+                }
+                newCache.put(TranslationUtil.prepareKeyForCache(key), contextTranslation.getLocale(), translation);
+                newCacheUsage.put(key, contextTranslation.getLastUsed());
+                newTranslationsForJS.put(buildKeyForJS(contextTranslation), key, translation);
+            }
 
 			cache = newCache;
 			translationsForJS = newTranslationsForJS;
@@ -319,23 +325,23 @@ public class I18nCache implements TranslationService, Serializable {
 	}
 
 	private boolean isEmptyStringValidTranslation() {
-		return getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION);
+		return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION);
 	}
 
-	public List<Map<String, String>> getTranslationsForJS(String actionName, String methodName, Set<String> locales) {
-		if (CollectionUtils.isEmpty(locales) || Strings.isEmpty(actionName) || Strings.isEmpty(methodName)) {
-			return Collections.emptyList();
-		}
+    public List<Map<String, String>> getTranslationsForJS(String actionName, String methodName, Set<String> locales) {
+        if (CollectionUtils.isEmpty(locales) || Strings.isEmpty(actionName) || Strings.isEmpty(methodName)) {
+            return Collections.emptyList();
+        }
 
-		List<String> keys = generateKeys(actionName, methodName, locales);
+        List<String> keys = generateKeys(actionName, methodName, locales);
 
-		List<Map<String, String>> translations = new ArrayList<>();
-		for (String key : keys) {
-			translations.add(Collections.unmodifiableMap(translationsForJS.row(key)));
-		}
+        List<Map<String, String>> translations = new ArrayList<>();
+        for (String key : keys) {
+            translations.add(Collections.unmodifiableMap(translationsForJS.row(key)));
+        }
 
-		return translations;
-	}
+        return translations;
+    }
 
 	private List<String> generateKeys(String actionName, String methodName, Set<String> locales) {
 		List<String> keys = new ArrayList<String>();
@@ -347,22 +353,27 @@ public class I18nCache implements TranslationService, Serializable {
 		return keys;
 	}
 
-	private AppTranslationDAO getAppTranslationDAO() {
+	private TranslationDAO appTranslationDAO() {
 		if (appTranslationDAO == null) {
 			// not using the SpringUtils because the SpringContext has not been
 			// loaded before this is called.
-			appTranslationDAO = new AppTranslationDAO();
-			return appTranslationDAO;
+            if (useNewTranslationSchema()) {
+			    appTranslationDAO = new TranslationsDAO();
+            } else {
+                appTranslationDAO = new AppTranslationDAO();
+            }
 		}
-
 		return appTranslationDAO;
 	}
 
-	private FeatureToggle getFeatureToggle() {
+    private boolean useNewTranslationSchema() {
+        return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE);
+    }
+
+    private FeatureToggle featureToggle() {
 		if (featureToggle == null) {
 			featureToggle = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
 		}
-
 		return featureToggle;
 	}
 

@@ -305,7 +305,7 @@
                         buttons: [
                             {
                                 html: '<a href="javascript:;" class="btn danger">' + translate('JS.button.Close') + '</a>',
-                                callback: function() { PICS.getClass('modal.Modal').hide(); }
+                                callback: function() { PICS.getClass('widget.Modal').hide(); }
                             },
                             {
                                 html: '<a href="javascript:;" class="btn only-work-for">' + translate('JS.RegistrationAddClientSite.OnlyWorkFor', [client_site_name]) + '</a>'
@@ -362,7 +362,7 @@
 
                         general_contractor_element.closest('li').hide();
 
-                        PICS.getClass('modal.Modal').hide();
+                        PICS.getClass('widget.Modal').hide();
                     });
 
                     modal.delegate('.already-selected', 'click', function () {
@@ -373,7 +373,7 @@
 
                         general_contractor_element.closest('li').hide();
 
-                        PICS.getClass('modal.Modal').hide();
+                        PICS.getClass('widget.Modal').hide();
                     });
                 }
 

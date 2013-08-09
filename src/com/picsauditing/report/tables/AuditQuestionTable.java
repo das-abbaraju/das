@@ -17,7 +17,6 @@ public class AuditQuestionTable extends AbstractTable {
 		Field auditQuestionName;
 		auditQuestionName = new Field("Name", "id", FieldType.AuditQuestion);
 		auditQuestionName.setTranslationPrefixAndSuffix("AuditQuestion", "name");
-		auditQuestionName.setUrl("ManageQuestion.action?id={" + ReportOnClause.ToAlias + "ID}");
 		auditQuestionName.setImportance(FieldImportance.Required);
 		auditQuestionName.setCategory(FieldCategory.DocumentsAndAudits);
 		auditQuestionName.setWidth(200);

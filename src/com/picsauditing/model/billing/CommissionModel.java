@@ -134,7 +134,7 @@ public class CommissionModel {
 		}
 
 		commissionEligibleData.append("Total").append(",");
-		commissionEligibleData.append(invoice.getTotalCommissionEligibleInvoice(false));
+		commissionEligibleData.append(invoice.getCommissionableAmount());
 		commissionEligibleData.append(Strings.NEW_LINE).append(Strings.NEW_LINE);
 	}
 
@@ -200,7 +200,7 @@ public class CommissionModel {
 			return;
 		}
 
-		BigDecimal totalCommissionEligible = invoice.getTotalCommissionEligibleInvoice(false);
+		BigDecimal totalCommissionEligible = invoice.getCommissionableAmount();
 		Map<FeeClass, BigDecimal> commissionEligibleFees = invoice.getCommissionEligibleFees(false);
 
 		for (CommissionDetail commissionDetail : commissionDetails) {

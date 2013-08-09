@@ -192,16 +192,28 @@ public class ContractorOperatorDAO extends PicsDAO {
 		return Collections.EMPTY_SET;
 	}
 
-    public List<ContractorOperator> findByContractorAndWorkStatus(ContractorAccount contractorAccount, ApprovalStatus ... statuses) {
+    public List<ContractorOperator> findDecendentsByStatus(ContractorOperator corporate, ApprovalStatus... statuses) {
         try {
             Query query = em.createQuery(
                     "FROM ContractorOperator co " +
                     "WHERE co.contractorAccount.id = :conId " +
+		            "AND co.operatorAccount.inPicsConsortium = false " +
                     "AND co.workStatus IN (:statuses) "
             );
-            query.setParameter("conId", contractorAccount.getId());
+            query.setParameter("conId", corporate.getContractorAccount().getId());
             query.setParameter("statuses", Arrays.asList(statuses));
-            return query.getResultList();
+            List<ContractorOperator> unfilteredResults = query.getResultList();
+
+            // This feels wrong, but we don't have a true hierarchy in the database, so it's pretty much impossible
+            // to do this in a query
+            List<ContractorOperator> filtertedResults = new ArrayList<>();
+            for (ContractorOperator childAccount: unfilteredResults) {
+                if (childAccount.getOperatorAccount().isDescendantOf(corporate.getId())) {
+                    filtertedResults.add(childAccount);
+                }
+            }
+
+            return filtertedResults;
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

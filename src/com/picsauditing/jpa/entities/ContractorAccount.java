@@ -486,7 +486,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 *
 	 * @return
 	 */
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, importance = FieldImportance.Average, requiredPermissions = OpPerms.Billing)
 	public boolean isCcOnFile() {
 		return ccOnFile;
 	}

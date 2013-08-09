@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.dao.OperatorTagDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.FlagDataCalculator;
@@ -38,12 +39,16 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private FlagCriteriaDAO flagCriteriaDAO;
 	@Autowired
 	private FlagDataOverrideDAO flagDataOverrideDAO;
+    @Autowired
+    private OperatorTagDAO operatorTagDAO;
 
 	private FlagCriteria flagCriteria;
 	private FlagCriteriaOperator flagCriteriaOperator;
 	private OperatorTag operatorTag;
 
-	private boolean insurance = false;
+    private List<OperatorTag> tags;
+
+    private boolean insurance = false;
 	private int childID;
 	private FlagColor newFlag;
 	private String newHurdle;
@@ -58,6 +63,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	@RequiredPermission(value = OpPerms.EditFlagCriteria)
 	public String execute() throws Exception {
 		findOperator();
+        tags = operatorTagDAO.findByOperator(id, false);
 
 		subHeading = (insurance ? getText("ManageInsuranceCriteriaOperator.title")
 				: getText("ManageFlagCriteriaOperator.title"));
@@ -66,7 +72,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	}
 
 	@RequiredPermission(value = OpPerms.EditFlagCriteria, type = OpType.Edit)
-	public String save() {
+	public String save()throws Exception {
+        findOperator();
+        tags = operatorTagDAO.findByOperator(id, false);
+
 		// The fco here and the fco in operator.getInheritedFlagCriteria end up being the same in memory so the check
 		// always returns true.
 		FlagCriteriaOperator fco1 = new FlagCriteriaOperator();
@@ -214,7 +223,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		this.flagCriteriaOperator = flagCriteriaOperator;
 	}
 
-	public OperatorTag getOperatorTag() {
+    public List<OperatorTag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<OperatorTag> tags) {
+        this.tags = tags;
+    }
+
+    public OperatorTag getOperatorTag() {
 		return operatorTag;
 	}
 
@@ -303,25 +320,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		operator.getFlagCriteriaInherited();
 		// Filter out here?
 		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited(insurance);
-		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
+		List<FlagCriteriaOperator> valid = new ArrayList<>();
 
 		// Sort by category, description
-		Collections.sort(inheritedCriteria, new Comparator<FlagCriteriaOperator>() {
-			public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
-				FlagCriteria f1 = o1.getCriteria();
-				FlagCriteria f2 = o2.getCriteria();
-
-				// Display order matches, sort by category
-				if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
-					// If category matches, sort by label
-					if (f1.getCategory().equals(f2.getCategory())) {
-						return f1.getLabel().compareTo(f2.getLabel());
-					} else
-						return f1.getCategory().compareTo(f2.getCategory());
-				} else
-					return f1.getDisplayOrder() - f2.getDisplayOrder();
-			}
-		});
+		Collections.sort(inheritedCriteria, FlagCriteriaOperator.COMPARATOR);
 
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();

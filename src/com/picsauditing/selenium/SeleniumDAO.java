@@ -17,33 +17,49 @@ public class SeleniumDAO {
 
 	private static final String TEST_ACCOUNT_NAME_DELIMITER = "Selenium";
 	
-	private EmployeeDeleter ED = new EmployeeDeleter();
-	private UserDeleter UD = new UserDeleter();
-	private AccountDeleter AD = new AccountDeleter();
+	private EmployeeDeleter employeeDeleter = new EmployeeDeleter();
+	private UserDeleter userDeleter = new UserDeleter();
+	private AccountDeleter accountDeleter = new AccountDeleter();
+    private AuditCategoryRuleDeleter auditCategoryRuleDeleter = new AuditCategoryRuleDeleter();
+    private AuditTypeRuleDeleter auditTypeRuleDeleter = new AuditTypeRuleDeleter();
 	
 	public void delete(List<SeleniumDeletable> deletables) throws Exception {
 		if (CollectionUtils.isEmpty(deletables)) return;
+        deleteFromAuditTypeRules(deletables);
+        deleteFromAuditCategoryRules(deletables);
 		deleteFromAccounts(deletables);
 		deleteFromUsers(deletables);
 		deleteFromEmployees(deletables);
 	}
 
-	private void deleteFromEmployees(List<SeleniumDeletable> deletables) throws Exception {
+    private void deleteFromAuditTypeRules(List<SeleniumDeletable> deletables) throws SQLException {
+        List<Integer> IDs = getAccountIDNumbersFrom(deletables);
+        if (IDs.isEmpty()) return;
+        auditTypeRuleDeleter.setIds(IDs).execute();
+    }
+
+    private void deleteFromAuditCategoryRules(List<SeleniumDeletable> deletables) throws Exception {
+        List<Integer> IDs = getAccountIDNumbersFrom(deletables);
+        if (IDs.isEmpty()) return;
+        auditCategoryRuleDeleter.setIds(IDs).execute();
+    }
+
+    private void deleteFromEmployees(List<SeleniumDeletable> deletables) throws Exception {
 		List<Integer> IDs = getEmployeeIDNumbersFrom(deletables);
 		if (IDs.isEmpty()) return;
-		ED.setEmployeeIDs(IDs).execute();
+		employeeDeleter.setIds(IDs).execute();
 	}
 
 	private void deleteFromUsers(List<SeleniumDeletable> deletables) throws Exception {
 		List<Integer> IDs = getUserIDNumbersFrom(deletables);
 		if (IDs.isEmpty()) return;
-		UD.setUserIDs(IDs).execute();
+		userDeleter.setIds(IDs).execute();
 	}
 
 	private void deleteFromAccounts(List<SeleniumDeletable> deletables) throws Exception {
 		List<Integer> IDs = getAccountIDNumbersFrom(deletables);
 		if (IDs.isEmpty()) return;
-		AD.setAccountIDs(IDs).execute();
+		accountDeleter.setIds(IDs).execute();
 	}
 
 	public static List<Integer> getAccountIDNumbersFrom(List<SeleniumDeletable> deletable) {
@@ -59,7 +75,7 @@ public class SeleniumDAO {
 	}
 
 	private static List<Integer> getIDNumbers(List<SeleniumDeletable> deletables, String testMethod) {
-		List<Integer> IDs = new ArrayList<Integer>();
+		List<Integer> IDs = new ArrayList<>();
 		for (SeleniumDeletable deleteMe : deletables) {
 			try {
 				if ((Boolean) SeleniumDeletable.class.getDeclaredMethod(testMethod).invoke(deleteMe))
@@ -72,7 +88,7 @@ public class SeleniumDAO {
 	}
 
 	public List<SeleniumDeletable> availableTestingReferences() {
-		List<SeleniumDeletable> deletables = new ArrayList<SeleniumDeletable>();
+		List<SeleniumDeletable> deletables = new ArrayList<>();
 		deletables.addAll(availableTestingAccounts());
 		deletables.addAll(availableTestingEmployees());
 		deletables.addAll(availableTestingUsers());
@@ -80,7 +96,7 @@ public class SeleniumDAO {
 	}
 
 	private List<SeleniumDeletable> availableTestingAccounts() {
-		ArrayList<SeleniumDeletable> accounts = new ArrayList<SeleniumDeletable>();
+		ArrayList<SeleniumDeletable> accounts = new ArrayList<>();
 		for (BasicDynaBean row : basicInformationFetch("accounts", "name", "id", "name", "type")) {
 			Account account = new Account();
 			account.setId((Integer) row.get("id"));
@@ -92,7 +108,7 @@ public class SeleniumDAO {
 	}
 
 	private List<SeleniumDeletable> availableTestingEmployees() {
-		ArrayList<SeleniumDeletable> employees = new ArrayList<SeleniumDeletable>();
+		ArrayList<SeleniumDeletable> employees = new ArrayList<>();
 		for (BasicDynaBean row : basicInformationFetch("employee", "firstName", "id", "firstName", "lastName")) {
 			Employee emp = new Employee();
 			emp.setFirstName(row.get("firstName").toString());
@@ -104,7 +120,7 @@ public class SeleniumDAO {
 	}
 
 	private List<SeleniumDeletable> availableTestingUsers() {
-		ArrayList<SeleniumDeletable> users = new ArrayList<SeleniumDeletable>();
+		ArrayList<SeleniumDeletable> users = new ArrayList<>();
 		for (BasicDynaBean row : basicInformationFetch("users", "name", "id", "name")) {
 			User user = new User();
 			user.setId((Integer) row.get("id"));
@@ -124,7 +140,7 @@ public class SeleniumDAO {
 			return db.select(SQL.toString(), false);
 		} catch (SQLException e) {
 			System.out.println("Error in SeleniumDAO!!");
-			return new ArrayList<BasicDynaBean>();
+			return new ArrayList<>();
 		}
 	}
 }

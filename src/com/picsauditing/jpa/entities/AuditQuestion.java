@@ -612,8 +612,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	@Transient
 	public String getColumnHeaderOrQuestion() {
 		String columnHeader = getColumnHeader();
-		if (columnHeader != null && !Strings.isEmpty(columnHeader.toString())) {
-			return columnHeader.toString();
+		if (columnHeader != null && !Strings.isEmpty(columnHeader) && !columnHeader.equals(getI18nKey("columnHeader"))) {
+			return columnHeader;
 		}
 
 		if (getName() == null) {
@@ -664,8 +664,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static Comparator<AuditQuestion> getComparator() {
 		return new Comparator<AuditQuestion>() {
 			public int compare(AuditQuestion o1, AuditQuestion o2) {
-				String[] o1a = o1.getExpandedNumber().split("\\.");
-				String[] o2a = o2.getExpandedNumber().split("\\.");
+                String expandedNumber1 = o1.getExpandedNumber();
+                String expandedNumber2 = o2.getExpandedNumber();
+                String[] o1a = expandedNumber1.split("\\.");
+                String[] o2a = expandedNumber2.split("\\.");
 
 				for (int i = 0; i < o1a.length; i++) {
 					if (i >= o2a.length) {
@@ -679,7 +681,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 					}
 				}
 
-				return 0;
+                if (expandedNumber1.equals(expandedNumber2))
+				    return 0;
+                else
+                    return 1;
 			}
 		};
 	}
@@ -848,4 +853,5 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static AuditQuestionBuilder builder() {
 		return new AuditQuestionBuilder();
 	}
+
 }

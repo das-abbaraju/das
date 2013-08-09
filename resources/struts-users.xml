@@ -65,6 +65,10 @@
 		</action>
 
 		<action name="QaUserCreator" class="com.picsauditing.actions.qa.QaUserCreator"/>
+
+        <action name="SessionTimeout" class="com.picsauditing.actions.users.SessionTimeout">
+			<result>struts/users/session_timeout_notification.jsp</result>
+		</action>
 	</package>
 
 </struts>

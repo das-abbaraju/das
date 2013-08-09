@@ -47,7 +47,6 @@ public class ProfileEdit extends PicsActionSupport {
 	 * This method needs to be anonymous to prevent the user from redirecting on
 	 * login if the {@link User}'s forcePasswordReset is true.
 	 */
-	@Anonymous
 	public String execute() throws Exception {
 		String loginResult = checkProfileEditLogin();
 
@@ -120,20 +119,29 @@ public class ProfileEdit extends PicsActionSupport {
 	}
 
 	public String version6Menu() throws Exception {
-		u.setUsingVersion7Menus(false);
-		u.setUsingDynamicReports(false);
-		userDAO.save(u);
+		if (permissions.getUserId() == u.getId()) {
+			u.setUsingVersion7Menus(false);
+			u.setUsingDynamicReports(false);
+			userDAO.save(u);
+
+			permissions.setUsingVersion7Menus(false);
+		}
 
 		return setUrlForRedirect(getReferer());
 	}
 
 	public String version7Menu() throws Exception {
-		Date today = new Date();
-		u.setUsingDynamicReports(true);
-		u.setusingDynamicReportsDate(today);
-		u.setUsingVersion7Menus(true);
-		u.setUsingVersion7MenusDate(today);
-		userDAO.save(u);
+		if (permissions.getUserId() == u.getId()) {
+			Date today = new Date();
+			u.setUsingDynamicReports(true);
+			u.setusingDynamicReportsDate(today);
+			u.setUsingVersion7Menus(true);
+			u.setUsingVersion7MenusDate(today);
+			userDAO.save(u);
+
+			permissions.setUsingVersion7Menus(true);
+			permissions.setUsingVersion7MenusDate(today);
+		}
 
 		return setUrlForRedirect(getReferer());
 	}

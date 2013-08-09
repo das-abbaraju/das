@@ -33,7 +33,9 @@ public class CountrySubdivisionList extends AccountActionSupport {
 		if (country != null) {
 			json.put("country", getText(country.getI18nKey()));
 
-			if (Strings.isNotEmpty(country.getPhone())) {
+			if (Strings.isNotEmpty(country.getSalesPhone())) {
+				json.put("picsPhoneNumber", country.getSalesPhone());
+			} else if (Strings.isNotEmpty(country.getPhone())) {
 				json.put("picsPhoneNumber", country.getPhone());
 			}
 		}

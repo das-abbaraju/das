@@ -548,7 +548,7 @@
 	    									value = "%{(contractor.dontReassign)?contractor.currentCsr.id:0}"
 										/>
 	    							</li>
-                                    <s:if test="contractor.status.pending">
+                                    <s:if test="showISRAssginment()">
                                         <li>
                                             <label>Inside Sales Assignment</label>
                                             <s:select

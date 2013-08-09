@@ -11,6 +11,7 @@ import com.picsauditing.mail.*;
 import com.picsauditing.messaging.FlagChange;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
+import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.toggle.FeatureToggle;
@@ -58,6 +59,8 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	@Qualifier("CsrAssignmentSinglePublisher")
 	private Publisher csrAssignmentSinglePublisher;
+    @Autowired
+    private RulesRunner rulesRunner;
 
 	// this is @Autowired at the setter because we need @Qualifier which does
 	// NOT work
@@ -152,7 +155,7 @@ public class ContractorCron extends PicsActionSupport {
 			runTradeETL(contractor);
 			runContractorETL(contractor);
 			runCSRAssignment(contractor);
-
+            runRulesBasedInsuranceCriteria(contractor);
 
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
@@ -211,7 +214,20 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
+    private void runRulesBasedInsuranceCriteria(ContractorAccount contractor) {
+        if (!runStep(ContractorCronStep.RulesBasedInsurance)) {
+            return;
+        }
+        rulesRunner.setContractor(contractor);
+
+        for (ContractorOperator contractorOperator : contractor.getOperators()) {
+            OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
+            rulesRunner.runInsuranceCriteriaRulesForOperator(operatorAccount);
+        }
+
+    }
+
+    private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
 		Database db = getDatabase();
 		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
 
@@ -510,6 +526,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void checkLcCor(ContractorAccount contractor) {
+		featureToggleChecker.addToggleVariable("contractor", contractor);
 		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
 			return;
 		}
@@ -674,7 +691,9 @@ public class ContractorCron extends PicsActionSupport {
 			corporates.add(f.getCorporate());
 		}
 
-		for (FlagDataOverride override : co.getContractorAccount().getFlagDataOverrides()) {
+		Iterator<FlagDataOverride> itr = co.getContractorAccount().getFlagDataOverrides().iterator();
+		while (itr.hasNext()) {
+			FlagDataOverride override = itr.next();
 			if (override.getOperator().equals(co.getOperatorAccount())) {
 				if (!overridesMap.containsKey(override.getCriteria())) {
 					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
@@ -694,7 +713,7 @@ public class ContractorCron extends PicsActionSupport {
 		JSONObject flagJson = new JSONObject();
 		for (FlagData data : changes) {
 			JSONObject flag = new JSONObject();
-			flag.put("category", data.getCriteria().getCategory());
+			flag.put("category", data.getCriteria().getCategory().toString() );
 			flag.put("label", data.getCriteria().getLabel().toString());
 			flag.put("flag", data.getFlag().toString());
 
@@ -775,6 +794,24 @@ public class ContractorCron extends PicsActionSupport {
 			dao.remove(flagData);
 		}
 		co.setAuditColumns(new User(User.SYSTEM));
+	}
+
+	private boolean isOverrideApplicableToOperator(FlagDataOverride override, OperatorAccount operator) {
+		for (FlagCriteriaOperator fco:operator.getFlagCriteriaInherited()) {
+			if (override.getCriteria().equals(fco.getCriteria())) {
+				// need to check if audit is not expired
+				if (!Strings.isEmpty(override.getYear())) {
+					for (OshaAudit audit: override.getContractor().getOshaAudits()) {
+						if (override.getYear().equals(audit.getAuditFor())) {
+							return true;
+						}
+					}
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private FlagChange getFlagChange(ContractorOperator co, FlagColor overallColor) {

@@ -31,7 +31,7 @@ public class FieldTypeTest {
 	public void testGetSqlFunctions_SqlFunctionProfile_String() {
 
 		Set<FieldType> fieldTypes = FieldType.getAllBySqlFunctionProfile(SqlFunctionProfile.String);
-		assertEquals(34, fieldTypes.size());
+		assertEquals(39, fieldTypes.size());
 
 		for (FieldType fieldType : fieldTypes) {
 //			System.out.println("Testing fieldType: " + fieldType);
@@ -54,7 +54,7 @@ public class FieldTypeTest {
 	public void testGetSqlFunctions_SqlFunctionProfile_Date() {
 
 		Set<FieldType> fieldTypes = FieldType.getAllBySqlFunctionProfile(SqlFunctionProfile.Date);
-		assertEquals(2, fieldTypes.size());
+		assertEquals(3, fieldTypes.size());
 
 		for (FieldType fieldType : fieldTypes) {
 //			System.out.println("Testing fieldType: " + fieldType);
@@ -62,7 +62,7 @@ public class FieldTypeTest {
 
 			if (fieldType == FieldType.Date) {
 				assertEquals(13, sqlFunctionsResult.size());
-			} else if (fieldType == FieldType.DateTime){
+			} else if (fieldType == FieldType.DateTime || fieldType == FieldType.ExpirationDate){
 				assertEquals(14, sqlFunctionsResult.size());
 				assertTrue(sqlFunctionsResult.contains(SqlFunction.Date));
 			} else {

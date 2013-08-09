@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.BrainTreeHash;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.RecordNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +20,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.braintree.CreditCard;
@@ -59,9 +56,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	private boolean newRegistration = false;
 
 	private InvoiceFee activationFee;
-	private InvoiceFee canadianTaxFee;
+	private InvoiceFee canadianTaxFee = new InvoiceFee();
 	private String canadianTaxFeeMsgKey;
-	private InvoiceFee vatFee;
+	private InvoiceFee vatFee = new InvoiceFee();
 	private InvoiceFee importFee;
 
 	// Any time we do a get w/o an exception we set the communication status.
@@ -79,8 +76,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		    this.id = Integer.parseInt(ids[0]);
 
 		this.findContractor();
-		if (contractor.getCountry().getCurrency().isCAD()) {
-			initCanadianTaxFee();
+		if (contractor.getCountry().getCurrency().isTaxable()) {
+			initTaxFee();
 		}
 	}
 
@@ -119,44 +116,36 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		return SUCCESS;
 	}
 
-	private void initCanadianTaxFee() throws Exception {
-		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)) {
-			CountrySubdivision countrySubdivision = contractor.getCountrySubdivision();
-			canadianTaxFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
-		} else {
-			canadianTaxFee = getLegacyGstFee();
-		}
+	private void initTaxFee() throws Exception {
+        CountrySubdivision countrySubdivision = contractor.getCountrySubdivision();
+        Country country = contractor.getCountry();
 
-		BigDecimal total = BigDecimal.ZERO.setScale(2);
-		for (FeeClass feeClass : contractor.getFees().keySet()) {
-			if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
-				total = total.add(contractor.getFees().get(feeClass).getNewAmount());
-			}
-		}
+        BigDecimal total = BigDecimal.ZERO.setScale(2);
+        Map<FeeClass,ContractorFee> fees = contractor.getFees();
+        for (FeeClass feeClass : fees.keySet()) {
+            ContractorFee contractorFee = fees.get(feeClass);
+            if (!contractorFee.getNewLevel().isFree()) {
+                total = total.add(contractorFee.getNewAmount());
+            }
+        }
+        total = total.add(getActivationFee().getAmount());
 
-		total = total.add(getActivationFee().getAmount());
-		canadianTaxFee.setAmount(canadianTaxFee.getTax(total));
-		canadianTaxFeeMsgKey = canadianTaxFee.getI18nKey("fee");
-	}
+        try {
+            canadianTaxFee = invoiceService.getTaxInvoiceFee(FeeClass.CanadianTax, country, countrySubdivision);
+            canadianTaxFee.setAmount(canadianTaxFee.getTax(total));
+            canadianTaxFeeMsgKey = canadianTaxFee.getI18nKey("fee");
+        }
+        catch (Exception e) {
 
-	@Deprecated
-	public InvoiceFee getLegacyGstFee() {
-		InvoiceFee gstFee = new InvoiceFee();
+        }
 
-		if (contractor.getCountry().getCurrency().isCAD()) {
-			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
-			BigDecimal total = BigDecimal.ZERO.setScale(2);
-			for (FeeClass feeClass : contractor.getFees().keySet()) {
-				if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
-					total = total.add(contractor.getFees().get(feeClass).getNewAmount());
-				}
-			}
+        try {
+            vatFee = invoiceService.getTaxInvoiceFee(FeeClass.VAT, country, countrySubdivision);
+            vatFee.setAmount(vatFee.getTax(total));
+        }
+        catch (Exception e) {
 
-			total = total.add(getActivationFee().getAmount());
-			gstFee.setAmount(gstFee.getTax(total));
-		}
-
-		return gstFee;
+        }
 	}
 
 	private void loadCC() throws Exception {
@@ -542,23 +531,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	}
 
 	public InvoiceFee getVatFee() {
-		if (vatFee == null) {
-			vatFee = new InvoiceFee();
-			//if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
-			if (contractor.getCountry().getCurrency().isGBP()) {
-				vatFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.VAT, contractor.getPayingFacilities());
-				BigDecimal total = BigDecimal.ZERO.setScale(2);
-				for (FeeClass feeClass : contractor.getFees().keySet()) {
-					if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
-						total = total.add(contractor.getFees().get(feeClass).getNewAmount());
-					}
-				}
-
-				total = total.add(getActivationFee().getAmount());
-				vatFee.setAmount(vatFee.getTax(total));
-			}
-		}
-
 		return vatFee;
 	}
 
