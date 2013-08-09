@@ -277,7 +277,8 @@
 	PICS.define('registration.Registration', {
 	    methods: {
 	        init: function () {
-                var company_information = $('.company-information')
+                var company_information = $('.company-information'),
+                    $country_select = $('.country select');
 
                 $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
                 $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
@@ -293,15 +294,15 @@
 
                 if ($('.Registration-page').length) {
                     $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
-                } else if ($('.RegistrationServiceEvaluation-page').length) {
-                    $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
-                }
 
-                if ($('.Registration-page').length) {
-                    this.updateFieldsRelativeToCountry();
+                    this.updateTimezonesByCountry($country_select.val());
+
                     this.bindSelect2EventstoPopover();
 
-                    $('.country select').on('change', $.proxy(this.updateFieldsRelativeToCountry, this));
+                    $country_select.on('change', $.proxy(this.updateCountryFields, this));
+
+                } else if ($('.RegistrationServiceEvaluation-page').length) {
+                    $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
                 }
 	        },
 
@@ -375,6 +376,18 @@
                 });
             },
 
+            prefillTimezoneFromRegistrationRequestValue: function () {
+                var $registration_request_timezone = $('#registration_requested_timezone'),
+                    prefilled_timezone = $registration_request_timezone.val();
+
+                if (prefilled_timezone) {
+                    $('input.timezone_input').val(prefilled_timezone);
+                }
+
+                //remove prefilled timezone value to prevent submission of duplicate values
+                $registration_request_timezone.remove();
+            },
+
             showBasicModal: function (event) {
 	            var element = $(this);
 
@@ -444,8 +457,7 @@
             },
 
             updateCountrySubvisions: function (selected_country) {
-                var Country = PICS.getClass('country.Country')
-                    that = this;
+                var Country = PICS.getClass('country.Country');
 
                 PICS.ajax({
                     url: 'CountrySubdivisionListAjax!registration.action',
@@ -459,7 +471,7 @@
                 });
             },
 
-            updateFieldsRelativeToCountry: function () {
+            updateCountryFields: function () {
                 var $country = $('.country select'),
                     selected_country = $country.val() || '';
 
@@ -490,30 +502,18 @@
                 });
             },
 
-            prefillTimezoneFromRegistrationRequestValue: function () {
-                var $registration_request_timezone = $('#registration_requested_timezone'),
-                    prefilled_timezone = $registration_request_timezone.val();
-
-                if (prefilled_timezone) {
-                    $('input.timezone_input').val(prefilled_timezone);
-                }
-
-                //remove prefilled timezone value to prevent submission of duplicate values
-                $('#registration_requested_timezone').remove();
-            },
-
             updateTimezonesByCountry: function (selected_country) {
-                var Timezone = PICS.getClass('timezone.Timezone');
+                var Country = PICS.getClass('country.Country');
 
                 this.prefillTimezoneFromRegistrationRequestValue();
 
-                Timezone.getTimezones(selected_country);
+                Country.getTimezones(selected_country);
             },
 
             updateZipcode: function (selected_country) {
-                var Zipcode = PICS.getClass('country.Zipcode');
+                var Country = PICS.getClass('country.Country');
 
-                Zipcode.modifyZipcodeDisplay(selected_country, $('.zipcode'));
+                Country.modifyZipcodeDisplay(selected_country);
             }
 	    }
 	});
