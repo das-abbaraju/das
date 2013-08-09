@@ -11,6 +11,7 @@ import com.picsauditing.mail.*;
 import com.picsauditing.messaging.FlagChange;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
+import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.toggle.FeatureToggle;
@@ -58,6 +59,8 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	@Qualifier("CsrAssignmentSinglePublisher")
 	private Publisher csrAssignmentSinglePublisher;
+    @Autowired
+    private RulesRunner rulesRunner;
 
 	// this is @Autowired at the setter because we need @Qualifier which does
 	// NOT work
@@ -152,7 +155,7 @@ public class ContractorCron extends PicsActionSupport {
 			runTradeETL(contractor);
 			runContractorETL(contractor);
 			runCSRAssignment(contractor);
-
+            runRulesBasedInsuranceCriteria(contractor);
 
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
@@ -211,7 +214,20 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
+    private void runRulesBasedInsuranceCriteria(ContractorAccount contractor) {
+        if (!runStep(ContractorCronStep.RulesBasedInsurance)) {
+            return;
+        }
+        rulesRunner.setContractor(contractor);
+
+        for (ContractorOperator contractorOperator : contractor.getOperators()) {
+            OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
+            rulesRunner.runInsuranceCriteriaRulesForOperator(operatorAccount);
+        }
+
+    }
+
+    private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
 		Database db = getDatabase();
 		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
 
