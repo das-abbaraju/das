@@ -33,7 +33,7 @@ import com.picsauditing.report.tables.FieldImportance;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteria extends BaseTableRequiringLanguages implements Comparable<FlagCriteria> {
 
-	private String backwardCompatibleCategory;
+	private FlagCriteriaCategory backwardCompatibleCategory;
 	private FlagCriteriaCategory category;
 	private int displayOrder = 999;
 	private AuditQuestion question;
@@ -65,31 +65,23 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
     @Enumerated(EnumType.STRING)
 	@ReportField(i18nKeyPrefix = "FlagCriteria.Category", type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Required)
-    @Column(name = "new_category")
+    @Column(name = "category")
 	public FlagCriteriaCategory getCategory() {
 		return category;
 	}
 
 	public void setCategory(FlagCriteriaCategory category) {
 		this.category = category;
-        setBackwardCompatibleCategory(backwardCompatibleCategoryForEnum(category));
+        setBackwardCompatibleCategory(category);
 	}
 
-    @Transient
-    public String backwardCompatibleCategoryForEnum(FlagCriteriaCategory category) {
-        if (category == null) {
-            return Strings.EMPTY_STRING;
-        } else {
-            return category.toString();
-        }
-    }
-
-    @Column(name = "category")
-    public String getBackwardCompatibleCategory() {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "new_category")
+    public FlagCriteriaCategory getBackwardCompatibleCategory() {
         return backwardCompatibleCategory;
     }
 
-    public void setBackwardCompatibleCategory(String category) {
+    public void setBackwardCompatibleCategory(FlagCriteriaCategory category) {
         this.backwardCompatibleCategory = category;
     }
 
