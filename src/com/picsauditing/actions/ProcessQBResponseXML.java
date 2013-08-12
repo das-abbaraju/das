@@ -18,6 +18,7 @@ public class ProcessQBResponseXML extends PicsActionSupport {
 
 	public String execute() throws NoRightsException, IOException, SAXException, ParserConfigurationException {
 		permissions.tryPermission(OpPerms.Billing);
+		permissions.tryPermission(OpPerms.DevelopmentEnvironment);
 
 		if (button != null) {
 			if (button.equals("save")) {
