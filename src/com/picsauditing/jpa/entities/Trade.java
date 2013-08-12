@@ -39,7 +39,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ref_trade")
-@SecondaryTable(name = "ref_trade_calc", pkJoinColumns = { @PrimaryKeyJoinColumn(name = "tradeID") })
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 @IndexableOverride(ignores = { @IndexOverrideIgnore(methodName = "getId") })
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
@@ -326,7 +325,6 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.needsIndexing = needsIndexing;
 	}
 
-	@Column(table = "ref_trade_calc")
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getContractorCount() {
 		return contractorCount;
