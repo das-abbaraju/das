@@ -5,14 +5,14 @@
 
 <html>
 <head>
-    <title>QuickBooks Sync Edit</title>
+    <title>QuickBooks Process QBResponse.xml</title>
     <link rel="stylesheet" type="text/css" media="screen"
           href="css/reports.css?v=<s:property value="version"/>"/>
     <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
     <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>"/>
 </head>
 <body>
-<h1>QuickBooks Sync Edit</h1>
+<h1>QuickBooks Process QBResponse.xml</h1>
 
 <s:include value="../actionMessages.jsp"/>
 
