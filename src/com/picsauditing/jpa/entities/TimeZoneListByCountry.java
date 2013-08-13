@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import com.picsauditing.jpa.entities.builders.TimeZoneBuilder;
 
 @Entity
-@Table(name = "time_zone")
+@Table(name = "ref_time_zone")
 public class TimeZoneListByCountry {
 	private int id;
 	private String countryCode;
@@ -26,14 +26,14 @@ public class TimeZoneListByCountry {
 	public void setId(int id) {
 		this.id = id;
 	}
-	@Column(name="country_code", nullable = false)
+	@Column(name="countryCode", nullable = false)
 	public String getCountryCode() {
 		return countryCode;
 	}
 	public void setCountryCode(String countryCode) {
 		this.countryCode = countryCode;
 	}
-	@Column(name="zone_name", nullable = false)
+	@Column(name="zoneName", nullable = false)
 	public String getTimeZoneName() {
 		return timeZoneName;
 	}
