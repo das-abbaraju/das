@@ -6,15 +6,12 @@ public class TranslationWrapper {
 	private String key;
 	private String translation;
 	private String locale;
+    private boolean retrievedByWildcard = false;
 	private int createdBy;
 	private int updatedBy;
 
     public int getKeyID() {
         return keyID;
-    }
-
-    public void setKeyID(int keyID) {
-        this.keyID = keyID;
     }
 
     public String getKey() {
@@ -29,7 +26,11 @@ public class TranslationWrapper {
 		return locale;
 	}
 
-	public int getCreatedBy() {
+    public boolean isRetrievedByWildcard() {
+        return retrievedByWildcard;
+    }
+
+    public int getCreatedBy() {
 		return createdBy;
 	}
 
@@ -42,6 +43,7 @@ public class TranslationWrapper {
 		private String key;
 		private String translation;
 		private String locale;
+        private boolean retrievedByWildcard = false;
 		private int createdBy;
 		private int updatedBy;
 
@@ -65,7 +67,12 @@ public class TranslationWrapper {
 			return this;
 		}
 
-		public Builder createdBy(int createdBy) {
+        public Builder retrievedByWildcard(boolean retrievedByWildcard) {
+            this.retrievedByWildcard = retrievedByWildcard;
+            return this;
+        }
+
+        public Builder createdBy(int createdBy) {
 			this.createdBy = createdBy;
 			return this;
 		}
@@ -81,6 +88,7 @@ public class TranslationWrapper {
 			translationWrapper.key = key;
 			translationWrapper.translation = translation;
 			translationWrapper.locale = locale;
+			translationWrapper.retrievedByWildcard = retrievedByWildcard;
 			translationWrapper.createdBy = createdBy;
 			translationWrapper.updatedBy = updatedBy;
 			return translationWrapper;

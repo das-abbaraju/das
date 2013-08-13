@@ -10,6 +10,7 @@ public class TranslationLookupData {
     private String environment;
     private String pageName;
     private Date requestDate;
+    private boolean retrievedByWildcard = false;
 
     public String getMsgKey() {
         return msgKey;
@@ -65,5 +66,13 @@ public class TranslationLookupData {
 
     public void setRequestDate(Date requestDate) {
         this.requestDate = requestDate;
+    }
+
+    public boolean isRetrievedByWildcard() {
+        return retrievedByWildcard;
+    }
+
+    public void setRetrievedByWildcard(boolean retrievedByWildcard) {
+        this.retrievedByWildcard = retrievedByWildcard;
     }
 }

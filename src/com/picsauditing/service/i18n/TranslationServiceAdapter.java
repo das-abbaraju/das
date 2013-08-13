@@ -120,7 +120,7 @@ public class TranslationServiceAdapter implements TranslationService {
         return translation;
     }
 
-    private List<TranslationWrapper> translationsFromWebResource(String key, String locale) {
+    private List<TranslationWrapper> translationsFromWebResourceByWildcard(String key, String locale) {
         List<TranslationWrapper> translations = new ArrayList<>();
         ClientResponse response = makeServiceApiCall(getTranslationLikeUrl(key, locale));
 
@@ -134,6 +134,7 @@ public class TranslationServiceAdapter implements TranslationService {
                         .key(keyFromJson(((JSONObject) jsonObject)))
                         .locale(actualLocaleFromJson(((JSONObject) jsonObject)))
                         .translation(translationTextFromJson(((JSONObject) jsonObject)))
+                        .retrievedByWildcard(true)
                         .build());
             }
         }
@@ -236,6 +237,7 @@ public class TranslationServiceAdapter implements TranslationService {
         data.setPageName(pageName());
         data.setMsgKey(translation.getKey());
         data.setEnvironment(environment);
+        data.setRetrievedByWildcard(translation.isRetrievedByWildcard());
         return data;
     }
 
@@ -351,17 +353,19 @@ public class TranslationServiceAdapter implements TranslationService {
         List<Map<String, String>> localeListOfTranslationMaps = new ArrayList<>();
 
         for (String locale : locales) {
-            addToTranslations(actionName + "." + methodName, translationsForJS, locale);
-            addToTranslations(actionName + "." + ACTION_TRANSLATION_KEYWORD, translationsForJS, locale);
+            addToTranslationsAndPublishUse(actionName + "." + methodName, translationsForJS, locale);
+            addToTranslationsAndPublishUse(actionName + "." + ACTION_TRANSLATION_KEYWORD, translationsForJS, locale);
         }
+
         localeListOfTranslationMaps.add(translationsForJS);
         return localeListOfTranslationMaps;
     }
 
-    private void addToTranslations(String key, Map<String, String> translationsForJS, String locale) {
-        List<TranslationWrapper> translations = translationsFromWebResource(key, locale);
+    private void addToTranslationsAndPublishUse(String key, Map<String, String> translationsForJS, String locale) {
+        List<TranslationWrapper> translations = translationsFromWebResourceByWildcard(key, locale);
         for (TranslationWrapper translation : translations) {
             translationsForJS.put(translation.getKey(), translation.getTranslation());
+            publishTranslationLookupEventIfReturned(locale, translation);
         }
     }
 
