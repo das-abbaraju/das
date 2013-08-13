@@ -59,6 +59,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/workflow_manage.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/audit.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/audit-controller.js?v=${version}"></script>
+<script type="text/javascript" src="js/audit/cao-table-controller.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/employee_competencies.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/employee_detail.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/manage_employees.js?v=${version}"></script>

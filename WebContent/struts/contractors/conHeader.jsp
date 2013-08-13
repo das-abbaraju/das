@@ -45,9 +45,9 @@ $(function() {
 		$('.clean').hide();
 		$('.dirty').show();
 		$('#auditHeader').addClass('dirty');
-		
+
 		var caoMap = $('.dirtyCao :input').serialize();
-		
+
 		$.post('ConAuditMaintainAjax.action', 'button=caoSave&systemEdit=true&'+'auditID='+$('input[name="auditID"]').val()+'&'+caoMap, function(data){
 			$('#caoTable').html(data);
 			$('#auditHeader').removeClass('dirty');
@@ -61,38 +61,38 @@ $(function() {
 		if(status == -1) {
 			return false;
 		}
-		
+
 		var caoString = $('#h_' + status).val();
 		var caoIDs = caoString.substring(1, caoString.length-1).replace(/\s/g,'').split(',');
-		
+
 		var data = {
 			auditID: $('#auditID').val(), caoIDs: caoIDs,
 			status: status
 		};
-		
+
 		$('#caoTable').block({
 			message: 'Loading...'
 		});
-		
-		loadResults(data);		
+
+		loadResults(data);
 	});
 
 	<s:if test="canEditCao && !systemEdit">
 		$('td.caoStatus a.edit').live('click', function(e) {
 			e.preventDefault();
-			
+
 			$(this).parents('td.caoStatus:first').toggleClass('edit');
 		});
-	
+
 		$('#caoTable').delegate('span.caoEdit', 'change', function() {
 			var data = {
 					button: 'caoSave',
-					auditID: $('#auditID').val(), 
-					'caosSave[0].id': $('.caoID', this).val(), 
+					auditID: $('#auditID').val(),
+					'caosSave[0].id': $('.caoID', this).val(),
 					'caosSave[0].status': $('.status', this).val(),
 					systemEdit: false
 			};
-			
+
 			$.post('ConAuditMaintainAjax.action', data, function(data){
 				$('#caoTable').html(data);
 			});
@@ -100,85 +100,10 @@ $(function() {
 	</s:if>
 });
 
-function loadResults(data, noteText, audit_reload) {
-	$.ajax({
-		url: 'CaoSaveAjax!loadStatus.action',
-		data: data,
-		headers: {'refresh':'true'},
-		type: 'get',
-		success: function(response, status, xhr){
-			if(status == 'success'){
-				$('#caoAjax').html(response);
-				$('#caoTable').unblock();
-				
-				if($('#noteRequired').val()=='true'){
-					$('#yesButton').addClass('disabled');
-					
-					$('#addToNotes').live('keyup', function(){
-						if($(this).val()!='') {
-							$('#yesButton').removeClass('disabled');
-						} else {
-							$('#yesButton').addClass('disabled');
-						}
-					});
-				}
-				
-				$('#yesButton').click(function(){
-					if($(this).hasClass('disabled')) {
-						return false;
-					}
-					
-			        $.blockUI({message: 'Saving Status, please wait...'});
-			        
-			        data.viewCaoTable = true;
-			        
-			        if($('#addToNotes').val()) {
-			        	data.note =  $('#addToNotes').val();
-			        }
+function loadResults(audit_parameters, noteText, audit_reload) {
+	var caoTableController = PICS.getClass('audit.CaoTableController');
 
-			        function saveCaoTable () {
-                        var audit_controller = PICS.getClass('audit.AuditController'),
-                            $element = $('#caoTable');
-
-                        PICS.ajax({
-                            url: 'CaoSaveAjax!save.action',
-                            data: data,
-                            success: function (data, textStatus, jqXHR) {
-                                $element.html(data);
-
-                                $.unblockUI();
-
-                                if (audit_reload == 'true') {
-                                    audit_controller.refreshAudit();
-                                }
-                            }
-                        });
-			        }
-
-			        saveCaoTable();
-			    });
-				
-			    $('#noButton').click(function(){
-			        $.unblockUI();
-			        
-			        return false;
-			    });
-			    
-				if($('#noteRequired').val()=='true') {
-					$.blockUI({
-						message: $('#caoAjax')
-					});
-				} else {
-					$('#yesButton').click();
-				}
-			} else {
-				$('#caoTable').block({
-					message: 'Error with request, please try again',
-					timeout: 1500
-				});
-			}
-		}
-	});
+	caoTableController.initAuditWorkflowChange(audit_parameters, noteText, audit_reload);
 }
 
 function loadStatus(caoID, addUserNote){
@@ -190,21 +115,21 @@ function loadStatus(caoID, addUserNote){
 				width:'575px'
 			}
 		});
-		
+
 		$('.editNote').click(function() {
 			var that = $(this);
 			that.hide();
 			var parent = that.closest('tr').attr('id');
 			var note_div = $('#'+parent+' .ac_cao_notes');
 			var oldNote = note_div.text();
-			
+
 			note_div.html($('<textarea>').append(oldNote).attr({
 				'rows':'4',
 				'cols':'24'
 			}))
 			.append($('<a>').append('Change').addClass('showPointer edit saveEdited'))
 			.append($('<a>').append('Cancel').addClass('showPointer remove noCancel'));
-			
+
 			$('#'+parent+' .ac_cao_notes > .saveEdited').click(function(){
 				$.post('CaoSaveAjax!editNote.action', {
 					auditID: $('#auditID').val(), caoID: caoID, noteID: parent,
@@ -214,20 +139,20 @@ function loadStatus(caoID, addUserNote){
 						return false;
 				});
 			});
-			
+
 			$('#'+parent+' .ac_cao_notes > .noCancel').click(function(){
 				that.show();
 				note_div.html('');
 				note_div.text(oldNote);
 			});
 		});
-		
+
 		$('#noButton').click(function(){
 	        $.unblockUI();
-	        
+
 	        return false;
 	    });
-		
+
 		if (addUserNote) {
 		    $('.editNote:first').click();
 		}
@@ -306,7 +231,7 @@ function loadStatus(caoID, addUserNote){
 
 <s:if test="showHeader">
 	<s:hidden name="auditID" id="auditID" />
-	
+
 	<div id="internalnavcontainer">
 		<ul id="navlist">
 			<s:if test="!permissions.insuranceOnlyContractorUser">
@@ -323,7 +248,7 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</s:else>
-		
+
 			<s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser">
 				<li>
 					<a href="ContractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('contractor_facilities')">class="current"</s:if>>
@@ -331,7 +256,7 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</s:if>
-			
+
 			<s:if test="permissions.generalContractor">
 				<li>
 					<a href="SubcontractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('subcontractor_facilities')">class="current"</s:if>>
@@ -339,7 +264,7 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</s:if>
-			
+
 			<s:if test="permissions.contractor">
 				<li>
 					<a href="ContractorForms.action?id=<s:property value="id" />"<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>
@@ -347,13 +272,13 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</s:if>
-			
+
 			<s:iterator value="#auditMenu">
 				<li>
 					<s:if test="children.size() > 0">
 						<a id="<s:property value="nameIdSafe"/>"
 							class="dropdown <s:if test="current == true"> current</s:if>"
-							href="<s:property value="url" />" 
+							href="<s:property value="url" />"
 							onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="nameIdSafe" />')"
 							title="<s:property value="title" />">
 							<s:property value="name" escape="false" />
@@ -371,7 +296,7 @@ function loadStatus(caoID, addUserNote){
 			</s:iterator>
 		</ul>
 	</div>
-	
+
 	<s:if test="auditID > 0 && showCaoTable">
 		<div id="auditHeader" class="auditHeader">
 			<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
@@ -382,11 +307,11 @@ function loadStatus(caoID, addUserNote){
 							<s:property value="conAudit.id" />
 						</li>
 
-						
+
 						<s:if test="conAudit.auditType.scoreable">
 							<li>
 								<label><s:text name="ContractorAccount.score" />:</label>
-								
+
 								<s:if test="conAudit.auditType.classType.im">
 									<div id="auditScore"><s:property value="conAudit.printableScore"/></div>
 								</s:if>
@@ -395,7 +320,7 @@ function loadStatus(caoID, addUserNote){
 								</s:else>
 							</li>
 						</s:if>
-						
+
 						<s:if test="conAudit.auditType.showManual">
 							<li>
 								<label>
@@ -407,7 +332,7 @@ function loadStatus(caoID, addUserNote){
 											<s:text name="Audit.message.SafetyManual" /></s:else>:
 									</nobr>
 								</label>
-								
+
 								<s:if test="hasSafetyManual">
 									<s:iterator value="safetyManualLink.values()">
 										<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK">
@@ -424,7 +349,7 @@ function loadStatus(caoID, addUserNote){
 						</s:if>
 					</ul>
 				</fieldset>
-				
+
 				<fieldset>
 					<ul>
 						<s:if test="conAudit.expiresDate != null">
@@ -454,7 +379,7 @@ function loadStatus(caoID, addUserNote){
                         </li>
 					</ul>
 				</fieldset>
-				
+
 				<fieldset>
 					<ul>
 						<s:if test="conAudit.auditType.hasAuditor && !conAudit.auditType.annualAddendum">
@@ -485,7 +410,7 @@ function loadStatus(caoID, addUserNote){
 
 							</li>
 						</s:if>
-						
+
 						<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
 							<li>
 								<label><s:text name="Audit.message.Scheduled" />:</label>
@@ -503,13 +428,13 @@ function loadStatus(caoID, addUserNote){
 					</ul>
 				</fieldset>
 			</div>
-			
+
 			<div class="clear"></div>
-			
-			<div id="caoTable" class="center">	
+
+			<div id="caoTable" class="center">
 				<s:include value="caoTable.jsp"/>
 			</div>
-			
+
 			<s:if test="systemEdit">
 				<span class="refresh">
 					<a class="clickable save" id="saveEdit_cao">
@@ -526,7 +451,7 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</span>
 			</s:else>
-			
+
 			<div class="clear"></div>
 		</div>
 	</s:if>
@@ -545,7 +470,7 @@ function loadStatus(caoID, addUserNote){
 				</a>
 			</li>
 		</s:if>
-		
+
 		<s:if test="permissions.operator">
 			<li>
 				<a href="ContractorFlag.action?id=<s:property value="id" />" <s:if test="requestURI.contains('flag')">class="current"</s:if>>
@@ -553,7 +478,7 @@ function loadStatus(caoID, addUserNote){
 				</a>
 			</li>
 		</s:if>
-		
+
 		<s:if test="permissions.admin || permissions.hasPermission('ContractorWatch')">
 			<li>
 				<a href="ReportActivityWatch.action?contractor=<s:property value="id" />" <s:if test="requestURI.contains('report_activity_watch')">class="current"</s:if>>
@@ -561,13 +486,13 @@ function loadStatus(caoID, addUserNote){
 				</a>
 			</li>
 		</s:if>
-		
+
 		<li>
 			<a href="ContractorNotes.action?id=<s:property value="id" />" <s:if test="requestURI.contains('con_notes')">class="current"</s:if>>
 				<span><s:text name="global.Notes" /></span>
 			</a>
 		</li>
-		
+
 		<pics:permission perm="DefineCompetencies">
 			<li>
 				<a href="JobCompetencyMatrix.action?id=<s:property value="id" />">
@@ -575,14 +500,14 @@ function loadStatus(caoID, addUserNote){
 				</a>
 			</li>
 		</pics:permission>
-		
+
 		<s:if test="permissions.admin">
 			<li>
 				<a id="edit_contractor" href="ContractorEdit.action?id=<s:property value="id" />" <s:if test="requestURI.contains('edit')">class="current"</s:if>>
 					<span><s:text name="FacilitiesEdit.title" /></span>
 				</a>
 			</li>
-			
+
 			<pics:permission perm="AuditVerification">
 				<li>
 					<a href="VerifyView.action?id=<s:property value="id" />">
@@ -590,7 +515,7 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</pics:permission>
-			
+
 			<li>
 				<a href="UsersManage.action?account=<s:property value="id"/>">
 					<s:text name="global.Users" />
@@ -608,7 +533,7 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</s:if>
-			
+
 			<pics:permission perm="DevelopmentEnvironment">
 				<li>
 					<a href="ContractorCron.action?conID=<s:property value="id" />">
@@ -630,13 +555,13 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</pics:permission>
-			
+
 			<li>
 				<a id="profileEditLink" href="ProfileEdit.action" <s:if test="requestURI.contains('profile')">class="current"</s:if>>
 					<span><s:text name="ProfileEdit.title" /></span>
 				</a>
 			</li>
-			
+
 			<pics:permission perm="ContractorAdmin">
 				<li>
 					<a href="UsersManage.action">
@@ -644,7 +569,7 @@ function loadStatus(caoID, addUserNote){
 					</a>
 				</li>
 			</pics:permission>
-			
+
 			<pics:permission perm="ContractorBilling">
 				<li>
 					<a id="billing_detail" href="BillingDetail.action?id=<s:property value="id" />" <s:if test="requestURI.contains('billing_detail')">class="current"</s:if>>
@@ -658,7 +583,7 @@ function loadStatus(caoID, addUserNote){
 				</li>
 			</pics:permission>
 		</s:elseif>
-		
+
 		<pics:permission perm="DevelopmentEnvironment">
 			<li>
 				<a href="EmployeeAssessmentResults.action?account=<s:property value="id"/>">
@@ -677,7 +602,7 @@ function loadStatus(caoID, addUserNote){
 			<ul>
 				<s:iterator value="children">
 					<li>
-						<a id="<s:property value="nameIdSafe"/>" 
+						<a id="<s:property value="nameIdSafe"/>"
 							href="<s:property value="url"/>"
 							class="audit <s:if test="current == true">current </s:if><s:property value="cssClass"/>"
 							title="<s:property value="title" />"><span><s:property value="name" escape="false" /></span>
