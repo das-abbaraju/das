@@ -9,7 +9,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.when;
@@ -53,6 +55,39 @@ public class ContractorModelTest {
             contractorTags.add(contractorTag);
         }
         when(contractor.getOperatorTags()).thenReturn(contractorTags);
+    }
+
+    private void addContractorTradeLineToContractor(Integer... tradeIds) {
+        boolean firstTrade = true;
+
+        List<Trade> trades = new ArrayList<>();
+        for (Integer tradeId : tradeIds) {
+            Trade trade = new Trade();
+            trade.setId(tradeId);
+            if (trades.size() > 0) {
+                trades.get(trades.size() - 1).setParent(trade);
+            }
+            trades.add(trade);
+        }
+
+        ContractorTrade conTrade = new ContractorTrade();
+        conTrade.setTrade(trades.get(0));
+        Set<ContractorTrade> conTrades = new HashSet<>();
+        conTrades.add(conTrade);
+        when(contractor.getTrades()).thenReturn(conTrades);
+    }
+
+    @Test
+    public void testTrade() throws Exception {
+        addContractorTradeLineToContractor(1, 2, 3);
+        ContractorModel contractorModel = new ContractorModel();
+        contractorModel.setContractor(contractor);
+
+        assertTrue(contractorModel.hasTrade(1));
+        assertTrue(contractorModel.hasTrade(3));
+
+        assertFalse(contractorModel.hasTrade(4));
+
     }
 
     @Test
