@@ -3,6 +3,6 @@
 
 <section>
     <s:text name="ContractorAgreement.content">
-        <s:param>${picsPhoneNumber}</s:param>
+		<s:param><span class="pics_phone_number">${picsPhoneNumber}</span></s:param>
     </s:text>
 </section>
