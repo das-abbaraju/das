@@ -3,6 +3,8 @@ package com.picsauditing.rbic;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
+import com.picsauditing.util.SpringUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -62,8 +64,16 @@ public class RulesRunner {
     public void setContractor(ContractorAccount contractor) {
         this.contractor = contractor;
     }
-    public boolean operatorHasRulesBasedInsuranceCriteria(int operatorId) {
+    private boolean operatorHasRulesBasedInsuranceCriteria(int operatorId) {
+        return operatorHasRulesBasedInsuranceCriteria(featureToggle, operatorId);
+    }
+    public static boolean operatorHasRulesBasedInsuranceCriteria(OperatorAccount operator) {
+        FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+        return operatorHasRulesBasedInsuranceCriteria(featureToggleChecker, operator.getId());
+    }
+    public static boolean operatorHasRulesBasedInsuranceCriteria(FeatureToggle featureToggle, int operatorId) {
         featureToggle.addToggleVariable("operatorId", operatorId);
         return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_RULES_BASED_INSURANCE_CRITERIA);
+
     }
 }

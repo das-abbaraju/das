@@ -5,6 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.picsauditing.jpa.entities.builders.FlagCriteriaContractorBuilder;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
@@ -119,4 +120,8 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 			res = criteria.compareTo(o.criteria);
 		return res;
 	}
+
+    public static FlagCriteriaContractorBuilder builder() {
+        return new FlagCriteriaContractorBuilder();
+    }
 }

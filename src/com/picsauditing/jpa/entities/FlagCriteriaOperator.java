@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.FlagCriteriaOperatorBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -169,4 +170,8 @@ public class FlagCriteriaOperator extends BaseTable {
 
 		return desc;
 	}
+
+    public static FlagCriteriaOperatorBuilder builder() {
+        return new FlagCriteriaOperatorBuilder();
+    }
 }

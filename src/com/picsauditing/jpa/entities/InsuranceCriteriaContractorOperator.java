@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.ContractorAuditOperatorPermissionBuilder;
+import com.picsauditing.jpa.entities.builders.InsuranceCriteriaContractorOperatorBuilder;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -60,5 +63,9 @@ public class InsuranceCriteriaContractorOperator extends BaseTable {
     }
    public boolean meetsCriteria(int contractorsLimit) {
         return contractorsLimit >= this.getInsuranceLimit();
+    }
+
+    public static InsuranceCriteriaContractorOperatorBuilder builder() {
+        return new InsuranceCriteriaContractorOperatorBuilder();
     }
 }
