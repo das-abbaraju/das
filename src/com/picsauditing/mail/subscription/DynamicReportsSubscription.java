@@ -16,8 +16,6 @@ public class DynamicReportsSubscription extends SubscriptionBuilder {
     @Autowired
     ReportApi reportApi;
 
-    I18nCache i18nCache = I18nCache.getInstance();
-
 	@Override
 	public Map<String, Object> process(EmailSubscription subscription) {
 		Map<String, Object> tokens = new HashMap<String, Object>();

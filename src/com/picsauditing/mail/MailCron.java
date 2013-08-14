@@ -31,6 +31,9 @@ import com.picsauditing.util.Strings;
  */
 @SuppressWarnings("serial")
 public class MailCron extends PicsActionSupport {
+
+	public static final String ERROR_INVALID_SUBSCRIPTION = "The subscription is invalid.";
+	public static final String ERROR_INVALID_SUBSCRIPTION_ID = "You must supply a valid subscription id.";
 	@Autowired
 	private AppPropertyDAO appPropDAO;
 	@Autowired
@@ -59,11 +62,11 @@ public class MailCron extends PicsActionSupport {
 				if (subscriptionID > 0) {
 					EmailSubscription emailSubscription = subscriptionDAO.find(subscriptionID);
 	
-					if (emailSubscription == null) {
-						addActionError("You must supply a valid subscription id.");
+					validate(emailSubscription);
+					if (hasActionErrors()) {
 						return ACTION_MESSAGES;
 					}
-	
+
 					try {
 						SubscriptionBuilder builder = subscriptionFactory.getBuilder(emailSubscription.getSubscription());
 						builder.sendSubscription(emailSubscription);
@@ -100,6 +103,27 @@ public class MailCron extends PicsActionSupport {
 		}
 		
 		return ACTION_MESSAGES;
+	}
+
+	protected void validate(EmailSubscription emailSubscription) {
+		if (emailSubscription == null) {
+			addActionError(ERROR_INVALID_SUBSCRIPTION_ID);
+			return;
+		}
+
+		if (emailSubscription.getSubscription() == null) {
+			addActionError(ERROR_INVALID_SUBSCRIPTION);
+			logger.error("MailCron.validate: EmailSubscription " + emailSubscription.getId() + " has a null subscription.");
+			return;
+		}
+
+		if (emailSubscription.getSubscription() == Subscription.DynamicReports) {
+			if (emailSubscription.getReport() == null) {
+				addActionError(ERROR_INVALID_SUBSCRIPTION);
+				logger.error("MailCron.validate: EmailSubscription " + emailSubscription.getId() + " for DynamicReports has a null report.");
+				return;
+			}
+		}
 	}
 
 	private void setSubscriptionToBeReprocessedTomorrow(EmailSubscription emailSubscription) {
