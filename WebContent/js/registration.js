@@ -283,10 +283,6 @@
                 $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
                 $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
 
-                $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-                $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-                $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
-
 	            company_information.on('change', '#Registration_contractor_country_isoCode', this.checkVatRequired);
 
                 // Show or hide the vat id field based on the Country default value.
@@ -294,6 +290,8 @@
 
                 if ($('.Registration-page').length) {
                     $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
+
+                    $('.contractor-agreement.modal-link').on('click', this.showContractorAgreementModal);
 
                     this.updateTimezonesByCountry($country_select.val());
 
@@ -303,6 +301,9 @@
 
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
                     $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
+                } else if ($('.RegistrationMakePayment-page').length) {
+                    $('.modal-link:not(.contractor-agreement)').on('click', this.showBasicModal);
+                    $('.contractor-agreement.modal-link').on('click', this.showContractorAgreementModal);
                 }
 	        },
 
@@ -407,11 +408,13 @@
 	        },
 
 	        showContractorAgreementModal: function (event) {
-	            var element = $(this);
+	            var element = $(event.target);
 
                 PICS.ajax({
                     url: element.attr('data-url'),
                     success: function (data, textStatus, XMLHttpRequest) {
+                        var pics_phone = $('span.pics_phone_number').html();
+
                         var modal = PICS.modal({
                             height: 550,
                             width: 700,
@@ -421,6 +424,10 @@
                                 html: '<a href="ContractorAgreement!print.action" class="btn info" target="_blank">' + translate('JS.global.print') + '</a>'
                             }]
                         });
+
+                        var $agreement_phone = $('.modal-body').find('.pics_phone_number');
+
+                        $agreement_phone.html(pics_phone);
 
                         modal.show();
                     }
