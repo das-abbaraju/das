@@ -276,12 +276,19 @@ public class ProfileEdit extends PicsActionSupport {
 			List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
 			Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
 			for (EmailSubscription emailSubscription : userEmail) {
+                if (emailSubscription.getSubscription() == Subscription.DynamicReports)
+                    continue;
+
 				eMap.put(emailSubscription.getSubscription(), emailSubscription);
 			}
 
 			for (Subscription subscription : requiredSubscriptionList(permissions)) {
+                if (subscription == Subscription.DynamicReports)
+                    continue;
+
 				EmailSubscription eSubscription = eMap.get(subscription);
-				if (eSubscription == null) {
+
+                if (eSubscription == null) {
 					eSubscription = new EmailSubscription();
 					eSubscription.setSubscription(subscription);
 				}
