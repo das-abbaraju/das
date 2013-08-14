@@ -25,7 +25,9 @@ import static org.junit.Assert.fail;
 public class FacilityChangerTest {
 	private FacilityChanger facilityChanger;
 	@Mock
-	private BillingCalculatorSingle billingService;
+	private BillingService billingService;
+    @Mock
+    private FeeService feeService;
 	@Mock
 	private ContractorAccountDAO contractorAccountDAO;
 	@Mock
@@ -48,6 +50,7 @@ public class FacilityChangerTest {
 		facilityChanger.setPermissions(permissions);
 
 		Whitebox.setInternalState(facilityChanger, "billingService", billingService);
+        Whitebox.setInternalState(facilityChanger, "feeService", feeService);
 		Whitebox.setInternalState(facilityChanger, "contractorAccountDAO", contractorAccountDAO);
 		Whitebox.setInternalState(facilityChanger, "contractorOperatorDAO", contractorOperatorDAO);
 		Whitebox.setInternalState(facilityChanger, "noteDAO", noteDAO);

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.FeeService;
+import com.picsauditing.PICS.TaxService;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.BrainTreeHash;
 import com.picsauditing.jpa.entities.*;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.toggle.FeatureToggle;
@@ -33,7 +34,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	@Autowired
 	private BrainTree paymentService;
 	@Autowired
-	protected InvoiceService invoiceService;
+	protected TaxService taxService;
 	@Autowired
 	private FeatureToggle featureToggle;
 
@@ -131,7 +132,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
         total = total.add(getActivationFee().getAmount());
 
         try {
-            canadianTaxFee = invoiceService.getTaxInvoiceFee(FeeClass.CanadianTax, country, countrySubdivision);
+            canadianTaxFee = taxService.getTaxInvoiceFee(FeeClass.CanadianTax, country, countrySubdivision);
             canadianTaxFee.setAmount(canadianTaxFee.getTax(total));
             canadianTaxFeeMsgKey = canadianTaxFee.getI18nKey("fee");
         }
@@ -140,7 +141,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
         }
 
         try {
-            vatFee = invoiceService.getTaxInvoiceFee(FeeClass.VAT, country, countrySubdivision);
+            vatFee = taxService.getTaxInvoiceFee(FeeClass.VAT, country, countrySubdivision);
             vatFee.setAmount(vatFee.getTax(total));
         }
         catch (Exception e) {
@@ -490,13 +491,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 			if (contractor.getStatus().isPendingOrDeactivated() && contractor.getAccountLevel().isFull()) {
 				if (contractor.getMembershipDate() == null) {
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-					activationFee.setAmount(FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor,
+					activationFee.setAmount(FeeService.getAdjustedFeeAmountIfNecessary(contractor,
 							activationFee));
 				} else {
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
 							contractor.getPayingFacilities());
-					activationFee.setAmount(FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor,
-							activationFee));
+					activationFee.setAmount(FeeService.getAdjustedFeeAmountIfNecessary(contractor,
+                            activationFee));
 				}
 			}
 		}

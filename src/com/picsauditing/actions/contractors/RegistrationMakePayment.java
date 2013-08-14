@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.*;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +13,6 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.InvoiceService;
-import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -64,20 +61,20 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationMakePayment.class);
 
-	@Autowired
-	private InvoiceService invoiceService;
-	@Autowired
+    @Autowired
+    private BillingService billingService;
+    @Autowired
+    private FeeService feeService;
+    @Autowired
+    private BrainTree paymentService;
+    @Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
-	@Autowired
+    @Autowired
 	private NoteDAO noteDAO;
-	@Autowired
+    @Autowired
 	private PaymentDAO paymentDAO;
-	@Autowired
+    @Autowired
 	private AppPropertyDAO appPropDao;
-	@Autowired
-	private BillingCalculatorSingle billingService;
-	@Autowired
-	private BrainTree paymentService;
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
@@ -212,7 +209,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 						paymentDAO.save(payment);
 						invoice.updateAmountApplied();
 						billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);
-						contractor.syncBalance();
+                        billingService.syncBalance(contractor);
 
 						// Activate the contractor
 						billingService.activateContractor(contractor, invoice);
@@ -706,14 +703,15 @@ public class RegistrationMakePayment extends RegistrationAction {
 	}
 
 	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
-		billingService.calculateContractorInvoiceFees(contractor, false);
+        feeService.calculateContractorInvoiceFees(contractor, false);
 		invoice = contractor.findLastUnpaidInvoice();
 
 		if (invoice == null) {
-			invoice = billingService.createInvoice(contractor, getUser());
+            // TODO: refactor this method to get the billing status within
+			invoice = billingService.createInvoice(contractor, contractor.getBillingStatus(), getUser());
 			contractor.getInvoices().add(invoice);
-			invoiceService.saveInvoice(invoice);
-			contractor.syncBalance();
+			billingService.saveInvoice(invoice);
+            billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
@@ -724,7 +722,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		if (contractor.isHasMembershipChanged()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
-			contractor.syncBalance();
+            billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.UPDATE));
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");

@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FeeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,8 +19,6 @@ import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.access.NoRightsException;
@@ -50,10 +50,10 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private Country country;
 	@Mock
 	private ContractorAccount contractor;
-	@Mock
-	private InvoiceService invoiceService;
-	@Mock
-	private BillingCalculatorSingle billingService;
+    @Mock
+    private BillingService billingService;
+    @Mock
+    private FeeService feeService;
 	@Mock
 	private ContractorAccountDAO contractorAccountDAO;
 	@Mock
@@ -72,8 +72,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 
 		super.setUp(invoiceDetail);
 
-		Whitebox.setInternalState(invoiceDetail, "invoiceService", invoiceService);
 		Whitebox.setInternalState(invoiceDetail, "billingService", billingService);
+        Whitebox.setInternalState(invoiceDetail, "feeService", feeService);
 		Whitebox.setInternalState(invoiceDetail, "contractorAccountDao", contractorAccountDAO);
 		Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
 		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
@@ -144,9 +144,9 @@ public class InvoiceDetailTest extends PicsActionTest {
 			throws Exception {
 		assertEquals(expectedActionResult, actualActionResult);
 		verify(contractor, never()).setStatus(AccountStatus.Deactivated);
-		verify(invoiceService, times(1)).saveInvoice(invoice);
-		verify(billingService, times(1)).calculateContractorInvoiceFees(contractor);
-		verify(contractor, times(1)).syncBalance();
+		verify(billingService, times(1)).saveInvoice(invoice);
+		verify(feeService, times(1)).calculateContractorInvoiceFees(contractor);
+		verify(billingService, times(1)).syncBalance(contractor);
 		verify(contractor, times(1)).setAuditColumns(permissions);
 		verify(contractorAccountDAO, times(1)).save(contractor);
 	}

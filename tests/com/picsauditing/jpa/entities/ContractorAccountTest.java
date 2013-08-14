@@ -56,10 +56,6 @@ public class ContractorAccountTest {
 	@Mock
 	private InvoiceFee listOnlyinvoiceFee;
 	@Mock
-	private InvoiceFeeDAO feeDao;
-	@Mock
-	private InvoiceFee randomFee;
-	@Mock
 	private CountryDAO countryDAO;
 
 	public ContractorAccountTest() {
@@ -90,10 +86,9 @@ public class ContractorAccountTest {
         accountUsers = new ArrayList<>();
 
         contractorUnderTest.setAccountUsers(accountUsers);
-		Whitebox.setInternalState(contractorUnderTest, "invoiceFeeDAO", feeDao);
 		Whitebox.setInternalState(contractorUnderTest, "countryDAO", countryDAO);
 		Whitebox.setInternalState(contractorUnderTest, "inputValidator", new InputValidator());
-		Whitebox.setInternalState(contractorUnderTest, "vatValidator", new VATValidator());
+        Whitebox.setInternalState(contractorUnderTest, "vatValidator", new VATValidator());
 	}
 
 	@After
@@ -343,51 +338,6 @@ public class ContractorAccountTest {
 		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
 
 		assertTrue(billingStatus.isCurrent());
-	}
-
-	@Ignore
-	@Test
-	public void testCreateInvoiceItems() {
-		// InvoiceFee feeFree = new InvoiceFee(InvoiceFee.FREE);
-		// InvoiceFee feePQFOnly = new InvoiceFee(InvoiceFee.PQFONLY);
-		// feePQFOnly.setAmount(new BigDecimal(99));
-		//
-		// ContractorAccount contractor = EntityFactory.makeContractor();
-		// contractor.setMembershipLevel(feeFree);
-		// // Registered yesterday
-		// contractor.setCreationDate(DateBean.addDays(new Date(), -1));
-		// contractor.setPaymentExpires(contractor.getCreationDate());
-		//
-		// assertEquals("Not Calculated", contractor.getBillingStatus());
-		//
-		// contractor.setNewMembershipLevel(feeFree);
-		// assertEquals("Current", contractor.getBillingStatus());
-		//
-		// contractor.setNewMembershipLevel(feePQFOnly);
-		// assertEquals("Upgrade", contractor.getBillingStatus());
-		//
-		// contractor.setMembershipLevel(feePQFOnly);
-		// assertEquals("Renewal Overdue", contractor.getBillingStatus());
-		//
-		// // Expires next month
-		// contractor.setPaymentExpires(DateBean.addMonths(new Date(), 1));
-		// assertEquals("Renewal", contractor.getBillingStatus());
-		//
-		// contractor.setRenew(false);
-		// assertEquals("Do not renew", contractor.getBillingStatus());
-		//
-		// contractor.setStatus(AccountStatus.Deactivated);
-		// assertEquals("Membership Canceled", contractor.getBillingStatus());
-		//
-		// contractor.setPaymentExpires(contractor.getCreationDate());
-		// contractor.setRenew(true);
-		// assertEquals("Activation", contractor.getBillingStatus());
-		//
-		// contractor.setMembershipDate(new Date());
-		// assertEquals("Reactivation", contractor.getBillingStatus());
-		//
-		// contractor.setMustPay("No");
-		// assertEquals("Current", contractor.getBillingStatus());
 	}
 
 	@Test
@@ -706,118 +656,35 @@ public class ContractorAccountTest {
 		assertTrue(validationResult);
 	}
 
-	@Test
-	public void testClearCurrentFee_NullFees() throws Exception {
-		contractorUnderTest.setFees(null);
+    @Test
+    public void testDoesNotHaveOperatorWithCompetencyRequiringDocumentation() throws Exception {
+        assertFalse("contractorUnderTest has no operators",
+                contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
 
-		verifyMethodDoesNotResultInNPE("clearCurrentFee", FeeClass.InsureGUARD);
-	}
+        List<ContractorOperator> contractorOperators = new ArrayList<>();
+        ContractorOperator contractorOperator = mock(ContractorOperator.class);
+        contractorOperators.add(contractorOperator);
+        OperatorAccount operatorAccount = mock(OperatorAccount.class);
 
-	@Test
-	public void testClearCurrentFee_EmptyFees() throws Exception {
-		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+        when(contractorOperator.getOperatorAccount()).thenReturn(operatorAccount);
+        contractorUnderTest.setOperators(contractorOperators);
 
-		verifyMethodDoesNotResultInNPE("clearCurrentFee", FeeClass.InsureGUARD);
-	}
+        assertFalse("contractorUnderTest has no operator with a competency requiring documentation",
+                contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
+    }
 
-	@Test
-	public void testSetCurrentFee_NullFees() throws Exception {
-		contractorUnderTest.setFees(null);
+    @Test
+    public void testHasOperatorWithCompetencyRequiringDocumentation() throws Exception {
+        List<ContractorOperator> contractorOperators = new ArrayList<>();
+        ContractorOperator contractorOperator = mock(ContractorOperator.class);
+        contractorOperators.add(contractorOperator);
+        OperatorAccount operatorAccount = mock(OperatorAccount.class);
 
-		verifyMethodDoesNotResultInNPE("setCurrentFee", randomFee, BigDecimal.TEN);
-	}
+        when(contractorOperator.getOperatorAccount()).thenReturn(operatorAccount);
+        when(operatorAccount.hasCompetencyRequiringDocumentation()).thenReturn(true);
+        contractorUnderTest.setOperators(contractorOperators);
 
-	@Test
-	public void testSetCurrentFee_EmptyFees() throws Exception {
-		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
-
-		verifyMethodDoesNotResultInNPE("setCurrentFee", randomFee, BigDecimal.TEN);
-	}
-
-	@Test
-	public void testSetCurrentFee_NullFee() throws Exception {
-		Map<FeeClass, ContractorFee> fees = buildFakeFeeMap();
-		contractorUnderTest.setFees(fees);
-
-		verifyMethodDoesNotResultInNPE("setCurrentFee", null, BigDecimal.TEN);
-	}
-
-	@Test
-	public void testClearNewFee_NullFees() throws Exception {
-		contractorUnderTest.setFees(null);
-
-		verifyMethodDoesNotResultInNPE("clearNewFee", FeeClass.InsureGUARD);
-	}
-
-	@Test
-	public void testClearNewFee_EmptyFees() throws Exception {
-		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
-
-		verifyMethodDoesNotResultInNPE("clearNewFee", FeeClass.InsureGUARD);
-	}
-
-	@Test
-	public void testSetNewFee_NullFees() throws Exception {
-		contractorUnderTest.setFees(null);
-
-		verifyMethodDoesNotResultInNPE("setNewFee", randomFee, BigDecimal.TEN);
-	}
-
-	@Test
-	public void testSetNewFee_EmptyFees() throws Exception {
-		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
-
-		verifyMethodDoesNotResultInNPE("setNewFee", randomFee, BigDecimal.TEN);
-	}
-
-	@Test
-	public void testSetNewFee_NullFee() throws Exception {
-		Map<FeeClass, ContractorFee> fees = buildFakeFeeMap();
-		contractorUnderTest.setFees(fees);
-
-		verifyMethodDoesNotResultInNPE("setNewFee", null, BigDecimal.TEN);
-	}
-
-	@Test
-	public void testHasOperatorWithCompetencyRequiringDocumentation() throws Exception {
-		assertFalse("contractorUnderTest has no operators",
-				contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
-
-		List<ContractorOperator> contractorOperators = new ArrayList<>();
-		ContractorOperator contractorOperator = mock(ContractorOperator.class);
-		contractorOperators.add(contractorOperator);
-		OperatorAccount operatorAccount = mock(OperatorAccount.class);
-
-		when(contractorOperator.getOperatorAccount()).thenReturn(operatorAccount);
-		contractorUnderTest.setOperators(contractorOperators);
-
-		assertFalse("contractorUnderTest has no operator with a competency requiring documentation",
-				contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
-
-		when(operatorAccount.hasCompetencyRequiringDocumentation()).thenReturn(true);
-		assertTrue("contractorUnderTest has at least one operator with a competency requiring documentation",
-				contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
-	}
-
-	private Map<FeeClass, ContractorFee> buildFakeFeeMap() {
-		Map<FeeClass, ContractorFee> contractorFees = new TreeMap<FeeClass, ContractorFee>();
-		contractorFees.put(FeeClass.InsureGUARD, new ContractorFee());
-		return contractorFees;
-	}
-
-	private void verifyMethodDoesNotResultInNPE(String methodName, FeeClass fee) throws Exception {
-		try {
-			Whitebox.invokeMethod(contractorUnderTest, methodName, fee, feeDao);
-		} catch (NullPointerException npe) {
-			fail("threw unexpected null pointer exception");
-		}
-	}
-
-	private void verifyMethodDoesNotResultInNPE(String methodName, InvoiceFee invoiceFee, BigDecimal amount) throws Exception {
-		try {
-			Whitebox.invokeMethod(contractorUnderTest, methodName, invoiceFee, amount);
-		} catch (NullPointerException npe) {
-			fail("threw unexpected null pointer exception");
-		}
-	}
+        assertTrue("contractorUnderTest has at least one operator with a competency requiring documentation",
+                contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
+    }
 }

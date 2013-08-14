@@ -3,12 +3,18 @@ package com.picsauditing.PICS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.*;
+import org.joda.time.DateTimeUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,8 +25,8 @@ public class TaxServiceTest {
 
 	private TaxService taxService = new TaxService();
 
-	@Mock
-	private InvoiceService invoiceService;
+    @Mock
+    private InvoiceFeeCountryDAO invoiceFeeCountryDAO;
 	@Mock
 	private Invoice invoice;
 	@Mock
@@ -29,11 +35,47 @@ public class TaxServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(taxService, "invoiceService", invoiceService);
+        Whitebox.setInternalState(taxService, "invoiceFeeCountryDAO", invoiceFeeCountryDAO);
+        setupInvoiceFeeCountries();
 		setupMocks();
 	}
 
-	@Test
+    @After
+    public void tearDown() throws Exception {
+        resetNowTime();
+    }
+
+    private void setupInvoiceFeeCountries() {
+        InvoiceFee invoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 7.5);
+
+        List<InvoiceFeeCountry> invoiceFeeCountriesForAlberta = new ArrayList<InvoiceFeeCountry>();
+        invoiceFeeCountriesForAlberta.add(createInvoiceFeeCountry("CA-AB", 5, "2012-04-01", invoiceFee));
+        invoiceFeeCountriesForAlberta.add(createInvoiceFeeCountry("CA-AB", 7.5, "2013-04-01", invoiceFee));
+
+        List<InvoiceFeeCountry> invoiceFeeCountries = new ArrayList<InvoiceFeeCountry>();
+        invoiceFeeCountries.add(createInvoiceFeeCountry("CA-BC", 7.5, "2012-04-01", invoiceFee));
+        invoiceFeeCountries.add(createInvoiceFeeCountry("CA-SK", 7.5, "2012-04-01", invoiceFee));
+        invoiceFeeCountries.addAll(invoiceFeeCountriesForAlberta);
+
+        invoiceFee.setInvoiceFeeCountries(invoiceFeeCountries);
+
+        CountrySubdivision alberta = new CountrySubdivision("CA-AB");
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(
+                invoiceFeeCountriesForAlberta);
+
+    }
+
+    private InvoiceFeeCountry createInvoiceFeeCountry(String isoCode, double subdivisionRate, String effectiveDate,
+                                                      InvoiceFee invoiceFee) {
+        InvoiceFeeCountry invoiceFeeCountry = new InvoiceFeeCountry();
+        invoiceFeeCountry.setSubdivision(new CountrySubdivision(isoCode));
+        invoiceFeeCountry.setRatePercent(new BigDecimal(subdivisionRate));
+        invoiceFeeCountry.setEffectiveDate(DateBean.parseDate(effectiveDate));
+        invoiceFeeCountry.setInvoiceFee(invoiceFee);
+        return invoiceFeeCountry;
+    }
+
+    @Test
 	public void testFindTaxInvoiceFee_WhenInvoiceHasTax_ReturnsThatTax() {
 		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
@@ -64,7 +106,6 @@ public class TaxServiceTest {
 		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFeeWithoutSubdivisionRate(FeeClass.CanadianTax, 5);
 		InvoiceFeeCountry provinceTaxFee = new InvoiceFeeCountry();
 		provinceTaxFee.setRatePercent(new BigDecimal("9.975"));
-		when(invoiceService.getTaxInvoiceFee(any(FeeClass.class),any(Country.class),any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
 
@@ -100,34 +141,42 @@ public class TaxServiceTest {
 
     @Test
 	public void testApplyTax_whenInvoiceHasNoTax_ApplyNewCanadianTax() throws Exception {
-		InvoiceFee taxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
-		when(invoiceService.getTaxInvoiceFee(any(FeeClass.class),any(Country.class),any(CountrySubdivision.class))).thenReturn(
-				taxInvoiceFee);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithoutTax();
 		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
 		int beforeInvoiceItemCount = invoice.getItems().size();
+
+        InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax);
+        List<InvoiceFeeCountry> subFees = new ArrayList<InvoiceFeeCountry>();
+        InvoiceFeeCountry subdivisionFee = new InvoiceFeeCountry();
+        subdivisionFee.setInvoiceFee(existingTaxInvoiceFee);
+        subdivisionFee.setRatePercent(new BigDecimal("5"));
+        subFees.add(subdivisionFee);
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(any(FeeClass.class),any(CountrySubdivision.class))).thenReturn(subFees);
 
 		taxService.applyTax(invoice);
 
 		assertEquals(beforeInvoiceItemCount + 1, invoiceItems.size());
 		InvoiceItem taxInvoiceItem = getTaxItem(invoice);
 		assertEquals(FeeClass.CanadianTax, taxInvoiceItem.getInvoiceFee().getFeeClass());
-		assertEquals(new BigDecimal("44.93"), taxInvoiceItem.getAmount());
-		assertEquals(new BigDecimal("344.93"), invoice.getTotalAmount());
+		assertEquals(new BigDecimal("15.00"), taxInvoiceItem.getAmount());
+		assertEquals(new BigDecimal("315.00"), invoice.getTotalAmount());
 	}
 
 	@Test
 	public void testApplyTax_whenInvoiceHasNoTaxAndCurrencyIsGbp_ApplyVat() throws Exception {
         InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT);
+        List<InvoiceFeeCountry> subFees = new ArrayList<InvoiceFeeCountry>();
         InvoiceFeeCountry subdivisionFee = new InvoiceFeeCountry();
+        subdivisionFee.setInvoiceFee(existingTaxInvoiceFee);
         subdivisionFee.setRatePercent(new BigDecimal("20"));
-        existingTaxInvoiceFee.setRegionalFee(subdivisionFee);
+
+        subFees.add(subdivisionFee);
 
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithoutTax();
 		Invoice invoice = buildInvoice(invoiceItems, Currency.GBP);
 		int beforeInvoiceItemCount = invoice.getItems().size();
 
-        when(invoiceService.getTaxInvoiceFee(any(FeeClass.class),any(Country.class),any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(any(FeeClass.class),any(CountrySubdivision.class))).thenReturn(subFees);
 
 		taxService.applyTax(invoice);
 
@@ -141,9 +190,12 @@ public class TaxServiceTest {
     @Test
     public void testApplyTax_whenInvoiceHasNoTaxAndCurrencyIsGbpButCountryIsNotUK_DontApplyVat() throws Exception {
         InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT);
+
+        List<InvoiceFeeCountry> subFees = new ArrayList<InvoiceFeeCountry>();
         InvoiceFeeCountry subdivisionFee = new InvoiceFeeCountry();
         subdivisionFee.setRatePercent(new BigDecimal("20"));
-        existingTaxInvoiceFee.setRegionalFee(subdivisionFee);
+        subdivisionFee.setInvoiceFee(existingTaxInvoiceFee);
+        subFees.add(subdivisionFee);
 
         ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithoutTax();
         Invoice invoice = buildInvoice(invoiceItems, Currency.GBP);
@@ -151,7 +203,8 @@ public class TaxServiceTest {
         invoice.updateTotalAmount();
         int beforeInvoiceItemCount = invoice.getItems().size();
 
-        when(invoiceService.getTaxInvoiceFee(any(FeeClass.class),any(Country.class),any(CountrySubdivision.class))).thenReturn(null);
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(any(FeeClass.class),any(CountrySubdivision.class))).thenReturn(null);
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(any(FeeClass.class),any(Country.class))).thenReturn(subFees);
 
         taxService.applyTax(invoice);
 
@@ -259,11 +312,63 @@ public class TaxServiceTest {
 
     private InvoiceItem getTaxItem(Invoice invoice) {
         for (InvoiceItem item : invoice.getItems()) {
-            if (InvoiceService.TAX_FEE_CLASSES.contains(item.getInvoiceFee().getFeeClass())) {
+            if (TaxService.TAX_FEE_CLASSES.contains(item.getInvoiceFee().getFeeClass())) {
                 return item;
             }
         }
         return null;
+    }
+
+    @Test
+    public void testGetCanadianTaxInvoiceFeeForProvince_oldScheduleShouldBeInEffect() throws Exception {
+        setNowTime("2012-12-1");
+
+        CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
+        Country country = new Country("CA");
+
+        InvoiceFee taxInvoiceFee = taxService.getTaxInvoiceFee(FeeClass.CanadianTax,country,countrySubdivision);
+
+        assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
+        assertEquals(new BigDecimal(5), taxInvoiceFee.getRegionalFee().getRatePercent());
+        assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
+        assertEquals("qbCanadianTax", taxInvoiceFee.getQbFullName());
+        assertEquals(DateBean.parseDate("2012-04-01"), taxInvoiceFee.getRegionalFee().getEffectiveDate());
+    }
+
+    @Test
+    public void testGetCanadianTaxInvoiceFeeForProvince_newScheduleShouldBeInEffect() throws Exception {
+        setNowTime("2013-04-02");
+        CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
+        Country country = new Country("CA");
+
+        InvoiceFee taxInvoiceFee = taxService.getTaxInvoiceFee(FeeClass.CanadianTax,country,countrySubdivision);
+
+        assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
+        assertEquals(new BigDecimal(7.5), taxInvoiceFee.getRegionalFee().getRatePercent());
+        assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
+        assertEquals("qbCanadianTax", taxInvoiceFee.getQbFullName());
+        assertEquals(DateBean.parseDate("2013-04-01"), taxInvoiceFee.getRegionalFee().getEffectiveDate());
+    }
+
+    @Test
+    public void testGetCanadianTaxInvoiceFeeForProvince() throws Exception {
+        resetNowTime();
+        CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
+        Country country = new Country("CA");
+
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(eq(FeeClass.CanadianTax), eq(countrySubdivision))).thenReturn(null);
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(country))).thenReturn(null);
+
+        assertNull(taxService.getTaxInvoiceFee(FeeClass.CanadianTax, country, countrySubdivision));
+    }
+
+    private void setNowTime(String dateString) {
+        Date date = DateBean.parseDate(dateString);
+        DateTimeUtils.setCurrentMillisFixed(date.getTime());
+    }
+
+    private void resetNowTime() {
+        DateTimeUtils.setCurrentMillisSystem();
     }
 
 }

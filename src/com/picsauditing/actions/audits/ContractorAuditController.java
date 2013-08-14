@@ -13,6 +13,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.picsauditing.PICS.FeeService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -535,7 +536,7 @@ public class ContractorAuditController extends AuditActionSupport {
 							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
-									&& (contractor.getCountry().getAmount(ii.getInvoiceFee()).equals(ii.getAmount()) || i
+									&& (FeeService.getRegionalAmountOverride(contractor, ii.getInvoiceFee()).equals(ii.getAmount()) || i
 											.getTotalAmount().intValue() > 450)) {
 								return true;
 							}
@@ -607,7 +608,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public BigDecimal getImportPQFFeeAmount() throws Exception {
 		findContractor();
 		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
-		return contractor.getCountry().getAmount(fee);
+		return FeeService.getRegionalAmountOverride(contractor, fee);
 	}
 
 	private void checkMode() {

@@ -237,6 +237,7 @@ public class ReportApi extends PicsApiSupport {
     public String subscribe() {
         try {
             report = reportDao.findById(reportId);
+
             List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(permissions.getUserId(), report.getId());
             EmailSubscription reportSubscription;
 

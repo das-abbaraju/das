@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import com.picsauditing.PICS.BillingService;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -46,6 +47,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Report;
+import org.mockito.internal.util.reflection.Whitebox;
 
 public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	private ReportContractorRiskAssessment reportContractorRiskAssessment;
@@ -66,6 +68,8 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	private EmailSender emailSender;
 	@Mock
 	private EmailBuilder emailBuilder;
+    @Mock
+    private BillingService billingService;
 
 	@AfterClass
 	public static void classTearDown() throws Exception {
@@ -78,6 +82,7 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 		MockitoAnnotations.initMocks(this);
 		reportContractorRiskAssessment = new ReportContractorRiskAssessment();
 		super.setUp(reportContractorRiskAssessment);
+        Whitebox.setInternalState(reportContractorRiskAssessment, "billingService", billingService);
 
 		when(contractorAccount.getAccountLevel()).thenReturn(AccountLevel.Full);
 		when(contractorAccount.getAudits()).thenReturn(generatePQFWithRiskAnswers());
@@ -130,7 +135,7 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	private void setExpectedBehaviors() throws SQLException {
 		setupApplicationContext();
 
-		doNothing().when(contractorAccount).syncBalance();
+		doNothing().when(billingService).syncBalance(contractorAccount);
 
 		when(emailTemplateDAO.find(anyInt())).thenReturn(emailTemplate);
 		when(permissions.hasPermission(OpPerms.RiskRank, OpType.View)).thenReturn(true);

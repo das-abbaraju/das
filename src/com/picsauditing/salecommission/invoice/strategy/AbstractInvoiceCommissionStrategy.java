@@ -1,8 +1,9 @@
 package com.picsauditing.salecommission.invoice.strategy;
 
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.Invoice;
 
@@ -15,7 +16,9 @@ public abstract class AbstractInvoiceCommissionStrategy implements InvoiceCommis
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
-	protected BillingCalculatorSingle billingService;
+	protected BillingService billingService;
+    @Autowired
+    protected FeeService feeService;
 
 	public void processInvoiceCommission(Invoice invoice) {
 		if (hasStrategyAlreadyProcessed(invoice)) {

@@ -3,19 +3,16 @@ package com.picsauditing.actions.contractors;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.auditBuilder.AuditRuleCache;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang3.StringUtils;
-import org.perf4j.StopWatch;
-import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.dao.AuditDataDAO;
@@ -29,9 +26,11 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	@Autowired
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
-	private BillingCalculatorSingle billingService;
-	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+    @Autowired
+    private BillingService billingService;
+    @Autowired
+    private FeeService feeService;
 
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
@@ -186,6 +185,9 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
             auditDao.remove(ssipAudit);
             for (AuditData data : ssipAnswerMap.values()) {
                 auditDataDAO.remove(data);
+
+
+
             }
         }
 
@@ -194,8 +196,8 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
 
-		contractor.syncBalance();
-		billingService.calculateContractorInvoiceFees(contractor, false);
+        billingService.syncBalance(contractor);
+		feeService.calculateContractorInvoiceFees(contractor, false);
 		contractorAccountDao.save(contractor);
 
 		// Free accounts should just be activated
@@ -819,7 +821,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 
 	private void setAccountLevelByListOnlyEligibility() {
 		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
-				&& contractor.getAccountLevel().isFull()) {
+				&& !contractor.getAccountLevel().isBidOnly()) {
 			boolean canBeListed = true;
 
 			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {

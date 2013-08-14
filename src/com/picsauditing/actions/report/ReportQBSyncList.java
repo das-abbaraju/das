@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import com.picsauditing.PICS.BillingService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.intuit.developer.adaptors.GetContractorsForUpdate;
@@ -10,7 +11,6 @@ import com.intuit.developer.adaptors.GetPaymentsForUpdate;
 import com.intuit.developer.adaptors.InsertContractors;
 import com.intuit.developer.adaptors.InsertInvoices;
 import com.intuit.developer.adaptors.InsertPayments;
-import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -27,7 +27,7 @@ import com.picsauditing.jpa.entities.Payment;
 @SuppressWarnings("serial")
 public class ReportQBSyncList extends PicsActionSupport {
 	@Autowired
-	private InvoiceService invoiceService;
+	private BillingService billingService;
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -72,7 +72,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 				if (obj.getQbListID() == null) {
 					obj.setQbListID("NOLOAD" + id);
 				}
-				invoiceService.saveInvoice(obj);
+                billingService.saveInvoice(obj);
 			}
 
 			if (type.equals("P")) {

@@ -109,7 +109,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 					sb.append(t.getId()).append(",");
 				}
 				sb.setLength(sb.lastIndexOf(","));
-				sb.append(") OR t.trade IS NULL AND t.auditType.id =").append(AuditType.DESKTOP);
+				sb.append(") OR t.trade IS NULL AND t.auditType.id =").append(AuditType.MANUAL_AUDIT);
 				whereClauses.add(sb.toString());
 			}
 

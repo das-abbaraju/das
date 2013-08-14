@@ -51,9 +51,11 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private ContractorAuditDAO conAuditDAO;
 	@Autowired
-	private BillingCalculatorSingle billingService;
+	private BillingService billingService;
 	@Autowired
 	private ExceptionService exceptionService;
+    @Autowired
+    private FeeService feeService;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
 	@Autowired
@@ -322,8 +324,8 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		logger.trace("ContractorCron starting Billing");
-		billingService.calculateContractorInvoiceFees(contractor);
-		contractor.syncBalance();
+		feeService.calculateContractorInvoiceFees(contractor);
+		billingService.syncBalance(contractor);
 	}
 
 	private void runAuditBuilder(ContractorAccount contractor) {
@@ -1272,7 +1274,7 @@ public class ContractorCron extends PicsActionSupport {
 							audit.setAssignedDate(new Date());
 						}
 						break;
-					case (AuditType.DESKTOP):
+					case (AuditType.MANUAL_AUDIT):
 						if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
 								&& contractor.isFinanciallyReadyForAudits()) {
 							ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());

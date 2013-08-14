@@ -131,7 +131,7 @@ public class AuditActionSupportTest extends PicsTest {
 		assertTrue(test.isCanViewRequirements());
 
 		// Other
-		audit.getAuditType().setId(AuditType.DESKTOP);
+		audit.getAuditType().setId(AuditType.MANUAL_AUDIT);
 		cao.changeStatus(AuditStatus.Submitted, null);
 		assertTrue(test.isCanViewRequirements());
 

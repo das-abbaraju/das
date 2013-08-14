@@ -438,7 +438,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		ContractorAudit audit = mock(ContractorAudit.class);
 
 		when(audit.getAuditType()).thenReturn(auditType);
-		when(audit.getId()).thenReturn(AuditType.DESKTOP);
+		when(audit.getId()).thenReturn(AuditType.MANUAL_AUDIT);
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
 
 		if (hasOperators) {

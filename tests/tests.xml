@@ -99,7 +99,7 @@
 
 	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder"
 		scope="prototype" />
-	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle"
+	<bean id="BillingService" class="com.picsauditing.PICS.BillingService"
 		scope="prototype" />
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"
 		scope="prototype" />

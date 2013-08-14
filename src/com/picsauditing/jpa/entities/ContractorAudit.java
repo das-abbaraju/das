@@ -650,7 +650,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	public int getAuditorPayment() {
 		if (auditType.isDesktop())
 			return 75;
-		if (auditType.getId() == AuditType.OFFICE) {
+		if (auditType.getId() == AuditType.IMPLEMENTATION_AUDIT) {
 			if (isConductedOnsite())
 				return 225;
 			else

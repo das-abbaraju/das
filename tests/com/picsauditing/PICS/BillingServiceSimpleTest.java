@@ -1,22 +1,17 @@
 package com.picsauditing.PICS;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Invoice;
 
-public class BillingCalculatorSingleSimpleTest {
+public class BillingServiceSimpleTest {
 
 	private static Date getStartOfBilling() {
 		return new GregorianCalendar(2001, 3, 14).getTime();
@@ -48,8 +43,8 @@ public class BillingCalculatorSingleSimpleTest {
 	}
 
 	private static void assertDueDate(ContractorAccount contractor, BillingStatus billingStatus, Date expected) {
-		Date dueDate = BillingCalculatorSingle.calculateInvoiceDueDate(contractor, billingStatus, getStartOfBilling(),
-				getStartOfBilling());
+		Date dueDate = BillingService.calculateInvoiceDueDate(contractor, billingStatus, getStartOfBilling(),
+                getStartOfBilling());
 
 		assertEquals(expected, dueDate);
 	}
@@ -85,7 +80,7 @@ public class BillingCalculatorSingleSimpleTest {
 		contractor.setStatus(AccountStatus.Active);
 		contractor.setPaymentExpires(getStartOfBilling());
 
-		Date dueDate = BillingCalculatorSingle.calculateInvoiceDueDate(contractor, BillingStatus.Renewal, getStartOfBilling(), DateBean.addDays(getStartOfBilling(), 2));
+		Date dueDate = BillingService.calculateInvoiceDueDate(contractor, BillingStatus.Renewal, getStartOfBilling(), DateBean.addDays(getStartOfBilling(), 2));
 
 		assertEquals(DateBean.addDays(getStartOfBilling(), 7), dueDate);
 	}
