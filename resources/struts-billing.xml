@@ -87,7 +87,7 @@
         </action>
         <action name="ProcessCommission" class="com.picsauditing.actions.billing.ProcessCommission" />
 
-        <action name="InvoiceRefund" class="com.picsauditing.actions.billing.InvoiceRefundController">
+        <action name="InvoiceRefund" class="com.picsauditing.actions.billing.InvoiceReturnItemsController">
             <result>struts/reports/invoice-refund.jsp</result>
 			<result name="input" type="redirectAction">
 				<param name="actionName">InvoiceDetail</param>

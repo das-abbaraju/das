@@ -13,7 +13,7 @@ import java.lang.{Integer => int}
 import java.util.{List => StrutsList}
 
 @RequiredPermission(OpPerms.Billing)
-class InvoiceRefundController extends ContractorActionSupport with Preparable {
+class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {
 
   @Autowired
   private val creditMemoDAO: CreditMemoDAO = null

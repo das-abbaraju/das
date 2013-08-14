@@ -19,7 +19,7 @@ import com.opensymphony.xwork2.Action
 
 
 @RunWith(classOf[JUnitRunner])
-class InvoiceRefundControllerTest extends FlatSpec with BeforeAndAfter with MockitoSugar with AssertionsForJUnit {
+class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with MockitoSugar with AssertionsForJUnit {
 
   protected val ITEM_ID_1= 1
   protected val ITEM_ID_2 = 2
@@ -32,11 +32,11 @@ class InvoiceRefundControllerTest extends FlatSpec with BeforeAndAfter with Mock
   @Mock
   val mockCreditMemoDAO: CreditMemoDAO = null
   val mockInvoice: Invoice = new Invoice
-  var classUnderTest: InvoiceRefundController = null
+  var classUnderTest: InvoiceReturnItemsController = null
 
   before {
     TranslationServiceFactory.registerTranslationService(mock[TranslationService])
-    classUnderTest = new InvoiceRefundController with AvoidActionContext
+    classUnderTest = new InvoiceReturnItemsController with AvoidActionContext
     val testNumbers = new util.ArrayList[java.lang.Integer]()
     testNumbers.add(ITEM_ID_1)
     testNumbers.add(ITEM_ID_2)
@@ -51,7 +51,7 @@ class InvoiceRefundControllerTest extends FlatSpec with BeforeAndAfter with Mock
     TranslationServiceFactory.registerTranslationService(null.asInstanceOf[TranslationService])
   }
 
-  "InvoiceRefundController" should "add an Action Error when no refund IDs are provided, and doRefund is called." in {
+  "InvoiceReturnItemsController" should "add an Action Error when no refund IDs are provided, and doRefund is called." in {
     classUnderTest.refunds = List()
     classUnderTest doRefund
     val count = classUnderTest.getActionErrors.size()
