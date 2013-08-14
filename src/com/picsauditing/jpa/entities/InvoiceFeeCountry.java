@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.persistence.*;
 import javax.persistence.Column;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -33,6 +35,7 @@ public class InvoiceFeeCountry extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "country")
+    @ReportField(type = FieldType.Country)
 	public Country getCountry() {
 		return country;
 	}
@@ -43,6 +46,7 @@ public class InvoiceFeeCountry extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "subdivision")
+    @ReportField(type = FieldType.CountrySubdivision)
 	public CountrySubdivision getSubdivision() {
 		return subdivision;
 	}
@@ -52,6 +56,7 @@ public class InvoiceFeeCountry extends BaseTable {
 	}
 
 	@Column(name = "amount", nullable = false)
+    @ReportField(type = FieldType.Float)
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -60,6 +65,7 @@ public class InvoiceFeeCountry extends BaseTable {
 		this.amount = amount;
 	}
 
+    @ReportField(type = FieldType.Float)
 	public BigDecimal getRatePercent() {
 		return ratePercent;
 	}

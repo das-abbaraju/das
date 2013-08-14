@@ -81,6 +81,7 @@ public class InvoiceFee extends BaseTable {
 	}
 
 	@Column(name = "defaultAmount", nullable = false)
+    @ReportField(type = FieldType.Float)
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -89,6 +90,7 @@ public class InvoiceFee extends BaseTable {
 		this.amount = amount;
 	}
 
+    @ReportField(type = FieldType.Float)
 	public BigDecimal getRatePercent() {
 		return ratePercent;
 	}
@@ -166,6 +168,7 @@ public class InvoiceFee extends BaseTable {
 		return displayOrder;
 	}
 
+    @ReportField(type = FieldType.Boolean)
 	public boolean isCommissionEligible() {
 		return commissionEligible;
 	}

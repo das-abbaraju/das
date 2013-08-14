@@ -23,6 +23,7 @@ public enum ModelType {
     FlagArchive,
     ForcedFlags,
     ForcedFlagPercents,
+    InvoiceFeeCountries,
     InvoiceItems,
     Invoices,
     Operators,
