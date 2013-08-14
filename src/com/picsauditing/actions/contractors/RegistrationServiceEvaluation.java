@@ -186,6 +186,9 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
             auditDao.remove(ssipAudit);
             for (AuditData data : ssipAnswerMap.values()) {
                 auditDataDAO.remove(data);
+
+
+
             }
         }
 
@@ -819,7 +822,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 
 	private void setAccountLevelByListOnlyEligibility() {
 		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
-				&& contractor.getAccountLevel().isFull()) {
+				&& !contractor.getAccountLevel().isBidOnly()) {
 			boolean canBeListed = true;
 
 			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {

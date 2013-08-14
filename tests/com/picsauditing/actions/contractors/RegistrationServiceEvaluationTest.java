@@ -45,6 +45,8 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 	protected BasicDAO dao;
     @Mock
     protected AuditTypeRuleCache auditTypeRuleCache;
+    @Mock
+    protected OperatorAccount operator;
 
 
     private ContractorAccount contractor;
@@ -72,6 +74,35 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissionToViewContractor", permissionToViewContractor);
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "auditTypeRuleCache", auditTypeRuleCache);
 	}
+
+    @Test
+    public void testNextStepListOnly() throws Exception {
+        contractor.setMaterialSupplier(true);
+        contractor.setOnsiteServices(false);
+        contractor.setOffsiteServices(false);
+        contractor.setTransportationServices(false);
+        contractor.setSafetyRisk(LowMedHigh.Low);
+        contractor.setProductRisk(LowMedHigh.Low);
+        ContractorOperator conOp = EntityFactory.addContractorOperator(contractor, operator);
+
+        when(operator.isAcceptsList()).thenReturn(true);
+        when(operator.getStatus()).thenReturn(AccountStatus.Active);
+
+        contractor.setAccountLevel(AccountLevel.Full);
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
+        Whitebox.invokeMethod(serviceEvaluation, "setAccountLevelByListOnlyEligibility");
+        assertTrue(contractor.getAccountLevel().isListOnly());
+
+        contractor.setAccountLevel(AccountLevel.ListOnly);
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
+        Whitebox.invokeMethod(serviceEvaluation, "setAccountLevelByListOnlyEligibility");
+        assertTrue(contractor.getAccountLevel().isListOnly());
+
+        contractor.setAccountLevel(AccountLevel.BidOnly);
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
+        Whitebox.invokeMethod(serviceEvaluation, "setAccountLevelByListOnlyEligibility");
+        assertFalse(contractor.getAccountLevel().isListOnly());
+    }
 
 	@Test
 	public void testNextStep_MaterialSupplier() throws Exception {
