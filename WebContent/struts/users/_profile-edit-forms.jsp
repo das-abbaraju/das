@@ -23,7 +23,7 @@
 				<s:property value="u.account.name"/>
 			</li>
 
-			<li>
+			<li class="country">
 				<label><s:text name="global.Country"></s:text>:</label>
 				<s:property value="u.account.country.name"/>
 			</li>
@@ -66,6 +66,7 @@
 					          name="language"
 					          value="language"
 					          id="profile_language"
+					          cssClass="select2"
 							/>
 				</li>
 				<li id="profile_dialect">
@@ -73,14 +74,10 @@
 				</li>
 			</s:if>
 
-			<li>
-				<s:select
-						id="timezone"
-						name="u.timezone"
-						list="@com.picsauditing.util.TimeZoneUtil@timeZones()"
-						value="u.timezone.iD"
-						theme="form"/>
-			</li>
+            <li class="timezone">
+                <label for="timezone_input"><s:text name="global.timezone" /></label>
+                <input id="timezone_input" class="timezone_input" name="u.timezone" data-country="${u.account.country.isoCode}" data-placeholder="<s:text name='Timezone.list.select.header' />" value="${u.timezone.ID}" />
+            </li>
 
 			<li>
 				<label><s:text name="global.CreationDate"/>:</label>
