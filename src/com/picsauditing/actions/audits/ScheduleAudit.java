@@ -2,8 +2,9 @@ package com.picsauditing.actions.audits;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.*;
@@ -51,8 +52,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	@Autowired
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
-	@Autowired
-	private InvoiceService invoiceService;
+    @Autowired
+    private BillingService billingService;
 	@Autowired
 	private InvoiceFeeDAO feeDAO;
 	@Autowired
@@ -560,15 +561,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setAccount(contractor);
 		invoice.setCurrency(contractor.getCountry().getCurrency());
 		invoice.setDueDate(new Date());
-		invoice.setTotalAmount(contractor.getCountry().getAmount(fee));
+		invoice.setTotalAmount(FeeService.getRegionalAmountOverride(contractor, fee));
 		invoice.setNotes(notes);
 		invoice.setAuditColumns(permissions);
         invoice.setInvoiceType(InvoiceType.OtherFees);
 		AccountingSystemSynchronization.setToSynchronize(invoice);
-		invoice = invoiceService.saveInvoice(invoice);
+		invoice = billingService.saveInvoice(invoice);
 
 		InvoiceItem item = new InvoiceItem();
-		item.setAmount(contractor.getCountry().getAmount(fee));
+		item.setAmount(FeeService.getRegionalAmountOverride(contractor, fee));
 		item.setInvoice(invoice);
 		item.setInvoiceFee(fee);
 		item.setAuditColumns(permissions);
@@ -576,7 +577,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		invoice.getItems().add(item);
 		contractor.getInvoices().add(invoice);
-		contractor.syncBalance();
+		billingService.syncBalance(contractor);
 		contractorAccountDao.save(contractor);
 
 		addNote(contractor, notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));

@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
@@ -46,73 +47,7 @@ public enum FeeClass implements Translatable {
 		}
 
 	},
-	AuditGUARD, EmployeeGUARD {
-		@Override
-		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-			AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) SpringUtils.getBean("AuditTypeRuleCache");
-			AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
-
-			boolean employeeAudits = false;
-			boolean oq = false;
-			boolean hseCompetency = false;
-
-			for (AuditTypeDetail detail : builder.calculate()) {
-				AuditType auditType = detail.rule.getAuditType();
-				if (auditType == null) {
-					continue;
-				}
-				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()
-						|| auditType.getClassType().isIm()) {
-					employeeAudits = true;
-				}
-				if (auditType.getId() == AuditType.HSE_COMPETENCY) {
-					hseCompetency = true;
-				}
-			}
-
-			for (ContractorOperator co : contractor.getOperators()) {
-				if (co.getOperatorAccount().isRequiresOQ()) {
-					oq = true;
-				}
-			}
-
-			if (!hseCompetency && (employeeAudits || oq)) {
-				return BigDecimal.ZERO;
-			}
-
-			return contractor.getCountry().getAmount(fee);
-		}
-	},
-	Reviews, Activation {
-		@Override
-		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-			Set<BigDecimal> discounts = new HashSet<BigDecimal>();
-			for (OperatorAccount operator : contractor.getOperatorAccounts()) {
-				if (operator.isHasDiscount()) {
-					discounts.add(operator.getDiscountPercent());
-				} else {
-					OperatorAccount inheritedDiscountPercentOperator = operator.getInheritedDiscountPercentOperator();
-					if (inheritedDiscountPercentOperator != null) {
-						discounts.add(inheritedDiscountPercentOperator.getDiscountPercent());
-					} else {
-						return contractor.getCountry().getAmount(fee);
-					}
-				}
-			}
-
-			// This happens if there are no operators attached to this
-			// contractor.
-			// Unlikely, but if it never happened, I wouldn't be writing this.
-			if (discounts.isEmpty()) {
-				return contractor.getCountry().getAmount(fee);
-			}
-
-			BigDecimal minimumDiscount = Collections.min(discounts);
-			minimumDiscount = BigDecimal.ONE.subtract(minimumDiscount);
-			return contractor.getCountry().getAmount(fee).multiply(minimumDiscount).setScale(0, BigDecimal.ROUND_DOWN);
-		}
-	},
-	Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, CanadianTax, VAT, Misc, SSIPDiscountFee;
+	AuditGUARD, EmployeeGUARD,Reviews, Activation,Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, CanadianTax, VAT, Misc, SSIPDiscountFee;
 
 	// after 2013-01-01, we can remove the insureGuard date-based pricing logic.
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
@@ -133,10 +68,6 @@ public enum FeeClass implements Translatable {
 		return false;
 	}
 
-	public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-		return contractor.getCountry().getAmount(fee);
-	}
-
 	@Override
 	public String getI18nKey() {
 		return (!getClass().getSimpleName().isEmpty() ? getClass().getSimpleName() : getClass().getSuperclass()
@@ -148,8 +79,7 @@ public enum FeeClass implements Translatable {
 		return getI18nKey() + "." + property;
 	}
 
-	// TODO: This probably needs to be refactored into rules as it continues to
-	// grow
+	// TODO: This probably needs to be refactored into rules as it continues to grow
 	public boolean isAllExclusionsApplicable(ContractorAccount contractor, InvoiceFee newLevel,
 			Set<OperatorAccount> operators) {
 		boolean isUpgrade = false;
@@ -207,20 +137,5 @@ public enum FeeClass implements Translatable {
 		feeTypes.add(InsureGUARD);
 
 		return feeTypes;
-	}
-
-	public static String getContractorPriceTableFeeTypesForDatabase() {
-		Set<FeeClass> feeClasses = getContractorPriceTableFeeTypes();
-
-		String feeTypesForDatabase = "";
-		for (FeeClass feeClass : feeClasses) {
-			if (StringUtils.isNotEmpty(feeTypesForDatabase)) {
-				feeTypesForDatabase += ",";
-			}
-
-			feeTypesForDatabase += "'" + feeClass.toString() + "'";
-		}
-
-		return feeTypesForDatabase;
 	}
 }

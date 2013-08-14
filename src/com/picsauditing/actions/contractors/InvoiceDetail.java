@@ -47,8 +47,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private static final String BAD_DEBT_BUTTON = "baddebt";
 
 	@Autowired
-	private InvoiceService invoiceService;
-	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
@@ -59,7 +57,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
-	private BillingCalculatorSingle billingService;
+	private BillingService billingService;
 	@Autowired
 	private BrainTree paymentService;
 	@Autowired
@@ -70,6 +68,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private InvoiceModel invoiceModel;
 	@Autowired
 	private BillingNoteModel billingNoteModel;
+    @Autowired
+    private FeeService feeService;
 
 	private boolean edit = false;
     private String message = null;
@@ -110,9 +110,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
             return processedCommand();
 		} else {
             updateTotals();
-            invoiceService.saveInvoice(invoice);
-            billingService.calculateContractorInvoiceFees(contractor);
-            contractor.syncBalance();
+            billingService.saveInvoice(invoice);
+            feeService.calculateContractorInvoiceFees(contractor);
+            billingService.syncBalance(contractor);
             contractor.setAuditColumns(permissions);
             contractorAccountDao.save(contractor);
 
@@ -145,7 +145,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
                 }
         }
 
-        invoiceService.saveInvoice(invoice);
+        billingService.saveInvoice(invoice);
 
         if (!Strings.isEmpty(message)) {
             addActionMessage(message);
@@ -284,8 +284,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
             }
         }
 
-        billingService.calculateContractorInvoiceFees(contractor);
-        contractor.syncBalance();
+        feeService.calculateContractorInvoiceFees(contractor);
+        billingService.syncBalance(contractor);
         contractor.incrementRecalculation(10);
         contractor.setAuditColumns(permissions);
         contractorAccountDao.save(contractor);
@@ -362,14 +362,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         AccountingSystemSynchronization.setToSynchronize(invoice);
         invoice.updateTotalAmount();
         invoice.updateAmountApplied();
-        invoiceService.saveInvoice(invoice);
+        billingService.saveInvoice(invoice);
 
         addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
                 + " to " + Strings.implode(createdItemNames, ", "), billingNoteModel.findUserForPaymentNote(permissions));
         message = getText("InvoiceDetail.message.ChangedLevel");
 
         invoice.setNotes(invoiceModel.getSortedClientSiteList(contractor));
-        contractor.syncBalance();
+        billingService.syncBalance(contractor);
 
         notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
     }
@@ -431,7 +431,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		InvoiceItem newItem = new InvoiceItem();
 		InvoiceFee newFee = invoiceFeeDAO.find(feeId);
 		newItem.setInvoiceFee(newFee);
-		newItem.setAmount(invoice.getAccount().getCountry().getAmount(newFee));
+		newItem.setAmount(FeeService.getRegionalAmountOverride((ContractorAccount)invoice.getAccount(), newFee));
 		newItem.setInvoice(invoice);
 		newItem.setAuditColumns(permissions);
 

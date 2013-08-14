@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 
-import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -35,8 +35,8 @@ public class ScheduleAuditTest extends PicsActionTest {
 
 	@Mock
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
-	@Mock
-	private InvoiceService invoiceService;
+    @Mock
+    private BillingService billingService;
 	@Mock
 	private InvoiceFeeDAO feeDAO;
 	@Mock
@@ -80,7 +80,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		Whitebox.setInternalState(scheduleAudit, "emailSender", emailSender);
 		Whitebox.setInternalState(scheduleAudit, "expedite", expedite);
 		Whitebox.setInternalState(scheduleAudit, "rescheduling", rescheduling);
-		Whitebox.setInternalState(scheduleAudit, "invoiceService", invoiceService);
+        Whitebox.setInternalState(scheduleAudit, "billingService", billingService);
 
 		parameters.put("auditor.id", 941);
 
@@ -98,9 +98,8 @@ public class ScheduleAuditTest extends PicsActionTest {
 		when(auditType.getI18nKey(anyString())).thenReturn("ImplementationAudit");
 		when(contractor.getCountry()).thenReturn(country);
 		when(country.getCurrency()).thenReturn(Currency.USD);
-		when(country.getAmount(rescheduling)).thenReturn(new BigDecimal("199"));
 		Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
-		when(invoiceService.saveInvoice(org.mockito.Matchers.any(Invoice.class))).thenReturn(new Invoice());
+		when(billingService.saveInvoice(org.mockito.Matchers.any(Invoice.class))).thenReturn(new Invoice());
 
 		String strutsAction = scheduleAudit.cancelAudit();
 
@@ -221,7 +220,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setScheduledDate((Date) any());
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
-		verify(invoiceService).saveInvoice((Invoice) any());
+		verify(billingService).saveInvoice((Invoice) any());
 		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
 		verify(itemDAO).save(captor.capture());
 		InvoiceItem itemSaved = captor.getValue();
@@ -252,7 +251,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setScheduledDate((Date) any());
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
-		verify(invoiceService).saveInvoice((Invoice) any());
+		verify(billingService).saveInvoice((Invoice) any());
 		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
 		verify(itemDAO).save(captor.capture());
 		InvoiceItem itemSaved = captor.getValue();
@@ -286,6 +285,6 @@ public class ScheduleAuditTest extends PicsActionTest {
 		when(auditType.getI18nKey("name")).thenReturn("test");
 		Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
 		when(contractor.getCountry()).thenReturn(country);
-		when(invoiceService.saveInvoice((Invoice) any())).thenReturn(invoice);
+		when(billingService.saveInvoice((Invoice) any())).thenReturn(invoice);
 	}
 }

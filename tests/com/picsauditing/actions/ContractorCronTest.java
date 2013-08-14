@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import com.picsauditing.jpa.entities.*;
@@ -71,7 +70,7 @@ public class ContractorCronTest extends PicsActionTest {
 		contractor = EntityFactory.makeContractor();
 
 		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
 
 		ContractorAuditOperator noNeedManualAuditCao = addCaoCaop(pqf, EntityFactory.makeOperator());
 		ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
@@ -116,7 +115,7 @@ public class ContractorCronTest extends PicsActionTest {
 		contractor = EntityFactory.makeContractor();
 
 		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
 
 		ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
 		addCaoCaop(audit, needManualAuditCao1.getOperator());
@@ -176,8 +175,8 @@ public class ContractorCronTest extends PicsActionTest {
 		contractor = EntityFactory.makeContractor();
 
 		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
-		ContractorAudit previousAudit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+		ContractorAudit previousAudit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
 
 		ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
 		addCaoCaop(audit, needManualAuditCao1.getOperator());
@@ -832,7 +831,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testCancelScheduledImplementationAudits() throws Exception {
 		ContractorAccount contractor = EntityFactory.makeContractor();
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.OFFICE, contractor);
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.IMPLEMENTATION_AUDIT, contractor);
 		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
 		cao.setVisible(false);
 

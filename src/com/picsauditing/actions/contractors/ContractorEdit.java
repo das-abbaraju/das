@@ -3,8 +3,8 @@ package com.picsauditing.actions.contractors;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
@@ -47,11 +47,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
 	@Autowired
-	protected BillingCalculatorSingle billingService;
-	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
-	@Autowired
+    @Autowired
 	private AccountStatusChanges accountStatusChanges;
+    @Autowired
+    protected BillingService billingService;
+    @Autowired
+    protected FeeService feeService;
 
 	private File logo = null;
 	private String logoFileName = null;
@@ -83,8 +85,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (conID > 0) {
 				contractor = contractorAccountDao.find(conID);
 
-				billingService.calculateContractorInvoiceFees(contractor);
-				contractor.syncBalance();
+				feeService.calculateContractorInvoiceFees(contractor);
+                billingService.syncBalance(contractor);
 				for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
 					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}

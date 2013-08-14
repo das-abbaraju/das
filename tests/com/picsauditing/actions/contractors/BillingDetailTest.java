@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.model.account.AccountStatusChanges;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +36,8 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -78,16 +78,16 @@ public class BillingDetailTest extends PicsActionTest {
 	@Mock
 	private ContractorAccount contractor;
 	@Mock
-	private InvoiceService invoiceService;
-	@Mock
 	private ContractorAccountDAO contractorAccountDao;
-	@Mock
+    @Mock
 	private AccountDAO accountDAO;
-	@Mock
+    @Mock
 	private NoteDAO noteDao;
-	@Mock
-	private BillingCalculatorSingle billingService;
-	@Mock
+    @Mock
+	private BillingService billingService;
+    @Mock
+    private FeeService feeService;
+    @Mock
 	private User user;
 	@Mock
 	private PermissionToViewContractor permissionToViewContractor;
@@ -129,12 +129,13 @@ public class BillingDetailTest extends PicsActionTest {
 	}
 
 	private void stubMockBehaviors() throws IOException {
-		when(billingService.createInvoiceItems(contractor, user)).thenReturn(invoiceItems);
+		when(billingService.createInvoiceItems(contractor, BillingStatus.Activation, user)).thenReturn(invoiceItems);
 		when(permissions.loginRequired((HttpServletResponse) any(), (HttpServletRequest) any())).thenReturn(true);
 		when(permissions.getUserId()).thenReturn(123);
 		when(contractorAccountDao.find(any(int.class))).thenReturn(contractor);
 		when(permissionToViewContractor.check(any(boolean.class))).thenReturn(true);
 		when(item.getAmount()).thenReturn(new BigDecimal(199.00));
+        when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 		when(contractor.getId()).thenReturn(123);
 		when(contractor.getCountry()).thenReturn(country);
 		when(contractor.getFees()).thenReturn(fees);
@@ -162,7 +163,7 @@ public class BillingDetailTest extends PicsActionTest {
 
 	@SuppressWarnings("rawtypes")
 	private void setupInvoiceServiceToReturnArgumentOnSave() throws Exception {
-		when(invoiceService.saveInvoice(any(Invoice.class))).thenAnswer(new Answer() {
+		when(billingService.saveInvoice(any(Invoice.class))).thenAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
@@ -187,7 +188,7 @@ public class BillingDetailTest extends PicsActionTest {
 		billingDetail.setId(123);
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(billingDetail, this);
 		Whitebox.setInternalState(billingDetail, "billingService", billingService);
-		Whitebox.setInternalState(billingDetail, "invoiceService", invoiceService);
+        Whitebox.setInternalState(billingDetail, "feeService", feeService);
 		Whitebox.setInternalState(billingDetail, "user", user);
 		Whitebox.setInternalState(billingDetail, "permissionToViewContractor", permissionToViewContractor);
 		Whitebox.setInternalState(billingDetail, "saleCommissionDataObservable", saleCommissionDataObservable);
@@ -252,7 +253,7 @@ public class BillingDetailTest extends PicsActionTest {
 
 		billingDetail.execute();
 
-		verify(contractor).syncBalance();
+		verify(billingService).syncBalance(contractor);
 	}
 
 	@Test
@@ -328,7 +329,7 @@ public class BillingDetailTest extends PicsActionTest {
 		assertEquals(AccountStatus.Active, contractor.getStatus());
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 
-		verify(contractor, times(1)).syncBalance();
+		verify(billingService, times(1)).syncBalance(contractor);
 		verify(accountDAO, times(1)).save(contractor);
 	}
 

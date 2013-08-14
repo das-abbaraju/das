@@ -97,12 +97,12 @@ public class WaitingOnCalculator {
 									if (cao.getStatus().before(requiredStatus)) {
 										if (cao.getStatus().isComplete()) {
 											waitingOnOperator = true;
-										} else if (conAudit.getAuditType().getId() == AuditType.OFFICE) {
+										} else if (conAudit.getAuditType().getId() == AuditType.IMPLEMENTATION_AUDIT) {
 											// either needs to schedule the
 											// audit or
 											// close out RQs
 											return WaitingOn.Contractor;
-										} else if (conAudit.getAuditType().getId() == AuditType.DESKTOP
+										} else if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT
 												&& cao.getStatus().isSubmitted()) {
 											// contractor needs to close out RQs
 											return WaitingOn.Contractor;

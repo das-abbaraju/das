@@ -16,6 +16,7 @@ import java.util.TreeMap;
 
 import javax.sql.DataSource;
 
+import com.picsauditing.PICS.BillingService;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -100,6 +101,8 @@ public class CronTest extends PicsActionTest {
 	private AccountStatusChanges accountStatusChanges;
 	@Mock
 	private EmailSender emailSender;
+    @Mock
+    protected BillingService billingService;
 
 	@BeforeClass
 	public static void classSetUp() {
@@ -125,6 +128,7 @@ public class CronTest extends PicsActionTest {
 		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
 		Whitebox.setInternalState(cron, "emailSender", emailSender);
 		Whitebox.setInternalState(cron, "accountStatusChanges", accountStatusChanges);
+        Whitebox.setInternalState(cron, "billingService", billingService);
 
 		operators = new ArrayList<ContractorOperator>();
 		// certList = new ArrayList<Certificate>();
@@ -366,7 +370,7 @@ public class CronTest extends PicsActionTest {
 		String reason = isBidOnly ? AccountStatusChanges.BID_ONLY_ACCOUNT_REASON
 				: AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
 
-		verify(contractor, times(1)).syncBalance();
+		verify(billingService, times(1)).syncBalance(contractor);
 		verify(contractor, times(1)).setAuditColumns(Cron.system);
 		verify(accountStatusChanges, times(1)).deactivateContractor(contractor, permissions, reason,
 				"Automatically inactivating account based on expired membership");

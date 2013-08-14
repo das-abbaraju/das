@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.BillingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private EmailSender emailSender;
+    @Autowired
+    private BillingService billingService;
 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
@@ -171,7 +174,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 				resetPqf();
 			}
 
-			contractor.syncBalance();
+			billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			addActionMessage("Successfully updated Risk Level" + (noteSummary.size() > 1 ? "s" : ""));
 		}

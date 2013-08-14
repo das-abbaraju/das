@@ -1,8 +1,9 @@
 package com.picsauditing.util;
 
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -29,7 +30,9 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
-	private BillingCalculatorSingle billingService;
+	private BillingService billingService;
+    @Autowired
+    private FeeService feeService;
 
 	private boolean createInvoice = false;
 	private String url;
@@ -74,8 +77,8 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				ContractorFee newConFee = new ContractorFee();
 				newConFee.setAuditColumns(permissions);
 				newConFee.setContractor(contractor);
-				newConFee.setCurrentAmount(contractor.getCountry().getAmount(initialFee));
-				newConFee.setNewAmount(contractor.getCountry().getAmount(fee));
+				newConFee.setCurrentAmount(FeeService.getRegionalAmountOverride(contractor, initialFee));
+				newConFee.setNewAmount(FeeService.getRegionalAmountOverride(contractor, fee));
 				newConFee.setCurrentLevel(initialFee);
 				newConFee.setNewLevel(fee);
 				newConFee.setFeeClass(fee.getFeeClass());
@@ -83,8 +86,8 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 
 				contractor.getFees().put(fee.getFeeClass(), newConFee);
 
-				contractor.syncBalance();
-				billingService.calculateContractorInvoiceFees(contractor);
+                billingService.syncBalance(contractor);
+				feeService.calculateContractorInvoiceFees(contractor);
 			}
 
 			contractor.setCompetitorMembership(true);

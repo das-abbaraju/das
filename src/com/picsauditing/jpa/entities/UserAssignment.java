@@ -30,9 +30,9 @@ import javax.persistence.Transient;
  *
  * 3. ContractorCron.runAssignAudit() -- (the 4th step of contracor cron) This 
  *    table is specifically only consulted for auto-assigning 
- *    AuditType.WA_STATE_VERIFICATION and AuditType.DESKTOP
+ *    AuditType.WA_STATE_VERIFICATION and AuditType.MANUAL_AUDIT
  *
- * 4. BillingCalculatorSingle.performInvoiceStatusChangeActions() -- ensures 
+ * 4. BillingService.performInvoiceStatusChangeActions() -- ensures
  *    that an Import PQF audit is actually assigned before we charge the 
  *    contractor for doing the import.
  *

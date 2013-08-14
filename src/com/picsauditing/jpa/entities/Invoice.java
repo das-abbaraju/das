@@ -17,7 +17,6 @@ import com.picsauditing.access.OpPerms;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.velocity.tools.generic.DateTool;
 
-import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.TaxService;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -59,7 +58,7 @@ public class Invoice extends Transaction {
                 continue;
             }
 
-            if (InvoiceService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
+            if (TaxService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
                 return item;
             }
         }
@@ -204,36 +203,6 @@ public class Invoice extends Transaction {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
 		super.updateAmountApplied();
-	}
-
-	@Transient
-	public boolean isCcRebill() {
-		if (getAccount() instanceof ContractorAccount) {
-			ContractorAccount contractor = (ContractorAccount) getAccount();
-			return !getStatus().isPaid() && contractor.getPaymentMethod().isCreditCard() && contractor.isCcValid();
-		} else {
-			return false;
-		}
-	}
-
-	@Transient
-	public String getDueDateF() {
-		DateTool dateTool = new DateTool();
-		return dateTool.format(PicsDateFormat.Iso, getDueDate());
-	}
-
-	public boolean containsATaxLineItem() {
-		for (InvoiceItem item : getItems()) {
-			InvoiceFee invoiceFee = item.getInvoiceFee();
-			if (invoiceFee == null) {
-				continue;
-			}
-
-			if (InvoiceService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Transient

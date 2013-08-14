@@ -1,8 +1,9 @@
 package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -33,10 +34,12 @@ public class ContractorFacilities extends ContractorActionSupport {
     private NoteDAO noteDAO;
     @Autowired
     private FacilityChanger facilityChanger;
-    @Autowired
-    private BillingCalculatorSingle billingService;
 	@Autowired
 	private EmailSender emailSender;
+    @Autowired
+    private BillingService billingService;
+    @Autowired
+    private FeeService feeService;
 
     public Boolean competitorAnswer;
     private ContractorType type = null;
@@ -106,8 +109,8 @@ public class ContractorFacilities extends ContractorActionSupport {
             if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
                 contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 
-            billingService.calculateContractorInvoiceFees(contractor);
-            contractor.syncBalance();
+            feeService.calculateContractorInvoiceFees(contractor);
+            billingService.syncBalance(contractor);
             recalculate();
         } else {
             addActionError(getText("ContractorFacilities.error.ServiceMismatch"));
@@ -345,8 +348,8 @@ public class ContractorFacilities extends ContractorActionSupport {
             if (contractor.getAccountLevel().isBidOnly() && !contractor.getRequestedBy().isAcceptsBids()) {
                 contractor.setAccountLevel(AccountLevel.BidOnly);
                 contractor.setRenew(true);
-                billingService.calculateContractorInvoiceFees(contractor);
-                contractor.syncBalance();
+                feeService.calculateContractorInvoiceFees(contractor);
+                billingService.syncBalance(contractor);
             }
 
             accountDao.save(contractor);
@@ -358,8 +361,8 @@ public class ContractorFacilities extends ContractorActionSupport {
     public String switchToTrialAccount() {
         contractor.setAccountLevel(AccountLevel.BidOnly);
         contractor.setRenew(false);
-        billingService.calculateContractorInvoiceFees(contractor);
-        contractor.syncBalance();
+        feeService.calculateContractorInvoiceFees(contractor);
+        billingService.syncBalance(contractor);
         accountDao.save(contractor);
 
         return BLANK;
@@ -524,8 +527,8 @@ public class ContractorFacilities extends ContractorActionSupport {
                 }
             }
 
-            billingService.calculateContractorInvoiceFees(contractor);
-            contractor.syncBalance();
+            feeService.calculateContractorInvoiceFees(contractor);
+            billingService.syncBalance(contractor);
 
             accountDao.save(contractor);
         }
@@ -569,8 +572,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 
     private void recalculate() throws Exception {
         findContractor();
-        billingService.calculateContractorInvoiceFees(contractor);
-        contractor.syncBalance();
+        feeService.calculateContractorInvoiceFees(contractor);
+        billingService.syncBalance(contractor);
         accountDao.save(contractor);
     }
 

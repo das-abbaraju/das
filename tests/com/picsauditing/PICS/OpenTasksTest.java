@@ -33,7 +33,6 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
@@ -586,7 +585,7 @@ public class OpenTasksTest extends PicsActionTest {
 		when(cao.isVisible()).thenReturn(true);
 		when(cao.getStatus()).thenReturn(AuditStatus.Pending);
 		when(auditType.isCanContractorEdit()).thenReturn(true);
-		when(auditType.getId()).thenReturn(AuditType.DESKTOP);
+		when(auditType.getId()).thenReturn(AuditType.MANUAL_AUDIT);
 		when(audit.getOperators()).thenReturn(Arrays.asList(cao));
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(workFlow.getId()).thenReturn(Workflow.MANUAL_AUDIT_WORKFLOW);

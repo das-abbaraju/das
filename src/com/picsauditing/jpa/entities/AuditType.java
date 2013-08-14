@@ -38,8 +38,8 @@ import com.picsauditing.report.tables.FieldImportance;
 public class AuditType extends BaseTableRequiringLanguages implements Comparable<AuditType>, java.io.Serializable {
 
 	public static final int PQF = 1;
-	public static final int DESKTOP = 2;
-	public static final int OFFICE = 3;
+	public static final int MANUAL_AUDIT = 2;
+	public static final int IMPLEMENTATION_AUDIT = 3;
 	public static final int FIELD = 5;
 	public static final int DA = 6;
 	public static final int WELCOME = 9;
@@ -324,10 +324,10 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		if (auditTypeID == AuditType.PQF) {
 			auditType = "PQF";
 		}
-		if (auditTypeID == AuditType.DESKTOP) {
+		if (auditTypeID == AuditType.MANUAL_AUDIT) {
 			auditType = "Desktop";
 		}
-		if (auditTypeID == AuditType.OFFICE) {
+		if (auditTypeID == AuditType.IMPLEMENTATION_AUDIT) {
 			auditType = "Office";
 		}
 		if (auditTypeID == AuditType.DA) {
@@ -338,10 +338,10 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	@Transient
 	public boolean isShowManual() {
-		if (this.id == OFFICE) {
+		if (this.id == IMPLEMENTATION_AUDIT) {
 			return true;
 		}
-		if (this.id == DESKTOP) {
+		if (this.id == MANUAL_AUDIT) {
 			return true;
 		}
 		if (this.id == BPIISNCASEMGMT) {
@@ -367,12 +367,12 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	@Transient
 	public boolean isDesktop() {
-		return (id == DESKTOP);
+		return (id == MANUAL_AUDIT);
 	}
 
 	@Transient
 	public boolean isImplementation() {
-		return id == OFFICE;
+		return id == IMPLEMENTATION_AUDIT;
 	}
 
 	@Transient
@@ -385,9 +385,14 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		return CANADIAN_PROVINCES.contains(id);
 	}
 
-	@Transient
+    @Transient
+    public boolean isCorIec() {
+        return (id == COR || id == IEC_AUDIT);
+    }
+
+    @Transient
 	public boolean isCorIecWaState() {
-		return (id == COR || id == IEC_AUDIT || id == WA_STATE_VERIFICATION);
+		return (isCorIec() || id == WA_STATE_VERIFICATION);
 	}
 
 	@Transient

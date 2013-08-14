@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.BillingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	private EmailSender emailSender;
 	@Autowired
 	private EmailBuilder emailBuilder;
+    @Autowired
+    private BillingService billingService;
 
 	protected int conID;
 	protected String auditorNotes;
@@ -96,7 +99,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		}
 
 		con.setAuditColumns(permissions);
-		con.syncBalance();
+        billingService.syncBalance(con);
 		contractorAccountDAO.save(con);
 
 		auditorNotes = "";

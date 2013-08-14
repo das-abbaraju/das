@@ -28,6 +28,7 @@ import javax.naming.NoPermissionException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.picsauditing.PICS.FeeService;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,7 +41,7 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.actions.PicsActionSupport;
@@ -62,7 +63,9 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 	@Mock
 	private BasicDynaBean basicDynaBean;
 	@Mock
-	private BillingCalculatorSingle billingCalculatorSingle;
+	private BillingService billingService;
+    @Mock
+    private FeeService feeService;
 	@Mock
 	private EntityManager entityManager;
 	@Mock
@@ -90,7 +93,8 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		PicsTestUtil picsTestUtil = new PicsTestUtil();
 		picsTestUtil.autowireEMInjectedDAOs(contractorFacilities, entityManager);
 
-		Whitebox.setInternalState(contractorFacilities, "billingService", billingCalculatorSingle);
+		Whitebox.setInternalState(contractorFacilities, "billingService", billingService);
+        Whitebox.setInternalState(contractorFacilities, "feeService", feeService);
 		Whitebox.setInternalState(contractorFacilities, "facilityChanger", facilityChanger);
 		Whitebox.setInternalState(contractorFacilities, "permissionToViewContractor", permissionToViewContractor);
 		Whitebox.setInternalState(contractorFacilities, "database", database);
@@ -186,7 +190,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
 		assertTrue(actionContext.getSession().get("requestID") == null);
 
-		verify(contractorAccount).syncBalance();
+		verify(billingService).syncBalance(contractorAccount);
 		verify(entityManager, times(2)).merge(any(ContractorAccount.class));
 		verify(facilityChanger).add();
 	}
@@ -203,7 +207,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 
 		session.put("requestID", 1);
 
-		doNothing().when(contractorAccount).syncBalance();
+		doNothing().when(billingService).syncBalance(contractorAccount);
 		when(entityManager.find(eq(ContractorAccount.class), anyInt())).thenReturn(contractorAccount);
 		when(entityManager.find(ContractorRegistrationRequest.class, 1)).thenReturn(request);
 		when(permissions.getAccountId()).thenReturn(1);
@@ -212,7 +216,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		assertTrue(actionContext.getSession().get("requestID") == null);
 		assertFalse(contractorAccount.getOperatorTags().isEmpty());
 
-		verify(contractorAccount).syncBalance();
+		verify(billingService).syncBalance(contractorAccount);
 		verify(entityManager, times(3)).merge(any(ContractorAccount.class));
 		verify(facilityChanger).add();
 	}
@@ -654,7 +658,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 
 		if (spy) {
 			contractorAccount = spy(contractorAccount);
-			doNothing().when(contractorAccount).syncBalance();
+			doNothing().when(billingService).syncBalance(contractorAccount);
 		}
 
 		when(entityManager.find(ContractorAccount.class, contractorID)).thenReturn(contractorAccount);

@@ -14,10 +14,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.PICS.TaxService;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -205,9 +205,7 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isMembership() {
-		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.BidOnly
-				|| this.getFeeClass() == FeeClass.DocuGUARD || this.getFeeClass() == FeeClass.AuditGUARD
-				|| this.getFeeClass() == FeeClass.InsureGUARD || this.getFeeClass() == FeeClass.EmployeeGUARD;
+		return this.getFeeClass().isMembership();
 	}
 
 	@Transient
@@ -269,7 +267,7 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isTax() {
-		if (InvoiceService.TAX_FEE_CLASSES.contains(feeClass)) {
+		if (TaxService.TAX_FEE_CLASSES.contains(feeClass)) {
 			return true;
 		}
 

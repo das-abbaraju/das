@@ -1,7 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
@@ -45,7 +45,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
-	private BillingCalculatorSingle billingService;
+	private BillingService billingService;
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired

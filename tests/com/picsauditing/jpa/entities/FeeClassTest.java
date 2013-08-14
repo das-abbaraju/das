@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.FeeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,10 +40,9 @@ public class FeeClassTest {
     private InvoiceFee mockFee;
     @Mock
     private Country mockCountry;
+    @Mock
+    private InvoiceFeeCountry mockInvoiceFeeCountry;
 
-    private static final BigDecimal FULL_AMOUNT = BigDecimal.valueOf(10);
-    private static final BigDecimal DISCOUNTED_AMOUNT = BigDecimal.valueOf(7);
-    private static final BigDecimal LESS_DISCOUNTED_AMOUNT = BigDecimal.valueOf(9);
     private static final BigDecimal DISCOUNT_PERCENTAGE = BigDecimal.valueOf(0.3);
     private static final BigDecimal LESSER_DISCOUNT_PERCENTAGE = BigDecimal.valueOf(0.1);
     private List<OperatorAccount> operatorList;
@@ -52,6 +52,7 @@ public class FeeClassTest {
         MockitoAnnotations.initMocks(this);
 		contractor = EntityFactory.makeContractor();
         operatorList = new ArrayList<OperatorAccount>(2);
+
         when(mockOperatorWithDiscount.isHasDiscount()).thenReturn(true);
         when(mockOperatorWithLesserDiscount.isHasDiscount()).thenReturn(true);
         when(mockOperatorWithoutDiscount.isHasDiscount()).thenReturn(false);
@@ -59,7 +60,13 @@ public class FeeClassTest {
         when(mockOperatorWithLesserDiscount.getDiscountPercent()).thenReturn(LESSER_DISCOUNT_PERCENTAGE);
         when(mockContractor.getOperatorAccounts()).thenReturn(operatorList);
         when(mockContractor.getCountry()).thenReturn(mockCountry);
-        when(mockCountry.getAmount(mockFee)).thenReturn(FULL_AMOUNT);
+
+        List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
+        when(mockInvoiceFeeCountry.getInvoiceFee()).thenReturn(mockFee);
+        when(mockInvoiceFeeCountry.getAmount()).thenReturn(new BigDecimal(10));
+        amountOverrides.add(mockInvoiceFeeCountry);
+
+        when(mockCountry.getAmountOverrides()).thenReturn(amountOverrides);
         ID_FOR_MOCKS = 100;
 	}
 
@@ -201,36 +208,4 @@ public class FeeClassTest {
 		fees.put(FeeClass.InsureGUARD, contractorFee);
 		contractor.setFees(fees);
 	}
-
-    @Test
-    public void testActivation_getAdjustedFeeAmount_operatorWithDiscount() {
-        operatorList.add(mockOperatorWithDiscount);
-        assertEquals(DISCOUNTED_AMOUNT, FeeClass.Activation.getAdjustedFeeAmountIfNecessary(mockContractor, mockFee));
-    }
-
-    @Test
-    public void testActivation_getAdjustedFeeAmount_operatorWithoutDiscount() {
-        operatorList.add(mockOperatorWithoutDiscount);
-        assertEquals(FULL_AMOUNT, FeeClass.Activation.getAdjustedFeeAmountIfNecessary(mockContractor, mockFee));
-    }
-
-    @Test
-    public void testActivation_getAdjustedFeeAmount_noOperators() {
-        assertEquals(FULL_AMOUNT, FeeClass.Activation.getAdjustedFeeAmountIfNecessary(mockContractor, mockFee));
-    }
-
-    @Test
-    public void testActivation_getAdjustedFeeAmount_multipleDiscountedOperators() {
-        operatorList.add(mockOperatorWithDiscount);
-        operatorList.add(mockOperatorWithLesserDiscount);
-        assertEquals(LESS_DISCOUNTED_AMOUNT, FeeClass.Activation.getAdjustedFeeAmountIfNecessary(mockContractor, mockFee));
-    }
-
-    @Test
-    public void testActivation_getAdjustedFeeAmount_variedOperators() {
-        operatorList.add(mockOperatorWithDiscount);
-        operatorList.add(mockOperatorWithLesserDiscount);
-        operatorList.add(mockOperatorWithoutDiscount);
-        assertEquals(FULL_AMOUNT, FeeClass.Activation.getAdjustedFeeAmountIfNecessary(mockContractor, mockFee));
-    }
 }

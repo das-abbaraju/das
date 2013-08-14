@@ -237,16 +237,21 @@ public class ReportApi extends PicsApiSupport {
     public String subscribe() {
         try {
             report = reportDao.findById(reportId);
+            logger.debug("Report: " + report.getId());
+
             List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(permissions.getUserId(), report.getId());
             EmailSubscription reportSubscription;
+            logger.debug("Subscription count from DB: " + subscriptions.size());
 
             if (subscriptions.isEmpty())
                 reportSubscription = Subscription.DynamicReports.createEmailSubscription(new User(permissions.getUserId()));
             else
                 reportSubscription = subscriptions.get(0);
+            logger.debug("Subscription obtained: " + reportSubscription.getSubscription().toString());
 
             reportSubscription.setTimePeriod(frequency);
             reportSubscription.setReport(report);
+            logger.debug("Report is set into subscription: " + reportSubscription.getReport().getId());
 
             emailSubscriptionDAO.save(reportSubscription);
         } catch (Exception e) {

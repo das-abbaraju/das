@@ -5,11 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.BillingService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -32,15 +31,13 @@ import com.picsauditing.model.billing.AccountingSystemSynchronization;
 @SuppressWarnings("serial")
 public class ConInvoiceMaintain extends ContractorActionSupport implements Preparable {
 	@Autowired
-	private InvoiceService invoiceService;
-	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
-	private BillingCalculatorSingle billingService;
+	private BillingService billingService;
 
 	public int invoiceId;
 	public Invoice invoice;
@@ -82,7 +79,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 			invoice.updateTotalAmount();
 			AccountingSystemSynchronization.setToSynchronize(invoice);
-			invoiceService.saveInvoice(invoice);
+			billingService.saveInvoice(invoice);
 			addActionMessage(message);
 		}
 
@@ -109,7 +106,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 				invoice.updateTotalAmount();
 				AccountingSystemSynchronization.setToSynchronize(invoice);
-				invoiceService.saveInvoice(invoice);
+                billingService.saveInvoice(invoice);
 			}
 		}
 

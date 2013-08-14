@@ -130,7 +130,6 @@ public class ContractorAccount extends Account implements JSONable {
 	public static final int MAX_RECALC = 127;
 
 	// This is only for testing, do not autowire these
-	private InvoiceFeeDAO invoiceFeeDAO;
 	private InputValidator inputValidator;
 	private VATValidator vatValidator;
 	private CountryDAO countryDAO;
@@ -163,7 +162,6 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setOperators(List<ContractorOperator> operators) {
 		this.operators = operators;
 	}
-
 
 	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	public List<InsuranceCriteriaContractorOperator> getInsuranceCriteriaContractorOperators() {
@@ -465,8 +463,9 @@ public class ContractorAccount extends Account implements JSONable {
 		return this.payingFacilities;
 	}
 
-	public void setPayingFacilities(int payingFacilities) {
+	public int setPayingFacilities(int payingFacilities) {
 		this.payingFacilities = payingFacilities;
+        return payingFacilities;
 	}
 
 	@Transient
@@ -1064,320 +1063,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.agreedBy = agreedBy;
 	}
 
-	/**
-	 * Set the balance equal to the sum of all unpaid invoices
-	 */
-	@Transient
-	public void syncBalance() {
-		if (this.getStatus().isRequested() || this.getStatus().isDeclined()) {
-			return;
-		}
-
-		/**
-		 * Roll up the outstanding balance on all transactions
-		 */
-		balance = BigDecimal.ZERO;
-		for (Invoice invoice : getInvoices()) {
-			if (!invoice.getStatus().isVoid()) {
-				balance = balance.add(invoice.getTotalAmount());
-			}
-		}
-
-		for (Refund refund : getRefunds()) {
-			if (!refund.getStatus().isVoid()) {
-				balance = balance.add(refund.getTotalAmount());
-			}
-		}
-
-		for (Payment payment : getPayments()) {
-			if (!payment.getStatus().isVoid()) {
-				balance = balance.subtract(payment.getTotalAmount());
-			}
-		}
-
-		balance = balance.setScale(2, BigDecimal.ROUND_UP);
-
-		// STart here, call private method and set the contractor.fee
-		InvoiceFeeDAO feeDAO = getInvoiceFeeDAO();
-
-		boolean foundListOnlyMembership = false;
-		boolean foundBidOnlyMembership = false;
-		boolean foundDocuGUARDMembership = false;
-		boolean foundAuditGUARDMembership = false;
-		boolean foundInsureGUARDMembership = false;
-		boolean foundEmployeeGUARDMembership = false;
-		boolean foundImportPQFFee = false;
-		/**
-		 * TRUE if we found the most recent membership activation/reactivation
-		 * or renewal. We're not looking for upgrades here.
-		 */
-		boolean foundMembership = false;
-		boolean foundMembershipDate = false;
-		boolean foundPaymentExpires = false;
-
-		/**
-		 * Go through the list of invoices in reverse order (most recent first).
-		 * Find the first invoice with a membership line and grab all the
-		 * invoiceFees.
-		 */
-		for (Invoice invoice : getSortedInvoices()) {
-			if (!invoice.getStatus().isVoid()) {
-				for (InvoiceItem invoiceItem : invoice.getItems()) {
-					if (!foundMembership && invoiceItem.getInvoiceFee().isMembership()) {
-						if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)
-								&& !foundListOnlyMembership) {
-							foundListOnlyMembership = true;
-							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly,
-									getPayingFacilities());
-							setCurrentFee(fee, getCountry().getAmount(fee));
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)
-								&& !foundBidOnlyMembership) {
-							foundBidOnlyMembership = true;
-							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,
-									getPayingFacilities());
-							setCurrentFee(fee, getCountry().getAmount(fee));
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)
-								&& !foundDocuGUARDMembership) {
-							foundDocuGUARDMembership = true;
-
-							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
-								// We have no way of knowing how many paying
-								// facilities the contractor had when we
-								// transitioned fee levels. Since all
-								// DocuGUARD fee amounts are currently the
-								// same, set fee level based on current
-								// number of paying facilities if contractor
-								// paid legacy DocuGUARD fee.
-								InvoiceFee newDocuGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
-										this.getPayingFacilities());
-								setCurrentFee(newDocuGUARDFee, getCountry().getAmount(newDocuGUARDFee));
-
-								foundInsureGUARDMembership = true;
-								InvoiceFee newInsureGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(
-										FeeClass.InsureGUARD, this.getPayingFacilities());
-								setCurrentFee(newInsureGUARDFee, getCountry().getAmount(newInsureGUARDFee));
-							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee(),
-										getCountry().getAmount(invoiceItem.getInvoiceFee()));
-							}
-
-							// DocuGUARD overrides Bid/List Only membership
-							foundBidOnlyMembership = true;
-							clearCurrentFee(FeeClass.BidOnly, feeDAO);
-							foundListOnlyMembership = true;
-							clearCurrentFee(FeeClass.ListOnly, feeDAO);
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.AuditGUARD)
-								&& !foundAuditGUARDMembership) {
-							foundAuditGUARDMembership = true;
-
-							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
-								InvoiceFee fee = feeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.AuditGUARD,
-										invoiceItem.getInvoiceFee());
-								BigDecimal currentAmount = FeeClass.AuditGUARD.getAdjustedFeeAmountIfNecessary(this,
-										fee);
-								setCurrentFee(fee, currentAmount);
-							} else {
-								BigDecimal currentAmount = FeeClass.AuditGUARD.getAdjustedFeeAmountIfNecessary(this,
-										invoiceItem.getInvoiceFee());
-								setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
-							}
-
-							// Old AuditGUARD included DocuGUARD fee &
-							// InsureGUARD fee
-							// For legacy compliance
-							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
-								foundDocuGUARDMembership = true;
-								InvoiceFee newDocuGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
-										FeeClass.DocuGUARD, invoiceItem.getInvoiceFee());
-								setCurrentFee(newDocuGUARDfee, getCountry().getAmount(newDocuGUARDfee));
-
-								foundInsureGUARDMembership = true;
-								InvoiceFee newInsureGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
-										FeeClass.InsureGUARD, invoiceItem.getInvoiceFee());
-								setCurrentFee(newInsureGUARDfee, getCountry().getAmount(newInsureGUARDfee));
-							}
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)
-								&& !foundInsureGUARDMembership) {
-							foundInsureGUARDMembership = true;
-							BigDecimal currentAmount = FeeClass.InsureGUARD.getAdjustedFeeAmountIfNecessary(this,
-									invoiceItem.getInvoiceFee());
-							setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.EmployeeGUARD)
-								&& !foundEmployeeGUARDMembership) {
-							foundEmployeeGUARDMembership = true;
-							BigDecimal currentAmount = FeeClass.EmployeeGUARD.getAdjustedFeeAmountIfNecessary(this,
-									invoiceItem.getInvoiceFee());
-							setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
-						}
-
-						if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
-							paymentExpires = invoiceItem.getPaymentExpires();
-							foundPaymentExpires = true;
-						}
-					}
-					if (!foundMembershipDate
-							&& (invoiceItem.getInvoiceFee().isActivation() || invoiceItem.getInvoiceFee()
-							.isReactivation())) {
-						if (invoice.getPayments().size() > 0) {
-							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(
-									invoice.getPayments());
-							Collections.sort(invoice.getPayments(), new Comparator<PaymentApplied>() {
-								public int compare(PaymentApplied paymentOne, PaymentApplied paymentTwo) {
-									return paymentTwo.getCreationDate().compareTo(paymentOne.getCreationDate());
-								}
-							});
-
-							PaymentApplied payment = sortedPaymentList.get(0);
-
-							membershipDate = payment.getCreationDate();
-							foundMembershipDate = true;
-						}
-					}
-					// Checking for ImportPQF fee and potentially others
-					if (!foundImportPQFFee && invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)
-							&& getFees().containsKey(FeeClass.ImportFee)) {
-						InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
-						foundImportPQFFee = true;
-						setCurrentFee(fee, getCountry().getAmount(fee));
-					}
-				}
-
-				if (foundPaymentExpires) {
-					foundMembership = true;
-				}
-				invoice.getCommissionEligibleFees(true);
-			}
-		}
-
-		if (!foundListOnlyMembership) {
-			clearCurrentFee(FeeClass.ListOnly, feeDAO);
-		}
-
-		if (!foundBidOnlyMembership) {
-			clearCurrentFee(FeeClass.BidOnly, feeDAO);
-		}
-
-		if (!foundDocuGUARDMembership) {
-			clearCurrentFee(FeeClass.DocuGUARD, feeDAO);
-		}
-
-		if (!foundAuditGUARDMembership) {
-			clearCurrentFee(FeeClass.AuditGUARD, feeDAO);
-		}
-
-		if (!foundInsureGUARDMembership) {
-			clearCurrentFee(FeeClass.InsureGUARD, feeDAO);
-		}
-
-		if (!foundEmployeeGUARDMembership) {
-			clearCurrentFee(FeeClass.EmployeeGUARD, feeDAO);
-		}
-
-		if (getFees().containsKey(FeeClass.ImportFee) && !foundImportPQFFee) {
-			clearCurrentFee(FeeClass.ImportFee, feeDAO);
-		}
-
-		if (!foundPaymentExpires) {
-			paymentExpires = creationDate;
-		}
-
-		if (!foundMembershipDate) {
-			membershipDate = null;
-		}
-	}
-
-	private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-		Map<FeeClass, ContractorFee> contractorFees = getFees();
-		if (isMissingFee(contractorFees, feeClass)) {
-			setNewContractorFeeOnContractor(feeClass, BigDecimal.ZERO);
-		} else {
-			InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(feeClass, 0);
-			contractorFees.get(feeClass).setCurrentLevel(invoiceFee);
-			contractorFees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
-		}
-	}
-
-	private void setNewContractorFeeOnContractor(FeeClass fee, BigDecimal amount) {
-		InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(fee, 0);
-		setNewContractorFeeOnContractor(invoiceFee, amount);
-	}
-
-	private void setNewContractorFeeOnContractor(InvoiceFee invoiceFee, BigDecimal amount) {
-		if (invoiceFee == null || invoiceFee.getFeeClass() == null) {
-			return;
-		}
-
-		ContractorFee contractorFee = buildContractorFee(invoiceFee, amount);
-
-		Map<FeeClass, ContractorFee> contractorFees = getFees();
-		if (contractorFees == null) {
-			contractorFees = new TreeMap<FeeClass, ContractorFee>();
-			setFees(contractorFees);
-		}
-
-		contractorFees.put(invoiceFee.getFeeClass(), contractorFee);
-	}
-
-	private ContractorFee buildContractorFee(InvoiceFee invoiceFee, BigDecimal amount) {
-		ContractorFee contractorFee = new ContractorFee();
-		contractorFee.setAuditColumns(getUpdatedBy());
-		contractorFee.setContractor(this);
-		contractorFee.setFeeClass(invoiceFee.getFeeClass());
-		contractorFee.setCurrentLevel(invoiceFee);
-		contractorFee.setNewLevel(invoiceFee);
-		contractorFee.setCurrentAmount(amount);
-		contractorFee.setNewAmount(amount);
-		return contractorFee;
-	}
-
-	private boolean isMissingFee(InvoiceFee invoiceFee) {
-		Map<FeeClass, ContractorFee> contractorFees = getFees();
-		return invoiceFee == null || invoiceFee.getFeeClass() == null
-				|| isMissingFee(contractorFees, invoiceFee.getFeeClass());
-	}
-
-	private boolean isMissingFee(Map<FeeClass, ContractorFee> contractorFees, FeeClass fee) {
-		return MapUtils.isEmpty(contractorFees) || !contractorFees.containsKey(fee);
-	}
-
-	private InvoiceFee findInvoiceFeeForServiceLevel(FeeClass feeClass, int numberOfClientSites) {
-		InvoiceFeeDAO invoiceFeeDAO = getInvoiceFeeDAO();
-		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfClientSites);
-	}
-
-	private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
-		Map<FeeClass, ContractorFee> contractorFees = getFees();
-		if (isMissingFee(fee)) {
-			setNewContractorFeeOnContractor(fee, amount);
-		} else {
-			contractorFees.get(fee.getFeeClass()).setCurrentLevel(fee);
-			contractorFees.get(fee.getFeeClass()).setCurrentAmount(amount);
-		}
-	}
-
-	@Transient
-	public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-		Map<FeeClass, ContractorFee> contractorFees = getFees();
-		if (isMissingFee(contractorFees, feeClass)) {
-			setNewContractorFeeOnContractor(feeClass, BigDecimal.ZERO);
-		} else {
-			InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(feeClass, 0);
-			contractorFees.get(feeClass).setNewLevel(invoiceFee);
-			contractorFees.get(feeClass).setNewAmount(BigDecimal.ZERO);
-		}
-	}
-
-	@Transient
-	public void setNewFee(InvoiceFee invoiceFee, BigDecimal amount) {
-		Map<FeeClass, ContractorFee> contractorFees = getFees();
-		if (isMissingFee(invoiceFee)) {
-			setNewContractorFeeOnContractor(invoiceFee, amount);
-		} else {
-			contractorFees.get(invoiceFee.getFeeClass()).setNewLevel(invoiceFee);
-			contractorFees.get(invoiceFee.getFeeClass()).setNewAmount(amount);
-		}
-	}
-
 	@Transient
 	public boolean isHasMembershipChanged() {
 		for (FeeClass feeClass : this.getFees().keySet()) {
@@ -1468,20 +1153,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setFlagDataOverrides(Set<FlagDataOverride> flagDataOverrides) {
 		this.flagDataOverrides = flagDataOverrides;
-	}
-
-	/**
-	 * @return a list of invoices sorted by creationDate DESC
-	 */
-	@Transient
-	public List<Invoice> getSortedInvoices() {
-		List<Invoice> sortedInvoiceList = new ArrayList<Invoice>(getInvoices());
-		Collections.sort(sortedInvoiceList, new Comparator<Invoice>() {
-			public int compare(Invoice invoiceOne, Invoice invoiceTwo) {
-				return invoiceTwo.getCreationDate().compareTo(invoiceOne.getCreationDate());
-			}
-		});
-		return sortedInvoiceList;
 	}
 
 	/**
@@ -1864,7 +1535,21 @@ public class ContractorAccount extends Account implements JSONable {
 		return false;
 	}
 
-	/**
+    /**
+     * @return a list of invoices sorted by creationDate DESC
+     */
+    @Transient
+    public List<Invoice> getSortedInvoices() {
+        List<Invoice> sortedInvoiceList = new ArrayList<Invoice>(getInvoices());
+        Collections.sort(sortedInvoiceList, new Comparator<Invoice>() {
+            public int compare(Invoice invoiceOne, Invoice invoiceTwo) {
+                return invoiceTwo.getCreationDate().compareTo(invoiceOne.getCreationDate());
+            }
+        });
+        return sortedInvoiceList;
+    }
+
+    /**
 	 * @return Null if no unpaid invoices exist
 	 */
 	@Transient
@@ -2211,15 +1896,6 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return countryDAO;
-	}
-
-	@Transient
-	private InvoiceFeeDAO getInvoiceFeeDAO() {
-		if (invoiceFeeDAO == null) {
-			return SpringUtils.getBean("InvoiceFeeDAO");
-		}
-
-		return invoiceFeeDAO;
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.PICS.BillingService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -98,6 +99,9 @@ public class Cron extends PicsActionSupport {
 	private EmailBuilder emailBuilder;
 	@Autowired
 	private AccountStatusChanges accountStatusChanges;
+
+    @Autowired
+    private BillingService billingService;
 
 	protected final static User system = new User(User.SYSTEM);
 
@@ -339,7 +343,7 @@ public class Cron extends PicsActionSupport {
 		for (ContractorAccount contractor : conAcctList) {
             final String reason = contractor.getAccountLevel().isBidOnly() ? AccountStatusChanges
                     .BID_ONLY_ACCOUNT_REASON : AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
-			contractor.syncBalance();
+			billingService.syncBalance(contractor);
 			contractor.setAuditColumns(system);
 			accountStatusChanges.deactivateContractor(contractor, permissions, reason,
 					"Automatically inactivating account based on expired membership");
@@ -777,7 +781,7 @@ public class Cron extends PicsActionSupport {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 7);
 
-		List<ContractorAudit> caList = contractorAuditDAO.findScheduledAuditsByAuditId(AuditType.OFFICE,
+		List<ContractorAudit> caList = contractorAuditDAO.findScheduledAuditsByAuditId(AuditType.IMPLEMENTATION_AUDIT,
 				DateBean.setToStartOfDay(cal.getTime()), DateBean.setToEndOfDay(cal.getTime()));
 		for (ContractorAudit ca : caList) {
 			EventSubscriptionBuilder.notifyUpcomingImplementationAudit(ca);
@@ -907,7 +911,7 @@ public class Cron extends PicsActionSupport {
 
             i.setAuditColumns(new User(User.SYSTEM));
             if (i.getAccount() instanceof ContractorAccount) {
-                ((ContractorAccount) i.getAccount()).syncBalance();
+                billingService.syncBalance(((ContractorAccount) i.getAccount()));
                 invoiceItemDAO.save(i.getAccount());
             }
             invoiceItemDAO.save(lateFeeItem);
@@ -1163,5 +1167,13 @@ public class Cron extends PicsActionSupport {
 					AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
 		}
 	}
+
+    public BillingService getBillingService() {
+        return billingService;
+    }
+
+    public void setBillingService(BillingService billingService) {
+        this.billingService = billingService;
+    }
 
 }

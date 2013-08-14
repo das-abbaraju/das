@@ -51,13 +51,15 @@ public class FacilityChanger {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
-	private BillingCalculatorSingle billingService;
-	@Autowired
 	private EmailSender emailSender;
-	@Autowired
+    @Autowired
 	protected AuditBuilder auditBuilder = null;
-	@Autowired
+    @Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
+    @Autowired
+    private BillingService billingService;
+    @Autowired
+    private FeeService feeService;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -146,7 +148,7 @@ public class FacilityChanger {
 			contractor.setRequestedBy(findEarliestAddedOperator());
 		}
 
-		billingService.calculateContractorInvoiceFees(contractor);
+        feeService.calculateContractorInvoiceFees(contractor);
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -209,7 +211,7 @@ public class FacilityChanger {
 
 				accountLevelAdjuster.setListOnlyIfPossible(contractor);
 
-				billingService.calculateContractorInvoiceFees(contractor);
+                feeService.calculateContractorInvoiceFees(contractor);
 
 				// adjusting requested by to earliest added operator
 				if (contractor.getRequestedBy() == null || contractor.getRequestedBy().equals(operator)) {

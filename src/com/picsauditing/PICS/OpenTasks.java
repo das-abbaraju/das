@@ -459,13 +459,13 @@ public class OpenTasks extends TranslationActionSupport {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
 						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 					String text = "";
-					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
+					if (conAudit.getAuditType().getId() == AuditType.IMPLEMENTATION_AUDIT && conAudit.getScheduledDate() == null) {
 						text = getTextParameterized(locale, "ContractorWidget.message.ScheduleYourImplementationAudit",
 								conAudit.getId(), auditName, showAuditFor, auditFor);
 					} else {
 						Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 						Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
-						if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
+						if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT) {
 							text = getTextParameterized(locale, "ContractorWidget.message.UpcomingAuditConductedBy",
 
 									conAudit.getId(), auditName, showAuditor, (conAudit.getAuditor() != null) ? conAudit

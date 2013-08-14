@@ -4,15 +4,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.BillingNoteModel;
 
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -39,11 +39,11 @@ public class BillingDetail extends ContractorActionSupport {
 	private static final String CREATE_BUTTON = "Create";
 
 	@Autowired
-	private BillingCalculatorSingle billingService;
+	private BillingService billingService;
+    @Autowired
+    private FeeService feeService;
 	@Autowired
 	private OperatorAccountDAO opAccountDao;
-	@Autowired
-	private InvoiceService invoiceService;
 	@Autowired
 	private TransactionDAO transactionDAO;
 	@Autowired
@@ -63,9 +63,9 @@ public class BillingDetail extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 		this.findContractor();
-		billingService.calculateContractorInvoiceFees(contractor);
+        feeService.calculateContractorInvoiceFees(contractor);
 
-		invoiceItems = billingService.createInvoiceItems(contractor,
+		invoiceItems = billingService.createInvoiceItems(contractor, contractor.getBillingStatus(),
 				billingNoteModel.findUserForPaymentNote(permissions));
 		invoiceTotal = billingService.calculateInvoiceTotal(invoiceItems);
 
@@ -78,10 +78,10 @@ public class BillingDetail extends ContractorActionSupport {
 			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems,
 					new User(permissions.getUserId()), contractor.getBillingStatus());
 
-			invoice = invoiceService.saveInvoice(invoice);
+			invoice = billingService.saveInvoice(invoice);
 
 			contractor.getInvoices().add(invoice);
-			contractor.syncBalance();
+			billingService.syncBalance(contractor);
 			accountDAO.save(contractor);
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
@@ -111,7 +111,7 @@ public class BillingDetail extends ContractorActionSupport {
 			}
 		}
 
-		contractor.syncBalance();
+        billingService.syncBalance(contractor);
 
 		accountDAO.save(contractor);
 

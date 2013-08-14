@@ -65,6 +65,7 @@
     <bean id="EmployeeSiteDAO" class="com.picsauditing.dao.EmployeeSiteDAO"/>
     <bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
     <bean id="FeatureToggleProvider" class="com.picsauditing.dao.FeatureToggleDAO"/>
+    <bean id="FeeService" class="com.picsauditing.PICS.FeeService" scope="prototype"/>
     <bean id="FileDAO" class="com.picsauditing.dao.FileDAO"/>
     <bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
     <bean id="FlagCriteriaContractorDAO" class="com.picsauditing.dao.FlagCriteriaContractorDAO"/>
@@ -127,7 +128,7 @@
 
     <bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
     <bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
-    <bean id="BillingService" class="com.picsauditing.PICS.BillingCalculatorSingle" init-method="initService"/>
+    <bean id="BillingService" class="com.picsauditing.PICS.BillingService" init-method="initService"/>
     <bean id="brainTree" class="com.picsauditing.billing.BrainTree"/>
     <bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
     <bean id="ContractorWatchlistHelper" class="com.picsauditing.PICS.ContractorWatchlistHelper" scope="prototype"/>
@@ -138,7 +139,6 @@
     <bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
-    <bean id="InvoiceService" class="com.picsauditing.PICS.InvoiceService"/>
     <bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
     <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
           scope="prototype"/>
