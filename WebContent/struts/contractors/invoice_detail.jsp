@@ -427,15 +427,11 @@
                 	</td>
 				</tr> 
 				<!-- proforma payment contractor -->
-				<s:if test="contractor.paymentMethod.EFT">
+                <s:if test="!invoice.currency.USD && !invoice.currency.CAD">
                     <tr>
                         <td style="padding: 15px;">
-                        	<s:if test="invoice.currency.EUR">
-                            	<s:text name="InvoiceDetail.PaymentInstruction" />
-                            </s:if>
-                            <s:elseif test="invoice.currency.GBP">
-                            	<s:text name="InvoiceDetail.PaymentInstruction_UK" />
-                            </s:elseif>
+                            <s:set var="paymentInstruction">InvoiceDetail.PaymentInstruction_<s:property value="invoice.currency.display"/></s:set>
+                            <s:text name="%{paymentInstruction}" />
                         </td>
                     </tr>
                 </s:if>

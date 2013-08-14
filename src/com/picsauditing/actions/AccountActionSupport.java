@@ -38,8 +38,6 @@ public class AccountActionSupport extends PicsActionSupport {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
-	protected NoteDAO noteDao;
-	@Autowired
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 
 	public int getId() {

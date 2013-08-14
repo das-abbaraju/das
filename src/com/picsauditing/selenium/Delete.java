@@ -32,4 +32,18 @@ class Delete {
 	public void delete(Database db) throws SQLException {
 		db.executeUpdate(toString());
 	}
+
+    public void deleteSingleTable(Database db) throws SQLException {
+        db.executeUpdate(toSingleTableString());
+    }
+
+    private String toSingleTableString() {
+        String sql = "DELETE FROM " + table + " ";
+
+        for (String join : joins) {
+            sql += "\n" + join;
+        }
+
+        return sql;
+    }
 }

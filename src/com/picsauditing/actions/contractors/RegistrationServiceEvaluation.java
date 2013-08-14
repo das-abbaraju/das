@@ -176,10 +176,18 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		}
 
 		saveAnswersForPqfAudit();
-		saveAnswersForSsipAudit();
-
 		loadPqfAnswers();
-		loadSsipAnswers();
+
+        if (shouldShowSsip()) {
+            saveAnswersForSsipAudit();
+            loadSsipAnswers();
+        }
+        else {
+            auditDao.remove(ssipAudit);
+            for (AuditData data : ssipAnswerMap.values()) {
+                auditDataDAO.remove(data);
+            }
+        }
 
 		recalculateAuditPercentages();
 

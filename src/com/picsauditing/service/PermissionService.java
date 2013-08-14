@@ -77,7 +77,7 @@ public class PermissionService {
 			// Don't care
 		}
 
-		for (UserGroup group : user.getGroups()) {
+		for (UserGroup group : user.getAllInheritedGroups()) {
 			try {
 				reportPermissionUserDao.findOne(group.getGroup().getId(), report.getId());
 				return true;
@@ -152,7 +152,7 @@ public class PermissionService {
 			// Don't care
 		}
 
-		for (UserGroup userGroup : user.getGroups()) {
+		for (UserGroup userGroup : user.getAllInheritedGroups()) {
 			try {
 				ReportPermissionUser reportPermissionGroup = reportPermissionUserDao.findOne(userGroup.getGroup().getId(), report.getId());
 

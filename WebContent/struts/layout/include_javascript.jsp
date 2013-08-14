@@ -5,7 +5,7 @@
 <%--
 Note: 1.7.2 version affects the website in the followings ways, upgrading jquery.ui may effect the following
 
-- Including multiple jquery.ui will break plugins 
+- Including multiple jquery.ui will break plugins
 - UI calendar z-index
 - MySchedule calendar plugin
 
@@ -16,7 +16,21 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="v7/js/pics/core/core.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/widget/modal.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/widget/mibew.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart.js?v=${version}"></script>
+
+<%-- v7 Chart Classes --%>
+<script type="text/javascript" src="v7/js/pics/widget/chart/Chart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/BasicChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/StackedColumnChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/CustomColorChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/_child/flags-chart/FlagsChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/_child/flags-chart/_child/StackedFlagsChart.js?v=${version}"></script>
+<%-- END v7 Chart Classes --%>
+
+<script type="text/javascript" src="v7/js/vendor/select2.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/session-timer.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/country/country.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics//select2/select2.js?v=${version}"></script>
+
 <%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>
@@ -48,6 +62,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/workflow_manage.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/audit.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/audit-controller.js?v=${version}"></script>
+<script type="text/javascript" src="js/audit/cao-table-controller.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/employee_competencies.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/employee_detail.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/manage_employees.js?v=${version}"></script>
@@ -67,8 +82,6 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>
 <script type="text/javascript" src="TranslateJS.action"></script>
-
-<script src="v7/js/vendor/select2.js?v=${version}"></script>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script>google.load('visualization', '1.0', {'packages':['corechart']});</script>

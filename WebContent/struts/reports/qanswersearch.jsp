@@ -52,7 +52,7 @@ $(function() {
 		changeOrderBy('form1','a.name');
 	})
 	
-	$('#form1').live('submit', function() {
+	$('#form1').one('submit', function() {
 		runSearch($(this));
 	});
 });

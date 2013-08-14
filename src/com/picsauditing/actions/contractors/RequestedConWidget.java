@@ -34,7 +34,7 @@ public class RequestedConWidget extends PicsActionSupport {
 		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
 			current = ReportRegistrationRequests.buildAccountQuery();
 
-			current.addWhere("(a.status = 'Requested' AND c.followupDate IS NULL) OR (a.status IN ('Declined', 'Pending') AND c.requestedByID IS NOT NULL) ");
+			current.addWhere("(a.status = 'Requested' AND c.followupDate IS NULL) OR (a.status = 'Pending' AND c.requestedByID IS NOT NULL) OR (a.status = 'Declined' AND c.requestedByID IS NOT NULL and date_add(gc.deadline, INTERVAL 30 DAY) > NOW()) ");
 			current.addOrderBy("status DESC, deadline DESC");
 		} else {
 			current = new SelectSQL("contractor_registration_request crr");

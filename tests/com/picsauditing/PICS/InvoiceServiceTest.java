@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -22,12 +24,6 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeCountryDAO;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceFeeCountry;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.report.RecordNotFoundException;
 
 public class InvoiceServiceTest {
@@ -102,40 +98,45 @@ public class InvoiceServiceTest {
 	@Test
 	public void testGetCanadianTaxInvoiceFeeForProvince_oldScheduleShouldBeInEffect() throws Exception {
 		setNowTime("2012-12-1");
-		CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
 
-		InvoiceFee taxInvoiceFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
+        CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
+        Country country = new Country("CA");
+
+        InvoiceFee taxInvoiceFee = invoiceService.getTaxInvoiceFee(FeeClass.CanadianTax,country,countrySubdivision);
 
 		assertEquals("Foo", taxInvoiceFee.getFee());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
-		assertEquals(new BigDecimal(5), taxInvoiceFee.getSubdivisionFee().getRatePercent());
+		assertEquals(new BigDecimal(5), taxInvoiceFee.getRegionalFee().getRatePercent());
 		assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
 		assertEquals("qbFoo", taxInvoiceFee.getQbFullName());
-		assertEquals(DateBean.parseDate("2012-04-01"), taxInvoiceFee.getSubdivisionFee().getEffectiveDate());
+		assertEquals(DateBean.parseDate("2012-04-01"), taxInvoiceFee.getRegionalFee().getEffectiveDate());
 	}
 
 	@Test
 	public void testGetCanadianTaxInvoiceFeeForProvince_newScheduleShouldBeInEffect() throws Exception {
 		setNowTime("2013-04-02");
-		CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
+        CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
+        Country country = new Country("CA");
 
-		InvoiceFee taxInvoiceFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
+        InvoiceFee taxInvoiceFee = invoiceService.getTaxInvoiceFee(FeeClass.CanadianTax,country,countrySubdivision);
 
 		assertEquals("Foo", taxInvoiceFee.getFee());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
-		assertEquals(new BigDecimal(7.5), taxInvoiceFee.getSubdivisionFee().getRatePercent());
+		assertEquals(new BigDecimal(7.5), taxInvoiceFee.getRegionalFee().getRatePercent());
 		assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
 		assertEquals("qbFoo", taxInvoiceFee.getQbFullName());
-		assertEquals(DateBean.parseDate("2013-04-01"), taxInvoiceFee.getSubdivisionFee().getEffectiveDate());
+		assertEquals(DateBean.parseDate("2013-04-01"), taxInvoiceFee.getRegionalFee().getEffectiveDate());
 	}
 
-	@Test(expected = RecordNotFoundException.class)
 	public void testGetCanadianTaxInvoiceFeeForProvince() throws Exception {
 		resetNowTime();
-		CountrySubdivision alberta = new CountrySubdivision("CA-AB");
-		when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(null);
+        CountrySubdivision countrySubdivision = new CountrySubdivision("CA-AB");
+        Country country = new Country("CA");
 
-		invoiceService.getCanadianTaxInvoiceFeeForProvince(alberta);
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(eq(FeeClass.CanadianTax), eq(countrySubdivision))).thenReturn(null);
+        when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(country))).thenReturn(null);
+
+        assertNull(invoiceService.getTaxInvoiceFee(FeeClass.CanadianTax, country, countrySubdivision));
 	}
 
 	private void setupInvoiceFeeCountries() {
@@ -153,7 +154,7 @@ public class InvoiceServiceTest {
 		invoiceFee.setInvoiceFeeCountries(invoiceFeeCountries);
 
 		CountrySubdivision alberta = new CountrySubdivision("CA-AB");
-		when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(
+		when(invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(
 				invoiceFeeCountriesForAlberta);
 
 	}

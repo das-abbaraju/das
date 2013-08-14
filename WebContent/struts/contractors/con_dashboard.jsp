@@ -196,7 +196,7 @@
 </s:if>
 
 <s:if test="co != null">
-	<s:include value="_con-dashboard-message.jsp"/>
+	    <s:include value="_con-dashboard-message.jsp"/>
 
 	<div class="co_flag">
 		<s:url action="ContractorFlag" var="contractor_flag">

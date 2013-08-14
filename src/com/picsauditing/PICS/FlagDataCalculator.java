@@ -468,14 +468,19 @@ public class FlagDataCalculator {
     private boolean auditIsApplicableForThisOperator(FlagCriteriaOperator opCriteria, FlagCriteria criteria, ContractorAccount con) {
         for (ContractorAudit ca : con.getAudits()) {
             if (criteria.getQuestion() != null && ca.getAuditType().equals(criteria.getQuestion().getAuditType()) && !ca.isExpired()) {
-                for (ContractorAuditOperator cao: ca.getOperators()) {
-                    if (opCriteria.getOperator().isOrIsDescendantOf(cao.getOperator().getId()) && cao.isVisible()) {
-                        return true;
-                    }
+	            for (ContractorAuditOperator cao : ca.getOperators()) {
+		            if (cao.isVisible()) {
+			            for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				            if (caop.getOperator().getId() == operator.getId()) {
+					            return true;
+				            }
+			            }
+		            }
                 }
+	            return false;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean isStatisticValidForOperator(OperatorAccount operator, ContractorAccount con) {

@@ -23,139 +23,59 @@
 		}
 	};
 
-	// contractor create account country / country subdivision toggle
-	REGISTRATION.contractor_country = {
-		init: function () {
-			if ($('.Registration-page').length) {
-			    var that = this;
+    // contractor create account help text displayed on input focus
+    REGISTRATION.help_text = {
+        init: function () {
+            if ($('.Registration-page').length) {
+                var element = $('.help-text');
 
-				$('.contractor-country').on('change', function (event) {
-				    that.events.update_countrySubdivision_list.call(that, event);
-				});
+                element.each(function (key, value) {
+                    var html = $(this).html();
+                    var label = $(this).siblings('label');
+                    var input = $(this).siblings('input[type=text], input[type=password], select');
 
-				var selectedSubdivision = null;
+                    label.attr('title', label.html().replace(':', ''));
+                    label.attr('data-content', html.replace('"', "'"));
 
-				if ($('#requested_contractor').length) {
-			    	var countrySubdivision_element = $('.registration-form li.countrySubdivision');
+                    label.popover({
+                        placement: 'bottom',
+                        trigger: 'manual'
+                    });
 
-			    	selectedSubdivision = countrySubdivision_element.find('select option:selected').val();
-			    }
-			}
-		},
-
-		events: {
-			update_countrySubdivision_list: function (selectedSubdivision) {
-				var country_select = $('.contractor-country') || $(event.currentTarget),
-				    country_string = country_select.val(),
-				    that = this;
-
-				PICS.ajax({
-					url: 'CountrySubdivisionListAjax!registration.action',
-					data: {
-						countryString: country_string,
-						prefix: 'contractor.'
-					},
-					success: function (data, textStatus, XMLHttpRequest) {
-						var countrySubdivision_element = $('.registration-form li.countrySubdivision'),
-						    zip_element = $('.registration-form li.zip');
-
-						countrySubdivision_element.html(data);
-
-						if ($.trim(data) == '') {
-							countrySubdivision_element.slideUp(400);
-						} else {
-							countrySubdivision_element.slideDown(400);
-						}
-
-						if (country_string == 'AE') {
-							zip_element.slideUp(400);
-						} else {
-							zip_element.slideDown(400);
-						}
-
-						if (selectedSubdivision) {
-							countrySubdivision_element.find("select").val(selectedSubdivision);
-						}
-
-						that.events.updatePicsPhone(country_string);
-					}
-				});
-			},
-
-			updatePicsPhone: function (country_string) {
-                PICS.ajax({
-                    url: 'CountrySubdivisionListAjax!phone.action',
-                    dataType: 'json',
-                    data: {
-                        countryString: country_string
-                    },
-                    success: function (data, textStatus, XMLHttpRequest) {
-                        var pics_phone = $('#pics_phone_number');
-
-                        if (pics_phone.length > 0) {
-                            pics_phone.html(data.picsPhoneNumber);
-                            pics_phone.attr("title", data.country);
-                        }
-                    }
-                });
-			}
-		}
-	};
-
-	// contractor create account help text displayed on input focus
-	REGISTRATION.help_text = {
-		init: function () {
-			if ($('.Registration-page').length) {
-				var element = $('.help-text');
-
-				element.each(function (key, value) {
-					var html = $(this).html();
-					var label = $(this).siblings('label');
-					var input = $(this).siblings('input[type=text], input[type=password], select');
-
-					label.attr('title', label.html().replace(':', ''));
-					label.attr('data-content', html.replace('"', "'"));
-
-					label.popover({
-						placement: 'bottom',
-						trigger: 'manual'
-					});
-
-					input.bind('focus', function (event) {
+                    input.bind('focus', function (event) {
                         label.popover('show');
                     });
 
-					input.bind('blur', function (event) {
+                    input.bind('blur', function (event) {
                         label.popover('hide');
                     });
 
-					// ie specific js to shim select menus
-					if ($.browser.msie && $.browser.version == 6) {
-						input.bind('focus', function () {
-							var container = $('.popover:last');
-							var element = $('.inner', container);
-							var offset = element.offset();
-							var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
+                    // ie specific js to shim select menus
+                    if ($.browser.msie && $.browser.version == 6) {
+                        input.bind('focus', function () {
+                            var container = $('.popover:last'),element = $('.inner', container);
+                            var offset = element.offset();
+                            var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
 
-							// paste shim
-							shim.css({
-								'height': element.height(),
-								'left': offset.left,
-								'position': 'absolute',
-								'top': offset.top,
-								'width': element.width()
-							}).prependTo('body');
-						});
+                            // paste shim
+                            shim.css({
+                                'height': element.height(),
+                                'left': offset.left,
+                                'position': 'absolute',
+                                'top': offset.top,
+                                'width': element.width()
+                            }).prependTo('body');
+                        });
 
-						// add blur event to destroy iframe
-						input.blur('blur', function () {
-							$('iframe.shim:first').remove();
-						});
-					}
-				});
-			}
-		}
-	};
+                        // add blur event to destroy iframe
+                        input.blur('blur', function () {
+                            $('iframe.shim:first').remove();
+                        });
+                    }
+                });
+            }
+        }
+    };
 
 	REGISTRATION.language_dropdown = {
 		init: function () {
@@ -192,6 +112,10 @@
                     if (dialect_dropdown == '') {
                          that.updatePageLanguageBasedOnSelectedLanguageAndDialect();
                     }
+
+                     $('#dialect_selection').select2({
+                        minimumResultsForSearch: -1
+                    });
                 }
             });
         },
@@ -353,7 +277,8 @@
 	PICS.define('registration.Registration', {
 	    methods: {
 	        init: function () {
-                var company_information = $('.company-information');
+                var company_information = $('.company-information'),
+                    $country_select = $('.country select');
 
                 $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
                 $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
@@ -362,15 +287,22 @@
                 $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
 
-	            company_information.delegate('#Registration_contractor_country_isoCode', 'change', this.checkVatRequired);
+	            company_information.on('change', '#Registration_contractor_country_isoCode', this.checkVatRequired);
 
                 // Show or hide the vat id field based on the Country default value.
                 company_information.find('#Registration_contractor_country_isoCode').trigger('change');
 
                 if ($('.Registration-page').length) {
-                    $('.registration').delegate('#autofill', 'click', this.autofillRegistrationFormForDev);
+                    $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
+
+                    this.updateTimezonesByCountry($country_select.val());
+
+                    this.bindSelect2EventstoPopover();
+
+                    $country_select.on('change', $.proxy(this.updateCountryFields, this));
+
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
-                    $('.service-evaluation').delegate('#autofill', 'click', this.autofillRegistrationServiceEvaluationFormForDev);
+                    $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
                 }
 	        },
 
@@ -380,12 +312,12 @@
                 // Company Info
                 $('[name=language]').children().first().attr('selected','selected');
                 $('[name=dialect]').children().last().attr('selected','selected');
-                $('[name="contractor.timezone"]').children().last().attr('selected','selected');
                 $('[name="contractor.country.isoCode"]').children().first().attr('selected','selected');
+                $('[name="contractor.timezone"]').select2('val', 'America/Los_Angeles')
                 $('[name="contractor.name"]').val("My Company" +  new Date().getTime() );
                 $('[name="contractor.address"]').val("123 Anywhere St");
                 $('[name="contractor.city"]').val("Springfield");
-                $('[name="countrySubdivision"]').children().last().attr('selected','selected');
+                $('[name="countrySubdivision"]').select2('val', 'US-CA')
                 $('[name="contractor.zip"]').val("12345");
 
                 // Contact Info
@@ -407,6 +339,53 @@
                 $('input.year').val(2015);
 
                 $('[name="ssipAnswerMap[16948].answer"]').children().last().attr('selected','selected');
+            },
+
+            bindSelect2EventstoPopover: function () {
+                var $country = $('li.country'),
+                    label = $country.find('label'),
+                    select = $country.find('select');
+
+                select.on('select2-open', function () {
+                    label.popover('show');
+                });
+
+                select.on('select2-close', function (event) {
+                    label.popover('hide');
+                });
+            },
+
+            checkVatRequired: function (event) {
+                var iso_code = $('#Registration_contractor_country_isoCode').val();
+
+                PICS.ajax({
+                    url: 'VATCountryAJAX.action',
+                    data: {
+                        iso_code: iso_code
+                    },
+                    dataType: 'json',
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var vat_element = $('#vat_id');
+
+                        if (data.vat_required) {
+                            vat_element.slideDown(400);
+                        } else {
+                            vat_element.slideUp(400);
+                        }
+                    }
+                });
+            },
+
+            prefillTimezoneFromRegistrationRequestValue: function () {
+                var $registration_request_timezone = $('#registration_requested_timezone'),
+                    prefilled_timezone = $registration_request_timezone.val();
+
+                if (prefilled_timezone) {
+                    $('input.timezone_input').val(prefilled_timezone);
+                }
+
+                //remove prefilled timezone value to prevent submission of duplicate values
+                $registration_request_timezone.remove();
             },
 
             showBasicModal: function (event) {
@@ -448,27 +427,6 @@
                 });
 	        },
 
-	        checkVatRequired: function (event) {
-                var iso_code = $('#Registration_contractor_country_isoCode').val();
-
-                PICS.ajax({
-                    url: 'VATCountryAJAX.action',
-                    data: {
-                        iso_code: iso_code
-                    },
-                    dataType: 'json',
-                    success: function (data, textStatus, XMLHttpRequest) {
-                        var vat_element = $('#vat_id');
-
-                        if (data.vat_required) {
-                            vat_element.slideDown(400);
-                        } else {
-                            vat_element.slideUp(400);
-                        }
-                    }
-                });
-            },
-
             toggleReadyToProvideSsipDetailsDisplay: function (event) {
                 var val = $('#registeredWithSsipMemberScheme:checked').val();
 
@@ -496,6 +454,66 @@
                     $('.ssip-details-container').slideUp(400);
                     $('.provide-ssip-details-later-message').slideDown(400);
                 }
+            },
+
+            updateCountrySubvisions: function (selected_country) {
+                var Country = PICS.getClass('country.Country');
+
+                PICS.ajax({
+                    url: 'CountrySubdivisionListAjax!registration.action',
+                    data: {
+                        countryString: selected_country,
+                        prefix: 'contractor.'
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        Country.renderSubdivision(data);
+                    }
+                });
+            },
+
+            updateCountryFields: function () {
+                var $country = $('.country select'),
+                    selected_country = $country.val() || '';
+
+                this.updateCountrySubvisions(selected_country);
+
+                this.updatePhoneNumber(selected_country);
+
+                this.updateTimezonesByCountry(selected_country);
+
+                this.updateZipcode(selected_country);
+            },
+
+            updatePhoneNumber: function (selected_country) {
+                PICS.ajax({
+                    url: 'CountrySubdivisionListAjax!phone.action',
+                    dataType: 'json',
+                    data: {
+                        countryString: selected_country
+                    },
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var $pics_phone = $('.pics_phone_number');
+
+                        $pics_phone.each(function (index, element) {
+                            $(element).html(data.picsPhoneNumber);
+                            $(element).attr("title", data.country);
+                        });
+                    }
+                });
+            },
+
+            updateTimezonesByCountry: function (selected_country) {
+                var Country = PICS.getClass('country.Country');
+
+                this.prefillTimezoneFromRegistrationRequestValue();
+
+                Country.getTimezones(selected_country);
+            },
+
+            updateZipcode: function (selected_country) {
+                var Country = PICS.getClass('country.Country');
+
+                Country.modifyZipcodeDisplay(selected_country);
             }
 	    }
 	});

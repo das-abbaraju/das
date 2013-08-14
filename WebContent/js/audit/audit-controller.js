@@ -31,22 +31,40 @@
                 });
             },
 
+            auditNeedsReload: function (needs_reload) {
+                if (needs_reload) {
+                    this.audit_needs_reload = needs_reload;
+                } else {
+                    return this.audit_needs_reload || $.error('Reload has not be defined.');
+                }
+            },
+
+            getAuditParameters: function () {
+                return this.audit_parameters || $.error('No audit parameters have been defined.');
+            },
+
+            setAuditParameters: function (audit_parameters) {
+                this.audit_parameters = audit_parameters;
+            },
+
             refreshCaoTable: function (event) {
                 var $element = $(event.target),
-                    data = {
-                        auditID: $('#auditID').val(),
-                        caoID: $element.find('.bCaoID').val(),
-                        status: $element.find('.bStatus').val()
-                    },
-                    reload = $element.attr('data-attr-audit-reload');
                     that = this;
+
+                this.setAuditParameters({
+                    auditID: $('#auditID').val(),
+                    caoID: $element.find('.bCaoID').val(),
+                    status: $element.find('.bStatus').val()
+                });
+
+                this.auditNeedsReload($element.attr('data-attr-audit-reload'));
 
                 $('#caoTable').block({
                     message: 'Loading...'
                 });
 
                 //call loadResults defined in conHeader.jsp
-                loadResults(data, '', reload);
+                loadResults(this.getAuditParameters(), '', this.auditNeedsReload());
             },
 
             refreshAudit: function () {

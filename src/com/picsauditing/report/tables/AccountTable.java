@@ -15,6 +15,7 @@ public class AccountTable extends AbstractTable {
 	public static final String Invoice = "Invoice";
 	public static final String AccountManager = "AccountManager";
 	public static final String SalesRep = "SalesRep";
+    public static final String Note = "Note";
     public static final String LastLogin = "LastLogin";
 
     public AccountTable() {
@@ -37,7 +38,7 @@ public class AccountTable extends AbstractTable {
 
 	protected void addJoins() {
 		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("id"))).setMinimumImportance(FieldImportance.Average);
-		addOptionalKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
+        addOptionalKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
 
 		ReportForeignKey contractorOperatorKey = addOptionalKey(new ReportForeignKey(ContractorOperator,
 				new ContractorOperatorTable(), new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = "
@@ -64,5 +65,7 @@ public class AccountTable extends AbstractTable {
         ReportForeignKey lastLogin = new ReportForeignKey(LastLogin, new AccountLastLoginView(), new ReportOnClause("id", "accountID"));
         lastLogin.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(lastLogin);
+
+        addRequiredKey(new ReportForeignKey(Note, new NoteTable(), new ReportOnClause("id", "accountID")));
     }
 }

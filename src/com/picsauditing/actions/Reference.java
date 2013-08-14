@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +43,16 @@ public class Reference extends PicsActionSupport {
 		loadPermissions(false);
 
         if (from == null) {
-            from = ((String[]) ActionContext.getContext().getParameters().get("from"))[0];
+            Map<String,Object> parameters = ActionContext.getContext().getParameters();
+
+            if (parameters != null && !parameters.isEmpty()) {
+                from = ((String[]) parameters.get("from"))[0];
+            }
         }
 
         boolean isFromReportsMenu = from != null && from.equals("ReportsMenu");
 
-        if (!isFirstTimeReportsManagerUser() && isFromReportsMenu) {
+        if ((!isFirstTimeReportsManagerUser() || permissions.getSwitchedToUserName() != null) && isFromReportsMenu) {
             setUrlForRedirect("ManageReports!search.action");
             return REDIRECT;
         } else {

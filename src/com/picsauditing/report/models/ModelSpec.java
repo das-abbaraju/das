@@ -7,11 +7,13 @@ import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 public class ModelSpec {
+    String thirdAlias;
 	String fromAlias;
 	String key;
 	String alias;
 	FieldCategory category;
 	FieldImportance minimumImportance;
+    boolean forceRequired;
 	List<ModelSpec> joins = new ArrayList<ModelSpec>();
 
 	public ModelSpec(String key, String alias, FieldCategory category) {

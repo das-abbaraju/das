@@ -48058,7 +48058,7 @@ Ext.define('Ext.data.proxy.Server', {
      * @cfg {Number} timeout
      * The number of milliseconds to wait for a response. Defaults to 30000 milliseconds (30 seconds).
      */
-    timeout : 30000,
+    timeout : 60000,
 
     /**
      * @cfg {Object} api
@@ -48668,7 +48668,7 @@ Ext.define('Ext.data.Connection', {
      * @cfg {Number} timeout
      * The timeout in milliseconds to be used for requests.
      */
-    timeout : 30000,
+    timeout : 60000,
 
     /**
      * @cfg {Object} extraParams
@@ -66328,6 +66328,9 @@ Ext.define('PICS.data.ServerCommunication', {
     
                             loadDataTableStore(json);
     
+                            // TODO: Find a better place for non-report data like this.
+                            PICS.export_limit = json.export_limit;
+
                             success_callback.apply(scope, arguments);
                         }
                     }
@@ -66414,6 +66417,10 @@ Ext.define('PICS.data.ServerCommunication', {
                 
                 // sync
                 report_store.sync({
+                    failure: function (batch, options) {
+                        console.log('here')
+                    },
+
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
                             response = operation.response,
@@ -66576,6 +66583,17 @@ Ext.define('PICS.data.ServerCommunication', {
                 });
             },
 
+            requestSubscription: function (frequency) {
+                var url = PICS.data.ServerCommunicationUrl.getRequestSubscriptionUrl();
+
+                Ext.Ajax.request({
+                    url: url,
+                    params: {
+                        frequency: frequency
+                    }
+                });
+            },
+
             unfavoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
 
@@ -66632,131 +66650,159 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
+        getBaseApiParams: function () {
+            var query_string_params = Ext.Object.fromQueryString(window.location.search),
+                base_api_params = {};
+
+            if (query_string_params.report) {
+                base_api_params.reportId = query_string_params.report;
+            }
+
+            if (query_string_params.dynamicParameters) {
+                base_api_params.dynamicParameters = query_string_params.dynamicParameters
+            }
+
+            if (query_string_params.removeAggregates) {
+                base_api_params.removeAggregates = query_string_params.removeAggregates
+            }
+
+            return base_api_params;
+        },
+
         getCopyReportUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!copy.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
 
         getColumnFunctionUrl: function (report_type, field_id) {
-            var path = 'ReportApi!buildSqlFunctions.action?';
+            var base_api_params = this.getBaseApiParams(),
+                path = 'ReportApi!buildSqlFunctions.action?';
 
             var params = {
                 type: report_type,
                 fieldId: field_id
             };
 
+            Ext.apply(params, base_api_params);
+
             return path + Ext.Object.toQueryString(params);
         },
 
         getGetReportInfoUrl: function (report_id) {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!info.action?';
 
-            var params = {
-                reportId: report_id,
-            };
+            var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
 
         getExportReportUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!download.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
 
         getFavoriteReportUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!favorite.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
+
+            Ext.apply(params, base_api_params);
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getRequestSubscriptionUrl: function () {
+            var base_api_params = this.getBaseApiParams(),
+                path = 'ReportApi!subscribe.action?';
+
+            var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
 
         getLoadAllUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi.action?';
 
             var params = {
-                reportId: report_id,
                 includeReport: true,
                 includeColumns: true,
                 includeFilters: true,
                 includeData: true
             };
 
+            Ext.apply(params, base_api_params);
+
             return path + Ext.Object.toQueryString(params);
         },
 
         getLoadReportAndDataUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi.action?';
 
             var params = {
-                reportId: report_id,
                 includeReport: true,
                 includeData: true
             };
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
 
         getLoadDataUrl: function (page, limit) {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi.action?';
 
             var params = {
-                reportId: report_id,
                 includeData: true,
                 page: page,
                 limit: limit
             };
 
+            Ext.apply(params, base_api_params);
+
             return path + Ext.Object.toQueryString(params);
         },
 
         getMultiSelectUrl: function (field_id) {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'Autocompleter.action?';
 
             var params = {
-                reportId: report_id,
                 fieldId: field_id
             };
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
 
         getPrintReportUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!print.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
@@ -66774,13 +66820,12 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         },
 
         getSaveReportUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!save.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
@@ -66858,13 +66903,12 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         },
 
         getUnfavoriteReportUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!unfavorite.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         }
@@ -77306,6 +77350,11 @@ Ext.define('Ext.ProgressBar', {
 Ext.define('PICS.store.report.ColumnFunctions', {
     extend: 'PICS.store.report.base.Store',
     model: 'PICS.model.report.ColumnFunctions',
+
+    sorters: [{
+        property: 'key',
+        direction: 'ASC'
+    }],
     
     // dynamic url needs to be generated to obtain specific column's "sql functions" 
     setProxyForRead: function (url) {
@@ -82770,11 +82819,25 @@ Ext.define('PICS.view.report.filter.base.Boolean', {
 
     createValueField: function () {
         return {
-            xtype: 'checkbox',
-            boxLabel: 'True',
-            inputValue: true,
-            name: 'value',
-            uncheckedValue: false
+            xtype      : 'radiogroup',
+            defaults: {
+                flex: 1,
+                name: 'value',
+                margin: '0 10 0 0'
+            },
+            layout: 'hbox',
+            items: [
+                {
+                    boxLabel: PICS.text('Report.execute.booleanFilter.yes'),
+                    inputValue: 'true'
+                }, {
+                    boxLabel: PICS.text('Report.execute.booleanFilter.no'),
+                    inputValue: 'false'
+                }, {
+                    boxLabel: PICS.text('Report.execute.booleanFilter.all'),
+                    inputValue: 'all'
+                }
+            ]
         };
     }
 });
@@ -83306,7 +83369,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
+        text : '<i class="icon-print icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
         cls: 'default print',
         id: 'print-button',
         tooltip: PICS.text('Report.execute.exportSetting.tooltipPreview'),
@@ -83328,7 +83391,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         id: 'message',
         tpl: new Ext.XTemplate([
             '<p class="export-message">',
-                'All {record_count} rows will be exported.',
+                '{export_message}',
             '</p>'
         ]),
         margin: '20 0 0 0'
@@ -83341,9 +83404,67 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     modal_title: PICS.text('Report.execute.exportSetting.title'),
     title: '<i class="icon-download icon-large"></i>' + PICS.text('Report.execute.exportSetting.tabName'),
 
-    update: function (values) {
+    update: function (record_count) {
+        var values = {},
+            export_limit = PICS.export_limit;
+
+        if (record_count < export_limit) {
+            values.export_message = PICS.text('Report.execute.exportSetting.exportMessage', Ext.util.Format.number(record_count, '0,000'));
+        } else {
+            values.export_message = [
+                PICS.text('Report.execute.exportSetting.limitExceeded') + '</br>',
+                PICS.text('Report.execute.exportSetting.rowsExported', Ext.util.Format.number(export_limit, '0,000'))
+            ].join('');
+        }
+
         this.items.get('message').update(values);
     }
+});
+Ext.define('PICS.view.report.settings.SubscribeSetting', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.reportsubscribesetting',
+
+    border: 0,
+
+    id: 'report_subscribe',
+
+    items: [{
+      xtype: 'fieldset',
+      title: PICS.text('Report.execute.subscribeSetting.legendTitle') + ':',
+      items: [{
+            xtype: 'radiogroup',
+            defaults: {
+                flex: 1,
+                name: 'subscription_frequency',
+                margin: '0 0 10 0'
+            },
+            layout: 'vbox',
+            align: 'left',
+            items: [{
+                boxLabel: PICS.text('Report.execute.subscribeSetting.labelNever'),
+                inputValue: 'None'
+            }, {
+                boxLabel: PICS.text('Report.execute.subscribeSetting.labelDaily'),
+                inputValue: 'Daily'
+            }, {
+                boxLabel: PICS.text('Report.execute.subscribeSetting.labelWeekly'),
+                inputValue: 'Weekly'
+            }, {
+                boxLabel: PICS.text('Report.execute.subscribeSetting.labelMonthly'),
+                    inputValue: 'Monthly'
+            }]
+        }]
+    }],
+
+    layout: {
+        type: 'form'
+    },
+
+    margin: '0 20 0 20',
+
+    // custom config
+    modal_title: PICS.text('Report.execute.subscribeSetting.title'),
+    title: '<i class="icon-envelope icon-large"></i>' + PICS.text('Report.execute.subscribeSetting.tabName')
 });
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
@@ -92979,7 +93100,8 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
         'PICS.view.report.settings.CopySetting',
         'PICS.view.report.settings.EditSetting',
         'PICS.view.report.settings.ExportSetting',
-        'PICS.view.report.settings.share.ShareSetting'
+        'PICS.view.report.settings.share.ShareSetting',
+        'PICS.view.report.settings.SubscribeSetting'
     ],
 
     border: false,
@@ -92991,6 +93113,8 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
         xtype: 'reportsharesetting'
     }, {
         xtype: 'reportexportsetting'
+    }, {
+        xtype: 'reportsubscribesetting'
     }],
     tabBar: {
         border: false,
@@ -96263,14 +96387,14 @@ Ext.define('PICS.ux.grid.column.Column', {
         if (url) {
             var href = grid_column.getHref(url, record);
             
-            return '<a href="' + href + '" target="_blank">' + value + '</a>';
+            return "<a href='" + href + "' target='_blank'>" + value + "</a>";
         }
         
         return value;
     },
     
     getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
+        return url.replace(/\{(.[^"]*?)\}/g, function (match, p1) {
             // raw attribute is to get data from the record that is not observed in the model
             return record.raw[p1];
         });
@@ -97185,6 +97309,9 @@ Ext.define('PICS.model.report.Report', {
     }, {
         name: 'is_favorite',
         type: 'boolean'
+    }, {
+        name: 'subscription_frequency',
+        type: 'string'
     }],
 
     hasMany: [{
@@ -98690,6 +98817,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
         ref: 'shareSetting',
         selector: 'reportsharesetting'
     }, {
+        ref: 'exportSetting',
+        selector: 'reportexportsetting'
+    }, {
+        ref: 'subscribeSetting',
+        selector: 'reportsubscribesetting'
+    }, {
         ref: 'reportInfoSetting',
         selector: 'reportinfosetting'
     }, {
@@ -98709,6 +98842,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         this.control({
             'reportsettingsmodal': {
                 beforerender: this.beforeSettingsModalRender,
+                beforeshow: this.beforeSettingsModalShow,
                 close: this.closeSettingsModal
             },
 
@@ -98731,10 +98865,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reporteditsetting': {
                 afterrender: this.afterEditSettingRender
-            },
-
-            'reportsettingsmodal reportexportsetting': {
-                afterrender: this.afterExportSettingRender
             },
 
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
@@ -98766,6 +98896,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsharesetting button[action=share]': {
                 click: this.onReportModalShareClick
+            },
+
+            'reportsettingsmodal reportsubscribesetting radiogroup': {
+                change: this.requestSubscription
             }
         });
 
@@ -98796,24 +98930,29 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    afterExportSettingRender: function (cmp, eOpts) {
-        cmp.update({
-            record_count: this.getFormattedRecordCount(),
-            page_count: '50'
-        });
-    },
-
     beforeSettingsModalRender: function (cmp, eOpts) {
             var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            edit_setting_view = this.getEditSetting(),
-            edit_setting_form = edit_setting_view.getForm();
+                report = report_store.first(),
+                edit_setting_view = this.getEditSetting(),
+                edit_setting_form = edit_setting_view.getForm(),
+                subscribe_setting_view = this.getSubscribeSetting(),
+                subscribe_setting_form = subscribe_setting_view.getForm();
     
         if (edit_setting_form) {
             edit_setting_form.loadRecord(report);
         }
+
+        if (subscribe_setting_form) {
+            subscribe_setting_form.loadRecord(report);
+        }
     },
-    
+
+    beforeSettingsModalShow: function (cmp, eOpts) {
+        var export_setting_view = this.getExportSetting();
+
+        export_setting_view.update(this.getRecordCount());
+    },
+
     closeSettingsModal: function (cmp, eOpts) {
         var settings_modal_tabs_view = this.getSettingsModalTabs(),
             edit_setting_view = this.getEditSetting(),
@@ -98912,12 +99051,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    getFormattedRecordCount: function () {
+    getRecordCount: function () {
         var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
-            data_table_store = data_table_view.getStore(),
-            record_count = data_table_store.getTotalCount();
+            data_table_store = data_table_view.getStore();
 
-        return Ext.util.Format.number(record_count, '0,000');
+        return data_table_store.getTotalCount();
     },
 
     openSettingsModal: function (action) {
@@ -99112,6 +99250,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
         };
 
         PICS.data.ServerCommunication.shareReport(options);
+    },
+
+    requestSubscription: function (cmp, e, eOpts) {
+        var subscribe_setting_view = this.getSubscribeSetting(),
+            subscribe_setting_form = subscribe_setting_view.getForm(),
+            subscription_frequency = subscribe_setting_form.getValues().subscription_frequency;
+
+        PICS.data.ServerCommunication.requestSubscription(subscription_frequency);
     }
 });
 /**

@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.EmailAddressUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,11 +21,6 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailStatus;
-import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.toggle.FeatureToggle;
 
@@ -132,6 +129,13 @@ public class EmailSenderTest {
 		verify(email).setSentDate((Date)any());
 		verify(emailQueueDAO).save(email);
 	}
+
+    @Test
+    public void testIsEmailAddressValid_BillingAddress() throws Exception {
+        Boolean result = Whitebox.invokeMethod(emailSenderSpring, "isEmailAddressValid", EmailAddressUtils.getBillingEmail(Currency.USD));
+
+        assertTrue(result);
+    }
 
 	@Test
 	public void testCheckDeactivated_NullContractorAccountReturnsFalse() throws Exception {

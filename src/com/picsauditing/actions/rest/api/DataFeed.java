@@ -7,6 +7,7 @@ import com.picsauditing.jpa.entities.Report;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,15 +68,21 @@ public class DataFeed extends ReportApi implements ParameterAware {
     public String execute() {
     	Report report = null;
 
+
         try {
+            JSONArray params = null;
+            if (dynamicParameters != null) {
+                params = (JSONArray)new JSONParser().parse(dynamicParameters);
+            }
+
 	        JSONObject payloadJson = getJsonFromRequestPayload();
             setIncludeData(true);
             setLimit(Integer.MAX_VALUE);
 	        ReportContext reportContext = buildReportContext(payloadJson);
-	        report = reportService.createOrLoadReport(reportContext);
+	        report = reportService.createOrLoadReport(reportContext, params, removeAggregates);
 
 	        if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
-		        json = reportService.buildJsonResponse(reportContext);
+		        json = reportService.buildJsonResponse(reportContext, params, removeAggregates);
 
                 if (PicsActionSupport.XML.equals(outputFormat)) {
                     adjustForBetterSchema();

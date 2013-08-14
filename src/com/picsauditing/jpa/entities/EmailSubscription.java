@@ -25,6 +25,7 @@ public class EmailSubscription extends BaseTable {
 	private SubscriptionTimePeriod timePeriod = SubscriptionTimePeriod.None;
 	private Date lastSent;
 	private OpPerms permission;
+    private Report report;
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
@@ -88,4 +89,14 @@ public class EmailSubscription extends BaseTable {
 		setAuditColumns();
 		setTimePeriod(SubscriptionTimePeriod.None);
 	}
+
+    @ManyToOne
+    @JoinColumn(name = "reportID", nullable = true)
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
 }

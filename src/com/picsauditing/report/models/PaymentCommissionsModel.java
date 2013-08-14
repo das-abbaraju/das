@@ -9,12 +9,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.AccountUserTable;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.report.tables.InvoiceCommissionTable;
-import com.picsauditing.report.tables.InvoiceTable;
-import com.picsauditing.report.tables.PaymentCommissionTable;
+import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -46,6 +41,10 @@ public class PaymentCommissionsModel extends AbstractModel {
 
         ModelSpec opAccount = accountUser.join(AccountUserTable.Account);
         opAccount.alias = "Operator";
+
+        ModelSpec operator = opAccount.join(AccountTable.Operator);
+
+        operator.join(OperatorTable.Reporting);
 
         ModelSpec user = accountUser.join(AccountUserTable.User);
         user.alias = "CommissionUserUser";

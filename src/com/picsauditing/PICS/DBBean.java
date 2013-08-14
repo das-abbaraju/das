@@ -14,6 +14,7 @@ public class DBBean implements InitializingBean {
 
 	private static final String PICS_JDBC_RESOURCE_NAME = "java:comp/env/jdbc/pics";
 	private static final String PICS_READ_ONLY_JDBC_RESOURCE_NAME = "java:comp/env/jdbc/picsro";
+	private static final String TRANSLATIONS_JDBC_RESOURCE_NAME = "java:comp/env/jdbc/translations";
 
 	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
 	private static DataSource dataSource;
@@ -21,8 +22,10 @@ public class DBBean implements InitializingBean {
 	// volatile to use as part of the double-locking pattern
 	static volatile DataSource staticDataSource;
 	static volatile DataSource readOnlyDataSource;
+	static volatile DataSource translationsDataSource;
 	static AtomicInteger instantiationCount = new AtomicInteger(0);
 	static AtomicInteger readOnlyDataSourceInstantiationCount = new AtomicInteger(0);
+	static AtomicInteger translationsDataSourceInstantiationCount = new AtomicInteger(0);
 
 	/**
 	 * Enforce the singleton nature of this class by making the
@@ -84,7 +87,34 @@ public class DBBean implements InitializingBean {
 		return dataSource.getConnection();
 	}
 
-	private static DataSource getJdbcPics() throws NamingException {
+    /**
+     * Use double-locking to improve the performance and ensure that only one
+     * instance of the readOnlyDataSource is created.
+     *
+     * @return
+     * @throws SQLException
+     */
+    public static Connection getTranslationsConnection() throws SQLException {
+        DataSource dataSource = translationsDataSource;
+        if (dataSource == null) {
+            synchronized(DBBean.class) {
+                dataSource = translationsDataSource;
+                if (dataSource == null) {
+                    try {
+                        translationsDataSource = dataSource = new PICSDBLocator().getDataSource(TRANSLATIONS_JDBC_RESOURCE_NAME);
+                        DBBean.translationsDataSourceInstantiationCount.getAndIncrement();
+                    } catch (NamingException ne) {
+                        ne.printStackTrace();
+                        return null;
+                    }
+                }
+            }
+        }
+
+        return dataSource.getConnection();
+    }
+
+    private static DataSource getJdbcPics() throws NamingException {
 		if (dataSource == null) {
 			return getServiceLocator().getDataSource(PICS_JDBC_RESOURCE_NAME);
 		}

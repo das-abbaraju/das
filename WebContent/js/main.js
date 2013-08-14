@@ -20,8 +20,6 @@
 		
 		//REGISTRATION.client_site_manage.init();
 		
-		REGISTRATION.contractor_country.init();
-		
 		REGISTRATION.help_text.init();
 		
 		REGISTRATION.language_dropdown.init();

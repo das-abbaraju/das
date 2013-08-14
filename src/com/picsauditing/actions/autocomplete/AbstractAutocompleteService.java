@@ -13,7 +13,7 @@ public abstract class AbstractAutocompleteService<T> {
 	 * This is the limit of the total number of records that can be returned at one time
 	 * from the auto-complete.
 	 */
-	protected static final int RESULT_SET_LIMIT = 10;
+	protected static final int RESULT_SET_LIMIT = 25;
 
 	public final JSONObject getJson(String search, Permissions permissions) {
 		Collection<T> searchResults = getItemsForSearch(search, permissions);

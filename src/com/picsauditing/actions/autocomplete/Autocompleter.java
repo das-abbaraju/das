@@ -49,10 +49,12 @@ public class Autocompleter extends PicsActionSupport {
 			json.put("success", true);
 			switch (fieldType.getFilterType()) {
 			case Autocomplete:
-				if (Strings.isNotEmpty(searchKey)) {
-					json = fieldType.getAutocompleteService().searchByKey(searchKey, permissions);
+                AbstractAutocompleteService<?> autocompleteService = fieldType.getAutocompleteService();
+
+                if (Strings.isNotEmpty(searchKey)) {
+					json = autocompleteService.searchByKey(searchKey, permissions);
 				} else {
-					json = fieldType.getAutocompleteService().getJson(searchQuery, permissions);
+					json = autocompleteService.getJson(searchQuery, permissions);
 				}
 				break;
 

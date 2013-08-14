@@ -74,6 +74,7 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 		field.setName(fieldName);
 		FieldCategory fieldCategory = FieldCategory.AccountInformation;
 		field.setCategory(fieldCategory);
+        field.setCategoryTranslation(categoryTranslation);
 		// We're not calling field.setCategoryTranslation() because that's set
 		// by ReportUtil
 		// We're not calling field.setHelp() because that's set by ReportUtil
@@ -94,13 +95,11 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 		when(reportsModel.getAvailableFields()).thenReturn(fieldsMap);
 
 		// This is super brittle, but testing exactly what's actually happening
-		when(
-				translationService.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()),
-						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
+        when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.CATEGORY_KEY_SUFFIX),
+                any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
 		when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(
 				TRANSLATION_PREFIX + fieldName);
-		when(
-				translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX),
+		when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX),
 						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
 
 		JSONArray jsonArray = JsonReportElementsBuilder.buildColumns(reportsModel, permissions);
@@ -130,7 +129,9 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 		field.setName(fieldName);
 		FieldCategory fieldCategory = FieldCategory.AccountInformation;
 		field.setCategory(fieldCategory);
-		// We're not calling field.setCategoryTranslation() because that's set
+        field.setCategoryTranslation(categoryTranslation);
+
+        // We're not calling field.setCategoryTranslation() because that's set
 		// by ReportUtil
 		// We're not calling field.setHelp() because that's set by ReportUtil
 
@@ -144,13 +145,11 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 		when(reportsModel.getAvailableFields()).thenReturn(fieldsMap);
 
 		// This is super brittle, but testing exactly what's actually happening
-		when(
-				translationService.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()),
+		when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.CATEGORY_KEY_SUFFIX),
 						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
 		when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(
 				TRANSLATION_PREFIX + fieldName);
-		when(
-				translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX),
+		when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX),
 						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
 
 		JSONArray jsonArray = JsonReportElementsBuilder.buildFilters(reportsModel, permissions);

@@ -99,6 +99,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     protected UserLoginLogDAO loginLogDAO;
     @Autowired
 	private PermissionBuilder permissionBuilder;
+	@Autowired
+	protected NoteDAO noteDao;
 
 	protected Collection<String> alertMessages;
 
@@ -1038,21 +1040,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isStringEmpty(String s) {
 		return Strings.isEmpty(s);
-	}
-
-	@Transient
-	public String getHelpURL() {
-		String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
-
-		if (permissions.isOperatorCorporate()) {
-			helpUrl += "os_username=operator&os_password=oper456ator";
-		} else if (permissions.isContractor()) {
-			helpUrl += "os_username=contractor&os_password=con123tractor";
-		} else {
-			helpUrl += "os_username=admin&os_password=ad9870mins";
-		}
-
-		return helpUrl;
 	}
 
 	public String getActionName() {

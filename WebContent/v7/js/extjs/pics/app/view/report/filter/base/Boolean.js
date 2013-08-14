@@ -11,11 +11,25 @@ Ext.define('PICS.view.report.filter.base.Boolean', {
 
     createValueField: function () {
         return {
-            xtype: 'checkbox',
-            boxLabel: 'True',
-            inputValue: true,
-            name: 'value',
-            uncheckedValue: false
+            xtype      : 'radiogroup',
+            defaults: {
+                flex: 1,
+                name: 'value',
+                margin: '0 10 0 0'
+            },
+            layout: 'hbox',
+            items: [
+                {
+                    boxLabel: PICS.text('Report.execute.booleanFilter.yes'),
+                    inputValue: 'true'
+                }, {
+                    boxLabel: PICS.text('Report.execute.booleanFilter.no'),
+                    inputValue: 'false'
+                }, {
+                    boxLabel: PICS.text('Report.execute.booleanFilter.all'),
+                    inputValue: 'all'
+                }
+            ]
         };
     }
 });

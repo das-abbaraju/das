@@ -2,13 +2,19 @@ package com.picsauditing.model.i18n;
 
 public class TranslationWrapper {
 
+	private int keyID;
 	private String key;
 	private String translation;
 	private String locale;
+    private boolean retrievedByWildcard = false;
 	private int createdBy;
 	private int updatedBy;
 
-	public String getKey() {
+    public int getKeyID() {
+        return keyID;
+    }
+
+    public String getKey() {
 		return key;
 	}
 
@@ -20,7 +26,11 @@ public class TranslationWrapper {
 		return locale;
 	}
 
-	public int getCreatedBy() {
+    public boolean isRetrievedByWildcard() {
+        return retrievedByWildcard;
+    }
+
+    public int getCreatedBy() {
 		return createdBy;
 	}
 
@@ -29,14 +39,20 @@ public class TranslationWrapper {
 	}
 
 	public static class Builder {
-
+        private int keyID;
 		private String key;
 		private String translation;
 		private String locale;
+        private boolean retrievedByWildcard = false;
 		private int createdBy;
 		private int updatedBy;
 
-		public Builder key(String key) {
+        public Builder keyID(int keyID) {
+            this.keyID = keyID;
+            return this;
+        }
+
+        public Builder key(String key) {
 			this.key = key;
 			return this;
 		}
@@ -51,7 +67,12 @@ public class TranslationWrapper {
 			return this;
 		}
 
-		public Builder createdBy(int createdBy) {
+        public Builder retrievedByWildcard(boolean retrievedByWildcard) {
+            this.retrievedByWildcard = retrievedByWildcard;
+            return this;
+        }
+
+        public Builder createdBy(int createdBy) {
 			this.createdBy = createdBy;
 			return this;
 		}
@@ -63,9 +84,11 @@ public class TranslationWrapper {
 
 		public TranslationWrapper build() {
 			TranslationWrapper translationWrapper = new TranslationWrapper();
+			translationWrapper.keyID = keyID;
 			translationWrapper.key = key;
 			translationWrapper.translation = translation;
 			translationWrapper.locale = locale;
+			translationWrapper.retrievedByWildcard = retrievedByWildcard;
 			translationWrapper.createdBy = createdBy;
 			translationWrapper.updatedBy = updatedBy;
 			return translationWrapper;

@@ -140,7 +140,7 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addField("GROUP_CONCAT(DISTINCT CAST(gc_flag.id as CHAR)) AS gcIDs");
 		sql.addField("operator.id AS opId");
 		sql.addField("c.membershipDate");
-		sql.addField("c.lastRecalculation");
+		sql.addField("gc_flag.flagLastUpdated");
 		sql.addField("gc_flag.id gcID");
 		sql.addField("gc_flag.flag");
 		sql.addField("gc_flag.baselineFlag");

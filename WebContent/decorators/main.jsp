@@ -45,8 +45,8 @@
 	MenuComponent menu = new MenuComponent();
 	String homePageUrl = "";
 	if (useVersion7Menus) {
-		menu = MenuBuilder.buildMenubar(permissions);
-		homePageUrl = MenuBuilder.getHomePage(menu, permissions);
+        MenuBuilder.reportUserDAO = SpringUtils.getBean("ReportUserDAO");
+		homePageUrl = MenuBuilder.getHomePage(permissions);
 	} else {
 		menu = PicsMenu.getMenu(permissions);
 		homePageUrl = PicsMenu.getHomePage(menu, permissions);
@@ -94,6 +94,7 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}"/>
 	<link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2.css?v=${version}"/>
 	<link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2-override.css?v=${version}"/>
+	<link rel="stylesheet" type="text/css" href="css/timezone.css?v=${version}"/>
 
 	<link rel="stylesheet" type="text/css" href="css/bootstrap/css/font-awesome.min.css?v=${version}"/>
 	<!--[if lt IE 8]>
@@ -115,34 +116,6 @@
 
 	<script type="text/javascript">
 		$(function () {
-			$(document).ajaxError(function (e, xhr, originalSettings, exception) {
-				if (xhr.status == 401) {
-					$.facebox(function () {
-						$.get('Login!overlay.action', function (response, status, loginXhr) {
-							var html = $(response).addClass('overlay');
-							html.find('#login').ajaxForm({
-								url: 'Login!ajax.action',
-								dataType: 'json',
-								success: function (response, status, formXhr, $form) {
-									if (response.loggedIn) {
-										$.facebox.close();
-										if (originalSettings.url.indexOf('?') != -1) {
-											originalSettings.url = originalSettings.url.replace(/\?.*$/, '');
-										}
-										$.ajax(originalSettings);
-									} else {
-										$('#loginMessages').msg('error', response.actionError, true);
-										$('#username').focus();
-									}
-								}
-							});
-							$.facebox(html);
-							html.find('#username').focus();
-						});
-					});
-				}
-			});
-
 			$('#debug-menu, #debug-menu_menu').live('click', function (e) {
 				e.preventDefault();
 				$('body').toggleClass('debugging');
@@ -196,6 +169,9 @@
 
 <header>
 	<s:action name="Menu!menu" executeResult="true"/>
+    
+    <%-- include javascript translations --%>
+    <s:action name="TranslateJS2" executeResult="true" />    
 </header>
 <%
 	}
@@ -332,15 +308,6 @@
 String mibew_href = MenuBuilder.getMibewURL(locale, permissions);
 String chat_link_text = translationService.getText("Header.Chat", locale);
 String help_link_text = translationService.getText("Header.HelpCenter", locale);
-String help_url = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
-
-if (permissions.isOperatorCorporate()) {
-	help_url += "os_username=operator&os_password=oper456ator";
-} else if (permissions.isContractor()) {
-	help_url += "os_username=contractor&os_password=con123tractor";
-} else {
-	help_url += "os_username=admin&os_password=ad9870mins";
-}
 %>
 
 <div id="main">
@@ -349,7 +316,7 @@ if (permissions.isOperatorCorporate()) {
 
 		<div id="helpbox">
 			<div id="helpcenter" style="float:left;">
-				<a href="<%= help_url %>" target="_BLANK"><%= help_link_text %></a>
+				<a href="/HelpCenter.action" target="_BLANK"><%= help_link_text %></a>
 			</div>
 
 			<div id="helpchat" style="float:left;">

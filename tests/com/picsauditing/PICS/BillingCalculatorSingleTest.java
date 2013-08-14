@@ -172,7 +172,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
 
-		billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		verify(contractor).setRenew(true);
 	}
@@ -183,7 +183,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(false);
 
-		billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		verify(contractor).setRenew(true);
 	}
@@ -192,7 +192,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 	public void testCreateInvoiceWithItems_Activation_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -202,7 +202,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -212,7 +212,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -222,7 +222,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -232,7 +232,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.RenewalOverdue);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -242,7 +242,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Current);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 30)));
 	}
@@ -254,7 +254,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -266,7 +266,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(false);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -278,7 +278,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(false);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -290,7 +290,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -300,7 +300,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		doCallRealMethod().when(invoiceModel).getSortedClientSiteList(any(ContractorAccount.class));
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertThat("Test Operator", is(equalTo(invoice.getNotes())));
 		assertThat(contractor, is(equalTo(invoice.getAccount())));
@@ -315,7 +315,7 @@ public class BillingCalculatorSingleTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		doCallRealMethod().when(invoiceModel).getSortedClientSiteList(any(ContractorAccount.class));
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
 
 		assertThat("Test Operator", is(equalTo(invoice.getNotes())));
 	}

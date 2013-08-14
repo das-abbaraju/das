@@ -75,6 +75,7 @@
         <pattern>/AuditFileUpload.action</pattern>
         <pattern>/*External.action</pattern>
         <pattern>/Liveagent.action</pattern>
-        <pattern>/PrintIolRmpAudit.action</pattern>        
+        <pattern>/PrintIolRmpAudit.action</pattern>
+        <pattern>/PreviewEmail.action</pattern>
     </decorator>
 </decorators>

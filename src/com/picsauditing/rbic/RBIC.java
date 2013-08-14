@@ -13,24 +13,10 @@ import java.util.List;
 public class RBIC extends PicsActionSupport {
 
     private ContractorAccount contractor;
-    @Autowired
-    private RulesRunner rulesRunner;
-    @Autowired
+   @Autowired
     private InsuranceCriteriaContractorOperatorDAO insuranceCriteriaContractorOperatorDAO;
-    @Autowired
-    private ContractorAccountDAO contractorAccountDAO;
-
-    public String execute() {
-        rulesRunner.setContractor(contractor);
-
-        for (ContractorOperator contractorOperator : contractor.getOperators()) {
-            OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
-            rulesRunner.runInsuranceCriteriaRulesForOperator(operatorAccount);
-        }
-
-        contractorAccountDAO.save(contractor);
-
-        return SUCCESS;
+   public String execute() {
+       return SUCCESS;
     }
 
     public List<InsuranceCriteriaContractorOperator> getInsuranceLimits() {

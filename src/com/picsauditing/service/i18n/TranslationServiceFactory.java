@@ -3,13 +3,17 @@ package com.picsauditing.service.i18n;
 import java.util.Locale;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
 import com.picsauditing.model.i18n.ThreadLocalLocale;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import com.spun.util.ObjectUtils;
 import com.spun.util.persistence.Loader;
 
 public class TranslationServiceFactory {
 
 	private static Loader<Locale> localeProvider = ThreadLocalLocale.INSTANCE;
+    private static FeatureToggle featureToggle;
 
 	// for testing
 	private static TranslationService translationService;
@@ -26,14 +30,8 @@ public class TranslationServiceFactory {
 		return I18nCache.getInstance();
 	}
 
-	/**
-	 * This is a place-holder that will read off a system or toggle property to
-	 * determine which TranslationService implementation to use.
-	 * 
-	 * @return
-	 */
 	private static boolean useTranslationServiceAdapter() {
-		return false;
+		return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
 	}
 
 	public static void registerTranslationService(TranslationService translationService) {
@@ -47,5 +45,13 @@ public class TranslationServiceFactory {
 			throw ObjectUtils.throwAsError(e);
 		}
 	}
+
+    private static FeatureToggle featureToggle() {
+        if (featureToggle == null) {
+            featureToggle = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
+        }
+
+        return featureToggle;
+    }
 
 }

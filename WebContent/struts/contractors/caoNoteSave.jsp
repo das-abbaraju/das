@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -16,7 +17,7 @@
 </div>
 
 <div id="buttonsDialog">
-	<input class="btn approve" type="button" value="<s:text name="%{status.getI18nKey('button')}" />" id="yesButton" />
-	
+	<input class="btn approve" disabled="disabled" type="button" value="<s:text name="%{status.getI18nKey('button')}" />" id="yesButton" />
+
 	<input class="btn error" type="button" value="<s:text name="button.Close" />" id="noButton" />
 </div>

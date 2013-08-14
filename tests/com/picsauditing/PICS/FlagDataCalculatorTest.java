@@ -17,6 +17,7 @@ import java.util.Map;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -833,8 +834,8 @@ public class FlagDataCalculatorTest {
 		
 		assertNull(result);
 	}
-	
-	@Test
+
+    @Test
 	public void testIsFlagged_AuditApprovedAuditQuestionVerifiedWithSubmittedWorkflow() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Approved);
 		
@@ -940,8 +941,8 @@ public class FlagDataCalculatorTest {
 		
 		assertNull(result);
 	}
-	
-	@Test
+
+    @Test
 	public void testIsFlagged_AuditCompleteFailsCPIQuestionCheck() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
 		
@@ -973,8 +974,8 @@ public class FlagDataCalculatorTest {
 		
 		assertTrue(result);
 	}
-	
-	@Test
+
+    @Test
 	public void testIsFlagged_AuditCompleteSucceedsCPIQuestionCheck() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
 		
@@ -1179,12 +1180,16 @@ public class FlagDataCalculatorTest {
 		when(audit.getAuditType()).thenReturn(auditType);
 		
 		ContractorAuditOperator cao = Mockito.mock(ContractorAuditOperator.class);
+		ContractorAuditOperatorPermission caop = Mockito.mock(ContractorAuditOperatorPermission.class);
 		when(cao.getId()).thenReturn(auditForYear);
 		when(cao.isVisible()).thenReturn(true);
 		when(audit.getOperators()).thenReturn(Arrays.asList(cao));
 		when(cao.hasCaop(OPERATOR_ID_FOR_CAOP)).thenReturn(true);
 		when(cao.getStatus()).thenReturn(caoStatus);
         when(cao.getOperator()).thenReturn(operator);
+		when(caop.getOperator()).thenReturn(operator);
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		when(cao.getCaoPermissions()).thenReturn(Arrays.asList(caop));
 				
 		return audit;
 	}

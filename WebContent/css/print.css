@@ -492,6 +492,10 @@
 	margin-bottom: 0px;
 }
 
+#PrintIolRmpAudit__page section {
+	clear: left;
+}
+
 #PrintIolRmpAudit__page .table {
 	border: 1px solid #999;
 	font-size: 12px;
@@ -501,7 +505,23 @@
 	border: 1px solid #999;
 }
 
+#PrintIolRmpAudit__page dl {
+	margin: 0px;
+}
+
+#PrintIolRmpAudit__page dt, dd {
+	float: left;
+}
+
 #PrintIolRmpAudit__page dt {
-    float: left;
+	clear: left;
     margin-right: 5px;
+}
+
+#PrintIolRmpAudit__page li {
+	clear: left;
+}
+
+#PrintIolRmpAudit__page .last-dt{
+	margin-bottom: 15px;
 }

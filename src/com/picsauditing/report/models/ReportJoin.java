@@ -22,6 +22,7 @@ import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.Strings;
 
 public class ReportJoin {
+    private String thirdAlias = "";
 	private String fromAlias = "";
 	private String alias = "";
 	private AbstractTable toTable;
@@ -43,7 +44,15 @@ public class ReportJoin {
 		return importantEnough;
 	}
 
-	public String getFromAlias() {
+    public String getThirdAlias() {
+        return thirdAlias;
+    }
+
+    public void setThirdAlias(String thirdAlias) {
+        this.thirdAlias = thirdAlias;
+    }
+
+    public String getFromAlias() {
 		return fromAlias;
 	}
 
@@ -165,13 +174,12 @@ public class ReportJoin {
 							return true;
 					}
 				}
-			}
 
-			for (Column column : report.getColumns()) {
-				String columnName = column.getFieldNameWithoutMethod();
-				if (columnName.equalsIgnoreCase(fieldName))
-					return true;
-			}
+                String columnRequiredJoin = column.getField().getRequiredJoin();
+                if (alias.equalsIgnoreCase(columnRequiredJoin)) {
+                    return true;
+                }
+            }
 
 			for (Filter filter : report.getFilters()) {
 				String filterName = filter.getFieldNameWithoutMethod();
@@ -179,14 +187,18 @@ public class ReportJoin {
                     if (isFilterUsed(filter))
                         return true;
                 }
-			}
 
-			for (Filter filter : report.getFilters()) {
-				if (filter.getFieldForComparison() != null) {
-					String filterName = filter.getFieldForComparison().getName();
-					if (filterName.equalsIgnoreCase(fieldName))
-						return true;
-				}
+                String filterRequiredJoin = filter.getField().getRequiredJoin();
+                if (alias.equalsIgnoreCase(filterRequiredJoin)) {
+                    if (isFilterUsed(filter))
+                        return true;
+                }
+
+                if (filter.getFieldForComparison() != null) {
+                    String comparedColumnName = filter.getFieldForComparison().getName();
+                    if (comparedColumnName.equalsIgnoreCase(fieldName))
+                        return true;
+                }
 			}
 
 			for (Sort sort : report.getSorts()) {

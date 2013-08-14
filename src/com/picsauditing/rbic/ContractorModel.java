@@ -21,6 +21,27 @@ public class ContractorModel implements Serializable {
         return false;
     }
 
+    public boolean hasTrade(int tradeID) {
+        for (ContractorTrade conTrade : contractor.getTrades()) {
+            if (hasTrade(tradeID, conTrade.getTrade())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasTrade(int tradeID, Trade trade) {
+        if (trade.getId() == tradeID) {
+            return true;
+        }
+
+        if (trade.getParent() != null) {
+            return hasTrade(tradeID, trade.getParent());
+        }
+
+        return false;
+    }
+
     public boolean worksFor(int opID) {
         for (ContractorOperator operator : contractor.getOperators()) {
             if (operator.getOperatorAccount().getId() == opID) {

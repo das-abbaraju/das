@@ -14,13 +14,13 @@
             PICS Organizer 7.0
         </h2>
     </header>
-    
+
     <div class="content summary">
         <div class="row">
             <div class="span6 image-container">
                 <img src="/v7/img/reference/navigation-restructure/restructure.jpg" />
             </div>
-            
+
             <div class="span6">
                 <section class="overview">
                     <h1>We've moved some menu items</h1>
@@ -41,7 +41,6 @@
                     <li class="active"><a href="#about">About</a></li>
                     <li><a href="#account_summary">Account Summary</a></li>
                     <li><a href="#annual_update">Annual Update</a></li>
-                    <li><a href="#audit_guard">AuditGUARD</a></li>
                     <li><a href="#billing">Billing</a></li>
                     <li><a href="#client_sites">Client Sites</a></li>
                     <li><a href="#company">Company</a></li>
@@ -63,35 +62,34 @@
             <div class="span8">
                 <section id="about">
                     <h3>About</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>About</li>
                             </ul>
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Support (About PICS Organizer)</li>
                             </ul>
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="account_summary">
                     <h3>Account Summary</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Account Summary</li>
-                                <li>Flag Status</li>
                                 <li>Activity Watch</li>
                                 <li>Notes</li>
                                 <li>Edit Account</li>
@@ -103,14 +101,13 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Company (Dashboard)</li>
-                                <li>Reports > Legacy Reports</li>
-                                <li>Reports > Legacy Reports</li>
+                                <li>Manage</li>
                                 <li>Company</li>
                                 <li>Company (Company Profile)</li>
-                                <li>"Your Name" (Account)</li>
+                                <li>"Your Name" (Profile)</li>
                                 <li>Company</li>
                                 <li>Company</li>
                                 <li>Company</li>
@@ -118,14 +115,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="annual_update">
                     <h3>Annual Update</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Document Index</li>
                                 <li>Annual Update</li>
@@ -133,7 +130,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>DocuGUARD (Summary)</li>
                                 <li>DocuGUARD</li>
@@ -141,35 +138,14 @@
                         </div>
                     </div>
                 </section>
-                
-                <section id="audit_guard">
-                    <h3>AuditGUARD</h3>
-                
-                    <div class="row">
-                        <div class="span4">
-                            <h4>Version 6</h4>
-                            
-                            <ul class="unstyled">
-                                <li>Document Index</li>
-                            </ul>
-                        </div>
-                        <div class="span4">
-                            <h4>Version 7 Location (New Name)</h4>
-                            
-                            <ul class="unstyled">
-                                <li>AuditGUARD (Summary)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-                
+
                 <section id="billing">
                     <h3>Billing</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Billing Details</li>
                                 <li>Payment Options</li>
@@ -177,7 +153,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Company</li>
                                 <li>Company</li>
@@ -185,14 +161,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="client_sites">
                     <h3>Client Sites</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Client Sites</li>
                                 <li>Subcontractor Client Sites</li>
@@ -200,7 +176,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Company</li>
                                 <li>Company</li>
@@ -208,14 +184,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="company">
                     <h3>Company</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Client Sites</li>
                                 <li>Activity Log</li>
@@ -223,7 +199,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Company</li>
                                 <li>Company (Notes)</li>
@@ -231,14 +207,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="contractors">
                     <h3>Contractors</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Bid Only Accounts</li>
                                 <li>Contractor List</li>
@@ -255,14 +231,14 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Reports</li>
                                 <li>Reports</li>
-                                <li>Reports > Legacy Reports</li>
+                                <li>Manage</li>
                                 <li>Manage</li>
                                 <li>Reports > Legacy Reports</li>
-                                <li>Reports > Legacy Reports</li>
+                                <li>Manage</li>
                                 <li>Reports > Legacy Reports</li>
                                 <li>Reports</li>
                                 <li>Reports > Legacy Reports</li>
@@ -272,14 +248,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="edit">
                     <h3>Edit</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Company Account</li>
                                 <li>Trades</li>
@@ -289,7 +265,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Company (Company Profile)</li>
                                 <li>Company</li>
@@ -299,14 +275,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="employee_guard">
                     <h3>EmployeeGUARD</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>EmployeeGUARD Dashboard</li>
                                 <li>Manage Employees</li>
@@ -315,7 +291,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>EmployeeGUARD (Summary)</li>
                                 <li>EmployeeGUARD (Employees)</li>
@@ -324,35 +300,35 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="help_center">
                     <h3>Help Center</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Help Center</li>
                             </ul>
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Support</li>
                             </ul>
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="hse_competencies">
                     <h3>HSE Competencies</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Define Competencies</li>
                                 <li>Employee Competencies</li>
@@ -364,7 +340,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Reports > Legacy Reports</li>
                                 <li>EmployeeGUARD (Competencies)</li>
@@ -376,14 +352,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="insure_guard">
                     <h3>InsureGUARD</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>InsureGUARD Dashboard</li>
                                 <li>Manage Certificates</li>
@@ -391,7 +367,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>InsureGUARD (Summary)</li>
                                 <li>InsureGUARD (Certificates Manager)</li>
@@ -399,35 +375,35 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="live_chat">
                     <h3>Live Chat</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Live Chat</li>
                             </ul>
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Support</li>
                             </ul>
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="management">
                     <h3>Management</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Approve Contractors</li>
                                 <li>Email Wizard</li>
@@ -444,7 +420,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Reports > Legacy Reports</li>
                                 <li>Manage > Email</li>
@@ -461,14 +437,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="operator_qualification">
                     <h3>Operator Qualification</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Job Tasks</li>
                                 <li>Projects</li>
@@ -480,7 +456,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Reports > Legacy Reports</li>
                                 <li>Reports > Legacy Reports</li>
@@ -492,37 +468,35 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="pqf">
                     <h3>PQF</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Document Index</li>
-                                <li>Trades</li>
                             </ul>
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>DocuGUARD (Summary)</li>
-                                <li>Company</li>
                             </ul>
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="reports">
                     <h3>Reports</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Employee List</li>
                                 <li>EMR Rates Graph</li>
@@ -547,7 +521,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Reports > Legacy Reports</li>
                                 <li>Reports > Legacy Reports</li>
@@ -572,35 +546,35 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="resources">
                     <h3>Resources</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Resources</li>
                             </ul>
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Company</li>
                             </ul>
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="support">
                     <h3>Support</h3>
-                
+
                     <div class="row">
                         <div class="span4">
                             <h4>Version 6</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Support</li>
                                 <li>Edit Profile</li>
@@ -608,7 +582,7 @@
                         </div>
                         <div class="span4">
                             <h4>Version 7 Location (New Name)</h4>
-                            
+
                             <ul class="unstyled">
                                 <li>Support (Contact PICS)</li>
                                 <li>"Your Name"</li>

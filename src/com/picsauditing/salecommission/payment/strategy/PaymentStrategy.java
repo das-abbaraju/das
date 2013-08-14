@@ -4,18 +4,13 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.PaymentCommissionDAO;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceCommission;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.PaymentCommission;
-import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.util.Strings;
 
 /**
@@ -89,18 +84,22 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 
 		BigDecimal revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, payment).multiply(
 				invoiceCommission.getRevenuePercent());
-		BigDecimal revenueAmount = invoiceCommission.getInvoice().getTotalCommissionEligibleInvoice(true)
-				.multiply(revenuePercent);
+		BigDecimal revenueAmount = invoiceCommission.getInvoice().getCommissionableAmount().multiply(revenuePercent);
 		return revenueAmount;
 	}
 
 	private BigDecimal calculatePaymentPercentOfInvoice(InvoiceCommission invoiceCommission, Payment payment) {
 		BigDecimal totalAmount = invoiceCommission.getInvoice().getTotalAmount();
-		BigDecimal amountApplied = payment.getAmountApplied();
 
-		if (totalAmount != null && amountApplied != null) {
-			return BigDecimal.valueOf(amountApplied.doubleValue() / totalAmount.doubleValue());
-		}
+        for (PaymentAppliedToInvoice invoicePayment : payment.getInvoices()) {
+            if (invoiceCommission.getInvoice().getId() == invoicePayment.getInvoice().getId()) {
+                BigDecimal amountApplied = invoicePayment.getAmount();
+
+                if (totalAmount != null && amountApplied != null) {
+                    return BigDecimal.valueOf(amountApplied.doubleValue() / totalAmount.doubleValue());
+                }
+            }
+        }
 
 		return BigDecimal.ZERO;
 	}

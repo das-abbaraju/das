@@ -72,7 +72,6 @@
 
     .navbar-search
     {
-        border-right: 1px solid #e7e7e7;
         margin: 0;
         line-height: 49px;
         padding: 0 15px;
@@ -95,6 +94,11 @@
         {
             color: #73bbe8;
         }
+    }
+    
+    #user_menu
+    {
+    	border-left: 1px solid #e7e7e7;
     }
     
     .nav .switch-to
@@ -274,8 +278,6 @@
         
         .navbar-search
         {
-            border: 0;
-            
             .icon-search
             {
             	top: 6px;
@@ -288,6 +290,11 @@
                 min-height: 30px;
                 width: 100%;
             }
+        }
+        
+        #user_menu
+        {
+        	border: 0;
         }
         
         .nav .switch-to

@@ -6,9 +6,7 @@ import java.util.Map;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.report.tables.InvoiceTable;
+import com.picsauditing.report.tables.*;
 
 public class InvoicesModel extends AbstractModel {
 
@@ -26,7 +24,13 @@ public class InvoicesModel extends AbstractModel {
 		ModelSpec contractor = account.join(AccountTable.Contractor);
 		contractor.alias = "Contractor";
 
-		return spec;
+        ModelSpec insideSales = contractor.join(ContractorTable.InsideSales);
+        insideSales.minimumImportance = FieldImportance.Required;
+        ModelSpec insideSalesUser = insideSales.join(AccountUserTable.User);
+        insideSalesUser.category = FieldCategory.CustomerService;
+        insideSalesUser.minimumImportance = FieldImportance.Required;
+
+        return spec;
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class InvoicesModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 
 		Field accountName = fields.get("AccountName".toUpperCase());
-		accountName.setUrl("ContractorView.action?id={AccountID}");
+		accountName.setUrl("BillingDetail.action?id={AccountID}");
 
 		return fields;
 	}

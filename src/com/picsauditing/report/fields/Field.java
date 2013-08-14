@@ -27,6 +27,7 @@ public class Field {
 	private int width = Column.DEFAULT_WIDTH;
 	private String help;
 
+    private String requiredJoin;
 	private Class<?> fieldClass;
 	private String databaseColumnName;
 	private boolean visible = true;
@@ -305,6 +306,7 @@ public class Field {
 		copiedField.visible = visible;
 		copiedField.filterable = filterable;
 		copiedField.sortable = sortable;
+        copiedField.requiredJoin = requiredJoin;
 		copiedField.preTranslation = preTranslation;
 		copiedField.postTranslation = postTranslation;
 		copiedField.requiredPermission = requiredPermission;
@@ -319,4 +321,12 @@ public class Field {
 	public String toString() {
 		return category + ": " + name;
 	}
+
+    public String getRequiredJoin() {
+        return requiredJoin;
+    }
+
+    public void setRequiredJoin(String requiredJoin) {
+        this.requiredJoin = requiredJoin;
+    }
 }

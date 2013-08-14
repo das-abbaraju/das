@@ -13,6 +13,7 @@ public class InvoiceTable extends AbstractTable {
 		super("invoice");
 		addFields(Invoice.class);
 		addCurrency();
+        addCreationDate();
 
 		Field invoiceStatus = new Field("Status", "status", FieldType.TransactionStatus);
 		invoiceStatus.setCategory(FieldCategory.Invoicing);

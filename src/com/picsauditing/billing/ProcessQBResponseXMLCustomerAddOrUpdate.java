@@ -12,6 +12,7 @@ import com.picsauditing.util.SpringUtils;
  */
 public class ProcessQBResponseXMLCustomerAddOrUpdate extends ProcessQBResponseXMLStrategy  {
 	public static final String PARENT_NODE_NAME_ADD_RESULT = "CustomerAddRs";
+	public static final String PARENT_NODE_NAME_UPDATE_RESULT = "CustomerModRs";
 	public static final String PARENT_NODE_NAME_QUERY_RESULT = "CustomerQueryRs";
 	public static final String DETAIL_NODE_NAME = "CustomerRet";
 	public static final String REQUEST_TYPE = "Customer Add";
@@ -28,6 +29,7 @@ public class ProcessQBResponseXMLCustomerAddOrUpdate extends ProcessQBResponseXM
 		ProcessQBResponseXMLCustomerAddOrUpdate object = new ProcessQBResponseXMLCustomerAddOrUpdate(actionMessages,errorMessages);
 		object.setParentNodeNameAddResult(PARENT_NODE_NAME_ADD_RESULT);
 		object.setParentNodeNameQueryResult(PARENT_NODE_NAME_QUERY_RESULT);
+		object.setParentNodeNameUpdateResult(PARENT_NODE_NAME_UPDATE_RESULT);
 		object.setDetailNodeName(DETAIL_NODE_NAME);
 		object.setRequestType(REQUEST_TYPE);
 		object.setContractorAccountDAO(dao != null ? dao :(ContractorAccountDAO)SpringUtils.getBean(DAO_TYPE));

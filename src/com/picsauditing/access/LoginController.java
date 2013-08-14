@@ -2,10 +2,13 @@ package com.picsauditing.access;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -15,8 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.security.auth.login.*;
-import javax.servlet.http.*;
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
@@ -32,9 +39,12 @@ public class LoginController extends PicsActionSupport {
 	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
 
+    // FOR TESTING ONLY
+    protected static ReportUserDAO reportUserDAO;
+
 	@Autowired
 	private LoginService loginService;
-    @Autowired
+	@Autowired
 	protected PermissionBuilder permissionBuilder;
 
 	private User user;
@@ -52,20 +62,20 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
-            if (sessionCookieIsValidAndNotExpired()) {
-                switchToUser = getClientSessionUserID();
-                return switchTo();
-            } else {
-                clearPicsOrgCookie();
+			if (sessionCookieIsValidAndNotExpired()) {
+				switchToUser = getClientSessionUserID();
+				return switchTo();
+			} else {
+				clearPicsOrgCookie();
 
-                if (ActionContext.getContext().getLocale() == null) {
-                    ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
-                            .getVisibleLanguages());
-                    ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
-                }
+				if (ActionContext.getContext().getLocale() == null) {
+					ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
+							.getVisibleLanguages());
+					ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
+				}
 
-                return SUCCESS;
-            }
+				return SUCCESS;
+			}
 		} else if ("confirm".equals(button)) {
 			return confirm();
 		} else if ("logout".equals(button)) {
@@ -147,6 +157,17 @@ public class LoginController extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	@Anonymous
+	@SuppressWarnings("unchecked")
+	public String sessionLogout() throws Exception {
+		logout();
+
+		json = new JSONObject();
+		json.put("referer", getReferer());
+
+		return JSON;
+	}
+
 	private String switchBack() throws Exception {
 		loadPermissions(false);
 		switchToUser = 0;
@@ -186,8 +207,8 @@ public class LoginController extends PicsActionSupport {
 
 		doSwitchToUser(switchToUser);
 		username = permissions.getUsername();
-        logSwitchToAttempt(user);
-		return REDIRECT;
+		logSwitchToAttempt(user);
+		return setRedirectUrlPostLogin();
 	}
 
 	private void doSwitchToUser(int userID) throws Exception {
@@ -200,9 +221,9 @@ public class LoginController extends PicsActionSupport {
 			permissions = permissionBuilder.login(user);
 			permissions.setAdminID(adminID);
 			permissions.setRememberMeTimeInSeconds(maxAge);
-            if (adminID != userID) {
-			    permissions.setSwitchedToUserName(user.getName());
-            }
+			if (adminID != userID) {
+				permissions.setSwitchedToUserName(user.getName());
+			}
 
 			if (adminIsTranslator) {
 				permissions.setTranslatorOn();
@@ -312,7 +333,7 @@ public class LoginController extends PicsActionSupport {
 		updateUserForSuccessfulLogin();
 
 		setBetaTestingCookie();
-        logCredentialLoginAttempt(user);
+		logCredentialLoginAttempt(user);
 
 		if (permissions.belongsToGroups() || permissions.isContractor()) {
 			return setRedirectUrlPostLogin();
@@ -324,7 +345,7 @@ public class LoginController extends PicsActionSupport {
 
 	private boolean logAndMessageError(String error) throws Exception {
 		if (StringUtils.isNotEmpty(error)) {
-            logCredentialLoginAttempt(user);
+			logCredentialLoginAttempt(user);
 			addActionError(error);
 			ActionContext.getContext().getSession().clear();
 			return true;
@@ -369,8 +390,8 @@ public class LoginController extends PicsActionSupport {
 				break;
 			case HomePage:
 				if (user.isUsingVersion7Menus()) {
-					MenuComponent menu = MenuBuilder.buildMenubar(permissions);
-					redirectURL = MenuBuilder.getHomePage(menu, permissions);
+                    MenuBuilder.reportUserDAO = setReportUserDAO();
+					redirectURL = MenuBuilder.getHomePage(permissions);
 				} else {
 					MenuComponent menu = PicsMenu.getMenu(permissions);
 					redirectURL = PicsMenu.getHomePage(menu, permissions);
@@ -379,17 +400,17 @@ public class LoginController extends PicsActionSupport {
 			case Deactivated:
 				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
 				break;
-            case Declined:
-                // per PICS-10995 - declined is an internal status and doesn't need to be shown on a special page
-                // just show them deactivated
-                redirectURL = DEACTIVATED_ACCOUNT_PAGE;
-                break;
+			case Declined:
+				// per PICS-10995 - declined is an internal status and doesn't need to be shown on a special page
+				// just show them deactivated
+				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
+				break;
 		}
 
 		return redirectURL;
 	}
 
-	private String getPreLoginUrl() {
+    private String getPreLoginUrl() {
 		// Find out if the user previously timed out on a page, so we can forward to it if appropriate for the user
 		String urlPreLogin = null;
 		Cookie cookie = CookieSupport.cookieFromRequest(getRequest(), CookieSupport.PRELOGIN_URL_COOKIE_NAME);
@@ -424,7 +445,7 @@ public class LoginController extends PicsActionSupport {
 		return userBetaTester;
 	}
 
-    /* GETTER & SETTERS */
+	/* GETTER & SETTERS */
 	private HttpServletResponse getResponse() {
 		return ServletActionContext.getResponse();
 	}
@@ -500,4 +521,9 @@ public class LoginController extends PicsActionSupport {
 		this.sessionTimeout = sessionTimeout;
 	}
 
+    public static ReportUserDAO setReportUserDAO() {
+        if (reportUserDAO == null)
+            return SpringUtils.getBean("ReportUserDAO");
+        return reportUserDAO;
+    }
 }

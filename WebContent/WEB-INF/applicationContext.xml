@@ -52,6 +52,7 @@
     <bean id="CountrySubdivisionDAO" class="com.picsauditing.dao.CountrySubdivisionDAO"/>
     <bean id="CronDAO" class="com.picsauditing.dao.CronDAO"/>
     <bean id="CreditMemoDAO" class="com.picsauditing.dao.CreditMemoDAO" />
+    <bean id="DynamicReportsSubscription" class="com.picsauditing.mail.subscription.DynamicReportsSubscription"/>
     <bean id="EbixLoader" class="com.picsauditing.util.EbixLoader"/>
     <bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
     <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
@@ -100,11 +101,13 @@
     <bean id="PaymentCommissionDAO" class="com.picsauditing.dao.PaymentCommissionDAO"/>
     <bean id="PasswordDAO" class="com.picsauditing.dao.PasswordDAO"/>
     <bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
+    <bean id="ReportApi" class="com.picsauditing.actions.report.ReportApi"/>
     <bean id="ReportDAO" class="com.picsauditing.dao.ReportDAO"/>
     <bean id="ReportElementDAO" class="com.picsauditing.dao.ReportElementDAO"/>
     <bean id="ReportUserDAO" class="com.picsauditing.dao.ReportUserDAO"/>
     <bean id="ReportPermissionUserDAO" class="com.picsauditing.dao.ReportPermissionUserDAO"/>
     <bean id="ReportPermissionAccountDAO" class="com.picsauditing.dao.ReportPermissionAccountDAO"/>
+    <bean id="TimeZoneDAO" class="com.picsauditing.dao.TimeZoneDAO"/>
     <bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
     <bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
     <bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
@@ -224,7 +227,6 @@
     <bean id="OptionGroupAutocompleteService"
           class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
     <bean id="OptionValueAutocompleteService"
-
           class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
     <bean id="ReportService" class="com.picsauditing.service.ReportService"/>
     <bean id="ManageReportsService" class="com.picsauditing.service.ManageReportsService"/>
@@ -233,6 +235,7 @@
     <bean id="CountrySubdivisionAutocompleteService"
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
+    <bean id="UserGroupAutocompleteService" class="com.picsauditing.actions.autocomplete.UserGroupAutocompleteService"/>
     <bean id="UserService" class="com.picsauditing.access.UserService"/>
     <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
@@ -268,8 +271,16 @@
     <bean id="taskExecutor"
           class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="5"/>
-        <property name="maxPoolSize" value="10"/>
-        <property name="queueCapacity" value="25"/>
+        <property name="maxPoolSize" value="50"/>
+        <property name="queueCapacity" value="250"/>
+    </bean>
+
+    <!-- this is intentionally a singleton -->
+    <bean id="translationLookupEventListener" class="com.picsauditing.model.events.TranslationLookupEventListener" />
+
+    <bean id="applicationEventMulticaster"
+          class="org.springframework.context.event.SimpleApplicationEventMulticaster">
+        <property name="taskExecutor" ref="taskExecutor"/>
     </bean>
 
     <!--  JPA implementation -->

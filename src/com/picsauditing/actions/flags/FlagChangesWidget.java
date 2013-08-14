@@ -52,7 +52,7 @@ public class FlagChangesWidget extends PicsActionSupport {
 				+ "2 when gc_flag.flag = 'Amber' then 3 when gc_flag.flag = 'Red' then 4 "
 				+ "when gc_flag.flag = 'Clear' then 5 end as `flagEnum`");
 		sql.addField("c.membershipDate");
-		sql.addField("TIMESTAMPDIFF(MINUTE, c.lastRecalculation, NOW()) AS lastRecalculation");
+		sql.addField("gc_flag.flagLastUpdated");
 		sql.addOrderBy("baselineEnum, flagEnum DESC, a.name, operator.name");
 
 		sql.setLimit(10);

@@ -13,7 +13,10 @@ import java.util.Set;
 
 import com.picsauditing.access.OpType;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.models.audits.AuditEditModel;
+import com.picsauditing.util.EmailAddressUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -53,6 +56,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private ContractorAuditDAO conAuditDAO;
 	@Autowired
 	private AuditEditModel auditEditModel;
+	@Autowired
+	private EmailSender emailSender;
 
 
 	protected int auditID = 0;
@@ -78,6 +83,26 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public String execute() throws Exception {
 		this.findConAudit();
 
+		return SUCCESS;
+	}
+
+	public String emailReminder() throws Exception {
+		this.findConAudit();
+
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(12);
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
+		emailBuilder.setConAudit(conAudit);
+		EmailQueue email = emailBuilder.build();
+		email.setSubjectViewableById(Account.EVERYONE);
+		email.setBodyViewableById(Account.EVERYONE);
+		emailSender.send(email);
+		String note = "PQF/Annual Update reminder email sent to " + emailBuilder.getSentTo();
+		addNote(contractor, note, NoteCategory.Audits);
+
+		addActionMessage("The PQF/Annual Update reminder email was sent and the contractor notes were stamped");
 		return SUCCESS;
 	}
 
@@ -126,6 +151,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 			refreshAudit = true;
 		if (conAudit.getAuditType().getClassType().isPolicy() && !conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 			refreshAudit = true;
+	}
+
+	public boolean isShowEmailReminder() {
+		if (!permissions.isAdmin())
+			return false;
+
+		if ((conAudit.getAuditType().isPicsPqf() || conAudit.getAuditType().isAnnualAddendum())
+				&& conAudit.hasCaoStatus(AuditStatus.Pending))
+			return true;
+		return false;
 	}
 
 	public boolean isRefreshAudit() {
@@ -331,6 +366,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// contractor can perform only submits and complete for pqf specific's
 		// if they can edit that audit
 		if (permissions.isContractor() && type.isCanContractorEdit()) {
+            if (type.getWorkFlow().isUseStateForEdit()) {
+                AuditEditModel model = new AuditEditModel();
+                return model.canEdit(conAudit, permissions);
+            }
 			if (newStatus.isSubmitted()) {
 				return true;
 			}
@@ -879,6 +918,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 		}
 
+		if (permissions.isAdmin()) {
+			return true;
+		}
 		/*
 		 * Contractors are only allowed to edit the limits and policy
 		 * information BEFORE the policy is submitted. Once the policy is
@@ -896,6 +938,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 
+		// check policy category fro cao after incomplete
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+		for (ContractorAuditOperator cao:conAudit.getOperatorsVisible()) {
+			setCategoryBuilderToSpecificCao(builder, cao);
+			if (builder.isCategoryApplicable(category, cao) && cao.getStatus().after(AuditStatus.Incomplete)) {
+					return false;
+			}
+		}
 		return true;
 	}
 

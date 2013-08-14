@@ -96,16 +96,36 @@
  * Tab Content
  */
 
+#report_subscribe
+{
+	.x-fieldset-body
+	{
+		margin-left: 27px;
+	}
+
+	fieldset
+	{
+		margin-top: 14px;
+	}
+
+	legend
+	{
+		padding-bottom: 10px;
+	}
+}
+
 #report_edit,
 #report_copy,
-#report_share
+#report_share,
+#report_subscribe
 {
 	padding: 8px 10px 10px;
 }
 
 #report_edit-body,
 #report_copy-body,
-#report_share-body
+#report_share-body,
+#report_subscribe-body
 {
 	height: auto !important;
 }
@@ -113,6 +133,7 @@
 #report_edit .x-toolbar,
 #report_copy .x-toolbar,
 #report_share .x-toolbar
+#report_subscribe .x-toolbar
 {
 	top: auto !important;
 }
@@ -366,7 +387,7 @@
 /***
  * Tabs
  */
- 
+
 #report_settings_modal_tabbar
 {
 	background: #454545;
@@ -378,6 +399,11 @@
 	border-right: 1px solid #333333;
 	border-top: 1px solid #333333;
 	padding: 5px;
+}
+
+#report_settings_modal_tabbar .x-tab-active:last-child
+{
+  width: 72px;
 }
 
 #report_settings_modal_tabbar .x-tab button
@@ -434,7 +460,14 @@
 
 #report_export .export-message
 {
-	color: #d14;
+	color: #999;
+	text-align: center;
+}
+
+#report_subscribe .coming-soon
+{
+	margin-top: 85px;
+	font-size: 18px;
 }
 
 .report-info

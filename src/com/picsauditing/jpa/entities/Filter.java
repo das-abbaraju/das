@@ -105,11 +105,15 @@ public class Filter extends ReportElement {
 		String operand = operator.getOperand();
 		String valueSql = toValueSql();
 
-        if (field.getPrefixValue() != null || field.getSuffixValue() != null) {
+        if (field.getPrefixValue() != null || field.getSuffixValue() != null)
             valueSql = "(" + field.getPrefixValue() + valueSql + field.getSuffixValue() + ")";
-        }
 
-		return columnSql + " " + operand + " " + valueSql;
+        String filterSql = columnSql + " " + operand + " " + valueSql;
+
+        if (field.getType() == FieldType.ExpirationDate)
+            filterSql = "(" + filterSql + " OR " + columnSql + " IS NULL)";
+
+        return filterSql;
 	}
 
 	private String toValueSql() throws ReportValidationException {
@@ -153,8 +157,12 @@ public class Filter extends ReportElement {
 			if (filterValue.equalsIgnoreCase("Yes")) {
 				return true + Strings.EMPTY_STRING;
 			}
+            if (filterValue.equalsIgnoreCase("X")) {
+                return true + Strings.EMPTY_STRING;
+            }
 
-			return false + Strings.EMPTY_STRING;
+
+            return false + Strings.EMPTY_STRING;
 		}
 
 		// todo: combine the logic below where possible
@@ -238,6 +246,10 @@ public class Filter extends ReportElement {
 		if (getValues().isEmpty() && fieldForComparison == null) {
 			return false;
 		}
+
+        if (field.getFilterType() == FilterType.Boolean && value.equals("all")) {
+            return false;
+        }
 
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.

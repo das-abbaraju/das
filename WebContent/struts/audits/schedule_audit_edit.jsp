@@ -53,11 +53,9 @@
 		                </s:text>
 		            </a>
 		        
-					<pics:permission perm="AuditEdit" type="Edit">
-						<s:if test="conAudit.scheduledDate != null">
-			                    <s:submit cssClass="picsbutton negative" method="cancelAudit" value="%{getText('button.cancelAudit')}" />
-				        </s:if>
-			        </pics:permission>
+					<s:if test="conAudit.scheduledDate != null && permissions.hasGroup(@com.picsauditing.jpa.entities.User@GROUP_MANAGER)">
+			            <s:submit cssClass="picsbutton negative" method="cancelAudit" value="%{getText('button.cancelAudit')}" />
+				    </s:if>
 	           	</fieldset>
 	        </div>
 	        <br />

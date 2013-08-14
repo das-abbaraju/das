@@ -61,6 +61,11 @@ public class ContractorAuditDatasModel extends AbstractModel {
         Field accountName = fields.get("AccountName".toUpperCase());
         accountName.setUrl("ContractorView.action?id={AccountID}");
 
+        if (permissions.isPicsEmployee()) {
+            Field questionName = fields.get("QuestionName".toUpperCase());
+            questionName.setUrl("ManageQuestion.action?id={QuestionID}");
+        }
+
         Field auditDataAnswer = fields.get("AuditDataAnswer".toUpperCase());
         auditDataAnswer.setType(FieldType.Float);
 

@@ -67,4 +67,9 @@ public class OperatorAccountBuilder {
 		operator.setStatus(status);
 		return this;
 	}
+
+    public OperatorAccountBuilder name(String name) {
+        operator.setName(name);
+        return this;
+    }
 }

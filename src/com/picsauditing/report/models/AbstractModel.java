@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.report.tables.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ public abstract class AbstractModel {
 		join.setToTable(toTable);
 		join.setFromAlias(modelSpec.fromAlias);
 		join.setAlias(modelSpec.alias);
+        join.setThirdAlias(modelSpec.thirdAlias);
 
 		if (modelSpec.category != null) {
 			join.setCategory(modelSpec.category);
@@ -49,7 +51,7 @@ public abstract class AbstractModel {
 
 		for (ModelSpec childSpec : modelSpec.joins) {
 			ReportForeignKey key = getKey(toTable, childSpec.key);
-			ReportJoin childJoin = appendToJoin(join.getAlias(), childSpec, key);
+			ReportJoin childJoin = appendToJoin(join.getAlias(), childSpec, join.getThirdAlias(), key);
 			join.getJoins().add(childJoin);
 		}
 
@@ -64,14 +66,18 @@ public abstract class AbstractModel {
 		return key;
 	}
 
-	private ReportJoin appendToJoin(String fromAlias, ModelSpec childSpec, ReportForeignKey key) {
+	private ReportJoin appendToJoin(String fromAlias, ModelSpec childSpec, String thirdAlias, ReportForeignKey key) {
 		ReportJoin childJoin = parseSpec(key.getTable(), childSpec);
+
+        if (childSpec.forceRequired) {
+            key.setJoinType(JoinType.RequiredJoin);
+        }
 
 		childJoin.setJoinType(key.getJoinType());
 		childJoin.setAlias(childSpec.alias);
 
 		ReportOnClause onClause = key.getOnClause();
-		String onClauseSql = onClause.toSql(fromAlias, childJoin.getAlias(), permissions);
+		String onClauseSql = onClause.toSql(fromAlias, childJoin.getAlias(), thirdAlias, permissions);
 		childJoin.setOnClause(onClauseSql);
 
 		childJoin.setMinimumImportance(key.getMinimumImportance());

@@ -1,14 +1,15 @@
 /**
- * Chart
+ * Chart: Abstract base class for all chart types.
  *
  * Implements Google Charts: https://developers.google.com/chart/interactive/docs/reference
+ * See ChartsDemo.action for implementation examples.
  *
  * @author: Jason Roos
  * @date: 7-1-2013
  * @version: 1
  */
 (function ($) {
-    PICS.define('widget.Chart', {
+    PICS.define('widget.chart.Chart', {
         methods: (function () {
             function init() {
                 this.$all_containers = getAllContainers();
@@ -124,9 +125,28 @@
                             data_table = new google.visualization.DataTable(google_data),
                             options = getAllOptions(child, data_table);
 
+                        google.visualization.events.addListener(chart, 'select', function () { redirect(chart, data_table); } );
                         chart.draw(data_table, options);
                     }
                 });
+            }
+
+            function redirect(chart, data_table) {
+                var selection = chart.getSelection()[0],
+                    url;
+
+                // We use typeof here because row and column can equal zero.
+                if (typeof selection.row != 'undefined' && typeof selection.column != 'undefined') {
+                    url = data_table.getProperty(selection.row, selection.column, 'url');
+                } else if (typeof selection.row != 'undefined') {
+                    url = data_table.getRowProperty(selection.row, 'url');
+                } else if (typeof selection.column != 'undefined') {
+                    url = data_table.getColumnProperty(selection.column, 'url');
+                }
+
+                if (url) {
+                    window.location = url;
+                }
             }
 
             return {
@@ -135,152 +155,5 @@
                 isSingleSeries: isSingleSeries
             };
         }())
-    });
-}(jQuery));
-
-(function ($) {
-    PICS.define('widget.CustomColorChart', {
-        extend: 'widget.Chart',
-
-        methods: {
-            getColors: function (data_table, type_color_associations) {
-                if (this.isSingleSeries(data_table)) {
-                    return this.getColorsForSingleSeriesChart(data_table, type_color_associations);
-                } else {
-                    return this.getColorsForMultiSeriesChart(data_table, type_color_associations);
-                }
-            },
-
-            getColorsForSingleSeriesChart: function (data_table, color_associations) {
-                var row_index = 0,
-                    num_rows = data_table.getNumberOfRows(),
-                    colors = [];
-
-                for (; row_index < num_rows; row_index += 1) {
-                    style_type = data_table.getRowProperty(row_index, 'style_type'),
-                    color = color_associations[style_type] || $.error('Invalid row style type: ' + style_type);
-
-                    colors.push(color);
-                }
-
-                return colors;
-            },
-
-            getColorsForMultiSeriesChart: function (data_table, color_associations) {
-                var column_index = 1,
-                    num_columns = data_table.getNumberOfColumns(),
-                    colors = [];
-
-                for (; column_index < num_columns; column_index += 1) {
-                    style_type = data_table.getColumnProperty(column_index, 'style_type'),
-                    color = color_associations[style_type] || $.error('Invalid column style type: ' + style_type);
-
-                    colors.push(color);
-                }
-
-                return colors;
-            }
-        }
-    })
-}(jQuery));
-
-(function ($) {
-    PICS.define('widget.BasicChart', {
-        extend: 'widget.Chart',
-
-        methods: {
-            init: function () {
-                this.style_type = 'Basic';
-
-                this.loadCharts();
-            },
-
-            getStyleType: function () {
-                return this.style_type;
-            }
-        }
-    });
-}(jQuery));
-
-(function ($) {
-    PICS.define('widget.StackedColumnChart', {
-        extend: 'widget.Chart',
-
-        methods: {
-            init: function () {
-                this.style_type = 'StackedColumn';
-
-                this.loadCharts();
-            },
-
-            getStyleType: function () {
-                return this.style_type;
-            },
-
-            getChartOptions: function (data_table) {
-                var options = {};
-
-                options.isStacked = true;
-
-                return options;
-            }
-        }
-    });
-}(jQuery));
-
-(function ($) {
-    PICS.define('widget.FlagsChart', {
-        extend: 'widget.CustomColorChart',
-
-        methods: {
-            init: function () {
-                this.style_type = 'Flags';
-                this.type_color_associations = {
-                    'red-flag': '#ac030c',
-                    'amber-flag': '#e67e1c',
-                    'green-flag': '#229322'
-                };
-
-                this.loadCharts();
-            },
-
-            getStyleType: function () {
-                return this.style_type;
-            },
-
-            getTypeColorAssociations: function () {
-                return this.type_color_associations;
-            },
-
-            getChartOptions: function (data_table) {
-                var options = {};
-
-                options.colors = this.getColors(data_table, this.getTypeColorAssociations());
-
-                return options;
-            }
-        }
-    });
-}(jQuery));
-
-(function ($) {
-    PICS.define('widget.StackedFlagsChart', {
-        extend: 'widget.FlagsChart',
-
-        methods: {
-            init: function () {
-                this.style_type = 'StackedFlags';
-
-                this.loadCharts();
-            },
-
-            getChartOptions: function (data_table) {
-                var options = {};
-
-                options.isStacked = true;
-
-                return options;
-            }
-        }
     });
 }(jQuery));

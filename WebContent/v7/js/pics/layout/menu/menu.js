@@ -9,10 +9,12 @@
                     search_query_element = navbar_element.find('.search-query');
 
                 if (navbar_element.length > 0) {
-                    // drop down menu
                     this.configureDropdown(dropdown_toggle_element);
 
-                    // autocomplete user searchbox
+                }
+                
+                // autocomplete user searchbox
+                if (search_query_element.length > 0) {
                     this.configureUserSearch(search_query_element);
                 }
             },

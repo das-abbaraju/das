@@ -6,8 +6,15 @@ import static com.picsauditing.report.ReportJson.writeJsonSuccess;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +33,8 @@ import com.picsauditing.report.models.ModelType;
 import com.picsauditing.service.ReportPreferencesService;
 import com.picsauditing.service.ReportService;
 
+import java.util.List;
+
 @SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
 
@@ -35,6 +44,8 @@ public class ReportApi extends PicsApiSupport {
 	private ReportPreferencesService reportPreferencesService;
 	@Autowired
 	private ReportDAO reportDao;
+    @Autowired
+    protected EmailSubscriptionDAO emailSubscriptionDAO;
 
 	protected int reportId;
 	protected String debugSQL = "";
@@ -52,6 +63,11 @@ public class ReportApi extends PicsApiSupport {
 	private ModelType type;
 	private String fieldId;
 
+    protected String dynamicParameters;
+    protected boolean removeAggregates;
+
+    private SubscriptionTimePeriod frequency = SubscriptionTimePeriod.None;
+
 	private static final String PRINT = "print";
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
 
@@ -59,8 +75,13 @@ public class ReportApi extends PicsApiSupport {
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
 
+        JSONArray params = null;
+        if (dynamicParameters != null) {
+            params = (JSONArray)new JSONParser().parse(dynamicParameters);
+        }
+
 		try {
-			json = reportService.buildJsonResponse(reportContext);
+			json = reportService.buildJsonResponse(reportContext, params, removeAggregates);
 		} catch (ReportValidationException rve) {
 			logger.error("Invalid report in ReportApi.execute()", rve);
 			writeJsonException(json, rve);
@@ -213,6 +234,28 @@ public class ReportApi extends PicsApiSupport {
 		return JSON;
 	}
 
+    public String subscribe() {
+        try {
+            report = reportDao.findById(reportId);
+            List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(permissions.getUserId(), report.getId());
+            EmailSubscription reportSubscription;
+
+            if (subscriptions.isEmpty())
+                reportSubscription = Subscription.DynamicReports.createEmailSubscription(new User(permissions.getUserId()));
+            else
+                reportSubscription = subscriptions.get(0);
+
+            reportSubscription.setTimePeriod(frequency);
+            reportSubscription.setReport(report);
+
+            emailSubscriptionDAO.save(reportSubscription);
+        } catch (Exception e) {
+            logger.error("Error setting subscription", e);
+        }
+
+        return PLAIN_TEXT;
+    }
+
 	public String buildSqlFunctions() {
 		try {
 			json = reportService.buildSqlFunctionsJson(type, fieldId, permissions);
@@ -273,6 +316,10 @@ public class ReportApi extends PicsApiSupport {
 		this.reportId = reportId;
 	}
 
+    public void setFrequency(SubscriptionTimePeriod frequency) {
+        this.frequency = frequency;
+	}
+
 	public ReportResults getReportResults() {
 		return reportResults;
 	}
@@ -293,4 +340,19 @@ public class ReportApi extends PicsApiSupport {
 		this.reportJson = reportJson;
 	}
 
+    public boolean isRemoveAggregates() {
+        return removeAggregates;
+    }
+
+    public void setRemoveAggregates(boolean removeAggregates) {
+        this.removeAggregates = removeAggregates;
+    }
+
+    public String getDynamicParameters() {
+        return dynamicParameters;
+    }
+
+    public void setDynamicParameters(String dynamicParameters) {
+        this.dynamicParameters = dynamicParameters;
+    }
 }

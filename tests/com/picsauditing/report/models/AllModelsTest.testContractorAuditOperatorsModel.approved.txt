@@ -20,6 +20,7 @@ AuditCreationDate
 AuditEffectiveDate
 AuditExpiresDate
 AuditID
+AuditLwcrAnswer
 AuditOperatorAccountID
 AuditOperatorAccountName
 AuditOperatorAuditSubStatus
@@ -36,6 +37,7 @@ AuditTypeID
 AuditTypeMonthsToExpire
 AuditTypeName
 AuditTypeRenewable
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorBalance
@@ -62,5 +64,4 @@ PreviousAuditScore
 PreviousAuditTypeName
 SafetyManualAnswer
 SafetyManualComment
-SafetyManualDateVerified
 TrirAnswer

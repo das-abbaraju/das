@@ -50,7 +50,7 @@
 		</header>
 	</section>
 </div>
-					
+
 <div class="registration">
     <s:if test="isLocalhostEnvironment() || isAlphaEnvironment()">
         <a class="btn" id="autofill">Autofill</a>
@@ -61,7 +61,7 @@
 				<h1><s:text name="Registration.JoinInfo" /></h1>
 			</section>
 		</div>
-		
+
 		<div class="info-qualify">
 			<section>
 				<h1><s:text name="Registration.Qualify" /></h1>
@@ -78,7 +78,7 @@
 				</ul>
 			</section>
 		</div>
-		
+
 		<div class="info-choice">
 			<section>
 				<h1><s:text name="Registration.Why" /></h1>
@@ -108,7 +108,7 @@
 			</section>
 		</div>
 	</aside>
-	
+
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
 		<s:if test="contractor.status.requested">
@@ -116,14 +116,14 @@
 			<s:hidden name="user" />
 			<s:hidden name="registrationKey" />
 		</s:if>
-		
+
 		<div class="company-information">
 			<section>
 				<h1>
 					<span><s:text name="Number.1" /></span>
 					<s:text name="Registration.CompanyInformation" />
 				</h1>
-				
+
 				<ul>
                     <li>
                         <s:select
@@ -134,6 +134,7 @@
                             name="language"
                             value="language"
                             id="registration_language"
+                            cssClass="select2Min"
                         />
                     </li>
                     <li id="registration_dialect">
@@ -142,11 +143,16 @@
                     <li class="country">
                         <s:select
                             list="countryList"
-                            cssClass="contractor-country"
+                            cssClass="select2 contractor-country"
                             name="contractor.country.isoCode"
                             listKey="isoCode"
                             listValue="name"
                         />
+                    </li>
+                    <li class="timezone">
+                        <label for="contractor_timezone"><s:text name="global.timezone" /></label>
+                        <input class="timezone_input" name="contractor.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
+                        <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
                     </li>
                     <li>
 						<s:textfield name="contractor.name" />
@@ -160,7 +166,9 @@
                     		<p>
                     			<span class="icon warn"></span><s:text name="Registration.Error.PersonalizedHelp" />
                     			<ul>
-                    				<li><s:text name="Registration.Error.CallUs" /></li>
+                    				<li>
+                    					<s:text name="Registration.Error.CallUs" />
+                    					<span class="phone pics_phone_number" title="United States">${salesPhoneNumber}</span>
                     				<li>
                                         <a class="chat-link" href="${mibew_href}" target="_blank"><s:text name="Header.Chat" /></a>
                                         <s:text name="Registration.Error.PicsRep" />
@@ -180,7 +188,7 @@
                             <s:property value="getCountrySubdivisionLabelFor(#country_value)" />
                         </label>
 
-                        <select class="contractor-countrySubdivision" id="Registration_contractor_countrySubdivision" name="countrySubdivision">
+                        <select class="select2 contractor-countrySubdivision" id="Registration_contractor_countrySubdivision" name="countrySubdivision">
                             <option value="">- <s:text name="CountrySubdivisionList.list.select.header" /> -</option>
                             <s:iterator value="getCountrySubdivisionList(#country_value)" var="country_subdivision_list_item">
                                 <s:set var="country_subdivision_selection" value="''" />
@@ -193,32 +201,23 @@
 
                         <s:fielderror fieldName="countrySubdivision" id="Registration_country_subdivision_error" />
 					</li>
-					<li class="zip" style="${zip_display}">
+					<li class="zipcode" style="${zip_display}">
 						<s:textfield name="contractor.zip" />
 					</li>
 					<li id="vat_id">
 						<s:textfield name="contractor.vatId" />
 					</li>
-                    <li>
-                        <s:select
-                                id="timezone"
-                                name="contractor.timezone"
-                                headerKey=""
-                                headerValue="%{getText('Timezone.list.select.header')}"
-                                list="timezones"
-                                value="contractor.timezone.iD" />
-                    </li>
                 </ul>
 			</section>
 		</div>
-		
+
 		<div class="contact-information">
 			<section>
 				<h1>
 					<span><s:text name="Number.2" /></span>
 					<s:text name="Registration.ContactInformation" />
 				</h1>
-				
+
 				<ul>
                     <li>
                         <s:textfield name="user.firstName" />
@@ -235,14 +234,14 @@
 				</ul>
 			</section>
 		</div>
-		
+
 		<div class="account-information">
 			<section>
 				<h1>
 					<span><s:text name="Number.3" /></span>
 					<s:text name="Registration.AccountInformation" />
 				</h1>
-				
+
 				<ul>
 					<li>
 						<s:textfield name="user.username" label="global.Username" autocomplete="off" />
@@ -256,20 +255,20 @@
 				</ul>
 			</section>
 		</div>
-		
+
 		<div class="actions">
 			<div class="info-agreement">
 				<p>
 					<s:text name="Registration.AgreeTC" />
 				</p>
 			</div>
-			
-			<s:submit 
+
+			<s:submit
 				method="createAccount"
 				key="button.GetStarted"
-				cssClass="btn success" 
+				cssClass="btn success"
 			/>
-			
+
 			<div class="modal hide fade">
 				<div class="modal-header">
 					<a href="#" class="close">×</a>
@@ -279,13 +278,13 @@
 					<p><s:text name="Registration.ModalBody" /></p>
 				</div>
 				<div class="modal-footer">
-					
+
 				</div>
 			</div>
-			
+
 			<br style="clear: both" />
 		</div>
 	</s:form>
-	
+
 	<br style="clear: both" />
 </div>

@@ -14,6 +14,7 @@ import java.util.*;
 
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.data.*;
 import com.picsauditing.report.models.ReportModelFactory;
@@ -46,7 +47,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.excel.ExcelBuilder;
@@ -61,43 +61,49 @@ public class ReportService {
 	private SqlBuilder sqlBuilder;
 	@Autowired
 	public ReportPreferencesService reportPreferencesService;
+    @Autowired
+    private EmailSubscriptionDAO emailSubscriptionDAO;
 
 	private I18nCache i18nCache;
+    private static final int EXPORT_LIMIT = 10000;
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
-	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException,
-			RecordNotFoundException, SQLException {
-		Report report = createOrLoadReport(reportContext);
-		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+    public JSONObject buildJsonResponse(ReportContext reportContext, JSONArray parameters, boolean removeAggregates) throws ReportValidationException,
+            RecordNotFoundException, SQLException {
+        Report report = createOrLoadReport(reportContext, parameters, removeAggregates);
+        SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
 
-		JSONObject responseJson = new JSONObject();
+        JSONObject responseJson = new JSONObject();
 
-		if (reportContext.includeReport) {
-			JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.permissions);
-			responseJson.put(LEVEL_REPORT, reportJson);
-		}
+        if (reportContext.includeReport) {
+            List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(reportContext.permissions.getUserId(), report.getId());
 
-		AbstractModel reportModel = ReportModelFactory.build(report.getModelType(), reportContext.permissions);
-		if (reportContext.includeColumns) {
-			JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
-			responseJson.put(LEVEL_COLUMNS, columnsJson);
-		}
+            JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.permissions, subscriptions);
+            responseJson.put(LEVEL_REPORT, reportJson);
+        }
 
-		if (reportContext.includeFilters) {
-			JSONArray filtersJson = JsonReportElementsBuilder.buildFilters(reportModel, reportContext.permissions);
-			responseJson.put(LEVEL_FILTERS, filtersJson);
-		}
+        AbstractModel reportModel = ReportModelFactory.build(report.getModelType(), reportContext.permissions);
+        if (reportContext.includeColumns) {
+            JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
+            responseJson.put(LEVEL_COLUMNS, columnsJson);
+        }
 
-		if (reportContext.includeData) {
-			JSONObject dataJson = buildDataJson(report, reportContext, sql);
-			responseJson.put(LEVEL_RESULTS, dataJson);
-		}
+        if (reportContext.includeFilters) {
+            JSONArray filtersJson = JsonReportElementsBuilder.buildFilters(reportModel, reportContext.permissions);
+            responseJson.put(LEVEL_FILTERS, filtersJson);
+        }
 
-		responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
+        if (reportContext.includeData) {
+            JSONObject dataJson = buildDataJson(report, reportContext, sql);
+            responseJson.put(LEVEL_RESULTS, dataJson);
+        }
 
-		return responseJson;
-	}
+        responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
+        responseJson.put(ReportJson.REPORT_EXPORT_LIMIT, EXPORT_LIMIT);
+
+        return responseJson;
+    }
 
 	public SelectSQL initializeReportAndBuildSql(ReportContext reportContext, Report report)
 			throws ReportValidationException {
@@ -108,7 +114,7 @@ public class ReportService {
 		return sql;
 	}
 
-	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException,
+	public Report createOrLoadReport(ReportContext reportContext, JSONArray parameters, boolean removeAggregates) throws RecordNotFoundException,
 			ReportValidationException {
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 
@@ -119,12 +125,14 @@ public class ReportService {
 			report = loadReportFromDatabase(reportContext.reportId);
 		}
 
+        ReportBuilder.addDynamicParameters(report, parameters, removeAggregates);
+
 		report.sortColumns();
 
 		return report;
 	}
 
-	private JSONObject buildReportJsonFromPayload(JSONObject payloadJson) {
+    private JSONObject buildReportJsonFromPayload(JSONObject payloadJson) {
 		JSONObject reportJson = new JSONObject();
 
 		if (JSONUtilities.isNotEmpty(payloadJson)) {
@@ -268,7 +276,10 @@ public class ReportService {
 		}
 
 		sql.setPageNumber(reportContext.limit, reportContext.pageNumber);
-		List<BasicDynaBean> queryResults = runQuery(sql, dataJson);
+
+        List<BasicDynaBean> queryResults = null;
+        if (!sql.getFields().isEmpty())
+		    queryResults = runQuery(sql, dataJson);
 
 		ReportResults reportResults = buildReportResults(report, reportContext, queryResults);
 
@@ -349,6 +360,7 @@ public class ReportService {
 	public ReportResults buildReportResultsForPrinting(ReportContext reportContext, Report report)
 			throws ReportValidationException, PicsSqlException {
 		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+        sql.setLimit(EXPORT_LIMIT);
 		List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 		ReportResults reportResults = prepareReportForPrinting(report, reportContext, queryResults);
 

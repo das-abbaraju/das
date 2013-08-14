@@ -165,7 +165,7 @@
 										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
-                                <s:elseif test="contractor.country.currency.gbp">
+                                <s:elseif test="contractor.country.currency.GBP">
                                     <li>
                                         <label><s:text name="ContractorPaymentOptions.VAT"/></label>
                                         <s:property value="contractor.country.currency.symbol" />
@@ -264,7 +264,7 @@
 										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
-                                <s:elseif test="contractor.country.currency.gbp || contractor.country.currency.eur">
+                                <s:elseif test="contractor.country.currency.GBP || contractor.country.currency.EUR">
                                     <li>
                                         <label><s:text name="ContractorPaymentOptions.VAT"/></label>
                                         <s:property value="contractor.country.currency.symbol" />

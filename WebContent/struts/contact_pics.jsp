@@ -113,7 +113,7 @@
 				<li>
 					<label><s:text name="Header.HelpCenter"/>:</label>
 
-					<a href="<s:property value='helpURL' />" target="_BLANK">
+                    <a href="/HelpCenter.action" target="_BLANK">
 						<s:text name="Header.HelpCenter"/>
 					</a>
 				</li>

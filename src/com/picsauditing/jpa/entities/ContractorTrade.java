@@ -67,7 +67,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 	 * Number 1-9 that represents the frequency of that trade for a given business
 	 * @return
 	 */
-//	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
+	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getActivityPercent() {
 		return activityPercent;
 	}

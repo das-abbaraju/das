@@ -486,4 +486,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public static AuditTypeBuilder builder() {
 		return new AuditTypeBuilder();
 	}
+
+    public void setTopCategories(ArrayList<AuditCategory> topCategories) {
+        this.topCategories = topCategories;
+    }
 }

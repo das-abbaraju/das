@@ -89,7 +89,16 @@ public class IGVerification extends ContractorActionSupport {
 		List<ContractorAudit> policies = new ArrayList<ContractorAudit>();
 		policies.addAll(audits);
 
+        User user = dao.find(User.class, permissions.getUserId());
+        String phone = null;
+        try {
+            phone = getLocalizedPhoneNumberForUser(user, contractor.getCountry());
+        } catch(Exception e) {}
+        if (phone == null)
+            phone = contractor.getCountry().getPhone();
+
 		emailBuilder.setTemplate(template);
+        emailBuilder.addToken("contactPhone", phone);
 		emailBuilder.addToken("auditList", policies);
 		emailBuilder.addToken("caowList", caowList);
 		emailBuilder.setPermissions(permissions);
@@ -100,8 +109,7 @@ public class IGVerification extends ContractorActionSupport {
 	
 	@RequiredPermission(value = OpPerms.AuditVerification)
 	public String sendEmail() throws Exception {
-		previewEmail.setBody(body);
-		previewEmail.setSubject(subject);
+		start();
 		previewEmail.setMediumPriority();
 
 		try {

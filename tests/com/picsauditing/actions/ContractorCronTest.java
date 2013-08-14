@@ -947,7 +947,7 @@ public class ContractorCronTest extends PicsActionTest {
 	    assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
     }
 
-	@Test
+	@Ignore
 	public void testOverrideStillApplicable() throws Exception {
 		Boolean result;
 

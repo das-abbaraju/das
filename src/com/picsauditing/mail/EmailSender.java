@@ -3,7 +3,10 @@ package com.picsauditing.mail;
 import java.util.Date;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 
+import com.opensymphony.xwork2.validator.validators.EmailValidator;
+import com.picsauditing.validator.InputValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,23 +50,41 @@ public class EmailSender {
 		if (checkDeactivated(email))
 			return;
 
-		GridSender gridSender;
-		if (!Strings.isEmpty(email.getFromPassword())) {
-			// TODO We don't use Gmail anymore. SendGrid only accepts a single
-			// username (info@pics) So we should remove this section
-			// We need the password to correctly authenticate with GMail
-			gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
-		} else {
-			// Use the default info@picsauditing.com address
-			gridSender = new GridSender(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS,
-					EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
-		}
-		gridSender.sendMail(email);
+		if (isEmailAddressValid(email.getToAddresses())) {
+			GridSender gridSender;
+			if (!Strings.isEmpty(email.getFromPassword())) {
+				// TODO We don't use Gmail anymore. SendGrid only accepts a single
+				// username (info@pics) So we should remove this section
+				// We need the password to correctly authenticate with GMail
+				gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
+			} else {
+				// Use the default info@picsauditing.com address
+				gridSender = new GridSender(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS,
+						EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
+			}
+			gridSender.sendMail(email);
 
-		email.setStatus(EmailStatus.Sent);
+			email.setStatus(EmailStatus.Sent);
+		} else {
+			email.setStatus(EmailStatus.Error);
+		}
 		email.setSentDate(new Date());
 
 		emailQueueDAO.save(email);
+	}
+
+	private boolean isEmailAddressValid(String toAddresses) {
+		boolean emailAddressValid = true;
+		InputValidator inputValidator = new InputValidator();
+		for (String emailAddress : toAddresses.split(",")) {
+			String returnCode = inputValidator.validateEmail(emailAddress, false);
+			if (!returnCode.equals(InputValidator.NO_ERROR)) {
+				logger.error(toAddresses + " FAILED VALIDATION");
+				emailAddressValid = false;
+				break;
+			}
+		}
+		return emailAddressValid;
 	}
 
 	private boolean checkDeactivated(EmailQueue email) {
@@ -128,7 +149,7 @@ public class EmailSender {
 	 * @param email
 	 */
 	public void send(EmailQueue email) {
-		if (!checkDeactivated(email)) {
+		if (!checkDeactivated(email) && isEmailAddressValid(email.getToAddresses())) {
 			emailQueueDAO.save(email);
 			publishEnterpriseMessageIfEmailShouldBeSent(email);
 		}

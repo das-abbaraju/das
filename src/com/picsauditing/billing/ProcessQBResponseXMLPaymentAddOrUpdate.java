@@ -14,6 +14,7 @@ import com.picsauditing.util.SpringUtils;
 public class ProcessQBResponseXMLPaymentAddOrUpdate extends ProcessQBResponseXMLStrategy  {
 
 	public static final String PARENT_NODE_NAME_ADD_RESULT = "ReceivePaymentAddRs";
+	public static final String PARENT_NODE_NAME_UPDATE_RESULT = "ReceivePaymentModRs";
 	public static final String PARENT_NODE_NAME_QUERY_RESULT = "ReceivePaymentQueryRs";
 	public static final String DETAIL_NODE_NAME = "ReceivePaymentRet";
 	public static final String REQUEST_TYPE = "Payment List ID Update";
@@ -30,6 +31,8 @@ public class ProcessQBResponseXMLPaymentAddOrUpdate extends ProcessQBResponseXML
 	public static ProcessQBResponseXMLPaymentAddOrUpdate factory (StringBuilder actionMessages, StringBuilder errorMessages,PicsDAO dao) {
 		ProcessQBResponseXMLPaymentAddOrUpdate object = new ProcessQBResponseXMLPaymentAddOrUpdate(actionMessages, errorMessages);
 		object.setParentNodeNameAddResult(PARENT_NODE_NAME_ADD_RESULT);
+		object.setParentNodeNameUpdateResult(PARENT_NODE_NAME_UPDATE_RESULT);
+		object.setParentNodeNameQueryResult(PARENT_NODE_NAME_QUERY_RESULT);
 		object.setDetailNodeName(DETAIL_NODE_NAME);
 		object.setRequestType(REQUEST_TYPE);
 		object.setDao(dao != null ? dao :(PaymentDAO)SpringUtils.getBean(DAO_TYPE));

@@ -72,7 +72,21 @@ public class RequestNewContractor extends AccountActionSupport {
 
 	private final Logger LOG = LoggerFactory.getLogger(RequestNewContractor.class);
 
+	private boolean redirectOverride = false;
+
+	public boolean isRedirectOverride() {
+		return redirectOverride;
+	}
+
+	public void setRedirectOverride(boolean redirectOverride) {
+		this.redirectOverride = redirectOverride;
+	}
+
 	public String execute() throws Exception {
+		if (!redirectOverride) {
+			return setUrlForRedirect(urlUtils.getActionUrl("RequestNewContractorAccount"));
+		}
+
 		if (!permissions.isPicsEmployee() && !permissions.isOperatorCorporate()) {
 			throw new NoRightsException(getText("global.Operator"));
 		}
