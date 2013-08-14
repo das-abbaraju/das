@@ -10,7 +10,7 @@ import java.util.List;
 @DiscriminatorValue("C")
 public class InvoiceCreditMemo extends Transaction {
 
-    private PaymentMethod paymentMethod = PaymentMethod.RefundCreditMemo;
+    private PaymentMethod paymentMethod = PaymentMethod.ReturnCreditMemo;
     private List<RefundItem> refundItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

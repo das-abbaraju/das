@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum PaymentMethod implements Translatable {
-	CreditCard, Check, Refund, EFT, BadDebtCreditMemo, RefundCreditMemo;
+	CreditCard, Check, Refund, EFT, BadDebtCreditMemo, ReturnCreditMemo;
 	// EFT is for wiring the money
 	public boolean isCreditCard() {
 		return this.equals(CreditCard);
