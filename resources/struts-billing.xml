@@ -87,14 +87,14 @@
         </action>
         <action name="ProcessCommission" class="com.picsauditing.actions.billing.ProcessCommission" />
 
-        <action name="InvoiceRefund" class="com.picsauditing.actions.billing.InvoiceReturnItemsController">
-            <result>struts/reports/invoice-refund.jsp</result>
+        <action name="InvoiceReturnItems" class="com.picsauditing.actions.billing.InvoiceReturnItemsController">
+            <result>struts/reports/invoice-return-items.jsp</result>
 			<result name="input" type="redirectAction">
 				<param name="actionName">InvoiceDetail</param>
 				<param name="invoice.id">${invoice.id}</param>
 			</result>
 			<result name="error" type="redirectAction">
-				<param name="actionName">InvoiceRefund</param>
+				<param name="actionName">InvoiceReturnItems</param>
 				<param name="invoice.id">${invoice.id}</param>
 			</result>
         </action>

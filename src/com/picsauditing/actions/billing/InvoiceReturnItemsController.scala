@@ -28,21 +28,26 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   private lazy val REDIRECT = "InvoiceDetail.action?invoice.id="
 
   def prepare = {
+    //println("entering prepare")
     invoice = invoiceDAO.find(getParameter("invoice.id"))
+    //println("leaving prepare with invoice ID "+invoice.getId)
   }
 
   override def execute = Action.SUCCESS
 
-  def doRefund = try { if (refunds != null && !refunds.isEmpty) {
-    save(refundFor(invoice))
-    setUrlForRedirect(REDIRECT + invoice.getId)
-    Action.INPUT
-  } else {
-    addActionError("You must select items to refund.")
-    execute
-  }} catch {
-    case e => addActionError("There has been a problem creating your refund.")
-    Action.ERROR
+  def doRefund = {
+    //println("entering doRefund")
+    try { if (refunds != null && !refunds.isEmpty) {
+      save(refundFor(invoice))
+      setUrlForRedirect(REDIRECT + invoice.getId)
+      Action.INPUT
+    } else {
+      addActionError("You must select items to refund.")
+      execute
+    }} catch {
+      case e => addActionError("There has been a problem creating your refund.")
+      Action.ERROR
+    }
   }
 
   private def refundFor(invoice: Invoice) = {

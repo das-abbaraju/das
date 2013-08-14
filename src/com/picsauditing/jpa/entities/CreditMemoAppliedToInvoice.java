@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.*;
 
 @Entity
-@DiscriminatorValue("C")
+@DiscriminatorValue(value = "C")
 public class CreditMemoAppliedToInvoice extends TransactionApplied {
 
     private InvoiceCreditMemo creditMemo;

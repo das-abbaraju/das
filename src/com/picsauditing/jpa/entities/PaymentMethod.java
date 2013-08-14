@@ -23,6 +23,14 @@ public enum PaymentMethod implements Translatable {
         return this.equals(BadDebtCreditMemo);
     }
 
+	public boolean isReturnCreditMemo() {
+		return this.equals(ReturnCreditMemo);
+	}
+
+	public boolean isCreditMemo() {
+		return this.equals(BadDebtCreditMemo) || this.equals(ReturnCreditMemo);
+	}
+
 	@Override
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + this.toString();
