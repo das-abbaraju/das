@@ -2,7 +2,7 @@ Ext.define('PICS.Overrides', {
     requires: [
         'Ext.data.writer.Json',
         'Ext.menu.Menu',
-        'Ext.Ajax'
+        'Ext.Ajax',
         'Ext.data.proxy.Server',
     ]
 }, function () {
