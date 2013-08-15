@@ -463,6 +463,19 @@
                 }
             },
 
+            // HACK to pull custom address fields for the UK
+            updateAddressFields: function (selected_country) {
+                PICS.ajax({
+                    url: 'Registration!getCompanyAddressFields.action',
+                    data: {
+                        'contractor.country': selected_country
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        $('#company_address_fields').html(data);
+                    }
+                });
+            },
+
             updateCountrySubvisions: function (selected_country) {
                 var Country = PICS.getClass('country.Country');
 
@@ -481,6 +494,8 @@
             updateCountryFields: function () {
                 var $country = $('.country select'),
                     selected_country = $country.val() || '';
+
+                this.updateAddressFields(selected_country);
 
                 this.updateCountrySubvisions(selected_country);
 

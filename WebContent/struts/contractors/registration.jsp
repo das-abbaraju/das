@@ -125,92 +125,76 @@
 				</h1>
 
 				<ul>
-                    <li>
-                        <s:select
-                            label="User.locale"
-                            list="supportedLanguages.visibleLanguagesSansDialect"
-                            listKey="key"
-                            listValue="value"
-                            name="language"
-                            value="language"
-                            id="registration_language"
-                            cssClass="select2Min"
-                        />
-                    </li>
-                    <li id="registration_dialect">
-                        <s:include value="/struts/contractors/_registration-dialects.jsp" />
-                    </li>
-                    <li class="country">
-                        <s:select
-                            list="countryList"
-                            cssClass="select2 contractor-country"
-                            name="contractor.country.isoCode"
-                            listKey="isoCode"
-                            listValue="name"
-                        />
-                    </li>
-                    <li class="timezone">
-                        <label for="contractor_timezone"><s:text name="global.timezone" /></label>
-                        <input class="timezone_input" name="contractor.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
-                        <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
-                    </li>
-                    <li>
+		            <li>
+		                <s:select
+		                    label="User.locale"
+		                    list="supportedLanguages.visibleLanguagesSansDialect"
+		                    listKey="key"
+		                    listValue="value"
+		                    name="language"
+		                    value="language"
+		                    id="registration_language"
+		                    cssClass="select2Min"
+		                />
+		            </li>
+		            <li id="registration_dialect">
+		                <s:include value="/struts/contractors/_registration-dialects.jsp" />
+		            </li>
+		            <li class="country">
+		                <s:select
+		                    list="countryList"
+		                    cssClass="select2 contractor-country"
+		                    name="contractor.country.isoCode"
+		                    listKey="isoCode"
+		                    listValue="name"
+		                />
+		            </li>
+		            <li class="timezone">
+		                <label for="contractor_timezone"><s:text name="global.timezone" /></label>
+		                <input class="timezone_input" name="contractor.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
+		                <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
+		            </li>
+		            <li>
 						<s:textfield name="contractor.name" />
 					</li>
-                    <li class="contractor-name-duplicate">
-                    	<div class="alert-message warning">
-                    		<p>
-                    			<s:text name="Registration.Error.AlreadyStarted" /><br/>
-                    			<s:text name="Registration.Error.PickUp" />
-                    		</p>
-                    		<p>
-                    			<span class="icon warn"></span><s:text name="Registration.Error.PersonalizedHelp" />
-                    			<ul>
-                    				<li>
-                    					<s:text name="Registration.Error.CallUs" />
-                    					<span class="phone pics_phone_number" title="United States">${salesPhoneNumber}</span>
-                    				<li>
-                                        <a class="chat-link" href="${mibew_href}" target="_blank"><s:text name="Header.Chat" /></a>
-                                        <s:text name="Registration.Error.PicsRep" />
-                                    </li>
-                    			</ul>
-                    		</p>
-                    	</div>
-                    </li>
-					<li class="address">
-						<s:textfield name="contractor.address" />
-					</li>
-					<li class="city">
-						<s:textfield name="contractor.city" />
-					</li>
-					<li class="countrySubdivision" style="${countrySubdivision_display}">
-                        <label for="Registration_contractor_countrySubdivision">
-                            <s:property value="getCountrySubdivisionLabelFor(#country_value)" />
-                        </label>
+		            <li class="contractor-name-duplicate">
+		            	<div class="alert-message warning">
+		            		<p>
+		            			<s:text name="Registration.Error.AlreadyStarted" /><br/>
+		            			<s:text name="Registration.Error.PickUp" />
+		            		</p>
+		            		<p>
+		            			<span class="icon warn"></span><s:text name="Registration.Error.PersonalizedHelp" />
+		            			<ul>
+		            				<li>
+		            					<s:text name="Registration.Error.CallUs" />
+		            					<span class="phone pics_phone_number" title="United States">${salesPhoneNumber}</span>
+		            				<li>
+		                                <a class="chat-link" href="${mibew_href}" target="_blank"><s:text name="Header.Chat" /></a>
+		                                <s:text name="Registration.Error.PicsRep" />
+		                            </li>
+		            			</ul>
+		            		</p>
+		            	</div>
+		            </li>
 
-                        <select class="select2 contractor-countrySubdivision" id="Registration_contractor_countrySubdivision" name="countrySubdivision">
-                            <option value="">- <s:text name="CountrySubdivisionList.list.select.header" /> -</option>
-                            <s:iterator value="getCountrySubdivisionList(#country_value)" var="country_subdivision_list_item">
-                                <s:set var="country_subdivision_selection" value="''" />
-                                <s:if test="countrySubdivision != null && countrySubdivision == #country_subdivision_list_item">
-                                    <s:set var="country_subdivision_selection" value="' selected=\"selected\"'" />
-                                </s:if>
-                                <option value="${isoCode}"${country_subdivision_selection}>${simpleName}</option>
-                            </s:iterator>
-                        </select>
+					<%-- Hack to override company address for UK --%>
+					<div id="company_address_fields">
+						<s:if test="#country_value != 'GB'">
+							<s:include value="/struts/contractors/_registration-company-address.jsp" />
+						</s:if>
+						<s:else>
+							<s:include value="/struts/contractors/united-kingdom/_registration-company-address.jsp" />
+						</s:else>
+					</div>
+					<%-- End hack --%>
 
-                        <s:fielderror fieldName="countrySubdivision" id="Registration_country_subdivision_error" />
-					</li>
-					<li class="zipcode" style="${zip_display}">
-						<s:textfield name="contractor.zip" />
-					</li>
 					<li id="vat_id">
 						<s:textfield name="contractor.vatId" />
 					</li>
-                </ul>
+		        </ul>
 			</section>
 		</div>
-
 		<div class="contact-information">
 			<section>
 				<h1>
