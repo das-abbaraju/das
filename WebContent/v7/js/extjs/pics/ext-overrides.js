@@ -3,7 +3,7 @@ Ext.define('PICS.Overrides', {
         'Ext.data.writer.Json',
         'Ext.menu.Menu',
         'Ext.Ajax',
-        'Ext.data.proxy.Server',
+        'Ext.data.proxy.Server'
     ]
 }, function () {
     Ext.log = function (message) {
