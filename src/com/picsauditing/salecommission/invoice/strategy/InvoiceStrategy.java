@@ -156,6 +156,13 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			// I am now looking at a specific service level
 			int totalSitesWithService = totalSites.get(feeClass);
 			BigDecimal invoiceRevenueForService = fees.get(feeClass);
+
+            // if this is an activation fee and we have a discount
+            if (feeClass == FeeClass.Activation && fees.containsKey(FeeClass.Misc)) {
+                // reduce the activation fee by the amount of the discount.
+                invoiceRevenueForService = invoiceRevenueForService.subtract(fees.get(FeeClass.Misc));
+            }
+
 			if (invoiceRevenueForService != null && totalSitesWithService > 0) {
 				result += BigDecimal.valueOf(invoiceRevenueForService.doubleValue() / totalSitesWithService)
 						.doubleValue();
