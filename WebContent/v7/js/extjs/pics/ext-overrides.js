@@ -3,6 +3,7 @@ Ext.define('PICS.Overrides', {
         'Ext.data.writer.Json',
         'Ext.menu.Menu',
         'Ext.Ajax'
+        'Ext.data.proxy.Server',
     ]
 }, function () {
     Ext.log = function (message) {
@@ -14,6 +15,10 @@ Ext.define('PICS.Overrides', {
      */
     Ext.override(Ext.Ajax, {
         timeout: 60000
+    });
+
+    Ext.override(Ext.data.proxy.Server, {
+        timeout: Ext.Ajax.timeout
     });
 
     /*
