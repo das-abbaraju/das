@@ -259,7 +259,12 @@
 					
 					<li class="creditcard">
 						<s:textfield label="CreditCard.Number" name="ccnumber" />
-						<img src="images/creditcard.png" class="card" />
+                        <s:if test="invoice.currency.GBP || invoice.currency.EUR">
+                            <img src="images/creditcardNoAmex.png" class="card" />
+                        </s:if>
+                        <s:else>
+                            <img src="images/creditcard.png" class="card" />
+                        </s:else>
 					</li>
 					
 					<li class="creditcard">
