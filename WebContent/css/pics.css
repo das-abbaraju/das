@@ -1762,3 +1762,7 @@ div.blockDialog {
 {
     color: #73BBE8;
 }
+
+.ConfigChanges-page .deleted {
+	background-color: #FBF2C9;
+}

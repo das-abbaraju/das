@@ -105,7 +105,10 @@ function deleteRule(element,ruleID) {
 		</thead>
 		<tbody>
 			<s:iterator value="rules" var="r">
-				<tr id="<s:property value="urlPrefix"/>Rule<s:property value="id"/>" class="<s:if test="include">on</s:if><s:else>off</s:else>">
+
+		        <s:set name="status_class" value="%{#r.current ? 'current' : 'deleted'}" />
+
+				<tr id="<s:property value="urlPrefix"/>Rule<s:property value="id"/>" class="<s:if test="include">on</s:if><s:else>off</s:else> ${status_class}">
 					<td class="center">
 						<a href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a>
 					</td>
@@ -273,12 +276,14 @@ function deleteRule(element,ruleID) {
 					</s:if>
 					
 					<s:if test="columnMap.get('delete')">
-						<s:if test="isCanEditRule(#r)">
-							<td class="center"><a class="remove" href="#" onclick="deleteRule('#<s:property value="urlPrefix"/>Rule<s:property value="id"/>',<s:property value="id"/>); return false;"></a></td>
-						</s:if>
-						<s:else>
-							<td>&nbsp;</td>
-						</s:else>
+						<td class="center">
+							<s:if test="isCanEditRule(#r) && #r.current">
+								<a class="remove" href="#" onclick="deleteRule('#<s:property value="urlPrefix"/>Rule<s:property value="id"/>',<s:property value="id"/>); return false;"></a>
+							</s:if>
+							<s:else>
+								&nbsp;
+							</s:else>
+						</td>
 					</s:if>
 				</tr>
 			</s:iterator>
