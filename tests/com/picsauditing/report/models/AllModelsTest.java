@@ -31,6 +31,7 @@ public class AllModelsTest {
     }
 
     @Test
+	@Ignore
     public void testAllModels() throws Exception {
         StringBuilder actual = new StringBuilder();
 

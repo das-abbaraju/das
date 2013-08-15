@@ -45,7 +45,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       addActionError("You must select items to refund.")
       execute
     }} catch {
-      case e => addActionError("There has been a problem creating your refund.")
+      case e : Throwable => addActionError("There has been a problem creating your refund.")
       Action.ERROR
     }
   }
