@@ -176,8 +176,8 @@
                                     <pics:permission perm="InvoiceEdit">
                                         <li>
                                             <a class="refund"
-                                               href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=refund">
-                                                <s:text name="button.Refund"/>
+                                               href="InvoiceReturnItems.action?invoice.id=<s:property value="transaction.id"/>">
+                                                <s:text name="button.ReturnItems"/>
                                             </a>
                                         </li>
                                         <li>

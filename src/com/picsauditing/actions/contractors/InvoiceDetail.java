@@ -47,6 +47,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private static final String CHANGE_TO_BUTTON = "changeto";
 	private static final String EMAIL_BUTTON = "email";
     private static final String BAD_DEBT_BUTTON = "baddebt";
+	private static final String RETURN_ITEMS_BUTTON = "returnitems";
 
 	@Autowired
 	private InvoiceDAO invoiceDAO;
