@@ -92,6 +92,11 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	protected User assignAudit;
 	protected User editAudit;
 	protected String assigneeLabel;
+    protected AuditTypePeriod period;
+    protected Integer anchorDay;
+    protected Integer anchorMonth;
+    protected int advanceDays = 0;
+    protected int maximumActive = 1;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -494,5 +499,52 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
     public void setTopCategories(ArrayList<AuditCategory> topCategories) {
         this.topCategories = topCategories;
+    }
+
+    @Transient
+    public int getAdvanceDays() {
+        return advanceDays;
+    }
+
+    public void setAdvanceDays(int advanceDays) {
+        this.advanceDays = advanceDays;
+    }
+
+    @Transient
+    public Integer getAnchorMonth() {
+        return anchorMonth;
+    }
+
+    public void setAnchorMonth(Integer anchorMonth) {
+        this.anchorMonth = anchorMonth;
+    }
+
+    @Transient
+    public Integer getAnchorDay() {
+        return anchorDay;
+    }
+
+    public void setAnchorDay(Integer anchorDay) {
+        this.anchorDay = anchorDay;
+    }
+
+    @Transient
+    public AuditTypePeriod getPeriod() {
+        if (id == ANNUALADDENDUM) return AuditTypePeriod.Yearly;
+        return period;
+    }
+
+    public void setPeriod(AuditTypePeriod period) {
+        this.period = period;
+    }
+
+    @Transient
+    public int getMaximumActive() {
+        return maximumActive;
+    }
+
+    @Transient
+    public void setMaximumActive(int maximumActive) {
+        this.maximumActive = maximumActive;
     }
 }
