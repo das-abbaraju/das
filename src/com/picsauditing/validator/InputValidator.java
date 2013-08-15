@@ -50,6 +50,7 @@ public class InputValidator {
 	public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
 	public static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
 	public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
+	public static final String INVALID_UK_POST_CODE_KEY = "JS.Validation.InvalidPostcode";
 	public static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
 
 	// (?s) turns on single-line mode, which makes '.' also match line
@@ -70,6 +71,9 @@ public class InputValidator {
 	// and shown in the Regular Expressions Cookbook (O'Reilly, 2009)
 	public static final String PHONE_NUMBER_REGEX = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}((?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
 	public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
+
+	// Regex is from http://webarchive.nationalarchives.gov.uk/+/http://www.cabinetoffice.gov.uk/media/291370/bs7666-v2-0-xsd-PostCodeType.htm and some additions for other territories
+	public static final String UK_POST_CODE_REGEX = "(GIR 0AA|STHL 1ZZ|ASCN 1ZZ|AI-2640|TDCU 1ZZ|BBND 1ZZ|BIQQ 1ZZ|FIQQ 1ZZ|GX11 1AA|PCRN 1ZZ|SIQQ 1ZZ|TKCA 1ZZ)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})";
 
 	public boolean isUsernameTaken(String username, int currentUserId) {
 		return userDao.duplicateUsername(username, currentUserId);
@@ -211,7 +215,7 @@ public class InputValidator {
 	}
 
 	public String validateName(String name, boolean required) {
-		return validateString(name, required, false, true, true, false, false, false);
+		return validateString(name, required, false, true, true, false, false, false, false);
 	}
 
 	// TODO: Cleanup
@@ -264,7 +268,7 @@ public class InputValidator {
 			return COMPANY_NAME_EXISTS_KEY;
 		}
 
-		return validateString(name, required, true, true, true, false, false, false);
+		return validateString(name, required, true, true, true, false, false, false, false);
 	}
 
 	public String validateUsername(String username) {
@@ -272,7 +276,7 @@ public class InputValidator {
 	}
 
 	public String validateUsername(String username, boolean required) {
-		return validateString(username, required, false, true, true, true, false, false);
+		return validateString(username, required, false, true, true, true, false, false, false);
 	}
 
 	public String validateEmail(String email) {
@@ -280,7 +284,7 @@ public class InputValidator {
 	}
 
 	public String validateEmail(String email, boolean required) {
-		return validateString(email, required, false, true, false, false, true, false);
+		return validateString(email, required, false, true, false, false, true, false, false);
 	}
 
 	public String validatePhoneNumber(String phoneNumber) {
@@ -288,11 +292,15 @@ public class InputValidator {
 	}
 
 	public String validatePhoneNumber(String phoneNumber, boolean required) {
-		return validateString(phoneNumber, required, false, true, true, false, false, true);
+		return validateString(phoneNumber, required, false, true, true, false, false, true, false);
+	}
+
+	public String validateUkPostcode(String postcode, boolean required) {
+		return validateString(postcode, required, false, false, false, false, false, false, true);
 	}
 
 	private String validateString(String str, boolean required, boolean minLengthCheck, boolean maxLengthCheck,
-			boolean dangerousCharsCheck, boolean usernameCheck, boolean emailFormatCheck, boolean phoneFormatCheck) {
+			boolean dangerousCharsCheck, boolean usernameCheck, boolean emailFormatCheck, boolean phoneFormatCheck, boolean ukPostcodeCheck) {
 
 		if (StringUtils.isEmpty(str)) {
 			if (required) {
@@ -326,6 +334,11 @@ public class InputValidator {
 			return INVALID_PHONE_FORMAT_KEY;
 		}
 
+		if (ukPostcodeCheck && !str.matches(UK_POST_CODE_REGEX)) {
+			return INVALID_UK_POST_CODE_KEY;
+		}
+
 		return NO_ERROR;
 	}
+
 }

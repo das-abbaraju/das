@@ -18,6 +18,7 @@ import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +163,20 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	@Anonymous
 	public String dialects() {
 		return SUCCESS;
+	}
+
+	@Anonymous
+	@SkipValidation
+	public String getCompanyAddressFields() {
+		if (isUKContractor()) {
+			return "GBAddressFields";
+		} else {
+			return "defaultAddressFields";
+		}
+	}
+
+	private boolean isUKContractor() {
+		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isUK();
 	}
 
 	@Anonymous
