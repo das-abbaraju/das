@@ -1,6 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.TransactionItem;
 
 public class InvoiceItemTable extends AbstractTable {
 
@@ -10,6 +11,7 @@ public class InvoiceItemTable extends AbstractTable {
 	public InvoiceItemTable() {
 		super("invoice_item");
 		addFields(InvoiceItem.class);
+		addFields(TransactionItem.class);
 	}
 
 	protected void addJoins() {
