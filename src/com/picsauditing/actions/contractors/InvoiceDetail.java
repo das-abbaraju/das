@@ -79,8 +79,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private boolean invoiceExists = false;
     private String message = null;
 	private int newFeeId;
-	private Invoice invoice;
-	private InvoiceCreditMemo creditMemo;
+	private Invoice invoice = null;
+	private InvoiceCreditMemo creditMemo = null;
 	private Transaction transaction;
 	private List<InvoiceFee> feeList = null;
 	private String country;
@@ -583,7 +583,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	public boolean isCreditMemoExists() {
-		creditMemoExists = (creditMemo != null);
+		creditMemoExists = (creditMemo != null && transaction instanceof InvoiceCreditMemo);
 		return creditMemoExists;
 	}
 
@@ -592,7 +592,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	public boolean isInvoiceExists() {
-		invoiceExists = (invoice != null);
+		invoiceExists = (invoice != null && transaction instanceof Invoice);
 		return invoiceExists;
 	}
 
