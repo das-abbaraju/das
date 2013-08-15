@@ -56,7 +56,6 @@
                     <li><a href="#pqf">PQF</a></li>
                     <li><a href="#reports">Reports</a></li>
                     <li><a href="#resources">Resources</a></li>
-                    <li><a href="#support">Support</a></li>
                 </ul>
             </div>
             <div class="span8">
@@ -427,7 +426,7 @@
                                 <li>Manage (Client Sites)</li>
                                 <li>Reports > Legacy Reports</li>
                                 <li>Manage</li>
-                                <li>"Your Name"</li>
+                                <li>"Your Name" (Profile)</li>
                                 <li>Manage (Client Accounts)</li>
                                 <li>Reports > Legacy Reports</li>
                                 <li>Manage</li>
@@ -563,29 +562,6 @@
 
                             <ul class="unstyled">
                                 <li>Company</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="support">
-                    <h3>Support</h3>
-
-                    <div class="row">
-                        <div class="span4">
-                            <h4>Version 6</h4>
-
-                            <ul class="unstyled">
-                                <li>Support</li>
-                                <li>Edit Profile</li>
-                            </ul>
-                        </div>
-                        <div class="span4">
-                            <h4>Version 7 Location (New Name)</h4>
-
-                            <ul class="unstyled">
-                                <li>Support (Contact PICS)</li>
-                                <li>"Your Name"</li>
                             </ul>
                         </div>
                     </div>
