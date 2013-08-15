@@ -1,13 +1,17 @@
 package com.picsauditing.mail;
 
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.actions.report.ReportApi;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.mail.subscription.ContractorAddedSubscription;
+import com.picsauditing.mail.subscription.DynamicReportsSubscription;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,6 +41,8 @@ public class MailCronTest extends PicsTranslationTest {
 	private SubscriptionBuilder builder;
 	@Mock
 	private EmailSubscription emailSubscription;
+	@Mock
+	private Report report;
 	@Mock
 	private EmailSender emailSender;
 	@Mock
@@ -68,6 +74,8 @@ public class MailCronTest extends PicsTranslationTest {
 		when(appPropDAO.find("subscription.enable")).thenReturn(enableSubscriptions);
 		when(subscriptionFactory.getBuilder((Subscription) any())).thenReturn(builder);
 		when(subscriptionDAO.find(subscriptionID)).thenReturn(emailSubscription);
+		when(emailSubscription.getReport()).thenReturn(report);
+		when(emailSubscription.getSubscription()).thenReturn(Subscription.AmberFlags);
 		when(emailQueueDAO.getPendingEmails(1)).thenReturn(emails);
 		Whitebox.setInternalState(mailCron, "subscriptionFactory", subscriptionFactory);
 		Whitebox.setInternalState(mailCron, "emailSender", emailSender);
@@ -96,5 +104,53 @@ public class MailCronTest extends PicsTranslationTest {
 		mailCron.execute();
 
 		verifyZeroInteractions(builder, emailSender);
+	}
+
+	@Test
+	// PICS-12304
+	public void testExecute_EmailSubscriptionForDynamicReportsWithNullReportShouldThrowValidationError() throws Exception {
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
+		EmailSubscription invalidEmailSubscription = createEmailSubscription(Subscription.DynamicReports, null);
+		when(subscriptionDAO.find(subscriptionID)).thenReturn(invalidEmailSubscription);
+		SubscriptionBuilder subscriptionBuilder = createDynamicReportsSubscription();
+		when(subscriptionFactory.getBuilder((Subscription) any())).thenReturn(subscriptionBuilder);
+
+		mailCron.execute();
+
+		assertTrue(mailCron.hasActionErrors());
+		assert(mailCron.getActionErrors().contains(MailCron.ERROR_INVALID_SUBSCRIPTION));
+	}
+
+	@Test
+	public void testExecute_EmailSubscriptionWithNullSubscriptionShouldThrowValidationError() throws Exception {
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
+		EmailSubscription invalidEmailSubscription = createEmailSubscription(null, new Report());
+		when(subscriptionDAO.find(subscriptionID)).thenReturn(invalidEmailSubscription);
+		SubscriptionBuilder subscriptionBuilder = createContractorAddedSubscription();
+		when(subscriptionFactory.getBuilder((Subscription) any())).thenReturn(subscriptionBuilder);
+
+		mailCron.execute();
+
+		assertTrue(mailCron.hasActionErrors());
+		assert(mailCron.getActionErrors().contains(MailCron.ERROR_INVALID_SUBSCRIPTION));
+	}
+
+	private EmailSubscription createEmailSubscription(Subscription subscription, Report report) {
+		EmailSubscription emailSubscription = new EmailSubscription();
+		emailSubscription.setSubscription(subscription);
+		emailSubscription.setReport(report);
+		return emailSubscription;
+	}
+
+	private DynamicReportsSubscription createDynamicReportsSubscription() {
+		DynamicReportsSubscription dynamicReportsSubscription = new DynamicReportsSubscription();
+		ReportApi reportApi = new ReportApi();
+		Whitebox.setInternalState(dynamicReportsSubscription, "reportApi", reportApi);
+		return dynamicReportsSubscription;
+	}
+
+	private ContractorAddedSubscription createContractorAddedSubscription() {
+		ContractorAddedSubscription contractorAddedSubscription = new ContractorAddedSubscription();
+		return contractorAddedSubscription;
 	}
 }

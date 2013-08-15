@@ -929,6 +929,20 @@ ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
 ForcedFlagPercent
 
+Model: InvoiceFeeCountries
+Permission: Permissions{permissions=[]}
+----------------------------------------
+FeeAmount
+FeeCommissionEligible
+FeeCountryAmount
+FeeCountryCountry
+FeeCountryRatePercent
+FeeCountrySubdivision
+FeeFeeClass
+FeeMaxFacilities
+FeeName
+FeeRatePercent
+
 Model: InvoiceItems
 Permission: Permissions{permissions=[]}
 ----------------------------------------

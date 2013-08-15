@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.rbic.RulesRunner;
+import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,6 +168,12 @@ public class FlagDataCalculator {
 		if (criteria.isAllowCustomValue() && Strings.isNotEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
 		}
+        if (criteriaEligibleForRulesBasedInsurance(opCriteria)) {
+            String newHurdle = findRulesBasedInsuranceCriteriaLimit(con, opCriteria);
+            if (newHurdle != null) {
+                hurdle = newHurdle;
+            }
+        }
 
 		// if ("Statistics".equals(criteria.getCategory()) &&
 		// !isStatisticValidForOperator(opCriteria.getOperator(), con)) {
@@ -182,8 +190,8 @@ public class FlagDataCalculator {
 			}
 
 			if (!found) {
-				return null;
-			}
+                return null;
+            }
 		}
 
 		String answer = conCriteria.getAnswer();
@@ -464,6 +472,21 @@ public class FlagDataCalculator {
 			}
 		}
 	}
+
+    private boolean criteriaEligibleForRulesBasedInsurance(FlagCriteriaOperator opCriteria) {
+        return opCriteria.getCriteria().isInsurance()
+                && RulesRunner.operatorHasRulesBasedInsuranceCriteria(opCriteria.getOperator());
+    }
+
+    private String findRulesBasedInsuranceCriteriaLimit(ContractorAccount contractor, FlagCriteriaOperator operatorCriteria) {
+        for (InsuranceCriteriaContractorOperator criteria: contractor.getInsuranceCriteriaContractorOperators()) {
+            if (criteria.getOperatorAccount().equals(operatorCriteria.getOperator())
+                    && criteria.getFlagCriteria().equals(operatorCriteria.getCriteria())) {
+                return Integer.toString(criteria.getInsuranceLimit());
+            }
+        }
+        return null;
+    }
 
     private boolean auditIsApplicableForThisOperator(FlagCriteriaOperator opCriteria, FlagCriteria criteria, ContractorAccount con) {
         for (ContractorAudit ca : con.getAudits()) {
