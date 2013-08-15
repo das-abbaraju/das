@@ -130,7 +130,7 @@
                     <div id="toolbox" class="noprint">
                         <ul>
                             <pics:permission perm="Billing" type="Edit">
-                                <s:if test="!creditMemoExists && edit">
+                                <s:if test="!transactionIsCreditMemo && edit">
                                     <li>
                                         <a class="save" href="#">
                                             <s:text name="button.Save"/>
@@ -144,7 +144,7 @@
                                     </li>
                                 </s:if>
                                 <s:else>
-                                    <s:if test="!creditMemoExists && transaction.status.unpaid">
+                                    <s:if test="!transactionIsCreditMemo && transaction.status.unpaid">
                                         <li>
                                             <a class="pay"
                                                href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="transaction.id"/>]=<s:property value="transaction.balance"/>">
@@ -152,7 +152,7 @@
                                             </a>
                                         </li>
                                     </s:if>
-                                    <s:if test="!creditMemoExists">
+                                    <s:if test="!transactionIsCreditMemo">
                                     <li>
                                         <a class="edit"
                                            href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&edit=true">
@@ -166,20 +166,24 @@
                                                 <s:text name="button.Void"/>
                                             </a>
                                         </li>
+                                        <s:if test="badDebtEnabled">
                                         <li>
                                             <a class="bad"
                                                href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=baddebt">
                                                 <s:text name="button.BadDebt"/>
                                             </a>
                                         </li>
+                                        </s:if>
                                     </pics:permission>
                                     <pics:permission perm="InvoiceEdit">
+                                        <s:if test="returnCreditMemoEnabled">
                                         <li>
                                             <a class="refund"
                                                href="InvoiceReturnItems.action?invoice.id=<s:property value="transaction.id"/>">
                                                 <s:text name="button.ReturnItems"/>
                                             </a>
                                         </li>
+                                        </s:if>
                                         <li>
                                             <a class="system_edit"
                                                href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="transaction.id"/>">
@@ -191,7 +195,7 @@
                                 </s:else>
                             </pics:permission>
                             <s:if test="!edit">
-                                <s:if test="!creditMemoExists && permissions.contractor && transaction.status.unpaid && contractor.ccValid">
+                                <s:if test="!transactionIsCreditMemo && permissions.contractor && transaction.status.unpaid && contractor.ccValid">
                                     <li>
                                         <a class="pay ccValid"
                                            href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=pay">
