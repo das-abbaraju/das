@@ -60,7 +60,7 @@ PICS.define('country.Country', {
             if (subdivision_list.length > 0) {
                 $subdivision_container.html(subdivision_list);
 
-                $subdivision_container.find('select').select2();
+                $subdivision_container.find('select').select2({width: 'auto'});
 
                 $subdivision_container.slideDown(400);
             } else {
