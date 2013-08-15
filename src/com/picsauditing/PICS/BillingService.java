@@ -74,7 +74,7 @@ public class BillingService {
 
         BigDecimal balance = calculateCurrentBalance(contractor);
 
-        if (contractor.getBalance().equals(balance))
+        if (balance.equals(contractor.getBalance()))
             contractor.setBalance(balance.setScale(2, BigDecimal.ROUND_UP));
 
         feeService.syncMembershipFees(contractor);
