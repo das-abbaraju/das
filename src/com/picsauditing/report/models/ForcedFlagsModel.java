@@ -1,5 +1,6 @@
 package com.picsauditing.report.models;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
@@ -11,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ForcedFlagsModel extends AbstractModel {
-
-	public static final String CONTRACTOR_OPERATOR = "ContractorOperator";
 
 	public ForcedFlagsModel(Permissions permissions) {
 		super(permissions, new ForcedFlagView());
@@ -70,7 +69,20 @@ public class ForcedFlagsModel extends AbstractModel {
     @Override
     public String getWhereClause(List<Filter> filters) {
         super.getWhereClause(filters);
+        String where = permissionQueryBuilder.buildWhereClause();
 
-        return permissionQueryBuilder.buildWhereClause();
+        if (permissions.isContractor()) {
+            return "ContractorFlag.conID = " + permissions.getAccountId();
+        }
+
+        if (permissions.isOperator()) {
+            return where + " AND ContractorFlag.opID = " + permissions.getAccountId();
+        }
+
+        if (permissions.isCorporate()) {
+            return where + " AND ContractorFlag.opID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
+        }
+
+        return where;
     }
 }
