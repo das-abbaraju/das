@@ -384,7 +384,7 @@
 									<s:iterator value="transactions" var="transaction">
 										<s:if test="!(permissions.contractor && status.void)">
 											<s:set name="url" value="''" />
-											<s:if test="class.simpleName == 'Invoice'">
+											<s:if test="class.simpleName == 'Invoice' || class.simpleName == 'InvoiceCreditMemo'">
 												<s:set name="url" value="'InvoiceDetail.action?invoice.id=' + id" />
 											</s:if>
 											<s:elseif test="class.simpleName == 'Payment'">
@@ -392,7 +392,6 @@
 													<s:set name="url" value="'PaymentDetail.action?payment.id=' + id" />
 												</pics:permission>
 											</s:elseif>
-
 											<tr>
 												<td>
 													<s:text name="%{'BillingDetail.' + #transaction.class.simpleName}" />

@@ -1,7 +1,9 @@
 package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.*;
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FeeService;
+import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -11,6 +13,7 @@ import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -24,17 +27,13 @@ import com.picsauditing.model.billing.CommissionDetail;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
@@ -45,6 +44,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private static final String CHANGE_TO_BUTTON = "changeto";
 	private static final String EMAIL_BUTTON = "email";
     private static final String BAD_DEBT_BUTTON = "baddebt";
+	private static final String RETURN_ITEMS_BUTTON = "returnitems";
 
 	@Autowired
 	private InvoiceDAO invoiceDAO;
@@ -59,6 +59,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private BillingService billingService;
 	@Autowired
+	private AppPropertyDAO appPropertyDAO;
+	@Autowired
 	private BrainTree paymentService;
 	@Autowired
 	private EmailSender emailSender;
@@ -72,9 +74,15 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private FeeService feeService;
 
 	private boolean edit = false;
+	private boolean transactionIsCreditMemo = false;
+	private boolean transactionIsInvoice = false;
+	private boolean badDebtEnabled = false;
+	private boolean returnCreditMemoEnabled = false;
     private String message = null;
 	private int newFeeId;
-	private Invoice invoice;
+	private Invoice invoice = null;
+	private InvoiceCreditMemo creditMemo = null;
+	private Transaction transaction;
 	private List<InvoiceFee> feeList = null;
 	private String country;
 
@@ -82,14 +90,20 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	@Override
 	public void prepare() {
-		int invoiceId = getParameter("invoice.id");
-		if (invoiceId > 0) {
-			invoice = invoiceDAO.find(invoiceId);
-			if (invoice != null) {
-                account = invoice.getAccount();
+		int transactionId = getParameter("invoice.id");
+		if (transactionId > 0) {
+			transaction = invoiceDAO.find(Transaction.class,transactionId);
+			if (transaction != null) {
+                account = transaction.getAccount();
 				id = account.getId();
 				contractor = (ContractorAccount) account;
                 country = account.getCountry().toString();
+
+				if (isTransactionIsInvoice()) {
+					invoice = (Invoice) transaction;
+				} else if (isTransactionIsCreditMemo()) {
+					creditMemo = (InvoiceCreditMemo) transaction;
+				} else addActionError("ID "+transactionId+" does not return anything");
 			}
 		}
 	}
@@ -97,75 +111,86 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	@SuppressWarnings("deprecation")
 	public String execute() throws Exception {
 
-        if (invoiceDoesntExist()) {
+        if (!isTransactionIsInvoice() && !isTransactionIsCreditMemo()) {
             addActionError(getText("InvoiceDetail.error.CantFindInvoice"));
             return BLANK;
         }
 
         if (userViewIsDenied()) throw new NoRightsException(getText("InvoiceDetail.error.CantViewInvoice"));
 
-		invoice.updateAmountApplied();
+		if (isTransactionIsInvoice()) {
+			invoice.updateAmountApplied();
+		}
 
 		if (button != null) {
             return processedCommand();
 		} else {
-            updateTotals();
-            billingService.saveInvoice(invoice);
-            feeService.calculateContractorInvoiceFees(contractor);
-            billingService.syncBalance(contractor);
-            contractor.setAuditColumns(permissions);
-            contractorAccountDao.save(contractor);
-
+			if (isTransactionIsInvoice()) {
+				updateTotals();
+				billingService.saveInvoice(invoice);
+				feeService.calculateContractorInvoiceFees(contractor);
+				billingService.syncBalance(contractor);
+				contractor.setAuditColumns(permissions);
+				contractorAccountDao.save(contractor);
+			}
             return SUCCESS;
         }
 	}
 
     private String processedCommand() throws Exception {
-        switch (button) {
-            case SAVE_BUTTON:  save();
-                break;
-            case CHANGE_TO_BUTTON:  change();
-                break;
-            case EMAIL_BUTTON:  email();
-                break;
-            case CANCEL_BUTTON:  cancel();
-                break;
-            case BAD_DEBT_BUTTON:  badDebt();
-                break;
-            case PAY_BUTTON:
-                Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
-                try {
-                    process(payment);
-                } catch (NoBrainTreeServiceResponseException re) {
-                    handleBrainTreeError(payment, re);
-                    return SUCCESS;
-                } catch (Exception e) {
-                    handleGenericCreditCardError(e);
-                    return SUCCESS;
-                }
-        }
+		String urlForRedirect = "InvoiceDetail.action?invoice.id=" + transaction.getId() + "&edit=" + edit;
+		if (isTransactionIsCreditMemo() && !button.equals(EMAIL_BUTTON)) {
+			return this.setUrlForRedirect(urlForRedirect);
+		}
 
-        billingService.saveInvoice(invoice);
+		switch (button) {
+			case SAVE_BUTTON:  save();
+				break;
+			case CHANGE_TO_BUTTON:  change();
+				break;
+			case EMAIL_BUTTON:  email();
+				break;
+			case CANCEL_BUTTON:  cancel();
+				break;
+			case BAD_DEBT_BUTTON:
+				if (isBadDebtEnabled()) badDebt();
+				break;
+			case PAY_BUTTON:
+				Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
+				try {
+					process(payment);
+				} catch (NoBrainTreeServiceResponseException re) {
+					handleBrainTreeError(payment, re);
+					return SUCCESS;
+				} catch (Exception e) {
+					handleGenericCreditCardError(e);
+					return SUCCESS;
+				}
+		}
 
+		if (isTransactionIsInvoice()) {
+			billingService.saveInvoice(invoice);
+		}
         if (!Strings.isEmpty(message)) {
             addActionMessage(message);
         }
 
-        if (SAVE_BUTTON.equals(button) && !invoice.getStatus().isPaid()) {
+        if (isTransactionIsInvoice() && SAVE_BUTTON.equals(button) && !invoice.getStatus().isPaid()) {
             notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
         }
 
-        return this.setUrlForRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit);
+        return this.setUrlForRedirect(urlForRedirect);
     }
 
     private void badDebt() {
-        if (!invoice.getPayments().isEmpty()) return;
+		if (isTransactionIsCreditMemo()) return;
+        if (isTransactionIsInvoice() && !invoice.getPayments().isEmpty()) return;
         if (contractor.getStatus().isActivePendingRequested()) {
             addActionError(getText("InvoiceDetail.BadDebtUnavailable"));
             return;
         }
 
-        Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.BadDebt);
+        Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.BadDebtCreditMemo);
         PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions), payment.getTotalAmount());
         payment.setStatus(TransactionStatus.BadDebt);
         payment.setAuditColumns(getUser());
@@ -183,11 +208,12 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void handleGenericCreditCardError(Exception e) {
-        addNote("Credit Card transaction failed: " + e.getMessage(), billingNoteModel.findUserForPaymentNote(permissions));
+        addNote("Credit Card invoice failed: " + e.getMessage(), billingNoteModel.findUserForPaymentNote(permissions));
         this.addActionError(getText("InvoiceDetail.error.FailedCreditCard") + e.getMessage());
     }
 
     private void handleBrainTreeError(Payment payment, NoBrainTreeServiceResponseException re) {
+		if (isTransactionIsCreditMemo()) return;
         addNote("Credit Card service connection error: " + re.getMessage(), billingNoteModel.findUserForPaymentNote(permissions));
 
         EmailBuilder emailBuilder = new EmailBuilder();
@@ -210,11 +236,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         } catch (Exception e) {
             PicsLogger
                     .log("Cannot send email error message or determine credit processing status for contractor "
-                            + contractor.getName()
-                            + " ("
-                            + contractor.getId()
-                            + ") for invoice "
-                            + invoice.getId());
+							+ contractor.getName()
+							+ " ("
+							+ contractor.getId()
+							+ ") for invoice "
+							+ invoice.getId());
         }
         addActionError(getTextParameterized("InvoiceDetail.error.ContactBilling",
                 getText("PicsBillingPhone")));
@@ -228,7 +254,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void process(Payment payment) throws Exception {
-
+		if (isTransactionIsCreditMemo()) return;
         if (!(invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) || !contractor.isCcValid()) return;
 
         paymentService.processPayment(payment, invoice);
@@ -236,7 +262,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         CreditCard creditCard = paymentService.getCreditCard(contractor);
         payment.setCcNumber(creditCard.getCardNumber());
 
-        // Only if the transaction succeeds
+        // Only if the invoice succeeds
         PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions),
                 payment.getTotalAmount());
         AccountingSystemSynchronization.setToSynchronize(payment);
@@ -251,9 +277,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
 
-        addNote("Credit Card transaction completed and emailed the receipt for "
-                + invoice.getTotalAmount() + Strings.SINGLE_SPACE
-                + invoice.getCurrency().getDisplay(), billingNoteModel.findUserForPaymentNote(permissions));
+        addNote("Credit Card invoice completed and emailed the receipt for "
+				+ invoice.getTotalAmount() + Strings.SINGLE_SPACE
+				+ invoice.getCurrency().getDisplay(), billingNoteModel.findUserForPaymentNote(permissions));
 
         // Send a receipt to the contractor
         try {
@@ -263,6 +289,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void cancel() {
+		if (isTransactionIsCreditMemo()) return;
         Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
         if (paIterator.hasNext()) {
             PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
@@ -300,9 +327,13 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
     private void email() {
         try {
+			if (isTransactionIsCreditMemo())  {        // TODO: John B?  Help?
+				addActionMessage("Email not yet supported for credit memos");
+				return;
+			}
             EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice);
             String note = Strings.EMPTY_STRING;
-            if (invoice.getStatus().isPaid()) {
+            if (transaction.getStatus().isPaid()) {
                 note += "Payment Receipt for Invoice";
             } else {
                 note += "Invoice";
@@ -322,6 +353,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void change() throws Exception {
+		if (isTransactionIsCreditMemo()) return;
         List<String> removedItemNames = new ArrayList<String>();
         List<String> createdItemNames = new ArrayList<String>();
 
@@ -365,7 +397,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         billingService.saveInvoice(invoice);
 
         addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
-                + " to " + Strings.implode(createdItemNames, ", "), billingNoteModel.findUserForPaymentNote(permissions));
+				+ " to " + Strings.implode(createdItemNames, ", "), billingNoteModel.findUserForPaymentNote(permissions));
         message = getText("InvoiceDetail.message.ChangedLevel");
 
         invoice.setNotes(invoiceModel.getSortedClientSiteList(contractor));
@@ -375,6 +407,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void save() {
+		if (isTransactionIsCreditMemo()) return;
         edit = false;
         if (newFeeId > 0) {
             addInvoiceItem(newFeeId);
@@ -388,14 +421,12 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private boolean userViewIsDenied() throws NoRightsException {
-        return (!permissions.hasPermission(OpPerms.AllContractors) && permissions.getAccountId() != invoice.getAccount().getId());
+        return (!permissions.hasPermission(OpPerms.AllContractors) && permissions.getAccountId() != transaction.getAccount().getId());
     }
 
-    private boolean invoiceDoesntExist() {
-        return (invoice == null);
-    }
 
     private void updateTotals() {
+		if (isTransactionIsCreditMemo()) return;
 		if (!invoice.getStatus().isPaid()) {
 			invoice.setTotalAmount(BigDecimal.ZERO);
             invoice.setCommissionableAmount(BigDecimal.ZERO);
@@ -411,7 +442,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private void addNote(String subject, User u) {
-		Note note = new Note(invoice.getAccount(), u, subject);
+		Note note = new Note(transaction.getAccount(), u, subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
@@ -419,7 +450,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private void addNote(String subject, String body, User u) {
-		Note note = new Note(invoice.getAccount(), u, subject);
+		Note note = new Note(transaction.getAccount(), u, subject);
 		note.setBody(body);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
@@ -428,10 +459,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private void addInvoiceItem(int feeId) {
+		if (isTransactionIsCreditMemo()) return;
 		InvoiceItem newItem = new InvoiceItem();
 		InvoiceFee newFee = invoiceFeeDAO.find(feeId);
 		newItem.setInvoiceFee(newFee);
-		newItem.setAmount(FeeService.getRegionalAmountOverride((ContractorAccount)invoice.getAccount(), newFee));
+		newItem.setAmount(FeeService.getRegionalAmountOverride((ContractorAccount) invoice.getAccount(), newFee));
 		newItem.setInvoice(invoice);
 		newItem.setAuditColumns(permissions);
 
@@ -497,7 +529,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	public boolean isHasInvoiceMembershipChanged() {
-		for (InvoiceItem item : this.getInvoice().getItems()) {
+		if (isTransactionIsCreditMemo()) return false;
+		for (InvoiceItem item : invoice.getItems()) {
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (item.getInvoiceFee().isMembership()
 						&& item.getInvoiceFee().getFeeClass()
@@ -534,4 +567,80 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 //		return userForPaymentNote;
 //	}
 
+
+	public InvoiceCreditMemo getCreditMemo() {
+		return creditMemo;
+	}
+
+	public void setCreditMemo(InvoiceCreditMemo creditMemo) {
+		this.creditMemo = creditMemo;
+	}
+
+	public Transaction getTransaction() {
+		return transaction;
+	}
+
+	public void setTransaction(Transaction transaction) {
+		this.transaction = transaction;
+	}
+
+	public boolean isTransactionIsCreditMemo() {
+		transactionIsCreditMemo = (transaction instanceof InvoiceCreditMemo);
+		return transactionIsCreditMemo;
+	}
+
+	public void setTransactionIsCreditMemo(boolean transactionIsCreditMemo) {
+		this.transactionIsCreditMemo = transactionIsCreditMemo;
+	}
+
+	public boolean isTransactionIsInvoice() {
+		transactionIsInvoice = (transaction instanceof Invoice);
+		return transactionIsInvoice;
+	}
+
+	public void setTransactionIsInvoice(boolean transactionIsInvoice) {
+		this.transactionIsInvoice = transactionIsInvoice;
+	}
+
+	public boolean isBadDebtEnabled() {
+		badDebtEnabled = false;
+		if (isTransactionIsInvoice()) {
+			AppProperty badDebtBizUnitsAP = appPropertyDAO.find(AppProperty.SAP_BIZ_UNITS_BAD_DEBT_ENABLED);
+			if (badDebtBizUnitsAP != null) {
+				String badDebtBizUnitsS = badDebtBizUnitsAP.getValue();
+				if (!Strings.isEmpty(badDebtBizUnitsS)) {
+					if (Arrays.asList(badDebtBizUnitsS.split(",")).contains(invoice.getAccount().getCountry().getBusinessUnit().getId()+"")) {
+						badDebtEnabled = true;
+					}
+				}
+			}
+		}
+
+		return badDebtEnabled;
+	}
+
+	public void setBadDebtEnabled(boolean badDebtEnabled) {
+		this.badDebtEnabled = badDebtEnabled;
+	}
+
+	public boolean isReturnCreditMemoEnabled() {
+		returnCreditMemoEnabled = false;
+		if (isTransactionIsInvoice()) {
+			AppProperty returnCreditMemoBizUnitsAP = appPropertyDAO.find(AppProperty.SAP_BIZ_UNITS_RETURN_CREDIT_MEMO_ENABLED);
+			if (returnCreditMemoBizUnitsAP != null) {
+				String returnCreditMemoBizUnitsS = returnCreditMemoBizUnitsAP.getValue();
+				if (!Strings.isEmpty(returnCreditMemoBizUnitsS)) {
+					if (Arrays.asList(returnCreditMemoBizUnitsS.split(",")).contains(invoice.getAccount().getCountry().getBusinessUnit().getId()+"")) {
+						returnCreditMemoEnabled = true;
+					}
+				}
+			}
+		}
+
+		return returnCreditMemoEnabled;
+	}
+
+	public void setReturnCreditMemoEnabled(boolean returnCreditMemoEnabled) {
+		this.returnCreditMemoEnabled = returnCreditMemoEnabled;
+	}
 }

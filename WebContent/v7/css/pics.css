@@ -2504,6 +2504,36 @@ hr {
     display: none;
   }
 }
+/* line 3, ../sass/pics/templates/report/billing/_invoice-refund.scss */
+#InvoiceRefund__page .table th {
+  text-align: center;
+}
+/* line 9, ../sass/pics/templates/report/billing/_invoice-refund.scss */
+#InvoiceRefund__page .table th:first-child,
+#InvoiceRefund__page .table td:first-child {
+  padding-left: 0px;
+  padding-right: 0px;
+  vertical-align: middle;
+}
+/* line 16, ../sass/pics/templates/report/billing/_invoice-refund.scss */
+#InvoiceRefund__page tr td:first-child {
+  text-align: center;
+}
+/* line 21, ../sass/pics/templates/report/billing/_invoice-refund.scss */
+#InvoiceRefund__page input[type=checkbox] {
+  margin-top: -3px;
+}
+/* line 26, ../sass/pics/templates/report/billing/_invoice-refund.scss */
+#InvoiceRefund__page td span {
+  color: #444;
+  font-style: italic;
+  font-size: 13px;
+}
+/* line 33, ../sass/pics/templates/report/billing/_invoice-refund.scss */
+#InvoiceRefund__page td.number {
+  text-align: right;
+}
+
 /* line 2, ../sass/pics/templates/reference/_dynamic-report.scss */
 #Reference_dynamicReport_page {
   background-color: #454545;

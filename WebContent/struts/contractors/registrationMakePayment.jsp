@@ -256,10 +256,15 @@
 					<li>
 						<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
 					</li>
-					
-					<li class="creditcard">
-						<s:textfield label="CreditCard.Number" name="ccnumber" />
-						<img src="images/creditcard.png" class="card" />
+
+                    <li class="creditcard">
+                        <s:textfield label="CreditCard.Number" name="ccnumber" />
+                        <s:if test="invoice.currency.USD || invoice.currency.CAD">
+                            <img src="images/creditcard.png" class="card" />
+                        </s:if>
+                        <s:else>
+                            <img src="images/creditcardNoAmex.png" class="card" />
+                        </s:else>
 					</li>
 					
 					<li class="creditcard">

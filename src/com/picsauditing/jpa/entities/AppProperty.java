@@ -18,6 +18,8 @@ public class AppProperty implements java.io.Serializable {
 	public static final String BETA_LEVEL = "BETA_maxLevel";
 	public static final String QB_JAXB_ENCODING = "QuickBooks.JAXB.ASCII.Encoding";
 	public static final String QB_AXIS_ENCODING = "QuickBooks.Axis.ASCII.Encoding";
+	public static final String SAP_BIZ_UNITS_BAD_DEBT_ENABLED = "SAP.BusinessUnits.BadDebt.Enabled";
+	public static final String SAP_BIZ_UNITS_RETURN_CREDIT_MEMO_ENABLED = "SAP.BusinessUnits.ReturnCreditMemo.Enabled";
 	public static final String VERSION_MAJOR = "VERSION.major";
 	public static final String VERSION_MINOR = "VERSION.minor";
 	public static final String SSIP_CLIENT_SITE_ID_LIST_KEY = "Ssip.ClientSite.Ids";

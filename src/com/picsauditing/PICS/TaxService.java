@@ -1,17 +1,14 @@
 package com.picsauditing.PICS;
 
-import java.math.BigDecimal;
-import java.util.*;
-
 import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.report.RecordNotFoundException;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class TaxService {

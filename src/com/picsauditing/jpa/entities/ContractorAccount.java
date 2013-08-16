@@ -88,6 +88,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<Invoice> invoices = new ArrayList<Invoice>();
 	private List<Payment> payments = new ArrayList<Payment>();
 	private List<Refund> refunds = new ArrayList<Refund>();
+    private List<InvoiceCreditMemo> creditMemos = new ArrayList<>();
 	private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
 	private Set<FlagDataOverride> flagDataOverrides = new HashSet<FlagDataOverride>();
 
@@ -1107,7 +1108,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.fees = fees;
 	}
 
-	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
 	@Where(clause = "tableType='I'")
 	public List<Invoice> getInvoices() {
 		return invoices;
@@ -1117,7 +1118,17 @@ public class ContractorAccount extends Account implements JSONable {
 		this.invoices = invoices;
 	}
 
-	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
+    @Where(clause = "tableType='C'")
+    public List<InvoiceCreditMemo> getCreditMemos() {
+        return creditMemos;
+    }
+
+    public void setCreditMemos(List<InvoiceCreditMemo> creditMemos) {
+        this.creditMemos = creditMemos;
+    }
+
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
 	@Where(clause = "tableType='P'")
 	public List<Payment> getPayments() {
 		return payments;
@@ -1127,7 +1138,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.payments = payments;
 	}
 
-	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
 	@Where(clause = "tableType='R'")
 	public List<Refund> getRefunds() {
 		return refunds;

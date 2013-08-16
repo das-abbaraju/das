@@ -1,42 +1,30 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-
+import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.PICS.InvoiceValidationException;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.BillingNoteModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PICS.InvoiceValidationException;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.model.billing.BillingNoteModel;
+import java.io.IOException;
+import java.math.BigDecimal;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class InvoiceDetailTest extends PicsActionTest {
 
@@ -93,6 +81,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private void commonSetupForExecuteTest() {
 		when(invoice.getAccount()).thenReturn(account);
 		invoiceDetail.setInvoice(invoice);
+		invoiceDetail.setTransaction(invoice);
 		when(permissions.getAccountId()).thenReturn(6987);
 		when(account.getCountry()).thenReturn(country);
 		when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);

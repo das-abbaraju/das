@@ -44,6 +44,7 @@ public class Invoice extends Transaction {
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
+    private List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
 
 	@Transient
 	public boolean hasTax() {
@@ -175,7 +176,16 @@ public class Invoice extends Transaction {
 		this.payments = payments;
 	}
 
-	@Transient
+    @OneToMany(mappedBy = "invoice", cascade = { CascadeType.REMOVE })
+    public List<CreditMemoAppliedToInvoice> getCreditMemos() {
+        return creditMemos;
+    }
+
+    public void setCreditMemos(List<CreditMemoAppliedToInvoice> creditMemos) {
+        this.creditMemos = creditMemos;
+    }
+
+    @Transient
 	public void markPaid(User u) {
 		setStatus(TransactionStatus.Paid);
 		this.setPaidDate(new Date());
@@ -202,6 +212,10 @@ public class Invoice extends Transaction {
 		for (PaymentApplied ip : payments) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
+
+        for (CreditMemoAppliedToInvoice memo : creditMemos)
+            amountApplied = amountApplied.add(memo.getAmount());
+
 		super.updateAmountApplied();
 	}
 
@@ -248,13 +262,13 @@ public class Invoice extends Transaction {
         this.commissionableAmount = commissionableAmount;
 	}
 
-	@Transient
-	public BigDecimal getTaxlessSubtotal() {
-		BigDecimal subtotal = BigDecimal.ZERO.setScale(2, RoundingMode.UP);
-		for (InvoiceItem item : items)
-			if (!item.getInvoiceFee().isTax()) {
-				subtotal = subtotal.add(item.getAmount());
-			}
-		return subtotal;
-	}
+    @Transient
+    public BigDecimal getTaxlessSubTotal() {
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (InvoiceItem item : items)
+            if (!item.getInvoiceFee().isTax()) {
+                subtotal = item.getAmount().add(subtotal);
+            }
+        return subtotal;
+    }
 }

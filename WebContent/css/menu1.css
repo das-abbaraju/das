@@ -301,3 +301,7 @@ div.auditSubMenu a.current {
 #toolbox a.bad {
     background-image: url('../images/icon-16-remove.png');
 }
+
+#toolbox a.refund {
+    background-image: url('../images/add_remove.png');
+}
