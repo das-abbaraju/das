@@ -501,7 +501,6 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         this.topCategories = topCategories;
     }
 
-    @Transient
     public int getAdvanceDays() {
         return advanceDays;
     }
@@ -510,7 +509,6 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         this.advanceDays = advanceDays;
     }
 
-    @Transient
     public Integer getAnchorMonth() {
         return anchorMonth;
     }
@@ -519,7 +517,6 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         this.anchorMonth = anchorMonth;
     }
 
-    @Transient
     public Integer getAnchorDay() {
         return anchorDay;
     }
@@ -528,9 +525,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         this.anchorDay = anchorDay;
     }
 
-    @Transient
+    @Enumerated(EnumType.STRING)
     public AuditTypePeriod getPeriod() {
-        if (id == ANNUALADDENDUM) return AuditTypePeriod.Yearly;
         return period;
     }
 
@@ -538,12 +534,10 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         this.period = period;
     }
 
-    @Transient
     public int getMaximumActive() {
         return maximumActive;
     }
 
-    @Transient
     public void setMaximumActive(int maximumActive) {
         this.maximumActive = maximumActive;
     }
