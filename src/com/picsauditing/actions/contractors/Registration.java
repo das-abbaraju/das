@@ -530,4 +530,21 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
         return timezones;
     }
+
+    @Override
+    public List<CountrySubdivision> getCountrySubdivisionList() {
+		if (contractor == null || contractor.getCountry() == null) {
+			return getCountrySubdivisionList(Country.US_ISO_CODE);
+		}
+
+		return getCountrySubdivisionList(contractor.getCountry().getIsoCode());
+	}
+
+    public String getCountrySubdivisionLabelFor() {
+    	if (contractor == null || contractor.getCountry() == null) {
+			return getCountrySubdivisionLabelFor(Country.US_ISO_CODE);
+		}
+
+		return getCountrySubdivisionLabelFor(contractor.getCountry().getIsoCode());
+	}
 }

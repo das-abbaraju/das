@@ -389,6 +389,15 @@
                 $registration_request_timezone.remove();
             },
 
+            renderSubdivision: function() {
+                var $subdivision_container = $('.countrySubdivision'),
+                    $subdivision_list = $subdivision_container.find('select option');
+
+                if ($subdivision_list.length > 1) {
+                    $subdivision_container.find('select').select2();
+                }
+            },
+
             showBasicModal: function (event) {
 	            var element = $(this);
 
@@ -465,28 +474,16 @@
 
             // HACK to pull custom address fields for the UK
             updateAddressFields: function (selected_country) {
+                var that = this;
+
                 PICS.ajax({
                     url: 'Registration!getCompanyAddressFields.action',
                     data: {
-                        'contractor.country': selected_country
+                        'contractor.country.isoCode': selected_country
                     },
                     success: function (data, textStatus, jqXHR) {
                         $('#company_address_fields').html(data);
-                    }
-                });
-            },
-
-            updateCountrySubvisions: function (selected_country) {
-                var Country = PICS.getClass('country.Country');
-
-                PICS.ajax({
-                    url: 'CountrySubdivisionListAjax!registration.action',
-                    data: {
-                        countryString: selected_country,
-                        prefix: 'contractor.'
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        Country.renderSubdivision(data);
+                        that.renderSubdivision();
                     }
                 });
             },
@@ -496,8 +493,6 @@
                     selected_country = $country.val() || '';
 
                 this.updateAddressFields(selected_country);
-
-                this.updateCountrySubvisions(selected_country);
 
                 this.updatePhoneNumber(selected_country);
 
