@@ -340,6 +340,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@Override
 	protected String returnResult() throws IOException {
+        if (permissions.isOperator()) {
+            calculateOverallFlags();
+        }
 		return super.returnResult();
 	}
 
