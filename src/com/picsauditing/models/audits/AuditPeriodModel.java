@@ -1,5 +1,6 @@
 package com.picsauditing.models.audits;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
@@ -41,7 +42,7 @@ public class AuditPeriodModel {
             date.set(Calendar.DAY_OF_MONTH, 1);
             for (int i=0; i<auditType.getMaximumActive(); i++) {
                 date.add(Calendar.MONTH, -1);
-                auditFors.add(String.format("%d-%02d", date.get(Calendar.YEAR), (date.get(Calendar.MONTH) +1)));
+                auditFors.add(0, String.format("%d-%02d", date.get(Calendar.YEAR), (date.get(Calendar.MONTH) +1)));
             }
         }
 
@@ -78,7 +79,7 @@ public class AuditPeriodModel {
                         quarter = 4;
                         break;
                 };
-                auditFors.add(String.format("%d:%d", date.get(Calendar.YEAR), quarter));
+                auditFors.add(0, String.format("%d:%d", date.get(Calendar.YEAR), quarter));
             }
         }
 
@@ -90,21 +91,95 @@ public class AuditPeriodModel {
                 date.set(Calendar.DAY_OF_MONTH, auditType.getAnchorDay());
                 date.set(Calendar.MONTH, auditType.getAnchorMonth() - 1);
                 date.getTime();
-                System.out.println("Current :" + currentDate);
-                System.out.println("Target  :" + date.getTime());
                 if (currentDate.before(date.getTime())) {
                     date.add(Calendar.YEAR, 1);
-                    System.out.println("Modified  :" + date.getTime());
                 }
             }
             date.getTime();
             for (int i=0; i<auditType.getMaximumActive(); i++) {
                 date.add(Calendar.YEAR, -1);
                 date.getTime();
-                auditFors.add(String.format("%d", date.get(Calendar.YEAR)));
+                auditFors.add(0, String.format("%d", date.get(Calendar.YEAR)));
             }
         }
 
         return auditFors;
+    }
+
+    public Date getEffectiveDateForMonthlyQuarterlyYearly(AuditType auditType, String auditFor) {
+        Calendar date = parseAuditFor(auditType, auditFor);
+        return date.getTime();
+    }
+
+    public Date getExpirationDateForMonthlyQuarterlyYearly(AuditType auditType, String auditFor) {
+        Calendar date = parseAuditFor(auditType, auditFor);
+
+        int months = 0;
+        if (auditType.getMonthsToExpire() == null) {
+            months = 12;
+        } else {
+            months = auditType.getMonthsToExpire().intValue();
+        }
+        date.add(Calendar.MONTH, months);
+        date.getTime();
+        date.add(Calendar.DATE, -1);
+
+        date.setTime(DateBean.setToEndOfDay(date.getTime()));
+
+        return date.getTime();
+    }
+
+    private Calendar parseAuditFor(AuditType auditType, String auditFor) {
+        Calendar date = Calendar.getInstance();
+        int year = 1970;
+        int month = 1;
+        int day = 1;
+
+        if (auditType.getPeriod().isMonthly()) {
+            String[] values = auditFor.split("-");
+            year = Integer.parseInt(values[0]);
+            month = Integer.parseInt(values[1]) - 1;
+        }
+
+        if (auditType.getPeriod().isQuarterly()) {
+            String[] values = auditFor.split(":");
+            year = Integer.parseInt(values[0]);
+            int quarter = Integer.parseInt(values[1]);
+            switch (quarter) {
+                case 1:
+                    month = 0;
+                    break;
+                case 2:
+                    month = 3;
+                    break;
+                case 3:
+                    month = 6;
+                    break;
+                case 4:
+                    month = 9;
+                    break;
+                default:
+                    month = 0;
+                    break;
+            }
+        }
+
+        if (auditType.getPeriod().isYearly() || auditType.getPeriod().isCustomDate()) {
+            year = Integer.parseInt(auditFor);
+
+            if (auditType.getPeriod().isYearly())  {
+                month = 0;
+            } else {
+                month = auditType.getAnchorMonth() - 1;
+                day = auditType.getAnchorDay();
+            }
+        }
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        date.setTime(DateBean.setToStartOfDay(date.getTime()));
+
+        return date;
     }
 }

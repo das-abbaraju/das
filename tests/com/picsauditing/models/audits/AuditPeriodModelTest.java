@@ -6,7 +6,9 @@ import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
@@ -35,9 +37,9 @@ public class AuditPeriodModelTest extends PicsTest {
 
         results = test.getAuditForByDate(auditTypeBuilder.build(), date.getTime());
         assertTrue(results.size() == 3);
-        assertTrue(results.get(0).equals("2013-02"));
+        assertTrue(results.get(0).equals("2012-12"));
         assertTrue(results.get(1).equals("2013-01"));
-        assertTrue(results.get(2).equals("2012-12"));
+        assertTrue(results.get(2).equals("2013-02"));
     }
 
     @Test
@@ -54,9 +56,9 @@ public class AuditPeriodModelTest extends PicsTest {
 
         results = test.getAuditForByDate(auditTypeBuilder.build(), date.getTime());
         assertTrue(results.size() == 3);
-        assertTrue(results.get(0).equals("2012:4"));
+        assertTrue(results.get(0).equals("2012:2"));
         assertTrue(results.get(1).equals("2012:3"));
-        assertTrue(results.get(2).equals("2012:2"));
+        assertTrue(results.get(2).equals("2012:4"));
     }
 
     @Test
@@ -73,9 +75,9 @@ public class AuditPeriodModelTest extends PicsTest {
 
         results = test.getAuditForByDate(auditTypeBuilder.build(), date.getTime());
         assertTrue(results.size() == 3);
-        assertTrue(results.get(0).equals("2012"));
+        assertTrue(results.get(0).equals("2010"));
         assertTrue(results.get(1).equals("2011"));
-        assertTrue(results.get(2).equals("2010"));
+        assertTrue(results.get(2).equals("2012"));
     }
 
     @Test
@@ -94,17 +96,137 @@ public class AuditPeriodModelTest extends PicsTest {
         auditTypeBuilder.anchorMonth(4); //April
         results = test.getAuditForByDate(auditTypeBuilder.build(), date.getTime());
         assertTrue(results.size() == 3);
-        assertTrue(results.get(0).equals("2013"));
+        assertTrue(results.get(0).equals("2011"));
         assertTrue(results.get(1).equals("2012"));
-        assertTrue(results.get(2).equals("2011"));
+        assertTrue(results.get(2).equals("2013"));
 
         // test if the custom date is before the current date
         auditTypeBuilder.anchorMonth(2); //February
         results = test.getAuditForByDate(auditTypeBuilder.build(), date.getTime());
         assertTrue(results.size() == 3);
-        assertTrue(results.get(0).equals("2012"));
+        assertTrue(results.get(0).equals("2010"));
         assertTrue(results.get(1).equals("2011"));
-        assertTrue(results.get(2).equals("2010"));
+        assertTrue(results.get(2).equals("2012"));
+    }
+
+    @Test
+    public void testGetEffectiveDateForMonthlyQuarterlyYearly_Monthly() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.Monthly);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012-01");
+        assertTrue(formatter.format(result).equals("2012-01-01 00:00:00"));
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012-12");
+        assertTrue(formatter.format(result).equals("2012-12-01 00:00:00"));
+    }
+
+    @Test
+    public void testGetEffectiveDateForMonthlyQuarterlyYearly_Quarterly() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.Quarterly);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:1");
+        assertTrue(formatter.format(result).equals("2012-01-01 00:00:00"));
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:2");
+        assertTrue(formatter.format(result).equals("2012-04-01 00:00:00"));
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:3");
+        assertTrue(formatter.format(result).equals("2012-07-01 00:00:00"));
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:4");
+        assertTrue(formatter.format(result).equals("2012-10-01 00:00:00"));
+    }
+
+    @Test
+    public void testGetEffectiveDateForMonthlyQuarterlyYearly_Yearly() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.Yearly);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012");
+        assertTrue(formatter.format(result).equals("2012-01-01 00:00:00"));
+    }
+
+    @Test
+    public void testGetEffectiveDateForMonthlyQuarterlyYearly_CustomDate() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.CustomDate).anchorDay(5).anchorMonth(6);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getEffectiveDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012");
+        assertTrue(formatter.format(result).equals("2012-06-05 00:00:00"));
+    }
+
+    @Test
+    public void testGetExpirationDateForMonthlyQuarterlyYearly_Monthly() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.Monthly);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012-01");
+        assertTrue(formatter.format(result).equals("2012-12-31 23:59:59"));
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012-12");
+        assertTrue(formatter.format(result).equals("2013-11-30 23:59:59"));
+    }
+
+    @Test
+    public void testGetExpirationDateForMonthlyQuarterlyYearly_Quarterly() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.Quarterly);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:1");
+        assertTrue(formatter.format(result).equals("2012-12-31 23:59:59"));
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:2");
+        assertTrue(formatter.format(result).equals("2013-03-31 23:59:59"));
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:3");
+        assertTrue(formatter.format(result).equals("2013-06-30 23:59:59"));
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012:4");
+        assertTrue(formatter.format(result).equals("2013-09-30 23:59:59"));
+    }
+
+    @Test
+    public void testGetExpirationDateForMonthlyQuarterlyYearly_Yearly() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.Yearly);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012");
+        assertTrue(formatter.format(result).equals("2012-12-31 23:59:59"));
+    }
+
+    @Test
+    public void testGetExpirationDateForMonthlyQuarterlyYearly_CustomDate() throws Exception {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.CustomDate).anchorDay(5).anchorMonth(6);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date result;
+
+        result = test.getExpirationDateForMonthlyQuarterlyYearly(auditTypeBuilder.build(), "2012");
+        assertTrue(formatter.format(result).equals("2013-06-04 23:59:59"));
     }
 
 }
