@@ -1108,7 +1108,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.fees = fees;
 	}
 
-	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
 	@Where(clause = "tableType='I'")
 	public List<Invoice> getInvoices() {
 		return invoices;
@@ -1118,7 +1118,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.invoices = invoices;
 	}
 
-    @OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
     @Where(clause = "tableType='C'")
     public List<InvoiceCreditMemo> getCreditMemos() {
         return creditMemos;
@@ -1128,7 +1128,7 @@ public class ContractorAccount extends Account implements JSONable {
         this.creditMemos = creditMemos;
     }
 
-	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
 	@Where(clause = "tableType='P'")
 	public List<Payment> getPayments() {
 		return payments;
@@ -1138,7 +1138,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.payments = payments;
 	}
 
-	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
 	@Where(clause = "tableType='R'")
 	public List<Refund> getRefunds() {
 		return refunds;
