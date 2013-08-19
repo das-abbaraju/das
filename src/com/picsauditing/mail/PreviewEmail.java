@@ -46,7 +46,8 @@ public class PreviewEmail extends PicsActionSupport {
         }
 		emailBuilder.setTemplate(templateID);
 
-		email = emailBuilder.build();
+        if (emailBuilder.hasTokens())
+		    email = emailBuilder.build();
 
 		return SUCCESS;
 	}
