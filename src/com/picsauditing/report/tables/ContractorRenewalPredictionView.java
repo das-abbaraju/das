@@ -8,7 +8,7 @@ public class ContractorRenewalPredictionView extends AbstractTable {
 	public ContractorRenewalPredictionView() {
 		super("(SELECT\n" +
                 "\taccounts.id conID\n" +
-                ",\t0.16065856 \n" +
+                ",\tROUND((0.16065856 \n" +
                 "\t+ ( 0.08340467 * \n" +
                 "\t\tAVG(\n" +
                 "\t\tCASE \tgeneralcontractors.flag\n" +
@@ -57,7 +57,7 @@ public class ContractorRenewalPredictionView extends AbstractTable {
                 "\t\tELSE\n" +
                 "\t\t\t3.5\n" +
                 "\t\tEND\n" +
-                "\t)\n" +
+                "\t))*100)\n" +
                 "predictor\n" +
                 "FROM\n" +
                 "\taccounts\n" +
@@ -77,7 +77,7 @@ public class ContractorRenewalPredictionView extends AbstractTable {
                 "\n)");
 
 		addField(new Field("ContractorID", "conID", FieldType.Integer));
-        addField(new Field("RenewalPrediction", "predictor", FieldType.Float)).setImportance(FieldImportance.Required);
+        addField(new Field("RenewalPrediction", "predictor", FieldType.Integer)).setImportance(FieldImportance.Required);
 	}
 
     @Override
