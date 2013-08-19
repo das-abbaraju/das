@@ -109,7 +109,9 @@ public class HtmlWriter {
                 html.append("<tr>");
 
                 addTD(TD_END_ROW_STYLE,columnSpan.toString(),"...");
-                addTD(TD_END_ROW_COLUMN_STYLE, "");
+
+                if (reportResults.getColumns().size() >= MAX_COLUMNS)
+                    addTD(TD_END_ROW_COLUMN_STYLE, "");
 
                 html.append("</tr>");
                 break;
