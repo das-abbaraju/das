@@ -634,6 +634,7 @@ AccountContactLocale
 AccountContactName
 AccountContactPhone
 AccountContactTimezone
+AccountContractorRenewalPredictorRenewalPrediction
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
