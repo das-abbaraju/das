@@ -375,6 +375,7 @@ public class ReportService {
 
 	private HSSFWorkbook buildWorkbook(Report report, ReportResults reportResults) {
 		ExcelBuilder builder = new ExcelBuilder();
+        builder.setMaxRows(EXPORT_LIMIT+1);
 		builder.addColumns(report.getColumns());
 		builder.addSheet(report.getName(), reportResults);
 		HSSFWorkbook workbook = builder.getWorkbook();
