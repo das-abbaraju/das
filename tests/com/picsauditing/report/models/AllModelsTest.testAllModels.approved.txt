@@ -866,6 +866,7 @@ AccountName
 ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
+ContractorWorksAtClientSite
 TradeName
 
 Model: EmployeeCompetencies
