@@ -17,6 +17,7 @@ public class AccountTable extends AbstractTable {
 	public static final String SalesRep = "SalesRep";
     public static final String Note = "Note";
     public static final String LastLogin = "LastLogin";
+    public static final String ContractorRenewalPredictor = "ContractorRenewalPredictor";
 
     public AccountTable() {
 		super("accounts");
@@ -67,5 +68,7 @@ public class AccountTable extends AbstractTable {
         addOptionalKey(lastLogin);
 
         addRequiredKey(new ReportForeignKey(Note, new NoteTable(), new ReportOnClause("id", "accountID")));
+        addRequiredKey(new ReportForeignKey(ContractorRenewalPredictor, new ContractorRenewalPredictionView(), new ReportOnClause("id", "conID")));
+
     }
 }

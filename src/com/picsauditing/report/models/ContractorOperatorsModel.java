@@ -64,6 +64,7 @@ public class ContractorOperatorsModel extends AbstractModel {
 		account.minimumImportance = FieldImportance.Average;
 		account.join(AccountTable.Contact);
 
+        account.join(AccountTable.ContractorRenewalPredictor);
 		return spec;
 	}
 
