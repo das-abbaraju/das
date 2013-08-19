@@ -65,7 +65,7 @@ public class ReportService {
     private EmailSubscriptionDAO emailSubscriptionDAO;
 
 	private I18nCache i18nCache;
-    private static final int EXPORT_LIMIT = 10000;
+    private static final int EXPORT_LIMIT = 65535;
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
