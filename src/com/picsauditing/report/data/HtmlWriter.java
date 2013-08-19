@@ -101,6 +101,8 @@ public class HtmlWriter {
 
         for (ReportRow row : reportResults.getRows()) {
             boolean isOddRow = (countRows) % 2 == 0;
+            boolean isLastRow = countRows+1 == reportResults.size();
+
             Integer columnSpan = createColumnSpan(row.getCells().size());
 
             if (countRows == MAX_ROWS) {
@@ -117,13 +119,15 @@ public class HtmlWriter {
 
             html.append("<tr>");
 
-            boolean isLastRow = countRows+1 == reportResults.size();
-
             addRowNumber(countRows, isLastRow);
 
             for (Column column : reportResults.getColumns()) {
                 if (countColumns == MAX_COLUMNS) {
-                    addTD(TD_END_COLUMN_STYLE,"");
+                    String style = TD_END_COLUMN_STYLE;
+                    if (isLastRow)
+                        style = StringUtils.remove(style,TD_NO_BOTTOM_BORDER_STYLE);
+
+                    addTD(style,"");
                     break;
                 }
 
