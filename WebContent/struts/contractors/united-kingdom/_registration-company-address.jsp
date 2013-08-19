@@ -12,9 +12,9 @@
 </li>
 
 <li class="city">
-	<s:textfield name="contractor.city" label="Post Town"/>
+	<s:textfield name="contractor.city" label="global.city"/>
 </li>
 
 <li class="zipcode" style="${zip_display}">
-	<s:textfield name="contractor.zip" label="Postcode" />
+	<s:textfield name="contractor.zip" label="global.ZipPostalCode" />
 </li>
