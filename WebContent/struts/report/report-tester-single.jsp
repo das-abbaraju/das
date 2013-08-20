@@ -52,7 +52,7 @@
                 <s:iterator value="reportElements">
                     <tr>
                         <td><s:property value="name" /></td>
-                        <td><s:property value="field.category" /></td>
+                        <td><s:property value="field.categoryTranslation" /></td>
                         <td><s:property value="field.text" /></td>
                         <td><s:property value="sql" /></td>
                     </tr>
