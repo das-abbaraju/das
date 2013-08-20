@@ -19,6 +19,7 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
+import static org.mockito.Mockito.when;
 
 public class ReportDataConverterTest extends PicsTranslationTest {
 
@@ -45,10 +46,12 @@ public class ReportDataConverterTest extends PicsTranslationTest {
 	@Test
 	public void testConvertQueryResultsToJson_Single() {
 		List<BasicDynaBean> queryResults = DynaBeanBuilder.createAccountQueryList(1);
+        when(translationService.getText("Country.CA",Locale.FRENCH)).thenReturn("Canada");
+
 		JSONArray json = runJsonConverter(queryResults);
 
 		assertEquals(1, json.size());
-		String expected = "\\[\\{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 2\\d:56\","
+		String expected = "\\[\\{\"AccountCountry\":\"Canada\",\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 2\\d:56\","
 				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\","
 				+ "\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
 

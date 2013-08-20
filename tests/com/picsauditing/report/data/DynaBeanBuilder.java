@@ -34,15 +34,16 @@ public class DynaBeanBuilder {
 
     static List<Column> makeColumns(Permissions permissions) {
         DynaBeanBuilder builder = new DynaBeanBuilder(permissions);
-        builder.addColumn("AccountID");
-        builder.addColumn("AccountName");
-        builder.addColumn("AccountCreationDate");
-        builder.addColumn("ContractorMembershipDate");
-
         Column membershipMonth = builder.addColumn("ContractorMembershipDate");
         membershipMonth.setName("ContractorMembershipDate__Month");
         membershipMonth.setSqlFunction(SqlFunction.Month);
-        membershipMonth.getField().setUrl("Test.action?id={AccountZip}");
+        membershipMonth.getField().setUrl("Test.action?id={AccountZip}{AccountCountry}");
+
+        builder.addColumn("AccountID");
+        builder.addColumn("AccountName");
+        builder.addColumn("AccountCountry");
+        builder.addColumn("AccountCreationDate");
+        builder.addColumn("ContractorMembershipDate");
 
         builder.addColumn("ContractorLastUpgradeDate");
 
@@ -58,6 +59,7 @@ public class DynaBeanBuilder {
         builder.addProperty("ContractorMembershipDate__Month", Integer.class);
         builder.addProperty("ContractorLastUpgradeDate", java.sql.Date.class);
         builder.addProperty("AccountZip", String.class);
+        builder.addProperty("AccountCountry", String.class);
 
         for (int i = 0; i < count; i++) {
             builder.addRow();
@@ -75,6 +77,7 @@ public class DynaBeanBuilder {
             builder.setValue("ContractorMembershipDate__Month", 1);
             builder.setValue("ContractorLastUpgradeDate", null);
             builder.setValue("AccountZip", "92614");
+            builder.setValue("AccountCountry", "CA");
         }
 
         return builder.getRows();
