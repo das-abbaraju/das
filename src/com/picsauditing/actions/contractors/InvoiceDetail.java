@@ -296,6 +296,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
             paymentDAO.removePaymentInvoice(paymentAppliedToInvoice, getUser());
         }
         invoice.setStatus(TransactionStatus.Void);
+		invoice.setSapSync(false);
         billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Void);
         invoice.setAuditColumns(permissions);
         AccountingSystemSynchronization.setToSynchronize(invoice);
