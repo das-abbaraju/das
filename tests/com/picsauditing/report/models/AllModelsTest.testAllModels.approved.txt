@@ -367,6 +367,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorTagTagID
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
 CustomerServiceUserID

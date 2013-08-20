@@ -43,6 +43,8 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 		account.alias = AbstractModel.ACCOUNT;
 		account.minimumImportance = FieldImportance.Average;
 
+        contractor.join(ContractorTable.Tag);
+
         ModelSpec customerService = contractor.join(ContractorTable.CustomerService);
         customerService.alias = "CustomerService";
         customerService.minimumImportance = FieldImportance.Required;
