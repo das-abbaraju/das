@@ -47,12 +47,10 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 
         ModelSpec customerService = contractor.join(ContractorTable.CustomerService);
         customerService.alias = "CustomerService";
-        customerService.category = FieldCategory.CustomerService;
         customerService.minimumImportance = FieldImportance.Required;
 
         ModelSpec customerServiceUser = customerService.join(AccountUserTable.User);
         customerServiceUser.alias = "CustomerServiceUser";
-        customerServiceUser.category = FieldCategory.CustomerService;
 
         ModelSpec override = spec.join(FlagDataTable.Override);
 		override.minimumImportance = FieldImportance.Required;
@@ -68,12 +66,10 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
 		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.String);
-		flagCriteriaLabel.setCategory(FieldCategory.CompanyStatistics);
 		flagCriteriaLabel.setTranslationPrefixAndSuffix("FlagCriteria", "label");
 		fields.put(FLAG_CRITERIA_LABEL.toUpperCase(), flagCriteriaLabel);
 
 		Field flagCriteriaDescription = new Field(FLAG_CRITERIA_DESCRIPTION, "FlagCriteria.id", FieldType.String);
-		flagCriteriaDescription.setCategory(FieldCategory.CompanyStatistics);
 		flagCriteriaDescription.setTranslationPrefixAndSuffix("FlagCriteria", "description");
 		flagCriteriaDescription.setWidth(500);
 		fields.put(FLAG_CRITERIA_DESCRIPTION.toUpperCase(), flagCriteriaDescription);

@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
@@ -59,7 +58,7 @@ public class InvoiceCommission extends BaseTable {
 	}
 
 	@Column(name = "revenue")
-	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, importance = FieldImportance.Average, requiredPermissions = OpPerms.SalesCommission)
+	@ReportField(type = FieldType.Float, importance = FieldImportance.Average, requiredPermissions = OpPerms.SalesCommission)
 	public BigDecimal getRevenuePercent() {
 		return revenuePercent;
 	}

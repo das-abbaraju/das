@@ -18,27 +18,21 @@ public class OperatorUsersModel extends AbstractModel {
 
     public ModelSpec getJoinSpec() {
         ModelSpec spec = new ModelSpec(null, "User");
-        spec.category = FieldCategory.AccountInformation;
 
         ModelSpec account = spec.join(UserTable.Account);
-        account.category = FieldCategory.AccountInformation;
         account.alias = "Account";
 
         ModelSpec operator = account.join(AccountTable.Operator);
-        operator.category = FieldCategory.AccountInformation;
         operator.minimumImportance = FieldImportance.Low;
         operator.alias = "Operator";
 
         ModelSpec loginLog = spec.join(UserTable.LoginLog);
-        loginLog.category = FieldCategory.AccountInformation;
         loginLog.alias = "LoginLog";
 
         ModelSpec userGroup = spec.join(UserTable.Group);
-        userGroup.category = FieldCategory.AccountInformation;
         userGroup.alias = "UserGroup";
 
         ModelSpec group = userGroup.join(UserGroupTable.Group);
-        group.category = FieldCategory.AccountInformation;
         group.alias = "Groups";
 
         return spec;
@@ -49,7 +43,6 @@ public class OperatorUsersModel extends AbstractModel {
         Map<String, Field> fields = super.getAvailableFields();
 
         Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
-		accountType.setCategory(FieldCategory.AccountInformation);
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 

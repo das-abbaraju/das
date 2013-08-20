@@ -118,6 +118,11 @@ public class RegistrationValidator implements Validator {
 			errors.put("contractor.zip", errorMessageKey);
 		}
 
+		if (requiresUkPostcode(contractor.getCountry())) {
+			errorMessageKey = inputValidator.validateUkPostcode(contractor.getZip(), true);
+			errors.put("contractor.zip", errorMessageKey);
+		}
+
 		if (!isValidVAT(contractor.getVatId(), contractor.getCountry(), vatValidator, inputValidator)) {
 			errors.put("contractor.vatId", InputValidator.INVALID_VAT_ID_KEY);
 		}
@@ -204,6 +209,10 @@ public class RegistrationValidator implements Validator {
 		}
 
 		return true;
+	}
+
+	private static boolean requiresUkPostcode(Country country) {
+		return Country.UK_ISO_CODE.equals(country.getIsoCode());
 	}
 
 	private void addFieldErrorIfMessage(String fieldName, String errorMessageKey) {

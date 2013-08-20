@@ -108,8 +108,8 @@ public class ReportTester extends PicsActionSupport {
         Collections.sort(fields, new Comparator<Field>() {
             @Override
             public int compare(Field o1, Field o2) {
-                if (o1.getCategory() != o2.getCategory()) {
-                    return o1.getCategory().compareTo(o2.getCategory());
+                if (o1.getCategoryTranslation() != o2.getCategoryTranslation()) {
+                    return o1.getCategoryTranslation().compareTo(o2.getCategoryTranslation());
                 }
                 return o1.getName().compareTo(o2.getName());
             }

@@ -17,10 +17,11 @@ public class AccountTable extends AbstractTable {
 	public static final String SalesRep = "SalesRep";
     public static final String Note = "Note";
     public static final String LastLogin = "LastLogin";
+    public static final String ContractorRenewalPredictor = "ContractorRenewalPredictor";
 
     public AccountTable() {
 		super("accounts");
-		addPrimaryKey(FieldType.AccountID).setCategory(FieldCategory.AccountInformation);
+		addPrimaryKey(FieldType.AccountID);
 		addFields(Account.class);
 
 		Field accountName = getField("NAME");
@@ -29,10 +30,9 @@ public class AccountTable extends AbstractTable {
 
 		Field accountLegalName = new Field("LegalName", "dbaName", FieldType.String);
 		accountLegalName.setImportance(FieldImportance.Average);
-		addField(accountLegalName).setCategory(FieldCategory.AccountInformation);
+		addField(accountLegalName);
 
         Field creationDate = addCreationDate();
-        creationDate.setCategory(FieldCategory.AccountInformation);
         creationDate.setImportance(FieldImportance.Average);
 	}
 
@@ -67,5 +67,7 @@ public class AccountTable extends AbstractTable {
         addOptionalKey(lastLogin);
 
         addRequiredKey(new ReportForeignKey(Note, new NoteTable(), new ReportOnClause("id", "accountID")));
+        addRequiredKey(new ReportForeignKey(ContractorRenewalPredictor, new ContractorRenewalPredictionView(), new ReportOnClause("id", "conID")));
+
     }
 }

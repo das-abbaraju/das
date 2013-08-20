@@ -24,7 +24,8 @@
                         success: function(data, textStatus, jqXHR) {
                             $element.select2({
                                 multiple: true,
-                                data: data
+                                data: data,
+                                width: '400px'
                             });
                         }
                     });

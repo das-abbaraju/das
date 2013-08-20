@@ -367,6 +367,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorTagTagID
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
 CustomerServiceUserID
@@ -634,6 +635,7 @@ AccountContactLocale
 AccountContactName
 AccountContactPhone
 AccountContactTimezone
+AccountContractorRenewalPredictorRenewalPrediction
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
@@ -866,6 +868,7 @@ AccountName
 ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
+ContractorWorksAtClientSite
 TradeName
 
 Model: EmployeeCompetencies

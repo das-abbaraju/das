@@ -17,12 +17,10 @@ public class EmployeeCompetenciesModel extends AbstractModel {
 
         ModelSpec competency = empComp.join(EmployeeCompetencyTable.Competency);
         competency.alias = "Competency";
-        competency.category = FieldCategory.Competency;
         competency.minimumImportance = FieldImportance.Average;
 
         ModelSpec employee = empComp.join(EmployeeCompetencyTable.Employee);
         employee.alias = "Employee";
-        employee.category = FieldCategory.Employee;
         employee.minimumImportance = FieldImportance.Average;
         ModelSpec contractor = employee.join(EmployeeTable.Account);
         contractor.alias = "Account";
@@ -32,7 +30,6 @@ public class EmployeeCompetenciesModel extends AbstractModel {
             ModelSpec flag = contractor.join(ContractorTable.Flag);
             flag.alias = "ContractorOperator";
             flag.minimumImportance = FieldImportance.Average;
-            flag.category = FieldCategory.AccountInformation;
         }
 
         return empComp;
@@ -44,7 +41,6 @@ public class EmployeeCompetenciesModel extends AbstractModel {
 
         Field name = new Field("EmployeeName","CONCAT(Employee.firstName,' ',Employee.lastName)", FieldType.String);
         name.setImportance(FieldImportance.Required);
-        name.setCategory(FieldCategory.Employee);
         fields.put(name.getName().toUpperCase(), name);
 
         return fields;

@@ -62,6 +62,7 @@ public class ReportApi extends PicsApiSupport {
 
 	private ModelType type;
 	private String fieldId;
+    private User user;
 
     protected String dynamicParameters;
     protected boolean removeAggregates;
@@ -278,7 +279,19 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	protected ReportContext buildReportContext(JSONObject payloadJson) {
-		ReportContext reportContext = new ReportContext(payloadJson, reportId, getUser(), permissions, includeReport,
+        User currentUser;
+
+        if (this.user != null) {
+            currentUser = this.user;
+            loadPermissions(true);
+            permissions.login(user);
+        }
+        else {
+            currentUser = super.getUser();
+        }
+
+
+		ReportContext reportContext = new ReportContext(payloadJson, reportId, currentUser, permissions, includeReport,
 				includeData, includeColumns, includeFilters, limit, pageNumber);
 		return reportContext;
 	}
@@ -355,5 +368,13 @@ public class ReportApi extends PicsApiSupport {
 
     public void setDynamicParameters(String dynamicParameters) {
         this.dynamicParameters = dynamicParameters;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

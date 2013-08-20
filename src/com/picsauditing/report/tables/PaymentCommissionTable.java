@@ -15,12 +15,10 @@ public class PaymentCommissionTable extends AbstractTable {
 
 	public void addJoins() {
 		ReportForeignKey commissionKey = new ReportForeignKey(Commission, new InvoiceCommissionTable(), new ReportOnClause("commissionID"));
-		commissionKey.setCategory(FieldCategory.Commission);
         commissionKey.setMinimumImportance(FieldImportance.Average);
 		addRequiredKey(commissionKey);
 		
 		ReportForeignKey paymentKey = new ReportForeignKey(Payment, new PaymentTable(), new ReportOnClause("paymentID"));
-		paymentKey.setCategory(FieldCategory.Commission);
         paymentKey.setMinimumImportance(FieldImportance.Average);
         addRequiredKey(paymentKey);
 	}

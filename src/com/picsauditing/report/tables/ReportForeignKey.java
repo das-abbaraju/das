@@ -4,7 +4,6 @@ public class ReportForeignKey {
 	private String name;
 	private AbstractTable table;
 	private ReportOnClause onClause;
-	private FieldCategory category;
 	private JoinType joinType = JoinType.LeftJoin;
 	private FieldImportance minimumImportance = FieldImportance.Required;
 
@@ -24,14 +23,6 @@ public class ReportForeignKey {
 
 	public ReportOnClause getOnClause() {
 		return onClause;
-	}
-
-	public FieldCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(FieldCategory category) {
-		this.category = category;
 	}
 
 	public JoinType getJoinType() {

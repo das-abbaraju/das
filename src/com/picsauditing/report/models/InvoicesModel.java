@@ -27,7 +27,6 @@ public class InvoicesModel extends AbstractModel {
         ModelSpec insideSales = contractor.join(ContractorTable.InsideSales);
         insideSales.minimumImportance = FieldImportance.Required;
         ModelSpec insideSalesUser = insideSales.join(AccountUserTable.User);
-        insideSalesUser.category = FieldCategory.CustomerService;
         insideSalesUser.minimumImportance = FieldImportance.Required;
 
         return spec;

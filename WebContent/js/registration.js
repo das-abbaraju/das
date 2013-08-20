@@ -389,6 +389,15 @@
                 $registration_request_timezone.remove();
             },
 
+            renderSubdivision: function() {
+                var $subdivision_container = $('.countrySubdivision'),
+                    $subdivision_list = $subdivision_container.find('select option');
+
+                if ($subdivision_list.length > 1) {
+                    $subdivision_container.find('select').select2();
+                }
+            },
+
             showBasicModal: function (event) {
 	            var element = $(this);
 
@@ -463,17 +472,18 @@
                 }
             },
 
-            updateCountrySubvisions: function (selected_country) {
-                var Country = PICS.getClass('country.Country');
+            // HACK to pull custom address fields for the UK
+            updateAddressFields: function (selected_country) {
+                var that = this;
 
                 PICS.ajax({
-                    url: 'CountrySubdivisionListAjax!registration.action',
+                    url: 'Registration!getCompanyAddressFields.action',
                     data: {
-                        countryString: selected_country,
-                        prefix: 'contractor.'
+                        'contractor.country.isoCode': selected_country
                     },
                     success: function (data, textStatus, jqXHR) {
-                        Country.renderSubdivision(data);
+                        $('#company_address_fields').html(data);
+                        that.renderSubdivision();
                     }
                 });
             },
@@ -482,7 +492,7 @@
                 var $country = $('.country select'),
                     selected_country = $country.val() || '';
 
-                this.updateCountrySubvisions(selected_country);
+                this.updateAddressFields(selected_country);
 
                 this.updatePhoneNumber(selected_country);
 

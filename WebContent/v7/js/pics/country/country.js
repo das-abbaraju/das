@@ -53,23 +53,6 @@ PICS.define('country.Country', {
             }
         }
 
-        function renderSubdivision(subdivision_list) {
-            var subdivision_list = $.trim(subdivision_list),
-                $subdivision_container = $('.countrySubdivision');
-
-            if (subdivision_list.length > 0) {
-                $subdivision_container.html(subdivision_list);
-
-                $subdivision_container.find('select').select2();
-
-                $subdivision_container.slideDown(400);
-            } else {
-                $subdivision_container.slideUp(400);
-                $subdivision_container.html('');
-            }
-        }
-
-
         function renderTimezoneList(data, callback) {
             var $timezone_input = $('input.timezone_input');
 
@@ -112,7 +95,6 @@ PICS.define('country.Country', {
         return {
             getTimezones: getTimezones,
             modifyZipcodeDisplay: modifyZipcodeDisplay,
-            renderSubdivision: renderSubdivision,
             renderTimezoneList: renderTimezoneList
         };
     }())

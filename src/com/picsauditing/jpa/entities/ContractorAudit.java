@@ -36,7 +36,6 @@ import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
@@ -154,7 +153,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.ExpirationDate, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.ExpirationDate, importance = FieldImportance.Average)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -164,7 +163,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.Date, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getEffectiveDate() {
 		return effectiveDate;
 	}
@@ -211,7 +210,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.Date, category = FieldCategory.DocumentsAndAudits)
+	@ReportField(type = FieldType.Date)
 	public Date getAssignedDate() {
 		return assignedDate;
 	}
@@ -221,7 +220,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.DateTime, category = FieldCategory.AuditScheduling)
+	@ReportField(type = FieldType.DateTime)
 	public Date getScheduledDate() {
 		return scheduledDate;
 	}
@@ -239,7 +238,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		this.paidDate = paidDate;
 	}
 
-	@ReportField(type = FieldType.Date, category = FieldCategory.AuditScheduling, requiredPermissions = OpPerms.AllOperators)
+	@ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllOperators)
 	public Date getSlaDate() {
 		return slaDate;
 	}
@@ -268,7 +267,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		return true;
 	}
 
-	@ReportField(type = FieldType.String, category = FieldCategory.DocumentsAndAudits)
+	@ReportField(type = FieldType.String)
 	public String getAuditLocation() {
 		return auditLocation;
 	}
@@ -290,7 +289,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(type = FieldType.Integer, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
 	public int getScore() {
 		return score;
 	}
@@ -446,7 +445,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.AuditScheduling, type = FieldType.Date)
+	@ReportField(type = FieldType.Date)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
 	}
@@ -456,7 +455,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.AuditScheduling, type = FieldType.Date)
+	@ReportField(type = FieldType.Date)
 	public Date getAuditorConfirm() {
 		return auditorConfirm;
 	}
@@ -479,7 +478,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(type = FieldType.String, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public String getAuditFor() {
 		return auditFor;
 	}

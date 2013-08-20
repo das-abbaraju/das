@@ -27,6 +27,8 @@ public class DynamicReportsSubscription extends SubscriptionBuilder {
 
         int totalRowCount = 0;
         try {
+            reportApi.setUser(subscription.getUser());
+
             reportApi.execute();
             JSONObject json = reportApi.getJson();
             JSONObject results = (JSONObject) json.get("results");
@@ -35,6 +37,11 @@ public class DynamicReportsSubscription extends SubscriptionBuilder {
         catch (Exception e) {
 
         }
+
+        if (totalRowCount == 0) {
+            return tokens;
+        }
+
         reportApi.html();
         String output = reportApi.getOutput();
 

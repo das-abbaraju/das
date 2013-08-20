@@ -28,31 +28,24 @@ public class ContractorOperatorsModel extends AbstractModel {
 
         ModelSpec percentForcedFlag = operator.join(OperatorTable.ForcedFlagPercent);
         percentForcedFlag.alias = "ForcedFlag";
-        percentForcedFlag.category = FieldCategory.AccountInformation;
 
         ModelSpec reportingClient = operator.join(OperatorTable.Reporting);
         reportingClient.alias = "ReportingClient";
-        reportingClient.category = FieldCategory.ReportingClientSite;
 
         ModelSpec accountManager = opAccount.join(AccountTable.AccountManager);
         accountManager.alias = "AccountManager";
-        accountManager.category = FieldCategory.CustomerService;
 
         ModelSpec accountManagerUser = accountManager.join(AccountUserTable.User);
         accountManagerUser.alias = "AccountManagerUser";
-        accountManagerUser.category = FieldCategory.CustomerService;
 
         ModelSpec salesRep = opAccount.join(AccountTable.SalesRep);
-        salesRep.category = FieldCategory.CustomerService;
-
-        ModelSpec salesRepUser = salesRep.join(AccountUserTable.User);
-        salesRepUser.category = FieldCategory.CustomerService;
+        salesRep.join(AccountUserTable.User);
 
         ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
 		contractor.alias = "Contractor";
 		contractor.minimumImportance = FieldImportance.Average;
 
-        contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
+        contractor.join(ContractorTable.Tag);
 
         ModelSpec csr = contractor.join(ContractorTable.CustomerService);
         csr.alias = "CustomerService";
@@ -64,6 +57,7 @@ public class ContractorOperatorsModel extends AbstractModel {
 		account.minimumImportance = FieldImportance.Average;
 		account.join(AccountTable.Contact);
 
+        account.join(AccountTable.ContractorRenewalPredictor);
 		return spec;
 	}
 
@@ -72,7 +66,6 @@ public class ContractorOperatorsModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 
         Field accountType = new Field("ContractorOperatorOperatorType", "ContractorOperatorOperator.type", FieldType.AccountType);
-        accountType.setCategory(FieldCategory.ReportingClientSite);
         accountType.setTranslationPrefixAndSuffix("AccountType", "");
         fields.put("ContractorOperatorOperatorType".toUpperCase(), accountType);
 

@@ -7,15 +7,11 @@
             return {
                 init: function () {
                     if ($('.Registration-page').length) {
-                        var form_fields = $('.registration-form input[type=text], .registration-form input[type=password]'),
+                        var form_fields = '.registration-form input[type=text], .registration-form input[type=password]',
                             threshold = 250;
 
-                        form_fields.on({
-                            focusout: this.validate,
-                            keypress: PICS.debounce(this.validate, threshold)
-                        }, {
-                            that: this
-                        });
+                        $('body').on('focusout', form_fields, $.proxy(this.validate, this));
+                        $('body').on('keypress', form_fields, $.proxy(PICS.debounce(this.validate, threshold), this));
                     }
                 },
 
@@ -79,8 +75,8 @@
                 },
 
                 validate: function (event) {
-                    var that = event.data.that,
-                        field = $(event.currentTarget),
+                    var that = this,
+                        field = $(event.target),
                         field_name = field.attr('name'),
                         form = field.closest('form'),
                         data = that.getFormData(form);

@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @Target(METHOD)
@@ -32,8 +31,6 @@ public @interface ReportField {
 	String i18nKeyPrefix() default "";
 
 	String i18nKeySuffix() default "";
-
-	FieldCategory category() default FieldCategory.General;
 
 	OpPerms requiredPermissions() default OpPerms.None;
 

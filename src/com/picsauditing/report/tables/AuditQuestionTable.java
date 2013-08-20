@@ -11,14 +11,12 @@ public class AuditQuestionTable extends AbstractTable {
 	public AuditQuestionTable() {
 		super("audit_question");
 		addFields(AuditQuestion.class);
-		Field id = addPrimaryKey();
-		id.setCategory(FieldCategory.DocumentsAndAudits);
-		
+		addPrimaryKey();
+
 		Field auditQuestionName;
 		auditQuestionName = new Field("Name", "id", FieldType.AuditQuestion);
 		auditQuestionName.setTranslationPrefixAndSuffix("AuditQuestion", "name");
 		auditQuestionName.setImportance(FieldImportance.Required);
-		auditQuestionName.setCategory(FieldCategory.DocumentsAndAudits);
 		auditQuestionName.setWidth(200);
 		addField(auditQuestionName);
 	}

@@ -20,7 +20,6 @@ public class FlagDataTable extends AbstractTable {
 
 
         Field lastModified = addUpdateDate();
-        lastModified.setCategory(FieldCategory.CompanyStatistics);
         addField(lastModified);
 	}
 
@@ -28,7 +27,6 @@ public class FlagDataTable extends AbstractTable {
 		addRequiredKey(new ReportForeignKey(FlagCriteria, new FlagCriteriaTable(), new ReportOnClause("criteriaID")));
 
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-		operator.setCategory(FieldCategory.ReportingClientSite);
 		operator.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(operator);
 
@@ -36,7 +34,6 @@ public class FlagDataTable extends AbstractTable {
 				new ReportOnClause("criteriaID", "criteriaID", "(" + ReportOnClause.FromAlias + ".opID = "
 						+ ReportOnClause.ThirdAlias + ".id OR " + ReportOnClause.FromAlias + ".opID = "
                         + ReportOnClause.ThirdAlias + ".inheritFlagCriteria)"));
-		operatorCriteria.setCategory(FieldCategory.ReportingClientSite);
 		operatorCriteria.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(operatorCriteria);
 

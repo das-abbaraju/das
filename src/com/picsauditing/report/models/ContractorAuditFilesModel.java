@@ -23,7 +23,7 @@ public class ContractorAuditFilesModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		// join() param is the name of the ReportForeignKey in the "from" table that points to the table we want to join to
 
-		ModelSpec contractorAuditFile = new ModelSpec(null, ContractorAuditFile, FieldCategory.DocumentsAndAudits);
+		ModelSpec contractorAuditFile = new ModelSpec(null, ContractorAuditFile);
 
 		// join from ContractorAuditFileTable to ContractorAuditTable
 		ModelSpec contractorAudit = contractorAuditFile.join(ContractorAuditFileTable.ContractorAudit);

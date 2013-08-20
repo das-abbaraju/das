@@ -18,6 +18,7 @@ import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +163,20 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	@Anonymous
 	public String dialects() {
 		return SUCCESS;
+	}
+
+	@Anonymous
+	@SkipValidation
+	public String getCompanyAddressFields() {
+		if (isUKContractor()) {
+			return "GBAddressFields";
+		} else {
+			return "defaultAddressFields";
+		}
+	}
+
+	private boolean isUKContractor() {
+		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isUK();
 	}
 
 	@Anonymous
@@ -515,4 +530,21 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
         return timezones;
     }
+
+    @Override
+    public List<CountrySubdivision> getCountrySubdivisionList() {
+		if (contractor == null || contractor.getCountry() == null) {
+			return getCountrySubdivisionList(Country.US_ISO_CODE);
+		}
+
+		return getCountrySubdivisionList(contractor.getCountry().getIsoCode());
+	}
+
+    public String getCountrySubdivisionLabelFor() {
+    	if (contractor == null || contractor.getCountry() == null) {
+			return getCountrySubdivisionLabelFor(Country.US_ISO_CODE);
+		}
+
+		return getCountrySubdivisionLabelFor(contractor.getCountry().getIsoCode());
+	}
 }

@@ -4,7 +4,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.builders.ContractorOperatorBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -76,7 +75,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	 * @return P=Pending, Y=Yes, N=No
 	 */
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.ApprovalStatus, category = FieldCategory.CompanyStatus, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.ApprovalStatus, importance = FieldImportance.Average)
 	public ApprovalStatus getWorkStatus() {
 		return workStatus;
 	}
@@ -167,7 +166,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.FlagColor)
 	public FlagColor getBaselineFlag() {
 		return baselineFlag;
 	}
@@ -207,7 +206,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.FlagColor)
 	public FlagColor getForceFlag() {
 		return forceFlag;
 	}
@@ -217,7 +216,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.Date)
 	public Date getForceEnd() {
 		return forceEnd;
 	}
@@ -226,7 +225,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.forceEnd = forceEnd;
 	}
 
-	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.Date)
 	public Date getForceBegin() {
 		return forceBegin;
 	}
@@ -246,7 +245,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.Date)
 	public Date getProcessCompletion() {
 		return processCompletion;
 	}
@@ -278,7 +277,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "flag", nullable = false)
-	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
+	@ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
@@ -297,7 +296,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "waitingOn", nullable = false)
-	@ReportField(type = FieldType.WaitingOn, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "WaitingOn", importance = FieldImportance.Average)
+	@ReportField(type = FieldType.WaitingOn, i18nKeyPrefix = "WaitingOn", importance = FieldImportance.Average)
 	public WaitingOn getWaitingOn() {
 		return waitingOn;
 	}
@@ -363,7 +362,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		return null;
 	}
 
-	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.Date)
 	public Date getLastStepToGreenDate() {
 		return lastStepToGreenDate;
 	}

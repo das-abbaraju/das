@@ -25,7 +25,6 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 
 		ModelSpec operatorAccount = spec.join(ContractorAuditOperatorTable.Operator);
 		operatorAccount.alias = "AuditOperatorAccount";
-		operatorAccount.category = FieldCategory.MonitoringClientSite;
 
 		ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
 		conAudit.alias = "Audit";
@@ -36,25 +35,22 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         ModelSpec previousAudit = conAudit.join(ContractorAuditTable.PreviousAudit);
         previousAudit.alias = "PreviousAudit";
         previousAudit.minimumImportance = FieldImportance.Average;
-        previousAudit.category = FieldCategory.DocumentsAndAudits;
 
 		ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
 		contractor.alias = "Contractor";
 		contractor.minimumImportance = FieldImportance.Average;
-		contractor.category = FieldCategory.AccountInformation;
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = AbstractModel.ACCOUNT;
 		account.minimumImportance = FieldImportance.Average;
-		account.category = FieldCategory.AccountInformation;
+
+        contractor.join(ContractorTable.Tag);
 
         ModelSpec customerService = contractor.join(ContractorTable.CustomerService);
         customerService.alias = "CustomerService";
-        customerService.category = FieldCategory.CustomerService;
         customerService.minimumImportance = FieldImportance.Required;
 
         ModelSpec customerServiceUser = customerService.join(AccountUserTable.User);
         customerServiceUser.alias = "CustomerServiceUser";
-        customerServiceUser.category = FieldCategory.CustomerService;
 
         ModelSpec pqf = contractor.join(ContractorTable.PQF);
         pqf.alias = "PQF";
@@ -62,13 +58,11 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         ModelSpec manual = pqf.join(ContractorAuditTable.SafetyManual);
         manual.alias = "SafetyManual";
         manual.minimumImportance = FieldImportance.Average;
-        manual.category = FieldCategory.DocumentsAndAudits;
 
 		if (permissions.isOperatorCorporate()) {
 			ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.alias = CONTRACTOR_OPERATOR;
 			flag.minimumImportance = FieldImportance.Average;
-			flag.category = FieldCategory.AccountInformation;
 		}
 
         ModelSpec fatalities = conAudit.join(ContractorAuditTable.Fatalities);
@@ -143,7 +137,6 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
                 "FROM generalcontractors co " +
                 "WHERE co.genID IN ");
         clientSite.setSuffixValue("");
-        clientSite.setCategory(FieldCategory.ReportingClientSite);
         fields.put(clientSite.getName().toUpperCase(), clientSite);
 
         return fields;

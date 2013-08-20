@@ -21,7 +21,7 @@ public class ContractorsModel extends AbstractModel {
 		{
 			ModelSpec account = contractor.join(ContractorTable.Account);
 			account.alias = "Account";
-			account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+			account.join(AccountTable.Contact);
 			account.join(AccountTable.Naics);
 			account.join(AccountTable.Country);
             account.join(AccountTable.LastLogin);
@@ -62,18 +62,16 @@ public class ContractorsModel extends AbstractModel {
 		ModelSpec csr = contractor.join(ContractorTable.CustomerService);
         csr.minimumImportance = FieldImportance.Required;
         ModelSpec csrUser = csr.join(AccountUserTable.User);
-        csrUser.category = FieldCategory.CustomerService;
         csrUser.minimumImportance = FieldImportance.Required;
 
         ModelSpec insideSales = contractor.join(ContractorTable.InsideSales);
         insideSales.minimumImportance = FieldImportance.Required;
         ModelSpec insideSalesUser = insideSales.join(AccountUserTable.User);
-        insideSalesUser.category = FieldCategory.CustomerService;
         insideSalesUser.minimumImportance = FieldImportance.Required;
 
         contractor.join(ContractorTable.RecommendedCSR);
-		contractor.join(ContractorTable.Watch).category = FieldCategory.AccountInformation;
-		contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
+		contractor.join(ContractorTable.Watch);
+		contractor.join(ContractorTable.Tag);
 
 		return contractor;
 	}
@@ -125,7 +123,6 @@ public class ContractorsModel extends AbstractModel {
                 "JOIN users u ON au.userID = u.id " +
                 "WHERE u.id IN ");
         accountManager.setSuffixValue("");
-        accountManager.setCategory(FieldCategory.CustomerService);
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
         Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
@@ -134,7 +131,6 @@ public class ContractorsModel extends AbstractModel {
                 "FROM generalcontractors co " +
                 "WHERE co.genID IN ");
         clientSite.setSuffixValue("");
-        clientSite.setCategory(FieldCategory.ReportingClientSite);
         fields.put(clientSite.getName().toUpperCase(), clientSite);
 
         Field reportingClient = new Field("ContractorWorksForReportingClient","Account.id",FieldType.Operator);
@@ -144,7 +140,6 @@ public class ContractorsModel extends AbstractModel {
                 "JOIN operators o ON o.id = co.genID " +
                 "WHERE o.reportingID IN ");
         reportingClient.setSuffixValue("");
-        reportingClient.setCategory(FieldCategory.ReportingClientSite);
         fields.put(reportingClient.getName().toUpperCase(), reportingClient);
 
         Field supplierDiversity = new Field("ContractorSupplierDiversity","ContractorPQF.id",FieldType.SupplierDiversity);
@@ -153,7 +148,6 @@ public class ContractorsModel extends AbstractModel {
                 "FROM pqfdata pd " +
                 "WHERE (pd.answer = 'X' OR pd.answer = 'Yes') AND questionID IN ");
         supplierDiversity.setSuffixValue("");
-        supplierDiversity.setCategory(FieldCategory.ReportingClientSite);
         supplierDiversity.setRequiredJoin("ContractorPQF");
         fields.put(supplierDiversity.getName().toUpperCase(), supplierDiversity);
 

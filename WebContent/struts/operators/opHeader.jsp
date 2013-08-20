@@ -80,9 +80,14 @@
 			</pics:permission>
 			
 			<li>
-				<a href="ContractorList.action?filter.status=Active&filter.status=Demo<s:property value="operatorIds"/>" id="facilitiesedit_contractor">
-					<s:text name="global.Contractors" />
-				</a>
+                <s:if test="permissions.usingVersion7Menus">
+                    <a href="Report.action?report=100" id="v7_facilitiesedit_contractor">
+                </s:if>
+                <s:else>
+                    <a href="ContractorList.action?filter.status=Active&filter.status=Demo<s:property value="operatorIds"/>" id="v6_facilitiesedit_contractor">
+                </s:else>
+
+                <s:text name="global.Contractors" /></a>
 			</li>
 		</ul>
 	</div>

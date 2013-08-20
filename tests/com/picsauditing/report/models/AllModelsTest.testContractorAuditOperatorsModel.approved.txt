@@ -48,6 +48,7 @@ ContractorMembershipDate
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
+ContractorTagTagID
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
 CustomerServiceUserID
