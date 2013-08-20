@@ -209,6 +209,18 @@ public class ContractorsModel extends AbstractModel {
         EXEachOccurrence.setType(FieldType.Number);
         EXEachOccurrence.setDatabaseColumnName("REPLACE(" + EXEachOccurrence.getDatabaseColumnName() + ",',','')");
 
+        Field ELMonetaryLimit = fields.get("ContractorEmployerLiabilityELLimitAnswer".toUpperCase());
+        ELMonetaryLimit.setType(FieldType.Number);
+        ELMonetaryLimit.setDatabaseColumnName("REPLACE(" + ELMonetaryLimit.getDatabaseColumnName() + ",',','')");
+
+        Field PPLMonetaryLimit = fields.get("ContractorPublicProductLiabilityPPLLimitAnswer".toUpperCase());
+        PPLMonetaryLimit.setType(FieldType.Number);
+        PPLMonetaryLimit.setDatabaseColumnName("REPLACE(" + PPLMonetaryLimit.getDatabaseColumnName() + ",',','')");
+
+        Field PROLEachOccurrence = fields.get("ContractorProfessionalLiabilityPROLEachOccurrenceAnswer".toUpperCase());
+        PROLEachOccurrence.setType(FieldType.Number);
+        PROLEachOccurrence.setDatabaseColumnName("REPLACE(" + PROLEachOccurrence.getDatabaseColumnName() + ",',','')");
+
         return fields;
 	}
 }
