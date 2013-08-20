@@ -166,19 +166,19 @@ public class ReportJoin {
 				if (columnName.equalsIgnoreCase(fieldName))
 					return true;
 
-				if ((column.getField()) == null) {
+				if (column.getField() == null) {
 					logger.error("ReportJoin.isNeeded() - Column: "  + column + " has a null field");
 				} else {
 					for (String dependentField : column.getField().getDependentFields()) {
 						if (dependentField.equalsIgnoreCase(fieldName))
 							return true;
 					}
-				}
 
-                String columnRequiredJoin = column.getField().getRequiredJoin();
-                if (alias.equalsIgnoreCase(columnRequiredJoin)) {
-                    return true;
-                }
+                    String columnRequiredJoin = column.getField().getRequiredJoin();
+                    if (alias.equalsIgnoreCase(columnRequiredJoin)) {
+                        return true;
+                    }
+				}
             }
 
 			for (Filter filter : report.getFilters()) {
@@ -188,10 +188,14 @@ public class ReportJoin {
                         return true;
                 }
 
-                String filterRequiredJoin = filter.getField().getRequiredJoin();
-                if (alias.equalsIgnoreCase(filterRequiredJoin)) {
-                    if (isFilterUsed(filter))
-                        return true;
+                if (filter.getField() == null) {
+                    logger.error("ReportJoin.isNeeded() - filter: "  + filter + " has a null field");
+                } else {
+                    String filterRequiredJoin = filter.getField().getRequiredJoin();
+                    if (alias.equalsIgnoreCase(filterRequiredJoin)) {
+                        if (isFilterUsed(filter))
+                            return true;
+                    }
                 }
 
                 if (filter.getFieldForComparison() != null) {
