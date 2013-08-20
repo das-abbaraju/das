@@ -343,11 +343,16 @@ public class AuditMenuBuilder {
                             childMenu = createAuditMenuItem(audit);
                         }
 
-                        String year = DateBean.format(audit.getEffectiveDateLabel(), "yyyy");
-                        String linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + year;
+                        String linkText;
 
-                        if (!Strings.isEmpty(audit.getAuditFor())) {
-                            linkText = audit.getAuditFor() + " " + linkText;
+                        if (audit.getAuditType().getPeriod().isMonthlyQuarterlyYearly()) {
+                            linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + audit.getAuditFor();
+                        } else {
+                            String year = DateBean.format(audit.getEffectiveDateLabel(), "yyyy");
+                            linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + year;
+                            if (!Strings.isEmpty(audit.getAuditFor())) {
+                                linkText = audit.getAuditFor() + " " + linkText;
+                            }
                         }
 
                         childMenu.setName(linkText);
