@@ -1517,51 +1517,6 @@
 								<span id="error5" class="redMain"></span>
 							</td>
 						</tr>
-                        <tr>
-                            <td class="clearLink"
-                                title="<s:text name="Filters.help.ELMonetaryLimit" />">
-                                <s:text name="Filters.label.ELMonetaryLimit" />
-                                :
-                            </td>
-                            <td>
-                                $
-                                <s:textfield id="form1_insuranceLimits6" cssClass="forms"
-                                             title="%{getTextNullSafe('Filters.help.EnterANumber')}"
-                                             name="filter.elMonetaryLimit" onfocus="clearInsuranceText(this);"
-                                             onblur="resetEmptyField(this);" onkeyup="isNumber(this,1);" size="15" />
-                                <span id="error1" class="redMain"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="clearLink"
-                                title="<s:text name="Filters.help.PPLMonetaryLimit" />">
-                                <s:text name="Filters.label.PPLMonetaryLimit" />
-                                :
-                            </td>
-                            <td>
-                                $
-                                <s:textfield id="form1_insuranceLimits7" cssClass="forms"
-                                             title="%{getTextNullSafe('Filters.help.EnterANumber')}"
-                                             name="filter.pplMonetaryLimit" onfocus="clearInsuranceText(this);"
-                                             onblur="resetEmptyField(this);" onkeyup="isNumber(this,1);" size="15" />
-                                <span id="error1" class="redMain"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="clearLink"
-                                title="<s:text name="Filters.help.PROLEachOccurence" />">
-                                <s:text name="Filters.label.PROLEachOccurence" />
-                                :
-                            </td>
-                            <td>
-                                $
-                                <s:textfield id="form1_insuranceLimits8" cssClass="forms"
-                                             title="%{getTextNullSafe('Filters.help.EnterANumber')}"
-                                             name="filter.prolEachOccurrence" onfocus="clearInsuranceText(this);"
-                                             onblur="resetEmptyField(this);" onkeyup="isNumber(this,1);" size="15" />
-                                <span id="error1" class="redMain"></span>
-                            </td>
-                        </tr>
 					</table>
 
 					<a class="clearLink" href="#"
