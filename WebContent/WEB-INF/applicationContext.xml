@@ -141,6 +141,7 @@
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
     <bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
+    <bean id="ProductServiceQuery" class="com.picsauditing.actions.billing.ProductServiceQuery" />
     <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
           scope="prototype"/>
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
