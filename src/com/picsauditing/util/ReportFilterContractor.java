@@ -111,6 +111,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String alCombinedSingle;
 	protected String wcEachAccident;
 	protected String exEachOccurrence;
+    protected String elMonetaryLimit;
+    protected String pplMonetaryLimit;
+    protected String prolEachOccurrence;
 	protected boolean oq = false;
 	protected boolean hse = false;
 	protected boolean caoChangesFlagChanges = false;
@@ -871,7 +874,43 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.exEachOccurrence = exEachOccurence.replaceAll("[^0-9]", "");
 	}
 
-	public boolean isOq() {
+    public String getElMonetaryLimit() {
+        if (Strings.isEmpty(elMonetaryLimit)) {
+            elMonetaryLimit = getDefaultAmount();
+        }
+
+        return elMonetaryLimit;
+    }
+
+    public void setElMonetaryLimit(String elMonetaryLimit) {
+        this.elMonetaryLimit = elMonetaryLimit.replaceAll("[^0-9]", "");
+    }
+
+    public String getPplMonetaryLimit() {
+        if (Strings.isEmpty(pplMonetaryLimit)) {
+            pplMonetaryLimit = getDefaultAmount();
+        }
+
+        return pplMonetaryLimit;
+    }
+
+    public void setPplMonetaryLimit(String pplMonetaryLimit) {
+        this.pplMonetaryLimit = pplMonetaryLimit.replaceAll("[^0-9]", "");
+    }
+
+    public String getProlEachOccurrence() {
+        if (Strings.isEmpty(prolEachOccurrence)) {
+            prolEachOccurrence = getDefaultAmount();
+        }
+
+        return prolEachOccurrence;
+    }
+
+    public void setProlEachOccurrence(String prolEachOccurrence) {
+        this.prolEachOccurrence = prolEachOccurrence.replaceAll("[^0-9]", "");
+    }
+
+    public boolean isOq() {
 		return oq;
 	}
 

@@ -746,6 +746,18 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
                 sql.addAuditQuestion(2161, 16, true);
                 sql.addWhere("REPLACE(q2161.answer,',','') >= " + getFilter().getExEachOccurrence());
             }
+            if (filterOn(getFilter().getElMonetaryLimit(), ReportFilterContractor.getDefaultAmount())) {
+                sql.addAuditQuestion(14359, 23, true);
+                sql.addWhere("REPLACE(q14359.answer,',','') >= " + getFilter().getElMonetaryLimit());
+            }
+            if (filterOn(getFilter().getPplMonetaryLimit(), ReportFilterContractor.getDefaultAmount())) {
+                sql.addAuditQuestion(10230, 310, true);
+                sql.addWhere("REPLACE(q10230.answer,',','') >= " + getFilter().getPplMonetaryLimit());
+            }
+            if (filterOn(getFilter().getProlEachOccurrence(), ReportFilterContractor.getDefaultAmount())) {
+                sql.addAuditQuestion(2167, 20, true);
+                sql.addWhere("REPLACE(q2167.answer,',','') >= " + getFilter().getProlEachOccurrence());
+            }
 
             sql.addGroupBy("a.id");
         }

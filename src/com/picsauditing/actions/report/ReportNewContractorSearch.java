@@ -468,7 +468,10 @@ public class ReportNewContractorSearch extends ReportAccount {
 					|| filterOn(getFilter().getGlGeneralAggregate(), ReportFilterContractor.getDefaultAmount())
 					|| filterOn(getFilter().getAlCombinedSingle(), ReportFilterContractor.getDefaultAmount())
 					|| filterOn(getFilter().getWcEachAccident(), ReportFilterContractor.getDefaultAmount())
-					|| filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.getDefaultAmount());
+					|| filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.getDefaultAmount())
+                    || filterOn(getFilter().getElMonetaryLimit(), ReportFilterContractor.getDefaultAmount())
+                    || filterOn(getFilter().getPplMonetaryLimit(), ReportFilterContractor.getDefaultAmount())
+                    || filterOn(getFilter().getProlEachOccurrence(), ReportFilterContractor.getDefaultAmount());
 		}
 
 		return false;
