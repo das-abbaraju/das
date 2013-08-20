@@ -37,7 +37,6 @@ import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.models.ReportsModel;
-import com.picsauditing.report.tables.FieldCategory;
 
 public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 
@@ -72,8 +71,6 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 		// TODO Avoid constructor with side effects
 		Field field = new Field("");
 		field.setName(fieldName);
-		FieldCategory fieldCategory = FieldCategory.AccountInformation;
-		field.setCategory(fieldCategory);
         field.setCategoryTranslation(categoryTranslation);
 		// We're not calling field.setCategoryTranslation() because that's set
 		// by ReportUtil
@@ -127,8 +124,6 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 		// TODO why does this require an argument?
 		Field field = new Field("");
 		field.setName(fieldName);
-		FieldCategory fieldCategory = FieldCategory.AccountInformation;
-		field.setCategory(fieldCategory);
         field.setCategoryTranslation(categoryTranslation);
 
         // We're not calling field.setCategoryTranslation() because that's set
