@@ -349,6 +349,84 @@
                             </p>
                         </pics:fieldhelp>
                     </li>
+        <li>
+            <label>Period Type:</label>
+            <s:select
+                    name="auditType.period"
+                    list="@com.picsauditing.jpa.entities.AuditTypePeriod@values()"
+                    />
+
+            <pics:fieldhelp title="Audit Type Period">
+                <p>
+                    This field is for describing the period of the audit.
+                </p>
+                <ol>
+                    <li>
+                        None - used for legacy audits.  The original code is used.
+                    </li>
+                    <li>
+                        Expiration - used for audits that generate when the previous one expires.
+                    </li>
+                    <li>
+                        Monthly - used for audits that generate monthly.
+                    </li>
+                    <li>
+                        Quarterly - used for audits that generate quarterly.
+                    </li>
+                    <li>
+                        Yearly - used for audits that generate annually.
+                    </li>
+                    <li>
+                        CustomDate - like yearly but on a date other than Jan 1st.
+                    </li>
+                    <li>
+                        Membership - used for audits that generate on the contractor's membership date.
+                    </li>
+                </ol>
+            </pics:fieldhelp>
+        </li>
+        <li>
+            <label>Advance Days:</label>
+            <s:textfield name="auditType.advanceDays" />
+
+            <pics:fieldhelp title="Advance Days">
+                <p>
+                    How many days in advance to generate the next audit.
+                </p>
+            </pics:fieldhelp>
+        </li>
+        <li>
+            <label>Maximum Active:</label>
+            <s:textfield name="auditType.maximumActive" />
+
+            <pics:fieldhelp title="Maximum Active">
+                <p>
+                    Number of audits that may be active (usually 1).  For monthly, quarterly, yearly, and custom dates, this is the number of previous periods to create if they do not exist.
+                </p>
+            </pics:fieldhelp>
+        </li>
+        <li>
+            <label>Custom Date Day:</label>
+            <s:textfield name="auditType.anchorDay" />
+
+            <pics:fieldhelp title="Custom Date Day">
+                <p>
+                    Day of the month (1-31) for the Custom Date period.
+                </p>
+            </pics:fieldhelp>
+
+        </li>
+        <li>
+            <label>Custom Date Month:</label>
+            <s:textfield name="auditType.anchorMonth" />
+
+            <pics:fieldhelp title="Custom Date Month">
+                <p>
+                    Month (1-12) used for the Custom Date Period.
+                </p>
+            </pics:fieldhelp>
+
+        </li>
                     <li>
                         <label><s:text name="ManageAuditType.RequiredLanguages" />:</label>
                         <s:optiontransferselect

@@ -254,6 +254,22 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 				addActionError("You must set a workflow in order to save the Audit Type");
 				return false;
 			}
+            if (auditType.getAdvanceDays() < 0) {
+                addActionError("You must set advance days to be 0 or greater.");
+                return false;
+            }
+            if (auditType.getMaximumActive() < 1) {
+                addActionError("You must set maximum active to be at least 1");
+                return false;
+            }
+            if ((auditType.getAnchorDay() < 1) || (auditType.getAnchorDay() > 31)) {
+                addActionError("You must set the custom date day to be 1-31");
+                return false;
+            }
+            if ((auditType.getAnchorMonth() < 1) || (auditType.getAnchorMonth() > 12)) {
+                addActionError("You must set custom date month to be 1-12");
+                return false;
+            }
 			if (auditType.hasMissingChildRequiredLanguages()) {
 				addActionError("Changes to required languages must always have at least one language left. "
 						+ "Check your hierarchy to make sure that each type, category and question has at least one language.");

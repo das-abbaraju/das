@@ -13,11 +13,9 @@ public class AuditPeriodModel {
     public ContractorAudit findAudit(List<ContractorAudit> audits, AuditType auditType, String auditFor) {
         for (ContractorAudit audit:audits) {
             if (audit.getAuditType().equals(auditType)) {
-                if (auditFor != null && !auditFor.equals(audit.getAuditFor())) {
-                    return null;
+                if (auditFor == null || (auditFor != null && auditFor.equals(audit.getAuditFor()))) {
+                    return audit;
                 }
-
-                return audit;
             }
         }
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.models.audits.AuditPeriodModel;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,12 +88,15 @@ public class AuditBuilder {
 				}
 
 				requiredAuditTypes.add(auditType);
-				if (auditType.isAnnualAddendum()) {
+				if (auditType.getPeriod().isMonthlyQuarterlyYearly()) {
 					auditType = reconnectAuditType(auditType);
-					// not the annual updates must be done in this order to find their previous audit
-					addAnnualUpdate(contractor, year - 3, auditType);
-					addAnnualUpdate(contractor, year - 2, auditType);
-					addAnnualUpdate(contractor, year - 1, auditType);
+
+                    addMonthlyQuarterlyYearly(contractor, auditType);
+//                    List<String> list;
+//					// not the annual updates must be done in this order to find their previous audit
+//					addAnnualUpdate(contractor, year - 3, auditType);
+//					addAnnualUpdate(contractor, year - 2, auditType);
+//					addAnnualUpdate(contractor, year - 1, auditType);
 				} else {
 					boolean found = false;
 					for (ContractorAudit conAudit : contractor.getAudits()) {
@@ -188,7 +192,27 @@ public class AuditBuilder {
 		conAuditDao.save(contractor);
 	}
 
-	private boolean resetRenewableAudit(ContractorAccount contractor, AuditType auditType) {
+    private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
+        AuditPeriodModel periodModel = new AuditPeriodModel();
+        List<String> auditFors = periodModel.getAuditForByDate(auditType, new Date());
+        for (String auditFor:auditFors) {
+            if (periodModel.findAudit(contractor.getAudits(), auditType, auditFor) == null) {
+                ContractorAudit audit = new ContractorAudit();
+                audit.setContractorAccount(contractor);
+                audit.setAuditType(auditType);
+                audit.setAuditColumns(systemUser);
+                audit.setAuditFor(auditFor);
+                audit.setCreationDate(periodModel.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setEffectiveDate(periodModel.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setExpiresDate(periodModel.getExpirationDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setPreviousAudit(conAuditDao.findPreviousAudit(audit));
+                conAuditDao.save(audit);
+                contractor.getAudits().add(audit);
+            }
+        }
+    }
+
+    private boolean resetRenewableAudit(ContractorAccount contractor, AuditType auditType) {
 		if (!auditType.isRenewable())
 			return false;
 
