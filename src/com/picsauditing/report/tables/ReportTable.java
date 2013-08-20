@@ -20,6 +20,6 @@ public class ReportTable extends AbstractTable {
     }
 
     protected void addJoins() {
-        addOptionalKey(new ReportForeignKey(Owner, new UserTable(), new ReportOnClause("ownerID"))).setMinimumImportance(FieldImportance.Required);
+        addOptionalKey(new ReportForeignKey(Owner, new UserTable(), new ReportOnClause("ownerID")));
     }
 }

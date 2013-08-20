@@ -43,7 +43,6 @@ public class AccountTable extends AbstractTable {
 		ReportForeignKey contractorOperatorKey = addOptionalKey(new ReportForeignKey(ContractorOperator,
 				new ContractorOperatorTable(), new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = "
 						+ ReportOnClause.AccountID)));
-		contractorOperatorKey.setMinimumImportance(FieldImportance.Required);
 
 		addOptionalKey(new ReportForeignKey(Contact, new UserTable(), new ReportOnClause("contactID")))
 				.setMinimumImportance(FieldImportance.Average);

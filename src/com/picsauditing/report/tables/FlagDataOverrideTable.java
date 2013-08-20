@@ -27,7 +27,6 @@ public class FlagDataOverrideTable extends AbstractTable {
 		addRequiredKey(new ReportForeignKey(FlagCriteria, new FlagCriteriaTable(), new ReportOnClause("criteriaID")));
 
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-		operator.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(operator);
 
 		addRequiredKey(new ReportForeignKey(Contractor, new AccountTable(), new ReportOnClause("conID")));

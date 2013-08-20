@@ -41,6 +41,15 @@ public class ContractorsModel extends AbstractModel {
         ModelSpec excess = contractor.join(ContractorTable.ExcessLiability);
         excess.join(ContractorAuditTable.EXEachOccurrence);
 
+        ModelSpec employer = contractor.join(ContractorTable.EmployerLiability);
+        employer.join(ContractorAuditTable.ELLimit);
+
+        ModelSpec publicProduct = contractor.join(ContractorTable.PublicProductLiability);
+        publicProduct.join(ContractorAuditTable.PPLLimit);
+
+        ModelSpec professional = contractor.join(ContractorTable.ProfessionalLiability);
+        professional.join(ContractorAuditTable.PROLEachOccurrence);
+
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
@@ -52,7 +61,6 @@ public class ContractorsModel extends AbstractModel {
 			ModelSpec welcomeCall = contractor.join(ContractorTable.WelcomeCall);
 			welcomeCall.join(ContractorAuditTable.SingleCAO);
 		}
-
 
 		if (permissions.isOperatorCorporate()) {
             ModelSpec flag = contractor.join(ContractorTable.Flag);

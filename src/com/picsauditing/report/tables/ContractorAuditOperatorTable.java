@@ -25,7 +25,6 @@ public class ContractorAuditOperatorTable extends AbstractTable {
         audit.setMinimumImportance(FieldImportance.Low);
         addRequiredKey(audit);
 		ReportForeignKey operatorKey = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-		operatorKey.setMinimumImportance(FieldImportance.Required);
         addRequiredKey(operatorKey);
 	}
 }

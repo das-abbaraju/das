@@ -27,14 +27,12 @@ public class FlagDataTable extends AbstractTable {
 		addRequiredKey(new ReportForeignKey(FlagCriteria, new FlagCriteriaTable(), new ReportOnClause("criteriaID")));
 
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-		operator.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(operator);
 
 		ReportForeignKey operatorCriteria = new ReportForeignKey(OperatorCriteria, new FlagCriteriaOperatorTable(),
 				new ReportOnClause("criteriaID", "criteriaID", "(" + ReportOnClause.FromAlias + ".opID = "
 						+ ReportOnClause.ThirdAlias + ".id OR " + ReportOnClause.FromAlias + ".opID = "
                         + ReportOnClause.ThirdAlias + ".inheritFlagCriteria)"));
-		operatorCriteria.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(operatorCriteria);
 
 		addRequiredKey(new ReportForeignKey(Contractor, new AccountTable(), new ReportOnClause("conID")));
@@ -48,7 +46,6 @@ public class FlagDataTable extends AbstractTable {
 		ReportForeignKey override = new ReportForeignKey(Override, new FlagDataOverrideTable(), new ReportOnClause(
 				"conID", "conID", ReportOnClause.FromAlias + ".opID = " + ReportOnClause.ToAlias + ".opID AND "
 						+ ReportOnClause.FromAlias + ".criteriaID = " + ReportOnClause.ToAlias + ".criteriaID"));
-		override.setMinimumImportance(FieldImportance.Required);
 		addOptionalKey(override);
 
 		// TODO: Placeholder for when we will need to implement the flag
