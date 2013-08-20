@@ -12,6 +12,7 @@ public class ContractorAuditOperatorWorkflowTable extends AbstractTable {
 	public ContractorAuditOperatorWorkflowTable() {
 		super("contractor_audit_operator_workflow");
 		addPrimaryKey();
+        addCreationDate();
 
 		addFields(ContractorAuditOperatorWorkflow.class);
 	}

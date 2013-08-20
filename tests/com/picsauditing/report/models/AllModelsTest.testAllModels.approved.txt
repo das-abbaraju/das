@@ -415,6 +415,7 @@ AuditOperatorAccountID
 AuditOperatorAccountName
 AuditOperatorID
 AuditOperatorStatus
+AuditOperatorWorkflowCreationDate
 AuditOperatorWorkflowID
 AuditOperatorWorkflowNotes
 AuditOperatorWorkflowPreviousStatus
