@@ -81,7 +81,7 @@
 			
 			<li>
                 <s:if test="permissions.usingVersion7Menus">
-                    <a href='Report.action?report=1&removeAggregates=true&dynamicParameters=[{"value":"Active","field_id":"AccountStatus","operator":"In"},{"value":"<s:property value="operator.id"/>","field_id":"ContractorWorksAtClientSite","operator":"In"}]' id="v7_facilitiesedit_contractor">
+                    <a href='Report.action?report=1&dynamicParameters=[{"value":"Active","field_id":"AccountStatus","operator":"In"},{"value":"<s:property value="operator.id"/>","field_id":"ContractorWorksAtClientSite","operator":"In"}]' id="v7_facilitiesedit_contractor">
                 </s:if>
                 <s:else>
                     <a href="ContractorList.action?filter.status=Active&filter.status=Demo<s:property value="operatorIds"/>" id="v6_facilitiesedit_contractor">
