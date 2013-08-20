@@ -6,7 +6,6 @@ import javax.persistence.Id;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
@@ -19,7 +18,7 @@ public class Naics implements java.io.Serializable {
 
 	@Id
 	@Column(nullable = false, length = 6)
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Required)
+	@ReportField(importance = FieldImportance.Required)
 	public String getCode() {
 		return code;
 	}
@@ -28,7 +27,7 @@ public class Naics implements java.io.Serializable {
 		this.code = code;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics, type = FieldType.Float, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public float getTrir() {
 		return trir;
 	}
@@ -37,7 +36,7 @@ public class Naics implements java.io.Serializable {
 		this.trir = trir;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics, type = FieldType.Float, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public float getLwcr() {
 		return lwcr;
 	}
@@ -46,7 +45,7 @@ public class Naics implements java.io.Serializable {
 		this.lwcr = lwcr;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics, type = FieldType.Float, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public float getDart() {
 		return dart;
 	}
