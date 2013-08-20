@@ -10,7 +10,6 @@ import javax.persistence.Table;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 
 @SuppressWarnings("serial")
 @Entity
@@ -42,7 +41,7 @@ public class PaymentCommission extends BaseTable {
 		this.payment = payment;
 	}
 
-	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
+	@ReportField(type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
 	public BigDecimal getPaymentAmount() {
 		return paymentAmount;
 	}
@@ -54,7 +53,7 @@ public class PaymentCommission extends BaseTable {
     // Does this field really require OpPerms.SalesCommission?
     // The entire table probably requires it but these two fields don't seem special
     // Trevor 6/9/2013
-	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
+	@ReportField(type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
 	public BigDecimal getActivationPoints() {
 		return activationPoints;
 	}
