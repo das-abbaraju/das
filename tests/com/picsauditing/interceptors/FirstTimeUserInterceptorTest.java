@@ -111,7 +111,6 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
         when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(false);
-		when(permissions.isDynamicReportsUser()).thenReturn(true);
 		when(permissions.getReportsManagerTutorialDate()).thenReturn(null);
 		when(invocation.getAction()).thenReturn(manageReports);
 
@@ -134,7 +133,6 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
         when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(false);
-		when(permissions.isDynamicReportsUser()).thenReturn(true);
 		when(permissions.getReportsManagerTutorialDate()).thenReturn(new Date());
 		when(invocation.getAction()).thenReturn(manageReports);
 
@@ -149,7 +147,6 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
         when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(false);
-		when(permissions.isDynamicReportsUser()).thenReturn(true);
 		when(permissions.getReportsManagerTutorialDate()).thenReturn(null);
 		when(invocation.getAction()).thenReturn(manageReports);
 
