@@ -49,9 +49,9 @@ public class AuditPeriodModel {
             int month = date.get(Calendar.MONTH);
             if (month <=2) {
                 month = 0;
-            } else if (month <=3) {
+            } else if (month <=5) {
                 month = 3;
-            } else if (month <=6) {
+            } else if (month <=8) {
                 month = 6;
             } else {
                 month = 9;
@@ -176,7 +176,12 @@ public class AuditPeriodModel {
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, day);
-        date.setTime(DateBean.setToStartOfDay(date.getTime()));
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        date.setTime(date.getTime());
 
         return date;
     }

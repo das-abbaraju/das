@@ -92,8 +92,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	protected User editAudit;
 	protected String assigneeLabel;
     protected AuditTypePeriod period;
-    protected Integer anchorDay;
-    protected Integer anchorMonth;
+    protected Integer anchorDay = new Integer(1);
+    protected Integer anchorMonth = new Integer(1);
     protected int advanceDays = 0;
     protected int maximumActive = 1;
 

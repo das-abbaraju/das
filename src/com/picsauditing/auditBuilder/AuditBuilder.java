@@ -62,6 +62,7 @@ public class AuditBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
 
 	private User systemUser = new User(User.SYSTEM);
+    private Date today = new Date();
 
 	HashSet<ContractorAuditOperator> caosToMoveToApprove = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
@@ -90,13 +91,13 @@ public class AuditBuilder {
 				requiredAuditTypes.add(auditType);
 				if (auditType.getPeriod().isMonthlyQuarterlyYearly()) {
 					auditType = reconnectAuditType(auditType);
-
                     addMonthlyQuarterlyYearly(contractor, auditType);
-//                    List<String> list;
-//					// not the annual updates must be done in this order to find their previous audit
-//					addAnnualUpdate(contractor, year - 3, auditType);
-//					addAnnualUpdate(contractor, year - 2, auditType);
-//					addAnnualUpdate(contractor, year - 1, auditType);
+                } else if (auditType.isAnnualAddendum()) {
+                    auditType = reconnectAuditType(auditType);
+                    // not the annual updates must be done in this order to find their previous audit
+                    addAnnualUpdate(contractor, year - 3, auditType);
+                    addAnnualUpdate(contractor, year - 2, auditType);
+                    addAnnualUpdate(contractor, year - 1, auditType);
 				} else {
 					boolean found = false;
 					for (ContractorAudit conAudit : contractor.getAudits()) {
@@ -194,7 +195,7 @@ public class AuditBuilder {
 
     private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
         AuditPeriodModel periodModel = new AuditPeriodModel();
-        List<String> auditFors = periodModel.getAuditForByDate(auditType, new Date());
+        List<String> auditFors = periodModel.getAuditForByDate(auditType, today);
         for (String auditFor:auditFors) {
             if (periodModel.findAudit(contractor.getAudits(), auditType, auditFor) == null) {
                 ContractorAudit audit = new ContractorAudit();
@@ -283,7 +284,15 @@ public class AuditBuilder {
 		return yearsForAllWCBs.contains(previousYear) && yearsForAllWCBs.contains(currentWCBYear);
 	}
 
-	private void createWCBAudits(ContractorAccount contractor, AuditType auditType) {
+    public Date getToday() {
+        return today;
+    }
+
+    public void setToday(Date today) {
+        this.today = today;
+    }
+
+    private void createWCBAudits(ContractorAccount contractor, AuditType auditType) {
 		buildSetOfAllWCBYears(contractor, auditType);
 		Set<String> yearsForWCBs = getAllYearsForNewWCB();
 		if (CollectionUtils.isEmpty(yearsForWCBs)) {
