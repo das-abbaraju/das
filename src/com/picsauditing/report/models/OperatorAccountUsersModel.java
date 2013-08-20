@@ -6,7 +6,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.AccountUserTable;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 public class OperatorAccountUsersModel extends AbstractModel {
@@ -19,14 +18,11 @@ public class OperatorAccountUsersModel extends AbstractModel {
 
     public ModelSpec getJoinSpec() {
         ModelSpec spec = new ModelSpec(null, "AccountUser");
-        spec.category = FieldCategory.AccountInformation;
 
         ModelSpec account = spec.join(AccountUserTable.Account);
-        account.category = FieldCategory.AccountInformation;
         account.alias = "Account";
 
         ModelSpec user = spec.join(AccountUserTable.User);
-        user.category = FieldCategory.ContactInformation;
         user.alias = "User";
         user.minimumImportance = FieldImportance.Required;
 
@@ -38,7 +34,6 @@ public class OperatorAccountUsersModel extends AbstractModel {
         Map<String, Field> fields = super.getAvailableFields();
 
         Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
-		accountType.setCategory(FieldCategory.AccountInformation);
 		accountType.setTranslationPrefixAndSuffix(ACCOUNT_TYPE, "");
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 

@@ -21,7 +21,7 @@ public class AccountTable extends AbstractTable {
 
     public AccountTable() {
 		super("accounts");
-		addPrimaryKey(FieldType.AccountID).setCategory(FieldCategory.AccountInformation);
+		addPrimaryKey(FieldType.AccountID);
 		addFields(Account.class);
 
 		Field accountName = getField("NAME");
@@ -30,10 +30,9 @@ public class AccountTable extends AbstractTable {
 
 		Field accountLegalName = new Field("LegalName", "dbaName", FieldType.String);
 		accountLegalName.setImportance(FieldImportance.Average);
-		addField(accountLegalName).setCategory(FieldCategory.AccountInformation);
+		addField(accountLegalName);
 
         Field creationDate = addCreationDate();
-        creationDate.setCategory(FieldCategory.AccountInformation);
         creationDate.setImportance(FieldImportance.Average);
 	}
 

@@ -11,16 +11,14 @@ public class ContractorAuditFileTable extends AbstractTable {
 	public ContractorAuditFileTable() {
 		super("contractor_audit_file");
 		addFields(ContractorAuditFile.class);
-		Field id = addPrimaryKey();
-		id.setCategory(FieldCategory.DocumentsAndAudits);
+		addPrimaryKey();
 
 		Field creationDate = new Field("UploadDate", "creationDate", FieldType.Date);
-		addField(creationDate).setCategory(FieldCategory.DocumentsAndAudits);
+		addField(creationDate);
 	}
 
 	public void addJoins() {
 		ReportForeignKey fkToContractorAudit = new ReportForeignKey(ContractorAudit, new ContractorAuditTable(), new ReportOnClause("auditID", "id"));
-		fkToContractorAudit.setCategory(FieldCategory.DocumentsAndAudits);
 		addJoinKey(fkToContractorAudit);
 	}
 

@@ -5,7 +5,6 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.ContractorTradeTable;
-import com.picsauditing.report.tables.FieldCategory;
 
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,6 @@ public class ContractorTradesModel extends AbstractModel {
 				"FROM generalcontractors co " +
 				"WHERE co.genID IN ");
 		clientSite.setSuffixValue("");
-		clientSite.setCategory(FieldCategory.ReportingClientSite);
 		fields.put(clientSite.getName().toUpperCase(), clientSite);
 
         return fields;

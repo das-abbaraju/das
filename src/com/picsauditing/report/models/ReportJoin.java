@@ -15,7 +15,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.JoinType;
 import com.picsauditing.report.tables.ReportOnClause;
@@ -29,7 +28,6 @@ public class ReportJoin {
 	private List<ReportJoin> joins = new ArrayList<ReportJoin>();
 	private String onClause;
 	private FieldImportance minimumImportance = FieldImportance.Low;
-	private FieldCategory category = null;
 	private JoinType joinType;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportJoin.class);
@@ -88,14 +86,6 @@ public class ReportJoin {
 		this.onClause = onClause;
 	}
 
-	public FieldCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(FieldCategory categoryOverride) {
-		this.category = categoryOverride;
-	}
-
 	public void setMinimumImportance(FieldImportance minimumImportance) {
 		this.minimumImportance = minimumImportance;
 	}
@@ -137,9 +127,6 @@ public class ReportJoin {
 					fieldCopy.setUrl(fieldCopy.getUrl().replace(ReportOnClause.ToAlias, alias));
 				}
 
-				if (category != null) {
-					fieldCopy.setCategory(category);
-				}
 				fields.add(fieldCopy);
 			}
 		}

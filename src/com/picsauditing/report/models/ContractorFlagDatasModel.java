@@ -10,7 +10,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.FlagDataTable;
 
@@ -65,12 +64,10 @@ public class ContractorFlagDatasModel extends AbstractModel {
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
 		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.String);
-		flagCriteriaLabel.setCategory(FieldCategory.CompanyStatistics);
 		flagCriteriaLabel.setTranslationPrefixAndSuffix("FlagCriteria", "label");
 		fields.put(FLAG_CRITERIA_LABEL.toUpperCase(), flagCriteriaLabel);
 
 		Field flagCriteriaDescription = new Field(FLAG_CRITERIA_DESCRIPTION, "FlagCriteria.id", FieldType.String);
-		flagCriteriaDescription.setCategory(FieldCategory.CompanyStatistics);
 		flagCriteriaDescription.setTranslationPrefixAndSuffix("FlagCriteria", "description");
 		flagCriteriaDescription.setWidth(500);
 		fields.put(FLAG_CRITERIA_DESCRIPTION.toUpperCase(), flagCriteriaDescription);

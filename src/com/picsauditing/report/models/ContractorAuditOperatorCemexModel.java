@@ -21,12 +21,10 @@ public class ContractorAuditOperatorCemexModel extends AbstractModel {
 
         ModelSpec account = spec.join(ContractorTable.Account);
         account.minimumImportance = FieldImportance.Average;
-        account.category = FieldCategory.AccountInformation;
 
         ModelSpec cemexPostEval = spec.join(ContractorTable.CemexPostEval);
 
-        ModelSpec cao = cemexPostEval.join(ContractorAuditTable.SingleCAO);
-        cao.category = FieldCategory.MonitoringClientSite;
+        cemexPostEval.join(ContractorAuditTable.SingleCAO);
 
         for (Integer questionID : ContractorAuditTable.CEMEX_POST_EVAL_DATA.keySet()) {
             ModelSpec data = cemexPostEval.join(ContractorAuditTable.CEMEX_POST_EVAL_DATA.get(questionID));

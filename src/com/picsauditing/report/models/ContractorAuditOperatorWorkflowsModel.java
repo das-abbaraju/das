@@ -31,7 +31,6 @@ public class ContractorAuditOperatorWorkflowsModel extends AbstractModel {
 
         ModelSpec operatorAccount = cao.join(ContractorAuditOperatorTable.Operator);
 		operatorAccount.alias = "AuditOperatorAccount";
-		operatorAccount.category = FieldCategory.MonitoringClientSite;
 
 		ModelSpec conAudit = cao.join(ContractorAuditOperatorTable.Audit);
 		conAudit.alias = "Audit";
@@ -42,11 +41,9 @@ public class ContractorAuditOperatorWorkflowsModel extends AbstractModel {
 		ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
 		contractor.alias = "Contractor";
 		contractor.minimumImportance = FieldImportance.Average;
-		contractor.category = FieldCategory.AccountInformation;
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = AbstractModel.ACCOUNT;
 		account.minimumImportance = FieldImportance.Average;
-		account.category = FieldCategory.AccountInformation;
 
         return spec;
 	}

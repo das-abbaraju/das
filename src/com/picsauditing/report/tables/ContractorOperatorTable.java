@@ -17,7 +17,6 @@ public class ContractorOperatorTable extends AbstractTable {
 		addFields(ContractorOperator.class);
 
         Field creationDate = addCreationDate();
-        creationDate.setCategory(FieldCategory.AccountInformation);
         creationDate.setImportance(FieldImportance.Low);
 
 		String networkLevelDatabaseColumn = "";
@@ -51,7 +50,6 @@ public class ContractorOperatorTable extends AbstractTable {
 		}
 
 		Field networkLevel = new Field("NetworkLevel", networkLevelDatabaseColumn, FieldType.NetworkLevel);
-		networkLevel.setCategory(FieldCategory.AccountInformation);
 		networkLevel.setImportance(FieldImportance.Required);
 		networkLevel.setTranslationPrefixAndSuffix("NetworkLevel", "");
 		networkLevel.setVisible(false);
@@ -61,7 +59,6 @@ public class ContractorOperatorTable extends AbstractTable {
 
 	public void addJoins() {
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("genID"));
-		operator.setCategory(FieldCategory.ReportingClientSite);
 		addRequiredKey(operator);
 
 		addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("subID")));

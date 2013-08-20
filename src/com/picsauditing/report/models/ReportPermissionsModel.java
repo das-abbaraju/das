@@ -1,7 +1,6 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.ReportPermissionView;
 import com.picsauditing.report.tables.ReportTable;

@@ -25,7 +25,6 @@ import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.model.i18n.translation.strategy.EmptyTranslationStrategy;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.search.IndexOverrideIgnore;
 import com.picsauditing.search.IndexValueType;
@@ -87,7 +86,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.parent = parent;
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Boolean)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.Boolean)
 	public Boolean getProduct() {
 		return product;
 	}
@@ -116,7 +115,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Boolean)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.Boolean)
 	public Boolean getService() {
 		return service;
 	}
@@ -145,7 +144,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Boolean)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.Boolean)
 	public Boolean getTransportation() {
 		return transportation;
 	}
@@ -174,7 +173,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Boolean)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.Boolean)
 	public Boolean getPsmApplies() {
 		return psmApplies;
 	}
@@ -203,7 +202,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.LowMedHigh)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.LowMedHigh)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
@@ -232,7 +231,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.LowMedHigh)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.LowMedHigh)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -261,7 +260,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.LowMedHigh)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.LowMedHigh)
 	public LowMedHigh getTransportationRisk() {
 		return transportationRisk;
 	}
@@ -290,7 +289,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Integer)
+	@ReportField(importance = FieldImportance.Low, type = FieldType.Integer)
 	public int getIndexLevel() {
 		return indexLevel;
 	}
@@ -299,7 +298,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.indexLevel = indexLevel;
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getIndexStart() {
 		return indexStart;
 	}
@@ -308,7 +307,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.indexStart = indexStart;
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getIndexEnd() {
 		return indexEnd;
 	}
@@ -325,7 +324,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.needsIndexing = needsIndexing;
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getContractorCount() {
 		return contractorCount;
 	}
@@ -613,7 +612,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		return String.valueOf(name);
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Boolean)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean)
 	public boolean isSelectable() {
 		return selectable;
 	}
@@ -622,7 +621,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.selectable = selectable;
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Float)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Float)
 	public Float getNaicsTRIR() {
 		return naicsTRIR;
 	}
@@ -642,7 +641,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Float)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Float)
 	public Float getNaicsLWCR() {
 		return naicsLWCR;
 	}

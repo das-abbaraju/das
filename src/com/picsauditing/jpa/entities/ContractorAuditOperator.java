@@ -23,7 +23,6 @@ import org.apache.commons.collections.CollectionUtils;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
@@ -72,7 +71,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Required, category = FieldCategory.MonitoringClientSite)
+	@ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Required)
 	public AuditStatus getStatus() {
 		return status;
 	}
@@ -170,7 +169,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.flag = flag;
 	}
 
-	@ReportField(type = FieldType.Date, category = FieldCategory.MonitoringClientSite)
+	@ReportField(type = FieldType.Date)
 	public Date getStatusChangedDate() {
 		return statusChangedDate;
 	}
@@ -179,7 +178,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.statusChangedDate = statusChangedDate;
 	}
 
-	@ReportField(type = FieldType.Integer, category = FieldCategory.MonitoringClientSite)
+	@ReportField(type = FieldType.Integer)
 	public int getPercentComplete() {
 		return percentComplete;
 	}
@@ -188,7 +187,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.percentComplete = percentComplete;
 	}
 
-    @ReportField(type = FieldType.Integer, category = FieldCategory.MonitoringClientSite)
+    @ReportField(type = FieldType.Integer)
     public int getPercentVerified() {
 		return percentVerified;
 	}
@@ -227,7 +226,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	}
 	
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.AuditSubStatus, category = FieldCategory.MonitoringClientSite)
+	@ReportField(type = FieldType.AuditSubStatus)
 	public AuditSubStatus getAuditSubStatus() {
 		return auditSubStatus;
 	}

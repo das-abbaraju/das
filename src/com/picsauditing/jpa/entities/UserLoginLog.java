@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @Entity
@@ -50,7 +49,7 @@ public class UserLoginLog {
 	}
 
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.DateTime)
+	@ReportField(type = FieldType.DateTime)
 	public Date getLoginDate() {
 		return loginDate;
 	}

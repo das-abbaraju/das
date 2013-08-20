@@ -37,7 +37,6 @@ public class PaymentCommissionsModel extends AbstractModel {
 
         ModelSpec accountUser = invoiceCommission.join(InvoiceCommissionTable.AccountUser);
         accountUser.alias = "CommissionUser";
-        accountUser.category = FieldCategory.Commission;
 
         ModelSpec opAccount = accountUser.join(AccountUserTable.Account);
         opAccount.alias = "Operator";
@@ -48,7 +47,6 @@ public class PaymentCommissionsModel extends AbstractModel {
 
         ModelSpec user = accountUser.join(AccountUserTable.User);
         user.alias = "CommissionUserUser";
-        user.category = FieldCategory.Commission;
 
 		return paymentCommission;
 	}
