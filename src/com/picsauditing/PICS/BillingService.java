@@ -107,7 +107,7 @@ public class BillingService {
     public Invoice saveInvoice(Invoice invoice) throws Exception {
         taxService.applyTax(invoice);
         if (taxService.validate(invoice)) {
-            invoiceDAO.save(invoice);
+            invoice = invoiceDAO.save(invoice);
         }
         return invoice;
     }
