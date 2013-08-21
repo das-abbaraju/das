@@ -22,7 +22,6 @@ public class ForcedFlagPercentageView extends AbstractTable {
 
 	public void addJoins() {
         ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-        operator.setMinimumImportance(FieldImportance.Required);
         addRequiredKey(operator);
     }
 }

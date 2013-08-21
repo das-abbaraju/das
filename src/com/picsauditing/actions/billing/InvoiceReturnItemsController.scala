@@ -92,6 +92,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       creditMemo.getCreditMemo.updateAmountApplied()
       creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
       creditMemo.setAuditColumns(permissions)
+      creditMemo.getCreditMemo.setSapSync(true)
       creditMemoDAO.save(creditMemo)
   }
 

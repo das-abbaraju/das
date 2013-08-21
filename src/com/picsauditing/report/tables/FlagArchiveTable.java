@@ -22,7 +22,6 @@ public class FlagArchiveTable extends AbstractTable {
 	@Override
 	protected void addJoins() {
         ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-        operator.setMinimumImportance(FieldImportance.Required);
         addRequiredKey(operator);
 
         addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));

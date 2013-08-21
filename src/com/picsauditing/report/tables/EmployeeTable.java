@@ -11,7 +11,7 @@ public class EmployeeTable extends AbstractTable {
     }
 
     protected void addJoins() {
-        addJoinKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID"))).setMinimumImportance(FieldImportance.Required);
+        addJoinKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
 
     }
 }

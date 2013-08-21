@@ -30,7 +30,6 @@ public class ContractorStatisticsView extends AbstractTable {
 	protected void addJoins() {
 		ReportForeignKey contractorKey = new ReportForeignKey(Contractor, new AccountTable(), new ReportOnClause(
 				"conID", "id"));
-		contractorKey.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(contractorKey);
 	}
 }

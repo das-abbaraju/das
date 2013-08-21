@@ -36,7 +36,7 @@ public class FeeService {
     }};
 
     public void syncMembershipFees(ContractorAccount contractor) {
-        Set<FeeClass> foundFeeClasses = new HashSet<FeeClass>();
+        Map<FeeClass, InvoiceFee> foundFeeClasses = new HashMap<FeeClass, InvoiceFee>();
 
         int payingFacilities = contractor.getPayingFacilities();
 
@@ -63,7 +63,7 @@ public class FeeService {
 
                     // Checking for ImportPQF fee and potentially others
                     if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.ImportFee) && contractor.getFees().containsKey(FeeClass.ImportFee)) {
-                        foundFeeClasses.add(FeeClass.ImportFee);
+                        foundFeeClasses.put(FeeClass.ImportFee, null);
                         payingFacilities = 1;
                     }
                 }
@@ -84,22 +84,25 @@ public class FeeService {
             contractor.setMembershipDate(null);
     }
 
-    private int identifyMembership(Set<FeeClass> foundFeeClasses, int payingFacilities, InvoiceFee invoiceFee, FeeClass feeClass) {
+    private int identifyMembership(Map<FeeClass, InvoiceFee> foundFeeClasses, int payingFacilities, InvoiceFee invoiceFee, FeeClass feeClass) {
         if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.ListOnly))
-            foundFeeClasses.add(FeeClass.ListOnly);
+            foundFeeClasses.put(FeeClass.ListOnly, null);
         else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.BidOnly))
-            foundFeeClasses.add(FeeClass.BidOnly);
+            foundFeeClasses.put(FeeClass.BidOnly, null);
         else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.DocuGUARD)) {
-            foundFeeClasses.add(FeeClass.DocuGUARD);
-
-            if (invoiceFee.isLegacyMembership())
-                foundFeeClasses.add(FeeClass.InsureGUARD);
-        } else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.AuditGUARD)) {
-            foundFeeClasses.add(FeeClass.AuditGUARD);
 
             if (invoiceFee.isLegacyMembership()) {
-                foundFeeClasses.add(FeeClass.DocuGUARD);
-                foundFeeClasses.add(FeeClass.InsureGUARD);
+                foundFeeClasses.put(FeeClass.DocuGUARD, null);
+                foundFeeClasses.put(FeeClass.InsureGUARD, null);
+            } else {
+                foundFeeClasses.put(FeeClass.DocuGUARD, invoiceFee);
+            }
+        } else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.AuditGUARD)) {
+
+            if (invoiceFee.isLegacyMembership()) {
+                foundFeeClasses.put(FeeClass.AuditGUARD, null);
+                foundFeeClasses.put(FeeClass.DocuGUARD, null);
+                foundFeeClasses.put(FeeClass.InsureGUARD, null);
 
                 switch(invoiceFee.getId()) {
                     case 5: payingFacilities = 1; break;
@@ -112,20 +115,27 @@ public class FeeService {
                     case 11: payingFacilities = 50; break;
                 }
             }
+            else {
+                foundFeeClasses.put(FeeClass.AuditGUARD, invoiceFee);
+            }
         } else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.InsureGUARD))
-            foundFeeClasses.add(FeeClass.InsureGUARD);
+            foundFeeClasses.put(FeeClass.InsureGUARD, invoiceFee);
         else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.EmployeeGUARD))
-            foundFeeClasses.add(FeeClass.EmployeeGUARD);
+            foundFeeClasses.put(FeeClass.EmployeeGUARD, invoiceFee);
         return payingFacilities;
     }
 
-    private void buildFeeCurrentLevels(ContractorAccount contractor, Set<FeeClass> foundFeeClasses, int payingFacilities) {
+    private void buildFeeCurrentLevels(ContractorAccount contractor, Map<FeeClass, InvoiceFee> foundFeeClasses, int payingFacilities) {
         for (FeeClass feeClass : CONTRACTOR_FEE_CLASSES) {
             if (feeClass == FeeClass.ImportFee && !contractor.getFees().containsKey(FeeClass.ImportFee))
                 continue;
 
-            if (foundFeeClasses.contains(feeClass)) {
-                InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities);
+            if (foundFeeClasses.containsKey(feeClass)) {
+                InvoiceFee fee = foundFeeClasses.get(feeClass);
+                if (fee == null) {
+                    fee = feeDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities);
+                }
+
                 setFee(contractor, fee, FeeService.getAdjustedFeeAmountIfNecessary(contractor, fee), true);
             }
             else
@@ -155,8 +165,8 @@ public class FeeService {
         return sortedPaymentList.get(0);
     }
 
-    private boolean hasFeeClass(Set<FeeClass> foundFeeClasses, FeeClass feeClass, FeeClass targetFeeClass) {
-        return feeClass.equals(targetFeeClass) && !foundFeeClasses.contains(targetFeeClass);
+    private boolean hasFeeClass(Map<FeeClass, InvoiceFee> foundFeeClasses, FeeClass feeClass, FeeClass targetFeeClass) {
+        return feeClass.equals(targetFeeClass) && !foundFeeClasses.containsKey(targetFeeClass);
     }
 
     public void calculateContractorInvoiceFees(ContractorAccount contractor) {
@@ -309,13 +319,17 @@ public class FeeService {
         Map<FeeClass, ContractorFee> contractorFees = contractor.getFees();
         if (isMissingFee(contractorFees, fee))
             setNewContractorFeeOnContractor(contractor, fee, amount);
-        else if (isCurrent) {
-            contractorFees.get(fee.getFeeClass()).setCurrentLevel(fee);
-            contractorFees.get(fee.getFeeClass()).setCurrentAmount(amount);
-        }
         else {
-            contractorFees.get(fee.getFeeClass()).setNewLevel(fee);
-            contractorFees.get(fee.getFeeClass()).setNewAmount(amount);
+            ContractorFee contractorFee = contractorFees.get(fee.getFeeClass());
+
+            if (isCurrent) {
+                contractorFee.setCurrentLevel(fee);
+                contractorFee.setCurrentAmount(amount);
+            }
+            else {
+                contractorFee.setNewLevel(fee);
+                contractorFee.setNewAmount(amount);
+            }
         }
     }
 

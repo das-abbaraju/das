@@ -33,11 +33,9 @@ public class AuditTypeTable extends AbstractTable {
 
 	public void addJoins() {
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-		operator.setMinimumImportance(FieldImportance.Required);
 		addOptionalKey(operator);
 
 		ReportForeignKey createdBy = new ReportForeignKey(CreatedBy, new UserTable(), new ReportOnClause("createdBy"));
-		createdBy.setMinimumImportance(FieldImportance.Required);
 		addOptionalKey(createdBy);
 	}
 }
