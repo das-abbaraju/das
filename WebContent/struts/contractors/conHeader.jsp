@@ -190,7 +190,9 @@ function loadStatus(caoID, addUserNote){
 }
 </style>
 
-<s:set name="auditMenu" value="auditMenu"></s:set>
+<s:if test="!permissions.contractor || !permissions.usingVersion7Menus">
+	<s:set name="auditMenu" value="auditMenu"></s:set>
+</s:if>
 
 <h1>
 	<s:property value="contractor.name" />
