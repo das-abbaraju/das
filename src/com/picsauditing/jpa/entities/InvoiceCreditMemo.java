@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,5 +37,16 @@ public class InvoiceCreditMemo extends Transaction {
 	public void setItems(List<RefundItem> items) {
         refundItems = items;
 	}
+
+    @Override
+    @Transient
+    public void updateAmountApplied() {
+        BigDecimal total = BigDecimal.ZERO;
+        for (RefundItem item : refundItems) {
+            total = total.add(item.getAmount());
+        }
+        setTotalAmount(total);
+        setAmountApplied(total);
+    }
 
 }
