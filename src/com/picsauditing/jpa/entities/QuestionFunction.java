@@ -263,6 +263,66 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
+    IFR2 {
+        @Override
+        public Object calculate(FunctionInput input) {
+            Map<String, String> params = getParameterMap(input);
+
+            if (Strings.isEmpty(params.get("totalHours"))
+                    || Strings.isEmpty(params.get("majorUnder"))
+                    || Strings.isEmpty(params.get("majorUnder"))
+                    || Strings.isEmpty(params.get("nonMajorInjuries"))
+                    || Strings.isEmpty(params.get("fatalities"))) {
+                return MISSING_PARAMETER;
+            }
+
+            BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+            BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+            BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries").replace(",", "")).setScale(7);
+            BigDecimal nonMajorInjuries = new BigDecimal(params.get("nonMajorInjuries").replace(",", "")).setScale(7);
+            BigDecimal majorUnder = new BigDecimal(params.get("majorUnder").replace(",", "")).setScale(7);
+
+            BigDecimal totalIncidents = fatalities.add(majorInjuries).add(majorUnder).add(nonMajorInjuries);
+
+
+            BigDecimal result;
+            try {
+                result = totalIncidents.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1_000_000)).setScale(2);
+            } catch (java.lang.ArithmeticException e) {
+                return MISSING_PARAMETER;
+            }
+
+            return result;
+        }
+    },
+    AIR {
+        @Override
+        public Object calculate(FunctionInput input) {
+            Map<String, String> params = getParameterMap(input);
+
+            if (Strings.isEmpty(params.get("employees"))
+                    || Strings.isEmpty(params.get("majorInjuries"))
+                    || Strings.isEmpty(params.get("fatalities"))) {
+                return MISSING_PARAMETER;
+            }
+
+            BigDecimal employees = new BigDecimal(params.get("employees").replace(",", "")).setScale(7);
+            BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+            BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries").replace(",", "")).setScale(7);
+
+            BigDecimal totalIncidents = fatalities.add(majorInjuries);
+
+
+            BigDecimal result;
+            try {
+                result = totalIncidents.divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100_000)).setScale(2);
+            } catch (java.lang.ArithmeticException e) {
+                return MISSING_PARAMETER;
+            }
+
+            return result;
+        }
+    },
 	/**
 	 * UK Total Lost Time Injuries
 	 * LTIFR = ((Total Lost Time Injuries X 1,000,000) / Total Hours Worked)
