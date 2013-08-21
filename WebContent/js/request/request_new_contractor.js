@@ -129,6 +129,7 @@
                     success: function(data, textStatus, XMLHttpRequest) {
                         var modal = PICS.modal({
                             width: 800,
+                            height: 500,
                             title: translate('JS.button.Preview'),
                             content: data
                         });
