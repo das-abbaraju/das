@@ -14,9 +14,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorBalance
@@ -27,6 +31,7 @@ ContractorMembershipDate
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 PaymentAmountApplied
 PaymentCcNumber

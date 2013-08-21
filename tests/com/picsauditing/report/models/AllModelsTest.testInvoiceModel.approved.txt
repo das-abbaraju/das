@@ -14,12 +14,18 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorBalance
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsideSalesUserID
@@ -29,6 +35,8 @@ ContractorMembershipDate
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
+ContractorSoleProprietor
+ContractorTagTagID
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCreationDate

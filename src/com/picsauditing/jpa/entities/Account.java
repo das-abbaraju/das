@@ -554,7 +554,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.needsIndexing = needsIndex;
 	}
 
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 	public boolean isOnsiteServices() {
 		return onsiteServices;
 	}
@@ -563,7 +563,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.onsiteServices = onsiteServices;
 	}
 
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 	public boolean isOffsiteServices() {
 		return offsiteServices;
 	}
@@ -572,7 +572,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.offsiteServices = offsiteServices;
 	}
 
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 	public boolean isMaterialSupplier() {
 		return materialSupplier;
 	}
@@ -581,7 +581,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.materialSupplier = materialSupplier;
 	}
 
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 	public boolean isTransportationServices() {
 		return transportationServices;
 	}

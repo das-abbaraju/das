@@ -1348,7 +1348,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return balance < halfMembership;
 	}
 
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 	public boolean getSoleProprietor() {
 		return soleProprietor;
 	}
