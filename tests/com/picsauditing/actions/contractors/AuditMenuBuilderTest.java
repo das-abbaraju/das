@@ -6,6 +6,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.URLUtils;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -353,6 +354,31 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 
 		assertTrue("Contractor has at least one operator requiring competencies and a tag that does not remove EG",
 				competencyRequiresDocumentation);
+	}
+
+	@Test
+	public void testTradesSubMenuVisible_PICSAdminOrOperatorUser() throws Exception {
+		when(permissions.isContractor()).thenReturn(false);
+		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
+		assertTrue(tradeMenuVisible);
+	}
+
+	@Test
+	public void testTradesSubMenuVisible_ContractorUserWithoutV7Menus() throws Exception {
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.isUsingVersion7Menus()).thenReturn(false);
+
+		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
+		assertTrue(tradeMenuVisible);
+	}
+
+	@Test
+	public void testTradesSubMenuVisible_ContractorUserHasV7Menus() throws Exception {
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.isUsingVersion7Menus()).thenReturn(true);
+
+		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
+		assertFalse(tradeMenuVisible);
 	}
 
 	private List<ContractorAudit> audits() {
