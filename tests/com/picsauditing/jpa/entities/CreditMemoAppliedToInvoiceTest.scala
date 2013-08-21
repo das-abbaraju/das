@@ -9,9 +9,10 @@ import org.scalatest.matchers.ShouldMatchers
 @RunWith(classOf[JUnitRunner])
 class CreditMemoAppliedToInvoiceTest extends FlatSpec with ShouldMatchers {
 
-  val TWO = BigDecimal valueOf 2 setScale 2
+  val NEGATIVE_TWO = BigDecimal valueOf 2 setScale 2 negate
   val FIVE = BigDecimal valueOf 5 setScale 2
-  val SIX = BigDecimal valueOf 6 setScale 2
+  val POSITIVE_SIX = BigDecimal valueOf 6 setScale 2
+  val NEGATIVE_SIX= BigDecimal valueOf 6 setScale 2 negate
   val NINE = BigDecimal valueOf 9 setScale 2
   val FIFTEEN = BigDecimal valueOf 15 setScale 2
 
@@ -34,23 +35,24 @@ class CreditMemoAppliedToInvoiceTest extends FlatSpec with ShouldMatchers {
     item.setInvoiceFee(invoiceFee)
     creditMemo.getItems.add(item)
     item.setCreditMemo(creditMemo)
-    item.setAmount(TWO)
+    item.setAmount(NEGATIVE_TWO)
   }
 
   creditMemoApplied.updateAmountApplied()
 
   "CreditMemoAppliedToInvoice" should "update the values for the relevant invoice when updateAmountApplied is called." in {
     creditMemoApplied.getInvoice.getTotalAmount should equal(FIFTEEN)
-    creditMemoApplied.getInvoice.getAmountApplied should equal(SIX)
+    creditMemoApplied.getInvoice.getAmountApplied should equal(POSITIVE_SIX)
   }
 
   it should "update the values for the relevant credit memo when updateAmountApplied is called." in {
-    creditMemoApplied.getCreditMemo.getTotalAmount should equal(SIX)
-    creditMemoApplied.getInvoice.getAmountApplied should equal(SIX)
+    creditMemoApplied.getCreditMemo.getTotalAmount should equal(NEGATIVE_SIX)
+    creditMemoApplied.getCreditMemo.getAmountApplied should equal(NEGATIVE_SIX)
+    creditMemoApplied.getInvoice.getAmountApplied should equal(POSITIVE_SIX)
   }
 
   it should "calculate it's own value based on the underlying credit memo when updateAmountApplied is called." in {
-    creditMemoApplied.getAmount should equal(creditMemoApplied.getCreditMemo.getTotalAmount)
-    creditMemoApplied.getAmount should equal(SIX)
+    creditMemoApplied.getAmount should equal(creditMemoApplied.getCreditMemo.getTotalAmount.negate)
+    creditMemoApplied.getAmount should equal(POSITIVE_SIX)
   }
 }

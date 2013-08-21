@@ -34,7 +34,7 @@ public class CreditMemoAppliedToInvoice extends TransactionApplied {
     public void updateAmountApplied() {
         invoice.updateTotalAmount();
         creditMemo.updateAmountApplied();
-        setAmount(creditMemo.getTotalAmount());
+        setAmount(creditMemo.getTotalAmount().negate());
         invoice.updateAmountApplied();
     }
 
