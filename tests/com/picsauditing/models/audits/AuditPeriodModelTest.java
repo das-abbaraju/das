@@ -24,6 +24,23 @@ public class AuditPeriodModelTest extends PicsTest {
     }
 
     @Test
+    public void testGetAuditForByDate_AdvanceDays() {
+        AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
+        auditTypeBuilder.period(AuditTypePeriod.Monthly).maximumActive(1).advanceDays(10);
+
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.YEAR, 2013);
+        date.set(Calendar.MONTH, Calendar.MARCH);
+        date.set(Calendar.DAY_OF_MONTH, 23);
+
+        List<String> results;
+
+        results = test.getAuditForByDate(auditTypeBuilder.build(), date.getTime());
+        assertTrue(results.size() == 1);
+        assertTrue(results.get(0).equals("2013-03"));
+    }
+
+    @Test
     public void testGetAuditForByDate_Monthly() {
         AuditTypeBuilder auditTypeBuilder = new AuditTypeBuilder();
         auditTypeBuilder.period(AuditTypePeriod.Monthly).maximumActive(3);

@@ -35,6 +35,7 @@ public class AuditPeriodModel {
 
         Calendar date = Calendar.getInstance();
         date.setTime(currentDate);
+        date.add(Calendar.DATE, auditType.getAdvanceDays());
 
         if (auditType.getPeriod().isMonthly()) {
             date.set(Calendar.DAY_OF_MONTH, 1);
