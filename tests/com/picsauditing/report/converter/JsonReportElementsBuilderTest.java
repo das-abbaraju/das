@@ -1,6 +1,6 @@
 package com.picsauditing.report.converter;
 
-import static com.picsauditing.report.ReportJson.COLUMN_SORTABLE;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_SORTABLE;
 import static com.picsauditing.report.ReportJson.COLUMN_SQL_FUNCTION;
 import static com.picsauditing.report.ReportJson.COLUMN_TYPE;
 import static com.picsauditing.report.ReportJson.COLUMN_URL;
@@ -111,7 +111,7 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 		assertJson(COLUMN_URL, url, jsonString);
 		assertJsonNoQuotes(COLUMN_SQL_FUNCTION, null, jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
-		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
+		assertJsonNoQuotes(REPORT_ELEMENT_SORTABLE, sortable, jsonString);
 	}
 
 	@Test

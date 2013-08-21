@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.*;
 
+import com.google.common.base.Joiner;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Column;
@@ -10,10 +11,13 @@ import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
+import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ModelType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
@@ -39,9 +43,28 @@ public class ReportTester extends PicsActionSupport {
             return showReportFocus();
 		}
 
-        // Report Focus, Show Sql, Show Columns, Show Filters, Show Sorts. Maybe add functions to add remove filters, columns, sorts. Add functions to do model stuff.
 		return SUCCESS;
 	}
+
+    public String directory() {
+        JSONArray fieldDirectoryJson = new JSONArray();
+        for (ModelType type : ModelType.values()) {
+
+            AbstractModel model = ReportModelFactory.build(type, permissions);
+
+            JSONArray availableFieldsJson = JsonReportElementsBuilder.buildFields(model, permissions);
+            for (Object obj : availableFieldsJson) {
+                JSONObject fieldJson = (JSONObject) obj;
+                fieldJson.put("modelType",type.toString());
+            }
+
+            fieldDirectoryJson.addAll(availableFieldsJson);
+        }
+
+        json.put("directory",fieldDirectoryJson);
+
+        return JSON;
+    }
 
     private String showModelFocus() throws ReportValidationException {
         AbstractModel model = ReportModelFactory.build(modelType, permissions);

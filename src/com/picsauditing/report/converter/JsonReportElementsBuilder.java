@@ -11,7 +11,6 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 
 @SuppressWarnings("unchecked")
@@ -47,7 +46,30 @@ public class JsonReportElementsBuilder {
 		return jsonArray;
 	}
 
-	private static JSONObject fieldToColumnJson(Field field, Locale locale) {
+    public static JSONArray buildFields(AbstractModel model, Permissions permissions) {
+        JSONArray jsonArray = new JSONArray();
+
+        if (model != null) {
+            Collection<Field> fields = model.getAvailableFields().values();
+
+            for (Field field : fields) {
+                if (field.canUserSeeQueryField(permissions)) {
+                    ReportUtil.translateField(field, permissions.getLocale());
+                    JSONObject fieldJson = fieldToCommonJson(field);
+
+                    fieldJson.put(REPORT_ELEMENT_VISIBLE,field.isVisible());
+                    fieldJson.put(REPORT_ELEMENT_FILTERABLE,field.isFilterable());
+                    fieldJson.put(REPORT_ELEMENT_SORTABLE,field.isSortable());
+
+                    jsonArray.add(fieldJson);
+                }
+            }
+        }
+
+        return jsonArray;
+    }
+
+    private static JSONObject fieldToColumnJson(Field field, Locale locale) {
 		JSONObject json = fieldToCommonJson(field);
 
 		json.put(COLUMN_TYPE, field.getDisplayType().name());
@@ -55,7 +77,7 @@ public class JsonReportElementsBuilder {
 		
 		json.put(COLUMN_SQL_FUNCTION, null);
 		json.put(COLUMN_WIDTH, field.getWidth());
-		json.put(COLUMN_SORTABLE, field.isSortable());
+		json.put(REPORT_ELEMENT_SORTABLE, field.isSortable());
 
 		return json;
 	}
