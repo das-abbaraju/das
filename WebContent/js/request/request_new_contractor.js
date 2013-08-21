@@ -2,22 +2,20 @@
     PICS.define('request.RequestNewContractor', {
         methods: {
             init: function () {
-                var element = $('.RequestNewContractorAccount-page');
+                var $element = $('.RequestNewContractorAccount-page');
 
-                if (element.length) {
-                    var that = this;
+                if ($element.length) {
+                    $element.on('keyup', '#city', this.toggleAddressZip);
+                    $element.on('change', '#country', this.loadCountrySubdivision);
+                    $element.on('click', '#email_preview', this.previewEmail);
+                    $element.on('change', '#operator_list', this.loadOperatorUsersAndTags);
+                    $element.on('change', '#requesting_user', this.toggleOtherTextfield);
+                    $element.on('keyup', '.check-matches', PICS.debounce(this.checkMatches, 250));
+                    $element.on('change', '.popup-on-match', this.showMatchModal);
+                    $element.on('click', '.contact-note-required', this.showContactNote);
+                    $element.on('click', '.duplicated-show', this.showResolvedDuplicate);
+                    $element.on('click', '.duplicated-hide', this.hideResolvedDuplicate);
                     
-                    element.delegate('#city', 'keyup', this.toggleAddressZip);
-                    element.delegate('#country', 'change', this.loadCountrySubdivision);
-                    element.delegate('#email_preview', 'click', this.previewEmail);
-                    element.delegate('#operator_list', 'change', this.loadOperatorUsersAndTags);
-                    element.delegate('#requesting_user', 'change', this.toggleOtherTextfield);
-                    element.delegate('.check-matches', 'keyup', PICS.debounce(that.checkMatches, 250));
-                    element.delegate('.popup-on-match', 'change', this.showMatchModal);
-                    element.delegate('.contact-note-required', 'click', this.showContactNote);
-                    element.delegate('.duplicated-show', 'click', this.showResolvedDuplicate);
-                    element.delegate('.duplicated-hide', 'click', this.hideResolvedDuplicate);
-
                     $('.datepicker').datepicker({
                         changeMonth : true,
                         changeYear : true,
@@ -31,26 +29,19 @@
                         minDate: 1
                     });
                     
-                    if (!$('#country_subdivision').html().trim()) {
+                    // TODO: Trigger to be removed after completion of PICS-12493.
+                    if (!$.trim($('#country_subdivision').html())) {
                         $('#country').trigger('change');
                     }
-                    
-                    if ($('#user_list').length && $('#user_list').html().trim()) {
-                        $('#requesting_user').trigger('change');
-                    }
-                    
-                    $('#city').trigger('keyup');
-                    $('#request_status').trigger('change');
                 }
             },
             
             checkMatches: function(event) {
-                var classname = $(this).attr('data-class');
-                
-                var messageDiv = $('.match-found.' + classname);
-                var listDiv = $('.match-list.' + classname);
-                var type = $(this).attr('data-type');
-                var term = $(this).val();
+                var classname = $(event.target).attr('data-class'),
+                    messageDiv = $('.match-found.' + classname),
+                    listDiv = $('.match-list.' + classname),
+                    type = $(event.target).attr('data-type'),
+                    term = $(event.target).val();
                 
                 messageDiv.html('<img src="images/ajax_process.gif" alt="' + translate('JS.Loading') + '" /> '
                         + translate('JS.RequestNewContractor.message.CheckingForMatches'));
@@ -86,9 +77,9 @@
             },
             
             loadCountrySubdivision: function(event) {
-                var isocode = $(this).val();
+                var isocode = $(event.target).val();
                 
-                if (isocode.trim()) {
+                if ($.trim(isocode)) {
                     PICS.ajax({
                         url: 'CountrySubdivisionListAjax.action',
                         data: {
@@ -106,7 +97,7 @@
             },
             
             loadOperatorUsersAndTags: function(event) {
-                var opID = $(this).val();
+                var opID = $(event.target).val();
                 
                 PICS.ajax({
                    url: 'RequestingOperatorUserList.action',
@@ -148,20 +139,14 @@
             },
 
             showContactNote: function (event) {
-                var declined = $(this).hasClass('negative');
-                var type = $(this).attr('data-type');
-                var placeholder = $(this).attr('data-placeholder');
+                var declined = $(event.target).hasClass('negative'),
+                    type = $(event.target).attr('data-type'),
+                    placeholder = $(event.target).attr('data-placeholder');
 
                 if (type) {
                     $('#contact_type').val(type);
                 } else {
                     $('#contact_type').val('');
-                }
-
-                if (declined) {
-                    $('#declined_value').val('true');
-                } else {
-                    $('#declined_value').val('false');
                 }
 
                 $('#contact_note').find('textarea').attr('placeholder', placeholder);
@@ -184,10 +169,10 @@
             },
 
             showMatchModal: function (event) {
-                var classname = $(this).attr('data-class');
-                var listDiv = $('.match-list.' + classname);
-                var type = $(this).attr('data-type');
-                var term = $(this).val();
+                var classname = $(event.target).attr('data-class'),
+                    listDiv = $('.match-list.' + classname),
+                    type = $(event.target).attr('data-type'),
+                    term = $(event.target).val();
 
                 PICS.ajax({
                     url: 'RequestNewContractorSearch.action',
@@ -215,7 +200,7 @@
             },
             
             toggleAddressZip: function(event) {
-                var city = $(this).val();
+                var city = $(event.target).val();
                 
                 if (city) {
                     $('.address-zip').show();
@@ -225,7 +210,7 @@
             },
             
             toggleOtherTextfield: function(event) {
-                if ($(this).val() > 0) {
+                if ($(event.target).val() > 0) {
                     $('#requesting_other').hide();
                 } else {
                     $('#requesting_other').show();

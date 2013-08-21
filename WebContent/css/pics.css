@@ -1766,3 +1766,30 @@ div.blockDialog {
 .ConfigChanges-page .deleted {
 	background-color: #FBF2C9;
 }
+
+/* Registration Request Page */
+.RequestNewContractorAccount-page #email_preview_modal th {
+	font-weight: bold;
+}
+
+.RequestNewContractorAccount-page #email_preview_modal th,
+.RequestNewContractorAccount-page #email_preview_modal td {
+	padding: 5px;
+}
+
+.RequestNewContractorAccount-page #email_preview_modal #email_body {
+	background-color: #EEE;
+	border: 1px solid #DDD;
+}
+
+.RequestNewContractorAccount-page p.matched-on {
+	color: #A84D10 !important;
+}
+
+.RequestNewContractorAccount-page #duplicated_contractor_cancel_button {
+	margin: 0 20px 0 0;
+}
+
+.RequestNewContractorAccount-page .address-zip {
+	display: none;
+}
