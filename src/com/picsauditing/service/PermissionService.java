@@ -204,7 +204,11 @@ public class PermissionService {
 		return isOwnerOrHasEdit(user, report, permissions);
 	}
 
-	public boolean canUserRemoveReport(User removerUser, Report report, Permissions permissions) {
+    public boolean canUserShareReport(User user, Report report, Permissions permissions, boolean editable) {
+        return isOwnerOrHasEdit(user, report, permissions) || (!editable && canUserViewReport(user, report, permissions));
+    }
+
+    public boolean canUserRemoveReport(User removerUser, Report report, Permissions permissions) {
         return isOwnerOrHasView(removerUser, report, permissions);
     }
 

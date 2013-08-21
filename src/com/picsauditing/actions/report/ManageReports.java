@@ -23,7 +23,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.PermissionService;
@@ -365,7 +364,7 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			Account toAccount = dao.find(Account.class, shareId);
 
-			manageReportsService.shareReportWithAccountViewPermission(getUser(), toAccount, report, permissions);
+			manageReportsService.shareReportWithAccountPermission(getUser(), toAccount, report, permissions, false);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
 		}
@@ -378,7 +377,7 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			Account toAccount = dao.find(Account.class, shareId);
 
-			manageReportsService.shareReportWithAccountEditPermission(getUser(), toAccount, report, permissions);
+            manageReportsService.shareReportWithAccountPermission(getUser(), toAccount, report, permissions, true);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
 		}
