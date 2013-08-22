@@ -38,6 +38,7 @@ Ext.define('PICS.model.report.Filter', {
                     value = Ext.Date.format(value, 'Y-m-d') || value;
                     
                     break;
+                case PICS.data.FilterType.Autocomplete:
                 case PICS.data.FilterType.Multiselect:
                     if (value instanceof Array) {
                         value = value.join(', ');
@@ -52,7 +53,6 @@ Ext.define('PICS.model.report.Filter', {
                     value = value.toString();
                     
                     break;
-                case PICS.data.FilterType.Autocomplete:
                 case PICS.data.FilterType.String:
                 default:
                     // no conversion necessary

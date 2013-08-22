@@ -2,6 +2,8 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
     extend: 'PICS.view.report.filter.base.Filter',
     alias: 'widget.reportfilterbasemultiselect',
     
+    cls: 'multiselect-shortlist',
+
     createOperatorField: function () {
         return {
             xtype: 'hiddenfield',
@@ -11,20 +13,22 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
 
     createValueField: function () {
         return {
-            xtype: 'combobox',
+            xtype: 'boxselect',
             displayField: 'value',
             editable: false,
-            multiSelect: true,
+            filterPickList: true,
+            height: 60,
             name: 'value',
             queryMode: 'local', // Prevents reloading of the store, which would wipe out pre-selections.
             valueField: 'key',
-            width: 258
+            width: 258,
+            selectOnFocus: false
         };
     },
     
     updateValueFieldStore: function (filter) {
         var field_id = filter.get('field_id'),
-            value_field = this.down('combobox'),
+            value_field = this.down('boxselect'),
             url = PICS.data.ServerCommunicationUrl.getMultiSelectUrl(field_id);
         
         value_field.store = Ext.create('Ext.data.Store', {

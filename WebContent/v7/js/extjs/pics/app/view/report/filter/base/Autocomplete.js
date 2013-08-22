@@ -13,15 +13,18 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
 
     createValueField: function () {
         return {
-            xtype: 'combobox',
+            xtype: 'boxselect',
             displayField: 'value',
             editable: true,
+            emptyText: PICS.text('Report.execute.filter.autocomplete.emptyText') + '\u2026',
+            filterPickList: true,
             flex: 1,
+            height: 60,
             hideTrigger: true,
             minChars: 2,
-            multiSelect: false,
             name: 'value',
             queryParam: 'searchQuery',
+            triggerOnClick: false,
             valueField: 'key'
         };
     },

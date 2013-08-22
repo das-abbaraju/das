@@ -18,11 +18,11 @@ Ext.define('PICS.view.report.filter.Filter', {
     bodyCls: 'filter-body',
     border: 0,
     cls: 'filter',
-    height: 96,
     layout: {
         type: 'hbox',
         align: 'middle'
     },
+    padding: '0, 0, 10, 0',
     overCls: 'x-over',
     width: 320,
 
@@ -43,6 +43,8 @@ Ext.define('PICS.view.report.filter.Filter', {
             filter_number = this.createNumber(index),
             filter_content = this.createContent(filter),
             remove_button = this.createRemoveButton();
+
+        this.height = filter_content.items[1].height;
 
         this.items = [
             filter_number,

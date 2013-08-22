@@ -84,12 +84,11 @@ Ext.define('PICS.controller.report.Filter', {
 
             // show filter-number and remove-filter on filter focus
             '\
-            #report_filters combobox,\
+            #report_filters reportfilterbasemultiselect,\
             #report_filters textfield,\
             #report_filters numberfield,\
             #report_filters datefield,\
-            #report_filters checkbox\
-            ': {
+            #report_filters checkbox': {
                 blur: this.blurFilter,
                 focus: this.focusFilter
             },
@@ -102,7 +101,7 @@ Ext.define('PICS.controller.report.Filter', {
 
             // saving edits to filter store + refresh
             '#report_filters reportfilterbaseautocomplete combobox[name=value]': {
-                select: this.selectValueField,
+                change: this.selectValueField,
                 render: this.renderComboboxValueField
             },
 
@@ -433,6 +432,11 @@ Ext.define('PICS.controller.report.Filter', {
     },
     
     selectValueField: function (cmp, records, eOpts) {
+        // Hack to prevent redundant data load on inital report load.
+        if (eOpts instanceof Array && eOpts[0] == '') {
+            return;
+        }
+
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
     

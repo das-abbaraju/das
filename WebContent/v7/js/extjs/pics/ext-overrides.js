@@ -4,6 +4,7 @@ Ext.define('PICS.Overrides', {
         'Ext.menu.Menu',
         'Ext.Ajax',
         'Ext.data.proxy.Server'
+        'Ext.ux.form.field.BoxSelect'
     ]
 }, function () {
     Ext.log = function (message) {
@@ -19,6 +20,49 @@ Ext.define('PICS.Overrides', {
 
     Ext.override(Ext.data.proxy.Server, {
         timeout: Ext.Ajax.timeout
+    {);
+
+    /**
+     * Override of BoxSelect's override of the same method
+     * The additional conditional check prevents emptying of the boxselect store if no actual records were selected.
+     */
+    Ext.override(Ext.ux.form.field.BoxSelect, {
+        onListSelectionChange: function(list, selectedRecords) {
+            var me = this,
+            valueStore = me.valueStore,
+            mergedRecords = [],
+            i;
+
+            // Only react to selection if it is not called from setValue, and if our list is
+            // expanded (ignores changes to the selection model triggered elsewhere)
+            if (selectedRecords.length && me.ignoreSelection <= 0 && me.isExpanded) {
+                // Pull forward records that were already selected or are now filtered out of the store
+                valueStore.each(function(rec) {
+                    if (Ext.Array.contains(selectedRecords, rec) || me.isFilteredRecord(rec)) {
+                        mergedRecords.push(rec);
+                    }
+                });
+                mergedRecords = Ext.Array.merge(mergedRecords, selectedRecords);
+
+                i = Ext.Array.intersect(mergedRecords, valueStore.getRange()).length;
+                if ((i != mergedRecords.length) || (i != me.valueStore.getCount())) {
+                    me.setValue(mergedRecords, false);
+                    if (!me.multiSelect || !me.pinList) {
+                        Ext.defer(me.collapse, 1, me);
+                    }
+                    if (valueStore.getCount() > 0) {
+                        me.fireEvent('select', me, valueStore.getRange());
+                    }
+                }
+                me.inputEl.focus();
+                if (!me.pinList) {
+                    me.inputEl.dom.value = '';
+                }
+                if (me.selectOnFocus) {
+                    me.inputEl.dom.select();
+                }
+            }
+        }
     });
 
     /*
