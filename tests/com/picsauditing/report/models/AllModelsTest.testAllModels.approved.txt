@@ -705,6 +705,7 @@ ContractorMembershipDate
 ContractorOperatorBaselineFlag
 ContractorOperatorCreationDate
 ContractorOperatorFlagColor
+ContractorOperatorFlagIsForced
 ContractorOperatorForceBegin
 ContractorOperatorForceEnd
 ContractorOperatorForceFlag
