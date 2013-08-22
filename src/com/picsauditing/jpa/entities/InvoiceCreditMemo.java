@@ -45,8 +45,15 @@ public class InvoiceCreditMemo extends Transaction {
         for (RefundItem item : refundItems) {
             total = total.add(item.getAmount());
         }
+        total = total.negate();
         setTotalAmount(total);
         setAmountApplied(total);
+    }
+
+    @Override
+    @Transient
+    public BigDecimal getBalance() {
+        return amountApplied;
     }
 
 }

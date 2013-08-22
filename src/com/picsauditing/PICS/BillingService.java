@@ -98,7 +98,7 @@ public class BillingService {
 
         for (InvoiceCreditMemo creditMemo : contractor.getCreditMemos()) {
             if (!creditMemo.getStatus().isVoid())
-                currentBalance = currentBalance.add(creditMemo.getTotalAmount());
+                currentBalance = currentBalance.subtract(creditMemo.getTotalAmount());
         }
 
         return currentBalance;
