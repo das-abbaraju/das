@@ -364,7 +364,7 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			Account toAccount = dao.find(Account.class, shareId);
 
-			manageReportsService.shareReportWithAccountPermission(getUser(), toAccount, report, permissions, false);
+			manageReportsService.shareReportWithAccountViewPermission(getUser(), toAccount, report, permissions);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
 		}
@@ -377,7 +377,7 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			Account toAccount = dao.find(Account.class, shareId);
 
-            manageReportsService.shareReportWithAccountPermission(getUser(), toAccount, report, permissions, true);
+			manageReportsService.shareReportWithAccountEditPermission(getUser(), toAccount, report, permissions);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
 		}
