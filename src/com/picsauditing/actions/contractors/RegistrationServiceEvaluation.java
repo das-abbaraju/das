@@ -206,7 +206,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
             contractor.setMembershipDate(new Date());
-            contractor.setPaymentExpires(DateUtils.addYears(contractor.getMembershipDate(), 1));
+            contractor.setPaymentExpires(DateUtils.addYears(new Date(), 1));
 
 			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);

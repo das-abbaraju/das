@@ -101,7 +101,7 @@ public class BillingDetail extends ContractorActionSupport {
 		if (ACTIVATE_BUTTON.equals(button)) {
 			contractor.setStatus(AccountStatus.Active);
             contractor.setMembershipDate(new Date());
-            contractor.setPaymentExpires(DateUtils.addYears(contractor.getMembershipDate(), 1));
+            contractor.setPaymentExpires(DateUtils.addYears(new Date(), 1));
 			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
 					Account.PicsID, billingNoteModel.findUserForPaymentNote(permissions));
 		}

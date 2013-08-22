@@ -500,7 +500,7 @@ public class BillingService {
 						|| item.getInvoiceFee().isBidonly() || item.getInvoiceFee().isListonly()) {
 					contractor.setStatus(AccountStatus.Active);
                     contractor.setMembershipDate(new Date());
-                    contractor.setPaymentExpires(DateUtils.addYears(contractor.getMembershipDate(), 1));
+                    contractor.setPaymentExpires(DateUtils.addYears(new Date(), 1));
 					contractor.setAuditColumns(new User(User.SYSTEM));
 					accountDao.save(contractor);
 					return true;

@@ -497,7 +497,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		if (contractor.isHasFreeMembership()) {
 			contractor.setStatus(AccountStatus.Active);
             contractor.setMembershipDate(new Date());
-            contractor.setPaymentExpires(DateUtils.addYears(contractor.getMembershipDate(), 1));
+            contractor.setPaymentExpires(DateUtils.addYears(new Date(), 1));
 		}
 
 		contractor.setReason(Strings.EMPTY_STRING);
