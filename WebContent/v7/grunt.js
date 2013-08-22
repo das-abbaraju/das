@@ -11,10 +11,11 @@ module.exports = function(grunt) {
             '* Copyright (c) <%= grunt.template.today("yyyy") %> ' +
             'Carey Hinoki; Licensed MIT */'
     },
-    
+
     lint: {
         files: [
             'js/vendor/jquery-1.9.1.min.js',
+            'js/vendor/jquery-ui-1.10.3.custom.js',
             'js/vendor/bootstrap.js',
             'js/vendor/prettify.js',
             'js/plugins.js',
@@ -22,11 +23,11 @@ module.exports = function(grunt) {
             'js/main.js'
         ]
     },
-    
+
     qunit: {
 
     },
-    
+
     concat: {
         prod: {
             src: [
@@ -36,7 +37,7 @@ module.exports = function(grunt) {
             dest: 'js/script.js'
         }
     },
-    
+
     min: {
         prod: {
             src: [
@@ -64,7 +65,7 @@ module.exports = function(grunt) {
             forcecompile: true
         }
     },
-    
+
     recess: {
         debug: {
             src: [
@@ -141,7 +142,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', 'Description...', function () {
       grunt.task.run('build-all');
   });
-  
+
   // grunt build-all:prod
   // grunt build-all:debug
   // grunt build-all
@@ -152,7 +153,7 @@ module.exports = function(grunt) {
           grunt.task.run('concat compass:debug recess:debug');
       }
   });
-  
+
   // grunt build-js:prod
   // grunt build-js:debug
   // grunt build-js
@@ -163,7 +164,7 @@ module.exports = function(grunt) {
           grunt.task.run('concat');
       }
   });
-  
+
   // grunt build-compass:prod
   // grunt build-compass:debug
   // grunt build-compass
@@ -174,7 +175,7 @@ module.exports = function(grunt) {
           grunt.task.run('compass:debug recess:debug');
       }
   });
-  
+
   // grunt watch-all
   // grunt watch-js
   // grunt watch-compass
