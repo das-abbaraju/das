@@ -47,7 +47,12 @@ public class OperatorAccountBuilder {
 		return this;
 	}
 
-	public OperatorAccountBuilder operator(ContractorOperator op) {
+    public OperatorAccountBuilder operator() {
+        operator.setType(Account.OPERATOR_ACCOUNT_TYPE);
+        return this;
+    }
+
+	public OperatorAccountBuilder contractor(ContractorOperator op) {
 		this.operator.getContractorOperators().add(op);
 		return this;
 	}

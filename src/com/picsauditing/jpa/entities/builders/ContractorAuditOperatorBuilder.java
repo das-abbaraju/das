@@ -1,9 +1,6 @@
 package com.picsauditing.jpa.entities.builders;
 
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.*;
 
 import java.util.ArrayList;
 
@@ -33,6 +30,36 @@ public class ContractorAuditOperatorBuilder {
 
     public ContractorAuditOperatorBuilder status(AuditStatus auditStatus) {
         cao.setStatus(auditStatus);
+        return this;
+    }
+
+    public ContractorAuditOperatorBuilder audit(ContractorAudit insurancePolicy) {
+        cao.setAudit(insurancePolicy);
+        return this;
+    }
+
+    public ContractorAuditOperatorBuilder caop() {
+        return caop(cao.getOperator());
+    }
+
+    public ContractorAuditOperatorBuilder caop(OperatorAccount... operators) {
+       for (OperatorAccount operator: operators) {
+            caop(operator);
+        }
+       return this;
+    }
+
+    public ContractorAuditOperatorBuilder caop(OperatorAccount operator) {
+        if (cao.getCaoPermissions() == null) {
+            cao.setCaoPermissions(new ArrayList<ContractorAuditOperatorPermission>());
+        }
+        cao.getCaoPermissions().add(
+                ContractorAuditOperatorPermission.builder()
+                        .cao(cao)
+                        .previousCao(cao)
+                        .operator(operator)
+                        .build()
+        );
         return this;
     }
 }

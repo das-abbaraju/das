@@ -50,6 +50,8 @@ public class FlagDataCalculator {
 		operatorCriteria.get(opCriteria.getCriteria()).add(opCriteria);
 	}
 
+    public FlagDataCalculator() {}
+
 	private FlagCriteriaDAO flagCriteriaDao() {
 		if (flagCriteriaDao == null) {
 			return SpringUtils.getBean(SpringUtils.FLAG_CRITERIA_DAO);

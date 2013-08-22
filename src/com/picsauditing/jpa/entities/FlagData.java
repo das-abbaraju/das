@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.FlagDataBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -134,4 +135,8 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 	public void resetBaseline() {
 		this.setBaselineFlag(this.getFlag());
 	}
+
+    public static FlagDataBuilder builder() {
+        return new FlagDataBuilder();
+    }
 }

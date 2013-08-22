@@ -20,4 +20,9 @@ public class FlagCriteriaBuilder {
         flag.setQuestion(question);
         return this;
     }
+
+    public FlagCriteriaBuilder insurance() {
+        flag.setInsurance(true);
+        return this;
+    }
 }

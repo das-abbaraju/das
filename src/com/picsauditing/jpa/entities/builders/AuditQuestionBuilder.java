@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities.builders;
 
 import com.picsauditing.actions.rules.AuditRuleActionSupport;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 public class AuditQuestionBuilder {
@@ -10,6 +11,11 @@ public class AuditQuestionBuilder {
        question.setId(id);
         return this;
 
+    }
+
+    public AuditQuestionBuilder category(AuditCategory category) {
+        question.setCategory(category);
+        return this;
     }
 
     public AuditQuestion build() {
