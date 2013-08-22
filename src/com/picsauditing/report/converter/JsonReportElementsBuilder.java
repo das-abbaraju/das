@@ -23,7 +23,7 @@ public class JsonReportElementsBuilder {
 		for (Field field : fields) {
 			if (field.isVisible() && field.canUserSeeQueryField(permissions)) {
 				ReportUtil.translateField(field, permissions.getLocale());
-				JSONObject columnJson = fieldToColumnJson(field, permissions.getLocale());
+				JSONObject columnJson = fieldToColumnJson(field);
 				jsonArray.add(columnJson);
 			}
 		}
@@ -46,30 +46,7 @@ public class JsonReportElementsBuilder {
 		return jsonArray;
 	}
 
-    public static JSONArray buildFields(AbstractModel model, Permissions permissions) {
-        JSONArray jsonArray = new JSONArray();
-
-        if (model != null) {
-            Collection<Field> fields = model.getAvailableFields().values();
-
-            for (Field field : fields) {
-                if (field.canUserSeeQueryField(permissions)) {
-                    ReportUtil.translateField(field, permissions.getLocale());
-                    JSONObject fieldJson = fieldToCommonJson(field);
-
-                    fieldJson.put(REPORT_ELEMENT_VISIBLE,field.isVisible());
-                    fieldJson.put(REPORT_ELEMENT_FILTERABLE,field.isFilterable());
-                    fieldJson.put(REPORT_ELEMENT_SORTABLE,field.isSortable());
-
-                    jsonArray.add(fieldJson);
-                }
-            }
-        }
-
-        return jsonArray;
-    }
-
-    private static JSONObject fieldToColumnJson(Field field, Locale locale) {
+    private static JSONObject fieldToColumnJson(Field field) {
 		JSONObject json = fieldToCommonJson(field);
 
 		json.put(COLUMN_TYPE, field.getDisplayType().name());

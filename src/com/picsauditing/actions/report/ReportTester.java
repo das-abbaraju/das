@@ -2,7 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.*;
 
-import com.google.common.base.Joiner;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Column;
@@ -11,13 +11,11 @@ import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ModelType;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.picsauditing.service.FieldInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
@@ -26,13 +24,15 @@ public class ReportTester extends PicsActionSupport {
     @Autowired
     private ReportDAO reportDAO;
 
-    ModelType modelType;
-	int reportID;
+    private ModelType modelType;
+    private int reportID;
 
-	Report report;
+    private Report report;
 
-	List<ReportElement> reportElements;
-	Map<String, Field> availableFields;
+    private List<ReportElement> reportElements;
+    private Map<String, Field> availableFields;
+
+    private List<FieldInfo> allModelFieldInfos;
 
 	@Override
 	public String execute() throws Exception {
@@ -47,24 +47,52 @@ public class ReportTester extends PicsActionSupport {
 	}
 
     public String directory() {
-        JSONArray fieldDirectoryJson = new JSONArray();
-        for (ModelType type : ModelType.values()) {
+        allModelFieldInfos = new ArrayList<FieldInfo>();
 
+        for (ModelType type : ModelType.values()) {
             AbstractModel model = ReportModelFactory.build(type, permissions);
 
-            JSONArray availableFieldsJson = JsonReportElementsBuilder.buildFields(model, permissions);
-            for (Object obj : availableFieldsJson) {
-                JSONObject fieldJson = (JSONObject) obj;
-                fieldJson.put("modelType",type.toString());
-            }
+            List modelFieldInfos = buildModelFieldInfomation(type, model, permissions);
 
-            fieldDirectoryJson.addAll(availableFieldsJson);
+            allModelFieldInfos.addAll(modelFieldInfos);
         }
 
-        json.put("directory",fieldDirectoryJson);
-
-        return JSON;
+        return SUCCESS;
     }
+
+    public static List<FieldInfo> buildModelFieldInfomation(ModelType modelType, AbstractModel model, Permissions permissions) {
+        List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>();
+
+        if (model != null) {
+            Collection<Field> fields = model.getAvailableFields().values();
+
+            for (Field field : fields) {
+                if (field.canUserSeeQueryField(permissions)) {
+                    FieldInfo fieldInfo = buildFieldInformation(permissions, field);
+                    fieldInfo.setModelType(modelType);
+                    fieldInfos.add(fieldInfo);
+                }
+            }
+        }
+
+        return fieldInfos;
+    }
+
+    private static FieldInfo buildFieldInformation(Permissions permissions, Field field) {
+        ReportUtil.translateField(field, permissions.getLocale());
+
+        FieldInfo fieldInfo = new FieldInfo();
+
+        fieldInfo.setFieldId(field.getName());
+        fieldInfo.setCategory(field.getCategoryTranslation());
+        fieldInfo.setName(field.getText());
+        fieldInfo.setHelp(field.getHelp());
+        fieldInfo.setVisible(field.isVisible());
+        fieldInfo.setFilterable(field.isFilterable());
+        fieldInfo.setSortable(field.isSortable());
+        return fieldInfo;
+    }
+
 
     private String showModelFocus() throws ReportValidationException {
         AbstractModel model = ReportModelFactory.build(modelType, permissions);
@@ -119,6 +147,14 @@ public class ReportTester extends PicsActionSupport {
 
     public void setModelType(ModelType modelType) {
         this.modelType = modelType;
+    }
+
+    public List<FieldInfo> getAllModelFieldInfos() {
+        return allModelFieldInfos;
+    }
+
+    public void setAllModelFieldInfos(List<FieldInfo> allModelFieldInfos) {
+        this.allModelFieldInfos = allModelFieldInfos;
     }
 
     public List<ReportElement> getReportElements() {
