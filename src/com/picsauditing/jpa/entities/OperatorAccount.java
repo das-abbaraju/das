@@ -395,9 +395,9 @@ public class OperatorAccount extends Account {
 		return forms;
 	}
 
-	@OneToMany(mappedBy = "operator")
+	@OneToMany(mappedBy = "operator", orphanRemoval = true)
 	@Where(clause = "type IS NULL")
-	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@Cascade(org.hibernate.annotations.CascadeType.ALL)
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}
