@@ -1,50 +1,26 @@
 package com.picsauditing.actions.employees;
 
-import static com.picsauditing.EntityFactory.addCao;
-import static com.picsauditing.EntityFactory.addContractorOperator;
-import static com.picsauditing.EntityFactory.makeContractor;
-import static com.picsauditing.EntityFactory.makeContractorAudit;
-import static com.picsauditing.EntityFactory.makeOperator;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.persistence.EntityManager;
-
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.OperatorTagCategory;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.test.TranslatorFactorySetup;
+import org.junit.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import javax.persistence.EntityManager;
+import java.util.*;
+
+import static com.picsauditing.EntityFactory.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class EmployeeDashboardTest extends PicsTranslationTest {
 
@@ -206,6 +182,33 @@ public class EmployeeDashboardTest extends PicsTranslationTest {
 		assertFalse(employeeDashboard.isCanEditEmployees());
 
 		when(permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit)).thenReturn(true);
+		assertTrue(employeeDashboard.isCanEditEmployees());
+	}
+
+	@Test
+	public void testIsCanEditEmployees_OperatorCorporate() {
+		OperatorAccount operator = mock(OperatorAccount.class);
+		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
+
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(operator.hasCompetencyRequiringDocumentation()).thenReturn(false);
+		assertFalse(employeeDashboard.isCanEditEmployees());
+
+		when(operator.hasCompetencyRequiringDocumentation()).thenReturn(true);
+		contractorAccount.setOperators(Collections.<ContractorOperator>emptyList());
+		assertFalse(employeeDashboard.isCanEditEmployees());
+
+		when(permissions.isRequiresCompetencyReview()).thenReturn(true);
+		contractorAccount.setOperators(Collections.<ContractorOperator>emptyList());
+		assertFalse(employeeDashboard.isCanEditEmployees());
+
+		List<ContractorOperator> contractorOperatorList = new ArrayList<>();
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
+		contractorOperatorList.add(contractorOperator);
+
+		when(operator.hasCompetencyRequiringDocumentation()).thenReturn(true);
+		contractorAccount.setOperators(contractorOperatorList);
 		assertTrue(employeeDashboard.isCanEditEmployees());
 	}
 

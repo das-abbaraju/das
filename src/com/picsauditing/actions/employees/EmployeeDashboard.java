@@ -1,16 +1,5 @@
 package com.picsauditing.actions.employees;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
@@ -19,12 +8,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.contractors.ContractorDocuments;
 import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.UserStatus;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class EmployeeDashboard extends ContractorDocuments {
@@ -136,6 +125,21 @@ public class EmployeeDashboard extends ContractorDocuments {
 	}
 
 	public boolean isCanEditEmployees() {
+		if (permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview()) {
+			// Are you managing required competencies?
+			OperatorAccount operator = operatorDAO.find(permissions.getAccountId());
+			if (operator.hasCompetencyRequiringDocumentation()) {
+				// Does this contractor work for you?
+				for (ContractorOperator contractorOperator : contractor.getOperators()) {
+					if (contractorOperator.getOperatorAccount().equals(operator)) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
 		return permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)
 				|| permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit);
 	}
