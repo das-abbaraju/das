@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.BillingService;
@@ -9,6 +10,7 @@ import com.picsauditing.PICS.FeeService;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.BillingNoteModel;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -98,6 +100,8 @@ public class BillingDetail extends ContractorActionSupport {
 
 		if (ACTIVATE_BUTTON.equals(button)) {
 			contractor.setStatus(AccountStatus.Active);
+            contractor.setMembershipDate(new Date());
+            contractor.setPaymentExpires(DateUtils.addYears(contractor.getMembershipDate(), 1));
 			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
 					Account.PicsID, billingNoteModel.findUserForPaymentNote(permissions));
 		}
