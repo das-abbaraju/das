@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2013-08-21
+/*! Picsorganizer - v0.1.0 - 2013-08-22
 * http://www.picsorganizer.com/
 * Copyright (c) 2013 Carey Hinoki; Licensed MIT */
 
@@ -9553,7 +9553,33 @@ PICS.define('report.manage-report.FavoritesController', {
                     .on('click', '.report-options .unfavorite', $.proxy(this.unfavoriteReport, this))
                     .on('click', '.report-options .pin', $.proxy(this.pinReport, this))
                     .on('click', '.report-options .unpin', $.proxy(this.unpinReport, this))
+                    .on('click', '.report-options .move-down', $.proxy(this.moveReportDown, this))
+                    .on('click', '.report-options .move-up', $.proxy(this.moveReportUp, this));
             }
+        },
+        
+        moveReportUp: function (event) {
+            var $element = $(event.currentTarget);
+            
+            PICS.ajax({
+                url: $element.attr('href'),
+                success: this.refreshFavorites
+            });
+            
+            event.preventDefault();
+        },
+        
+        moveReportDown: function (event) {
+            var $element = $(event.currentTarget);
+            
+            event.preventDefault();
+            
+            PICS.ajax({
+                url: $element.attr('href'),
+                success: this.refreshFavorites
+            });
+            
+            event.preventDefault();
         },
         
         pinReport: function (event) {
@@ -10152,14 +10178,14 @@ PICS.define('select2.Select2', {
                     $(TOP_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [BOTTOM_LIST_SELECTOR],
-                        update: onFirstListUpdate,
+                        update: onTopListUpdate,
                         receive: updateOrder
                     });
 
                     $(BOTTOM_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [TOP_LIST_SELECTOR],
-                        update: onSecondListUpdate,
+                        update: onBottomListUpdate,
                         receive: updateOrder
                     });
                 }
@@ -10167,11 +10193,11 @@ PICS.define('select2.Select2', {
 
             // Event Handlers
 
-            function onFirstListUpdate(event, ui) {
+            function onTopListUpdate(event, ui) {
                 var $this = $(this),
                     this_list_items, last_item;
 
-                if (ui.sender && firstListMaxExceeded()) {
+                if (ui.sender && topListMaxExceeded()) {
                     this_list_items = $this.children();
 
                     last_item = this_list_items.last();
@@ -10180,11 +10206,11 @@ PICS.define('select2.Select2', {
                 }
             }
 
-            function onSecondListUpdate(event, ui) {
+            function onBottomListUpdate(event, ui) {
                 var $this = $(this),
                     this_list_items, first_item;
 
-                if (ui.sender && !firstListMaxExceeded()) {
+                if (ui.sender && !topListMaxExceeded()) {
                     this_list_items = $this.children();
 
                     first_item = this_list_items.first();
@@ -10255,7 +10281,7 @@ PICS.define('select2.Select2', {
                 }
             }
 
-            function firstListMaxExceeded() {
+            function topListMaxExceeded() {
                 return $(TOP_LIST_SELECTOR).children().length > TOP_LIST_MAX;
             }
 

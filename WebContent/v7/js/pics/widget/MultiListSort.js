@@ -29,14 +29,14 @@
                     $(TOP_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [BOTTOM_LIST_SELECTOR],
-                        update: onFirstListUpdate,
+                        update: onTopListUpdate,
                         receive: updateOrder
                     });
 
                     $(BOTTOM_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [TOP_LIST_SELECTOR],
-                        update: onSecondListUpdate,
+                        update: onBottomListUpdate,
                         receive: updateOrder
                     });
                 }
@@ -44,11 +44,11 @@
 
             // Event Handlers
 
-            function onFirstListUpdate(event, ui) {
+            function onTopListUpdate(event, ui) {
                 var $this = $(this),
                     this_list_items, last_item;
 
-                if (ui.sender && firstListMaxExceeded()) {
+                if (ui.sender && topListMaxExceeded()) {
                     this_list_items = $this.children();
 
                     last_item = this_list_items.last();
@@ -57,11 +57,11 @@
                 }
             }
 
-            function onSecondListUpdate(event, ui) {
+            function onBottomListUpdate(event, ui) {
                 var $this = $(this),
                     this_list_items, first_item;
 
-                if (ui.sender && !firstListMaxExceeded()) {
+                if (ui.sender && !topListMaxExceeded()) {
                     this_list_items = $this.children();
 
                     first_item = this_list_items.first();
@@ -132,7 +132,7 @@
                 }
             }
 
-            function firstListMaxExceeded() {
+            function topListMaxExceeded() {
                 return $(TOP_LIST_SELECTOR).children().length > TOP_LIST_MAX;
             }
 

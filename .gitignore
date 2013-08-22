@@ -12,3 +12,10 @@
 *.bak
 rebel.xml
 rebel-remote.xml
+
+/css
+/ie7
+/images
+/js
+/struts
+/v7
