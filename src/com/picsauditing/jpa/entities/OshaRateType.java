@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum OshaRateType implements Translatable {
-	LwcrAbsolute(true), LwcrNaics, TrirAbsolute(true), TrirNaics, TrirWIA, Fatalities, Dart(true), DartNaics, SeverityRate, Cad7, Neer, DaysAwayCases, DaysAway, JobTransfersCases, JobTransferDays, OtherRecordables, Hours, FileUpload, IFR, EMR, AFR, DOFR, LTIFR, IR, FR, ATLR, DIIR, SR, WIR, ODI;
+	LwcrAbsolute(true), LwcrNaics, TrirAbsolute(true), TrirNaics, TrirWIA, Fatalities, Dart(true), DartNaics, SeverityRate, Cad7, Neer, DaysAwayCases, DaysAway, JobTransfersCases, JobTransferDays, OtherRecordables, Hours, FileUpload, IFR, EMR, AFR, DOFR, LTIFR, IR, FR, ATLR, DIIR, SR, WIR, ODI, AIR;
 
 	private boolean hasIndustryAverage;
 

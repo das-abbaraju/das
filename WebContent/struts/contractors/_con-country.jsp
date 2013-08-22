@@ -20,9 +20,7 @@
         theme="pics"
         value="accountCountrySubdivision"
     />
-	<s:if test="accountCountrySubdivision == null" >
-		<span class="redMain" id="countrySubdivision_req">*</span>
-	</s:if>
+	<span class="redMain" id="countrySubdivision_req">*</span>
 	<pics:fieldhelp title="Country Subdivision">
 		<s:text name="ContractorAccount.countrySubdivision.isoCode.fieldhelp"/>
 	</pics:fieldhelp>

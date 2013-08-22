@@ -114,9 +114,9 @@ public class ManageReportsService {
 
 	public ReportPermissionUser shareReportWithUserOrGroup(User sharerUser, User toUser, Report report, Permissions permissions,
 			boolean editable) throws Exception {
-		if (!permissionService.canUserShareReport(sharerUser, report, permissions)) {
+		if (!permissionService.canUserShareReport(sharerUser, report, permissions, editable)) {
 			// TODO translate this
-			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
+			throw new ReportPermissionException("You cannot share a report that you cannot access.");
 		}
 
         ReportPermissionUser reportPermissionUser;
@@ -136,22 +136,17 @@ public class ManageReportsService {
         return reportPermissionUser;
 	}
 
-	public ReportPermissionAccount shareReportWithAccountViewPermission(User sharerUser, Account toAccount, Report report, Permissions permissions) throws ReportPermissionException {
-		if (!permissionService.canUserShareReport(sharerUser, report, permissions)) {
+	public ReportPermissionAccount shareReportWithAccountPermission(User sharerUser, Account toAccount, Report report, Permissions permissions, boolean editable) throws ReportPermissionException {
+        if (!permissionService.canUserShareReport(sharerUser, report, permissions, editable)) {
 			// TODO translate this
-			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
+			throw new ReportPermissionException("You cannot share a report that you cannot access.");
 		}
 
-		return permissionService.grantAccountViewPermission(sharerUser.getId(), toAccount, report);
-	}
-
-	public ReportPermissionAccount shareReportWithAccountEditPermission(User sharerUser, Account toAccount, Report report, Permissions permissions) throws ReportPermissionException {
-		if (!permissionService.canUserShareReport(sharerUser, report, permissions)) {
-			// TODO translate this
-			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
-		}
-
-		return permissionService.grantAccountEditPermission(sharerUser.getId(), toAccount, report);
+        if (editable) {
+            return permissionService.grantAccountEditPermission(sharerUser.getId(), toAccount, report);
+        } else {
+            return permissionService.grantAccountViewPermission(sharerUser.getId(), toAccount, report);
+        }
 	}
 
 	public void unshareUser(User revokerUser, User fromUser, Report report, Permissions permissions) throws Exception {

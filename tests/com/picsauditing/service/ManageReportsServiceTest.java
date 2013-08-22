@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -30,8 +29,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
-
-import javax.persistence.NoResultException;
 
 public class ManageReportsServiceTest {
 
@@ -176,7 +173,7 @@ public class ManageReportsServiceTest {
 	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsTrue_ThenReportIsSharedWithEditPermission() throws Exception {
 		when(reportDAO.findById(REPORT_ID)).thenReturn(report);
 		when(reportDAO.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(true);
+		when(permissionService.canUserShareReport(user, report, permissions, true)).thenReturn(true);
 		when(reportPreferencesService.loadOrCreateReportUser(USER_ID, REPORT_ID)).thenReturn(reportUser);
 		boolean editable = true;
 
@@ -189,7 +186,7 @@ public class ManageReportsServiceTest {
 	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsFalse_ThenReportIsSharedWithViewPermission() throws Exception {
 		when(reportDAO.findById(REPORT_ID)).thenReturn(report);
 		when(reportDAO.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(true);
+		when(permissionService.canUserShareReport(user, report, permissions, false)).thenReturn(true);
 		when(reportPreferencesService.loadOrCreateReportUser(USER_ID, REPORT_ID)).thenReturn(reportUser);
 		boolean editable = false;
 
@@ -202,16 +199,16 @@ public class ManageReportsServiceTest {
 	public void testShareReportWithAccount_WhenUserCantShare_ThenExceptionIsThrown() throws ReportPermissionException {
 		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(false);
 
-		manageReportsService.shareReportWithAccountViewPermission(user, account, report, permissions);
+		manageReportsService.shareReportWithAccountPermission(user, account, report, permissions, false);
 	}
 
 	@Test
 	public void testShareReportWithAccount_WhenUserCanViewAndEdit_ThenReportIsShared() throws ReportPermissionException {
 		when(reportDAO.findById(REPORT_ID)).thenReturn(report);
 		when(reportDAO.find(Account.class, ACCOUNT_ID)).thenReturn(account);
-		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(true);
+		when(permissionService.canUserShareReport(user, report, permissions, false)).thenReturn(true);
 
-		manageReportsService.shareReportWithAccountViewPermission(user, account, report, permissions);
+		manageReportsService.shareReportWithAccountPermission(user, account, report, permissions, false);
 
 		verify(permissionService).grantAccountViewPermission(USER_ID, account, report);
 	}
@@ -262,7 +259,7 @@ public class ManageReportsServiceTest {
 		report.setOwner(sharerUser);
 		User toUser = new User("To User");
 		toUser.setId(2);
-		when(permissionService.canUserShareReport(sharerUser, report, permissions)).thenReturn(true);
+		when(permissionService.canUserShareReport(sharerUser, report, permissions, false)).thenReturn(true);
 		ReportUser reportUser = new ReportUser();
 		reportUser.setHidden(true);
 		when(reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);

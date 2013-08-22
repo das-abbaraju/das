@@ -89,7 +89,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
 
   private def save(creditMemo: CreditMemoAppliedToInvoice) = {
     if (!creditMemo.getCreditMemo.getItems.isEmpty)
-      creditMemo.getCreditMemo.updateAmountApplied()
+      creditMemo.updateAmountApplied()
       creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
       creditMemo.setAuditColumns(permissions)
       creditMemo.getCreditMemo.setSapSync(true)

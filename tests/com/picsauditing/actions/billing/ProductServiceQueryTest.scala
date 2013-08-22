@@ -13,12 +13,14 @@ import org.scalatest.matchers.ShouldMatchers._
 import scala.collection.JavaConversions._
 import com.picsauditing.actions.PicsActionSupport
 import com.picsauditing.service.i18n.{TranslationServiceFactory, TranslationService}
+import java.math.BigDecimal
+import com.picsauditing.jpa.entities.FeeClass._
 
 @RunWith(classOf[JUnitRunner])
 class ProductServiceQueryTest extends FlatSpec with MockitoSugar with BeforeAndAfter {
 
   val EMPLOYEE_GUARD_SUCCESS = "{\"EmployeeGUARD\":true}"
-  val EMPLOYEE_GUARD_FAILURE = "{\"EmployeeGUARD\":false}"
+    val EMPLOYEE_GUARD_FAILURE = "{\"EmployeeGUARD\":false}"
 
   "ProductServiceQueryTest" should "return an error when a non-contractor account ID is querried." in new TestSetup {
     when(mockAccount isContractor) thenReturn false
@@ -34,20 +36,20 @@ class ProductServiceQueryTest extends FlatSpec with MockitoSugar with BeforeAndA
     (classUnderTest employeeGuardQuery) should equal (ERROR)
   }
 
-  it should "return a positive JSON when the contractor has an invoice containing EmployeeGuard less than 1 year old." in new TestSetup {
-    when(mockAccount.getSortedInvoices) thenReturn List(failingInvoiceWithoutEG, passingInvoice)
+  it should "return a positive JSON when the contractor has a non-zero contractor_fee entry for EmployeeGUARD." in new TestSetup {
+    when(mockAccount.getFees) thenReturn passingMap
     classUnderTest.employeeGuardQuery should equal (PicsActionSupport.JSON)
     classUnderTest.getJson.toJSONString should equal (EMPLOYEE_GUARD_SUCCESS)
   }
 
-  it should "return a negative JSON when the contractor has an invoice containing EmployeeGuard more than 1 year old, but not one less than 1 year old." in new TestSetup {
-    when(mockAccount getSortedInvoices) thenReturn List(failingInvoiceWithEG, failingInvoiceWithoutEG)
+  it should "return a negative JSON when the contractor does not have a contractor_fee entry for EmployeeGUARD." in new TestSetup {
+    when(mockAccount.getFees) thenReturn mapWithoutEG
     classUnderTest.employeeGuardQuery should equal (PicsActionSupport.JSON)
     classUnderTest.getJson.toJSONString should equal (EMPLOYEE_GUARD_FAILURE)
   }
 
-  it should "return a negative JSON when the contractor has no invoice containing EmployeeGuard." in new TestSetup {
-    when(mockAccount getSortedInvoices) thenReturn List(failingInvoiceWithoutEG)
+  it should "return a negative JSON when the contractor has a zero value for a contractor_fee entry for EmployeeGUARD" in new TestSetup {
+    when(mockAccount.getFees) thenReturn failingMap
     classUnderTest.employeeGuardQuery should equal (PicsActionSupport.JSON)
     classUnderTest.getJson.toJSONString should equal (EMPLOYEE_GUARD_FAILURE)
   }
@@ -58,38 +60,23 @@ class ProductServiceQueryTest extends FlatSpec with MockitoSugar with BeforeAndA
     val classUnderTest = new ProductServiceQuery
     val mockDao = mock[AccountDAO]
     val mockAccount = mock[ContractorAccount]
-    val (passingInvoice, failingInvoiceWithEG, failingInvoiceWithoutEG) = (mock[Invoice], mock[Invoice], mock[Invoice])
-    private[this] val EGLineItem = mock[InvoiceItem]
-    private[this] val NonEGLineItem = mock[InvoiceItem]
-    private[this] val EGInvoiceFee = mock[InvoiceFee]
-    private[this] val NonEGInvoiceFee = mock[InvoiceFee]
 
     org.mockito.internal.util.reflection.Whitebox.setInternalState(classUnderTest, "dao", mockDao)
     when(mockDao find(anyInt)) thenReturn mockAccount
+    when(mockAccount isContractor) thenReturn true
 
-    when(EGInvoiceFee getFeeClass) thenReturn FeeClass.EmployeeGUARD
-    when(NonEGInvoiceFee getFeeClass) thenReturn FeeClass.AuditGUARD
+    private[this] val zeroEG = new ContractorFee
+    zeroEG.setNewAmount(BigDecimal.ZERO.setScale(2))
+    private[this] val nonZeroEG = new ContractorFee
+    nonZeroEG.setNewAmount(BigDecimal valueOf 599 setScale 2)
+    private[this] val nonEGFee1 = new ContractorFee
+    nonEGFee1.setNewAmount(BigDecimal.ZERO.setScale(2))
+    private[this] val nonEGFee2 = new ContractorFee
+    nonEGFee2.setNewAmount(BigDecimal valueOf 599 setScale 2)
 
-    when(EGLineItem getInvoiceFee) thenReturn EGInvoiceFee
-    when(NonEGLineItem getInvoiceFee) thenReturn NonEGInvoiceFee
-
-    when(passingInvoice.getItems) thenReturn List(EGLineItem, NonEGLineItem)
-    when(passingInvoice getCreationDate) thenReturn {
-      val cal = java.util.Calendar.getInstance
-      cal.add(java.util.Calendar.MONTH, -3)
-      cal.getTime
-    }
-    when(failingInvoiceWithEG getItems) thenReturn List(EGLineItem, NonEGLineItem)
-    when(failingInvoiceWithEG getCreationDate) thenReturn {
-      val cal = java.util.Calendar.getInstance
-      cal.add(java.util.Calendar.YEAR, -2)
-      cal.getTime
-    }
-    when(failingInvoiceWithoutEG getItems) thenReturn List(NonEGLineItem)
-    when(failingInvoiceWithoutEG getCreationDate) thenReturn(new java.util.Date)
-
-    when(mockAccount isContractor) thenReturn true;
-
+    val passingMap = Map(AuditGUARD -> nonEGFee1, EmployeeGUARD -> nonZeroEG, DocuGUARD -> nonEGFee2)
+    val mapWithoutEG = Map(AuditGUARD -> nonEGFee1, DocuGUARD -> nonEGFee2)
+    val failingMap = Map(InsureGUARD -> nonEGFee1, EmployeeGUARD -> zeroEG, AuditGUARD -> nonEGFee2)
   }
 
   before {

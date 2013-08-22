@@ -121,6 +121,11 @@
 						<s:text name="ContractorAccount.tradesSub" />
 					</td>
 				</s:if>
+                <s:if test="permissions.operatorCorporate">
+                    <td>
+                        <s:text name="ContractorAccount.tags" />
+                    </td>
+                </s:if>
 			</tr>
 		</thead>
 		<tbody>
@@ -270,6 +275,11 @@
 							<s:property value="get('tradesSub')"/>
 						</td>			
 					</s:if>
+                    <s:if test="permissions.operatorCorporate">
+                        <td>
+                            <s:property value="get('tag')"/>
+                        </td>
+                    </s:if>
 				</tr>
 			</s:iterator>
 		</tbody>
