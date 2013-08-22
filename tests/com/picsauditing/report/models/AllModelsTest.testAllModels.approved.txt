@@ -1048,7 +1048,7 @@ InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoiceItemAmount
 InvoiceItemDescription
@@ -1057,6 +1057,8 @@ InvoiceItemFeeMaxFacilities
 InvoiceItemFeeName
 InvoicePaidDate
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 
 Model: Invoices
@@ -1104,12 +1106,14 @@ InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 
 Model: Operators
@@ -1240,10 +1244,12 @@ InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoicePaidDate
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 OperatorID
 OperatorName
@@ -1252,9 +1258,9 @@ OperatorOperatorReportingName
 PaymentAmountApplied
 PaymentCreationDate
 PaymentCurrency
+PaymentID
 PaymentStatus
 PaymentTotalAmount
-Paymentid
 
 Model: Payments
 Permission: Permissions{permissions=[]}
@@ -1297,11 +1303,11 @@ PaymentCcNumber
 PaymentCheckNumber
 PaymentCreationDate
 PaymentCurrency
+PaymentID
 PaymentPaymentMethod
 PaymentStatus
 PaymentTotalAmount
 PaymentTransactionID
-Paymentid
 
 Model: Reports
 Permission: Permissions{permissions=[]}
@@ -1409,11 +1415,13 @@ InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoiceItemAmount
 InvoicePaidDate
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 UserAssignmentUserDepartment
 UserAssignmentUserEmail

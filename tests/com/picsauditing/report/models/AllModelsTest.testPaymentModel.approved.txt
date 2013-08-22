@@ -38,8 +38,8 @@ PaymentCcNumber
 PaymentCheckNumber
 PaymentCreationDate
 PaymentCurrency
+PaymentID
 PaymentPaymentMethod
 PaymentStatus
 PaymentTotalAmount
 PaymentTransactionID
-Paymentid

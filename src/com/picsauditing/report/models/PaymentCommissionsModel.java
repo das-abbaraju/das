@@ -54,7 +54,7 @@ public class PaymentCommissionsModel extends AbstractModel {
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
-		setUrlForField(fields, "InvoiceInvoiceID", "InvoiceDetail.action?invoice.id={InvoiceInvoiceID}");
+		setUrlForField(fields, "InvoiceID", "InvoiceDetail.action?invoice.id={InvoiceID}");
 		setUrlForField(fields, "AccountName", "ContractorView.action?id={AccountID}");
         setUrlForField(fields, "OperatorName", "FacilitiesEdit.action?id={OperatorID}");
 		formatActivationPoints(fields);

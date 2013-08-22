@@ -42,10 +42,12 @@ InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
