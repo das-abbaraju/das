@@ -18,7 +18,7 @@
 	<section>
 		<s:include value="/struts/contractors/registrationStep.jsp">
 			<s:param name="step_current" value="1" />
-			<s:param name="step_last" value="getLastStepCompleted()" />
+			<s:param name="step_last" value="1" />
 		</s:include>
 	</section>
 </div>
