@@ -175,4 +175,18 @@ public class ReportUserDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void changeSortOrder(String caseStmt, int userId) throws SQLException {
+
+		StringBuilder sqlStmt = new StringBuilder();
+		sqlStmt.append("UPDATE report_user SET sortOrder = ");
+		sqlStmt.append(caseStmt);
+		sqlStmt.append(" WHERE userid = ");
+		sqlStmt.append(userId);
+		sqlStmt.append(" AND favorite = 1");
+
+		Database db = new Database();
+		db.executeUpdate(sqlStmt.toString());
+	}
 }
