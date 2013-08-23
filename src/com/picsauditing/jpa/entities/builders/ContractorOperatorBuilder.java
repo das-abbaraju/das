@@ -1,9 +1,9 @@
 package com.picsauditing.jpa.entities.builders;
 
-import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ContractorOperatorBuilder{
 
@@ -28,5 +28,13 @@ public class ContractorOperatorBuilder{
 
     public ContractorOperator build() {
         return contractorOperator;
+    }
+
+    public ContractorOperatorBuilder flagData(FlagData flagData) {
+        if (contractorOperator.getFlagDatas() == null) {
+            contractorOperator.setFlagDatas(new HashSet<FlagData>());
+        }
+        contractorOperator.getFlagDatas().add(flagData);
+        return this;
     }
 }

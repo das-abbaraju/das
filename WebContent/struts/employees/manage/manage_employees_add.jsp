@@ -46,22 +46,24 @@
         					</label>
 
         					<s:iterator value="allEmployeeGUARDOperators" var="client">
-        						<s:if test="#client.site == null">
-        							<%-- HSE Operators --%>
-        							<input type="checkbox" name="initialClients" value="${client.id}" id="site_${client.id}" />
-        							<label for="site_${client.id}" class="sites-label">
-        								${client.name}
-        							</label>
-        							<br />
-        						</s:if>
-        						<s:else>
-        							<%-- OQ Operators --%>
-        							<input type="checkbox" name="initialJobSites" value="${client.site.id}" id="site_${client.site.id}" />
-        							<label for="site_${client.id}" class="sites-label">
-        								${client.name}: ${client.site.name}
-        							</label>
-        							<br />
-        						</s:else>
+						        <s:if test="permissions.picsEmployee || permissions.contractor || permissions.accountId == #client.operator.id">
+	                                <s:if test="#client.site == null">
+	                                    <%-- HSE Operators --%>
+	                                    <input type="checkbox" name="initialClients" value="${client.id}" id="site_${client.id}" />
+	                                    <label for="site_${client.id}" class="sites-label">
+	                                        ${client.name}
+	                                    </label>
+	                                    <br />
+	                                </s:if>
+	                                <s:else>
+	                                    <%-- OQ Operators --%>
+	                                    <input type="checkbox" name="initialJobSites" value="${client.site.id}" id="site_${client.site.id}" />
+	                                    <label for="site_${client.id}" class="sites-label">
+	                                        ${client.name}: ${client.site.name}
+	                                    </label>
+	                                    <br />
+	                                </s:else>
+						        </s:if>
         					</s:iterator>
         				</li>
         			</s:if>

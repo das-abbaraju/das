@@ -276,7 +276,6 @@ public class AuditMenuBuilder {
 				String employeeDashboardPage = urlUtils().getActionUrl("EmployeeDashboard", "id", contractor.getId());
 				MenuComponent summary = new MenuComponent(getText(SUMMARY), employeeDashboardPage);
 				Iterator<ContractorAudit> iterator = sortedAudits.iterator();
-				int counter = 0;
 
 				if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)) {
 					String manageEmployeesPage = urlUtils().getActionUrl("ManageEmployees", "id", contractor.getId());
@@ -302,12 +301,13 @@ public class AuditMenuBuilder {
 						}
 
 						iterator.remove();
-						counter++;
 					}
 				}
 
-				MenuComponent employeeCompetencies = new MenuComponent(getText("EmployeeCompetencies.title"), "EmployeeCompetencies.action", "employee_competencies");
-				addToServiceMenu(Service.EMPLOYEEGUARD, employeeCompetencies);
+				if (permissions.isContractor()) {
+					MenuComponent employeeCompetencies = new MenuComponent(getText("EmployeeCompetencies.title"), "EmployeeCompetencies.action", "employee_competencies");
+					addToServiceMenu(Service.EMPLOYEEGUARD, employeeCompetencies);
+				}
 
 				MenuComponent competencyMatrix = new MenuComponent(getText("global.HSECompetencyMatrix"), urlUtils().getActionUrl("JobCompetencyMatrix", "id", permissions.getAccountId()), "employee_competencies");
 				addToServiceMenu(Service.EMPLOYEEGUARD, competencyMatrix);
@@ -318,9 +318,7 @@ public class AuditMenuBuilder {
 					addToServiceMenu(Service.EMPLOYEEGUARD, createNewAudit);
 				}
 
-				if (counter > 0) {
-					addToStartOfServiceMenu(Service.EMPLOYEEGUARD, summary);
-				}
+				addToStartOfServiceMenu(Service.EMPLOYEEGUARD, summary);
 			}
 		} catch (Exception exception) {
 			LOG.error("Error building EmployeeGUARD section in AuditMenuBuilder", exception);

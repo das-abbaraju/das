@@ -41,8 +41,6 @@ public class FeeService {
         int payingFacilities = contractor.getPayingFacilities();
 
         boolean foundMembership = false;
-        boolean foundMembershipDate = false;
-        boolean foundPaymentExpires = false;
 
         for (Invoice invoice : contractor.getSortedInvoices()) {
             if (!invoice.getStatus().isVoid()) {
@@ -52,15 +50,7 @@ public class FeeService {
 
                     if (!foundMembership && invoiceFee.isMembership()) {
                         payingFacilities = identifyMembership(foundFeeClasses, payingFacilities, invoiceFee, feeClass);
-
-                        if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
-                            contractor.setPaymentExpires(invoiceItem.getPaymentExpires());
-                            foundPaymentExpires = true;
-                        }
                     }
-                    if (!foundMembershipDate && (invoiceFee.isActivation() || invoiceFee.isReactivation()))
-                        foundMembershipDate = setMembershipDate(contractor, foundMembershipDate, invoice);
-
                     // Checking for ImportPQF fee and potentially others
                     if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.ImportFee) && contractor.getFees().containsKey(FeeClass.ImportFee)) {
                         foundFeeClasses.put(FeeClass.ImportFee, null);
@@ -68,7 +58,7 @@ public class FeeService {
                     }
                 }
 
-                if (foundPaymentExpires)
+                if (foundFeeClasses.containsKey(FeeClass.Activation))
                     foundMembership = true;
 
                 invoice.getCommissionEligibleFees(true);
@@ -76,12 +66,6 @@ public class FeeService {
         }
 
         buildFeeCurrentLevels(contractor, foundFeeClasses, payingFacilities);
-
-        if (!foundPaymentExpires)
-            contractor.setPaymentExpires(contractor.getCreationDate());
-
-        if (!foundMembershipDate)
-            contractor.setMembershipDate(null);
     }
 
     private int identifyMembership(Map<FeeClass, InvoiceFee> foundFeeClasses, int payingFacilities, InvoiceFee invoiceFee, FeeClass feeClass) {
@@ -141,16 +125,6 @@ public class FeeService {
             else
                 clearFee(contractor, feeClass, true);
         }
-    }
-
-    private boolean setMembershipDate(ContractorAccount contractor, boolean foundMembershipDate, Invoice invoice) {
-        if (invoice.getPayments().size() > 0) {
-            PaymentApplied payment = getLatestPayment(invoice);
-
-            contractor.setMembershipDate(payment.getCreationDate());
-            foundMembershipDate = true;
-        }
-        return foundMembershipDate;
     }
 
     private PaymentApplied getLatestPayment(Invoice invoice) {
