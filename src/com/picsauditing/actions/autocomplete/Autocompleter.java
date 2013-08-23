@@ -1,11 +1,5 @@
 package com.picsauditing.actions.autocomplete;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
@@ -16,6 +10,15 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.util.Strings;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class Autocompleter extends PicsActionSupport {
@@ -52,7 +55,19 @@ public class Autocompleter extends PicsActionSupport {
                 AbstractAutocompleteService<?> autocompleteService = fieldType.getAutocompleteService();
 
                 if (Strings.isNotEmpty(searchKey)) {
-					json = autocompleteService.searchByKey(searchKey, permissions);
+					if (searchKey.contains(", ")) {
+						List<String> searchKeys = Arrays.asList(searchKey.split(","));
+						JSONArray fullArray = new JSONArray();
+						for (String key : searchKeys) {
+							JSONObject result = autocompleteService.searchByKey(key.trim(), permissions);
+							JSONArray internal = (JSONArray) result.get("result");
+							fullArray.addAll(internal);
+						}
+						json.put("result",fullArray);
+					} else {
+						json = autocompleteService.searchByKey(searchKey, permissions);
+					}
+
 				} else {
 					json = autocompleteService.getJson(searchQuery, permissions);
 				}

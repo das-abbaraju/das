@@ -6,7 +6,7 @@
 <s:set var="css_dir">v7/js/extjs/pics/resources/css</s:set>
 <s:set var="extjs_dir">v7/js/extjs/pics/extjs</s:set>
 
-<s:set var="is_development_mode" value="false" />
+<s:set var="is_development_mode" value="true" />
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->

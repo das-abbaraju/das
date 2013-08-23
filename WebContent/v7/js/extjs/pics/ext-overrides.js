@@ -3,7 +3,7 @@ Ext.define('PICS.Overrides', {
         'Ext.data.writer.Json',
         'Ext.menu.Menu',
         'Ext.Ajax',
-        'Ext.data.proxy.Server'
+        'Ext.data.proxy.Server',
         'Ext.ux.form.field.BoxSelect'
     ]
 }, function () {
@@ -20,7 +20,7 @@ Ext.define('PICS.Overrides', {
 
     Ext.override(Ext.data.proxy.Server, {
         timeout: Ext.Ajax.timeout
-    {);
+    });
 
     /**
      * Override of BoxSelect's override of the same method
