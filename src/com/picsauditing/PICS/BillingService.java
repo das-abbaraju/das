@@ -77,6 +77,7 @@ public class BillingService {
 
         contractor.setBalance(balance.setScale(2, BigDecimal.ROUND_UP));
 
+        feeService.getRuleCache();
         feeService.syncMembershipFees(contractor);
     }
 

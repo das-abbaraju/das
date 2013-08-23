@@ -1,22 +1,5 @@
 package com.picsauditing.actions.employees;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
@@ -25,6 +8,15 @@ import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.ServletOutputStream;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class JobCompetencyMatrix extends AccountActionSupport {
@@ -100,22 +92,27 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	}
 
 	private void loadRolesAndCompetencies() {
-		roles = jobRoleDAO.findMostUsed(account.getId(), true);
-		competencies = operatorCompetencyDAO.findMostUsed(account.getId(), true);
-		map = jobRoleDAO.findJobCompetencies(account.getId(), true);
+		if (account != null) {
+			roles = jobRoleDAO.findMostUsed(account.getId(), true);
+			competencies = operatorCompetencyDAO.findMostUsed(account.getId(), true);
+			map = jobRoleDAO.findJobCompetencies(account.getId(), true);
+		}
 	}
 
 	private void addAccountJobRoles() {
-		List<JobRole> jobRoles = account.getJobRoles();
-		Collections.sort(jobRoles, new Comparator<JobRole>() {
-			public int compare(JobRole o1, JobRole o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
+		if (account != null) {
+			List<JobRole> jobRoles = account.getJobRoles();
+			Collections.sort(jobRoles, new Comparator<JobRole>() {
+				public int compare(JobRole o1, JobRole o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
 
-		for (JobRole jr : jobRoles) {
-			if (!roles.contains(jr) && jr.isActive())
-				roles.add(jr);
+			for (JobRole jr : jobRoles) {
+				if (!roles.contains(jr) && jr.isActive()) {
+					roles.add(jr);
+				}
+			}
 		}
 	}
 
