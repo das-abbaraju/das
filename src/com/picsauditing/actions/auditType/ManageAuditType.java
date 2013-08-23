@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -20,16 +22,6 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.WorkFlowDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AppTranslation;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.TranslationQualityRating;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.models.audits.TranslationKeysGenerator;
 import com.picsauditing.util.Strings;
@@ -67,6 +59,8 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 	protected WorkFlowDAO wfDAO;
 	@Autowired
 	protected TranslationKeysGenerator translationKeysGenerator;
+    @Autowired
+    private FeatureToggle featureToggle;
 
 	List<? extends AuditRule> relatedRules;
 	List<Workflow> workFlowList = null;
@@ -212,6 +206,10 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		}
 	}
 
+    public boolean isShowPeriodicAudit() {
+        return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_PERIODIC_AUDIT);
+    }
+
 	public boolean save() {
 		try {
 			if (auditType == null) {
@@ -254,6 +252,9 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 				addActionError("You must set a workflow in order to save the Audit Type");
 				return false;
 			}
+            if (auditType.getPeriod() == null) {
+                auditType.setPeriod(AuditTypePeriod.None);
+            }
             if (auditType.getAdvanceDays() < 0) {
                 addActionError("You must set advance days to be 0 or greater.");
                 return false;

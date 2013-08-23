@@ -320,6 +320,7 @@
                             If you're not sure, then start with Single Step Workflow, which is the simplest.
                         </pics:fieldhelp>
                     </li>
+                    <s:if test="showPeriodicAudit">
                     <li>
                         <label>Months to Expire:</label>
                         <s:textfield name="auditType.monthsToExpire" />
@@ -427,6 +428,7 @@
             </pics:fieldhelp>
 
         </li>
+        </s:if>
                     <li>
                         <label><s:text name="ManageAuditType.RequiredLanguages" />:</label>
                         <s:optiontransferselect

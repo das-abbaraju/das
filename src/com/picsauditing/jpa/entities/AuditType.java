@@ -91,9 +91,9 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	protected User assignAudit;
 	protected User editAudit;
 	protected String assigneeLabel;
-    protected AuditTypePeriod period;
-    protected Integer anchorDay = new Integer(1);
-    protected Integer anchorMonth = new Integer(1);
+    protected AuditTypePeriod period = AuditTypePeriod.None;
+    protected int anchorDay = 1;
+    protected int anchorMonth = 1;
     protected int advanceDays = 0;
     protected int maximumActive = 1;
 
@@ -124,6 +124,11 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		this.isScheduled = a.isScheduled();
 		this.monthsToExpire = a.getMonthsToExpire();
 		this.renewable = a.isRenewable();
+        this.period = a.getPeriod();
+        this.maximumActive = a.getMaximumActive();
+        this.advanceDays = a.getAdvanceDays();
+        this.anchorDay = a.getAnchorDay();
+        this.anchorMonth = a.getAnchorMonth();
 	}
 
 	@Transient
@@ -508,19 +513,19 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         this.advanceDays = advanceDays;
     }
 
-    public Integer getAnchorMonth() {
+    public int getAnchorMonth() {
         return anchorMonth;
     }
 
-    public void setAnchorMonth(Integer anchorMonth) {
+    public void setAnchorMonth(int anchorMonth) {
         this.anchorMonth = anchorMonth;
     }
 
-    public Integer getAnchorDay() {
+    public int getAnchorDay() {
         return anchorDay;
     }
 
-    public void setAnchorDay(Integer anchorDay) {
+    public void setAnchorDay(int anchorDay) {
         this.anchorDay = anchorDay;
     }
 
