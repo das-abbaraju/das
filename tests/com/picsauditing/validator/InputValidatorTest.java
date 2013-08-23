@@ -451,7 +451,7 @@ public class InputValidatorTest {
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
-	
+
 	@Test
 	public void testValidatePhoneNumber_ExtentionOnly() {
 		String phoneNumber = "1234";
@@ -459,11 +459,11 @@ public class InputValidatorTest {
 		String result = inputValidator.validatePicsCSRPhoneNumber(phoneNumber);
 
 		assertEquals(InputValidator.NO_ERROR, result);
-		
+
 //		System.out.println(phoneNumber.matches("^[0-9]{4}$"));
-		
+
 	}
-	
+
 	@Test
 	public void testValidatePhoneNumber_FullNumber() {
 		String phoneNumber = "949-936-4512 x 1234";
@@ -472,7 +472,7 @@ public class InputValidatorTest {
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
-	
+
 	@Test
 	public void testValidatePhoneNumber_Invalid() {
 		String phoneNumber = "123";
@@ -501,70 +501,70 @@ public class InputValidatorTest {
 
 	@Test
 	public void testValidatePostCodeForUK_Format1Successful() {
-		String result = inputValidator.validateUkPostcode("M2 5BQ", false);
+		String result = inputValidator.validateUkPostcode("M2 5BQ", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_Format2Successful() {
-		String result = inputValidator.validateUkPostcode("M34 4AB", false);
+		String result = inputValidator.validateUkPostcode("M34 4AB", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_Format3Successful() {
-		String result = inputValidator.validateUkPostcode("CR0 2YR", false);
+		String result = inputValidator.validateUkPostcode("CR0 2YR", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_Format4Successful() {
-		String result = inputValidator.validateUkPostcode("DN16 9AA", false);
+		String result = inputValidator.validateUkPostcode("DN16 9AA", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_Format5Successful() {
-		String result = inputValidator.validateUkPostcode("W1A 4ZZ", false);
+		String result = inputValidator.validateUkPostcode("W1A 4ZZ", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_Format6Successful() {
-		String result = inputValidator.validateUkPostcode("EC1A 1HQ", false);
+		String result = inputValidator.validateUkPostcode("EC1A 1HQ", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_SpecialCasesForTerritoriesSuccessful() {
-		String result = inputValidator.validateUkPostcode("ASCN 1ZZ", false);
+		String result = inputValidator.validateUkPostcode("ASCN 1ZZ", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_SpecialCasesForBritishForces() {
-		String result = inputValidator.validateUkPostcode("BF1 4TT", false);
+		String result = inputValidator.validateUkPostcode("BF1 	 4TT", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_SpecialCasesForCrownDependencies() {
-		String result = inputValidator.validateUkPostcode("IM1 1JB", false);
+		String result = inputValidator.validateUkPostcode(" IM1  1JB ", false, true, true);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	@Test
 	public void testValidatePostCodeForUK_Error() {
-		String result = inputValidator.validateUkPostcode("123", false);
+		String result = inputValidator.validateUkPostcode("123", false, true, true);
 
 		assertEquals(InputValidator.INVALID_UK_POST_CODE_KEY, result);
 	}
