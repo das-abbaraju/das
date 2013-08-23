@@ -43,11 +43,12 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	private EmailSender emailSender;
     @Autowired
     private BillingService billingService;
+    @Autowired
+    private EmailBuilder emailBuilder;
 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
 	protected LowMedHigh transportationRisk;
-	private EmailBuilder emailBuilder;
 	private EmailQueue emailQueue;
 
 	public ContractorEditRiskLevel() {
@@ -113,9 +114,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			if (isRiskChanged(oldSafety, safetyRisk))
 				needsPqfReset = true;
 
-			if (needsPqfReset)
-				checkSafetyStatus(oldSafety, safetyRisk);
-
+            checkSafetyStatus(oldSafety, safetyRisk);
 		}
 
 		if (productRisk != null && !contractor.getProductRisk().equals(productRisk)) {
@@ -194,7 +193,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 		emailBuilder.addToken("contractor", contractor);
 		emailBuilder.addToken("currentSafetyRisk", currentRisk);
-		emailBuilder.addToken("newSafetRisk", newRisk);
+		emailBuilder.addToken("newSafetyRisk", newRisk);
 
 		try {
 			emailQueue = emailBuilder.build();
