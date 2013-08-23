@@ -74,23 +74,27 @@ public class InputValidator {
 	// and shown in the Regular Expressions Cookbook (O'Reilly, 2009)
 	public static final String PHONE_NUMBER_REGEX = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}((?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
 	public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
-	public static final String PHONE_NUMBER_PICS_CSR_EXTENTION = "^[0-9]{4}$";	
+	public static final String PHONE_NUMBER_PICS_CSR_EXTENTION = "^[0-9]{4}$";
+
+	public static final String REGEX_FOR_MULTIPLE_SPACES = "\\s+";
 
 	// Regex is from http://webarchive.nationalarchives.gov.uk/+/http://www.cabinetoffice.gov.uk/media/291370/bs7666-v2-0-xsd-PostCodeType.htm and some additions for other territories
 	public static final String UK_POST_CODE_REGEX = "(GIR 0AA|STHL 1ZZ|ASCN 1ZZ|AI-2640|TDCU 1ZZ|BBND 1ZZ|BIQQ 1ZZ|FIQQ 1ZZ|GX11 1AA|PCRN 1ZZ|SIQQ 1ZZ|TKCA 1ZZ)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})";
-	
+
 	public enum ValidationType {
-		Required, 
-		MinLengthCheck, 
-		MaxLengthCheck, 
-		DangerousCharsCheck, 
-		UsernameCheck, 
-		EmailFormatCheck, 
-		PhoneFormatCheck, 
+		Required,
+		MinLengthCheck,
+		MaxLengthCheck,
+		DangerousCharsCheck,
+		UsernameCheck,
+		EmailFormatCheck,
+		PhoneFormatCheck,
 		UKPostcodeCheck,
-		PicsCSRPhoneFormat
+		PicsCSRPhoneFormat,
+		TrimLeadingAndTrailingSpaces,
+		ReplaceMultipleSpacesWithSingleSpace
 	}
-	
+
 	public boolean isUsernameTaken(String username, int currentUserId) {
 		return userDao.duplicateUsername(username, currentUserId);
 	}
@@ -232,8 +236,8 @@ public class InputValidator {
 	}
 
 	public String validateName(String name, boolean required) {
-		return validateString(name, ValidationType.MaxLengthCheck, ValidationType.DangerousCharsCheck, 
-				required ? ValidationType.Required : null);
+		return validateString(name, ValidationType.MaxLengthCheck, ValidationType.DangerousCharsCheck,
+				getRequiredValidationType(required));
 	}
 
 	// TODO: Cleanup
@@ -286,8 +290,8 @@ public class InputValidator {
 			return COMPANY_NAME_EXISTS_KEY;
 		}
 
-		return validateString(name, ValidationType.MaxLengthCheck, ValidationType.MinLengthCheck, 
-				ValidationType.DangerousCharsCheck, required ? ValidationType.Required : null);
+		return validateString(name, ValidationType.MaxLengthCheck, ValidationType.MinLengthCheck,
+				ValidationType.DangerousCharsCheck, getRequiredValidationType(required));
 	}
 
 	public String validateUsername(String username) {
@@ -295,8 +299,8 @@ public class InputValidator {
 	}
 
 	public String validateUsername(String username, boolean required) {
-		return validateString(username, ValidationType.UsernameCheck, ValidationType.MaxLengthCheck, 
-				ValidationType.DangerousCharsCheck, required ? ValidationType.Required : null);
+		return validateString(username, ValidationType.UsernameCheck, ValidationType.MaxLengthCheck,
+				ValidationType.DangerousCharsCheck, getRequiredValidationType(required));
 	}
 
 	public String validateEmail(String email) {
@@ -304,7 +308,7 @@ public class InputValidator {
 	}
 
 	public String validateEmail(String email, boolean required) {
-		return validateString(email, ValidationType.EmailFormatCheck, required ? ValidationType.Required : null);
+		return validateString(email, ValidationType.EmailFormatCheck, getRequiredValidationType(required));
 	}
 
 	public String validatePhoneNumber(String phoneNumber) {
@@ -312,21 +316,27 @@ public class InputValidator {
 	}
 
 	public String validatePhoneNumber(String phoneNumber, boolean required) {
-		return validateString(phoneNumber, ValidationType.PhoneFormatCheck, required ? ValidationType.Required : null);
+		return validateString(phoneNumber, ValidationType.PhoneFormatCheck, getRequiredValidationType(required));
 	}
-	
+
 	public String validatePicsCSRPhoneNumber(String phoneNumber) {
 		return validatePicsCSRPhoneNumber(phoneNumber, true);
 	}
 
 	public String validatePicsCSRPhoneNumber(String phoneNumber, boolean required) {
-		return validateString(phoneNumber, ValidationType.PicsCSRPhoneFormat, required ? ValidationType.Required : null);
+		return validateString(phoneNumber, ValidationType.PicsCSRPhoneFormat, getRequiredValidationType(required));
 	}
 
-	public String validateUkPostcode(String postcode, boolean required) {
-		return validateString(postcode, ValidationType.UKPostcodeCheck, required ? ValidationType.Required : null);
+	public String validateUkPostcode(String postcode, boolean required, boolean trimLeadingAndTrailingSpaces, boolean replaceMultipleSpacesWithSingleSpace) {
+		ValidationType trim = trimLeadingAndTrailingSpaces ? ValidationType.TrimLeadingAndTrailingSpaces : null;
+		ValidationType singleSpace = replaceMultipleSpacesWithSingleSpace ? ValidationType.ReplaceMultipleSpacesWithSingleSpace : null;
+		return validateString(postcode, ValidationType.UKPostcodeCheck, trim, singleSpace, getRequiredValidationType(required));
 	}
-	
+
+	private ValidationType getRequiredValidationType(boolean required) {
+		return required ? ValidationType.Required : null;
+	}
+
 	private String validateString(String str, ValidationType... validationType) {
 		Set<ValidationType> validationTypes = new HashSet<>(Arrays.asList(validationType));
 
@@ -335,7 +345,15 @@ public class InputValidator {
 				return REQUIRED_KEY;
 			}
 
-			return NO_ERROR;
+			return NO_ERROR; // FIXME possible error here
+		}
+
+		if (validationTypes.contains(ValidationType.TrimLeadingAndTrailingSpaces)) {
+			str = str.trim();
+		}
+
+		if (validationTypes.contains(ValidationType.ReplaceMultipleSpacesWithSingleSpace)) {
+			str = str.replaceAll(REGEX_FOR_MULTIPLE_SPACES, " ");
 		}
 
 		if (validationTypes.contains(ValidationType.MinLengthCheck) && str.length() < MIN_STRING_LENGTH_2) {
@@ -365,8 +383,8 @@ public class InputValidator {
 		if (validationTypes.contains(ValidationType.UKPostcodeCheck) && !str.matches(UK_POST_CODE_REGEX)) {
 			return INVALID_UK_POST_CODE_KEY;
 		}
-		
-		if (validationTypes.contains(ValidationType.PicsCSRPhoneFormat) && !str.matches(PHONE_NUMBER_REGEX_WITH_ASTERISK) 
+
+		if (validationTypes.contains(ValidationType.PicsCSRPhoneFormat) && !str.matches(PHONE_NUMBER_REGEX_WITH_ASTERISK)
 				&& !str.matches(PHONE_NUMBER_PICS_CSR_EXTENTION)) {
 			return INVALID_PHONE_FORMAT_KEY;
 		}
