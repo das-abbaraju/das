@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2013-08-22
+/*! Picsorganizer - v0.1.0 - 2013-08-23
 * http://www.picsorganizer.com/
 * Copyright (c) 2013 Carey Hinoki; Licensed MIT */
 
@@ -10178,15 +10178,13 @@ PICS.define('select2.Select2', {
                     $(TOP_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [BOTTOM_LIST_SELECTOR],
-                        update: onTopListUpdate,
-                        receive: updateOrder
+                        update: onTopListUpdate
                     });
 
                     $(BOTTOM_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [TOP_LIST_SELECTOR],
-                        update: onBottomListUpdate,
-                        receive: updateOrder
+                        update: onBottomListUpdate
                     });
                 }
             }
@@ -10204,6 +10202,10 @@ PICS.define('select2.Select2', {
 
                     bumpItem(last_item, ui.sender);
                 }
+
+                if (!ui.sender) {
+                    updateOrder();
+                }
             }
 
             function onBottomListUpdate(event, ui) {
@@ -10216,6 +10218,10 @@ PICS.define('select2.Select2', {
                     first_item = this_list_items.first();
 
                     bumpItem(first_item, ui.sender);
+                }
+
+                if (!ui.sender) {
+                    updateOrder();
                 }
             }
 

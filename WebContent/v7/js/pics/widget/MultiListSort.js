@@ -29,15 +29,13 @@
                     $(TOP_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [BOTTOM_LIST_SELECTOR],
-                        update: onTopListUpdate,
-                        receive: updateOrder
+                        update: onTopListUpdate
                     });
 
                     $(BOTTOM_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [TOP_LIST_SELECTOR],
-                        update: onBottomListUpdate,
-                        receive: updateOrder
+                        update: onBottomListUpdate
                     });
                 }
             }
@@ -55,6 +53,10 @@
 
                     bumpItem(last_item, ui.sender);
                 }
+
+                if (!ui.sender) {
+                    updateOrder();
+                }
             }
 
             function onBottomListUpdate(event, ui) {
@@ -67,6 +69,10 @@
                     first_item = this_list_items.first();
 
                     bumpItem(first_item, ui.sender);
+                }
+
+                if (!ui.sender) {
+                    updateOrder();
                 }
             }
 
