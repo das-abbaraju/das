@@ -13,34 +13,6 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
 	
-	<style type="text/css">
-		#email_preview_modal th
-		{
-			font-weight: bold;
-		}
-		
-		#email_preview_modal th,
-		#email_preview_modal td
-		{
-			padding: 5px;
-		}
-		
-		#email_preview_modal #email_body
-		{
-			background-color: #EEE;
-			border: 1px solid #DDD;
-		}
-		
-		p.matched-on
-		{
-			color: #A84D10 !important;
-		}
-
-		#duplicated_contractor_cancel_button
-		{
-			margin: 0 20px 0 0;
-		}
-	</style>
 </head>
 <body>
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
@@ -132,7 +104,6 @@
                                 </li>
                             </s:if>
                         </pics:permission>
-						<li class="match-found contact-name"></li>
 						<li>
 							<s:textfield
 								cssClass="check-matches"
@@ -203,7 +174,6 @@
 				
 				<div class="match-list hide contact-phone"></div>
 				<div class="match-list hide contractor-name"></div>
-				<div class="match-list hide contact-name"></div>
 				<div class="match-list hide contact-email"></div>
 			</fieldset>
 			<fieldset class="form">
@@ -304,99 +274,8 @@
 				<h2 class="formLegend">
 					<s:text name="RequestNewContractor.header.RequestSummary" />
 				</h2>
-				
-				
-				<ol>
-                    <!--
-					<s:if test="contractor.id > 0 && requestRelationship.operatorAccount.id > 0 && !permissions.operator">
-						<s:url action="RequestNewContractorAccount" var="request_add_operator">
-							<s:param name="contractor">
-								${contractor.id}
-							</s:param>
-						</s:url>
-						<li>
-							<a href="${request_add_operator}" class="add">
-								<s:text name="ContractorFacilities.AddOperator" />
-							</a>
-						</li>
-					</s:if>
-					<s:if test="visibleRelationships.size > 1 || (visibleRelationships.size > 0 && requestRelationship.operatorAccount.id == 0)">
-						<li>
-							<table class="report">
-								<thead>
-									<tr>
-										<th></th>
-										<th>
-											<s:text name="ContractorAccount.requestedBy" />
-										</th>
-										<th>
-											<s:text name="ContractorOperator.requestedBy" />
-										</th>
-										<th>
-											<s:text name="ContractorOperator.deadline" />
-										</th>
-										<th>
-											<s:text name="ContractorOperator.reasonForRegistration" />
-										</th>
-										<th>
-											<s:text name="button.Edit" />
-										</th>
-										<th>
-											<s:text name="button.Remove" />
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									<s:iterator value="contractor.operators" var="relationship" status="position">
-										<s:if test="relationship.operatorAccount.id == requestRelationship.operatorAccount.id">
-											<s:set name="selected_row" value="'highlight'" />
-										</s:if>
-										<s:else>
-											<s:set name="selected_row" value="" />
-										</s:else>
-										<tr class="${selected_row}">
-											<td>
-												${position.count}
-											</td>
-											<td>
-												<s:url action="FacilitiesEdit" var="operator_edit">
-													<s:param name="id">
-														${relationship.operatorAccount.id}
-													</s:param>
-												</s:url>
-												<a href="${operator_edit}">${relationship.operatorAccount.name}</a>
-											</td>
-											<td>
-												${relationship.requestedByName}
-											</td>
-											<td>
-												<s:date name="#relationship.deadline" format="%{getText('date.short')}" />
-											</td>
-											<td>
-												${relationship.reasonForRegistration}
-											</td>
-											<td class="center">
-												<s:url action="RequestNewContractorAccount" var="edit_operator_request">
-													<s:param name="contractor">
-														${contractor.id}
-													</s:param>
-													<s:param name="requestRelationship.operatorAccount">
-														${relationship.operatorAccount.id}
-													</s:param>
-												</s:url>
-												<a href="${edit_operator_request}" class="edit"></a>
-											</td>
-											<td class="center">
-												<a href="javascript:;" class="remove"></a>
-											</td>
-										</tr>
-									</s:iterator>
-								</tbody>
-							</table>
-						</li>
-					</s:if>
-                    -->
 
+				<ol>
                     <s:include value="operator_required_fields.jsp" />
 
                     <s:if test="contractor.id > 0">

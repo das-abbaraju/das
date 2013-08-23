@@ -9,8 +9,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import scala.NotImplementedError;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.math.BigDecimal;
 
 public class ProductServiceQuery extends PicsActionSupport {
 
@@ -37,7 +36,7 @@ public class ProductServiceQuery extends PicsActionSupport {
         if (account == null) return Action.ERROR;
         if (account.isContractor()) {
             ContractorAccount contractor = (ContractorAccount) account;
-            if (recentInvoiceContainingFeeExists(contractor, FeeClass.EmployeeGUARD))
+            if (hasFee(contractor, FeeClass.EmployeeGUARD))
                 return positiveJsonFor(EMPLOYEE_GUARD);
             else
                 return negativeJsonFor(EMPLOYEE_GUARD);
@@ -46,22 +45,9 @@ public class ProductServiceQuery extends PicsActionSupport {
         }
     }
 
-    private boolean recentInvoiceContainingFeeExists(ContractorAccount contractor, FeeClass feeClass) {
-        for (Invoice invoice : contractor.getSortedInvoices()) {
-            if (invoice.getCreationDate().after(oneYearAgo())) {
-                for (InvoiceItem invoiceItem : invoice.getItems()) {
-                    if (invoiceItem.getInvoiceFee().getFeeClass().equals(feeClass))
-                        return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Date oneYearAgo() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, -1);
-        return calendar.getTime();
+    private boolean hasFee(ContractorAccount contractorAccount, FeeClass feeClass) {
+        return contractorAccount.getFees().containsKey(feeClass)
+                && !contractorAccount.getFees().get(feeClass).getNewAmount().equals(BigDecimal.ZERO.setScale(2));
     }
 
     private String positiveJsonFor(String value) {

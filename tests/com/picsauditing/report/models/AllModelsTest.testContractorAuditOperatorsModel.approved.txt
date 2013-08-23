@@ -4,9 +4,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 AuditAssignedDate
 AuditAuditFor
 AuditAuditLocation
@@ -48,6 +52,7 @@ ContractorMembershipDate
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail

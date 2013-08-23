@@ -172,7 +172,7 @@ public class ContractorDashboardApprovalMessageTest {
     }
 
     private OperatorAccount createChild(ContractorAccount contractor, ApprovalStatus status) {
-        return OperatorAccount.builder().operator(ContractorOperator.builder().contractor(contractor).workStatus(status).build()).build();
+        return OperatorAccount.builder().contractor(ContractorOperator.builder().contractor(contractor).workStatus(status).build()).build();
 
     }
 

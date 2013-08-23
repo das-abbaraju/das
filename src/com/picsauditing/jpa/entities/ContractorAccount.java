@@ -8,7 +8,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.builders.ContractorAccountBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -20,7 +19,6 @@ import com.picsauditing.util.YearList;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.validator.InputValidator;
 import com.picsauditing.validator.VATValidator;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.*;
@@ -556,12 +554,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.paymentMethod = paymentMethod;
 	}
 
-	/**
-	 * The date the contractor was invoiced for their most recent
-	 * activation/reactivation fee
-	 *
-	 * @return
-	 */
 	@Temporal(TemporalType.DATE)
 	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getMembershipDate() {
@@ -585,12 +577,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.viewedFacilities = viewedFacilities;
 	}
 
-	/**
-	 * The date the lastPayment expires and the contractor is due to pay another
-	 * "period's" membership fee. This should NEVER be null.
-	 *
-	 * @return
-	 */
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
 	@ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllOperators, importance = FieldImportance.Average)
@@ -602,12 +588,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.paymentExpires = paymentExpires;
 	}
 
-	/**
-	 * Used to determine if we need to calculate the flagColor, audits and
-	 * billing
-	 *
-	 * @return
-	 */
     @ReportField(type = FieldType.Integer, requiredPermissions = OpPerms.DevelopmentEnvironment)
 	public int getNeedsRecalculation() {
 		return needsRecalculation;
@@ -1348,7 +1328,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return balance < halfMembership;
 	}
 
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 	public boolean getSoleProprietor() {
 		return soleProprietor;
 	}
@@ -1478,15 +1458,6 @@ public class ContractorAccount extends Account implements JSONable {
 		int daysToExpire = DateBean.getDateDifference(paymentExpires);
 
 		return (daysToExpire <= daysBeforeExpiration);
-	}
-
-	@Transient
-	public boolean isHasPaymentExpired() {
-		if (getPaymentExpires() == null) {
-			return true;
-		}
-
-		return new Date().after(getPaymentExpires());
 	}
 
 	@Transient

@@ -12,6 +12,7 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -173,7 +174,7 @@ public class ProfileEdit extends PicsActionSupport {
 		errorMessageKey = inputValidator.validateUsernameAvailable(u.getUsername(), permissions.getUserId());
 		addFieldErrorIfMessage("u.username", errorMessageKey);
 
-		errorMessageKey = inputValidator.validatePhoneNumber(u.getPhone(), false);
+		errorMessageKey = validateUserPhoneNumber();
 		addFieldErrorIfMessage("u.phone", errorMessageKey);
 
 		errorMessageKey = inputValidator.validatePhoneNumber(u.getFax(), false);
@@ -185,6 +186,14 @@ public class ProfileEdit extends PicsActionSupport {
 		if (u.getTimezone() == null) {
 			addFieldErrorIfMessage("u.timezone", InputValidator.REQUIRED_KEY);
 		}
+	}
+
+	private String validateUserPhoneNumber() {
+		if (permissions.hasGroup(User.GROUP_CSR)) {
+			return inputValidator.validatePicsCSRPhoneNumber(u.getPhone(), false);
+		}
+		
+		return inputValidator.validatePhoneNumber(u.getPhone(), false);
 	}
 
 	@SuppressWarnings("unchecked")

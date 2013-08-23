@@ -23,6 +23,7 @@ public class QaUserCreator extends PicsApiSupport {
     private Account account;
     private Set<Integer> groupId = new HashSet<>();
     private Set<String> opPerm = new HashSet<>();
+    private Locale localeForUser = Locale.ENGLISH;
 
     @Autowired
     private UserManagementService userManagementService;
@@ -146,7 +147,7 @@ public class QaUserCreator extends PicsApiSupport {
         user.setFirstName("Selenium");
         user.setLastName("Test User");
         user.setEmail("tester@picsauditing.com");
-        user.setLocale(Locale.ENGLISH);
+        user.setLocale(localeForUser);
         userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
         return user;
     }
@@ -181,6 +182,14 @@ public class QaUserCreator extends PicsApiSupport {
 
     public void setOpPerm(Set<String> opPerm) {
         this.opPerm = opPerm;
+    }
+
+    public Locale getLocaleForUser() {
+        return localeForUser;
+    }
+
+    public void setLocaleForUser(Locale localeForUser) {
+        this.localeForUser = localeForUser;
     }
 
     private String guid() {

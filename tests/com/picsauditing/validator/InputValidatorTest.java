@@ -451,6 +451,36 @@ public class InputValidatorTest {
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
+	
+	@Test
+	public void testValidatePhoneNumber_ExtentionOnly() {
+		String phoneNumber = "1234";
+
+		String result = inputValidator.validatePicsCSRPhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+		
+//		System.out.println(phoneNumber.matches("^[0-9]{4}$"));
+		
+	}
+	
+	@Test
+	public void testValidatePhoneNumber_FullNumber() {
+		String phoneNumber = "949-936-4512 x 1234";
+
+		String result = inputValidator.validatePicsCSRPhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+	
+	@Test
+	public void testValidatePhoneNumber_Invalid() {
+		String phoneNumber = "123";
+
+		String result = inputValidator.validatePicsCSRPhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.INVALID_PHONE_FORMAT_KEY, result);
+	}
 
 	@Test
 	public void testValidateLastName_OneCharacterLastNameIsValid() {

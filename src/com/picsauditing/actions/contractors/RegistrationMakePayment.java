@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.*;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,6 +187,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
 			contractor.setMembershipDate(new Date());
+            contractor.setPaymentExpires(DateUtils.addYears(contractor.getMembershipDate(),1));
 			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);
 			}
@@ -292,6 +294,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 		closeRelatedRegistrationRequests();
 		if (contractor.getStatus().equals(AccountStatus.Requested)) {
 			contractor.setStatus(AccountStatus.Active);
+            contractor.setMembershipDate(new Date());
+            contractor.setPaymentExpires(DateUtils.addYears(contractor.getMembershipDate(),1));
 			contractorAccountDao.save(contractor);
 		}
 

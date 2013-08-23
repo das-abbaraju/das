@@ -275,18 +275,24 @@ public class ContractorActionSupport extends AccountActionSupport {
 				MenuComponent subItem = menuComponentIterator.next();
 				// Separate Annual Updates from DocuGUARD
 				if (service == AuditMenuBuilder.Service.DOCUGUARD && subItem.getName().startsWith(annualUpdateText)) {
-					addToAnnualUpdateMenu(annualUpdates, subItem);
+					annualUpdates = addToAnnualUpdateMenu(annualUpdates, subItem);
 				} else {
 					header.addChild(subItem);
 				}
 			}
 
 			v6.add(header);
+
+			if (annualUpdates != null && annualUpdates.hasChildren()) {
+				v6.add(annualUpdates);
+				annualUpdates = null;
+			}
 		}
+
 		return v6;
 	}
 
-	private void addToAnnualUpdateMenu(MenuComponent annualUpdates, MenuComponent child) {
+	private MenuComponent addToAnnualUpdateMenu(MenuComponent annualUpdates, MenuComponent child) {
 		if (annualUpdates == null) {
 			URLUtils urlUtils = new URLUtils();
 			String url = urlUtils.getActionUrl("ContractorDocuments", "id", 14766) + "#annual_update";
@@ -294,6 +300,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		annualUpdates.addChild(child);
+
+		return annualUpdates;
 	}
 
 	/**
@@ -303,10 +311,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 */
 
 	public boolean isShowHeader() {
-		if (permissions.isContractor()) {
-			return !permissions.isUsingVersion7Menus();
-		}
-
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
 		if (permissions.isOperator())
@@ -324,6 +328,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean isShowV6Menu() {
+		return !permissions.isContractor() || !permissions.isUsingVersion7Menus();
 	}
 
 	public boolean isCheckPermissionForOperator() {

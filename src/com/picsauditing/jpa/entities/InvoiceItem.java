@@ -11,6 +11,7 @@ import javax.persistence.*;
 public class InvoiceItem extends TransactionItem {
 
 	private Invoice invoice;
+    @Deprecated
 	private Date paymentExpires;
 	private boolean refunded = false;
 	private String qbRefundID;
@@ -50,10 +51,12 @@ public class InvoiceItem extends TransactionItem {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
+    @Deprecated
 	public Date getPaymentExpires() {
 		return paymentExpires;
 	}
 
+    @Deprecated
 	public void setPaymentExpires(Date paymentExpires) {
 		this.paymentExpires = paymentExpires;
 	}

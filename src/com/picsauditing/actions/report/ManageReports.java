@@ -23,7 +23,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.PermissionService;

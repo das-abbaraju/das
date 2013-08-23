@@ -16,7 +16,7 @@ public enum OshaType implements Translatable {
 			OshaRateType.Hours }),
 	COHS(OshaAudit.CAT_ID_COHS, AuditQuestion.COHS_KEPT_ID, true, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
-	UK_HSE(OshaAudit.CAT_ID_UK_HSE, AuditQuestion.UK_HSE_KEPT_ID, true, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
+	UK_HSE(OshaAudit.CAT_ID_UK_HSE, AuditQuestion.UK_HSE_KEPT_ID, true, new OshaRateType[] { OshaRateType.IFR, OshaRateType.AIR, OshaRateType.Fatalities }),
 	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, 0, false, null),
 	MEXICO(OshaAudit.CAT_ID_MEXICO, AuditQuestion.MEXICO_KEPT_ID, true, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 			OshaRateType.Fatalities, OshaRateType.Hours }),

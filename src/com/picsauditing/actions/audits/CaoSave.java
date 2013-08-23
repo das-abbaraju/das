@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -518,14 +519,7 @@ public class CaoSave extends AuditActionSupport {
 			flagCalculator = new FlagDataCalculator(contractorFlagCriteria);
 		}
 
-		for (ContractorOperator co : cao.getAudit().getContractorAccount().getNonCorporateOperators()) {
-			if (cao.hasCaop(co.getOperatorAccount().getId())) {
-				FlagColor flagColor = flagCalculator.calculateCaoStatus(cao.getAudit().getAuditType(), co.getFlagDatas());
-				cao.setFlag(flagColor);
-
-				return;
-			}
-		}
+        InsurancePolicySuggestionCalculator.calculateSuggestionForPolicy(contractor, flagCalculator, conAudit);
 	}
 
 	public int getCaoID() {

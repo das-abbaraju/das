@@ -19,6 +19,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.ContractorValidator;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -495,6 +496,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		contractor.setRenew(true);
 		if (contractor.isHasFreeMembership()) {
 			contractor.setStatus(AccountStatus.Active);
+            contractor.setMembershipDate(new Date());
+            contractor.setPaymentExpires(DateUtils.addYears(new Date(), 1));
 		}
 
 		contractor.setReason(Strings.EMPTY_STRING);

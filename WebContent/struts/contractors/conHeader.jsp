@@ -190,7 +190,9 @@ function loadStatus(caoID, addUserNote){
 }
 </style>
 
-<s:set name="auditMenu" value="auditMenu"></s:set>
+<s:if test="!permissions.contractor || !permissions.usingVersion7Menus">
+	<s:set name="auditMenu" value="auditMenu"></s:set>
+</s:if>
 
 <h1>
 	<s:property value="contractor.name" />
@@ -232,70 +234,72 @@ function loadStatus(caoID, addUserNote){
 <s:if test="showHeader">
 	<s:hidden name="auditID" id="auditID" />
 
-	<div id="internalnavcontainer">
-		<ul id="navlist">
-			<s:if test="!permissions.insuranceOnlyContractorUser">
-				<li>
-					<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">
-						<s:text name="ContractorView.title" />
-					</a>
-				</li>
-			</s:if>
-			<s:else>
-				<li>
-					<a class="dropdown" href="ContractorView.action" onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">
-						<s:text name="ContractorView.title" />
-					</a>
-				</li>
-			</s:else>
-
-			<s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser">
-				<li>
-					<a href="ContractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('contractor_facilities')">class="current"</s:if>>
-						<s:text name="global.Facilities" />
-					</a>
-				</li>
-			</s:if>
-
-			<s:if test="permissions.generalContractor">
-				<li>
-					<a href="SubcontractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('subcontractor_facilities')">class="current"</s:if>>
-						<s:text name="SubcontractorFacilities.title" />
-					</a>
-				</li>
-			</s:if>
-
-			<s:if test="permissions.contractor">
-				<li>
-					<a href="ContractorForms.action?id=<s:property value="id" />"<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>
-						<s:text name="global.Resources" />
-					</a>
-				</li>
-			</s:if>
-
-			<s:iterator value="#auditMenu">
-				<li>
-					<s:if test="children.size() > 0">
-						<a id="<s:property value="nameIdSafe"/>"
-							class="dropdown <s:if test="current == true"> current</s:if>"
-							href="<s:property value="url" />"
-							onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="nameIdSafe" />')"
-							title="<s:property value="title" />">
-							<s:property value="name" escape="false" />
+	<s:if test="showV6Menu">
+		<div id="internalnavcontainer">
+			<ul id="navlist">
+				<s:if test="!permissions.insuranceOnlyContractorUser">
+					<li>
+						<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">
+							<s:text name="ContractorView.title" />
 						</a>
-					</s:if>
-					<s:else>
-						<a id="<s:property value="nameIdSafe"/>"
-							href="<s:property value="url" />"
-							class="<s:if test="current == true"> current</s:if>"
-							title="<s:property value="title" />">
-							<s:property value="name" escape="false" />
+					</li>
+				</s:if>
+				<s:else>
+					<li>
+						<a class="dropdown" href="ContractorView.action" onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">
+							<s:text name="ContractorView.title" />
 						</a>
-					</s:else>
-				</li>
-			</s:iterator>
-		</ul>
-	</div>
+					</li>
+				</s:else>
+
+				<s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser">
+					<li>
+						<a href="ContractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('contractor_facilities')">class="current"</s:if>>
+							<s:text name="global.Facilities" />
+						</a>
+					</li>
+				</s:if>
+
+				<s:if test="permissions.generalContractor">
+					<li>
+						<a href="SubcontractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('subcontractor_facilities')">class="current"</s:if>>
+							<s:text name="SubcontractorFacilities.title" />
+						</a>
+					</li>
+				</s:if>
+
+				<s:if test="permissions.contractor">
+					<li>
+						<a href="ContractorForms.action?id=<s:property value="id" />"<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>
+							<s:text name="global.Resources" />
+						</a>
+					</li>
+				</s:if>
+
+				<s:iterator value="#auditMenu">
+					<li>
+						<s:if test="children.size() > 0">
+							<a id="<s:property value="nameIdSafe"/>"
+								class="dropdown <s:if test="current == true"> current</s:if>"
+								href="<s:property value="url" />"
+								onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="nameIdSafe" />')"
+								title="<s:property value="title" />">
+								<s:property value="name" escape="false" />
+							</a>
+						</s:if>
+						<s:else>
+							<a id="<s:property value="nameIdSafe"/>"
+								href="<s:property value="url" />"
+								class="<s:if test="current == true"> current</s:if>"
+								title="<s:property value="title" />">
+								<s:property value="name" escape="false" />
+							</a>
+						</s:else>
+					</li>
+				</s:iterator>
+			</ul>
+		</div>
+	</s:if>
 
 	<s:if test="auditID > 0 && showCaoTable">
 		<div id="auditHeader" class="auditHeader">

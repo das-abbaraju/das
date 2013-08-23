@@ -50,7 +50,7 @@ public abstract class Transaction extends BaseTable {
 		this.account = account;
 	}
 
-	@ReportField(type = FieldType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -59,7 +59,7 @@ public abstract class Transaction extends BaseTable {
 		this.totalAmount = totalAmount;
 	}
 
-	@ReportField(type = FieldType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public BigDecimal getAmountApplied() {
 		return amountApplied;
 	}
@@ -135,7 +135,7 @@ public abstract class Transaction extends BaseTable {
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.TransactionStatus, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.TransactionStatus, width = 100, importance = FieldImportance.Average)
 	public TransactionStatus getStatus() {
 		return status;
 	}
@@ -145,7 +145,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.Currency, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.Currency, importance = FieldImportance.Average)
 	public Currency getCurrency() {
 		return currency;
 	}

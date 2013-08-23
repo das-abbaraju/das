@@ -11,7 +11,6 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 
 @SuppressWarnings("unchecked")
@@ -24,7 +23,7 @@ public class JsonReportElementsBuilder {
 		for (Field field : fields) {
 			if (field.isVisible() && field.canUserSeeQueryField(permissions)) {
 				ReportUtil.translateField(field, permissions.getLocale());
-				JSONObject columnJson = fieldToColumnJson(field, permissions.getLocale());
+				JSONObject columnJson = fieldToColumnJson(field);
 				jsonArray.add(columnJson);
 			}
 		}
@@ -47,7 +46,7 @@ public class JsonReportElementsBuilder {
 		return jsonArray;
 	}
 
-	private static JSONObject fieldToColumnJson(Field field, Locale locale) {
+    private static JSONObject fieldToColumnJson(Field field) {
 		JSONObject json = fieldToCommonJson(field);
 
 		json.put(COLUMN_TYPE, field.getDisplayType().name());
@@ -55,7 +54,7 @@ public class JsonReportElementsBuilder {
 		
 		json.put(COLUMN_SQL_FUNCTION, null);
 		json.put(COLUMN_WIDTH, field.getWidth());
-		json.put(COLUMN_SORTABLE, field.isSortable());
+		json.put(REPORT_ELEMENT_SORTABLE, field.isSortable());
 
 		return json;
 	}
