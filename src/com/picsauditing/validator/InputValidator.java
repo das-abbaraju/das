@@ -17,6 +17,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.model.i18n.KeyValue;
 import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.util.DataScrubber;
 
 public class InputValidator {
 
@@ -90,9 +91,8 @@ public class InputValidator {
 		EmailFormatCheck,
 		PhoneFormatCheck,
 		UKPostcodeCheck,
+		UKPostcodeScrub,
 		PicsCSRPhoneFormat,
-		TrimLeadingAndTrailingSpaces,
-		ReplaceMultipleSpacesWithSingleSpace
 	}
 
 	public boolean isUsernameTaken(String username, int currentUserId) {
@@ -327,10 +327,9 @@ public class InputValidator {
 		return validateString(phoneNumber, ValidationType.PicsCSRPhoneFormat, getRequiredValidationType(required));
 	}
 
-	public String validateUkPostcode(String postcode, boolean required, boolean trimLeadingAndTrailingSpaces, boolean replaceMultipleSpacesWithSingleSpace) {
-		ValidationType trim = trimLeadingAndTrailingSpaces ? ValidationType.TrimLeadingAndTrailingSpaces : null;
-		ValidationType singleSpace = replaceMultipleSpacesWithSingleSpace ? ValidationType.ReplaceMultipleSpacesWithSingleSpace : null;
-		return validateString(postcode, ValidationType.UKPostcodeCheck, trim, singleSpace, getRequiredValidationType(required));
+	public String validateUkPostcode(String postcode, boolean required, boolean scrubData) {
+		ValidationType scrubPostcode = scrubData ? ValidationType.UKPostcodeScrub : null;
+		return validateString(postcode, ValidationType.UKPostcodeCheck,  getRequiredValidationType(required), scrubPostcode);
 	}
 
 	private ValidationType getRequiredValidationType(boolean required) {
@@ -348,12 +347,8 @@ public class InputValidator {
 			return NO_ERROR; // FIXME possible error here
 		}
 
-		if (validationTypes.contains(ValidationType.TrimLeadingAndTrailingSpaces)) {
-			str = str.trim();
-		}
-
-		if (validationTypes.contains(ValidationType.ReplaceMultipleSpacesWithSingleSpace)) {
-			str = str.replaceAll(REGEX_FOR_MULTIPLE_SPACES, " ");
+		if (validationTypes.contains(ValidationType.UKPostcodeScrub)) {
+			str = DataScrubber.cleanUKPostcode(str);
 		}
 
 		if (validationTypes.contains(ValidationType.MinLengthCheck) && str.length() < MIN_STRING_LENGTH_2) {

@@ -119,7 +119,7 @@ public class RegistrationValidator implements Validator {
 		}
 
 		if (requiresUkPostcode(contractor.getCountry())) {
-			errorMessageKey = inputValidator.validateUkPostcode(contractor.getZip(), true, true, true);
+			errorMessageKey = inputValidator.validateUkPostcode(contractor.getZip(), true, true);
 			errors.put("contractor.zip", errorMessageKey);
 		}
 
