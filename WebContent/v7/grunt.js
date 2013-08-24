@@ -15,6 +15,7 @@ module.exports = function(grunt) {
     lint: {
         files: [
             'js/vendor/jquery-1.9.1.min.js',
+            'js/vendor/jquery-ui-1.10.3.custom.js',
             'js/vendor/bootstrap.js',
             'js/vendor/prettify.js',
             'js/vendor/jquery.dataTables.js',

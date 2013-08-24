@@ -12004,7 +12004,14 @@ hr {
   color: #999;
 }
 
-/* line 20, ../sass/pics/templates/report/manage-report/_favorites.scss */
+/* line 14, ../sass/pics/templates/report/manage-report/_favorites.scss */
+
+#ManageReports_favorites_page .report-list li {
+  position: relative;
+  cursor: pointer;
+}
+
+/* line 25, ../sass/pics/templates/report/manage-report/_favorites.scss */
 
 #ManageReports_favorites_page #favorite_reports_overflow h1 {
   margin: 30px 0 20px;
