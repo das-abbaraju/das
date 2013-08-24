@@ -57,7 +57,7 @@ public class ReportTester extends PicsActionSupport {
             allModelFieldInfos.addAll(modelFieldInfos);
         }
 
-        return SUCCESS;
+        return "directory";
     }
 
     public static List<FieldInfo> buildModelFieldInfomation(ModelType modelType, AbstractModel model, Permissions permissions) {

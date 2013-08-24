@@ -2534,6 +2534,20 @@ hr {
   text-align: right;
 }
 
+/* line 2, ../sass/pics/templates/report/report-tester/_directory.scss */
+.ReportTester-page .raw {
+  visibility: hidden;
+}
+/* line 6, ../sass/pics/templates/report/report-tester/_directory.scss */
+.ReportTester-page #directory_table_wrapper {
+  margin-top: 18px;
+}
+/* line 11, ../sass/pics/templates/report/report-tester/_directory.scss */
+.ReportTester-page tfoot input,
+.ReportTester-page tfoot select {
+  width: 100%;
+}
+
 /* line 2, ../sass/pics/templates/reference/_dynamic-report.scss */
 #Reference_dynamicReport_page {
   background-color: #454545;
