@@ -35,4 +35,5 @@ public class SessionAjax extends PicsActionSupport {
 
 		return json;
 	}
+	
 }
