@@ -10297,7 +10297,7 @@ PICS.define('select2.Select2', {
                     list_item_ids = $.merge(top_list_item_ids, bottom_list_item_ids),
                     data = {};
 
-                data[UPDATE_PARAMETER_NAME] = list_item_ids;
+                data[UPDATE_PARAMETER_NAME] = list_item_ids.toString();
 
                 PICS.ajax({
                     url: UPDATE_URL,
