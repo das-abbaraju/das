@@ -213,7 +213,7 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	// updateFavoritesOrder, receiving "{ "reports": "[int, int, int]" }
-	public void updateFavoritesOrder() throws SQLException {
+	public String updateFavoritesOrder() throws SQLException {
 		List<String> reportIds = Arrays.asList(reports.split(","));
 		Collections.reverse(reportIds);
 		StringBuilder caseStmt = new StringBuilder();
@@ -228,9 +228,9 @@ public class ManageReports extends PicsActionSupport {
 		}
 		caseStmt.append("END");
 
+    	reportUserDAO.changeSortOrder(caseStmt.toString(),permissions.getUserId());
 
-
-		reportUserDAO.changeSortOrder(caseStmt.toString(),permissions.getUserId());
+        return SUCCESS;
 	}
 
 
