@@ -233,7 +233,7 @@
 		<!-- Credit Card Payment Method -->
 					
 		<div id='credit-card-payment-method'>
-			<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics">
+			<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics" autocomplete="off">
 				<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
 				<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
 				<%-- We must do it this way, or we are not PCI compliant --%>
@@ -258,7 +258,7 @@
 					</li>
 
                     <li class="creditcard">
-                        <s:textfield label="CreditCard.Number" name="ccnumber" />
+                        <s:textfield label="CreditCard.Number" name="ccnumber" autocomplete="off" />
                         <s:if test="invoice.currency.USD || invoice.currency.CAD">
                             <img src="images/creditcard.png" class="card" />
                         </s:if>
@@ -268,7 +268,7 @@
 					</li>
 					
 					<li class="creditcard">
-						<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:30px" maxlength="4" />
+						<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:30px" maxlength="4" autocomplete="off" />
 					</li>
 
 					<li class="expiration-date">
