@@ -17,7 +17,6 @@ import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -490,7 +489,6 @@ public class BillingService {
 		BigDecimal adjustedFeeAmount = FeeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee);
 
 		// Activate effective today
-        // TODO: Remove Payment Expiration, as we will no longer base this on the invoice item creation.
 		return new InvoiceItem(invoiceFee, adjustedFeeAmount, new Date());
 	}
 
@@ -500,8 +498,6 @@ public class BillingService {
 				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isReactivation()
 						|| item.getInvoiceFee().isBidonly() || item.getInvoiceFee().isListonly()) {
 					contractor.setStatus(AccountStatus.Active);
-                    contractor.setMembershipDate(new Date());
-                    contractor.setPaymentExpires(DateUtils.addYears(new Date(), 1));
 					contractor.setAuditColumns(new User(User.SYSTEM));
 					accountDao.save(contractor);
 					return true;

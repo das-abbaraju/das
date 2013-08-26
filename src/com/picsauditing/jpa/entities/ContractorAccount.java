@@ -554,6 +554,12 @@ public class ContractorAccount extends Account implements JSONable {
 		this.paymentMethod = paymentMethod;
 	}
 
+    /**
+     * The date the contractor was invoiced for their most recent
+     * activation/reactivation fee
+     *
+     * @return
+     */
 	@Temporal(TemporalType.DATE)
 	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getMembershipDate() {
@@ -577,6 +583,12 @@ public class ContractorAccount extends Account implements JSONable {
 		this.viewedFacilities = viewedFacilities;
 	}
 
+    /**
+     * The date the lastPayment expires and the contractor is due to pay another
+     * "period's" membership fee. This should NEVER be null.
+     *
+     * @return
+     */
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
 	@ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllOperators, importance = FieldImportance.Average)
@@ -588,6 +600,12 @@ public class ContractorAccount extends Account implements JSONable {
 		this.paymentExpires = paymentExpires;
 	}
 
+    /**
+     * Used to determine if we need to calculate the flagColor, audits and
+     * billing
+     *
+     * @return
+     */
     @ReportField(type = FieldType.Integer, requiredPermissions = OpPerms.DevelopmentEnvironment)
 	public int getNeedsRecalculation() {
 		return needsRecalculation;
@@ -1460,7 +1478,16 @@ public class ContractorAccount extends Account implements JSONable {
 		return (daysToExpire <= daysBeforeExpiration);
 	}
 
-	@Transient
+    @Transient
+    public boolean isHasPaymentExpired() {
+        if (getPaymentExpires() == null) {
+            return true;
+        }
+
+        return new Date().after(getPaymentExpires());
+    }
+
+    @Transient
 	public float getWeightedIndustryAverage() {
 		float sum = 0;
 		int activitySum = 0;

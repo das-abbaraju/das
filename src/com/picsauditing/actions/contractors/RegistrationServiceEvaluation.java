@@ -8,7 +8,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.*;
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,7 +205,6 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
             contractor.setMembershipDate(new Date());
-            contractor.setPaymentExpires(DateUtils.addYears(new Date(), 1));
 
 			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);

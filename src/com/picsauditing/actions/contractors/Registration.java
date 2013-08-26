@@ -364,6 +364,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
+        contractor.setPaymentExpires(new Date());
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
 		contractor.setNameIndex();
         if (!contractor.isDemo()) {
