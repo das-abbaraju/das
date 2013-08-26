@@ -2168,7 +2168,12 @@ hr {
 #ManageReports_favorites_page .report-list .icon-pushpin {
   color: #999;
 }
-/* line 20, ../sass/pics/templates/report/manage-report/_favorites.scss */
+/* line 14, ../sass/pics/templates/report/manage-report/_favorites.scss */
+#ManageReports_favorites_page .report-list li {
+  position: relative;
+  cursor: pointer;
+}
+/* line 25, ../sass/pics/templates/report/manage-report/_favorites.scss */
 #ManageReports_favorites_page #favorite_reports_overflow h1 {
   border-bottom: 1px solid #ccc;
   color: #999;
@@ -2532,6 +2537,20 @@ hr {
 /* line 33, ../sass/pics/templates/report/billing/_invoice-refund.scss */
 #InvoiceRefund__page td.number {
   text-align: right;
+}
+
+/* line 2, ../sass/pics/templates/report/report-tester/_directory.scss */
+.ReportTester-page .raw {
+  visibility: hidden;
+}
+/* line 6, ../sass/pics/templates/report/report-tester/_directory.scss */
+.ReportTester-page #directory_table_wrapper {
+  margin-top: 18px;
+}
+/* line 11, ../sass/pics/templates/report/report-tester/_directory.scss */
+.ReportTester-page tfoot input,
+.ReportTester-page tfoot select {
+  width: 100%;
 }
 
 /* line 2, ../sass/pics/templates/reference/_dynamic-report.scss */

@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.builders.EmailQueueBuilder;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -355,4 +356,8 @@ public class EmailQueue implements java.io.Serializable {
 	{
 		priority = 10;
 	}
+
+    public static EmailQueueBuilder builder() {
+        return new EmailQueueBuilder();
+    }
 }

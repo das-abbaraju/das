@@ -1,7 +1,6 @@
 package com.picsauditing.mail;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -15,6 +14,7 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.EmailAddressUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -23,8 +23,13 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.toggle.FeatureToggle;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.mail.MessagingException;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "EmailSenderTest-context.xml" })
 public class EmailSenderTest {
 	private EmailSender emailSenderSpring;
 	
@@ -193,8 +198,70 @@ public class EmailSenderTest {
 		verify(email).setSentDate((Date)any());
 		verify(emailQueueDAO).save(email);
 	}
-	
-	private int notValidDeactivatedEmailId() {
+
+    @Test
+    public void testSendNow_ValidToEmailAddress() throws MessagingException {
+        email = EmailQueue.builder()
+                .toAddress("contractor@example.com")
+                .fromAddress("pics@example.com")
+                .emailTemplate(emailTemplate)
+                .build();
+
+        emailSenderSpring.sendNow(email);
+
+        assertEquals(EmailStatus.Sent, email.getStatus());
+		assertNotNull(email.getSentDate());
+		verify(emailQueueDAO).save(email);
+
+    }
+
+    @Test
+    public void testSendNow_ValidToEmailAddress_MultipleRecipient() throws MessagingException {
+        email = EmailQueue.builder()
+                .toAddress("contractor1@example.com, contractor2@example.com,contractor3@example.com")
+                .fromAddress("pics@example.com")
+                .emailTemplate(emailTemplate)
+                .build();
+
+        emailSenderSpring.sendNow(email);
+
+        assertEquals(EmailStatus.Sent, email.getStatus());
+        assertNotNull(email.getSentDate());
+        verify(emailQueueDAO).save(email);
+    }
+
+
+    @Test
+    public void testSendNow_InvalidToEmailAddress() throws MessagingException {
+        email = EmailQueue.builder()
+                .toAddress("contractor$example.com")
+                .fromAddress("pics@example.com")
+                .emailTemplate(emailTemplate)
+                .build();
+
+        emailSenderSpring.sendNow(email);
+
+        assertEquals(EmailStatus.Error, email.getStatus());
+        assertNotNull(email.getSentDate());
+        verify(emailQueueDAO).save(email);
+    }
+
+    @Test
+    public void testSendNow_InvalidToEmailAddress_MultipleRecipient() throws MessagingException {
+        email = EmailQueue.builder()
+                .toAddress("contractor1@example.com, contractor2#example.com,contractor3@example.com")
+                .fromAddress("pics@example.com")
+                .emailTemplate(emailTemplate)
+                .build();
+
+        emailSenderSpring.sendNow(email);
+
+        assertEquals(EmailStatus.Error, email.getStatus());
+        assertNotNull(email.getSentDate());
+        verify(emailQueueDAO).save(email);
+    }
+
+    private int notValidDeactivatedEmailId() {
 		int i = 1;
 		while(EmailTemplate.VALID_DEACTIVATED_EMAILS().contains(i)) {
 			i++;

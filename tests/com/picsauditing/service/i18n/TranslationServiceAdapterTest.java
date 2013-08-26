@@ -1,9 +1,11 @@
 package com.picsauditing.service.i18n;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.util.SpringUtils;
 import com.sun.jersey.api.client.*;
 import net.sf.ehcache.Cache;
+import org.apache.struts2.StrutsStatics;
 import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -11,8 +13,10 @@ import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 
-import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -26,6 +30,8 @@ public class TranslationServiceAdapterTest {
 
     private TranslationServiceAdapter translationService;
     private Cache cache;
+    private ActionContext actionContext;
+    private Map<String, Object> context;
 
     @Mock
     private Client client;
@@ -37,6 +43,8 @@ public class TranslationServiceAdapterTest {
     private WebResource.Builder builder;
     @Mock
     private ApplicationContext applicationContext;
+    @Mock
+    protected HttpServletRequest request;
 
     @Before
     public void setUp() throws Exception {
@@ -52,6 +60,12 @@ public class TranslationServiceAdapterTest {
         when(builder.get(ClientResponse.class)).thenReturn(response);
         when(response.getStatus()).thenReturn(200);
         when(response.getEntity(String.class)).thenReturn(TEST_RESPONSE);
+
+        context = new HashMap<>();
+        context.put(StrutsStatics.HTTP_REQUEST, request);
+        actionContext = new ActionContext(context);
+        ActionContext.setContext(actionContext);
+
     }
 
     @After
@@ -63,6 +77,28 @@ public class TranslationServiceAdapterTest {
 //    @AfterClass
 //    public static void classTearDown() throws Exception {
 //    }
+
+    @Test
+    public void testNullActionNameParsesFromReferrer() throws Exception {
+        context.put(ActionContext.ACTION_NAME, null);
+        StringBuffer referrer = new StringBuffer("http://localhost:9000/api/en_US/ContractorRegistrationServices.title?referrer=http://ajiva.local:8080/RegistrationServiceEvaluation.action");
+        when(request.getRequestURL()).thenReturn(referrer);
+
+        String pageName = Whitebox.invokeMethod(translationService, "pageName");
+
+        assertTrue("RegistrationServiceEvaluation".equals(pageName));
+
+    }
+
+    @Test
+    public void testParsePageFromReferrer() throws Exception {
+        StringBuffer referrer = new StringBuffer("http://localhost:9000/api/en_US/ContractorRegistrationServices.title?referrer=http://ajiva.local:8080/RegistrationServiceEvaluation.action");
+        when(request.getRequestURL()).thenReturn(referrer);
+
+        String pageName = Whitebox.invokeMethod(translationService, "parsePageFromReferrer");
+
+        assertTrue("RegistrationServiceEvaluation".equals(pageName));
+    }
 
     @Test
     public void testGetText_NotCachedResultsInServiceCall() throws Exception {

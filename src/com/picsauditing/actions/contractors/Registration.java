@@ -12,11 +12,13 @@ import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.DataScrubber;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
+
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
@@ -186,6 +188,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
 		}
+		
 		permissions = null;
 
 		setupUserData();
@@ -358,7 +361,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		if (contractor.getStatus().isRequested()) {
 			contractor.setStatus(AccountStatus.Pending);
 		}
-
+		
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
@@ -387,6 +390,15 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			newConFee.setNewLevel(currentFee);
 			newConFee.setFeeClass(feeClass);
 			contractor.getFees().put(feeClass, newConFee);
+		}
+		
+		scrubContractorData(contractor);
+	}
+	
+	private void scrubContractorData(ContractorAccount contractor) {
+		if (contractor.getCountry().isUK()) {
+			String zip = contractor.getZip();
+			contractor.setZip(DataScrubber.cleanUKPostcode(zip));
 		}
 	}
 

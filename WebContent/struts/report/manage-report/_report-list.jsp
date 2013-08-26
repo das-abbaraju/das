@@ -24,7 +24,7 @@
         <%-- Icon --%>
         <s:set name="is_favorite_class" value="%{#report.favorite ? 'selected' : ''}" />
 
-        <li class="report clearfix">
+        <li id="${report.id}" class="report clearfix">
             <s:if test="#actions_path != ''">
                 <%-- hidden options may be being passed from the parent include --%>
                 <s:include value="%{#actions_path}" />

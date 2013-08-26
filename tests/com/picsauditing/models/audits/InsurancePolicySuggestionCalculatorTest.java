@@ -1,13 +1,10 @@
 package com.picsauditing.models.audits;
 
 import com.picsauditing.PICS.FlagDataCalculator;
-import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.*;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,14 +20,17 @@ public class InsurancePolicySuggestionCalculatorTest {
     private ContractorAccount contractor;
 
     @Test
-    public void testCalculate() {
+    public void testCalculate_Simple_JustOneOperator() {
         OperatorAccount operator = makeOperator(2);
         ContractorOperator contractorOperator = makeContractorOperator(operator, FlagColor.Green);
 
         ContractorAuditOperator cao = makeContractorAuditOperator(operator);
 
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperator}));
-        assertFlagColor(FlagColor.Green, cao);
+
+        setAuditsAndOperators(cao);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        assertEquals(FlagColor.Green, cao.getFlag());
     }
 
     @Test
@@ -49,7 +49,10 @@ public class InsurancePolicySuggestionCalculatorTest {
         ContractorAuditOperator cao = makeContractorAuditOperator(picsUs, operatorA, operatorB);
 
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
-        assertFlagColor(FlagColor.Red, cao);
+
+        setAuditsAndOperators(cao);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        assertEquals(FlagColor.Red, cao.getFlag());
     }
 
     @Test
@@ -68,7 +71,10 @@ public class InsurancePolicySuggestionCalculatorTest {
         ContractorAuditOperator cao = makeContractorAuditOperator(picsUs, operatorA, operatorB);
 
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
-        assertFlagColor(FlagColor.Red, cao);
+
+        setAuditsAndOperators(cao);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        assertEquals(FlagColor.Red, cao.getFlag());
     }
 
     @Test
@@ -89,7 +95,10 @@ public class InsurancePolicySuggestionCalculatorTest {
         auditType.setClassType(AuditTypeClass.Audit);
 
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
-        assertFlagColor(null, cao);
+
+        setAuditsAndOperators(cao);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        assertEquals(null, cao.getFlag());
     }
 
     @Test
@@ -113,7 +122,15 @@ public class InsurancePolicySuggestionCalculatorTest {
         contractorAudit.setExpiresDate(yesterday.getTime());
 
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
-        assertFlagColor(null, cao);
+        setAuditsAndOperators(cao);
+
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        assertEquals(null, cao.getFlag());
+    }
+
+    private void setAuditsAndOperators(ContractorAuditOperator cao) {
+        contractor.setAudits(Arrays.asList(new ContractorAudit[]{contractorAudit}));
+        contractorAudit.setOperators(Arrays.asList(new ContractorAuditOperator[]{cao}));
     }
 
     @Test
@@ -133,12 +150,15 @@ public class InsurancePolicySuggestionCalculatorTest {
         cao.setStatus(AuditStatus.Pending);
 
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
-        assertFlagColor(null, cao);
+
+        setAuditsAndOperators(cao);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        assertEquals(null, cao.getFlag());
     }
 
 
     @Before
-    public void setup(){
+    public void setup() {
         flagDataCalculator = new FlagDataCalculator();
 
         auditType = AuditType.builder()
@@ -162,14 +182,6 @@ public class InsurancePolicySuggestionCalculatorTest {
                 .build();
     }
 
-    private void assertFlagColor(FlagColor color, ContractorAuditOperator cao) {
-        contractor.setAudits(Arrays.asList(new ContractorAudit[]{contractorAudit}));
-        contractorAudit.setOperators(Arrays.asList(new ContractorAuditOperator[]{cao}));
-
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
-        assertEquals(color, cao.getFlag());
-    }
-
     private ContractorOperator makeContractorOperator(OperatorAccount operator, FlagColor green) {
         return ContractorOperator.builder()
                 .operator(operator)
@@ -183,7 +195,7 @@ public class InsurancePolicySuggestionCalculatorTest {
 
     private OperatorAccount makeOperator(int id) {
         return OperatorAccount.builder()
-                .id(id )
+                .id(id)
                 .operator()
                 .build();
     }

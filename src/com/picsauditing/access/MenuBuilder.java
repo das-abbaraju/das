@@ -368,6 +368,7 @@ public final class MenuBuilder {
                 MenuComponent adminMenu = reportsMenu.addChild("Administration");
                 adminMenu.addChild("Create Report", "CreateReport.action", "CreateReport");
                 adminMenu.addChild("Report Tester", "ReportTester.action", "ReportTester");
+                adminMenu.addChild("Report Field Directory", "ReportTester!directory.action", "ReportFieldDirectory");
             }
 
             FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
