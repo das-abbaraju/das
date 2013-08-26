@@ -1,8 +1,9 @@
-package com.picsauditing.models.audits;
+package com.picsauditing.service.audit;
 
 import com.picsauditing.PicsTest;
 import com.picsauditing.jpa.entities.AuditTypePeriod;
 import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,14 +14,14 @@ import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 
-public class AuditPeriodModelTest extends PicsTest {
-    private AuditPeriodModel test;
+public class AuditPeriodServiceTest extends PicsTest {
+    private AuditPeriodService test;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        test = new AuditPeriodModel();
+        test = new AuditPeriodService();
     }
 
     @Test

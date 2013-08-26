@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.models.audits.AuditPeriodModel;
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +58,8 @@ public class AuditBuilder {
 	private AuditCategoryRuleCache categoryRuleCache;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+    @Autowired
+    AuditPeriodService auditPeriodService;
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
 
@@ -89,7 +91,7 @@ public class AuditBuilder {
 				}
 
 				requiredAuditTypes.add(auditType);
-				if (auditType.getPeriod().isMonthlyQuarterlyYearly()) {
+				if (auditType.getPeriod().isMonthlyQuarterlyAnnual()) {
 					auditType = reconnectAuditType(auditType);
                     addMonthlyQuarterlyYearly(contractor, auditType);
                 } else if (auditType.isAnnualAddendum()) {
@@ -194,18 +196,17 @@ public class AuditBuilder {
 	}
 
     private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
-        AuditPeriodModel periodModel = new AuditPeriodModel();
-        List<String> auditFors = periodModel.getAuditForByDate(auditType, today);
+        List<String> auditFors = auditPeriodService.getAuditForByDate(auditType, today);
         for (String auditFor:auditFors) {
-            if (periodModel.findAudit(contractor.getAudits(), auditType, auditFor) == null) {
+            if (auditPeriodService.findAudit(contractor.getAudits(), auditType, auditFor) == null) {
                 ContractorAudit audit = new ContractorAudit();
                 audit.setContractorAccount(contractor);
                 audit.setAuditType(auditType);
                 audit.setAuditColumns(systemUser);
                 audit.setAuditFor(auditFor);
-                audit.setCreationDate(periodModel.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
-                audit.setEffectiveDate(periodModel.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
-                audit.setExpiresDate(periodModel.getExpirationDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setCreationDate(auditPeriodService.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setEffectiveDate(auditPeriodService.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setExpiresDate(auditPeriodService.getExpirationDateForMonthlyQuarterlyYearly(auditType, auditFor));
                 audit.setPreviousAudit(conAuditDao.findPreviousAudit(audit));
                 conAuditDao.save(audit);
                 contractor.getAudits().add(audit);

@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -46,6 +47,7 @@ public class AuditBuilderTest extends PicsTest {
 	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
 	List<AuditTypeRule> typeRules = new ArrayList<AuditTypeRule>();
 	AuditTypesBuilder typeBuilder;
+    AuditPeriodService auditPeriodService = new AuditPeriodService();
 
 	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
 	List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
@@ -82,6 +84,7 @@ public class AuditBuilderTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", typeRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", catRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", auditPercentCalculator);
+        PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPeriodService", auditPeriodService);
 
 		Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);

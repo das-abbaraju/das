@@ -365,7 +365,7 @@ public class AuditMenuBuilder {
 
                         String linkText;
 
-                        if (audit.getAuditType().getPeriod().isMonthlyQuarterlyYearly()) {
+                        if (audit.getAuditType().getPeriod().isMonthlyQuarterlyAnnual()) {
                             linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + audit.getAuditFor();
                         } else {
                             String year = DateBean.format(audit.getEffectiveDateLabel(), "yyyy");
@@ -485,7 +485,7 @@ public class AuditMenuBuilder {
 	private MenuComponent createAuditMenuItem(ContractorAudit audit) {
 		String link = urlUtils().getActionUrl("Audit", "auditID", audit.getId());
 		String linkText = getText(audit.getAuditType().getI18nKey("name"));
-        if (audit.getAuditType().getPeriod().isMonthlyQuarterlyYearly()) {
+        if (audit.getAuditType().getPeriod().isMonthlyQuarterlyAnnual()) {
             linkText += " " + audit.getAuditFor();
         }
 		MenuComponent menuItem = new MenuComponent(linkText, link);

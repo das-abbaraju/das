@@ -186,6 +186,7 @@
     <bean id="FacilitiesEditModel" class="com.picsauditing.model.operators.FacilitiesEditModel"/>
     <bean id="AuditEditModel" class="com.picsauditing.models.audits.AuditEditModel"/>
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
+    <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>
     <bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener"

@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum AuditTypePeriod {
-    None, Monthly, Quarterly, Yearly, CustomDate, Membership, Expiration;
+    None, Monthly, Quarterly, Yearly, CustomDate;
 
     public boolean isNone() {
         return None == this;
@@ -23,15 +23,11 @@ public enum AuditTypePeriod {
         return CustomDate == this;
     }
 
-    public boolean isMembership() {
-        return Membership == this;
+    public boolean isAnnual() {
+        return Yearly == this || CustomDate == this;
     }
 
-    public boolean isExpiration() {
-        return Expiration == this;
-    }
-
-    public boolean isMonthlyQuarterlyYearly() {
+    public boolean isMonthlyQuarterlyAnnual() {
         return Monthly == this || Quarterly == this || Yearly == this || CustomDate == this;
     }
 
