@@ -71,18 +71,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	public void setCategory(FlagCriteriaCategory category) {
 		this.category = category;
-        setBackwardCompatibleCategory(category);
 	}
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "new_category")
-    public FlagCriteriaCategory getBackwardCompatibleCategory() {
-        return backwardCompatibleCategory;
-    }
-
-    public void setBackwardCompatibleCategory(FlagCriteriaCategory category) {
-        this.backwardCompatibleCategory = category;
-    }
 
 	@ManyToOne
 	@JoinColumn(name = "questionID", nullable = true)
