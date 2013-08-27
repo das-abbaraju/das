@@ -9,6 +9,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
@@ -50,6 +51,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private NoteDAO noteDAO;
 	@Mock
 	private BillingNoteModel billingNoteModel;
+	@Mock
+	private AppPropertyDAO appPropertyDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -66,6 +69,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 		Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
 		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
 		Whitebox.setInternalState(invoiceDetail, "billingNoteModel", billingNoteModel);
+		Whitebox.setInternalState(invoiceDetail,"appPropertyDAO",appPropertyDAO);
 	}
 
 	// Go back and add in verification for the message
