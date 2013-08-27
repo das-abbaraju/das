@@ -159,6 +159,7 @@
                                                 <s:text name="button.Edit"/>
                                             </a>
                                         </li>
+                                        </s:if>
                                         <pics:permission perm="Billing" type="Delete">
                                             <s:if test="voidEnabled">
                                                 <li>
@@ -177,6 +178,7 @@
                                                 </li>
                                             </s:if>
                                         </pics:permission>
+                                    <s:if test="editEnabled">
                                         <pics:permission perm="InvoiceEdit">
                                             <s:if test="!transactionIsCreditMemo">
                                                 <s:if test="sapEnabledForBizUnit">

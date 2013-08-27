@@ -285,7 +285,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void cancel() {
-		if (isTransactionIsCreditMemo() || !isVoidEnabled()) return;
+		if (!isVoidEnabled()) return;
         Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
         if (paIterator.hasNext()) {
             PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
@@ -350,7 +350,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void change() throws Exception {
-		if (isTransactionIsCreditMemo() || !isEditEnabled()) return;
+		if (!isEditEnabled()) return;
         List<String> removedItemNames = new ArrayList<String>();
         List<String> createdItemNames = new ArrayList<String>();
 
