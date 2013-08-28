@@ -76,8 +76,10 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey insideSalesRep = addOptionalKey(insideSales);
         insideSalesRep.setMinimumImportance(FieldImportance.Average);
 
-        addRequiredKey(new ReportForeignKey(CemexPostEval, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 456")));
+        ReportForeignKey cemex = new ReportForeignKey(CemexPostEval, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 456"));
+        cemex.setMinimumImportance(FieldImportance.Average);
+        addRequiredKey(cemex);
 
         addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));

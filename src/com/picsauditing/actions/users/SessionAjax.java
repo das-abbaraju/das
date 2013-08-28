@@ -35,5 +35,14 @@ public class SessionAjax extends PicsActionSupport {
 
 		return json;
 	}
-	
+
+	// The session timeout is reset in the SecurityInterceptor
+	@SuppressWarnings("unchecked")
+	public String resetTimeout() {
+		json = new JSONObject();
+
+		json.put("result", "success");
+
+		return JSON;
+	}
 }
