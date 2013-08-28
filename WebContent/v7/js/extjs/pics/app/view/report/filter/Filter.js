@@ -27,10 +27,10 @@ Ext.define('PICS.view.report.filter.Filter', {
     width: 320,
 
     initComponent: function () {
-        var filter = this.filter,
+        var filter_record = this.filter,
             index = this.index;
-        
-        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+
+        if (Ext.getClassName(filter_record) != 'PICS.model.report.Filter') {
             Ext.Error.raise('Invalid filter record');
         }
 
@@ -38,10 +38,9 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
-        var type = filter.get('type'),
-            cls = this.getFilterClassByType(type),
+        var type = filter_record.get('type'),
             filter_number = this.createNumber(index),
-            filter_content = this.createContent(filter),
+            filter_content = this.createContent(filter_record),
             remove_button = this.createRemoveButton();
 
         this.height = filter_content.items[1].height;
@@ -50,7 +49,7 @@ Ext.define('PICS.view.report.filter.Filter', {
             filter_number,
             filter_content
         ];
-        
+
         this.dockedItems = [
             remove_button
         ];
@@ -71,9 +70,9 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createContent: function (filter) {
-        var filter_title = this.createTitle(filter);
-        var filter_input = this.createInput(filter);
+    createContent: function (filter_record) {
+        var filter_title = this.createTitle(filter_record);
+        var filter_input = this.createInput(filter_record);
 
         return {
             border: 0,
@@ -87,8 +86,8 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createTitle: function (filter) {
-        var name = filter.get('name');
+    createTitle: function (filter_record) {
+        var name = filter_record.get('name');
 
         if (name.length >= 29) {
             name = name.substring(0, 29) + '&hellip;';
@@ -113,13 +112,13 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createInput: function (filter) {
-        var type = filter.get('type'),
+    createInput: function (filter_record) {
+        var type = filter_record.get('type'),
             cls = this.getFilterClassByType(type);
 
         return Ext.create(cls);
     },
-    
+
     createRemoveButton: function () {
         return {
             xtype: 'toolbar',
@@ -142,21 +141,21 @@ Ext.define('PICS.view.report.filter.Filter', {
             ui: 'footer'
         };
     },
-    
+
     createTooltip: function () {
         var filter = this.filter;
-        
+
         if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
             Ext.Error.raise('Invalid filter record');
         }
-        
+
         var target = this.el.down('.filter-name'),
             description = filter.get('description');
-        
+
         var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
             target: target
         });
-        
+
         tooltip.update({
             description: description
         });
@@ -165,17 +164,17 @@ Ext.define('PICS.view.report.filter.Filter', {
     getFilterClassByType: function (type) {
         var filter_classes = this.getFilterClasses(),
             filter_class = filter_classes[type];
-        
+
         if (typeof filter_class == 'undefined') {
             Ext.Error.raise('Invalid filter type: ' + type);
         }
-        
+
         return filter_class;
     },
-    
+
     getFilterClasses: function () {
         var filter_classes = {};
-        
+
         filter_classes[PICS.data.FilterType.AccountID] = 'PICS.view.report.filter.base.AccountId';
         filter_classes[PICS.data.FilterType.Autocomplete] = 'PICS.view.report.filter.base.Autocomplete';
         filter_classes[PICS.data.FilterType.Boolean] = 'PICS.view.report.filter.base.Boolean';
@@ -184,7 +183,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         filter_classes[PICS.data.FilterType.Number] = 'PICS.view.report.filter.base.Number';
         filter_classes[PICS.data.FilterType.String] = 'PICS.view.report.filter.base.String';
         filter_classes[PICS.data.FilterType.UserID] = 'PICS.view.report.filter.base.UserId';
-        
+
         return filter_classes;
     }
 });

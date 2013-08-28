@@ -53,6 +53,37 @@ ul.x-boxselect-list.x-boxselect-singleselect {
     display: none;
 }
 
+/* Extracted from _tab.scss */
+
+.#{$prefix}tab-close-btn {
+    position: absolute;
+    top: $tab-closable-icon-top;
+    right: $tab-closable-icon-right;
+    width: $tab-closable-icon-width;
+    height: $tab-closable-icon-height;
+    font-size: 0;
+    line-height: 0;
+    text-indent: -999px;
+    background: no-repeat;
+    background-image: theme-background-image($theme-name, $tab-closable-icon);
+    @include opacity(.6);
+}
+
+.#{$prefix}nbr .#{$prefix}tab-close-btn {
+    top: $nbr-tab-closable-icon-top;
+    right: $nbr-tab-closable-icon-right;
+}
+
+/* Include the element name otherwise Internet Explorer 7 & 8 take a performance hit */
+a.#{$prefix}tab-close-btn:hover {
+    @include opacity(1);
+}
+
+/* Include the element name to raise the specificity to equal the :hover */
+.#{$prefix}tab-default-disabled a.#{$prefix}tab-close-btn {
+    @include opacity(0.3);
+}
+
 /* PICS custom */
 
 .x-boxselect.x-form-text {
@@ -71,8 +102,13 @@ ul.x-boxselect-list.x-boxselect-singleselect {
     border: 0;
 }
 
+.x-field:not(.x-item-disabled) .x-boxselect-item.selected {
+    border: 0 !important;
+    background: #dcdcdc !important;
+}
+
 .x-boxselect-item-close {
-    margin-top: 1px !important;   
+    margin-top: 1px !important;
 }
 
 .x-boxselect {
@@ -92,7 +128,7 @@ ul.x-boxselect-list.x-boxselect-singleselect {
     }
 
     .x-boxselect-input {
-        visibility: hidden;        
+        visibility: hidden;
     }
 
     .x-form-trigger {

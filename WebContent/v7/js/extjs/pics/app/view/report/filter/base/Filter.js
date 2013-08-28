@@ -11,14 +11,14 @@ Ext.define('PICS.view.report.filter.base.Filter', {
         if (typeof this.createOperatorField != 'function') {
             Ext.Error.raise('Method createOperatorField missing');
         }
-        
+
         if (typeof this.createValueField != 'function') {
             Ext.Error.raise('Method createValueField missing');
         }
-        
+
         var operator_field = this.createOperatorField();
         var value_field = this.createValueField();
-        
+
         this.items = [operator_field, value_field];
 
         this.callParent(arguments);

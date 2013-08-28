@@ -1,8 +1,19 @@
 Ext.define('PICS.view.report.filter.base.Autocomplete', {
     extend: 'PICS.view.report.filter.base.Filter',
     alias: 'widget.reportfilterbaseautocomplete',
-    
+
     cls: 'autocomplete',
+
+    listeners: {
+        render: function (cmp, eOpts) {
+            var el = this.getEl();
+
+            // TODO: Use mon + delegate or some other ExtJS way of attaching listeners to elements.
+            el.query('.x-boxselect-list')[0].onclick = function () {
+                el.query('.x-boxselect-input-field')[0].focus();
+            }
+        }
+    },
 
     createOperatorField: function () {
         return {
@@ -19,20 +30,32 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
             emptyText: PICS.text('Report.execute.filter.autocomplete.emptyText') + '\u2026',
             filterPickList: true,
             flex: 1,
-            height: 60,
+            height: 61,
             hideTrigger: true,
             minChars: 2,
             name: 'value',
             queryParam: 'searchQuery',
+
+            // Default store required for boxselect to work, but quickly overridden by updateValueFieldStore.
+            store: {
+                fields: [{
+                    name: 'key',
+                    type: 'string'
+                }, {
+                    name: 'value',
+                    type: 'string'
+                }]
+            },
+
             triggerOnClick: false,
             valueField: 'key'
         };
     },
 
-    updateValueFieldStore: function (filter) {
-        var field_id = filter.get('field_id'),
-            filter_value = filter.get('value'),
-            value_field = this.down('combobox'),
+    updateValueFieldStore: function (filter_record) {
+        var field_id = filter_record.get('field_id'),
+            filter_value = filter_record.get('value'),
+            value_field = this.down('boxselect'),
             url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id, filter_value);
 
         value_field.store = Ext.create('Ext.data.Store', {
@@ -59,8 +82,8 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
                     if (!this.initialSelectionMade) {
                         this.initialSelectionMade = true;
                         this.proxy.url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id);
-                        
-                        value_field.select(filter.get('value').split(', '));
+
+                        value_field.select(filter_record.get('value').split(', '));
                     }
                 }
             }

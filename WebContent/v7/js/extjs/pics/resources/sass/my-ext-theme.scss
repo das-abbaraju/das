@@ -58,7 +58,6 @@ $toolbar-font-size: 13px;
 
 // You may remove any of the following modules that you
 // do not use in order to create a smaller css file.
-@include extjs-tab;
 @include extjs-boundlist;
 @include extjs-button;
 @include extjs-datepicker;
@@ -104,12 +103,12 @@ $toolbar-font-size: 13px;
 	{
 		@include background-image(none !important);
 	}
-	
+
 	.x-menu-item-active .x-menu-item-link
 	{
 		background: #a84d10;
 	}
-	
+
 	#report_toolbar,
 	#paging_toolbar,
 	.x-grid-header-ct,
@@ -120,7 +119,7 @@ $toolbar-font-size: 13px;
 	{
 		@include background-image(none !important);
 	}
-	
+
 	.x-grid-header-ct,
 	.x-column-header,
 	.x-column-header-over

@@ -29,16 +29,16 @@ Ext.define('PICS.view.report.filter.Filters', {
 
             index += 1;
         });
-        
+
         this.items = items;
-        
+
         this.callParent(arguments);
     },
-    
+
     hideFilterNumbers: function () {
         this.removeCls('x-active');
     },
-    
+
     showFilterNumbers: function () {
         this.addCls('x-active');
     }
