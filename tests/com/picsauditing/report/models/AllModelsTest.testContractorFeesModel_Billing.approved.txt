@@ -5,9 +5,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorCcOnFile
@@ -22,6 +26,7 @@ ContractorMembershipDate
 ContractorMustPay
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 FeeFeeClass
 FeeMaxFacilities

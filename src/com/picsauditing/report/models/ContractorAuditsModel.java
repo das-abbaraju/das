@@ -28,7 +28,6 @@ public class ContractorAuditsModel extends AbstractModel {
 			ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.alias = "ContractorOperator";
 			flag.minimumImportance = FieldImportance.Average;
-			flag.category = FieldCategory.AccountInformation;
 		}
 
 		conAudit.join(ContractorAuditTable.Auditor);

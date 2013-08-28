@@ -27,22 +27,17 @@ public class ForcedFlagsModel extends AbstractModel {
 
         ModelSpec operator = spec.join(ForcedFlagView.Operator);
         operator.alias = "Operator";
-        operator.category = FieldCategory.ReportingClientSite;
         ModelSpec opAccount = operator.join(OperatorTable.Account);
         opAccount.alias = "ContractorOperatorOperator";
         opAccount.minimumImportance = FieldImportance.Required;
-        opAccount.category = FieldCategory.ReportingClientSite;
 
         ModelSpec forcedFlagPercent = operator.join(OperatorTable.ForcedFlagPercent);
         forcedFlagPercent.alias = "ForcedFlagPercent";
-        forcedFlagPercent.category = FieldCategory.ReportingClientSite;
 
         ModelSpec accountManager = opAccount.join(AccountTable.AccountManager);
         accountManager.alias = "AccountManager";
-        accountManager.category = FieldCategory.CustomerService;
         ModelSpec accountManagerUser = accountManager.join(AccountUserTable.User);
         accountManagerUser.alias = "AccountManagerUser";
-        accountManagerUser.category = FieldCategory.CustomerService;
 
         ModelSpec forcedBy = spec.join(ForcedFlagView.ForcedByUser);
         forcedBy.alias = "ContractorOperatorForcedByUser";
@@ -59,7 +54,6 @@ public class ForcedFlagsModel extends AbstractModel {
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
         Field accountType = new Field("ContractorOperatorOperatorType", "ContractorOperatorOperator.type", FieldType.AccountType);
-        accountType.setCategory(FieldCategory.ReportingClientSite);
         accountType.setTranslationPrefixAndSuffix("AccountType", "");
         fields.put("ContractorOperatorOperatorType".toUpperCase(), accountType);
 

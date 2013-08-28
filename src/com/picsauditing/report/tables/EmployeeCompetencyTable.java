@@ -13,7 +13,7 @@ public class EmployeeCompetencyTable extends AbstractTable {
     }
 
     protected void addJoins() {
-        addJoinKey(new ReportForeignKey(Employee, new EmployeeTable(), new ReportOnClause("employeeID"))).setMinimumImportance(FieldImportance.Required);
-        addJoinKey(new ReportForeignKey(Competency, new OperatorCompetencyTable(), new ReportOnClause("competencyID"))).setMinimumImportance(FieldImportance.Required);
+        addJoinKey(new ReportForeignKey(Employee, new EmployeeTable(), new ReportOnClause("employeeID")));
+        addJoinKey(new ReportForeignKey(Competency, new OperatorCompetencyTable(), new ReportOnClause("competencyID")));
     }
 }

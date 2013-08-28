@@ -17,7 +17,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
@@ -73,7 +72,7 @@ public class FlagCriteriaOperator extends BaseTable {
 
 	@Enumerated(EnumType.STRING)
 	@JoinColumn(nullable = false)
-	@ReportField(type = FieldType.FlagColor, category = FieldCategory.ClientSitePreferences, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
+	@ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
 	public FlagColor getFlag() {
 		return flag;
 	}
@@ -82,7 +81,7 @@ public class FlagCriteriaOperator extends BaseTable {
 		this.flag = flag;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences, importance = FieldImportance.Required)
+	@ReportField(importance = FieldImportance.Required)
 	public String getHurdle() {
 		return hurdle;
 	}

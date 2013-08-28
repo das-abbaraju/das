@@ -11,6 +11,7 @@ import com.picsauditing.mail.*;
 import com.picsauditing.messaging.FlagChange;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
+import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -885,24 +886,9 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		logger.trace("ContractorCron starting Policies");
-		// TODO we might be able to move this to the new FlagCalculator method
-		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
-				if (audit.getAuditType().getClassType().isPolicy() && !audit.isExpired()) {
-					for (ContractorAuditOperator cao : audit.getOperators()) {
-						if (cao.getStatus().after(AuditStatus.Pending)) {
-							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
-										co.getFlagDatas());
 
-								cao.setFlag(flagColor);
-								dao.save(cao);
-							}
-						}
-					}
-				}
-			}
-		}
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        dao.save(contractor);
 
 		Set<ContractorAudit> expiringPolicies = getExpiringPolicies(contractor);
 		Set<EmailSubscription> unsentWeeklyInsuranceSubscriptions = getUnsentWeeklyInsuranceSubscriptions(contractor);

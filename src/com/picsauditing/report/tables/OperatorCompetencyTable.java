@@ -11,7 +11,7 @@ public class OperatorCompetencyTable extends AbstractTable {
     }
 
     protected void addJoins() {
-        addJoinKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("opID"))).setMinimumImportance(FieldImportance.Required);
+        addJoinKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("opID")));
 
     }
 }

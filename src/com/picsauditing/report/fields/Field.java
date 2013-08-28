@@ -10,7 +10,6 @@ import javax.persistence.Transient;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
@@ -20,7 +19,6 @@ public class Field {
 
 	private FieldType type = FieldType.String;
 	private String name;
-	private FieldCategory category = FieldCategory.General;
 	private String categoryTranslation;
 	private String text;
 	private String url;
@@ -51,7 +49,6 @@ public class Field {
 			url = annotation.url();
 		}
 
-		category = annotation.category();
 		requiredPermission = annotation.requiredPermissions();
 		visible = annotation.visible();
 		filterable = annotation.filterable();
@@ -187,15 +184,6 @@ public class Field {
 		this.url = url;
 	}
 
-	public FieldCategory getCategory() {
-		return category;
-	}
-
-	public Field setCategory(FieldCategory category) {
-		this.category = category;
-		return this;
-	}
-
 	@Transient
 	public String getCategoryTranslation() {
 		return categoryTranslation;
@@ -297,7 +285,6 @@ public class Field {
 
     public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, type);
-		copiedField.category = category;
 		copiedField.text = text;
 		copiedField.url = url;
 		copiedField.width = width;
@@ -319,7 +306,7 @@ public class Field {
 
 	@Override
 	public String toString() {
-		return category + ": " + name;
+		return categoryTranslation + ": " + name;
 	}
 
     public String getRequiredJoin() {

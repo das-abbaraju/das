@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TranslationLookupEventListener implements ApplicationListener<TranslationLookupEvent> {
     private static List<TranslationLookupData> lookups  = new ArrayList<>();
-    private static final int NUMBER_TO_SEND_AT_ONCE = 500;
+    private static final int NUMBER_TO_SEND_AT_ONCE = 5000;
 
     @Autowired
     @Qualifier("TranslationUsagePublisher")

@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class TranslationServiceAdapter implements TranslationService {
@@ -27,7 +29,7 @@ public class TranslationServiceAdapter implements TranslationService {
     public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
 
     private static final String TRANSLATION_URL =
-            ((System.getProperty("translation.server") == null) ? "http://acoustickitty.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
+            ((System.getProperty("translation.server") == null) ? "http://translate.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
     private static final String LOCALES_URL = TRANSLATION_URL + "locales/";
     private static final String CACHE_NAME = "i18n";
     private static Cache cache;
@@ -204,7 +206,7 @@ public class TranslationServiceAdapter implements TranslationService {
             return ServletActionContext.getRequest().getRequestURL();
         } catch (Exception e) {
             logger.warn("No ServletActionContext Request available");
-            return null;
+            return new StringBuffer("UNKNOWN");
         }
     }
 
@@ -244,10 +246,25 @@ public class TranslationServiceAdapter implements TranslationService {
     private String pageName() {
         try {
             String pageName = ServletActionContext.getContext().getName();
+            if (Strings.isEmpty(pageName )) {
+                pageName = parsePageFromReferrer();
+            }
             return pageName;
         } catch (Exception e) {
             logger.warn("No ServletActionContext Request available");
-            return null;
+            return "UNKNOWN";
+        }
+    }
+
+    private String parsePageFromReferrer() {
+        String referrer = referrer().toString();
+        Pattern ptrn= Pattern.compile(".*/(.*)\\.action$");
+        Matcher matcher = ptrn.matcher(referrer);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        else {
+            return "UNKNOWN";
         }
     }
 

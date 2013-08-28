@@ -453,12 +453,43 @@ public class InputValidatorTest {
 	}
 
 	@Test
+	public void testValidatePhoneNumber_ExtentionOnly() {
+		String phoneNumber = "1234";
+
+		String result = inputValidator.validatePicsCSRPhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+
+//		System.out.println(phoneNumber.matches("^[0-9]{4}$"));
+
+	}
+
+	@Test
+	public void testValidatePhoneNumber_FullNumber() {
+		String phoneNumber = "949-936-4512 x 1234";
+
+		String result = inputValidator.validatePicsCSRPhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePhoneNumber_Invalid() {
+		String phoneNumber = "123";
+
+		String result = inputValidator.validatePicsCSRPhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.INVALID_PHONE_FORMAT_KEY, result);
+	}
+
+	@Test
 	public void testValidateLastName_OneCharacterLastNameIsValid() {
 		String errorMessageKey = inputValidator.validateLastName("x");
 
 		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
+	@SuppressWarnings("deprecation")
 	private Date buildValidDate() {
 		Date date = new Date();
 		date.setDate(1);
@@ -466,6 +497,76 @@ public class InputValidatorTest {
 		date.setYear(2000);
 
 		return date;
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_Format1Successful() {
+		String result = inputValidator.validateUkPostcode("M2 5BQ", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_Format2Successful() {
+		String result = inputValidator.validateUkPostcode("M34 4AB", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_Format3Successful() {
+		String result = inputValidator.validateUkPostcode("CR0 2YR", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_Format4Successful() {
+		String result = inputValidator.validateUkPostcode("DN16 9AA", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_Format5Successful() {
+		String result = inputValidator.validateUkPostcode("W1A 4ZZ", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_Format6Successful() {
+		String result = inputValidator.validateUkPostcode("EC1A 1HQ", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_SpecialCasesForTerritoriesSuccessful() {
+		String result = inputValidator.validateUkPostcode("ASCN 1ZZ", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_SpecialCasesForBritishForcesWithTab() {
+		String result = inputValidator.validateUkPostcode("BF1 	 4TT", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_SpecialCasesForCrownDependenciesWithWhiteSpace() {
+		String result = inputValidator.validateUkPostcode(" IM1  1JB ", false, true);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePostCodeForUK_Error() {
+		String result = inputValidator.validateUkPostcode("123", false, true);
+
+		assertEquals(InputValidator.INVALID_UK_POST_CODE_KEY, result);
 	}
 
 }

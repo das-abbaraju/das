@@ -20,7 +20,6 @@ import org.apache.velocity.tools.generic.DateTool;
 import com.picsauditing.PICS.TaxService;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.PicsDateFormat;
 import org.hibernate.annotations.Type;
@@ -85,7 +84,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getDueDate() {
 		return dueDate;
 	}
@@ -95,7 +94,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getPaidDate() {
 		return paidDate;
 	}
@@ -104,7 +103,7 @@ public class Invoice extends Transaction {
 		this.paidDate = paidDate;
 	}
 
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.String)
+	@ReportField(type = FieldType.String)
 	public String getPoNumber() {
 		return poNumber;
 	}
@@ -113,7 +112,7 @@ public class Invoice extends Transaction {
 		this.poNumber = poNumber;
 	}
 
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.String)
+	@ReportField(type = FieldType.String)
 	public String getNotes() {
 		return notes;
 	}
@@ -244,7 +243,7 @@ public class Invoice extends Transaction {
     @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.InvoiceType") })
     @Enumerated(EnumType.STRING)
     @Column(name = "invoiceType", nullable = false)
-    @ReportField(category = FieldCategory.Invoicing, type = FieldType.InvoiceType, importance = FieldImportance.Required)
+    @ReportField(type = FieldType.InvoiceType, importance = FieldImportance.Required)
     public InvoiceType getInvoiceType() {
         return invoiceType;
     }
@@ -253,7 +252,7 @@ public class Invoice extends Transaction {
         this.invoiceType = invoiceType;
     }
 
-    @ReportField(category = FieldCategory.Commission, type = FieldType.Float, importance = FieldImportance.Required, requiredPermissions = OpPerms.SalesCommission)
+    @ReportField(type = FieldType.Float, importance = FieldImportance.Required, requiredPermissions = OpPerms.SalesCommission)
     public BigDecimal getCommissionableAmount() {
         return commissionableAmount;
     }

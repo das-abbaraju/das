@@ -98,5 +98,7 @@
 				<param name="invoice.id">${invoice.id}</param>
 			</result>
         </action>
+
+        <action name="ProductServiceQuery" class="com.picsauditing.actions.billing.ProductServiceQuery" />
 	</package>
 </struts>

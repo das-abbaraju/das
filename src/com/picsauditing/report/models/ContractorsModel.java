@@ -21,7 +21,7 @@ public class ContractorsModel extends AbstractModel {
 		{
 			ModelSpec account = contractor.join(ContractorTable.Account);
 			account.alias = "Account";
-			account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+			account.join(AccountTable.Contact);
 			account.join(AccountTable.Naics);
 			account.join(AccountTable.Country);
             account.join(AccountTable.LastLogin);
@@ -41,6 +41,15 @@ public class ContractorsModel extends AbstractModel {
         ModelSpec excess = contractor.join(ContractorTable.ExcessLiability);
         excess.join(ContractorAuditTable.EXEachOccurrence);
 
+        ModelSpec employer = contractor.join(ContractorTable.EmployerLiability);
+        employer.join(ContractorAuditTable.ELLimit);
+
+        ModelSpec publicProduct = contractor.join(ContractorTable.PublicProductLiability);
+        publicProduct.join(ContractorAuditTable.PPLLimit);
+
+        ModelSpec professional = contractor.join(ContractorTable.ProfessionalLiability);
+        professional.join(ContractorAuditTable.PROLEachOccurrence);
+
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
@@ -53,7 +62,6 @@ public class ContractorsModel extends AbstractModel {
 			welcomeCall.join(ContractorAuditTable.SingleCAO);
 		}
 
-
 		if (permissions.isOperatorCorporate()) {
             ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.join(ContractorOperatorTable.ForcedByUser);
@@ -62,18 +70,16 @@ public class ContractorsModel extends AbstractModel {
 		ModelSpec csr = contractor.join(ContractorTable.CustomerService);
         csr.minimumImportance = FieldImportance.Required;
         ModelSpec csrUser = csr.join(AccountUserTable.User);
-        csrUser.category = FieldCategory.CustomerService;
         csrUser.minimumImportance = FieldImportance.Required;
 
         ModelSpec insideSales = contractor.join(ContractorTable.InsideSales);
         insideSales.minimumImportance = FieldImportance.Required;
         ModelSpec insideSalesUser = insideSales.join(AccountUserTable.User);
-        insideSalesUser.category = FieldCategory.CustomerService;
         insideSalesUser.minimumImportance = FieldImportance.Required;
 
         contractor.join(ContractorTable.RecommendedCSR);
-		contractor.join(ContractorTable.Watch).category = FieldCategory.AccountInformation;
-		contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
+		contractor.join(ContractorTable.Watch);
+		contractor.join(ContractorTable.Tag);
 
 		return contractor;
 	}
@@ -125,7 +131,6 @@ public class ContractorsModel extends AbstractModel {
                 "JOIN users u ON au.userID = u.id " +
                 "WHERE u.id IN ");
         accountManager.setSuffixValue("");
-        accountManager.setCategory(FieldCategory.CustomerService);
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
         Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
@@ -134,7 +139,6 @@ public class ContractorsModel extends AbstractModel {
                 "FROM generalcontractors co " +
                 "WHERE co.genID IN ");
         clientSite.setSuffixValue("");
-        clientSite.setCategory(FieldCategory.ReportingClientSite);
         fields.put(clientSite.getName().toUpperCase(), clientSite);
 
         Field reportingClient = new Field("ContractorWorksForReportingClient","Account.id",FieldType.Operator);
@@ -144,7 +148,6 @@ public class ContractorsModel extends AbstractModel {
                 "JOIN operators o ON o.id = co.genID " +
                 "WHERE o.reportingID IN ");
         reportingClient.setSuffixValue("");
-        reportingClient.setCategory(FieldCategory.ReportingClientSite);
         fields.put(reportingClient.getName().toUpperCase(), reportingClient);
 
         Field supplierDiversity = new Field("ContractorSupplierDiversity","ContractorPQF.id",FieldType.SupplierDiversity);
@@ -153,7 +156,6 @@ public class ContractorsModel extends AbstractModel {
                 "FROM pqfdata pd " +
                 "WHERE (pd.answer = 'X' OR pd.answer = 'Yes') AND questionID IN ");
         supplierDiversity.setSuffixValue("");
-        supplierDiversity.setCategory(FieldCategory.ReportingClientSite);
         supplierDiversity.setRequiredJoin("ContractorPQF");
         fields.put(supplierDiversity.getName().toUpperCase(), supplierDiversity);
 
@@ -206,6 +208,18 @@ public class ContractorsModel extends AbstractModel {
         Field EXEachOccurrence = fields.get("ContractorExcessLiabilityEXEachOccurrenceAnswer".toUpperCase());
         EXEachOccurrence.setType(FieldType.Number);
         EXEachOccurrence.setDatabaseColumnName("REPLACE(" + EXEachOccurrence.getDatabaseColumnName() + ",',','')");
+
+        Field ELMonetaryLimit = fields.get("ContractorEmployerLiabilityELLimitAnswer".toUpperCase());
+        ELMonetaryLimit.setType(FieldType.Number);
+        ELMonetaryLimit.setDatabaseColumnName("REPLACE(" + ELMonetaryLimit.getDatabaseColumnName() + ",',','')");
+
+        Field PPLMonetaryLimit = fields.get("ContractorPublicProductLiabilityPPLLimitAnswer".toUpperCase());
+        PPLMonetaryLimit.setType(FieldType.Number);
+        PPLMonetaryLimit.setDatabaseColumnName("REPLACE(" + PPLMonetaryLimit.getDatabaseColumnName() + ",',','')");
+
+        Field PROLEachOccurrence = fields.get("ContractorProfessionalLiabilityPROLEachOccurrenceAnswer".toUpperCase());
+        PROLEachOccurrence.setType(FieldType.Number);
+        PROLEachOccurrence.setDatabaseColumnName("REPLACE(" + PROLEachOccurrence.getDatabaseColumnName() + ",',','')");
 
         return fields;
 	}

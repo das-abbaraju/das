@@ -45,10 +45,6 @@ public abstract class AbstractModel {
 		join.setAlias(modelSpec.alias);
         join.setThirdAlias(modelSpec.thirdAlias);
 
-		if (modelSpec.category != null) {
-			join.setCategory(modelSpec.category);
-		}
-
 		for (ModelSpec childSpec : modelSpec.joins) {
 			ReportForeignKey key = getKey(toTable, childSpec.key);
 			ReportJoin childJoin = appendToJoin(join.getAlias(), childSpec, join.getThirdAlias(), key);
@@ -86,15 +82,6 @@ public abstract class AbstractModel {
 			childJoin.setMinimumImportance(childSpec.minimumImportance);
 		}
 
-		if (key.getCategory() != null) {
-			logger.debug("Overriding category from ForeignKey " + childJoin.getAlias() + " to " + key.getCategory());
-			childJoin.setCategory(key.getCategory());
-		}
-
-		if (childSpec.category != null) {
-			logger.debug("Overriding category from ModelSpec " + childJoin.getAlias() + " to " + childSpec.category);
-			childJoin.setCategory(childSpec.category);
-		}
 		return childJoin;
 	}
 

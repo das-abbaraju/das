@@ -24,6 +24,7 @@ public class UkStatistics extends SafetyStatistics{
 		answerMap.put(OshaRateType.Fatalities, makeZeroAnswerData(8867));
 		answerMap.put(OshaRateType.DOFR, makeZeroAnswerData(9062));
 		answerMap.put(OshaRateType.LTIFR, makeZeroAnswerData(11689));
+        answerMap.put(OshaRateType.AIR, makeZeroAnswerData(20236));
 
 		for (AuditData answer: data) {
 			if (Strings.isEmpty(answer.getAnswer()))
@@ -32,9 +33,12 @@ public class UkStatistics extends SafetyStatistics{
 				continue;
 			if (answer.getQuestion().getId() == getOshaType().shaKeptQuestionId)
 				shaKept = Strings.isEqualNullSafe(answer.getAnswer(), "Yes");
-			if (answer.getQuestion().getId() == 9060 && categoryApplies) {
-				answerMap.put(OshaRateType.IFR, answer);
-			}
+            if (answer.getQuestion().getId() == 9060 && categoryApplies) {
+                answerMap.put(OshaRateType.IFR, answer);
+            }
+            if (answer.getQuestion().getId() == 20236 && categoryApplies) {
+                answerMap.put(OshaRateType.AIR, answer);
+            }
 			if (answer.getQuestion().getId() == 9099 && categoryApplies) {
 				answerMap.put(OshaRateType.Hours, answer);
 			}

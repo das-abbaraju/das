@@ -30,7 +30,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
@@ -198,7 +197,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Currency, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Currency, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public Currency getCurrency() {
 		return currency;
 	}

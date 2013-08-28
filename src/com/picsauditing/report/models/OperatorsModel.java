@@ -23,36 +23,29 @@ public class OperatorsModel extends AbstractModel {
         operator.alias = "Operator";
         operator.minimumImportance = FieldImportance.Low;
 		ModelSpec reporting = operator.join(OperatorTable.Reporting);
-		reporting.category = FieldCategory.ReportingClientSite;
 		reporting.alias = "ReportingClient";
 
 		ModelSpec parent = operator.join(OperatorTable.Parent);
-		parent.category = FieldCategory.AccountInformation;
 		parent.alias = "ParentCorporation";
 		parent.minimumImportance = FieldImportance.Required;
 
 		ModelSpec parentOperator = parent.join(AccountTable.Operator);
-		parentOperator.category = FieldCategory.AccountInformation;
 		parentOperator.alias = "parentOperator";
         parentOperator.minimumImportance = FieldImportance.Required;
 
         ModelSpec accountManager = spec.join(AccountTable.AccountManager);
-        accountManager.category = FieldCategory.CustomerService;
         accountManager.minimumImportance = FieldImportance.Required;
         accountManager.alias = "AccountManager";
 
 		ModelSpec accountManagerUser = accountManager.join(AccountUserTable.User);
-		accountManagerUser.category = FieldCategory.CustomerService;
 		accountManagerUser.alias = "AccountManagerUser";
 		accountManagerUser.minimumImportance = FieldImportance.Required;
 
 		ModelSpec salesRep = spec.join(AccountTable.SalesRep);
-		salesRep.category = FieldCategory.CustomerService;
 		salesRep.minimumImportance = FieldImportance.Required;
 		salesRep.alias = "SalesRep";
 
 		ModelSpec salesRepUser = salesRep.join(AccountUserTable.User);
-		salesRepUser.category = FieldCategory.CustomerService;
 		salesRepUser.alias = "SalesRepUser";
 		salesRepUser.minimumImportance = FieldImportance.Required;
 
@@ -76,7 +69,6 @@ public class OperatorsModel extends AbstractModel {
 		accountName.setUrl("FacilitiesEdit.action?operator={AccountID}");
 
 		Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
-		accountType.setCategory(FieldCategory.AccountInformation);
 		accountType.setTranslationPrefixAndSuffix(ACCOUNT_TYPE, "");
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 

@@ -10,7 +10,6 @@ public class AccountLastLoginView extends AbstractTable {
 		super("(SELECT MAX(lastLogin) lastLogin, accountID FROM users GROUP BY accountID)");
 
         Field lastLogin = new Field("LastLogin","lastLogin", FieldType.DateTime);
-        lastLogin.setCategory(FieldCategory.AccountInformation);
         lastLogin.setImportance(FieldImportance.Average);
         addField(lastLogin);
 	}

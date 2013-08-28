@@ -24,10 +24,20 @@ public class InvoicesModel extends AbstractModel {
 		ModelSpec contractor = account.join(AccountTable.Contractor);
 		contractor.alias = "Contractor";
 
+        ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
+        ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
+        directTrade.join(TradeTable.Children);
+
+        contractor.join(ContractorTable.Tag);
+
+        if (permissions.isOperatorCorporate()) {
+            ModelSpec flag = contractor.join(ContractorTable.Flag);
+            flag.join(ContractorOperatorTable.ForcedByUser);
+        }
+
         ModelSpec insideSales = contractor.join(ContractorTable.InsideSales);
         insideSales.minimumImportance = FieldImportance.Required;
         ModelSpec insideSalesUser = insideSales.join(AccountUserTable.User);
-        insideSalesUser.category = FieldCategory.CustomerService;
         insideSalesUser.minimumImportance = FieldImportance.Required;
 
         return spec;

@@ -20,25 +20,20 @@ public class UsersModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "User");
-		spec.category = FieldCategory.AccountInformation;
 
 		ModelSpec account = spec.join(UserTable.Account);
 		account.alias = "Account";
 
         ModelSpec accountUser = account.join(AccountTable.AccountManager);
-        accountUser.category = FieldCategory.CustomerService;
         accountUser.alias = "AccountManager";
 
         ModelSpec accountManager = accountUser.join(AccountUserTable.User);
-        accountManager.category = FieldCategory.CustomerService;
         accountManager.alias = "AccountManagerUser";
 
         ModelSpec operator = account.join(AccountTable.Operator);
-        operator.category = FieldCategory.AccountInformation;
         operator.alias = "Operator";
 
         ModelSpec reporting = operator.join(OperatorTable.Reporting);
-        reporting.category = FieldCategory.ReportingClientSite;
         reporting.alias = "ReportingClient";
 
 		return spec;
@@ -55,7 +50,6 @@ public class UsersModel extends AbstractModel {
 		userName.setUrl("UsersManage.action?account={AccountID}&user={UserID}");
 
 		Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
-		accountType.setCategory(FieldCategory.AccountInformation);
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 
@@ -64,7 +58,6 @@ public class UsersModel extends AbstractModel {
         accountManager.setPrefixValue("SELECT userID FROM calc_inherited_user_group ciug " +
                 "WHERE groupID IN ");
         accountManager.setSuffixValue("");
-        accountManager.setCategory(FieldCategory.CustomerService);
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
         return fields;

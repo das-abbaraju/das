@@ -6,6 +6,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.URLUtils;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -355,6 +356,31 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 				competencyRequiresDocumentation);
 	}
 
+	@Test
+	public void testTradesSubMenuVisible_PICSAdminOrOperatorUser() throws Exception {
+		when(permissions.isContractor()).thenReturn(false);
+		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
+		assertTrue(tradeMenuVisible);
+	}
+
+	@Test
+	public void testTradesSubMenuVisible_ContractorUserWithoutV7Menus() throws Exception {
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.isUsingVersion7Menus()).thenReturn(false);
+
+		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
+		assertTrue(tradeMenuVisible);
+	}
+
+	@Test
+	public void testTradesSubMenuVisible_ContractorUserHasV7Menus() throws Exception {
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.isUsingVersion7Menus()).thenReturn(true);
+
+		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
+		assertFalse(tradeMenuVisible);
+	}
+
 	private List<ContractorAudit> audits() {
 		return audits(true);
 	}
@@ -380,6 +406,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(pqf.getId()).thenReturn(1);
 		when(pqfAuditType.getClassType()).thenReturn(AuditTypeClass.PQF);
 		when(pqfAuditType.isPicsPqf()).thenReturn(true);
+        when(pqfAuditType.getPeriod()).thenReturn(AuditTypePeriod.None);
 
 		if (hasOperators) {
 			addOperators(pqf);
@@ -393,8 +420,9 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		ContractorAudit annualUpdate = mock(ContractorAudit.class);
 
 		when(annualUpdate.getAuditType()).thenReturn(annualUpdateType);
-		when(annualUpdate.getId()).thenReturn(11);
+        when(annualUpdate.getId()).thenReturn(11);
 		when(annualUpdateType.isAnnualAddendum()).thenReturn(true);
+        when(annualUpdateType.getPeriod()).thenReturn(AuditTypePeriod.None);
 
 		if (hasOperators) {
 			addOperators(annualUpdate);
@@ -410,6 +438,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(policy.getAuditType()).thenReturn(policyType);
 		when(policy.getId()).thenReturn(2);
 		when(policyType.getClassType()).thenReturn(AuditTypeClass.Policy);
+        when(policyType.getPeriod()).thenReturn(AuditTypePeriod.None);
 
 		if (hasOperators) {
 			addOperators(policy);
@@ -425,6 +454,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(employeeGUARD.getAuditType()).thenReturn(employeeType);
 		when(employeeGUARD.getId()).thenReturn(AuditType.SHELL_COMPETENCY_REVIEW);
 		when(employeeType.getClassType()).thenReturn(AuditTypeClass.Employee);
+        when(employeeType.getPeriod()).thenReturn(AuditTypePeriod.None);
 
 		if (hasOperators) {
 			addOperators(employeeGUARD);
@@ -440,6 +470,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(audit.getId()).thenReturn(AuditType.MANUAL_AUDIT);
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+        when(auditType.getPeriod()).thenReturn(AuditTypePeriod.None);
 
 		if (hasOperators) {
 			addOperators(audit);
@@ -455,6 +486,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(clientReviews.getAuditType()).thenReturn(clientReviewType);
 		when(clientReviews.getId()).thenReturn(AuditType.BPIISNSPECIFIC);
 		when(clientReviewType.getClassType()).thenReturn(AuditTypeClass.Review);
+        when(clientReviewType.getPeriod()).thenReturn(AuditTypePeriod.None);
 
 		if (hasOperators) {
 			addOperators(clientReviews);

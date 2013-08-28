@@ -22,8 +22,8 @@
 					<tbody>
 						<s:iterator value="permissions.permissions">
 							<tr>
-								<td title="<s:property value="opPerm.helpText" />"><s:property
-										value="opPerm.description" /></td>
+								<td title="<s:text name='%{opPerm.getI18nKey("helpText")}'/>">
+                                    <s:text name='%{opPerm.getI18nKey("description")}'/></td>
 								<td><s:if test="viewFlag">
 										<s:text name="OpType.View" />
 									</s:if></td>

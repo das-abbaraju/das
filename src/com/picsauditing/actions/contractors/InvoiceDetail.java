@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -74,11 +75,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private FeeService feeService;
 
 	private boolean edit = false;
-	private boolean transactionIsCreditMemo = false;
-	private boolean transactionIsInvoice = false;
-	private boolean badDebtEnabled = false;
-	private boolean returnCreditMemoEnabled = false;
-    private String message = null;
+	private String message = null;
 	private int newFeeId;
 	private Invoice invoice = null;
 	private InvoiceCreditMemo creditMemo = null;
@@ -152,8 +149,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				break;
 			case CANCEL_BUTTON:  cancel();
 				break;
-			case BAD_DEBT_BUTTON:
-				if (isBadDebtEnabled()) badDebt();
+			case BAD_DEBT_BUTTON: badDebt();
 				break;
 			case PAY_BUTTON:
 				Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
@@ -183,7 +179,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void badDebt() {
-		if (isTransactionIsCreditMemo()) return;
+		if (isTransactionIsCreditMemo() || !isSapEnabledForBizUnit()) return;
         if (isTransactionIsInvoice() && !invoice.getPayments().isEmpty()) return;
         if (contractor.getStatus().isActivePendingRequested()) {
             addActionError(getText("InvoiceDetail.BadDebtUnavailable"));
@@ -289,13 +285,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void cancel() {
-		if (isTransactionIsCreditMemo()) return;
+		if (!isVoidEnabled()) return;
         Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
         if (paIterator.hasNext()) {
             PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
             paymentDAO.removePaymentInvoice(paymentAppliedToInvoice, getUser());
         }
         invoice.setStatus(TransactionStatus.Void);
+		invoice.setSapSync(false);
         billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Void);
         invoice.setAuditColumns(permissions);
         AccountingSystemSynchronization.setToSynchronize(invoice);
@@ -353,7 +350,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     private void change() throws Exception {
-		if (isTransactionIsCreditMemo()) return;
+		if (!isEditEnabled()) return;
         List<String> removedItemNames = new ArrayList<String>();
         List<String> createdItemNames = new ArrayList<String>();
 
@@ -584,63 +581,61 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		this.transaction = transaction;
 	}
 
+	@Transient
 	public boolean isTransactionIsCreditMemo() {
-		transactionIsCreditMemo = (transaction instanceof InvoiceCreditMemo);
+		boolean transactionIsCreditMemo = (transaction instanceof InvoiceCreditMemo);
 		return transactionIsCreditMemo;
 	}
 
-	public void setTransactionIsCreditMemo(boolean transactionIsCreditMemo) {
-		this.transactionIsCreditMemo = transactionIsCreditMemo;
-	}
-
+	@Transient
 	public boolean isTransactionIsInvoice() {
-		transactionIsInvoice = (transaction instanceof Invoice);
+		boolean transactionIsInvoice = (transaction instanceof Invoice);
 		return transactionIsInvoice;
 	}
 
-	public void setTransactionIsInvoice(boolean transactionIsInvoice) {
-		this.transactionIsInvoice = transactionIsInvoice;
-	}
-
-	public boolean isBadDebtEnabled() {
-		badDebtEnabled = false;
+	@Transient
+	public boolean isSapEnabledForBizUnit() {
+		boolean sapEnabledForBizUnit = false;
 		if (isTransactionIsInvoice()) {
-			AppProperty badDebtBizUnitsAP = appPropertyDAO.find(AppProperty.SAP_BIZ_UNITS_BAD_DEBT_ENABLED);
+			AppProperty badDebtBizUnitsAP = appPropertyDAO.find(AppProperty.SAP_BIZ_UNITS_ENABLED);
 			if (badDebtBizUnitsAP != null) {
 				String badDebtBizUnitsS = badDebtBizUnitsAP.getValue();
 				if (!Strings.isEmpty(badDebtBizUnitsS)) {
 					if (Arrays.asList(badDebtBizUnitsS.split(",")).contains(invoice.getAccount().getCountry().getBusinessUnit().getId()+"")) {
-						badDebtEnabled = true;
+						sapEnabledForBizUnit = true;
 					}
 				}
 			}
 		}
-
-		return badDebtEnabled;
+		return sapEnabledForBizUnit;
 	}
 
-	public void setBadDebtEnabled(boolean badDebtEnabled) {
-		this.badDebtEnabled = badDebtEnabled;
-	}
-
-	public boolean isReturnCreditMemoEnabled() {
-		returnCreditMemoEnabled = false;
-		if (isTransactionIsInvoice()) {
-			AppProperty returnCreditMemoBizUnitsAP = appPropertyDAO.find(AppProperty.SAP_BIZ_UNITS_RETURN_CREDIT_MEMO_ENABLED);
-			if (returnCreditMemoBizUnitsAP != null) {
-				String returnCreditMemoBizUnitsS = returnCreditMemoBizUnitsAP.getValue();
-				if (!Strings.isEmpty(returnCreditMemoBizUnitsS)) {
-					if (Arrays.asList(returnCreditMemoBizUnitsS.split(",")).contains(invoice.getAccount().getCountry().getBusinessUnit().getId()+"")) {
-						returnCreditMemoEnabled = true;
-					}
-				}
+	@Transient
+	public boolean isVoidEnabled() {
+		boolean voidEnabled = false;
+		if (isSapEnabledForBizUnit() && isTransactionIsInvoice()) {
+			if (contractor.getStatus().isPending() && invoice.getPayments().size() == 0) {
+				voidEnabled = true;
+			} else if (contractor.getStatus().isDeclined()) {
+				voidEnabled = true;
 			}
+		} else {
+			voidEnabled = true;
 		}
-
-		return returnCreditMemoEnabled;
+		return voidEnabled;
 	}
 
-	public void setReturnCreditMemoEnabled(boolean returnCreditMemoEnabled) {
-		this.returnCreditMemoEnabled = returnCreditMemoEnabled;
+	@Transient
+	public boolean isEditEnabled() {
+		boolean editEnabled = false;
+		if (isSapEnabledForBizUnit() && isTransactionIsInvoice()) {
+			if (contractor.getStatus().isPending() && invoice.getPayments().size() == 0) {
+				editEnabled = true;
+			}
+		} else {
+			editEnabled = true;
+		}
+		return editEnabled;
 	}
+
 }

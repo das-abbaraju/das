@@ -235,6 +235,7 @@ public class EntityFactory {
 		auditType.setName("Unit Test " + auditTypeID);
 		auditType.setClassType(AuditTypeClass.Audit);
 		auditType.setMonthsToExpire(12);
+        auditType.setPeriod(AuditTypePeriod.None);
 		Workflow workFlow = makeWorkflowNoSubmitted();
 		auditType.setWorkFlow(workFlow);
 		return auditType;

@@ -1,8 +1,11 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.PICS.TaxService;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.util.Strings;
 
 public class InvoiceTable extends AbstractTable {
 
@@ -12,39 +15,26 @@ public class InvoiceTable extends AbstractTable {
 	public InvoiceTable() {
 		super("invoice");
 		addFields(Invoice.class);
-		addCurrency();
+        addFields(Transaction.class);
+        addPrimaryKey();
         addCreationDate();
 
-		Field invoiceStatus = new Field("Status", "status", FieldType.TransactionStatus);
-		invoiceStatus.setCategory(FieldCategory.Invoicing);
-		invoiceStatus.setWidth(100);
-        invoiceStatus.setImportance(FieldImportance.Average);
-		addField(invoiceStatus);
+        Field tax = new Field("Tax", "IFNULL((SELECT ii.amount FROM invoice_item ii JOIN invoice_fee fee ON ii.feeID = fee.id AND fee.feeClass IN (" +
+                Strings.implodeForDB(TaxService.TAX_FEE_CLASSES) +
+                ") WHERE ii.invoiceID = " + ReportOnClause.ToAlias + ".id),0)", FieldType.Float);
+        tax.setImportance(FieldImportance.Average);
+        addField(tax);
 
-		Field invoiceTotalAmount = new Field("TotalAmount", "totalAmount", FieldType.Float);
-		invoiceTotalAmount.setCategory(FieldCategory.Invoicing);
-		invoiceTotalAmount.setWidth(100);
-        invoiceTotalAmount.setImportance(FieldImportance.Average);
-		addField(invoiceTotalAmount);
-
-		Field invoiceAmountApplied = new Field("AmountApplied", "amountApplied", FieldType.Float);
-		invoiceAmountApplied.setCategory(FieldCategory.Invoicing);
-		invoiceAmountApplied.setWidth(100);
-        invoiceAmountApplied.setImportance(FieldImportance.Average);
-		addField(invoiceAmountApplied);
-	}
-
-	private void addCurrency() {
-		Field currency = new Field("Currency", "currency", FieldType.String);
-		currency.setCategory(FieldCategory.Invoicing);
-        currency.setImportance(FieldImportance.Average);
-		addField(currency);
-
-		Field invoiceID = new Field("InvoiceID", "id", FieldType.Number);
-		invoiceID.setCategory(FieldCategory.Invoicing);
-        invoiceID.setImportance(FieldImportance.Average);
-		addField(invoiceID);
-	}
+        Field taxlessTotalAmount = new Field("TaxlessTotalAmount", "(" +
+                ReportOnClause.ToAlias +
+                ".totalAmount - IFNULL((SELECT ii.amount FROM invoice_item ii JOIN invoice_fee fee ON ii.feeID = fee.id AND fee.feeClass IN (" +
+                Strings.implodeForDB(TaxService.TAX_FEE_CLASSES) +
+                ") WHERE ii.invoiceID = " +
+                ReportOnClause.ToAlias +
+                ".id),0))", FieldType.Float);
+        taxlessTotalAmount.setImportance(FieldImportance.Average);
+        addField(taxlessTotalAmount);
+    }
 
 	protected void addJoins() {
 		ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(),

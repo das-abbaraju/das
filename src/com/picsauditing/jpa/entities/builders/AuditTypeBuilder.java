@@ -1,9 +1,6 @@
 package com.picsauditing.jpa.entities.builders;
 
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.*;
 
 import java.util.ArrayList;
 
@@ -40,6 +37,31 @@ public class AuditTypeBuilder {
         }
 
         type.getCategories().add(category);
+        return this;
+    }
+
+    public AuditTypeBuilder period(AuditTypePeriod period) {
+        type.setPeriod(period);
+        return this;
+    }
+
+    public AuditTypeBuilder advanceDays(int advanceDays) {
+        type.setAdvanceDays(advanceDays);
+        return this;
+    }
+
+    public AuditTypeBuilder maximumActive(int maxActive) {
+        type.setMaximumActive(maxActive);
+        return this;
+    }
+
+    public AuditTypeBuilder anchorDay(int anchorDay) {
+        type.setAnchorDay(anchorDay);
+        return this;
+    }
+
+    public AuditTypeBuilder anchorMonth(int anchorMonth) {
+        type.setAnchorMonth(anchorMonth);
         return this;
     }
 }

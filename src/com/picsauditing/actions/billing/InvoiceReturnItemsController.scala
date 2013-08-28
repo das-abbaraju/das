@@ -28,15 +28,12 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   private lazy val REDIRECT = "InvoiceDetail.action?invoice.id="
 
   def prepare = {
-    //println("entering prepare")
     invoice = invoiceDAO.find(getParameter("invoice.id"))
-    //println("leaving prepare with invoice ID "+invoice.getId)
   }
 
   override def execute = Action.SUCCESS
 
   def doRefund = {
-    //println("entering doRefund")
     try { if (refunds != null && !refunds.isEmpty) {
       save(refundFor(invoice))
       setUrlForRedirect(REDIRECT + invoice.getId)
@@ -52,13 +49,13 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
 
   private def refundFor(invoice: Invoice) = {
     val refund = CreditMemoAppliedToInvoice.from(invoice)
-    refundItemsPickedFrom(invoice) foreach { item => item match {
-        case Some(refundItem) => {
-          refund.getCreditMemo.getItems.add(refundItem)
-          refundItem.setCreditMemo(refund.getCreditMemo)
-        }
-        case None => {} // Do nothing.
+    refundItemsPickedFrom(invoice) foreach {
+      case Some(refundItem) => {
+        refund.getCreditMemo.setAuditColumns(permissions)
+        refund.getCreditMemo.getItems.add(refundItem)
+        refundItem.setCreditMemo(refund.getCreditMemo)
       }
+      case None => {} // Do nothing.
     }
     refund
   }
@@ -92,6 +89,10 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
 
   private def save(creditMemo: CreditMemoAppliedToInvoice) = {
     if (!creditMemo.getCreditMemo.getItems.isEmpty)
+      creditMemo.updateAmountApplied()
+      creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
+      creditMemo.setAuditColumns(permissions)
+      creditMemo.getCreditMemo.setSapSync(true)
       creditMemoDAO.save(creditMemo)
   }
 

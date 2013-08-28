@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -20,14 +22,10 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.picsauditing.access.*;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -42,7 +40,30 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.inject.Inject;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.MainPage;
+import com.picsauditing.access.AjaxNotLoggedInException;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.PermissionBuilder;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.SecurityAware;
+import com.picsauditing.access.UserAgentParser;
 import com.picsauditing.actions.users.ChangePassword;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.LoginMethod;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
 import com.picsauditing.security.CookieSupport;
@@ -486,6 +507,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String maskDateFormat(Date date) {
 		try {
+			@SuppressWarnings("deprecation")
 			DateFormat dateFormat = new SimpleDateFormat(PicsDateFormat.American);
 			return dateFormat.format(date);
 		} catch (Exception e) {
@@ -534,6 +556,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public Date parseDate(String date) {
+		@SuppressWarnings("deprecation")
 		SimpleDateFormat americanFormat = new SimpleDateFormat(PicsDateFormat.American);
 
 		try {
@@ -904,11 +927,26 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     private boolean cookieIsNotTimedOut(SessionCookie sessionCookie) {
         // in case the http session was reset
         loadPermissions();
-        long nowInSeconds = new Date().getTime() / 1000;
-        long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
-        return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
-                .getSessionCookieTimeoutInSeconds());
+        long timeRemaing = calculateTimeRemaining(sessionCookie, permissions);
+        return (timeRemaing > -1);
     }
+    
+    private long calculateTimeRemaining(SessionCookie sessionCookie, Permissions permissions) {
+		if (permissions == null || sessionCookie == null) {
+			return -1;
+		}
+		
+		long nowInSeconds = new Date().getTime() / 1000;
+        long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
+        
+        return remainingTimeInSeconds(permissions, nowInSeconds, cookieCreatedSeconds);
+	}
+
+	private long remainingTimeInSeconds(Permissions permissions, long nowInSeconds,
+			long cookieCreatedSeconds) {
+		long timeSinceCookieCreatedInSeconds = nowInSeconds - cookieCreatedSeconds;
+		return permissions.getSessionCookieTimeoutInSeconds() - timeSinceCookieCreatedInSeconds;
+	}
 
     private SessionCookie validSessionCookie() {
 		String sessionCookieValue = clientSessionCookieValue();
@@ -1278,4 +1316,35 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return user.getPhone();
 	}
+	
+	@Anonymous
+	public String getSessionTimeRemaining() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
+			json = buildSessionTimeRemainingResponse(0);
+		} else {
+			Permissions permissions = getPermissionsFromSession();
+			long timeRemaining = calculateTimeRemaining(sessionCookie, permissions);
+			json = buildSessionTimeRemainingResponse(timeRemaining);
+		}
+		
+		return JSON;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private JSONObject buildSessionTimeRemainingResponse(long timeRemaining) {
+		JSONObject response = new JSONObject();
+		response.put("timeRemaining", timeRemaining);
+		return response;
+	}
+	
+	private Permissions getPermissionsFromSession() {
+		if (ActionContext.getContext() == null || ActionContext.getContext().getSession() == null) {
+			return null;
+		}
+		
+		return (Permissions) ActionContext.getContext().getSession()
+				.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
+	}
+	
 }

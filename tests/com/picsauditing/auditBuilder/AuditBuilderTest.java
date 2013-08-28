@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,29 +38,6 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.QuestionComparator;
-import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.test.TranslatorFactorySetup;
 
@@ -68,6 +47,7 @@ public class AuditBuilderTest extends PicsTest {
 	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
 	List<AuditTypeRule> typeRules = new ArrayList<AuditTypeRule>();
 	AuditTypesBuilder typeBuilder;
+    AuditPeriodService auditPeriodService = new AuditPeriodService();
 
 	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
 	List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
@@ -104,6 +84,7 @@ public class AuditBuilderTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", typeRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", catRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", auditPercentCalculator);
+        PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPeriodService", auditPeriodService);
 
 		Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
@@ -244,7 +225,101 @@ public class AuditBuilderTest extends PicsTest {
 		assertEquals(3, contractor.getAudits().size());
 	}
 
-	@Test
+    @Test
+    public void testBuildAudits_Monthly() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType(1000);
+        auditType.setPeriod(AuditTypePeriod.Monthly);
+        when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+                auditType);
+
+        addTypeRules((new RuleParameters()).setAuditType(auditType));
+        addCategoryRules(null);
+
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.YEAR, 2012);
+        date.set(Calendar.DAY_OF_MONTH, 1);
+
+        for (int month=0; month<12; month++) {
+            date.set(Calendar.MONTH, month);
+            auditBuilder.setToday(date.getTime());
+            auditBuilder.buildAudits(contractor);
+            assertEquals(month + 1, contractor.getAudits().size());
+            String auditFor = contractor.getAudits().get(contractor.getAudits().size() - 1).getAuditFor();
+            String[] parts = auditFor.split("-");
+            if (month == 0) {
+                assertEquals(12, Integer.parseInt(parts[1]));
+            } else {
+                assertEquals(month, Integer.parseInt(parts[1]));
+            }
+        }
+    }
+
+    @Test
+    public void testBuildAudits_Quarterly() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType(1000);
+        auditType.setPeriod(AuditTypePeriod.Quarterly);
+        when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+                auditType);
+
+        addTypeRules((new RuleParameters()).setAuditType(auditType));
+        addCategoryRules(null);
+
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.YEAR, 2012);
+        date.set(Calendar.DAY_OF_MONTH, 1);
+
+        for (int quarter=1; quarter<=4; quarter++) {
+            int month = (quarter - 1) * 3;
+            date.set(Calendar.MONTH, month);
+            auditBuilder.setToday(date.getTime());
+            auditBuilder.buildAudits(contractor);
+            assertEquals(quarter, contractor.getAudits().size());
+
+            date.set(Calendar.MONTH, month + 1);
+            auditBuilder.setToday(date.getTime());
+            auditBuilder.buildAudits(contractor);
+            assertEquals(quarter, contractor.getAudits().size());
+
+            date.set(Calendar.MONTH, month + 2);
+            auditBuilder.setToday(date.getTime());
+            auditBuilder.buildAudits(contractor);
+            assertEquals(quarter, contractor.getAudits().size());
+
+            String auditFor = contractor.getAudits().get(contractor.getAudits().size() - 1).getAuditFor();
+            String[] parts = auditFor.split(":");
+            if (quarter == 1) {
+                assertEquals(4, Integer.parseInt(parts[1]));
+            } else {
+                assertEquals(quarter - 1, Integer.parseInt(parts[1]));
+            }
+        }
+    }
+
+    @Test
+    public void testBuildAudits_Yearly() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType(1000);
+        auditType.setPeriod(AuditTypePeriod.Yearly);
+        when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+                auditType);
+
+        addTypeRules((new RuleParameters()).setAuditType(auditType));
+        addCategoryRules(null);
+
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.MONTH, 0);
+        date.set(Calendar.DAY_OF_MONTH, 1);
+
+        for (int year=2012; year<2015; year++) {
+            date.set(Calendar.YEAR, year);
+            auditBuilder.setToday(date.getTime());
+            auditBuilder.buildAudits(contractor);
+            assertEquals(year - 2011, contractor.getAudits().size());
+            String auditFor = contractor.getAudits().get(contractor.getAudits().size() - 1).getAuditFor();
+            assertEquals(year - 1, Integer.parseInt(auditFor));
+        }
+    }
+
+    @Test
 	public void testBuildAudits_ReviewCompetency() throws Exception {
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.INTEGRITYMANAGEMENT));
 		addCategoryRules(null);

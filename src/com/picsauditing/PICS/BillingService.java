@@ -74,9 +74,9 @@ public class BillingService {
 
         BigDecimal balance = calculateCurrentBalance(contractor);
 
-        if (balance.equals(contractor.getBalance()))
-            contractor.setBalance(balance.setScale(2, BigDecimal.ROUND_UP));
+        contractor.setBalance(balance.setScale(2, BigDecimal.ROUND_UP));
 
+        feeService.getRuleCache();
         feeService.syncMembershipFees(contractor);
     }
 
@@ -84,17 +84,22 @@ public class BillingService {
         BigDecimal currentBalance = BigDecimal.ZERO;
         for (Invoice invoice : contractor.getInvoices()) {
             if (!invoice.getStatus().isVoid())
-                currentBalance.add(invoice.getTotalAmount());
+                currentBalance = currentBalance.add(invoice.getTotalAmount());
         }
 
         for (Refund refund : contractor.getRefunds()) {
             if (!refund.getStatus().isVoid())
-                currentBalance.add(refund.getTotalAmount());
+                currentBalance = currentBalance.add(refund.getTotalAmount());
         }
 
         for (Payment payment : contractor.getPayments()) {
             if (!payment.getStatus().isVoid())
-                currentBalance.subtract(payment.getTotalAmount());
+                currentBalance = currentBalance.subtract(payment.getTotalAmount());
+        }
+
+        for (InvoiceCreditMemo creditMemo : contractor.getCreditMemos()) {
+            if (!creditMemo.getStatus().isVoid())
+                currentBalance = currentBalance.subtract(creditMemo.getTotalAmount());
         }
 
         return currentBalance;
@@ -103,7 +108,7 @@ public class BillingService {
     public Invoice saveInvoice(Invoice invoice) throws Exception {
         taxService.applyTax(invoice);
         if (taxService.validate(invoice)) {
-            invoiceDAO.save(invoice);
+            invoice = invoiceDAO.save(invoice);
         }
         return invoice;
     }

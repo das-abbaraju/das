@@ -18,17 +18,15 @@ public class FlagDataOverrideTable extends AbstractTable {
 
 		Field createdBy = new Field("CreatedBy", "createdBy", FieldType.UserID);
 		createdBy.setImportance(FieldImportance.Required);
-		addField(createdBy).setCategory(FieldCategory.CompanyStatistics);
+		addField(createdBy);
 
-        addCreationDate().setCategory(FieldCategory.CompanyStatistics);
+        addCreationDate();
 	}
 
 	public void addJoins() {
 		addRequiredKey(new ReportForeignKey(FlagCriteria, new FlagCriteriaTable(), new ReportOnClause("criteriaID")));
 
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-		operator.setCategory(FieldCategory.ReportingClientSite);
-		operator.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(operator);
 
 		addRequiredKey(new ReportForeignKey(Contractor, new AccountTable(), new ReportOnClause("conID")));

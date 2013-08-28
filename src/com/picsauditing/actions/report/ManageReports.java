@@ -1,43 +1,35 @@
 package com.picsauditing.actions.report;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.access.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.service.ManageReportsService;
-import com.picsauditing.service.PermissionService;
-import com.picsauditing.service.ReportFavoriteInfo;
-import com.picsauditing.service.ReportFavoriteInfoConverter;
-import com.picsauditing.service.ReportInfo;
-import com.picsauditing.service.ReportPermissionInfo;
-import com.picsauditing.service.ReportPreferencesService;
-import com.picsauditing.service.ReportSearch;
-import com.picsauditing.service.ReportService;
+import com.picsauditing.service.*;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
 import com.picsauditing.util.pagination.PaginationParameters;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
@@ -46,6 +38,8 @@ public class ManageReports extends PicsActionSupport {
 	private ReportService reportService;
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private ReportUserDAO reportUserDAO;
 	@Autowired
 	private ManageReportsService manageReportsService;
 	@Autowired
@@ -74,6 +68,7 @@ public class ManageReports extends PicsActionSupport {
 
 	// URL parameters
 	private int reportId;
+	private String reports;
 	private String searchTerm;
 	private String sort;
 	private String direction;
@@ -216,6 +211,28 @@ public class ManageReports extends PicsActionSupport {
 
 		return redirectToPreviousView();
 	}
+
+	// updateFavoritesOrder, receiving "{ "reports": "[int, int, int]" }
+	public String updateFavoritesOrder() throws SQLException {
+		List<String> reportIds = Arrays.asList(reports.split(","));
+		Collections.reverse(reportIds);
+		StringBuilder caseStmt = new StringBuilder();
+		caseStmt.append("CASE ");
+		int counter = 1;
+		for (String reportId : reportIds) {
+			caseStmt.append("WHEN reportid = ");
+			caseStmt.append(reportId);
+			caseStmt.append(" THEN ");
+			caseStmt.append(counter++);
+			caseStmt.append("\n");
+		}
+		caseStmt.append("END");
+
+    	reportUserDAO.changeSortOrder(caseStmt.toString(),permissions.getUserId());
+
+        return SUCCESS;
+	}
+
 
 	public String moveFavoriteUp() {
 		try {
@@ -655,4 +672,12 @@ public class ManageReports extends PicsActionSupport {
     public boolean isCanTransferOwnership() {
         return isCurrentUserOwner || permissionService.isReportDevelopmentGroup(permissions);
     }
+
+	public String getReports() {
+		return reports;
+	}
+
+	public void setReports(String reports) {
+		this.reports = reports;
+	}
 }

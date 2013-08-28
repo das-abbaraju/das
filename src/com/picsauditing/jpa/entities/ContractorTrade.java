@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
@@ -45,7 +44,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 		this.trade = trade;
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Boolean)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean)
 	public boolean isSelfPerformed() {
 		return selfPerformed;
 	}
@@ -54,7 +53,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 		this.selfPerformed = selfPerformed;
 	}
 
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Boolean)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean)
 	public boolean isManufacture() {
 		return manufacture;
 	}
@@ -67,7 +66,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 	 * Number 1-9 that represents the frequency of that trade for a given business
 	 * @return
 	 */
-	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getActivityPercent() {
 		return activityPercent;
 	}

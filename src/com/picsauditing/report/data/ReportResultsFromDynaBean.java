@@ -23,6 +23,7 @@ public class ReportResultsFromDynaBean {
 
     static private ReportRow createRow(List<Column> columns, BasicDynaBean dynaBean) {
         Map<Column, Object> cells = new HashMap<>();
+        Set<String> dependentFields = new HashSet<String>();
 
         for (Column column : columns) {
             if (column.getField() != null) {
@@ -32,16 +33,19 @@ public class ReportResultsFromDynaBean {
                 } catch (IllegalArgumentException e) {
 
                 }
-                addDependentFields(column, dynaBean, cells);
+
+                dependentFields.addAll(column.getField().getDependentFields());
             } else {
                 cells.put(column, null);
             }
         }
+
+        addDependentFields(dependentFields, dynaBean, cells);
+
         return new ReportRow(cells);
     }
 
-    static private void addDependentFields(Column column, BasicDynaBean dynaBean, Map<Column, Object> cells) {
-        Set<String> dependentFields = column.getField().getDependentFields();
+    static private void addDependentFields(Set<String> dependentFields, BasicDynaBean dynaBean, Map<Column, Object> cells) {
         for (String fieldName : dependentFields) {
             if (!containsColumnWithFieldName(cells, fieldName)) {
                 try {

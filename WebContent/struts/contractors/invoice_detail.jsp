@@ -152,45 +152,53 @@
                                             </a>
                                         </li>
                                     </s:if>
-                                    <s:if test="!transactionIsCreditMemo">
-                                    <li>
-                                        <a class="edit"
-                                           href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&edit=true">
-                                            <s:text name="button.Edit"/>
-                                        </a>
-                                    </li>
-                                    <pics:permission perm="Billing" type="Delete">
+                                    <s:if test="editEnabled">
                                         <li>
-                                            <a class="void"
-                                               href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=cancel">
-                                                <s:text name="button.Void"/>
-                                            </a>
-                                        </li>
-                                        <s:if test="badDebtEnabled">
-                                        <li>
-                                            <a class="bad"
-                                               href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=baddebt">
-                                                <s:text name="button.BadDebt"/>
+                                            <a class="edit"
+                                               href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&edit=true">
+                                                <s:text name="button.Edit"/>
                                             </a>
                                         </li>
                                         </s:if>
-                                    </pics:permission>
-                                    <pics:permission perm="InvoiceEdit">
-                                        <s:if test="returnCreditMemoEnabled">
-                                        <li>
-                                            <a class="refund"
-                                               href="InvoiceReturnItems.action?invoice.id=<s:property value="transaction.id"/>">
-                                                <s:text name="button.ReturnItems"/>
-                                            </a>
-                                        </li>
-                                        </s:if>
-                                        <li>
-                                            <a class="system_edit"
-                                               href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="transaction.id"/>">
-                                                <s:text name="button.SysEdit"/>
-                                            </a>
-                                        </li>
-                                    </pics:permission>
+                                        <pics:permission perm="Billing" type="Delete">
+                                            <s:if test="voidEnabled">
+                                                <li>
+                                                    <a class="void"
+                                                       href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=cancel">
+                                                        <s:text name="button.Void"/>
+                                                    </a>
+                                                </li>
+                                            </s:if>
+                                            <s:if test="sapEnabledForBizUnit">
+                                                <li>
+                                                    <a class="bad"
+                                                       href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=baddebt">
+                                                        <s:text name="button.BadDebt"/>
+                                                    </a>
+                                                </li>
+                                            </s:if>
+                                        </pics:permission>
+                                    <s:if test="editEnabled">
+                                        <pics:permission perm="InvoiceEdit">
+                                            <s:if test="!transactionIsCreditMemo">
+                                                <s:if test="sapEnabledForBizUnit">
+                                                    <li>
+                                                        <a class="refund"
+                                                           href="InvoiceReturnItems.action?invoice.id=<s:property value="transaction.id"/>">
+                                                            <s:text name="button.ReturnItems"/>
+                                                        </a>
+                                                    </li>
+                                                </s:if>
+                                                <s:else>
+                                                    <li>
+                                                        <a class="system_edit"
+                                                           href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="transaction.id"/>">
+                                                            <s:text name="button.SysEdit"/>
+                                                        </a>
+                                                    </li>
+                                                </s:else>
+                                            </s:if>
+                                        </pics:permission>
                                     </s:if>
                                 </s:else>
                             </pics:permission>

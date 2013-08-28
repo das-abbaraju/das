@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,10 +58,13 @@ public class AuditBuilder {
 	private AuditCategoryRuleCache categoryRuleCache;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+    @Autowired
+    AuditPeriodService auditPeriodService;
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
 
 	private User systemUser = new User(User.SYSTEM);
+    private Date today = new Date();
 
 	HashSet<ContractorAuditOperator> caosToMoveToApprove = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
@@ -87,12 +91,15 @@ public class AuditBuilder {
 				}
 
 				requiredAuditTypes.add(auditType);
-				if (auditType.isAnnualAddendum()) {
+				if (auditType.getPeriod().isMonthlyQuarterlyAnnual()) {
 					auditType = reconnectAuditType(auditType);
-					// not the annual updates must be done in this order to find their previous audit
-					addAnnualUpdate(contractor, year - 3, auditType);
-					addAnnualUpdate(contractor, year - 2, auditType);
-					addAnnualUpdate(contractor, year - 1, auditType);
+                    addMonthlyQuarterlyYearly(contractor, auditType);
+                } else if (auditType.isAnnualAddendum()) {
+                    auditType = reconnectAuditType(auditType);
+                    // not the annual updates must be done in this order to find their previous audit
+                    addAnnualUpdate(contractor, year - 3, auditType);
+                    addAnnualUpdate(contractor, year - 2, auditType);
+                    addAnnualUpdate(contractor, year - 1, auditType);
 				} else {
 					boolean found = false;
 					for (ContractorAudit conAudit : contractor.getAudits()) {
@@ -188,7 +195,26 @@ public class AuditBuilder {
 		conAuditDao.save(contractor);
 	}
 
-	private boolean resetRenewableAudit(ContractorAccount contractor, AuditType auditType) {
+    private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
+        List<String> auditFors = auditPeriodService.getAuditForByDate(auditType, today);
+        for (String auditFor:auditFors) {
+            if (auditPeriodService.findAudit(contractor.getAudits(), auditType, auditFor) == null) {
+                ContractorAudit audit = new ContractorAudit();
+                audit.setContractorAccount(contractor);
+                audit.setAuditType(auditType);
+                audit.setAuditColumns(systemUser);
+                audit.setAuditFor(auditFor);
+                audit.setCreationDate(auditPeriodService.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setEffectiveDate(auditPeriodService.getEffectiveDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setExpiresDate(auditPeriodService.getExpirationDateForMonthlyQuarterlyYearly(auditType, auditFor));
+                audit.setPreviousAudit(conAuditDao.findPreviousAudit(audit));
+                conAuditDao.save(audit);
+                contractor.getAudits().add(audit);
+            }
+        }
+    }
+
+    private boolean resetRenewableAudit(ContractorAccount contractor, AuditType auditType) {
 		if (!auditType.isRenewable())
 			return false;
 
@@ -259,7 +285,15 @@ public class AuditBuilder {
 		return yearsForAllWCBs.contains(previousYear) && yearsForAllWCBs.contains(currentWCBYear);
 	}
 
-	private void createWCBAudits(ContractorAccount contractor, AuditType auditType) {
+    public Date getToday() {
+        return today;
+    }
+
+    public void setToday(Date today) {
+        this.today = today;
+    }
+
+    private void createWCBAudits(ContractorAccount contractor, AuditType auditType) {
 		buildSetOfAllWCBYears(contractor, auditType);
 		Set<String> yearsForWCBs = getAllYearsForNewWCB();
 		if (CollectionUtils.isEmpty(yearsForWCBs)) {

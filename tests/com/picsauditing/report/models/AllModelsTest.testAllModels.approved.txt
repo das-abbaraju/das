@@ -113,9 +113,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 AuditAssignedDate
 AuditAuditFor
 AuditAuditLocation
@@ -144,6 +148,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 
 Model: ContractorAuditDatas
@@ -155,9 +160,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 AuditAssignedDate
 AuditAuditFor
 AuditAuditLocation
@@ -190,6 +199,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 FlagCriteriaContractorAnswer
 FlagCriteriaContractorCriteriaID
@@ -235,9 +245,13 @@ ContractorAccountCreationDate
 ContractorAccountID
 ContractorAccountLegalName
 ContractorAccountLevel
+ContractorAccountMaterialSupplier
 ContractorAccountName
+ContractorAccountOffsiteServices
+ContractorAccountOnsiteServices
 ContractorAccountStatus
 ContractorAccountTimezone
+ContractorAccountTransportationServices
 ContractorAuditGUARD
 ContractorCemexPostEvalAggregatesAnswer
 ContractorCemexPostEvalAggregatesDoveHolesAnswer
@@ -253,6 +267,7 @@ ContractorCemexPostEvalAsphaltAnswer
 ContractorCemexPostEvalAsphaltNAnswer
 ContractorCemexPostEvalAsphaltSAnswer
 ContractorCemexPostEvalAsphaltUrbanAnswer
+ContractorCemexPostEvalAuditFor
 ContractorCemexPostEvalBuildingAnswer
 ContractorCemexPostEvalBuildingConcreteAnswer
 ContractorCemexPostEvalBuildingFloorsAnswer
@@ -266,7 +281,9 @@ ContractorCemexPostEvalCementRugbyAnswer
 ContractorCemexPostEvalCementSouthFerribyAnswer
 ContractorCemexPostEvalCementTilburyAnswer
 ContractorCemexPostEvalDateAnswer
+ContractorCemexPostEvalEffectiveDate
 ContractorCemexPostEvalEvaluatorAnswer
+ContractorCemexPostEvalExpiresDate
 ContractorCemexPostEvalID
 ContractorCemexPostEvalLogisticsAggregatesAnswer
 ContractorCemexPostEvalLogisticsAnswer
@@ -300,6 +317,7 @@ ContractorCemexPostEvalReadymixSouthernCluster23Answer
 ContractorCemexPostEvalReadymixSouthernCluster24Answer
 ContractorCemexPostEvalSafetyAnswer
 ContractorCemexPostEvalSafetyComment
+ContractorCemexPostEvalScore
 ContractorCemexPostEvalSiteAnswer
 ContractorCemexPostEvalTitleAnswer
 ContractorCemexPostEvalTypeName
@@ -325,9 +343,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 AuditAssignedDate
 AuditAuditFor
 AuditAuditLocation
@@ -367,6 +389,8 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
+ContractorTagTagID
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
 CustomerServiceUserID
@@ -394,9 +418,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 AuditAssignedDate
 AuditAuditFor
 AuditAuditLocation
@@ -414,6 +442,7 @@ AuditOperatorAccountID
 AuditOperatorAccountName
 AuditOperatorID
 AuditOperatorStatus
+AuditOperatorWorkflowCreationDate
 AuditOperatorWorkflowID
 AuditOperatorWorkflowNotes
 AuditOperatorWorkflowPreviousStatus
@@ -435,6 +464,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 
 Model: ContractorFees
@@ -446,9 +476,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -460,6 +494,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 FeeFeeClass
 FeeMaxFacilities
@@ -474,9 +509,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorFlagFlagColor
 ContractorFlagNetworkLevel
 ContractorFlagWaitingOn
@@ -487,9 +526,13 @@ ContractorOperatorOperatorCountrySubdivision
 ContractorOperatorOperatorCreationDate
 ContractorOperatorOperatorID
 ContractorOperatorOperatorLegalName
+ContractorOperatorOperatorMaterialSupplier
 ContractorOperatorOperatorName
+ContractorOperatorOperatorOffsiteServices
+ContractorOperatorOperatorOnsiteServices
 ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
+ContractorOperatorOperatorTransportationServices
 CustomerServiceUserID
 CustomerServiceUserName
 FlagCriteriaAllowCustomValue
@@ -525,9 +568,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorFlagFlagColor
 ContractorFlagNetworkLevel
 ContractorFlagWaitingOn
@@ -538,9 +585,13 @@ ContractorOperatorOperatorCountrySubdivision
 ContractorOperatorOperatorCreationDate
 ContractorOperatorOperatorID
 ContractorOperatorOperatorLegalName
+ContractorOperatorOperatorMaterialSupplier
 ContractorOperatorOperatorName
+ContractorOperatorOperatorOffsiteServices
+ContractorOperatorOperatorOnsiteServices
 ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
+ContractorOperatorOperatorTransportationServices
 FlagCriteriaCategory
 FlagCriteriaDescription
 FlagCriteriaLabel
@@ -634,6 +685,7 @@ AccountContactLocale
 AccountContactName
 AccountContactPhone
 AccountContactTimezone
+AccountContractorRenewalPredictorRenewalPrediction
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
@@ -641,9 +693,13 @@ AccountID
 AccountLegalName
 AccountManagerUserID
 AccountManagerUserName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -653,6 +709,7 @@ ContractorMembershipDate
 ContractorOperatorBaselineFlag
 ContractorOperatorCreationDate
 ContractorOperatorFlagColor
+ContractorOperatorFlagIsForced
 ContractorOperatorForceBegin
 ContractorOperatorForceEnd
 ContractorOperatorForceFlag
@@ -664,17 +721,23 @@ ContractorOperatorOperatorCountrySubdivision
 ContractorOperatorOperatorCreationDate
 ContractorOperatorOperatorID
 ContractorOperatorOperatorLegalName
+ContractorOperatorOperatorMaterialSupplier
 ContractorOperatorOperatorName
+ContractorOperatorOperatorOffsiteServices
+ContractorOperatorOperatorOnsiteServices
 ContractorOperatorOperatorSalesRepUserID
 ContractorOperatorOperatorSalesRepUserName
 ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
+ContractorOperatorOperatorTransportationServices
 ContractorOperatorOperatorType
 ContractorOperatorProcessCompletion
+ContractorOperatorTag
 ContractorOperatorWaitingOn
 ContractorOperatorWorkStatus
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
 CustomerServiceEndDate
@@ -740,6 +803,9 @@ ContractorCustomerServiceUserName
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorEmployerLiabilityELLimitAnswer
+ContractorEmployerLiabilityID
+ContractorEmployerLiabilityTypeName
 ContractorExcessLiabilityEXEachOccurrenceAnswer
 ContractorExcessLiabilityID
 ContractorExcessLiabilityTypeName
@@ -756,6 +822,12 @@ ContractorPQFID
 ContractorPQFTypeName
 ContractorProductRisk
 ContractorProductRiskVerified
+ContractorProfessionalLiabilityID
+ContractorProfessionalLiabilityPROLEachOccurrenceAnswer
+ContractorProfessionalLiabilityTypeName
+ContractorPublicProductLiabilityID
+ContractorPublicProductLiabilityPPLLimitAnswer
+ContractorPublicProductLiabilityTypeName
 ContractorRecommendedCSRID
 ContractorRecommendedCSRName
 ContractorSafetyRisk
@@ -866,6 +938,7 @@ AccountName
 ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
+ContractorWorksAtClientSite
 TradeName
 
 Model: EmployeeCompetencies
@@ -877,9 +950,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 CompetencyLabel
 EmployeeCompetencySkilled
 EmployeeFirstName
@@ -924,9 +1001,13 @@ ContractorOperatorOperatorCountrySubdivision
 ContractorOperatorOperatorCreationDate
 ContractorOperatorOperatorID
 ContractorOperatorOperatorLegalName
+ContractorOperatorOperatorMaterialSupplier
 ContractorOperatorOperatorName
+ContractorOperatorOperatorOffsiteServices
+ContractorOperatorOperatorOnsiteServices
 ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
+ContractorOperatorOperatorTransportationServices
 ForcedFlagPercent
 
 Model: InvoiceFeeCountries
@@ -952,9 +1033,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -963,12 +1048,13 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoiceItemAmount
 InvoiceItemDescription
@@ -977,6 +1063,8 @@ InvoiceItemFeeMaxFacilities
 InvoiceItemFeeName
 InvoicePaidDate
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 
 Model: Invoices
@@ -998,11 +1086,17 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsideSalesUserID
@@ -1011,17 +1105,21 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
+ContractorTagTagID
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 
 Model: Operators
@@ -1092,9 +1190,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 AccountType
 GroupsDepartment
 GroupsEmail
@@ -1148,10 +1250,12 @@ InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoicePaidDate
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 OperatorID
 OperatorName
@@ -1160,9 +1264,9 @@ OperatorOperatorReportingName
 PaymentAmountApplied
 PaymentCreationDate
 PaymentCurrency
+PaymentID
 PaymentStatus
 PaymentTotalAmount
-Paymentid
 
 Model: Payments
 Permission: Permissions{permissions=[]}
@@ -1183,9 +1287,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -1194,17 +1302,18 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSoleProprietor
 ContractorTransportationRisk
 PaymentAmountApplied
 PaymentCcNumber
 PaymentCheckNumber
 PaymentCreationDate
 PaymentCurrency
+PaymentID
 PaymentPaymentMethod
 PaymentStatus
 PaymentTotalAmount
 PaymentTransactionID
-Paymentid
 
 Model: Reports
 Permission: Permissions{permissions=[]}
@@ -1284,9 +1393,13 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -1308,11 +1421,13 @@ InvoiceAmountApplied
 InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
-InvoiceInvoiceID
+InvoiceID
 InvoiceInvoiceType
 InvoiceItemAmount
 InvoicePaidDate
 InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 UserAssignmentUserDepartment
 UserAssignmentUserEmail
@@ -1336,9 +1451,13 @@ AccountID
 AccountLegalName
 AccountManagerUserID
 AccountManagerUserName
+AccountMaterialSupplier
 AccountName
+AccountOffsiteServices
+AccountOnsiteServices
 AccountStatus
 AccountTimezone
+AccountTransportationServices
 AccountType
 ReportingClientID
 ReportingClientName

@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.*;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Column;
@@ -14,6 +15,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.service.FieldInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
@@ -22,13 +24,15 @@ public class ReportTester extends PicsActionSupport {
     @Autowired
     private ReportDAO reportDAO;
 
-    ModelType modelType;
-	int reportID;
+    private ModelType modelType;
+    private int reportID;
 
-	Report report;
+    private Report report;
 
-	List<ReportElement> reportElements;
-	Map<String, Field> availableFields;
+    private List<ReportElement> reportElements;
+    private Map<String, Field> availableFields;
+
+    private List<FieldInfo> allModelFieldInfos;
 
 	@Override
 	public String execute() throws Exception {
@@ -39,9 +43,56 @@ public class ReportTester extends PicsActionSupport {
             return showReportFocus();
 		}
 
-        // Report Focus, Show Sql, Show Columns, Show Filters, Show Sorts. Maybe add functions to add remove filters, columns, sorts. Add functions to do model stuff.
 		return SUCCESS;
 	}
+
+    public String directory() {
+        allModelFieldInfos = new ArrayList<FieldInfo>();
+
+        for (ModelType type : ModelType.values()) {
+            AbstractModel model = ReportModelFactory.build(type, permissions);
+
+            List modelFieldInfos = buildModelFieldInfomation(type, model, permissions);
+
+            allModelFieldInfos.addAll(modelFieldInfos);
+        }
+
+        return "directory";
+    }
+
+    public static List<FieldInfo> buildModelFieldInfomation(ModelType modelType, AbstractModel model, Permissions permissions) {
+        List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>();
+
+        if (model != null) {
+            Collection<Field> fields = model.getAvailableFields().values();
+
+            for (Field field : fields) {
+                if (field.canUserSeeQueryField(permissions)) {
+                    FieldInfo fieldInfo = buildFieldInformation(permissions, field);
+                    fieldInfo.setModelType(modelType);
+                    fieldInfos.add(fieldInfo);
+                }
+            }
+        }
+
+        return fieldInfos;
+    }
+
+    private static FieldInfo buildFieldInformation(Permissions permissions, Field field) {
+        ReportUtil.translateField(field, permissions.getLocale());
+
+        FieldInfo fieldInfo = new FieldInfo();
+
+        fieldInfo.setFieldId(field.getName());
+        fieldInfo.setCategory(field.getCategoryTranslation());
+        fieldInfo.setName(field.getText());
+        fieldInfo.setHelp(field.getHelp());
+        fieldInfo.setVisible(field.isVisible());
+        fieldInfo.setFilterable(field.isFilterable());
+        fieldInfo.setSortable(field.isSortable());
+        return fieldInfo;
+    }
+
 
     private String showModelFocus() throws ReportValidationException {
         AbstractModel model = ReportModelFactory.build(modelType, permissions);
@@ -98,6 +149,14 @@ public class ReportTester extends PicsActionSupport {
         this.modelType = modelType;
     }
 
+    public List<FieldInfo> getAllModelFieldInfos() {
+        return allModelFieldInfos;
+    }
+
+    public void setAllModelFieldInfos(List<FieldInfo> allModelFieldInfos) {
+        this.allModelFieldInfos = allModelFieldInfos;
+    }
+
     public List<ReportElement> getReportElements() {
 		return reportElements;
 	}
@@ -108,8 +167,8 @@ public class ReportTester extends PicsActionSupport {
         Collections.sort(fields, new Comparator<Field>() {
             @Override
             public int compare(Field o1, Field o2) {
-                if (o1.getCategory() != o2.getCategory()) {
-                    return o1.getCategory().compareTo(o2.getCategory());
+                if (o1.getCategoryTranslation() != o2.getCategoryTranslation()) {
+                    return o1.getCategoryTranslation().compareTo(o2.getCategoryTranslation());
                 }
                 return o1.getName().compareTo(o2.getName());
             }

@@ -871,7 +871,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.exEachOccurrence = exEachOccurence.replaceAll("[^0-9]", "");
 	}
 
-	public boolean isOq() {
+    public boolean isOq() {
 		return oq;
 	}
 

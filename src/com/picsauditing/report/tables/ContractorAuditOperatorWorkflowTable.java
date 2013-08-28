@@ -11,17 +11,15 @@ public class ContractorAuditOperatorWorkflowTable extends AbstractTable {
 
 	public ContractorAuditOperatorWorkflowTable() {
 		super("contractor_audit_operator_workflow");
-		Field primaryKey = addPrimaryKey();
-		primaryKey.setCategory(FieldCategory.DocumentsAndAudits);
+		addPrimaryKey();
+        addCreationDate();
 
 		addFields(ContractorAuditOperatorWorkflow.class);
 	}
 
 	protected void addJoins() {
-        ReportForeignKey caoKey = addRequiredKey(new ReportForeignKey(CAO, new ContractorAuditOperatorTable(),
+        addRequiredKey(new ReportForeignKey(CAO, new ContractorAuditOperatorTable(),
                 new ReportOnClause("caoID")));
-        caoKey.setCategory(FieldCategory.DocumentsAndAudits);
-        caoKey.setMinimumImportance(FieldImportance.Required);
 
         addOptionalKey(new ReportForeignKey(User, new UserTable(), new ReportOnClause("createdBy", "id")));
     }

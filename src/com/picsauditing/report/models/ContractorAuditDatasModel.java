@@ -17,7 +17,6 @@ public class ContractorAuditDatasModel extends AbstractModel {
 
     public ModelSpec getJoinSpec() {
         ModelSpec auditData = new ModelSpec(null, "AuditData");
-        auditData.category = FieldCategory.DocumentsAndAudits;
 
         ModelSpec conAudit = auditData.join(AuditDataTable.Audit);
         conAudit.alias = "Audit";
@@ -34,15 +33,12 @@ public class ContractorAuditDatasModel extends AbstractModel {
 
         ModelSpec flagCriteriaContractor = contractor.join(ContractorTable.FlagCriteriaContractor);
         flagCriteriaContractor.alias = "FlagCriteriaContractor";
-        flagCriteriaContractor.category = FieldCategory.DocumentsAndAudits;
 
         ModelSpec question = auditData.join(AuditDataTable.Question);
         question.alias = "Question";
-        question.category = FieldCategory.DocumentsAndAudits;
 
         ModelSpec category = question.join(AuditQuestionTable.Category);
         category.alias = "Category";
-        category.category = FieldCategory.DocumentsAndAudits;
 
         return auditData;
     }

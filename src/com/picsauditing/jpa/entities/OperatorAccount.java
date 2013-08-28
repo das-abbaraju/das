@@ -5,7 +5,6 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.builders.OperatorAccountBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
@@ -106,7 +105,7 @@ public class OperatorAccount extends Account {
 	 * Yes, No, Multiple
 	 */
 	@Column(nullable = false, length = 8)
-	@ReportField(category = FieldCategory.Billing)
+	@ReportField()
 	public String getDoContractorsPay() {
 		return this.doContractorsPay;
 	}
@@ -118,7 +117,7 @@ public class OperatorAccount extends Account {
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
 	@Column(name = "canSeeInsurance", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.ClientSitePreferences)
+	@ReportField()
 	public YesNo getCanSeeInsurance() {
 		checkCanSeeInsurance();
 		return this.canSeeInsurance;
@@ -147,7 +146,7 @@ public class OperatorAccount extends Account {
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
 	@Column(name = "isUserManualUploaded", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.ClientSitePreferences)
+	@ReportField()
 	public YesNo getIsUserManualUploaded() {
 		return this.isUserManualUploaded;
 	}
@@ -185,7 +184,7 @@ public class OperatorAccount extends Account {
 		this.oshaType = oshaType;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean)
 	public boolean isPrimaryCorporate() {
 		return primaryCorporate;
 	}
@@ -194,7 +193,7 @@ public class OperatorAccount extends Account {
 		this.primaryCorporate = primaryCorporate;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean)
 	public boolean isAutoApproveInsurance() {
 		return autoApproveInsurance;
 	}
@@ -231,7 +230,7 @@ public class OperatorAccount extends Account {
 		return null;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences)
+	@ReportField()
 	public String getRequiredTags() {
 		return requiredTags;
 	}
@@ -272,7 +271,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Date)
+	@ReportField(type = FieldType.Date)
 	public Date getDiscountExpiration() {
 		return discountExpiration;
 	}
@@ -396,9 +395,9 @@ public class OperatorAccount extends Account {
 		return forms;
 	}
 
-	@OneToMany(mappedBy = "operator")
+	@OneToMany(mappedBy = "operator", orphanRemoval = true)
 	@Where(clause = "type IS NULL")
-	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@Cascade(org.hibernate.annotations.CascadeType.ALL)
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}
@@ -684,7 +683,7 @@ public class OperatorAccount extends Account {
 		this.inPicsConsortium = inPicsConsortium;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences)
+	@ReportField()
 	public String getSalesForceID() {
 		return salesForceID;
 	}

@@ -82,7 +82,6 @@ public class Permissions implements Serializable {
 
 	private boolean usingVersion7Menus;
 	private Date usingVersion7MenusDate;
-	private boolean dynamicReportsUser;
 	private Date reportsManagerTutorialDate;
     // this is for injecting for unit tests
 	private transient LanguageModel languageModel;
@@ -160,6 +159,7 @@ public class Permissions implements Serializable {
         locale = user.getLocale();
         shadowedUserID = (user.getShadowedUser() != null ? user.getShadowedUser().getId() : userID);
         shadowedUserName = (user.getShadowedUser() != null ? user.getShadowedUser().getName() : username);
+
         if (user.getAccount().getCountry() != null) {
             country = user.getAccount().getCountry().getIsoCode();
         } else {
@@ -732,10 +732,6 @@ public class Permissions implements Serializable {
 
 	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
 		this.usingVersion7MenusDate = usingVersion7MenusDate;
-	}
-
-	public boolean isDynamicReportsUser() {
-		return dynamicReportsUser;
 	}
 
 	public Date getReportsManagerTutorialDate() {

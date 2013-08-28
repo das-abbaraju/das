@@ -24,6 +24,9 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String ALCombinedSingle = "ALCombinedSingle";
     public static final String WCEachAccident = "WCEachAccident";
     public static final String EXEachOccurrence = "EXEachOccurrence";
+    public static final String ELLimit = "ELLimit";
+    public static final String PPLLimit = "PPLLimit";
+    public static final String PROLEachOccurrence = "PROLEachOccurrence";
 
     public static final String Fatalities = "Fatalities";
     public static final String Emr = "Emr";
@@ -103,11 +106,9 @@ public class ContractorAuditTable extends AbstractTable {
 	public ContractorAuditTable() {
 		super("contractor_audit");
 		addFields(ContractorAudit.class);
-		Field id = addPrimaryKey();
-		id.setCategory(FieldCategory.DocumentsAndAudits);
+		addPrimaryKey();
 
         Field creationDate = addCreationDate();
-        creationDate.setCategory(FieldCategory.DocumentsAndAudits);
         creationDate.setImportance(FieldImportance.Low);
 
 		Field auditTypeName;
@@ -115,7 +116,6 @@ public class ContractorAuditTable extends AbstractTable {
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + ReportOnClause.ToAlias + "ID}");
 		auditTypeName.setImportance(FieldImportance.Required);
-		auditTypeName.setCategory(FieldCategory.DocumentsAndAudits);
 		auditTypeName.setWidth(200);
 		addField(auditTypeName);
 	}
@@ -127,100 +127,81 @@ public class ContractorAuditTable extends AbstractTable {
 				.setMinimumImportance(FieldImportance.Average);
 		
 		{
-			ReportForeignKey auditorKey = addOptionalKey(new ReportForeignKey(Auditor, new UserTable(),
+			addOptionalKey(new ReportForeignKey(Auditor, new UserTable(),
 					new ReportOnClause("auditorID")));
-			auditorKey.setMinimumImportance(FieldImportance.Required);
-			auditorKey.setCategory(FieldCategory.Auditors);
 		}
 
 		{
-			ReportForeignKey auditorKey = addOptionalKey(new ReportForeignKey(ClosingAuditor, new UserTable(),
+			addOptionalKey(new ReportForeignKey(ClosingAuditor, new UserTable(),
 					new ReportOnClause("closingAuditorID")));
-			auditorKey.setMinimumImportance(FieldImportance.Required);
-			auditorKey.setCategory(FieldCategory.Auditors);
 		}
 
-		ReportForeignKey caoKey = addRequiredKey(new ReportForeignKey(SingleCAO, new ContractorAuditOperatorTable(),
+		addRequiredKey(new ReportForeignKey(SingleCAO, new ContractorAuditOperatorTable(),
 				new ReportOnClause("id", "auditID")));
-		caoKey.setCategory(FieldCategory.DocumentsAndAudits);
-		caoKey.setMinimumImportance(FieldImportance.Required);
 
-		ReportForeignKey data = addOptionalKey(new ReportForeignKey(Data, new AuditDataTable(),
+		addOptionalKey(new ReportForeignKey(Data, new AuditDataTable(),
 				new ReportOnClause("id", "auditID")));
-		data.setCategory(FieldCategory.DocumentsAndAudits);
-		data.setMinimumImportance(FieldImportance.Required);
 
-        ReportForeignKey safetyManual = addOptionalKey(new ReportForeignKey(SafetyManual, new AuditDataTable(),
+        addOptionalKey(new ReportForeignKey(SafetyManual, new AuditDataTable(),
                 new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + AuditQuestion.MANUAL_PQF)));
-        safetyManual.setCategory(FieldCategory.DocumentsAndAudits);
-        safetyManual.setMinimumImportance(FieldImportance.Average);
 
-        ReportForeignKey previousAudit = addOptionalKey(new ReportForeignKey(PreviousAudit, new ContractorAuditTable(),
+        addOptionalKey(new ReportForeignKey(PreviousAudit, new ContractorAuditTable(),
                 new ReportOnClause("previousAuditID", "id")));
-        previousAudit.setCategory(FieldCategory.DocumentsAndAudits);
-        previousAudit.setMinimumImportance(FieldImportance.Required);
 
         // Insurance
         {
             // General Liability
-            ReportForeignKey glEachOccurrence = addOptionalKey(new ReportForeignKey(GLEachOccurrence, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(GLEachOccurrence, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2074")));
-            glEachOccurrence.setCategory(FieldCategory.DocumentsAndAudits);
-            glEachOccurrence.setMinimumImportance(FieldImportance.Required);
 
-            ReportForeignKey glGeneralAggregate = addOptionalKey(new ReportForeignKey(GLGeneralAggregate, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(GLGeneralAggregate, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2079")));
-            glGeneralAggregate.setCategory(FieldCategory.DocumentsAndAudits);
-            glGeneralAggregate.setMinimumImportance(FieldImportance.Required);
 
             // Auto Liability
-            ReportForeignKey alCombinedSingle = addOptionalKey(new ReportForeignKey(ALCombinedSingle, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(ALCombinedSingle, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2155")));
-            alCombinedSingle.setCategory(FieldCategory.DocumentsAndAudits);
-            alCombinedSingle.setMinimumImportance(FieldImportance.Required);
 
             // Workers' Comp
-            ReportForeignKey wcEachAccident = addOptionalKey(new ReportForeignKey(WCEachAccident, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(WCEachAccident, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2149")));
-            wcEachAccident.setCategory(FieldCategory.DocumentsAndAudits);
-            wcEachAccident.setMinimumImportance(FieldImportance.Required);
 
             // Excess/Umbrella Liability
-            ReportForeignKey exEachOccurrence = addOptionalKey(new ReportForeignKey(EXEachOccurrence, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(EXEachOccurrence, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2161")));
-            exEachOccurrence.setCategory(FieldCategory.DocumentsAndAudits);
-            exEachOccurrence.setMinimumImportance(FieldImportance.Required);
+
+            // Employers' Liability
+            addOptionalKey(new ReportForeignKey(ELLimit, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 14359")));
+
+            // Public and Product Liability
+            addOptionalKey(new ReportForeignKey(PPLLimit, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 10230")));
+
+            // Professional Liability
+            addOptionalKey(new ReportForeignKey(PROLEachOccurrence, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2167")));
         }
 
         // Annual Updates
         {
-            ReportForeignKey fatalities = addOptionalKey(new ReportForeignKey(Fatalities, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(Fatalities, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR)));
-            fatalities.setCategory(FieldCategory.DocumentsAndAudits);
-            fatalities.setMinimumImportance(FieldImportance.Required);
 
-            ReportForeignKey emr = addOptionalKey(new ReportForeignKey(Emr, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(Emr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + EmrStatistics.QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR)));
-            emr.setCategory(FieldCategory.DocumentsAndAudits);
-            emr.setMinimumImportance(FieldImportance.Required);
 
-            ReportForeignKey lwcr = addOptionalKey(new ReportForeignKey(Lwcr, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(Lwcr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR)));
-            lwcr.setCategory(FieldCategory.DocumentsAndAudits);
-            lwcr.setMinimumImportance(FieldImportance.Required);
 
-            ReportForeignKey trir = addOptionalKey(new ReportForeignKey(Trir, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(Trir, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));
-            trir.setCategory(FieldCategory.DocumentsAndAudits);
-            trir.setMinimumImportance(FieldImportance.Required);
         }
 
         // CEMEX
         {
             for (Integer questionID : CEMEX_POST_EVAL_DATA.keySet()) {
-                ReportForeignKey cemexData = addOptionalKey(new ReportForeignKey(CEMEX_POST_EVAL_DATA.get(questionID), new AuditDataTable(),
+                addOptionalKey(new ReportForeignKey(CEMEX_POST_EVAL_DATA.get(questionID), new AuditDataTable(),
                         new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + questionID)));
-                cemexData.setMinimumImportance(FieldImportance.Required);
             }
         }
     }

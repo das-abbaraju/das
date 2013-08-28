@@ -1,0 +1,14 @@
+.ReportTester-page {
+    .raw {
+        visibility: hidden;
+    }
+
+    #directory_table_wrapper {
+        margin-top: 18px;
+    }
+
+    tfoot input,
+    tfoot select {
+        width: 100%;
+    }
+}

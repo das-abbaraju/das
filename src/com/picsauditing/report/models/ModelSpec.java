@@ -3,7 +3,6 @@ package com.picsauditing.report.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 public class ModelSpec {
@@ -11,15 +10,9 @@ public class ModelSpec {
 	String fromAlias;
 	String key;
 	String alias;
-	FieldCategory category;
 	FieldImportance minimumImportance;
     boolean forceRequired;
 	List<ModelSpec> joins = new ArrayList<ModelSpec>();
-
-	public ModelSpec(String key, String alias, FieldCategory category) {
-		this(key, alias);
-		this.category = category;
-	}
 
 	public ModelSpec(String key, String alias) {
 		this.key = key;

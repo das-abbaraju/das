@@ -111,7 +111,11 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 					caoDAO.remove(cao);
 				}
 				auditDao.clear();
-				auditDao.remove(auditID, getFtpDir());
+                try {
+				    auditDao.remove(auditID, getFtpDir());
+                } catch (Exception e) {
+                    // ignore
+                }
 				addNote(conAudit.getContractorAccount(), "Deleted " + conAudit.getAuditType().getName().toString(),
 						NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, this.getUser());
 				if (conAudit.getAuditType().getClassType().isPolicy())

@@ -12,10 +12,13 @@ import org.slf4j.MarkerFactory;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class SearchEngine {
 	private static final Logger logger = LoggerFactory.getLogger(SearchEngine.class);
 	private static final Marker marker = MarkerFactory.getMarker("Search Engine");
+    private static final Pattern NON_WORD_CHARS = Pattern.compile("\\W|_", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern NON_ALPHA_NUMERIC_SPACES = Pattern.compile("[^\\p{L}\\p{N}\\p{Z}]", Pattern.UNICODE_CHARACTER_CLASS);
 
 	protected String searchTerm;
 
@@ -352,26 +355,30 @@ public class SearchEngine {
 	 * @return An array of search terms, sorted from least to most common
 	 */
 	public List<String> buildTerm(String check, boolean sort, boolean removeDups) {
-		if (Strings.isEmpty(check))
+		if (Strings.isEmpty(check)) {
 			return Collections.emptyList();
-		String[] terms = check.toUpperCase().split("\\W|_");
+        }
+
+        String[] terms = NON_WORD_CHARS.split(check.toUpperCase());
 		Collection<String> stringCollection;
-		if (removeDups)
-			stringCollection = new HashSet<String>(terms.length);
-		else
-			stringCollection = new ArrayList<String>();
+		if (removeDups) {
+			stringCollection = new HashSet<>(terms.length);
+        } else {
+			stringCollection = new ArrayList<>();
+        }
 		for (int i = 0; i < terms.length; i++) {
-			stringCollection.add(terms[i].replaceAll("^(HTTP)|^(W{3})", "").replaceAll("[^a-zA-Z0-9\\s]", ""));
+			stringCollection.add(NON_ALPHA_NUMERIC_SPACES.matcher(terms[i].replaceAll("^(HTTP)|^(W{3})", "")).replaceAll(""));
 		}
 		// remove empty strings
 		while (stringCollection.remove(""))
 			;
-		List<String> s = new ArrayList<String>();
+		List<String> s = new ArrayList<>();
 		s.addAll(stringCollection);
-		if (sort)
+		if (sort) {
 			return sortSearchTerms(s, false);
-		else
+        } else {
 			return s;
+        }
 	}
 
 	/**

@@ -29,11 +29,11 @@ public class TaxService {
             if (TAX_FEE_CLASSES.contains(invoiceItem.getInvoiceFee().getFeeClass())) {
                 duplicateCount += 1;
                 if (duplicateCount > 1) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     public void applyTax(Invoice invoice) throws Exception {

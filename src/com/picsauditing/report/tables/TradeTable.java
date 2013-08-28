@@ -16,7 +16,6 @@ public class TradeTable extends AbstractTable {
         Field tradeName = new Field("Name","id", FieldType.Trade);
         tradeName.setTranslationPrefixAndSuffix("Trade","name");
         tradeName.setImportance(FieldImportance.Required);
-        tradeName.setCategory(FieldCategory.AccountInformation);
         tradeName.setVisible(false);
         addField(tradeName);
 	}

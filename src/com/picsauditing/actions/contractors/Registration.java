@@ -12,12 +12,15 @@ import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.DataScrubber;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
+
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,12 +168,27 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	}
 
 	@Anonymous
+	@SkipValidation
+	public String getCompanyAddressFields() {
+		if (isUKContractor()) {
+			return "GBAddressFields";
+		} else {
+			return "defaultAddressFields";
+		}
+	}
+
+	private boolean isUKContractor() {
+		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isUK();
+	}
+
+	@Anonymous
 	public String createAccount() throws Exception {
 		loadPermissions(false);
 		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
 		}
+		
 		permissions = null;
 
 		setupUserData();
@@ -343,10 +361,10 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		if (contractor.getStatus().isRequested()) {
 			contractor.setStatus(AccountStatus.Pending);
 		}
-
+		
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
-		contractor.setPaymentExpires(new Date());
+        contractor.setPaymentExpires(new Date());
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
 		contractor.setNameIndex();
         if (!contractor.isDemo()) {
@@ -373,6 +391,15 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			newConFee.setNewLevel(currentFee);
 			newConFee.setFeeClass(feeClass);
 			contractor.getFees().put(feeClass, newConFee);
+		}
+		
+		scrubContractorData(contractor);
+	}
+	
+	private void scrubContractorData(ContractorAccount contractor) {
+		if (contractor.getCountry().isUK()) {
+			String zip = contractor.getZip();
+			contractor.setZip(DataScrubber.cleanUKPostcode(zip));
 		}
 	}
 
@@ -515,4 +542,21 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
         return timezones;
     }
+
+    @Override
+    public List<CountrySubdivision> getCountrySubdivisionList() {
+		if (contractor == null || contractor.getCountry() == null) {
+			return getCountrySubdivisionList(Country.US_ISO_CODE);
+		}
+
+		return getCountrySubdivisionList(contractor.getCountry().getIsoCode());
+	}
+
+    public String getCountrySubdivisionLabelFor() {
+    	if (contractor == null || contractor.getCountry() == null) {
+			return getCountrySubdivisionLabelFor(Country.US_ISO_CODE);
+		}
+
+		return getCountrySubdivisionLabelFor(contractor.getCountry().getIsoCode());
+	}
 }

@@ -21,7 +21,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
@@ -118,7 +117,7 @@ public class InvoiceFee extends BaseTable {
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.FeeClass, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.FeeClass, importance = FieldImportance.Average)
 	public FeeClass getFeeClass() {
 		return feeClass;
 	}
@@ -135,7 +134,7 @@ public class InvoiceFee extends BaseTable {
 		this.minFacilities = minFacilities;
 	}
 
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
 	public int getMaxFacilities() {
 		return maxFacilities;
 	}

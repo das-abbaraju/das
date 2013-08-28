@@ -35,22 +35,19 @@ public class ReportContractorApproval extends ReportAccount {
 	protected void buildQuery() {
 		skipPermissions = true;
 		super.buildQuery();
-		String where = "1";
+        String where = "1";
 
-		if (permissions.isCorporate()) {
-			if (filterOn(getFilter().getWorkStatus()))
-				where = "gc.workStatus = '" + getFilter().getWorkStatus() + "'";
+        if (filterOn(getFilter().getWorkStatus()))
+            where = "gc.workStatus LIKE '" + getFilter().getWorkStatus() + "%'";
 
-			sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc "
-					+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId() + ""
-					+ " AND " + where + ")");
-		}
-		if (permissions.isOperatorCorporate()) {
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID=" + permissions.getAccountId());
-			sql.addField("gc.creationDate as dateAdded");
-			sql.addField("gc.flag");
-			sql.addField("gc.workStatus");
-		}
+        if (permissions.isOperatorCorporate()) {
+            sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID=" + permissions.getAccountId());
+            sql.addField("gc.creationDate as dateAdded");
+            sql.addField("gc.flag");
+            sql.addField("gc.workStatus");
+
+            sql.addWhere(where);
+        }
 
 		sql.addWhere("c.accountLevel != 'BidOnly'");
 

@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 import javax.persistence.*;
@@ -28,7 +27,7 @@ public class TransactionItem extends BaseTable{
 		this.invoiceFee = invoiceFee;
 	}
 
-    @ReportField(type = FieldType.Float, category = FieldCategory.Invoicing, importance = FieldImportance.Required)
+    @ReportField(type = FieldType.Float, importance = FieldImportance.Required)
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -37,7 +36,7 @@ public class TransactionItem extends BaseTable{
 		this.amount = amount;
 	}
 
-    @ReportField(category = FieldCategory.Invoicing, importance = FieldImportance.Average)
+    @ReportField(importance = FieldImportance.Average)
 	public String getDescription() {
 		return description;
 	}

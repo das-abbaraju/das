@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @DiscriminatorValue(value = "C")
@@ -29,11 +30,22 @@ public class CreditMemoAppliedToInvoice extends TransactionApplied {
         this.creditMemo = creditMemo;
     }
 
+    @Transient
+    public void updateAmountApplied() {
+        invoice.updateTotalAmount();
+        creditMemo.updateAmountApplied();
+        setAmount(creditMemo.getTotalAmount());
+        invoice.updateAmountApplied();
+    }
+
     public static CreditMemoAppliedToInvoice from(Invoice inv) {
         CreditMemoAppliedToInvoice applied = new CreditMemoAppliedToInvoice();
+        applied.setCreationDate(new Date());
+        applied.setUpdateDate(new Date());
         applied.setInvoice(inv);
         applied.setCreditMemo(new InvoiceCreditMemo());
         applied.getCreditMemo().setAccount(inv.getAccount());
+        inv.getCreditMemos().add(applied);
         return applied;
     }
 

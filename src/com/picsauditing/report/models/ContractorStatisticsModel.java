@@ -10,7 +10,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.ContractorTable;
-import com.picsauditing.report.tables.FieldCategory;
 
 public class ContractorStatisticsModel extends AbstractModel {
 
@@ -23,16 +22,15 @@ public class ContractorStatisticsModel extends AbstractModel {
 
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = "Account";
-		account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+		account.join(AccountTable.Contact);
 
 		if (permissions.isOperatorCorporate()) {
 			ModelSpec flag = contractor.join(ContractorTable.Flag);
-			flag.join(ContractorOperatorTable.ForcedByUser).category = FieldCategory.ContactInformation;
+			flag.join(ContractorOperatorTable.ForcedByUser);
 		}
 
 		ModelSpec statistics = contractor.join(ContractorTable.ContractorStatistics);
 		statistics.alias = "ContractorStatistics";
-		statistics.category = FieldCategory.CompanyStatistics;
 		contractor.join(ContractorTable.CustomerService);
 
 		return contractor;

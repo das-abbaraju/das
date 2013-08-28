@@ -204,7 +204,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingRequestedOrDeactivated()) {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
-			contractor.setMembershipDate(new Date());
+            contractor.setMembershipDate(new Date());
 
 			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);

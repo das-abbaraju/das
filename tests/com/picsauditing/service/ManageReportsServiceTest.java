@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -30,8 +29,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
-
-import javax.persistence.NoResultException;
 
 public class ManageReportsServiceTest {
 

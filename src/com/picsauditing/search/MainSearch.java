@@ -65,8 +65,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	@Override
 	public void prepare() throws Exception {
 		String[] qA = (String[]) ActionContext.getContext().getParameters().get("q");
-		if (qA != null)
-			searchTerm = qA[0];
+		if (qA != null) {
+			searchTerm = new String(qA[0].getBytes("iso-8859-1"), "UTF-8");
+        }
 	}
 
 	public String execute() throws SQLException, IOException {

@@ -4,6 +4,5 @@ CREATE TABLE IF NOT EXISTS ref_time_zone (
   zoneName varchar(200) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (id)
 );
-
 ALTER TABLE ref_time_zone
   ADD  UNIQUE INDEX ak_ref_time_zone (countryCode, zoneName);

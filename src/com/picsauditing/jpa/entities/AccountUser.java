@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
@@ -53,7 +52,7 @@ public class AccountUser extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.UserAccountRole, category = FieldCategory.Commission, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.UserAccountRole, importance = FieldImportance.Average)
 	public UserAccountRole getRole() {
 		return role;
 	}

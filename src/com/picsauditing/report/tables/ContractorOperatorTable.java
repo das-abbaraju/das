@@ -17,7 +17,6 @@ public class ContractorOperatorTable extends AbstractTable {
 		addFields(ContractorOperator.class);
 
         Field creationDate = addCreationDate();
-        creationDate.setCategory(FieldCategory.AccountInformation);
         creationDate.setImportance(FieldImportance.Low);
 
 		String networkLevelDatabaseColumn = "";
@@ -51,17 +50,30 @@ public class ContractorOperatorTable extends AbstractTable {
 		}
 
 		Field networkLevel = new Field("NetworkLevel", networkLevelDatabaseColumn, FieldType.NetworkLevel);
-		networkLevel.setCategory(FieldCategory.AccountInformation);
 		networkLevel.setImportance(FieldImportance.Required);
 		networkLevel.setTranslationPrefixAndSuffix("NetworkLevel", "");
 		networkLevel.setVisible(false);
 		networkLevel.setFilterable(false);
 		addField(networkLevel);
+
+        // TODO: We should find a way to attach this to ContractorTagView instead of here
+        Field contractorOperatorTag = new Field("Tag", "(SELECT GROUP_CONCAT(o.tag ORDER BY o.tag SEPARATOR ', ') FROM contractor_tag c " +
+                " JOIN operator_tag o ON c.tagID = o.id AND o.active = 1 " +
+                " WHERE " + ReportOnClause.ToAlias + ".subID = c.conID AND " + ReportOnClause.ToAlias + ".genID = o.opID)", FieldType.String);
+        contractorOperatorTag.setFilterable(false);
+        contractorOperatorTag.setWidth(300);
+        addField(contractorOperatorTag);
+
+        Field contractorFlagOverride = new Field("FlagIsForced", "(" + ReportOnClause.ToAlias + ".forceEnd IS NOT NULL OR " +
+                " EXISTS(SELECT * FROM flag_data_override fdo " +
+                " WHERE fdo.conID = " + ReportOnClause.ToAlias + ".subID " +
+                " AND fdo.opID = " + ReportOnClause.ToAlias + ".genID " +
+                " AND fdo.forceEnd IS NOT NULL))", FieldType.Boolean);
+        addField(contractorFlagOverride);
 	}
 
 	public void addJoins() {
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("genID"));
-		operator.setCategory(FieldCategory.ReportingClientSite);
 		addRequiredKey(operator);
 
 		addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("subID")));

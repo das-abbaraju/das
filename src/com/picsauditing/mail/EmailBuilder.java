@@ -346,7 +346,11 @@ public class EmailBuilder {
 		tokens.putAll(m);
 	}
 
-	public String getFromAddress() {
+    public boolean hasTokens() {
+        return tokens.size() > 0;
+    }
+
+    public String getFromAddress() {
 		return fromAddress;
 	}
 

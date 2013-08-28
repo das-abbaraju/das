@@ -2,7 +2,7 @@ package com.picsauditing.report.converter;
 
 import static com.picsauditing.report.ReportJson.COLUMN_ID;
 import static com.picsauditing.report.ReportJson.COLUMN_ID_PREFIX;
-import static com.picsauditing.report.ReportJson.COLUMN_SORTABLE;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_SORTABLE;
 import static com.picsauditing.report.ReportJson.COLUMN_SQL_FUNCTION;
 import static com.picsauditing.report.ReportJson.COLUMN_TYPE;
 import static com.picsauditing.report.ReportJson.COLUMN_URL;
@@ -165,7 +165,7 @@ public class JsonReportBuilderTest {
 		assertJson(COLUMN_URL, expectedURL, jsonString);
 		assertJson(COLUMN_SQL_FUNCTION, sqlFunction, jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
-		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
+		assertJsonNoQuotes(REPORT_ELEMENT_SORTABLE, sortable, jsonString);
 		assertJson(COLUMN_ID, COLUMN_ID_PREFIX + "0", jsonString);
 	}
 
