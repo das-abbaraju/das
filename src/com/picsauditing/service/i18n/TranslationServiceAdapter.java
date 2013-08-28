@@ -29,7 +29,7 @@ public class TranslationServiceAdapter implements TranslationService {
     public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
 
     private static final String TRANSLATION_URL =
-            ((System.getProperty("translation.server") == null) ? "http://acoustickitty.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
+            ((System.getProperty("translation.server") == null) ? "http://translate.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
     private static final String LOCALES_URL = TRANSLATION_URL + "locales/";
     private static final String CACHE_NAME = "i18n";
     private static Cache cache;
