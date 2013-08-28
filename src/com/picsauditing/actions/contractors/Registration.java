@@ -6,6 +6,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
+import com.picsauditing.decorators.SapAppPropertyDecorator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
@@ -369,7 +370,9 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		contractor.setNameIndex();
         if (!contractor.isDemo()) {
             contractor.setQbSync(true);
-            contractor.setSapSync(true);
+			if (SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+				contractor.setSapSync(true);
+			}
         }
 
 		contractor.setNaics(new Naics());

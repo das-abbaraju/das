@@ -9,6 +9,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.*;
+import com.picsauditing.decorators.SapAppPropertyDecorator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
@@ -173,7 +174,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			// auditBuilder.buildAudits(contractor);
             if (!contractor.isDemo()) {
                 contractor.setQbSync(true);
-                contractor.setSapSync(true);
+				if (SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+                	contractor.setSapSync(true);
+				}
             }
 
 			contractor.incrementRecalculation();

@@ -11,6 +11,7 @@ import com.picsauditing.access.{OpPerms, RequiredPermission}
 import scala.Some
 import java.lang.{Integer => int}
 import java.util.{List => StrutsList}
+import com.picsauditing.decorators.SapAppPropertyDecorator
 
 @RequiredPermission(OpPerms.Billing)
 class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {
@@ -92,7 +93,10 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       creditMemo.updateAmountApplied()
       creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
       creditMemo.setAuditColumns(permissions)
-      creditMemo.getCreditMemo.setSapSync(true)
+      if (SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getBusinessUnit.getId)) {
+        creditMemo.getCreditMemo.setSapSync(true)
+      }
+
       creditMemoDAO.save(creditMemo)
   }
 

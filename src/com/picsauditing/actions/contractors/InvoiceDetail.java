@@ -16,6 +16,7 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
+import com.picsauditing.decorators.SapAppPropertyDecorator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -595,33 +596,12 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	@Transient
 	public boolean isSapEnabledForBizUnit() {
-		boolean sapEnabledForBizUnit = false;
-		if (isTransactionIsInvoice()) {
-			AppProperty badDebtBizUnitsAP = appPropertyDAO.find(AppProperty.SAP_BIZ_UNITS_ENABLED);
-			if (badDebtBizUnitsAP != null) {
-				String badDebtBizUnitsS = badDebtBizUnitsAP.getValue();
-				if (!Strings.isEmpty(badDebtBizUnitsS)) {
-					if (Arrays.asList(badDebtBizUnitsS.split(",")).contains(invoice.getAccount().getCountry().getBusinessUnit().getId()+"")) {
-						sapEnabledForBizUnit = true;
-					}
-				}
-			}
-		}
-		return sapEnabledForBizUnit;
+		return SapAppPropertyDecorator.isSAPBusinessUnitEnabled(invoice.getAccount().getCountry().getBusinessUnit().getId());
 	}
 
 	@Transient
 	public boolean isVoidEnabled() {
-		boolean voidEnabled = false;
-		if (isSapEnabledForBizUnit() && isTransactionIsInvoice()) {
-			if (contractor.getStatus().isPending() && invoice.getPayments().size() == 0) {
-				voidEnabled = true;
-			} else if (contractor.getStatus().isDeclined()) {
-				voidEnabled = true;
-			}
-		} else {
-			voidEnabled = true;
-		}
+		boolean voidEnabled = (isEditEnabled() || contractor.getStatus().isDeclined());
 		return voidEnabled;
 	}
 

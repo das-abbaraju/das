@@ -22,6 +22,8 @@ public class AppProperty implements java.io.Serializable {
 	public static final String VERSION_MAJOR = "VERSION.major";
 	public static final String VERSION_MINOR = "VERSION.minor";
 	public static final String SSIP_CLIENT_SITE_ID_LIST_KEY = "Ssip.ClientSite.Ids";
+	public static final String SAP_BIZ_UNITS_SET_SYNC_TRUE_ENABLED = "SAP.BusinessUnits.SetSyncTrue.Enabled";
+
 
 	private String property;
 	private String value;

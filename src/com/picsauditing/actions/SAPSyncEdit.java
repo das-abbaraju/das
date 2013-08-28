@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.List;
 
+import com.picsauditing.decorators.SapAppPropertyDecorator;
 import org.bouncycastle.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -79,7 +80,10 @@ public class SAPSyncEdit extends PicsActionSupport {
 	}
 
 	private void editContractor(ContractorAccount contractor) {
-		contractor.setSapSync(needSync);
+		if (!needSync || SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+			contractor.setSapSync(needSync);
+		}
+
 		if (clearLastSyncDate) {
 			contractor.setSapLastSync(null);
 		}
@@ -103,7 +107,9 @@ public class SAPSyncEdit extends PicsActionSupport {
 	}
 
 	private void editTranaction(Transaction transaction) {
-		transaction.setSapSync(needSync);
+		if (!needSync || SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(transaction.getAccount().getCountry().getBusinessUnit().getId())) {
+			transaction.setSapSync(needSync);
+		}
 		if (clearLastSyncDate) {
 			transaction.setSapLastSync(null);
 		}
