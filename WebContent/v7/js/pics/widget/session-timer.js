@@ -26,7 +26,7 @@ PICS.define('widget.SessionTimer', {
             // any ajax made from the site that have an expired session will be forced to the redirection target
             $(document).on('ajaxError', function (event, jqXHR, ajaxSettings, thrownError) {
                 if (jqXHR.status === 401) {
-                    document.location = LOGOUT_URL;
+                    redirect(LOGOUT_URL);
                 }
             });
 
@@ -174,13 +174,13 @@ PICS.define('widget.SessionTimer', {
                     if (data.referer) {
                         //redirect to referer to set "from" cookie
                         //to triggger redirect to previous page on login
-                        document.location = data.referer;
+                        redirect(data.referer);
                     } else {
-                        document.location = LOGOUT_URL;
+                        redirect(LOGOUT_URL);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    document.location = LOGOUT_URL;
+                    redirect(LOGOUT_URL);
                 }
             });
         }
@@ -199,6 +199,12 @@ PICS.define('widget.SessionTimer', {
                     }
                 }
             });
+        }
+
+        function redirect(url) {
+            if (document.location.href !== url) {
+                document.location = url;
+            }
         }
 
         //DEVELOPMENT FUNCTIONS
