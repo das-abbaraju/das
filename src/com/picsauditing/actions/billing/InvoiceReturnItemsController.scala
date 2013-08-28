@@ -88,7 +88,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       Some(new RefundItem(item))
     }
     case Left(id) => {
-      addActionError("Item number " + id + " did not exist on this invoice.")
+      addActionError("Item number " + id + " has already been returned on this invoice.")
       None
     }
   }
