@@ -16,7 +16,7 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
-import com.picsauditing.decorators.SapAppPropertyDecorator;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -75,6 +75,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     @Autowired
     private FeeService feeService;
 
+	private SapAppPropertyUtil sapAppPropertyUtil;
+
 	private boolean edit = false;
 	private String message = null;
 	private int newFeeId;
@@ -88,6 +90,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	@Override
 	public void prepare() {
+		if (sapAppPropertyUtil == null) {
+			sapAppPropertyUtil = SapAppPropertyUtil.factory();
+		}
 		int transactionId = getParameter("invoice.id");
 		if (transactionId > 0) {
 			transaction = invoiceDAO.find(Transaction.class,transactionId);
@@ -596,7 +601,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	@Transient
 	public boolean isSapEnabledForBizUnit() {
-		return SapAppPropertyDecorator.isSAPBusinessUnitEnabled(invoice.getAccount().getCountry().getBusinessUnit().getId());
+		return sapAppPropertyUtil.isSAPBusinessUnitEnabled(invoice.getAccount().getCountry().getBusinessUnit().getId());
 	}
 
 	@Transient
@@ -618,4 +623,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		return editEnabled;
 	}
 
+	public SapAppPropertyUtil getSapAppPropertyUtil() {
+		return sapAppPropertyUtil;
+	}
+
+	public void setSapAppPropertyUtil(SapAppPropertyUtil sapAppPropertyUtil) {
+		this.sapAppPropertyUtil = sapAppPropertyUtil;
+	}
 }

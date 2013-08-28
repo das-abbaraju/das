@@ -2,7 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.List;
 
-import com.picsauditing.decorators.SapAppPropertyDecorator;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.bouncycastle.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -80,7 +80,8 @@ public class SAPSyncEdit extends PicsActionSupport {
 	}
 
 	private void editContractor(ContractorAccount contractor) {
-		if (!needSync || SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+		SapAppPropertyUtil sapAppPropertyUtil = new SapAppPropertyUtil();
+		if (!needSync || sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
 			contractor.setSapSync(needSync);
 		}
 
@@ -107,7 +108,8 @@ public class SAPSyncEdit extends PicsActionSupport {
 	}
 
 	private void editTranaction(Transaction transaction) {
-		if (!needSync || SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(transaction.getAccount().getCountry().getBusinessUnit().getId())) {
+		SapAppPropertyUtil sapAppPropertyUtil = new SapAppPropertyUtil();
+		if (!needSync || sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(transaction.getAccount().getCountry().getBusinessUnit().getId())) {
 			transaction.setSapSync(needSync);
 		}
 		if (clearLastSyncDate) {

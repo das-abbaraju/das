@@ -12,8 +12,10 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.BillingNoteModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +40,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 	@Mock
 	private Country country;
 	@Mock
+	private BusinessUnit businessUnit;
+	@Mock
 	private ContractorAccount contractor;
     @Mock
     private BillingService billingService;
@@ -53,6 +57,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private BillingNoteModel billingNoteModel;
 	@Mock
 	private AppPropertyDAO appPropertyDAO;
+	@Mock
+	private SapAppPropertyUtil sapAppPropertyUtil;
 
 	@Before
 	public void setUp() throws Exception {
@@ -70,6 +76,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
 		Whitebox.setInternalState(invoiceDetail, "billingNoteModel", billingNoteModel);
 		Whitebox.setInternalState(invoiceDetail,"appPropertyDAO",appPropertyDAO);
+		Whitebox.setInternalState(invoiceDetail,"sapAppPropertyUtil",sapAppPropertyUtil);
+		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 	}
 
 	// Go back and add in verification for the message
@@ -90,12 +98,14 @@ public class InvoiceDetailTest extends PicsActionTest {
 		when(account.getCountry()).thenReturn(country);
 		when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);
 		when(country.getCurrency()).thenReturn(Currency.USD);
-		when(account.getCountry()).thenReturn(country);
 		when(contractor.getCountry()).thenReturn(country);
 		when(invoice.getTotalAmount()).thenReturn(BigDecimal.valueOf(199.00));
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
+		when(country.getBusinessUnit()).thenReturn(businessUnit);
+		when(businessUnit.getId()).thenReturn(2);
+
 	}
 
 	@Test(expected = NoRightsException.class)
