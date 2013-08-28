@@ -4,7 +4,7 @@ PICS.define('widget.SessionTimer', {
     methods: (function () {
 
         //CONSTANTS
-        var LOGOUT_URL = 'Login.action?button=logout',
+        var LOGOUT_URL = document.location.host + '/Login.action?button=logout',
             NOTIFICATION_DURATION = 60,
             AJAX_URL_BLACKLIST = [
                 'SessionAjax!getSessionTimeRemaining.action',
@@ -36,6 +36,8 @@ PICS.define('widget.SessionTimer', {
                     if (!isBlacklistedUrl(settings.url)) {
                         PICS.debounce(requestRemainingSessionTime(startSession), 250);
                     }
+                } else {
+                    $(this).off('ajaxSend');
                 }
             });
 
@@ -53,16 +55,16 @@ PICS.define('widget.SessionTimer', {
                 url: "SessionAjax!getSessionTimeRemaining.action",
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR) {
-                    if (callback) {
-                        var end = nowInSeconds();
-                        var time_remaining = data.timeRemaining - (end - start);
+                    if (data.timeRemaining != null) {
+                        if (callback) {
+                            var end = nowInSeconds();
+                            var time_remaining = data.timeRemaining - (end - start);
 
-                        callback(time_remaining);
+                            callback(time_remaining);
+                        }
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                   log(errorThrown);
-                   log(textStatus);
                    logout();
                 }
             });
@@ -219,7 +221,6 @@ PICS.define('widget.SessionTimer', {
                         time_remaining = data.timeRemaining - (end - start);
 
                     log(time_remaining);
-
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                    log(errorThrown);

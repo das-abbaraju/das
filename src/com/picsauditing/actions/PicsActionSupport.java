@@ -84,7 +84,11 @@ import com.picsauditing.util.system.PicsEnvironment;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware {
 
-    private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
+    private static final String NO_SESSION = "NO SESSION";
+
+	private static final String HAS_SESSION = "HAS SESSION";
+
+	private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
             + CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
 
     protected static final int DELETE_COOKIE_AGE = 0;
@@ -139,7 +143,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * String that is used for simple messages.
 	 * <p/>
 	 * This is also used for plain-text type results.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -155,28 +159,28 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
 
 	/**
 	 * Container to hold a file being downloaded by the user.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.FileResult
 	 */
 	protected FileDownloadContainer fileContainer = null;
@@ -666,7 +670,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 * 
+	 *
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -756,7 +760,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 * 
+	 *
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -902,7 +906,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * persistently remembered then return true If the cookie is valid and the
 	 * user is not being persistently remembered then check to see if the cookie
 	 * session (in the cookie itself) is expired
-	 * 
+	 *
 	 * @see
 	 * com.picsauditing.access.SecurityAware#sessionCookieIsValidAndNotExpired()
 	 */
@@ -930,15 +934,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         long timeRemaing = calculateTimeRemaining(sessionCookie, permissions);
         return (timeRemaing > -1);
     }
-    
+
     private long calculateTimeRemaining(SessionCookie sessionCookie, Permissions permissions) {
 		if (permissions == null || sessionCookie == null) {
 			return -1;
 		}
-		
+
 		long nowInSeconds = new Date().getTime() / 1000;
         long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
-        
+
         return remainingTimeInSeconds(permissions, nowInSeconds, cookieCreatedSeconds);
 	}
 
@@ -1316,35 +1320,36 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return user.getPhone();
 	}
-	
+
 	@Anonymous
 	public String getSessionTimeRemaining() {
 		SessionCookie sessionCookie = validSessionCookie();
 		if (sessionCookie == null) {
-			json = buildSessionTimeRemainingResponse(0);
+			json = buildSessionTimeRemainingResponse(NO_SESSION, null);
 		} else {
 			Permissions permissions = getPermissionsFromSession();
 			long timeRemaining = calculateTimeRemaining(sessionCookie, permissions);
-			json = buildSessionTimeRemainingResponse(timeRemaining);
+			json = buildSessionTimeRemainingResponse(HAS_SESSION, timeRemaining);
 		}
-		
+
 		return JSON;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private JSONObject buildSessionTimeRemainingResponse(long timeRemaining) {
+	private JSONObject buildSessionTimeRemainingResponse(String status, Long timeRemaining) {
 		JSONObject response = new JSONObject();
+		response.put("status", status);
 		response.put("timeRemaining", timeRemaining);
 		return response;
 	}
-	
+
 	private Permissions getPermissionsFromSession() {
 		if (ActionContext.getContext() == null || ActionContext.getContext().getSession() == null) {
 			return null;
 		}
-		
+
 		return (Permissions) ActionContext.getContext().getSession()
 				.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 	}
-	
+
 }
