@@ -122,11 +122,11 @@ a.#{$prefix}tab-close-btn:hover {
     }
 }
 
-.multiselect-shortlist {
-    .x-boxselect ul.x-boxselect-list {
-        padding: 2px 0 !important;
-    }
+.x-boxselect ul.x-boxselect-list {
+    padding: 1px 3px;
+}
 
+.multiselect-shortlist {
     .x-boxselect-input {
         visibility: hidden;
     }

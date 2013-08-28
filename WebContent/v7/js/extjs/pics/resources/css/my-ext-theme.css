@@ -9783,9 +9783,10 @@ a.x-tab-close-btn:hover {
   background-image: url(../../app/resources/images/tab/tab-default-close.gif);
   bavkground-image-position: 3px 3px; }
 
-/* line 126, ../sass/my-ext-theme/widget/_boxselect.scss */
-.multiselect-shortlist .x-boxselect ul.x-boxselect-list {
-  padding: 2px 0 !important; }
+/* line 125, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect ul.x-boxselect-list {
+  padding: 1px 3px; }
+
 /* line 130, ../sass/my-ext-theme/widget/_boxselect.scss */
 .multiselect-shortlist .x-boxselect-input {
   visibility: hidden; }
