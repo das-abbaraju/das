@@ -2,10 +2,16 @@ package com.picsauditing.mail;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.EntityFactory;
+import com.picsauditing.actions.contractors.ContractorCronStatistics;
+import com.picsauditing.jpa.entities.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,11 +28,6 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "EventSubscriptionBuilderTest-context.xml" })
@@ -38,6 +39,8 @@ public class EventSubscriptionBuilderTest extends PicsTranslationTest {
 	private EmailQueue email;
 	@Mock
 	private EmailTemplate emailTemplate;
+    @Mock
+    private ContractorCronStatistics cronStats;
 
 	@Autowired
 	private EmailSender emailSender;
@@ -72,6 +75,28 @@ public class EventSubscriptionBuilderTest extends PicsTranslationTest {
 
 		verify(emailSender).send(email);
 	}
+
+    @Test
+    public void testEmailCronFailure() throws Exception {
+        when(cronStats.isEmailCronError()).thenReturn(true);
+        List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
+        subscriptions.add(createEmailSubscription(Subscription.EmailCronFailure, SubscriptionTimePeriod.None, null));
+        when(emailSubscriptionDAO.find(Subscription.EmailCronFailure, Account.PicsID)).thenReturn(subscriptions);
+        EventSubscriptionBuilder.theSystemIsDown(cronStats);
+        verify(emailBuilder, times(0)).build();
+    }
+
+    private EmailSubscription createEmailSubscription(Subscription subscription, SubscriptionTimePeriod period, Date lastSent) {
+        EmailSubscription es = new EmailSubscription();
+        es.setSubscription(subscription);
+        es.setTimePeriod(period);
+        es.setLastSent(lastSent);
+
+        User user = EntityFactory.makeUser();
+        user.setEmail("tester@picsauditing.com");
+        es.setUser(user);
+        return es;
+    }
 
 	private ContractorAudit getAudit() {
 		ContractorAudit audit = new ContractorAudit();

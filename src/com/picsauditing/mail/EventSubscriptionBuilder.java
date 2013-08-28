@@ -126,7 +126,7 @@ public class EventSubscriptionBuilder {
 		if (stats.isEmailCronError()) {
 			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.EmailCronFailure, Account.PicsID);
 			for (EmailSubscription subscription : subscriptions) {
-				if (subscription.getLastSent() == null || checkLastSentPlusTenMinutes(now, subscription.getLastSent())) {
+				if (isAppropriateToSend(now, subscription)) {
 					sendSystemStatusEmail(subscription, stats);
 				}
 			}
@@ -137,8 +137,7 @@ public class EventSubscriptionBuilder {
 					Account.PicsID);
 			if (stats.isContractorCronError()) {
 				for (EmailSubscription subscription : subscriptions) {
-					if (subscription.getLastSent() == null
-							|| checkLastSentPlusTenMinutes(now, subscription.getLastSent())) {
+					if (isAppropriateToSend(now, subscription)) {
 						sendSystemStatusEmail(subscription, stats);
 					}
 				}
@@ -146,7 +145,11 @@ public class EventSubscriptionBuilder {
 		}
 	}
 
-	private static boolean checkLastSentPlusTenMinutes(Calendar now, Date lastSent) {
+    private static boolean isAppropriateToSend(Calendar now, EmailSubscription subscription) {
+        return (!subscription.getTimePeriod().isNone() && (subscription.getLastSent() == null || checkLastSentPlusTenMinutes(now, subscription.getLastSent())));
+    }
+
+    private static boolean checkLastSentPlusTenMinutes(Calendar now, Date lastSent) {
 		// Make sure this email hasn't been sent within the last 10 minutes
 		Calendar result = Calendar.getInstance();
 		result.setTime(lastSent);
