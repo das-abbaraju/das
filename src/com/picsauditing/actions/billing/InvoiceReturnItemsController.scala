@@ -11,7 +11,7 @@ import com.picsauditing.access.{OpPerms, RequiredPermission}
 import scala.Some
 import java.lang.{Integer => int}
 import java.util.{List => StrutsList}
-import com.picsauditing.decorators.SapAppPropertyDecorator
+import com.picsauditing.util.SapAppPropertyUtil
 
 @RequiredPermission(OpPerms.Billing)
 class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {
@@ -20,6 +20,8 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   private val creditMemoDAO: CreditMemoDAO = null
   @Autowired
   private val invoiceDAO: InvoiceDAO = null
+
+  private var sapAppPropertyUtil: SapAppPropertyUtil = null
 
   @BeanProperty
   var refunds: StrutsList[int] = null.asInstanceOf[StrutsList[int]]
@@ -30,6 +32,9 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
 
   def prepare = {
     invoice = invoiceDAO.find(getParameter("invoice.id"))
+    if (sapAppPropertyUtil == None) {
+      sapAppPropertyUtil = new SapAppPropertyUtil
+    }
   }
 
   override def execute = Action.SUCCESS
@@ -93,7 +98,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       creditMemo.updateAmountApplied()
       creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
       creditMemo.setAuditColumns(permissions)
-      if (SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getBusinessUnit.getId)) {
+      if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getBusinessUnit.getId)) {
         creditMemo.getCreditMemo.setSapSync(true)
       }
 

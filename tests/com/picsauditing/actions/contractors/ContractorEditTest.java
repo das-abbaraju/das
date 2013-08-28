@@ -12,6 +12,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.validator.ContractorValidator;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +59,10 @@ public class ContractorEditTest extends PicsActionTest {
 	private NoteDAO mockNoteDao;
 	@Mock
 	private AccountStatusChanges accountStatusChanges;
+	@Mock
+	private BusinessUnit businessUnit;
+	@Mock
+	private SapAppPropertyUtil sapAppPropertyUtil;
 
 	// Recreating Test Class --BLatner
 	private final static int TESTING_CONTACT_ID = 555;
@@ -80,10 +85,16 @@ public class ContractorEditTest extends PicsActionTest {
 
 		when(mockContractor.getCountry()).thenReturn(mockCountry);
 		when(mockContractor.getId()).thenReturn(TESTING_ACCOUNT_ID);
+		when(mockCountry.getBusinessUnit()).thenReturn(businessUnit);
+		when(businessUnit.getId()).thenReturn(2);
+		classUnderTest.setSapAppPropertyUtil(sapAppPropertyUtil);
+
 
 		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
 		when(translationService.getText(anyString(), any(Locale.class))).thenReturn("foo");
 		when(translationService.getText(anyString(), any(Locale.class), any())).thenReturn("foo");
+
+
 	}
 
 	/**

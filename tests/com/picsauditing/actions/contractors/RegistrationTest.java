@@ -1,19 +1,14 @@
 package com.picsauditing.actions.contractors;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.reflect.Whitebox.invokeMethod;
-import static org.powermock.reflect.Whitebox.setInternalState;
-
-import java.util.ArrayList;
-import java.util.Map;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -22,24 +17,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
+import java.util.ArrayList;
+import java.util.Map;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.powermock.reflect.Whitebox.invokeMethod;
+import static org.powermock.reflect.Whitebox.setInternalState;
 
 public class RegistrationTest extends PicsTranslationTest {
 
@@ -70,6 +56,10 @@ public class RegistrationTest extends PicsTranslationTest {
 	private ActionContext mockContext;
 	@Mock
 	private User mockUser;
+	@Mock
+	private BusinessUnit businessUnit;
+	@Mock
+	private SapAppPropertyUtil sapAppPropertyUtil;
 
 	@AfterClass
 	public static void tearDown() {
@@ -95,6 +85,9 @@ public class RegistrationTest extends PicsTranslationTest {
 		when(contractor.getCountry()).thenReturn(country);
 		when(contractor.getNaics()).thenReturn(new Naics());
 		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
+		when(country.getBusinessUnit()).thenReturn(businessUnit);
+		when(businessUnit.getId()).thenReturn(2);
+		classUnderTest.setSapAppPropertyUtil(sapAppPropertyUtil);
 	}
 
 	@Test

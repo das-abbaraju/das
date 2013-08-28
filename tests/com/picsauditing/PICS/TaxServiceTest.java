@@ -1,18 +1,9 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +11,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 public class TaxServiceTest {
 
@@ -31,6 +33,12 @@ public class TaxServiceTest {
 	private Invoice invoice;
 	@Mock
 	private Account account;
+	@Mock
+	private Country country;
+	@Mock
+	private BusinessUnit businessUnit;
+	@Mock
+	private SapAppPropertyUtil sapAppPropertyUtil;
 
 	@Before
 	public void setUp() throws Exception {
@@ -38,6 +46,11 @@ public class TaxServiceTest {
         Whitebox.setInternalState(taxService, "invoiceFeeCountryDAO", invoiceFeeCountryDAO);
         setupInvoiceFeeCountries();
 		setupMocks();
+		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
+		when(invoice.getAccount()).thenReturn(account);
+		when(account.getCountry()).thenReturn(country);
+		when(country.getBusinessUnit()).thenReturn(businessUnit);
+		when(businessUnit.getId()).thenReturn(2);
 	}
 
     @After
@@ -253,6 +266,8 @@ public class TaxServiceTest {
             account.setCountry(new Country("FR"));
         }
 		invoice.setAccount(account);
+		account.getCountry().setBusinessUnit(businessUnit);
+		when(businessUnit.getId()).thenReturn(2);
 		return invoice;
 	}
 

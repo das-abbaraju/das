@@ -1,22 +1,15 @@
 package com.picsauditing.actions.audits;
 
-import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
-
 import com.picsauditing.PICS.BillingService;
-import com.picsauditing.PICS.InvoiceValidationException;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,11 +17,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.PicsDateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 public class ScheduleAuditTest extends PicsActionTest {
 	private ScheduleAudit scheduleAudit;
@@ -67,6 +65,10 @@ public class ScheduleAuditTest extends PicsActionTest {
 	private Country country;
 	@Mock
 	private Invoice invoice;
+	@Mock
+	private BusinessUnit businessUnit;
+	@Mock
+	private SapAppPropertyUtil sapAppPropertyUtil;
 
 	@Before
 	public void setUp() throws Exception {
@@ -86,6 +88,9 @@ public class ScheduleAuditTest extends PicsActionTest {
 
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0)).thenReturn(rescheduling);
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0)).thenReturn(expedite);
+		when(country.getBusinessUnit()).thenReturn(businessUnit);
+		when(businessUnit.getId()).thenReturn(2);
+		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 	}
 
 	@Test

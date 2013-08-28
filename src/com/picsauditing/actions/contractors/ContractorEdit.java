@@ -9,7 +9,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.*;
-import com.picsauditing.decorators.SapAppPropertyDecorator;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
@@ -56,6 +56,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
     @Autowired
     protected FeeService feeService;
 
+	private SapAppPropertyUtil sapAppPropertyUtil;
+
 	private File logo = null;
 	private String logoFileName = null;
 	private File brochure = null;
@@ -75,6 +77,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private HttpServletRequest request;
 
 	public void prepare() throws Exception {
+		if (sapAppPropertyUtil == null) {
+			sapAppPropertyUtil = SapAppPropertyUtil.factory();
+		}
 		if (permissions.isLoggedIn()) {
 			int conID = 0;
 			if (permissions.isContractor()) {
@@ -174,7 +179,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			// auditBuilder.buildAudits(contractor);
             if (!contractor.isDemo()) {
                 contractor.setQbSync(true);
-				if (SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+				if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
                 	contractor.setSapSync(true);
 				}
             }
@@ -715,5 +720,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			return true;
 		}
 		return false;
+	}
+
+	public SapAppPropertyUtil getSapAppPropertyUtil() {
+		return sapAppPropertyUtil;
+	}
+
+	public void setSapAppPropertyUtil(SapAppPropertyUtil sapAppPropertyUtil) {
+		this.sapAppPropertyUtil = sapAppPropertyUtil;
 	}
 }

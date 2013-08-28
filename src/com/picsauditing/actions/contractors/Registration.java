@@ -2,16 +2,14 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
-import com.picsauditing.decorators.SapAppPropertyDecorator;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.messaging.Publisher;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.DataScrubber;
 import com.picsauditing.util.EmailAddressUtils;
@@ -25,7 +23,6 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -66,6 +63,9 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	protected PermissionBuilder permissionBuilder;
 	@Autowired
 	private RegistrationValidator registrationValidator;
+
+	private SapAppPropertyUtil sapAppPropertyUtil;
+
 
 	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
@@ -370,7 +370,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		contractor.setNameIndex();
         if (!contractor.isDemo()) {
             contractor.setQbSync(true);
-			if (SapAppPropertyDecorator.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+			if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
 				contractor.setSapSync(true);
 			}
         }
@@ -561,5 +561,13 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		}
 
 		return getCountrySubdivisionLabelFor(contractor.getCountry().getIsoCode());
+	}
+
+	public SapAppPropertyUtil getSapAppPropertyUtil() {
+		return sapAppPropertyUtil;
+	}
+
+	public void setSapAppPropertyUtil(SapAppPropertyUtil sapAppPropertyUtil) {
+		this.sapAppPropertyUtil = sapAppPropertyUtil;
 	}
 }

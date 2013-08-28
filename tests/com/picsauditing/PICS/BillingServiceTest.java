@@ -1,21 +1,12 @@
 package com.picsauditing.PICS;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.*;
-
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.jpa.entities.Currency;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import com.picsauditing.model.billing.InvoiceModel;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +14,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.model.billing.InvoiceModel;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
 
 public class BillingServiceTest extends PicsTranslationTest {
 	private BillingService billingService;
@@ -36,13 +33,16 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private List<Invoice> invoices;
 	private List<InvoiceItem> invoiceItems;
 	private Map<FeeClass, ContractorFee> fees;
-	private Country country;
 	private BigDecimal invoiceTotal;
 
 	@Mock
 	private ContractorAccount contractor;
 	@Mock
 	private User user;
+	@Mock
+	private Country country;
+	@Mock
+	private BusinessUnit businessUnit;
 	@Mock
 	private TaxService taxService;
 	@Mock
@@ -67,6 +67,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private InvoiceModel invoiceModel;
 	@Mock
 	private AuditDataDAO auditDataDAO;
+	@Mock
+	private SapAppPropertyUtil sapAppPropertyUtil;
+	@Mock
+	private InvoiceFeeCountry override;
 
 	@Before
 	public void setUp() {
@@ -77,13 +81,15 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
 		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
 		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
-
+		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		assert (OAMocksSet.isEmpty());
 
 		setupInvoiceAndItems();
 		setupStandardFees();
-		setupCountry();
 		calculateInvoiceTotal();
+		when(contractor.getCountry()).thenReturn(country);
+		when(country.getBusinessUnit()).thenReturn(businessUnit);
+		when(businessUnit.getId()).thenReturn(2);
 	}
 
 	private void setupInvoiceAndItems() {
@@ -123,11 +129,6 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
 		when(operator.getDoContractorsPay()).thenReturn("Yes");
 		when(operator.getName()).thenReturn("Test Operator");
-	}
-
-	private void setupCountry() {
-		country = new Country();
-		country.setCurrency(Currency.USD);
 	}
 
 	private void calculateInvoiceTotal() {
@@ -328,11 +329,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 
 	@Test
 	public void createInvoice_shouldCallApplyTax() throws Exception {
-		Country country = mock(Country.class);
 		BigDecimal amount = new BigDecimal(100);
         List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
-        InvoiceFeeCountry override = mock(InvoiceFeeCountry.class);
-        InvoiceFee invoiceFee = mock(InvoiceFee.class);
         when(override.getInvoiceFee()).thenReturn(invoiceFee);
         when(override.getAmount()).thenReturn(amount);
         amountOverrides.add(override);
