@@ -340,14 +340,14 @@ input, textarea, select {
 .x-hide-offsets {
   display: block !important;
   visibility: hidden !important;
-  position: absolute!important;
+  position: absolute !important;
   left: -10000px !important;
   top: -10000px !important; }
 
 /* line 75, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-hide-nosize {
-  height: 0!important;
-  width: 0!important; }
+  height: 0 !important;
+  width: 0 !important; }
 
 /* line 80, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-masked-relative {
@@ -867,7 +867,7 @@ tr.x-container:before {
 /* IE9 shows scrollbars in a button unless this is set  */
 /* line 112, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-ie9 .x-btn button {
-  overflow: visible!important; }
+  overflow: visible !important; }
 
 /* line 117, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 * html .x-ie .x-btn button {
@@ -3517,7 +3517,7 @@ table.x-datepicker-inner {
 /* line 45, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-autowidth-table table.x-grid-table {
   table-layout: auto;
-  width: auto!important; }
+  width: auto !important; }
 
 /* line 50, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row .x-grid-table {
@@ -3545,7 +3545,7 @@ table.x-datepicker-inner {
 
 /* line 73, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-accordion-item .x-grid-header-ct {
-  border-width: 0 0 1px 0!important; }
+  border-width: 0 0 1px 0 !important; }
 
 /* line 77, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-column-header {
@@ -4705,7 +4705,7 @@ textarea.x-form-invalid-field {
 
 /* line 12, ../themes/stylesheets/ext4/default/widgets/form/_checkboxgroup.scss */
 .x-form-invalid .x-form-checkboxgroup-body {
-  border: 1px solid #c30!important;
+  border: 1px solid #cc3300 !important;
   background: transparent repeat-x bottom;
   background-image: url('../images/grid/invalid_line.gif');
   padding: 1px 3px 0 3px; }
@@ -8011,7 +8011,7 @@ a.x-tab-close-btn:hover {
 /* line 9, ../themes/stylesheets/ext4/default/widgets/_tree.scss */
 .x-autowidth-table table.x-grid-table {
   table-layout: auto;
-  width: auto!important; }
+  width: auto !important; }
 
 /* line 14, ../themes/stylesheets/ext4/default/widgets/_tree.scss */
 .x-tree-no-lines .x-tree-elbow {
@@ -8345,7 +8345,7 @@ svg, vml {
 
 /* line 3, ../themes/stylesheets/ext4/default/util/_dragdrop.scss */
 .x-dd-drag-proxy {
-  z-index: 1000000!important; }
+  z-index: 1000000 !important; }
 
 /* line 8, ../themes/stylesheets/ext4/default/util/_dragdrop.scss */
 .x-dd-drag-repair .x-dd-drag-ghost {

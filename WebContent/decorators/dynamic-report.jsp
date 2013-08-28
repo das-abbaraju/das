@@ -15,29 +15,29 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 	<head>
 		<meta charset="utf-8">
-		
+
 		<title>PICS - <decorator:title default="PICS" /></title>
-        
+
         <%-- include javascript translations --%>
         <s:action name="TranslateJS2" executeResult="true" />
 
         <%-- Translations: globally scoped and integrated into the application --%>
-        
+
         <%-- hella balls hacky, placing text method on the global PICS namespace, Ext.create.Application will add this to the scope it creates --%>
         <%-- this is emulated in index.html, the file that is used to compile the application --%>
         <script>
         PICS.text = function (key, escape) {
             var args = arguments,
                 translation;
-                
+
             translation = PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
                 return args[parseInt(p1) + 1];
             }) : key;
-            
+
             return typeof escape == 'boolean' && escape ? translation.replace(/'/g, "\\'") : translation;
         };
         </script>
-		
+
         <s:if test="#is_development_mode == true">
             <script type="text/javascript" src="${extjs_dir}/ext-debug.js"></script>
             <script type="text/javascript" src="${extjs_dir}/ext-debug-override.js"></script>
@@ -48,17 +48,17 @@
             <script type="text/javascript" src="${extjs_dir}/ext.js?v=${version}"></script>
             <script type="text/javascript" src="${extjs_dir}/app-all.js?v=${version}"></script>
         </s:else>
-        
+
         <s:if test="#is_development_mode == true">
             <link rel="stylesheet" type="text/css" href="${css_dir}/my-ext-theme.css?v=${version}" />
         </s:if>
         <s:else>
             <link rel="stylesheet" type="text/css" href="${css_dir}/my-ext-theme.min.css?v=${version}" />
         </s:else>
-        
+
         <link rel="stylesheet" type="text/css" href="${css_dir}/font-awesome.css?v=${version}" />
         <!--[if lt IE 8]><link rel="stylesheet" href="${css_dir}/font-awesome-ie7.css"><![endif]-->
-		
+
 		<decorator:head />
 	</head>
 	<body id="${actionName}_${methodName}_page" class="${actionName}-page page">

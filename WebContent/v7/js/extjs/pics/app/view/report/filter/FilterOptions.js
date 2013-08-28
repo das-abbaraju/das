@@ -35,43 +35,43 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
     },
     title: PICS.text('Report.execute.filterOptions.title'),
     width: 320,
-    
+
     showFormula: function () {
-        var formula = this.down('reportfilterformula'), 
+        var formula = this.down('reportfilterformula'),
             toolbar = this.down('reportfiltertoolbar');
-        
+
         if (formula) {
             return;
         }
-        
+
         if (toolbar) {
             this.removeDocked(toolbar);
         }
-        
+
         this.addDocked({
             xtype: 'reportfilterformula',
             dock: 'top'
         });
     },
-    
+
     showToolbar: function () {
-        var formula = this.down('reportfilterformula'), 
+        var formula = this.down('reportfilterformula'),
             toolbar = this.down('reportfiltertoolbar');
-        
+
         if (toolbar) {
             return;
         }
-        
+
         if (formula) {
             this.removeDocked(formula);
         }
-        
+
         this.addDocked({
             xtype: 'reportfiltertoolbar',
             dock: 'top'
         });
     },
-    
+
     updateBodyHeight: function () {
         var body = Ext.getBody(),
             body_height = body.getHeight(),
@@ -80,17 +80,17 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
             filters_element = filters.getEl(),
             filters_offset_y = filters_element.getY(),
             filter_options_body_height;
-        
+
         // if filters show fully on screen
         if (body_height > filters_offset_y + filters_height) {
             filter_options_body_height = filters_height;
         } else {
-            filter_options_body_height = filters_height - ((filters_offset_y + filters_height) - body_height); 
+            filter_options_body_height = filters_height - ((filters_offset_y + filters_height) - body_height);
         }
-        
+
         this.body.setHeight(filter_options_body_height);
     },
-    
+
     updateFooterPosition: function () {
         var filter_header = this.down('reportfilterheader'),
             filter_header_height = filter_header.getHeight(),
@@ -100,13 +100,13 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
             filters_height = filters.getHeight(),
             filter_footer = this.down('#report_filter_options_footer'),
             filter_offset = filter_header_height + filters_height;
-        
+
         if (filter_formula) {
-            filter_offset += filter_formula.getHeight(); 
+            filter_offset += filter_formula.getHeight();
         } else if (filter_toolbar) {
             filter_offset += filter_toolbar.getHeight();
         }
-        
+
         filter_footer.setPosition(0, filter_offset);
     }
 });

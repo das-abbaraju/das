@@ -32,7 +32,7 @@ $button-small-text-padding: 7px; // bug -- currently does not have a !default in
 $button-medium-text-padding: 10px;
 $button-large-text-padding: 10px;
 $button-large-font-size: 13px;
-$color: #333333;
+$color: #454545;
 $font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $font-size: 13px;
 $form-field-height: 24px;
@@ -48,7 +48,7 @@ $loadmask-opacity: 0.65;
 $menu-background-color: #ffffff;
 $menu-link-padding: 4px 15px 4px 15px;
 $menu-padding: 0px;
-$menu-text-color: #333;
+$menu-text-color: #454545;
 $panel-body-font-size: 13px;
 $toolbar-font-size: 13px;
 
@@ -103,12 +103,12 @@ $toolbar-font-size: 13px;
 	{
 		@include background-image(none !important);
 	}
-	
+
 	.x-menu-item-active .x-menu-item-link
 	{
 		background: #a84d10;
 	}
-	
+
 	#report_toolbar,
 	#paging_toolbar,
 	.x-grid-header-ct,
@@ -119,7 +119,7 @@ $toolbar-font-size: 13px;
 	{
 		@include background-image(none !important);
 	}
-	
+
 	.x-grid-header-ct,
 	.x-column-header,
 	.x-column-header-over

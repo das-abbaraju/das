@@ -82591,43 +82591,43 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
     },
     title: PICS.text('Report.execute.filterOptions.title'),
     width: 320,
-    
+
     showFormula: function () {
-        var formula = this.down('reportfilterformula'), 
+        var formula = this.down('reportfilterformula'),
             toolbar = this.down('reportfiltertoolbar');
-        
+
         if (formula) {
             return;
         }
-        
+
         if (toolbar) {
             this.removeDocked(toolbar);
         }
-        
+
         this.addDocked({
             xtype: 'reportfilterformula',
             dock: 'top'
         });
     },
-    
+
     showToolbar: function () {
-        var formula = this.down('reportfilterformula'), 
+        var formula = this.down('reportfilterformula'),
             toolbar = this.down('reportfiltertoolbar');
-        
+
         if (toolbar) {
             return;
         }
-        
+
         if (formula) {
             this.removeDocked(formula);
         }
-        
+
         this.addDocked({
             xtype: 'reportfiltertoolbar',
             dock: 'top'
         });
     },
-    
+
     updateBodyHeight: function () {
         var body = Ext.getBody(),
             body_height = body.getHeight(),
@@ -82636,17 +82636,17 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
             filters_element = filters.getEl(),
             filters_offset_y = filters_element.getY(),
             filter_options_body_height;
-        
+
         // if filters show fully on screen
         if (body_height > filters_offset_y + filters_height) {
             filter_options_body_height = filters_height;
         } else {
-            filter_options_body_height = filters_height - ((filters_offset_y + filters_height) - body_height); 
+            filter_options_body_height = filters_height - ((filters_offset_y + filters_height) - body_height);
         }
-        
+
         this.body.setHeight(filter_options_body_height);
     },
-    
+
     updateFooterPosition: function () {
         var filter_header = this.down('reportfilterheader'),
             filter_header_height = filter_header.getHeight(),
@@ -82656,13 +82656,13 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
             filters_height = filters.getHeight(),
             filter_footer = this.down('#report_filter_options_footer'),
             filter_offset = filter_header_height + filters_height;
-        
+
         if (filter_formula) {
-            filter_offset += filter_formula.getHeight(); 
+            filter_offset += filter_formula.getHeight();
         } else if (filter_toolbar) {
             filter_offset += filter_toolbar.getHeight();
         }
-        
+
         filter_footer.setPosition(0, filter_offset);
     }
 });
@@ -82679,14 +82679,14 @@ Ext.define('PICS.view.report.filter.base.Filter', {
         if (typeof this.createOperatorField != 'function') {
             Ext.Error.raise('Method createOperatorField missing');
         }
-        
+
         if (typeof this.createValueField != 'function') {
             Ext.Error.raise('Method createValueField missing');
         }
-        
+
         var operator_field = this.createOperatorField();
         var value_field = this.createValueField();
-        
+
         this.items = [operator_field, value_field];
 
         this.callParent(arguments);
@@ -82739,8 +82739,19 @@ Ext.define('PICS.view.report.filter.base.AccountId', {
 Ext.define('PICS.view.report.filter.base.Autocomplete', {
     extend: 'PICS.view.report.filter.base.Filter',
     alias: 'widget.reportfilterbaseautocomplete',
-    
+
     cls: 'autocomplete',
+
+    listeners: {
+        render: function (cmp, eOpts) {
+            var el = this.getEl();
+
+            // TODO: Use mon + delegate or some other ExtJS way of attaching listeners to elements.
+            el.query('.x-boxselect-list')[0].onclick = function () {
+                el.query('.x-boxselect-input-field')[0].focus();
+            }
+        }
+    },
 
     createOperatorField: function () {
         return {
@@ -82751,23 +82762,38 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
 
     createValueField: function () {
         return {
-            xtype: 'combobox',
+            xtype: 'boxselect',
             displayField: 'value',
             editable: true,
+            emptyText: PICS.text('Report.execute.filter.autocomplete.emptyText') + '\u2026',
+            filterPickList: true,
             flex: 1,
+            height: 61,
             hideTrigger: true,
             minChars: 2,
-            multiSelect: false,
             name: 'value',
             queryParam: 'searchQuery',
+
+            // Default store required for boxselect to work, but quickly overridden by updateValueFieldStore.
+            store: {
+                fields: [{
+                    name: 'key',
+                    type: 'string'
+                }, {
+                    name: 'value',
+                    type: 'string'
+                }]
+            },
+
+            triggerOnClick: false,
             valueField: 'key'
         };
     },
 
-    updateValueFieldStore: function (filter) {
-        var field_id = filter.get('field_id'),
-            filter_value = filter.get('value'),
-            value_field = this.down('combobox'),
+    updateValueFieldStore: function (filter_record) {
+        var field_id = filter_record.get('field_id'),
+            filter_value = filter_record.get('value'),
+            value_field = this.down('boxselect'),
             url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id, filter_value);
 
         value_field.store = Ext.create('Ext.data.Store', {
@@ -82794,8 +82820,8 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
                     if (!this.initialSelectionMade) {
                         this.initialSelectionMade = true;
                         this.proxy.url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id);
-                        
-                        value_field.select(filter.get('value').split(', '));
+
+                        value_field.select(filter_record.get('value').split(', '));
                     }
                 }
             }
@@ -82931,7 +82957,9 @@ Ext.define('PICS.view.report.filter.base.Number', {
 Ext.define('PICS.view.report.filter.base.MultiSelect', {
     extend: 'PICS.view.report.filter.base.Filter',
     alias: 'widget.reportfilterbasemultiselect',
-    
+
+    cls: 'multiselect-shortlist',
+
     createOperatorField: function () {
         return {
             xtype: 'hiddenfield',
@@ -82941,22 +82969,24 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
 
     createValueField: function () {
         return {
-            xtype: 'combobox',
+            xtype: 'boxselect',
             displayField: 'value',
             editable: false,
-            multiSelect: true,
+            filterPickList: true,
+            height: 61,
             name: 'value',
             queryMode: 'local', // Prevents reloading of the store, which would wipe out pre-selections.
             valueField: 'key',
-            width: 258
+            width: 258,
+            selectOnFocus: false
         };
     },
-    
-    updateValueFieldStore: function (filter) {
-        var field_id = filter.get('field_id'),
-            value_field = this.down('combobox'),
+
+    updateValueFieldStore: function (filter_record) {
+        var field_id = filter_record.get('field_id'),
+            value_field = this.down('boxselect'),
             url = PICS.data.ServerCommunicationUrl.getMultiSelectUrl(field_id);
-        
+
         value_field.store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             fields: [{
@@ -82975,9 +83005,9 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
                 }
             },
             listeners: {
-                // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
+                // Pre-select saved selections, i.e., display them in the input field and highlight them in the drop-down.
                 load: function (store, records, successful, eOpts) {
-                    value_field.select(filter.get('value').split(', '));
+                    value_field.select(filter_record.get('value').split(', '));
                 }
             }
         });
@@ -83094,19 +83124,19 @@ Ext.define('PICS.view.report.filter.Filter', {
     bodyCls: 'filter-body',
     border: 0,
     cls: 'filter',
-    height: 96,
     layout: {
         type: 'hbox',
         align: 'middle'
     },
+    padding: '0, 0, 10, 0',
     overCls: 'x-over',
     width: 320,
 
     initComponent: function () {
-        var filter = this.filter,
+        var filter_record = this.filter,
             index = this.index;
-        
-        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+
+        if (Ext.getClassName(filter_record) != 'PICS.model.report.Filter') {
             Ext.Error.raise('Invalid filter record');
         }
 
@@ -83114,17 +83144,18 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
-        var type = filter.get('type'),
-            cls = this.getFilterClassByType(type),
+        var type = filter_record.get('type'),
             filter_number = this.createNumber(index),
-            filter_content = this.createContent(filter),
+            filter_content = this.createContent(filter_record),
             remove_button = this.createRemoveButton();
+
+        this.height = filter_content.items[1].height;
 
         this.items = [
             filter_number,
             filter_content
         ];
-        
+
         this.dockedItems = [
             remove_button
         ];
@@ -83145,9 +83176,9 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createContent: function (filter) {
-        var filter_title = this.createTitle(filter);
-        var filter_input = this.createInput(filter);
+    createContent: function (filter_record) {
+        var filter_title = this.createTitle(filter_record);
+        var filter_input = this.createInput(filter_record);
 
         return {
             border: 0,
@@ -83161,8 +83192,8 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createTitle: function (filter) {
-        var name = filter.get('name');
+    createTitle: function (filter_record) {
+        var name = filter_record.get('name');
 
         if (name.length >= 29) {
             name = name.substring(0, 29) + '&hellip;';
@@ -83187,13 +83218,13 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createInput: function (filter) {
-        var type = filter.get('type'),
+    createInput: function (filter_record) {
+        var type = filter_record.get('type'),
             cls = this.getFilterClassByType(type);
 
         return Ext.create(cls);
     },
-    
+
     createRemoveButton: function () {
         return {
             xtype: 'toolbar',
@@ -83216,21 +83247,21 @@ Ext.define('PICS.view.report.filter.Filter', {
             ui: 'footer'
         };
     },
-    
+
     createTooltip: function () {
         var filter = this.filter;
-        
+
         if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
             Ext.Error.raise('Invalid filter record');
         }
-        
+
         var target = this.el.down('.filter-name'),
             description = filter.get('description');
-        
+
         var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
             target: target
         });
-        
+
         tooltip.update({
             description: description
         });
@@ -83239,17 +83270,17 @@ Ext.define('PICS.view.report.filter.Filter', {
     getFilterClassByType: function (type) {
         var filter_classes = this.getFilterClasses(),
             filter_class = filter_classes[type];
-        
+
         if (typeof filter_class == 'undefined') {
             Ext.Error.raise('Invalid filter type: ' + type);
         }
-        
+
         return filter_class;
     },
-    
+
     getFilterClasses: function () {
         var filter_classes = {};
-        
+
         filter_classes[PICS.data.FilterType.AccountID] = 'PICS.view.report.filter.base.AccountId';
         filter_classes[PICS.data.FilterType.Autocomplete] = 'PICS.view.report.filter.base.Autocomplete';
         filter_classes[PICS.data.FilterType.Boolean] = 'PICS.view.report.filter.base.Boolean';
@@ -83258,7 +83289,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         filter_classes[PICS.data.FilterType.Number] = 'PICS.view.report.filter.base.Number';
         filter_classes[PICS.data.FilterType.String] = 'PICS.view.report.filter.base.String';
         filter_classes[PICS.data.FilterType.UserID] = 'PICS.view.report.filter.base.UserId';
-        
+
         return filter_classes;
     }
 });
@@ -83293,16 +83324,16 @@ Ext.define('PICS.view.report.filter.Filters', {
 
             index += 1;
         });
-        
+
         this.items = items;
-        
+
         this.callParent(arguments);
     },
-    
+
     hideFilterNumbers: function () {
         this.removeCls('x-active');
     },
-    
+
     showFilterNumbers: function () {
         this.addCls('x-active');
     }
@@ -83502,6 +83533,7 @@ Ext.define('PICS.model.report.Filter', {
                     value = Ext.Date.format(value, 'Y-m-d') || value;
                     
                     break;
+                case PICS.data.FilterType.Autocomplete:
                 case PICS.data.FilterType.Multiselect:
                     if (value instanceof Array) {
                         value = value.join(', ');
@@ -83516,7 +83548,6 @@ Ext.define('PICS.model.report.Filter', {
                     value = value.toString();
                     
                     break;
-                case PICS.data.FilterType.Autocomplete:
                 case PICS.data.FilterType.String:
                 default:
                     // no conversion necessary
@@ -98259,7 +98290,7 @@ Ext.define('PICS.controller.report.Filter', {
                 beforerender: this.beforeFilterRender,
                 render: this.renderFilter
             },
-            
+
             // render filter options
             'reportfilteroptions': {
                 afterlayout: this.afterFilterOptionsLayout,
@@ -98304,27 +98335,23 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // show filter-number and remove-filter on filter focus
-            '\
-            #report_filters combobox,\
+               '\
+            #report_filters reportfilterbasemultiselect,\
             #report_filters textfield,\
             #report_filters numberfield,\
             #report_filters datefield,\
-            #report_filters checkbox\
-            ': {
+            #report_filters checkbox': {
                 blur: this.blurFilter,
                 focus: this.focusFilter
             },
 
             // saving edits to filter store + refresh
-            '#report_filters reportfilterbasemultiselect combobox[name=value]': {
-                change: this.selectValueField,
-                render: this.renderComboboxValueField
-            },
-
-            // saving edits to filter store + refresh
-            '#report_filters reportfilterbaseautocomplete combobox[name=value]': {
+            '\
+            #report_filters reportfilterbasemultiselect combobox[name=value],\
+            #report_filters reportfilterbaseautocomplete combobox[name=value]': {
                 select: this.selectValueField,
-                render: this.renderComboboxValueField
+                render: this.renderBoxselectValueField,
+                change: this.changeBoxselectValueField
             },
 
             '#report_filters combobox[name=operator]': {
@@ -98340,13 +98367,13 @@ Ext.define('PICS.controller.report.Filter', {
             '#report_filters datefield[name=value]': {
                 render: this.renderDateField
             },
-            
+
             // saving edits to non-date filter store + refresh
             '#report_filters [name=value]': {
                 blur: this.blurValueField,
                 specialkey: this.submitValueField
             },
-            
+
             // saving edits to filter store + refresh
             '#report_filters checkbox': {
                 change: this.selectValueField,
@@ -98354,7 +98381,7 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // remove filter
-            'reportfilteroptions button[action=remove-filter]': {   
+            'reportfilteroptions button[action=remove-filter]': {
                 click: this.removeFilter
             }
          });
@@ -98381,7 +98408,7 @@ Ext.define('PICS.controller.report.Filter', {
         }
 
         cmp.updateBodyHeight();
-        
+
         cmp.updateFooterPosition();
 
         // TODO: ???
@@ -98393,17 +98420,25 @@ Ext.define('PICS.controller.report.Filter', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_expression = report.get('filter_expression');
-        
+
         if (filter_expression) {
             cmp.showFormula();
         }
     },
-    
+
     // add filters to the filter options panel before its rendered
     beforeFilterOptionsRender: function (cmp, eOpts) {
         this.application.fireEvent('refreshfilters');
     },
-    
+
+    changeBoxselectValueField: function (cmp, newValue, oldValue, eOpts) {
+        // Select does not fire when the user clicks removes the last item.
+        // TODO: Create a third method called by both change and select.
+        if (!newValue) {
+            this.selectValueField(cmp);
+        }
+    },
+
     collapseFilterOptions: function (cmp, event, eOpts) {
         var filter_options_view = this.getFilterOptions();
 
@@ -98415,7 +98450,7 @@ Ext.define('PICS.controller.report.Filter', {
 
         filter_options_view.expand();
     },
-    
+
     /**
      * Filter Formula
      */
@@ -98440,14 +98475,14 @@ Ext.define('PICS.controller.report.Filter', {
             filter_formula_textfield = this.getFilterFormulaTextfield(),
             filter_expression = filter_formula_textfield.getValue(),
             is_new_filter_expression = report.isNewFilterExpression(filter_expression);
-        
+
         if (is_new_filter_expression) {
             report.setFilterExpression(filter_expression);
 
             PICS.data.ServerCommunication.loadData();
         }
     },
-    
+
     // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
     // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
     // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
@@ -98460,7 +98495,7 @@ Ext.define('PICS.controller.report.Filter', {
 
         // Hide the filter expression field.
         filter_options.showToolbar();
-        
+
         filters_view.hideFilterNumbers();
 
         // Clear the filter expression and reload the report if it isn't already cleared.
@@ -98470,10 +98505,10 @@ Ext.define('PICS.controller.report.Filter', {
             PICS.data.ServerCommunication.loadData();
         }
     },
-    
+
     showFilterFormula: function (cmp, event, eOpts) {
         var filter_options = cmp.up('reportfilteroptions');
-        
+
         filter_options.showFormula();
     },
 
@@ -98481,16 +98516,16 @@ Ext.define('PICS.controller.report.Filter', {
         if (event.getKey() != event.ENTER) {
             return false;
         }
-        
+
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_formula_textfield = this.getFilterFormulaTextfield(),
             filter_expression = filter_formula_textfield.getValue(),
             is_new_filter_expression = report.isNewFilterExpression(filter_expression);
-        
+
         if (is_new_filter_expression) {
             report.setFilterExpression(filter_expression);
-            
+
             PICS.data.ServerCommunication.loadData();
         }
     },
@@ -98498,71 +98533,71 @@ Ext.define('PICS.controller.report.Filter', {
     /**
      * Filter
      */
-    
+
     addFilter: function (cmp, event, eOpts) {
         this.application.fireEvent('openfiltermodal');
     },
-    
+
     beforeFilterRender: function (cmp, eOpts) {
         // attach the filter record to the filter view
         this.loadFilter(cmp);
     },
-    
+
     blurFilter: function (cmp, event, eOpts) {
         var filter_view = cmp.up('reportfilter');
-        
+
         filter_view.removeCls('x-form-focus');
     },
 
     blurValueField: function (cmp, event, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
-    
+
         filter_input_form.updateRecord();
     },
-    
+
     focusFilter: function (cmp, event, eOpts) {
         var filter_view = cmp.up('reportfilter');
 
         filter_view.addCls('x-form-focus');
     },
-    
+
     // must disable change event from being fired so extra loadRecord does not throw excess change events on loading
     // http://extjs-tutorials.blogspot.com/2012/02/extjs-loadrecord-disable-events.html
     loadFilter: function (cmp) {
         var filter_input = cmp.down('reportfilterbasefilter'),
             filter_input_form = filter_input.getForm();
-        
+
         filter_input_form.getFields().each(function (item, index, length) {
             item.suspendCheckChange++;
         });
-        
+
         // attach filter record to "filter view form"
         filter_input_form.loadRecord(cmp.filter);
-        
+
         filter_input_form.getFields().each(function (item, index, length) {
             item.suspendCheckChange--;
         });
     },
-    
+
     // this method is to default checkboxes lastValue. this would have normally been set by the form field by default
     // through chainable constructors, but we are suspending the change event from being thrown calling loadRecord
     renderCheckbox: function (cmp, eOpts) {
         cmp.lastValue = cmp.getValue();
     },
-    
+
     // this method is to default checkboxes lastValue. this would have normally been set by the form field by default
     // through chainable constructors, but we are suspending the change event from being thrown calling select
-    renderComboboxValueField: function (cmp, eOpts) {
+    renderBoxselectValueField: function (cmp, eOpts) {
         var filter_view = cmp.up('reportfilter'),
             filter_input = cmp.up('reportfilterbasefilter'),
-            filter = filter_view.filter;
-        
+            filter_record = filter_view.filter;
+
         cmp.lastValue = cmp.getRawValue().split(', ');
-        
-        filter_input.updateValueFieldStore(filter);
+
+        filter_input.updateValueFieldStore(filter_record);
     },
-    
+
     refreshFilters: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -98588,7 +98623,7 @@ Ext.define('PICS.controller.report.Filter', {
         // TODO: ???
         this.updateRemoveButtonPositions();
     },
-    
+
     removeFilter: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -98620,16 +98655,16 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_input_view = cmp.down('reportfilterbasefilter'),
             combobox = filter_input_view.down('[name="operator"]'),
             operator = combobox && combobox.value;
-        
+
         // attach tooltip on the name of each filter
         cmp.createTooltip();
-        
+
         // hide value field depending on operator selected
         if (filter_input_view && typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
             filter_input_view.updateValueFieldFromOperatorValue(operator);
         }
     },
-    
+
     selectOperator: function (cmp, records, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm(),
@@ -98643,7 +98678,7 @@ Ext.define('PICS.controller.report.Filter', {
         if (filter_input_view && typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
             filter_input_view.updateValueFieldFromOperatorValue(operator);
         }
-        
+
         // update filter record
         filter_input_form.updateRecord();
 
@@ -98652,11 +98687,11 @@ Ext.define('PICS.controller.report.Filter', {
             PICS.data.ServerCommunication.loadData();
         }
     },
-    
+
     selectValueField: function (cmp, records, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
-    
+
         filter_input_form.updateRecord();
 
         PICS.data.ServerCommunication.loadData();
@@ -98666,10 +98701,10 @@ Ext.define('PICS.controller.report.Filter', {
         if (event.getKey() != event.ENTER) {
             return false;
         }
-        
+
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
-    
+
         filter_input_form.updateRecord();
 
         PICS.data.ServerCommunication.loadData();
@@ -102161,5 +102196,6 @@ Ext.define('Ext.grid.Lockable', {
     this.borrow(Ext.view.Table, ['constructFeatures']);
     this.borrow(Ext.AbstractComponent, ['constructPlugins', 'constructPlugin']);
 });
+
 
 

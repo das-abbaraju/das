@@ -324,14 +324,14 @@
 .x-hide-offsets {
   display: block !important;
   visibility: hidden !important;
-  position: absolute!important;
+  position: absolute !important;
   left: -10000px !important;
   top: -10000px !important; }
 
 /* line 75, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-hide-nosize {
-  height: 0!important;
-  width: 0!important; }
+  height: 0 !important;
+  width: 0 !important; }
 
 /* line 80, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-masked-relative {
@@ -2582,7 +2582,7 @@ tr.x-container:before {
   /* line 45, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-reset .x-autowidth-table table.x-grid-table {
     table-layout: auto;
-    width: auto!important; }
+    width: auto !important; }
   /* line 50, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-reset .x-grid-row .x-grid-table {
     border-collapse: collapse; }
@@ -2599,7 +2599,7 @@ tr.x-container:before {
     border-bottom-color: #c5c5c5; }
   /* line 73, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-reset .x-accordion-item .x-grid-header-ct {
-    border-width: 0 0 1px 0!important; }
+    border-width: 0 0 1px 0 !important; }
   /* line 77, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-reset .x-column-header {
     padding: 0;
@@ -3264,7 +3264,7 @@ tr.x-container:before {
   .x-reset .x-form-display-field {
     margin: 0 0 0 0;
     font: normal 12px tahoma, arial, verdana, sans-serif;
-    color: black; }
+    color: #454545; }
   /* line 14, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
   .x-reset .x-form-item-hidden {
     margin: 0; }
@@ -3290,7 +3290,7 @@ tr.x-container:before {
     height: 22px; }
   /* line 52, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
   .x-reset textarea.x-form-field {
-    color: black;
+    color: #454545;
     overflow: auto;
     height: auto;
     line-height: normal;
@@ -3477,7 +3477,7 @@ tr.x-container:before {
     padding: 1px 4px 1px 4px; }
   /* line 12, ../themes/stylesheets/ext4/default/widgets/form/_checkboxgroup.scss */
   .x-reset .x-form-invalid .x-form-checkboxgroup-body {
-    border: 1px solid #c30!important;
+    border: 1px solid #cc3300 !important;
     background: transparent repeat-x bottom;
     background-image: url('../images/grid/invalid_line.gif');
     padding: 1px 3px 0 3px; }
@@ -5380,7 +5380,7 @@ tr.x-container:before {
   /* line 9, ../themes/stylesheets/ext4/default/widgets/_tree.scss */
   .x-reset .x-autowidth-table table.x-grid-table {
     table-layout: auto;
-    width: auto!important; }
+    width: auto !important; }
   /* line 14, ../themes/stylesheets/ext4/default/widgets/_tree.scss */
   .x-reset .x-tree-no-lines .x-tree-elbow {
     background-color: transparent; }
@@ -5647,7 +5647,7 @@ tr.x-container:before {
     position: static; }
   /* line 3, ../themes/stylesheets/ext4/default/util/_dragdrop.scss */
   .x-reset .x-dd-drag-proxy {
-    z-index: 1000000!important; }
+    z-index: 1000000 !important; }
   /* line 8, ../themes/stylesheets/ext4/default/util/_dragdrop.scss */
   .x-reset .x-dd-drag-repair .x-dd-drag-ghost {
     filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);

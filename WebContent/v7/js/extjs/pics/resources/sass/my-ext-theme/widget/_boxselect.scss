@@ -1,100 +1,145 @@
-.x-boxselect.x-form-text
-{
-    cursor: text;
+.x-boxselect.x-form-text {
     height: auto;
-    overflow-y: auto;
+    cursor: text;
     padding: 0;
+    overflow-y: auto;
 }
-
-.x-boxselect
-{
-	ul.x-boxselect-list
-	{
-	    padding: 1px 2px;
-	}
-	
-	input
-	{
-	    border: none;
-	    background: none;
-	    height: 20px;
-	    line-height: 18px;
-	    width: 100%;
-	}
-} 
-
-.x-boxselect-input,
-.x-boxselect-item
-{
+.x-boxselect ul.x-boxselect-list {
+    padding: 1px 3px;
+}
+ul.x-boxselect-list.x-boxselect-singleselect {
+    white-space: nowrap;
+    overflow: hidden;
+}
+.x-boxselect input {
+    border: none;
+    background: none;
+    line-height: 18px;
+    height: 20px;
+    width: 100%;
+}
+.x-boxselect-input, .x-boxselect-item {
     display: inline-block;
     position: relative;
+    *display:inline; /* IE7 */
+    zoom:1; /* IE */
 }
-
-.lt-ie8 .x-boxselect-input, 
-.lt-ie8 .x-boxselect-item
-{
-    display:inline;
-}
-
-.lt-ie9 .x-boxselect-input,
-.lt-ie9 .x-boxselect-item
-{
-    zoom: 1;
-}
-
-.x-boxselect-stacked .x-boxselect-item
-{
+.x-boxselect-stacked .x-boxselect-item {
     display: block;
 }
-
-.x-boxselect-item
-{
-    background-color: #DEE7F8;
-    border: 1px solid #CAD8F3;
-    @include border-radius(6px);
-    cursor: default;
-    margin: 1px 1px 1px 0;
+.x-boxselect-item {
+    -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; o-border-radius: 6px; khtml-border-radius: 6px; border: 1px solid #CAD8F3;
     padding: 0px 1px 0px 5px !important;
+    margin: 1px 1px 1px 0;
+    background-color: #DEE7F8;
+    cursor: default;
 }
-
-.x-field:not(.x-item-disabled) .x-boxselect-item:hover
-{
+.x-field:not(.x-item-disabled) .x-boxselect-item:hover {
     background: #BBCEF1;
     border: 1px solid #6D95E0;
 }
-
-.x-field:not(.x-item-disabled) .x-boxselect-item.selected
-{
+.x-field:not(.x-item-disabled) .x-boxselect-item.selected {
     border: 1px solid #316AD3 !important;
     background: #658FDC !important;
 }
-
-.x-boxselect-item-text
-{
+.x-boxselect-item-text {
     line-height: 16px;
     padding-right: 20px !important;
 }
-
-.x-boxselect-item-close
-{
+.x-boxselect-item-close {
     cursor: pointer;
 }
-
-.x-boxselect-hideselections .x-boundlist-selected
-{
+.x-boxselect-hideselections .x-boundlist-selected {
     display: none;
 }
 
-.x-tab-close-btn
-{
-    background: url('../images/tab/tab-default-close.gif') 0px 0px no-repeat;
-    font-size: 0;
-    height: 11px;
-    line-height: 0;
+/* Extracted from _tab.scss */
+
+.#{$prefix}tab-close-btn {
     position: absolute;
-    right: 2px;
+    top: $tab-closable-icon-top;
+    right: $tab-closable-icon-right;
+    width: $tab-closable-icon-width;
+    height: $tab-closable-icon-height;
+    font-size: 0;
+    line-height: 0;
     text-indent: -999px;
-    top: 2px;
-    @include opacity(0.6);
-    width: 11px;
+    background: no-repeat;
+    background-image: theme-background-image($theme-name, $tab-closable-icon);
+    @include opacity(.6);
+}
+
+.#{$prefix}nbr .#{$prefix}tab-close-btn {
+    top: $nbr-tab-closable-icon-top;
+    right: $nbr-tab-closable-icon-right;
+}
+
+/* Include the element name otherwise Internet Explorer 7 & 8 take a performance hit */
+a.#{$prefix}tab-close-btn:hover {
+    @include opacity(1);
+}
+
+/* Include the element name to raise the specificity to equal the :hover */
+.#{$prefix}tab-default-disabled a.#{$prefix}tab-close-btn {
+    @include opacity(0.3);
+}
+
+/* PICS custom */
+
+.x-boxselect.x-form-text {
+    cursor: default;
+}
+
+.x-boxselect-item {
+    background: #dcdcdc;
+    border: 0;
+    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; o-border-radius: 4px; khtml-border-radius: 4px;
+    margin: 2px 2px 0 0 !important;
+}
+
+.x-field:not(.x-item-disabled) .x-boxselect-item:hover {
+    background: #dcdcdc;
+    border: 0;
+}
+
+.x-field:not(.x-item-disabled) .x-boxselect-item.selected {
+    border: 0 !important;
+    background: #dcdcdc !important;
+}
+
+.x-boxselect-item-close {
+    margin-top: 1px !important;
+}
+
+.x-boxselect {
+    .x-tab-close-btn {
+        background-image: url(../../app/resources/images/tab/tab-default-close.gif);
+    }
+
+    .x-tab-close-btn:hover {
+        background-image: url(../../app/resources/images/tab/tab-default-close.gif);
+        bavkground-image-position: 3px 3px;
+    }
+}
+
+.x-boxselect ul.x-boxselect-list {
+    padding: 1px 3px;
+}
+
+.multiselect-shortlist {
+    .x-boxselect-input {
+        visibility: hidden;
+    }
+
+    .x-form-trigger {
+        height: 60px !important;
+    }
+
+    .x-form-trigger {
+        background-image: url(../../app/resources/images/form/large-trigger.png);
+    }
+
+    .x-form-field {
+        padding-left: 0;
+    }
 }
