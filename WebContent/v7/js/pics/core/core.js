@@ -1,15 +1,15 @@
 /**
  * Prototypal Inheritance
- * 
+ *
  * Helper method to create class instance
  * http://javascript.crockford.com/prototypal.html
  */
 if (typeof Object.create !== 'function') {
     Object.create = function (o) {
         function F() {}
-        
+
         F.prototype = o;
-        
+
         return new F();
     };
 }
@@ -27,10 +27,25 @@ if (typeof console === "undefined"){
 }
 window.log=function(){log.history=log.history||[];log.history.push(arguments);if(this.console){console.log(Array.prototype.slice.call(arguments))}};
 
+(function checkNumberofStylesheets() {
+    $(document).ready(function () {
+        alert(document.styleSheets.length);
+        try {
+            if (document.styleSheets.length >= 31) {
+                // throw new Error('You are trying to load ' + document.styleSheets.length + ' stylesheets.  All styles after the first 31 are not applied in Internet Explorer.');
+                $.error('You are trying to load ' + document.styleSheets.length + ' stylesheets.  All styles after the first 31 are not applied in Internet Explorer.');
+            }
+        } catch (e) {
+            log(e.message);
+        }
+    });
+})();
+
+
 (function ($, window, document, undefined) {
     /**
      * PICS Application
-     * 
+     *
      * ajax()
      * define()
      * getClass()
@@ -38,53 +53,53 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
      * modal()
      */
     if (!window.PICS) window.PICS = {};
-    
+
     PICS = Object.create(PICS);
-    
+
     $.extend(PICS, (function () {
         // private storage for classes and initializers
         var _classes = {};
         var _inits = [];
-        
+
         // get class name from a qualified class path "foo.bar.Foo"
         function getClassName(class_path) {
             var class_parts = getClassParts(class_path);
             var class_parts_length = class_parts.length;
-            
+
             return class_parts[class_parts_length - 1];
         }
-        
+
         // get class parts from a qualified class path separated by "." i.e. "foo.bar.Foo"
         function getClassParts(class_path) {
             return class_path.split('.');
         }
-        
+
         return {
             /**
              * _Init
-             * 
+             *
              * Initialize all init methods when the document is ready
              * Clear out init methods once they have been executed
              */
             _init: function () {
                 var that = this;
-                
+
                 $(document).ready(function () {
                     for (var i in _inits) {
                         var cls = that.getClass(_inits[i]);
-                        
+
                         if (typeof cls.init == 'function') {
                             cls.init();
                         }
                     }
-                    
+
                     _inits = [];
                 });
             },
-            
+
             /**
              * Ajax
-             * 
+             *
              * @options: An object literal configuration for an ajax request
              */
             ajax: function (options) {
@@ -98,38 +113,38 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                     complete: function(jqXHR, textStatus) {},
                     cache: false
                 };
-                
+
                 var config = {};
-                
+
                 $.extend(config, defaults, options);
-                
+
                 return $.ajax(config);
             },
-            
+
             debounce: function (func, threshold) {
                 var timeout;
-                
+
                 return function () {
                     var context = this,
                         args = arguments;
-                    
+
                     if (timeout) {
                         clearTimeout(timeout);
                     }
-                    
+
                     timeout = setTimeout(function() {
                         func.apply(context, args);
-                        
+
                         timeout = null;
                     }, threshold || 250);
                 };
             },
-            
+
             /**
              * Define
-             * 
+             *
              * @class_path: A qualified path to the class i.e. contractor.Flags or operator.flag.Criteria
-             * @class_configuration: An object literal container a methods parameter and an optional extend parameter. 
+             * @class_configuration: An object literal container a methods parameter and an optional extend parameter.
              * The extend parameter must have  aqualified path to a class your extending from. The methods parameter must be
              * an object literial containing an optional init parameter, a method that will automatically be initialized on
              * document.ready
@@ -138,21 +153,21 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 if (typeof class_path != 'string') {
                     throw 'PICS.define() @class_path must be a string';
                 }
-                
+
                 if (typeof class_configuration != 'object') {
                     throw 'PICS.define() @class_configuration must be a configuration object';
                 }
-                
+
                 var that = this;
                 var class_parts = getClassParts(class_path);
                 var class_name = getClassName(class_path);
                 var class_object = _classes;
                 var class_path_string = [];
-                
+
                 // create a class based off the "methods" parameter of the class_configuration object
                 function createClass() {
                     var class_methods = class_configuration.methods;
-                    
+
                     if (typeof class_methods == 'function') {
                         return class_methods();
                     } else if (typeof class_methods == 'object') {
@@ -161,7 +176,7 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                         throw 'class "' + class_path_string.join('.') + '" requires a "methods" parameter to return an object';
                     }
                 }
-                
+
                 // create a child class  off an existing class based off the "extend" parameter of the class_configuration object
                 function extendClass(child_class) {
                     var parent_class_name = class_configuration.extend,
@@ -193,98 +208,98 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                         _inits.push(class_path_string.join('.'));
                     }
                 }
-                
+
                 // class_name must start with a capital letter
                 if (class_name.substr(0, 1).search(/[A-Z]/) === -1) {
                     throw 'PICS.define() @class_path must include a valid class ({ClassName} or {namespace}.{ClassName})';
                 }
-                
+
                 for (var i in class_parts) {
                     var class_part = class_parts[i];
-                    
+
                     class_path_string.push(class_part);
-                    
+
                     // create undefined namespaces
                     if (class_object[class_part] == undefined && class_part != class_name) {
                         class_object[class_part] = {};
-                        
+
                     // do not allow classes to be overwritten
                     } else if (class_object[class_part] != undefined  && class_part == class_name) {
                         throw 'class "' + class_path_string.join('.') + '" is already defined';
-                        
+
                     } else if (class_part == class_name) {
                         // creating class
                         var cls = createClass();
-                        
+
                         // extending class
                         var cls = extendClass(cls);
-                        
+
                         // init class
                         initClass(cls, class_path_string);
-                            
+
                         class_object[class_part] = cls;
                     }
-                    
+
                     class_object = class_object[class_part];
                 }
             },
-            
+
             /**
              * Get Class
-             * 
+             *
              * @class_path:
              */
             getClass: function (class_path) {
                 var class_parts = getClassParts(class_path);
                 var class_object = _classes;
                 var class_path_string = [];
-                
+
                 for (var i in class_parts) {
                     var class_part = class_parts[i];
-                    
+
                     class_path_string.push(class_part);
-                    
+
                     if (class_object[class_part] == undefined) {
                         throw 'class "' + class_path_string.join('.') + '" is not defined';
                     }
-                    
-                    class_object = class_object[class_part]; 
+
+                    class_object = class_object[class_part];
                 }
-                
+
                 return class_object;
             },
-            
+
             /**
              * Get Classes
              */
             getClasses: function () {
                 return _classes;
             },
-            
+
             getRequestParameters: function (url) {
                 if (typeof url != 'string') {
                     throw 'Invalid url';
                 }
-                
+
                 var query_string = {},
                     regex = new RegExp('([^?=&]+)(=([^&]*))?', 'g');
-                
+
                 url.replace(regex, function(match, p1, p2, p3, offset, string) {
                     query_string[p1] = p3;
                 });
-                
+
                 return query_string;
             },
-            
+
             loading: function (selector) {
                 var element = $(selector);
                 var height = element.height();
-                
+
                 var loading = $('<div class="loading">');
                 loading.css({
                     background: '#FFFFFF url(images/loaders/in-progress.gif) no-repeat center'
                 });
-                
+
                 if (height >= 500) {
                     loading.css({
                         height: 500,
@@ -302,45 +317,45 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                         padding: 10
                     });
                 }
-                
+
                 $(selector).html(loading);
             },
-            
+
             /**
              * Modal
-             * 
+             *
              * Shorthand for creating a modal
              */
             modal: function (options) {
                 var modal = this.getClass('widget.Modal');
-                
+
                 modal.create(options);
-                
-                return modal; 
+
+                return modal;
             },
-            
+
             text: function (key, escape) {
                 var args = arguments,
                     translation;
-                    
+
                 translation = PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
                     return args[parseInt(p1) + 1];
                 }) : key;
-                
+
                 return typeof escape == 'boolean' && escape ? translation.replace(/'/g, "\\'") : translation;
             },
-            
+
             throttle: function (func, delay) {
                 var timer;
-                
+
                 return function () {
-                    var context = this, 
+                    var context = this,
                         args = arguments;
-                    
+
                     if (!timer) {
                         timer = setTimeout(function () {
                             func.apply(context, args);
-                            
+
                             timer = null;
                         }, delay || 250);
                     }
@@ -348,6 +363,6 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
             }
         }
     }()));
-    
+
     PICS._init();
 }(jQuery, window, document));

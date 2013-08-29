@@ -1793,3 +1793,765 @@ div.blockDialog {
 .RequestNewContractorAccount-page .address-zip {
 	display: none;
 }
+
+/*FROM FORM.CSS WHICH REMOVED FROM MAIN.JSP*/
+/* optiontransferselect */
+
+div.double-list
+{
+	margin: 10px 0px;
+}
+
+div.double-list-left,
+div.double-list-action,
+div.double-list-right
+{
+	float: left;
+}
+
+div.double-list label
+{
+	font-size: 13px !important;
+	font-weight: normal !important;
+}
+
+div.double-list-action
+{
+	margin: 0px 10px;
+}
+
+div.double-list-action input.add-left,
+div.double-list-action input.add-right
+{
+	display: block;
+	margin-bottom: 10px;
+	position: relative;
+	top: 115px;
+	width: 75px;
+}
+
+/* radio */
+
+ul.radio
+{
+	list-style-type: none;
+	margin: 0px;
+	overflow: hidden;
+}
+
+ul.radio li
+{
+	padding-left: 0px !important;
+}
+
+ul.radio input
+{
+	float: left;
+	margin: 2px 5px 0px 5px;
+}
+
+ul.radio.inline li
+{
+	clear: none !important;
+	display: inline !important;
+	overflow: hidden;
+	padding: 5px 5px 10px 0px !important;
+}
+
+ul.radio.inline input
+{
+	margin: 3px 5px 0px 0px;
+}
+
+ul.radio.inline label
+{
+	float: left !important;
+	line-height: 20px !important;
+	margin: 0px 8px 0px 0px !important;
+}
+
+/* Table */
+.table
+{
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.table th,
+.table td
+{
+	border: 1px solid #DDDDDD;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 18px;
+	padding: 7px 7px 6px;
+}
+
+.table th
+{
+	color: #404040;
+	font-weight: bold;
+	padding: 10px 10px 9px;
+	text-align: center;
+}
+
+.table td
+{
+	vertical-align: middle;
+}
+
+.table .odd td
+{
+	background-color: #EFEFEF;
+}
+
+.table tfoot td
+{
+	background-color: #FFF6D9;
+}
+/*END FORM.CSS*/
+/*FROM FORMS.CSS WHICH REMOVED FROM MAIN.JSP*/
+/******************** New Primary class="forms"  ************************/
+fieldset.form, form.form fieldset {
+	margin: 0 0 0 0;
+	padding: 0 0 10px 0;
+	border-style: none;
+	border-top: 2px solid #81b2da;
+	background-color: #F6F6F0;
+	width: 100%;
+	float: left;
+	clear: both;
+	position: relative;
+	color: #404245;
+}
+
+fieldset.alt {
+	background-color: #F0F0F0;
+}
+
+fieldset.form h2, form.form h2 {
+	color: white;
+	font-weight:bold;
+	font-size:125%;
+	display:block;
+	background-color:#81b2da;
+	padding:0.2em 0;
+	text-indent:5px;
+	letter-spacing:0px;
+	min-height:25px;
+	height:expression(this.height<25?25:true);
+}
+
+fieldset.form ol, form.form ol {
+	padding-left: 5px;
+	list-style: none;
+}
+
+fieldset.form ol li, form.form ol li {
+	font-size: 15px;
+	padding: 4px 5px 12px 10px;
+	float: left;
+	clear: left;
+}
+
+fieldset.form li.required, form.form li.required {
+	padding-right: 20px;
+	background-image: url(../images/required.png);
+	background-repeat: no-repeat;
+	background-position: right 28px;
+}
+
+.required-info {
+	padding-left: 20px;
+	background: url(../images/required.png) no-repeat left center;
+}
+
+fieldset.form ol li.required.hasdata, form.form li.required.hasdata {
+	background-image: none;
+}
+
+fieldset.submit, form.form fieldset.submit {
+	padding: 1em 0;
+	border-bottom: 2px solid #4686bf;
+	border-top:2px solid #4686bf;
+	background-color:#F2F2F2;
+	margin-bottom: 10px;
+	float: none;
+}
+
+fieldset.submit .picsbutton.positive {
+	float: left;
+	margin-left: 5em;
+}
+fieldset.submit .picsbutton.neutral {
+	float: left;
+	margin-left: 5em;
+	background-color: gray;
+}
+fieldset.submit .picsbutton.negative {
+	float: right;
+	margin-right: 5em;
+}
+
+fieldset.bottom {
+	border-bottom: 2px solid #012142;
+	margin-bottom: 10px;
+	float: none;
+	width: auto;
+}
+
+fieldset.form label, form.form label, ol.form-style label {
+	float: none;
+	width: 100%;
+	display: block;
+	margin: 0 0 5px 0;
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+	color: #012142;
+	line-height: 15px;
+	white-space: nowrap;
+	width: auto;
+}
+
+fieldset.form label.checkbox, form.form label.checkbox {
+	float: none;
+	width: auto;
+	margin-right: auto;
+	text-align: left;
+	font-size: inherit;
+	font-weight: normal;
+	color: inherit;
+	line-height: inherit;
+}
+
+fieldset.form label.input, form.form label.input {
+	float: none;
+	width: inherit;
+	margin-right: auto;
+	text-align: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	display: inherit;
+}
+
+form.form input[type=text],form.form input[type=password], form.form textarea,
+fieldset.form input[type=text],fieldset.form input[type=password], fieldset.form textarea {
+	width: 320px;
+	font-size: 14px;
+	padding: 2px;
+}
+
+/**
+* We have to separate these because IE 6 can't see the rules with input[type=text]
+**/
+fieldset.form select, form.form select {
+	width: 320px;
+	font-size: 14px;
+	padding: 2px;
+}
+fieldset.form input.input-edit-field, form.form input.input-edit-field {
+	width: 320px;
+	font-size: 14px;
+	padding: 2px;
+}
+
+/** Sortable list items **/
+.list {
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+}
+
+.list li {
+	margin: 5px;
+	padding: 10px;
+	border: 1px solid #888;
+	cursor: move;
+	line-height: 1em;
+}
+
+/** Field Help **/
+fieldset.form .fieldhelp-focused, form.form .fieldhelp-focused {
+	background-color: #ffff99;
+}
+
+fieldset.form .fieldhelp-focused input, form.form .fieldhelp-focused input {
+	outline: none;
+}
+
+.fieldhelp {
+	z-index: 99999;
+	max-width: 250px;
+	width: 250px;
+	padding: 10px;
+	background-color: #ffff99;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+	-moz-box-shadow: 3px 3px 4px #666;
+	-webkit-box-shadow: 3px 3px 4px #666;
+	box-shadow: 3px 3px 4px #666;
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color=#666666)";
+	/* For IE 5.5 - 7 */
+}
+
+fieldset.form .fieldhelp, form.form .fieldhelp {
+	display: none;
+}
+
+fieldset.form .fieldhelp-focused .fieldhelp, form.form .fieldhelp-focused .fieldhelp {
+	position: absolute;
+	display: block
+}
+
+form.form .fieldhelp.hover, form.form .fieldhelp.mousedown,
+fieldset.form .fieldhelp.hover, fieldset.form .fieldhelp.mousedown {
+	position: absolute;
+	display: block;
+	z-index: 1001;
+}
+
+div.fieldhelp {
+	margin-left: 10px;
+	float:none;
+	clear:both;
+}
+
+div.fieldhelp li {
+	font-size: 12px !important;
+	list-style-position: inside;
+	list-style-type: disc;
+	margin: 0px !important;
+	padding: 0px !important;
+	text-indent:none;
+}
+
+div.fieldhelp p {
+	clear : both;
+	line-height:16px;
+}
+
+/*
+ * Login form changes
+ */
+#login fieldset.form input.login {
+	padding: 3px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+div.loginForm {
+	width: 500px;
+}
+
+.overlay .other {
+	display: none
+}
+
+/*
+ * Jump To Styles for form headers
+ */
+
+h2 span.form-title {
+	float: left;
+}
+
+h2 span.jump-to {
+	float: right;
+	font-size: 80%;
+	margin-right: 5px;
+	padding-right: 18px;
+	background: url(../images/arrow-360.png) no-repeat right center;
+	z-index: 1005;
+}
+
+h2.hover span.jump-to
+{
+	background-color:#012142;
+	cursor: pointer;
+}
+
+span.jump-to ul.jump-header-list {
+	display: none;
+	position: absolute;
+	right:5px;
+	background-color: #ececec;
+	color: #464646;
+	list-style: none;
+	margin-left:-5px;
+	line-height:28px;
+	border-top:2px solid #012142;
+	border-bottom:2px solid #012142;
+	font-weight:normal;
+}
+
+span.jump-to ul.jump-header-list li a {
+	display:block;
+	white-space: nowrap;
+	cursor:pointer;
+	color: #464646;
+}
+
+span.jump-to.hover ul.jump-header-list {
+	display: block;
+	z-index: 1005;
+}
+
+ul.jump-header-list li a {
+	display:block;
+	padding-left:16px;
+	padding-right: 4px;
+	color: #464646;
+	text-decoration:none;
+}
+
+ul.jump-header-list li.hover {
+	background-color: #ffff99;
+	cursor: pointer;
+}
+
+ul.jump-header-list li a.jump-top {
+	background: url(../images/arrow-up-top.png) no-repeat left center;
+	color:#012142;
+	font-weight:bold;
+}
+
+ul.jump-header-list li a.jump-bottom {
+	background: url(../images/arrow-down-bottom.png) no-repeat left center;
+	color:#012142;
+	font-weight:bold;
+}
+
+ul.jump-header-list li.hover a.jump-up {
+	background: url(../images/arrow-up.png) no-repeat left center;
+	color: #000;
+}
+
+ul.jump-header-list li a.jump-current {
+	font-weight: bold;
+	background-color: #ffc;
+	border-top:1px solid white;
+	border-bottom:1px solid white;
+}
+
+ul.jump-header-list li.hover a.jump-current {
+	background: url(../images/arrow-right.png) no-repeat left center;
+	color: #000;
+}
+
+ul.jump-header-list li.hover a.jump-down {
+	background: url(../images/arrow-down.png) no-repeat left center;
+	color: #000;
+}
+/*END FORMS.CSS*/
+/*FROM MENU1.CSS WHICH WAS REMOVED FROM MAIN.JSP*/
+/* Navigation */
+#MainMenu {
+	height: 31px;
+	background-color: #5D9BCE;
+	background-image: url("../images/bmid_022.gif");
+	background-repeat: repeat-x;
+	margin: 0 0px 20px 0;
+	min-width: 1000px;
+	border: 0;
+}
+
+#tab {
+	margin: 0;
+	min-width: 890px;
+	max-width: 1150px;
+}
+
+#navbar {
+	margin-left: 20px;
+}
+
+#tab ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	float: left;
+}
+
+#tab li {
+	display: inline;
+	float: left;
+	margin: 0;
+	padding: 0;
+	cursor: default;
+}
+
+#tab a {
+	background: #5D9BCE url("../images/bright_022.gif") no-repeat right top;
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+	border: 0;
+	display: block;
+	float: left;
+}
+
+#tab a span {
+	display: block;
+	background: url("../images/bleft_022.gif") no-repeat left top;
+	padding: 0 18px 0 18px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	font-weight: bold;
+	line-height: 31px;
+}
+
+#tab a:hover,#tab li.item_active a {
+	background-position: right bottom;
+	border-color: #000000;
+}
+
+#tab a:hover span,#tab li.item_active a span {
+	background-position: left bottom;
+	color: #ffffff;
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+}
+
+.dropmenudiv {
+	position: absolute;
+	top: 0;
+	float: left;
+	display: block;
+	visibility: hidden;
+	border: 0 solid #330066;
+	background: #FFFFFF url("../images/bmid_022.gif");
+	color: #FFFFFF;
+	z-index: 105;
+	text-decoration: none;
+	padding: 0;
+}
+
+.dropmenudiv ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.dropmenudiv li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+.dropmenudiv a:link,.dropmenudiv a:visited {
+	width: auto;
+	margin: 0;
+	padding: 0;
+	display: block;
+	border: 0 solid #000000;
+	color: #FFFFFF;
+	background: url("../images/bleft_022.gif") no-repeat left top;
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+}
+
+.dropmenudiv a span {
+	float: left;
+	display: block;
+	line-height: 31px;
+	background: url("../images/bright_022.gif") no-repeat right top;
+	padding: 0 18px 0 18px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #FFFFFF;
+}
+
+.dropmenudiv a span {
+	float: none;
+}
+
+.dropmenudiv a:hover {
+	border: 0 solid #000000;
+	background-position: left bottom;
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+	color: #ffffff;
+}
+
+.dropmenudiv a:hover span {
+	background-position: right bottom;
+	color: #ffffff;
+	font-weight: bold;
+}
+
+div.auditSubMenu {
+	position: absolute;
+	float: left;
+	display: block;
+	visibility: hidden;
+	z-index: 100;
+	text-decoration: none;
+	padding: 0;
+}
+
+div.auditSubMenu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+div.auditSubMenu li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+div.auditSubMenu a, div.auditSubMenu a:link, div.auditSubMenu a:visited {
+	margin: 0;
+	padding: 0 10px;
+	display: block;
+	border: 1px solid white;
+	color: #FFFFFF;
+	background-color: #012142;
+	text-decoration: none;
+	font-size: 13px;
+	line-height: 28px;
+}
+
+div.auditSubMenu a.audit {
+	padding-left: 18px;
+}
+
+div.auditSubMenu a.done {
+	background-image: url("../images/okCheck.gif");
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+div.auditSubMenu a:hover {
+	border: 1px solid white;
+	background-color: #A84D10;
+	text-decoration: none;
+	color: #ffffff;
+}
+
+div.auditSubMenu a.current {
+	color: #fff;
+	background-color: rgb(168, 77, 16);
+	text-decoration: none;
+}
+
+/************* Toolbox *************/
+#toolbox {
+	background-color: #79A7D0;
+	border-top: 3px solid #4686BF;
+	border-bottom: 3px solid #4686BF;
+	text-align: center;
+	padding-top: 15px;
+	padding-bottom: 3px;
+	margin-top: 7px;
+	line-height: 30px;
+}
+
+#toolbox ul {
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	display: block;
+	white-space: nowrap;
+	list-style-type: none;
+}
+
+#toolbox li {
+	list-style: none;
+	display: inline;
+	margin: 0;
+}
+
+#toolbox a {
+	background-repeat: no-repeat;
+	background-position: center 3px;
+	background-image: url('../images/default.gif');
+	background-color: #79A7D0;
+	color: #FFFFFF;
+	text-decoration: none;
+	font-family: Helvetica, Arial, Verdana, sans-serif;
+	margin: 1px;
+	padding-top: 19px;
+	padding-bottom: 6px;
+	padding-right: 10px;
+	padding-left: 10px;
+	border: 1px solid #79A7D0;
+	font-weight: bold;
+}
+
+#toolbox a:hover {
+	text-decoration: none;
+	background-color: #C4D5E3;
+	font-weight: bold;
+	color: #012142;
+	border-color: white;
+}
+
+#toolbox a.default {
+	background-image: url('../images/default.gif');
+}
+
+#toolbox a.save {
+	background-image: url('../images/save.gif');
+}
+
+#toolbox a.exit {
+	background-image: url('../images/cross.png');
+}
+
+#toolbox a.edit {
+	background-image: url('../images/edit_pencil.gif');
+}
+
+#toolbox a.system_edit {
+	background-image: url('../images/system_edit.gif');
+}
+
+#toolbox a.email {
+	background-image: url('../images/icon_link_email.gif');
+}
+
+#toolbox a.print {
+	background-image: url('../images/print_icon.gif');
+}
+
+#toolbox a.categories {
+	background-image: url('../images/categories.gif');
+}
+
+#toolbox a.cancel {
+	background-image: url('../images/cross.png');
+}
+
+#toolbox a.pay {
+	background-image: url('../images/visa.gif');
+}
+
+#toolbox a.upgrade {
+	background-image: url('../images/upgrade.gif');
+}
+
+#toolbox a.void {
+	background-image: url('../images/void.gif');
+}
+
+#toolbox a.preview {
+	background-image: url('../images/preview.gif');
+}
+
+#toolbox a.bad {
+    background-image: url('../images/icon-16-remove.png');
+}
+
+#toolbox a.refund {
+    background-image: url('../images/add_remove.png');
+}

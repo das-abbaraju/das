@@ -10,21 +10,10 @@
 
 	<s:include value="../reports/reportHeader.jsp"/>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>"/>
-	<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>"/>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>"/>
 
-	<style type="text/css">
-		<s:set name="isWatched" value="%{watched ? 'inline' : 'none'}" />
-		<s:set name="stopWatch" value="%{watched ? 'none' : 'inline'}" />
-		.watch {
-			display: <s:property value="#isWatched" />;
-		}
-
-		.stop {
-			display: <s:property value="#stopWatch" />;
-		}
-	</style>
+	<s:set name="isWatched" value="%{watched ? 'inline' : 'none'}" />
+	<s:set name="stopWatch" value="%{watched ? 'none' : 'inline'}" />
 
 	<script type="text/javascript">
 		function removeTag(tagId) {
@@ -274,7 +263,7 @@
 				<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
 					<li>
 						<s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/>
-                                                            
+
                                                             <span title="<s:property value="getPercentComplete(#probcrit, opID)" />">
                                                                 <s:property value="label"/>
                                                             </span>
@@ -336,19 +325,19 @@
 
 	<pics:permission perm="ContractorWatch" type="Edit">
 		<p id="contractorWatch">
-                        						<span class="watch">
-                        							<s:text name="ContractorView.WatchingContractor"/>
-                        							<a href="javascript:;" id="stop_watch_link"
-							                           data-conid="${contractor.id}">
-								                        <s:text name="ContractorView.StopWatching"/>
-							                        </a>
-                        						</span>
-                        						<span class="stop watch">
-                        							<a href="javascript:;" id="start_watch_link"
-							                           data-conid="${contractor.id}">
-								                        <s:text name="ContractorView.WatchContractor"/>
-							                        </a>
-                        						</span>
+			<span class="watch" style="display: ${isWatched};">
+				<s:text name="ContractorView.WatchingContractor"/>
+				<a href="javascript:;" id="stop_watch_link"
+                   data-conid="${contractor.id}">
+                    <s:text name="ContractorView.StopWatching"/>
+                </a>
+			</span>
+			<span class="stop watch" style="display: ${stopWatch};">
+				<a href="javascript:;" id="start_watch_link"
+                   data-conid="${contractor.id}">
+                    <s:text name="ContractorView.WatchContractor"/>
+                </a>
+			</span>
 		</p>
 	</pics:permission>
 </div>
@@ -706,12 +695,12 @@
 				<s:text name="ContractorView.ShowMap"/>
 			</a>]
 				<br/>
-                                        
+
                 						<span class="street-address">
                 							<s:property value="contractor.address"/>
                 						</span>
 				<br/>
-                                        
+
                 						<span class="locality">
                 							<s:property value="contractor.city"/>
                 						</span>,
@@ -721,12 +710,12 @@
                 								<s:property value="contractor.countrySubdivision.simpleName"/>
                 							</span>
 				</s:if>
-                                        
+
                 						<span class="postal-code">
                 							<s:property value="contractor.zip"/>
                 						</span>
 				<br/>
-                                        
+
                 						<span class="region">
                 							<s:property value="contractor.country.name"/>
                 						</span>
@@ -917,7 +906,7 @@
 	<div class="panel">
 		<div class="panel_header">
 			<s:text name="ContractorView.SynchronizeContractor"/>
-                                    
+
     								<span style="float: right;">
     									<a href="#" class="cluetip help" rel="#cluetip_sync"
 									       title="<s:text name="ContractorView.SynchronizeContractor" />"></a>
