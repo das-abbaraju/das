@@ -295,7 +295,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private MenuComponent addToAnnualUpdateMenu(MenuComponent annualUpdates, MenuComponent child) {
 		if (annualUpdates == null) {
 			URLUtils urlUtils = new URLUtils();
-			String url = urlUtils.getActionUrl("ContractorDocuments", "id", 14766) + "#annual_update";
+			String url = urlUtils.getActionUrl("ContractorDocuments", "id", contractor.getId()) + "#annual_update";
 			annualUpdates = new MenuComponent(getText("AuditType.11.name"), url);
 		}
 
