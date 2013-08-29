@@ -29,7 +29,6 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
 
 (function checkNumberofStylesheets() {
     $(document).ready(function () {
-        alert(document.styleSheets.length);
         try {
             if (document.styleSheets.length >= 31) {
                 // throw new Error('You are trying to load ' + document.styleSheets.length + ' stylesheets.  All styles after the first 31 are not applied in Internet Explorer.');
