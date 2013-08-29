@@ -6,6 +6,7 @@ import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.sun.jersey.api.client.*;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 import net.sf.ehcache.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
+import javax.ws.rs.core.MultivaluedMap;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -31,6 +33,7 @@ public class TranslationServiceAdapter implements TranslationService {
     private static final String TRANSLATION_URL =
             ((System.getProperty("translation.server") == null) ? "http://translate.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
     private static final String LOCALES_URL = TRANSLATION_URL + "locales/";
+    private static final String UPDATE_URL = TRANSLATION_URL + "saveOrUpdate/";
     private static final String CACHE_NAME = "i18n";
     private static Cache cache;
     private static final String environment = System.getProperty("pics.env");
@@ -272,10 +275,15 @@ public class TranslationServiceAdapter implements TranslationService {
 	public String getText(String key, Locale locale, Object... args) {
         String translationText = getText(key, locale);
         // TODO: sanity check the translation text?
-        MessageFormat message = new MessageFormat(fixFormatCharacters(translationText), locale);
-        StringBuffer buffer = new StringBuffer();
-        message.format(args, buffer, null);
-        return buffer.toString();
+        if (args != null && args.length > 0) {
+            MessageFormat message = new MessageFormat(fixFormatCharacters(translationText), locale);
+            StringBuffer buffer = new StringBuffer();
+            message.format(args, buffer, null);
+            return buffer.toString();
+        } else {
+            return translationText;
+        }
+
 	}
 
     private String fixFormatCharacters(String text) {
@@ -291,26 +299,45 @@ public class TranslationServiceAdapter implements TranslationService {
 	public Map<String, String> getText(String key) {
         JSONArray locales = allLocalesForKey(key);
 
+        Map<String, String> translationsToReturn = new HashMap();
+        Map<String, String> cachedTranslations = updateCacheWithLocalesNotPreviouslyRequested(key, locales);
+
+        for (String locale : cachedTranslations.keySet()) {
+            if (locales.contains(locale)) {
+                translationsToReturn.put(locale, cachedTranslations.get(locale));
+            }
+        }
+
+        return translationsToReturn;
+	}
+
+    private Map<String, String> cachedTranslationsForKey(String key) {
         Element element = cache.get(key);
-        Map<String,String> cachedTranslations =  new HashMap<String,String>();
+        Map<String,String> cachedTranslations =  new HashMap<>();
         if (element != null && element.getObjectValue() != null) {
             cachedTranslations =  (Map<String,String>) element.getObjectValue();
         }
+        return cachedTranslations;
+    }
+
+    private Map<String, String> updateCacheWithLocalesNotPreviouslyRequested(String key, JSONArray locales) {
+        Map<String, String> cachedTranslations = cachedTranslationsForKey(key);
+
         for (int i = 0; i < locales.size(); i++) {
             String locale = (String) locales.get(i);
             if (!cachedTranslations.containsKey(locale)) {
                 getText(key, locale);
             }
         }
-        return (Map<String, String>) cache.get(key).getObjectValue();
-	}
+        return cachedTranslationsForKey(key);
+    }
 
     private JSONArray allLocalesForKey(String key) {
         JSONArray locales = new JSONArray();
         ClientResponse response = makeServiceApiCall(getLocalesUrl(key));
         if (response.getStatus() != 200) {
             logger.error("Failed : HTTP error code : {}", response.getStatus());
-            locales.add("en_US");
+            // locales.add("en_US");
         } else {
             JSONObject json = parseJson(response.getEntity(String.class));
             locales = (JSONArray) json.get("locales");
@@ -324,6 +351,9 @@ public class TranslationServiceAdapter implements TranslationService {
 
     @Override
 	public boolean hasKey(String key, Locale locale) {
+        if (Strings.isEmpty(key) || key.contains(" ")) {
+            return false;
+        }
         String translation = getText(key, locale.toString());
         return !Strings.isEmpty(translation);
 	}
@@ -345,11 +375,43 @@ public class TranslationServiceAdapter implements TranslationService {
 
     @Override
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) {
-		// TODO Auto-generated method stub
+        Client client = client();
+        ClientResponse response = null;
+        WebResource webResource = client.resource(UPDATE_URL);
+        if (webResource != null) {
+            JSONObject formData = new JSONObject();
+            formData.put("key", key);
+            formData.put("value", translation);
+            formData.put("qualityRating", QUALITY_GOOD);
+            for (String locale : requiredLanguages) {
+                formData.remove("locale");
+                formData.put("locale", locale);
+                response = webResource
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .type(MediaType.APPLICATION_JSON_VALUE)
+                        .post(ClientResponse.class, formData.toJSONString());
+                if (response.getStatus() == 200) {
+                    // let's just decache all locales
+                    cache.remove(key);
+                }
+            }
+        }
 
 	}
 
-	@Override
+    @Override
+    public void saveTranslation(String key, String translation) throws Exception {
+        String language = DEFAULT_LANGUAGE;
+
+        Locale locale = TranslationServiceFactory.getLocale();
+        if (locale != null) {
+            language = locale.toString();
+        }
+
+        saveTranslation(key, translation, Arrays.asList(language));
+    }
+
+    @Override
 	public void removeTranslations(List<String> keys) {
 		// TODO Auto-generated method stub
 
@@ -396,12 +458,6 @@ public class TranslationServiceAdapter implements TranslationService {
 	public Date getLastCleared() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void saveTranslation(String key, String translation) throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 
 }
