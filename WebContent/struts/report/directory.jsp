@@ -4,7 +4,7 @@
 <table id="directory_table" class="table raw">
     <thead>
         <tr>
-            <th>
+            <th class="field-id">
                 fieldId
             </th>
             <th>
@@ -38,7 +38,7 @@
         <s:set var="is_filterable" value="%{#field.isFilterable() ? 'Yes' : 'No'}" />
 
         <tr>
-            <td>
+            <td class="field-id">
                 ${field.fieldId}
             </td>
             <td>
@@ -67,7 +67,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <th>
+            <th class="field-id">
                 fieldId
             </th>
             <th>

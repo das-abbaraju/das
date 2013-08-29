@@ -2552,6 +2552,10 @@ hr {
 .ReportTester-page tfoot select {
   width: 100%;
 }
+/* line 15, ../sass/pics/templates/report/report-tester/_directory.scss */
+.ReportTester-page .field-id {
+  display: none;
+}
 
 /* line 2, ../sass/pics/templates/reference/_dynamic-report.scss */
 #Reference_dynamicReport_page {
