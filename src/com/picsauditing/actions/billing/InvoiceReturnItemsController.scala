@@ -12,6 +12,7 @@ import scala.Some
 import java.lang.{Integer => int}
 import java.util.{List => StrutsList}
 import com.picsauditing.util.SapAppPropertyUtil
+import java.io.PrintStream
 
 @RequiredPermission(OpPerms.Billing)
 class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {
@@ -31,24 +32,30 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   private lazy val REDIRECT = "InvoiceDetail.action?invoice.id="
 
   def prepare = {
-    invoice = invoiceDAO.find(getParameter("invoice.id"))
-    if (sapAppPropertyUtil == None) {
-      sapAppPropertyUtil = new SapAppPropertyUtil
+    Option(sapAppPropertyUtil) match {
+      case Some(_) => Unit
+      case None => sapAppPropertyUtil = new SapAppPropertyUtil
     }
+    invoice = invoiceDAO.find(getParameter("invoice.id"))
   }
 
   override def execute = Action.SUCCESS
 
   def doRefund = {
     try { if (refunds != null && !refunds.isEmpty) {
-      save(refundFor(invoice))
+      val refund = refundFor(invoice)
+      save(refund)
       setUrlForRedirect(REDIRECT + invoice.getId)
       Action.INPUT
     } else {
       addActionError("You must select items to refund.")
       execute
     }} catch {
-      case e : Throwable => addActionError("There has been a problem creating your refund.")
+      case e : Exception => {
+        addActionError("There has been a problem creating your refund.")
+        println(e.getMessage)
+        e.printStackTrace
+      }
       Action.ERROR
     }
   }
