@@ -4,7 +4,7 @@ PICS.define('widget.SessionTimer', {
     methods: (function () {
 
         //CONSTANTS
-        var LOGOUT_URL = document.location.host + '/Login.action?button=logout',
+        var LOGOUT_URL = getOrigin() + '/Login.action?button=logout',
             NOTIFICATION_DURATION = 60,
             AJAX_URL_BLACKLIST = [
                 'SessionAjax!getSessionTimeRemaining.action',
@@ -41,7 +41,25 @@ PICS.define('widget.SessionTimer', {
                 }
             });
 
-            requestRemainingSessionTime(startSession);
+            checkIfPageRequiresSession(function (sessionRequired) {
+                if (sessionRequired) {
+                    requestRemainingSessionTime(startSession);
+                }
+            });
+        }
+
+        function checkIfPageRequiresSession(callback) {
+            PICS.ajax({
+                url: "SessionAjax!getUserSession.action",
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    if (data.error) {
+                        callback(false);
+                    } else {
+                        callback(true);
+                    }
+                }
+            });
         }
 
         function isBlacklistedUrl(url) {
@@ -55,13 +73,15 @@ PICS.define('widget.SessionTimer', {
                 url: "SessionAjax!getSessionTimeRemaining.action",
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR) {
-                    if (data.timeRemaining != null) {
+                    if ((data.timeRemaining != null) || (data.timeRemaining > 0)) {
                         if (callback) {
                             var end = nowInSeconds();
                             var time_remaining = data.timeRemaining - (end - start);
 
                             callback(time_remaining);
                         }
+                    } else {
+                        redirect(LOGOUT_URL);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -176,7 +196,7 @@ PICS.define('widget.SessionTimer', {
                     if (data.referer) {
                         //redirect to referer to set "from" cookie
                         //to triggger redirect to previous page on login
-                        redirect(data.referer);
+                        redirect(data.referer, true);
                     } else {
                         redirect(LOGOUT_URL);
                     }
@@ -203,10 +223,28 @@ PICS.define('widget.SessionTimer', {
             });
         }
 
-        function redirect(url) {
-            if (document.location.href !== url) {
+        //TODO Have backend handle referer
+        //and remove call to sessionLogout.action in LoginController.
+        function redirect(url, referer) {
+            if (referer) {
                 document.location = url;
+            } else {
+                if (document.location.href !== url) {
+                    document.location = url;
+                }
             }
+        }
+
+        function getOrigin() {
+            var origin = document.location.origin || '',
+                url = document.location;
+
+            //For IE
+            if (!origin) {
+                origin = document.location.protocol + "//" + document.location.host;
+            }
+
+            return origin;
         }
 
         //DEVELOPMENT FUNCTIONS
@@ -248,7 +286,8 @@ PICS.define('widget.SessionTimer', {
 
         return {
             init: init,
-            displayRemainingSessionTime: displayRemainingSessionTime
+            displayRemainingSessionTime: displayRemainingSessionTime,
+            LOGOUT_URL: LOGOUT_URL
         };
     }())
 });
