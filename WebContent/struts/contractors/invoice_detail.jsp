@@ -178,28 +178,26 @@
                                                 </li>
                                             </s:if>
                                         </pics:permission>
-                                    <s:if test="editEnabled">
                                         <pics:permission perm="InvoiceEdit">
                                             <s:if test="!transactionIsCreditMemo">
-                                                <s:if test="sapEnabledForBizUnit">
-                                                    <li>
-                                                        <a class="refund"
-                                                           href="InvoiceReturnItems.action?invoice.id=<s:property value="transaction.id"/>">
-                                                            <s:text name="button.ReturnItems"/>
-                                                        </a>
-                                                    </li>
-                                                </s:if>
-                                                <s:else>
+                                                <s:if test="editEnabled">
                                                     <li>
                                                         <a class="system_edit"
                                                            href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="transaction.id"/>">
                                                             <s:text name="button.SysEdit"/>
                                                         </a>
                                                     </li>
+                                                </s:if>
+                                                <s:else>
+                                                    <li>
+                                                        <a class="refund"
+                                                           href="InvoiceReturnItems.action?invoice.id=<s:property value="transaction.id"/>">
+                                                            <s:text name="button.ReturnItems"/>
+                                                        </a>
+                                                    </li>
                                                 </s:else>
                                             </s:if>
                                         </pics:permission>
-                                    </s:if>
                                 </s:else>
                             </pics:permission>
                             <s:if test="!edit">

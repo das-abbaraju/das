@@ -601,7 +601,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	@Transient
 	public boolean isSapEnabledForBizUnit() {
-		return sapAppPropertyUtil.isSAPBusinessUnitEnabled(invoice.getAccount().getCountry().getBusinessUnit().getId());
+		return sapAppPropertyUtil.isSAPBusinessUnitEnabled(transaction.getAccount().getCountry().getBusinessUnit().getId());
 	}
 
 	@Transient
