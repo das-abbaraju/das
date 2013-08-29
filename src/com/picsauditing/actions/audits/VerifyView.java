@@ -36,8 +36,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class VerifyView extends ContractorActionSupport {
-	private static final String YES = "Yes";
-	@Autowired
+    private static final String YES = "Yes";
+
+    @Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
 	protected NoteDAO noteDAO;
@@ -221,7 +222,7 @@ public class VerifyView extends ContractorActionSupport {
 	public String previewEmail() throws Exception {
 		findContractor();
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(11); // PQF Verification
+		emailBuilder.setTemplate(EmailTemplate.PQF_VERIFICATION_EMAIL_TEMPLATE); // PQF Verification
 		emailBuilder
 				.setFromAddress(contractor.getCurrentCsr().getName() + " <" + contractor.getCurrentCsr().getEmail() + ">");
 		emailBuilder.setPermissions(permissions);
@@ -240,13 +241,13 @@ public class VerifyView extends ContractorActionSupport {
 		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
 		if (previewEmail == null || Strings.isEmpty(previewEmail.getBody())
 				|| Strings.isEmpty(previewEmail.getSubject())) {
-			emailBuilder.setTemplate(11);
+			emailBuilder.setTemplate(EmailTemplate.PQF_VERIFICATION_EMAIL_TEMPLATE);
 			emailBuilder.addToken("missing_items", addMissingItemsToEmail());
 			emailBuilder.setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<"
 					+ contractor.getCurrentCsr().getEmail() + ">");
 		} else {
 			EmailTemplate emailTemplate = new EmailTemplate();
-			emailTemplate.setId(11);
+			emailTemplate.setId(EmailTemplate.PQF_VERIFICATION_EMAIL_TEMPLATE);
 			emailTemplate.setBody(previewEmail.getBody());
 			emailTemplate.setSubject(previewEmail.getSubject());
 			emailBuilder.setEdited(true);

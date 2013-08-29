@@ -40,7 +40,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
-	@Autowired
+    @Autowired
 	protected AuditCategoryDataDAO catDataDao;
 	@Autowired
 	protected CertificateDAO certificateDao;
@@ -90,7 +90,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		this.findConAudit();
 
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(12);
+		emailBuilder.setTemplate(EmailTemplate.REMINDER_EMAIL_TEMPLATE);
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);

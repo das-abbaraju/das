@@ -1,15 +1,11 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
@@ -18,7 +14,7 @@ import com.picsauditing.util.EmailAddressUtils;
 @SuppressWarnings("serial")
 public class ReportExpiredCreditCards extends ReportAccount {
 
-	@Autowired
+    @Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private EmailBuilder emailBuilder;
@@ -78,7 +74,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 					try {
 						int conID = Integer.parseInt(conIDString);
 						ContractorAccount con = contractorAccountDAO.find(conID);
-						emailBuilder.setTemplate(59);
+						emailBuilder.setTemplate(EmailTemplate.CREDIT_CARD_EXPIRATION_EMAIL_TEMPLATE);
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.setContractor(con, OpPerms.ContractorBilling);
 						emailBuilder.setFromAddress(EmailAddressUtils.getBillingEmail(con.getCurrency()));

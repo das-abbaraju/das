@@ -36,7 +36,7 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {
-	protected User user;
+    protected User user;
 	protected Account account;
 
 	private boolean sendActivationEmail = false;
@@ -973,7 +973,7 @@ public class UsersManage extends PicsActionSupport {
 			String serverName = ServletActionContext.getRequest().getServerName();
 
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(85);
+			emailBuilder.setTemplate(EmailTemplate.PASSWORD_RESET_EMAIL_TEMPLATE);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.addToken("user", user);
 
@@ -1013,7 +1013,7 @@ public class UsersManage extends PicsActionSupport {
 			String serverName = ServletActionContext.getRequest().getServerName();
 
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(5);
+			emailBuilder.setTemplate(EmailTemplate.NEW_USER_EMAIL_TEMPLATE);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
 			emailBuilder.addToken("user", user);

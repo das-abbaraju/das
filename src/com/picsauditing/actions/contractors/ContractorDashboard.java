@@ -29,7 +29,7 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
-	private static Logger logger = LoggerFactory
+    private static Logger logger = LoggerFactory
 			.getLogger(ContractorDashboard.class);
 
 	@Autowired
@@ -195,7 +195,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			// Sending a Email to the contractor for upgrade
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(73); // Trial Contractor Account Approval
+			emailBuilder.setTemplate(EmailTemplate.TRIAL_ACCOUNT_APPROVAL_EMAIL_TEMPLATE); // Trial Contractor Account Approval
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("permissions", permissions);

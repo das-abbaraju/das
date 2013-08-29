@@ -35,7 +35,7 @@ import java.util.*;
 public class Registration extends RegistrationAction implements AjaxValidator {
 
 	public static final String DEMO_CONTRACTOR_NAME_MARKER = "^^^";
-	private User user;
+    private User user;
 	private String username;
 	private String confirmPassword;
 	private String registrationKey;
@@ -331,7 +331,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(2);
+		emailBuilder.setTemplate(EmailTemplate.WELCOME_EMAIL_TEMPLATE);
 		emailBuilder.setUser(user);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		// TODO move to EncodedKey

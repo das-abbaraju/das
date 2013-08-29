@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.FacilityChanger;
@@ -13,16 +14,6 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectSQL;
@@ -93,7 +84,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 
 				// Sending a Email to the contractor for upgrade
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(73); // Trial Contractor
+				emailBuilder.setTemplate(EmailTemplate.TRIAL_ACCOUNT_APPROVAL_EMAIL_TEMPLATE); // Trial Contractor
 				// Account Approval
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);

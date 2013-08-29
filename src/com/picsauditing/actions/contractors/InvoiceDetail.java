@@ -40,7 +40,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
 
-	private static final String PAY_BUTTON = "pay";
+    private static final String PAY_BUTTON = "pay";
 	private static final String CANCEL_BUTTON = "cancel";
 	private static final String SAVE_BUTTON = "save";
 	private static final String CHANGE_TO_BUTTON = "changeto";
@@ -219,7 +219,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         addNote("Credit Card service connection error: " + re.getMessage(), billingNoteModel.findUserForPaymentNote(permissions));
 
         EmailBuilder emailBuilder = new EmailBuilder();
-        emailBuilder.setTemplate(106);
+        emailBuilder.setTemplate(EmailTemplate.BRAIN_TREE_ERROR_EMAIL_TEMPLATE);
         emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
         emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
         emailBuilder.setPermissions(permissions);

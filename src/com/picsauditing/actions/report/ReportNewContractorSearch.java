@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +26,6 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
@@ -49,7 +38,7 @@ import com.picsauditing.util.Strings;
  */
 @SuppressWarnings("serial")
 public class ReportNewContractorSearch extends ReportAccount {
-	@Autowired
+    @Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
@@ -224,7 +213,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		try {
 			// Sending a Email to the contractor for upgrade
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(321); // Request for Client Site Addition
+			emailBuilder.setTemplate(EmailTemplate.REQUEST_FOR_CLIENT_SITE_ADDITION_EMAIL_TEMPLATE); // Request for Client Site Addition
 			// Account Approval
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
@@ -291,7 +280,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 				// Sending a Email to the contractor for upgrade
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(73); // Trial Contractor
+				emailBuilder.setTemplate(EmailTemplate.TRIAL_ACCOUNT_APPROVAL_EMAIL_TEMPLATE); // Trial Contractor
 				// Account Approval
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);

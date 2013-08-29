@@ -34,7 +34,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	// TODO Move this to a common location
 	static final public String GOOGLE_API_KEY = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
 
-	private TimeZone selectedTimeZone = TimeZone.getTimeZone("CST");
+    private TimeZone selectedTimeZone = TimeZone.getTimeZone("CST");
 
 	private AvailableSet availableSet = new AvailableSet();
 	private Date timeSelected;
@@ -590,7 +590,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setConAudit(conAudit);
-			emailBuilder.setTemplate(15);
+			emailBuilder.setTemplate(EmailTemplate.IMPLEMENTATION_AUDIT_CONFIRMATION_EMAIL_TEMPLATE);
 			ContractorAccount contractor = conAudit.getContractorAccount();
 			emailBuilder.setUser((contractor.getPrimaryContact() != null) ? contractor.getPrimaryContact() : conAudit
 					.getContractorAccount().getUsers().get(0));
@@ -610,7 +610,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setConAudit(conAudit);
-			emailBuilder.setTemplate(14);
+			emailBuilder.setTemplate(EmailTemplate.AUDIT_CONFIRMATION_EMAIL_TEMPLATE);
 
 			String seed = "a" + conAudit.getAuditor().getId() + "id" + conAudit.getId();
 			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&contractorAudit=" + conAudit.getId()

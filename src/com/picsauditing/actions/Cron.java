@@ -58,7 +58,7 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
-	@Autowired
+    @Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	protected ContractorAuditDAO contractorAuditDAO;
@@ -934,7 +934,7 @@ public class Cron extends PicsActionSupport {
 		for (ContractorAccount cAccount : conList) {
 			EmailBuilder emailBuilder = new EmailBuilder();
 
-			emailBuilder.setTemplate(70);
+			emailBuilder.setTemplate(EmailTemplate.NO_ACTION_EMAIL_TEMPLATE);
 			// No Action Email Notification - Contractor
 			emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
@@ -997,7 +997,7 @@ public class Cron extends PicsActionSupport {
 
 	private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(55);
+		emailBuilder.setTemplate(EmailTemplate.FLAG_CHANGES_EMAIL_TEMPLATE);
 		emailBuilder.setFromAddress(EmailAddressUtils.PICS_SYSTEM_EMAIL_ADDRESS);
 		emailBuilder.addToken("changes", flagChanges);
 		int totalFlagChanges = sumFlagChanges(flagChanges);

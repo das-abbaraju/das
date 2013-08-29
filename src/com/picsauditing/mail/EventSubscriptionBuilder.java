@@ -1,6 +1,7 @@
 package com.picsauditing.mail;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.audits.VerifyView;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -19,7 +20,7 @@ import java.util.*;
 
 public class EventSubscriptionBuilder {
 
-	private static LanguageModel languageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
+    private static LanguageModel languageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
 	private static Publisher emailRequestPublisher = SpringUtils.getBean(SpringUtils.EMAIL_REQUEST_PUBLISHER);
 	private static EmailReportRunner runner = SpringUtils.getBean(SpringUtils.EMAIL_REPORT_RUNNER);
 	private static FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
@@ -174,7 +175,7 @@ public class EventSubscriptionBuilder {
 			IOException {
 		EmailBuilder emailBuilder = emailBuilder();
 		emailBuilder.clear();
-		emailBuilder.setTemplate(247);
+		emailBuilder.setTemplate(EmailTemplate.UPCOMING_IMPLEMENTATION_AUDIT_EMAIL_TEMPLATE);
 		emailBuilder.setConID(audit.getContractorAccount().getId());
 		emailBuilder.addToken("contractor", audit.getContractorAccount());
 		emailBuilder.setToAddresses(audit.getContractorAccount().getActiveUser().getEmail());
@@ -235,7 +236,7 @@ public class EventSubscriptionBuilder {
 
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.clear();
-		emailBuilder.setTemplate(10); // Certificate Expiration
+		emailBuilder.setTemplate(EmailTemplate.INSURANCE_CERTIFICATE_EXPIRING_EMAIL_TEMPLATE); // Certificate Expiration
 		emailBuilder.setConID(user.getAccount().getId());
 		emailBuilder.addToken("contractor", user.getAccount());
 		emailBuilder.addToken("policies", expiringPolicies);

@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +11,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
@@ -22,7 +18,7 @@ import com.picsauditing.util.SpringUtils;
 @SuppressWarnings("serial")
 public class OpenAuditsMailer extends PicsActionSupport {
 
-	private ContractorAuditDAO contractorAuditDAO;
+    private ContractorAuditDAO contractorAuditDAO;
 	private EmailQueueDAO emailQueueDAO;
     
 	private final Logger LOG = LoggerFactory.getLogger(OpenAuditsMailer.class);
@@ -58,7 +54,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 			nextID = conAudit.getId();
 			try {
 				emailBuilder.clear();
-				emailBuilder.setTemplate(6);
+				emailBuilder.setTemplate(EmailTemplate.OPEN_AUDITS_EMAIL_TEMPLATE);
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
 				EmailQueue email = emailBuilder.build();

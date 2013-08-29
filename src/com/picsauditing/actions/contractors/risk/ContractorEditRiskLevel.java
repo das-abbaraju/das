@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.BillingService;
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,6 @@ import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
@@ -31,7 +23,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorEditRiskLevel extends ContractorActionSupport implements Preparable {
-	private static final Logger logger = LoggerFactory.getLogger(ContractorEditRiskLevel.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContractorEditRiskLevel.class);
 
 	@Autowired
 	protected UserDAO userDAO;
@@ -188,7 +180,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
 		emailBuilder.clear();
-		emailBuilder.setTemplate(159);
+		emailBuilder.setTemplate(EmailTemplate.RISK_LEVEL_DOWNGRADED_EMAIL_TEMPLATE);
 		emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
 		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 		emailBuilder.addToken("contractor", contractor);

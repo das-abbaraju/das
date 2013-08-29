@@ -148,7 +148,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						addNote("Credit Card service connection error: " + re.getMessage());
 
 						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setTemplate(106);
+						emailBuilder.setTemplate(EmailTemplate.BRAIN_TREE_ERROR_EMAIL_TEMPLATE);
 						emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
 						emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 						emailBuilder.setPermissions(permissions);

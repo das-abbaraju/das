@@ -21,8 +21,29 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	public static final int pendingFinalEmailTemplate = 244;
 	public static final int pendingLastChanceEmailTemplate = 245;
 	public static final int pendingReminderEmailTemplate = 246;
+    public static final int FLAG_CHANGES_EMAIL_TEMPLATE = 55;
+    public static final int NO_ACTION_EMAIL_TEMPLATE = 70;
+    public static final int REMINDER_EMAIL_TEMPLATE = 12;
+    public static final int OPEN_AUDITS_EMAIL_TEMPLATE = 6;
+    public static final int IMPLEMENTATION_AUDIT_CONFIRMATION_EMAIL_TEMPLATE = 15;
+    public static final int AUDIT_CONFIRMATION_EMAIL_TEMPLATE = 14;
+    public static final int PQF_VERIFICATION_EMAIL_TEMPLATE = 11;
+    public static final int TRIAL_ACCOUNT_APPROVAL_EMAIL_TEMPLATE = 73;
+    public static final int DEACTIVATION_FOR_OPERATORS_EMAIL_TEMPLATE = 51;
+    public static final int BRAIN_TREE_ERROR_EMAIL_TEMPLATE = 106;
+    public static final int WELCOME_EMAIL_TEMPLATE = 2;
+    public static final int RISK_LEVEL_DOWNGRADED_EMAIL_TEMPLATE = 159;
+    public static final int CREDIT_CARD_EXPIRATION_EMAIL_TEMPLATE = 59;
+    public static final int REQUEST_FOR_CLIENT_SITE_ADDITION_EMAIL_TEMPLATE = 321;
+    public static final int NEW_USER_EMAIL_TEMPLATE = 5;
+    public static final int PASSWORD_RESET_EMAIL_TEMPLATE = 85;
+    public static final int INSURANCE_CERTIFICATE_EXPIRING_EMAIL_TEMPLATE = 10;
+    public static final int CONTRACTOR_ADDED_EMAIL_TEMPLATE = 9;
+    public static final int NOTICE_OF_FACILITY_REMOVAL = 47;
+    public static final int CONTRACTOR_APPROVE_GC_RELATIONSHIP_EMAIL_TEMPLATE = 238;
+    public static final int UPCOMING_IMPLEMENTATION_AUDIT_EMAIL_TEMPLATE = 247;
 
-	private int accountID;
+    private int accountID;
 	private String templateName = "";
 	private String subject;
 	private String body;
@@ -35,7 +56,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	private boolean translated = false;
 
 	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = Collections
-			.unmodifiableSet(new HashSet<Integer>(Arrays.asList(48, 51, 71, 85, 86)));
+			.unmodifiableSet(new HashSet<>(Arrays.asList(48, 51, 71, 85, 86)));
 
 	@Column(nullable = false)
 	public int getAccountID() {

@@ -31,7 +31,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
 
-	@Autowired
+    @Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
 	@Autowired
 	protected ContractorValidator contractorValidator;
@@ -399,7 +399,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					contractor = contractorAccountDao.find(contractor.getId());
 				}
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(51); // Deactivation Email for
+				emailBuilder.setTemplate(EmailTemplate.DEACTIVATION_FOR_OPERATORS_EMAIL_TEMPLATE); // Deactivation Email for
 				// operators
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);

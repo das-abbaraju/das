@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -17,21 +18,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
@@ -40,7 +26,7 @@ import com.picsauditing.util.EmailAddressUtils;
  * Adds and removed contractors from operator accounts
  */
 public class FacilityChanger {
-	@Autowired
+    @Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
@@ -110,7 +96,7 @@ public class FacilityChanger {
 		if (!permissions.isContractor()) {
 			// Send the contractor an email that the operator added them
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(9); // Contractor Added
+			emailBuilder.setTemplate(EmailTemplate.CONTRACTOR_ADDED_EMAIL_TEMPLATE); // Contractor Added
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("operator", operator);
@@ -154,7 +140,7 @@ public class FacilityChanger {
 
 	private void sendGCApprovalEmailToContractor() throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(238); // Contractor needs to Approve GC
+		emailBuilder.setTemplate(EmailTemplate.CONTRACTOR_APPROVE_GC_RELATIONSHIP_EMAIL_TEMPLATE); // Contractor needs to Approve GC
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		emailBuilder.addToken("operator", operator);
@@ -193,7 +179,7 @@ public class FacilityChanger {
 				if (!permissions.isContractor() && !permissions.hasGroup(958)
 						&& !co.getContractorAccount().getAccountLevel().isBidOnly()) { // Billing/Accounting
 					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(47); // Notice of Facility Rem
+					emailBuilder.setTemplate(EmailTemplate.NOTICE_OF_FACILITY_REMOVAL); // Notice of Facility Rem
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
 					emailBuilder.addToken("operator", co.getOperatorAccount());

@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.models.audits.AuditorAssignor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,13 +15,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
@@ -120,7 +114,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		if (contractorAudit.getAuditType().isScheduled() && contractorAudit.getAuditor() != null
 				&& contractorAudit.getScheduledDate() != null) {
 			if (contractorAudit.getContractorConfirm() == null) {
-				emailBuilder.setTemplate(15);
+				emailBuilder.setTemplate(EmailTemplate.IMPLEMENTATION_AUDIT_CONFIRMATION_EMAIL_TEMPLATE);
 				emailBuilder.clear();
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(contractorAudit);
@@ -142,7 +136,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailSender.send(email);
 			}
 			if (contractorAudit.getAuditorConfirm() == null) {
-				emailBuilder.setTemplate(14);
+				emailBuilder.setTemplate(EmailTemplate.AUDIT_CONFIRMATION_EMAIL_TEMPLATE);
 				emailBuilder.clear();
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(contractorAudit);

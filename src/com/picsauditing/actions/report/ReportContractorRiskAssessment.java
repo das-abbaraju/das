@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.PICS.BillingService;
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,6 @@ import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator.RiskCateg
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.WizardSession;
@@ -242,7 +235,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	}
 
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
-		emailBuilder.setTemplate(159);
+		emailBuilder.setTemplate(EmailTemplate.RISK_LEVEL_DOWNGRADED_EMAIL_TEMPLATE);
 		emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
 		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(con.getCurrency()));
 		emailBuilder.addToken("contractor", con);

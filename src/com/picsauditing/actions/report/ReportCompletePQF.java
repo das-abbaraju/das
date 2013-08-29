@@ -4,18 +4,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
@@ -85,7 +79,7 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 					conAudit.setScheduledDate(newDate);
 				}
 				try {
-					emailBuilder.setTemplate(12);
+					emailBuilder.setTemplate(EmailTemplate.REMINDER_EMAIL_TEMPLATE);
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setConAudit(conAudit);
 					if (conAudit.getContractorAccount().getCurrentCsr() != null)
