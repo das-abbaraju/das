@@ -137,6 +137,7 @@
     <bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
     <bean id="EmailSubscriptionHandler" class="com.picsauditing.messaging.subscription.EmailSubscriptionHandler"
           scope="prototype"/>
+    <bean id="EmployeeImport" class="com.picsauditing.service.fileimport.EmployeeImport"/>
     <bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>

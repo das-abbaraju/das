@@ -1,57 +1,39 @@
 package com.picsauditing.actions.employees;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.poi.hssf.usermodel.DVConstraint;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataValidation;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.EmployeeSiteDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.fileimport.EmployeeImport;
+import com.picsauditing.service.fileimport.FileImportException;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.Strings;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.EmployeeSiteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.EmployeeSite;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.Strings;
+import javax.servlet.ServletOutputStream;
+import java.io.File;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ImportEmployees extends PicsActionSupport {
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
+	private EmployeeImport employeeImport;
+	@Autowired
 	private EmployeeSiteDAO employeeSiteDAO;
 	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
+
 	// Read Excel Sheet
 	private Account account;
 	private File upload;
@@ -78,10 +60,12 @@ public class ImportEmployees extends PicsActionSupport {
 					upload = null;
 					addActionError(getText("ManageEmployeesUpload.message.MustBeExcel"));
 				}
-			} else if (upload == null || upload.length() == 0)
+			} else if (upload == null || upload.length() == 0) {
 				addActionError(getText("ManageEmployeesUpload.message.NoFileSelected"));
-		} else
+			}
+		} else {
 			addActionError(getText("ManageEmployeesUpload.message.MissingAccount"));
+		}
 
 		return SUCCESS;
 	}
@@ -175,7 +159,7 @@ public class ImportEmployees extends PicsActionSupport {
 
 			for (OperatorAccount operator : operators) {
 				if (operator.isRequiresCompetencyReview())
-					headers.add(getText("ManageEmployeesUpload.label.WorksIn", new Object[] { operator.getName() }));
+					headers.add(getText("ManageEmployeesUpload.label.WorksIn", new Object[]{operator.getName()}));
 			}
 		}
 
@@ -199,7 +183,7 @@ public class ImportEmployees extends PicsActionSupport {
 
 		CellRangeAddressList addressList = new CellRangeAddressList(0, 9999, getEmployeeInfo().length,
 				headers.size() - 1);
-		DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(new String[] { getText("YesNo.Yes") });
+		DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(new String[]{getText("YesNo.Yes")});
 		HSSFDataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
 		dataValidation.setSuppressDropDownArrow(false);
 		sheet.addValidationData(dataValidation);
@@ -207,63 +191,11 @@ public class ImportEmployees extends PicsActionSupport {
 
 	private void importData(File file) {
 		try {
-			Workbook wb = WorkbookFactory.create(new FileInputStream(file));
-			int importedEmployees = 0;
-
-			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-				Sheet sheet = wb.getSheetAt(i);
-
-				Iterator<Row> rows = sheet.rowIterator();
-				while (rows.hasNext()) {
-					Row row = rows.next();
-
-					if (row.getCell(0) != null) {
-						String cellValue = row.getCell(0).getRichStringCellValue().getString().trim();
-
-						if (row.getRowNum() == 0 && cellValue.contains("*")) {
-							int start = getEmployeeInfo().length;
-							int end = row.getLastCellNum();
-							operators = new ArrayList<OperatorAccount>();
-
-							List<String> names = new ArrayList<String>();
-							int prefixLength = getText("ManageEmployeesUpload.label.WorksIn").length() - 3;
-
-							for (int j = 0; j < (end - start); j++) {
-								int currentColumn = j + start;
-
-								if (row.getCell(currentColumn) != null
-										&& !Strings.isEmpty(row.getCell(currentColumn).toString())) {
-									String name = row.getCell(currentColumn).getStringCellValue();
-									if (name.length()>0 && name.length() > prefixLength)
-										name = name.substring(prefixLength).trim();
-									names.add(name);
-								}
-							}
-
-							operators = operatorAccountDAO.findWhere(true,
-									String.format("a.name IN (%s)", Strings.implodeForDB(names)));
-
-							continue;
-						}
-
-						if (parseRow(row))
-							importedEmployees++;
-					}
-				}
-			}
-
-			if (importedEmployees > 0) {
-				if (importedEmployees == 1)
-					addActionMessage(getText("ManageEmployeesUpload.message.SuccessfullyImportedOne"));
-				else
-					addActionMessage(getText("ManageEmployeesUpload.message.SuccessfullyImportedMany",
-							new Object[] { (Integer) importedEmployees }));
-			} else {
-				addActionMessage(getText("ManageEmployeesUpload.message.NoEmployeesInFile"));
-			}
-		} catch (Exception e) {
-			logger.error(e.toString());
-			addActionError(getText("ManageEmployeesUpload.message.ErrorInFile"));
+			employeeImport.importEmployees(file, account, permissions);
+			addActionMessage(getText("ManageEmployeesUpload.SuccessfullyImported"));
+		} catch (FileImportException fileImportException) {
+			logger.error(fileImportException.getMessage());
+			addActionError(fileImportException.getMessage());
 		}
 	}
 
@@ -279,40 +211,40 @@ public class ImportEmployees extends PicsActionSupport {
 				Cell cell = iterator.next();
 				if (cell != null && !Strings.isEmpty(cell.toString())) {
 					switch (cell.getColumnIndex()) {
-					case 0:
-						e.setFirstName(cell.toString());
-						break;
-					case 1:
-						e.setLastName(cell.toString());
-						break;
-					case 2:
-						e.setTitle(cell.toString());
-						break;
-					case 3:
-						e.setHireDate(cell.getDateCellValue());
-						break;
-					case 4:
-						e.setTwicExpiration(cell.getDateCellValue());
-						break;
-					case 5:
-						e.setEmail(EmailAddressUtils.validate(cell.toString()));
-						break;
-					case 6:
-						e.setPhone(cell.toString());
-						break;
-					default:
-						int index = cell.getColumnIndex() - getEmployeeInfo().length;
-						// Get operators?
-						if (index >= 0 && operators.size() > index && operators.get(index) != null) {
-							employeeDAO.save(e);
+						case 0:
+							e.setFirstName(cell.toString());
+							break;
+						case 1:
+							e.setLastName(cell.toString());
+							break;
+						case 2:
+							e.setTitle(cell.toString());
+							break;
+						case 3:
+							e.setHireDate(cell.getDateCellValue());
+							break;
+						case 4:
+							e.setTwicExpiration(cell.getDateCellValue());
+							break;
+						case 5:
+							e.setEmail(EmailAddressUtils.validate(cell.toString()));
+							break;
+						case 6:
+							e.setPhone(cell.toString());
+							break;
+						default:
+							int index = cell.getColumnIndex() - getEmployeeInfo().length;
+							// Get operators?
+							if (index >= 0 && operators.size() > index && operators.get(index) != null) {
+								employeeDAO.save(e);
 
-							EmployeeSite es = new EmployeeSite();
-							es.setEmployee(e);
-							es.setAuditColumns(permissions);
-							es.setOperator(operators.get(index));
-							es.setEffectiveDate(new Date());
-							employeeSiteDAO.save(es);
-						}
+								EmployeeSite es = new EmployeeSite();
+								es.setEmployee(e);
+								es.setAuditColumns(permissions);
+								es.setOperator(operators.get(index));
+								es.setEffectiveDate(new Date());
+								employeeSiteDAO.save(es);
+							}
 					}
 				}
 			}
@@ -325,9 +257,9 @@ public class ImportEmployees extends PicsActionSupport {
 	}
 
 	private String[] getEmployeeInfo() {
-		return new String[] { getText("ManageEmployeesUpload.label.EmployeeFirstName"),
+		return new String[]{getText("ManageEmployeesUpload.label.EmployeeFirstName"),
 				getText("ManageEmployeesUpload.label.EmployeeLastName"), getText("ManageEmployeesUpload.label.Title"),
 				getText("ManageEmployeesUpload.label.HireDate"), getText("Employee.twicExpiration"),
-				getText("Employee.email"), getText("Employee.phone") };
+				getText("Employee.email"), getText("Employee.phone")};
 	}
 }

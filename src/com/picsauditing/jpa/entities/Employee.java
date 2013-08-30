@@ -255,7 +255,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		return false;
 	}
 
-	@OneToMany(mappedBy = "employee")
+	@OneToMany(mappedBy = "employee", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	public List<EmployeeSite> getEmployeeSites() {
 		return employeeSites;
 	}
@@ -485,5 +485,30 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Employee employee = (Employee) o;
+
+		if (account != null ? !account.equals(employee.account) : employee.account != null) return false;
+		if (firstName != null ? !firstName.equalsIgnoreCase(employee.firstName) : employee.firstName != null) return false;
+		if (lastName != null ? !lastName.equalsIgnoreCase(employee.lastName) : employee.lastName != null) return false;
+		if (title != null ? !title.equalsIgnoreCase(employee.title) : employee.title != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+		result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+		result = 31 * result + (account != null ? account.hashCode() : 0);
+		result = 31 * result + (title != null ? title.hashCode() : 0);
+		return result;
 	}
 }

@@ -1,15 +1,18 @@
 package com.picsauditing.dao;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
-
-import javax.persistence.Query;
-
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class EmployeeDAO extends PicsDAO {
@@ -107,5 +110,44 @@ public class EmployeeDAO extends PicsDAO {
 
 	public void setPicsNumber(Employee employee) {
 		employee.setPicsNumber(generatePicsNumber(employee));
+	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void save(List<Employee> employees) {
+		for (Employee employee : employees) {
+			if (employee.getId() == 0) {
+				em.persist(employee);
+			} else {
+				em.merge(employee);
+			}
+		}
+
+		em.flush();
+	}
+
+	public List<Employee> findByFirstNameLastNameAndAccount(Set<Employee> employees) {
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("FROM Employee e WHERE ");
+
+		boolean first = true;
+		for (Employee employee : employees) {
+			if (!first) {
+				queryBuilder.append(" OR ");
+			}
+
+			queryBuilder.append("(e.account.id = ? AND e.firstName = ? AND e.lastName = ?)");
+			first = false;
+		}
+
+		TypedQuery<Employee> query = em.createQuery(queryBuilder.toString(), Employee.class);
+
+		int position = 1;
+		for (Employee employee : employees) {
+			query.setParameter(position++, employee.getAccount().getId());
+			query.setParameter(position++, employee.getFirstName());
+			query.setParameter(position++, employee.getLastName());
+		}
+
+		return query.getResultList();
 	}
 }
