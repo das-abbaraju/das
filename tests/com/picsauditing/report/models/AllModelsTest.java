@@ -72,6 +72,13 @@ public class AllModelsTest {
     }
 
     @Test
+    public void testContractorTradesModel_Operator() throws Exception {
+        permissions.setAccountType("Corporate");
+        model = new ContractorTradesModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
     public void testContractorsModel_Admin() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
