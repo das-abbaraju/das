@@ -12,7 +12,6 @@ public interface FeatureToggle {
 	String TOGGLE_BPROC_EMAILQUEUE = "Toggle.BackgroundProcesses.EmailQueue";
 	String TOGGLE_BPROC = "Toggle.BackgroundProcesses";
 	String TOGGLE_CONTRACTOR_CAMPAIGN = "Toggle.ContractorCampaign";
-	String TOGGLE_PERMISSION_GROUPS = "Toggle.PermissionGroups";
 	String TOGGLE_INVOICE_COMMISSION = "Toggle.InvoiceCommission";
 	String TOGGLE_INVOICE_COMMISSION_PHASE2 = "Toggle.InvoiceCommission.Phase2";
 	String TOGGLE_REQUESTNEWCONTRACTORACCOUNT = "Toggle.RequestNewContractorAccount";

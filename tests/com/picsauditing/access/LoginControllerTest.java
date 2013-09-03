@@ -123,7 +123,6 @@ public class LoginControllerTest extends PicsActionTest {
 		when(request.getServerName()).thenReturn("www.picsorganizer.com");
 		when(userDAO.findName(anyString())).thenReturn(user);
 		when(userDAO.find(941)).thenReturn(user);
-		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS)).thenReturn(true);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
 	}
 

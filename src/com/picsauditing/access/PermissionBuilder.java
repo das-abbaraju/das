@@ -33,11 +33,6 @@ public class PermissionBuilder {
 		Set<Integer> groupIDs = getDirectlyRelatedGroupIds(permissions.getUserId());
 		Set<Integer> allInheritedGroupIds = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
 
-		// This is just for safety, in case something breaks we don't find
-		if (!useInheritedGroups()) {
-			allInheritedGroupIds = groupIDs;
-		}
-
 		permissions.getAllInheritedGroupIds().clear();
 		permissions.getAllInheritedGroupIds().addAll(allInheritedGroupIds);
 
@@ -49,10 +44,6 @@ public class PermissionBuilder {
 		permissions.setUsingVersion7Menus(user.isUsingVersion7Menus());
 		permissions.setUsingVersion7MenusDate(user.getUsingVersion7MenusDate());
 		permissions.setReportsManagerTutorialDate(user.getReportsManagerTutorialDate());
-	}
-
-	private boolean useInheritedGroups() {
-		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS);
 	}
 
 	private Set<Integer> getDirectlyRelatedGroupIds(int userID) {
