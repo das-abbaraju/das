@@ -1,12 +1,13 @@
 package com.picsauditing.service.i18n;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.model.events.TranslationLookupEvent;
 import com.picsauditing.model.i18n.TranslationLookupData;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.sun.jersey.api.client.*;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import net.sf.ehcache.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
-import javax.ws.rs.core.MultivaluedMap;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -35,7 +35,9 @@ public class TranslationServiceAdapter implements TranslationService {
     private static final String LOCALES_URL = TRANSLATION_URL + "locales/";
     private static final String UPDATE_URL = TRANSLATION_URL + "saveOrUpdate/";
     private static final String CACHE_NAME = "i18n";
+    private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
     private static Cache cache;
+    private static Cache wildcardCache;
     private static final String environment = System.getProperty("pics.env");
     private Client client;
 
@@ -43,6 +45,7 @@ public class TranslationServiceAdapter implements TranslationService {
         // CacheManager.create returns the existing singleton if it already exists
         CacheManager manager = CacheManager.create();
         cache = manager.getCache(CACHE_NAME);
+        wildcardCache = manager.getCache(WILDCARD_CACHE_NAME);
     }
 
 	public static TranslationServiceAdapter getInstance() {
@@ -432,20 +435,59 @@ public class TranslationServiceAdapter implements TranslationService {
         List<Map<String, String>> localeListOfTranslationMaps = new ArrayList<>();
 
         for (String locale : locales) {
-            addToTranslationsAndPublishUse(actionName + "." + methodName, translationsForJS, locale);
-            addToTranslationsAndPublishUse(actionName + "." + ACTION_TRANSLATION_KEYWORD, translationsForJS, locale);
+            populateTranslationsForJSByWildCardAndPublishUse(actionName + "." + methodName, translationsForJS, locale);
+            populateTranslationsForJSByWildCardAndPublishUse(actionName + "." + ACTION_TRANSLATION_KEYWORD, translationsForJS, locale);
         }
 
         localeListOfTranslationMaps.add(translationsForJS);
         return localeListOfTranslationMaps;
     }
 
-    private void addToTranslationsAndPublishUse(String key, Map<String, String> translationsForJS, String locale) {
-        List<TranslationWrapper> translations = translationsFromWebResourceByWildcard(key, locale);
+    private void populateTranslationsForJSByWildCardAndPublishUse(String key, Map<String, String> translationsForJS, String locale) {
+        List<TranslationWrapper> translations = wildCardTranslations(key, locale);
         for (TranslationWrapper translation : translations) {
             translationsForJS.put(translation.getKey(), translation.getTranslation());
             publishTranslationLookupEventIfReturned(locale, translation);
         }
+    }
+
+    private List<TranslationWrapper> wildCardTranslations(String key, String locale) {
+        List<TranslationWrapper> translations = translationsFromWildCardCache(key, locale);
+        if (translations == null || translations.isEmpty()) {
+            translations = translationsFromWebResourceByWildcard(key, locale);
+            cacheWildcardTranslation(key, locale, translations);
+        }
+        return translations;
+    }
+
+    private List<TranslationWrapper> translationsFromWildCardCache(String key, String locale) {
+        List<TranslationWrapper> translations = new ArrayList<>();
+        Element element = wildcardCache.get(key);
+        if (element != null) {
+            Table<String, String, String> localeToKeyToValue = (Table<String, String, String>)element.getObjectValue();
+            Map<String, String> keyToTranslation = Collections.unmodifiableMap(localeToKeyToValue.row(locale));
+            if (keyToTranslation != null) {
+                for (String msgKey : keyToTranslation.keySet()) {
+                    translations.add(new TranslationWrapper.Builder().key(msgKey).locale(locale).translation(keyToTranslation.get(msgKey)).build());
+                }
+            }
+        }
+        return translations;
+    }
+
+    private void cacheWildcardTranslation(String wildcardKey, String requestedLocale, List<TranslationWrapper> translations) {
+        Table<String, String, String> localeToKeyToValue;
+        Element element = wildcardCache.get(wildcardKey);
+        if (element != null) {
+            localeToKeyToValue = (Table<String, String, String>)element.getObjectValue();
+        } else {
+            localeToKeyToValue = TreeBasedTable.create();
+        }
+
+        for (TranslationWrapper translation : translations) {
+            localeToKeyToValue.put(requestedLocale, translation.getKey(), translation.getTranslation());
+        }
+        wildcardCache.put(new Element(wildcardKey, localeToKeyToValue));
     }
 
     @Override

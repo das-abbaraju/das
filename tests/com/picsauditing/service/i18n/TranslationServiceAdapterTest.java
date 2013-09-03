@@ -1,10 +1,11 @@
 package com.picsauditing.service.i18n;
 
+import com.google.common.collect.Table;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.util.SpringUtils;
 import com.sun.jersey.api.client.*;
-import net.sf.ehcache.Cache;
+import net.sf.ehcache.*;
 import org.apache.struts2.StrutsStatics;
 import org.junit.*;
 import org.mockito.Mock;
@@ -30,6 +31,7 @@ public class TranslationServiceAdapterTest {
 
     private TranslationServiceAdapter translationService;
     private Cache cache;
+    private Cache wildcardCache;
     private ActionContext actionContext;
     private Map<String, Object> context;
 
@@ -54,6 +56,7 @@ public class TranslationServiceAdapterTest {
         Whitebox.setInternalState(translationService, "client", client);
         Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
         cache = Whitebox.getInternalState(TranslationServiceAdapter.class, "cache");
+        wildcardCache = Whitebox.getInternalState(TranslationServiceAdapter.class, "wildcardCache");
 
         when(client.resource(anyString())).thenReturn(webResource);
         when(webResource.accept(MediaType.APPLICATION_JSON_VALUE)).thenReturn(builder);
@@ -159,4 +162,55 @@ public class TranslationServiceAdapterTest {
         Whitebox.invokeMethod(translationService, "cacheTranslationIfReturned", new Object[] { TEST_KEY, TEST_LOCALE.getDisplayLanguage(), translation});
     }
 
+    @Test
+    public void testWildCardCaching() throws Exception {
+        List<TranslationWrapper> translations = englishTranslations();
+
+        Whitebox.invokeMethod(translationService, "cacheWildcardTranslation", new Object[] {"Test.WildCard", "en", translations });
+
+        List<TranslationWrapper> cachedTranslations = Whitebox.invokeMethod(translationService, "translationsFromWildCardCache", "Test.WildCard", "en");
+        assertSame(translations, cachedTranslations);
+    }
+
+    @Test
+    public void testWildCardCaching_MixedLocales() throws Exception {
+        List<TranslationWrapper> enTranslations = englishTranslations();
+        List<TranslationWrapper> frTranslations = frenchTranslations();
+
+        Whitebox.invokeMethod(translationService, "cacheWildcardTranslation", new Object[] {"Test.WildCard", "en", enTranslations });
+        Whitebox.invokeMethod(translationService, "cacheWildcardTranslation", new Object[] {"Test.WildCard", "fr", frTranslations });
+
+        List<TranslationWrapper> cachedTranslations = Whitebox.invokeMethod(translationService, "translationsFromWildCardCache", "Test.WildCard", "en");
+        assertSame(enTranslations, cachedTranslations);
+    }
+
+    private List<TranslationWrapper> englishTranslations() {
+        List<TranslationWrapper> translations = new ArrayList<>();
+        translations.add(new TranslationWrapper.Builder().key(TEST_KEY + "1").locale("en").translation("One").build());
+        translations.add(new TranslationWrapper.Builder().key(TEST_KEY + "2").locale("en").translation("Two").build());
+        translations.add(new TranslationWrapper.Builder().key(TEST_KEY + "3").locale("en").translation("Three").build());
+        return translations;
+    }
+
+    private List<TranslationWrapper> frenchTranslations() {
+        List<TranslationWrapper> frTranslations = new ArrayList<>();
+        frTranslations.add(new TranslationWrapper.Builder().key(TEST_KEY + "1").locale("fr").translation("Un").build());
+        frTranslations.add(new TranslationWrapper.Builder().key(TEST_KEY + "2").locale("fr").translation("Deux").build());
+        frTranslations.add(new TranslationWrapper.Builder().key(TEST_KEY + "3").locale("fr").translation("Trois").build());
+        return frTranslations;
+    }
+
+    private void assertSame(List<TranslationWrapper> translations, List<TranslationWrapper> cachedTranslations) {
+        int found = 0;
+        for (TranslationWrapper translation : translations) {
+            for (TranslationWrapper cachedTranslation : cachedTranslations) {
+                if (translation.getKey() == cachedTranslation.getKey() &&
+                    translation.getTranslation() == cachedTranslation.getTranslation() &&
+                    translation.getLocale() == cachedTranslation.getLocale()) {
+                    found++;
+                }
+            }
+        }
+        assertTrue(found == translations.size());
+    }
 }

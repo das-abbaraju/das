@@ -34,9 +34,14 @@
 		memoryStoreEvictionPolicy="LRU">
 	</cache>
 
-	<!--
-		Configuring Query Cache
-	-->
+    <cache name="i18n-wildcards" maxElementsInMemory="20000" eternal="false"
+           timeToLiveSeconds="3600" timeToIdleSeconds="1800" overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU">
+    </cache>
+
+    <!--
+        Configuring Query Cache
+    -->
 	<cache name="org.hibernate.cache.StandardQueryCache"
 		maxElementsInMemory="5" eternal="false" timeToLiveSeconds="120"
 		overflowToDisk="false" />
