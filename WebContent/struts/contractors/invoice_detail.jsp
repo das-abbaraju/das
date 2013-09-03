@@ -252,7 +252,7 @@
                         <s:property value="contractor.billingAddress"/>
                         <br/>
                         <s:property value="contractor.billingCity"/>,
-                        <s:property value="contractor.billingCountrySubdivision.isoCode"/>
+                        <s:property value="%{contractor.billingCountrySubdivision.getTwoLetterIsoCode()}"/>
                         <s:property value="contractor.billingZip"/>
                     </s:if>
                     <s:else>
