@@ -138,9 +138,14 @@ public class Filter extends ReportElement {
 		String filterValue = getValues().get(0);
 
 		if (filterType == FilterType.Date) {
-			QueryDateParameter parameter = new QueryDateParameter(filterValue);
-			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), Strings.EMPTY_STRING);
-			return "'" + dateValue + "'";
+            if (getSqlFunction() == null) {
+                QueryDateParameter parameter = new QueryDateParameter(filterValue);
+                String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), Strings.EMPTY_STRING);
+                return "'" + dateValue + "'";
+            }
+            else {
+                return "'" + filterValue + "'";
+            }
 		}
 
 		// Todo: Consider converting FilterTypes to classes that extend Filter

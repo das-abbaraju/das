@@ -8,6 +8,8 @@ import java.util.List;
 
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.QueryFilterOperator;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -105,7 +107,18 @@ public class JsonReportBuilder {
             else {
                 JSONObject param = new JSONObject();
                 param.put(REPORT_ELEMENT_FIELD_ID,column.getName());
-                param.put(FILTER_OPERATOR,column.getField().getFilterType().defaultOperator.toString());
+                FilterType filterType = column.getField().getFilterType();
+
+                QueryFilterOperator operator = filterType.defaultOperator;
+                if (filterType == FilterType.Date) {
+                    operator = QueryFilterOperator.Equals;
+                }
+                param.put(FILTER_OPERATOR, operator.toString());
+
+                if (column.getSqlFunction() != null) {
+                    param.put(FILTER_SQL_FUNCTION, column.getSqlFunction().toString());
+                }
+
                 param.put(FILTER_VALUE,"{" + column.getName() + "}");
                 dynamicParameters.add(param);
             }
