@@ -87,25 +87,8 @@ function showNavButtons() {
 	}
 }
 
-function highlight_category(category) {
-	var ccat = $('#category_'+category).addClass('current');;
-	var list = ccat.closest('ul.catUL');
-
-	if (list.is(':hidden')) {
-		$('ul.catUL:visible').hide();
-
-		list.show();
-	}
-}
-
 function _updateCategories() {
 	$('#auditHeader').addClass('dirty');
-
-	var currentCategory = $('li.catlist.current'), categoryID = 0;
-
-	if (currentCategory.length > 0) {
-		categoryID = currentCategory.attr('id').split('_')[1];
-	}
 
 	ucXHR && ucXHR.abort();
 
@@ -120,18 +103,48 @@ function _updateCategories() {
 		type: 'post',
 		success: function(text, status, xhr) {
 			if (xhr.status) {
-				var me = $(text);
-
-				$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
-				$('#caoTable').html(me.filter('#cao_table_refresh').html());
-				$('#auditScore').html(me.filter('#auditScore_refresh').html());
-				$('#auditHeader').removeClass('dirty');
-
-				highlight_category(categoryID);
-				showNavButtons();
+				updateSidebarAndCaoTable(text);
 			}
 		}
 	});
+}
+
+function updateSidebarAndCaoTable(text) {
+	var $sidebar_and_cao_table = $(text),
+		$sidebar = $sidebar_and_cao_table.filter('#audit_sidebar_refresh'),
+		$cao_table = $sidebar_and_cao_table.filter('#cao_table_refresh'),
+		category_id = getCategoryId();
+	
+	$('#auditHeaderSideNav').html($sidebar.html());
+
+	$('#caoTable').html($cao_table.html());
+	
+	$('#auditHeader').removeClass('dirty');
+
+	highlight_category(category_id);
+	showNavButtons();
+}
+
+function getCategoryId() {
+	var currentCategory = $('li.catlist.current'),
+		categoryID = 0;
+
+	if (currentCategory.length > 0) {
+		categoryID = currentCategory.attr('data-category-id');
+	}
+	
+	return categoryID;
+}
+
+function highlight_category(category) {
+	var ccat = $('#category_'+category).addClass('current');;
+	var list = ccat.closest('ul.catUL');
+
+	if (list.is(':hidden')) {
+		$('ul.catUL:visible').hide();
+
+		list.show();
+	}
 }
 
 function updateCategories() {

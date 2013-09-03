@@ -2,6 +2,8 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
+<s:include value="/struts/audits/_audit_score_and_date.jsp" />
+
 <ul id="toolbar" class="vert-toolbar clearfix">
 	<li class="head">
 		<s:text name="Audit.header.Toolbar" />
@@ -141,7 +143,7 @@
 		</li>
 
 		<s:iterator value="categoryNodes" id="catNode">
-			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
+			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist" data-category-id="<s:property value="#catNode.category.id"/>">
 				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>">
 					<span class="category-name"><s:property value="#catNode.category.name" /></span>
 

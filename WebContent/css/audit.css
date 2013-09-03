@@ -654,6 +654,18 @@ text-decoration:none;
 }
 /** END Category Header+Footer Navigation **/
 
+/** Audit Score **/
+
+#content div.auditScore {
+	margin: 0 30px 20px 0;
+	padding: 7px 13px;
+}
+
+#content div.auditScore .score-text{
+	font-weight: bold;
+	font-size: 18px;
+}
+
 /** Audit SideNav **/
 
 ul.vert-toolbar

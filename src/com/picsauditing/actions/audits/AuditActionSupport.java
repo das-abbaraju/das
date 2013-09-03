@@ -1,8 +1,10 @@
 package com.picsauditing.actions.audits;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,6 +39,8 @@ import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
@@ -963,6 +967,20 @@ public class AuditActionSupport extends ContractorActionSupport {
 				conAudit.getAuditType().getClassType().isPolicy())
 			return false;
 		return conAudit.getAuditType().isHasAuditor();
+	}
+	
+	public String getScoreLastUpdated() {
+		List<AuditData> sortedList = conAudit.getData();
+		Collections.sort(sortedList, new Comparator<AuditData>(){
+			@Override
+			public int compare(AuditData a1, AuditData a2) {
+				return a2.getUpdateDate().compareTo(a1.getUpdateDate());
+			}
+		});
+
+		Date lastUpdate = sortedList.get(0).getUpdateDate();
+
+		return new SimpleDateFormat("yyyy-MM-dd").format(lastUpdate);
 	}
 
 }

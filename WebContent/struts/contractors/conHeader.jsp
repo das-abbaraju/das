@@ -311,20 +311,6 @@ function loadStatus(caoID, addUserNote){
 							<s:property value="conAudit.id" />
 						</li>
 
-
-						<s:if test="conAudit.auditType.scoreable">
-							<li>
-								<label><s:text name="ContractorAccount.score" />:</label>
-
-								<s:if test="conAudit.auditType.classType.im">
-									<div id="auditScore"><s:property value="conAudit.printableScore"/></div>
-								</s:if>
-								<s:else>
-									<div id="auditScore"><s:property value="conAudit.score"/></div>
-								</s:else>
-							</li>
-						</s:if>
-
 						<s:if test="conAudit.auditType.showManual">
 							<li>
 								<label>
