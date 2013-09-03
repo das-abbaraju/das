@@ -18,15 +18,13 @@
     <s:include value="/struts/_action-messages.jsp" />
 
     <fieldset>
-        <s:if test="configEnvironment || i18nReady">
-            <div class="form-inline">
-                <label for="supported_locales">
-                    <i class="icon-globe icon-large"></i>
-                </label>
+        <div class="form-inline">
+            <label for="supported_locales">
+                <i class="icon-globe icon-large"></i>
+            </label>
 
-                <s:include value="/struts/user/login/_supported-locales-list.jsp" />
-            </div>
-        </s:if>
+            <s:include value="/struts/user/login/_supported-locales-list.jsp" />
+        </div>
         <s:include value="/struts/user/login/_login-form-fields.jsp"/>
     </fieldset>
 </s:form>

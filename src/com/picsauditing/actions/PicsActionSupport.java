@@ -260,10 +260,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return getEnvironmentDeterminer().isLocalhost();
 	}
 
-	public boolean isI18nReady() {
-		return "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
-	}
-
 	public String getVersion() {
 		return AppVersion.current.getVersion();
 	}

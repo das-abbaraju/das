@@ -178,17 +178,15 @@
     								list="@com.picsauditing.util.TimeZoneUtil@timeZones()" />
     						</li>
     
-    						<s:if test="contractor.demo || configEnvironment || i18nReady">
-    							<li>
-    								<label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
-    								<s:select
-    									name="contractor.locale"
-                                        list="supportedLanguages.visibleLocales"
-                                        listValue="displayName"
-                                    />
-    							</li>
-    						</s:if>
-    
+                            <li>
+                                <label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
+                                <s:select
+                                    name="contractor.locale"
+                                    list="supportedLanguages.visibleLocales"
+                                    listValue="displayName"
+                                />
+                            </li>
+
     						<li>
     							<label><s:text name="ContractorEdit.PrimaryAddress.CompanyPhone"/>:</label>
     							<s:textfield name="contractor.phone" />

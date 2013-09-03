@@ -349,15 +349,13 @@
                                 <s:textfield name="user.fax" size="15" theme="form" />
 							</li>
 
-							<s:if test="i18nReady">
-								<li>
-                                    <s:select
-										name="user.locale"
-										list="supportedLanguages.visibleLocales"
-										listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
-										theme="form" />
-                                </li>
-							</s:if>
+                            <li>
+                                <s:select
+                                    name="user.locale"
+                                    list="supportedLanguages.visibleLocales"
+                                    listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
+                                    theme="form" />
+                            </li>
 
 							<li>
                                 <s:select

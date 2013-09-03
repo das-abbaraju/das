@@ -57,22 +57,20 @@
 				<s:textfield name="u.fax" theme="form"/>
 			</li>
 
-			<s:if test="u.account.demo || u.account.admin || i18nReady">
-				<li>
-					<label for="profile_language"><s:text name="User.locale"/>:</label>
-					<s:select list="supportedLanguages.visibleLanguagesSansDialect"
-					          listKey="key"
-					          listValue="value"
-					          name="language"
-					          value="language"
-					          id="profile_language"
-					          cssClass="select2"
-							/>
-				</li>
-				<li id="profile_dialect">
-					<s:include value="_profile-edit-dialects.jsp"/>
-				</li>
-			</s:if>
+            <li>
+                <label for="profile_language"><s:text name="User.locale"/>:</label>
+                <s:select list="supportedLanguages.visibleLanguagesSansDialect"
+                          listKey="key"
+                          listValue="value"
+                          name="language"
+                          value="language"
+                          id="profile_language"
+                          cssClass="select2"
+                        />
+            </li>
+            <li id="profile_dialect">
+                <s:include value="_profile-edit-dialects.jsp"/>
+            </li>
 
             <li class="timezone">
                 <label for="timezone_input"><s:text name="global.timezone" /></label>
