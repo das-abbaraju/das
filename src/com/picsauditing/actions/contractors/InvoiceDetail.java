@@ -607,7 +607,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	@Transient
 	public boolean isVoidEnabled() {
-		boolean voidEnabled = (isEditEnabled() || contractor.getStatus().isDeclined());
+		boolean voidEnabled = (isEditEnabled() || contractor.getStatus().isDeclined() || contractor.getStatus().isPending());
 		return voidEnabled;
 	}
 
