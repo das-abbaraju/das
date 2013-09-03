@@ -8,8 +8,10 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ForcedFlagsModel extends AbstractModel {
 
@@ -74,7 +76,7 @@ public class ForcedFlagsModel extends AbstractModel {
         }
 
         if (permissions.isCorporate()) {
-            return where + " AND ContractorFlag.opID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
+            return where + " AND (ContractorFlag.opID = " + permissions.getAccountId() + " OR ContractorFlag.opID IN (SELECT opID FROM facilities WHERE corporateID = " + permissions.getAccountId() + "))";
         }
 
         return where;
