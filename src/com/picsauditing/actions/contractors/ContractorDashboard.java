@@ -12,6 +12,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.user.ContractorDashboardApprovalMessage;
 import com.picsauditing.oshadisplay.OshaDisplay;
+import com.picsauditing.service.contractor.ContractorEmailService;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.NoteFactory;
@@ -61,6 +62,8 @@ public class ContractorDashboard extends ContractorActionSupport {
     private Publisher csrAssignmentSinglePublisher;
     @Autowired
     private ContractorDashboardApprovalMessage contractorDashboardApprovalMessage;
+    @Autowired
+    private ContractorEmailService contractorEmailService;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -89,6 +92,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private Date earliestIndividualFlagOverride = null;
 	private int individualFlagOverrideCount = 0;
 	private ContractorOperator corporateFlagOverride = null;
+    private EmailQueue contractorNotificationEmail = null;
+    private boolean showContractorNotificationEmail = false;
 
 	// Show extremely limited contractor view for operators
 	private boolean showBasicsOnly = false;
@@ -360,7 +365,62 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return "pendingGcOperators";
 	}
 
-	public String preview() throws Exception {
+    public String sendContractorNotificationEmail() throws Exception {
+        try {
+            findContractor();
+        } catch (NoRightsException noRights) {
+            if (permissions.isOperatorCorporate()
+                    && contractor.isShowInDirectory()) {
+                showBasicsOnly = true;
+                List<User> users = userDAO.findUsersByAccountId(contractor.getId());
+                contractorNotificationEmail = contractorEmailService.generateContractorNotificationEmail(contractor, users.get(0), permissions);
+                emailSender.send(contractorNotificationEmail);
+
+                EmailQueue operatorNotificationEmail = contractorEmailService.generateOperatorNotificationEmail(contractor, permissions);
+                emailSender.send(operatorNotificationEmail);
+                addActionMessage("ContractorDashboard.message.emailSent");
+            } else {
+                throw noRights;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return SUCCESS;
+    }
+
+    public String previewContractorNotificationEmailAjax() throws Exception {
+        try {
+            findContractor();
+        } catch (NoRightsException noRights) {
+            if (permissions.isOperatorCorporate()
+                    && contractor.isShowInDirectory()) {
+                showBasicsOnly = true;
+                List<User> users = userDAO.findUsersByAccountId(contractor.getId());
+                contractorNotificationEmail = contractorEmailService.generateContractorNotificationEmail(contractor, users.get(0), permissions);
+            } else {
+                throw noRights;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return "previewEmail";
+    }
+
+    public boolean isShowContractorNotificationEmail() {
+        if (contractor.getStatus().isPendingRequestedOrDeactivated() &&
+                contractor.getRequestedBy() != null &&
+                permissions.getAccountId() != contractor.getRequestedBy().getId()) {
+            showContractorNotificationEmail = true;
+        }
+
+        return showContractorNotificationEmail;
+    }
+
+    public void setShowContractorNotificationEmail(boolean showContractorNotificationEmail) {
+        this.showContractorNotificationEmail = showContractorNotificationEmail;
+    }
+
+    public String preview() throws Exception {
 		return "preview";
 	}
 
@@ -369,7 +429,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return "printFlagMatrix";
 	}
 
-	public ContractorOperator getCo() {
+    public EmailQueue getContractorNotificationEmail() {
+        return contractorNotificationEmail;
+    }
+
+    public void setContractorNotificationEmail(EmailQueue contractorNotificationEmail) {
+        this.contractorNotificationEmail = contractorNotificationEmail;
+    }
+
+    public ContractorOperator getCo() {
 		return co;
 	}
 

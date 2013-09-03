@@ -229,6 +229,8 @@
 			<result>/struts/contractors/con_dashboard.jsp</result>
 			<result name="preview">struts/contractors/contractor_wia_preview.jsp
 			</result>
+            <result name="previewEmail">struts/contractors/contractor_email_preview.jsp
+            </result>
 			<result name="pendingGcOperators">struts/contractors/con_dashboard_pending_gc_operators.jsp
 			</result>
 			<result name="printFlagMatrix">struts/contractors/contractor_flag_matrix.jsp

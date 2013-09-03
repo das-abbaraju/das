@@ -188,6 +188,7 @@
     <bean id="AuditEditModel" class="com.picsauditing.models.audits.AuditEditModel"/>
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
+    <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>
     <bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener"

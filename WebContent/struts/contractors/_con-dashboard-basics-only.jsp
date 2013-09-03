@@ -10,7 +10,7 @@
 	</span>
 </h1>
 
-<s:if test="contractor.autoAddClientSite" >
+<s:if test="contractor.autoAddClientSite && !contractor.status.requested" >
     <s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
         <s:param name="contractor">${contractor.id}</s:param>
     </s:url>
@@ -20,7 +20,21 @@
         </s:param>
     </s:text>
 </s:if>
+
+<s:if test="showContractorNotificationEmail">
+    <div class="info">
+        <div>
+            <s:text name="ContractorDashboard.Basic.Registering" />
+        </div>
+        <span>
+            <a href="ContractorView!sendContractorNotificationEmail.action?id=<s:property value="id"/>" class="email_left" ><s:text name="ContractorDashboard.Basic.SendEmail" /></a>  <a href="ContractorView!previewContractorNotificationEmailAjax.action?id=<s:property value="id"/>" class="fancybox iframe preview" title=""<s:text name='ContractorDashboard.Basic.PreviewEmail' />" ></a>
+        </span>
+    </div>
+</s:if>
+
 <div class="clear"></div>
+
+<s:include value="../actionMessages.jsp"/>
 
 <table id="contractor_dashboard">
 	<tr>
@@ -44,7 +58,7 @@
                         </s:if>
 
 						<s:if test="!isStringEmpty(contractor.brochureFile)">
-							<p class="web">
+							<p class="web">i
 								<strong>
 									<s:url action="DownloadContractorFile" var="download_contractor_file">
 										<s:param name="id">

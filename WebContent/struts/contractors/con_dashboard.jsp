@@ -10,12 +10,24 @@
 
 	<s:include value="../reports/reportHeader.jsp"/>
 
+    <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>"/>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css?v=${version}" />
 
 	<s:set name="isWatched" value="%{watched ? 'inline' : 'none'}" />
 	<s:set name="stopWatch" value="%{watched ? 'none' : 'inline'}" />
 
+    <script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js?v=${version}"></script>
 	<script type="text/javascript">
+        $(function() {
+            $('.fancybox').fancybox({
+                frameWidth:  640,
+                frameHeight: 480,
+                hideOnContentClick: false
+            });
+        });
+
 		function removeTag(tagId) {
 			var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
 			$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
