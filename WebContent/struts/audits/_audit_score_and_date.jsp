@@ -12,7 +12,7 @@
 			<s:else>
 				<span id="auditScore" class="score-text"><s:property value="conAudit.score"/></span>
 				<s:if test="getScoreLastUpdated() != ''">
-					<div id="last_updated_date">Last updated <span><s:property value="getScoreLastUpdated()" /></span></div>
+					<div id="last_updated_date"><s:text name="ContractorAccount.lastUpdated" /> <span><s:property value="getScoreLastUpdated()" /></span></div>
 				</s:if>
 			</s:else>
 		</div>
