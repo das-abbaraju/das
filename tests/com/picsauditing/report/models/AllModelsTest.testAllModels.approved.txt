@@ -58,9 +58,6 @@ AccountID
 AccountLegalName
 AccountMaterialSupplier
 AccountNaicsCode
-AccountNaicsDart
-AccountNaicsLwcr
-AccountNaicsTrir
 AccountName
 AccountOffsiteServices
 AccountOnsiteServices
@@ -635,9 +632,6 @@ AccountID
 AccountLegalName
 AccountMaterialSupplier
 AccountNaicsCode
-AccountNaicsDart
-AccountNaicsLwcr
-AccountNaicsTrir
 AccountName
 AccountOffsiteServices
 AccountOnsiteServices
@@ -779,9 +773,6 @@ AccountLegalName
 AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
-AccountNaicsDart
-AccountNaicsLwcr
-AccountNaicsTrir
 AccountName
 AccountOffsiteServices
 AccountOnsiteServices

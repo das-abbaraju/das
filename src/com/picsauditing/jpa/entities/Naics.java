@@ -27,7 +27,6 @@ public class Naics implements java.io.Serializable {
 		this.code = code;
 	}
 
-	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public float getTrir() {
 		return trir;
 	}
@@ -36,7 +35,6 @@ public class Naics implements java.io.Serializable {
 		this.trir = trir;
 	}
 
-	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public float getLwcr() {
 		return lwcr;
 	}
@@ -45,7 +43,6 @@ public class Naics implements java.io.Serializable {
 		this.lwcr = lwcr;
 	}
 
-	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
 	public float getDart() {
 		return dart;
 	}

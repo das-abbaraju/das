@@ -24,9 +24,6 @@ AccountLegalName
 AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
-AccountNaicsDart
-AccountNaicsLwcr
-AccountNaicsTrir
 AccountName
 AccountOffsiteServices
 AccountOnsiteServices
