@@ -1,5 +1,5 @@
 Ext.define('PICS.view.report.data-table.DataTable', {
-    extend: 'Ext.grid.Panel',
+    extend: 'PICS.ux.grid.Panel',
     alias: 'widget.reportdatatable',
 
     requires: [
@@ -97,24 +97,10 @@ Ext.define('PICS.view.report.data-table.DataTable', {
             resizable: true,
             width: 50
         }];
-        
-        grid_columns = grid_columns.concat(new_grid_columns);
-        
-        this.reconfigure(null, grid_columns);
-    },
-    
-    // update or reset no results message
-    updateNoResultsMessage: function () {
-        var store = this.getStore(),
-            view = this.getView();
-        
-        if (store.getCount() == 0) {
-            view.emptyText = '<div class="x-grid-empty">' + PICS.text('Report.execute.table.noResults') + '</div>';
-        } else {
-            view.emptyText = '';
-        }
 
-        view.refresh();
+        grid_columns = grid_columns.concat(new_grid_columns);
+
+        this.reconfigure(null, grid_columns);
     },
 
     updateFunctionMenuItem: function(grid_column) {

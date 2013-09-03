@@ -1,13 +1,13 @@
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
-    extend: 'Ext.grid.Panel',
+    extend: 'PICS.ux.grid.Panel',
     alias: 'reportcolumnfilterlist',
-    
+
     requires: [
         'Ext.grid.feature.Feature',
         'Ext.grid.feature.Grouping',
         'Ext.grid.column.Template'
     ],
-    
+
     border: 0,
     columns: [{
         xtype: 'templatecolumn',
@@ -48,7 +48,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     selModel: Ext.create('Ext.selection.CheckboxModel', {
         mode: 'SIMPLE'
     }),
-    
+
     getGroupClassNamesWithoutOver: function (html) {
         var class_names = html.className.split(' '),
             class_names_length = class_names.length,

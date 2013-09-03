@@ -900,11 +900,6 @@
                     "path": "app/view/report/settings/"
                 },
                 {
-                    "clsName": "Ext.panel.Table",
-                    "name": "Table.js",
-                    "path": "extjs/src/panel/"
-                },
-                {
                     "clsName": "Ext.layout.container.Anchor",
                     "name": "Anchor.js",
                     "path": "extjs/src/layout/container/"
@@ -913,6 +908,11 @@
                     "clsName": "PICS.view.report.filter.FilterTooltip",
                     "name": "FilterTooltip.js",
                     "path": "app/view/report/filter/"
+                },
+                {
+                    "clsName": "Ext.panel.Table",
+                    "name": "Table.js",
+                    "path": "extjs/src/panel/"
                 },
                 {
                     "clsName": "Ext.grid.ColumnComponentLayout",
@@ -1045,11 +1045,6 @@
                     "path": "extjs/src/layout/component/"
                 },
                 {
-                    "clsName": "Ext.selection.DataViewModel",
-                    "name": "DataViewModel.js",
-                    "path": "extjs/src/selection/"
-                },
-                {
                     "clsName": "Ext.dd.DragZone",
                     "name": "DragZone.js",
                     "path": "extjs/src/dd/"
@@ -1058,6 +1053,11 @@
                     "clsName": "PICS.view.report.data-table.ColumnTooltip",
                     "name": "ColumnTooltip.js",
                     "path": "app/view/report/data-table/"
+                },
+                {
+                    "clsName": "Ext.selection.DataViewModel",
+                    "name": "DataViewModel.js",
+                    "path": "extjs/src/selection/"
                 },
                 {
                     "clsName": "Ext.dd.Registry",
@@ -1300,6 +1300,16 @@
                     "path": "app/view/report/data-table/"
                 },
                 {
+                    "clsName": "Ext.grid.header.DragZone",
+                    "name": "DragZone.js",
+                    "path": "extjs/src/grid/header/"
+                },
+                {
+                    "clsName": "PICS.model.report.Sort",
+                    "name": "Sort.js",
+                    "path": "app/model/report/"
+                },
+                {
                     "clsName": "Ext.view.AbstractView",
                     "name": "AbstractView.js",
                     "path": "extjs/src/view/"
@@ -1308,31 +1318,6 @@
                     "clsName": "Ext.view.View",
                     "name": "View.js",
                     "path": "extjs/src/view/"
-                },
-                {
-                    "clsName": "Ext.view.Table",
-                    "name": "Table.js",
-                    "path": "extjs/src/view/"
-                },
-                {
-                    "clsName": "Ext.grid.View",
-                    "name": "View.js",
-                    "path": "extjs/src/grid/"
-                },
-                {
-                    "clsName": "Ext.grid.Panel",
-                    "name": "Panel.js",
-                    "path": "extjs/src/grid/"
-                },
-                {
-                    "clsName": "PICS.view.report.modal.column-function.ColumnFunctionList",
-                    "name": "ColumnFunctionList.js",
-                    "path": "app/view/report/modal/column-function/"
-                },
-                {
-                    "clsName": "PICS.view.report.modal.column-function.ColumnFunctionModal",
-                    "name": "ColumnFunctionModal.js",
-                    "path": "app/view/report/modal/column-function/"
                 },
                 {
                     "clsName": "Ext.view.BoundList",
@@ -1385,14 +1370,34 @@
                     "path": "app/view/report/settings/"
                 },
                 {
-                    "clsName": "Ext.grid.header.DragZone",
-                    "name": "DragZone.js",
-                    "path": "extjs/src/grid/header/"
+                    "clsName": "Ext.view.Table",
+                    "name": "Table.js",
+                    "path": "extjs/src/view/"
                 },
                 {
-                    "clsName": "PICS.model.report.Sort",
-                    "name": "Sort.js",
-                    "path": "app/model/report/"
+                    "clsName": "Ext.grid.View",
+                    "name": "View.js",
+                    "path": "extjs/src/grid/"
+                },
+                {
+                    "clsName": "Ext.grid.Panel",
+                    "name": "Panel.js",
+                    "path": "extjs/src/grid/"
+                },
+                {
+                    "clsName": "PICS.ux.grid.Panel",
+                    "name": "Panel.js",
+                    "path": "app/ux/grid/"
+                },
+                {
+                    "clsName": "PICS.view.report.modal.column-function.ColumnFunctionList",
+                    "name": "ColumnFunctionList.js",
+                    "path": "app/view/report/modal/column-function/"
+                },
+                {
+                    "clsName": "PICS.view.report.modal.column-function.ColumnFunctionModal",
+                    "name": "ColumnFunctionModal.js",
+                    "path": "app/view/report/modal/column-function/"
                 },
                 {
                     "clsName": "Ext.dd.DropTarget",

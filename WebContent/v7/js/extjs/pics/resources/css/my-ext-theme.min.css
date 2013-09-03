@@ -8934,18 +8934,28 @@ textarea.x-form-invalid-field {
 #data_table-body {
   border: 0px;
   border-top: 0px !important; }
-  /* line 118, ../sass/my-ext-theme/report/report/_report.scss */
-  #data_table-body .x-grid-empty {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #CCC;
-    font-size: 35px;
-    margin-top: 100px;
-    text-align: center;
-    text-shadow: #aeaeae 0 -1px; }
 
-/* line 129, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 119, ../sass/my-ext-theme/report/report/_report.scss */
 #data_table-body .x-grid-cell {
   border-right: 1px solid gainsboro; }
+
+/* line 124, ../sass/my-ext-theme/report/report/_report.scss */
+.x-grid-empty {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #CCC;
+  font-size: 35px;
+  margin-top: 100px;
+  text-align: center;
+  text-shadow: #aeaeae 0 -1px; }
+
+/* line 134, ../sass/my-ext-theme/report/report/_report.scss */
+#data_table-body .x-grid-empty {
+  margin-top: 100px; }
+
+/* line 140, ../sass/my-ext-theme/report/report/_report.scss */
+#column_list-body .x-grid-empty,
+#filter_list-body .x-grid-empty {
+  margin-top: 141px; }
 
 /* line 9, ../sass/my-ext-theme/report/report/_report-column.scss */
 #data_table .x-grid-cell-inner .icon-ok {
