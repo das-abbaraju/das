@@ -187,7 +187,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private void badDebt() {
 		if (isTransactionIsCreditMemo() || !isSapEnabledForBizUnit()) return;
         if (isTransactionIsInvoice() && !invoice.getPayments().isEmpty()) return;
-        if (contractor.getStatus().isActivePendingRequested()) {
+        AccountStatus status = contractor.getStatus();
+        if (status.isActivePendingRequested() || status.isDeclined()) {
             addActionError(getText("InvoiceDetail.BadDebtUnavailable"));
             return;
         }
