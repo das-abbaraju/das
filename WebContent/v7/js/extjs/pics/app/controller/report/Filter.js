@@ -93,7 +93,29 @@ Ext.define('PICS.controller.report.Filter', {
                 focus: this.focusFilter
             },
 
-            // saving edits to filter store + refresh
+            // remove filter
+            'reportfilteroptions button[action=remove-filter]': {
+                click: this.removeFilter
+            },
+
+            /******************************************
+             * SAVING EDITS TO FILTER STORE + REFRESH *
+             ******************************************/
+
+            /*
+             * When the OPERATOR changes
+             */
+
+            // All filters with mutable operator values
+            '#report_filters combobox[name=operator]': {
+                select: this.selectOperator
+            },
+
+            /*
+             * When the VALUE changes
+             */
+
+            // autocomplete and shortlist multiselect filters
             '\
             #report_filters reportfilterbasemultiselect combobox[name=value],\
             #report_filters reportfilterbaseautocomplete combobox[name=value]': {
@@ -102,35 +124,25 @@ Ext.define('PICS.controller.report.Filter', {
                 change: this.changeBoxselectValueField
             },
 
-            '#report_filters combobox[name=operator]': {
-                select: this.selectOperator
-            },
-
-            // saving edits to filter store + refresh
+            // date filters
             'reportfilterbasedate [name=value]': {
                 select: this.selectValueField
             },
 
-            // saving edits to date filter store + refresh
             '#report_filters datefield[name=value]': {
                 render: this.renderDateField
             },
 
-            // saving edits to non-date filter store + refresh
-            '#report_filters [name=value]': {
-                blur: this.blurValueField,
-                specialkey: this.submitValueField
-            },
-
-            // saving edits to filter store + refresh
+            // boolean filters
             '#report_filters checkbox': {
                 change: this.selectValueField,
                 render: this.renderCheckbox
             },
 
-            // remove filter
-            'reportfilteroptions button[action=remove-filter]': {
-                click: this.removeFilter
+            // string, accountid, number, and userid filters
+            '#report_filters [name=value]': {
+                blur: this.submitTextValueFieldOnBlur,
+                specialkey: this.submitValueFieldOnEnterKeypress
             }
          });
 
@@ -297,13 +309,6 @@ Ext.define('PICS.controller.report.Filter', {
         filter_view.removeCls('x-form-focus');
     },
 
-    blurValueField: function (cmp, event, eOpts) {
-        var filter_input_view = cmp.up('reportfilterbasefilter'),
-            filter_input_form = filter_input_view.getForm();
-
-        filter_input_form.updateRecord();
-    },
-
     focusFilter: function (cmp, event, eOpts) {
         var filter_view = cmp.up('reportfilter');
 
@@ -445,12 +450,25 @@ Ext.define('PICS.controller.report.Filter', {
         PICS.data.ServerCommunication.loadData();
     },
 
-    submitValueField: function (cmp, event) {
+    submitTextValueFieldOnBlur: function (cmp, event, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter'),
+            filter_input_form_record_value = filter_input_view.getForm().getRecord().get('value');
+
+        if (cmp.value != filter_input_form_record_value) {
+            this.submitValueField(cmp);
+        }
+    },
+
+    submitValueFieldOnEnterKeypress: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
         }
 
-        var filter_input_view = cmp.up('reportfilterbasefilter'),
+        this.submitValueField(cmp);
+    },
+
+    submitValueField: function (value_field_cmp) {
+        var filter_input_view = value_field_cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
 
         filter_input_form.updateRecord();
