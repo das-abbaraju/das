@@ -1,6 +1,6 @@
 /**
  * Button style guide
- *
+ * 
  * Theme: 'default', 'primary', 'warning', 'info', 'success', 'danger'
  *
  * Ext.create('Ext.button.Button', {
@@ -10,8 +10,8 @@
  * @author: Carey Hinoki
  * @date: 2012-07-02
  */
-
-
+ 
+ 
 // default
 
 $button_default_background_color: #dcdcdc;
@@ -138,26 +138,6 @@ $button_danger_active_background_color: #8c0600;
 $button_danger_active_gradient_color_top: #c60c0c;
 $button_danger_active_gradient_color_bottom: #8c0600;
 
-// disabled
-
-$button_disabled_background_color: #dcdcdc;
-$button_disabled_border_color: #bcbcbc;
-$button_disabled_gradient_color_top: #dcdcdc;
-$button_disabled_gradient_color_bottom: #dcdcdc;
-$button_disabled_text_color: #454545;
-$button_disabled_text_shadow_color: rgba(255,255,255,0.75);
-
-$button_disabled_over_background_color: #dcdcdc;
-$button_disabled_over_gradient_color_top: #dcdcdc;
-$button_disabled_over_gradient_color_bottom: #dcdcdc;
-
-$button_disabled_pressed_background_color: #dcdcdc;
-$button_disabled_pressed_gradient_color_top: #dcdcdc;
-$button_disabled_pressed_gradient_color_bottom: #dcdcdc;
-
-$button_disabled_active_background_color: #dcdcdc;
-$button_disabled_active_gradient_color_top: #dcdcdc;
-$button_disabled_active_gradient_color_bottom: #dcdcdc;
 
 .x-btn-default-toolbar-small .x-btn-inner
 {
@@ -197,7 +177,7 @@ $button_disabled_active_gradient_color_bottom: #dcdcdc;
 	@include text-shadow(0px -1px 0px $button_default_text_shadow_color);
 }
 
-// primary
+// primary 
 
 .x-btn.primary
 {
@@ -360,27 +340,4 @@ $button_disabled_active_gradient_color_bottom: #dcdcdc;
 {
 	color: $button_danger_text_color;
 	@include text-shadow(0px -1px 0px $button_danger_text_shadow_color);
-}
-
-.x-btn.default.x-btn-disabled,
-.x-btn.primary.x-btn-disabled,
-.x-btn.warning.x-btn-disabled,
-.x-btn.info.x-btn-disabled,
-.x-btn.success.x-btn-disabled,
-.x-btn.danger.x-btn-disabled
-{
-	background: $button_disabled_background_color;
-	@include background-image(linear-gradient($button_disabled_gradient_color_top, $button_disabled_gradient_color_bottom));
-	border: 1px solid $button_disabled_border_color;
-}
-
-.x-btn.default.x-btn-disabled button span,
-.x-btn.primary.x-btn-disabled button span,
-.x-btn.warning.x-btn-disabled button span,
-.x-btn.info.x-btn-disabled button span,
-.x-btn.success.x-btn-disabled button span,
-.x-btn.danger.x-btn-disabled button span
-{
-	color: $button_disabled_text_color;
-	@include text-shadow(0px -1px 0px $button_disabled_border_color);
 }
