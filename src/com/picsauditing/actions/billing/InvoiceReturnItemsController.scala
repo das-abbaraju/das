@@ -34,7 +34,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   def prepare = {
     Option(sapAppPropertyUtil) match {
       case Some(_) => Unit
-      case None => sapAppPropertyUtil = new SapAppPropertyUtil
+      case None => sapAppPropertyUtil = SapAppPropertyUtil.factory
     }
     invoice = invoiceDAO.find(getParameter("invoice.id"))
   }

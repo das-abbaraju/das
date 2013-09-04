@@ -9,16 +9,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.*;
-import com.picsauditing.util.SapAppPropertyUtil;
+import com.picsauditing.util.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.ReportFilterContractor;
-import com.picsauditing.util.Strings;
 import com.picsauditing.validator.ContractorValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -179,7 +175,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			// auditBuilder.buildAudits(contractor);
             if (!contractor.isDemo()) {
                 contractor.setQbSync(true);
-				if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+				if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(contractor)) {
                 	contractor.setSapSync(true);
 				}
             }

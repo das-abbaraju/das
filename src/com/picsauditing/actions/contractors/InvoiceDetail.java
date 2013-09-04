@@ -16,6 +16,7 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
+import com.picsauditing.util.CountryUtil;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -602,7 +603,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	@Transient
 	public boolean isSapEnabledForBizUnit() {
-		return sapAppPropertyUtil.isSAPBusinessUnitEnabled(transaction.getAccount().getCountry().getBusinessUnit().getId());
+		return sapAppPropertyUtil.isSAPBusinessUnitEnabledForObject(transaction);
 	}
 
 	@Transient

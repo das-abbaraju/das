@@ -29,9 +29,14 @@ public class SAPSyncEdit extends PicsActionSupport {
 	private String type = ACCOUNT;
 	private boolean needSync = false;
 	private boolean clearLastSyncDate = false;
+	private SapAppPropertyUtil sapAppPropertyUtil;
 
 	public String execute() throws NoRightsException {
 		permissions.tryPermission(OpPerms.Billing);
+
+		if (sapAppPropertyUtil == null) {
+			sapAppPropertyUtil = SapAppPropertyUtil.factory();
+		}
 
 		if (button != null) {
 			if (button.equals("save")) {
@@ -80,8 +85,7 @@ public class SAPSyncEdit extends PicsActionSupport {
 	}
 
 	private void editContractor(ContractorAccount contractor) {
-		SapAppPropertyUtil sapAppPropertyUtil = new SapAppPropertyUtil();
-		if (!needSync || sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+		if (!needSync || sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(contractor)) {
 			contractor.setSapSync(needSync);
 		}
 
@@ -108,8 +112,7 @@ public class SAPSyncEdit extends PicsActionSupport {
 	}
 
 	private void editTranaction(Transaction transaction) {
-		SapAppPropertyUtil sapAppPropertyUtil = new SapAppPropertyUtil();
-		if (!needSync || sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(transaction.getAccount().getCountry().getBusinessUnit().getId())) {
+		if (!needSync || sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(transaction)) {
 			transaction.setSapSync(needSync);
 		}
 		if (clearLastSyncDate) {
@@ -148,5 +151,13 @@ public class SAPSyncEdit extends PicsActionSupport {
 
 	public void setClearLastSyncDate(boolean clearLastSyncDate) {
 		this.clearLastSyncDate = clearLastSyncDate;
+	}
+
+	public SapAppPropertyUtil getSapAppPropertyUtil() {
+		return sapAppPropertyUtil;
+	}
+
+	public void setSapAppPropertyUtil(SapAppPropertyUtil sapAppPropertyUtil) {
+		this.sapAppPropertyUtil = sapAppPropertyUtil;
 	}
 }
