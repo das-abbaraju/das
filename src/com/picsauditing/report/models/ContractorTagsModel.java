@@ -80,6 +80,15 @@ public class ContractorTagsModel extends AbstractModel {
             flagColor.setUrl("ContractorFlag.action?id={ContractorAccountID}");
         }
 
+        Field reportingClient = new Field("ContractorWorksForReportingClient","ContractorAccount.id",FieldType.Operator);
+        reportingClient.setVisible(false);
+        reportingClient.setPrefixValue("SELECT co.subID " +
+                "FROM generalcontractors co " +
+                "JOIN operators o ON o.id = co.genID " +
+                "WHERE o.reportingID IN ");
+        reportingClient.setSuffixValue("");
+        fields.put(reportingClient.getName().toUpperCase(), reportingClient);
+
         return fields;
 	}
 }

@@ -9383,7 +9383,7 @@ textarea.x-form-invalid-field {
 
 /**
  * Button style guide
- * 
+ *
  * Theme: 'default', 'primary', 'warning', 'info', 'success', 'danger'
  *
  * Ext.create('Ext.button.Button', {
@@ -9393,11 +9393,11 @@ textarea.x-form-invalid-field {
  * @author: Carey Hinoki
  * @date: 2012-07-02
  */
-/* line 143, ../sass/my-ext-theme/widget/_button.scss */
+/* line 163, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn-default-toolbar-small .x-btn-inner {
   padding: 0px 7px; }
 
-/* line 150, ../sass/my-ext-theme/widget/_button.scss */
+/* line 170, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default {
   background: gainsboro;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
@@ -9407,7 +9407,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#f1f1f1, #dcdcdc);
   border: 1px solid #bcbcbc; }
 
-/* line 157, ../sass/my-ext-theme/widget/_button.scss */
+/* line 177, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default.x-over {
   background: #ececec;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
@@ -9416,7 +9416,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#f7f7f8, #ececec);
   background-image: linear-gradient(#f7f7f8, #ececec); }
 
-/* line 163, ../sass/my-ext-theme/widget/_button.scss */
+/* line 183, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default.x-pressed {
   background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
@@ -9425,7 +9425,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 169, ../sass/my-ext-theme/widget/_button.scss */
+/* line 189, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default.x-menu-active {
   background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
@@ -9434,12 +9434,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 175, ../sass/my-ext-theme/widget/_button.scss */
+/* line 195, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default button span {
   color: #454545;
   text-shadow: 0px -1px 0px none; }
 
-/* line 183, ../sass/my-ext-theme/widget/_button.scss */
+/* line 203, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary {
   background: #226396;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
@@ -9449,7 +9449,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#73bbe8, #226396);
   border: 1px solid #226396; }
 
-/* line 190, ../sass/my-ext-theme/widget/_button.scss */
+/* line 210, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary.x-over {
   background: #396cc9;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
@@ -9458,7 +9458,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#60c9f3, #396cc9);
   background-image: linear-gradient(#60c9f3, #396cc9); }
 
-/* line 196, ../sass/my-ext-theme/widget/_button.scss */
+/* line 216, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary.x-pressed {
   background: #09366f;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
@@ -9467,7 +9467,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#336f9c, #09366f);
   background-image: linear-gradient(#336f9c, #09366f); }
 
-/* line 202, ../sass/my-ext-theme/widget/_button.scss */
+/* line 222, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary.x-menu-active {
   background: #09366f;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
@@ -9476,12 +9476,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#336f9c, #09366f);
   background-image: linear-gradient(#336f9c, #09366f); }
 
-/* line 208, ../sass/my-ext-theme/widget/_button.scss */
+/* line 228, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary button span {
   color: white;
   text-shadow: 0px -1px 0px #226396; }
 
-/* line 216, ../sass/my-ext-theme/widget/_button.scss */
+/* line 236, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning {
   background: #e67e1c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
@@ -9491,7 +9491,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#fcc033, #e67e1c);
   border: 1px solid #e67e1c; }
 
-/* line 223, ../sass/my-ext-theme/widget/_button.scss */
+/* line 243, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning.x-over {
   background: #f1a300;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
@@ -9500,7 +9500,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#fcd100, #f1a300);
   background-image: linear-gradient(#fcd100, #f1a300); }
 
-/* line 229, ../sass/my-ext-theme/widget/_button.scss */
+/* line 249, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning.x-pressed {
   background: #d66000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
@@ -9509,7 +9509,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#ea9000, #d66000);
   background-image: linear-gradient(#ea9000, #d66000); }
 
-/* line 235, ../sass/my-ext-theme/widget/_button.scss */
+/* line 255, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning.x-menu-active {
   background: #d66000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
@@ -9518,12 +9518,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#ea9000, #d66000);
   background-image: linear-gradient(#ea9000, #d66000); }
 
-/* line 241, ../sass/my-ext-theme/widget/_button.scss */
+/* line 261, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning button span {
   color: white;
   text-shadow: 0px -1px 0px #e67e1c; }
 
-/* line 249, ../sass/my-ext-theme/widget/_button.scss */
+/* line 269, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info {
   background: #6ca6f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
@@ -9533,7 +9533,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#70cfff, #6ca6f6);
   border: 1px solid #6ca6f6; }
 
-/* line 256, ../sass/my-ext-theme/widget/_button.scss */
+/* line 276, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info.x-over {
   background: #73d0f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
@@ -9542,7 +9542,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#73ddff, #73d0f6);
   background-image: linear-gradient(#73ddff, #73d0f6); }
 
-/* line 262, ../sass/my-ext-theme/widget/_button.scss */
+/* line 282, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info.x-pressed {
   background: #5599fc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
@@ -9551,7 +9551,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#55a9ff, #5599fc);
   background-image: linear-gradient(#55a9ff, #5599fc); }
 
-/* line 268, ../sass/my-ext-theme/widget/_button.scss */
+/* line 288, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info.x-menu-active {
   background: #5599fc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
@@ -9560,12 +9560,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#55a9ff, #5599fc);
   background-image: linear-gradient(#55a9ff, #5599fc); }
 
-/* line 274, ../sass/my-ext-theme/widget/_button.scss */
+/* line 294, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info button span {
   color: white;
   text-shadow: 0px -1px 0px #6ca6f6; }
 
-/* line 282, ../sass/my-ext-theme/widget/_button.scss */
+/* line 302, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success {
   background: #229322;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
@@ -9575,7 +9575,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#33c033, #229322);
   border: 1px solid #229322; }
 
-/* line 289, ../sass/my-ext-theme/widget/_button.scss */
+/* line 309, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success.x-over {
   background: #25b000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
@@ -9584,7 +9584,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#33d000, #25b000);
   background-image: linear-gradient(#33d000, #25b000); }
 
-/* line 295, ../sass/my-ext-theme/widget/_button.scss */
+/* line 315, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success.x-pressed {
   background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
@@ -9593,7 +9593,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#299600, #1c7600);
   background-image: linear-gradient(#299600, #1c7600); }
 
-/* line 301, ../sass/my-ext-theme/widget/_button.scss */
+/* line 321, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success.x-menu-active {
   background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
@@ -9602,12 +9602,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#299600, #1c7600);
   background-image: linear-gradient(#299600, #1c7600); }
 
-/* line 307, ../sass/my-ext-theme/widget/_button.scss */
+/* line 327, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success button span {
   color: white;
   text-shadow: 0px -1px 0px #229322; }
 
-/* line 315, ../sass/my-ext-theme/widget/_button.scss */
+/* line 335, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger {
   background: #ac030c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
@@ -9617,7 +9617,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#f6303c, #ac030c);
   border: 1px solid #ac030c; }
 
-/* line 322, ../sass/my-ext-theme/widget/_button.scss */
+/* line 342, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger.x-over {
   background: #d00900;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
@@ -9626,7 +9626,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#f92626, #d00900);
   background-image: linear-gradient(#f92626, #d00900); }
 
-/* line 328, ../sass/my-ext-theme/widget/_button.scss */
+/* line 348, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger.x-pressed {
   background: #8c0600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
@@ -9635,7 +9635,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
   background-image: linear-gradient(#c60c0c, #8c0600); }
 
-/* line 334, ../sass/my-ext-theme/widget/_button.scss */
+/* line 354, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger.x-menu-active {
   background: #8c0600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
@@ -9644,10 +9644,35 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
   background-image: linear-gradient(#c60c0c, #8c0600); }
 
-/* line 340, ../sass/my-ext-theme/widget/_button.scss */
+/* line 360, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger button span {
   color: white;
   text-shadow: 0px -1px 0px #ac030c; }
+
+/* line 371, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default.x-btn-disabled,
+.x-btn.primary.x-btn-disabled,
+.x-btn.warning.x-btn-disabled,
+.x-btn.info.x-btn-disabled,
+.x-btn.success.x-btn-disabled,
+.x-btn.danger.x-btn-disabled {
+  background: gainsboro;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #dcdcdc));
+  background-image: -webkit-linear-gradient(#dcdcdc, #dcdcdc);
+  background-image: -moz-linear-gradient(#dcdcdc, #dcdcdc);
+  background-image: -o-linear-gradient(#dcdcdc, #dcdcdc);
+  background-image: linear-gradient(#dcdcdc, #dcdcdc);
+  border: 1px solid #bcbcbc; }
+
+/* line 383, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default.x-btn-disabled button span,
+.x-btn.primary.x-btn-disabled button span,
+.x-btn.warning.x-btn-disabled button span,
+.x-btn.info.x-btn-disabled button span,
+.x-btn.success.x-btn-disabled button span,
+.x-btn.danger.x-btn-disabled button span {
+  color: #454545;
+  text-shadow: 0px -1px 0px #bcbcbc; }
 
 /* line 1, ../sass/my-ext-theme/widget/_boxselect.scss */
 .x-boxselect.x-form-text {

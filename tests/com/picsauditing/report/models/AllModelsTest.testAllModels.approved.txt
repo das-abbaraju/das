@@ -696,6 +696,8 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
@@ -954,6 +956,7 @@ ContractorSingleTagOperatorTagTag
 ContractorSoleProprietor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
+ContractorWorksForReportingClient
 
 Model: ContractorTrades
 Permission: Permissions{permissions=[]}
