@@ -147,7 +147,7 @@ public class PermissionQueryBuilder {
 				&& (permissions.isGeneralContractor() || !permissions.hasPermission(OpPerms.ViewUnApproved));
 	}
 
-	private String getOperatorIDs() {
+	public String getOperatorIDs() {
 		if (permissions.isCorporate())
 			return Strings.implode(permissions.getOperatorChildren());
 

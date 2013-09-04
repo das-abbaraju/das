@@ -18,6 +18,7 @@ public enum ModelType {
     Contractors,
     ContractorSearch,
     ContractorStatistics,
+    ContractorTags,
     ContractorTrades,
     EmployeeCompetencies,
     FlagArchive,
