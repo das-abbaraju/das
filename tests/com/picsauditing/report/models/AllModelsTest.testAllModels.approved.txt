@@ -696,6 +696,8 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
