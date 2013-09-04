@@ -9,11 +9,10 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.events.AuditDataSaveEvent;
 import com.picsauditing.rbic.InsuranceCriteriaDisplay;
-import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.service.AuditDataService;
+import com.picsauditing.service.ContractorAuditService;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +50,10 @@ public class AuditDataSave extends AuditActionSupport {
 	private String eSignatureTitle = null;
 
 	@Autowired
+	private AuditDataService auditDataService;
+	@Autowired
+	private ContractorAuditService contractorAuditService;
+	@Autowired
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private NaicsDAO naicsDAO;
@@ -63,50 +66,38 @@ public class AuditDataSave extends AuditActionSupport {
 
 		AuditCatData catData;
 		try {
-			getUser();
-			AuditData databaseCopy = null;
-			if (auditData != null && auditData.getId() > 0) {
-				databaseCopy = auditDataDAO.find(auditData.getId());
-			} else {
-				if (auditData == null) {
-					throw new Exception("Missing Audit Data");
+			user = getUser();
+
+			AuditData databaseCopy = loadAuditData(auditData);
+			auditID = auditData.getAudit().getId();
+			auditData = loadAuditDataQuestion(auditData);
+
+			if (conAudit == null) {
+				conAudit = contractorAuditService.findContractorAudit(auditID);
+
+				if (conAudit == null) {
+					addActionError(getText("Audit.error.AuditNotFound"));
+					return SUCCESS;
 				}
-				if (auditData.getAudit() == null) {
-					throw new Exception("Missing Audit");
+
+				try {
+					checkContractorAuditPermissions(conAudit);
+				} catch (NoRightsException e) {
+					addActionError(getText("Audit.error.AuditNotFound"));
+					return SUCCESS;
 				}
-				if (auditData.getQuestion() == null) {
-					throw new Exception("Missing Question");
-				}
-				databaseCopy = auditDataDAO.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
-						.getId());
+
+				professionalLabel = getProfessionalLabelText(conAudit.getAuditType().getAssigneeLabel());
+				refreshAudit = getRefreshAudit(conAudit);
+				showUploadRequirementsBanner = getShowUploadRequirementsBanner(conAudit);
 			}
 
-			auditID = auditData.getAudit().getId();
-			// question might not be fully reloaded with related records
-			auditData.setQuestion(questionDao.find(auditData.getQuestion().getId()));
-             if (conAudit == null) {
-                try {
-                    findConAudit();
-                } catch (RecordNotFoundException e){
-                    addActionError(getText("Audit.error.AuditNotFound"));
-                    return SUCCESS;
-                }
-                catch (NoRightsException e) {
-                    addActionError(getText("Audit.error.AuditNotFound"));
-                    return SUCCESS;
-                }
-            }
-			/*
-			 * If we are reloading the question, we need to exit early to
-			 * prevent the object from saving.
-			 */
+			// todo: Revisit how we use databaseCopy throughout
 			if ("reload".equals(button)) {
 				if (auditData.getId() == 0 && databaseCopy != null) {
 					auditData = databaseCopy;
 				}
-
-				loadAnswerMap();
-
+				answerMap = auditDataService.loadAnswerMap(auditData);
 				return SUCCESS;
 			}
 
@@ -114,22 +105,19 @@ public class AuditDataSave extends AuditActionSupport {
 			boolean commentChanged = false;
 			boolean answerChanged = false;
 
-			/*
-			 * If the `databaseCopy` is not set, then this is the first time the
-			 * question is being answered.
-			 */
-			if (databaseCopy == null) {
-				// insert mode
-				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
-				loadCategoryIfNeeded();
-				auditData.setAudit(audit);
-				if (!answerFormatValid(auditData, null)) {
+			if (answerIsNew(databaseCopy)) {
+				auditData = processAuditDataForNewAnswer(auditData);
+
+				databaseCopy = auditData;
+				AuditQuestion auditQuestion = auditDataService.findAuditQuestion(databaseCopy.getQuestion().getId());
+				databaseCopy.setQuestion(auditQuestion);
+
+				if (!processAndValidateBasedOnQuestionType(auditData, databaseCopy)) {
 					return SUCCESS;
 				}
-				SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
+				auditDataService.insertAuditData(auditData);
 			} else {
-				// update mode
-				if (!answerFormatValid(auditData, databaseCopy)) {
+				if (!processAndValidateBasedOnQuestionType(auditData, databaseCopy)) {
 					return SUCCESS;
 				}
 
@@ -152,7 +140,7 @@ public class AuditDataSave extends AuditActionSupport {
 				loadCategoryIfNeeded();
 			}
 
-			loadAnswerMap();
+			answerMap = auditDataService.loadAnswerMap(auditData);
 
 			auditData.setAuditColumns(permissions);
 
@@ -166,7 +154,8 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 			}
 
-			auditDataDAO.save(auditData);
+			auditDataService.saveAuditData(auditData);
+			// todo: Investigate. Barring a trigger, why would we need to resync from the db if we just saved? Ajax stuff?
 			auditDataDAO.refresh(auditData); // needed for PICS-11673
 
 			checkUniqueCode(conAudit);
@@ -198,7 +187,7 @@ public class AuditDataSave extends AuditActionSupport {
 					}
 				}
 
-				contractorAccountDao.save(contractor);
+				saveContractorAccount(contractor);
 
 				AuditQuestion checkRecalculateCategories = questionDao.find(currentQuestionId);
 				if (checkRecalculateCategories.isRecalculateCategories()) {
@@ -270,7 +259,7 @@ public class AuditDataSave extends AuditActionSupport {
 					// questions off of it
 					auditData = auditDataDAO.find(auditData.getId());
 
-					loadAnswerMap();
+					answerMap = auditDataService.loadAnswerMap(auditData);
 				} catch (Exception x) {
 					throw new Exception("Error saving category. Please refresh the page and try again.");
 				}
@@ -324,9 +313,50 @@ public class AuditDataSave extends AuditActionSupport {
 		return SUCCESS;
 	}
 
+	private BaseTable saveContractorAccount(ContractorAccount contractor) {
+		return contractorAccountDao.save(contractor);   // todo: Move to a service.
+	}
+
+	private AuditData processAuditDataForNewAnswer(AuditData auditData) {
+		ContractorAudit audit = contractorAuditService.findContractorAudit(auditData.getAudit().getId());
+		auditData = setQuestionCategoryIfNecessary(auditData);
+		auditData.setAudit(audit);
+		return auditData;
+	}
+
+	private AuditData setQuestionCategoryIfNecessary(AuditData auditData) {
+		AuditQuestion question = auditData.getQuestion();
+		if (question.getCategory() == null) {
+			AuditQuestion dataQuestion = auditDataService.findAuditQuestion(auditData.getQuestion().getId());
+			auditData.getQuestion().setCategory(dataQuestion.getCategory());
+		}
+		return auditData;
+	}
+
+	private boolean answerIsNew(AuditData databaseCopy) {
+		return databaseCopy == null;
+	}
+
+	private AuditData loadAuditData(AuditData auditData) throws Exception {
+		if (auditData != null && auditData.getId() > 0) {
+			return auditDataService.findAuditData(auditData.getId());
+		} else {
+			return auditDataService.findAuditDataByAuditAndQuestion(auditData);
+		}
+	}
+
+	private AuditData loadAuditDataQuestion(AuditData auditData) {
+		// DA: todo: Look into why the auditQuestion is missing records as hinted by the existing comment below.
+		// question might not be fully reloaded with related records
+		AuditQuestion auditQuestion = auditDataService.findAuditQuestion(auditData.getQuestion().getId());
+		auditData.setQuestion(auditQuestion);
+		return auditData;
+	}
+
 	private void loadCategoryIfNeeded() {
 		if (auditData.getQuestion().getCategory() == null) {
-			AuditQuestion dataQuestion = questionDao.find(auditData.getQuestion().getId());
+			AuditQuestion dataQuestion = auditDataService.findAuditQuestion(auditData.getQuestion().getId());
+			// todo: Investigate changing AuditQuestion.category to eager fetch (the default), to avoid this.
 			dataQuestion.setCategory(dataQuestion.getCategory());
 			auditData.getQuestion().setCategory(dataQuestion.getCategory());
 		}
@@ -360,7 +390,7 @@ public class AuditDataSave extends AuditActionSupport {
         }
 
 		if (isAudit && !isAnnualUpdate) {
-			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+			AuditQuestion question = auditDataService.findAuditQuestion(auditData.getQuestion().getId());
 			if (question.getOkAnswer() != null && question.getOkAnswer().contains(auditData.getAnswer())
 					&& (permissions.isAdmin() || permissions.hasPermission(OpPerms.AuditEdit))) {
 				newCopy.setDateVerified(new Date());
@@ -469,7 +499,7 @@ public class AuditDataSave extends AuditActionSupport {
 					auditData.setAuditColumns(permissions);
 					auditData.setAnswer("0");
 
-					auditDataDAO.save(auditData);
+					auditDataService.saveAuditData(auditData);
 				}
 			}
 		} else if (newCopy.getQuestion().getId() == COHS_INCIDENT_QUESTION_ID) {
@@ -489,7 +519,7 @@ public class AuditDataSave extends AuditActionSupport {
 					auditData.setAuditColumns(permissions);
 					auditData.setAnswer("0");
 
-					auditDataDAO.save(auditData);
+					auditDataService.saveAuditData(auditData);
 				}
 			}
 		}
@@ -627,29 +657,6 @@ public class AuditDataSave extends AuditActionSupport {
 		return false;
 	}
 
-	private void loadAnswerMap() {
-		List<Integer> questionIds = new ArrayList<Integer>();
-		questionIds.add(auditData.getQuestion().getId());
-		if (auditData.getQuestion().getRequiredQuestion() != null) {
-			AuditQuestion q = auditData.getQuestion().getRequiredQuestion();
-			while (q != null) {
-				questionIds.add(q.getId());
-				q = q.getRequiredQuestion();
-			}
-		}
-		if (auditData.getQuestion().getVisibleQuestion() != null) {
-			AuditQuestion q = auditData.getQuestion().getVisibleQuestion();
-			while (q != null) {
-				questionIds.add(q.getId());
-				q = q.getVisibleQuestion();
-			}
-		}
-
-		questionIds.addAll(auditData.getQuestion().getSiblingQuestionWatchers());
-
-		answerMap = auditDataDAO.findAnswers(auditID, questionIds);
-	}
-
 	public String getMode() {
 		return mode == null ? "View" : mode;
 	}
@@ -751,6 +758,8 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if ("Date".equals(questionType)) {
+			// todo: Revisit whether to call setAnswerToDateOrRecordError() which was unreachable but apparently intended
+			// to be called for the Date questionType.
 			return isDateValid(auditData);
 		}
 
@@ -797,9 +806,47 @@ public class AuditDataSave extends AuditActionSupport {
 				return false;
 			}
 		}
+		// fixme: Unreachable! Duplicate if-check above.
+//		if ("Date".equals(questionType)) {
+//			return setAnswerToDateOrRecordError(auditData, answer);
+//		}
+
+		if ("Check Box".equals(questionType)) {
+			if (answer.equals("false")) {
+				auditData.setAnswer("");
+			}
+		}
+
+		return true;
+	}
+
+	private boolean processAndValidateBasedOnQuestionType(AuditData auditData, AuditData databaseCopy) {
+
+		String questionType = databaseCopy.getQuestion().getQuestionType();
+		String answer = auditData.getAnswer();
+
+		if ("ESignature".equals(questionType)) {
+			boolean valid = processAndValidateESignature(auditData, databaseCopy, answer);
+			if (!valid) {
+				return false;
+			}
+		}
+
+		if ("Tagit".equals(questionType) && "[]".equals(answer)) {
+			auditData.setAnswer("");
+			return true;
+		}
 
 		if ("Date".equals(questionType)) {
-			return setAnswerToDateOrRecordError(auditData, answer);
+			return isDateValid(auditData);
+		}
+
+		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)
+				|| "Percent".equals(questionType)) {
+			boolean valid = processAndValidateNumeric(auditData, databaseCopy, questionType);
+			if (!valid) {
+				return false;
+			}
 		}
 
 		if ("Check Box".equals(questionType)) {
@@ -807,6 +854,93 @@ public class AuditDataSave extends AuditActionSupport {
 				auditData.setAnswer("");
 			}
 		}
+
+		// Null or blank answers are always OK
+		if (Strings.isEmpty(answer)) {
+			return true;
+		}
+
+		return true;
+	}
+
+	private boolean processAndValidateNumeric(AuditData auditData, AuditData databaseCopy, String questionType) {
+		AuditQuestion question = databaseCopy.getQuestion();
+		String answer = auditData.getAnswer();
+
+		answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
+
+		boolean hasBadChar = false;
+		for (int i = 0; i < answer.length(); i++) {
+			char c = answer.charAt(i);
+			if (!Character.isDigit(c) && (c != '.') && (c != '-')) {
+				hasBadChar = true;
+			}
+		}
+
+		if (hasBadChar) {
+			addActionError(getText("AuditData.error.MustBeNumber"));
+			return false;
+		}
+
+		NumberFormat format;
+		if ("Decimal Number".equals(questionType)) {
+			format = new DecimalFormat("#,##0.000");
+		} else if ("Number".equals(questionType)) {
+			format = new DecimalFormat("###0");
+		} else if ("Percent".equals(questionType)) {
+			format = new DecimalFormat("##0.00");
+		} else {
+			format = new DecimalFormat("#,##0");
+		}
+
+		try {
+			BigDecimal value = new BigDecimal(answer);
+			if (isInvalidNegativeNumber(value, question)) {
+				addActionError(getText("Audit.message.InvalidNegativeNumber"));
+				return false;
+			} else if (isInvalidPercent(value, question)) {
+				addActionError(getText("Audit.message.InvalidPercent"));
+				return false;
+			}
+			auditData.setAnswer(format.format(value));
+		} catch (Exception ignore) {
+			addActionError(getText("Audit.message.InvalidFormat"));
+			return false;
+		}
+		return true;
+	}
+
+	private boolean processAndValidateESignature(AuditData auditData, AuditData databaseCopy, String answer) {
+
+		if (eSignatureName == null && eSignatureTitle == null) {
+			setESignatureData(answer);
+		}
+
+		if ("Verify".equals(mode)) {
+			setESignatureData(databaseCopy.getAnswer());
+		}
+
+		if (eSignatureName == null && eSignatureTitle == null) {
+			auditData.setAnswer("");
+			auditData.setComment("");
+			return true;
+		}
+
+		if (Strings.isEmpty(eSignatureName)) {
+			addActionError(getText("AuditData.ESignature.name.missing"));
+		}
+
+		if (Strings.isEmpty(eSignatureTitle)) {
+			addActionError(getText("AuditData.ESignature.title.missing"));
+		}
+
+		if (hasActionErrors()) {
+			return false;
+		}
+
+		// Strip the first comma that results from the two part answer.
+		auditData.setAnswer(eSignatureName + " / " + eSignatureTitle);
+		auditData.setComment(getIP());
 
 		return true;
 	}

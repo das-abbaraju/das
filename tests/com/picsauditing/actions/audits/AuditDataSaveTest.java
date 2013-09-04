@@ -19,6 +19,8 @@ import java.util.*;
 
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.models.audits.AuditEditModel;
+import com.picsauditing.service.AuditDataService;
+import com.picsauditing.service.ContractorAuditService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -67,6 +69,10 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	private AuditCategoryRuleCache categoryRuleCache;
 	@Mock
 	private AuditPercentCalculator auditPercentCalculatior;
+	@Mock
+	private AuditDataService auditDataService;
+	@Mock
+	private ContractorAuditService contractorAuditService;
 
 	private ContractorAccount contractor;
 	private AuditData auditData;
@@ -120,11 +126,13 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditPercentCalculator", auditPercentCalculatior);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "conAudit", audit);
         PicsTestUtil.forceSetPrivateField(auditDataSave, "auditEditModel", auditEditModel);
-
+        PicsTestUtil.forceSetPrivateField(auditDataSave, "auditDataService", auditDataService);
+        PicsTestUtil.forceSetPrivateField(auditDataSave, "contractorAuditService", contractorAuditService);
 
 		when(auditDataDao.findAnswers(anyInt(), (Collection<Integer>) Matchers.anyObject())).thenReturn(answerMap);
-		when(auditDao.find(anyInt())).thenReturn(audit);
+		when(contractorAuditService.findContractorAudit(anyInt())).thenReturn(audit);
 		when(questionDao.find(anyInt())).thenReturn(auditData.getQuestion());
+		when(auditDataService.findAuditQuestion(anyInt())).thenReturn(auditData.getQuestion());
 		when(catDataDao.findAuditCatData(Matchers.anyInt(), Matchers.anyInt())).thenReturn(catData);
 		when(auditRuleDAO.findCategoryRulesByQuestion(Matchers.anyInt()))
 				.thenReturn(new ArrayList<AuditCategoryRule>());
@@ -237,11 +245,10 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		oldData.setAudit(auditData.getAudit());
 		oldData.setQuestion(auditData.getQuestion());
 
-		when(questionDao.find(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
-
-        when(permissions.seesAllContractors()).thenReturn(true);
-
+		when(auditDataService.findAuditQuestion(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
+		when(permissions.seesAllContractors()).thenReturn(true);
 		when(auditDataDao.find(anyInt())).thenReturn(oldData);
+		when(auditDataService.findAuditData(anyInt())).thenReturn(oldData);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "button", "verify");
 		assertEquals("success", auditDataSave.execute());
 		assertEquals("Yes", oldData.getAnswer());
@@ -271,9 +278,10 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		oldData.setAudit(auditData.getAudit());
 		oldData.setQuestion(auditData.getQuestion());
 
-		when(questionDao.find(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
-        when(permissions.isContractor()).thenReturn(true);
+		when(auditDataService.findAuditQuestion(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
+		when(permissions.isContractor()).thenReturn(true);
 		when(auditDataDao.find(anyInt())).thenReturn(oldData);
+		when(auditDataService.findAuditData(anyInt())).thenReturn(oldData);
 
 		assertEquals("success", auditDataSave.execute());
 		assertEquals("No", oldData.getAnswer());
@@ -303,6 +311,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         when(questionDao.find(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
         when(permissions.isContractor()).thenReturn(true);
         when(auditDataDao.find(anyInt())).thenReturn(oldData);
+        when(auditDataService.findAuditData(anyInt())).thenReturn(oldData);
 
         assertEquals("success", auditDataSave.execute());
         assertEquals("Yes", oldData.getAnswer());
@@ -393,8 +402,9 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		auditData.setId(0);
 		auditData.setAnswer("2000000");
 
-		when(questionDao.find(questionInTheDatabase.getId())).thenReturn(questionInTheDatabase);
+		when(auditDataService.findAuditQuestion(questionInTheDatabase.getId())).thenReturn(questionInTheDatabase);
 		when(auditDataDao.find(auditData.getId())).thenReturn(auditData);
+		when(auditDataService.findAuditData(auditData.getId())).thenReturn(auditData);
 
 		assertEquals("success", auditDataSave.execute());
 		assertEquals(0, auditDataSave.getActionErrors().size());

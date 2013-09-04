@@ -188,7 +188,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Current logged in user
 	 */
-	private User user;
+	protected User user;
 	/**
 	 * TODO Kyle, please research this field and document it. Also review if we
 	 * need setAccount on AccountActionSupport Maybe we should move the account

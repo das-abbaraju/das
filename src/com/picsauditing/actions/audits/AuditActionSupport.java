@@ -71,7 +71,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected boolean showVerified = false;
 	protected boolean showCaoTable = true;
 	protected boolean showUploadRequirementsBanner = false;
-	private boolean refreshAudit = false;
+	boolean refreshAudit = false;
 
 	protected ContractorAudit conAudit;
 
@@ -82,7 +82,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<CategoryNode> categoryNodes;
 
-	private String professionalLabel = "";
+	String professionalLabel = "";
 
 	public String execute() throws Exception {
 		this.findConAudit();
@@ -116,8 +116,26 @@ public class AuditActionSupport extends ContractorActionSupport {
 			throw new RecordNotFoundException("Audit " + this.auditID);
 		}
 
+		if (conAudit != null) {
+			checkContractorAuditPermissions(conAudit);
+			professionalLabel = getProfessionalLabelText(conAudit.getAuditType().getAssigneeLabel());
+			refreshAudit = getRefreshAudit(conAudit);
+			showUploadRequirementsBanner = getShowUploadRequirementsBanner(conAudit);
+		}
+	}
+
+	String getProfessionalLabelText(String assigneeLabel) {
+		if (Strings.isEmpty(assigneeLabel)) {
+			return getText("Assignee.SafetyProfessional");
+		} else {
+			return getText("Assignee." + assigneeLabel);
+		}
+	}
+
+	protected void checkContractorAuditPermissions(ContractorAudit conAudit) throws NoRightsException {
 		contractor = conAudit.getContractorAccount();
 		id = contractor.getId();
+
 		if (permissions.isContractor() && id != permissions.getAccountId()) {
 			throw new NoRightsException("Contractors can only view their own audits");
 		}
@@ -127,34 +145,24 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		if (!conAudit.isVisibleTo(permissions)) {
-			throw new NoRightsException(conAudit.getAuditType().getName().toString());
+			throw new NoRightsException(conAudit.getAuditType().getName());
 		}
-
-		if (Strings.isEmpty(conAudit.getAuditType().getAssigneeLabel()))
-			professionalLabel = getText("Assignee.SafetyProfessional");
-		else
-			professionalLabel = getText("Assignee." + conAudit.getAuditType().getAssigneeLabel());
-
-		calculateRefreshAudit();
-
-		setUploadRequirements();
-
 	}
 
-	private void setUploadRequirements() {
-		if (conAudit == null)
-			return;
+	boolean getShowUploadRequirementsBanner(ContractorAudit conAudit) {
 		List<Integer> list = Arrays.asList(2, 3, 5, 6, 17, 29, 72, 82, 96, 100, 176, 313);
-		if (list.contains(conAudit.getAuditType().getId())) {
-			showUploadRequirementsBanner = true;
-		}
+		return list.contains(conAudit.getAuditType().getId());
 	}
 
-	private void calculateRefreshAudit() {
-		if (conAudit.getAuditType().getWorkFlow().isUseStateForEdit())
-			refreshAudit = true;
-		if (conAudit.getAuditType().getClassType().isPolicy() && !conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			refreshAudit = true;
+	boolean getRefreshAudit(ContractorAudit conAudit) {
+		if (conAudit.getAuditType().getWorkFlow().isUseStateForEdit()) {
+			return true;
+		}
+
+		if (conAudit.getAuditType().getClassType().isPolicy() && !conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
+			return true;
+		}
+		return false;
 	}
 
 	public boolean isShowEmailReminder() {
