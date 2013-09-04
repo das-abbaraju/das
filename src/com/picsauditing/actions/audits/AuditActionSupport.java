@@ -119,7 +119,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit != null) {
 			checkContractorAuditPermissions(conAudit);
 			professionalLabel = getProfessionalLabelText(conAudit.getAuditType().getAssigneeLabel());
-			refreshAudit = getRefreshAudit(conAudit);
+			calculateRefreshAudit();
 			showUploadRequirementsBanner = getShowUploadRequirementsBanner(conAudit);
 		}
 	}
@@ -154,15 +154,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return list.contains(conAudit.getAuditType().getId());
 	}
 
-	boolean getRefreshAudit(ContractorAudit conAudit) {
+	void calculateRefreshAudit() {
 		if (conAudit.getAuditType().getWorkFlow().isUseStateForEdit()) {
-			return true;
+			refreshAudit = true;
 		}
 
 		if (conAudit.getAuditType().getClassType().isPolicy() && !conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
-			return true;
+			refreshAudit = true;
 		}
-		return false;
 	}
 
 	public boolean isShowEmailReminder() {

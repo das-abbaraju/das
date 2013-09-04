@@ -88,7 +88,7 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 
 				professionalLabel = getProfessionalLabelText(conAudit.getAuditType().getAssigneeLabel());
-				refreshAudit = getRefreshAudit(conAudit);
+				calculateRefreshAudit();
 				showUploadRequirementsBanner = getShowUploadRequirementsBanner(conAudit);
 			}
 
