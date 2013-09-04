@@ -126,72 +126,14 @@ public class Cron extends PicsActionSupport {
 		report.append("\n\n\n");
 
 		if (!flagsOnly) {
-
-			startTask("Running auditBuilder.addAuditRenewals...");
-			List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
-			for (ContractorAccount contractor : contractors) {
-				try {
-					auditBuilder.buildAudits(contractor);
-					contractorAuditDAO.save(contractor);
-				} catch (Exception e) {
-					logger.error("ERROR!! AuditBuiler.addAuditRenewals() {}", e.getMessage());
-				}
-			}
-			endTask();
-
-			try {
-				// TODO - Move this to the db.picsauditing.com cron bash script
-				/*
-				 * OPTIMIZE TABLE
-				 * OSHA,accounts,auditCategories,auditData,auditQuestions
-				 * ,certificates,contractor_info," +
-				 * "forms,generalContractors,loginLog,users;
-				 */
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
-				startTask("Running Huntsman EBIX Support...");
-				processEbixData();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
-				// TODO we shouldn't recacluate audits, but only categories.
-				// This shouldn't be needed at all anymore
-				startTask("Recalculating all the categories for Audits...");
-				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
-				for (ContractorAudit cAudit : conList) {
-					auditPercentCalculator.percentCalculateComplete(cAudit, true);
-					cAudit.setLastRecalculation(new Date());
-					cAudit.setAuditColumns(system);
-					contractorAuditDAO.save(cAudit);
-				}
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-			try {
-				startTask("Starting Indexer...");
-				runIndexer();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
+			tasksIfNotFlagsOnly();
 		}
 
 		try {
 			startTask("Sending emails to contractors pending...");
-
 			getEmailExclusions();
-
 			sendEmailPendingAccounts();
-
 			emailExclusionList.clear();
-
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -199,13 +141,9 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			startTask("Sending emails to registration requests...");
-
 			getEmailExclusions();
-
 			sendEmailContractorRegistrationRequest();
-
 			emailExclusionList.clear();
-
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -213,9 +151,7 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			startTask("Sending email about upcoming implementation audits...");
-
 			sendUpcomingImplementationAuditEmail();
-
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -325,7 +261,64 @@ public class Cron extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-    @Anonymous
+	private void tasksIfNotFlagsOnly() {
+		startTask("Running auditBuilder.addAuditRenewals...");
+		List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
+		for (ContractorAccount contractor : contractors) {
+			try {
+				auditBuilder.buildAudits(contractor);
+				contractorAuditDAO.save(contractor);
+			} catch (Exception e) {
+				logger.error("ERROR!! AuditBuiler.addAuditRenewals() {}", e.getMessage());
+			}
+		}
+		endTask();
+
+		try {
+			// TODO - Move this to the db.picsauditing.com cron bash script
+			/*
+			 * OPTIMIZE TABLE
+			 * OSHA,accounts,auditCategories,auditData,auditQuestions
+			 * ,certificates,contractor_info," +
+			 * "forms,generalContractors,loginLog,users;
+			 */
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Running Huntsman EBIX Support...");
+			processEbixData();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			// TODO we shouldn't recacluate audits, but only categories.
+			// This shouldn't be needed at all anymore
+			startTask("Recalculating all the categories for Audits...");
+			List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
+			for (ContractorAudit cAudit : conList) {
+				auditPercentCalculator.percentCalculateComplete(cAudit, true);
+				cAudit.setLastRecalculation(new Date());
+				cAudit.setAuditColumns(system);
+				contractorAuditDAO.save(cAudit);
+			}
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		try {
+			startTask("Starting Indexer...");
+			runIndexer();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+	}
+
+	@Anonymous
     public String move90DayPendingAccountsToDeclinedStatus() throws Exception {
         try {
             startTask("Moving pending accounts past 90 days to declined");
