@@ -37,6 +37,7 @@ public class Invoice extends Transaction {
 	private Date paidDate; // MAX(Payment.creationDate)
 	private Map<FeeClass, BigDecimal> commissionEligibleFeeMap;
 	protected boolean qbSyncWithTax;
+	private Invoice lateFeeInvoice;
 
     private InvoiceType invoiceType;
     protected BigDecimal commissionableAmount = BigDecimal.ZERO;
@@ -127,6 +128,14 @@ public class Invoice extends Transaction {
 
 	public void setQbSyncWithTax(boolean qbSyncWithTax) {
 		this.qbSyncWithTax = qbSyncWithTax;
+	}
+
+	public Invoice getLateFeeInvoice() {
+		return lateFeeInvoice;
+	}
+
+	public void setLateFeeInvoice(Invoice lateFeeInvoice) {
+		this.lateFeeInvoice = lateFeeInvoice;
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })

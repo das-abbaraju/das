@@ -891,24 +891,25 @@ public class Cron extends PicsActionSupport {
             InvoiceItem lateFeeItem = new InvoiceItem(fee);
             lateFeeItem.setAmount(lateFee);
             lateFeeItem.setAuditColumns(new User(User.SYSTEM));
-            lateFeeItem.setInvoice(i);
             lateFeeItem.setDescription("Assessed "
                     + new SimpleDateFormat(PicsDateFormat.American).format(new Date())
                     + " due to delinquent payment.");
 
-            // Add Late Fee to Invoice
-            i.getItems().add(lateFeeItem);
-            i.updateTotalAmount();
-            i.updateAmountApplied();
-            AccountingSystemSynchronization.setToSynchronize(i);
+			Invoice lateFeeInvoice = new Invoice();
+			lateFeeItem.setInvoice(lateFeeInvoice);
+			lateFeeInvoice.getItems().add(lateFeeItem);
+			lateFeeInvoice.updateTotalAmount();
+			lateFeeInvoice.updateAmountApplied();
+			lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
+            AccountingSystemSynchronization.setToSynchronize(lateFeeInvoice);
 
-            i.setAuditColumns(new User(User.SYSTEM));
-            if (i.getAccount() instanceof ContractorAccount) {
-                billingService.syncBalance(((ContractorAccount) i.getAccount()));
-                invoiceItemDAO.save(i.getAccount());
+			lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
+            if (lateFeeInvoice.getAccount() instanceof ContractorAccount) {
+                billingService.syncBalance(((ContractorAccount) lateFeeInvoice.getAccount()));
+                invoiceItemDAO.save(lateFeeInvoice.getAccount());
             }
             invoiceItemDAO.save(lateFeeItem);
-            invoiceItemDAO.save(i);
+            invoiceItemDAO.save(lateFeeInvoice);
         }
 	}
 
@@ -920,6 +921,10 @@ public class Cron extends PicsActionSupport {
         }
         return false;
     }
+
+	private boolean invoiceHasLateFeeAlready(Invoice i) {
+
+	}
 
     public void sendNoActionEmailToTrialAccounts() throws Exception {
 		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
