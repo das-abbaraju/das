@@ -105,18 +105,13 @@ public class AuditDataDAO extends PicsDAO {
 		List<AuditData> result = query.getResultList();
 
 		for (AuditData row : result) {
-			int id = row.getQuestion().getId();
-			if (!Strings.isEmpty(row.getAudit().getAuditFor())
-					&& !AuditType.CANADIAN_PROVINCES.contains(row.getAudit().getAuditType().getId())) {
-				throw new RuntimeException("ERROR AuditDataDAO:findAnswersByContractor(" + conID + "," + id
-						+ ") getAuditFor not empty for audit id: " + row.getAudit().getId());
-			}
-			if (indexedResult.containsKey(id)) {
-				if (row.getCreationDate().after(indexedResult.get(id).getCreationDate())) {
-					indexedResult.put(id, row);
+			int questionId = row.getQuestion().getId();
+			if (indexedResult.containsKey(questionId)) {
+				if (row.getCreationDate().after(indexedResult.get(questionId).getCreationDate())) {
+					indexedResult.put(questionId, row);
 				}
 			} else {
-				indexedResult.put(id, row);
+				indexedResult.put(questionId, row);
 			}
 		}
 
