@@ -268,6 +268,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 				case AUDITGUARD:
 					header.setName(getText("global.AuditGUARD"));
 					break;
+				case CLIENT_REVIEWS:
+					header.setName(getText("global.ClientReviews"));
+					break;
 			}
 
 			Iterator<MenuComponent> menuComponentIterator = menu.get(service).iterator();
