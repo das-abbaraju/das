@@ -126,24 +126,29 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	}
 
 	@Column(name = "phone", length = 30)
+    @Deprecated
 	public String getPhone() {
 		return phone;
 	}
 
+    @Deprecated
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
 	@Column(name = "salesPhone", length = 30)
+    @Deprecated
 	public String getSalesPhone() {
 		return salesPhone;
 	}
 
+    @Deprecated
 	public void setSalesPhone(String salesPhone) {
 		this.salesPhone = salesPhone;
 	}
 
 	@Column(name = "fax", length = 30)
+    @Deprecated
 	public String getFax() {
 		return fax;
 	}
@@ -198,26 +203,29 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.proforma = proforma;
 	}
 
+    @Deprecated
 	public String getPicsEmail() {
 		return picsEmail;
 	}
 
+    @Deprecated
 	public void setPicsEmail(String picsEmail) {
 		this.picsEmail = picsEmail;
 	}
 
 	@ManyToOne
 	@JoinColumn(name="businessUnitID")
+    @Deprecated
 	public BusinessUnit getBusinessUnit() {
 		return businessUnit;
 	}
 
+    @Deprecated
 	public void setBusinessUnit(BusinessUnit businessUnit) {
 		this.businessUnit = businessUnit;
 	}
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "isoCode", nullable = true)
+    @OneToOne(mappedBy = "country")
     public CountryContact getCountryContact() {
         return countryContact;
     }

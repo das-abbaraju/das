@@ -37,6 +37,8 @@ public class ContractorEditTest extends PicsActionTest {
 	private ContractorAccount mockContractor;
 	@Mock
 	private Country mockCountry;
+    @Mock
+    private CountryContact countryContact;
 	// @Mock
 	// private CountrySubdivision countrySubdivision;
 	// @Mock
@@ -85,7 +87,8 @@ public class ContractorEditTest extends PicsActionTest {
 
 		when(mockContractor.getCountry()).thenReturn(mockCountry);
 		when(mockContractor.getId()).thenReturn(TESTING_ACCOUNT_ID);
-		when(mockCountry.getBusinessUnit()).thenReturn(businessUnit);
+        when(mockCountry.getCountryContact()).thenReturn(countryContact);
+		when(countryContact.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
 		classUnderTest.setSapAppPropertyUtil(sapAppPropertyUtil);
 

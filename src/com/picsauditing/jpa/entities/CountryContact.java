@@ -134,7 +134,7 @@ public class CountryContact extends BaseTable {
         this.csrAddress = csrAddress;
     }
 
-    @Column(name = "isrEmail", length = 100)
+    @Column(name = "csrEmail", length = 100)
     public String getCsrEmail() {
         return csrEmail;
     }

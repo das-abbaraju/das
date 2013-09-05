@@ -63,6 +63,8 @@ public class ScheduleAuditTest extends PicsActionTest {
 	private AuditType auditType;
 	@Mock
 	private Country country;
+    @Mock
+    private CountryContact countryContact;
 	@Mock
 	private Invoice invoice;
 	@Mock
@@ -88,7 +90,8 @@ public class ScheduleAuditTest extends PicsActionTest {
 
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0)).thenReturn(rescheduling);
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0)).thenReturn(expedite);
-		when(country.getBusinessUnit()).thenReturn(businessUnit);
+        when(country.getCountryContact()).thenReturn(countryContact);
+		when(countryContact.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 	}
