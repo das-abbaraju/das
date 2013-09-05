@@ -198,6 +198,11 @@ public final class MenuBuilder {
 
         addAuditsSubmenu(configureMenu, permissions);
 
+        if (permissions.has(OpPerms.DevelopmentEnvironment)) {
+            configureMenu.addChild("Manage Countries", "ManageCountries.action",
+                    "manage_countries");
+        }
+
         if (permissions.has(OpPerms.ManageAudits)) {
             configureMenu.addChild(getText("menu.Configure.FlagCriteria"), "ManageFlagCriteria.action",
                     "manage_flag_criteria");
