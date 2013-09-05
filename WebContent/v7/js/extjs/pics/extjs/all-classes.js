@@ -67584,7 +67584,7 @@ Ext.define('PICS.ux.window.Window', {
                 var body_el = Ext.getBody();
 
                 this.mon(body_el, 'click', function (event, html, eOpts) {
-                    cmp.close();
+                    cmp.hide();
                 }, cmp, {
                     delegate: '.x-mask'
                 });
@@ -67592,7 +67592,9 @@ Ext.define('PICS.ux.window.Window', {
         };
 
         this.callParent(arguments);
-    }
+    },
+
+    closeAction: 'hide'
 });
 Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     extend: 'Ext.Component',
@@ -67633,1975 +67635,6 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
 
     update: function (values) {
         this.callParent([values]);
-    }
-});
-/**
- * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
- * If the container is resized, all anchored items are automatically rerendered according to their
- * `{@link #anchor}` rules.
- *
- * This class is intended to be extended or created via the {@link Ext.container.AbstractContainer#layout layout}: 'anchor' 
- * config, and should generally not need to be created directly via the new keyword.
- * 
- * AnchorLayout does not have any direct config options (other than inherited ones). By default,
- * AnchorLayout will calculate anchor measurements based on the size of the container itself. However, the
- * container using the AnchorLayout can supply an anchoring-specific config property of `anchorSize`.
- *
- * If anchorSize is specifed, the layout will use it as a virtual container for the purposes of calculating
- * anchor measurements based on it instead, allowing the container to be sized independently of the anchoring
- * logic if necessary.
- *
- *     @example
- *     Ext.create('Ext.Panel', {
- *         width: 500,
- *         height: 400,
- *         title: "AnchorLayout Panel",
- *         layout: 'anchor',
- *         renderTo: Ext.getBody(),
- *         items: [
- *             {
- *                 xtype: 'panel',
- *                 title: '75% Width and 20% Height',
- *                 anchor: '75% 20%'
- *             },
- *             {
- *                 xtype: 'panel',
- *                 title: 'Offset -300 Width & -200 Height',
- *                 anchor: '-300 -200'		
- *             },
- *             {
- *                 xtype: 'panel',
- *                 title: 'Mixed Offset and Percent',
- *                 anchor: '-250 20%'
- *             }
- *         ]
- *     });
- */
-Ext.define('Ext.layout.container.Anchor', {
-
-    /* Begin Definitions */
-
-    alias: 'layout.anchor',
-    extend: 'Ext.layout.container.Container',
-    alternateClassName: 'Ext.layout.AnchorLayout',
-
-    /* End Definitions */
-
-    type: 'anchor',
-
-    manageOverflow: 2,
-
-    renderTpl: [
-        '{%this.renderBody(out,values);this.renderPadder(out,values)%}'
-    ],
-
-    /**
-     * @cfg {String} anchor
-     *
-     * This configuation option is to be applied to **child `items`** of a container managed by
-     * this layout (ie. configured with `layout:'anchor'`).
-     *
-     * This value is what tells the layout how an item should be anchored to the container. `items`
-     * added to an AnchorLayout accept an anchoring-specific config property of **anchor** which is a string
-     * containing two values: the horizontal anchor value and the vertical anchor value (for example, '100% 50%').
-     * The following types of anchor values are supported:
-     *
-     * - **Percentage** : Any value between 1 and 100, expressed as a percentage.
-     *
-     *   The first anchor is the percentage width that the item should take up within the container, and the
-     *   second is the percentage height.  For example:
-     *
-     *       // two values specified
-     *       anchor: '100% 50%' // render item complete width of the container and
-     *                          // 1/2 height of the container
-     *       // one value specified
-     *       anchor: '100%'     // the width value; the height will default to auto
-     *
-     * - **Offsets** : Any positive or negative integer value.
-     *
-     *   This is a raw adjustment where the first anchor is the offset from the right edge of the container,
-     *   and the second is the offset from the bottom edge. For example:
-     *
-     *       // two values specified
-     *       anchor: '-50 -100' // render item the complete width of the container
-     *                          // minus 50 pixels and
-     *                          // the complete height minus 100 pixels.
-     *       // one value specified
-     *       anchor: '-50'      // anchor value is assumed to be the right offset value
-     *                          // bottom offset will default to 0
-     *
-     * - **Sides** : Valid values are `right` (or `r`) and `bottom` (or `b`).
-     *
-     *   Either the container must have a fixed size or an anchorSize config value defined at render time in
-     *   order for these to have any effect.
-     *   
-     * - **Mixed** :
-     *
-     *   Anchor values can also be mixed as needed.  For example, to render the width offset from the container
-     *   right edge by 50 pixels and 75% of the container's height use:
-     *   
-     *       anchor:   '-50 75%'
-     */
-
-    /**
-     * @cfg {String} defaultAnchor
-     * Default anchor for all child **container** items applied if no anchor or specific width is set on the child item.
-     */
-    defaultAnchor: '100%',
-
-    parseAnchorRE: /^(r|right|b|bottom)$/i,
-
-    beginLayout: function (ownerContext) {
-        var me = this,
-            dimensions = 0,
-            anchorSpec, childContext, childItems, i, length, target;
-
-        me.callParent(arguments);
-
-        childItems = ownerContext.childItems; // populated by callParent
-        length = childItems.length;
-
-        for (i = 0; i < length; ++i) {
-            childContext = childItems[i];
-            anchorSpec = childContext.target.anchorSpec;
-
-            if (anchorSpec) {
-                if (childContext.widthModel.calculated && anchorSpec.right) {
-                    dimensions |= 1;
-                }
-                if (childContext.heightModel.calculated && anchorSpec.bottom) {
-                    dimensions |= 2;
-                }
-
-                if (dimensions == 3) { // if (both dimensions in play)
-                    break;
-                }
-            }
-        }
-
-        ownerContext.anchorDimensions = dimensions;
-
-        // Work around WebKit RightMargin bug. We're going to inline-block all the children
-        // only ONCE and remove it when we're done
-        if (!Ext.supports.RightMargin && !me.rightMarginCleanerFn) {
-            target = ownerContext.targetContext.el; // targetContext is added by superclass
-
-            me.rightMarginCleanerFn = Ext.Element.getRightMarginFixCleaner(target);
-            target.addCls(Ext.baseCSSPrefix + 'inline-children');
-        }
-
-        me.sanityCheck(ownerContext);
-    },
-
-    calculate: function (ownerContext) {
-        var me = this,
-            containerSize = me.getContainerSize(ownerContext);
-
-        if (ownerContext.anchorDimensions !== ownerContext.state.calculatedAnchors) {
-            me.calculateAnchors(ownerContext, containerSize);
-        }
-
-        if (ownerContext.hasDomProp('containerChildrenDone')) {
-            // Once the child layouts are done we can determine the content sizes...
-
-            if (!containerSize.gotAll) {
-                me.done = false;
-            }
-
-            me.calculateContentSize(ownerContext, ownerContext.anchorDimensions);
-
-            if (me.done) {
-                me.calculateOverflow(ownerContext, containerSize, ownerContext.anchorDimensions);
-                return;
-            }
-        }
-
-        me.done = false;
-    },
-
-    calculateAnchors: function (ownerContext, containerSize) {
-        var me = this,
-            childItems = ownerContext.childItems,
-            length = childItems.length,
-            gotHeight = containerSize.gotHeight,
-            gotWidth = containerSize.gotWidth,
-            ownerHeight = containerSize.height,
-            ownerWidth = containerSize.width,
-            state = ownerContext.state,
-            calculatedAnchors = (gotWidth ? 1 : 0) | (gotHeight ? 2 : 0),
-            anchorSpec, childContext, childMargins, height, i, width;
-
-        state.calculatedAnchors = (state.calculatedAnchors || 0) | calculatedAnchors;
-
-        for (i = 0; i < length; i++) {
-            childContext = childItems[i];
-            childMargins = childContext.getMarginInfo();
-            anchorSpec = childContext.target.anchorSpec;
-
-            // Check widthModel in case "defaults" has applied an anchor to a component
-            // that also has width (which must win). If we did not make this check in this
-            // way, we would attempt to calculate a width where it had been configured.
-            //
-            if (gotWidth && childContext.widthModel.calculated) {
-                width = anchorSpec.right(ownerWidth) - childMargins.width;
-                width = me.adjustWidthAnchor(width, childContext);
-
-                childContext.setWidth(width);
-            }
-
-            // Repeat for height
-            if (gotHeight && childContext.heightModel.calculated) {
-                height = anchorSpec.bottom(ownerHeight) - childMargins.height;
-                height = me.adjustHeightAnchor(height, childContext);
-
-                childContext.setHeight(height);
-            }
-        }
-    },
-
-    finishedLayout: function (ownerContext) {
-        var cleanerFn = this.rightMarginCleanerFn;
-
-        if (cleanerFn) {
-            delete this.rightMarginCleanerFn;
-            ownerContext.targetContext.el.removeCls(Ext.baseCSSPrefix + 'inline-children');
-            cleanerFn();
-        }
-    },
-
-    sanityCheck: function (ownerContext) {
-        var shrinkWrapWidth = ownerContext.widthModel.shrinkWrap,
-            shrinkWrapHeight = ownerContext.heightModel.shrinkWrap,
-            children = ownerContext.childItems,
-            anchorSpec, comp, childContext,
-            i, length;
-
-        for (i = 0, length = children.length; i < length; ++i) {
-            childContext = children[i];
-            comp = childContext.target;
-            anchorSpec = comp.anchorSpec;
-
-            if (anchorSpec) {
-                if (childContext.widthModel.calculated && anchorSpec.right) {
-                    if (shrinkWrapWidth) {
-                        Ext.log({
-                            level: 'warn',
-                            msg: 'Right anchor on '+comp.id+' in shrinkWrap width container'
-                        });
-                    }
-                }
-
-                if (childContext.heightModel.calculated && anchorSpec.bottom) {
-                    if (shrinkWrapHeight) {
-                        Ext.log({
-                            level: 'warn',
-                            msg: 'Bottom anchor on '+comp.id+' in shrinkWrap height container'
-                        });
-                    }
-                }
-            }
-        }
-    },
-
-    // private
-    anchorFactory: {
-        offset: function (delta) {
-            return function(v) {
-                return v + delta;
-            };
-        },
-        ratio: function (ratio) {
-            return function(v) {
-                return Math.floor(v * ratio);
-            };
-        },
-        standard: function (diff) {
-            return function(v) {
-                return v - diff;
-            };
-        }
-    },
-
-    parseAnchor: function(a, start, cstart) {
-        if (a && a != 'none') {
-            var factory = this.anchorFactory,
-                delta;
-
-            if (this.parseAnchorRE.test(a)) {
-                return factory.standard(cstart - start);
-            }    
-            if (a.indexOf('%') != -1) {
-                return factory.ratio(parseFloat(a.replace('%', '')) * 0.01);
-            }    
-            delta = parseInt(a, 10);
-            if (!isNaN(delta)) {
-                return factory.offset(delta);
-            }
-        }
-        return null;
-    },
-
-    // private
-    adjustWidthAnchor: function(value, childContext) {
-        return value;
-    },
-
-    // private
-    adjustHeightAnchor: function(value, childContext) {
-        return value;
-    },
-
-    configureItem: function(item) {
-        var me = this,
-            owner = me.owner,
-            anchor= item.anchor,
-            anchorsArray,
-            anchorWidth,
-            anchorHeight;
-
-        me.callParent(arguments);
-
-        if (!item.anchor && item.items && !Ext.isNumber(item.width) && !(Ext.isIE6 && Ext.isStrict)) {
-            item.anchor = anchor = me.defaultAnchor;
-        }
-
-        /**
-         * @cfg {Number/Object} anchorSize
-         * Defines the anchoring size of container.
-         * Either a number to define the width of the container or an object with `width` and `height` fields.
-         * @member Ext.container.Container
-         */ 
-        if (owner.anchorSize) {
-            if (typeof owner.anchorSize == 'number') {
-                anchorWidth = owner.anchorSize;
-            } else {
-                anchorWidth = owner.anchorSize.width;
-                anchorHeight = owner.anchorSize.height;
-            }
-        } else {
-            anchorWidth = owner.initialConfig.width;
-            anchorHeight = owner.initialConfig.height;
-        }
-
-        if (anchor) {
-            // cache all anchor values
-            anchorsArray = anchor.split(' ');
-            item.anchorSpec = {
-                right: me.parseAnchor(anchorsArray[0], item.initialConfig.width, anchorWidth),
-                bottom: me.parseAnchor(anchorsArray[1], item.initialConfig.height, anchorHeight)
-            };
-        }
-    },
-
-    sizePolicy: {
-        '': {
-            setsWidth: 0,
-            setsHeight: 0
-        },
-        b: {
-            setsWidth: 0,
-            setsHeight: 1
-        },
-        r: {
-            '': {
-                setsWidth: 1,
-                setsHeight: 0
-            },
-            b: {
-                setsWidth: 1,
-                setsHeight: 1
-
-            }
-        }
-    },
-
-    getItemSizePolicy: function (item) {
-        var anchorSpec = item.anchorSpec,
-            key = '',
-            policy = this.sizePolicy,
-            sizeModel;
-
-        if (anchorSpec) {
-            sizeModel = this.owner.getSizeModel();
-            if (anchorSpec.right && !sizeModel.width.shrinkWrap) {
-                policy = policy.r;
-            }
-            if (anchorSpec.bottom && !sizeModel.height.shrinkWrap) {
-                key = 'b';
-            }
-        }
-
-        return policy[key];
-    }
-});
-
-Ext.define('PICS.view.report.filter.FilterTooltip', {
-    extend: 'Ext.tip.ToolTip',
-    alias: 'widget.filtertooltip',
-    
-    anchor: 'left',
-    showDelay: 0,
-    tpl: '<div><p>{description}</p></div>'
-});
-/**
- * @author Nicolas Ferrero
- *
- * TablePanel is the basis of both {@link Ext.tree.Panel TreePanel} and {@link Ext.grid.Panel GridPanel}.
- *
- * TablePanel aggregates:
- *
- *  - a Selection Model
- *  - a View
- *  - a Store
- *  - Scrollers
- *  - Ext.grid.header.Container
- */
-Ext.define('Ext.panel.Table', {
-    extend: 'Ext.panel.Panel',
-
-    alias: 'widget.tablepanel',
-
-    uses: [
-        'Ext.selection.RowModel',
-        'Ext.selection.CellModel',
-        'Ext.selection.CheckboxModel',
-        'Ext.grid.PagingScroller',
-        'Ext.grid.header.Container',
-        'Ext.grid.Lockable'
-    ],
-
-    extraBaseCls: Ext.baseCSSPrefix + 'grid',
-    extraBodyCls: Ext.baseCSSPrefix + 'grid-body',
-
-    layout: 'fit',
-    /**
-     * @property {Boolean} hasView
-     * True to indicate that a view has been injected into the panel.
-     */
-    hasView: false,
-
-    // each panel should dictate what viewType and selType to use
-    /**
-     * @cfg {String} viewType
-     * An xtype of view to use. This is automatically set to 'gridview' by {@link Ext.grid.Panel Grid}
-     * and to 'treeview' by {@link Ext.tree.Panel Tree}.
-     * @protected
-     */
-    viewType: null,
-
-    /**
-     * @cfg {Object} viewConfig
-     * A config object that will be applied to the grid's UI view. Any of the config options available for
-     * {@link Ext.view.Table} can be specified here. This option is ignored if {@link #view} is specified.
-     */
-
-    /**
-     * @cfg {Ext.view.Table} view
-     * The {@link Ext.view.Table} used by the grid. Use {@link #viewConfig} to just supply some config options to
-     * view (instead of creating an entire View instance).
-     */
-
-    /**
-     * @cfg {String} selType
-     * An xtype of selection model to use. Defaults to 'rowmodel'. This is used to create selection model if just
-     * a config object or nothing at all given in {@link #selModel} config.
-     */
-    selType: 'rowmodel',
-
-    /**
-     * @cfg {Ext.selection.Model/Object} selModel
-     * A {@link Ext.selection.Model selection model} instance or config object.  In latter case the {@link #selType}
-     * config option determines to which type of selection model this config is applied.
-     */
-
-    /**
-     * @cfg {Boolean} [multiSelect=false]
-     * True to enable 'MULTI' selection mode on selection model.
-     * @deprecated 4.1.1 Use {@link Ext.selection.Model#mode} 'MULTI' instead.
-     */
-
-    /**
-     * @cfg {Boolean} [simpleSelect=false]
-     * True to enable 'SIMPLE' selection mode on selection model.
-     * @deprecated 4.1.1 Use {@link Ext.selection.Model#mode} 'SIMPLE' instead.
-     */
-
-    /**
-     * @cfg {Ext.data.Store} store (required)
-     * The {@link Ext.data.Store Store} the grid should use as its data source.
-     */
-
-    /**
-     * @cfg {String/Boolean} scroll
-     * Scrollers configuration. Valid values are 'both', 'horizontal' or 'vertical'.
-     * True implies 'both'. False implies 'none'.
-     */
-    scroll: true,
-
-    /**
-     * @cfg {Ext.grid.column.Column[]/Object} columns
-     * An array of {@link Ext.grid.column.Column column} definition objects which define all columns that appear in this
-     * grid. Each column definition provides the header text for the column, and a definition of where the data for that
-     * column comes from.
-     *
-     * This can also be a configuration object for a {Ext.grid.header.Container HeaderContainer} which may override
-     * certain default configurations if necessary. For example, the special layout may be overridden to use a simpler
-     * layout, or one can set default values shared by all columns:
-     * 
-     *     columns: {
-     *         items: [
-     *             {
-     *                 text: "Column A"
-     *                 dataIndex: "field_A"
-     *             },{
-     *                 text: "Column B",
-     *                 dataIndex: "field_B"
-     *             }, 
-     *             ...
-     *         ],
-     *         defaults: {
-     *             flex: 1
-     *         }
-     *     }
-     */
-
-    /**
-     * @cfg {Boolean} forceFit
-     * Ttrue to force the columns to fit into the available width. Headers are first sized according to configuration,
-     * whether that be a specific width, or flex. Then they are all proportionally changed in width so that the entire
-     * content width is used. For more accurate control, it is more optimal to specify a flex setting on the columns
-     * that are to be stretched & explicit widths on columns that are not.
-     */
-
-    /**
-     * @cfg {Ext.grid.feature.Feature[]} features
-     * An array of grid Features to be added to this grid. See {@link Ext.grid.feature.Feature} for usage.
-     */
-
-    /**
-     * @cfg {Boolean} [hideHeaders=false]
-     * True to hide column headers.
-     */
-
-    /**
-     * @cfg {Boolean} deferRowRender
-     * Defaults to true to enable deferred row rendering.
-     *
-     * This allows the View to execute a refresh quickly, with the expensive update of the row structure deferred so
-     * that layouts with GridPanels appear, and lay out more quickly.
-     */
-
-    /**
-     * @cfg {Object} verticalScroller
-     * A config object to be used when configuring the {@link Ext.grid.PagingScroller scroll monitor} to control
-     * refreshing of data in an "infinite grid".
-     * 
-     * Configurations of this object allow fine tuning of data caching which can improve performance and usability
-     * of the infinite grid.
-     */
-
-    deferRowRender: true,
-     
-    /**
-     * @cfg {Boolean} sortableColumns
-     * False to disable column sorting via clicking the header and via the Sorting menu items.
-     */
-    sortableColumns: true,
-
-    /**
-     * @cfg {Boolean} [enableLocking=false]
-     * True to enable locking support for this grid. Alternatively, locking will also be automatically
-     * enabled if any of the columns in the column configuration contain the locked config option.
-     */
-    enableLocking: false,
-
-    // private property used to determine where to go down to find views
-    // this is here to support locking.
-    scrollerOwner: true,
-
-    /**
-     * @cfg {Boolean} [enableColumnMove=true]
-     * False to disable column dragging within this grid.
-     */
-    enableColumnMove: true,
-    
-    /**
-     * @cfg {Boolean} [sealedColumns=false]
-     * True to constrain column dragging so that a column cannot be dragged in or out of it's
-     * current group. Only relevant while {@link #enableColumnMove} is enabled.
-     */
-    sealedColumns: false,
-
-    /**
-     * @cfg {Boolean} [enableColumnResize=true]
-     * False to disable column resizing within this grid.
-     */
-    enableColumnResize: true,
-
-    /**
-     * @cfg {Boolean} [enableColumnHide=true]
-     * False to disable column hiding within this grid.
-     */
-    enableColumnHide: true,
-
-    /**
-     * @cfg {Boolean} columnLines Adds column line styling
-     */
-
-    /**
-     * @cfg {Boolean} [rowLines=true] Adds row line styling
-     */
-    rowLines: true,
-
-    /**
-     * @cfg {Boolean} [disableSelection=false]
-     * True to disable selection model.
-     */
-
-    /**
-     * @cfg {String} emptyText Default text (html tags are accepted) to display in the Panel body when the Store
-     * is empty. When specified, and the Store is empty, the text will be rendered inside a DIV with the CSS class "x-grid-empty".
-     */
-    
-    /**
-     * @cfg {Boolean} [allowDeselect=false]
-     * True to allow deselecting a record. This config is forwarded to {@link Ext.selection.Model#allowDeselect}.
-     */
-
-    /**
-     * @property {Boolean} optimizedColumnMove
-     * If you are writing a grid plugin or a {Ext.grid.feature.Feature Feature} which creates a column-based structure which
-     * needs a view refresh when columns are moved, then set this property in the grid.
-     *
-     * An example is the built in {@link Ext.grid.feature.AbstractSummary Summary} Feature. This creates summary rows, and the
-     * summary columns must be in the same order as the data columns. This plugin sets the `optimizedColumnMove` to `false.
-     */
-
-    initComponent: function() {
-        if (!this.viewType) {
-            Ext.Error.raise("You must specify a viewType config.");
-        }
-        if (this.headers) {
-            Ext.Error.raise("The headers config is not supported. Please specify columns instead.");
-        }
-
-        var me          = this,
-            scroll      = me.scroll,
-            vertical    = false,
-            horizontal  = false,
-            headerCtCfg = me.columns || me.colModel,
-            view,
-            border = me.border,
-            i, len;
-
-        if (me.columnLines) {
-            me.addCls(Ext.baseCSSPrefix + 'grid-with-col-lines');
-        }
-
-        if (me.rowLines) {
-            me.addCls(Ext.baseCSSPrefix + 'grid-with-row-lines');
-        }
-
-        // Look up the configured Store. If none configured, use the fieldless, empty Store defined in Ext.data.Store.
-        me.store = Ext.data.StoreManager.lookup(me.store || 'ext-empty-store');
-
-        if (!headerCtCfg) {
-            Ext.Error.raise("A column configuration must be specified");
-        }
-
-        // The columns/colModel config may be either a fully instantiated HeaderContainer, or an array of Column definitions, or a config object of a HeaderContainer
-        // Either way, we extract a columns property referencing an array of Column definitions.
-        if (headerCtCfg instanceof Ext.grid.header.Container) {
-            me.headerCt = headerCtCfg;
-            me.headerCt.border = border;
-            me.columns = me.headerCt.items.items;
-        } else {
-            if (Ext.isArray(headerCtCfg)) {
-                headerCtCfg = {
-                    items: headerCtCfg,
-                    border: border
-                };
-            }
-            Ext.apply(headerCtCfg, {
-                forceFit: me.forceFit,
-                sortable: me.sortableColumns,
-                enableColumnMove: me.enableColumnMove,
-                enableColumnResize: me.enableColumnResize,
-                enableColumnHide: me.enableColumnHide,
-                border:  border,
-                sealed: me.sealedColumns
-            });
-            me.columns = headerCtCfg.items;
-
-             // If any of the Column objects contain a locked property, and are not processed, this is a lockable TablePanel, a
-             // special view will be injected by the Ext.grid.Lockable mixin, so no processing of .
-             if (me.enableLocking || Ext.ComponentQuery.query('{locked !== undefined}{processed != true}', me.columns).length) {
-                 me.self.mixin('lockable', Ext.grid.Lockable);
-                 me.injectLockable();
-             }
-        }
-
-        me.scrollTask = new Ext.util.DelayedTask(me.syncHorizontalScroll, me);
-
-        me.addEvents(
-            // documented on GridPanel
-            'reconfigure',
-            /**
-             * @event viewready
-             * Fires when the grid view is available (use this for selecting a default row).
-             * @param {Ext.panel.Table} this
-             */
-            'viewready'
-        );
-
-        me.bodyCls = me.bodyCls || '';
-        me.bodyCls += (' ' + me.extraBodyCls);
-        
-        me.cls = me.cls || '';
-        me.cls += (' ' + me.extraBaseCls);
-
-        // autoScroll is not a valid configuration
-        delete me.autoScroll;
-
-        // If this TablePanel is lockable (Either configured lockable, or any of the defined columns has a 'locked' property)
-        // than a special lockable view containing 2 side-by-side grids will have been injected so we do not need to set up any UI.
-        if (!me.hasView) {
-
-            // If we were not configured with a ready-made headerCt (either by direct config with a headerCt property, or by passing
-            // a HeaderContainer instance as the 'columns' property, then go ahead and create one from the config object created above.
-            if (!me.headerCt) {
-                me.headerCt = new Ext.grid.header.Container(headerCtCfg);
-            }
-
-            // Extract the array of Column objects
-            me.columns = me.headerCt.items.items;
-
-            // If the Store is paging blocks of the dataset in, then it can only be sorted remotely.
-            if (me.store.buffered && !me.store.remoteSort) {
-                for (i = 0, len = me.columns.length; i < len; i++) {
-                    me.columns[i].sortable = false;
-                }
-            }
-
-            if (me.hideHeaders) {
-                me.headerCt.height = 0;
-                me.headerCt.addCls(Ext.baseCSSPrefix + 'grid-header-ct-hidden');
-                me.addCls(Ext.baseCSSPrefix + 'grid-header-hidden');
-                // IE Quirks Mode fix
-                // If hidden configuration option was used, several layout calculations will be bypassed.
-                if (Ext.isIEQuirks) {
-                    me.headerCt.style = {
-                        display: 'none'
-                    };
-                }
-            }
-
-            // turn both on.
-            if (scroll === true || scroll === 'both') {
-                vertical = horizontal = true;
-            } else if (scroll === 'horizontal') {
-                horizontal = true;
-            } else if (scroll === 'vertical') {
-                vertical = true;
-            }
-
-            me.relayHeaderCtEvents(me.headerCt);
-            me.features = me.features || [];
-            if (!Ext.isArray(me.features)) {
-                me.features = [me.features];
-            }
-            me.dockedItems = [].concat(me.dockedItems || []);
-            me.dockedItems.unshift(me.headerCt);
-            me.viewConfig = me.viewConfig || {};
-
-            // Buffered scrolling must preserve scroll on refresh
-            if (me.store && me.store.buffered) {
-                me.viewConfig.preserveScrollOnRefresh = true;
-            } else if (me.invalidateScrollerOnRefresh !== undefined) {
-                me.viewConfig.preserveScrollOnRefresh = !me.invalidateScrollerOnRefresh;
-            }
-
-            // AbstractDataView will look up a Store configured as an object
-            // getView converts viewConfig into a View instance
-            view = me.getView();
-
-            me.items = [view];
-            me.hasView = true;
-
-            if (vertical) {
-                // If the Store is buffered, create a PagingScroller to monitor the View's scroll progress,
-                // load the Store's prefetch buffer when it detects we are nearing an edge.
-                if (me.store.buffered) {
-                    me.verticalScroller = new Ext.grid.PagingScroller(Ext.apply({
-                        panel: me,
-                        store: me.store,
-                        view: me.view
-                    }, me.verticalScroller));
-                }
-            }
-
-            if (horizontal) {
-                // Add a listener to synchronize the horizontal scroll position of the headers
-                // with the table view's element... Unless we are not showing headers!
-                if (!me.hideHeaders) {
-                    view.on({
-                        scroll: {
-                            fn: me.onHorizontalScroll,
-                            element: 'el',
-                            scope: me
-                        }
-                    });
-                }
-            }
-
-            me.mon(view.store, {
-                load: me.onStoreLoad,
-                scope: me
-            });
-            me.mon(view, {
-                viewready: me.onViewReady,
-                refresh: me.onRestoreHorzScroll,
-                scope: me
-            });
-        }
-
-        // Relay events from the View whether it be a LockingView, or a regular GridView
-        this.relayEvents(me.view, [
-            /**
-             * @event beforeitemmousedown
-             * @inheritdoc Ext.view.View#beforeitemmousedown
-             */
-            'beforeitemmousedown',
-            /**
-             * @event beforeitemmouseup
-             * @inheritdoc Ext.view.View#beforeitemmouseup
-             */
-            'beforeitemmouseup',
-            /**
-             * @event beforeitemmouseenter
-             * @inheritdoc Ext.view.View#beforeitemmouseenter
-             */
-            'beforeitemmouseenter',
-            /**
-             * @event beforeitemmouseleave
-             * @inheritdoc Ext.view.View#beforeitemmouseleave
-             */
-            'beforeitemmouseleave',
-            /**
-             * @event beforeitemclick
-             * @inheritdoc Ext.view.View#beforeitemclick
-             */
-            'beforeitemclick',
-            /**
-             * @event beforeitemdblclick
-             * @inheritdoc Ext.view.View#beforeitemdblclick
-             */
-            'beforeitemdblclick',
-            /**
-             * @event beforeitemcontextmenu
-             * @inheritdoc Ext.view.View#beforeitemcontextmenu
-             */
-            'beforeitemcontextmenu',
-            /**
-             * @event itemmousedown
-             * @inheritdoc Ext.view.View#itemmousedown
-             */
-            'itemmousedown',
-            /**
-             * @event itemmouseup
-             * @inheritdoc Ext.view.View#itemmouseup
-             */
-            'itemmouseup',
-            /**
-             * @event itemmouseenter
-             * @inheritdoc Ext.view.View#itemmouseenter
-             */
-            'itemmouseenter',
-            /**
-             * @event itemmouseleave
-             * @inheritdoc Ext.view.View#itemmouseleave
-             */
-            'itemmouseleave',
-            /**
-             * @event itemclick
-             * @inheritdoc Ext.view.View#itemclick
-             */
-            'itemclick',
-            /**
-             * @event itemdblclick
-             * @inheritdoc Ext.view.View#itemdblclick
-             */
-            'itemdblclick',
-            /**
-             * @event itemcontextmenu
-             * @inheritdoc Ext.view.View#itemcontextmenu
-             */
-            'itemcontextmenu',
-            /**
-             * @event beforecontainermousedown
-             * @inheritdoc Ext.view.View#beforecontainermousedown
-             */
-            'beforecontainermousedown',
-            /**
-             * @event beforecontainermouseup
-             * @inheritdoc Ext.view.View#beforecontainermouseup
-             */
-            'beforecontainermouseup',
-            /**
-             * @event beforecontainermouseover
-             * @inheritdoc Ext.view.View#beforecontainermouseover
-             */
-            'beforecontainermouseover',
-            /**
-             * @event beforecontainermouseout
-             * @inheritdoc Ext.view.View#beforecontainermouseout
-             */
-            'beforecontainermouseout',
-            /**
-             * @event beforecontainerclick
-             * @inheritdoc Ext.view.View#beforecontainerclick
-             */
-            'beforecontainerclick',
-            /**
-             * @event beforecontainerdblclick
-             * @inheritdoc Ext.view.View#beforecontainerdblclick
-             */
-            'beforecontainerdblclick',
-            /**
-             * @event beforecontainercontextmenu
-             * @inheritdoc Ext.view.View#beforecontainercontextmenu
-             */
-            'beforecontainercontextmenu',
-            /**
-             * @event containermouseup
-             * @inheritdoc Ext.view.View#containermouseup
-             */
-            'containermouseup',
-            /**
-             * @event containermouseover
-             * @inheritdoc Ext.view.View#containermouseover
-             */
-            'containermouseover',
-            /**
-             * @event containermouseout
-             * @inheritdoc Ext.view.View#containermouseout
-             */
-            'containermouseout',
-            /**
-             * @event containerclick
-             * @inheritdoc Ext.view.View#containerclick
-             */
-            'containerclick',
-            /**
-             * @event containerdblclick
-             * @inheritdoc Ext.view.View#containerdblclick
-             */
-            'containerdblclick',
-            /**
-             * @event containercontextmenu
-             * @inheritdoc Ext.view.View#containercontextmenu
-             */
-            'containercontextmenu',
-            /**
-             * @event selectionchange
-             * @inheritdoc Ext.selection.Model#selectionchange
-             */
-            'selectionchange',
-            /**
-             * @event beforeselect
-             * @inheritdoc Ext.selection.RowModel#beforeselect
-             */
-            'beforeselect',
-            /**
-             * @event select
-             * @inheritdoc Ext.selection.RowModel#select
-             */
-            'select',
-            /**
-             * @event beforedeselect
-             * @inheritdoc Ext.selection.RowModel#beforedeselect
-             */
-            'beforedeselect',
-            /**
-             * @event deselect
-             * @inheritdoc Ext.selection.RowModel#deselect
-             */
-            'deselect'
-        ]);
-
-        me.callParent(arguments);
-        me.addStateEvents(['columnresize', 'columnmove', 'columnhide', 'columnshow', 'sortchange']);
-
-        if (me.headerCt) {
-            me.headerCt.on('afterlayout', me.onRestoreHorzScroll, me);
-        }
-    },
-
-    relayHeaderCtEvents: function (headerCt) {
-        this.relayEvents(headerCt, [
-            /**
-             * @event columnresize
-             * @inheritdoc Ext.grid.header.Container#columnresize
-             */
-            'columnresize',
-            /**
-             * @event columnmove
-             * @inheritdoc Ext.grid.header.Container#columnmove
-             */
-            'columnmove',
-            /**
-             * @event columnhide
-             * @inheritdoc Ext.grid.header.Container#columnhide
-             */
-            'columnhide',
-            /**
-             * @event columnshow
-             * @inheritdoc Ext.grid.header.Container#columnshow
-             */
-            'columnshow',
-            /**
-             * @event sortchange
-             * @inheritdoc Ext.grid.header.Container#sortchange
-             */
-            'sortchange'
-        ]);
-    },
-
-    getState: function(){
-        var me = this,
-            state = me.callParent(),
-            sorter = me.store.sorters.first();
-
-        state = me.addPropertyToState(state, 'columns', (me.headerCt || me).getColumnsState());
-
-        if (sorter) {
-            state = me.addPropertyToState(state, 'sort', {
-                property: sorter.property,
-                direction: sorter.direction,
-                root: sorter.root
-            });
-        }
-        return state;
-    },
-
-    applyState: function(state) {
-        var me = this,
-            sorter = state.sort,
-            store = me.store,
-            columns = state.columns;
-
-        delete state.columns;
-
-        // Ensure superclass has applied *its* state.
-        // AbstractComponent saves dimensions (and anchor/flex) plus collapsed state.
-        me.callParent(arguments);
-
-        if (columns) {
-            (me.headerCt || me).applyColumnsState(columns);
-        }
-
-        if (sorter) {
-            if (store.remoteSort) {
-                // Pass false to prevent a sort from occurring
-                store.sort({
-                    property: sorter.property,
-                    direction: sorter.direction,
-                    root: sorter.root
-                }, null, false);
-            } else {
-                store.sort(sorter.property, sorter.direction);
-            }
-        }
-    },
-
-    /**
-     * Returns the store associated with this Panel.
-     * @return {Ext.data.Store} The store
-     */
-    getStore: function(){
-        return this.store;
-    },
-
-    /**
-     * Gets the view for this panel.
-     * @return {Ext.view.Table}
-     */
-    getView: function() {
-        var me = this,
-            sm;
-
-        if (!me.view) {
-            sm = me.getSelectionModel();
-            me.view = Ext.widget(Ext.apply({}, me.viewConfig, {
-
-                // Features need a reference to the grid, so configure a reference into the View
-                grid: me,
-                deferInitialRefresh: me.deferRowRender !== false,
-                scroll: me.scroll,
-                xtype: me.viewType,
-                store: me.store,
-                headerCt: me.headerCt,
-                selModel: sm,
-                features: me.features,
-                panel: me,
-                emptyText : me.emptyText ? '<div class="' + Ext.baseCSSPrefix + 'grid-empty">' + me.emptyText + '</div>' : ''
-            }));
-
-            // TableView's custom component layout, Ext.view.TableLayout requires a reference to the headerCt because it depends on the headerCt doing its work.
-            me.view.getComponentLayout().headerCt = me.headerCt;
-
-            me.mon(me.view, {
-                uievent: me.processEvent,
-                scope: me
-            });
-            sm.view = me.view;
-            me.headerCt.view = me.view;
-            me.relayEvents(me.view, [
-                /**
-                 * @event cellclick
-                 * Fired when table cell is clicked.
-                 * @param {Ext.view.Table} this
-                 * @param {HTMLElement} td The TD element that was clicked.
-                 * @param {Number} cellIndex
-                 * @param {Ext.data.Model} record
-                 * @param {HTMLElement} tr The TR element that was clicked.
-                 * @param {Number} rowIndex
-                 * @param {Ext.EventObject} e
-                 */
-                'cellclick',
-                /**
-                 * @event celldblclick
-                 * Fired when table cell is double clicked.
-                 * @param {Ext.view.Table} this
-                 * @param {HTMLElement} td The TD element that was clicked.
-                 * @param {Number} cellIndex
-                 * @param {Ext.data.Model} record
-                 * @param {HTMLElement} tr The TR element that was clicked.
-                 * @param {Number} rowIndex
-                 * @param {Ext.EventObject} e
-                 */
-                'celldblclick'
-            ]);
-        }
-        return me.view;
-    },
-
-    /**
-     * @private
-     * autoScroll is never valid for all classes which extend TablePanel.
-     */
-    setAutoScroll: Ext.emptyFn,
-
-    /**
-     * @private
-     * Processes UI events from the view. Propagates them to whatever internal Components need to process them.
-     * @param {String} type Event type, eg 'click'
-     * @param {Ext.view.Table} view TableView Component
-     * @param {HTMLElement} cell Cell HtmlElement the event took place within
-     * @param {Number} recordIndex Index of the associated Store Model (-1 if none)
-     * @param {Number} cellIndex Cell index within the row
-     * @param {Ext.EventObject} e Original event
-     */
-    processEvent: function(type, view, cell, recordIndex, cellIndex, e) {
-        var me = this,
-            header;
-
-        if (cellIndex !== -1) {
-            header = me.headerCt.getGridColumns()[cellIndex];
-            return header.processEvent.apply(header, arguments);
-        }
-    },
-
-    /**
-     * This method is obsolete in 4.1. The closest equivalent in
-     * 4.1 is {@link #doLayout}, but it is also possible that no
-     * layout is needed.
-     * @deprecated 4.1
-     */
-    determineScrollbars: function () {
-        Ext.log.warn('Obsolete');
-    },
-
-    /**
-     * This method is obsolete in 4.1. The closest equivalent in 4.1 is
-     * {@link Ext.AbstractComponent#updateLayout}, but it is also possible that no layout
-     * is needed.
-     * @deprecated 4.1
-     */
-    invalidateScroller: function () {
-        Ext.log.warn('Obsolete');
-    },
-
-    scrollByDeltaY: function(yDelta, animate) {
-        this.getView().scrollBy(0, yDelta, animate);
-    },
-
-    scrollByDeltaX: function(xDelta, animate) {
-        this.getView().scrollBy(xDelta, 0, animate);
-    },
-
-    afterCollapse: function() {
-        var me = this;
-        me.saveScrollPos();
-        me.saveScrollPos();
-        me.callParent(arguments);
-    },
-
-    afterExpand: function() {
-        var me = this;
-        me.callParent(arguments);
-        me.restoreScrollPos();
-        me.restoreScrollPos();
-    },
-
-    saveScrollPos: Ext.emptyFn,
-
-    restoreScrollPos: Ext.emptyFn,
-    
-    onHeaderResize: function(){
-        this.delayScroll();
-    },
-
-    // Update the view when a header moves
-    onHeaderMove: function(headerCt, header, colsToMove, fromIdx, toIdx) {
-        var me = this;
-
-        // If there are Features or Plugins which create DOM which must match column order, they set the optimizedColumnMove flag to false.
-        // In this case we must refresh the view on column move.
-        if (me.optimizedColumnMove === false) {
-            me.view.refresh();
-        }
-
-        // Simplest case for default DOM structure is just to swap the columns round in the view.
-        else {
-            me.view.moveColumn(fromIdx, toIdx, colsToMove);
-        }
-        me.delayScroll();
-    },
-
-    // Section onHeaderHide is invoked after view.
-    onHeaderHide: function(headerCt, header) {
-        this.delayScroll();
-    },
-
-    onHeaderShow: function(headerCt, header) {
-        this.delayScroll();
-    },
-    
-    delayScroll: function(){
-        var target = this.getScrollTarget().el;
-        if (target) {
-            this.scrollTask.delay(10, null, null, [target.dom.scrollLeft]);
-        }
-    },
-
-    /**
-     * @private
-     * Fires the TablePanel's viewready event when the view declares that its internal DOM is ready
-     */
-    onViewReady: function() {
-         this.fireEvent('viewready', this);   
-    },
-
-    /**
-     * @private
-     * Tracks when things happen to the view and preserves the horizontal scroll position.
-     */
-    onRestoreHorzScroll: function() {
-        var left = this.scrollLeftPos;
-        if (left) {
-            // We need to restore the body scroll position here
-            this.syncHorizontalScroll(left, true);
-        }
-    },
-
-    getScrollerOwner: function() {
-        var rootCmp = this;
-        if (!this.scrollerOwner) {
-            rootCmp = this.up('[scrollerOwner]');
-        }
-        return rootCmp;
-    },
-
-    /**
-     * Gets left hand side marker for header resizing.
-     * @private
-     */
-    getLhsMarker: function() {
-        var me = this;
-        return me.lhsMarker || (me.lhsMarker = Ext.DomHelper.append(me.el, {
-            cls: Ext.baseCSSPrefix + 'grid-resize-marker'
-        }, true));
-    },
-
-    /**
-     * Gets right hand side marker for header resizing.
-     * @private
-     */
-    getRhsMarker: function() {
-        var me = this;
-
-        return me.rhsMarker || (me.rhsMarker = Ext.DomHelper.append(me.el, {
-            cls: Ext.baseCSSPrefix + 'grid-resize-marker'
-        }, true));
-    },
-
-    /**
-     * Returns the selection model being used and creates it via the configuration if it has not been created already.
-     * @return {Ext.selection.Model} selModel
-     */
-    getSelectionModel: function(){
-        if (!this.selModel) {
-            this.selModel = {};
-        }
-
-        var mode = 'SINGLE',
-            type;
-        if (this.simpleSelect) {
-            mode = 'SIMPLE';
-        } else if (this.multiSelect) {
-            mode = 'MULTI';
-        }
-
-        Ext.applyIf(this.selModel, {
-            allowDeselect: this.allowDeselect,
-            mode: mode
-        });
-
-        if (!this.selModel.events) {
-            type = this.selModel.selType || this.selType;
-            this.selModel = Ext.create('selection.' + type, this.selModel);
-        }
-
-        if (!this.selModel.hasRelaySetup) {
-            this.relayEvents(this.selModel, [
-                'selectionchange', 'beforeselect', 'beforedeselect', 'select', 'deselect'
-            ]);
-            this.selModel.hasRelaySetup = true;
-        }
-
-        // lock the selection model if user
-        // has disabled selection
-        if (this.disableSelection) {
-            this.selModel.locked = true;
-        }
-        return this.selModel;
-    },
-    
-    getScrollTarget: function(){
-        var owner = this.getScrollerOwner(),
-            items = owner.query('tableview');
-            
-        return items[1] || items[0];
-    },
-
-    onHorizontalScroll: function(event, target) {
-        this.syncHorizontalScroll(target.scrollLeft);
-    },
-    
-    syncHorizontalScroll: function(left, setBody) {
-        var me = this,
-            scrollTarget;
-            
-        setBody = setBody === true;
-        // Only set the horizontal scroll if we've changed position,
-        // so that we don't set this on vertical scrolls
-        if (me.rendered && (setBody || left !== me.scrollLeftPos)) {
-            // Only set the body position if we're reacting to a refresh, otherwise
-            // we just need to set the header.
-            if (setBody) {   
-                scrollTarget = me.getScrollTarget();
-                scrollTarget.el.dom.scrollLeft = left;
-            }
-            me.headerCt.el.dom.scrollLeft = left;
-            me.scrollLeftPos = left;
-        }
-    },
-
-    // template method meant to be overriden
-    onStoreLoad: Ext.emptyFn,
-
-    getEditorParent: function() {
-        return this.body;
-    },
-
-    bindStore: function(store) {
-        var me = this;
-        me.store = store;
-        me.getView().bindStore(store);
-    },
-    
-    beforeDestroy: function(){
-        Ext.destroy(this.verticalScroller);
-        this.callParent();    
-    },
-
-    // documented on GridPanel
-    reconfigure: function(store, columns) {
-        var me = this,
-            headerCt = me.headerCt;
-
-        if (me.lockable) {
-            me.reconfigureLockable(store, columns);
-        } else {
-            Ext.suspendLayouts();
-            if (columns) {
-                // new columns, delete scroll pos
-                delete me.scrollLeftPos;
-                headerCt.removeAll();
-                headerCt.add(columns);
-            }
-            if (store) {
-                store = Ext.StoreManager.lookup(store);
-                me.bindStore(store);
-            } else {
-                me.getView().refresh();
-            }
-            headerCt.setSortState();
-            Ext.resumeLayouts(true);
-        }
-        me.fireEvent('reconfigure', me, store, columns);
-    }
-});
-
-/**
- * Component layout for grid column headers which have a title element at the top followed by content.
- * @private
- */
-Ext.define('Ext.grid.ColumnComponentLayout', {
-    extend: 'Ext.layout.component.Auto',
-    alias: 'layout.columncomponent',
-
-    type: 'columncomponent',
-
-    setWidthInDom: true,
-
-    getContentHeight : function(ownerContext) {
-        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
-        return this.owner.isGroupHeader ? ownerContext.getProp('contentHeight') : this.callParent(arguments);
-    },
-
-    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
-        var result = this.callParent(arguments);
-        if (this.owner.isGroupHeader) {
-            result += this.owner.titleEl.dom.offsetHeight;
-        }
-        return result;
-    },
-    
-    getContentWidth : function(ownerContext) {
-        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
-        return this.owner.isGroupHeader ? ownerContext.getProp('contentWidth') : this.callParent(arguments);
-    },
-
-    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
-        return contentWidth + ownerContext.getPaddingInfo().width;
-    }
-});
-/**
- * @private
- *
- * This class is used only by the grid's HeaderContainer docked child.
- *
- * It adds the ability to shrink the vertical size of the inner container element back if a grouped
- * column header has all its child columns dragged out, and the whole HeaderContainer needs to shrink back down.
- *
- * Also, after every layout, after all headers have attained their 'stretchmax' height, it goes through and calls
- * `setPadding` on the columns so that they lay out correctly.
- */
-Ext.define('Ext.grid.ColumnLayout', {
-    extend: 'Ext.layout.container.HBox',
-    alias: 'layout.gridcolumn',
-    type : 'gridcolumn',
-
-    reserveOffset: false,
-
-    firstHeaderCls: Ext.baseCSSPrefix + 'column-header-first',
-    lastHeaderCls: Ext.baseCSSPrefix + 'column-header-last',
-
-    initLayout: function() {
-        this.grid = this.owner.up('[scrollerOwner]');
-        this.callParent();
-    },
-
-    // Collect the height of the table of data upon layout begin
-    beginLayout: function (ownerContext) {
-        var me = this,
-            grid = me.grid,
-            view = grid.view,
-            i = 0,
-            items = me.getVisibleItems(),
-            len = items.length,
-            item;
-
-        ownerContext.gridContext = ownerContext.context.getCmp(me.grid);
-
-        // If we are one side of a locking grid, then if we are on the "normal" side, we have to grab the normal view
-        // for use in determining whether to subtract scrollbar width from available width.
-        // The locked side does not have scrollbars, so it should not look at the view.
-        if (grid.lockable) {
-            if (me.owner.up('tablepanel') === view.normalGrid) {
-                view = view.normalGrid.getView();
-            } else {
-                view = null;
-            }
-        }
-
-        me.callParent(arguments);
-
-        // Unstretch child items before the layout which stretches them.
-        for (; i < len; i++) {
-            item = items[i];
-            item.removeCls([me.firstHeaderCls, me.lastHeaderCls]);
-            item.el.setStyle({
-                height: 'auto'
-            });
-            item.titleEl.setStyle({
-                height: 'auto',
-                paddingTop: ''  // reset back to default padding of the style
-            });
-        }
-
-        // Add special first/last classes
-        if (len > 0) {
-            items[0].addCls(me.firstHeaderCls);
-            items[len - 1].addCls(me.lastHeaderCls);
-        }
-
-        // If the owner is the grid's HeaderContainer, and the UI displays old fashioned scrollbars and there is a rendered View with data in it,
-        // AND we are scrolling vertically:
-        // collect the View context to interrogate it for overflow, and possibly invalidate it if there is overflow
-        if (!me.owner.isHeader && Ext.getScrollbarSize().width && !grid.collapsed && view &&
-                view.table.dom && (view.autoScroll || view.overflowY)) {
-            ownerContext.viewContext = ownerContext.context.getCmp(view);
-        }
-    },
-
-    roundFlex: function(width) {
-        return Math.floor(width);
-    },
-
-    calculate: function(ownerContext) {
-        var me = this,
-            viewContext = ownerContext.viewContext,
-            tableHeight,
-            viewHeight;
-
-        me.callParent(arguments);
-
-        if (ownerContext.state.parallelDone) {
-            ownerContext.setProp('columnWidthsDone', true);
-        }
-
-        // If we have a viewContext (Only created if there is an existing <table> within the view, AND we are scolling vertically AND scrollbars take up space)
-        //     we are not already in the second pass, and we are not shrinkWrapping...
-        //     Then we have to see if we know enough to determine whether there is vertical opverflow so that we can
-        //     invalidate and loop back for the second pass with a narrower target width.
-        if (viewContext && !ownerContext.state.overflowAdjust.width && !ownerContext.gridContext.heightModel.shrinkWrap) {
-            tableHeight = viewContext.tableContext.getProp('height');
-            viewHeight = viewContext.getProp('height');
-
-            // Heights of both view and its table content have not both been published; we cannot complete
-            if (isNaN(tableHeight + viewHeight)) {
-                me.done = false;
-            }
-
-            // Heights have been published, and there is vertical overflow; invalidate with a width adjustment to allow for the scrollbar
-            else if (tableHeight >= viewHeight) {
-                ownerContext.gridContext.invalidate({
-                    after: function() {
-                        ownerContext.state.overflowAdjust = {
-                            width: Ext.getScrollbarSize().width,
-                            height: 0
-                        };
-                    }
-                });
-            }
-        }
-    },
- 
-    completeLayout: function(ownerContext) {
-        var me = this,
-            owner = me.owner,
-            state = ownerContext.state,
-            needsInvalidate = false,
-            calculated = me.sizeModels.calculated,
-            childItems, len, i, childContext, item;
-
-        me.callParent(arguments);
-
-        // If we have not been through this already, and the owning Container is configured
-        // forceFit, is not a group column and and there is a valid width, then convert
-        // widths to flexes, and loop back.
-        if (!state.flexesCalculated && owner.forceFit && !owner.isHeader) {
-            childItems = ownerContext.childItems;
-            len = childItems.length;
-
-            for (i = 0; i < len; i++) {
-                childContext = childItems[i];
-                item = childContext.target;
-
-                // For forceFit, just use allocated width as the flex value, and the proportions
-                // will end up the same whatever HeaderContainer width they are being forced into.
-                if (item.width) {
-                    item.flex = ownerContext.childItems[i].flex = item.width;
-                    delete item.width;
-                    childContext.widthModel = calculated;
-                    needsInvalidate = true;
-                }
-            }
-
-            // Recalculate based upon all columns now being flexed instead of sized.
-            // Set flag, so that we do not do this infinitely
-            if (needsInvalidate) {
-                me.cacheFlexes(ownerContext);
-                ownerContext.invalidate({
-                    state: {
-                        flexesCalculated: true
-                    }
-                });
-            }
-        }
-    },
-
-    finalizeLayout: function() {
-        var me = this,
-            i = 0,
-            items,
-            len,
-            itemsHeight,
-            owner = me.owner,
-            titleEl = owner.titleEl;
-
-        // Set up padding in items
-        items = me.getVisibleItems();
-        len = items.length;
-        // header container's items take up the whole height
-        itemsHeight = owner.el.getViewSize().height;
-        if (titleEl) {
-        // if owner is a grouped column with children, we need to subtract the titleEl's height
-        // to determine the remaining available height for the child items
-            itemsHeight -= titleEl.getHeight();
-        }
-        for (; i < len; i++) {
-            items[i].setPadding(itemsHeight);
-        }
-    },
-
-    // FIX: when flexing we actually don't have enough space as we would
-    // typically because of the scrollOffset on the GridView, must reserve this
-    publishInnerCtSize: function(ownerContext) {
-        var me = this,
-            size = ownerContext.state.boxPlan.targetSize,
-            cw = ownerContext.peek('contentWidth'),
-            view;
-
-        // InnerCt MUST stretch to accommodate all columns so that left/right scrolling is enabled in the header container.
-        if ((cw != null) && !me.owner.isHeader) {
-            size.width = cw;
-
-            // innerCt must also encompass any vertical scrollbar width if there may be one
-            view = me.owner.ownerCt.view;
-            if (view.autoScroll || view.overflowY) {
-                size.width += Ext.getScrollbarSize().width;
-            }
-        }
-
-        return me.callParent(arguments);
-    }
-});
-
-/**
- * A simple class that renders text directly into a toolbar.
- *
- *     @example
- *     Ext.create('Ext.panel.Panel', {
- *         title: 'Panel with TextItem',
- *         width: 300,
- *         height: 200,
- *         tbar: [
- *             { xtype: 'tbtext', text: 'Sample Text Item' }
- *         ],
- *         renderTo: Ext.getBody()
- *     });
- *
- * @constructor
- * Creates a new TextItem
- * @param {Object} text A text string, or a config object containing a #text property
- */
-Ext.define('Ext.toolbar.TextItem', {
-    extend: 'Ext.toolbar.Item',
-    requires: ['Ext.XTemplate'],
-    alias: 'widget.tbtext',
-    alternateClassName: 'Ext.Toolbar.TextItem',
-
-    /**
-     * @cfg {String} text
-     * The text to be used as innerHTML (html tags are accepted).
-     */
-    text: '',
-
-    renderTpl: '{text}',
-    //
-    baseCls: Ext.baseCSSPrefix + 'toolbar-text',
-
-    beforeRender : function() {
-        var me = this;
-
-        me.callParent();
-
-        Ext.apply(me.renderData, {
-            text: me.text
-        });
-    },
-
-    /**
-     * Updates this item's text, setting the text to be used as innerHTML.
-     * @param {String} text The text to display (html accepted).
-     */
-    setText : function(text) {
-        var me = this;
-        if (me.rendered) {
-            me.el.update(text);
-            me.updateLayout();
-        } else {
-            this.text = text;
-        }
-    }
-});
-/**
- * A mixin for {@link Ext.container.Container} components that are likely to have form fields in their
- * items subtree. Adds the following capabilities:
- *
- * - Methods for handling the addition and removal of {@link Ext.form.Labelable} and {@link Ext.form.field.Field}
- *   instances at any depth within the container.
- * - Events ({@link #fieldvaliditychange} and {@link #fielderrorchange}) for handling changes to the state
- *   of individual fields at the container level.
- * - Automatic application of {@link #fieldDefaults} config properties to each field added within the
- *   container, to facilitate uniform configuration of all fields.
- *
- * This mixin is primarily for internal use by {@link Ext.form.Panel} and {@link Ext.form.FieldContainer},
- * and should not normally need to be used directly. @docauthor Jason Johnston <jason@sencha.com>
- */
-Ext.define('Ext.form.FieldAncestor', {
-
-    /**
-     * @cfg {Object} fieldDefaults
-     * If specified, the properties in this object are used as default config values for each {@link Ext.form.Labelable}
-     * instance (e.g. {@link Ext.form.field.Base} or {@link Ext.form.FieldContainer}) that is added as a descendant of
-     * this container. Corresponding values specified in an individual field's own configuration, or from the {@link
-     * Ext.container.Container#defaults defaults config} of its parent container, will take precedence. See the
-     * documentation for {@link Ext.form.Labelable} to see what config options may be specified in the fieldDefaults.
-     *
-     * Example:
-     *
-     *     new Ext.form.Panel({
-     *         fieldDefaults: {
-     *             labelAlign: 'left',
-     *             labelWidth: 100
-     *         },
-     *         items: [{
-     *             xtype: 'fieldset',
-     *             defaults: {
-     *                 labelAlign: 'top'
-     *             },
-     *             items: [{
-     *                 name: 'field1'
-     *             }, {
-     *                 name: 'field2'
-     *             }]
-     *         }, {
-     *             xtype: 'fieldset',
-     *             items: [{
-     *                 name: 'field3',
-     *                 labelWidth: 150
-     *             }, {
-     *                 name: 'field4'
-     *             }]
-     *         }]
-     *     });
-     *
-     * In this example, field1 and field2 will get labelAlign:'top' (from the fieldset's defaults) and labelWidth:100
-     * (from fieldDefaults), field3 and field4 will both get labelAlign:'left' (from fieldDefaults and field3 will use
-     * the labelWidth:150 from its own config.
-     */
-
-
-    /**
-     * Initializes the FieldAncestor's state; this must be called from the initComponent method of any components
-     * importing this mixin.
-     * @protected
-     */
-    initFieldAncestor: function() {
-        var me = this,
-            onSubtreeChange = me.onFieldAncestorSubtreeChange;
-
-        me.addEvents(
-            /**
-             * @event fieldvaliditychange
-             * Fires when the validity state of any one of the {@link Ext.form.field.Field} instances within this
-             * container changes.
-             * @param {Ext.form.FieldAncestor} this
-             * @param {Ext.form.Labelable} The Field instance whose validity changed
-             * @param {String} isValid The field's new validity state
-             */
-            'fieldvaliditychange',
-
-            /**
-             * @event fielderrorchange
-             * Fires when the active error message is changed for any one of the {@link Ext.form.Labelable} instances
-             * within this container.
-             * @param {Ext.form.FieldAncestor} this
-             * @param {Ext.form.Labelable} The Labelable instance whose active error was changed
-             * @param {String} error The active error message
-             */
-            'fielderrorchange'
-        );
-
-        // Catch addition and removal of descendant fields
-        me.on('add', onSubtreeChange, me);
-        me.on('remove', onSubtreeChange, me);
-
-        me.initFieldDefaults();
-    },
-
-    /**
-     * @private Initialize the {@link #fieldDefaults} object
-     */
-    initFieldDefaults: function() {
-        if (!this.fieldDefaults) {
-            this.fieldDefaults = {};
-        }
-    },
-
-    /**
-     * @private
-     * Handle the addition and removal of components in the FieldAncestor component's child tree.
-     */
-    onFieldAncestorSubtreeChange: function(parent, child) {
-        var me = this,
-            isAdding = !!child.ownerCt;
-
-        function handleCmp(cmp) {
-            var isLabelable = cmp.isFieldLabelable,
-                isField = cmp.isFormField;
-            if (isLabelable || isField) {
-                if (isLabelable) {
-                    me['onLabelable' + (isAdding ? 'Added' : 'Removed')](cmp);
-                }
-                if (isField) {
-                    me['onField' + (isAdding ? 'Added' : 'Removed')](cmp);
-                }
-            }
-            else if (cmp.isContainer) {
-                Ext.Array.forEach(cmp.getRefItems(), handleCmp);
-            }
-        }
-        handleCmp(child);
-    },
-
-    /**
-     * Called when a {@link Ext.form.Labelable} instance is added to the container's subtree.
-     * @param {Ext.form.Labelable} labelable The instance that was added
-     * @protected
-     */
-    onLabelableAdded: function(labelable) {
-        var me = this;
-
-        // buffer slightly to avoid excessive firing while sub-fields are changing en masse
-        me.mon(labelable, 'errorchange', me.handleFieldErrorChange, me, {buffer: 10});
-
-        labelable.setFieldDefaults(me.fieldDefaults);
-    },
-
-    /**
-     * Called when a {@link Ext.form.field.Field} instance is added to the container's subtree.
-     * @param {Ext.form.field.Field} field The field which was added
-     * @protected
-     */
-    onFieldAdded: function(field) {
-        var me = this;
-        me.mon(field, 'validitychange', me.handleFieldValidityChange, me);
-    },
-
-    /**
-     * Called when a {@link Ext.form.Labelable} instance is removed from the container's subtree.
-     * @param {Ext.form.Labelable} labelable The instance that was removed
-     * @protected
-     */
-    onLabelableRemoved: function(labelable) {
-        var me = this;
-        me.mun(labelable, 'errorchange', me.handleFieldErrorChange, me);
-    },
-
-    /**
-     * Called when a {@link Ext.form.field.Field} instance is removed from the container's subtree.
-     * @param {Ext.form.field.Field} field The field which was removed
-     * @protected
-     */
-    onFieldRemoved: function(field) {
-        var me = this;
-        me.mun(field, 'validitychange', me.handleFieldValidityChange, me);
-    },
-
-    /**
-     * @private Handle validitychange events on sub-fields; invoke the aggregated event and method
-     */
-    handleFieldValidityChange: function(field, isValid) {
-        var me = this;
-        me.fireEvent('fieldvaliditychange', me, field, isValid);
-        me.onFieldValidityChange(field, isValid);
-    },
-
-    /**
-     * @private Handle errorchange events on sub-fields; invoke the aggregated event and method
-     */
-    handleFieldErrorChange: function(labelable, activeError) {
-        var me = this;
-        me.fireEvent('fielderrorchange', me, labelable, activeError);
-        me.onFieldErrorChange(labelable, activeError);
-    },
-
-    /**
-     * Fired when the validity of any field within the container changes.
-     * @param {Ext.form.field.Field} field The sub-field whose validity changed
-     * @param {Boolean} valid The new validity state
-     * @protected
-     */
-    onFieldValidityChange: Ext.emptyFn,
-
-    /**
-     * Fired when the error message of any field within the container changes.
-     * @param {Ext.form.Labelable} field The sub-field whose active error changed
-     * @param {String} error The new active error message
-     * @protected
-     */
-    onFieldErrorChange: Ext.emptyFn
-
-});
-Ext.define('PICS.ux.util.filter.FilterMultipleColumn', {
-    extend: 'Ext.util.Filter',
-
-    anyMatch: true,
-    root: 'data',
-
-    createFilterFn: function () {
-        var me = this,
-            matcher = me.createValueMatcher(),
-            property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
-
-        return function(item) {
-            var hasmatch = false;
-
-            for(var i = 0; i < property.length; i++) {
-                if(matcher.test(me.getRoot.call(me, item)[property[i]])) {
-                    hasmatch = true;
-                    break;
-                }
-            }
-
-            return matcher === null ? value === null : hasmatch;
-        };
     }
 });
 /**
@@ -71893,14 +69926,1985 @@ Ext.define('PICS.view.report.header.Header', {
     }],
     layout: 'border'
 });
-Ext.define('PICS.ux.util.filter.ColumnFilterStoreFilter', {
-    extend: 'PICS.ux.util.filter.FilterMultipleColumn',
+/**
+ * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
+ * If the container is resized, all anchored items are automatically rerendered according to their
+ * `{@link #anchor}` rules.
+ *
+ * This class is intended to be extended or created via the {@link Ext.container.AbstractContainer#layout layout}: 'anchor' 
+ * config, and should generally not need to be created directly via the new keyword.
+ * 
+ * AnchorLayout does not have any direct config options (other than inherited ones). By default,
+ * AnchorLayout will calculate anchor measurements based on the size of the container itself. However, the
+ * container using the AnchorLayout can supply an anchoring-specific config property of `anchorSize`.
+ *
+ * If anchorSize is specifed, the layout will use it as a virtual container for the purposes of calculating
+ * anchor measurements based on it instead, allowing the container to be sized independently of the anchoring
+ * logic if necessary.
+ *
+ *     @example
+ *     Ext.create('Ext.Panel', {
+ *         width: 500,
+ *         height: 400,
+ *         title: "AnchorLayout Panel",
+ *         layout: 'anchor',
+ *         renderTo: Ext.getBody(),
+ *         items: [
+ *             {
+ *                 xtype: 'panel',
+ *                 title: '75% Width and 20% Height',
+ *                 anchor: '75% 20%'
+ *             },
+ *             {
+ *                 xtype: 'panel',
+ *                 title: 'Offset -300 Width & -200 Height',
+ *                 anchor: '-300 -200'		
+ *             },
+ *             {
+ *                 xtype: 'panel',
+ *                 title: 'Mixed Offset and Percent',
+ *                 anchor: '-250 20%'
+ *             }
+ *         ]
+ *     });
+ */
+Ext.define('Ext.layout.container.Anchor', {
 
-    property: [
-        'category',
-        'name',
-        'description'
-    ]
+    /* Begin Definitions */
+
+    alias: 'layout.anchor',
+    extend: 'Ext.layout.container.Container',
+    alternateClassName: 'Ext.layout.AnchorLayout',
+
+    /* End Definitions */
+
+    type: 'anchor',
+
+    manageOverflow: 2,
+
+    renderTpl: [
+        '{%this.renderBody(out,values);this.renderPadder(out,values)%}'
+    ],
+
+    /**
+     * @cfg {String} anchor
+     *
+     * This configuation option is to be applied to **child `items`** of a container managed by
+     * this layout (ie. configured with `layout:'anchor'`).
+     *
+     * This value is what tells the layout how an item should be anchored to the container. `items`
+     * added to an AnchorLayout accept an anchoring-specific config property of **anchor** which is a string
+     * containing two values: the horizontal anchor value and the vertical anchor value (for example, '100% 50%').
+     * The following types of anchor values are supported:
+     *
+     * - **Percentage** : Any value between 1 and 100, expressed as a percentage.
+     *
+     *   The first anchor is the percentage width that the item should take up within the container, and the
+     *   second is the percentage height.  For example:
+     *
+     *       // two values specified
+     *       anchor: '100% 50%' // render item complete width of the container and
+     *                          // 1/2 height of the container
+     *       // one value specified
+     *       anchor: '100%'     // the width value; the height will default to auto
+     *
+     * - **Offsets** : Any positive or negative integer value.
+     *
+     *   This is a raw adjustment where the first anchor is the offset from the right edge of the container,
+     *   and the second is the offset from the bottom edge. For example:
+     *
+     *       // two values specified
+     *       anchor: '-50 -100' // render item the complete width of the container
+     *                          // minus 50 pixels and
+     *                          // the complete height minus 100 pixels.
+     *       // one value specified
+     *       anchor: '-50'      // anchor value is assumed to be the right offset value
+     *                          // bottom offset will default to 0
+     *
+     * - **Sides** : Valid values are `right` (or `r`) and `bottom` (or `b`).
+     *
+     *   Either the container must have a fixed size or an anchorSize config value defined at render time in
+     *   order for these to have any effect.
+     *   
+     * - **Mixed** :
+     *
+     *   Anchor values can also be mixed as needed.  For example, to render the width offset from the container
+     *   right edge by 50 pixels and 75% of the container's height use:
+     *   
+     *       anchor:   '-50 75%'
+     */
+
+    /**
+     * @cfg {String} defaultAnchor
+     * Default anchor for all child **container** items applied if no anchor or specific width is set on the child item.
+     */
+    defaultAnchor: '100%',
+
+    parseAnchorRE: /^(r|right|b|bottom)$/i,
+
+    beginLayout: function (ownerContext) {
+        var me = this,
+            dimensions = 0,
+            anchorSpec, childContext, childItems, i, length, target;
+
+        me.callParent(arguments);
+
+        childItems = ownerContext.childItems; // populated by callParent
+        length = childItems.length;
+
+        for (i = 0; i < length; ++i) {
+            childContext = childItems[i];
+            anchorSpec = childContext.target.anchorSpec;
+
+            if (anchorSpec) {
+                if (childContext.widthModel.calculated && anchorSpec.right) {
+                    dimensions |= 1;
+                }
+                if (childContext.heightModel.calculated && anchorSpec.bottom) {
+                    dimensions |= 2;
+                }
+
+                if (dimensions == 3) { // if (both dimensions in play)
+                    break;
+                }
+            }
+        }
+
+        ownerContext.anchorDimensions = dimensions;
+
+        // Work around WebKit RightMargin bug. We're going to inline-block all the children
+        // only ONCE and remove it when we're done
+        if (!Ext.supports.RightMargin && !me.rightMarginCleanerFn) {
+            target = ownerContext.targetContext.el; // targetContext is added by superclass
+
+            me.rightMarginCleanerFn = Ext.Element.getRightMarginFixCleaner(target);
+            target.addCls(Ext.baseCSSPrefix + 'inline-children');
+        }
+
+        me.sanityCheck(ownerContext);
+    },
+
+    calculate: function (ownerContext) {
+        var me = this,
+            containerSize = me.getContainerSize(ownerContext);
+
+        if (ownerContext.anchorDimensions !== ownerContext.state.calculatedAnchors) {
+            me.calculateAnchors(ownerContext, containerSize);
+        }
+
+        if (ownerContext.hasDomProp('containerChildrenDone')) {
+            // Once the child layouts are done we can determine the content sizes...
+
+            if (!containerSize.gotAll) {
+                me.done = false;
+            }
+
+            me.calculateContentSize(ownerContext, ownerContext.anchorDimensions);
+
+            if (me.done) {
+                me.calculateOverflow(ownerContext, containerSize, ownerContext.anchorDimensions);
+                return;
+            }
+        }
+
+        me.done = false;
+    },
+
+    calculateAnchors: function (ownerContext, containerSize) {
+        var me = this,
+            childItems = ownerContext.childItems,
+            length = childItems.length,
+            gotHeight = containerSize.gotHeight,
+            gotWidth = containerSize.gotWidth,
+            ownerHeight = containerSize.height,
+            ownerWidth = containerSize.width,
+            state = ownerContext.state,
+            calculatedAnchors = (gotWidth ? 1 : 0) | (gotHeight ? 2 : 0),
+            anchorSpec, childContext, childMargins, height, i, width;
+
+        state.calculatedAnchors = (state.calculatedAnchors || 0) | calculatedAnchors;
+
+        for (i = 0; i < length; i++) {
+            childContext = childItems[i];
+            childMargins = childContext.getMarginInfo();
+            anchorSpec = childContext.target.anchorSpec;
+
+            // Check widthModel in case "defaults" has applied an anchor to a component
+            // that also has width (which must win). If we did not make this check in this
+            // way, we would attempt to calculate a width where it had been configured.
+            //
+            if (gotWidth && childContext.widthModel.calculated) {
+                width = anchorSpec.right(ownerWidth) - childMargins.width;
+                width = me.adjustWidthAnchor(width, childContext);
+
+                childContext.setWidth(width);
+            }
+
+            // Repeat for height
+            if (gotHeight && childContext.heightModel.calculated) {
+                height = anchorSpec.bottom(ownerHeight) - childMargins.height;
+                height = me.adjustHeightAnchor(height, childContext);
+
+                childContext.setHeight(height);
+            }
+        }
+    },
+
+    finishedLayout: function (ownerContext) {
+        var cleanerFn = this.rightMarginCleanerFn;
+
+        if (cleanerFn) {
+            delete this.rightMarginCleanerFn;
+            ownerContext.targetContext.el.removeCls(Ext.baseCSSPrefix + 'inline-children');
+            cleanerFn();
+        }
+    },
+
+    sanityCheck: function (ownerContext) {
+        var shrinkWrapWidth = ownerContext.widthModel.shrinkWrap,
+            shrinkWrapHeight = ownerContext.heightModel.shrinkWrap,
+            children = ownerContext.childItems,
+            anchorSpec, comp, childContext,
+            i, length;
+
+        for (i = 0, length = children.length; i < length; ++i) {
+            childContext = children[i];
+            comp = childContext.target;
+            anchorSpec = comp.anchorSpec;
+
+            if (anchorSpec) {
+                if (childContext.widthModel.calculated && anchorSpec.right) {
+                    if (shrinkWrapWidth) {
+                        Ext.log({
+                            level: 'warn',
+                            msg: 'Right anchor on '+comp.id+' in shrinkWrap width container'
+                        });
+                    }
+                }
+
+                if (childContext.heightModel.calculated && anchorSpec.bottom) {
+                    if (shrinkWrapHeight) {
+                        Ext.log({
+                            level: 'warn',
+                            msg: 'Bottom anchor on '+comp.id+' in shrinkWrap height container'
+                        });
+                    }
+                }
+            }
+        }
+    },
+
+    // private
+    anchorFactory: {
+        offset: function (delta) {
+            return function(v) {
+                return v + delta;
+            };
+        },
+        ratio: function (ratio) {
+            return function(v) {
+                return Math.floor(v * ratio);
+            };
+        },
+        standard: function (diff) {
+            return function(v) {
+                return v - diff;
+            };
+        }
+    },
+
+    parseAnchor: function(a, start, cstart) {
+        if (a && a != 'none') {
+            var factory = this.anchorFactory,
+                delta;
+
+            if (this.parseAnchorRE.test(a)) {
+                return factory.standard(cstart - start);
+            }    
+            if (a.indexOf('%') != -1) {
+                return factory.ratio(parseFloat(a.replace('%', '')) * 0.01);
+            }    
+            delta = parseInt(a, 10);
+            if (!isNaN(delta)) {
+                return factory.offset(delta);
+            }
+        }
+        return null;
+    },
+
+    // private
+    adjustWidthAnchor: function(value, childContext) {
+        return value;
+    },
+
+    // private
+    adjustHeightAnchor: function(value, childContext) {
+        return value;
+    },
+
+    configureItem: function(item) {
+        var me = this,
+            owner = me.owner,
+            anchor= item.anchor,
+            anchorsArray,
+            anchorWidth,
+            anchorHeight;
+
+        me.callParent(arguments);
+
+        if (!item.anchor && item.items && !Ext.isNumber(item.width) && !(Ext.isIE6 && Ext.isStrict)) {
+            item.anchor = anchor = me.defaultAnchor;
+        }
+
+        /**
+         * @cfg {Number/Object} anchorSize
+         * Defines the anchoring size of container.
+         * Either a number to define the width of the container or an object with `width` and `height` fields.
+         * @member Ext.container.Container
+         */ 
+        if (owner.anchorSize) {
+            if (typeof owner.anchorSize == 'number') {
+                anchorWidth = owner.anchorSize;
+            } else {
+                anchorWidth = owner.anchorSize.width;
+                anchorHeight = owner.anchorSize.height;
+            }
+        } else {
+            anchorWidth = owner.initialConfig.width;
+            anchorHeight = owner.initialConfig.height;
+        }
+
+        if (anchor) {
+            // cache all anchor values
+            anchorsArray = anchor.split(' ');
+            item.anchorSpec = {
+                right: me.parseAnchor(anchorsArray[0], item.initialConfig.width, anchorWidth),
+                bottom: me.parseAnchor(anchorsArray[1], item.initialConfig.height, anchorHeight)
+            };
+        }
+    },
+
+    sizePolicy: {
+        '': {
+            setsWidth: 0,
+            setsHeight: 0
+        },
+        b: {
+            setsWidth: 0,
+            setsHeight: 1
+        },
+        r: {
+            '': {
+                setsWidth: 1,
+                setsHeight: 0
+            },
+            b: {
+                setsWidth: 1,
+                setsHeight: 1
+
+            }
+        }
+    },
+
+    getItemSizePolicy: function (item) {
+        var anchorSpec = item.anchorSpec,
+            key = '',
+            policy = this.sizePolicy,
+            sizeModel;
+
+        if (anchorSpec) {
+            sizeModel = this.owner.getSizeModel();
+            if (anchorSpec.right && !sizeModel.width.shrinkWrap) {
+                policy = policy.r;
+            }
+            if (anchorSpec.bottom && !sizeModel.height.shrinkWrap) {
+                key = 'b';
+            }
+        }
+
+        return policy[key];
+    }
+});
+
+Ext.define('PICS.view.report.filter.FilterTooltip', {
+    extend: 'Ext.tip.ToolTip',
+    alias: 'widget.filtertooltip',
+    
+    anchor: 'left',
+    showDelay: 0,
+    tpl: '<div><p>{description}</p></div>'
+});
+/**
+ * @author Nicolas Ferrero
+ *
+ * TablePanel is the basis of both {@link Ext.tree.Panel TreePanel} and {@link Ext.grid.Panel GridPanel}.
+ *
+ * TablePanel aggregates:
+ *
+ *  - a Selection Model
+ *  - a View
+ *  - a Store
+ *  - Scrollers
+ *  - Ext.grid.header.Container
+ */
+Ext.define('Ext.panel.Table', {
+    extend: 'Ext.panel.Panel',
+
+    alias: 'widget.tablepanel',
+
+    uses: [
+        'Ext.selection.RowModel',
+        'Ext.selection.CellModel',
+        'Ext.selection.CheckboxModel',
+        'Ext.grid.PagingScroller',
+        'Ext.grid.header.Container',
+        'Ext.grid.Lockable'
+    ],
+
+    extraBaseCls: Ext.baseCSSPrefix + 'grid',
+    extraBodyCls: Ext.baseCSSPrefix + 'grid-body',
+
+    layout: 'fit',
+    /**
+     * @property {Boolean} hasView
+     * True to indicate that a view has been injected into the panel.
+     */
+    hasView: false,
+
+    // each panel should dictate what viewType and selType to use
+    /**
+     * @cfg {String} viewType
+     * An xtype of view to use. This is automatically set to 'gridview' by {@link Ext.grid.Panel Grid}
+     * and to 'treeview' by {@link Ext.tree.Panel Tree}.
+     * @protected
+     */
+    viewType: null,
+
+    /**
+     * @cfg {Object} viewConfig
+     * A config object that will be applied to the grid's UI view. Any of the config options available for
+     * {@link Ext.view.Table} can be specified here. This option is ignored if {@link #view} is specified.
+     */
+
+    /**
+     * @cfg {Ext.view.Table} view
+     * The {@link Ext.view.Table} used by the grid. Use {@link #viewConfig} to just supply some config options to
+     * view (instead of creating an entire View instance).
+     */
+
+    /**
+     * @cfg {String} selType
+     * An xtype of selection model to use. Defaults to 'rowmodel'. This is used to create selection model if just
+     * a config object or nothing at all given in {@link #selModel} config.
+     */
+    selType: 'rowmodel',
+
+    /**
+     * @cfg {Ext.selection.Model/Object} selModel
+     * A {@link Ext.selection.Model selection model} instance or config object.  In latter case the {@link #selType}
+     * config option determines to which type of selection model this config is applied.
+     */
+
+    /**
+     * @cfg {Boolean} [multiSelect=false]
+     * True to enable 'MULTI' selection mode on selection model.
+     * @deprecated 4.1.1 Use {@link Ext.selection.Model#mode} 'MULTI' instead.
+     */
+
+    /**
+     * @cfg {Boolean} [simpleSelect=false]
+     * True to enable 'SIMPLE' selection mode on selection model.
+     * @deprecated 4.1.1 Use {@link Ext.selection.Model#mode} 'SIMPLE' instead.
+     */
+
+    /**
+     * @cfg {Ext.data.Store} store (required)
+     * The {@link Ext.data.Store Store} the grid should use as its data source.
+     */
+
+    /**
+     * @cfg {String/Boolean} scroll
+     * Scrollers configuration. Valid values are 'both', 'horizontal' or 'vertical'.
+     * True implies 'both'. False implies 'none'.
+     */
+    scroll: true,
+
+    /**
+     * @cfg {Ext.grid.column.Column[]/Object} columns
+     * An array of {@link Ext.grid.column.Column column} definition objects which define all columns that appear in this
+     * grid. Each column definition provides the header text for the column, and a definition of where the data for that
+     * column comes from.
+     *
+     * This can also be a configuration object for a {Ext.grid.header.Container HeaderContainer} which may override
+     * certain default configurations if necessary. For example, the special layout may be overridden to use a simpler
+     * layout, or one can set default values shared by all columns:
+     * 
+     *     columns: {
+     *         items: [
+     *             {
+     *                 text: "Column A"
+     *                 dataIndex: "field_A"
+     *             },{
+     *                 text: "Column B",
+     *                 dataIndex: "field_B"
+     *             }, 
+     *             ...
+     *         ],
+     *         defaults: {
+     *             flex: 1
+     *         }
+     *     }
+     */
+
+    /**
+     * @cfg {Boolean} forceFit
+     * Ttrue to force the columns to fit into the available width. Headers are first sized according to configuration,
+     * whether that be a specific width, or flex. Then they are all proportionally changed in width so that the entire
+     * content width is used. For more accurate control, it is more optimal to specify a flex setting on the columns
+     * that are to be stretched & explicit widths on columns that are not.
+     */
+
+    /**
+     * @cfg {Ext.grid.feature.Feature[]} features
+     * An array of grid Features to be added to this grid. See {@link Ext.grid.feature.Feature} for usage.
+     */
+
+    /**
+     * @cfg {Boolean} [hideHeaders=false]
+     * True to hide column headers.
+     */
+
+    /**
+     * @cfg {Boolean} deferRowRender
+     * Defaults to true to enable deferred row rendering.
+     *
+     * This allows the View to execute a refresh quickly, with the expensive update of the row structure deferred so
+     * that layouts with GridPanels appear, and lay out more quickly.
+     */
+
+    /**
+     * @cfg {Object} verticalScroller
+     * A config object to be used when configuring the {@link Ext.grid.PagingScroller scroll monitor} to control
+     * refreshing of data in an "infinite grid".
+     * 
+     * Configurations of this object allow fine tuning of data caching which can improve performance and usability
+     * of the infinite grid.
+     */
+
+    deferRowRender: true,
+     
+    /**
+     * @cfg {Boolean} sortableColumns
+     * False to disable column sorting via clicking the header and via the Sorting menu items.
+     */
+    sortableColumns: true,
+
+    /**
+     * @cfg {Boolean} [enableLocking=false]
+     * True to enable locking support for this grid. Alternatively, locking will also be automatically
+     * enabled if any of the columns in the column configuration contain the locked config option.
+     */
+    enableLocking: false,
+
+    // private property used to determine where to go down to find views
+    // this is here to support locking.
+    scrollerOwner: true,
+
+    /**
+     * @cfg {Boolean} [enableColumnMove=true]
+     * False to disable column dragging within this grid.
+     */
+    enableColumnMove: true,
+    
+    /**
+     * @cfg {Boolean} [sealedColumns=false]
+     * True to constrain column dragging so that a column cannot be dragged in or out of it's
+     * current group. Only relevant while {@link #enableColumnMove} is enabled.
+     */
+    sealedColumns: false,
+
+    /**
+     * @cfg {Boolean} [enableColumnResize=true]
+     * False to disable column resizing within this grid.
+     */
+    enableColumnResize: true,
+
+    /**
+     * @cfg {Boolean} [enableColumnHide=true]
+     * False to disable column hiding within this grid.
+     */
+    enableColumnHide: true,
+
+    /**
+     * @cfg {Boolean} columnLines Adds column line styling
+     */
+
+    /**
+     * @cfg {Boolean} [rowLines=true] Adds row line styling
+     */
+    rowLines: true,
+
+    /**
+     * @cfg {Boolean} [disableSelection=false]
+     * True to disable selection model.
+     */
+
+    /**
+     * @cfg {String} emptyText Default text (html tags are accepted) to display in the Panel body when the Store
+     * is empty. When specified, and the Store is empty, the text will be rendered inside a DIV with the CSS class "x-grid-empty".
+     */
+    
+    /**
+     * @cfg {Boolean} [allowDeselect=false]
+     * True to allow deselecting a record. This config is forwarded to {@link Ext.selection.Model#allowDeselect}.
+     */
+
+    /**
+     * @property {Boolean} optimizedColumnMove
+     * If you are writing a grid plugin or a {Ext.grid.feature.Feature Feature} which creates a column-based structure which
+     * needs a view refresh when columns are moved, then set this property in the grid.
+     *
+     * An example is the built in {@link Ext.grid.feature.AbstractSummary Summary} Feature. This creates summary rows, and the
+     * summary columns must be in the same order as the data columns. This plugin sets the `optimizedColumnMove` to `false.
+     */
+
+    initComponent: function() {
+        if (!this.viewType) {
+            Ext.Error.raise("You must specify a viewType config.");
+        }
+        if (this.headers) {
+            Ext.Error.raise("The headers config is not supported. Please specify columns instead.");
+        }
+
+        var me          = this,
+            scroll      = me.scroll,
+            vertical    = false,
+            horizontal  = false,
+            headerCtCfg = me.columns || me.colModel,
+            view,
+            border = me.border,
+            i, len;
+
+        if (me.columnLines) {
+            me.addCls(Ext.baseCSSPrefix + 'grid-with-col-lines');
+        }
+
+        if (me.rowLines) {
+            me.addCls(Ext.baseCSSPrefix + 'grid-with-row-lines');
+        }
+
+        // Look up the configured Store. If none configured, use the fieldless, empty Store defined in Ext.data.Store.
+        me.store = Ext.data.StoreManager.lookup(me.store || 'ext-empty-store');
+
+        if (!headerCtCfg) {
+            Ext.Error.raise("A column configuration must be specified");
+        }
+
+        // The columns/colModel config may be either a fully instantiated HeaderContainer, or an array of Column definitions, or a config object of a HeaderContainer
+        // Either way, we extract a columns property referencing an array of Column definitions.
+        if (headerCtCfg instanceof Ext.grid.header.Container) {
+            me.headerCt = headerCtCfg;
+            me.headerCt.border = border;
+            me.columns = me.headerCt.items.items;
+        } else {
+            if (Ext.isArray(headerCtCfg)) {
+                headerCtCfg = {
+                    items: headerCtCfg,
+                    border: border
+                };
+            }
+            Ext.apply(headerCtCfg, {
+                forceFit: me.forceFit,
+                sortable: me.sortableColumns,
+                enableColumnMove: me.enableColumnMove,
+                enableColumnResize: me.enableColumnResize,
+                enableColumnHide: me.enableColumnHide,
+                border:  border,
+                sealed: me.sealedColumns
+            });
+            me.columns = headerCtCfg.items;
+
+             // If any of the Column objects contain a locked property, and are not processed, this is a lockable TablePanel, a
+             // special view will be injected by the Ext.grid.Lockable mixin, so no processing of .
+             if (me.enableLocking || Ext.ComponentQuery.query('{locked !== undefined}{processed != true}', me.columns).length) {
+                 me.self.mixin('lockable', Ext.grid.Lockable);
+                 me.injectLockable();
+             }
+        }
+
+        me.scrollTask = new Ext.util.DelayedTask(me.syncHorizontalScroll, me);
+
+        me.addEvents(
+            // documented on GridPanel
+            'reconfigure',
+            /**
+             * @event viewready
+             * Fires when the grid view is available (use this for selecting a default row).
+             * @param {Ext.panel.Table} this
+             */
+            'viewready'
+        );
+
+        me.bodyCls = me.bodyCls || '';
+        me.bodyCls += (' ' + me.extraBodyCls);
+        
+        me.cls = me.cls || '';
+        me.cls += (' ' + me.extraBaseCls);
+
+        // autoScroll is not a valid configuration
+        delete me.autoScroll;
+
+        // If this TablePanel is lockable (Either configured lockable, or any of the defined columns has a 'locked' property)
+        // than a special lockable view containing 2 side-by-side grids will have been injected so we do not need to set up any UI.
+        if (!me.hasView) {
+
+            // If we were not configured with a ready-made headerCt (either by direct config with a headerCt property, or by passing
+            // a HeaderContainer instance as the 'columns' property, then go ahead and create one from the config object created above.
+            if (!me.headerCt) {
+                me.headerCt = new Ext.grid.header.Container(headerCtCfg);
+            }
+
+            // Extract the array of Column objects
+            me.columns = me.headerCt.items.items;
+
+            // If the Store is paging blocks of the dataset in, then it can only be sorted remotely.
+            if (me.store.buffered && !me.store.remoteSort) {
+                for (i = 0, len = me.columns.length; i < len; i++) {
+                    me.columns[i].sortable = false;
+                }
+            }
+
+            if (me.hideHeaders) {
+                me.headerCt.height = 0;
+                me.headerCt.addCls(Ext.baseCSSPrefix + 'grid-header-ct-hidden');
+                me.addCls(Ext.baseCSSPrefix + 'grid-header-hidden');
+                // IE Quirks Mode fix
+                // If hidden configuration option was used, several layout calculations will be bypassed.
+                if (Ext.isIEQuirks) {
+                    me.headerCt.style = {
+                        display: 'none'
+                    };
+                }
+            }
+
+            // turn both on.
+            if (scroll === true || scroll === 'both') {
+                vertical = horizontal = true;
+            } else if (scroll === 'horizontal') {
+                horizontal = true;
+            } else if (scroll === 'vertical') {
+                vertical = true;
+            }
+
+            me.relayHeaderCtEvents(me.headerCt);
+            me.features = me.features || [];
+            if (!Ext.isArray(me.features)) {
+                me.features = [me.features];
+            }
+            me.dockedItems = [].concat(me.dockedItems || []);
+            me.dockedItems.unshift(me.headerCt);
+            me.viewConfig = me.viewConfig || {};
+
+            // Buffered scrolling must preserve scroll on refresh
+            if (me.store && me.store.buffered) {
+                me.viewConfig.preserveScrollOnRefresh = true;
+            } else if (me.invalidateScrollerOnRefresh !== undefined) {
+                me.viewConfig.preserveScrollOnRefresh = !me.invalidateScrollerOnRefresh;
+            }
+
+            // AbstractDataView will look up a Store configured as an object
+            // getView converts viewConfig into a View instance
+            view = me.getView();
+
+            me.items = [view];
+            me.hasView = true;
+
+            if (vertical) {
+                // If the Store is buffered, create a PagingScroller to monitor the View's scroll progress,
+                // load the Store's prefetch buffer when it detects we are nearing an edge.
+                if (me.store.buffered) {
+                    me.verticalScroller = new Ext.grid.PagingScroller(Ext.apply({
+                        panel: me,
+                        store: me.store,
+                        view: me.view
+                    }, me.verticalScroller));
+                }
+            }
+
+            if (horizontal) {
+                // Add a listener to synchronize the horizontal scroll position of the headers
+                // with the table view's element... Unless we are not showing headers!
+                if (!me.hideHeaders) {
+                    view.on({
+                        scroll: {
+                            fn: me.onHorizontalScroll,
+                            element: 'el',
+                            scope: me
+                        }
+                    });
+                }
+            }
+
+            me.mon(view.store, {
+                load: me.onStoreLoad,
+                scope: me
+            });
+            me.mon(view, {
+                viewready: me.onViewReady,
+                refresh: me.onRestoreHorzScroll,
+                scope: me
+            });
+        }
+
+        // Relay events from the View whether it be a LockingView, or a regular GridView
+        this.relayEvents(me.view, [
+            /**
+             * @event beforeitemmousedown
+             * @inheritdoc Ext.view.View#beforeitemmousedown
+             */
+            'beforeitemmousedown',
+            /**
+             * @event beforeitemmouseup
+             * @inheritdoc Ext.view.View#beforeitemmouseup
+             */
+            'beforeitemmouseup',
+            /**
+             * @event beforeitemmouseenter
+             * @inheritdoc Ext.view.View#beforeitemmouseenter
+             */
+            'beforeitemmouseenter',
+            /**
+             * @event beforeitemmouseleave
+             * @inheritdoc Ext.view.View#beforeitemmouseleave
+             */
+            'beforeitemmouseleave',
+            /**
+             * @event beforeitemclick
+             * @inheritdoc Ext.view.View#beforeitemclick
+             */
+            'beforeitemclick',
+            /**
+             * @event beforeitemdblclick
+             * @inheritdoc Ext.view.View#beforeitemdblclick
+             */
+            'beforeitemdblclick',
+            /**
+             * @event beforeitemcontextmenu
+             * @inheritdoc Ext.view.View#beforeitemcontextmenu
+             */
+            'beforeitemcontextmenu',
+            /**
+             * @event itemmousedown
+             * @inheritdoc Ext.view.View#itemmousedown
+             */
+            'itemmousedown',
+            /**
+             * @event itemmouseup
+             * @inheritdoc Ext.view.View#itemmouseup
+             */
+            'itemmouseup',
+            /**
+             * @event itemmouseenter
+             * @inheritdoc Ext.view.View#itemmouseenter
+             */
+            'itemmouseenter',
+            /**
+             * @event itemmouseleave
+             * @inheritdoc Ext.view.View#itemmouseleave
+             */
+            'itemmouseleave',
+            /**
+             * @event itemclick
+             * @inheritdoc Ext.view.View#itemclick
+             */
+            'itemclick',
+            /**
+             * @event itemdblclick
+             * @inheritdoc Ext.view.View#itemdblclick
+             */
+            'itemdblclick',
+            /**
+             * @event itemcontextmenu
+             * @inheritdoc Ext.view.View#itemcontextmenu
+             */
+            'itemcontextmenu',
+            /**
+             * @event beforecontainermousedown
+             * @inheritdoc Ext.view.View#beforecontainermousedown
+             */
+            'beforecontainermousedown',
+            /**
+             * @event beforecontainermouseup
+             * @inheritdoc Ext.view.View#beforecontainermouseup
+             */
+            'beforecontainermouseup',
+            /**
+             * @event beforecontainermouseover
+             * @inheritdoc Ext.view.View#beforecontainermouseover
+             */
+            'beforecontainermouseover',
+            /**
+             * @event beforecontainermouseout
+             * @inheritdoc Ext.view.View#beforecontainermouseout
+             */
+            'beforecontainermouseout',
+            /**
+             * @event beforecontainerclick
+             * @inheritdoc Ext.view.View#beforecontainerclick
+             */
+            'beforecontainerclick',
+            /**
+             * @event beforecontainerdblclick
+             * @inheritdoc Ext.view.View#beforecontainerdblclick
+             */
+            'beforecontainerdblclick',
+            /**
+             * @event beforecontainercontextmenu
+             * @inheritdoc Ext.view.View#beforecontainercontextmenu
+             */
+            'beforecontainercontextmenu',
+            /**
+             * @event containermouseup
+             * @inheritdoc Ext.view.View#containermouseup
+             */
+            'containermouseup',
+            /**
+             * @event containermouseover
+             * @inheritdoc Ext.view.View#containermouseover
+             */
+            'containermouseover',
+            /**
+             * @event containermouseout
+             * @inheritdoc Ext.view.View#containermouseout
+             */
+            'containermouseout',
+            /**
+             * @event containerclick
+             * @inheritdoc Ext.view.View#containerclick
+             */
+            'containerclick',
+            /**
+             * @event containerdblclick
+             * @inheritdoc Ext.view.View#containerdblclick
+             */
+            'containerdblclick',
+            /**
+             * @event containercontextmenu
+             * @inheritdoc Ext.view.View#containercontextmenu
+             */
+            'containercontextmenu',
+            /**
+             * @event selectionchange
+             * @inheritdoc Ext.selection.Model#selectionchange
+             */
+            'selectionchange',
+            /**
+             * @event beforeselect
+             * @inheritdoc Ext.selection.RowModel#beforeselect
+             */
+            'beforeselect',
+            /**
+             * @event select
+             * @inheritdoc Ext.selection.RowModel#select
+             */
+            'select',
+            /**
+             * @event beforedeselect
+             * @inheritdoc Ext.selection.RowModel#beforedeselect
+             */
+            'beforedeselect',
+            /**
+             * @event deselect
+             * @inheritdoc Ext.selection.RowModel#deselect
+             */
+            'deselect'
+        ]);
+
+        me.callParent(arguments);
+        me.addStateEvents(['columnresize', 'columnmove', 'columnhide', 'columnshow', 'sortchange']);
+
+        if (me.headerCt) {
+            me.headerCt.on('afterlayout', me.onRestoreHorzScroll, me);
+        }
+    },
+
+    relayHeaderCtEvents: function (headerCt) {
+        this.relayEvents(headerCt, [
+            /**
+             * @event columnresize
+             * @inheritdoc Ext.grid.header.Container#columnresize
+             */
+            'columnresize',
+            /**
+             * @event columnmove
+             * @inheritdoc Ext.grid.header.Container#columnmove
+             */
+            'columnmove',
+            /**
+             * @event columnhide
+             * @inheritdoc Ext.grid.header.Container#columnhide
+             */
+            'columnhide',
+            /**
+             * @event columnshow
+             * @inheritdoc Ext.grid.header.Container#columnshow
+             */
+            'columnshow',
+            /**
+             * @event sortchange
+             * @inheritdoc Ext.grid.header.Container#sortchange
+             */
+            'sortchange'
+        ]);
+    },
+
+    getState: function(){
+        var me = this,
+            state = me.callParent(),
+            sorter = me.store.sorters.first();
+
+        state = me.addPropertyToState(state, 'columns', (me.headerCt || me).getColumnsState());
+
+        if (sorter) {
+            state = me.addPropertyToState(state, 'sort', {
+                property: sorter.property,
+                direction: sorter.direction,
+                root: sorter.root
+            });
+        }
+        return state;
+    },
+
+    applyState: function(state) {
+        var me = this,
+            sorter = state.sort,
+            store = me.store,
+            columns = state.columns;
+
+        delete state.columns;
+
+        // Ensure superclass has applied *its* state.
+        // AbstractComponent saves dimensions (and anchor/flex) plus collapsed state.
+        me.callParent(arguments);
+
+        if (columns) {
+            (me.headerCt || me).applyColumnsState(columns);
+        }
+
+        if (sorter) {
+            if (store.remoteSort) {
+                // Pass false to prevent a sort from occurring
+                store.sort({
+                    property: sorter.property,
+                    direction: sorter.direction,
+                    root: sorter.root
+                }, null, false);
+            } else {
+                store.sort(sorter.property, sorter.direction);
+            }
+        }
+    },
+
+    /**
+     * Returns the store associated with this Panel.
+     * @return {Ext.data.Store} The store
+     */
+    getStore: function(){
+        return this.store;
+    },
+
+    /**
+     * Gets the view for this panel.
+     * @return {Ext.view.Table}
+     */
+    getView: function() {
+        var me = this,
+            sm;
+
+        if (!me.view) {
+            sm = me.getSelectionModel();
+            me.view = Ext.widget(Ext.apply({}, me.viewConfig, {
+
+                // Features need a reference to the grid, so configure a reference into the View
+                grid: me,
+                deferInitialRefresh: me.deferRowRender !== false,
+                scroll: me.scroll,
+                xtype: me.viewType,
+                store: me.store,
+                headerCt: me.headerCt,
+                selModel: sm,
+                features: me.features,
+                panel: me,
+                emptyText : me.emptyText ? '<div class="' + Ext.baseCSSPrefix + 'grid-empty">' + me.emptyText + '</div>' : ''
+            }));
+
+            // TableView's custom component layout, Ext.view.TableLayout requires a reference to the headerCt because it depends on the headerCt doing its work.
+            me.view.getComponentLayout().headerCt = me.headerCt;
+
+            me.mon(me.view, {
+                uievent: me.processEvent,
+                scope: me
+            });
+            sm.view = me.view;
+            me.headerCt.view = me.view;
+            me.relayEvents(me.view, [
+                /**
+                 * @event cellclick
+                 * Fired when table cell is clicked.
+                 * @param {Ext.view.Table} this
+                 * @param {HTMLElement} td The TD element that was clicked.
+                 * @param {Number} cellIndex
+                 * @param {Ext.data.Model} record
+                 * @param {HTMLElement} tr The TR element that was clicked.
+                 * @param {Number} rowIndex
+                 * @param {Ext.EventObject} e
+                 */
+                'cellclick',
+                /**
+                 * @event celldblclick
+                 * Fired when table cell is double clicked.
+                 * @param {Ext.view.Table} this
+                 * @param {HTMLElement} td The TD element that was clicked.
+                 * @param {Number} cellIndex
+                 * @param {Ext.data.Model} record
+                 * @param {HTMLElement} tr The TR element that was clicked.
+                 * @param {Number} rowIndex
+                 * @param {Ext.EventObject} e
+                 */
+                'celldblclick'
+            ]);
+        }
+        return me.view;
+    },
+
+    /**
+     * @private
+     * autoScroll is never valid for all classes which extend TablePanel.
+     */
+    setAutoScroll: Ext.emptyFn,
+
+    /**
+     * @private
+     * Processes UI events from the view. Propagates them to whatever internal Components need to process them.
+     * @param {String} type Event type, eg 'click'
+     * @param {Ext.view.Table} view TableView Component
+     * @param {HTMLElement} cell Cell HtmlElement the event took place within
+     * @param {Number} recordIndex Index of the associated Store Model (-1 if none)
+     * @param {Number} cellIndex Cell index within the row
+     * @param {Ext.EventObject} e Original event
+     */
+    processEvent: function(type, view, cell, recordIndex, cellIndex, e) {
+        var me = this,
+            header;
+
+        if (cellIndex !== -1) {
+            header = me.headerCt.getGridColumns()[cellIndex];
+            return header.processEvent.apply(header, arguments);
+        }
+    },
+
+    /**
+     * This method is obsolete in 4.1. The closest equivalent in
+     * 4.1 is {@link #doLayout}, but it is also possible that no
+     * layout is needed.
+     * @deprecated 4.1
+     */
+    determineScrollbars: function () {
+        Ext.log.warn('Obsolete');
+    },
+
+    /**
+     * This method is obsolete in 4.1. The closest equivalent in 4.1 is
+     * {@link Ext.AbstractComponent#updateLayout}, but it is also possible that no layout
+     * is needed.
+     * @deprecated 4.1
+     */
+    invalidateScroller: function () {
+        Ext.log.warn('Obsolete');
+    },
+
+    scrollByDeltaY: function(yDelta, animate) {
+        this.getView().scrollBy(0, yDelta, animate);
+    },
+
+    scrollByDeltaX: function(xDelta, animate) {
+        this.getView().scrollBy(xDelta, 0, animate);
+    },
+
+    afterCollapse: function() {
+        var me = this;
+        me.saveScrollPos();
+        me.saveScrollPos();
+        me.callParent(arguments);
+    },
+
+    afterExpand: function() {
+        var me = this;
+        me.callParent(arguments);
+        me.restoreScrollPos();
+        me.restoreScrollPos();
+    },
+
+    saveScrollPos: Ext.emptyFn,
+
+    restoreScrollPos: Ext.emptyFn,
+    
+    onHeaderResize: function(){
+        this.delayScroll();
+    },
+
+    // Update the view when a header moves
+    onHeaderMove: function(headerCt, header, colsToMove, fromIdx, toIdx) {
+        var me = this;
+
+        // If there are Features or Plugins which create DOM which must match column order, they set the optimizedColumnMove flag to false.
+        // In this case we must refresh the view on column move.
+        if (me.optimizedColumnMove === false) {
+            me.view.refresh();
+        }
+
+        // Simplest case for default DOM structure is just to swap the columns round in the view.
+        else {
+            me.view.moveColumn(fromIdx, toIdx, colsToMove);
+        }
+        me.delayScroll();
+    },
+
+    // Section onHeaderHide is invoked after view.
+    onHeaderHide: function(headerCt, header) {
+        this.delayScroll();
+    },
+
+    onHeaderShow: function(headerCt, header) {
+        this.delayScroll();
+    },
+    
+    delayScroll: function(){
+        var target = this.getScrollTarget().el;
+        if (target) {
+            this.scrollTask.delay(10, null, null, [target.dom.scrollLeft]);
+        }
+    },
+
+    /**
+     * @private
+     * Fires the TablePanel's viewready event when the view declares that its internal DOM is ready
+     */
+    onViewReady: function() {
+         this.fireEvent('viewready', this);   
+    },
+
+    /**
+     * @private
+     * Tracks when things happen to the view and preserves the horizontal scroll position.
+     */
+    onRestoreHorzScroll: function() {
+        var left = this.scrollLeftPos;
+        if (left) {
+            // We need to restore the body scroll position here
+            this.syncHorizontalScroll(left, true);
+        }
+    },
+
+    getScrollerOwner: function() {
+        var rootCmp = this;
+        if (!this.scrollerOwner) {
+            rootCmp = this.up('[scrollerOwner]');
+        }
+        return rootCmp;
+    },
+
+    /**
+     * Gets left hand side marker for header resizing.
+     * @private
+     */
+    getLhsMarker: function() {
+        var me = this;
+        return me.lhsMarker || (me.lhsMarker = Ext.DomHelper.append(me.el, {
+            cls: Ext.baseCSSPrefix + 'grid-resize-marker'
+        }, true));
+    },
+
+    /**
+     * Gets right hand side marker for header resizing.
+     * @private
+     */
+    getRhsMarker: function() {
+        var me = this;
+
+        return me.rhsMarker || (me.rhsMarker = Ext.DomHelper.append(me.el, {
+            cls: Ext.baseCSSPrefix + 'grid-resize-marker'
+        }, true));
+    },
+
+    /**
+     * Returns the selection model being used and creates it via the configuration if it has not been created already.
+     * @return {Ext.selection.Model} selModel
+     */
+    getSelectionModel: function(){
+        if (!this.selModel) {
+            this.selModel = {};
+        }
+
+        var mode = 'SINGLE',
+            type;
+        if (this.simpleSelect) {
+            mode = 'SIMPLE';
+        } else if (this.multiSelect) {
+            mode = 'MULTI';
+        }
+
+        Ext.applyIf(this.selModel, {
+            allowDeselect: this.allowDeselect,
+            mode: mode
+        });
+
+        if (!this.selModel.events) {
+            type = this.selModel.selType || this.selType;
+            this.selModel = Ext.create('selection.' + type, this.selModel);
+        }
+
+        if (!this.selModel.hasRelaySetup) {
+            this.relayEvents(this.selModel, [
+                'selectionchange', 'beforeselect', 'beforedeselect', 'select', 'deselect'
+            ]);
+            this.selModel.hasRelaySetup = true;
+        }
+
+        // lock the selection model if user
+        // has disabled selection
+        if (this.disableSelection) {
+            this.selModel.locked = true;
+        }
+        return this.selModel;
+    },
+    
+    getScrollTarget: function(){
+        var owner = this.getScrollerOwner(),
+            items = owner.query('tableview');
+            
+        return items[1] || items[0];
+    },
+
+    onHorizontalScroll: function(event, target) {
+        this.syncHorizontalScroll(target.scrollLeft);
+    },
+    
+    syncHorizontalScroll: function(left, setBody) {
+        var me = this,
+            scrollTarget;
+            
+        setBody = setBody === true;
+        // Only set the horizontal scroll if we've changed position,
+        // so that we don't set this on vertical scrolls
+        if (me.rendered && (setBody || left !== me.scrollLeftPos)) {
+            // Only set the body position if we're reacting to a refresh, otherwise
+            // we just need to set the header.
+            if (setBody) {   
+                scrollTarget = me.getScrollTarget();
+                scrollTarget.el.dom.scrollLeft = left;
+            }
+            me.headerCt.el.dom.scrollLeft = left;
+            me.scrollLeftPos = left;
+        }
+    },
+
+    // template method meant to be overriden
+    onStoreLoad: Ext.emptyFn,
+
+    getEditorParent: function() {
+        return this.body;
+    },
+
+    bindStore: function(store) {
+        var me = this;
+        me.store = store;
+        me.getView().bindStore(store);
+    },
+    
+    beforeDestroy: function(){
+        Ext.destroy(this.verticalScroller);
+        this.callParent();    
+    },
+
+    // documented on GridPanel
+    reconfigure: function(store, columns) {
+        var me = this,
+            headerCt = me.headerCt;
+
+        if (me.lockable) {
+            me.reconfigureLockable(store, columns);
+        } else {
+            Ext.suspendLayouts();
+            if (columns) {
+                // new columns, delete scroll pos
+                delete me.scrollLeftPos;
+                headerCt.removeAll();
+                headerCt.add(columns);
+            }
+            if (store) {
+                store = Ext.StoreManager.lookup(store);
+                me.bindStore(store);
+            } else {
+                me.getView().refresh();
+            }
+            headerCt.setSortState();
+            Ext.resumeLayouts(true);
+        }
+        me.fireEvent('reconfigure', me, store, columns);
+    }
+});
+
+/**
+ * Component layout for grid column headers which have a title element at the top followed by content.
+ * @private
+ */
+Ext.define('Ext.grid.ColumnComponentLayout', {
+    extend: 'Ext.layout.component.Auto',
+    alias: 'layout.columncomponent',
+
+    type: 'columncomponent',
+
+    setWidthInDom: true,
+
+    getContentHeight : function(ownerContext) {
+        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
+        return this.owner.isGroupHeader ? ownerContext.getProp('contentHeight') : this.callParent(arguments);
+    },
+
+    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
+        var result = this.callParent(arguments);
+        if (this.owner.isGroupHeader) {
+            result += this.owner.titleEl.dom.offsetHeight;
+        }
+        return result;
+    },
+    
+    getContentWidth : function(ownerContext) {
+        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
+        return this.owner.isGroupHeader ? ownerContext.getProp('contentWidth') : this.callParent(arguments);
+    },
+
+    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
+        return contentWidth + ownerContext.getPaddingInfo().width;
+    }
+});
+/**
+ * @private
+ *
+ * This class is used only by the grid's HeaderContainer docked child.
+ *
+ * It adds the ability to shrink the vertical size of the inner container element back if a grouped
+ * column header has all its child columns dragged out, and the whole HeaderContainer needs to shrink back down.
+ *
+ * Also, after every layout, after all headers have attained their 'stretchmax' height, it goes through and calls
+ * `setPadding` on the columns so that they lay out correctly.
+ */
+Ext.define('Ext.grid.ColumnLayout', {
+    extend: 'Ext.layout.container.HBox',
+    alias: 'layout.gridcolumn',
+    type : 'gridcolumn',
+
+    reserveOffset: false,
+
+    firstHeaderCls: Ext.baseCSSPrefix + 'column-header-first',
+    lastHeaderCls: Ext.baseCSSPrefix + 'column-header-last',
+
+    initLayout: function() {
+        this.grid = this.owner.up('[scrollerOwner]');
+        this.callParent();
+    },
+
+    // Collect the height of the table of data upon layout begin
+    beginLayout: function (ownerContext) {
+        var me = this,
+            grid = me.grid,
+            view = grid.view,
+            i = 0,
+            items = me.getVisibleItems(),
+            len = items.length,
+            item;
+
+        ownerContext.gridContext = ownerContext.context.getCmp(me.grid);
+
+        // If we are one side of a locking grid, then if we are on the "normal" side, we have to grab the normal view
+        // for use in determining whether to subtract scrollbar width from available width.
+        // The locked side does not have scrollbars, so it should not look at the view.
+        if (grid.lockable) {
+            if (me.owner.up('tablepanel') === view.normalGrid) {
+                view = view.normalGrid.getView();
+            } else {
+                view = null;
+            }
+        }
+
+        me.callParent(arguments);
+
+        // Unstretch child items before the layout which stretches them.
+        for (; i < len; i++) {
+            item = items[i];
+            item.removeCls([me.firstHeaderCls, me.lastHeaderCls]);
+            item.el.setStyle({
+                height: 'auto'
+            });
+            item.titleEl.setStyle({
+                height: 'auto',
+                paddingTop: ''  // reset back to default padding of the style
+            });
+        }
+
+        // Add special first/last classes
+        if (len > 0) {
+            items[0].addCls(me.firstHeaderCls);
+            items[len - 1].addCls(me.lastHeaderCls);
+        }
+
+        // If the owner is the grid's HeaderContainer, and the UI displays old fashioned scrollbars and there is a rendered View with data in it,
+        // AND we are scrolling vertically:
+        // collect the View context to interrogate it for overflow, and possibly invalidate it if there is overflow
+        if (!me.owner.isHeader && Ext.getScrollbarSize().width && !grid.collapsed && view &&
+                view.table.dom && (view.autoScroll || view.overflowY)) {
+            ownerContext.viewContext = ownerContext.context.getCmp(view);
+        }
+    },
+
+    roundFlex: function(width) {
+        return Math.floor(width);
+    },
+
+    calculate: function(ownerContext) {
+        var me = this,
+            viewContext = ownerContext.viewContext,
+            tableHeight,
+            viewHeight;
+
+        me.callParent(arguments);
+
+        if (ownerContext.state.parallelDone) {
+            ownerContext.setProp('columnWidthsDone', true);
+        }
+
+        // If we have a viewContext (Only created if there is an existing <table> within the view, AND we are scolling vertically AND scrollbars take up space)
+        //     we are not already in the second pass, and we are not shrinkWrapping...
+        //     Then we have to see if we know enough to determine whether there is vertical opverflow so that we can
+        //     invalidate and loop back for the second pass with a narrower target width.
+        if (viewContext && !ownerContext.state.overflowAdjust.width && !ownerContext.gridContext.heightModel.shrinkWrap) {
+            tableHeight = viewContext.tableContext.getProp('height');
+            viewHeight = viewContext.getProp('height');
+
+            // Heights of both view and its table content have not both been published; we cannot complete
+            if (isNaN(tableHeight + viewHeight)) {
+                me.done = false;
+            }
+
+            // Heights have been published, and there is vertical overflow; invalidate with a width adjustment to allow for the scrollbar
+            else if (tableHeight >= viewHeight) {
+                ownerContext.gridContext.invalidate({
+                    after: function() {
+                        ownerContext.state.overflowAdjust = {
+                            width: Ext.getScrollbarSize().width,
+                            height: 0
+                        };
+                    }
+                });
+            }
+        }
+    },
+ 
+    completeLayout: function(ownerContext) {
+        var me = this,
+            owner = me.owner,
+            state = ownerContext.state,
+            needsInvalidate = false,
+            calculated = me.sizeModels.calculated,
+            childItems, len, i, childContext, item;
+
+        me.callParent(arguments);
+
+        // If we have not been through this already, and the owning Container is configured
+        // forceFit, is not a group column and and there is a valid width, then convert
+        // widths to flexes, and loop back.
+        if (!state.flexesCalculated && owner.forceFit && !owner.isHeader) {
+            childItems = ownerContext.childItems;
+            len = childItems.length;
+
+            for (i = 0; i < len; i++) {
+                childContext = childItems[i];
+                item = childContext.target;
+
+                // For forceFit, just use allocated width as the flex value, and the proportions
+                // will end up the same whatever HeaderContainer width they are being forced into.
+                if (item.width) {
+                    item.flex = ownerContext.childItems[i].flex = item.width;
+                    delete item.width;
+                    childContext.widthModel = calculated;
+                    needsInvalidate = true;
+                }
+            }
+
+            // Recalculate based upon all columns now being flexed instead of sized.
+            // Set flag, so that we do not do this infinitely
+            if (needsInvalidate) {
+                me.cacheFlexes(ownerContext);
+                ownerContext.invalidate({
+                    state: {
+                        flexesCalculated: true
+                    }
+                });
+            }
+        }
+    },
+
+    finalizeLayout: function() {
+        var me = this,
+            i = 0,
+            items,
+            len,
+            itemsHeight,
+            owner = me.owner,
+            titleEl = owner.titleEl;
+
+        // Set up padding in items
+        items = me.getVisibleItems();
+        len = items.length;
+        // header container's items take up the whole height
+        itemsHeight = owner.el.getViewSize().height;
+        if (titleEl) {
+        // if owner is a grouped column with children, we need to subtract the titleEl's height
+        // to determine the remaining available height for the child items
+            itemsHeight -= titleEl.getHeight();
+        }
+        for (; i < len; i++) {
+            items[i].setPadding(itemsHeight);
+        }
+    },
+
+    // FIX: when flexing we actually don't have enough space as we would
+    // typically because of the scrollOffset on the GridView, must reserve this
+    publishInnerCtSize: function(ownerContext) {
+        var me = this,
+            size = ownerContext.state.boxPlan.targetSize,
+            cw = ownerContext.peek('contentWidth'),
+            view;
+
+        // InnerCt MUST stretch to accommodate all columns so that left/right scrolling is enabled in the header container.
+        if ((cw != null) && !me.owner.isHeader) {
+            size.width = cw;
+
+            // innerCt must also encompass any vertical scrollbar width if there may be one
+            view = me.owner.ownerCt.view;
+            if (view.autoScroll || view.overflowY) {
+                size.width += Ext.getScrollbarSize().width;
+            }
+        }
+
+        return me.callParent(arguments);
+    }
+});
+
+/**
+ * A simple class that renders text directly into a toolbar.
+ *
+ *     @example
+ *     Ext.create('Ext.panel.Panel', {
+ *         title: 'Panel with TextItem',
+ *         width: 300,
+ *         height: 200,
+ *         tbar: [
+ *             { xtype: 'tbtext', text: 'Sample Text Item' }
+ *         ],
+ *         renderTo: Ext.getBody()
+ *     });
+ *
+ * @constructor
+ * Creates a new TextItem
+ * @param {Object} text A text string, or a config object containing a #text property
+ */
+Ext.define('Ext.toolbar.TextItem', {
+    extend: 'Ext.toolbar.Item',
+    requires: ['Ext.XTemplate'],
+    alias: 'widget.tbtext',
+    alternateClassName: 'Ext.Toolbar.TextItem',
+
+    /**
+     * @cfg {String} text
+     * The text to be used as innerHTML (html tags are accepted).
+     */
+    text: '',
+
+    renderTpl: '{text}',
+    //
+    baseCls: Ext.baseCSSPrefix + 'toolbar-text',
+
+    beforeRender : function() {
+        var me = this;
+
+        me.callParent();
+
+        Ext.apply(me.renderData, {
+            text: me.text
+        });
+    },
+
+    /**
+     * Updates this item's text, setting the text to be used as innerHTML.
+     * @param {String} text The text to display (html accepted).
+     */
+    setText : function(text) {
+        var me = this;
+        if (me.rendered) {
+            me.el.update(text);
+            me.updateLayout();
+        } else {
+            this.text = text;
+        }
+    }
+});
+/**
+ * A mixin for {@link Ext.container.Container} components that are likely to have form fields in their
+ * items subtree. Adds the following capabilities:
+ *
+ * - Methods for handling the addition and removal of {@link Ext.form.Labelable} and {@link Ext.form.field.Field}
+ *   instances at any depth within the container.
+ * - Events ({@link #fieldvaliditychange} and {@link #fielderrorchange}) for handling changes to the state
+ *   of individual fields at the container level.
+ * - Automatic application of {@link #fieldDefaults} config properties to each field added within the
+ *   container, to facilitate uniform configuration of all fields.
+ *
+ * This mixin is primarily for internal use by {@link Ext.form.Panel} and {@link Ext.form.FieldContainer},
+ * and should not normally need to be used directly. @docauthor Jason Johnston <jason@sencha.com>
+ */
+Ext.define('Ext.form.FieldAncestor', {
+
+    /**
+     * @cfg {Object} fieldDefaults
+     * If specified, the properties in this object are used as default config values for each {@link Ext.form.Labelable}
+     * instance (e.g. {@link Ext.form.field.Base} or {@link Ext.form.FieldContainer}) that is added as a descendant of
+     * this container. Corresponding values specified in an individual field's own configuration, or from the {@link
+     * Ext.container.Container#defaults defaults config} of its parent container, will take precedence. See the
+     * documentation for {@link Ext.form.Labelable} to see what config options may be specified in the fieldDefaults.
+     *
+     * Example:
+     *
+     *     new Ext.form.Panel({
+     *         fieldDefaults: {
+     *             labelAlign: 'left',
+     *             labelWidth: 100
+     *         },
+     *         items: [{
+     *             xtype: 'fieldset',
+     *             defaults: {
+     *                 labelAlign: 'top'
+     *             },
+     *             items: [{
+     *                 name: 'field1'
+     *             }, {
+     *                 name: 'field2'
+     *             }]
+     *         }, {
+     *             xtype: 'fieldset',
+     *             items: [{
+     *                 name: 'field3',
+     *                 labelWidth: 150
+     *             }, {
+     *                 name: 'field4'
+     *             }]
+     *         }]
+     *     });
+     *
+     * In this example, field1 and field2 will get labelAlign:'top' (from the fieldset's defaults) and labelWidth:100
+     * (from fieldDefaults), field3 and field4 will both get labelAlign:'left' (from fieldDefaults and field3 will use
+     * the labelWidth:150 from its own config.
+     */
+
+
+    /**
+     * Initializes the FieldAncestor's state; this must be called from the initComponent method of any components
+     * importing this mixin.
+     * @protected
+     */
+    initFieldAncestor: function() {
+        var me = this,
+            onSubtreeChange = me.onFieldAncestorSubtreeChange;
+
+        me.addEvents(
+            /**
+             * @event fieldvaliditychange
+             * Fires when the validity state of any one of the {@link Ext.form.field.Field} instances within this
+             * container changes.
+             * @param {Ext.form.FieldAncestor} this
+             * @param {Ext.form.Labelable} The Field instance whose validity changed
+             * @param {String} isValid The field's new validity state
+             */
+            'fieldvaliditychange',
+
+            /**
+             * @event fielderrorchange
+             * Fires when the active error message is changed for any one of the {@link Ext.form.Labelable} instances
+             * within this container.
+             * @param {Ext.form.FieldAncestor} this
+             * @param {Ext.form.Labelable} The Labelable instance whose active error was changed
+             * @param {String} error The active error message
+             */
+            'fielderrorchange'
+        );
+
+        // Catch addition and removal of descendant fields
+        me.on('add', onSubtreeChange, me);
+        me.on('remove', onSubtreeChange, me);
+
+        me.initFieldDefaults();
+    },
+
+    /**
+     * @private Initialize the {@link #fieldDefaults} object
+     */
+    initFieldDefaults: function() {
+        if (!this.fieldDefaults) {
+            this.fieldDefaults = {};
+        }
+    },
+
+    /**
+     * @private
+     * Handle the addition and removal of components in the FieldAncestor component's child tree.
+     */
+    onFieldAncestorSubtreeChange: function(parent, child) {
+        var me = this,
+            isAdding = !!child.ownerCt;
+
+        function handleCmp(cmp) {
+            var isLabelable = cmp.isFieldLabelable,
+                isField = cmp.isFormField;
+            if (isLabelable || isField) {
+                if (isLabelable) {
+                    me['onLabelable' + (isAdding ? 'Added' : 'Removed')](cmp);
+                }
+                if (isField) {
+                    me['onField' + (isAdding ? 'Added' : 'Removed')](cmp);
+                }
+            }
+            else if (cmp.isContainer) {
+                Ext.Array.forEach(cmp.getRefItems(), handleCmp);
+            }
+        }
+        handleCmp(child);
+    },
+
+    /**
+     * Called when a {@link Ext.form.Labelable} instance is added to the container's subtree.
+     * @param {Ext.form.Labelable} labelable The instance that was added
+     * @protected
+     */
+    onLabelableAdded: function(labelable) {
+        var me = this;
+
+        // buffer slightly to avoid excessive firing while sub-fields are changing en masse
+        me.mon(labelable, 'errorchange', me.handleFieldErrorChange, me, {buffer: 10});
+
+        labelable.setFieldDefaults(me.fieldDefaults);
+    },
+
+    /**
+     * Called when a {@link Ext.form.field.Field} instance is added to the container's subtree.
+     * @param {Ext.form.field.Field} field The field which was added
+     * @protected
+     */
+    onFieldAdded: function(field) {
+        var me = this;
+        me.mon(field, 'validitychange', me.handleFieldValidityChange, me);
+    },
+
+    /**
+     * Called when a {@link Ext.form.Labelable} instance is removed from the container's subtree.
+     * @param {Ext.form.Labelable} labelable The instance that was removed
+     * @protected
+     */
+    onLabelableRemoved: function(labelable) {
+        var me = this;
+        me.mun(labelable, 'errorchange', me.handleFieldErrorChange, me);
+    },
+
+    /**
+     * Called when a {@link Ext.form.field.Field} instance is removed from the container's subtree.
+     * @param {Ext.form.field.Field} field The field which was removed
+     * @protected
+     */
+    onFieldRemoved: function(field) {
+        var me = this;
+        me.mun(field, 'validitychange', me.handleFieldValidityChange, me);
+    },
+
+    /**
+     * @private Handle validitychange events on sub-fields; invoke the aggregated event and method
+     */
+    handleFieldValidityChange: function(field, isValid) {
+        var me = this;
+        me.fireEvent('fieldvaliditychange', me, field, isValid);
+        me.onFieldValidityChange(field, isValid);
+    },
+
+    /**
+     * @private Handle errorchange events on sub-fields; invoke the aggregated event and method
+     */
+    handleFieldErrorChange: function(labelable, activeError) {
+        var me = this;
+        me.fireEvent('fielderrorchange', me, labelable, activeError);
+        me.onFieldErrorChange(labelable, activeError);
+    },
+
+    /**
+     * Fired when the validity of any field within the container changes.
+     * @param {Ext.form.field.Field} field The sub-field whose validity changed
+     * @param {Boolean} valid The new validity state
+     * @protected
+     */
+    onFieldValidityChange: Ext.emptyFn,
+
+    /**
+     * Fired when the error message of any field within the container changes.
+     * @param {Ext.form.Labelable} field The sub-field whose active error changed
+     * @param {String} error The new active error message
+     * @protected
+     */
+    onFieldErrorChange: Ext.emptyFn
+
+});
+Ext.define('PICS.ux.util.filter.FilterMultipleColumn', {
+    extend: 'Ext.util.Filter',
+
+    anyMatch: true,
+    root: 'data',
+
+    createFilterFn: function () {
+        var me = this,
+            matcher = me.createValueMatcher(),
+            property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
+
+        return function(item) {
+            var hasmatch = false;
+
+            for(var i = 0; i < property.length; i++) {
+                if(matcher.test(me.getRoot.call(me, item)[property[i]])) {
+                    hasmatch = true;
+                    break;
+                }
+            }
+
+            return matcher === null ? value === null : hasmatch;
+        };
+    }
+});
+Ext.define('PICS.model.report.ColumnFunctions', {
+    extend: 'Ext.data.Model',
+
+    fields: [{
+        name: 'key',
+        type: 'string'
+    }, {
+        name: 'value',
+        type: 'string'
+    }]
 });
 /**
  * @singleton
@@ -72493,17 +72497,298 @@ Ext.define('Ext.layout.container.Card', {
     }
 });
 
-Ext.define('PICS.model.report.ColumnFunctions', {
-    extend: 'Ext.data.Model',
+/**
+ * @author Ed Spencer
+ * @class Ext.data.association.BelongsTo
+ *
+ * Represents a many to one association with another model. The owner model is expected to have
+ * a foreign key which references the primary key of the associated model:
+ *
+ *     Ext.define('Category', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             { name: 'id',   type: 'int' },
+ *             { name: 'name', type: 'string' }
+ *         ]
+ *     });
+ *
+ *     Ext.define('Product', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             { name: 'id',          type: 'int' },
+ *             { name: 'category_id', type: 'int' },
+ *             { name: 'name',        type: 'string' }
+ *         ],
+ *         // we can use the belongsTo shortcut on the model to create a belongsTo association
+ *         associations: [
+ *             { type: 'belongsTo', model: 'Category' }
+ *         ]
+ *     });
+ *
+ * In the example above we have created models for Products and Categories, and linked them together
+ * by saying that each Product belongs to a Category. This automatically links each Product to a Category
+ * based on the Product's category_id, and provides new functions on the Product model:
+ *
+ * ## Generated getter function
+ *
+ * The first function that is added to the owner model is a getter function:
+ *
+ *     var product = new Product({
+ *         id: 100,
+ *         category_id: 20,
+ *         name: 'Sneakers'
+ *     });
+ *
+ *     product.getCategory(function(category, operation) {
+ *         // do something with the category object
+ *         alert(category.get('id')); // alerts 20
+ *     }, this);
+ *
+ * The getCategory function was created on the Product model when we defined the association. This uses the
+ * Category's configured {@link Ext.data.proxy.Proxy proxy} to load the Category asynchronously, calling the provided
+ * callback when it has loaded.
+ *
+ * The new getCategory function will also accept an object containing success, failure and callback properties
+ * - callback will always be called, success will only be called if the associated model was loaded successfully
+ * and failure will only be called if the associatied model could not be loaded:
+ *
+ *     product.getCategory({
+ *         reload: true, // force a reload if the owner model is already cached
+ *         callback: function(category, operation) {}, // a function that will always be called
+ *         success : function(category, operation) {}, // a function that will only be called if the load succeeded
+ *         failure : function(category, operation) {}, // a function that will only be called if the load did not succeed
+ *         scope   : this // optionally pass in a scope object to execute the callbacks in
+ *     });
+ *
+ * In each case above the callbacks are called with two arguments - the associated model instance and the
+ * {@link Ext.data.Operation operation} object that was executed to load that instance. The Operation object is
+ * useful when the instance could not be loaded.
+ * 
+ * Once the getter has been called on the model, it will be cached if the getter is called a second time. To
+ * force the model to reload, specify reload: true in the options object.
+ *
+ * ## Generated setter function
+ *
+ * The second generated function sets the associated model instance - if only a single argument is passed to
+ * the setter then the following two calls are identical:
+ *
+ *     // this call...
+ *     product.setCategory(10);
+ *
+ *     // is equivalent to this call:
+ *     product.set('category_id', 10);
+ *     
+ * An instance of the owner model can also be passed as a parameter.
+ *
+ * If we pass in a second argument, the model will be automatically saved and the second argument passed to
+ * the owner model's {@link Ext.data.Model#save save} method:
+ *
+ *     product.setCategory(10, function(product, operation) {
+ *         // the product has been saved
+ *         alert(product.get('category_id')); //now alerts 10
+ *     });
+ *
+ *     //alternative syntax:
+ *     product.setCategory(10, {
+ *         callback: function(product, operation), // a function that will always be called
+ *         success : function(product, operation), // a function that will only be called if the load succeeded
+ *         failure : function(product, operation), // a function that will only be called if the load did not succeed
+ *         scope   : this //optionally pass in a scope object to execute the callbacks in
+ *     })
+ *
+ * ## Customisation
+ *
+ * Associations reflect on the models they are linking to automatically set up properties such as the
+ * {@link #primaryKey} and {@link #foreignKey}. These can alternatively be specified:
+ *
+ *     Ext.define('Product', {
+ *         fields: [...],
+ *
+ *         associations: [
+ *             { type: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id' }
+ *         ]
+ *     });
+ *
+ * Here we replaced the default primary key (defaults to 'id') and foreign key (calculated as 'category_id')
+ * with our own settings. Usually this will not be needed.
+ */
+Ext.define('Ext.data.association.BelongsTo', {
+    extend: 'Ext.data.association.Association',
+    alternateClassName: 'Ext.data.BelongsToAssociation',
+    alias: 'association.belongsto',
 
-    fields: [{
-        name: 'key',
-        type: 'string'
-    }, {
-        name: 'value',
-        type: 'string'
-    }]
+    /**
+     * @cfg {String} foreignKey The name of the foreign key on the owner model that links it to the associated
+     * model. Defaults to the lowercased name of the associated model plus "_id", e.g. an association with a
+     * model called Product would set up a product_id foreign key.
+     *
+     *     Ext.define('Order', {
+     *         extend: 'Ext.data.Model',
+     *         fields: ['id', 'date'],
+     *         hasMany: 'Product'
+     *     });
+     *
+     *     Ext.define('Product', {
+     *         extend: 'Ext.data.Model',
+     *         fields: ['id', 'name', 'order_id'], // refers to the id of the order that this product belongs to
+     *         belongsTo: 'Order'
+     *     });
+     *     var product = new Product({
+     *         id: 1,
+     *         name: 'Product 1',
+     *         order_id: 22
+     *     }, 1);
+     *     product.getOrder(); // Will make a call to the server asking for order_id 22
+     *
+     */
+
+    /**
+     * @cfg {String} getterName The name of the getter function that will be added to the local model's prototype.
+     * Defaults to 'get' + the name of the foreign model, e.g. getCategory
+     */
+
+    /**
+     * @cfg {String} setterName The name of the setter function that will be added to the local model's prototype.
+     * Defaults to 'set' + the name of the foreign model, e.g. setCategory
+     */
+
+    /**
+     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
+     * Use 'belongsTo' to create a BelongsTo association.
+     *
+     *     associations: [{
+     *         type: 'belongsTo',
+     *         model: 'User'
+     *     }]
+     */
+    constructor: function(config) {
+        this.callParent(arguments);
+
+        var me             = this,
+            ownerProto     = me.ownerModel.prototype,
+            associatedName = me.associatedName,
+            getterName     = me.getterName || 'get' + associatedName,
+            setterName     = me.setterName || 'set' + associatedName;
+
+        Ext.applyIf(me, {
+            name        : associatedName,
+            foreignKey  : associatedName.toLowerCase() + "_id",
+            instanceName: associatedName + 'BelongsToInstance',
+            associationKey: associatedName.toLowerCase()
+        });
+
+        ownerProto[getterName] = me.createGetter();
+        ownerProto[setterName] = me.createSetter();
+    },
+
+    /**
+     * @private
+     * Returns a setter function to be placed on the owner model's prototype
+     * @return {Function} The setter function
+     */
+    createSetter: function() {
+        var me = this,
+            foreignKey = me.foreignKey;
+
+        //'this' refers to the Model instance inside this function
+        return function(value, options, scope) {
+            // If we pass in an instance, pull the id out
+            if (value && value.isModel) {
+                value = value.getId();
+            }
+            this.set(foreignKey, value);
+
+            if (Ext.isFunction(options)) {
+                options = {
+                    callback: options,
+                    scope: scope || this
+                };
+            }
+
+            if (Ext.isObject(options)) {
+                return this.save(options);
+            }
+        };
+    },
+
+    /**
+     * @private
+     * Returns a getter function to be placed on the owner model's prototype. We cache the loaded instance
+     * the first time it is loaded so that subsequent calls to the getter always receive the same reference.
+     * @return {Function} The getter function
+     */
+    createGetter: function() {
+        var me              = this,
+            associatedName  = me.associatedName,
+            associatedModel = me.associatedModel,
+            foreignKey      = me.foreignKey,
+            primaryKey      = me.primaryKey,
+            instanceName    = me.instanceName;
+
+        //'this' refers to the Model instance inside this function
+        return function(options, scope) {
+            options = options || {};
+
+            var model = this,
+                foreignKeyId = model.get(foreignKey),
+                success,
+                instance,
+                args;
+
+            if (options.reload === true || model[instanceName] === undefined) {
+                instance = Ext.ModelManager.create({}, associatedName);
+                instance.set(primaryKey, foreignKeyId);
+
+                if (typeof options == 'function') {
+                    options = {
+                        callback: options,
+                        scope: scope || model
+                    };
+                }
+                
+                // Overwrite the success handler so we can assign the current instance
+                success = options.success;
+                options.success = function(rec){
+                    model[instanceName] = rec;
+                    if (success) {
+                        success.apply(this, arguments);
+                    }
+                };
+
+                associatedModel.load(foreignKeyId, options);
+                // assign temporarily while we wait for data to return
+                model[instanceName] = instance;
+                return instance;
+            } else {
+                instance = model[instanceName];
+                args = [instance];
+                scope = scope || options.scope || model;
+
+                //TODO: We're duplicating the callback invokation code that the instance.load() call above
+                //makes here - ought to be able to normalize this - perhaps by caching at the Model.load layer
+                //instead of the association layer.
+                Ext.callback(options, scope, args);
+                Ext.callback(options.success, scope, args);
+                Ext.callback(options.failure, scope, args);
+                Ext.callback(options.callback, scope, args);
+
+                return instance;
+            }
+        };
+    },
+
+    /**
+     * Read associated data
+     * @private
+     * @param {Ext.data.Model} record The record we're writing to
+     * @param {Ext.data.reader.Reader} reader The reader for the associated model
+     * @param {Object} associationData The raw associated data
+     */
+    read: function(record, reader, associationData){
+        record[this.instanceName] = reader.read([associationData]).records[0];
+    }
 });
+
 /**
  * A feature is a type of plugin that is specific to the {@link Ext.grid.Panel}. It provides several
  * hooks that allows the developer to inject additional functionality at certain points throughout the 
@@ -75871,298 +76156,14 @@ Ext.define('Ext.form.action.Action', {
     }
 });
 
-/**
- * @author Ed Spencer
- * @class Ext.data.association.BelongsTo
- *
- * Represents a many to one association with another model. The owner model is expected to have
- * a foreign key which references the primary key of the associated model:
- *
- *     Ext.define('Category', {
- *         extend: 'Ext.data.Model',
- *         fields: [
- *             { name: 'id',   type: 'int' },
- *             { name: 'name', type: 'string' }
- *         ]
- *     });
- *
- *     Ext.define('Product', {
- *         extend: 'Ext.data.Model',
- *         fields: [
- *             { name: 'id',          type: 'int' },
- *             { name: 'category_id', type: 'int' },
- *             { name: 'name',        type: 'string' }
- *         ],
- *         // we can use the belongsTo shortcut on the model to create a belongsTo association
- *         associations: [
- *             { type: 'belongsTo', model: 'Category' }
- *         ]
- *     });
- *
- * In the example above we have created models for Products and Categories, and linked them together
- * by saying that each Product belongs to a Category. This automatically links each Product to a Category
- * based on the Product's category_id, and provides new functions on the Product model:
- *
- * ## Generated getter function
- *
- * The first function that is added to the owner model is a getter function:
- *
- *     var product = new Product({
- *         id: 100,
- *         category_id: 20,
- *         name: 'Sneakers'
- *     });
- *
- *     product.getCategory(function(category, operation) {
- *         // do something with the category object
- *         alert(category.get('id')); // alerts 20
- *     }, this);
- *
- * The getCategory function was created on the Product model when we defined the association. This uses the
- * Category's configured {@link Ext.data.proxy.Proxy proxy} to load the Category asynchronously, calling the provided
- * callback when it has loaded.
- *
- * The new getCategory function will also accept an object containing success, failure and callback properties
- * - callback will always be called, success will only be called if the associated model was loaded successfully
- * and failure will only be called if the associatied model could not be loaded:
- *
- *     product.getCategory({
- *         reload: true, // force a reload if the owner model is already cached
- *         callback: function(category, operation) {}, // a function that will always be called
- *         success : function(category, operation) {}, // a function that will only be called if the load succeeded
- *         failure : function(category, operation) {}, // a function that will only be called if the load did not succeed
- *         scope   : this // optionally pass in a scope object to execute the callbacks in
- *     });
- *
- * In each case above the callbacks are called with two arguments - the associated model instance and the
- * {@link Ext.data.Operation operation} object that was executed to load that instance. The Operation object is
- * useful when the instance could not be loaded.
- * 
- * Once the getter has been called on the model, it will be cached if the getter is called a second time. To
- * force the model to reload, specify reload: true in the options object.
- *
- * ## Generated setter function
- *
- * The second generated function sets the associated model instance - if only a single argument is passed to
- * the setter then the following two calls are identical:
- *
- *     // this call...
- *     product.setCategory(10);
- *
- *     // is equivalent to this call:
- *     product.set('category_id', 10);
- *     
- * An instance of the owner model can also be passed as a parameter.
- *
- * If we pass in a second argument, the model will be automatically saved and the second argument passed to
- * the owner model's {@link Ext.data.Model#save save} method:
- *
- *     product.setCategory(10, function(product, operation) {
- *         // the product has been saved
- *         alert(product.get('category_id')); //now alerts 10
- *     });
- *
- *     //alternative syntax:
- *     product.setCategory(10, {
- *         callback: function(product, operation), // a function that will always be called
- *         success : function(product, operation), // a function that will only be called if the load succeeded
- *         failure : function(product, operation), // a function that will only be called if the load did not succeed
- *         scope   : this //optionally pass in a scope object to execute the callbacks in
- *     })
- *
- * ## Customisation
- *
- * Associations reflect on the models they are linking to automatically set up properties such as the
- * {@link #primaryKey} and {@link #foreignKey}. These can alternatively be specified:
- *
- *     Ext.define('Product', {
- *         fields: [...],
- *
- *         associations: [
- *             { type: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id' }
- *         ]
- *     });
- *
- * Here we replaced the default primary key (defaults to 'id') and foreign key (calculated as 'category_id')
- * with our own settings. Usually this will not be needed.
- */
-Ext.define('Ext.data.association.BelongsTo', {
-    extend: 'Ext.data.association.Association',
-    alternateClassName: 'Ext.data.BelongsToAssociation',
-    alias: 'association.belongsto',
-
-    /**
-     * @cfg {String} foreignKey The name of the foreign key on the owner model that links it to the associated
-     * model. Defaults to the lowercased name of the associated model plus "_id", e.g. an association with a
-     * model called Product would set up a product_id foreign key.
-     *
-     *     Ext.define('Order', {
-     *         extend: 'Ext.data.Model',
-     *         fields: ['id', 'date'],
-     *         hasMany: 'Product'
-     *     });
-     *
-     *     Ext.define('Product', {
-     *         extend: 'Ext.data.Model',
-     *         fields: ['id', 'name', 'order_id'], // refers to the id of the order that this product belongs to
-     *         belongsTo: 'Order'
-     *     });
-     *     var product = new Product({
-     *         id: 1,
-     *         name: 'Product 1',
-     *         order_id: 22
-     *     }, 1);
-     *     product.getOrder(); // Will make a call to the server asking for order_id 22
-     *
-     */
-
-    /**
-     * @cfg {String} getterName The name of the getter function that will be added to the local model's prototype.
-     * Defaults to 'get' + the name of the foreign model, e.g. getCategory
-     */
-
-    /**
-     * @cfg {String} setterName The name of the setter function that will be added to the local model's prototype.
-     * Defaults to 'set' + the name of the foreign model, e.g. setCategory
-     */
-
-    /**
-     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
-     * Use 'belongsTo' to create a BelongsTo association.
-     *
-     *     associations: [{
-     *         type: 'belongsTo',
-     *         model: 'User'
-     *     }]
-     */
-    constructor: function(config) {
-        this.callParent(arguments);
-
-        var me             = this,
-            ownerProto     = me.ownerModel.prototype,
-            associatedName = me.associatedName,
-            getterName     = me.getterName || 'get' + associatedName,
-            setterName     = me.setterName || 'set' + associatedName;
-
-        Ext.applyIf(me, {
-            name        : associatedName,
-            foreignKey  : associatedName.toLowerCase() + "_id",
-            instanceName: associatedName + 'BelongsToInstance',
-            associationKey: associatedName.toLowerCase()
-        });
-
-        ownerProto[getterName] = me.createGetter();
-        ownerProto[setterName] = me.createSetter();
-    },
-
-    /**
-     * @private
-     * Returns a setter function to be placed on the owner model's prototype
-     * @return {Function} The setter function
-     */
-    createSetter: function() {
-        var me = this,
-            foreignKey = me.foreignKey;
-
-        //'this' refers to the Model instance inside this function
-        return function(value, options, scope) {
-            // If we pass in an instance, pull the id out
-            if (value && value.isModel) {
-                value = value.getId();
-            }
-            this.set(foreignKey, value);
-
-            if (Ext.isFunction(options)) {
-                options = {
-                    callback: options,
-                    scope: scope || this
-                };
-            }
-
-            if (Ext.isObject(options)) {
-                return this.save(options);
-            }
-        };
-    },
-
-    /**
-     * @private
-     * Returns a getter function to be placed on the owner model's prototype. We cache the loaded instance
-     * the first time it is loaded so that subsequent calls to the getter always receive the same reference.
-     * @return {Function} The getter function
-     */
-    createGetter: function() {
-        var me              = this,
-            associatedName  = me.associatedName,
-            associatedModel = me.associatedModel,
-            foreignKey      = me.foreignKey,
-            primaryKey      = me.primaryKey,
-            instanceName    = me.instanceName;
-
-        //'this' refers to the Model instance inside this function
-        return function(options, scope) {
-            options = options || {};
-
-            var model = this,
-                foreignKeyId = model.get(foreignKey),
-                success,
-                instance,
-                args;
-
-            if (options.reload === true || model[instanceName] === undefined) {
-                instance = Ext.ModelManager.create({}, associatedName);
-                instance.set(primaryKey, foreignKeyId);
-
-                if (typeof options == 'function') {
-                    options = {
-                        callback: options,
-                        scope: scope || model
-                    };
-                }
-                
-                // Overwrite the success handler so we can assign the current instance
-                success = options.success;
-                options.success = function(rec){
-                    model[instanceName] = rec;
-                    if (success) {
-                        success.apply(this, arguments);
-                    }
-                };
-
-                associatedModel.load(foreignKeyId, options);
-                // assign temporarily while we wait for data to return
-                model[instanceName] = instance;
-                return instance;
-            } else {
-                instance = model[instanceName];
-                args = [instance];
-                scope = scope || options.scope || model;
-
-                //TODO: We're duplicating the callback invokation code that the instance.load() call above
-                //makes here - ought to be able to normalize this - perhaps by caching at the Model.load layer
-                //instead of the association layer.
-                Ext.callback(options, scope, args);
-                Ext.callback(options.success, scope, args);
-                Ext.callback(options.failure, scope, args);
-                Ext.callback(options.callback, scope, args);
-
-                return instance;
-            }
-        };
-    },
-
-    /**
-     * Read associated data
-     * @private
-     * @param {Ext.data.Model} record The record we're writing to
-     * @param {Ext.data.reader.Reader} reader The reader for the associated model
-     * @param {Object} associationData The raw associated data
-     */
-    read: function(record, reader, associationData){
-        record[this.instanceName] = reader.read([associationData]).records[0];
-    }
+Ext.define('PICS.view.report.data-table.ColumnTooltip', {
+    extend: 'Ext.tip.ToolTip',
+    alias: 'widget.reportcolumntooltip',
+    
+    anchor: 'bottom',
+    showDelay: 0,
+    tpl: '<div><h3>{name}</h3><p>{description}</p></div>'
 });
-
 /**
  * Component layout for tabs
  * @private
@@ -76328,14 +76329,6 @@ Ext.define('Ext.dd.DragZone', {
     }
 });
 
-Ext.define('PICS.view.report.data-table.ColumnTooltip', {
-    extend: 'Ext.tip.ToolTip',
-    alias: 'widget.reportcolumntooltip',
-    
-    anchor: 'bottom',
-    showDelay: 0,
-    tpl: '<div><h3>{name}</h3><p>{description}</p></div>'
-});
 /**
  * @private
  */
@@ -77006,6 +76999,38 @@ Ext.define('Ext.dd.ScrollManager', {
     }
 });
 
+Ext.define('PICS.ux.util.filter.ColumnFilterStoreFilter', {
+    extend: 'PICS.ux.util.filter.FilterMultipleColumn',
+
+    property: [
+        'category',
+        'name',
+        'description'
+    ]
+});
+Ext.define('PICS.store.report.ColumnFunctions', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.ColumnFunctions',
+
+    sorters: [{
+        property: 'key',
+        direction: 'ASC'
+    }],
+    
+    // dynamic url needs to be generated to obtain specific column's "sql functions" 
+    setProxyForRead: function (url) {
+        var proxy = {
+            reader: {
+                root: 'sql_functions',
+                type: 'json'
+            },
+            type: 'ajax',
+            url: url
+        };
+        
+        this.setProxy(proxy);
+    }
+});
 /**
  * An updateable progress bar component. The progress bar supports two different modes: manual and automatic.
  *
@@ -77343,28 +77368,104 @@ Ext.define('Ext.ProgressBar', {
     }
 });
 
-Ext.define('PICS.store.report.ColumnFunctions', {
-    extend: 'PICS.store.report.base.Store',
-    model: 'PICS.model.report.ColumnFunctions',
+Ext.define('PICS.model.report.Filter', {
+    extend: 'Ext.data.Model',
 
-    sorters: [{
-        property: 'key',
-        direction: 'ASC'
+    fields: [{
+        name: 'field_id',
+        type: 'string'
+    }, {
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'operator',
+        type: 'string',
+        useNull: true
+    }, {
+        name: 'value',
+        convert: function (value, record) {
+            var type = record.get('type');
+            
+            if (value == null) {
+                return '';
+            }
+            
+            switch (type) {
+                case PICS.data.FilterType.Date:
+                    value = Ext.Date.format(value, 'Y-m-d') || value;
+                    
+                    break;
+                case PICS.data.FilterType.Autocomplete:
+                case PICS.data.FilterType.Multiselect:
+                    if (value instanceof Array) {
+                        value = value.join(', ');
+                    }
+                    
+                    break;
+                case PICS.data.FilterType.AccountID:
+                case PICS.data.FilterType.Boolean:
+                case PICS.data.FilterType.Number:
+                case PICS.data.FilterType.UserID:
+                    // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
+                    value = value.toString();
+                    
+                    break;
+                case PICS.data.FilterType.String:
+                default:
+                    // no conversion necessary
+                    break;
+            }
+            
+            return value;
+        },
+        type: 'string',
+        useNull: true
+    }, {
+        name: 'column_compare_id',
+        type: 'string',
+        useNull: true
     }],
-    
-    // dynamic url needs to be generated to obtain specific column's "sql functions" 
-    setProxyForRead: function (url) {
-        var proxy = {
-            reader: {
-                root: 'sql_functions',
-                type: 'json'
-            },
-            type: 'ajax',
-            url: url
-        };
-        
-        this.setProxy(proxy);
-    }
+
+    associations: [{
+        type: 'belongsTo',
+        model: 'PICS.model.report.Report',
+        getterName: 'getReport',
+        instanceName: 'report',
+        setterName: 'setReport'
+    }]
+});
+Ext.define('PICS.store.report.Filters', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.Filter',
+
+    groupField: 'category',
+    proxy: {
+        reader: {
+            root: 'filters',
+            type: 'json'
+        },
+        type: 'memory'
+    },
+    sorters: [{
+        property: 'category',
+        direction: 'ASC'
+    }, {
+        property: 'name',
+        direction: 'ASC'
+    }]
 });
 /**
  * @docauthor Jason Johnston <jason@sencha.com>
@@ -83493,75 +83594,16 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     modal_title: PICS.text('Report.execute.subscribeSetting.title'),
     title: '<i class="icon-envelope icon-large"></i>' + PICS.text('Report.execute.subscribeSetting.tabName')
 });
-Ext.define('PICS.model.report.Filter', {
+Ext.define('PICS.model.report.Sort', {
     extend: 'Ext.data.Model',
 
     fields: [{
         name: 'field_id',
         type: 'string'
     }, {
-        name: 'type',
+        name: 'direction',
         type: 'string',
-        persist: false
-    }, {
-        name: 'category',
-        type: 'string',
-        persist: false
-    }, {
-        name: 'name',
-        type: 'string',
-        persist: false
-    }, {
-        name: 'description',
-        type: 'string',
-        persist: false
-    }, {
-        name: 'operator',
-        type: 'string',
-        useNull: true
-    }, {
-        name: 'value',
-        convert: function (value, record) {
-            var type = record.get('type');
-            
-            if (value == null) {
-                return '';
-            }
-            
-            switch (type) {
-                case PICS.data.FilterType.Date:
-                    value = Ext.Date.format(value, 'Y-m-d') || value;
-                    
-                    break;
-                case PICS.data.FilterType.Autocomplete:
-                case PICS.data.FilterType.Multiselect:
-                    if (value instanceof Array) {
-                        value = value.join(', ');
-                    }
-                    
-                    break;
-                case PICS.data.FilterType.AccountID:
-                case PICS.data.FilterType.Boolean:
-                case PICS.data.FilterType.Number:
-                case PICS.data.FilterType.UserID:
-                    // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
-                    value = value.toString();
-                    
-                    break;
-                case PICS.data.FilterType.String:
-                default:
-                    // no conversion necessary
-                    break;
-            }
-            
-            return value;
-        },
-        type: 'string',
-        useNull: true
-    }, {
-        name: 'column_compare_id',
-        type: 'string',
-        useNull: true
+        defaultValue: 'ASC'
     }],
 
     associations: [{
@@ -83570,26 +83612,6 @@ Ext.define('PICS.model.report.Filter', {
         getterName: 'getReport',
         instanceName: 'report',
         setterName: 'setReport'
-    }]
-});
-Ext.define('PICS.store.report.Filters', {
-    extend: 'PICS.store.report.base.Store',
-    model: 'PICS.model.report.Filter',
-
-    groupField: 'category',
-    proxy: {
-        reader: {
-            root: 'filters',
-            type: 'json'
-        },
-        type: 'memory'
-    },
-    sorters: [{
-        property: 'category',
-        direction: 'ASC'
-    }, {
-        property: 'name',
-        direction: 'ASC'
     }]
 });
 /**
@@ -87478,26 +87500,6 @@ Ext.define('Ext.grid.header.DragZone', {
     }
 });
 
-Ext.define('PICS.model.report.Sort', {
-    extend: 'Ext.data.Model',
-
-    fields: [{
-        name: 'field_id',
-        type: 'string'
-    }, {
-        name: 'direction',
-        type: 'string',
-        defaultValue: 'ASC'
-    }],
-
-    associations: [{
-        type: 'belongsTo',
-        model: 'PICS.model.report.Report',
-        getterName: 'getReport',
-        instanceName: 'report',
-        setterName: 'setReport'
-    }]
-});
 /**
  * @class Ext.view.AbstractView
  * This is an abstract superclass and should not be used directly. Please see {@link Ext.view.View}.
@@ -93289,7 +93291,6 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
 
     border: 0,
     bodyBorder: false,
-    closeAction: 'destroy',
     draggable: false,
     header: {
         height: 44
@@ -96122,263 +96123,6 @@ Ext.define('PICS.view.report.Viewport', {
     }],
     layout: 'border'
 });
-/**
- * A Column definition class which renders a value by processing a {@link Ext.data.Model Model}'s
- * {@link Ext.data.Model#persistenceProperty data} using a {@link #tpl configured}
- * {@link Ext.XTemplate XTemplate}.
- * 
- *     @example
- *     Ext.create('Ext.data.Store', {
- *         storeId:'employeeStore',
- *         fields:['firstname', 'lastname', 'seniority', 'department'],
- *         groupField: 'department',
- *         data:[
- *             { firstname: "Michael", lastname: "Scott",   seniority: 7, department: "Management" },
- *             { firstname: "Dwight",  lastname: "Schrute", seniority: 2, department: "Sales" },
- *             { firstname: "Jim",     lastname: "Halpert", seniority: 3, department: "Sales" },
- *             { firstname: "Kevin",   lastname: "Malone",  seniority: 4, department: "Accounting" },
- *             { firstname: "Angela",  lastname: "Martin",  seniority: 5, department: "Accounting" }
- *         ]
- *     });
- *     
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Column Template Demo',
- *         store: Ext.data.StoreManager.lookup('employeeStore'),
- *         columns: [
- *             { text: 'Full Name',       xtype: 'templatecolumn', tpl: '{firstname} {lastname}', flex:1 },
- *             { text: 'Department (Yrs)', xtype: 'templatecolumn', tpl: '{department} ({seniority})' }
- *         ],
- *         height: 200,
- *         width: 300,
- *         renderTo: Ext.getBody()
- *     });
- */
-Ext.define('Ext.grid.column.Template', {
-    extend: 'Ext.grid.column.Column',
-    alias: ['widget.templatecolumn'],
-    requires: ['Ext.XTemplate'],
-    alternateClassName: 'Ext.grid.TemplateColumn',
-
-    /**
-     * @cfg {String/Ext.XTemplate} tpl
-     * An {@link Ext.XTemplate XTemplate}, or an XTemplate *definition string* to use to process a
-     * {@link Ext.data.Model Model}'s {@link Ext.data.Model#persistenceProperty data} to produce a
-     * column's rendered value.
-     */
-    /**
-     * @cfg renderer
-     * @hide
-     */
-    /**
-     * @cfg scope
-     * @hide
-     */
-
-    initComponent: function(){
-        var me = this;
-        me.tpl = (!Ext.isPrimitive(me.tpl) && me.tpl.compile) ? me.tpl : new Ext.XTemplate(me.tpl);
-        // Set this here since the template may access any record values,
-        // so we must always run the update for this column
-        me.hasCustomRenderer = true;
-        me.callParent(arguments);
-    },
-    
-    defaultRenderer: function(value, meta, record) {
-        var data = Ext.apply({}, record.data, record.getAssociatedData());
-        return this.tpl.apply(data);
-    }
-});
-
-Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
-    extend: 'PICS.ux.grid.Panel',
-    alias: '    ',
-
-    requires: [
-        'Ext.grid.feature.Feature',
-        'Ext.grid.feature.Grouping',
-        'Ext.grid.column.Template'
-    ],
-
-    border: 0,
-    columns: [{
-        xtype: 'templatecolumn',
-        dataIndex: 'name',
-        tpl: '{name} <span class="description">{description}</span>',
-        flex: 1
-    }],
-    enableColumnHide: false,
-    features: [{
-        ftype: 'grouping',
-        groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} ' + PICS.text('Report.execute.columnFilterList.columnHeaderItems') + ')</span>'
-    }],
-    hideHeaders: true,
-    listeners: {
-        render: function (cmp, eOpts) {
-
-            // Adds '.x-over' to a 'x-grid-group-hd' (group header) on mouseover.
-            this.mon(cmp.el, 'mouseover', function (event, html, eOpts) {
-                var class_names = this.getGroupClassNamesWithoutOver(html);
-
-                class_names.push('x-over');
-                html.className = class_names.join(' ');
-            }, cmp, {
-                delegate: '.x-grid-group-hd'
-            });
-
-            // Removes '.x-over' from a 'x-grid-group-hd's (group headers) on mouseout.
-            this.mon(cmp.el, 'mouseout', function (event, html, eOpts) {
-                var class_names = this.getGroupClassNamesWithoutOver(html);
-
-                html.className = class_names.join(' ');
-            }, cmp, {
-                delegate: '.x-grid-group-hd'
-            });
-        }
-    },
-    rowLines: false,
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
-        mode: 'SIMPLE'
-    }),
-
-    getGroupClassNamesWithoutOver: function (html) {
-        var class_names = html.className.split(' '),
-            class_names_length = class_names.length,
-            new_class_names = [];
-
-        while (class_names_length--) {
-            var class_name = class_names[class_names_length];
-
-            if (class_name != 'x-over') {
-                new_class_names.push(class_name);
-            }
-        }
-
-        return new_class_names;
-    },
-
-    reset: function () {
-        var store = this.getStore(),
-            selection_model = this.getSelectionModel();
-
-        store.clearFilter();
-
-        selection_model.deselectAll();
-    }
-});
-Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
-    extend: 'PICS.view.report.modal.column-filter.ColumnFilterList',
-    alias: 'widget.reportcolumnlist',
-
-    store: 'report.Columns',
-    
-    id: 'column_list'
-});
-Ext.define('PICS.view.report.modal.column-filter.FilterList', {
-    extend: 'PICS.view.report.modal.column-filter.ColumnFilterList',
-    alias: 'widget.reportfilterlist',
-
-    store: 'report.Filters',
-    
-    id: 'filter_list'
-});
-Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
-    extend: 'PICS.ux.window.Window',
-    alias: 'reportcolumnfiltermodal',
-
-    requires: [
-        'PICS.ux.util.filter.ColumnFilterStoreFilter',
-        'PICS.view.report.modal.column-filter.ColumnList',
-        'PICS.view.report.modal.column-filter.FilterList'
-    ],
-
-    border: 0,
-    dockedItems: [{
-        xtype: 'toolbar',
-        border: 0,
-        cls: 'search',
-        dock: 'top',
-        height: 45,
-        items: [{
-            xtype: 'textfield',
-            emptyText: PICS.text('Report.execute.columnFilterModal.placeholderSearch'),
-            enableKeyEvents: true,
-            fieldLabel: '<i class="icon-search icon-large"></i>',
-            labelSeparator: '',
-            name: 'search_box',
-            labelWidth: 16,
-            width: 245
-        }],
-        layout: {
-            type: 'hbox',
-            align: 'middle',
-            pack: 'center'
-        }
-    }, {
-        xtype: 'toolbar',
-        border: 0,
-        cls: 'footer',
-        defaults: {
-            margin: '0 10 0 0'
-        },
-        dock: 'bottom',
-        height: 45,
-        items: [{
-            action: 'cancel',
-            cls: 'default',
-            height: 26,
-            text: PICS.text('Report.execute.columnFilterModal.buttonCancel')
-        }, {
-            action: 'add',
-            cls: 'primary',
-            disabled: true,
-            height: 26,
-            text: PICS.text('Report.execute.columnFilterModal.buttonAdd')
-        }],
-        layout: {
-            type: 'hbox',
-            pack: 'end'
-        }
-    }],
-    draggable: false,
-    header: {
-        height: 45
-    },
-    height: 500,
-    layout: 'fit',
-    modal: true,
-    resizable: false,
-    width: 600
-});
-Ext.define('PICS.view.report.modal.column-filter.ColumnModal', {
-    extend: 'PICS.view.report.modal.column-filter.ColumnFilterModal',
-    alias: 'widget.reportcolumnmodal',
-
-    id: 'column_modal',
-    items: [{
-        xtype: 'reportcolumnlist'
-    }],
-
-    initComponent: function () {
-        this.setTitle(PICS.text('Report.execute.columnModal.title'));
-
-        this.callParent(arguments);
-    }
-});
-Ext.define('PICS.view.report.modal.column-filter.FilterModal', {
-    extend: 'PICS.view.report.modal.column-filter.ColumnFilterModal',
-    alias: 'widget.reportfiltermodal',
-
-    id: 'filter_modal',
-    items: [{
-        xtype: 'reportfilterlist'
-    }],
-
-    initComponent: function () {
-        this.setTitle(PICS.text('Report.execute.filterModal.title'));
-
-        this.callParent(arguments);
-    }
-});
 Ext.define('PICS.ux.grid.column.Column', {
     extend: 'Ext.grid.column.Column',
     
@@ -96666,6 +96410,268 @@ Ext.define('PICS.store.report.Columns', {
         property: 'name',
         direction: 'ASC'
     }]
+});
+/**
+ * A Column definition class which renders a value by processing a {@link Ext.data.Model Model}'s
+ * {@link Ext.data.Model#persistenceProperty data} using a {@link #tpl configured}
+ * {@link Ext.XTemplate XTemplate}.
+ * 
+ *     @example
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'employeeStore',
+ *         fields:['firstname', 'lastname', 'seniority', 'department'],
+ *         groupField: 'department',
+ *         data:[
+ *             { firstname: "Michael", lastname: "Scott",   seniority: 7, department: "Management" },
+ *             { firstname: "Dwight",  lastname: "Schrute", seniority: 2, department: "Sales" },
+ *             { firstname: "Jim",     lastname: "Halpert", seniority: 3, department: "Sales" },
+ *             { firstname: "Kevin",   lastname: "Malone",  seniority: 4, department: "Accounting" },
+ *             { firstname: "Angela",  lastname: "Martin",  seniority: 5, department: "Accounting" }
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Column Template Demo',
+ *         store: Ext.data.StoreManager.lookup('employeeStore'),
+ *         columns: [
+ *             { text: 'Full Name',       xtype: 'templatecolumn', tpl: '{firstname} {lastname}', flex:1 },
+ *             { text: 'Department (Yrs)', xtype: 'templatecolumn', tpl: '{department} ({seniority})' }
+ *         ],
+ *         height: 200,
+ *         width: 300,
+ *         renderTo: Ext.getBody()
+ *     });
+ */
+Ext.define('Ext.grid.column.Template', {
+    extend: 'Ext.grid.column.Column',
+    alias: ['widget.templatecolumn'],
+    requires: ['Ext.XTemplate'],
+    alternateClassName: 'Ext.grid.TemplateColumn',
+
+    /**
+     * @cfg {String/Ext.XTemplate} tpl
+     * An {@link Ext.XTemplate XTemplate}, or an XTemplate *definition string* to use to process a
+     * {@link Ext.data.Model Model}'s {@link Ext.data.Model#persistenceProperty data} to produce a
+     * column's rendered value.
+     */
+    /**
+     * @cfg renderer
+     * @hide
+     */
+    /**
+     * @cfg scope
+     * @hide
+     */
+
+    initComponent: function(){
+        var me = this;
+        me.tpl = (!Ext.isPrimitive(me.tpl) && me.tpl.compile) ? me.tpl : new Ext.XTemplate(me.tpl);
+        // Set this here since the template may access any record values,
+        // so we must always run the update for this column
+        me.hasCustomRenderer = true;
+        me.callParent(arguments);
+    },
+    
+    defaultRenderer: function(value, meta, record) {
+        var data = Ext.apply({}, record.data, record.getAssociatedData());
+        return this.tpl.apply(data);
+    }
+});
+
+Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
+    extend: 'PICS.ux.grid.Panel',
+    alias: '    ',
+
+    requires: [
+        'Ext.grid.feature.Feature',
+        'Ext.grid.feature.Grouping',
+        'Ext.grid.column.Template'
+    ],
+
+    border: 0,
+    columns: [{
+        xtype: 'templatecolumn',
+        dataIndex: 'name',
+        tpl: '{name} <span class="description">{description}</span>',
+        flex: 1
+    }],
+    enableColumnHide: false,
+    features: [{
+        ftype: 'grouping',
+        groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} ' + PICS.text('Report.execute.columnFilterList.columnHeaderItems') + ')</span>'
+    }],
+    hideHeaders: true,
+    listeners: {
+        render: function (cmp, eOpts) {
+
+            // Adds '.x-over' to a 'x-grid-group-hd' (group header) on mouseover.
+            this.mon(cmp.el, 'mouseover', function (event, html, eOpts) {
+                var class_names = this.getGroupClassNamesWithoutOver(html);
+
+                class_names.push('x-over');
+                html.className = class_names.join(' ');
+            }, cmp, {
+                delegate: '.x-grid-group-hd'
+            });
+
+            // Removes '.x-over' from a 'x-grid-group-hd's (group headers) on mouseout.
+            this.mon(cmp.el, 'mouseout', function (event, html, eOpts) {
+                var class_names = this.getGroupClassNamesWithoutOver(html);
+
+                html.className = class_names.join(' ');
+            }, cmp, {
+                delegate: '.x-grid-group-hd'
+            });
+        }
+    },
+    rowLines: false,
+
+    getGroupClassNamesWithoutOver: function (html) {
+        var class_names = html.className.split(' '),
+            class_names_length = class_names.length,
+            new_class_names = [];
+
+        while (class_names_length--) {
+            var class_name = class_names[class_names_length];
+
+            if (class_name != 'x-over') {
+                new_class_names.push(class_name);
+            }
+        }
+
+        return new_class_names;
+    },
+
+    reset: function () {
+        var store = this.getStore(),
+            selection_model = this.getSelectionModel();
+
+        store.clearFilter();
+
+        selection_model.deselectAll();
+    }
+});
+Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
+    extend: 'PICS.view.report.modal.column-filter.ColumnFilterList',
+    alias: 'widget.reportcolumnlist',
+
+    store: 'report.Columns',
+
+    id: 'column_list',
+
+    selModel: Ext.create('Ext.selection.CheckboxModel', {
+        mode: 'SIMPLE'
+    })
+});
+Ext.define('PICS.view.report.modal.column-filter.FilterList', {
+    extend: 'PICS.view.report.modal.column-filter.ColumnFilterList',
+    alias: 'widget.reportfilterlist',
+
+    store: 'report.Filters',
+
+    id: 'filter_list',
+
+    selModel: Ext.create('Ext.selection.CheckboxModel', {
+        mode: 'SIMPLE'
+    })
+});
+Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
+    extend: 'PICS.ux.window.Window',
+    alias: 'reportcolumnfiltermodal',
+
+    requires: [
+        'PICS.ux.util.filter.ColumnFilterStoreFilter',
+        'PICS.view.report.modal.column-filter.ColumnList',
+        'PICS.view.report.modal.column-filter.FilterList'
+    ],
+
+    border: 0,
+    dockedItems: [{
+        xtype: 'toolbar',
+        border: 0,
+        cls: 'search',
+        dock: 'top',
+        height: 45,
+        items: [{
+            xtype: 'textfield',
+            emptyText: PICS.text('Report.execute.columnFilterModal.placeholderSearch'),
+            enableKeyEvents: true,
+            fieldLabel: '<i class="icon-search icon-large"></i>',
+            labelSeparator: '',
+            name: 'search_box',
+            labelWidth: 16,
+            width: 245
+        }],
+        layout: {
+            type: 'hbox',
+            align: 'middle',
+            pack: 'center'
+        }
+    }, {
+        xtype: 'toolbar',
+        border: 0,
+        cls: 'footer',
+        defaults: {
+            margin: '0 10 0 0'
+        },
+        dock: 'bottom',
+        height: 45,
+        items: [{
+            action: 'cancel',
+            cls: 'default',
+            height: 26,
+            text: PICS.text('Report.execute.columnFilterModal.buttonCancel')
+        }, {
+            action: 'add',
+            cls: 'primary',
+            disabled: true,
+            height: 26,
+            text: PICS.text('Report.execute.columnFilterModal.buttonAdd')
+        }],
+        layout: {
+            type: 'hbox',
+            pack: 'end'
+        }
+    }],
+    draggable: false,
+    header: {
+        height: 45
+    },
+    height: 500,
+    layout: 'fit',
+    modal: true,
+    resizable: false,
+    width: 600
+});
+Ext.define('PICS.view.report.modal.column-filter.ColumnModal', {
+    extend: 'PICS.view.report.modal.column-filter.ColumnFilterModal',
+    alias: 'widget.reportcolumnmodal',
+
+    id: 'column_modal',
+    items: [{
+        xtype: 'reportcolumnlist'
+    }],
+
+    initComponent: function () {
+        this.setTitle(PICS.text('Report.execute.columnModal.title'));
+
+        this.callParent(arguments);
+    }
+});
+Ext.define('PICS.view.report.modal.column-filter.FilterModal', {
+    extend: 'PICS.view.report.modal.column-filter.ColumnFilterModal',
+    alias: 'widget.reportfiltermodal',
+
+    id: 'filter_modal',
+    items: [{
+        xtype: 'reportfilterlist'
+    }],
+
+    initComponent: function () {
+        this.setTitle(PICS.text('Report.execute.filterModal.title'));
+
+        this.callParent(arguments);
+    }
 });
 Ext.define('PICS.model.report.DataTable', {
     extend: 'Ext.data.Model',
@@ -97802,10 +97808,10 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     init: function () {
         this.control({
             'reportcolumnmodal': {
-                beforeclose: this.beforeColumnModalClose
+                beforehide: this.beforeColumnModalHide
             },
             'reportfiltermodal': {
-                beforeclose: this.beforeFilterModalClose
+                beforehide: this.beforeFilterModalHide
             },
             'reportcolumnmodal textfield[name=search_box]': {
                 keyup: this.onColumnModalTextfieldKeyup
@@ -97844,6 +97850,14 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         });
     },
 
+    beforeColumnModalHide: function (cmp, eOpts) {
+        this.getColumnList().reset();
+    },
+
+    beforeFilterModalHide: function (cmp, eOpts) {
+        this.getFilterList().reset();
+    },
+
     onColumnListSelectionChange: function (selection_model, selected, eOpts) {
         this.toggleAddButtonFromSelectionModelCount(selection_model, this.getColumnModalAddButton());
     },
@@ -97871,7 +97885,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         // Add the selected columns to the report model.
         report.addColumns(selected_columns);
 
-        column_modal.close();
+        column_modal.hide();
 
         // Get new data for the modified report model (which will update the view, as well).
         PICS.data.ServerCommunication.loadData();
@@ -97891,33 +97905,19 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         // Add the selected filters to the FilterOptions view.
         this.application.fireEvent('refreshfilters');
 
-        filter_modal.close();
-    },
-
-    beforeColumnModalClose: function (cmp, eOpts) {
-        var column_list = this.getColumnList();
-
-        column_list.reset();
-    },
-
-    beforeFilterModalClose: function (cmp, eOpts) {
-        var filter_list = this.getFilterList();
-
-        filter_list.reset();
+        filter_modal.hide();
     },
 
     cancelColumnModal: function (cmp, event, eOpts) {
-        var column_list = this.getColumnList(),
-            column_modal = this.getColumnModal();
+        var column_modal = this.getColumnModal();
 
-        column_modal.close();
+        column_modal.hide();
     },
 
     cancelFilterModal: function (cmp, event, eOpts) {
-        var filter_list = this.getFilterList(),
-            filter_modal = this.getFilterModal();
+        var filter_modal = this.getFilterModal();
 
-        filter_modal.close();
+        filter_modal.hide();
     },
 
     onColumnModalTextfieldKeyup: function (cmp, event, eOpts) {
@@ -97959,22 +97959,26 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     },
 
     openColumnModal: function () {
-        // Create the modal.
-        var column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
-            defaultFocus: 'textfield[name=search_box]'
-        });
+        var column_modal = this.getColumnModal();
 
-        // Display the modal.
+        if (!column_modal) {
+            column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
+                defaultFocus: 'textfield[name=search_box]'
+            });
+        }
+
         column_modal.show();
     },
 
     openFilterModal: function () {
-        // Create the modal.
-        var filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
-            defaultFocus: 'textfield[name=search_box]'
-        });
+        var filter_modal = this.getFilterModal();
 
-        // Display the modal.
+        if (!filter_modal) {
+            filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
+                defaultFocus: 'textfield[name=search_box]'
+            });
+        }
+
         filter_modal.show();
     }
 });
@@ -98016,30 +98020,40 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         // set the method on the column store - column
         column.set('sql_function', column_function_key);
 
-        // destroy modal for next use (generate with correct column)
-        column_function_modal.close();
-        
+        column_function_modal.hide();
+
         // refresh report
         PICS.data.ServerCommunication.loadReportAndData();
     },
 
-    openColumnFunctionModal: function (column) {
+    openColumnFunctionModal: function (selected_column) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             report_type = report.get('type'),
-            field_id = column.get('field_id'),
+            field_id = selected_column.get('field_id'),
             column_function_store = this.getReportColumnFunctionsStore(),
-            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(report_type, field_id);
-        
+            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(report_type, field_id),
+            column_function_modal = this.getColumnFunctionModal();
+
         column_function_store.setProxyForRead(url);
-        
+
         // TODO: errors caught???
         column_function_store.load(function (records, operation, success) {
             if (success) {
-                var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-                    column: column
-                });
-                
+                if (column_function_modal) {
+                    if (column_function_modal.column != selected_column) {
+                        column_function_modal.destroy();
+
+                        column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+                            column: selected_column
+                        });
+                    }
+                } else {
+                    column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+                        column: selected_column
+                    });
+                }
+
                 column_function_modal.show();
             } else {
                 // TODO: throw error

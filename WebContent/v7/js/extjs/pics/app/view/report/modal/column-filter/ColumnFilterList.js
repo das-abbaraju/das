@@ -45,9 +45,6 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
         }
     },
     rowLines: false,
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
-        mode: 'SIMPLE'
-    }),
 
     getGroupClassNamesWithoutOver: function (html) {
         var class_names = html.className.split(' '),

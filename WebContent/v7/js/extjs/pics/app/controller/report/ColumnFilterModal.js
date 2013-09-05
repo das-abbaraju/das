@@ -44,10 +44,10 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     init: function () {
         this.control({
             'reportcolumnmodal': {
-                beforeclose: this.beforeColumnModalClose
+                beforehide: this.beforeColumnModalHide
             },
             'reportfiltermodal': {
-                beforeclose: this.beforeFilterModalClose
+                beforehide: this.beforeFilterModalHide
             },
             'reportcolumnmodal textfield[name=search_box]': {
                 keyup: this.onColumnModalTextfieldKeyup
@@ -86,6 +86,14 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         });
     },
 
+    beforeColumnModalHide: function (cmp, eOpts) {
+        this.getColumnList().reset();
+    },
+
+    beforeFilterModalHide: function (cmp, eOpts) {
+        this.getFilterList().reset();
+    },
+
     onColumnListSelectionChange: function (selection_model, selected, eOpts) {
         this.toggleAddButtonFromSelectionModelCount(selection_model, this.getColumnModalAddButton());
     },
@@ -113,7 +121,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         // Add the selected columns to the report model.
         report.addColumns(selected_columns);
 
-        column_modal.close();
+        column_modal.hide();
 
         // Get new data for the modified report model (which will update the view, as well).
         PICS.data.ServerCommunication.loadData();
@@ -133,33 +141,19 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         // Add the selected filters to the FilterOptions view.
         this.application.fireEvent('refreshfilters');
 
-        filter_modal.close();
-    },
-
-    beforeColumnModalClose: function (cmp, eOpts) {
-        var column_list = this.getColumnList();
-
-        column_list.reset();
-    },
-
-    beforeFilterModalClose: function (cmp, eOpts) {
-        var filter_list = this.getFilterList();
-
-        filter_list.reset();
+        filter_modal.hide();
     },
 
     cancelColumnModal: function (cmp, event, eOpts) {
-        var column_list = this.getColumnList(),
-            column_modal = this.getColumnModal();
+        var column_modal = this.getColumnModal();
 
-        column_modal.close();
+        column_modal.hide();
     },
 
     cancelFilterModal: function (cmp, event, eOpts) {
-        var filter_list = this.getFilterList(),
-            filter_modal = this.getFilterModal();
+        var filter_modal = this.getFilterModal();
 
-        filter_modal.close();
+        filter_modal.hide();
     },
 
     onColumnModalTextfieldKeyup: function (cmp, event, eOpts) {
@@ -201,22 +195,26 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     },
 
     openColumnModal: function () {
-        // Create the modal.
-        var column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
-            defaultFocus: 'textfield[name=search_box]'
-        });
+        var column_modal = this.getColumnModal();
 
-        // Display the modal.
+        if (!column_modal) {
+            column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
+                defaultFocus: 'textfield[name=search_box]'
+            });
+        }
+
         column_modal.show();
     },
 
     openFilterModal: function () {
-        // Create the modal.
-        var filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
-            defaultFocus: 'textfield[name=search_box]'
-        });
+        var filter_modal = this.getFilterModal();
 
-        // Display the modal.
+        if (!filter_modal) {
+            filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
+                defaultFocus: 'textfield[name=search_box]'
+            });
+        }
+
         filter_modal.show();
     }
 });

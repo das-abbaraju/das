@@ -36,30 +36,40 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         // set the method on the column store - column
         column.set('sql_function', column_function_key);
 
-        // destroy modal for next use (generate with correct column)
-        column_function_modal.close();
-        
+        column_function_modal.hide();
+
         // refresh report
         PICS.data.ServerCommunication.loadReportAndData();
     },
 
-    openColumnFunctionModal: function (column) {
+    openColumnFunctionModal: function (selected_column) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             report_type = report.get('type'),
-            field_id = column.get('field_id'),
+            field_id = selected_column.get('field_id'),
             column_function_store = this.getReportColumnFunctionsStore(),
-            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(report_type, field_id);
-        
+            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(report_type, field_id),
+            column_function_modal = this.getColumnFunctionModal();
+
         column_function_store.setProxyForRead(url);
-        
+
         // TODO: errors caught???
         column_function_store.load(function (records, operation, success) {
             if (success) {
-                var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-                    column: column
-                });
-                
+                if (column_function_modal) {
+                    if (column_function_modal.column != selected_column) {
+                        column_function_modal.destroy();
+
+                        column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+                            column: selected_column
+                        });
+                    }
+                } else {
+                    column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+                        column: selected_column
+                    });
+                }
+
                 column_function_modal.show();
             } else {
                 // TODO: throw error
