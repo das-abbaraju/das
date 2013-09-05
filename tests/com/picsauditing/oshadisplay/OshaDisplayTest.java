@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -87,6 +88,31 @@ public class OshaDisplayTest extends PicsTranslationTest {
 
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(oshaDisplay, this);
 	}
+
+    @Test
+    public void testIndustryAverageDisplay() throws Exception {
+        YearList yearList = new YearList();
+        yearList.add(2011);
+        yearList.add(2012);
+        yearList.add(2013);
+
+        when(oshaOrganizer.getOutOfScopeYear(any(OshaType.class))).thenReturn(null);
+        when(oshaOrganizer.mostRecentThreeYears(any(OshaType.class))).thenReturn(yearList);
+
+        List<String> columnNames;
+
+        columnNames = Whitebox.invokeMethod(oshaDisplay, "getColumnNames", OshaType.OSHA);
+        assertEquals(4, columnNames.size());
+
+        columnNames = Whitebox.invokeMethod(oshaDisplay, "getColumnNames", OshaType.COHS);
+        assertEquals(4, columnNames.size());
+
+        columnNames = Whitebox.invokeMethod(oshaDisplay, "getColumnNames", OshaType.UK_HSE);
+        assertEquals(3, columnNames.size());
+
+        columnNames = Whitebox.invokeMethod(oshaDisplay, "getColumnNames", OshaType.EMR);
+        assertEquals(3, columnNames.size());
+    }
 
 	@Test
 	public void testIsEquivalentRateTypes_NullFlagCriteriaRateTypeIsFalse() throws Exception {
