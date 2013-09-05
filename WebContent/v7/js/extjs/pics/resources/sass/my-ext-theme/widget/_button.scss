@@ -1,6 +1,6 @@
 /**
  * Button style guide
- * 
+ *
  * Theme: 'default', 'primary', 'warning', 'info', 'success', 'danger'
  *
  * Ext.create('Ext.button.Button', {
@@ -10,8 +10,8 @@
  * @author: Carey Hinoki
  * @date: 2012-07-02
  */
- 
- 
+
+
 // default
 
 $button_default_background_color: #dcdcdc;
@@ -138,6 +138,47 @@ $button_danger_active_background_color: #8c0600;
 $button_danger_active_gradient_color_top: #c60c0c;
 $button_danger_active_gradient_color_bottom: #8c0600;
 
+// default disabled
+
+$button_default_disabled_background_color: #dcdcdc;
+$button_default_disabled_border_color: #bcbcbc;
+$button_default_disabled_gradient_color_top: #dcdcdc;
+$button_default_disabled_gradient_color_bottom: #dcdcdc;
+$button_default_disabled_text_color: #454545;
+$button_default_disabled_text_shadow_color: rgba(255,255,255,0.75);
+
+$button_default_disabled_over_background_color: #dcdcdc;
+$button_default_disabled_over_gradient_color_top: #dcdcdc;
+$button_default_disabled_over_gradient_color_bottom: #dcdcdc;
+
+$button_default_disabled_pressed_background_color: #dcdcdc;
+$button_default_disabled_pressed_gradient_color_top: #dcdcdc;
+$button_default_disabled_pressed_gradient_color_bottom: #dcdcdc;
+
+$button_default_disabled_active_background_color: #dcdcdc;
+$button_default_disabled_active_gradient_color_top: #dcdcdc;
+$button_default_disabled_active_gradient_color_bottom: #dcdcdc;
+
+// primary disabled
+
+$button_primary_disabled_background_color: #3f93c0;
+$button_primary_disabled_border_color: #369;
+$button_primary_disabled_gradient_color_top: #3f93c0;
+$button_primary_disabled_gradient_color_bottom: #3f93c0;
+$button_primary_disabled_text_color: #fff;
+$button_primary_disabled_text_shadow_color: rgba(255,255,255,0.75);
+
+$button_primary_disabled_over_background_color: #3f93c0;
+$button_primary_disabled_over_gradient_color_top: #3f93c0;
+$button_primary_disabled_over_gradient_color_bottom: #3f93c0;
+
+$button_primary_disabled_pressed_background_color: #3f93c0;
+$button_primary_disabled_pressed_gradient_color_top: #3f93c0;
+$button_primary_disabled_pressed_gradient_color_bottom: #3f93c0;
+
+$button_primary_disabled_active_background_color: #3f93c0;
+$button_primary_disabled_active_gradient_color_top: #3f93c0;
+$button_primary_disabled_active_gradient_color_bottom: #3f93c0;
 
 .x-btn-default-toolbar-small .x-btn-inner
 {
@@ -177,7 +218,7 @@ $button_danger_active_gradient_color_bottom: #8c0600;
 	@include text-shadow(0px -1px 0px $button_default_text_shadow_color);
 }
 
-// primary 
+// primary
 
 .x-btn.primary
 {
@@ -340,4 +381,47 @@ $button_danger_active_gradient_color_bottom: #8c0600;
 {
 	color: $button_danger_text_color;
 	@include text-shadow(0px -1px 0px $button_danger_text_shadow_color);
+}
+
+/*
+ * Disabled Styles
+ */
+
+/* default */
+
+.x-btn.default.x-btn-disabled
+{
+	background: $button_default_disabled_background_color;
+	@include background-image(linear-gradient($button_default_disabled_gradient_color_top, $button_default_disabled_gradient_color_bottom));
+	border: 1px solid $button_default_disabled_border_color;
+}
+
+.x-btn.default.x-btn-disabled button span
+{
+	color: $button_default_disabled_text_color !important;
+	@include text-shadow(0px -1px 0px $button_default_disabled_border_color);
+}
+
+/* primary */
+
+.x-btn.primary.x-btn-disabled
+{
+	background: $button_primary_disabled_background_color;
+	@include background-image(linear-gradient($button_primary_disabled_gradient_color_top, $button_primary_disabled_gradient_color_bottom));
+	border: 1px solid $button_primary_disabled_border_color;
+}
+
+.x-btn.primary.x-btn-disabled button span
+{
+	color: $button_primary_disabled_text_color !important;
+	@include text-shadow(0px -1px 0px $button_primary_disabled_border_color);
+}
+
+/* TODO: warning, info, success, danger */
+
+.x-btn.warning.x-btn-disabled button span,
+.x-btn.info.x-btn-disabled button span,
+.x-btn.success.x-btn-disabled button span,
+.x-btn.danger.x-btn-disabled button span
+{
 }

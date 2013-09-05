@@ -1,13 +1,13 @@
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     extend: 'PICS.ux.window.Window',
     alias: 'reportcolumnfiltermodal',
-    
+
     requires: [
         'PICS.ux.util.filter.ColumnFilterStoreFilter',
         'PICS.view.report.modal.column-filter.ColumnList',
         'PICS.view.report.modal.column-filter.FilterList'
     ],
-    
+
     border: 0,
     dockedItems: [{
         xtype: 'toolbar',
@@ -47,6 +47,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
         }, {
             action: 'add',
             cls: 'primary',
+            disabled: true,
             height: 26,
             text: PICS.text('Report.execute.columnFilterModal.buttonAdd')
         }],
