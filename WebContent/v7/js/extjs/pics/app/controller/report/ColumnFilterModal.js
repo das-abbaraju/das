@@ -22,7 +22,13 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     }, {
         ref: 'filterModalSearchBox',
         selector: 'reportfiltermodal textfield[name=search_box]'
-    }],
+    }, {
+        ref: 'columnModalAddButton',
+        selector: 'reportcolumnmodal button[action=add]'
+    }, {
+        ref: 'filterModalAddButton',
+        selector: 'reportfiltermodal button[action=add]'
+     }],
 
     stores: [
         'report.Reports',
@@ -60,6 +66,12 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             },
             'reportfiltermodal button[action=cancel]':  {
                 click: this.cancelFilterModal
+            },
+            'reportcolumnlist': {
+                selectionchange: this.onColumnListSelectionChange
+            },
+            'reportfilterlist': {
+                selectionchange: this.onFilterListSelectionChange
             }
         });
 
@@ -72,6 +84,22 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             openfiltermodal: this.openFilterModal,
             scope: this
         });
+    },
+
+    onColumnListSelectionChange: function (selection_model, selected, eOpts) {
+        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getColumnModalAddButton());
+    },
+
+    onFilterListSelectionChange: function (selection_model, selected, eOpts) {
+        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getFilterModalAddButton());
+    },
+
+    toggleAddButtonFromSelectionModelCount: function (selection_model, add_button) {
+        if (selection_model.getCount()) {
+            add_button.setDisabled(false);
+        } else {
+            add_button.setDisabled(true);
+        }
     },
 
     addColumn: function (cmp, event, eOpts) {
