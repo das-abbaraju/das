@@ -22,41 +22,41 @@ $data_table_paging_toolbar_add_column_icon_plus_text_color: #2caf2c;
 	{
 		background: $data_table_paging_toolbar_background_color;
 		padding: 0px 10px;
-		
+
 		.x-disabled span
 		{
 			opacity: 1;
 		}
-		
+
 		.x-toolbar-separator
 		{
 			border: 0px;
 			border-left: 1px solid $data_table_paging_toolbar_separator_border_color_left;
 		}
-		
+
 		.x-toolbar-text
 		{
 			color: $data_table_paging_toolbar_text_color;
 			font-size: 14px;
 		}
-		
+
 		.x-form-text
 		{
 			height: 24px;
 			padding-left: 3px;
 		}
-		
+
 		.limit
 		{
 			margin-left: 5px;
 		}
-		
+
 		.x-form-trigger
 		{
 			height: 24px;
 		}
 	}
-	
+
 	.paging-icon
 	{
 		span
@@ -89,22 +89,22 @@ $data_table_paging_toolbar_add_column_icon_plus_text_color: #2caf2c;
 			color: $data_table_paging_toolbar_icon_disabled_text_color !important;
 		}
 	}
-	
+
 	.add-column
 	{
 		margin-left: 10px;
-		
+
 		em
 		{
 			background-image: url('../images/button/s-arrow.gif');
 		}
-		
+
 		button span
 		{
 			font-size: 11px;
 			line-height: 24px !important;
 		}
-		
+
 		.icon-plus
 		{
 			color: $data_table_paging_toolbar_add_column_icon_plus_text_color;

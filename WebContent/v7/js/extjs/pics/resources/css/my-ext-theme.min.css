@@ -8873,73 +8873,82 @@ textarea.x-form-invalid-field {
 /* line 20, ../sass/my-ext-theme/report/report/_report.scss */
 #data_table {
   border: 1px solid #999; }
-  /* line 25, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 27, ../sass/my-ext-theme/report/report/_report.scss */
+  #data_table .x-grid-header-ct,
+  #data_table .x-column-header,
+  #data_table .x-column-header-over {
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #454545), color-stop(100%, #454545));
+    background-image: -webkit-linear-gradient(#454545, #454545);
+    background-image: -moz-linear-gradient(#454545, #454545);
+    background-image: -o-linear-gradient(#454545, #454545);
+    background-image: linear-gradient(#454545, #454545); }
+  /* line 32, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-header-ct {
     border-bottom: 1px solid #454545 !important;
     border-left: 1px solid transparent !important;
     border-right: 1px solid transparent !important;
     border-top: 1px solid #454545 !important; }
-  /* line 33, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 40, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-column-header {
     border-right: 1px solid #454545;
     font-weight: bold;
     text-shadow: none; }
-  /* line 40, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 47, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-column-header-inner {
     cursor: pointer;
     padding-left: 5px; }
-    /* line 45, ../sass/my-ext-theme/report/report/_report.scss */
+    /* line 52, ../sass/my-ext-theme/report/report/_report.scss */
     #data_table .x-column-header-inner span {
       color: #ccc; }
-  /* line 53, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 60, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-column-header-inner.x-column-header-over span {
     color: #fff; }
-  /* line 59, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 66, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-row-numberer .x-column-header-inner {
     cursor: auto; }
-  /* line 64, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 71, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-column-header-open {
     background: #222;
     border-left: 1px solid #191919;
     border-right: 1px solid #191919; }
-  /* line 71, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 78, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-row .x-grid-cell-special {
     background: white;
     border-right: 1px solid #dcdcdc; }
-  /* line 77, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 84, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-row-alt .x-grid-cell-special {
     background: #f1f1f2; }
-  /* line 82, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 89, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-row-over .x-grid-cell-special {
     background: #eaeaea; }
-  /* line 88, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 95, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-row-selected .x-grid-cell,
   #data_table .x-grid-row-selected .x-grid-rowwrap-div {
     background: #c3e0f9; }
-  /* line 93, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 100, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-cell-inner {
     color: #454545;
     font-size: 14px;
     line-height: 18px;
     padding: 4px 6px 4px; }
-  /* line 101, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 108, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-cell-inner a {
     color: #226396;
     text-decoration: none; }
-  /* line 107, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 114, ../sass/my-ext-theme/report/report/_report.scss */
   #data_table .x-grid-cell-inner a:hover {
     text-decoration: underline; }
 
-/* line 113, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 120, ../sass/my-ext-theme/report/report/_report.scss */
 #data_table-body {
   border: 0px;
   border-top: 0px !important; }
 
-/* line 119, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 126, ../sass/my-ext-theme/report/report/_report.scss */
 #data_table-body .x-grid-cell {
   border-right: 1px solid gainsboro; }
 
-/* line 124, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 131, ../sass/my-ext-theme/report/report/_report.scss */
 .x-grid-empty {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #CCC;
@@ -8948,11 +8957,11 @@ textarea.x-form-invalid-field {
   text-align: center;
   text-shadow: #aeaeae 0 -1px; }
 
-/* line 134, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 141, ../sass/my-ext-theme/report/report/_report.scss */
 #data_table-body .x-grid-empty {
   margin-top: 100px; }
 
-/* line 140, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 147, ../sass/my-ext-theme/report/report/_report.scss */
 #column_list-body .x-grid-empty,
 #filter_list-body .x-grid-empty {
   margin-top: 141px; }
@@ -9106,52 +9115,51 @@ textarea.x-form-invalid-field {
   cursor: pointer;
   font-size: 18px;
   position: relative;
-  text-decoration: none;
-  top: -5px; }
-/* line 165, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  text-decoration: none; }
+/* line 164, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit .selected,
 #report_copy .selected,
 #report_edit_no_permission .selected {
   color: #A84D10; }
-/* line 170, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 169, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit strong,
 #report_copy strong,
 #report_edit_no_permission strong {
   font-weight: bold; }
-/* line 175, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 174, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit input[type="text"],
 #report_copy input[type="text"],
 #report_edit_no_permission input[type="text"] {
   padding: 1px 3px; }
 
-/* line 183, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 182, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 85%; }
-/* line 192, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 191, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
-/* line 199, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 198, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
 
-/* line 208, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 207, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share a {
   color: #226396;
   text-decoration: none; }
-/* line 214, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 213, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share a:hover {
   color: #73bbe8; }
-/* line 219, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 218, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share strong {
   font-weight: bold; }
-/* line 224, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 223, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .selected-account {
   background-color: #f1f1f2;
   border: 1px solid #ccc;
@@ -9160,31 +9168,31 @@ textarea.x-form-invalid-field {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px; }
-  /* line 230, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 229, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .selected-account .selected-account-id {
     display: none; }
-/* line 236, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 235, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .icon-edit {
   color: #ccc;
   cursor: pointer;
   font-size: 22px;
   margin-left: 10px; }
-/* line 244, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 243, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .icon-edit.selected {
   color: #35c13d; }
-/* line 249, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 248, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share p {
   margin-left: 10px; }
-/* line 256, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 255, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox label {
   line-height: 14px;
   padding: 7px 0px 0px !important; }
-/* line 262, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 261, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox .icon-search {
   color: #cccccc;
   font-size: 14px;
   text-shadow: 0px -1px 0px #bcbcbc; }
-/* line 269, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 268, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox .x-form-text {
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
@@ -9193,7 +9201,7 @@ textarea.x-form-invalid-field {
   border-radius: 15px;
   height: 25px !important;
   padding: 0px 7px; }
-/* line 277, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 276, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox-list {
   border: 1px solid #a7a7a7;
   -webkit-border-radius: 5px;
@@ -9201,7 +9209,7 @@ textarea.x-form-invalid-field {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px; }
-  /* line 282, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 281, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list li:first-child {
     -moz-border-radius-topleft: 4px;
     -webkit-border-top-left-radius: 4px;
@@ -9209,7 +9217,7 @@ textarea.x-form-invalid-field {
     -moz-border-radius-topright: 4px;
     -webkit-border-top-right-radius: 4px;
     border-top-right-radius: 4px; }
-  /* line 288, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 287, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list li:last-child {
     -moz-border-radius-bottomleft: 4px;
     -webkit-border-bottom-left-radius: 4px;
@@ -9217,13 +9225,13 @@ textarea.x-form-invalid-field {
     -moz-border-radius-bottomright: 4px;
     -webkit-border-bottom-right-radius: 4px;
     border-bottom-right-radius: 4px; }
-  /* line 294, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 293, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .even {
     background: #f1f1f2; }
-  /* line 299, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 298, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .x-boundlist-item {
     border: 1px solid transparent; }
-  /* line 304, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 303, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .x-boundlist-item-over {
     background: #a84d10;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
@@ -9235,50 +9243,50 @@ textarea.x-form-invalid-field {
     border-bottom: 1px solid #a84d10;
     border-top: 1px solid #c66603;
     color: white; }
-  /* line 314, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 313, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .search-item {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-    /* line 320, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 319, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item div {
       clear: both; }
-    /* line 325, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 324, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item em {
       font-weight: bold; }
-    /* line 331, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 330, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item .name,
     #report_share .share-searchbox-list .search-item .location {
       float: left;
       width: 175px; }
-    /* line 337, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 336, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item .id {
       float: right; }
-    /* line 342, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 341, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item .type {
       float: right;
       font-style: italic; }
-  /* line 349, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 348, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .more-results {
     color: #333333;
     font-weight: bold; }
 
-/* line 360, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 359, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 90%; }
-/* line 369, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 368, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission strong {
   font-weight: bold; }
-/* line 374, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 373, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
-/* line 381, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 380, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
@@ -9286,75 +9294,75 @@ textarea.x-form-invalid-field {
 /***
  * Tabs
  */
-/* line 392, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 391, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar {
   background: #454545; }
 
-/* line 397, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 396, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab {
   border: 0px;
   border-right: 1px solid #333333;
   border-top: 1px solid #333333;
   padding: 5px; }
 
-/* line 405, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 404, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab-active:last-child {
   width: 72px; }
 
-/* line 410, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 409, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab button {
   background: #454545;
   border: 0px;
   cursor: pointer;
   padding: 0px; }
 
-/* line 418, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 417, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab span {
   color: #cccccc; }
 
-/* line 423, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 422, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-over span {
   color: #ffffff; }
 
-/* line 428, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 427, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-active {
   background: #eaeaea;
   border-top: 0px; }
 
-/* line 434, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 433, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-active button {
   background: #eaeaea;
   cursor: auto; }
 
-/* line 440, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 439, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-active span {
   color: #666666; }
 
-/* line 445, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 444, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab button i.icon-large {
   display: block;
   font-size: 17px; }
 
-/* line 451, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 450, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_export .x-btn i {
   position: relative;
   top: 2px; }
 
-/* line 457, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 456, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_export .x-btn-inner span {
   margin-left: 10px; }
 
-/* line 462, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 461, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_export .export-message {
   color: #999;
   text-align: center; }
 
-/* line 468, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 467, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe .coming-soon {
   margin-top: 85px;
   font-size: 18px; }
 
-/* line 474, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 473, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 .report-info {
   background: #EAEAEA;
   height: 100%;
@@ -9363,21 +9371,21 @@ textarea.x-form-invalid-field {
   top: 0;
   width: 100%;
   z-index: 9999; }
-  /* line 484, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 483, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info ul {
     padding: 15px; }
-  /* line 489, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 488, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info li {
     margin-bottom: 10px; }
-  /* line 494, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 493, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info label {
     color: #999;
     font-weight: bold;
     margin-right: 5px; }
-  /* line 503, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 502, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info .update-info label {
     float: left; }
-  /* line 508, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 507, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info .update-info span {
     display: inline-block; }
 
@@ -9393,11 +9401,11 @@ textarea.x-form-invalid-field {
  * @author: Carey Hinoki
  * @date: 2012-07-02
  */
-/* line 163, ../sass/my-ext-theme/widget/_button.scss */
+/* line 184, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn-default-toolbar-small .x-btn-inner {
   padding: 0px 7px; }
 
-/* line 170, ../sass/my-ext-theme/widget/_button.scss */
+/* line 191, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default {
   background: gainsboro;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
@@ -9407,7 +9415,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#f1f1f1, #dcdcdc);
   border: 1px solid #bcbcbc; }
 
-/* line 177, ../sass/my-ext-theme/widget/_button.scss */
+/* line 198, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default.x-over {
   background: #ececec;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
@@ -9416,7 +9424,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#f7f7f8, #ececec);
   background-image: linear-gradient(#f7f7f8, #ececec); }
 
-/* line 183, ../sass/my-ext-theme/widget/_button.scss */
+/* line 204, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default.x-pressed {
   background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
@@ -9425,7 +9433,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 189, ../sass/my-ext-theme/widget/_button.scss */
+/* line 210, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default.x-menu-active {
   background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
@@ -9434,12 +9442,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 195, ../sass/my-ext-theme/widget/_button.scss */
+/* line 216, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.default button span {
   color: #454545;
   text-shadow: 0px -1px 0px none; }
 
-/* line 203, ../sass/my-ext-theme/widget/_button.scss */
+/* line 224, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary {
   background: #226396;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
@@ -9449,7 +9457,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#73bbe8, #226396);
   border: 1px solid #226396; }
 
-/* line 210, ../sass/my-ext-theme/widget/_button.scss */
+/* line 231, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary.x-over {
   background: #396cc9;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
@@ -9458,7 +9466,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#60c9f3, #396cc9);
   background-image: linear-gradient(#60c9f3, #396cc9); }
 
-/* line 216, ../sass/my-ext-theme/widget/_button.scss */
+/* line 237, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary.x-pressed {
   background: #09366f;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
@@ -9467,7 +9475,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#336f9c, #09366f);
   background-image: linear-gradient(#336f9c, #09366f); }
 
-/* line 222, ../sass/my-ext-theme/widget/_button.scss */
+/* line 243, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary.x-menu-active {
   background: #09366f;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
@@ -9476,12 +9484,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#336f9c, #09366f);
   background-image: linear-gradient(#336f9c, #09366f); }
 
-/* line 228, ../sass/my-ext-theme/widget/_button.scss */
+/* line 249, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.primary button span {
   color: white;
   text-shadow: 0px -1px 0px #226396; }
 
-/* line 236, ../sass/my-ext-theme/widget/_button.scss */
+/* line 257, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning {
   background: #e67e1c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
@@ -9491,7 +9499,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#fcc033, #e67e1c);
   border: 1px solid #e67e1c; }
 
-/* line 243, ../sass/my-ext-theme/widget/_button.scss */
+/* line 264, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning.x-over {
   background: #f1a300;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
@@ -9500,7 +9508,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#fcd100, #f1a300);
   background-image: linear-gradient(#fcd100, #f1a300); }
 
-/* line 249, ../sass/my-ext-theme/widget/_button.scss */
+/* line 270, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning.x-pressed {
   background: #d66000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
@@ -9509,7 +9517,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#ea9000, #d66000);
   background-image: linear-gradient(#ea9000, #d66000); }
 
-/* line 255, ../sass/my-ext-theme/widget/_button.scss */
+/* line 276, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning.x-menu-active {
   background: #d66000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
@@ -9518,12 +9526,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#ea9000, #d66000);
   background-image: linear-gradient(#ea9000, #d66000); }
 
-/* line 261, ../sass/my-ext-theme/widget/_button.scss */
+/* line 282, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.warning button span {
   color: white;
   text-shadow: 0px -1px 0px #e67e1c; }
 
-/* line 269, ../sass/my-ext-theme/widget/_button.scss */
+/* line 290, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info {
   background: #6ca6f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
@@ -9533,7 +9541,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#70cfff, #6ca6f6);
   border: 1px solid #6ca6f6; }
 
-/* line 276, ../sass/my-ext-theme/widget/_button.scss */
+/* line 297, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info.x-over {
   background: #73d0f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
@@ -9542,7 +9550,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#73ddff, #73d0f6);
   background-image: linear-gradient(#73ddff, #73d0f6); }
 
-/* line 282, ../sass/my-ext-theme/widget/_button.scss */
+/* line 303, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info.x-pressed {
   background: #5599fc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
@@ -9551,7 +9559,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#55a9ff, #5599fc);
   background-image: linear-gradient(#55a9ff, #5599fc); }
 
-/* line 288, ../sass/my-ext-theme/widget/_button.scss */
+/* line 309, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info.x-menu-active {
   background: #5599fc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
@@ -9560,12 +9568,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#55a9ff, #5599fc);
   background-image: linear-gradient(#55a9ff, #5599fc); }
 
-/* line 294, ../sass/my-ext-theme/widget/_button.scss */
+/* line 315, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.info button span {
   color: white;
   text-shadow: 0px -1px 0px #6ca6f6; }
 
-/* line 302, ../sass/my-ext-theme/widget/_button.scss */
+/* line 323, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success {
   background: #229322;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
@@ -9575,7 +9583,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#33c033, #229322);
   border: 1px solid #229322; }
 
-/* line 309, ../sass/my-ext-theme/widget/_button.scss */
+/* line 330, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success.x-over {
   background: #25b000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
@@ -9584,7 +9592,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#33d000, #25b000);
   background-image: linear-gradient(#33d000, #25b000); }
 
-/* line 315, ../sass/my-ext-theme/widget/_button.scss */
+/* line 336, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success.x-pressed {
   background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
@@ -9593,7 +9601,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#299600, #1c7600);
   background-image: linear-gradient(#299600, #1c7600); }
 
-/* line 321, ../sass/my-ext-theme/widget/_button.scss */
+/* line 342, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success.x-menu-active {
   background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
@@ -9602,12 +9610,12 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#299600, #1c7600);
   background-image: linear-gradient(#299600, #1c7600); }
 
-/* line 327, ../sass/my-ext-theme/widget/_button.scss */
+/* line 348, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.success button span {
   color: white;
   text-shadow: 0px -1px 0px #229322; }
 
-/* line 335, ../sass/my-ext-theme/widget/_button.scss */
+/* line 356, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger {
   background: #ac030c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
@@ -9617,7 +9625,7 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#f6303c, #ac030c);
   border: 1px solid #ac030c; }
 
-/* line 342, ../sass/my-ext-theme/widget/_button.scss */
+/* line 363, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger.x-over {
   background: #d00900;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
@@ -9626,7 +9634,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#f92626, #d00900);
   background-image: linear-gradient(#f92626, #d00900); }
 
-/* line 348, ../sass/my-ext-theme/widget/_button.scss */
+/* line 369, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger.x-pressed {
   background: #8c0600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
@@ -9635,7 +9643,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
   background-image: linear-gradient(#c60c0c, #8c0600); }
 
-/* line 354, ../sass/my-ext-theme/widget/_button.scss */
+/* line 375, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger.x-menu-active {
   background: #8c0600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
@@ -9644,18 +9652,17 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
   background-image: linear-gradient(#c60c0c, #8c0600); }
 
-/* line 360, ../sass/my-ext-theme/widget/_button.scss */
+/* line 381, ../sass/my-ext-theme/widget/_button.scss */
 .x-btn.danger button span {
   color: white;
   text-shadow: 0px -1px 0px #ac030c; }
 
-/* line 371, ../sass/my-ext-theme/widget/_button.scss */
-.x-btn.default.x-btn-disabled,
-.x-btn.primary.x-btn-disabled,
-.x-btn.warning.x-btn-disabled,
-.x-btn.info.x-btn-disabled,
-.x-btn.success.x-btn-disabled,
-.x-btn.danger.x-btn-disabled {
+/*
+ * Disabled Styles
+ */
+/* default */
+/* line 393, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default.x-btn-disabled {
   background: gainsboro;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#dcdcdc, #dcdcdc);
@@ -9664,16 +9671,28 @@ textarea.x-form-invalid-field {
   background-image: linear-gradient(#dcdcdc, #dcdcdc);
   border: 1px solid #bcbcbc; }
 
-/* line 383, ../sass/my-ext-theme/widget/_button.scss */
-.x-btn.default.x-btn-disabled button span,
-.x-btn.primary.x-btn-disabled button span,
-.x-btn.warning.x-btn-disabled button span,
-.x-btn.info.x-btn-disabled button span,
-.x-btn.success.x-btn-disabled button span,
-.x-btn.danger.x-btn-disabled button span {
-  color: #454545;
+/* line 400, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default.x-btn-disabled button span {
+  color: #454545 !important;
   text-shadow: 0px -1px 0px #bcbcbc; }
 
+/* primary */
+/* line 408, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.primary.x-btn-disabled {
+  background: #3f93c0;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3f93c0), color-stop(100%, #3f93c0));
+  background-image: -webkit-linear-gradient(#3f93c0, #3f93c0);
+  background-image: -moz-linear-gradient(#3f93c0, #3f93c0);
+  background-image: -o-linear-gradient(#3f93c0, #3f93c0);
+  background-image: linear-gradient(#3f93c0, #3f93c0);
+  border: 1px solid #336699; }
+
+/* line 415, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.primary.x-btn-disabled button span {
+  color: white !important;
+  text-shadow: 0px -1px 0px #336699; }
+
+/* TODO: warning, info, success, danger */
 /* line 1, ../sass/my-ext-theme/widget/_boxselect.scss */
 .x-boxselect.x-form-text {
   height: auto;
@@ -9882,19 +9901,26 @@ a.x-tab-close-btn:hover {
 .x-grid-group-hd-collapsible.x-over .x-grid-group-title {
   background-position: 100% 0px !important; }
 
-/* line 94, ../sass/my-ext-theme.scss */
+/* line 2, ../sass/my-ext-theme/report/general/_general.scss */
+.x-form-invalid-field,
+textarea.x-form-invalid-field {
+  background-image: none;
+  background-position: 0%;
+  border-color: #c0392b; }
+
+/* line 95, ../sass/my-ext-theme.scss */
 .x-reset .x-tool img {
   background-image: url("../../app/resources/images/tool-sprites.gif"); }
 
-/* line 103, ../sass/my-ext-theme.scss */
+/* line 104, ../sass/my-ext-theme.scss */
 .x-nlg #site_menu,
 .x-nlg .x-menu-item-active .x-menu-item-link,
 .x-nlg .x-btn-default-small {
   background-image: none !important; }
-/* line 108, ../sass/my-ext-theme.scss */
+/* line 109, ../sass/my-ext-theme.scss */
 .x-nlg .x-menu-item-active .x-menu-item-link {
   background: #a84d10; }
-/* line 119, ../sass/my-ext-theme.scss */
+/* line 120, ../sass/my-ext-theme.scss */
 .x-nlg #report_toolbar,
 .x-nlg #paging_toolbar,
 .x-nlg .x-grid-header-ct,
@@ -9903,7 +9929,7 @@ a.x-tab-close-btn:hover {
 .x-nlg .x-btn-default-small,
 .x-nlg #report_filter_actions {
   background-image: none !important; }
-/* line 126, ../sass/my-ext-theme.scss */
+/* line 127, ../sass/my-ext-theme.scss */
 .x-nlg .x-grid-header-ct,
 .x-nlg .x-column-header,
 .x-nlg .x-column-header-over {

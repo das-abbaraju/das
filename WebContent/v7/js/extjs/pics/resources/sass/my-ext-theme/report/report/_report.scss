@@ -21,6 +21,13 @@ $data_table_cell_link_color: #226396;
 	border: 1px solid #999;
 
 	// header
+	.x-grid-header-ct,
+	.x-column-header,
+	.x-column-header-over
+	{
+		@include background-image(linear-gradient(#454545, #454545));
+	}
+
 	.x-grid-header-ct
 	{
 		border-bottom: 1px solid $data_table_header_border_color !important;
