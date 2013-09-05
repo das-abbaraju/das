@@ -13,6 +13,7 @@ import javax.persistence.Table;
 public class BusinessUnit {
 	private int id;
 
+    private String businessUnit;
 	private String displayName;
 	private String address;
 
@@ -25,7 +26,15 @@ public class BusinessUnit {
 		this.id = id;
 	}
 
-	public String getDisplayName() {
+    public String getBusinessUnit() {
+        return businessUnit;
+    }
+
+    public void setBusinessUnit(String businessUnit) {
+        this.businessUnit = businessUnit;
+    }
+
+    public String getDisplayName() {
 		return displayName;
 	}
 

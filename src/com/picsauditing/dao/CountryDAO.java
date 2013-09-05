@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import com.picsauditing.jpa.entities.BusinessUnit;
 import com.picsauditing.jpa.entities.Country;
 
 import javax.persistence.Query;
@@ -38,4 +39,14 @@ public class CountryDAO extends PicsDAO {
 	public Country findbyISO(String iso) {
 		return (Country) em.createQuery("FROM Country c WHERE c.isoCode = '" + iso + "'").getSingleResult();
 	}
+
+    public List<BusinessUnit> findAllBusinessUnits() {
+        Query query = em.createQuery("FROM BusinessUnit t");
+        List<BusinessUnit> list = new ArrayList<BusinessUnit>();
+
+        List<BusinessUnit> results = query.getResultList();
+        list.addAll(results);
+        return list;
+    }
+
 }
