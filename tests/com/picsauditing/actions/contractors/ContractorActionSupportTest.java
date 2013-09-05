@@ -4,6 +4,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -195,6 +196,15 @@ public class ContractorActionSupportTest extends PicsTest {
 	@Test
 	public void testGetV6MenuComponents_ClientReviewsMenu() throws Exception {
 		testMenu(AuditMenuBuilder.Service.CLIENT_REVIEWS, "global.ClientReviews", "Client Reviews");
+	}
+
+	@Test
+	public void testIsShowHeader_Contractor() throws Exception {
+		when(permissions.isContractor()).thenReturn(true);
+		assertTrue(contractorActionSupport.isShowHeader());
+
+		when(permissions.isUsingVersion7Menus()).thenReturn(true);
+		assertFalse(contractorActionSupport.isShowHeader());
 	}
 
 	private void testMenu(AuditMenuBuilder.Service service, String translationKey, String displayText) throws Exception {

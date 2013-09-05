@@ -47,8 +47,8 @@ public class ContractorsModel extends AbstractModel {
         ModelSpec publicProduct = contractor.join(ContractorTable.PublicProductLiability);
         publicProduct.join(ContractorAuditTable.PPLLimit);
 
-        ModelSpec professional = contractor.join(ContractorTable.ProfessionalLiability);
-        professional.join(ContractorAuditTable.PROLEachOccurrence);
+        ModelSpec professional = contractor.join(ContractorTable.ProfessionalIndemnity);
+        professional.join(ContractorAuditTable.PROILimit);
 
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
@@ -217,7 +217,7 @@ public class ContractorsModel extends AbstractModel {
         PPLMonetaryLimit.setType(FieldType.Number);
         PPLMonetaryLimit.setDatabaseColumnName("REPLACE(" + PPLMonetaryLimit.getDatabaseColumnName() + ",',','')");
 
-        Field PROLEachOccurrence = fields.get("ContractorProfessionalLiabilityPROLEachOccurrenceAnswer".toUpperCase());
+        Field PROLEachOccurrence = fields.get("ContractorProfessionalIndemnityPROILimitAnswer".toUpperCase());
         PROLEachOccurrence.setType(FieldType.Number);
         PROLEachOccurrence.setDatabaseColumnName("REPLACE(" + PROLEachOccurrence.getDatabaseColumnName() + ",',','')");
 

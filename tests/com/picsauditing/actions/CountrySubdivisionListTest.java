@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import com.picsauditing.jpa.entities.CountryContact;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,6 +32,8 @@ public class CountrySubdivisionListTest extends PicsActionTest {
 	private Account account;
 	@Mock
 	private Country country;
+    @Mock
+    private CountryContact countryContact;
 	@Mock
 	private CountrySubdivision countrySubdivision;
 	@Mock
@@ -53,7 +56,8 @@ public class CountrySubdivisionListTest extends PicsActionTest {
 	@Test
 	public void testPhone_ProvidedValidCountryCode() throws Exception {
 		when(country.getI18nKey()).thenReturn("Germany");
-		when(country.getPhone()).thenReturn("German Phone");
+        when(country.getCountryContact()).thenReturn(countryContact);
+		when(countryContact.getCsrPhone()).thenReturn("German Phone");
 		when(countryDAO.find("de")).thenReturn(country);
 		when(translationService.hasKey(eq("Germany"), any(Locale.class))).thenReturn(true);
 		when(translationService.getText(eq("Germany"), any(Locale.class), any())).thenReturn("Germany");
@@ -87,6 +91,7 @@ public class CountrySubdivisionListTest extends PicsActionTest {
 	@Test
 	public void testPhone_CountryHasNoPhone() throws Exception {
 		when(country.getI18nKey()).thenReturn("Germany");
+        when(country.getCountryContact()).thenReturn(countryContact);
 		when(countryDAO.find("de")).thenReturn(country);
 		when(translationService.hasKey(eq("Germany"), any(Locale.class))).thenReturn(true);
 		when(translationService.getText(eq("Germany"), any(Locale.class), any())).thenReturn("Germany");

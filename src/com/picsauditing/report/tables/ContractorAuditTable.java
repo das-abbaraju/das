@@ -26,7 +26,7 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String EXEachOccurrence = "EXEachOccurrence";
     public static final String ELLimit = "ELLimit";
     public static final String PPLLimit = "PPLLimit";
-    public static final String PROLEachOccurrence = "PROLEachOccurrence";
+    public static final String PROILimit = "PROILimit";
 
     public static final String Fatalities = "Fatalities";
     public static final String Emr = "Emr";
@@ -178,8 +178,8 @@ public class ContractorAuditTable extends AbstractTable {
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 10230")));
 
             // Professional Liability
-            addOptionalKey(new ReportForeignKey(PROLEachOccurrence, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2167")));
+            addOptionalKey(new ReportForeignKey(PROILimit, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 11934")));
         }
 
         // Annual Updates

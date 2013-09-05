@@ -314,6 +314,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 */
 
 	public boolean isShowHeader() {
+		if (permissions.isContractor())
+			return !permissions.isUsingVersion7Menus();
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
 		if (permissions.isOperator())
@@ -330,6 +332,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 			return false;
 		}
+
 		return true;
 	}
 

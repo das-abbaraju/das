@@ -12,10 +12,10 @@ audit_question_function_watcher
 audit_transform_option
 audit_type
 audit_type_rule
+country_contact
 flag_criteria
 flag_criteria_operator
 naics
-ref_country
 ref_sap_business_unit
 ref_trade
 ref_trade_alt

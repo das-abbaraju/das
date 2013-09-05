@@ -33,7 +33,7 @@ public class ContractorTable extends AbstractTable {
     public static final String ExcessLiability = "ExcessLiability";
     public static final String EmployerLiability = "EmployerLiability";
     public static final String PublicProductLiability = "PublicProductLiability";
-    public static final String ProfessionalLiability = "ProfessionalLiability";
+    public static final String ProfessionalIndemnity = "ProfessionalIndemnity";
 
     public ContractorTable() {
         super("contractor_info");
@@ -106,8 +106,8 @@ public class ContractorTable extends AbstractTable {
         addOptionalKey(new ReportForeignKey(PublicProductLiability, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 310 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
 
-        addOptionalKey(new ReportForeignKey(ProfessionalLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 20 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
+        addOptionalKey(new ReportForeignKey(ProfessionalIndemnity, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 378 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
 
         addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
                 new ReportOnClause("requestedByID")));
