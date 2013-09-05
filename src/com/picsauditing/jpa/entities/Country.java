@@ -75,6 +75,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	protected boolean proforma;
 	protected String picsEmail;
 	protected BusinessUnit businessUnit;
+    protected CountryContact countryContact;
 
 	protected Currency currency = Currency.USD;
 
@@ -215,7 +216,17 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.businessUnit = businessUnit;
 	}
 
-	@OneToMany(mappedBy = "country")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "isoCode", nullable = true)
+    public CountryContact getCountryContact() {
+        return countryContact;
+    }
+
+    public void setCountryContact(CountryContact countryContact) {
+        this.countryContact = countryContact;
+    }
+
+    @OneToMany(mappedBy = "country")
 	public List<InvoiceFeeCountry> getAmountOverrides() {
 		return this.amountOverrides;
 	}
