@@ -41,6 +41,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private User user;
 	@Mock
 	private Country country;
+    @Mock
+    private CountryContact countryContact;
 	@Mock
 	private BusinessUnit businessUnit;
 	@Mock
@@ -88,7 +90,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 		setupStandardFees();
 		calculateInvoiceTotal();
 		when(contractor.getCountry()).thenReturn(country);
-		when(country.getBusinessUnit()).thenReturn(businessUnit);
+        when(country.getCountryContact()).thenReturn(countryContact);
+        when(countryContact.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
 	}
 

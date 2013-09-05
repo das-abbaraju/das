@@ -430,8 +430,10 @@ public class PicsActionSupportTest extends PicsActionTest {
     @Test
     public void testGetLocalizedPhoneNumberForUser_FeatureToggleEnabledAndUserPhoneLengthEqualTo4AndCountryProvided() {
         Country country = mock(Country.class);
+        CountryContact countryContact = mock(CountryContact.class);
 
-        when(country.getPhone()).thenReturn("Country Phone");
+        when(country.getCountryContact()).thenReturn(countryContact);
+        when(countryContact.getCsrPhone()).thenReturn("Country Phone");
         when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
         when(user.getPhone()).thenReturn("1234");
 

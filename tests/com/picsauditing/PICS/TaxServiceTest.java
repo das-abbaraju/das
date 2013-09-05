@@ -35,6 +35,8 @@ public class TaxServiceTest {
 	private Account account;
 	@Mock
 	private Country country;
+    @Mock
+    private CountryContact countryContact;
 	@Mock
 	private BusinessUnit businessUnit;
 	@Mock
@@ -49,7 +51,8 @@ public class TaxServiceTest {
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		when(invoice.getAccount()).thenReturn(account);
 		when(account.getCountry()).thenReturn(country);
-		when(country.getBusinessUnit()).thenReturn(businessUnit);
+        when(country.getCountryContact()).thenReturn(countryContact);
+        when(countryContact.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
 	}
 

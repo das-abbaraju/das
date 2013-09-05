@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.jpa.entities.CountryContact;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +37,8 @@ public class MainPageTest extends PicsTranslationTest {
 
 	@Mock
 	private Country country;
+    @Mock
+    private CountryContact countryContact;
 	@Mock
 	private CountryDAO countryDAO;
 	@Mock
@@ -255,7 +258,8 @@ public class MainPageTest extends PicsTranslationTest {
 	public void testGetPhoneNumber_PassedInCountry() {
 		// Get phone number from country object based on isocode passed in
 		String countryPhoneNumber = "Phone Number";
-		when(country.getPhone()).thenReturn(countryPhoneNumber);
+        when(country.getCountryContact()).thenReturn(countryContact);
+        when(countryContact.getCsrPhone()).thenReturn(countryPhoneNumber);
 		when(countryDAO.find("US")).thenReturn(country);
 
 		String phoneNumber = mainPage.getPhoneNumber("US");
@@ -270,7 +274,8 @@ public class MainPageTest extends PicsTranslationTest {
 		when(permissions.getCountry()).thenReturn("US");
 
 		String permissionsCountryPhoneNumber = "Phone Number";
-		when(country.getPhone()).thenReturn(permissionsCountryPhoneNumber);
+        when(country.getCountryContact()).thenReturn(countryContact);
+		when(countryContact.getCsrPhone()).thenReturn(permissionsCountryPhoneNumber);
 		when(countryDAO.find("US")).thenReturn(country);
 
 		String phoneNumber = mainPage.getPhoneNumber("US");
@@ -286,7 +291,8 @@ public class MainPageTest extends PicsTranslationTest {
 	@Test
 	public void testGetSalesPhoneNumber_PassedInCountry() {
 		String countryPhoneNumber = "Phone Number";
-		when(country.getSalesPhone()).thenReturn(countryPhoneNumber);
+        when(country.getCountryContact()).thenReturn(countryContact);
+        when(countryContact.getIsrPhone()).thenReturn(countryPhoneNumber);
 		when(countryDAO.find("US")).thenReturn(country);
 
 		String phoneNumber = mainPage.getSalesPhoneNumber("US");
@@ -299,7 +305,8 @@ public class MainPageTest extends PicsTranslationTest {
 		when(permissions.getCountry()).thenReturn("US");
 
 		String permissionsCountryPhoneNumber = "Phone Number";
-		when(country.getSalesPhone()).thenReturn(permissionsCountryPhoneNumber);
+        when(country.getCountryContact()).thenReturn(countryContact);
+		when(countryContact.getIsrPhone()).thenReturn(permissionsCountryPhoneNumber);
 		when(countryDAO.find("US")).thenReturn(country);
 
 		String phoneNumber = mainPage.getSalesPhoneNumber("US");
@@ -315,7 +322,8 @@ public class MainPageTest extends PicsTranslationTest {
 	@Test
 	public void testGetFaxNumber_PassedInCountry() {
 		String countryPhoneNumber = "Phone Number";
-		when(country.getFax()).thenReturn(countryPhoneNumber);
+        when(country.getCountryContact()).thenReturn(countryContact);
+		when(countryContact.getCsrFax()).thenReturn(countryPhoneNumber);
 		when(countryDAO.find("US")).thenReturn(country);
 
 		String phoneNumber = mainPage.getFaxNumber("US");
@@ -328,7 +336,8 @@ public class MainPageTest extends PicsTranslationTest {
 		when(permissions.getCountry()).thenReturn("US");
 
 		String permissionsCountryPhoneNumber = "Phone Number";
-		when(country.getFax()).thenReturn(permissionsCountryPhoneNumber);
+        when(country.getCountryContact()).thenReturn(countryContact);
+		when(countryContact.getCsrFax()).thenReturn(permissionsCountryPhoneNumber);
 		when(countryDAO.find("US")).thenReturn(country);
 
 		String phoneNumber = mainPage.getFaxNumber("US");
