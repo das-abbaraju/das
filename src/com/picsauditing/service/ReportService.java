@@ -466,6 +466,7 @@ public class ReportService {
 
     public JSONObject buildJsonReportInfo(int reportId, TimeZone timezone) throws Exception {
         Report report = reportDao.findById(reportId);
+        List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByReportID(reportId);
 
         JSONObject infoJson = new JSONObject();
         infoJson.put("model", report.getModelType().toString());
@@ -479,6 +480,7 @@ public class ReportService {
                 favorites++;
         }
         infoJson.put("favorites",Integer.toString(favorites));
+        infoJson.put("subscribers",subscriptions.size());
 
         String updateDate = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, report.getUpdateDate());
 

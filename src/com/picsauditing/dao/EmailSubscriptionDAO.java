@@ -55,6 +55,12 @@ public class EmailSubscriptionDAO extends PicsDAO {
         return q.getResultList();
     }
 
+    public List<EmailSubscription> findByReportID(int reportID) {
+        Query q = em.createQuery("SELECT e FROM EmailSubscription e WHERE e.report.id = :reportID");
+        q.setParameter("reportID", reportID);
+        return q.getResultList();
+    }
+
 	public List<EmailSubscription> find(Subscription subscription, int opID) {
 		Query query = em
 				.createQuery("FROM EmailSubscription e WHERE e.subscription = :sub AND e.user.account.id = :opID AND e.user.isActive = 'Yes'");
