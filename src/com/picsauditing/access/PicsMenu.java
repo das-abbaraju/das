@@ -495,7 +495,6 @@ public class PicsMenu {
 			subMenu.addChild("Cron Dashboard", "CronDashboard.action", "CronDashbaord");
 			subMenu.addChild("Con/Op Flag Differences", "ContractorFlagDifference.action", "FlagDifferences");
 			subMenu.addChild("Mail Cron", "MailCron.action", "MailCron");
-			subMenu.addChild("Subscription Cron", "SubscriptionCron.action", "SubscriptionCron");
 			subMenu.addChild("Server Information", "ServerInfo.action", "ServerInfo");
 			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilderCron.action", "AuditScheduleBuilder");
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action", "HuntsmanSync");

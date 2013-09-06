@@ -264,7 +264,6 @@ public final class MenuBuilder {
         MenuComponent cronSubmenu = devMenu.addChild(getText("menu.Dev.Crons"));
         cronSubmenu.addChild(getText("global.Contractor"), "ContractorCron.action", "contractor_cron");
         cronSubmenu.addChild(getText("menu.Mail"), "MailCron.action", "mail_cron");
-        cronSubmenu.addChild(getText("menu.Subscription"), "SubscriptionCron.action", "subscription_cron");
         cronSubmenu.addChild(getText("menu.Dev.AuditScheduleBuilder"), "AuditScheduleBuilderCron.action",
                 "audit_schedule_builder");
     }
