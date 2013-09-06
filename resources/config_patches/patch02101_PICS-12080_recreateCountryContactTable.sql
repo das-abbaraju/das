@@ -16,7 +16,7 @@ ALTER TABLE `country_contact`
   ADD PRIMARY KEY (`id`),
   ADD  UNIQUE INDEX `Country` (`country`);
 
-ALTER TABLE `pics_alpha1`.`country_contact`
+ALTER TABLE `country_contact`
   CHANGE `csrAddress` `csrAddress` VARCHAR(50) NULL,
   CHANGE `csrCity` `csrCity` VARCHAR(35) NULL,
   CHANGE `csrCountrySubdivision` `csrCountrySubdivision` VARCHAR(10) NULL,
