@@ -198,7 +198,7 @@
 		 		</ul>
                 <p class="phone">
                     <s:text name="ContractorRegistration.title" />:
-                    ${contractor.country.countryContact.salesPhone}
+                    ${contractor.country.countryContact.isrPhone}
                 </p>
 	 		</div>
 
