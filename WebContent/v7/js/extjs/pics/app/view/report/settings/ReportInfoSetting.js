@@ -12,7 +12,7 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
                 '<label>' + PICS.text('Report.execute.reportInfoSetting.sharesLabel') + ':</label><span>{shares}</span>',
             '</li>',
             '<li>',
-                '<label>' + PICS.text('Report.execute.reportInfoSetting.favoritesLabel') + ':</span>',
+                '<label>' + PICS.text('Report.execute.reportInfoSetting.favoritesLabel') + ':</label><span>{favorites}</span>',
             '</li>',
             '<li>',
                 '<label>' + PICS.text('Report.execute.reportInfoSetting.subscribersLabel') + ':</label><span>{subscribers}</span>',
