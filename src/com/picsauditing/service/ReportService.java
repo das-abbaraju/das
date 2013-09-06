@@ -480,7 +480,7 @@ public class ReportService {
                 favorites++;
         }
         infoJson.put("favorites",Integer.toString(favorites));
-        infoJson.put("subscribers",subscriptions.size());
+        infoJson.put("subscribers",Integer.toString(subscriptions.size()));
 
         String updateDate = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, report.getUpdateDate());
 
