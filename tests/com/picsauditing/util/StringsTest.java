@@ -76,7 +76,12 @@ public class StringsTest {
 		assertEquals("QWERTYASDFZXCV", oldIndexName("QWERTYASDFZXCV"));
 	}
 
-	private String oldIndexName(String name) {
+    @Test
+    public void testIndexName__Chinese() {
+        assertEquals("山东", Strings.indexName("山东"));
+    }
+
+    private String oldIndexName(String name) {
 		if (name == null) {
 			return null;
 		}

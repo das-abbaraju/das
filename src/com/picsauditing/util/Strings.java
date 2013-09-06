@@ -331,7 +331,7 @@ public class Strings {
 		name = name.replaceAll(" L ?L ?C$", EMPTY_STRING);
 		name = name.replaceAll(" I ?N ?C$", EMPTY_STRING);
 		// Remove all non-alphanumeric characters
-		name = name.replaceAll("\\W", EMPTY_STRING);
+//		name = name.replaceAll("\\W", EMPTY_STRING);
 		name = name.replaceAll("_", EMPTY_STRING);
 		// Change multiple spaces into nothing
 		name = name.replaceAll(" +", EMPTY_STRING);
