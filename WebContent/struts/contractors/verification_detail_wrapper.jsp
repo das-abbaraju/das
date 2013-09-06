@@ -187,8 +187,9 @@
         }
 
         function changeAuditStatus(id, auditStatus, button) {
-            var normalArgs = 3;
-            var caoIDs = new Array(arguments.length - normalArgs);
+            var normalArgs = 3,
+            	caoIDs = new Array(arguments.length - normalArgs);
+
             for (i = normalArgs; i < arguments.length; i++) {
                 caoIDs[i - normalArgs] = arguments[i];
             }
@@ -200,21 +201,52 @@
             };
 
             $('#noteAjax').load('CaoSaveAjax!loadStatus.action', data, function(){
+            	var $reject_button = $('#yesButton'),
+            		$note_input = $('#addToNotes');
+
                 $.blockUI({ message:$('#noteAjax')});
+                
                 if($('#noteRequired').val()=='true'){
-                    $('#yesButton').addClass('disabled');
-                    $('#addToNotes').live('keyup', function(){
-                        if($(this).val()!='')
-                            $('#yesButton').removeClass('disabled');
-                        else
-                            $('#yesButton').addClass('disabled');
+	
+                	if ($note_input.val() == '') {
+                		$reject_button.addClass('disabled');
+                	} else {
+                		$reject_button.removeClass('disabled');
+                		$reject_button.removeAttr('disabled');
+                	}
+	
+                	$note_input.on('keyup', function(){
+	
+                        if($(this).val()!='') {
+                        	$reject_button.removeClass('disabled');
+                        	$reject_button.removeAttr('disabled');
+                        }
+
+                        else {
+                        	$reject_button.addClass('disabled');
+                        	$reject_button.attr('disabled', 'disabled');
+                        }
                     });
+                	
+                    $reject_button.on('click', function () {
+    					if (!$(this).hasClass('disabled')) {
+    						saveCao();
+    					}
+                    });                	
+                	
+                } else {
+					saveCao();
                 }
-                $('#yesButton').click(function(){
-                    if($(this).hasClass('disabled'))
-                        return false;
+
+                $('#noButton').click(function(){
+                    $.unblockUI();
+                    return false;
+                });
+                
+                function saveCao() {
                     $.blockUI({message: 'Saving Status, please wait...'});
-                    data.note = $('#addToNotes').val();
+
+                    data.note = $note_input.val();
 
                     $.post('CaoSaveAjax!save.action', data, function() {
                         $.unblockUI();
@@ -222,16 +254,6 @@
                         refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
                         refreshAuditList();
                     });
-
-                });
-                $('#noButton').click(function(){
-                    $.unblockUI();
-                    return false;
-                });
-                if ($('#nR').val()=='true') {
-                    $.blockUI({ message:$('#noteAjax')});
-                } else {
-                    $('#yesButton').click();
                 }
             });
 
