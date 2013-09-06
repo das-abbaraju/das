@@ -250,7 +250,7 @@ public class InvoiceFee extends BaseTable {
         BigDecimal feeTaxRate = getRateDecimal();
         BigDecimal totalTaxRate = subdivisionTaxRate.add(feeTaxRate);
 
-        return amountToTax.multiply(totalTaxRate).setScale(2, BigDecimal.ROUND_UP);
+        return amountToTax.multiply(totalTaxRate).setScale(2, BigDecimal.ROUND_HALF_UP);
 	}
 
 	@Transient
