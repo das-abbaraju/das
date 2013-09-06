@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     tpl: new Ext.XTemplate([
         '<ul id="report_info_list">',
             '<li>',
-                '<label>' + PICS.text('Report.execute.reportInfoSetting.modelLable') + ':</label><span>{model}</span>',
+                '<label>' + PICS.text('Report.execute.reportInfoSetting.modelLabel') + ':</label><span>{model}</span>',
             '</li>',
             '<li>',
                 '<label>' + PICS.text('Report.execute.reportInfoSetting.sharesLabel') + ':</label><span>{shares}</span>',
