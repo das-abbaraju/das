@@ -1123,7 +1123,7 @@
         <action name="ManageCountries" class="com.picsauditing.actions.countries.ManageCountries">
             <result>struts/countries/manage-countries.jsp</result>
             <result name="country">struts/countries/manage-country.jsp</result>
-            <result name="input">/struts/blank.jsp</result>
+            <result name="input">/struts/countries/manage-country.jsp</result>
         </action>
 
         <action name="ConfigChanges" class="com.picsauditing.actions.report.ConfigChanges">

@@ -42,7 +42,7 @@ public class CountryContact extends BaseTable {
         this.isrZip = isrZip;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "isrCountrySubdivision")
     public CountrySubdivision getIsrCountrySubdivision() {
         return isrCountrySubdivision;
@@ -106,7 +106,7 @@ public class CountryContact extends BaseTable {
         this.csrZip = csrZip;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "csrCountrySubdivision")
     public CountrySubdivision getCsrCountrySubdivision() {
         return csrCountrySubdivision;

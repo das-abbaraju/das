@@ -43,19 +43,11 @@ public class ManageCountries extends PicsActionSupport {
 	public String save() throws Exception {
         permissions.tryPermission(OpPerms.DevelopmentEnvironment);
 
-        if (countryContact.getCountry() == null) {
-            countryContact.setCountry(country);
-        }
-        if (countryContact.getBusinessUnit() == null) {
-            BusinessUnit businessUnit = new BusinessUnit();
-            businessUnit.setId(1);
-            countryContact.setBusinessUnit(businessUnit);
-        }
         countryContact.setAuditColumns(permissions);
         countrySubdivisionDAO.save(countryContact);
         addActionMessage("Country Saved Successfully");
 
-        return setUrlForRedirect("ProfileEdit.action?country=" + country.getIsoCode());
+        return setUrlForRedirect("ManageCountries.action?country=" + countryContact.getCountry().getIsoCode());
 	}
 
 	private void findCountries() {

@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <title>
 	Manage <s:property value="country.name"/>
 </title>
 
-<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
+<div>
 	<h1>
         Manage <s:property value="country.name"/>
 	</h1>
@@ -18,6 +17,10 @@
     <s:include value="../actionMessages.jsp" />
 
     <s:form id="save" method="POST" enctype="multipart/form-data">
+        <s:hidden name="countryContact.id"/>
+        <s:hidden name="countryContact.country.isoCode"/>
+        <s:hidden name="country.isoCode"/>
+
         <table width="100%">
             <tr>
                 <td style="vertical-align: top; width: 50%;">
@@ -38,8 +41,8 @@
                             <li><label>City: </label><s:textfield name="countryContact.csrCity"  size="20" /></li>
                             <li><label>Subdivision: </label>
                                 <s:select id="csr_subdivision"
-                                          name="countryContact.csrCountrySubdivision"
-                                          value="countryContact.csrCountrySubdivision"
+                                          name="countryContact.csrCountrySubdivision.isoCode"
+                                          value="countryContact.csrCountrySubdivision.isoCode"
                                           list="countrySubdivisionList"
                                           listKey="isoCode"
                                           listValue="name"
@@ -59,8 +62,8 @@
                             <li><label>City: </label><s:textfield name="countryContact.isrCity"  size="20" /></li>
                             <li><label>Subdivision: </label>
                                 <s:select id="isr_subdivision"
-                                          name="countryContact.isrCountrySubdivision"
-                                          value="countryContact.isrCountrySubdivision"
+                                          name="countryContact.isrCountrySubdivision.isoCode"
+                                          value="countryContact.isrCountrySubdivision.isoCode"
                                           list="countrySubdivisionList"
                                           listKey="isoCode"
                                           listValue="name"
@@ -75,8 +78,8 @@
                         <ol>
                             <li><label>Business Unit: </label>
                                 <s:select id="country_business_unit"
-                                          name="countryContact.businessUnit"
-                                          value="countryContact.businessUnit"
+                                          name="countryContact.businessUnit.id"
+                                          value="countryContact.businessUnit.id"
                                           list="businessUnitList"
                                           listKey="id"
                                           listValue="businessUnit"
