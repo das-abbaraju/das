@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
+
+<s:set var="currency"><s:property value="transaction.currency.display"/></s:set>
+
 <html>
 <head>
     <title>
@@ -308,47 +311,54 @@
                     <s:text name="InvoiceDetail.FeeAmount"/>
                 </th>
             </tr>
+
+            /*
+             * Non-tax Items
+             */
+
             <s:iterator value="transaction.items" status="stat">
-                <tr>
-                    <td style="border-right: 0">
-                        <s:set name="o" value="[0]"/>
-                        <s:include value="../who.jsp"/>
-                        <s:property value="invoiceFee.fee"/>
-                        <s:if test="paymentExpires != null">
-											<span style="color: #444; font-style: italic; font-size: 10px;">
-												<s:if test="invoiceFee.membership">
-                                                    <s:text name="InvoiceDetail.Expires"/>
-                                                </s:if>
-												<s:else>
-                                                    <s:text name="InvoiceDetail.Effective"/>
-                                                </s:else>
-												<s:date name="paymentExpires"/>
-											</span>
-                        </s:if>
-                    </td>
-                    <s:if test="edit">
-                        <td>
-                            <s:textfield name="transaction.items[%{#stat.index}].description" value="%{description}"
-                                         size="30"/>
-                            <s:text name="InvoiceDetail.OptionalDescription"/>
-                        </td>
-                        <td class="right">
-                            <s:textfield value="%{amount}" size="6" name="transaction.items[%{#stat.index}].amount"/>
-                            <s:if test="!(transaction.currency.EUR||transaction.currency.GBP)">
-                                <s:property value="transaction.currency"/>
+                <s:if test="!invoiceFee.isTax()">
+                    <tr>
+                        <td style="border-right: 0">
+                            <s:set name="o" value="[0]"/>
+                            <s:include value="../who.jsp"/>
+                            <s:property value="invoiceFee.fee"/>
+                            <s:if test="paymentExpires != null">
+        										<span style="color: #444; font-style: italic; font-size: 10px;">
+        											<s:if test="invoiceFee.membership">
+                                                        <s:text name="InvoiceDetail.Expires"/>
+                                                    </s:if>
+        											<s:else>
+                                                        <s:text name="InvoiceDetail.Effective"/>
+                                                    </s:else>
+        											<s:date name="paymentExpires"/>
+        										</span>
                             </s:if>
                         </td>
-                    </s:if>
-                    <s:else>
-                        <td style="border-left: 0">
-                            <s:property value="description"/>
-                        </td>
-                        <td class="right">
-                            <s:property value="amount"/>
-                            <s:property value="transaction.currency"/>
-                        </td>
-                    </s:else>
-                </tr>
+                        <s:if test="edit">
+                            <td>
+                                <s:textfield name="transaction.items[%{#stat.index}].description" value="%{description}"
+                                             size="30"/>
+                                <s:text name="InvoiceDetail.OptionalDescription"/>
+                            </td>
+                            <td class="right">
+                                <s:textfield value="%{amount}" size="6" name="transaction.items[%{#stat.index}].amount"/>
+                                <s:if test="!(transaction.currency.EUR||transaction.currency.GBP)">
+                                    <s:property value="transaction.currency"/>
+                                </s:if>
+                            </td>
+                        </s:if>
+                        <s:else>
+                            <td style="border-left: 0">
+                                <s:property value="description"/>
+                            </td>
+                            <td class="right">
+                                <s:property value="amount"/>
+                                <s:property value="transaction.currency"/>
+                            </td>
+                        </s:else>
+                    </tr>
+                </s:if>
             </s:iterator>
             <s:if test="edit">
                 <tr>
@@ -362,6 +372,72 @@
                     </td>
                 </tr>
             </s:if>
+
+
+            /*
+             * Tax Items
+             */
+
+            <s:if test="transaction.hasTax()">
+
+                <%-- Subtotal (i.e., pre-tax total) --%>
+                <s:set var="subtotal_label"><s:text name="InvoiceDetail.subtotalLabel" /></s:set>
+                <s:set var="subtotal_amount" value="transaction.taxlessSubtotal" />
+
+                <tr>
+                    <td class="big right" colspan="2">
+                        ${subtotal_label}
+                    </td>
+                    <td class="big right">
+                        ${subtotal_amount} ${currency}
+                    </td>
+                </tr>
+                <s:iterator value="transaction.items">
+                    <s:if test="invoiceFee.isTax()">
+                        <tr>
+                            <td style="border-right: 0">
+                                <s:set name="o" value="[0]"/>
+                                <s:include value="../who.jsp"/>
+                                <s:property value="invoiceFee.fee"/>
+                                <s:if test="paymentExpires != null">
+                                    <span style="color: #444; font-style: italic; font-size: 10px;">
+                                        <s:if test="invoiceFee.membership">
+                                            <s:text name="InvoiceDetail.Expires"/>
+                                        </s:if>
+                                        <s:else>
+                                            <s:text name="InvoiceDetail.Effective"/>
+                                        </s:else>
+                                        <s:date name="paymentExpires"/>
+                                    </span>
+                                </s:if>
+                            </td>
+                            <s:if test="edit">
+                                <td>
+                                    <s:textfield name="transaction.items[%{#stat.index}].description" value="%{description}"
+                                                 size="30"/>
+                                    <s:text name="InvoiceDetail.OptionalDescription"/>
+                                </td>
+                                <td class="right">
+                                    <s:textfield value="%{amount}" size="6" name="transaction.items[%{#stat.index}].amount"/>
+                                    <s:if test="!(transaction.currency.EUR||transaction.currency.GBP)">
+                                        <s:property value="transaction.currency"/>
+                                    </s:if>
+                                </td>
+                            </s:if>
+                            <s:else>
+                                <td style="border-left: 0">
+                                    <s:property value="description"/>
+                                </td>
+                                <td class="right">
+                                    <s:property value="amount"/>
+                                    <s:property value="transaction.currency"/>
+                                </td>
+                            </s:else>
+                        </tr>
+                    </s:if>
+                </s:iterator>
+            </s:if>
+
             <tr>
                 <th colspan="2" class="big right">
                     <s:text name="InvoiceDetail.InvoiceTotal"/>

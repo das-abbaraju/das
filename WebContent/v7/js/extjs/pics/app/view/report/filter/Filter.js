@@ -12,7 +12,8 @@ Ext.define('PICS.view.report.filter.Filter', {
         'PICS.view.report.filter.base.MultiSelect',
         'PICS.view.report.filter.base.String',
         'PICS.view.report.filter.base.UserId',
-        'PICS.view.report.filter.FilterTooltip'
+        'PICS.view.report.filter.FilterTooltip',
+        'Ext.ux.toggleslide.ToggleSlide'
     ],
 
     bodyCls: 'filter-body',
@@ -51,6 +52,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         ];
 
         this.dockedItems = [
+            Ext.Create('toggleslide'),
             remove_button
         ];
 

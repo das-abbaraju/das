@@ -147,7 +147,7 @@ public class Invoice extends Transaction {
 	/**
 	 * This is used by the QBWebConnector Adaptor to ensure that all Tax items
 	 * come before any other Fee item in an invoice for proper tax handling.
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -262,7 +262,7 @@ public class Invoice extends Transaction {
 	}
 
     @Transient
-    public BigDecimal getTaxlessSubTotal() {
+    public BigDecimal getTaxlessSubtotal() {
         BigDecimal subtotal = BigDecimal.ZERO;
         for (InvoiceItem item : items)
             if (!item.getInvoiceFee().isTax()) {
