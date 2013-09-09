@@ -41,7 +41,7 @@
                         PICS.loading(cao_table);
                     },
                     success: function (data, textStatus, XMLHttpRequest) {
-                        cao_table.replaceWith(data);
+                        cao_table.html(data);
                     }
                 });
             }
