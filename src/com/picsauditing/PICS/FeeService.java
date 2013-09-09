@@ -189,6 +189,7 @@ public class FeeService {
         boolean hasHseCompetency = false;
         boolean requiresOQ = false;
         boolean isLinkedToSuncor = false;
+        boolean isLinkedToValspar = false;
         Set<FeeClass> feeClasses = new HashSet<FeeClass>();
 
         for (ContractorOperator co : contractor.getOperators()) {
@@ -197,6 +198,9 @@ public class FeeService {
 
             if (!isLinkedToSuncor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
                 isLinkedToSuncor = true;
+
+            if (!isLinkedToValspar && co.getOperatorAccount().isDescendantOf(23196))
+                isLinkedToValspar = true;
         }
 
         if (contractor.getAccountLevel().isListOnly()) {
@@ -237,7 +241,7 @@ public class FeeService {
                 hasHseCompetency = true;
         }
 
-        if (requiresOQ || hasHseCompetency || hasEmployeeAudits)
+        if (requiresOQ || hasHseCompetency || hasEmployeeAudits || isLinkedToValspar)
             feeClasses.add(FeeClass.EmployeeGUARD);
 
         for (ContractorAudit ca : contractor.getAudits()) {
