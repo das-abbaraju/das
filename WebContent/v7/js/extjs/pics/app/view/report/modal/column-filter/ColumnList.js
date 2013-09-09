@@ -3,6 +3,10 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
     alias: 'widget.reportcolumnlist',
 
     store: 'report.Columns',
-    
-    id: 'column_list'
+
+    id: 'column_list',
+
+    selModel: Ext.create('Ext.selection.CheckboxModel', {
+        mode: 'SIMPLE'
+    })
 });

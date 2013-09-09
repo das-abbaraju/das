@@ -78,14 +78,14 @@
 	{
 		color: #999;
 	}
-	
+
 	i
 	{
 		display: block;
 		font-size: 26px;
 		margin: 60px 0px 10px;
 	}
-	
+
 	p
 	{
 		font-size: 24px;
@@ -158,7 +158,6 @@
 		font-size: 18px;
 		position: relative;
 		text-decoration: none;
-		top: -5px;
 	}
 
     .selected
@@ -187,14 +186,14 @@
 		text-align: center;
 		width: 85%;
 	}
-	
+
 	.permission-info
 	{
 		font-weight: bold;
 		margin-bottom: 15px;
 		margin-top: 25px;
 	}
-	
+
 	.duplicate-info
 	{
 		color: #666;
@@ -209,29 +208,29 @@
 		color: #226396;
 		text-decoration: none;
 	}
-	
+
 	a:hover
 	{
 		color: #73bbe8;
 	}
-	
+
 	strong
 	{
 		font-weight: bold;
 	}
-	
+
 	.selected-account
 	{
 		background-color: #f1f1f2;
 		border: 1px solid #ccc;
 		@include border-radius(5px);
-		
+
 		.selected-account-id
 		{
 			display: none;
 		}
 	}
-	
+
 	.icon-edit
 	{
 		color: #ccc;
@@ -239,7 +238,7 @@
 		font-size: 22px;
 		margin-left: 10px;
 	}
-	
+
 	.icon-edit.selected
 	{
 		color: #35c13d;
@@ -249,7 +248,7 @@
 	{
 		margin-left: 10px;
 	}
-	
+
 	.share-searchbox
 	{
 		label
@@ -257,14 +256,14 @@
 			line-height: 14px;
 			padding: 7px 0px 0px !important;
 		}
-		
+
 		.icon-search
 		{
 			color: $site_menu_search_icon_search_text_color;
 			font-size: 14px;
 			@include text-shadow(0px -1px 0px $site_menu_search_icon_search_text_shadow_color);
 		}
-		
+
 		.x-form-text
 		{
 		    @include border-radius(15px);
@@ -277,29 +276,29 @@
 	{
 		border: 1px solid $site_menu_search_list_border_color;
 		@include border-radius(5px);
-		
+
 		li:first-child
 		{
 			@include border-top-left-radius(4px);
 			@include border-top-right-radius(4px);
 		}
-		
+
 		li:last-child
 		{
 			@include border-bottom-left-radius(4px);
 			@include border-bottom-right-radius(4px);
 		}
-		
+
 		.even
 		{
 		    background: $site_menu_search_item_even_background_color;
 		}
-		
+
 		.x-boundlist-item
 		{
 			border: 1px solid transparent;
 		}
-		
+
 		.x-boundlist-item-over
 		{
 			background: $site_menu_search_item_background_color;
@@ -309,49 +308,49 @@
 			border-top: 1px solid $site_menu_search_item_border_color_top;
 			color: $site_menu_search_item_text_color;
 		}
-		
+
 		.search-item
 		{
 		    line-height: 15px;
 		    overflow: hidden;
 		    padding: 5px 15px;
-		
+
 		    div
 		    {
 		        clear: both;
 		    }
-		
+
 		    em
 		    {
 		        font-weight: bold;
 		    }
-		
+
 		    .name,
 		    .location
 		    {
 		        float: left;
 		        width: 175px;
 		    }
-		
+
 		    .id
 		    {
 		        float: right;
 		    }
-		
+
 		    .type
 		    {
 		        float: right;
 		        font-style: italic;
 		    }
 		}
-		
+
 		.more-results
 		{
 			color: $site_menu_search_more_results_text_color;
 			font-weight: bold;
 		}
 }
-	
+
 }
 
 #report_share_no_permission
@@ -364,19 +363,19 @@
 		text-align: center;
 		width: 90%;
 	}
-	
+
 	strong
 	{
 		font-weight: bold;
 	}
-	
+
 	.permission-info
 	{
 		font-weight: bold;
 		margin-bottom: 15px;
 		margin-top: 25px;
 	}
-	
+
 	.duplicate-info
 	{
 		color: #666;
@@ -497,7 +496,7 @@
 		margin-right: 5px;
 	}
 
-	.update-info 
+	.update-info
 	{
 		label
 		{

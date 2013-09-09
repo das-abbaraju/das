@@ -24,7 +24,7 @@ public class InvoiceFeeTest {
 
 		BigDecimal taxAmount = invoiceFee.getTax(amountToTax);
 
-		assertEquals(new BigDecimal("18.56"), taxAmount);
+		assertEquals(new BigDecimal("18.55"), taxAmount);
 	}
 
     @Test

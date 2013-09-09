@@ -85,7 +85,8 @@ public class OshaDisplay {
 		yearsForAverageLabel.delete(0, 1);
 		columnNames.add(translationService.getText("ContractorView.ContractorDashboard.AverageLabel", locale,
 				yearsForAverageLabel.toString()));
-		columnNames.add(translationService.getText("ContractorView.ContractorDashboard.Industry", locale));
+        if (oshaType.equals(OshaType.OSHA) || oshaType.equals(OshaType.COHS))
+		    columnNames.add(translationService.getText("ContractorView.ContractorDashboard.Industry", locale));
 
 		return columnNames;
 	}
@@ -166,12 +167,14 @@ public class OshaDisplay {
 			hurdleRateRows = generateHurdleRates(rateType, oshaType);
 		}
 
-		if (rateType.isHasIndustryAverage()) {
-			String industryAverage = getIndustryAverage(oshaType, rateType);
-			rateRow.addCell(industryAverage);
-		} else {
-			rateRow.addCell(EMPTY_CELL);
-		}
+        if (oshaType.equals(OshaType.OSHA) || oshaType.equals(OshaType.COHS)) {
+            if (rateType.isHasIndustryAverage()) {
+                String industryAverage = getIndustryAverage(oshaType, rateType);
+                rateRow.addCell(industryAverage);
+            } else {
+                rateRow.addCell(EMPTY_CELL);
+            }
+        }
 
 		rows.add(rateRow);
 

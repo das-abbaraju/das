@@ -1,41 +1,32 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.*;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import org.mockito.internal.util.reflection.Whitebox;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.*;
 
 public class ContractorActionSupportTest extends PicsTest {
 	ContractorActionSupport contractorActionSupport;
@@ -179,5 +170,58 @@ public class ContractorActionSupportTest extends PicsTest {
 		contractorActionSupport.setContractor(contractor);
 		contractorActionSupport.reviewCategories(EventType.Locations);
 		verify(auditBuilder, times(1)).buildAudits(contractor);
+	}
+
+	@Test
+	public void testGetV6MenuComponents_DocuGUARDMenu() throws Exception {
+		testMenu(AuditMenuBuilder.Service.DOCUGUARD, "AuditType.1.name", "DocuGUARD");
+	}
+
+	@Test
+	public void testGetV6MenuComponents_InsureGUARDMenu() throws Exception {
+		testMenu(AuditMenuBuilder.Service.INSUREGUARD, "global.InsureGUARD", "InsureGUARD");
+	}
+
+
+	@Test
+	public void testGetV6MenuComponents_EmployeeGUARDMenu() throws Exception {
+		testMenu(AuditMenuBuilder.Service.EMPLOYEEGUARD, "global.EmployeeGUARD", "EmployeeGUARD");
+	}
+
+	@Test
+	public void testGetV6MenuComponents_AuditGUARDMenu() throws Exception {
+		testMenu(AuditMenuBuilder.Service.AUDITGUARD, "global.AuditGUARD", "AuditGUARD");
+	}
+
+	@Test
+	public void testGetV6MenuComponents_ClientReviewsMenu() throws Exception {
+		testMenu(AuditMenuBuilder.Service.CLIENT_REVIEWS, "global.ClientReviews", "Client Reviews");
+	}
+
+	@Test
+	public void testIsShowHeader_Contractor() throws Exception {
+		when(permissions.isContractor()).thenReturn(true);
+		assertTrue(contractorActionSupport.isShowHeader());
+
+		when(permissions.isUsingVersion7Menus()).thenReturn(true);
+		assertFalse(contractorActionSupport.isShowHeader());
+	}
+
+	private void testMenu(AuditMenuBuilder.Service service, String translationKey, String displayText) throws Exception {
+		MenuComponent header = mock(MenuComponent.class);
+
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menu = new HashMap<>();
+		menu.put(service, new ArrayList<MenuComponent>());
+		menu.get(service).add(header);
+
+		when(translationService.hasKey(eq(translationKey), any(Locale.class))).thenReturn(true);
+		when(translationService.getText(eq(translationKey), any(Locale.class), anyList())).thenReturn(displayText);
+
+		List<MenuComponent> v6Menu = Whitebox.invokeMethod(contractorActionSupport, "getV6MenuComponents", menu);
+
+		assertNotNull(v6Menu);
+		assertFalse(v6Menu.isEmpty());
+
+		verify(header).setName(displayText);
 	}
 }

@@ -18,6 +18,7 @@ public class ContractorTable extends AbstractTable {
     public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
     public static final String RequestedBy = "RequestedBy";
     public static final String Watch = "Watch";
+    public static final String SingleTag = "SingleTag";
     public static final String Tag = "Tag";
     public static final String ContractorStatistics = "ContractorStatistics";
     public static final String ContractorTrade = "ContractorTrade";
@@ -32,7 +33,7 @@ public class ContractorTable extends AbstractTable {
     public static final String ExcessLiability = "ExcessLiability";
     public static final String EmployerLiability = "EmployerLiability";
     public static final String PublicProductLiability = "PublicProductLiability";
-    public static final String ProfessionalLiability = "ProfessionalLiability";
+    public static final String ProfessionalIndemnity = "ProfessionalIndemnity";
 
     public ContractorTable() {
         super("contractor_info");
@@ -105,8 +106,8 @@ public class ContractorTable extends AbstractTable {
         addOptionalKey(new ReportForeignKey(PublicProductLiability, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 310 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
 
-        addOptionalKey(new ReportForeignKey(ProfessionalLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 20 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
+        addOptionalKey(new ReportForeignKey(ProfessionalIndemnity, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 378 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
 
         addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
                 new ReportOnClause("requestedByID")));
@@ -116,9 +117,12 @@ public class ContractorTable extends AbstractTable {
         watch.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(watch);
 
-        ReportForeignKey tag = new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID"));
-        tag.setMinimumImportance(FieldImportance.Average);
+        ReportForeignKey tag = new ReportForeignKey(SingleTag, new ContractorTagTable(), new ReportOnClause("id", "conID"));
         addOptionalKey(tag);
+
+        ReportForeignKey tagView = new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID"));
+        tagView.setMinimumImportance(FieldImportance.Average);
+        addOptionalKey(tagView);
 
         addRequiredKey(new ReportForeignKey(ContractorStatistics, new ContractorStatisticsView(), new ReportOnClause(
                 "id", "conID"))).setMinimumImportance(FieldImportance.Average);

@@ -20,9 +20,15 @@ public class ServiceRiskCalculator {
 	public LowMedHigh getRiskLevel(AuditData auditData) {
 		try {
 			RiskAssessment assessment = getAssessment(auditData.getQuestion().getId());
+            if (assessment == null) {
+                logger.info("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
+                        new Object[] { auditData.getId(), auditData.getQuestion().getId(), auditData.getAnswer() });
+
+                return LowMedHigh.None;
+            }
 			return assessment.getRiskLevel(auditData.getAnswer());
 		} catch (Exception e) {
-			logger.error("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
+			logger.error("Error parsing risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
 					new Object[] { auditData.getId(), auditData.getQuestion().getId(), auditData.getAnswer(), e });
 
 			return LowMedHigh.None;
@@ -39,6 +45,11 @@ public class ServiceRiskCalculator {
 
 			try {
 				RiskAssessment assessment = getAssessment(auditQuestionID);
+                if (assessment == null) {
+                    logger.info("Error parsing the risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
+                            new Object[] { auditData.getId(), auditData.getQuestion().getId(), auditData.getAnswer()});
+                continue;
+                }
 				RiskCategory category = getCategory(assessment);
 				LowMedHigh currentRisk = highestRisks.get(category);
 
@@ -46,7 +57,7 @@ public class ServiceRiskCalculator {
 					highestRisks.put(category, calculatedRisk);
 				}
 			} catch (Exception e) {
-				logger.error("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
+				logger.info("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
 						new Object[] { auditData.getId(), auditData.getQuestion().getId(), auditData.getAnswer(), e });
 			}
 		}
@@ -54,7 +65,7 @@ public class ServiceRiskCalculator {
 		return highestRisks;
 	}
 
-	private RiskAssessment getAssessment(int questionID) throws Exception {
+	private RiskAssessment getAssessment(int questionID) {
 		for (SafetyAssessment safetyAssessment : SafetyAssessment.values()) {
 			if (questionID == safetyAssessment.getQuestionID()) {
 				return safetyAssessment;
@@ -73,7 +84,7 @@ public class ServiceRiskCalculator {
 			}
 		}
 
-		throw new IllegalArgumentException();
+		return null;
 	}
 
 	private void initializeRiskCategoriesToNone(Map<RiskCategory, LowMedHigh> highestRisks) {

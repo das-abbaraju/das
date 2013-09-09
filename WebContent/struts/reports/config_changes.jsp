@@ -262,6 +262,28 @@
 	</table>
 	</s:if>
 
-	</s:if>
+    <s:if test="countryContacts.size() > 0">
+        <h4>Country Contact Information</h4>
+        <table class="report">
+            <thead>
+            <tr>
+                <th>IsoCode</th>
+                <th>Country</th>
+                <th>Updated</th>
+                <th>On</th>
+            </tr>
+            </thead>
+            <s:iterator value="countryContacts">
+                <tr>
+                    <td><s:property value="country.isoCode"/></td>
+                    <td><a title="<s:property value="country.isoCode"/>" href="ManageCountries.action?country=<s:property value="country.isoCode"/>"><s:property value="country.name"/></a></td>
+                    <td><s:property value="updatedBy.name" /></td>
+                    <td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
+                </tr>
+            </s:iterator>
+        </table>
+    </s:if>
+
+    </s:if>
 </div>
 </html>

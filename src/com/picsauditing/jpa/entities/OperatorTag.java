@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
@@ -35,6 +37,7 @@ public class OperatorTag extends BaseTable {
 	private List<FlagCriteriaOperator> operatorFlagCriteria = new ArrayList<FlagCriteriaOperator>();
 
 	@Column(nullable = false, length = 50)
+    @ReportField(importance = FieldImportance.Required)
 	public String getTag() {
 		return tag;
 	}

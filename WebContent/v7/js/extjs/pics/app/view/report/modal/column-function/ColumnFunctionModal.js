@@ -8,7 +8,6 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
 
     border: 0,
     bodyBorder: false,
-    closeAction: 'destroy',
     draggable: false,
     header: {
         height: 44

@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -11,13 +12,6 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.jpa.entities.AppTranslation;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
 
 @SuppressWarnings("serial")
 public class ConfigChanges extends PicsActionSupport {
@@ -83,4 +77,11 @@ public class ConfigChanges extends PicsActionSupport {
 				"updateDate > '" + lastRelease + "' AND updatedBy != 1", 0,
 				"updateDate");
 	}
+
+    public List<CountryContact> getCountryContacts() {
+        return (List<CountryContact>) dao.findWhere(CountryContact.class, "updateDate > '"
+                + lastRelease + "'", 0, "updateDate");
+
+    }
+
 }

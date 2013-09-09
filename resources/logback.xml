@@ -135,4 +135,8 @@
 		<appender-ref ref="MissingTranslationAppender"/>
 	</logger>
 
+    <logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" level="${loglevel_hqlsql:-off}">
+        <appender-ref ref="FILE"/>
+    </logger>
+
 </configuration>

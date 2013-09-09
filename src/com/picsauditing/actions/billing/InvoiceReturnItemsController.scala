@@ -34,7 +34,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   def prepare = {
     Option(sapAppPropertyUtil) match {
       case Some(_) => Unit
-      case None => sapAppPropertyUtil = new SapAppPropertyUtil
+      case None => sapAppPropertyUtil = SapAppPropertyUtil.factory
     }
     invoice = invoiceDAO.find(getParameter("invoice.id"))
   }
@@ -105,7 +105,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       creditMemo.updateAmountApplied()
       creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
       creditMemo.setAuditColumns(permissions)
-      if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getBusinessUnit.getId)) {
+      if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getCountryContact.getBusinessUnit.getId)) {
         creditMemo.getCreditMemo.setSapSync(true)
       }
 

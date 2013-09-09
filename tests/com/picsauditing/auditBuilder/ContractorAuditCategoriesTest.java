@@ -3,13 +3,9 @@ package com.picsauditing.auditBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.Set;
+import java.util.*;
 
+import com.picsauditing.jpa.entities.ContractorAudit;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +23,8 @@ import com.picsauditing.util.test.TranslatorFactorySetup;
 public class ContractorAuditCategoriesTest {
 	@Mock
 	Permissions permissions;
+    @Mock
+    ContractorAudit audit;
 
 	private int categorySortCounter;
 
@@ -73,7 +71,89 @@ public class ContractorAuditCategoriesTest {
 		assertEquals(1, answer.size());
 	}
 
-	@Test
+    @Test
+    public void testGetApplicableCategories_EffectiveCategories() {
+        Set<AuditCategory> requiredCategories = new HashSet<AuditCategory>();
+        AuditCatData acd2 = createCategory(2);
+        requiredCategories.add(acd2.getCategory());
+
+        when(permissions.isOperatorCorporate()).thenReturn(false);
+        when(permissions.isContractor()).thenReturn(true);
+
+        Map<AuditCategory, AuditCatData> answer;
+
+        Calendar date = Calendar.getInstance();
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        Date originalDate;
+
+        // audit no effective date, category effective date wide open
+        answer = ContractorAuditCategories.getApplicableCategories(permissions,
+                requiredCategories, categories);
+        assertEquals(2, answer.size());
+
+        // audit no effective date, one category not yet effective
+        originalDate = setCategoryEffectiveDate(1, year + 1, month, day);
+        answer = ContractorAuditCategories.getApplicableCategories(permissions,
+                requiredCategories, categories);
+        assertEquals(1, answer.size());
+        categories.get(1).getCategory().setEffectiveDate(originalDate);
+
+        // audit no effective date, one category expired
+        originalDate = setCategoryExpirationDate(1, year - 1, month, day);
+        answer = ContractorAuditCategories.getApplicableCategories(permissions,
+                requiredCategories, categories);
+        assertEquals(1, answer.size());
+        categories.get(1).getCategory().setExpirationDate(originalDate);
+
+        // set effective and expiration date of audit
+        Calendar auditDate = Calendar.getInstance();
+        auditDate.add(Calendar.MONDAY, -1);
+        Date effectiveDate = auditDate.getTime();
+        auditDate.add(Calendar.MONDAY, +4);
+        Date expirationDate = auditDate.getTime();
+        when(audit.getEffectiveDate()).thenReturn(effectiveDate);
+        when(audit.getExpiresDate()).thenReturn(expirationDate);
+
+        // audit effective date, category effective date wide open
+        answer = ContractorAuditCategories.getApplicableCategories(permissions,
+                requiredCategories, categories);
+        assertEquals(2, answer.size());
+
+        // audit effective date, one category not yet effective
+        originalDate = setCategoryEffectiveDate(1, year + 1, month, day);
+        answer = ContractorAuditCategories.getApplicableCategories(permissions,
+                requiredCategories, categories);
+        assertEquals(1, answer.size());
+        categories.get(1).getCategory().setEffectiveDate(originalDate);
+
+        // audit effective date, one category expired
+        originalDate = setCategoryExpirationDate(1, year - 1, month, day);
+        answer = ContractorAuditCategories.getApplicableCategories(permissions,
+                requiredCategories, categories);
+        assertEquals(1, answer.size());
+    }
+
+    private Date setCategoryEffectiveDate(int index, int year, int month, int day) {
+        AuditCatData acd = categories.get(index);
+        Calendar date = Calendar.getInstance();
+        date.set(year, month, day);
+        Date originalDate = acd.getCategory().getEffectiveDate();
+        acd.getCategory().setEffectiveDate(date.getTime());
+        return originalDate;
+    }
+
+    private Date setCategoryExpirationDate(int index, int year, int month, int day) {
+        AuditCatData acd = categories.get(index);
+        Calendar date = Calendar.getInstance();
+        date.set(year, month, day);
+        Date originalDate = acd.getCategory().getExpirationDate();
+        acd.getCategory().setExpirationDate(date.getTime());
+        return originalDate;
+    }
+
+    @Test
 	public void testGetApplicableCategories__LimitCategories() {
 		Set<AuditCategory> requiredCategories = new HashSet<AuditCategory>();
 		AuditCatData acd2 = createCategory(2);
@@ -153,7 +233,13 @@ public class ContractorAuditCategoriesTest {
 		acd.getCategory().setId(categoryID);
 		acd.getCategory().setNumber(categorySortCounter);
 		acd.getCategory().setAuditType(testAuditType);
+        Calendar date = Calendar.getInstance();
+        date.set(2001, 0, 1);
+        acd.getCategory().setEffectiveDate(date.getTime());
+        date.set(4000, 0, 1);
+        acd.getCategory().setExpirationDate(date.getTime());
 		categories.add(acd);
+        acd.setAudit(audit);
 		return acd;
 	}
 }

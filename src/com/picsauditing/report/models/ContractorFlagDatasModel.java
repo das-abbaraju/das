@@ -91,7 +91,13 @@ public class ContractorFlagDatasModel extends AbstractModel {
 			}
 		}
 
-		return permissionQueryBuilder.buildWhereClause();
+        String where = permissionQueryBuilder.buildWhereClause();
+
+        if (permissions.isOperatorCorporate()) {
+            where += " AND (FlagData.opID IN (" + permissionQueryBuilder.getOperatorIDs() + "))";
+        }
+
+        return where;
 	}
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {

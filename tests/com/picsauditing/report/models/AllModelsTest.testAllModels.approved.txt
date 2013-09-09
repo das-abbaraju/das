@@ -696,6 +696,8 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
@@ -813,9 +815,9 @@ ContractorPQFID
 ContractorPQFTypeName
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorProfessionalLiabilityID
-ContractorProfessionalLiabilityPROLEachOccurrenceAnswer
-ContractorProfessionalLiabilityTypeName
+ContractorProfessionalIndemnityID
+ContractorProfessionalIndemnityPROILimitAnswer
+ContractorProfessionalIndemnityTypeName
 ContractorPublicProductLiabilityID
 ContractorPublicProductLiabilityPPLLimitAnswer
 ContractorPublicProductLiabilityTypeName
@@ -920,6 +922,41 @@ ContractorStatisticsRateType
 ContractorStatisticsStatisticFor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
+
+Model: ContractorTags
+Permission: Permissions{permissions=[]}
+----------------------------------------
+ContractorAccountCity
+ContractorAccountCountry
+ContractorAccountCountrySubdivision
+ContractorAccountCreationDate
+ContractorAccountID
+ContractorAccountLegalName
+ContractorAccountLevel
+ContractorAccountMaterialSupplier
+ContractorAccountName
+ContractorAccountOffsiteServices
+ContractorAccountOnsiteServices
+ContractorAccountStatus
+ContractorAccountTimezone
+ContractorAccountTransportationServices
+ContractorAuditGUARD
+ContractorDocuGUARD
+ContractorDontReassign
+ContractorEmployeeGUARD
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorProductRisk
+ContractorProductRiskVerified
+ContractorSafetyRisk
+ContractorSafetyRiskVerified
+ContractorSingleTagOperatorTagOperatorID
+ContractorSingleTagOperatorTagOperatorName
+ContractorSingleTagOperatorTagTag
+ContractorSoleProprietor
+ContractorTransportationRisk
+ContractorTransportationRiskVerified
+ContractorWorksForReportingClient
 
 Model: ContractorTrades
 Permission: Permissions{permissions=[]}

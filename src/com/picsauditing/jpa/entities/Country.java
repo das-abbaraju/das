@@ -1,37 +1,20 @@
 package com.picsauditing.jpa.entities;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.text.Collator;
+import java.util.*;
 
 @Entity
 @Table(name = "ref_country")
@@ -92,6 +75,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	protected boolean proforma;
 	protected String picsEmail;
 	protected BusinessUnit businessUnit;
+    protected CountryContact countryContact;
 
 	protected Currency currency = Currency.USD;
 
@@ -142,24 +126,29 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	}
 
 	@Column(name = "phone", length = 30)
+    @Deprecated
 	public String getPhone() {
 		return phone;
 	}
 
+    @Deprecated
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
 	@Column(name = "salesPhone", length = 30)
+    @Deprecated
 	public String getSalesPhone() {
 		return salesPhone;
 	}
 
+    @Deprecated
 	public void setSalesPhone(String salesPhone) {
 		this.salesPhone = salesPhone;
 	}
 
 	@Column(name = "fax", length = 30)
+    @Deprecated
 	public String getFax() {
 		return fax;
 	}
@@ -214,25 +203,38 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.proforma = proforma;
 	}
 
+    @Deprecated
 	public String getPicsEmail() {
 		return picsEmail;
 	}
 
+    @Deprecated
 	public void setPicsEmail(String picsEmail) {
 		this.picsEmail = picsEmail;
 	}
 
 	@ManyToOne
 	@JoinColumn(name="businessUnitID")
+    @Deprecated
 	public BusinessUnit getBusinessUnit() {
 		return businessUnit;
 	}
 
+    @Deprecated
 	public void setBusinessUnit(BusinessUnit businessUnit) {
 		this.businessUnit = businessUnit;
 	}
 
-	@OneToMany(mappedBy = "country")
+    @OneToOne(mappedBy = "country")
+    public CountryContact getCountryContact() {
+        return countryContact;
+    }
+
+    public void setCountryContact(CountryContact countryContact) {
+        this.countryContact = countryContact;
+    }
+
+    @OneToMany(mappedBy = "country")
 	public List<InvoiceFeeCountry> getAmountOverrides() {
 		return this.amountOverrides;
 	}

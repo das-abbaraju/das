@@ -5,16 +5,12 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
-import com.picsauditing.util.SapAppPropertyUtil;
+import com.picsauditing.util.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.DataScrubber;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
 
@@ -68,6 +64,12 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 
 	private static Logger logger = LoggerFactory.getLogger(Registration.class);
+
+	public Registration() {
+		if (sapAppPropertyUtil == null) {
+			sapAppPropertyUtil = SapAppPropertyUtil.factory();
+		}
+	}
 
 	@Anonymous
 	@Override
@@ -189,7 +191,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
 		}
-		
+
 		permissions = null;
 
 		setupUserData();
@@ -370,7 +372,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		contractor.setNameIndex();
         if (!contractor.isDemo()) {
             contractor.setQbSync(true);
-			if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(contractor.getCountry().getBusinessUnit().getId())) {
+			if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(contractor)) {
 				contractor.setSapSync(true);
 			}
         }
@@ -398,7 +400,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		
 		scrubContractorData(contractor);
 	}
-	
+
 	private void scrubContractorData(ContractorAccount contractor) {
 		if (contractor.getCountry().isUK()) {
 			String zip = contractor.getZip();

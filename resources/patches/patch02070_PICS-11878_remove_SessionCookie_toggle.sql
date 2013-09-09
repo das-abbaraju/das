@@ -1,2 +1,2 @@
 DELETE IGNORE FROM app_properties 
-WHERE property = 'Toggle.SessionCookie'
+WHERE property = 'Toggle.SessionCookie';

@@ -6,7 +6,9 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
+import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.messaging.Publisher;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -51,6 +53,10 @@ public class ContractorCronTest extends PicsActionTest {
 	private FlagCriteria criteria;
 	@Mock
 	private OshaAudit oshaAudit;
+    @Mock
+    private FlagDataCalculator flagDataCalculator;
+    @Mock
+    private Publisher flagChangePublisher;
 
 	@Before
 	public void setUp() throws Exception {
@@ -64,6 +70,33 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
 		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
 	}
+
+    @Test
+    public void testNoInsuranceCriteriaInFlagDifferences() throws Exception {
+        ContractorCronStep[] steps = new ContractorCronStep[1];
+        steps[0] = ContractorCronStep.Flag;
+
+        ContractorOperator conOp = new ContractorOperator();
+        conOp.setContractorAccount(contractor);
+        conOp.setOperatorAccount(operator);
+
+        FlagCriteria criteria = new FlagCriteria();
+        criteria.setInsurance(true);
+        FlagData flagData = new FlagData();
+        flagData.setCriteria(criteria);
+        List<FlagData> changes = new ArrayList<>();
+        changes.add(flagData);
+
+        Whitebox.setInternalState(contractorCron, "steps", steps);
+        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
+        Whitebox.setInternalState(contractorCron, "flagChangePublisher", flagChangePublisher);
+        when(flagDataCalculator.calculate()).thenReturn(changes);
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+
+        Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
+        assertEquals("{}", conOp.getFlagDetail());
+    }
 
 	@Test
 	public void testManualAuditSlaReset() throws Exception {

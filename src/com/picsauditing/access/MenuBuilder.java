@@ -198,6 +198,11 @@ public final class MenuBuilder {
 
         addAuditsSubmenu(configureMenu, permissions);
 
+        if (permissions.has(OpPerms.DevelopmentEnvironment)) {
+            configureMenu.addChild("Manage Countries", "ManageCountries.action",
+                    "manage_countries");
+        }
+
         if (permissions.has(OpPerms.ManageAudits)) {
             configureMenu.addChild(getText("menu.Configure.FlagCriteria"), "ManageFlagCriteria.action",
                     "manage_flag_criteria");
@@ -259,7 +264,6 @@ public final class MenuBuilder {
         MenuComponent cronSubmenu = devMenu.addChild(getText("menu.Dev.Crons"));
         cronSubmenu.addChild(getText("global.Contractor"), "ContractorCron.action", "contractor_cron");
         cronSubmenu.addChild(getText("menu.Mail"), "MailCron.action", "mail_cron");
-        cronSubmenu.addChild(getText("menu.Subscription"), "SubscriptionCron.action", "subscription_cron");
         cronSubmenu.addChild(getText("menu.Dev.AuditScheduleBuilder"), "AuditScheduleBuilderCron.action",
                 "audit_schedule_builder");
     }

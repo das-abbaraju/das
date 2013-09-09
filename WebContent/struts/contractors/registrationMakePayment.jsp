@@ -50,9 +50,9 @@
 								<td>
 									<s:property	value="invoiceFee.fee" />
 									<a
-										href="javascript:;" 
-										class="help" 
-										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />" 
+										href="javascript:;"
+										class="help"
+										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />"
 										data-content="<s:text name="%{invoiceFee.feeClass.getI18nKey('help')}" />"
 									><img src="images/help-icon.png" /></a>
 								</td>
@@ -64,25 +64,25 @@
 					</s:iterator>
 
 					<%-- One Time Fees --%>
-					
+
 					<tr>
 						<th colspan="2">
 							<s:text name="RegistrationMakePayment.OneTimeFees" />
 						</th>
 					</tr>
-					
+
 					<s:iterator value="invoice.items" status="stat">
 						<s:if test="!invoiceFee.membership && !invoiceFee.tax">
 							<tr>
 								<td>
 									<s:property	value="invoiceFee.fee" />
 									<a
-										href="javascript:;" 
-										class="help" 
-										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />" 
+										href="javascript:;"
+										class="help"
+										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />"
 										data-content="<s:text name="%{invoiceFee.feeClass.getI18nKey('help')}" />"
 									><img src="images/help-icon.png" /></a>
-									
+
 									<%-- remove import fee --%>
 									<s:if test="invoiceFee.feeClass == importFee.feeClass">
 										<s:form cssClass="data-import-form">
@@ -180,7 +180,7 @@
 					</tr>
 				</tbody>
 	 		</table>
-	 		
+
 	 		<div class="policy">
 	 			<ul>
 		 			<li>
@@ -198,7 +198,7 @@
 		 		</ul>
                 <p class="phone">
                     <s:text name="ContractorRegistration.title" />:
-                    ${contractor.country.salesPhone}
+                    ${contractor.country.countryContact.isrPhone}
                 </p>
 	 		</div>
 
@@ -220,9 +220,9 @@
 			<p><s:text name="RegistrationMakePayment.MembershipHelp" /></p>
 		</section>
 	</div>
-	
+
 	<div class="separator"></div>
-	
+
 	<section>
 		<h1>
 			<s:text name="RegistrationMakePayment.BillingInformation" />
@@ -231,7 +231,7 @@
 		<div id='payment-method-wrapper'>
 
 		<!-- Credit Card Payment Method -->
-					
+
 		<div id='credit-card-payment-method'>
 			<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics" autocomplete="off">
 				<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
@@ -244,14 +244,14 @@
 				<s:hidden name="time"></s:hidden>
 				<s:hidden name="company"></s:hidden>
 				<s:hidden name="customer_vault_id"></s:hidden>
-				
+
 				<s:if test="cc == null">
 					<input type="hidden" name="customer_vault" value="add_customer"/>
 				</s:if>
 				<s:else>
 					<input type="hidden" name="customer_vault" value="update_customer"/>
 				</s:else>
-			
+
 				<ul id="credit-card-inputs">
 					<li>
 						<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
@@ -266,7 +266,7 @@
                             <img src="images/creditcardNoAmex.png" class="card" />
                         </s:else>
 					</li>
-					
+
 					<li class="creditcard">
 						<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:30px" maxlength="4" autocomplete="off" />
 					</li>
@@ -275,7 +275,7 @@
 						<label>
 							<s:text name="RegistrationMakePayment.ExpirationDate" />
 						</label>
-					
+
 						<s:select
 							id="expMonth"
 							headerKey=""
@@ -286,7 +286,7 @@
 							name="ccexpmonth"
 							theme="simple"
 						/>
-					
+
 						<s:select
 							id="expYear"
 							headerKey=""
@@ -295,7 +295,7 @@
 							name="ccexpyear"
 							theme="simple"
 						/>
-					
+
 						<s:textfield id="ccexp" name="ccexp" theme="simple" />
 					</li>
 					<li class="actions">
@@ -304,21 +304,21 @@
 							key="button.SubmitPayment"
 							cssClass="btn success"
 						/>
-                       
+
                        	<a href="https://www.braintreegateway.com/merchants/89hr924yx28jmb8g/verified"
                        		target="_blank"
                        		class="brain-tree-badge">
-                           	
+
                            	<img src="https://braintree-badges.s3.amazonaws.com/05.png" border="0" />
                        	</a>
-					
+
 						<div class="processing">
 							<img src="images/loading.gif" />
 							<p>
 								<s:text name="RegistrationMakePayment.Processing" />
 							</p>
 						</div>
-					
+
 						<p class="check-note">
 							<s:text name="ContractorPaymentOptions.InvoiceEmail" />
 						</p>
@@ -330,7 +330,7 @@
 		<s:if test="contractor.country.proforma">
 
 			<!-- -OR- -->
-	
+
 			<div id='or'>
 				- <s:text name="Registration.Payment.Or" /> -
 			</div>
@@ -339,16 +339,16 @@
 			<s:form action="RegistrationMakePayment.action" method="POST">
 				<input type="hidden" name="button" value="email" />
 				<input type="hidden" name="invoice.id" value="<s:property value="invoice.id"/>" />
-		
+
 				<s:submit id='pro-forma-button'
-					key="Registration.ProForma.Email.Button" 
-					cssClass="btn success" 
+					key="Registration.ProForma.Email.Button"
+					cssClass="btn success"
 				/>
 			</s:form>
 
 		</s:if>
-					
-	</div>			
+
+	</div>
 
 	</section>
 </div>

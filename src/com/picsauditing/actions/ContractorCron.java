@@ -715,12 +715,14 @@ public class ContractorCron extends PicsActionSupport {
 		// Save the FlagDetail to the ContractorOperator as a JSON string
 		JSONObject flagJson = new JSONObject();
 		for (FlagData data : changes) {
-			JSONObject flag = new JSONObject();
-			flag.put("category", data.getCriteria().getCategory().toString() );
-			flag.put("label", data.getCriteria().getLabel().toString());
-			flag.put("flag", data.getFlag().toString());
+            if (!data.getCriteria().isInsurance()) {
+                JSONObject flag = new JSONObject();
+                flag.put("category", data.getCriteria().getCategory().toString());
+                flag.put("label", data.getCriteria().getLabel().toString());
+                flag.put("flag", data.getFlag().toString());
 
-			flagJson.put(data.getCriteria().getId(), flag);
+                flagJson.put(data.getCriteria().getId(), flag);
+            }
 		}
 		co.setFlagDetail(flagJson.toString());
 

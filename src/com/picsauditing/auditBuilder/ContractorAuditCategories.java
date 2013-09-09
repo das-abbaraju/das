@@ -1,10 +1,6 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -30,6 +26,9 @@ public class ContractorAuditCategories {
 		if (!auditCatData.isApplies())
 			return false;
 
+        if (!isCategoryEffective(auditCatData.getCategory(), auditCatData.getAudit().getEffectiveDate())) {
+            return false;
+        }
 		if (permissions.isContractor())
 			return true;
 
@@ -54,5 +53,11 @@ public class ContractorAuditCategories {
 
 		return false;
 	}
+
+    public static boolean isCategoryEffective(AuditCategory category, Date effectiveDate) {
+        if (effectiveDate == null)
+            return category.isCurrent();
+        return category.isCurrent(effectiveDate);
+    }
 
 }

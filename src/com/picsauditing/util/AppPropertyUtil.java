@@ -8,6 +8,10 @@ import java.util.Arrays;
 abstract class AppPropertyUtil extends AppProperty {
 	private AppPropertyDAO appPropertyDAO;
 
+	protected AppPropertyUtil() {
+
+	}
+
 	public void instantiateDAOs() {
 		if (appPropertyDAO == null) {
 			appPropertyDAO = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);

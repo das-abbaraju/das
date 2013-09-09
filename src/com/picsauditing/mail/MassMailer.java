@@ -77,7 +77,7 @@ public class MassMailer extends RequiredLanguagesSupport {
 	private String templateSubject;
 	private String templateBody;
 	private OpPerms recipient;
-	private boolean templateAllowsVelocity;
+	private boolean templateAllowsVelocity = true;
 	private boolean templateHtml;
 	private boolean templateTranslated;
 	private String fromMyAddress = EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS;

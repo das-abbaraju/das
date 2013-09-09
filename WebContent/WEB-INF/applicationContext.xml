@@ -184,6 +184,8 @@
     <bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype"/>
 
     <!-- Beans for service layers -->
+    <bean id="AuditDataService" class="com.picsauditing.service.AuditDataService"/>
+    <bean id="ContractorAuditService" class="com.picsauditing.service.ContractorAuditService"/>
     <bean id="FacilitiesEditModel" class="com.picsauditing.model.operators.FacilitiesEditModel"/>
     <bean id="AuditEditModel" class="com.picsauditing.models.audits.AuditEditModel"/>
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
@@ -274,9 +276,9 @@
 
     <bean id="taskExecutor"
           class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <property name="corePoolSize" value="50"/>
-        <property name="maxPoolSize" value="1000"/>
-        <property name="queueCapacity" value="2000"/>
+        <property name="corePoolSize" value="100"/>
+        <property name="maxPoolSize" value="2000"/>
+        <property name="queueCapacity" value="4000"/>
     </bean>
 
     <!-- this is intentionally a singleton -->

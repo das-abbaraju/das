@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     extend: 'PICS.ux.grid.Panel',
-    alias: 'reportcolumnfilterlist',
+    alias: '    ',
 
     requires: [
         'Ext.grid.feature.Feature',
@@ -45,9 +45,6 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
         }
     },
     rowLines: false,
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
-        mode: 'SIMPLE'
-    }),
 
     getGroupClassNamesWithoutOver: function (html) {
         var class_names = html.className.split(' '),

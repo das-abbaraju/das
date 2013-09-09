@@ -188,7 +188,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Current logged in user
 	 */
-	private User user;
+	protected User user;
 	/**
 	 * TODO Kyle, please research this field and document it. Also review if we
 	 * need setAccount on AccountActionSupport Maybe we should move the account
@@ -1308,7 +1308,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			String format = "%s x%s";
 
 			if (country != null) {
-				return String.format(format, country.getPhone(), user.getPhone());
+				return String.format(format, country.getCountryContact().getCsrPhone(), user.getPhone());
 			} else {
 				return String.format(format, getPicsPhoneNumber(), user.getPhone());
 			}

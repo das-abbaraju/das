@@ -1,7 +1,7 @@
 package com.picsauditing.model.billing;
 
-import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.Transaction;
+import com.picsauditing.util.SapAppPropertyUtil;
 
 public class AccountingSystemSynchronization {
 
@@ -11,7 +11,7 @@ public class AccountingSystemSynchronization {
         if (transaction.getAccount().isDemo()) return;
 		transaction.setQbSync(true);
 		if (sapAppPropertyUtil == null) sapAppPropertyUtil = SapAppPropertyUtil.factory();
-		if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(transaction.getAccount().getCountry().getBusinessUnit().getId())) {
+		if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(transaction)) {
         	transaction.setSapSync(true);
 		}
 	}
