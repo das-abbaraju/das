@@ -71,26 +71,6 @@ public class AuditCategoriesBuilderTest {
 	}
 
 	@Test
-	public void testExpiredCategories() throws Exception {
-		setUp();
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
-
-		// none expired
-		assertEquals(2, categoryBuilder.calculate(audit).size());
-
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
-		Date expiredDate = cal.getTime();
-		cal.add(Calendar.DATE, -1);
-		Date effectiveDate = cal.getTime();
-
-		cat2.setEffectiveDate(effectiveDate);
-		cat2.setExpirationDate(expiredDate);
-		// one expired
-		assertEquals(1, categoryBuilder.calculate(audit).size());
-	}
-
-	@Test
 	public void testFindMostRecentAudit() throws Exception {
 		ContractorAccount testContractor = EntityFactory.makeContractor();
 		testContractor.setAudits(new ArrayList<ContractorAudit>());
