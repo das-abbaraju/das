@@ -908,6 +908,9 @@ public class Cron extends PicsActionSupport {
                 billingService.syncBalance(((ContractorAccount) lateFeeInvoice.getAccount()));
                 invoiceItemDAO.save(lateFeeInvoice.getAccount());
             }
+
+			i.setLateFeeInvoice(lateFeeInvoice);
+			invoiceItemDAO.save(i);
             invoiceItemDAO.save(lateFeeItem);
             invoiceItemDAO.save(lateFeeInvoice);
         }
