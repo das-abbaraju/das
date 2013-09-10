@@ -12,6 +12,8 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,16 +26,18 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 @SuppressWarnings("deprecation")
 public class CronTest extends PicsActionTest {
@@ -78,6 +82,16 @@ public class CronTest extends PicsActionTest {
 	private EmailSender emailSender;
     @Mock
     protected BillingService billingService;
+	@Mock
+	protected Invoice mockInvoice;
+	@Mock
+	protected InvoiceItem mockInvoiceItem;
+	@Mock
+	protected ContractorAccount mockContractorAccount;
+	@Mock
+	protected InvoiceFee mockInvoiceFee;
+	@Mock
+	protected SapAppPropertyUtil mockSapAppPropertyUtil;
 
 	@BeforeClass
 	public static void classSetUp() {
@@ -352,7 +366,33 @@ public class CronTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testLateFeeCreation() {
+	public void testAddLateFeeToDelinquentInvoice() throws Exception {
 
+		BigDecimal invoiceFeeAmount = new BigDecimal(100);
+		BigDecimal expectedLateFeeInvoiceAmount = new BigDecimal(Cron.MINIMUM_LATE_FEE);
+
+		Cron cron = new Cron();
+
+		when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
+		when(mockInvoice.getAccount()).thenReturn(mockContractorAccount);
+		when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, 0)).thenReturn(mockInvoiceFee);
+		when(mockInvoiceFee.getFeeClass()).thenReturn(FeeClass.LateFee);
+		when(mockInvoiceFee.getAmount()).thenReturn(invoiceFeeAmount);
+		when(mockContractorAccount.isDemo()).thenReturn(false);
+		AccountingSystemSynchronization.setSapAppPropertyUtil(mockSapAppPropertyUtil);
+		when(mockSapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(mockInvoice)).thenReturn(false);
+		cron.setBillingService(billingService);
+		cron.setInvoiceFeeDAO(invoiceFeeDAO);
+		cron.setInvoiceItemDAO(invoiceItemDAO);
+		Invoice lateFeeInvoice = Whitebox.<Invoice> invokeMethod(cron,"addLateFeeToDelinquentInvoice",mockInvoice);
+		//Invoice lateFeeInvoice = cron.addLateFeeToDelinquentInvoice(mockInvoice);
+		verify(invoiceItemDAO).save(mockContractorAccount);
+		verify(invoiceItemDAO).save(mockInvoice);
+		verify(invoiceItemDAO).save(lateFeeInvoice);
+
+		assertEquals(InvoiceType.LateFee,lateFeeInvoice.getInvoiceType());
+		assertThat(lateFeeInvoice.getItems().get(0),instanceOf(InvoiceItem.class));
+		assertEquals(FeeClass.LateFee,lateFeeInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
+		assertEquals(expectedLateFeeInvoiceAmount,lateFeeInvoice.getTotalAmount());
 	}
 }

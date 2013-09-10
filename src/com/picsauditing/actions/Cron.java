@@ -58,7 +58,9 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
-    @Autowired
+	public static final int MINIMUM_LATE_FEE = 20;
+	public static final double LATE_FEE_PERCENTAGE = 0.05;
+	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	protected ContractorAuditDAO contractorAuditDAO;
@@ -866,57 +868,55 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void addLateFeeToDelinquentInvoices() throws Exception {
-		// Get delinquent Invoices missing Late Fees
 		List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
-
-//        invoiceLoop:
 		for (Invoice i : invoicesMissingLateFees) {
-
-//            for (CreditMemoAppliedToInvoice creditMemo : i.getCreditMemos())
-//                for (RefundItem item : creditMemo.getCreditMemo().getItems())
-//                    if (item.getInvoiceFee().getFeeClass().equals(FeeClass.LateFee))
-//                        continue invoiceLoop;
-
-            if (invoiceHasReactivation(i)) continue;
-
-            // Calculate Late Fee
-            BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05))
-                    .setScale(0, BigDecimal.ROUND_HALF_UP);
-            if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1) {
-                lateFee = BigDecimal.valueOf(20);
-            }
-
-            InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
-                    ((ContractorAccount) i.getAccount()).getPayingFacilities());
-            InvoiceItem lateFeeItem = new InvoiceItem(fee);
-            lateFeeItem.setAmount(lateFee);
-            lateFeeItem.setAuditColumns(new User(User.SYSTEM));
-            lateFeeItem.setDescription("Assessed "
-                    + new SimpleDateFormat(PicsDateFormat.American).format(new Date())
-                    + " due to delinquent payment.");
-
-			Invoice lateFeeInvoice = new Invoice();
-			lateFeeItem.setInvoice(lateFeeInvoice);
-			lateFeeInvoice.getItems().add(lateFeeItem);
-			lateFeeInvoice.updateTotalAmount();
-			lateFeeInvoice.updateAmountApplied();
-			lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
-            AccountingSystemSynchronization.setToSynchronize(lateFeeInvoice);
-
-			lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
-            if (lateFeeInvoice.getAccount() instanceof ContractorAccount) {
-                billingService.syncBalance(((ContractorAccount) lateFeeInvoice.getAccount()));
-                invoiceItemDAO.save(lateFeeInvoice.getAccount());
-            }
-
-			i.setLateFeeInvoice(lateFeeInvoice);
-			invoiceItemDAO.save(i);
-            invoiceItemDAO.save(lateFeeItem);
-            invoiceItemDAO.save(lateFeeInvoice);
+			if (invoiceHasReactivation(i)) {
+				continue;
+			}
+			Invoice lateFeeInvoice = addLateFeeToDelinquentInvoice(i);
         }
 	}
 
-    private boolean invoiceHasReactivation(Invoice i) {
+	private Invoice addLateFeeToDelinquentInvoice(Invoice i) {
+		// Calculate Late Fee
+		BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(LATE_FEE_PERCENTAGE))
+				.setScale(0, BigDecimal.ROUND_HALF_UP);
+		if (lateFee.compareTo(BigDecimal.valueOf(MINIMUM_LATE_FEE)) < 1) {
+			lateFee = BigDecimal.valueOf(MINIMUM_LATE_FEE);
+		}
+
+		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
+				((ContractorAccount) i.getAccount()).getPayingFacilities());
+		InvoiceItem lateFeeItem = new InvoiceItem(fee);
+		lateFeeItem.setAmount(lateFee);
+		lateFeeItem.setAuditColumns(new User(User.SYSTEM));
+		lateFeeItem.setDescription("Assessed "
+				+ new SimpleDateFormat(PicsDateFormat.American).format(new Date())
+				+ " due to delinquent payment.");
+
+		Invoice lateFeeInvoice = new Invoice();
+		lateFeeInvoice.setAccount(i.getAccount());
+		lateFeeItem.setInvoice(lateFeeInvoice);
+		lateFeeInvoice.getItems().add(lateFeeItem);
+		lateFeeInvoice.updateTotalAmount();
+		lateFeeInvoice.updateAmountApplied();
+		lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
+		AccountingSystemSynchronization.setToSynchronize(lateFeeInvoice);
+
+		lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
+		if (lateFeeInvoice.getAccount() instanceof ContractorAccount) {
+			billingService.syncBalance(((ContractorAccount) lateFeeInvoice.getAccount()));
+			invoiceItemDAO.save(lateFeeInvoice.getAccount());
+		}
+
+		i.setLateFeeInvoice(lateFeeInvoice);
+		invoiceItemDAO.save(i);
+		invoiceItemDAO.save(lateFeeItem);
+		invoiceItemDAO.save(lateFeeInvoice);
+		return lateFeeInvoice;
+	}
+
+	private boolean invoiceHasReactivation(Invoice i) {
         for (InvoiceItem ii : i.getItems()) {
             if (ii.getInvoiceFee().isReactivation()) {
                 return true;
@@ -925,9 +925,6 @@ public class Cron extends PicsActionSupport {
         return false;
     }
 
-	private boolean invoiceHasLateFeeAlready(Invoice i) {
-
-	}
 
     public void sendNoActionEmailToTrialAccounts() throws Exception {
 		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
@@ -1177,4 +1174,19 @@ public class Cron extends PicsActionSupport {
         this.billingService = billingService;
     }
 
+	public InvoiceFeeDAO getInvoiceFeeDAO() {
+		return invoiceFeeDAO;
+	}
+
+	public void setInvoiceFeeDAO(InvoiceFeeDAO invoiceFeeDAO) {
+		this.invoiceFeeDAO = invoiceFeeDAO;
+	}
+
+	public InvoiceItemDAO getInvoiceItemDAO() {
+		return invoiceItemDAO;
+	}
+
+	public void setInvoiceItemDAO(InvoiceItemDAO invoiceItemDAO) {
+		this.invoiceItemDAO = invoiceItemDAO;
+	}
 }
