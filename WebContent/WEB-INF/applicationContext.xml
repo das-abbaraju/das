@@ -185,6 +185,8 @@
 
     <!-- Beans for service layers -->
     <bean id="AuditDataService" class="com.picsauditing.service.AuditDataService"/>
+    <bean id="AppPropertyService" class="com.picsauditing.service.AppPropertyService"/>
+    <bean id="MailCronService" class="com.picsauditing.service.mail.MailCronService"/>
     <bean id="ContractorAuditService" class="com.picsauditing.service.ContractorAuditService"/>
     <bean id="FacilitiesEditModel" class="com.picsauditing.model.operators.FacilitiesEditModel"/>
     <bean id="AuditEditModel" class="com.picsauditing.models.audits.AuditEditModel"/>
