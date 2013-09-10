@@ -13,6 +13,8 @@ AccountContactName
 AccountContactPhone
 AccountContactTimezone
 AccountCountry
+AccountCountryEnglish
+AccountCountryIsoCode
 AccountCountrySubdivision
 AccountCreationDate
 AccountDeactivationDate
