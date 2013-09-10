@@ -77,7 +77,8 @@ public class InvoiceDAO extends PicsDAO {
 		String hql = "SELECT i FROM Invoice i JOIN i.account AS account "
 				+ "LEFT JOIN i.items AS item WITH item.invoiceFee.id = :oldfee OR item.invoiceFee.id = :fee "
 				+ "WHERE i.dueDate < :dueDate AND i.status = :status AND item IS NULL "
-				+ "AND i.account.status = :astatus AND i.totalAmount > :totalAmount";
+				+ "AND i.account.status = :astatus AND i.totalAmount > :totalAmount"
+				+ "AND i.lateFeeInvoice IS NOT NULL AND i.type != 'LateFee'";
 		Query query = em.createQuery(hql);
 		query.setParameter("dueDate", cal.getTime());
 		query.setParameter("status", TransactionStatus.Unpaid);

@@ -1,5 +1,5 @@
 package com.picsauditing.jpa.entities;
 
 public enum InvoiceType {
-    Activation,Upgrade,Renewal,OtherFees;
+    Activation,Upgrade,Renewal,LateFee,OtherFees;
 }

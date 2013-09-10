@@ -1,22 +1,19 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.sql.DataSource;
-
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.DBBean;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,37 +25,19 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.PICS.DBBean;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.model.account.AccountStatusChanges;
+import javax.sql.DataSource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 @SuppressWarnings("deprecation")
 public class CronTest extends PicsActionTest {
@@ -103,6 +82,16 @@ public class CronTest extends PicsActionTest {
 	private EmailSender emailSender;
     @Mock
     protected BillingService billingService;
+	@Mock
+	protected Invoice mockInvoice;
+	@Mock
+	protected InvoiceItem mockInvoiceItem;
+	@Mock
+	protected ContractorAccount mockContractorAccount;
+	@Mock
+	protected InvoiceFee mockInvoiceFee;
+	@Mock
+	protected SapAppPropertyUtil mockSapAppPropertyUtil;
 
 	@BeforeClass
 	public static void classSetUp() {
@@ -374,5 +363,36 @@ public class CronTest extends PicsActionTest {
 		verify(contractor, times(1)).setAuditColumns(Cron.system);
 		verify(accountStatusChanges, times(1)).deactivateContractor(contractor, permissions, reason,
 				"Automatically inactivating account based on expired membership");
+	}
+
+	@Test
+	public void testAddLateFeeToDelinquentInvoice() throws Exception {
+
+		BigDecimal invoiceFeeAmount = new BigDecimal(100);
+		BigDecimal expectedLateFeeInvoiceAmount = new BigDecimal(Cron.MINIMUM_LATE_FEE);
+
+		Cron cron = new Cron();
+
+		when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
+		when(mockInvoice.getAccount()).thenReturn(mockContractorAccount);
+		when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, 0)).thenReturn(mockInvoiceFee);
+		when(mockInvoiceFee.getFeeClass()).thenReturn(FeeClass.LateFee);
+		when(mockInvoiceFee.getAmount()).thenReturn(invoiceFeeAmount);
+		when(mockContractorAccount.isDemo()).thenReturn(false);
+		AccountingSystemSynchronization.setSapAppPropertyUtil(mockSapAppPropertyUtil);
+		when(mockSapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(mockInvoice)).thenReturn(false);
+		cron.setBillingService(billingService);
+		cron.setInvoiceFeeDAO(invoiceFeeDAO);
+		cron.setInvoiceItemDAO(invoiceItemDAO);
+		Invoice lateFeeInvoice = Whitebox.<Invoice> invokeMethod(cron,"addLateFeeToDelinquentInvoice",mockInvoice);
+		//Invoice lateFeeInvoice = cron.addLateFeeToDelinquentInvoice(mockInvoice);
+		verify(invoiceItemDAO).save(mockContractorAccount);
+		verify(invoiceItemDAO).save(mockInvoice);
+		verify(invoiceItemDAO).save(lateFeeInvoice);
+
+		assertEquals(InvoiceType.LateFee,lateFeeInvoice.getInvoiceType());
+		assertThat(lateFeeInvoice.getItems().get(0),instanceOf(InvoiceItem.class));
+		assertEquals(FeeClass.LateFee,lateFeeInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
+		assertEquals(expectedLateFeeInvoiceAmount,lateFeeInvoice.getTotalAmount());
 	}
 }
