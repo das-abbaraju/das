@@ -12,7 +12,7 @@ ALTER TABLE `generalcontractors`
   ADD CONSTRAINT `FK_contractor_operator_op` FOREIGN KEY (`opID`) REFERENCES `pics_yesterday`.`accounts`(`id`),
   ADD CONSTRAINT `FK_contractor_operator_con` FOREIGN KEY (`conID`) REFERENCES `pics_yesterday`.`accounts`(`id`);
 
-RENAME TABLE `pics_yesterday`.`generalcontractors` TO `pics_yesterday`.`contractor_operator`;
+RENAME TABLE `generalcontractors` TO `contractor_operator`;
 
 DROP VIEW IF EXISTS generalcontractors;
 CREATE VIEW `generalcontractors` AS
