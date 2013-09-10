@@ -17,7 +17,11 @@
     
     <label for="new_value">Value</label>
     <textarea name="newValue" id="new_value" rows="4" class="input-xxlarge"></textarea>
-    
+
+    <label>Description</label>
+    <textarea name="newDescription" id="new_description" rows="4" class="input-xxlarge">${property.description}</textarea>
+    <span class="help-block">${property.description}</span>
+
     <div class="form-actions input-xxlarge">
         <a href="${app_property_list}" class="btn">Cancel</a>
         <button type="submit" class="btn btn-success" name="save">Save</button>

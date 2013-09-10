@@ -20,6 +20,7 @@ public class ManageAppProperty extends PicsActionSupport {
 	private AppProperty property = new AppProperty();
 	private String newProperty;
 	private String newValue;
+    private String newDescription;
 	private List<AppProperty> all;
 
 	@RequiredPermission(value = OpPerms.DevelopmentEnvironment)
@@ -47,6 +48,7 @@ public class ManageAppProperty extends PicsActionSupport {
 
 			property.setProperty(newProperty);
 			property.setValue(newValue);
+            property.setDescription(newDescription);
 			appPropertyDAO.save(property);
 
 			action = updateActionToRedirectDependingOnParameters(action);
@@ -69,6 +71,7 @@ public class ManageAppProperty extends PicsActionSupport {
 			}
 
 			property.setValue(newValue);
+            property.setDescription(newDescription);
 			appPropertyDAO.save(property);
 
 			action = updateActionToRedirectDependingOnParameters(action);
@@ -118,7 +121,15 @@ public class ManageAppProperty extends PicsActionSupport {
 		this.newValue = newValue;
 	}
 
-	private String updateActionToRedirectDependingOnParameters(String action) throws Exception {
+    public String getNewDescription() {
+        return newDescription;
+    }
+
+    public void setNewDescription(String newDescription) {
+        this.newDescription = newDescription;
+    }
+
+    private String updateActionToRedirectDependingOnParameters(String action) throws Exception {
 		if (getRequest().getParameter(SAVE) != null) {
 			return setUrlForRedirect("ManageAppProperty.action");
 		}

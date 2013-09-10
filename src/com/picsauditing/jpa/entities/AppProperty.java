@@ -27,6 +27,8 @@ public class AppProperty implements java.io.Serializable {
 
 	private String property;
 	private String value;
+
+    private String description;
 	private Date ticklerDate;
 
 	public AppProperty() {
@@ -56,7 +58,15 @@ public class AppProperty implements java.io.Serializable {
 		this.value = value;
 	}
 
-	@Temporal(TemporalType.DATE)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Temporal(TemporalType.DATE)
 	public Date getTicklerDate() {
 		return ticklerDate;
 	}
