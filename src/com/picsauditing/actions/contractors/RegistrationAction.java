@@ -14,6 +14,6 @@ public class RegistrationAction extends ContractorActionSupport {
 
 	@Override
 	public String getPicsPhoneNumber() {
-		return getContractorCountry().getCountryContact().getCsrPhone();
+		return getContractorCountry().getCsrPhone();
 	}
 }

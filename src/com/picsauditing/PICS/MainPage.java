@@ -119,7 +119,7 @@ public class MainPage {
 	public String getSalesPhoneNumber(String country) {
 		if (Strings.isNotEmpty(country)) {
 			try {
-				String salesPhoneNumber = countryDAO().find(country).getCountryContact().getIsrPhone();
+				String salesPhoneNumber = countryDAO().find(country).getIsrPhone();
 
 				if (Strings.isNotEmpty(salesPhoneNumber)) {
 					return salesPhoneNumber;
@@ -139,7 +139,7 @@ public class MainPage {
 	public String getFaxNumber(String country) {
 		if (Strings.isNotEmpty(country)) {
 			try {
-				String faxNumber = countryDAO().find(country).getCountryContact().getCsrFax();
+				String faxNumber = countryDAO().find(country).getCsrFax();
 
 				if (Strings.isNotEmpty(faxNumber)) {
 					return faxNumber;
@@ -200,7 +200,7 @@ public class MainPage {
 	private String phoneNumberByCountry(String country) {
 		if (Strings.isNotEmpty(country)) {
 			try {
-				String phoneNumber = countryDAO().find(country).getCountryContact().getCsrPhone();
+				String phoneNumber = countryDAO().find(country).getCsrPhone();
 				if (Strings.isNotEmpty(phoneNumber)) {
                     return insertI18nPhoneDescriptionsForMultiplePhoneNumbers(country, phoneNumber);
 				}

@@ -39,8 +39,6 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private Invoice invoice;
 	@Mock
 	private Country country;
-    @Mock
-    private CountryContact countryContact;
 	@Mock
 	private BusinessUnit businessUnit;
 	@Mock
@@ -105,8 +103,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
-        when(country.getCountryContact()).thenReturn(countryContact);
-		when(countryContact.getBusinessUnit()).thenReturn(businessUnit);
+        when(country.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
 
 	}

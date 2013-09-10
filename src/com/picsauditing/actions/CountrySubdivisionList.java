@@ -33,10 +33,10 @@ public class CountrySubdivisionList extends AccountActionSupport {
 		if (country != null) {
 			json.put("country", getText(country.getI18nKey()));
 
-			if (Strings.isNotEmpty(country.getCountryContact().getIsrPhone())) {
-				json.put("picsPhoneNumber", country.getCountryContact().getIsrPhone());
-			} else if (Strings.isNotEmpty(country.getCountryContact().getCsrPhone())) {
-				json.put("picsPhoneNumber", country.getCountryContact().getCsrPhone());
+			if (Strings.isNotEmpty(country.getIsrPhone())) {
+				json.put("picsPhoneNumber", country.getIsrPhone());
+			} else if (Strings.isNotEmpty(country.getCsrPhone())) {
+				json.put("picsPhoneNumber", country.getCsrPhone());
 			}
 		}
 
