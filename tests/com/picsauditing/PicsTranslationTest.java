@@ -11,10 +11,12 @@ import com.picsauditing.service.i18n.TranslationServiceFactory;
 public abstract class PicsTranslationTest {
 
 	protected static TranslationService translationService = Mockito.mock(TranslationService.class);
+	protected static TranslationService nonLoggingTranslationService = Mockito.mock(TranslationService.class);
 
 	@BeforeClass
 	public static void setupTranslationServiceForTest() {
-		Whitebox.setInternalState(TranslationServiceFactory.class, "translationService", translationService);
+        TranslationServiceFactory.registerTranslationService(translationService);
+        TranslationServiceFactory.registerNonLoggingTranslationService(nonLoggingTranslationService);
 	}
 
 	public void resetTranslationService() {
@@ -23,7 +25,8 @@ public abstract class PicsTranslationTest {
 
 	@AfterClass
 	public static void tearDownTranslationService() {
-		Whitebox.setInternalState(TranslationServiceFactory.class, "translationService", (TranslationService) null);
+        TranslationServiceFactory.registerTranslationService(null);
+        TranslationServiceFactory.registerNonLoggingTranslationService(null);
 	}
 
 }

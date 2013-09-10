@@ -17,8 +17,14 @@ public class TranslationServiceFactory {
 
 	// for testing
 	private static TranslationService translationService;
+    // for testing
+	private static TranslationService nonLoggingTranslationServiceAdapter;
 
     public static TranslationService getNonLoggingTranslationService() {
+        if (nonLoggingTranslationServiceAdapter != null) {
+            return nonLoggingTranslationServiceAdapter;
+        }
+
         if (useTranslationServiceAdapter()) {
             return NonLoggingTranslationServiceAdapter.getInstance();
         }
@@ -46,7 +52,11 @@ public class TranslationServiceFactory {
 		TranslationServiceFactory.translationService = translationService;
 	}
 
-	public static Locale getLocale() {
+    public static void registerNonLoggingTranslationService(TranslationService translationService) {
+        TranslationServiceFactory.nonLoggingTranslationServiceAdapter = translationService;
+    }
+
+    public static Locale getLocale() {
 		try {
 			return localeProvider.load();
 		} catch (Exception e) {
