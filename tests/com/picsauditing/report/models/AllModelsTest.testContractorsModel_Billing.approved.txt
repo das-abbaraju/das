@@ -15,6 +15,9 @@ AccountContactPhone
 AccountContactTimezone
 AccountCountry
 AccountCountryCurrency
+AccountCountryEnglish
+AccountCountryIsoCode
+AccountCountryProforma
 AccountCountrySubdivision
 AccountCreationDate
 AccountFax

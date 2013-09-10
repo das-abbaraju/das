@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -66,18 +67,35 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 			.asList("BG", "CZ", "DK", UK_ISO_CODE, "GI", "HU", "LT", "LV", "PL", "RO", "SE")));
 
 	protected String isoCode;
+    protected User createdBy;
+    protected User updatedBy;
+    protected Date creationDate;
+    protected Date updateDate;
+
 	protected String name;
 	protected String english;
-	protected String phone;
-	protected String salesPhone;
-	protected String fax;
+
+    protected Currency currency = Currency.USD;
 	protected Double corruptionPerceptionIndex;
 	protected boolean proforma;
-	protected String picsEmail;
-	protected BusinessUnit businessUnit;
-    protected CountryContact countryContact;
 
-	protected Currency currency = Currency.USD;
+    protected String csrPhone;
+    protected String csrFax;
+    protected String csrEmail;
+    protected String csrAddress;
+    protected String csrCity;
+    protected CountrySubdivision csrCountrySubdivision;
+    protected String csrZip;
+
+    protected String isrPhone;
+    protected String isrFax;
+    protected String isrEmail;
+    protected String isrAddress;
+    protected String isrCity;
+    protected CountrySubdivision isrCountrySubdivision;
+    protected String isrZip;
+
+	protected BusinessUnit businessUnit;
 
 	private List<CountrySubdivision> countrySubdivisions = new ArrayList<CountrySubdivision>();
 	private List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
@@ -96,6 +114,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	@Id
 	@Column(nullable = false, length = 2)
+    @ReportField(importance = FieldImportance.Required)
 	public String getIsoCode() {
 		return isoCode;
 	}
@@ -104,7 +123,45 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.isoCode = isoCode;
 	}
 
-	@Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "createdBy", nullable = true)
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updatedBy", nullable = true)
+    public User getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(User updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    @Transient
 	public String getName() {
 		if (name != null) {
 			return name;
@@ -117,6 +174,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.name = name;
 	}
 
+    @ReportField(importance = FieldImportance.Required)
 	public String getEnglish() {
 		return english;
 	}
@@ -125,114 +183,182 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.english = english;
 	}
 
-	@Column(name = "phone", length = 30)
-    @Deprecated
-	public String getPhone() {
-		return phone;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @ReportField(type = FieldType.Currency, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
+    public Currency getCurrency() {
+        return currency;
+    }
 
-    @Deprecated
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public void setCurrency(Currency curreny) {
+        this.currency = curreny;
+    }
 
-	@Column(name = "salesPhone", length = 30)
-    @Deprecated
-	public String getSalesPhone() {
-		return salesPhone;
-	}
+    @Column(name = "perceivedCorruption")
+    public Double getCorruptionPerceptionIndex() {
+        return this.corruptionPerceptionIndex;
+    }
 
-    @Deprecated
-	public void setSalesPhone(String salesPhone) {
-		this.salesPhone = salesPhone;
-	}
+    public void setCorruptionPerceptionIndex(Double corruptionPerceptionIndex) {
+        this.corruptionPerceptionIndex = corruptionPerceptionIndex;
+    }
 
-	@Column(name = "fax", length = 30)
-    @Deprecated
-	public String getFax() {
-		return fax;
-	}
+    @ReportField(type = FieldType.Boolean, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
+    public boolean isProforma() {
+        return proforma;
+    }
 
-	public void setFax(String fax) {
-		this.fax = fax;
-	}
+    public void setProforma(boolean proforma) {
+        this.proforma = proforma;
+    }
 
-	public static String convertToCode(String tempCountry) {
-		if (Strings.isEmpty(tempCountry)) {
-			return null;
-		}
+    @Column(name = "csrPhone", length = 30)
+    public String getCsrPhone() {
+        return csrPhone;
+    }
 
-		tempCountry = tempCountry.trim();
-		if (tempCountry.length() == 2) {
-			return tempCountry;
-		}
-		if (tempCountry.equals("Canada")) {
-			return CANADA_ISO_CODE;
-		} else if (tempCountry.equals("United States")) {
-			return US_ISO_CODE;
-		}
+    public void setCsrPhone(String csrPhone) {
+        this.csrPhone = csrPhone;
+    }
 
-		return "???";
-	}
+    @Column(name = "csrFax", length = 30)
+    public String getCsrFax() {
+        return csrFax;
+    }
 
-	@Column(name = "perceivedCorruption")
-	public Double getCorruptionPerceptionIndex() {
-		return this.corruptionPerceptionIndex;
-	}
+    public void setCsrFax(String csrFax) {
+        this.csrFax = csrFax;
+    }
 
-	public void setCorruptionPerceptionIndex(Double corruptionPerceptionIndex) {
-		this.corruptionPerceptionIndex = corruptionPerceptionIndex;
-	}
+    public String getCsrEmail() {
+        return csrEmail;
+    }
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	@ReportField(type = FieldType.Currency, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
-	public Currency getCurrency() {
-		return currency;
-	}
+    public void setCsrEmail(String csrEmail) {
+        this.csrEmail = csrEmail;
+    }
 
-	public void setCurrency(Currency curreny) {
-		this.currency = curreny;
-	}
+    public String getCsrAddress() {
+        return csrAddress;
+    }
 
-	public boolean isProforma() {
-		return proforma;
-	}
+    public void setCsrAddress(String csrAddress) {
+        this.csrAddress = csrAddress;
+    }
 
-	public void setProforma(boolean proforma) {
-		this.proforma = proforma;
-	}
+    public String getCsrCity() {
+        return csrCity;
+    }
 
-    @Deprecated
-	public String getPicsEmail() {
-		return picsEmail;
-	}
+    public void setCsrCity(String csrCity) {
+        this.csrCity = csrCity;
+    }
 
-    @Deprecated
-	public void setPicsEmail(String picsEmail) {
-		this.picsEmail = picsEmail;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "csrCountrySubdivision")
+    public CountrySubdivision getCsrCountrySubdivision() {
+        return csrCountrySubdivision;
+    }
+
+    public void setCsrCountrySubdivision(CountrySubdivision csrCountrySubdivision) {
+        this.csrCountrySubdivision = csrCountrySubdivision;
+    }
+
+    public String getCsrZip() {
+        return csrZip;
+    }
+
+    public void setCsrZip(String csrZip) {
+        this.csrZip = csrZip;
+    }
+
+    @Column(name = "isrPhone", length = 30)
+    public String getIsrPhone() {
+        return isrPhone;
+    }
+
+    public void setIsrPhone(String isrPhone) {
+        this.isrPhone = isrPhone;
+    }
+
+    @Column(name = "isrFax", length = 30)
+    public String getIsrFax() {
+        return csrFax;
+    }
+
+    public void setIsrFax(String isrFax) {
+        this.isrFax = isrFax;
+    }
+
+    public String getIsrEmail() {
+        return isrEmail;
+    }
+
+    public void setIsrEmail(String isrEmail) {
+        this.isrEmail = isrEmail;
+    }
+
+    public String getIsrAddress() {
+        return isrAddress;
+    }
+
+    public void setIsrAddress(String isrAddress) {
+        this.isrAddress = isrAddress;
+    }
+
+    public String getIsrCity() {
+        return isrCity;
+    }
+
+    public void setIsrCity(String isrCity) {
+        this.isrCity = isrCity;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "isrCountrySubdivision")
+    public CountrySubdivision getIsrCountrySubdivision() {
+        return isrCountrySubdivision;
+    }
+
+    public void setIsrCountrySubdivision(CountrySubdivision isrCountrySubdivision) {
+        this.isrCountrySubdivision = isrCountrySubdivision;
+    }
+
+    public String getIsrZip() {
+        return isrZip;
+    }
+
+    public void setIsrZip(String isrZip) {
+        this.isrZip = isrZip;
+    }
+
+    public static String convertToCode(String tempCountry) {
+        if (Strings.isEmpty(tempCountry)) {
+            return null;
+        }
+
+        tempCountry = tempCountry.trim();
+        if (tempCountry.length() == 2) {
+            return tempCountry;
+        }
+        if (tempCountry.equals("Canada")) {
+            return CANADA_ISO_CODE;
+        } else if (tempCountry.equals("United States")) {
+            return US_ISO_CODE;
+        }
+
+        return "???";
+    }
 
 	@ManyToOne
 	@JoinColumn(name="businessUnitID")
-    @Deprecated
 	public BusinessUnit getBusinessUnit() {
 		return businessUnit;
 	}
 
-    @Deprecated
 	public void setBusinessUnit(BusinessUnit businessUnit) {
 		this.businessUnit = businessUnit;
 	}
-
-    @OneToOne(mappedBy = "country")
-    public CountryContact getCountryContact() {
-        return countryContact;
-    }
-
-    public void setCountryContact(CountryContact countryContact) {
-        this.countryContact = countryContact;
-    }
 
     @OneToMany(mappedBy = "country")
 	public List<InvoiceFeeCountry> getAmountOverrides() {
@@ -364,5 +490,36 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
         }
 
         return null;
+    }
+
+    public void setAuditColumns() {
+        updateDate = new Date();
+
+        if (createdBy == null) {
+            createdBy = updatedBy;
+        }
+        if (creationDate == null) {
+            creationDate = updateDate;
+        }
+    }
+
+    public void setAuditColumns(User user) {
+        if (user != null) {
+            updatedBy = user;
+        }
+
+        setAuditColumns();
+    }
+
+    public void setAuditColumns(Permissions permissions) {
+        if (permissions == null) {
+            setAuditColumns();
+            return;
+        }
+        int userID = permissions.getUserId();
+        if (permissions.getAdminID() > 0) {
+            userID = permissions.getAdminID();
+        }
+        setAuditColumns(new User(userID));
     }
 }

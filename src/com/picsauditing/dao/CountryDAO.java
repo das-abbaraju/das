@@ -1,7 +1,11 @@
 package com.picsauditing.dao;
 
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.BusinessUnit;
 import com.picsauditing.jpa.entities.Country;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
@@ -31,7 +35,17 @@ public class CountryDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<Country> findWhere(String where) {
+    @Transactional(propagation = Propagation.NESTED)
+    public Country save(Country o) {
+        if (StringUtils.isEmpty(o.getIsoCode())) {
+            em.persist(o);
+        } else {
+            o = em.merge(o);
+        }
+        return o;
+    }
+
+    public List<Country> findWhere(String where) {
 		Query query = em.createQuery("FROM Country WHERE " + where);
 		return query.getResultList();
 	}

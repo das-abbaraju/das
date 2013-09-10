@@ -38,8 +38,6 @@ public class RegistrationTest extends PicsTranslationTest {
 	private ContractorAccount contractor;
 	@Mock
 	private Country country;
-    @Mock
-    private CountryContact countryContact;
 	@Mock
 	private CountrySubdivision countrySubdivision;
 	@Mock
@@ -87,8 +85,7 @@ public class RegistrationTest extends PicsTranslationTest {
 		when(contractor.getCountry()).thenReturn(country);
 		when(contractor.getNaics()).thenReturn(new Naics());
 		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-        when(country.getCountryContact()).thenReturn(countryContact);
-        when(countryContact.getBusinessUnit()).thenReturn(businessUnit);
+        when(country.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
 		classUnderTest.setSapAppPropertyUtil(sapAppPropertyUtil);
 	}

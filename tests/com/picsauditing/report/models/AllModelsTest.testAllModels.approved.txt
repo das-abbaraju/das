@@ -469,6 +469,8 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
+AccountCountryEnglish
+AccountCountryIsoCode
 AccountCountrySubdivision
 AccountCreationDate
 AccountID
@@ -765,6 +767,8 @@ AccountContactName
 AccountContactPhone
 AccountContactTimezone
 AccountCountry
+AccountCountryEnglish
+AccountCountryIsoCode
 AccountCountrySubdivision
 AccountCreationDate
 AccountFax
@@ -968,6 +972,12 @@ ContractorTradeManufacture
 ContractorTradeSelfPerformed
 ContractorWorksAtClientSite
 TradeName
+
+Model: Countries
+Permission: Permissions{permissions=[]}
+----------------------------------------
+CountryEnglish
+CountryIsoCode
 
 Model: EmployeeCompetencies
 Permission: Permissions{permissions=[]}

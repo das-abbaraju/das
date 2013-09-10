@@ -95,7 +95,7 @@ public class IGVerification extends ContractorActionSupport {
             phone = getLocalizedPhoneNumberForUser(user, contractor.getCountry());
         } catch(Exception e) {}
         if (phone == null)
-            phone = contractor.getCountry().getCountryContact().getCsrPhone();
+            phone = contractor.getCountry().getCsrPhone();
 
 		emailBuilder.setTemplate(template);
         emailBuilder.addToken("contactPhone", phone);

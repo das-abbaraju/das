@@ -1,6 +1,7 @@
 package com.picsauditing.actions.countries;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -14,7 +15,6 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class ManageCountries extends PicsActionSupport {
     protected Country country;
-    protected CountryContact countryContact;
 
     private List<Country> countries;
 
@@ -29,8 +29,6 @@ public class ManageCountries extends PicsActionSupport {
         permissions.tryPermission(OpPerms.DevelopmentEnvironment);
 
         if (country != null) {
-            countryContact = country.getCountryContact();
-
             return "country";
         }
         else {
@@ -43,11 +41,11 @@ public class ManageCountries extends PicsActionSupport {
 	public String save() throws Exception {
         permissions.tryPermission(OpPerms.DevelopmentEnvironment);
 
-        countryContact.setAuditColumns(permissions);
-        countrySubdivisionDAO.save(countryContact);
+        country.setAuditColumns(permissions);
+        countryDAO.save(country);
         addActionMessage("Country Saved Successfully");
 
-        return setUrlForRedirect("ManageCountries.action?country=" + countryContact.getCountry().getIsoCode());
+        return setUrlForRedirect("ManageCountries.action?country=" + country.getIsoCode());
 	}
 
 	private void findCountries() {
@@ -65,14 +63,6 @@ public class ManageCountries extends PicsActionSupport {
 
     public void setCountry(Country country) {
         this.country = country;
-    }
-
-    public CountryContact getCountryContact() {
-        return countryContact;
-    }
-
-    public void setCountryContact(CountryContact countryContact) {
-        this.countryContact = countryContact;
     }
 
     public List<Country> getCountries() {
@@ -103,4 +93,5 @@ public class ManageCountries extends PicsActionSupport {
 
         return result;
     }
+
 }

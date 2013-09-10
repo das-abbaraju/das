@@ -20,6 +20,7 @@ public enum ModelType {
     ContractorStatistics,
     ContractorTags,
     ContractorTrades,
+    Countries,
     EmployeeCompetencies,
     FlagArchive,
     ForcedFlags,
