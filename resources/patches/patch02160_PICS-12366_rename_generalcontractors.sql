@@ -9,8 +9,8 @@ ALTER TABLE `generalcontractors`
   CHANGE `subID` `conID` INT(11) NULL, 
   ADD  UNIQUE INDEX `conID` (`conID`, `opID`),
   ADD  INDEX `opID` (`opID`),
-  ADD CONSTRAINT `FK_contractor_operator_op` FOREIGN KEY (`opID`) REFERENCES `pics_yesterday`.`accounts`(`id`),
-  ADD CONSTRAINT `FK_contractor_operator_con` FOREIGN KEY (`conID`) REFERENCES `pics_yesterday`.`accounts`(`id`);
+  ADD CONSTRAINT `FK_contractor_operator_op` FOREIGN KEY (`opID`) REFERENCES `accounts`(`id`),
+  ADD CONSTRAINT `FK_contractor_operator_con` FOREIGN KEY (`conID`) REFERENCES `accounts`(`id`);
 
 RENAME TABLE `generalcontractors` TO `contractor_operator`;
 
