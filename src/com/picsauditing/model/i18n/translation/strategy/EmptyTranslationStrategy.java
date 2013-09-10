@@ -9,7 +9,7 @@ public class EmptyTranslationStrategy implements TranslationStrategy {
 
 	@Override
 	public String performTranslation(String key, Locale locale) {
-		String translation = TranslationServiceFactory.getTranslationService().getText(key, locale);
+		String translation = TranslationServiceFactory.getNonLoggingTranslationService().getText(key, locale);
 		if (Strings.isEmpty(key) || key.equals(translation)) {
 			return Strings.EMPTY_STRING;
 		}

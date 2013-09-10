@@ -52,7 +52,7 @@ public class TranslationServiceAdapterTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        translationService = TranslationServiceAdapter.getInstance();
+        translationService = (TranslationServiceAdapter)TranslationServiceAdapter.getInstance();
         Whitebox.setInternalState(translationService, "client", client);
         Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
         cache = Whitebox.getInternalState(TranslationServiceAdapter.class, "cache");

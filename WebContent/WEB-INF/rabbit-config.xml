@@ -93,6 +93,7 @@
     <template message-converter="messageConverter" id="TranslationUsageTemplate" connection-factory="connectionFactory" exchange="translation-usage-exchange"/>
     <beans:bean id="TranslationUsagePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
         <beans:property name="amqpTemplate" ref="TranslationUsageTemplate" />
+        <beans:property name="featureToggleName" value="Toggle.TranslationServiceAdapter" />
     </beans:bean>
 
     <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">

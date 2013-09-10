@@ -14,6 +14,7 @@ import org.apache.struts2.ServletActionContext;
 import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.MediaType;
 
 import java.text.MessageFormat;
@@ -24,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class TranslationServiceAdapter implements TranslationService {
 
-	private static final TranslationServiceAdapter INSTANCE = new TranslationServiceAdapter();
+	private static final TranslationService INSTANCE = new TranslationServiceAdapter();
     private final Logger logger = LoggerFactory.getLogger(TranslationServiceAdapter.class);
 
     public static final String DEFAULT_LANGUAGE = "en";
@@ -41,14 +42,14 @@ public class TranslationServiceAdapter implements TranslationService {
     private static final String environment = System.getProperty("pics.env");
     private Client client;
 
-    private TranslationServiceAdapter() {
+    TranslationServiceAdapter() {
         // CacheManager.create returns the existing singleton if it already exists
         CacheManager manager = CacheManager.create();
         cache = manager.getCache(CACHE_NAME);
         wildcardCache = manager.getCache(WILDCARD_CACHE_NAME);
     }
 
-	public static TranslationServiceAdapter getInstance() {
+	public static TranslationService getInstance() {
 		return INSTANCE;
 	}
 
@@ -64,7 +65,7 @@ public class TranslationServiceAdapter implements TranslationService {
         return (translation == null) ? DEFAULT_TRANSLATION : translation.getTranslation();
 	}
 
-    private TranslationWrapper getTextForKey(String key, String locale) {
+    TranslationWrapper getTextForKey(String key, String locale) {
         TranslationWrapper translation;
         Element element = cache.get(key);
         if (element == null) {
@@ -232,7 +233,24 @@ public class TranslationServiceAdapter implements TranslationService {
     private void publishTranslationLookupEventIfReturned(String locale, TranslationWrapper translation) {
         if (translationReturned(translation)) {
             TranslationLookupData data = createPublishData(locale, translation);
-            SpringUtils.publishEvent(new TranslationLookupEvent(data));
+            int notAcceptedCount = 0;
+            boolean notAccepted = true;
+            while(notAccepted && notAcceptedCount < 8) {
+                if (notAcceptedCount > 0) {
+                    logger.warn("Retrying publish. Tries: {}", notAcceptedCount);
+                }
+                try {
+                    SpringUtils.publishEvent(new TranslationLookupEvent(data));
+                    notAccepted = false;
+                } catch (TaskRejectedException e) {
+                    try {
+                        logger.warn("TaskExecuter rejected this publish: {}", e.getMessage());
+                        notAcceptedCount++;
+                        Thread.sleep(250);
+                    } catch (InterruptedException e1) {
+                    }
+                }
+            }
         }
     }
 

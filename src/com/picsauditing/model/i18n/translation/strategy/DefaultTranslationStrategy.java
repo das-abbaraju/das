@@ -8,7 +8,7 @@ public class DefaultTranslationStrategy implements TranslationStrategy {
 
 	@Override
 	public String performTranslation(String key, Locale locale) {
-		return TranslationServiceFactory.getTranslationService().getText(key, locale);
+		return TranslationServiceFactory.getNonLoggingTranslationService().getText(key, locale);
 	}
 
 }

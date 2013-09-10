@@ -18,6 +18,14 @@ public class TranslationServiceFactory {
 	// for testing
 	private static TranslationService translationService;
 
+    public static TranslationService getNonLoggingTranslationService() {
+        if (useTranslationServiceAdapter()) {
+            return NonLoggingTranslationServiceAdapter.getInstance();
+        }
+
+        return I18nCache.getInstance();
+    }
+
 	public static TranslationService getTranslationService() {
 		if (translationService != null) {
 			return translationService;
