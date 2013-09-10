@@ -1,10 +1,11 @@
 package com.picsauditing.util;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 import java.util.Locale;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.TreeMap;
 
 @SuppressWarnings("serial")
 public class ReportFilterNote extends ReportFilter {
+    private TranslationService translationService;
 	protected String keyword;
 	protected NoteCategory[] category;
 	protected LowMedHigh[] priority;
@@ -77,29 +79,37 @@ public class ReportFilterNote extends ReportFilter {
 	}
 
 	public Map<LowMedHigh, String> getPriorityList() {
-        I18nCache cache = I18nCache.getInstance();
+        TranslationService translationService = translationService();
         Locale locale = getLocaleStatic();
 
         Map<LowMedHigh, String> priorityList = new TreeMap<>();
-        priorityList.put(LowMedHigh.Low, cache.getText(LowMedHigh.Low.getI18nKey(), locale));
-        priorityList.put(LowMedHigh.Med, cache.getText(LowMedHigh.Med.getI18nKey(), locale));
-        priorityList.put(LowMedHigh.High, cache.getText(LowMedHigh.High.getI18nKey(), locale));
+        priorityList.put(LowMedHigh.Low, translationService.getText(LowMedHigh.Low.getI18nKey(), locale));
+        priorityList.put(LowMedHigh.Med, translationService.getText(LowMedHigh.Med.getI18nKey(), locale));
+        priorityList.put(LowMedHigh.High, translationService.getText(LowMedHigh.High.getI18nKey(), locale));
         return priorityList;
 	}
 
     public Map<String, String> getCategoryList() {
-        I18nCache cache = I18nCache.getInstance();
+        TranslationService translationService = translationService();
         Locale locale = getLocaleStatic();
 
         Map<String, String> categoryList = new TreeMap<>();
 
         for (NoteCategory category : NoteCategory.values()) {
-            categoryList.put(category.name(), cache.getText(category.getI18nKey(), locale));
+            categoryList.put(category.name(), translationService.getText(category.getI18nKey(), locale));
         }
         return categoryList;
 	}
 
-	public NoteStatus[] getStatusList() {
+    private TranslationService translationService() {
+        if (translationService == null) {
+            return TranslationServiceFactory.getTranslationService();
+        }
+
+        return translationService;
+    }
+
+    public NoteStatus[] getStatusList() {
 		return NoteStatus.values();
 	}
 

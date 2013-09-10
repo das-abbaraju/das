@@ -1,19 +1,19 @@
 package com.picsauditing.report.data;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.DisplayType;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
 public class HtmlWriter {
-    private static final Logger logger = LoggerFactory.getLogger(HtmlWriter.class);
+    // private static final Logger logger = LoggerFactory.getLogger(HtmlWriter.class);
 
-    private static I18nCache i18nCache = I18nCache.getInstance();
+    // private static I18nCache i18nCache = I18nCache.getInstance();
+    private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
     private Locale locale;
 
@@ -230,7 +230,10 @@ public class HtmlWriter {
         return "style=\"" + style + "\"";
     }
 
-    protected static String getText(String key, Locale locale) {
-        return i18nCache.getText(key, locale);
+    protected String getText(String key, Locale locale) {
+        if (Strings.isEmpty(key) || key.contains(" ")) {
+            return key;
+        }
+        return translationService.getText(key, locale);
     }
 }

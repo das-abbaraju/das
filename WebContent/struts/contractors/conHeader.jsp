@@ -161,10 +161,6 @@ function loadStatus(caoID, addUserNote){
 </script>
 
 <style>
-#caoTable a.edit {
-	display: none
-}
-
 #caoTable span.right {
 	width: 20px;
 }

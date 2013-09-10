@@ -79,6 +79,7 @@
                     cao_id = $element.find('.bCaoID').val(),
                     status = $element.find('.bStatus').val();
 
+                // calls reject in report_insurance_approval.js and refresh in audit.js
                 $element.trigger('reject', [cao_id, function () {
 
                     $cao_table.trigger('refresh', [audit_id, cao_id, status]);

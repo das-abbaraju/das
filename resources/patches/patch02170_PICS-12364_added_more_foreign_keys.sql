@@ -1,0 +1,4 @@
+ALTER TABLE `contractor_audit`
+  ADD CONSTRAINT `auditType` FOREIGN KEY (`auditTypeID`) REFERENCES `audit_type`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT;
+ALTER TABLE `contractor_trade`
+  ADD CONSTRAINT `tradeID` FOREIGN KEY (`tradeID`) REFERENCES `ref_trade`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE;

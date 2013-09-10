@@ -18,6 +18,8 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.data.*;
 import com.picsauditing.report.models.ReportModelFactory;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.TimeZoneUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -29,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
@@ -64,7 +65,7 @@ public class ReportService {
     @Autowired
     private EmailSubscriptionDAO emailSubscriptionDAO;
 
-	private I18nCache i18nCache;
+    private TranslationService translationService;
     private static final int EXPORT_LIMIT = 65535;
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
@@ -417,7 +418,7 @@ public class ReportService {
 
 			json.put(ReportJson.SQL_FUNCTIONS_KEY, sqlFunction.name());
 			String key = ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name();
-			String translatedValue = getI18nCache().getText(key, locale);
+			String translatedValue = translationService().getText(key, locale);
 			json.put(ReportJson.SQL_FUNCTIONS_VALUE, translatedValue);
 
 			jsonArray.add(json);
@@ -428,12 +429,12 @@ public class ReportService {
 		return sqlFunctionsJson;
 	}
 
-	private I18nCache getI18nCache() {
-		if (i18nCache == null) {
-			return I18nCache.getInstance();
+	private TranslationService translationService() {
+		if (translationService == null) {
+			return TranslationServiceFactory.getTranslationService();
 		}
 
-		return i18nCache;
+		return translationService;
 	}
 
 	public void publicizeReport(User user, Report report) throws ReportPermissionException {
