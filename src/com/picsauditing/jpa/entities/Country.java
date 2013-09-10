@@ -96,6 +96,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	@Id
 	@Column(nullable = false, length = 2)
+    @ReportField(importance = FieldImportance.Required)
 	public String getIsoCode() {
 		return isoCode;
 	}
@@ -117,6 +118,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.name = name;
 	}
 
+    @ReportField(importance = FieldImportance.Required)
 	public String getEnglish() {
 		return english;
 	}
@@ -195,6 +197,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.currency = curreny;
 	}
 
+    @ReportField(type = FieldType.Boolean, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public boolean isProforma() {
 		return proforma;
 	}

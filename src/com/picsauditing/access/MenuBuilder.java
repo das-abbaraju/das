@@ -199,7 +199,7 @@ public final class MenuBuilder {
         addAuditsSubmenu(configureMenu, permissions);
 
         if (permissions.has(OpPerms.DevelopmentEnvironment)) {
-            configureMenu.addChild("Manage Countries", "ManageCountries.action",
+            configureMenu.addChild("Manage Countries", "Report.action?report=1010",
                     "manage_countries");
         }
 

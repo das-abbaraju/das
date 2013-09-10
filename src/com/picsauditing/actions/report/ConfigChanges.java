@@ -78,10 +78,4 @@ public class ConfigChanges extends PicsActionSupport {
 				"updateDate");
 	}
 
-    public List<CountryContact> getCountryContacts() {
-        return (List<CountryContact>) dao.findWhere(CountryContact.class, "updateDate > '"
-                + lastRelease + "'", 0, "updateDate");
-
-    }
-
 }
