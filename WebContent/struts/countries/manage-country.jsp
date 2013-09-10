@@ -19,7 +19,7 @@
     <s:form id="save" method="POST" enctype="multipart/form-data">
         <s:hidden name="country.id"/>
         <s:hidden name="country.isoCode"/>
-        <s:hidden name="country.isoCode"/>
+        <s:hidden name="country.businessUnit"/>
 
         <table width="100%">
             <tr>
@@ -34,6 +34,12 @@
                     <fieldset class="form">
                         <h2 class="formLegend">Billing</h2>
                         <ol>
+                            <li><label>Currency: </label>
+                                <s:select id="country_currency"
+                                          name="country.currency"
+                                          value="country.currency"
+                                          list="@com.picsauditing.jpa.entities.Currency@values()"/>
+                            </li>
                             <li><label>Accepts Proforma?</label>
                                 <s:radio
                                         list="#{'true':'Yes','false':'No'}"
@@ -91,14 +97,15 @@
                         <h2 class="formLegend">Business Unit</h2>
                         <ol>
                             <li><label>Business Unit: </label>
-                                <s:select id="country_business_unit"
-                                          name="country.businessUnit.id"
-                                          value="country.businessUnit.id"
-                                          list="businessUnitList"
-                                          listKey="id"
-                                          listValue="businessUnit"
-                                          headerKey=""
-                                          headerValue=" - Business Unit - "/>
+                                <s:property value="country.businessUnit.businessUnit"/>
+                                <%--<s:select id="country_business_unit"--%>
+                                          <%--name="country.businessUnit.id"--%>
+                                          <%--value="country.businessUnit.id"--%>
+                                          <%--list="businessUnitList"--%>
+                                          <%--listKey="id"--%>
+                                          <%--listValue="businessUnit"--%>
+                                          <%--headerKey=""--%>
+                                          <%--headerValue=" - Business Unit - "/>--%>
                             </li>
                         </ol>
                     </fieldset>
