@@ -1,29 +1,25 @@
 package com.picsauditing.report.data;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.report.fields.DisplayType;
-import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
 import static com.picsauditing.report.ReportJson.FILTER_VALUE;
 import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_FIELD_ID;
 
 public class ChartWriter {
-    private static final Logger logger = LoggerFactory.getLogger(ChartWriter.class);
+    // private static final Logger logger = LoggerFactory.getLogger(ChartWriter.class);
 
-    private static I18nCache i18nCache = I18nCache.getInstance();
+    private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
     private Locale locale;
 
@@ -149,8 +145,11 @@ public class ChartWriter {
         return text;
     }
 
-    protected static String getText(String key, Locale locale) {
-        return i18nCache.getText(key, locale);
+    protected String getText(String key, Locale locale) {
+        if (Strings.isEmpty(key) || key.contains(" ")) {
+            return key;
+        }
+        return translationService.getText(key, locale);
     }
 
     private void setDrillDownURL(ReportRow row) {
