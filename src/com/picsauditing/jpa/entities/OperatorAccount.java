@@ -38,6 +38,7 @@ public class OperatorAccount extends Account {
 	public static final int SALES = 23325;
 	public static final int SUNOCO = 27406;
 	public static final int TESORO = 1436;
+	public static final int VALSPAR_GARLAND = 23335;
 
 	private OperatorAccount parent;
 

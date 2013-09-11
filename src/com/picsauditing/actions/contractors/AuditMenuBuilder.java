@@ -326,10 +326,14 @@ public class AuditMenuBuilder {
 	}
 
 	private boolean employeeGUARDApplicable() {
-		return (contractor.isHasEmployeeGUARDTag() || competencyRequiresDocumentation());
+		return (contractor.isHasEmployeeGUARDTag() || contractorHasCompetencyRequiringDocumentation());
 	}
 
-	private boolean competencyRequiresDocumentation() {
+	private boolean contractorHasCompetencyRequiringDocumentation() {
+		if (!worksOnsiteForValsparGarland()) {
+			return false;
+		}
+
 		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
 			OperatorTagCategory operatorTagCategory = contractorTag.getTag().getCategory();
 			if (operatorTagCategory != null && operatorTagCategory.isRemoveEmployeeGUARD()) {
@@ -338,6 +342,11 @@ public class AuditMenuBuilder {
 		}
 
 		return contractor.hasOperatorWithCompetencyRequiringDocumentation();
+	}
+
+	private boolean worksOnsiteForValsparGarland() {
+		// FIXME This is a business requirement, need to find a better way to implement this
+		return contractor.isWorksForOperator(OperatorAccount.VALSPAR_GARLAND) && contractor.isOnsiteServices();
 	}
 
 	private boolean canManuallyAddAudits() {
@@ -363,19 +372,19 @@ public class AuditMenuBuilder {
 							childMenu = createAuditMenuItem(audit);
 						}
 
-                        String linkText;
+						String linkText;
 
-                        if (audit.getAuditType().getPeriod().isMonthlyQuarterlyAnnual()) {
-                            linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + audit.getAuditFor();
-                        } else {
-                            String year = DateBean.format(audit.getEffectiveDateLabel(), "yyyy");
-                            linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + year;
-                            if (!Strings.isEmpty(audit.getAuditFor())) {
-                                linkText = audit.getAuditFor() + " " + linkText;
-                            }
-                        }
+						if (audit.getAuditType().getPeriod().isMonthlyQuarterlyAnnual()) {
+							linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + audit.getAuditFor();
+						} else {
+							String year = DateBean.format(audit.getEffectiveDateLabel(), "yyyy");
+							linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + year;
+							if (!Strings.isEmpty(audit.getAuditFor())) {
+								linkText = audit.getAuditFor() + " " + linkText;
+							}
+						}
 
-                        childMenu.setName(linkText);
+						childMenu.setName(linkText);
 						addToServiceMenu(Service.AUDITGUARD, childMenu);
 						counter++;
 					}
@@ -485,9 +494,9 @@ public class AuditMenuBuilder {
 	private MenuComponent createAuditMenuItem(ContractorAudit audit) {
 		String link = urlUtils().getActionUrl("Audit", "auditID", audit.getId());
 		String linkText = getText(audit.getAuditType().getI18nKey("name"));
-        if (audit.getAuditType().getPeriod().isMonthlyQuarterlyAnnual()) {
-            linkText += " " + audit.getAuditFor();
-        }
+		if (audit.getAuditType().getPeriod().isMonthlyQuarterlyAnnual()) {
+			linkText += " " + audit.getAuditFor();
+		}
 		MenuComponent menuItem = new MenuComponent(linkText, link);
 		menuItem.setAuditId(audit.getId());
 
