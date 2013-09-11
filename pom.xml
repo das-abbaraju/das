@@ -296,17 +296,9 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>2.0.1</version>
                 <configuration>
-                    <propertyFile>${build.outputDirectory}/liquibase.properties</propertyFile>
-                    <changeLogFile>${build.outputDirectory}/changeLog.xml</changeLogFile>
+                    <propertyFile>${project.build.outputDirectory}/liquibase.properties</propertyFile>
+                    <changeLogFile>${project.build.outputDirectory}/changeLog.xml</changeLogFile>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
