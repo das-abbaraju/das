@@ -98,6 +98,14 @@ Ext.define('PICS.controller.report.Filter', {
                 click: this.removeFilter
             },
 
+            'reportfilteroptions button[action=toggle-negate-operator]': {
+                click: this.onNegateOperatorToggleButtonClick
+            },
+
+            'reportfilteroptions toggleslide': {
+                change: this.onToggleSlideChange
+            },
+
             /******************************************
              * SAVING EDITS TO FILTER STORE + REFRESH *
              ******************************************/
@@ -119,14 +127,14 @@ Ext.define('PICS.controller.report.Filter', {
             '\
             #report_filters reportfilterbasemultiselect combobox[name=value],\
             #report_filters reportfilterbaseautocomplete combobox[name=value]': {
-                select: this.selectValueField,
+                select: this.syncFormAndReportFromFormCmp,
                 render: this.renderBoxselectValueField,
                 change: this.changeBoxselectValueField
             },
 
             // date filters
             'reportfilterbasedate [name=value]': {
-                select: this.selectValueField
+                select: this.syncFormAndReportFromFormCmp
             },
 
             '#report_filters datefield[name=value]': {
@@ -135,7 +143,7 @@ Ext.define('PICS.controller.report.Filter', {
 
             // boolean filters
             '#report_filters checkbox': {
-                change: this.selectValueField,
+                change: this.syncFormAndReportFromFormCmp,
                 render: this.renderCheckbox
             },
 
@@ -157,6 +165,46 @@ Ext.define('PICS.controller.report.Filter', {
     /**
      * Filter Options
      */
+
+    toggleNegateOperator: function (cmp) {
+        var filter_cmp = cmp.up('reportfilter'),
+            base_filter_cmp = filter_cmp.down('reportfilterbasefilter'),
+            value_field = filter_cmp.down('[name=value]'),
+            has_value = value_field.value.length,
+            negate_operator_field = filter_cmp.down('[name=negate_operator]'),
+            old_tooltip_html = cmp.getTooltipHtml(),
+            new_tooltip_html;
+
+        if (filter_cmp.hasCls('negated')) {
+            negate_operator_field.setValue(false);
+            filter_cmp.removeCls('negated');
+
+            if (old_tooltip_html) {
+                new_tooltip_html = old_tooltip_html.replace('Include', 'Ignore');
+                cmp.setTooltipHtml(new_tooltip_html);
+            }
+        } else {
+            negate_operator_field.setValue(true);
+            filter_cmp.addCls('negated');
+
+            if (old_tooltip_html) {
+                new_tooltip_html = old_tooltip_html.replace('Ignore', 'Include');
+                cmp.setTooltipHtml(new_tooltip_html);
+            }
+        }
+
+        if (has_value) {
+            this.syncFormAndReport(base_filter_cmp);
+        }
+    },
+
+    onNegateOperatorToggleButtonClick: function (cmp, eOpts) {
+        this.toggleNegateOperator(cmp);
+    },
+
+    onToggleSlideChange: function (cmp, eOpts) {
+        this.toggleNegateOperator(cmp);
+    },
 
     // customizes the filter options view after it gets placed by the layout manager
     afterFilterOptionsLayout: function (cmp, eOpts) {
@@ -195,7 +243,7 @@ Ext.define('PICS.controller.report.Filter', {
         // Select does not fire when the user clicks removes the last item.
         // TODO: Create a third method called by both change and select.
         if (!newValue) {
-            this.selectValueField(cmp);
+            this.syncFormAndReportFromFormCmp(cmp);
         }
     },
 
@@ -441,13 +489,14 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    selectValueField: function (cmp, records, eOpts) {
-        var filter_input_view = cmp.up('reportfilterbasefilter'),
-            filter_input_form = filter_input_view.getForm();
-
-        filter_input_form.updateRecord();
-
+    syncFormAndReport: function (filter_input_view) {
+        filter_input_view.getForm().updateRecord();
         PICS.data.ServerCommunication.loadData();
+    },
+
+    syncFormAndReportFromFormCmp: function (cmp, records, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter');
+        this.syncFormAndReport(filter_input_view);
     },
 
     submitTextValueFieldOnBlur: function (cmp, event, eOpts) {

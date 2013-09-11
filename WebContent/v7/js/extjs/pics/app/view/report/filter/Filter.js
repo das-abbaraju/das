@@ -52,7 +52,6 @@ Ext.define('PICS.view.report.filter.Filter', {
         ];
 
         this.dockedItems = [
-            Ext.Create('toggleslide'),
             remove_button
         ];
 
@@ -74,7 +73,7 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     createContent: function (filter_record) {
         var filter_title = this.createTitle(filter_record);
-        var filter_input = this.createInput(filter_record);
+        var filter_input = this.createIsput(filter_record);
 
         return {
             border: 0,
@@ -97,28 +96,104 @@ Ext.define('PICS.view.report.filter.Filter', {
 
         return {
             border: 0,
-            height: 30,
             items: [{
-                xtype: 'displayfield',
-                cls: 'filter-name',
-                name: 'filter_name',
-                value: name
-            }, {
-                xtype: 'tbfill'
-            }],
-            layout: {
-                type: 'hbox',
-                align: 'middle'
-            },
-            name: 'filter_title'
+                xtype: 'toolbar',
+                style: {
+                    background: 'transparent'
+                },
+                height: name == "Country" ? 34 : 30,
+                items: [{
+                    xtype: 'displayfield',
+                    cls: 'filter-name',
+                    name: 'filter_name',
+                    value: name
+                }, {
+                    xtype: 'tbfill'
+                },
+                    name == "Country" ? this.createNegateOperatorToggleSlide() : this.createNegateOperatorToggleButton()
+                ],
+                layout: {
+                    type: 'hbox',
+                    align: 'middle'
+                },
+                name: 'filter_title'
+            }]
         };
     },
 
-    createInput: function (filter_record) {
+    createIsput: function (filter_record) {
         var type = filter_record.get('type'),
             cls = this.getFilterClassByType(type);
 
         return Ext.create(cls);
+    },
+
+    createNegateOperatorToggleButton: function () {
+        return {
+            xtype: 'button',
+            action: 'toggle-negate-operator',
+            cls: 'negate-operator-toggle-button',
+            height: 17,
+            text: '<i class="icon-ban-circle"></i>',
+            listeners: {
+                'render': function () {
+                    Ext.merge(this, {
+                        tooltip_cmp: Ext.create('Ext.tip.ToolTip', {
+                            target: this.getEl(),
+                            html: 'Ignore selected values'
+                        }),
+                        getTooltipHtml: function() {
+                            if (typeof this.tooltip_cmp.body == 'undefined') {
+                                return;
+                            }
+
+                            return this.tooltip_cmp.body.getHTML();
+                        },
+                        setTooltipHtml: function (value) {
+                            if (typeof this.tooltip_cmp.body == 'undefined') {
+                                return;
+                            }
+
+                            this.tooltip_cmp.body.setHTML(value);
+                        }
+                    });
+                }
+            }
+        };
+    },
+
+    createNegateOperatorToggleSlide: function () {
+        return {
+            xtype: 'toggleslide',
+            onText: '&nbsp',
+            offText: '&nbsp',
+            state: true,
+            tooltip: 'Toggle include / ignore',
+            listeners: {
+                'render': function () {
+                    Ext.merge(this, {
+                        tooltip_cmp: Ext.create('Ext.tip.ToolTip', {
+                            target: this.getEl(),
+                            html: 'Ignore selected values'
+                        }),
+                        getTooltipHtml: function() {
+                            if (typeof this.tooltip_cmp.body == 'undefined') {
+                                return;
+                            }
+
+                            return this.tooltip_cmp.body.getHTML();
+                        },
+                        setTooltipHtml: function (value) {
+                            if (typeof this.tooltip_cmp.body == 'undefined') {
+                                return;
+                            }
+
+                            return this.tooltip_cmp.body.setHTML(value);
+                        }
+                    });
+                }
+            }
+        };
     },
 
     createRemoveButton: function () {
@@ -132,7 +207,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 xtype: 'button',
                 action: 'remove-filter',
                 cls: 'remove-filter',
-                height: 20,
+                height: 22,
                 text: '<i class="icon-remove-sign"></i>',
                 tooltip: PICS.text('Report.execute.filter.tooltipRemove'),
                 width: 20
