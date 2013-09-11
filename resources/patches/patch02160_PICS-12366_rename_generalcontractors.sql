@@ -18,3 +18,50 @@ DROP VIEW IF EXISTS generalcontractors;
 CREATE VIEW `generalcontractors` AS
 (SELECT id,opID AS genID,conID AS subID,gcID,TYPE,createdBy,creationDate,updatedBy,updateDate,workStatus,flag,lastStepToGreenDate,waitingOn,forceFlag,forceBegin,forceEnd,forcedBy,relationshipType,processCompletion,flagLastUpdated,forceReason,contractorType,baselineFlag,baselineApprover,baselineApproved,flagDetail,baselineFlagDetail,requestedByUserID,requestedByUser,deadline,reasonForRegistration
 FROM contractor_operator);
+
+DROP TRIGGER IF EXISTS `generalcontractors_two_ids_before_insert` ;
+
+CREATE DEFINER = `pics_admin`@`%` TRIGGER `generalcontractors_two_ids_before_insert` BEFORE INSERT ON `contractor_operator`
+FOR EACH
+ROW BEGIN
+SET @cnt =0;
+
+IF new.gcID IS NULL THEN SET @cnt = @cnt +1;
+
+END IF ;
+
+IF new.conID IS NULL THEN SET @cnt = @cnt +1;
+
+END IF ;
+
+IF new.opID IS NULL THEN SET @cnt = @cnt +1;
+
+END IF ;
+
+IF @cnt >1 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'A contractor_operator object must have at least 2 ids between conID, opID and gcID not equal to NULL';
+
+END IF ;
+
+END;
+
+DROP TRIGGER IF EXISTS `generalcontractors_two_ids_before_update` ;
+
+CREATE DEFINER = `pics_admin`@`%` TRIGGER `generalcontractors_two_ids_before_update` BEFORE UPDATE ON `contractor_operator` FOR EACH ROW BEGIN SET @cnt =0;
+
+IF new.gcID IS NULL THEN SET @cnt = @cnt +1;
+
+END IF ;
+
+IF new.conID IS NULL THEN SET @cnt = @cnt +1;
+
+END IF ;
+
+IF new.opID IS NULL THEN SET @cnt = @cnt +1;
+
+END IF ;
+
+IF @cnt >1 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'A contractor_operator object must have at least 2 ids between conID, opID and gcID not equal to NULL';
+
+END IF ;
+
+END;
