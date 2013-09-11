@@ -312,9 +312,7 @@
                 </th>
             </tr>
 
-            /*
-             * Non-tax Items
-             */
+            <%-- Non-tax Items --%>
 
             <s:iterator value="transaction.items" status="stat">
                 <s:if test="!invoiceFee.isTax()">
@@ -373,10 +371,7 @@
                 </tr>
             </s:if>
 
-
-            /*
-             * Tax Items
-             */
+            <%-- Tax Items --%>
 
             <s:if test="transaction.hasTax()">
 
