@@ -20,14 +20,27 @@
  	</beans:bean>
 	
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
-	
-	<queue id="flag-changes" name="flag-changes" />
-	<fanout-exchange name="flag-changes-exchange">
-	  <bindings>
-	    <binding queue="flag-changes"/>
-	  </bindings>
-	</fanout-exchange>	
-	
+
+    <queue id="flag-changes-dead" name="flag-changes-dead"/>
+
+    <direct-exchange name="flag-changes-dead-letter-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+        <bindings>
+            <binding queue="flag-changes-dead" key="flag-changes-dead"/>
+        </bindings>
+    </direct-exchange>
+
+    <queue id="flag-changes" name="flag-changes" >
+        <queue-arguments>
+            <beans:entry key="x-dead-letter-exchange" value="flag-changes-dead-letter-exchange" />
+        </queue-arguments>
+    </queue>
+
+    <fanout-exchange name="flag-changes-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+        <bindings>
+            <binding queue="flag-changes"/>
+        </bindings>
+    </fanout-exchange>
+
 	<queue id="email-queue-priority" name="email-queue-priority" />
 	<queue id="email-queue-normal" name="email-queue-normal" />
 	<queue id="email-subscription" name="email-subscription" />
