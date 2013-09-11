@@ -1,20 +1,15 @@
-DROP PROCEDURE IF EXISTS ADD_COLUMN_11902;
+SELECT IFNULL(column_name, null) INTO @colName
+FROM information_schema.columns
+WHERE table_name = 'invoice'
+      AND column_name = 'lateFeeInvoice'
+      and table_schema = database();
 
-DELIMITER //
-CREATE PROCEDURE ADD_COLUMN_11902()
-  BEGIN
-    IF NOT EXISTS((SELECT
-                     *
-                   FROM information_schema.COLUMNS
-                   WHERE TABLE_SCHEMA = DATABASE()
-                         AND COLUMN_NAME = 'lateFeeInvoice' AND TABLE_NAME = 'invoice'))
-    THEN
-      ALTER TABLE invoice ADD lateFeeInvoice INT(11);
-    END IF;
+select if(@colName is not null, 'select 1', 'ALTER TABLE invoice ADD lateFeeInvoice INT(11)') into @addStatement;
 
-  END;
-//
-DELIMITER ;
+prepare addColumn from @addStatement;
 
-CALL ADD_COLUMN_11902();
-DROP PROCEDURE IF EXISTS ADD_COLUMN_11902;
+execute addColumn;
+
+deallocate prepare addColumn;
+
+set @colName = null;
