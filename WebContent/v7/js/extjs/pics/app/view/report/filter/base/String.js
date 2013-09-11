@@ -4,12 +4,17 @@ Ext.define('PICS.view.report.filter.base.String', {
 
     operator_store: [
         ['Contains', PICS.text('Report.execute.stringFilter.contains')],
+        ['NotContains', PICS.text('Report.execute.stringFilter.notContains')],
         ['BeginsWith', PICS.text('Report.execute.stringFilter.beginsWith')],
+        ['NotBeginsWith', PICS.text('Report.execute.stringFilter.notBeginsWith')],
         ['EndsWith', PICS.text('Report.execute.stringFilter.endsWith')],
+        ['NotEndsWith', PICS.text('Report.execute.stringFilter.notEndsWith')],
         ['Equals', PICS.text('Report.execute.stringFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.stringFilter.notEquals')],
         ['Empty', PICS.text('Report.execute.stringFilter.empty')],
+        ['NotEmpty', PICS.text('Report.execute.stringFilter.notEmpty')]
     ],
-
+    
     createOperatorField: function () {
         return {
             xtype: 'combobox',
@@ -28,10 +33,10 @@ Ext.define('PICS.view.report.filter.base.String', {
             name: 'value'
         };
     },
-
+    
     updateValueFieldFromOperatorValue: function (operator) {
         var input = this.down('textfield[name="value"]');
-
+        
         if (operator == 'Empty' || operator == 'NotEmpty') {
             input.setValue(null);
             input.hide();

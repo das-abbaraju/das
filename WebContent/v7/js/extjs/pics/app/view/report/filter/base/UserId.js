@@ -4,9 +4,10 @@ Ext.define('PICS.view.report.filter.base.UserId', {
 
     operator_store: [
         ['Equals', PICS.text('Report.execute.userIdFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.userIdFilter.notEquals')],
         ['CurrentUser', PICS.text('Report.execute.userIdFilter.currentUser')]
     ],
-
+    
     createOperatorField: function () {
         return {
             xtype: 'combobox',
@@ -29,10 +30,10 @@ Ext.define('PICS.view.report.filter.base.UserId', {
             name: 'value'
         };
     },
-
+    
     updateValueFieldFromOperatorValue: function (operator) {
         var input = this.down('numberfield');
-
+        
         if (operator == 'CurrentUser') {
             input.setValue(null);
             input.hide();

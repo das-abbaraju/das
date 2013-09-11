@@ -25,28 +25,25 @@ Ext.define('PICS.model.report.Filter', {
         type: 'string',
         useNull: true
     }, {
-        name: 'negate_operator',
-        type: 'boolean'
-    }, {
         name: 'value',
         convert: function (value, record) {
             var type = record.get('type');
-
+            
             if (value == null) {
                 return '';
             }
-
+            
             switch (type) {
                 case PICS.data.FilterType.Date:
                     value = Ext.Date.format(value, 'Y-m-d') || value;
-
+                    
                     break;
                 case PICS.data.FilterType.Autocomplete:
                 case PICS.data.FilterType.Multiselect:
                     if (value instanceof Array) {
                         value = value.join(', ');
                     }
-
+                    
                     break;
                 case PICS.data.FilterType.AccountID:
                 case PICS.data.FilterType.Boolean:
@@ -54,14 +51,14 @@ Ext.define('PICS.model.report.Filter', {
                 case PICS.data.FilterType.UserID:
                     // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
                     value = value.toString();
-
+                    
                     break;
                 case PICS.data.FilterType.String:
                 default:
                     // no conversion necessary
                     break;
             }
-
+            
             return value;
         },
         type: 'string',

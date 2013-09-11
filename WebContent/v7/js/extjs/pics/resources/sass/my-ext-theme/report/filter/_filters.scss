@@ -32,7 +32,7 @@ $report_filter_remove_filter_text_color: #ac030c;
 		border-bottom: 1px solid $report_filter_border_color_bottom;
 		border-top: 1px solid $report_filter_border_color_top;
 	}
-
+	
 	.filter-content
 	{
 		top: -9px !important;
@@ -42,7 +42,7 @@ $report_filter_remove_filter_text_color: #ac030c;
 	{
 		display: none;
 		top: 25px !important;
-
+		
 		label
 		{
 			color: $report_filter_number_text_color;
@@ -52,11 +52,11 @@ $report_filter_remove_filter_text_color: #ac030c;
 			text-align: center;
 		}
 	}
-
+	
 	.filter-name
 	{
 		white-space: nowrap;
-
+		
 		div
 		{
 			color: $report_filter_name_text_color;
@@ -64,13 +64,13 @@ $report_filter_remove_filter_text_color: #ac030c;
 			font-weight: bold;
 		}
 	}
-
+	
 	.x-form-field
 	{
 		border-color: $report_filter_input_border_color;
 		padding-left: 3px;
 	}
-
+	
 	.remove-filter
 	{
 		background: none;
@@ -78,12 +78,12 @@ $report_filter_remove_filter_text_color: #ac030c;
 		@include border-radius(0px);
 		display: none;
 		padding: 0px;
-
+		
 		span
 		{
 			padding: 0px;
 		}
-
+		
 		.icon-remove-sign
 		{
 			color: $report_filter_remove_filter_text_color;
@@ -118,38 +118,4 @@ $report_filter_remove_filter_text_color: #ac030c;
 #report_filters .filter.x-form-focus .remove-filter
 {
 	display: block;
-}
-
-#report_filters .negate-operator-toggle-button
-{
-	background: none;
-	border: 0px;
-	@include border-radius(0px);
-	padding: 0px;
-
-	span
-	{
-		padding: 0px;
-	}
-
-	.icon-ban-circle
-	{
-		color: #ccc;
-		font-size: 18px;
-		line-height: 18px;
-	}
-}
-
-#report_filters .filter.negated
-{
-	.icon-ban-circle
-	{
-		color: #AC030C;
-	}
-
-	.x-boxselect-item,
-	input[name="operator"]
-	{
-		text-decoration: line-through;
-	}
 }
