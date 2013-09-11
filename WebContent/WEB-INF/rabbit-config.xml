@@ -32,6 +32,7 @@
     <queue id="flag-changes" name="flag-changes" >
         <queue-arguments>
             <beans:entry key="x-dead-letter-exchange" value="flag-changes-dead-letter-exchange" />
+            <beans:entry key="x-dead-letter-routing-key" value="flag-changes-dead" />
         </queue-arguments>
     </queue>
 
@@ -66,13 +67,27 @@
         </bindings>
     </direct-exchange>
 
-    <queue id="csr-assignments-single" name="csr-assignments-single" />
+    <queue id="csr-assignments-single-dead" name="csr-assignments-single-dead" />
+
+    <direct-exchange name="csr-assignments-single-dead-letter-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+        <bindings>
+            <binding queue="csr-assignments-single-dead" key="csr-assignments-single-dead"/>
+        </bindings>
+    </direct-exchange>
+
+    <queue id="csr-assignments-single" name="csr-assignments-single" >
+        <queue-arguments>
+            <beans:entry key="x-dead-letter-exchange" value="csr-assignments-single-dead-letter-exchange" />
+            <beans:entry key="x-dead-letter-routing-key" value="csr-assignments-single-dead" />
+        </queue-arguments>
+    </queue>
+
     <direct-exchange name="csr-assignments-single-exchange" xmlns="http://www.springframework.org/schema/rabbit">
         <bindings>
             <binding queue="csr-assignments-single" />
         </bindings>
     </direct-exchange>
-	
+
 	<queue id="email-requests" name="email-requests" />
 	<direct-exchange name="email-requests-exchange" xmlns="http://www.springframework.org/schema/rabbit">
 	  <bindings>
