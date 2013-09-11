@@ -259,7 +259,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			// otherwise
 			return "confirm";
 		}
-		addActionError(getText("ScheduleAudit.error.FailedToSelectTime"));
+		addActionError(getText("ScheduleAudit.message.TimeSlotNotAvailable"));
 		findTimeslots();
 		return "select";
 	}

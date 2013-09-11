@@ -12,24 +12,13 @@
     <s:include value="../jquery.jsp"></s:include>
 
     <script type="text/javascript" src="js/audit/schedule_audit_select.js?v=<s:property value="version"/>"></script>
-
-    <script type="text/javascript">
-
-    var auditID = <s:property value="conAudit.id"/>;
-        var startDate = '<s:date name="availableSet.latest" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>';
-
-        $(function() {
-            $('a.expedite').click(function() {
-                return confirm(translate('JS.ScheduleAudit.confirm.RushAudit'));
-            });
-        });
-
-        </script>
 </head>
+
 <body>
-    <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
+	<!-- TODO: replaced method name in id with select_timeslot_page because two methods are routing to this page -->
+    <div id="${actionName}_select_timeslot_page" class="${actionName}-page page">
         <s:include value="../contractors/conHeader.jsp" />
-        
+
         <s:form cssClass="schedule-audit-form schedule-audit-select-form">
             <s:hidden name="auditID" />
 

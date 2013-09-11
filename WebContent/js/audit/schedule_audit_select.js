@@ -2,32 +2,28 @@
     PICS.define('audit.ScheduleAuditSelect', {
         methods: {
             init: function () {
-                var element = $('#ScheduleAudit_address_page');
+                var $select_timeslot_page = $('#ScheduleAudit_select_timeslot_page');
                 
-                if (element.length) {
-                    var that = this;
-                    
-                    var show_more_element = element.find('#show_next');
-                    show_more_element.bind('click', this.showMoreTimeslots);
-                    
-                    var timezone_element = element.find('#timezone');
-                    timezone_element.bind('change', this.updateTimeZone);
-                    
-                    element.delegate('.cal_times a', 'click', this.showScheduleAuditExpediteModal);
-                    
-                    $('window').ready(function (event) {
-                        that.updateTimeZone.apply(timezone_element, [event]);
-                    });
+                if ($select_timeslot_page.length) {
+                	var that = this;
+                
+	                $select_timeslot_page.on('click', '#show_next', this.showMoreTimeslots);
+	                $select_timeslot_page.on('change', '#timezone', this.updateTimeZone);
+	                $select_timeslot_page.on('click', 'a.expedite', this.showScheduleAuditExpediteModal);
+
+                	$('window').ready(function (event) {
+                		that.updateTimeZone.apply('#timezone', [event]);
+            		});
                 }
             },
-            
+
             /**
              * Show More Timeslots
              * 
              * @event
              */
             showMoreTimeslots: function (event) {
-                $(this).attr('disabled', true);
+                $(event.target).attr('disabled', true);
                 
                 PICS.ajax({
                     url:'ScheduleAudit!viewMoreTimes.action',
@@ -59,28 +55,26 @@
                     
                     return modal;
                 }
-                
-                var element = $(this);
-                var expedite = element.closest('.cal_day').hasClass('rush-date');
-                if (expedite) {
-                    event.preventDefault();
-                    
-                    PICS.ajax({
-                        url: 'ScheduleAudit!ajaxScheduleAuditExpediteModal.action',
-                        success: function (data, textStatus, XMLHttpRequest) {
-                            var modal = createModal(data);
-                            modal.show();
-                            
-                            $('.schedule-audit-expedite-modal').delegate('.accept-expedite', 'click', function (event) {
-                                window.location.href = element.attr('href');
-                            });
-                            
-                            $('.schedule-audit-expedite-modal').delegate('.cancel-expedite', 'click', function (event) {
-                                modal.hide();
-                            });
-                        }
-                    });
-                }
+
+                var element = $(event.target);
+
+                event.preventDefault();
+
+                PICS.ajax({
+                    url: 'ScheduleAudit!ajaxScheduleAuditExpediteModal.action',
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var modal = createModal(data);
+                        modal.show();
+
+                        $('.schedule-audit-expedite-modal').on('click', '.accept-expedite', function (event) {
+                            window.location.href = element.attr('href');
+                        });
+
+                        $('.schedule-audit-expedite-modal').on('click', '.cancel-expedite', function (event) {
+                            modal.hide();
+                        });
+                    }
+                });
             },
             
             /**
@@ -89,8 +83,8 @@
              * @event
              */
             updateTimeZone: function (event) {
-                var element = $(this);
-                var auditID = $('#auditID');
+                var element = $(event.target),
+                	auditID = $('#auditID');
                 
                 PICS.ajax({
                     url: 'ScheduleAudit!changeSelectedTimeZone.action',
