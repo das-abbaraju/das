@@ -19,7 +19,7 @@
     <s:form id="save" method="POST" enctype="multipart/form-data">
         <s:hidden name="country.id"/>
         <s:hidden name="country.isoCode"/>
-        <s:hidden name="country.businessUnit"/>
+        <s:hidden name="country.businessUnit.id"/>
 
         <table width="100%">
             <tr>
