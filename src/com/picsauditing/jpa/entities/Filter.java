@@ -29,6 +29,7 @@ import com.picsauditing.util.Strings;
 public class Filter extends ReportElement {
 
 	public static final String FILTER_VALUE_DELIMITER = ", ";
+    private boolean negateOperator;
 	private QueryFilterOperator operator;
 	private String value = "";
 	private String columnCompare;
@@ -42,7 +43,16 @@ public class Filter extends ReportElement {
 	}};
 	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 
-	@Enumerated(EnumType.STRING)
+    @ReportField(type = FieldType.Boolean)
+    public boolean getNegateOperator() {
+        return negateOperator;
+    }
+
+    public void setNegateOperator(boolean negateOperator) {
+        this.negateOperator = negateOperator;
+    }
+
+    @Enumerated(EnumType.STRING)
     @ReportField
 	public QueryFilterOperator getOperator() {
 		return operator;
@@ -93,8 +103,8 @@ public class Filter extends ReportElement {
 
 		String columnSql = getSql();
 
-		boolean isEmpty = operator.equals(QueryFilterOperator.Empty);
-		boolean isNotEmpty = operator.equals(QueryFilterOperator.NotEmpty);
+		boolean isEmpty = operator.equals(QueryFilterOperator.Empty) || (!negateOperator && operator.equals(QueryFilterOperator.NotEmpty));
+		boolean isNotEmpty = operator.equals(QueryFilterOperator.NotEmpty) || (negateOperator && operator.equals(QueryFilterOperator.Empty));
 
 		if (isEmpty) {
 			return columnSql + " IS NULL OR " + columnSql + " = ''";
@@ -102,7 +112,7 @@ public class Filter extends ReportElement {
 			return columnSql + " IS NOT NULL OR " + columnSql + " != ''";
 		}
 
-		String operand = operator.getOperand();
+		String operand = toOperatorSql();
 		String valueSql = toValueSql();
 
         if (field.getPrefixValue() != null || field.getSuffixValue() != null)
@@ -116,7 +126,42 @@ public class Filter extends ReportElement {
         return filterSql;
 	}
 
-	private String toValueSql() throws ReportValidationException {
+    private String toOperatorSql() throws ReportValidationException {
+        if (operator == null) {
+            throw new ReportValidationException("missing operator for field " + name);
+        }
+
+        StringBuilder operatorSql = new StringBuilder();
+
+        if (negateOperator)
+        {
+            switch (operator) {
+                case Equals:
+                    operator = QueryFilterOperator.NotEquals; break;
+                case NotEquals:
+                    operator = QueryFilterOperator.Equals; break;
+                case GreaterThan:
+                    operator = QueryFilterOperator.LessThanOrEquals; break;
+                case LessThan:
+                    operator = QueryFilterOperator.GreaterThanOrEquals; break;
+                case GreaterThanOrEquals:
+                    operator = QueryFilterOperator.LessThan; break;
+                case LessThanOrEquals:
+                    operator = QueryFilterOperator.GreaterThan; break;
+                case CurrentAccount:
+                case CurrentUser:
+                    operatorSql.append("!"); break;
+                default:
+                    operatorSql.append(" NOT ");
+            }
+        }
+
+        operatorSql.append(operator.getOperand());
+
+        return operatorSql.toString();
+    }
+
+    private String toValueSql() throws ReportValidationException {
 		if (operator == null) {
 			throw new ReportValidationException("missing operator for field " + name);
 		}

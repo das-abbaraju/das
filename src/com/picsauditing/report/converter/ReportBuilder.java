@@ -168,7 +168,8 @@ public class ReportBuilder {
 
 		Filter filter = new Filter();
 		toElementFromJSON(json, filter);
-		filter.setOperator(parseOperator(json));
+        filter.setOperator(parseOperator(json));
+		filter.setNegateOperator(Boolean.parseBoolean(Strings.toString(json.get(FILTER_NEGATE_OPERATOR))));
 		filter.setValue(Strings.toString(json.get(FILTER_VALUE)));
 		filter.setFieldForComparison(parseAdvancedFilter(json));
 

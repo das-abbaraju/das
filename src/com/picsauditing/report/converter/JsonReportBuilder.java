@@ -180,6 +180,7 @@ public class JsonReportBuilder {
 		JSONObject json = elementToCommonJson(filter);
 
 		json.put(FILTER_TYPE, filter.getField().getFilterType().name());
+        json.put(FILTER_NEGATE_OPERATOR, Boolean.toString(filter.getNegateOperator()));
 		json.put(FILTER_OPERATOR, filter.getOperator().toString());
 		String filterValue = makeFilterValue(filter);
 		json.put(FILTER_VALUE, filterValue);
