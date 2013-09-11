@@ -57,15 +57,6 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     account.setCountry(country)
     mockInvoice.setAccount(account)
 
-    var items = new util.ArrayList[InvoiceItem]()
-    val item1: InvoiceItem = new InvoiceItem(new InvoiceFee())
-    item1.setId(ITEM_ID_1)
-    val item2: InvoiceItem = new InvoiceItem(new InvoiceFee())
-    item2.setId(ITEM_ID_2)
-    items.add(item1)
-    items.add(item2)
-    mockInvoice.setItems(items)
-
     var payments = new util.ArrayList[PaymentAppliedToInvoice]()
     val payment1: PaymentAppliedToInvoice = new PaymentAppliedToInvoice
     payment1.setAmount(new java.math.BigDecimal(100))
@@ -107,12 +98,36 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
   }
 
   it should "if the invoice is fully paid, have a refund applied to it when we doRefund." in {
+    var items = new util.ArrayList[InvoiceItem]()
+    val item1: InvoiceItem = new InvoiceItem(new InvoiceFee())
+    item1.setId(ITEM_ID_1)
+    val item2: InvoiceItem = new InvoiceItem(new InvoiceFee())
+    item2.setId(ITEM_ID_2)
+    items.add(item1)
+    items.add(item2)
+    mockInvoice.setItems(items)
+
     assert(Action.INPUT === classUnderTest.doRefund)
     verify(mockCreditMemoDAO, atLeastOnce()).save(any(classOf[RefundAppliedToCreditMemo]))
   }
 
   it should "if the invoice is partially paid and we have a large unpaid balance, not have a refund applied to it when we doRefund." in {
-    mockInvoice.setTotalAmount(new math.BigDecimal(10000))
+    var items = new util.ArrayList[InvoiceItem]()
+    val item1: InvoiceItem = new InvoiceItem(new InvoiceFee())
+    item1.setId(ITEM_ID_1)
+    item1.setAmount(new math.BigDecimal(300))
+    val item2: InvoiceItem = new InvoiceItem(new InvoiceFee())
+    item2.setId(ITEM_ID_2)
+    item2.setAmount(new math.BigDecimal(300))
+    val item3: InvoiceItem = new InvoiceItem(new InvoiceFee())
+    item3.setId(3)
+    item3.setAmount(new math.BigDecimal(1000))
+    items.add(item1)
+    items.add(item2)
+    items.add(item3)
+    mockInvoice.setItems(items)
+    mockInvoice.setTotalAmount(new math.BigDecimal(600))
+
     assert(Action.INPUT === classUnderTest.doRefund)
     verify(mockCreditMemoDAO, never).save(any(classOf[RefundAppliedToCreditMemo]))
   }
