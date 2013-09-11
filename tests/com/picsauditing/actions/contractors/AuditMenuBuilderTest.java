@@ -244,12 +244,30 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_NonValsparSafetyContractorWithRequiredCompetency()
+	public void testBuildAuditMenuFrom_NonValsparOnsiteSafetyContractorWithRequiredCompetency()
 			throws Exception {
 		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 		when(contractorAccount.isWorksForOperator(OperatorAccount.VALSPAR_GARLAND)).thenReturn(true);
+
+		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
+
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		assertNotNull(menuComponents);
+		assertFalse(menuComponents.isEmpty());
+
+		verify(urlUtils, atLeastOnce()).getActionUrl(actionCaptor.capture(), anyString(), any());
+
+		assertFalse(actionCaptor.getAllValues().contains("EmployeeDashboard"));
+	}
+
+	@Test
+	public void testBuildAuditMenuFrom_NonValsparSafetyContractorWithRequiredCompetency()
+			throws Exception {
+		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
 
