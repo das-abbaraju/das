@@ -14,6 +14,8 @@ public class InvoiceCreditMemo extends Transaction {
     private PaymentMethod paymentMethod = PaymentMethod.ReturnCreditMemo;
     private List<RefundItem> refundItems = new ArrayList<>();
 
+    private RefundAppliedToCreditMemo refund;
+
     @Enumerated(EnumType.STRING)
     public PaymentMethod getPaymentMethod() {
         return paymentMethod;
@@ -37,6 +39,15 @@ public class InvoiceCreditMemo extends Transaction {
 	public void setItems(List<RefundItem> items) {
         refundItems = items;
 	}
+
+    @OneToOne(mappedBy = "creditMemo", cascade = { CascadeType.REMOVE })
+    public RefundAppliedToCreditMemo getRefund() {
+        return refund;
+    }
+
+    public void setRefund(RefundAppliedToCreditMemo refund) {
+        this.refund = refund;
+    }
 
     @Override
     @Transient

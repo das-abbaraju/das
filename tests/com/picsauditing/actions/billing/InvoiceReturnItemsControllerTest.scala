@@ -8,14 +8,15 @@ import org.mockito.{MockitoAnnotations, Mock}
 import org.mockito.Mockito._
 import org.mockito.Matchers._
 import com.picsauditing.dao.{CreditMemoDAO, InvoiceDAO}
-import com.picsauditing.jpa.entities.{InvoiceItem, Invoice, CreditMemoAppliedToInvoice}
+import com.picsauditing.jpa.entities._
 import com.picsauditing.actions.PicsActionSupport
 import org.scalatest.mock.MockitoSugar
 import com.picsauditing.service.i18n.{TranslationServiceFactory, TranslationService}
-import java.util
+import java.{math, util}
 import java.util.Date
 import org.junit.Ignore
 import com.opensymphony.xwork2.Action
+import com.picsauditing.util.SapAppPropertyUtil
 
 
 @RunWith(classOf[JUnitRunner])
@@ -27,6 +28,8 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
   protected val NON_ITEM_ID_2 = 555
   protected val amount = java.math.BigDecimal.valueOf(20.00)
 
+  @Mock
+  val sapAppPropertyUtil: SapAppPropertyUtil = null
   @Mock
   val mockInvoiceDAO: InvoiceDAO = null
   @Mock
@@ -44,6 +47,34 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     MockitoAnnotations.initMocks(this)
     setInternalState("invoiceDAO", mockInvoiceDAO)
     setInternalState("creditMemoDAO", mockCreditMemoDAO)
+
+    classUnderTest.sapAppPropertyUtil = sapAppPropertyUtil
+    val account: Account = new Account
+    val country: Country = new Country("US")
+    val unit: BusinessUnit = new BusinessUnit
+    unit.setId(2)
+    country.setBusinessUnit(unit)
+    account.setCountry(country)
+    mockInvoice.setAccount(account)
+
+    var items = new util.ArrayList[InvoiceItem]()
+    val item1: InvoiceItem = new InvoiceItem(new InvoiceFee())
+    item1.setId(ITEM_ID_1)
+    val item2: InvoiceItem = new InvoiceItem(new InvoiceFee())
+    item2.setId(ITEM_ID_2)
+    items.add(item1)
+    items.add(item2)
+    mockInvoice.setItems(items)
+
+    var payments = new util.ArrayList[PaymentAppliedToInvoice]()
+    val payment1: PaymentAppliedToInvoice = new PaymentAppliedToInvoice
+    payment1.setAmount(new java.math.BigDecimal(100))
+    val payment2: PaymentAppliedToInvoice = new PaymentAppliedToInvoice
+    payment2.setAmount(new java.math.BigDecimal(200))
+    payments.add(payment1)
+    payments.add(payment2)
+    mockInvoice.setPayments(payments)
+
     classUnderTest.invoice = mockInvoice
   }
 
@@ -75,7 +106,18 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     assert(Action.SUCCESS === classUnderTest.doRefund)
   }
 
-//// I'm commenting this out because the invoice's fee-ordering logic breaks this, and I don't have the time to fix it.
+  it should "if the invoice is fully paid, have a refund applied to it when we doRefund." in {
+    assert(Action.INPUT === classUnderTest.doRefund)
+    verify(mockCreditMemoDAO, atLeastOnce()).save(any(classOf[RefundAppliedToCreditMemo]))
+  }
+
+  it should "if the invoice is partially paid and we have a large unpaid balance, not have a refund applied to it when we doRefund." in {
+    mockInvoice.setTotalAmount(new math.BigDecimal(10000))
+    assert(Action.INPUT === classUnderTest.doRefund)
+    verify(mockCreditMemoDAO, never).save(any(classOf[RefundAppliedToCreditMemo]))
+  }
+
+  //// I'm commenting this out because the invoice's fee-ordering logic breaks this, and I don't have the time to fix it.
 //  it should "create a CreditMemo with a RefundItem when a correct InvoiceItem ID is supplied for refund." in new ExistentIDs {
 //    test { creditMemo =>
 //      creditMemo.getCreditMemo.getItems foreach {item =>

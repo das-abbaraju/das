@@ -4,7 +4,7 @@ import com.opensymphony.xwork2.{Action, Preparable}
 import com.picsauditing.actions.contractors.ContractorActionSupport
 import com.picsauditing.dao.{CreditMemoDAO, InvoiceDAO}
 import org.springframework.beans.factory.annotation.Autowired
-import com.picsauditing.jpa.entities.{InvoiceItem, RefundItem, CreditMemoAppliedToInvoice, Invoice}
+import com.picsauditing.jpa.entities._
 import scala.beans.BeanProperty
 import scala.collection.JavaConversions._
 import com.picsauditing.access.{OpPerms, RequiredPermission}
@@ -13,6 +13,7 @@ import java.lang.{Integer => int}
 import java.util.{List => StrutsList}
 import com.picsauditing.util.SapAppPropertyUtil
 import java.io.PrintStream
+import scala.Some
 
 @RequiredPermission(OpPerms.Billing)
 class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {
@@ -22,7 +23,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   @Autowired
   private val invoiceDAO: InvoiceDAO = null
 
-  private var sapAppPropertyUtil: SapAppPropertyUtil = null
+  var sapAppPropertyUtil: SapAppPropertyUtil = null
 
   @BeanProperty
   var refunds: StrutsList[int] = null.asInstanceOf[StrutsList[int]]
@@ -101,7 +102,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   }
 
   private def save(creditMemo: CreditMemoAppliedToInvoice) = {
-    if (!creditMemo.getCreditMemo.getItems.isEmpty)
+    if (!creditMemo.getCreditMemo.getItems.isEmpty) {
       creditMemo.updateAmountApplied()
       creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
       creditMemo.setAuditColumns(permissions)
@@ -109,7 +110,22 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
         creditMemo.getCreditMemo.setSapSync(true)
       }
 
-      creditMemoDAO.save(creditMemo)
+      if (invoice.getPayments.size() > 0) {
+        val diff = invoice.getTotalAmount.subtract(invoice.getAmountApplied)
+
+        if (diff.doubleValue() < creditMemo.getAmount.doubleValue()) {
+          val refundApplied = RefundAppliedToCreditMemo.from(creditMemo.getCreditMemo)
+          refundApplied.setAmount(creditMemo.getAmount)
+          refundApplied.setAuditColumns(permissions)
+          if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getBusinessUnit.getId)) {
+            refundApplied.getRefund.setSapSync(true)
+          }
+          creditMemoDAO.save(refundApplied)
+        }
+      }
+    }
+
+    creditMemoDAO.save(creditMemo)
   }
 
 }
