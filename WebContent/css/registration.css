@@ -906,7 +906,8 @@ footer .footer-menu a {
 	position: relative;
 	left: 3px;
 }
--.make-payment .invoice tr.total td {
+
+.make-payment .invoice tr.total td {
 	background: #c8e0f0;
 	color: #70a7cb;
 	font-size: 24px;
