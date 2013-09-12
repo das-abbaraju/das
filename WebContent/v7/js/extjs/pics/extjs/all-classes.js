@@ -98442,10 +98442,6 @@ Ext.define('PICS.controller.report.Filter', {
                 click: this.onNegateOperatorToggleButtonClick
             },
 
-            'reportfilteroptions toggleslide': {
-                change: this.onToggleSlideChange
-            },
-
             /******************************************
              * SAVING EDITS TO FILTER STORE + REFRESH *
              ******************************************/
@@ -98467,14 +98463,14 @@ Ext.define('PICS.controller.report.Filter', {
             '\
             #report_filters reportfilterbasemultiselect combobox[name=value],\
             #report_filters reportfilterbaseautocomplete combobox[name=value]': {
-                select: this.syncFormAndReportFromFormCmp,
+                select: this.syncFormAndReport,
                 render: this.renderBoxselectValueField,
                 change: this.changeBoxselectValueField
             },
 
             // date filters
             'reportfilterbasedate [name=value]': {
-                select: this.syncFormAndReportFromFormCmp
+                select: this.syncFormAndReport
             },
 
             '#report_filters datefield[name=value]': {
@@ -98483,7 +98479,7 @@ Ext.define('PICS.controller.report.Filter', {
 
             // boolean filters
             '#report_filters checkbox': {
-                change: this.syncFormAndReportFromFormCmp,
+                change: this.syncFormAndReport,
                 render: this.renderCheckbox
             },
 
@@ -98498,11 +98494,7 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             'reportfilterbaseboolean': {
-                beforerender: function (cmp) {
-                    var negate_operator_toggle_button = cmp.up('panel').down('button');
-
-                    negate_operator_toggle_button.hide();
-                }
+                beforerender: this.beforeBooleanFilterRender
             }
          });
 
@@ -98514,6 +98506,16 @@ Ext.define('PICS.controller.report.Filter', {
         Ext.EventManager.onWindowResize(this.updateRemoveButtonPositions, this);
     },
 
+    /**
+     * Negate Operator Toggle
+     */
+
+    beforeBooleanFilterRender: function (boolean_filter_cmp, eOpts) {
+        var negate_operator_toggle_button = boolean_filter_cmp.up('panel').down('button');
+
+        negate_operator_toggle_button.hide();
+    },
+
     onReportFilterBaseRender: function (cmp, eOpts) {
         var negate_operator = cmp.getRecord().get('negate_operator');
 
@@ -98522,14 +98524,14 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    /**
-     * Filter Options
-     */
+    onNegateOperatorToggleButtonClick: function (button, eOpts) {
+        this.toggleNegateOperator(button);
+    },
 
-    toggleNegateOperator: function (filter_input_view) {
-        var filter_cmp = filter_input_view.up('reportfilter'),
-            value_field = filter_cmp.down('[name=value]'),
-            has_value = value_field.value.length,
+    toggleNegateOperator: function (negate_operator_toggle_button) {
+        var filter_cmp = negate_operator_toggle_button.up('reportfilter'),
+            filter_input_view = filter_cmp.down('reportfilterbasefilter'),
+            filter_input_value = filter_cmp.down('[name=value]').getValue(),
             negate_operator_field = filter_cmp.down('[name=negate_operator]');
 
         if (filter_cmp.hasCls('negated')) {
@@ -98540,22 +98542,16 @@ Ext.define('PICS.controller.report.Filter', {
             filter_cmp.addCls('negated');
         }
 
-        if (has_value) {
-            this.syncFormAndReport(filter_input_view);
+        filter_input_view.getForm().updateRecord();
+
+        if (filter_input_value) {
+            PICS.data.ServerCommunication.loadData();
         }
     },
 
-    onNegateOperatorToggleButtonClick: function (cmp, eOpts) {
-        var filter_input_view = cmp.up('reportfilter').down('reportfilterbasefilter')
-
-        this.toggleNegateOperator(filter_input_view);
-    },
-
-    onToggleSlideChange: function (cmp, eOpts) {
-        var filter_input_view = cmp.up('reportfilter').down('reportfilterbasefilter')
-
-        this.toggleNegateOperator(filter_input_view);
-    },
+    /**
+     * Filter Options
+     */
 
     // customizes the filter options view after it gets placed by the layout manager
     afterFilterOptionsLayout: function (cmp, eOpts) {
@@ -98594,7 +98590,7 @@ Ext.define('PICS.controller.report.Filter', {
         // Select does not fire when the user clicks removes the last item.
         // TODO: Create a third method called by both change and select.
         if (!newValue) {
-            this.syncFormAndReportFromFormCmp(cmp);
+            this.syncFormAndReport(cmp);
         }
     },
 
@@ -98840,13 +98836,8 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    syncFormAndReport: function (filter_input_view) {
-        filter_input_view.getForm().updateRecord();
-        PICS.data.ServerCommunication.loadData();
-    },
-
-    syncFormAndReportFromFormCmp: function (cmp, records, eOpts) {
-        var filter_input_view = cmp.up('reportfilterbasefilter');
+    syncFormAndReportFromFilter: function (filter_value_cmp, records, eOpts) {
+        var filter_input_view = filter_value_cmp.up('reportfilterbasefilter');
         this.syncFormAndReport(filter_input_view);
     },
 
