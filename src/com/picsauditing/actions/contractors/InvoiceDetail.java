@@ -231,10 +231,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
             }
 
             if (balance.abs().doubleValue() <= creditLeft.doubleValue()) {
-                amountApplied.add(balance);
+                amountApplied = amountApplied.add(balance);
             }
             else {
-                amountApplied.add(creditLeft);
+                amountApplied = amountApplied.add(creditLeft);
             }
 
             RefundAppliedToCreditMemo refundApplied = createRefundForCreditMemo(amountApplied);
@@ -242,6 +242,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
             invoiceDAO.save(refundApplied);
             billingService.syncBalance(contractor);
             contractorAccountDao.save(contractor);
+            addActionMessage("Refund created for $" + amountApplied.abs().doubleValue());
         }
     }
 

@@ -52,9 +52,9 @@ public class InvoiceCreditMemo extends Transaction {
     @Transient
     public BigDecimal getCreditLeft() {
         BigDecimal refundBalance = BigDecimal.ZERO;
-        refundBalance.add(totalAmount);
+        refundBalance = refundBalance.add(totalAmount);
         for (RefundAppliedToCreditMemo refundAppliedToCreditMemo : refunds) {
-            refundBalance.subtract(refundAppliedToCreditMemo.getAmount());
+            refundBalance = refundBalance.subtract(refundAppliedToCreditMemo.getAmount());
         }
 
         return refundBalance;
