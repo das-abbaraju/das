@@ -1,10 +1,13 @@
 package com.picsauditing.jpa.entities;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -17,6 +20,31 @@ public class AccountTest {
 
     @Mock
     private Country country;
+
+    public static final Calendar END_OF_TIME = GregorianCalendar.getInstance();
+    public static final Calendar WEEK_AGO = GregorianCalendar.getInstance();
+    public static final Calendar TODAY = GregorianCalendar.getInstance();
+
+    static {
+        TODAY.setTime(new Date());
+        TODAY.set(Calendar.MINUTE, 0);
+        TODAY.set(Calendar.SECOND, 0);
+        TODAY.set(Calendar.MILLISECOND, 0);
+
+        WEEK_AGO.setTime(new Date());
+        WEEK_AGO.add(Calendar.DAY_OF_MONTH, -7);
+        WEEK_AGO.set(Calendar.MINUTE, 0);
+        WEEK_AGO.set(Calendar.SECOND, 0);
+        WEEK_AGO.set(Calendar.MILLISECOND, 0);
+
+        END_OF_TIME.setTime(new Date());
+        END_OF_TIME.set(Calendar.YEAR, 4000);
+        END_OF_TIME.set(Calendar.MONTH, 4000);
+        END_OF_TIME.set(Calendar.DAY_OF_MONTH, 4000);
+        END_OF_TIME.set(Calendar.MINUTE, 0);
+        END_OF_TIME.set(Calendar.SECOND, 0);
+        END_OF_TIME.set(Calendar.MILLISECOND, 0);
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -105,6 +133,50 @@ public class AccountTest {
 
 	    account.setType("Admin");
 	    assertFalse(account.isContractor());
+    }
+
+    @Test
+    public void testGetCurrentAccountUserOfRole_OneExpiredOneCurrent() {
+        List<AccountUser> accountUserList = new ArrayList<>();
+        accountUserList.add(AccountUser.builder()
+                .user(User.builder().id(1).build())
+                .startDate(WEEK_AGO.getTime())
+                .endDate(TODAY.getTime())
+                .role(UserAccountRole.PICSInsideSalesRep)
+                .build());
+        accountUserList.add(AccountUser.builder()
+                .user(User.builder().id(2).build())
+                .startDate(TODAY.getTime())
+                .endDate(END_OF_TIME.getTime())
+                .role(UserAccountRole.PICSInsideSalesRep)
+                .build());
+
+        account.setAccountUsers(accountUserList);
+
+        assertEquals(2, account.getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep).getUser().getId());
+    }
+
+    @Test
+    public void testGetCurrentAccountUserOfRole_NoRoles() {
+        List<AccountUser> accountUserList = new ArrayList<>();
+        accountUserList.add(AccountUser.builder()
+                .user(User.builder().id(1).build())
+                .startDate(WEEK_AGO.getTime())
+                .endDate(TODAY.getTime())
+                .role(UserAccountRole.PICSInsideSalesRep)
+                .build());
+
+        account.setAccountUsers(accountUserList);
+
+        assertEquals(null, account.getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep));
+    }
+
+    @Test
+    public void testGetCurrentAccountUserOfRole_NoCurrentRoles() {
+        List<AccountUser> accountUserList = new ArrayList<>();
+        account.setAccountUsers(accountUserList);
+
+        assertEquals(null, account.getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep));
     }
 
 	private void setupTestAccount(String type, int id, String name, String city, CountrySubdivision countrySubdivision,

@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.AccountUserBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -167,5 +168,9 @@ public class AccountUser extends BaseTable {
 		}
 
         return true;
+    }
+
+    public static AccountUserBuilder builder() {
+        return new AccountUserBuilder();
     }
 }
