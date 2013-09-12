@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class XMLResultTest {
     private XMLResult xmlResult;
     private JSONObject json;
-    private static final String xmlString = readFile("tests/com/picsauditing/strutsutil/test_xml.txt");
+    private static final String xmlString = readFile("src/test/java/com/picsauditing/strutsutil/test_xml.txt");
 
     @Mock
     private ActionInvocation invocation;
@@ -40,7 +40,7 @@ public class XMLResultTest {
 
         xmlResult = new XMLResult();
 
-        String jsonString = readFile("tests/com/picsauditing/strutsutil/test_json.txt");
+        String jsonString = readFile("src/test/java/com/picsauditing/strutsutil/test_json.txt");
         json = (JSONObject) JSONValue.parse(jsonString);
         when(invocation.getAction()).thenReturn(action);
         when(invocation.getStack()).thenReturn(valueStack);
