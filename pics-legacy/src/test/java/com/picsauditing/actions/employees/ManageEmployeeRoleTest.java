@@ -39,7 +39,7 @@ public class ManageEmployeeRoleTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		manageEmployeeRole = new ManageEmployeeRole();
 

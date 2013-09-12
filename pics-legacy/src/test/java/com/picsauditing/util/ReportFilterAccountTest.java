@@ -42,7 +42,6 @@ public class ReportFilterAccountTest extends PicsActionTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Mockito.reset(translationService);
 
 		accountFilter = new ReportFilterAccount();
 		super.setupMocks();

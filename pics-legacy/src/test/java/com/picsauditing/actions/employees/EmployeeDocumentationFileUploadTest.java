@@ -47,7 +47,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		employeeDocumentationFileUpload = new EmployeeDocumentationFileUpload();
 		employeeDocumentationFileUpload.setEmployee(employee);

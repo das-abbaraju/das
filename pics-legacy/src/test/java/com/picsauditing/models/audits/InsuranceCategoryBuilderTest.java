@@ -28,7 +28,6 @@ public class InsuranceCategoryBuilderTest extends PicsTranslationTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        resetTranslationService();
 
         when(typeDAO.save((BaseTable) any())).thenReturn(null);
         permissions = Permissions.builder().userId(1).build();

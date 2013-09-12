@@ -93,20 +93,18 @@ public class CronTest extends PicsActionTest {
 
 	@BeforeClass
 	public static void classSetUp() {
-		PicsTranslationTest.setupTranslationServiceForTest();
 		Whitebox.setInternalState(DBBean.class, "staticDataSource", Mockito.mock(DataSource.class));
 	}
 
 	@AfterClass
 	public static void classTearDown() {
-		PicsTranslationTest.tearDownTranslationService();
 		Whitebox.setInternalState(DBBean.class, "staticDataSource", (DataSource) null);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		cron = new Cron();
 		super.setUp(cron);

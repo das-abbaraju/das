@@ -6,6 +6,7 @@ import java.util.List;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 @SuppressWarnings("serial")
 public class ReportFilterEmail extends ReportFilter {
@@ -151,6 +152,6 @@ public class ReportFilterEmail extends ReportFilter {
 	}
 	
 	public static String getDefaultToAddress() {
-		return translationService.getText("Filters.label.ToAddress", getLocaleStatic());
+		return TranslationServiceFactory.getTranslationService().getText("Filters.label.ToAddress", getLocaleStatic());
 	}
 }

@@ -91,7 +91,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 		when(translationService.getText(anyString(), any(Locale.class))).then(translate());
 
 		reportService = new ReportService();

@@ -34,20 +34,18 @@ public class EmployeeDashboardTest extends PicsTranslationTest {
 
 	@BeforeClass
 	public static void classSetUp() throws Exception {
-		PicsTranslationTest.setupTranslationServiceForTest();
 		TranslatorFactorySetup.setupTranslatorFactoryForTest();
 	}
 
 	@AfterClass
 	public static void classTearDown() throws Exception {
-		PicsTranslationTest.tearDownTranslationService();
 		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		employeeDashboard = new EmployeeDashboard();
 		setupContractor();

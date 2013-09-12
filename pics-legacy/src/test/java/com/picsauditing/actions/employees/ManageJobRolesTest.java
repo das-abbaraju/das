@@ -61,7 +61,7 @@ public class ManageJobRolesTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		manageJobRoles = new ManageJobRoles();
 		PicsTestUtil testUtil = new PicsTestUtil();

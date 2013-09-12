@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 @SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
@@ -288,15 +289,15 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public static String getDefaultName() {
-		return String.format("- %s -", translationService.getText("global.CompanyName", getLocaleStatic()));
+		return String.format("- %s -", TranslationServiceFactory.getTranslationService().getText("global.CompanyName", getLocaleStatic()));
 	}
 
 	public static String getDefaultCity() {
-		return String.format("- %s -", translationService.getText("global.City", getLocaleStatic()));
+		return String.format("- %s -", TranslationServiceFactory.getTranslationService().getText("global.City", getLocaleStatic()));
 	}
 
 	public static String getDefaultZip() {
-		return String.format("- %s -", translationService.getText("global.ZipPostalCode", getLocaleStatic()));
+		return String.format("- %s -", TranslationServiceFactory.getTranslationService().getText("global.ZipPostalCode", getLocaleStatic()));
 	}
 
 	private CountrySubdivisionDAO countrySubdivisionDAO() {

@@ -40,7 +40,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		firstTimeUserInterceptor = new FirstTimeUserInterceptor();
 		when(actionContext.getSession()).thenReturn(session);

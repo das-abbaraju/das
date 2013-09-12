@@ -64,13 +64,11 @@ public class RegistrationTest extends PicsTranslationTest {
 	@AfterClass
 	public static void tearDown() {
 		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
-		PicsTranslationTest.tearDownTranslationService();
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
 
 		setInternalState(ActionContext.class, "actionContext", mockThreadLocal);
 		when(mockThreadLocal.get()).thenReturn(mockContext);

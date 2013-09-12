@@ -49,7 +49,7 @@ public class DataConversionRequestAccountTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		requestConversion = new DataConversionRequestAccount();
 		picsTestUtil = new PicsTestUtil();

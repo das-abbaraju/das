@@ -41,7 +41,7 @@ public class CountrySubdivisionListTest extends PicsActionTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		countrySubdivisionList = new CountrySubdivisionList();
 

@@ -1,7 +1,6 @@
 package com.picsauditing;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.*;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
@@ -10,22 +9,20 @@ import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public abstract class PicsTranslationTest {
 
-	protected static TranslationService translationService = Mockito.mock(TranslationService.class);
-	protected static TranslationService nonLoggingTranslationService = Mockito.mock(TranslationService.class);
+	protected TranslationService translationService;
+	protected TranslationService nonLoggingTranslationService;
 
-	@BeforeClass
-	public static void setupTranslationServiceForTest() {
+	@Before
+	public void setupTranslationServiceForTest() {
+        translationService = Mockito.mock(TranslationService.class);
+        nonLoggingTranslationService = Mockito.mock(TranslationService.class);
+
         TranslationServiceFactory.registerTranslationService(translationService);
         TranslationServiceFactory.registerNonLoggingTranslationService(nonLoggingTranslationService);
 	}
 
-	public void resetTranslationService() {
-		Mockito.reset(translationService);
-		Mockito.reset(nonLoggingTranslationService);
-	}
-
-	@AfterClass
-	public static void tearDownTranslationService() {
+	@After
+	public void tearDownTranslationService() {
         TranslationServiceFactory.registerTranslationService(null);
         TranslationServiceFactory.registerNonLoggingTranslationService(null);
 	}

@@ -52,13 +52,11 @@ public final class ReportUtil {
 	public static final String REPORT_CATEGORY_KEY_PREFIX = "Report.Category.";
 	public static final String REPORT_FUNCTION_KEY_PREFIX = "Report.Function.";
 
-	private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
-
 	private ReportUtil() {
 	}
 
 	public static String getText(String key, Locale locale) {
-		return translationService.getText(key, locale);
+		return TranslationServiceFactory.getTranslationService().getText(key, locale);
 	}
 
 	public static void translateField(Field field, Locale locale) {
@@ -225,7 +223,7 @@ public final class ReportUtil {
 
 		if (StringUtils.isNotEmpty(countrySubdivision)) {
 			String key = "CountrySubdivision." + countrySubdivision;
-			String translatedCountrySubdivision = translationService.getText(key, locale);
+			String translatedCountrySubdivision = TranslationServiceFactory.getTranslationService().getText(key, locale);
 
 			if (!StringUtils.equals(key, translatedCountrySubdivision)) {
 				location = cityLocation + translatedCountrySubdivision;

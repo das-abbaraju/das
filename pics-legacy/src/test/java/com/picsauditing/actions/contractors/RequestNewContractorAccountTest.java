@@ -83,7 +83,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		requestNewContractorAccount = new RequestNewContractorAccount();
 		picsTestUtil = new PicsTestUtil();

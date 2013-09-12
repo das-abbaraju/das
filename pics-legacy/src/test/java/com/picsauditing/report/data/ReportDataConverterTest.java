@@ -30,7 +30,7 @@ public class ReportDataConverterTest extends PicsTranslationTest {
 	@Before
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		permissions = EntityFactory.makePermission();
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);

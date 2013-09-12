@@ -15,7 +15,7 @@ import com.picsauditing.service.i18n.TranslationServiceFactory;
 @SuppressWarnings("serial")
 public class ReportFilter extends TranslationActionSupport implements Serializable {
 
-	protected static TranslationService translationService = TranslationServiceFactory.getTranslationService();
+	protected TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	protected String destinationAction = Strings.EMPTY_STRING;
 	protected boolean ajax = false;

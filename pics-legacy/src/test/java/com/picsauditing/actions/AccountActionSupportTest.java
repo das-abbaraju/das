@@ -22,7 +22,6 @@ public class AccountActionSupportTest extends PicsTranslationTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
 		accountActionSupport = new AccountActionSupport();
 	}
 

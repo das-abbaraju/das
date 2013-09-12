@@ -16,7 +16,7 @@ public class ExcelSheetTest extends PicsTranslationTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		excelSheet = new ExcelSheet();
 	}

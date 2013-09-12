@@ -33,7 +33,7 @@ public class ReportUtilTest extends PicsTranslationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		super.resetTranslationService();
+
 		when(translationService.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
 	}
 

@@ -59,7 +59,7 @@ public class EmployeeSkillsTrainingTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		employeeSkillsTraining = new EmployeeSkillsTraining();
 		employeeSkillsTraining.setEmployee(employee);

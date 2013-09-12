@@ -59,7 +59,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		accountRecovery = new AccountRecovery();
 

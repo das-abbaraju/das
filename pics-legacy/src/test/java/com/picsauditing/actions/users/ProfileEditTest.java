@@ -32,7 +32,7 @@ public class ProfileEditTest extends PicsActionTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 		super.setupMocks();
 
 		profileEdit = new ProfileEdit();

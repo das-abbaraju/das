@@ -61,7 +61,7 @@ public class ReportNewReqConImportTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		reportNewReqConImport = new ReportNewReqConImport();
 		PicsTestUtil picsTestUtil = new PicsTestUtil();

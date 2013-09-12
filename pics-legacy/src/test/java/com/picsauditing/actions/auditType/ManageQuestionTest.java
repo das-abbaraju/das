@@ -50,7 +50,7 @@ public class ManageQuestionTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		manageQuestion = new ManageQuestion();
 

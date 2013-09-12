@@ -75,7 +75,7 @@ public class RequestNewContractorTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		requestNewContractor = new RequestNewContractor();
 		PicsTestUtil picsTestUtil = new PicsTestUtil();

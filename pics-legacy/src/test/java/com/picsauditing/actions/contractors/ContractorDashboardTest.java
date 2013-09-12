@@ -70,7 +70,7 @@ public class ContractorDashboardTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		dashboard = new ContractorDashboard();
 

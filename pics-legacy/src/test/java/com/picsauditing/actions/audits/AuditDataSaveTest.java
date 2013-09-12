@@ -84,7 +84,6 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
 	@AfterClass
 	public static void classTearDown() {
-		PicsTranslationTest.tearDownTranslationService();
 		PicsTestUtil.resetSpringUtilsBeans();
 	}
 
@@ -92,7 +91,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		auditDataSave = new AuditDataSave();
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(auditDataSave, this);

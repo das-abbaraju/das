@@ -35,8 +35,6 @@ public final class ContractorSubmenuBuilder {
 	public static final String EMPLOYEEGUARD = "menu.EmployeeGUARD";
 	public static final String CLIENT_REVIEW = "menu.ClientReview";
 
-	private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
-
 	public ContractorSubmenuBuilder() {
 	}
 
@@ -104,7 +102,7 @@ public final class ContractorSubmenuBuilder {
 	}
 
 	private static String getText(String key) {
-		return translationService.getText(key, TranslationActionSupport.getLocaleStatic());
+		return TranslationServiceFactory.getTranslationService().getText(key, TranslationActionSupport.getLocaleStatic());
 	}
 
 }

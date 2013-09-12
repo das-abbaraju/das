@@ -52,7 +52,7 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		when(permissions.getAccountIdString()).thenReturn("" + ACCOUNT_ID);
 		when(permissions.getVisibleAccounts()).thenReturn(new HashSet<Integer>());

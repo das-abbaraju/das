@@ -22,7 +22,6 @@ public abstract class ReportDataConverter {
     protected Locale locale;
     protected final ReportResults reportResults;
 
-    private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
     private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
 
     public ReportDataConverter(ReportResults reportResults) {
@@ -140,7 +139,7 @@ public abstract class ReportDataConverter {
     }
 
     protected static String getText(String key, Locale locale) {
-        return translationService.getText(key, locale);
+        return TranslationServiceFactory.getTranslationService().getText(key, locale);
     }
 
     public void setLocale(Locale locale) {

@@ -43,7 +43,7 @@ public class ManageEmployeeSiteTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		manageEmployeeSite = new ManageEmployeeSite();
 

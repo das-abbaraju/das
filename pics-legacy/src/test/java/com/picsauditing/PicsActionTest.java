@@ -56,21 +56,15 @@ public class PicsActionTest extends PicsTranslationTest {
 	@Mock
 	private Enumeration enumeration;
 
-	@BeforeClass
-	public static void classSetUp() throws Exception {
-		PicsTranslationTest.setupTranslationServiceForTest();
-	}
-
 	@AfterClass
 	public static void classTearDown() throws Exception {
 		ActionContext.setContext(null);
-		PicsTranslationTest.tearDownTranslationService();
 	}
 
 	protected void setUp(PicsActionSupport controller) throws Exception {
 		setupMocks();
 		setObjectUnderTestState(controller);
-		super.resetTranslationService();
+
 	}
 
 	protected void setObjectUnderTestState(PicsActionSupport controller) {

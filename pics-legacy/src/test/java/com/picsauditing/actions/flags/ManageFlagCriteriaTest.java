@@ -22,7 +22,6 @@ public class ManageFlagCriteriaTest extends PicsTest {
 
 	@AfterClass
 	public static void classTearDown() {
-		PicsTranslationTest.tearDownTranslationService();
 		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
 	}
 

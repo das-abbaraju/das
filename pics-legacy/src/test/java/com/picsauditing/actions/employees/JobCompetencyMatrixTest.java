@@ -47,7 +47,7 @@ public class JobCompetencyMatrixTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		jobCompetencyMatrix = new JobCompetencyMatrix();
 		PicsTestUtil util = new PicsTestUtil();

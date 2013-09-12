@@ -32,7 +32,7 @@ public class ContractorEditRiskLevelTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		contractorEditRiskLevel = new ContractorEditRiskLevel();
 

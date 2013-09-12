@@ -26,7 +26,7 @@ public class MainPage {
 
 	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);
     private static String ERROR_FINDING = "Error finding {} for country {}\n{}";
-    private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
+    private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	private AppPropertyDAO appPropertyDAO;
 	private CountryDAO countryDAO;

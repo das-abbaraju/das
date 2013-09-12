@@ -28,7 +28,7 @@ public abstract class PicsTest extends PicsTranslationTest {
 	private PicsTestUtil testUtil = new PicsTestUtil();
 
 	public void setUp() throws Exception {
-		super.resetTranslationService();
+
 	}
 
 	protected void autowireEMInjectedDAOs(Object objectToAutowire) throws InstantiationException,

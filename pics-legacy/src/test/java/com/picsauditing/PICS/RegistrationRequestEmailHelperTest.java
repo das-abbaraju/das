@@ -61,7 +61,7 @@ public class RegistrationRequestEmailHelperTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		emailHelper = new RegistrationRequestEmailHelper();
 

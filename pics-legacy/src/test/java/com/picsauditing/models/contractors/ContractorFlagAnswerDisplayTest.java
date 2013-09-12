@@ -39,7 +39,7 @@ public class ContractorFlagAnswerDisplayTest extends PicsTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 
 		contractorFlagAnswerDisplay = new ContractorFlagAnswerDisplay();
 

@@ -54,13 +54,12 @@ public class EventSubscriptionBuilderTest extends PicsTranslationTest {
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", (EmailBuilder) null);
-		PicsTranslationTest.tearDownTranslationService();
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+
 		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", emailBuilder);
 
 		when(emailBuilder.build()).thenReturn(email);

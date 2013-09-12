@@ -956,19 +956,19 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public static String getDefaultAmount() {
-		return translationService.getText("JS.Filters.label.EnterAmount", getLocaleStatic());
+		return TranslationServiceFactory.getTranslationService().getText("JS.Filters.label.EnterAmount", getLocaleStatic());
 	}
 
 	public static String getDefaultTaxID() {
-		return translationService.getText("Filters.label.TaxID", getLocaleStatic());
+		return TranslationServiceFactory.getTranslationService().getText("Filters.label.TaxID", getLocaleStatic());
 	}
 
 	public static String getDefaultPerformedBy() {
-		return translationService.getText("Filters.label.NoPreference", getLocaleStatic());
+		return TranslationServiceFactory.getTranslationService().getText("Filters.label.NoPreference", getLocaleStatic());
 	}
 
 	public static String getDefaultSelectPerformedBy() {
-		return translationService.getText("Filters.label.SelfPerformed", getLocaleStatic());
+		return TranslationServiceFactory.getTranslationService().getText("Filters.label.SelfPerformed", getLocaleStatic());
 	}
 
 	public String getRiskType() {
