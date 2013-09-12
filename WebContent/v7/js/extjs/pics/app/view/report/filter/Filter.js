@@ -71,14 +71,14 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createContent: function (filter_record) {
-        var filter_title = this.createHeader(filter_record);
+        var filter_header = this.createHeader(filter_record);
         var filter_input = this.createInput(filter_record);
 
         return {
             border: 0,
             cls: 'filter-content',
             items: [
-                filter_title,
+                filter_header,
                 filter_input
             ],
             name: 'filter_content',
@@ -87,10 +87,25 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createHeader: function (filter_record) {
-        var name = filter_record.get('name');
+        var filter_name = filter_record.get('name'),
+            filter_type = filter_record.get('type'),
+            items;
 
-        if (name.length >= 29) {
-            name = name.substring(0, 29) + '&hellip;';
+        if (filter_name.length >= 29) {
+            filter_name = filter_name.substring(0, 29) + '&hellip;';
+        }
+
+        items = [{
+            xtype: 'displayfield',
+            cls: 'filter-name',
+            name: 'filter_name',
+            value: filter_name
+        }, {
+            xtype: 'tbfill'
+        }];
+
+        if (filter_type == 'Autocomplete' || filter_type == 'Multiselect') {
+            items.push(this.createNegateOperatorToggleButton());
         }
 
         return {
@@ -101,16 +116,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                     background: 'transparent'
                 },
                 height: 30,
-                items: [{
-                    xtype: 'displayfield',
-                    cls: 'filter-name',
-                    name: 'filter_name',
-                    value: name
-                }, {
-                    xtype: 'tbfill'
-                },
-                    this.createNegateOperatorToggleButton()
-                ],
+                items: items,
                 layout: {
                     type: 'hbox',
                     align: 'middle'

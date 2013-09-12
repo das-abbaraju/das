@@ -4,6 +4,12 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
 
     cls: 'autocomplete',
 
+    initComponent: function () {
+        this.items = [this.createNegateOperatorField()];
+
+        this.callParent(arguments);
+    },
+
     listeners: {
         render: function (cmp, eOpts) {
             var el = this.getEl();

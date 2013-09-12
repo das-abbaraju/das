@@ -151,10 +151,6 @@ Ext.define('PICS.controller.report.Filter', {
 
             'reportfilterbasefilter': {
                 render: this.onReportFilterBaseRender
-            },
-
-            'reportfilterbaseboolean': {
-                beforerender: this.beforeBooleanFilterRender
             }
          });
 
@@ -170,12 +166,6 @@ Ext.define('PICS.controller.report.Filter', {
      * Negate Operator Toggle
      */
 
-    beforeBooleanFilterRender: function (boolean_filter_cmp, eOpts) {
-        var negate_operator_toggle_button = boolean_filter_cmp.up('panel').down('button');
-
-        negate_operator_toggle_button.hide();
-    },
-
     onReportFilterBaseRender: function (cmp, eOpts) {
         var negate_operator = cmp.getRecord().get('negate_operator');
 
@@ -188,10 +178,21 @@ Ext.define('PICS.controller.report.Filter', {
         this.toggleNegateOperator(button);
     },
 
+    filterHasValue: function (filter_cmp) {
+        var value_textfield = filter_cmp.down('[name=value]'),
+            value = value_textfield.getValue();
+
+        if (Object.prototype.toString.call(value) === '[object Array]') {
+            return value.length;
+        } else {
+            return value;
+        }
+    },
+
     toggleNegateOperator: function (negate_operator_toggle_button) {
         var filter_cmp = negate_operator_toggle_button.up('reportfilter'),
             filter_input_view = filter_cmp.down('reportfilterbasefilter'),
-            filter_input_value = filter_cmp.down('[name=value]').getValue(),
+            filter_has_value = this.filterHasValue(filter_cmp),
             negate_operator_field = filter_cmp.down('[name=negate_operator]');
 
         if (filter_cmp.hasCls('negated')) {
@@ -204,7 +205,7 @@ Ext.define('PICS.controller.report.Filter', {
 
         filter_input_view.getForm().updateRecord();
 
-        if (filter_input_value) {
+        if (filter_has_value) {
             PICS.data.ServerCommunication.loadData();
         }
     },
@@ -354,7 +355,12 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     beforeFilterRender: function (cmp, eOpts) {
-        // attach the filter record to the filter view
+/*    beforeBooleanFilterRender: function (boolean_filter_cmp, eOpts) {
+        var negate_operator_toggle_button = boolean_filter_cmp.up('panel').down('button');
+
+        negate_operator_toggle_button.hide();
+    },
+*/        // attach the filter record to the filter view
         this.loadFilter(cmp);
     },
 
@@ -496,9 +502,12 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    syncFormAndReportFromFilter: function (filter_value_cmp, records, eOpts) {
-        var filter_input_view = filter_value_cmp.up('reportfilterbasefilter');
-        this.syncFormAndReport(filter_input_view);
+    syncFormAndReport: function (filter_value_cmp, records, eOpts) {
+        var filter_input_view = filter_value_cmp.up('reportfilterbasefilter'),
+            filter_input_form = filter_input_view.getForm();
+
+        filter_input_form.updateRecord();
+        PICS.data.ServerCommunication.loadData();
     },
 
     submitTextValueFieldOnBlur: function (cmp, event, eOpts) {

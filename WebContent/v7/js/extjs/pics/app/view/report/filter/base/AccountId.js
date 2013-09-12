@@ -4,6 +4,7 @@ Ext.define('PICS.view.report.filter.base.AccountId', {
 
     operator_store: [
         ['Equals', PICS.text('Report.execute.accountIdFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.accountIdFilter.notEquals')],
         ['CurrentAccount', PICS.text('Report.execute.accountIdFilter.currentAccount')]
     ],
 

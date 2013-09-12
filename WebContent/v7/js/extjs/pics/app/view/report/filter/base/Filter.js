@@ -16,20 +16,23 @@ Ext.define('PICS.view.report.filter.base.Filter', {
             Ext.Error.raise('Method createValueField missing');
         }
 
-        var negate_operator_field = {
-            xtype: 'hiddenfield',
-            name: 'negate_operator'
-        };
-
         var operator_field = this.createOperatorField();
         var value_field = this.createValueField();
 
-        this.items = [
-            negate_operator_field,
+        this.items = this.items || [];
+
+        this.items = this.items.concat([
             operator_field,
             value_field
-        ];
+        ]);
 
         this.callParent(arguments);
+    },
+
+    createNegateOperatorField: function () {
+        return {
+            xtype: 'hiddenfield',
+            name: 'negate_operator'
+        };
     }
 });

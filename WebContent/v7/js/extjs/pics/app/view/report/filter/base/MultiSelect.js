@@ -4,6 +4,12 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
 
     cls: 'multiselect-shortlist',
 
+    initComponent: function () {
+        this.items = [this.createNegateOperatorField()];
+
+        this.callParent(arguments);
+    },
+
     createOperatorField: function () {
         return {
             xtype: 'hiddenfield',

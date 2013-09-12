@@ -82791,21 +82791,24 @@ Ext.define('PICS.view.report.filter.base.Filter', {
             Ext.Error.raise('Method createValueField missing');
         }
 
-        var negate_operator_field = {
-            xtype: 'hiddenfield',
-            name: 'negate_operator'
-        };
-
         var operator_field = this.createOperatorField();
         var value_field = this.createValueField();
 
-        this.items = [
-            negate_operator_field,
+        this.items = this.items || [];
+
+        this.items = this.items.concat([
             operator_field,
             value_field
-        ];
+        ]);
 
         this.callParent(arguments);
+    },
+
+    createNegateOperatorField: function () {
+        return {
+            xtype: 'hiddenfield',
+            name: 'negate_operator'
+        };
     }
 });
 Ext.define('PICS.view.report.filter.base.AccountId', {
@@ -82814,6 +82817,7 @@ Ext.define('PICS.view.report.filter.base.AccountId', {
 
     operator_store: [
         ['Equals', PICS.text('Report.execute.accountIdFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.accountIdFilter.notEquals')],
         ['CurrentAccount', PICS.text('Report.execute.accountIdFilter.currentAccount')]
     ],
 
@@ -82856,6 +82860,12 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
     alias: 'widget.reportfilterbaseautocomplete',
 
     cls: 'autocomplete',
+
+    initComponent: function () {
+        this.items = [this.createNegateOperatorField()];
+
+        this.callParent(arguments);
+    },
 
     listeners: {
         render: function (cmp, eOpts) {
@@ -82986,6 +82996,7 @@ Ext.define('PICS.view.report.filter.base.Date', {
         ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
         ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greaterThanEquals')],
         ['Empty', PICS.text('Report.execute.dateFilter.empty')],
+        ['NotEmpty', PICS.text('Report.execute.dateFilter.notEmpty')]
     ],
 
     createOperatorField: function () {
@@ -83074,6 +83085,12 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
 
     cls: 'multiselect-shortlist',
 
+    initComponent: function () {
+        this.items = [this.createNegateOperatorField()];
+
+        this.callParent(arguments);
+    },
+
     createOperatorField: function () {
         return {
             xtype: 'hiddenfield',
@@ -83133,10 +83150,15 @@ Ext.define('PICS.view.report.filter.base.String', {
 
     operator_store: [
         ['Contains', PICS.text('Report.execute.stringFilter.contains')],
+        ['NotContains', PICS.text('Report.execute.stringFilter.notContains')],
         ['BeginsWith', PICS.text('Report.execute.stringFilter.beginsWith')],
+        ['NotBeginsWith', PICS.text('Report.execute.stringFilter.notBeginsWith')],
         ['EndsWith', PICS.text('Report.execute.stringFilter.endsWith')],
+        ['NotEndsWith', PICS.text('Report.execute.stringFilter.notEndsWith')],
         ['Equals', PICS.text('Report.execute.stringFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.stringFilter.notEquals')],
         ['Empty', PICS.text('Report.execute.stringFilter.empty')],
+        ['NotEmpty', PICS.text('Report.execute.stringFilter.notEmpty')]
     ],
 
     createOperatorField: function () {
@@ -83175,6 +83197,7 @@ Ext.define('PICS.view.report.filter.base.UserId', {
 
     operator_store: [
         ['Equals', PICS.text('Report.execute.userIdFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.userIdFilter.notEquals')],
         ['CurrentUser', PICS.text('Report.execute.userIdFilter.currentUser')]
     ],
 
@@ -83285,14 +83308,14 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createContent: function (filter_record) {
-        var filter_title = this.createHeader(filter_record);
+        var filter_header = this.createHeader(filter_record);
         var filter_input = this.createInput(filter_record);
 
         return {
             border: 0,
             cls: 'filter-content',
             items: [
-                filter_title,
+                filter_header,
                 filter_input
             ],
             name: 'filter_content',
@@ -83301,10 +83324,25 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createHeader: function (filter_record) {
-        var name = filter_record.get('name');
+        var filter_name = filter_record.get('name'),
+            filter_type = filter_record.get('type'),
+            items;
 
-        if (name.length >= 29) {
-            name = name.substring(0, 29) + '&hellip;';
+        if (filter_name.length >= 29) {
+            filter_name = filter_name.substring(0, 29) + '&hellip;';
+        }
+
+        items = [{
+            xtype: 'displayfield',
+            cls: 'filter-name',
+            name: 'filter_name',
+            value: filter_name
+        }, {
+            xtype: 'tbfill'
+        }];
+
+        if (filter_type == 'Autocomplete' || filter_type == 'Multiselect') {
+            items.push(this.createNegateOperatorToggleButton());
         }
 
         return {
@@ -83315,16 +83353,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                     background: 'transparent'
                 },
                 height: 30,
-                items: [{
-                    xtype: 'displayfield',
-                    cls: 'filter-name',
-                    name: 'filter_name',
-                    value: name
-                }, {
-                    xtype: 'tbfill'
-                },
-                    this.createNegateOperatorToggleButton()
-                ],
+                items: items,
                 layout: {
                     type: 'hbox',
                     align: 'middle'
@@ -98491,10 +98520,6 @@ Ext.define('PICS.controller.report.Filter', {
 
             'reportfilterbasefilter': {
                 render: this.onReportFilterBaseRender
-            },
-
-            'reportfilterbaseboolean': {
-                beforerender: this.beforeBooleanFilterRender
             }
          });
 
@@ -98510,12 +98535,6 @@ Ext.define('PICS.controller.report.Filter', {
      * Negate Operator Toggle
      */
 
-    beforeBooleanFilterRender: function (boolean_filter_cmp, eOpts) {
-        var negate_operator_toggle_button = boolean_filter_cmp.up('panel').down('button');
-
-        negate_operator_toggle_button.hide();
-    },
-
     onReportFilterBaseRender: function (cmp, eOpts) {
         var negate_operator = cmp.getRecord().get('negate_operator');
 
@@ -98528,10 +98547,21 @@ Ext.define('PICS.controller.report.Filter', {
         this.toggleNegateOperator(button);
     },
 
+    filterHasValue: function (filter_cmp) {
+        var value_textfield = filter_cmp.down('[name=value]'),
+            value = value_textfield.getValue();
+
+        if (Object.prototype.toString.call(value) === '[object Array]') {
+            return value.length;
+        } else {
+            return value;
+        }
+    },
+
     toggleNegateOperator: function (negate_operator_toggle_button) {
         var filter_cmp = negate_operator_toggle_button.up('reportfilter'),
             filter_input_view = filter_cmp.down('reportfilterbasefilter'),
-            filter_input_value = filter_cmp.down('[name=value]').getValue(),
+            filter_has_value = this.filterHasValue(filter_cmp),
             negate_operator_field = filter_cmp.down('[name=negate_operator]');
 
         if (filter_cmp.hasCls('negated')) {
@@ -98544,7 +98574,7 @@ Ext.define('PICS.controller.report.Filter', {
 
         filter_input_view.getForm().updateRecord();
 
-        if (filter_input_value) {
+        if (filter_has_value) {
             PICS.data.ServerCommunication.loadData();
         }
     },
@@ -98694,7 +98724,12 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     beforeFilterRender: function (cmp, eOpts) {
-        // attach the filter record to the filter view
+/*    beforeBooleanFilterRender: function (boolean_filter_cmp, eOpts) {
+        var negate_operator_toggle_button = boolean_filter_cmp.up('panel').down('button');
+
+        negate_operator_toggle_button.hide();
+    },
+*/        // attach the filter record to the filter view
         this.loadFilter(cmp);
     },
 
@@ -98836,9 +98871,12 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    syncFormAndReportFromFilter: function (filter_value_cmp, records, eOpts) {
-        var filter_input_view = filter_value_cmp.up('reportfilterbasefilter');
-        this.syncFormAndReport(filter_input_view);
+    syncFormAndReport: function (filter_value_cmp, records, eOpts) {
+        var filter_input_view = filter_value_cmp.up('reportfilterbasefilter'),
+            filter_input_form = filter_input_view.getForm();
+
+        filter_input_form.updateRecord();
+        PICS.data.ServerCommunication.loadData();
     },
 
     submitTextValueFieldOnBlur: function (cmp, event, eOpts) {

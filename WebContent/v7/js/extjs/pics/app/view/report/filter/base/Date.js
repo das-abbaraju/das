@@ -6,6 +6,7 @@ Ext.define('PICS.view.report.filter.base.Date', {
         ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
         ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greaterThanEquals')],
         ['Empty', PICS.text('Report.execute.dateFilter.empty')],
+        ['NotEmpty', PICS.text('Report.execute.dateFilter.notEmpty')]
     ],
 
     createOperatorField: function () {
