@@ -63,7 +63,7 @@
 		<class>com.picsauditing.jpa.entities.OshaAudit</class>
 		<class>com.picsauditing.jpa.entities.OshaType</class>
 		<class>com.picsauditing.jpa.entities.RulesRow</class>
-        <class>com.picsauditing.jpa.entities.RefundItem</class>
+        <class>com.picsauditing.jpa.entities.ReturnItem</class>
 		<class>com.picsauditing.jpa.entities.Token</class>
 		<class>com.picsauditing.jpa.entities.User</class>
 		<class>com.picsauditing.jpa.entities.UserAccess</class>
@@ -80,6 +80,8 @@
 			<property name="hibernate.max_fetch_depth" value="1" />
 			<property name="hibernate.show_sql" value="false" />
 
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.use_sql_comments" value="false"/>
 			<property name="hibernate.cache.region.factory_class"
 				value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
 			<property name="hibernate.generate_statistics" value="true" />
