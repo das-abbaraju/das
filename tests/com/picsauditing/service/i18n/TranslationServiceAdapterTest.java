@@ -6,6 +6,7 @@ import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.sun.jersey.api.client.*;
 import net.sf.ehcache.*;
 import org.apache.struts2.StrutsStatics;
@@ -233,13 +234,32 @@ public class TranslationServiceAdapterTest {
 
     @Test
     public void testGetInstance_WithNoAppPropertyForStrategySetsRightStrategy() throws Exception {
-        when(appPropertyProvider.findAppProperty("TranslationStrategyName")).thenReturn(null);
+        when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn(null);
         translationService.clear();
         TranslationServiceAdapter.getInstance();
 
         TranslationStrategy strategy = Whitebox.getInternalState(TranslationServiceAdapter.class, "translationStrategy");
 
         assertTrue(strategy instanceof EmptyTranslationStrategy);
+    }
+
+    @Test
+    public void testGetText_WhenKeyHasSpacesGetErrorBackWithReturnKeyStrategy() throws Exception {
+        when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn("ReturnKeyOnEmptyTranslation");
+        translationService.clear();
+        TranslationServiceAdapter.getInstance();
+
+        assertTrue("ERROR".equals(translationService.getText("This is a bad key", Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGetText_WhenKeyHasSpacesGetBlankBackWithEmptyTranslationStrategy() throws Exception {
+        when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn(null);
+        translationService.clear();
+        TranslationServiceAdapter.getInstance();
+
+
+        assertTrue(Strings.isEmpty(translationService.getText("This is a bad key", Locale.ENGLISH)));
     }
 
 }

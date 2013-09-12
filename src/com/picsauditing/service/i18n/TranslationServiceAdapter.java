@@ -47,6 +47,8 @@ public class TranslationServiceAdapter implements TranslationService {
     private static final String environment = System.getProperty("pics.env");
     private static AppPropertyProvider appPropertyProvider;
     private static TranslationStrategy translationStrategy;
+    private static TranslationKeyValidator translationKeyValidator = new TranslationKeyValidator();
+    private static final String ERROR_STRING = "ERROR";
 
     private Client client;
 
@@ -94,17 +96,31 @@ public class TranslationServiceAdapter implements TranslationService {
 	}
 
     TranslationWrapper getTextForKey(String key, String locale) {
-        TranslationWrapper translation;
-        Element element = cache.get(key);
-        if (element == null) {
-            translation = translationFromWebResource(key, locale);
-            cacheTranslationIfReturned(key, locale, translation);
-        } else {
-            translation = translationFromCacheOrWebResourceIfLocaleCacheMiss(key, locale, element);
-        }
+        TranslationWrapper translation = doTranslation(key, locale);
         return (translation != null)
             ? translationStrategy.transformTranslation(translation)
             : null;
+    }
+
+    private TranslationWrapper doTranslation(String key, String locale) {
+        TranslationWrapper translation;
+        if (translationKeyValidator.validateKey(key)) {
+            Element element = cache.get(key);
+            if (element == null) {
+                translation = translationFromWebResource(key, locale);
+                cacheTranslationIfReturned(key, locale, translation);
+            } else {
+                translation = translationFromCacheOrWebResourceIfLocaleCacheMiss(key, locale, element);
+            }
+        } else {
+            logger.error("The key {} is invalid", key);
+            translation = translationForInvalidKey();
+        }
+        return translation;
+    }
+
+    private TranslationWrapper translationForInvalidKey() {
+        return new TranslationWrapper.Builder().key(ERROR_STRING).translation(ERROR_STRING).build();
     }
 
     private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String locale, Element element) {
@@ -147,7 +163,7 @@ public class TranslationServiceAdapter implements TranslationService {
 
         if (response.getStatus() != 200) {
             logger.error("Failed : HTTP error code : {}", response.getStatus());
-            translation = new TranslationWrapper.Builder().key(key).locale(locale).translation("ERROR").build();
+            translation = new TranslationWrapper.Builder().key(key).locale(locale).translation(ERROR_STRING).build();
         } else {
             JSONObject json = parseJson(response.getEntity(String.class));
             translation = new TranslationWrapper.Builder()
@@ -165,7 +181,7 @@ public class TranslationServiceAdapter implements TranslationService {
 
         if (response.getStatus() != 200) {
             logger.error("Failed : HTTP error code : {}", response.getStatus());
-            translations.add(new TranslationWrapper.Builder().key(key).locale(locale).translation("ERROR").build());
+            translations.add(new TranslationWrapper.Builder().key(key).locale(locale).translation(ERROR_STRING).build());
         } else {
             JSONArray json = parseJsonArray(response.getEntity(String.class));
             for (Object jsonObject : json) {
