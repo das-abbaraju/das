@@ -26,10 +26,7 @@ import org.powermock.reflect.Whitebox;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -392,6 +389,8 @@ public class CronTest extends PicsActionTest {
 		when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, 0)).thenReturn(mockInvoiceFee);
 		when(mockInvoiceFee.getFeeClass()).thenReturn(FeeClass.LateFee);
 		when(mockInvoice.getAccount()).thenReturn(mockContractorAccount);
+		Date invoiceDueDate = new Date();
+		when(mockInvoice.getDueDate()).thenReturn(invoiceDueDate);
 		BigDecimal invoiceFeeAmount = new BigDecimal(100);
 		when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
 		BigDecimal lateFee = cron.calculateLateFeeFor(mockInvoice);
@@ -403,5 +402,6 @@ public class CronTest extends PicsActionTest {
 		assertEquals(lateFee,lateInvoice.getTotalAmount());
 		assertEquals(InvoiceType.LateFee,lateInvoice.getInvoiceType());
 		assertEquals(FeeClass.LateFee,lateInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
+		assertEquals(invoiceDueDate,lateInvoice.getDueDate());
 	}
 }

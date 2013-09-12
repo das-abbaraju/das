@@ -925,6 +925,7 @@ public class Cron extends PicsActionSupport {
 		lateFeeInvoice.updateAmountApplied();
 		lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
 		lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
+		lateFeeInvoice.setDueDate(invoiceWhichIsLate.getDueDate());
 		return lateFeeInvoice;
 	}
 
