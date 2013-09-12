@@ -116,7 +116,10 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
         if (diff.doubleValue() < creditMemo.getAmount.doubleValue()) {
           val refundApplied = RefundAppliedToCreditMemo.from(creditMemo.getCreditMemo)
           refundApplied.setAmount(creditMemo.getAmount)
+          refundApplied.getRefund.setTotalAmount(creditMemo.getAmount)
           refundApplied.setAuditColumns(permissions)
+          refundApplied.getRefund.setAuditColumns(permissions)
+          refundApplied.getRefund.setStatus(TransactionStatus.Paid)
           if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getBusinessUnit.getId)) {
             refundApplied.getRefund.setSapSync(true)
           }
@@ -125,6 +128,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       }
     }
 
+    creditMemo.getCreditMemo.setStatus(TransactionStatus.Paid)
     creditMemoDAO.save(creditMemo)
   }
 

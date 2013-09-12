@@ -4,14 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import com.picsauditing.braintree.CreditCard;
 
@@ -26,7 +20,9 @@ public class Refund extends Transaction {
 
 	private List<PaymentAppliedToRefund> payments = new ArrayList<PaymentAppliedToRefund>();
 
-	@Enumerated(EnumType.STRING)
+    private RefundAppliedToCreditMemo creditMemo;
+
+    @Enumerated(EnumType.STRING)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
@@ -74,7 +70,16 @@ public class Refund extends Transaction {
 		return new CreditCard(ccNumber).getCardType();
 	}
 
-	@Transient
+    @OneToOne(mappedBy = "refund", cascade = { CascadeType.REMOVE })
+    public RefundAppliedToCreditMemo getCreditMemo() {
+        return creditMemo;
+    }
+
+    public void setCreditMemo(RefundAppliedToCreditMemo creditMemo) {
+        this.creditMemo = creditMemo;
+    }
+
+    @Transient
 	public void updateAmountApplied() {
 		amountApplied = BigDecimal.ZERO;
 		for (PaymentApplied ip : payments) {

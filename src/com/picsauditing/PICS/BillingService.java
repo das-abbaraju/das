@@ -88,7 +88,7 @@ public class BillingService {
         }
 
         for (Refund refund : contractor.getRefunds()) {
-            if (!refund.getStatus().isVoid())
+            if (!refund.getStatus().isVoid() && refund.getCreditMemo() == null)
                 currentBalance = currentBalance.add(refund.getTotalAmount());
         }
 
