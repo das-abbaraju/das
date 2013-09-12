@@ -6,7 +6,7 @@ Ext.define('PICS.data.ServerCommunication', {
             report_store.setProxyForRead();
 
             report_store.loadRawData(json);
-            
+
             return report_store;
         }
 
@@ -14,7 +14,7 @@ Ext.define('PICS.data.ServerCommunication', {
             var column_store = Ext.StoreManager.get('report.Columns');
 
             column_store.loadRawData(json);
-            
+
             return column_store;
         }
 
@@ -22,7 +22,7 @@ Ext.define('PICS.data.ServerCommunication', {
             var filter_store = Ext.StoreManager.get('report.Filters');
 
             filter_store.loadRawData(json);
-            
+
             return filter_store;
         }
 
@@ -37,7 +37,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
             // load data table with results
             data_table_store.loadRawData(json);
-            
+
             return data_table_store;
         }
 
@@ -61,12 +61,12 @@ Ext.define('PICS.data.ServerCommunication', {
         }
 
         /* For our purposes, a "response object" is one that contains either a status or responseText property or both.
-         * 
+         *
          * Ext.Ajax.request(), on success, returns a status property (of value 2xx) and a reponseText property value: { status: 2xx, responseText: { ... } }
          * If the backend caught an error, this responseText property will contain a JSON string representing exception data used by PICS.data.Exception.
          * On failure, Ext.Ajax.request() returns a non-2xx status value but no responseText: { status: non-2xx }
          * Both of these qualify as "response objects".
-         * 
+         *
          * A store's sync method, however, returns a different set of data. If we need a response object following a call to sync,
          * then we must create the response object ourselves from the data that sync provides. This method primarily serves that purpose.
          */
@@ -80,7 +80,7 @@ Ext.define('PICS.data.ServerCommunication', {
             // If the store's reader contains JSON data, then we can create our response object's "responseText" value by converting that data to a string.
             // Otherwise, we first need to create the JSON data to convert.
             } else {
-                
+
                 // Since the response had no error, it was successful but it contained useless data.
                 if (!jsonData) {
                     var unknown_error = PICS.data.Exception.getUnknownError();
@@ -91,10 +91,10 @@ Ext.define('PICS.data.ServerCommunication', {
                         success: false
                     };
                 }
-                
+
                 response.responseText = Ext.encode(jsonData);
             }
-            
+
             return response;
         }
 
@@ -113,7 +113,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
@@ -137,7 +137,7 @@ Ext.define('PICS.data.ServerCommunication', {
                     }
                 });
             },
-            
+
             exportReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
 
@@ -149,7 +149,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 Ext.Ajax.request({
                     url: url,
-                    callback: function (options, success, response) {                        
+                    callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -167,7 +167,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 Ext.Ajax.request({
                     url: url,
-                    callback: function (options, success, response) {                        
+                    callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -175,15 +175,15 @@ Ext.define('PICS.data.ServerCommunication', {
                         } else {
                             var data = response.responseText,
                                 json = Ext.JSON.decode(data);
-    
+
                             loadReportStore(json);
-    
+
                             loadColumnStore(json);
-    
+
                             loadFilterStore(json);
-    
+
                             loadDataTableStore(json);
-    
+
                             // TODO: Find a better place for non-report data like this.
                             PICS.export_limit = json.export_limit;
 
@@ -208,7 +208,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 // sync
                 report_store.sync({
                     callback: function (batch, eOpts) {
@@ -219,7 +219,7 @@ Ext.define('PICS.data.ServerCommunication', {
                         if (!response) {
                             response = createResponse(operation, jsonData);
                         }
-    
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -270,18 +270,18 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 // sync
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
                             response = operation.response,
                             jsonData = this.getReader().jsonData;
-    
+
                         if (!response) {
                             response = createResponse(operation, jsonData);
                         }
-    
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -321,17 +321,17 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
                             response = operation.response,
                             jsonData = this.getReader().jsonData;
 
-                        if (!response) {    
+                        if (!response) {
                             response = createResponse(operation, jsonData);
                         }
-    
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -451,7 +451,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 Ext.Ajax.request({
                     url: url,
-                    callback: function (options, success, response) {                        
+                    callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response

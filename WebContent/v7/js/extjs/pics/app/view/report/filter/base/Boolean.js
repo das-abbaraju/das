@@ -1,7 +1,7 @@
 Ext.define('PICS.view.report.filter.base.Boolean', {
     extend: 'PICS.view.report.filter.base.Filter',
     alias: 'widget.reportfilterbaseboolean',
-    
+
     createOperatorField: function () {
         return {
             xtype: 'hiddenfield',

@@ -8692,6 +8692,33 @@ textarea.x-form-invalid-field {
 #report_filters .filter.x-form-focus .remove-filter {
   display: block; }
 
+/* line 124, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .negate-operator-toggle-button {
+  background: none;
+  border: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  padding: 0px; }
+  /* line 131, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .negate-operator-toggle-button span {
+    padding: 0px; }
+  /* line 136, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .negate-operator-toggle-button .icon-ban-circle {
+    color: #ccc;
+    font-size: 18px;
+    line-height: 18px; }
+
+/* line 146, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter.negated .icon-ban-circle {
+  color: #AC030C; }
+/* line 152, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter.negated .x-boxselect-item,
+#report_filters .filter.negated input[name="operator"] {
+  text-decoration: line-through; }
+
 /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
 #loading_page {
   height: 140px;
