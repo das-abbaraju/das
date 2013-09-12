@@ -11,11 +11,7 @@
 
     <modules>
         <module>pics-web</module>
-        <module>pics-security</module>
-        <module>pics-reports-core</module>
         <module>pics-legacy</module>
-        <module>service-nace</module>
-        <module>service-qbwc</module>
     </modules>
 
     <repositories>
@@ -89,7 +85,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
-            <!-- Not sure if this should be test scope or not -->
             <scope>test</scope>
         </dependency>
         <dependency>
