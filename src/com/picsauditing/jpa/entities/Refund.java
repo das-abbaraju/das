@@ -20,7 +20,7 @@ public class Refund extends Transaction {
 
 	private List<PaymentAppliedToRefund> payments = new ArrayList<PaymentAppliedToRefund>();
 
-    private RefundAppliedToCreditMemo creditMemo;
+    private List<RefundAppliedToCreditMemo> creditMemos = new ArrayList<RefundAppliedToCreditMemo>();
 
     @Enumerated(EnumType.STRING)
 	public PaymentMethod getPaymentMethod() {
@@ -70,13 +70,13 @@ public class Refund extends Transaction {
 		return new CreditCard(ccNumber).getCardType();
 	}
 
-    @OneToOne(mappedBy = "refund", cascade = { CascadeType.REMOVE })
-    public RefundAppliedToCreditMemo getCreditMemo() {
-        return creditMemo;
+    @OneToMany(mappedBy = "refund", cascade = { CascadeType.REMOVE })
+    public List<RefundAppliedToCreditMemo> getCreditMemos() {
+        return creditMemos;
     }
 
-    public void setCreditMemo(RefundAppliedToCreditMemo creditMemo) {
-        this.creditMemo = creditMemo;
+    public void setCreditMemos(List<RefundAppliedToCreditMemo> creditMemos) {
+        this.creditMemos = creditMemos;
     }
 
     @Transient

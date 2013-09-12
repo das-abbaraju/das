@@ -16,7 +16,6 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
-import com.picsauditing.util.CountryUtil;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -47,6 +46,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private static final String CHANGE_TO_BUTTON = "changeto";
 	private static final String EMAIL_BUTTON = "email";
     private static final String BAD_DEBT_BUTTON = "baddebt";
+    private static final String REFUND_BUTTON = "refund";
 	private static final String RETURN_ITEMS_BUTTON = "returnitems";
 
 	@Autowired
@@ -143,7 +143,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
     private String processedCommand() throws Exception {
 		String urlForRedirect = "InvoiceDetail.action?invoice.id=" + transaction.getId() + "&edit=" + edit;
-		if (isTransactionIsCreditMemo() && !button.equals(EMAIL_BUTTON)) {
+		if (isTransactionIsCreditMemo() && !(button.equals(EMAIL_BUTTON) || button.equals(REFUND_BUTTON))) {
 			return this.setUrlForRedirect(urlForRedirect);
 		}
 
@@ -157,6 +157,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			case CANCEL_BUTTON:  cancel();
 				break;
 			case BAD_DEBT_BUTTON: badDebt();
+				break;
+			case REFUND_BUTTON: refund();
 				break;
 			case PAY_BUTTON:
 				Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
@@ -202,13 +204,67 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         paymentDAO.save(payment);
         invoice.setStatus(TransactionStatus.Paid);
         invoiceDAO.save(invoice);
-//        contractor.syncBalance();
         contractor.setBalance(BigDecimal.ZERO);
         contractorAccountDao.save(contractor);
 
         notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
 
         addNote("Invoice marked as 'Bad Debt'.", billingNoteModel.findUserForPaymentNote(permissions));
+    }
+
+    private void refund() {
+        if (isTransactionIsInvoice()) return;
+        if (isTransactionIsCreditMemo() && !isSapEnabledForBizUnit()) return;
+
+        BigDecimal balance = BigDecimal.ZERO.add(contractor.getBalance());
+
+        if (balance.doubleValue() < 0) {
+            BigDecimal amountApplied = BigDecimal.ZERO;
+            BigDecimal creditLeft = creditMemo.getCreditLeft();
+
+            if (creditLeft.doubleValue() < 0) {
+                addActionError("This credit memo's linked refunds total a higher value than the credit memo's value itself");
+                return;
+            } else if (creditLeft.doubleValue() == 0) {
+                addActionError("This credit memo has been fully refunded");
+                return;
+            }
+
+            if (balance.abs().doubleValue() <= creditLeft.doubleValue()) {
+                amountApplied.add(balance);
+            }
+            else {
+                amountApplied.add(creditLeft);
+            }
+
+            RefundAppliedToCreditMemo refundApplied = createRefundForCreditMemo(amountApplied);
+
+            invoiceDAO.save(refundApplied);
+            billingService.syncBalance(contractor);
+            contractorAccountDao.save(contractor);
+        }
+    }
+
+    private RefundAppliedToCreditMemo createRefundForCreditMemo(BigDecimal amount) {
+        RefundAppliedToCreditMemo refundApplied = RefundAppliedToCreditMemo.from(creditMemo);
+
+        refundApplied.setAmount(amount.abs());
+        refundApplied.setAuditColumns(permissions);
+
+        Refund refund = new Refund();
+        refund.setTotalAmount(amount.abs());
+        refund.setAmountApplied(amount.abs());
+        refund.setAuditColumns(permissions);
+        refund.setStatus(TransactionStatus.Paid);
+        refund.setAccount(contractor);
+
+        refundApplied.setRefund(refund);
+
+        if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(creditMemo)) {
+            refundApplied.getRefund().setSapSync(true);
+        }
+
+        return refundApplied;
     }
 
     private void handleGenericCreditCardError(Exception e) {

@@ -173,12 +173,22 @@
                                                 </li>
                                             </s:if>
                                             <s:if test="sapEnabledForBizUnit">
-                                                <li>
-                                                    <a class="bad"
-                                                       href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=baddebt">
-                                                        <s:text name="button.BadDebt"/>
-                                                    </a>
-                                                </li>
+                                                <s:if test="!transactionIsCreditMemo">
+                                                    <li>
+                                                        <a class="bad"
+                                                           href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=baddebt">
+                                                            <s:text name="button.BadDebt"/>
+                                                        </a>
+                                                    </li>
+                                                </s:if>
+                                                <s:else>
+                                                    <li>
+                                                        <a class="pay"
+                                                           href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=refund">
+                                                            <s:text name="button.Refund"/>
+                                                        </a>
+                                                    </li>
+                                                </s:else>
                                             </s:if>
                                         </pics:permission>
                                         <pics:permission perm="InvoiceEdit">

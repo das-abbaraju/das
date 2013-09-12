@@ -52,7 +52,7 @@
 
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="refunds" value="${item_id}" />
+                                        <input type="checkbox" name="returns" value="${item_id}" />
                                     </td>
                                     <td>
                                         <s:include value="../who.jsp" />

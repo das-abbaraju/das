@@ -14,7 +14,7 @@ public class InvoiceCreditMemo extends Transaction {
     private PaymentMethod paymentMethod = PaymentMethod.ReturnCreditMemo;
     private List<ReturnItem> returnItems = new ArrayList<>();
 
-    private RefundAppliedToCreditMemo refund;
+    private List<RefundAppliedToCreditMemo> refunds = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     public PaymentMethod getPaymentMethod() {
@@ -40,13 +40,24 @@ public class InvoiceCreditMemo extends Transaction {
         returnItems = items;
 	}
 
-    @OneToOne(mappedBy = "creditMemo", cascade = { CascadeType.REMOVE })
-    public RefundAppliedToCreditMemo getRefund() {
-        return refund;
+    @OneToMany(mappedBy = "creditMemo", cascade = { CascadeType.REMOVE })
+    public List<RefundAppliedToCreditMemo> getRefunds() {
+        return refunds;
     }
 
-    public void setRefund(RefundAppliedToCreditMemo refund) {
-        this.refund = refund;
+    public void setRefunds(List<RefundAppliedToCreditMemo> refunds) {
+        this.refunds = refunds;
+    }
+
+    @Transient
+    public BigDecimal getCreditLeft() {
+        BigDecimal refundBalance = BigDecimal.ZERO;
+        refundBalance.add(totalAmount);
+        for (RefundAppliedToCreditMemo refundAppliedToCreditMemo : refunds) {
+            refundBalance.subtract(refundAppliedToCreditMemo.getAmount());
+        }
+
+        return refundBalance;
     }
 
     @Override

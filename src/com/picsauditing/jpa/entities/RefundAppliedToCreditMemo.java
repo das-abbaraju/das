@@ -10,7 +10,7 @@ public class RefundAppliedToCreditMemo extends TransactionApplied {
     private InvoiceCreditMemo creditMemo;
     private Refund refund;
 
-	@OneToOne(optional = false, cascade = {CascadeType.ALL})
+	@ManyToOne(optional = false, cascade = {CascadeType.ALL})
 	@JoinColumn(name = "paymentID")
 	public Refund getRefund() {
 		return refund;
@@ -20,7 +20,7 @@ public class RefundAppliedToCreditMemo extends TransactionApplied {
 		this.refund = refund;
 	}
 
-    @OneToOne(optional = false, cascade = {CascadeType.ALL})
+    @ManyToOne(optional = false, cascade = {CascadeType.ALL})
     @JoinColumn(name = "invoiceID")
     public InvoiceCreditMemo getCreditMemo() {
         return creditMemo;
@@ -34,8 +34,6 @@ public class RefundAppliedToCreditMemo extends TransactionApplied {
         RefundAppliedToCreditMemo refundApplied = new RefundAppliedToCreditMemo();
         refundApplied.setAuditColumns();
         refundApplied.setCreditMemo(invoiceCreditMemo);
-        refundApplied.setRefund(new Refund());
-        refundApplied.getRefund().setAccount(invoiceCreditMemo.getAccount());
         return refundApplied;
     }
 

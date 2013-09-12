@@ -11,6 +11,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
@@ -37,6 +38,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private Account account;
 	@Mock
 	private Invoice invoice;
+    @Mock
+    private InvoiceCreditMemo invoiceCreditMemo;
 	@Mock
 	private Country country;
 	@Mock
@@ -53,6 +56,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private DataObservable salesCommissionDataObservable;
 	@Mock
 	private NoteDAO noteDAO;
+    @Mock
+    private InvoiceDAO invoiceDAO;
 	@Mock
 	private BillingNoteModel billingNoteModel;
 	@Mock
@@ -74,6 +79,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 		Whitebox.setInternalState(invoiceDetail, "contractorAccountDao", contractorAccountDAO);
 		Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
 		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
+        Whitebox.setInternalState(invoiceDetail,"invoiceDAO",invoiceDAO);
 		Whitebox.setInternalState(invoiceDetail, "billingNoteModel", billingNoteModel);
 		Whitebox.setInternalState(invoiceDetail,"appPropertyDAO",appPropertyDAO);
 		Whitebox.setInternalState(invoiceDetail,"sapAppPropertyUtil",sapAppPropertyUtil);
@@ -143,7 +149,83 @@ public class InvoiceDetailTest extends PicsActionTest {
 		commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
 	}
 
-	private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult)
+    @Test
+    public void testExecute_RefundCreditMemo_AccountBalanceIsNotNegative() throws IOException, InvoiceValidationException, Exception {
+        invoiceDetail.setCreditMemo(invoiceCreditMemo);
+        invoiceDetail.setTransaction(invoiceCreditMemo);
+        invoiceDetail.setButton("refund");
+
+        when(sapAppPropertyUtil.isSAPBusinessUnitEnabledForObject(invoiceCreditMemo)).thenReturn(true);
+        when(contractor.getBalance()).thenReturn(BigDecimal.ZERO);
+
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+
+        invoiceDetail.execute();
+
+        verify(contractorAccountDAO, never()).save(contractor);
+        verify(invoiceDAO, never()).save(any(RefundAppliedToCreditMemo.class));
+    }
+
+    @Test
+    public void testExecute_RefundCreditMemo_NoRefundAllowed() throws IOException, InvoiceValidationException, Exception {
+        invoiceDetail.setCreditMemo(invoiceCreditMemo);
+        invoiceDetail.setTransaction(invoiceCreditMemo);
+        invoiceDetail.setButton("refund");
+
+        when(sapAppPropertyUtil.isSAPBusinessUnitEnabledForObject(invoiceCreditMemo)).thenReturn(true);
+        when(contractor.getBalance()).thenReturn(new BigDecimal(-2000));
+        when(invoiceCreditMemo.getCreditLeft()).thenReturn(new BigDecimal(-100));
+
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+
+        invoiceDetail.execute();
+
+        verify(contractorAccountDAO, never()).save(contractor);
+        verify(invoiceDAO, never()).save(any(RefundAppliedToCreditMemo.class));
+    }
+
+    @Test
+    public void testExecute_RefundCreditMemo_NoRefundsNeeded() throws IOException, InvoiceValidationException, Exception {
+        invoiceDetail.setCreditMemo(invoiceCreditMemo);
+        invoiceDetail.setTransaction(invoiceCreditMemo);
+        invoiceDetail.setButton("refund");
+
+        when(sapAppPropertyUtil.isSAPBusinessUnitEnabledForObject(invoiceCreditMemo)).thenReturn(true);
+        when(contractor.getBalance()).thenReturn(new BigDecimal(-2000));
+        when(invoiceCreditMemo.getCreditLeft()).thenReturn(BigDecimal.ZERO);
+
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+
+        invoiceDetail.execute();
+
+        verify(contractorAccountDAO, never()).save(contractor);
+        verify(invoiceDAO, never()).save(any(RefundAppliedToCreditMemo.class));
+    }
+
+    @Test
+    public void testExecute_RefundCreditMemo_Refund() throws IOException, InvoiceValidationException, Exception {
+        invoiceDetail.setCreditMemo(invoiceCreditMemo);
+        invoiceDetail.setTransaction(invoiceCreditMemo);
+        invoiceDetail.setButton("refund");
+
+        when(sapAppPropertyUtil.isSAPBusinessUnitEnabledForObject(invoiceCreditMemo)).thenReturn(true);
+        when(contractor.getBalance()).thenReturn(new BigDecimal(-2000));
+        when(invoiceCreditMemo.getCreditLeft()).thenReturn(new BigDecimal(1000));
+
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+
+        invoiceDetail.execute();
+
+        verify(billingService, times(1)).syncBalance(contractor);
+        verify(contractorAccountDAO, times(1)).save(contractor);
+        verify(invoiceDAO, times(1)).save(any(RefundAppliedToCreditMemo.class));
+    }
+
+    private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult)
 			throws Exception {
 		assertEquals(expectedActionResult, actualActionResult);
 		verify(contractor, never()).setStatus(AccountStatus.Deactivated);
