@@ -17,11 +17,11 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             displayField: 'value',
             editable: false,
             filterPickList: true,
+            flex: 1,
             height: 61,
             name: 'value',
             queryMode: 'local', // Prevents reloading of the store, which would wipe out pre-selections.
             valueField: 'key',
-            width: 258,
             selectOnFocus: false
         };
     },

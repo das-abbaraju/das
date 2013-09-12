@@ -98,6 +98,14 @@ Ext.define('PICS.controller.report.Filter', {
                 click: this.removeFilter
             },
 
+            'reportfilteroptions button[action=toggle-negate-operator]': {
+                click: this.onNegateOperatorToggleButtonClick
+            },
+
+            'reportfilteroptions toggleslide': {
+                change: this.onToggleSlideChange
+            },
+
             /******************************************
              * SAVING EDITS TO FILTER STORE + REFRESH *
              ******************************************/
@@ -119,14 +127,14 @@ Ext.define('PICS.controller.report.Filter', {
             '\
             #report_filters reportfilterbasemultiselect combobox[name=value],\
             #report_filters reportfilterbaseautocomplete combobox[name=value]': {
-                select: this.selectValueField,
+                select: this.syncFormAndReportFromFormCmp,
                 render: this.renderBoxselectValueField,
                 change: this.changeBoxselectValueField
             },
 
             // date filters
             'reportfilterbasedate [name=value]': {
-                select: this.selectValueField
+                select: this.syncFormAndReportFromFormCmp
             },
 
             '#report_filters datefield[name=value]': {
@@ -135,7 +143,7 @@ Ext.define('PICS.controller.report.Filter', {
 
             // boolean filters
             '#report_filters checkbox': {
-                change: this.selectValueField,
+                change: this.syncFormAndReportFromFormCmp,
                 render: this.renderCheckbox
             },
 
@@ -143,6 +151,18 @@ Ext.define('PICS.controller.report.Filter', {
             '#report_filters [name=value]': {
                 blur: this.submitTextValueFieldOnBlur,
                 specialkey: this.submitValueFieldOnEnterKeypress
+            },
+
+            'reportfilterbasefilter': {
+                render: this.onReportFilterBaseRender
+            },
+
+            'reportfilterbaseboolean': {
+                beforerender: function (cmp) {
+                    var negate_operator_toggle_button = cmp.up('panel').down('button');
+
+                    negate_operator_toggle_button.hide();
+                }
             }
          });
 
@@ -154,9 +174,48 @@ Ext.define('PICS.controller.report.Filter', {
         Ext.EventManager.onWindowResize(this.updateRemoveButtonPositions, this);
     },
 
+    onReportFilterBaseRender: function (cmp, eOpts) {
+        var negate_operator = cmp.getRecord().get('negate_operator');
+
+        if (negate_operator) {
+            this.toggleNegateOperator(cmp);
+        }
+    },
+
     /**
      * Filter Options
      */
+
+    toggleNegateOperator: function (filter_input_view) {
+        var filter_cmp = filter_input_view.up('reportfilter'),
+            value_field = filter_cmp.down('[name=value]'),
+            has_value = value_field.value.length,
+            negate_operator_field = filter_cmp.down('[name=negate_operator]');
+
+        if (filter_cmp.hasCls('negated')) {
+            negate_operator_field.setValue(false);
+            filter_cmp.removeCls('negated');
+        } else {
+            negate_operator_field.setValue(true);
+            filter_cmp.addCls('negated');
+        }
+
+        if (has_value) {
+            this.syncFormAndReport(filter_input_view);
+        }
+    },
+
+    onNegateOperatorToggleButtonClick: function (cmp, eOpts) {
+        var filter_input_view = cmp.up('reportfilter').down('reportfilterbasefilter')
+
+        this.toggleNegateOperator(filter_input_view);
+    },
+
+    onToggleSlideChange: function (cmp, eOpts) {
+        var filter_input_view = cmp.up('reportfilter').down('reportfilterbasefilter')
+
+        this.toggleNegateOperator(filter_input_view);
+    },
 
     // customizes the filter options view after it gets placed by the layout manager
     afterFilterOptionsLayout: function (cmp, eOpts) {
@@ -195,7 +254,7 @@ Ext.define('PICS.controller.report.Filter', {
         // Select does not fire when the user clicks removes the last item.
         // TODO: Create a third method called by both change and select.
         if (!newValue) {
-            this.selectValueField(cmp);
+            this.syncFormAndReportFromFormCmp(cmp);
         }
     },
 
@@ -441,13 +500,14 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    selectValueField: function (cmp, records, eOpts) {
-        var filter_input_view = cmp.up('reportfilterbasefilter'),
-            filter_input_form = filter_input_view.getForm();
-
-        filter_input_form.updateRecord();
-
+    syncFormAndReport: function (filter_input_view) {
+        filter_input_view.getForm().updateRecord();
         PICS.data.ServerCommunication.loadData();
+    },
+
+    syncFormAndReportFromFormCmp: function (cmp, records, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter');
+        this.syncFormAndReport(filter_input_view);
     },
 
     submitTextValueFieldOnBlur: function (cmp, event, eOpts) {

@@ -66150,7 +66150,7 @@ Ext.define('PICS.data.ServerCommunication', {
             report_store.setProxyForRead();
 
             report_store.loadRawData(json);
-            
+
             return report_store;
         }
 
@@ -66158,7 +66158,7 @@ Ext.define('PICS.data.ServerCommunication', {
             var column_store = Ext.StoreManager.get('report.Columns');
 
             column_store.loadRawData(json);
-            
+
             return column_store;
         }
 
@@ -66166,7 +66166,7 @@ Ext.define('PICS.data.ServerCommunication', {
             var filter_store = Ext.StoreManager.get('report.Filters');
 
             filter_store.loadRawData(json);
-            
+
             return filter_store;
         }
 
@@ -66181,7 +66181,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
             // load data table with results
             data_table_store.loadRawData(json);
-            
+
             return data_table_store;
         }
 
@@ -66205,12 +66205,12 @@ Ext.define('PICS.data.ServerCommunication', {
         }
 
         /* For our purposes, a "response object" is one that contains either a status or responseText property or both.
-         * 
+         *
          * Ext.Ajax.request(), on success, returns a status property (of value 2xx) and a reponseText property value: { status: 2xx, responseText: { ... } }
          * If the backend caught an error, this responseText property will contain a JSON string representing exception data used by PICS.data.Exception.
          * On failure, Ext.Ajax.request() returns a non-2xx status value but no responseText: { status: non-2xx }
          * Both of these qualify as "response objects".
-         * 
+         *
          * A store's sync method, however, returns a different set of data. If we need a response object following a call to sync,
          * then we must create the response object ourselves from the data that sync provides. This method primarily serves that purpose.
          */
@@ -66224,7 +66224,7 @@ Ext.define('PICS.data.ServerCommunication', {
             // If the store's reader contains JSON data, then we can create our response object's "responseText" value by converting that data to a string.
             // Otherwise, we first need to create the JSON data to convert.
             } else {
-                
+
                 // Since the response had no error, it was successful but it contained useless data.
                 if (!jsonData) {
                     var unknown_error = PICS.data.Exception.getUnknownError();
@@ -66235,10 +66235,10 @@ Ext.define('PICS.data.ServerCommunication', {
                         success: false
                     };
                 }
-                
+
                 response.responseText = Ext.encode(jsonData);
             }
-            
+
             return response;
         }
 
@@ -66257,7 +66257,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
@@ -66281,7 +66281,7 @@ Ext.define('PICS.data.ServerCommunication', {
                     }
                 });
             },
-            
+
             exportReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
 
@@ -66293,7 +66293,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 Ext.Ajax.request({
                     url: url,
-                    callback: function (options, success, response) {                        
+                    callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66311,7 +66311,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 Ext.Ajax.request({
                     url: url,
-                    callback: function (options, success, response) {                        
+                    callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66319,15 +66319,15 @@ Ext.define('PICS.data.ServerCommunication', {
                         } else {
                             var data = response.responseText,
                                 json = Ext.JSON.decode(data);
-    
+
                             loadReportStore(json);
-    
+
                             loadColumnStore(json);
-    
+
                             loadFilterStore(json);
-    
+
                             loadDataTableStore(json);
-    
+
                             // TODO: Find a better place for non-report data like this.
                             PICS.export_limit = json.export_limit;
 
@@ -66352,7 +66352,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 // sync
                 report_store.sync({
                     callback: function (batch, eOpts) {
@@ -66363,7 +66363,7 @@ Ext.define('PICS.data.ServerCommunication', {
                         if (!response) {
                             response = createResponse(operation, jsonData);
                         }
-    
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66414,18 +66414,18 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 // sync
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
                             response = operation.response,
                             jsonData = this.getReader().jsonData;
-    
+
                         if (!response) {
                             response = createResponse(operation, jsonData);
                         }
-    
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66465,17 +66465,17 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
                             response = operation.response,
                             jsonData = this.getReader().jsonData;
 
-                        if (!response) {    
+                        if (!response) {
                             response = createResponse(operation, jsonData);
                         }
-    
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66595,7 +66595,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 Ext.Ajax.request({
                     url: url,
-                    callback: function (options, success, response) {                        
+                    callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -72138,104 +72138,6 @@ Ext.define('Ext.layout.component.ProgressBar', {
 });
 
 /**
- * @class Ext.ux.toggleslide.Thumb
- * 
- * @author Harald Hanek (c) 2011-2012
- * @license http://harrydeluxe.mit-license.org
- */
-
-Ext.define('Ext.ux.toggleslide.Thumb', {
-
-    /**
-     * @private
-     * @property {Number} topThumbZIndex
-     * The number used internally to set the z index of the top thumb (see promoteThumb for details)
-     */
-    topZIndex: 10000,
-
-    /**
-     * @cfg {Ext.slider.MultiSlider} slider (required)
-     * The Slider to render to.
-     */
-
-    /**
-     * Creates new slider thumb.
-     * @param {Object} [config] Config object.
-     */
-    constructor: function(config) {
-        var me = this;
-
-        /**
-         * @property {Ext.slider.MultiSlider} slider
-         * The slider this thumb is contained within
-         */
-        Ext.apply(me, config || {}, {
-            cls: Ext.baseCSSPrefix + 'toggle-slide-thumb',
-
-            /**
-             * @cfg {Boolean} constrain True to constrain the thumb so that it cannot overlap its siblings
-             */
-            constrain: false
-        });
-        me.callParent([config]);
-    },
-
-    /**
-     * Renders the thumb into a slider
-     */
-    render: function() {
-        var me = this;
-        
-        me.el = me.slider.el.insertFirst(me.getElConfig());
-        me.onRender();
-    },
-    
-    onRender: function() {
-        if (this.disabled) {
-            this.disable();
-        }
-        //this.initEvents();
-    },
-
-    getElConfig: function() {
-        var me = this,
-            slider = me.slider,
-            style = {};
-
-        style['left'] = 0;
-        return {
-            style: style,
-            id  : this.id,
-            cls : this.cls
-        };
-    },
-
-    /**
-     * @private
-     * Bring thumb dom element to front.
-     */
-    bringToFront: function() {
-        this.el.setStyle('zIndex', this.topZIndex);
-    },
-
-    /**
-     * @private
-     * Send thumb dom element to back.
-     */
-    sendToBack: function() {
-        this.el.setStyle('zIndex', '');
-        
-        this.el.setStyle({
-            visibility: 'hidden'
-        });
-        
-    },
-    
-    disable: function() {
-
-    }
-});
-/**
  * This layout manages multiple child Components, each fitted to the Container, where only a single child Component can be
  * visible at any given time.  This layout style is most commonly used for wizards, tab implementations, etc.
  * This class is intended to be extended or created via the layout:'card' {@link Ext.container.Container#layout} config,
@@ -77469,493 +77371,6 @@ Ext.define('Ext.ProgressBar', {
     }
 });
 
-/**
- * @class Ext.ux.toggleslide.ToggleSlide
- * @extends Ext.Component
- *
- * The Initial Developer of the Original Code is Sean McDaniel <sean@mcdconsulting.com>
- * Copyright(c) 2010, http://www.mcdconsultingllc.com Licensed under the terms
- * of the Open Source LGPL 3.0 http://www.gnu.org/licenses/lgpl.html
- * @see https://github.com/steelThread/ExtJs-ToggleSlide
- *
- * @author Harald Hanek (c) 2011-2012
- * @license http://harrydeluxe.mit-license.org
- */
-Ext.define('Ext.ux.toggleslide.ToggleSlide', {
-    extend: 'Ext.Component',
-    alias: 'widget.toggleslide',
-
-    requires: ['Ext.ux.toggleslide.Thumb', 'Ext.fx.Anim'],
-
-    /**
-     * @cfg {Number} duration The duration for the slide animation (defaults to
-     *      120)
-     */
-    duration: 120,
-
-    /**
-     * @cfg {String} onText The text to display when the toggle is in the 'On'
-     *      position (defaults to 'ON')
-     */
-    onText: 'ON',
-
-    /**
-     * @cfg {String} offText The text to display when the toggle is in the 'Off'
-     *      position (defaults to 'OFF')
-     */
-    offText: 'OFF',
-
-    /**
-     * @cfg {Boolean} resizeHandle Specifies whether the drag handle should be
-     *      resized to cover the on or off side (defaults to true)
-     */
-    resizeHandle: true,
-
-    /**
-     * @cfg {Boolean} resizeContainer Specifies whether the contain element
-     *      should be resized (defaults to true)
-     */
-    resizeContainer: true,
-
-    /**
-     * @cfg {String} onLabelCls The CSS class for the on label (defaults to
-     *      'x-toggle-slide-label-on')
-     */
-    onLabelCls: 'x-toggle-slide-label-on',
-
-    /**
-     * @cfg {String} ofLabelCls The CSS class for the off label (defaults to
-     *      'x-toggle-slide-label-off')
-     */
-    offLabelCls: 'x-toggle-slide-label-off',
-
-    /**
-     * @cfg {String} handleCls The CSS class for the drag handle (defaults to
-     *      'x-toggle-slide-handle')
-     */
-    handleCls: 'x-toggle-slide-thumb',
-
-    disabledCls: 'x-toggle-slide-disabled',
-
-    /**
-     * @cfg {Boolean} state The initial state of the Toggle (defaults to false)
-     */
-    state: false,
-
-    /**
-     * @cfg {Boolean} booleanMode Determines whether the internal value is
-     *      represented as a Boolean. If not in booleanMode the internal value
-     *      will be represented as the on or off label text. The value passed to
-     *      event listeners will also be determined on this setting (defaults to
-     *      true)
-     */
-    booleanMode: true,
-
-    // private
-    dragging: false,
-    diff: 0,
-    diff2: 0,
-    diff3: 0,
-    frame: false,
-
-    renderTpl: ['<div class="holder">',
-                    '<label class="{onLabelCls}">',
-                        '<span>{onText}</span>',
-                    '</label>',
-                    '<label class="{offLabelCls}">',
-                        '<span>{offText}</span>',
-                    '</label>',
-                '</div>'],
-
-    autoEl: {
-            tag: 'div',
-            cls: 'x-toggle-slide-container'
-    },
-
-
-    initComponent: function()
-    {
-        var me = this;
-        me.callParent(arguments);
-
-        me.addEvents(
-                /**
-                 * @event beforechange Fires before this toggle is changed.
-                 * @param {Ext.form.Checkbox} this This toggle
-                 * @param {Boolean|String} state The next toggle state value if boolean
-                 *            mode else the label for the next state
-                 */
-                'beforechange',
-
-                /**
-                 * @event change Fires when the toggle is on or off.
-                 * @param {Ext.form.Checkbox} this This toggle
-                 * @param {Boolean|String} state the new toggle state value, boolean if
-                 *            in boolean mode else the label
-                 */
-                'change');
-    },
-
-
-    beforeRender: function()
-    {
-        var me = this;
-
-        me.callParent();
-
-        Ext.applyIf(me.renderData, {
-            offLabelCls: me.offLabelCls,
-            offText: me.offText,
-            onLabelCls: me.onLabelCls,
-            onText: me.onText,
-            handleCls: me.handleCls
-        });
-
-
-    },
-
-    /**
-     * Set up the hidden field
-     *
-     * @param {Object} ct The container to render to.
-     * @param {Object} position The position in the container to render to.
-     * @private
-     */
-    onRender: function()
-    {
-        var me = this;
-
-        if(!me.resizeContainer)
-            me.diff = 0;
-
-        if(!me.resizeHandle)
-        {
-            me.diff2 = 3;
-            me.diff3 = 5;
-        }
-
-        me.callParent(arguments);
-
-        if (me.cls) {
-            me.el.addCls(me.cls);
-        }
-
-        me.thumb = new Ext.ux.toggleslide.Thumb({
-            ownerCt: me,
-            slider: me,
-            disabled    : !!me.disabled
-        });
-
-        var holder = me.el.first();
-
-        me.onLabel = holder.first();
-        me.onSpan = me.onLabel.first();
-
-        me.offLabel = me.onLabel.next();
-        me.offSpan = me.offLabel.first();
-
-        if (me.rendered) {
-            me.thumb.render();
-        }
-        me.handle = me.thumb.el;
-
-        if(me.resizeHandle)
-            me.thumb.bringToFront();
-        else
-            me.thumb.sendToBack();
-
-        me.resize();
-        me.disableTextSelection();
-
-        if(!me.disabled)
-        {
-            me.registerToggleListeners();
-        }
-        else
-        {
-            Ext.ux.toggleslide.ToggleSlide.superclass.disable.call(me);
-        }
-    },
-
-    /**
-     * Resize assets.
-     *
-     * @private
-     */
-    resize: function()
-    {
-        var me = this,
-            container = me.el,
-            offlabel = me.offLabel,
-            onlabel = me.onLabel,
-            handle = me.handle;
-
-        if(me.resizeHandle)
-        {
-            var min = (onlabel.getWidth() < offlabel.getWidth()) ? onlabel.getWidth() : offlabel.getWidth();
-            handle.setWidth(min);
-        }
-
-        if(me.resizeContainer)
-        {
-            var max = (onlabel.getWidth() > offlabel.getWidth()) ? onlabel.getWidth() : offlabel.getWidth();
-            var expandPx = Math.ceil(container.getHeight() / 3);
-            container.setWidth(max + handle.getWidth() + expandPx);
-        }
-
-        var b = handle.getWidth() / 2;
-        onlabel.setWidth(container.getWidth() - b + me.diff2);
-        offlabel.setWidth(container.getWidth() - b + me.diff2);
-        var rightside = me.rightside = container.getWidth() - handle.getWidth() - me.diff;
-
-        if(me.state)
-        {
-            handle.setLeft(rightside);
-        }
-        else
-        {
-            handle.setLeft(0);
-        }
-        me.onDrag();
-    },
-
-    /**
-     * Turn off text selection.
-     *
-     * @private
-     */
-    disableTextSelection: function()
-    {
-        var els = [this.el,
-                this.onLabel,
-                this.offLabel,
-                this.handle];
-
-        Ext.each(els, function(el)
-        {
-            el.on('mousedown', function(evt)
-            {
-                evt.preventDefault();
-                return false;
-            });
-
-            if(Ext.isIE)
-            {
-                el.on('startselect', function(evt)
-                {
-                    evt.stopEvent();
-                    return false;
-                });
-            }
-        });
-    },
-
-    /**
-     * Animates the handle to the next state.
-     *
-     * @private
-     */
-    moveHandle: function(on, callback)
-    {
-        var me = this,
-            runner = new Ext.util.TaskRunner(),
-            to = on ? me.rightside : 0;
-
-        Ext.create('Ext.fx.Anim', {
-            target: me.handle,
-            dynamic: true,
-            easing: 'easeOut',
-            duration: me.duration,
-            to : {
-                left: to
-            },
-            listeners: {
-                beforeanimate: {
-                    fn: function(ani)
-                    {
-                        me.task = runner.newTask({
-                            run: function () {
-                                me.onDrag();
-                            },
-                            interval: 10
-                        });
-                        me.task.start();
-                    },
-                    scope: this
-                },
-                afteranimate: {
-                    fn: function(ani)
-                    {
-                        me.onDrag();
-                        me.task.destroy();
-                    },
-                    scope: this
-                }
-            },
-            callback: callback
-        });
-    },
-
-    /**
-     * Constrain the drag handle to the containing el.
-     *
-     * @private
-     */
-    onDragStart: function(e)
-    {
-        var me = this;
-
-        me.dragging = true;
-
-        me.dd.constrainTo(me.el, {
-            right: me.diff
-        });
-    },
-
-    /**
-     * Determine if the handle has been dropped > half way into the other
-     * position. Toggle if so or move the handle back to the original position
-     * if not.
-     *
-     * @private
-     */
-    onDragEnd: function(e)
-    {
-        var me = this,
-            hc = (me.handle.getLeft(true) + me.handle.getRight(true)) / 2,
-            cc = (me.el.getLeft(true) + me.el.getRight(true)) / 2,
-            next = hc > cc;
-
-        (me.state != next) ? me.toggle() : me.moveHandle(next);
-        me.dragging = false;
-    },
-
-    /**
-     * Adjust the label and span positions with the handles.
-     *
-     * @private
-     */
-    onDrag: function(e)
-    {
-        var me = this,
-            p = me.handle.getLeft(true) - me.rightside;
-
-        p = (me.handle.getLeft(true) == me.rightside) ? 0 : p - me.diff3;
-
-        me.onLabel.setStyle({
-            marginLeft: p + 'px'
-        });
-    },
-
-    /**
-     * If not dragging toggle.
-     *
-     * @private
-     */
-    onMouseUp: function()
-    {
-        if(!this.dragging)
-        {
-            this.toggle();
-        }
-    },
-
-    /**
-     * Transition to the next state.
-     */
-    toggle: function()
-    {
-        var me = this,
-            next = !this.state;
-
-        if(!me.booleanMode)
-        {
-            next = me.state ? me.onText : me.offText;
-        }
-
-        if(me.fireEvent('beforechange', me, next) !== false)
-        {
-            me.state = !me.state;
-
-            me.moveHandle(me.state, Ext.bind(me.fireEvent, me, ['change', me, me.getValue()]));
-        }
-        else
-        {
-            me.moveHandle(me.state);
-        }
-    },
-
-    /**
-     * If currently disabled, enable this component and fire the 'enable' event.
-     *
-     * @return {Ext.Component} this
-     */
-    enable: function()
-    {
-        if(this.disabled)
-        {
-            Ext.ux.toggleslide.ToggleSlide.superclass.enable.call(this);
-            this.registerToggleListeners();
-            //this.thumb.enable();
-        }
-        return this;
-    },
-
-    /**
-     * If currently enabled, disable this component and fire the 'disable'
-     * event.
-     *
-     * @return {Ext.Component} this
-     */
-    disable: function()
-    {
-        if(!this.disabled)
-        {
-            Ext.ux.toggleslide.ToggleSlide.superclass.disable.call(this);
-            this.unregisterToggleListeners();
-            //this.thumb.disable();
-        }
-        return this;
-    },
-
-    /**
-     * Registers the mouseup listener and the DD instance for the handle.
-     *
-     * @private
-     */
-    registerToggleListeners: function()
-    {
-        var me = this;
-
-        me.dd = new Ext.dd.DD(me.handle);
-        me.dd.startDrag = Ext.bind(me.onDragStart, me);
-        me.dd.onDrag = Ext.bind(me.onDrag, me);
-        me.dd.endDrag = Ext.bind(me.onDragEnd, me);
-
-        me.el.on('mouseup', me.onMouseUp, me);
-    },
-
-    /**
-     * Unregisters the mouseup listener and the DD instance for the handle.
-     *
-     * @private
-     */
-    unregisterToggleListeners: function()
-    {
-        Ext.destroy(this.dd);
-        this.el.un('mouseup', this.onMouseUp, this);
-    },
-
-    /**
-     * Returns the current internal value, either text or boolean depending on
-     * configured booleanMode.
-     */
-    getValue: function()
-    {
-        var me = this;
-        return me.booleanMode ? me.state : (me.state ? me.onText : me.offText);
-    }
-});
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
@@ -77983,25 +77398,28 @@ Ext.define('PICS.model.report.Filter', {
         type: 'string',
         useNull: true
     }, {
+        name: 'negate_operator',
+        type: 'boolean'
+    }, {
         name: 'value',
         convert: function (value, record) {
             var type = record.get('type');
-            
+
             if (value == null) {
                 return '';
             }
-            
+
             switch (type) {
                 case PICS.data.FilterType.Date:
                     value = Ext.Date.format(value, 'Y-m-d') || value;
-                    
+
                     break;
                 case PICS.data.FilterType.Autocomplete:
                 case PICS.data.FilterType.Multiselect:
                     if (value instanceof Array) {
                         value = value.join(', ');
                     }
-                    
+
                     break;
                 case PICS.data.FilterType.AccountID:
                 case PICS.data.FilterType.Boolean:
@@ -78009,14 +77427,14 @@ Ext.define('PICS.model.report.Filter', {
                 case PICS.data.FilterType.UserID:
                     // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
                     value = value.toString();
-                    
+
                     break;
                 case PICS.data.FilterType.String:
                 default:
                     // no conversion necessary
                     break;
             }
-            
+
             return value;
         },
         type: 'string',
@@ -83373,10 +82791,19 @@ Ext.define('PICS.view.report.filter.base.Filter', {
             Ext.Error.raise('Method createValueField missing');
         }
 
+        var negate_operator_field = {
+            xtype: 'hiddenfield',
+            name: 'negate_operator'
+        };
+
         var operator_field = this.createOperatorField();
         var value_field = this.createValueField();
 
-        this.items = [operator_field, value_field];
+        this.items = [
+            negate_operator_field,
+            operator_field,
+            value_field
+        ];
 
         this.callParent(arguments);
     }
@@ -83387,10 +82814,9 @@ Ext.define('PICS.view.report.filter.base.AccountId', {
 
     operator_store: [
         ['Equals', PICS.text('Report.execute.accountIdFilter.equals')],
-        ['NotEquals', PICS.text('Report.execute.accountIdFilter.notEquals')],
         ['CurrentAccount', PICS.text('Report.execute.accountIdFilter.currentAccount')]
     ],
-    
+
     createOperatorField: function () {
         return {
             xtype: 'combobox',
@@ -83413,10 +82839,10 @@ Ext.define('PICS.view.report.filter.base.AccountId', {
             name: 'value'
         };
     },
-    
+
     updateValueFieldFromOperatorValue: function (operator) {
         var input = this.down('numberfield');
-        
+
         if (operator == 'CurrentAccount') {
             input.setValue(null);
             input.hide();
@@ -83520,7 +82946,7 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
 Ext.define('PICS.view.report.filter.base.Boolean', {
     extend: 'PICS.view.report.filter.base.Filter',
     alias: 'widget.reportfilterbaseboolean',
-    
+
     createOperatorField: function () {
         return {
             xtype: 'hiddenfield',
@@ -83560,9 +82986,8 @@ Ext.define('PICS.view.report.filter.base.Date', {
         ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
         ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greaterThanEquals')],
         ['Empty', PICS.text('Report.execute.dateFilter.empty')],
-        ['NotEmpty', PICS.text('Report.execute.dateFilter.notEmpty')]
     ],
-    
+
     createOperatorField: function () {
         return {
             xtype: 'combobox',
@@ -83583,10 +83008,10 @@ Ext.define('PICS.view.report.filter.base.Date', {
             preventMark: true
         };
     },
-    
+
     updateValueFieldFromOperatorValue: function (operator) {
         var input = this.down('datefield');
-        
+
         if (operator == 'Empty' || operator == 'NotEmpty') {
             input.setValue(null);
             input.hide();
@@ -83662,11 +83087,11 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             displayField: 'value',
             editable: false,
             filterPickList: true,
+            flex: 1,
             height: 61,
             name: 'value',
             queryMode: 'local', // Prevents reloading of the store, which would wipe out pre-selections.
             valueField: 'key',
-            width: 258,
             selectOnFocus: false
         };
     },
@@ -83708,17 +83133,12 @@ Ext.define('PICS.view.report.filter.base.String', {
 
     operator_store: [
         ['Contains', PICS.text('Report.execute.stringFilter.contains')],
-        ['NotContains', PICS.text('Report.execute.stringFilter.notContains')],
         ['BeginsWith', PICS.text('Report.execute.stringFilter.beginsWith')],
-        ['NotBeginsWith', PICS.text('Report.execute.stringFilter.notBeginsWith')],
         ['EndsWith', PICS.text('Report.execute.stringFilter.endsWith')],
-        ['NotEndsWith', PICS.text('Report.execute.stringFilter.notEndsWith')],
         ['Equals', PICS.text('Report.execute.stringFilter.equals')],
-        ['NotEquals', PICS.text('Report.execute.stringFilter.notEquals')],
         ['Empty', PICS.text('Report.execute.stringFilter.empty')],
-        ['NotEmpty', PICS.text('Report.execute.stringFilter.notEmpty')]
     ],
-    
+
     createOperatorField: function () {
         return {
             xtype: 'combobox',
@@ -83737,10 +83157,10 @@ Ext.define('PICS.view.report.filter.base.String', {
             name: 'value'
         };
     },
-    
+
     updateValueFieldFromOperatorValue: function (operator) {
         var input = this.down('textfield[name="value"]');
-        
+
         if (operator == 'Empty' || operator == 'NotEmpty') {
             input.setValue(null);
             input.hide();
@@ -83755,10 +83175,9 @@ Ext.define('PICS.view.report.filter.base.UserId', {
 
     operator_store: [
         ['Equals', PICS.text('Report.execute.userIdFilter.equals')],
-        ['NotEquals', PICS.text('Report.execute.userIdFilter.notEquals')],
         ['CurrentUser', PICS.text('Report.execute.userIdFilter.currentUser')]
     ],
-    
+
     createOperatorField: function () {
         return {
             xtype: 'combobox',
@@ -83781,10 +83200,10 @@ Ext.define('PICS.view.report.filter.base.UserId', {
             name: 'value'
         };
     },
-    
+
     updateValueFieldFromOperatorValue: function (operator) {
         var input = this.down('numberfield');
-        
+
         if (operator == 'CurrentUser') {
             input.setValue(null);
             input.hide();
@@ -83807,8 +83226,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         'PICS.view.report.filter.base.MultiSelect',
         'PICS.view.report.filter.base.String',
         'PICS.view.report.filter.base.UserId',
-        'PICS.view.report.filter.FilterTooltip',
-        'Ext.ux.toggleslide.ToggleSlide'
+        'PICS.view.report.filter.FilterTooltip'
     ],
 
     bodyCls: 'filter-body',
@@ -83847,7 +83265,6 @@ Ext.define('PICS.view.report.filter.Filter', {
         ];
 
         this.dockedItems = [
-            Ext.Create('toggleslide'),
             remove_button
         ];
 
@@ -83868,7 +83285,7 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createContent: function (filter_record) {
-        var filter_title = this.createTitle(filter_record);
+        var filter_title = this.createHeader(filter_record);
         var filter_input = this.createInput(filter_record);
 
         return {
@@ -83883,7 +83300,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createTitle: function (filter_record) {
+    createHeader: function (filter_record) {
         var name = filter_record.get('name');
 
         if (name.length >= 29) {
@@ -83892,20 +83309,28 @@ Ext.define('PICS.view.report.filter.Filter', {
 
         return {
             border: 0,
-            height: 30,
             items: [{
-                xtype: 'displayfield',
-                cls: 'filter-name',
-                name: 'filter_name',
-                value: name
-            }, {
-                xtype: 'tbfill'
-            }],
-            layout: {
-                type: 'hbox',
-                align: 'middle'
-            },
-            name: 'filter_title'
+                xtype: 'toolbar',
+                style: {
+                    background: 'transparent'
+                },
+                height: 30,
+                items: [{
+                    xtype: 'displayfield',
+                    cls: 'filter-name',
+                    name: 'filter_name',
+                    value: name
+                }, {
+                    xtype: 'tbfill'
+                },
+                    this.createNegateOperatorToggleButton()
+                ],
+                layout: {
+                    type: 'hbox',
+                    align: 'middle'
+                },
+                name: 'filter_title'
+            }]
         };
     },
 
@@ -83914,6 +83339,16 @@ Ext.define('PICS.view.report.filter.Filter', {
             cls = this.getFilterClassByType(type);
 
         return Ext.create(cls);
+    },
+
+    createNegateOperatorToggleButton: function () {
+        return {
+            xtype: 'button',
+            action: 'toggle-negate-operator',
+            cls: 'negate-operator-toggle-button',
+            height: 17,
+            text: '<i class="icon-ban-circle"></i>'
+        };
     },
 
     createRemoveButton: function () {
@@ -83927,7 +83362,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 xtype: 'button',
                 action: 'remove-filter',
                 cls: 'remove-filter',
-                height: 20,
+                height: 22,
                 text: '<i class="icon-remove-sign"></i>',
                 tooltip: PICS.text('Report.execute.filter.tooltipRemove'),
                 width: 20
@@ -99003,6 +98438,14 @@ Ext.define('PICS.controller.report.Filter', {
                 click: this.removeFilter
             },
 
+            'reportfilteroptions button[action=toggle-negate-operator]': {
+                click: this.onNegateOperatorToggleButtonClick
+            },
+
+            'reportfilteroptions toggleslide': {
+                change: this.onToggleSlideChange
+            },
+
             /******************************************
              * SAVING EDITS TO FILTER STORE + REFRESH *
              ******************************************/
@@ -99024,14 +98467,14 @@ Ext.define('PICS.controller.report.Filter', {
             '\
             #report_filters reportfilterbasemultiselect combobox[name=value],\
             #report_filters reportfilterbaseautocomplete combobox[name=value]': {
-                select: this.selectValueField,
+                select: this.syncFormAndReportFromFormCmp,
                 render: this.renderBoxselectValueField,
                 change: this.changeBoxselectValueField
             },
 
             // date filters
             'reportfilterbasedate [name=value]': {
-                select: this.selectValueField
+                select: this.syncFormAndReportFromFormCmp
             },
 
             '#report_filters datefield[name=value]': {
@@ -99040,7 +98483,7 @@ Ext.define('PICS.controller.report.Filter', {
 
             // boolean filters
             '#report_filters checkbox': {
-                change: this.selectValueField,
+                change: this.syncFormAndReportFromFormCmp,
                 render: this.renderCheckbox
             },
 
@@ -99048,6 +98491,18 @@ Ext.define('PICS.controller.report.Filter', {
             '#report_filters [name=value]': {
                 blur: this.submitTextValueFieldOnBlur,
                 specialkey: this.submitValueFieldOnEnterKeypress
+            },
+
+            'reportfilterbasefilter': {
+                render: this.onReportFilterBaseRender
+            },
+
+            'reportfilterbaseboolean': {
+                beforerender: function (cmp) {
+                    var negate_operator_toggle_button = cmp.up('panel').down('button');
+
+                    negate_operator_toggle_button.hide();
+                }
             }
          });
 
@@ -99059,9 +98514,48 @@ Ext.define('PICS.controller.report.Filter', {
         Ext.EventManager.onWindowResize(this.updateRemoveButtonPositions, this);
     },
 
+    onReportFilterBaseRender: function (cmp, eOpts) {
+        var negate_operator = cmp.getRecord().get('negate_operator');
+
+        if (negate_operator) {
+            this.toggleNegateOperator(cmp);
+        }
+    },
+
     /**
      * Filter Options
      */
+
+    toggleNegateOperator: function (filter_input_view) {
+        var filter_cmp = filter_input_view.up('reportfilter'),
+            value_field = filter_cmp.down('[name=value]'),
+            has_value = value_field.value.length,
+            negate_operator_field = filter_cmp.down('[name=negate_operator]');
+
+        if (filter_cmp.hasCls('negated')) {
+            negate_operator_field.setValue(false);
+            filter_cmp.removeCls('negated');
+        } else {
+            negate_operator_field.setValue(true);
+            filter_cmp.addCls('negated');
+        }
+
+        if (has_value) {
+            this.syncFormAndReport(filter_input_view);
+        }
+    },
+
+    onNegateOperatorToggleButtonClick: function (cmp, eOpts) {
+        var filter_input_view = cmp.up('reportfilter').down('reportfilterbasefilter')
+
+        this.toggleNegateOperator(filter_input_view);
+    },
+
+    onToggleSlideChange: function (cmp, eOpts) {
+        var filter_input_view = cmp.up('reportfilter').down('reportfilterbasefilter')
+
+        this.toggleNegateOperator(filter_input_view);
+    },
 
     // customizes the filter options view after it gets placed by the layout manager
     afterFilterOptionsLayout: function (cmp, eOpts) {
@@ -99100,7 +98594,7 @@ Ext.define('PICS.controller.report.Filter', {
         // Select does not fire when the user clicks removes the last item.
         // TODO: Create a third method called by both change and select.
         if (!newValue) {
-            this.selectValueField(cmp);
+            this.syncFormAndReportFromFormCmp(cmp);
         }
     },
 
@@ -99346,13 +98840,14 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    selectValueField: function (cmp, records, eOpts) {
-        var filter_input_view = cmp.up('reportfilterbasefilter'),
-            filter_input_form = filter_input_view.getForm();
-
-        filter_input_form.updateRecord();
-
+    syncFormAndReport: function (filter_input_view) {
+        filter_input_view.getForm().updateRecord();
         PICS.data.ServerCommunication.loadData();
+    },
+
+    syncFormAndReportFromFormCmp: function (cmp, records, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter');
+        this.syncFormAndReport(filter_input_view);
     },
 
     submitTextValueFieldOnBlur: function (cmp, event, eOpts) {

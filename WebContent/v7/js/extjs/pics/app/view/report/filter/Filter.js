@@ -12,8 +12,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         'PICS.view.report.filter.base.MultiSelect',
         'PICS.view.report.filter.base.String',
         'PICS.view.report.filter.base.UserId',
-        'PICS.view.report.filter.FilterTooltip',
-        'Ext.ux.toggleslide.ToggleSlide'
+        'PICS.view.report.filter.FilterTooltip'
     ],
 
     bodyCls: 'filter-body',
@@ -52,7 +51,6 @@ Ext.define('PICS.view.report.filter.Filter', {
         ];
 
         this.dockedItems = [
-            Ext.Create('toggleslide'),
             remove_button
         ];
 
@@ -73,7 +71,7 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createContent: function (filter_record) {
-        var filter_title = this.createTitle(filter_record);
+        var filter_title = this.createHeader(filter_record);
         var filter_input = this.createInput(filter_record);
 
         return {
@@ -88,7 +86,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createTitle: function (filter_record) {
+    createHeader: function (filter_record) {
         var name = filter_record.get('name');
 
         if (name.length >= 29) {
@@ -97,20 +95,28 @@ Ext.define('PICS.view.report.filter.Filter', {
 
         return {
             border: 0,
-            height: 30,
             items: [{
-                xtype: 'displayfield',
-                cls: 'filter-name',
-                name: 'filter_name',
-                value: name
-            }, {
-                xtype: 'tbfill'
-            }],
-            layout: {
-                type: 'hbox',
-                align: 'middle'
-            },
-            name: 'filter_title'
+                xtype: 'toolbar',
+                style: {
+                    background: 'transparent'
+                },
+                height: 30,
+                items: [{
+                    xtype: 'displayfield',
+                    cls: 'filter-name',
+                    name: 'filter_name',
+                    value: name
+                }, {
+                    xtype: 'tbfill'
+                },
+                    this.createNegateOperatorToggleButton()
+                ],
+                layout: {
+                    type: 'hbox',
+                    align: 'middle'
+                },
+                name: 'filter_title'
+            }]
         };
     },
 
@@ -119,6 +125,16 @@ Ext.define('PICS.view.report.filter.Filter', {
             cls = this.getFilterClassByType(type);
 
         return Ext.create(cls);
+    },
+
+    createNegateOperatorToggleButton: function () {
+        return {
+            xtype: 'button',
+            action: 'toggle-negate-operator',
+            cls: 'negate-operator-toggle-button',
+            height: 17,
+            text: '<i class="icon-ban-circle"></i>'
+        };
     },
 
     createRemoveButton: function () {
@@ -132,7 +148,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 xtype: 'button',
                 action: 'remove-filter',
                 cls: 'remove-filter',
-                height: 20,
+                height: 22,
                 text: '<i class="icon-remove-sign"></i>',
                 tooltip: PICS.text('Report.execute.filter.tooltipRemove'),
                 width: 20

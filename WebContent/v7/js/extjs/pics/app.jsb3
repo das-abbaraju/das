@@ -980,11 +980,6 @@
                     "path": "extjs/src/layout/component/"
                 },
                 {
-                    "clsName": "Ext.ux.toggleslide.Thumb",
-                    "name": "Thumb.js",
-                    "path": "extjs/src/ux/toggleslide/"
-                },
-                {
                     "clsName": "Ext.layout.container.Card",
                     "name": "Card.js",
                     "path": "extjs/src/layout/container/"
@@ -1088,11 +1083,6 @@
                     "clsName": "Ext.ProgressBar",
                     "name": "ProgressBar.js",
                     "path": "extjs/src/"
-                },
-                {
-                    "clsName": "Ext.ux.toggleslide.ToggleSlide",
-                    "name": "ToggleSlide.js",
-                    "path": "extjs/src/ux/toggleslide/"
                 },
                 {
                     "clsName": "PICS.model.report.Filter",
