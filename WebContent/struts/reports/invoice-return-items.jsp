@@ -21,7 +21,7 @@
 
             <s:include value="/struts/_action-messages.jsp" />
 
-            <form action="InvoiceReturnItems!doRefund.action?invoice.id=${invoice.id}" method="post" id="" name="" class="form-horizontal">
+            <form action="InvoiceReturnItems!doReturn.action?invoice.id=${invoice.id}" method="post" id="" name="" class="form-horizontal">
 
                 <div class="control-group">
                     <table class="table table-striped table-bordered table-hover">

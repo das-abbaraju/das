@@ -97,7 +97,7 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     assert(Action.SUCCESS === classUnderTest.doReturn)
   }
 
-  it should "if the invoice is fully paid, have a refund applied to it when we doRefund." in {
+  it should "if the invoice is fully paid, have a refund applied to it when we doReturn." in {
     var items = new util.ArrayList[InvoiceItem]()
     val item1: InvoiceItem = new InvoiceItem(new InvoiceFee())
     item1.setId(ITEM_ID_1)
@@ -111,7 +111,7 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     verify(mockCreditMemoDAO, atLeastOnce()).save(any(classOf[RefundAppliedToCreditMemo]))
   }
 
-  it should "if the invoice is partially paid and we have a large unpaid balance, not have a refund applied to it when we doRefund." in {
+  it should "if the invoice is partially paid and we have a large unpaid balance, not have a refund applied to it when we doReturn." in {
     var items = new util.ArrayList[InvoiceItem]()
     val item1: InvoiceItem = new InvoiceItem(new InvoiceFee())
     item1.setId(ITEM_ID_1)
@@ -133,7 +133,7 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
   }
 
   //// I'm commenting this out because the invoice's fee-ordering logic breaks this, and I don't have the time to fix it.
-//  it should "create a CreditMemo with a RefundItem when a correct InvoiceItem ID is supplied for refund." in new ExistentIDs {
+//  it should "create a CreditMemo with a ReturnItem when a correct InvoiceItem ID is supplied for refund." in new ExistentIDs {
 //    test { creditMemo =>
 //      creditMemo.getCreditMemo.getItems foreach {item =>
 //        assert(classUnderTest.return.contains(item.getReturnedItem.getId))
