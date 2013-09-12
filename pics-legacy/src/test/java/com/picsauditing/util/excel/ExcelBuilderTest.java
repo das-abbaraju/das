@@ -73,7 +73,7 @@ public class ExcelBuilderTest {
 		// Assert.assertEquals("accountStatus should adjust the width", 4522,
 		// excelSheet.getColumnWidth(0));
 
-		FileOutputStream stream = new FileOutputStream("tests/junitExcelBuilderTest.xls");
+		FileOutputStream stream = new FileOutputStream("./junitExcelBuilderTest.xls");
 		workbook.write(stream);
 		stream.close();
 	}
