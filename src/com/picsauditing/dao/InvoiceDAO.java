@@ -7,14 +7,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.TransactionStatus;
 
 @SuppressWarnings("unchecked")
 public class InvoiceDAO extends PicsDAO {
@@ -77,8 +74,8 @@ public class InvoiceDAO extends PicsDAO {
 		String hql = "SELECT i FROM Invoice i JOIN i.account AS account "
 				+ "LEFT JOIN i.items AS item WITH item.invoiceFee.id = :oldfee OR item.invoiceFee.id = :fee "
 				+ "WHERE i.dueDate < :dueDate AND i.status = :status AND item IS NULL "
-				+ "AND i.account.status = :astatus AND i.totalAmount > :totalAmount"
-				+ "AND i.lateFeeInvoice IS NOT NULL AND i.type != 'LateFee'";
+				+ "AND i.account.status = :astatus AND i.totalAmount > :totalAmount "
+				+ "AND i.lateFeeInvoice IS NULL AND i.invoiceType != :invoiceType";
 		Query query = em.createQuery(hql);
 		query.setParameter("dueDate", cal.getTime());
 		query.setParameter("status", TransactionStatus.Unpaid);
@@ -86,6 +83,7 @@ public class InvoiceDAO extends PicsDAO {
 		query.setParameter("oldfee", InvoiceFee.OLDLATEFEE);
 		query.setParameter("astatus", AccountStatus.Active);
 		query.setParameter("totalAmount", BigDecimal.ZERO);
+		query.setParameter("invoiceType", InvoiceType.LateFee);
 		return query.getResultList();
 	}
 }

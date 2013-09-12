@@ -22,7 +22,7 @@ class CreditMemoAppliedToInvoiceTest extends FlatSpec with ShouldMatchers {
   val invoiceFee = new InvoiceFee
   invoiceFee.setDisplayOrder(1)
   val (invoiceItem1, invoiceItem2, invoiceItem3) = (new InvoiceItem, new InvoiceItem, new InvoiceItem)
-  val (refundItem1, refundItem2, refundItem3) = (new RefundItem, new RefundItem, new RefundItem)
+  val (returnItem1, returnItem2, returnItem3) = (new ReturnItem, new ReturnItem, new ReturnItem)
 
   List(invoiceItem1, invoiceItem2, invoiceItem3) foreach { item =>
     item.setInvoiceFee(invoiceFee)
@@ -31,7 +31,7 @@ class CreditMemoAppliedToInvoiceTest extends FlatSpec with ShouldMatchers {
     item.setAmount(FIVE)
   }
 
-  List(refundItem1, refundItem2, refundItem3) foreach { item =>
+  List(returnItem1, returnItem2, returnItem3) foreach { item =>
     item.setInvoiceFee(invoiceFee)
     creditMemo.getItems.add(item)
     item.setCreditMemo(creditMemo)

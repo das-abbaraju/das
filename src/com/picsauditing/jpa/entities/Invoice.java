@@ -1,29 +1,18 @@
 package com.picsauditing.jpa.entities;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.*;
-import javax.persistence.Column;
-
-import com.picsauditing.access.OpPerms;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.velocity.tools.generic.DateTool;
-
 import com.picsauditing.PICS.TaxService;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.util.PicsDateFormat;
-import org.hibernate.annotations.Type;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+import javax.persistence.Column;
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -37,9 +26,9 @@ public class Invoice extends Transaction {
 	private Date paidDate; // MAX(Payment.creationDate)
 	private Map<FeeClass, BigDecimal> commissionEligibleFeeMap;
 	protected boolean qbSyncWithTax;
-	private Invoice lateFeeInvoice;
 
     private InvoiceType invoiceType;
+	private Invoice lateFeeInvoice;
     protected BigDecimal commissionableAmount = BigDecimal.ZERO;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
@@ -130,6 +119,8 @@ public class Invoice extends Transaction {
 		this.qbSyncWithTax = qbSyncWithTax;
 	}
 
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "lateFeeInvoiceID", nullable = true)
 	public Invoice getLateFeeInvoice() {
 		return lateFeeInvoice;
 	}

@@ -43,7 +43,7 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     val testNumbers = new util.ArrayList[java.lang.Integer]()
     testNumbers.add(ITEM_ID_1)
     testNumbers.add(ITEM_ID_2)
-    classUnderTest.setRefunds(testNumbers)
+    classUnderTest.setReturns(testNumbers)
     MockitoAnnotations.initMocks(this)
     setInternalState("invoiceDAO", mockInvoiceDAO)
     setInternalState("creditMemoDAO", mockCreditMemoDAO)
@@ -73,28 +73,28 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     TranslationServiceFactory.registerTranslationService(null.asInstanceOf[TranslationService])
   }
 
-  "InvoiceReturnItemsController" should "add an Action Error when no refund IDs are provided, and doRefund is called." in {
-    classUnderTest.refunds = List()
-    classUnderTest doRefund
+  "InvoiceReturnItemsController" should "add an Action Error when no return IDs are provided, and doReturn is called." in {
+    classUnderTest.returns = List()
+    classUnderTest doReturn
     val count = classUnderTest.getActionErrors.size()
     assert(count === 1)
   }
 
-  it should "add an Action Error when the refund list is null and doRefund is called." in {
-    classUnderTest.setRefunds(null)
-    classUnderTest doRefund
+  it should "add an Action Error when the return list is null and doReturn is called." in {
+    classUnderTest.setReturns(null)
+    classUnderTest doReturn
     val count = classUnderTest.getActionErrors.size()
     assert(count === 1)
   }
 
-  it should "return SUCCESS when no refundIDs are provided, and doRefund is called." in {
-    classUnderTest.refunds = List()
-    assert(Action.SUCCESS === classUnderTest.doRefund)
+  it should "return SUCCESS when no returnIDs are provided, and doReturn is called." in {
+    classUnderTest.returns = List()
+    assert(Action.SUCCESS === classUnderTest.doReturn)
   }
 
-  it should "return SUCCESS when the refund list is null and doRefund is called." in {
-    classUnderTest.setRefunds(null)
-    assert(Action.SUCCESS === classUnderTest.doRefund)
+  it should "return SUCCESS when the return list is null and doReturn is called." in {
+    classUnderTest.setReturns(null)
+    assert(Action.SUCCESS === classUnderTest.doReturn)
   }
 
   it should "if the invoice is fully paid, have a refund applied to it when we doRefund." in {
@@ -107,7 +107,7 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     items.add(item2)
     mockInvoice.setItems(items)
 
-    assert(Action.INPUT === classUnderTest.doRefund)
+    assert(Action.INPUT === classUnderTest.doReturn)
     verify(mockCreditMemoDAO, atLeastOnce()).save(any(classOf[RefundAppliedToCreditMemo]))
   }
 
@@ -128,7 +128,7 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
     mockInvoice.setItems(items)
     mockInvoice.setTotalAmount(new math.BigDecimal(600))
 
-    assert(Action.INPUT === classUnderTest.doRefund)
+    assert(Action.INPUT === classUnderTest.doReturn)
     verify(mockCreditMemoDAO, never).save(any(classOf[RefundAppliedToCreditMemo]))
   }
 
@@ -136,25 +136,25 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
 //  it should "create a CreditMemo with a RefundItem when a correct InvoiceItem ID is supplied for refund." in new ExistentIDs {
 //    test { creditMemo =>
 //      creditMemo.getCreditMemo.getItems foreach {item =>
-//        assert(classUnderTest.refunds.contains(item.getRefundedItem.getId))
-//        assert(item.getAmount === item.getRefundedItem.getAmount.multiply(java.math.BigDecimal.valueOf(-1)))
+//        assert(classUnderTest.return.contains(item.getReturnedItem.getId))
+//        assert(item.getAmount === item.getReturnedItem.getAmount.multiply(java.math.BigDecimal.valueOf(-1)))
 //      }
 //    }
-//    classUnderTest.doRefund
+//    classUnderTest.doReturn
 //  }
 //
-//  it should "not create a RefundItem for incorrect / non-present InvoiceItem IDs." in new NonExistentIDs with ExistentIDs {
+//  it should "not create a ReturnItem for incorrect / non-present InvoiceItem IDs." in new NonExistentIDs with ExistentIDs {
 //    test { creditMemo =>
 //      creditMemo.getCreditMemo.getItems foreach {item =>
-//        assert(classUnderTest.refunds.contains(item.getRefundedItem.getId))
-//        assert(item.getAmount === item.getRefundedItem.getAmount.multiply(java.math.BigDecimal.valueOf(-1)))
-//        assert(!List(NON_ITEM_ID, NON_ITEM_ID_2).contains(item.getRefundedItem.getId))
+//        assert(classUnderTest.returns.contains(item.getReturnedItem.getId))
+//        assert(item.getAmount === item.getReturnedItem.getAmount.multiply(java.math.BigDecimal.valueOf(-1)))
+//        assert(!List(NON_ITEM_ID, NON_ITEM_ID_2).contains(item.getReturnedItem.getId))
 //      }
 //    }
 //  }
 //
-//  it should "not save CreditMemos that have no InvoiceItems refunded." in new NonExistentIDs {
-//    classUnderTest.doRefund
+//  it should "not save CreditMemos that have no InvoiceItems returned." in new NonExistentIDs {
+//    classUnderTest.doReturn
 //    verify(mockCreditMemoDAO, never).save(any(classOf[CreditMemoAppliedToInvoice]))
 //  }
 
@@ -165,8 +165,8 @@ class InvoiceReturnItemsControllerTest extends FlatSpec with BeforeAndAfter with
 //      assertEquals()
 //    }
 //
-//    classUnderTest.refunds = List(ITEM_ID_1, ITEM_ID_2, ITEM_ID_3)
-//    classUnderTest doRefund
+//    classUnderTest.returns = List(ITEM_ID_1, ITEM_ID_2, ITEM_ID_3)
+//    classUnderTest doReturn
 //  }
 
   private def setInternalState(name: String, obj: Any) = {

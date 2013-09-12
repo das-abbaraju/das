@@ -26,7 +26,7 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   var sapAppPropertyUtil: SapAppPropertyUtil = null
 
   @BeanProperty
-  var refunds: StrutsList[int] = null.asInstanceOf[StrutsList[int]]
+  var returns: StrutsList[int] = null.asInstanceOf[StrutsList[int]]
   @BeanProperty
   var invoice: Invoice = null
 
@@ -42,18 +42,18 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
 
   override def execute = Action.SUCCESS
 
-  def doRefund = {
-    try { if (refunds != null && !refunds.isEmpty) {
-      val refund = refundFor(invoice)
-      save(refund)
+  def doReturn = {
+    try { if (returns != null && !returns.isEmpty) {
+      val returnForInvoice = returnFor(invoice)
+      save(returnForInvoice)
       setUrlForRedirect(REDIRECT + invoice.getId)
       Action.INPUT
     } else {
-      addActionError("You must select items to refund.")
+      addActionError("You must select items to return.")
       execute
     }} catch {
       case e : Exception => {
-        addActionError("There has been a problem creating your refund.")
+        addActionError("There has been a problem creating your return.")
         println(e.getMessage)
         e.printStackTrace
       }
@@ -61,39 +61,39 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
     }
   }
 
-  private def refundFor(invoice: Invoice) = {
-    val refund = CreditMemoAppliedToInvoice.from(invoice)
-    refundItemsPickedFrom(invoice) foreach {
-      case Some(refundItem) => {
-        refund.getCreditMemo.setAuditColumns(permissions)
-        refund.getCreditMemo.getItems.add(refundItem)
-        refundItem.setCreditMemo(refund.getCreditMemo)
+  private def returnFor(invoice: Invoice) = {
+    val returnForInvoice = CreditMemoAppliedToInvoice.from(invoice)
+    returnItemsPickedFrom(invoice) foreach {
+      case Some(returnItem) => {
+        returnForInvoice.getCreditMemo.setAuditColumns(permissions)
+        returnForInvoice.getCreditMemo.getItems.add(returnItem)
+        returnItem.setCreditMemo(returnForInvoice.getCreditMemo)
       }
       case None => {} // Do nothing.
     }
-    refund
+    returnForInvoice
   }
 
-  private def refundItemsPickedFrom(invoice: Invoice): List[Option[RefundItem]] = {
-    refunds map { proposedRefundId => generatedReturnItem { foundInvoiceItemFor(proposedRefundId) }}}.toList
+  private def returnItemsPickedFrom(invoice: Invoice): List[Option[ReturnItem]] = {
+    returns map { proposedReturnId => generatedReturnItem { foundInvoiceItemFor(proposedReturnId) }}}.toList
 
-  private def foundInvoiceItemFor(proposedRefundItemId: int) = {
-    val matchingItem: InvoiceItem => Boolean = existingUnrefundedInvoiceItem(_)(proposedRefundItemId)
+  private def foundInvoiceItemFor(proposedReturnItemId: int) = {
+    val matchingItem: InvoiceItem => Boolean = existingUnreturnedInvoiceItem(_)(proposedReturnItemId)
 
     invoice.getItems find matchingItem match {
       case Some(item) => Right(item)
-      case None => Left(proposedRefundItemId)
+      case None => Left(proposedReturnItemId)
     }
   }
 
-  private def existingUnrefundedInvoiceItem(invoiceItem: InvoiceItem)(lookingFor: int) = {
-    invoiceItem.getId == lookingFor && !invoiceItem.isRefunded
+  private def existingUnreturnedInvoiceItem(invoiceItem: InvoiceItem)(lookingFor: int) = {
+    invoiceItem.getId == lookingFor && !invoiceItem.setReturned
   }
 
   private def generatedReturnItem(invoiceItem: Either[int, InvoiceItem]) = invoiceItem match {
     case Right(item) => {
-      item.setRefunded(true)
-      Some(new RefundItem(item))
+      item.setReturned(true)
+      Some(new ReturnItem(item))
     }
     case Left(id) => {
       addActionError("Item number " + id + " has already been returned on this invoice.")

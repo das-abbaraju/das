@@ -6,11 +6,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "ref_sap_business_unit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class BusinessUnit {
+public class BusinessUnit implements Serializable {
 	private int id;
 
     private String businessUnit;

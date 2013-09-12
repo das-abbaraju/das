@@ -12,7 +12,6 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.util.SapAppPropertyUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
@@ -32,12 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
 
 @SuppressWarnings("deprecation")
 public class CronTest extends PicsActionTest {
@@ -366,33 +364,44 @@ public class CronTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testAddLateFeeToDelinquentInvoice() throws Exception {
-
+	public void testCalculateLateFeeFor() {
 		BigDecimal invoiceFeeAmount = new BigDecimal(100);
-		BigDecimal expectedLateFeeInvoiceAmount = new BigDecimal(Cron.MINIMUM_LATE_FEE);
-
-		Cron cron = new Cron();
-
+		BigDecimal expectedLateFee = new BigDecimal(Cron.MINIMUM_LATE_FEE);
 		when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
-		when(mockInvoice.getAccount()).thenReturn(mockContractorAccount);
+		BigDecimal actualLateFee = cron.calculateLateFeeFor(mockInvoice);
+		assertEquals(expectedLateFee,actualLateFee);
+	}
+
+	@Test
+	public void createLateFeeInvoiceItem() {
+		cron.setInvoiceFeeDAO(invoiceFeeDAO);
 		when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, 0)).thenReturn(mockInvoiceFee);
 		when(mockInvoiceFee.getFeeClass()).thenReturn(FeeClass.LateFee);
-		when(mockInvoiceFee.getAmount()).thenReturn(invoiceFeeAmount);
-		when(mockContractorAccount.isDemo()).thenReturn(false);
-		AccountingSystemSynchronization.setSapAppPropertyUtil(mockSapAppPropertyUtil);
-		when(mockSapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(mockInvoice)).thenReturn(false);
-		cron.setBillingService(billingService);
-		cron.setInvoiceFeeDAO(invoiceFeeDAO);
-		cron.setInvoiceItemDAO(invoiceItemDAO);
-		Invoice lateFeeInvoice = Whitebox.<Invoice> invokeMethod(cron,"addLateFeeToDelinquentInvoice",mockInvoice);
-		//Invoice lateFeeInvoice = cron.addLateFeeToDelinquentInvoice(mockInvoice);
-		verify(invoiceItemDAO).save(mockContractorAccount);
-		verify(invoiceItemDAO).save(mockInvoice);
-		verify(invoiceItemDAO).save(lateFeeInvoice);
+		when(mockInvoice.getAccount()).thenReturn(mockContractorAccount);
+		BigDecimal invoiceFeeAmount = new BigDecimal(100);
+		when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
+		BigDecimal lateFee = cron.calculateLateFeeFor(mockInvoice);
+		InvoiceItem lateFeeInvoiceItem = cron.createLateFeeInvoiceItem(mockInvoice, lateFee);
+		assertEquals(FeeClass.LateFee,lateFeeInvoiceItem.getInvoiceFee().getFeeClass());
+		assertEquals(lateFee,lateFeeInvoiceItem.getAmount());
+	}
 
-		assertEquals(InvoiceType.LateFee,lateFeeInvoice.getInvoiceType());
-		assertThat(lateFeeInvoice.getItems().get(0),instanceOf(InvoiceItem.class));
-		assertEquals(FeeClass.LateFee,lateFeeInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
-		assertEquals(expectedLateFeeInvoiceAmount,lateFeeInvoice.getTotalAmount());
+	@Test
+	public void testGenerateLateFeeInvoice() {
+		cron.setInvoiceFeeDAO(invoiceFeeDAO);
+		when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, 0)).thenReturn(mockInvoiceFee);
+		when(mockInvoiceFee.getFeeClass()).thenReturn(FeeClass.LateFee);
+		when(mockInvoice.getAccount()).thenReturn(mockContractorAccount);
+		BigDecimal invoiceFeeAmount = new BigDecimal(100);
+		when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
+		BigDecimal lateFee = cron.calculateLateFeeFor(mockInvoice);
+		InvoiceItem lateFeeInvoiceItem = cron.createLateFeeInvoiceItem(mockInvoice, lateFee);
+		Invoice lateInvoice = cron.generateLateFeeInvoice(mockInvoice, lateFeeInvoiceItem);
+
+		assertEquals(mockInvoice.getAccount(),lateInvoice.getAccount());
+		assertEquals(lateFeeInvoiceItem,lateInvoice.getItems().get(0));
+		assertEquals(lateFee,lateInvoice.getTotalAmount());
+		assertEquals(InvoiceType.LateFee,lateInvoice.getInvoiceType());
+		assertEquals(FeeClass.LateFee,lateInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
 	}
 }

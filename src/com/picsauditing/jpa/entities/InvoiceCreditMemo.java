@@ -12,7 +12,7 @@ import java.util.List;
 public class InvoiceCreditMemo extends Transaction {
 
     private PaymentMethod paymentMethod = PaymentMethod.ReturnCreditMemo;
-    private List<RefundItem> refundItems = new ArrayList<>();
+    private List<ReturnItem> returnItems = new ArrayList<>();
 
     private RefundAppliedToCreditMemo refund;
 
@@ -26,18 +26,18 @@ public class InvoiceCreditMemo extends Transaction {
     }
 
 	@OneToMany(mappedBy = "creditMemo", cascade = { CascadeType.ALL })
-	public List<RefundItem> getItems() {
-		Collections.sort(refundItems, new Comparator<RefundItem>() {
+	public List<ReturnItem> getItems() {
+		Collections.sort(returnItems, new Comparator<ReturnItem>() {
             @Override
-            public int compare(RefundItem o1, RefundItem o2) {
+            public int compare(ReturnItem o1, ReturnItem o2) {
                 return o1.getInvoiceFee().getDisplayOrder().compareTo(o2.getInvoiceFee().getDisplayOrder());
             }
         });
-		return refundItems;
+		return returnItems;
 	}
 
-	public void setItems(List<RefundItem> items) {
-        refundItems = items;
+	public void setItems(List<ReturnItem> items) {
+        returnItems = items;
 	}
 
     @OneToOne(mappedBy = "creditMemo", cascade = { CascadeType.REMOVE })
@@ -53,7 +53,7 @@ public class InvoiceCreditMemo extends Transaction {
     @Transient
     public void updateAmountApplied() {
         BigDecimal total = BigDecimal.ZERO;
-        for (RefundItem item : refundItems) {
+        for (ReturnItem item : returnItems) {
             total = total.add(item.getAmount());
         }
         total = total.negate();

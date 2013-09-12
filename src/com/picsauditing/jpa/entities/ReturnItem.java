@@ -5,15 +5,15 @@ import java.math.BigDecimal;
 
 @Entity
 @DiscriminatorValue("C")
-public class RefundItem extends TransactionItem {
+public class ReturnItem extends TransactionItem {
 
     private InvoiceCreditMemo creditMemo;
-    private InvoiceItem refundedItem;
+    private InvoiceItem returnedItem;
 
-    public RefundItem() {}
+    public ReturnItem() {}
 
-    public RefundItem(InvoiceItem item) {
-        refundedItem = item;
+    public ReturnItem(InvoiceItem item) {
+        returnedItem = item;
         invoiceFee = item.invoiceFee;
         amount = item.getAmount().multiply(BigDecimal.valueOf(-1));
     }
@@ -30,11 +30,11 @@ public class RefundItem extends TransactionItem {
 
     @OneToOne
     @JoinColumn(name = "refundFor")
-    public InvoiceItem getRefundedItem() {
-        return refundedItem;
+    public InvoiceItem getReturnedItem() {
+        return returnedItem;
     }
 
-    public void setRefundedItem(InvoiceItem refundedItem) {
-        this.refundedItem = refundedItem;
+    public void setReturnedItem(InvoiceItem returnedItem) {
+        this.returnedItem = returnedItem;
     }
 }

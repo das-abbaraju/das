@@ -1,9 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -12,7 +11,7 @@ public class InvoiceItem extends TransactionItem {
 
 	private Invoice invoice;
 	private Date paymentExpires;
-	private boolean refunded = false;
+	private boolean returned = false;
 	private String qbRefundID;
 
 	public InvoiceItem() {
@@ -58,12 +57,12 @@ public class InvoiceItem extends TransactionItem {
 		this.paymentExpires = paymentExpires;
 	}
 
-	public boolean isRefunded() {
-		return refunded;
+	public boolean setReturned() {
+		return returned;
 	}
 
-	public void setRefunded(boolean refunded) {
-		this.refunded = refunded;
+	public void setReturned(boolean returned) {
+		this.returned = returned;
 	}
 
 	public String getQbRefundID() {
