@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +14,9 @@ import org.junit.Test;
 
 public class FileUtilsTest {
 	@Test
-	public void testGetSimilarFiles() {
-		File folder = new File("tests");
+	public void testGetSimilarFiles() throws URISyntaxException {
+        URL folderUrl = ClassLoader.getSystemResource("com/picsauditing/util");
+        File folder = new File(folderUrl.toURI());
 		File[] files = FileUtils.getSimilarFiles(folder, "test_notes");
 		assertTrue(files.length == 2);
 	}
