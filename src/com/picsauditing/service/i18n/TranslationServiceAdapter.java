@@ -40,7 +40,8 @@ public class TranslationServiceAdapter implements TranslationService {
     private static final String UPDATE_URL = TRANSLATION_URL + "saveOrUpdate/";
     private static final String CACHE_NAME = "i18n";
     private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
-    private static final String APP_PROPERTY_TRANSLATION_STRATEGY_NAME = "TranslationStrategyName";
+    private static final String APP_PROPERTY_TRANSLATION_STRATEGY_NAME = "TranslationTransformStrategy";
+    private static final String STRATEGY_RETURN_KEY = "ReturnKeyOnEmptyTranslation";
     private static Cache cache;
     private static Cache wildcardCache;
     private static final String environment = System.getProperty("pics.env");
@@ -62,13 +63,7 @@ public class TranslationServiceAdapter implements TranslationService {
             synchronized (TranslationServiceAdapter.class) {
                 service = INSTANCE;
                 if (service == null) {
-                    AppPropertyProvider appPropertyProvider = appPropertyProvider();
-                    String translationStrategyName = appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME);
-                    if ("ReturnKeyOnEmptyTranslation".equalsIgnoreCase(translationStrategyName)) {
-                        TranslationServiceAdapter.registerTranslationStrategy(new ReturnKeyTranslationStrategy());
-                    } else {
-                        TranslationServiceAdapter.registerTranslationStrategy(new EmptyTranslationStrategy());
-                    }
+                    registerTranslationTransformStrategy();
                     INSTANCE = new TranslationServiceAdapter();
                 }
             }
@@ -76,7 +71,17 @@ public class TranslationServiceAdapter implements TranslationService {
 		return INSTANCE;
 	}
 
-	@Override
+    protected static void registerTranslationTransformStrategy() {
+        AppPropertyProvider appPropertyProvider = appPropertyProvider();
+        String translationStrategyName = appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME);
+        if (STRATEGY_RETURN_KEY.equalsIgnoreCase(translationStrategyName)) {
+            TranslationServiceAdapter.registerTranslationStrategy(new ReturnKeyTranslationStrategy());
+        } else {
+            TranslationServiceAdapter.registerTranslationStrategy(new EmptyTranslationStrategy());
+        }
+    }
+
+    @Override
 	public String getText(String key, Locale locale) {
         return getText(key, locale.toString());
     }

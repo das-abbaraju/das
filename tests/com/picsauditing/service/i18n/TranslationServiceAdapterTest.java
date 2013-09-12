@@ -222,7 +222,7 @@ public class TranslationServiceAdapterTest {
 
     @Test
     public void testGetInstance_WithReturnKeyOnEmptyTranslationSetsRightStrategy() throws Exception {
-        when(appPropertyProvider.findAppProperty("TranslationStrategyName")).thenReturn("ReturnKeyOnEmptyTranslation");
+        when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn("ReturnKeyOnEmptyTranslation");
         translationService.clear();
         TranslationServiceAdapter.getInstance();
 
