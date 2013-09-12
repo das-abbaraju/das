@@ -155,7 +155,13 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 			return name;
 		}
 
-		return new TranslatableString(getI18nKey("name"), new EmptyTranslationStrategy()).toTranslatedString();
+        String key = getI18nKey("name");
+		String value = new TranslatableString(key).toTranslatedString();
+        if (key.equals(value)) {
+            return Strings.EMPTY_STRING;
+        } else {
+            return value;
+        }
 	}
 
 	public void setName(String name) {

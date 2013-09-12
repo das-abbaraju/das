@@ -21,6 +21,7 @@ public abstract class PicsTranslationTest {
 
 	public void resetTranslationService() {
 		Mockito.reset(translationService);
+		Mockito.reset(nonLoggingTranslationService);
 	}
 
 	@AfterClass

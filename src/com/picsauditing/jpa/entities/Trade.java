@@ -435,7 +435,13 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			return name2;
 		}
 
-		return new TranslatableString(getI18nKey("name2"), new EmptyTranslationStrategy()).toTranslatedString();
+        String key = getI18nKey("name2");
+        String value = new TranslatableString(key).toTranslatedString();
+        if (key.equals(value)) {
+            return Strings.EMPTY_STRING;
+        } else {
+            return value;
+        }
 	}
 
 	public void setName2(String name2) {
@@ -447,8 +453,13 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		if (help != null) {
 			return help;
 		}
-
-		return new TranslatableString(getI18nKey("help"), new EmptyTranslationStrategy()).toTranslatedString();
+        String key = getI18nKey("help");
+        String value = new TranslatableString(key).toTranslatedString();
+        if (key.equals(value)) {
+            return Strings.EMPTY_STRING;
+        } else {
+            return value;
+        }
 	}
 
 	public void setHelp(String help) {

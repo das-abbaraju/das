@@ -47,6 +47,20 @@ public class TranslationWrapper {
 		private int createdBy;
 		private int updatedBy;
 
+        public Builder() {
+
+        }
+
+        public Builder(TranslationWrapper seed) {
+            keyID = seed.getKeyID();
+            key = seed.getKey();
+            translation = seed.getTranslation();
+            locale = seed.getLocale();
+            retrievedByWildcard = seed.isRetrievedByWildcard();
+            createdBy = seed.getCreatedBy();
+            updatedBy = seed.getUpdatedBy();
+        }
+
         public Builder keyID(int keyID) {
             this.keyID = keyID;
             return this;

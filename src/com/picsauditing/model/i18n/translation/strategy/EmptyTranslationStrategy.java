@@ -1,20 +1,17 @@
 package com.picsauditing.model.i18n.translation.strategy;
 
-import java.util.Locale;
-
-import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.util.Strings;
 
 public class EmptyTranslationStrategy implements TranslationStrategy {
 
-	@Override
-	public String performTranslation(String key, Locale locale) {
-		String translation = TranslationServiceFactory.getNonLoggingTranslationService().getText(key, locale);
-		if (Strings.isEmpty(key) || key.equals(translation)) {
-			return Strings.EMPTY_STRING;
-		}
-
-		return translation;
-	}
+    @Override
+    public TranslationWrapper transformTranslation(TranslationWrapper translation) {
+        if (Strings.isEmpty(translation.getTranslation()) || translation.getKey().equals(translation.getTranslation())) {
+            return new TranslationWrapper.Builder(translation).translation(Strings.EMPTY_STRING).build();
+        } else {
+            return translation;
+        }
+    }
 
 }

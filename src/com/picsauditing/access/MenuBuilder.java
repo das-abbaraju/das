@@ -25,7 +25,6 @@ public final class MenuBuilder {
 
     private static final String SEARCH_FOR_NEW_URL = "NewContractorSearch.action?filter.performedBy=Self%20Performed&filter.primaryInformation=true&filter.tradeInformation=true";
     private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
-    private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
     public static ReportUserDAO reportUserDAO;
 
@@ -618,7 +617,7 @@ public final class MenuBuilder {
     }
 
     private static String getText(String key) {
-        return translationService.getText(key, TranslationActionSupport.getLocaleStatic());
+        return TranslationServiceFactory.getTranslationService().getText(key, TranslationActionSupport.getLocaleStatic());
     }
 
     private static MenuComponent buildUniqueFavoritesMenuComponent() {
@@ -647,7 +646,7 @@ public final class MenuBuilder {
     }
 
     public static String getMibewURL(Locale locale, Permissions permissions) throws UnsupportedEncodingException {
-        String mibew_language_code = translationService.getText("Mibew.LanguageCode", locale);
+        String mibew_language_code = TranslationServiceFactory.getTranslationService().getText("Mibew.LanguageCode", locale);
 
         StringBuilder mibewURL = new StringBuilder();
         mibewURL.append("https://chat.picsorganizer.com/client.php?");

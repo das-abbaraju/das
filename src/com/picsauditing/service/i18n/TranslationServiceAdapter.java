@@ -2,9 +2,12 @@ package com.picsauditing.service.i18n;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.model.events.TranslationLookupEvent;
+import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.TranslationLookupData;
 import com.picsauditing.model.i18n.TranslationWrapper;
+import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.sun.jersey.api.client.*;
@@ -25,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class TranslationServiceAdapter implements TranslationService {
 
-	private static final TranslationService INSTANCE = new TranslationServiceAdapter();
+	private static TranslationService INSTANCE;
     private final Logger logger = LoggerFactory.getLogger(TranslationServiceAdapter.class);
 
     public static final String DEFAULT_LANGUAGE = "en";
@@ -37,9 +40,13 @@ public class TranslationServiceAdapter implements TranslationService {
     private static final String UPDATE_URL = TRANSLATION_URL + "saveOrUpdate/";
     private static final String CACHE_NAME = "i18n";
     private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
+    private static final String APP_PROPERTY_TRANSLATION_STRATEGY_NAME = "TranslationStrategyName";
     private static Cache cache;
     private static Cache wildcardCache;
     private static final String environment = System.getProperty("pics.env");
+    private static AppPropertyProvider appPropertyProvider;
+    private static TranslationStrategy translationStrategy;
+
     private Client client;
 
     TranslationServiceAdapter() {
@@ -50,6 +57,22 @@ public class TranslationServiceAdapter implements TranslationService {
     }
 
 	public static TranslationService getInstance() {
+        TranslationService service = INSTANCE;
+        if (service == null) {
+            synchronized (TranslationServiceAdapter.class) {
+                service = INSTANCE;
+                if (service == null) {
+                    AppPropertyProvider appPropertyProvider = appPropertyProvider();
+                    String translationStrategyName = appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME);
+                    if ("ReturnKeyOnEmptyTranslation".equalsIgnoreCase(translationStrategyName)) {
+                        TranslationServiceAdapter.registerTranslationStrategy(new ReturnKeyTranslationStrategy());
+                    } else {
+                        TranslationServiceAdapter.registerTranslationStrategy(new EmptyTranslationStrategy());
+                    }
+                    INSTANCE = new TranslationServiceAdapter();
+                }
+            }
+        }
 		return INSTANCE;
 	}
 
@@ -74,7 +97,9 @@ public class TranslationServiceAdapter implements TranslationService {
         } else {
             translation = translationFromCacheOrWebResourceIfLocaleCacheMiss(key, locale, element);
         }
-        return translation;
+        return (translation != null)
+            ? translationStrategy.transformTranslation(translation)
+            : null;
     }
 
     private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String locale, Element element) {
@@ -510,8 +535,9 @@ public class TranslationServiceAdapter implements TranslationService {
 
     @Override
 	public void clear() {
-		// TODO Auto-generated method stub
-
+		synchronized (this) {
+            INSTANCE = null;
+        }
 	}
 
 	@Override
@@ -520,4 +546,14 @@ public class TranslationServiceAdapter implements TranslationService {
 		return null;
 	}
 
+    private static AppPropertyProvider appPropertyProvider() {
+        if (appPropertyProvider == null) {
+            appPropertyProvider = new JdbcAppPropertyProvider();
+        }
+        return appPropertyProvider;
+    }
+
+    public static void registerTranslationStrategy(TranslationStrategy strategy) {
+        translationStrategy = strategy;
+    }
 }

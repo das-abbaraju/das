@@ -2,7 +2,9 @@ package com.picsauditing.service.i18n;
 
 import com.google.common.collect.Table;
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.TranslationWrapper;
+import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.SpringUtils;
 import com.sun.jersey.api.client.*;
 import net.sf.ehcache.*;
@@ -47,11 +49,14 @@ public class TranslationServiceAdapterTest {
     private ApplicationContext applicationContext;
     @Mock
     protected HttpServletRequest request;
+    @Mock
+    private AppPropertyProvider appPropertyProvider;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        Whitebox.setInternalState(TranslationServiceAdapter.class, "appPropertyProvider", appPropertyProvider);
         translationService = (TranslationServiceAdapter)TranslationServiceAdapter.getInstance();
         Whitebox.setInternalState(translationService, "client", client);
         Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
@@ -75,6 +80,7 @@ public class TranslationServiceAdapterTest {
     public void tearDown() throws Exception {
         Whitebox.setInternalState(translationService, "client", (Client)null);
         cache.remove(TEST_KEY);
+        translationService.clear();
     }
 
 //    @AfterClass
@@ -213,4 +219,27 @@ public class TranslationServiceAdapterTest {
         }
         assertTrue(found == translations.size());
     }
+
+    @Test
+    public void testGetInstance_WithReturnKeyOnEmptyTranslationSetsRightStrategy() throws Exception {
+        when(appPropertyProvider.findAppProperty("TranslationStrategyName")).thenReturn("ReturnKeyOnEmptyTranslation");
+        translationService.clear();
+        TranslationServiceAdapter.getInstance();
+
+        TranslationStrategy strategy = Whitebox.getInternalState(TranslationServiceAdapter.class, "translationStrategy");
+
+        assertTrue(strategy instanceof ReturnKeyTranslationStrategy);
+    }
+
+    @Test
+    public void testGetInstance_WithNoAppPropertyForStrategySetsRightStrategy() throws Exception {
+        when(appPropertyProvider.findAppProperty("TranslationStrategyName")).thenReturn(null);
+        translationService.clear();
+        TranslationServiceAdapter.getInstance();
+
+        TranslationStrategy strategy = Whitebox.getInternalState(TranslationServiceAdapter.class, "translationStrategy");
+
+        assertTrue(strategy instanceof EmptyTranslationStrategy);
+    }
+
 }

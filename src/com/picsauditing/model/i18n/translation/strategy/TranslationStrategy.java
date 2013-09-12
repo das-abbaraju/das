@@ -1,9 +1,9 @@
 package com.picsauditing.model.i18n.translation.strategy;
 
-import java.util.Locale;
+import com.picsauditing.model.i18n.TranslationWrapper;
 
 public interface TranslationStrategy {
 
-	String performTranslation(String key, Locale locale);
+    TranslationWrapper transformTranslation(TranslationWrapper toTransform);
 
 }
