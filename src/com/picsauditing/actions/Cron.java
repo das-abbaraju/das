@@ -126,7 +126,7 @@ public class Cron extends PicsActionSupport {
 		report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n\n");
 		report.append("Starting Cron Job at: " + new Date().toString());
 		report.append("\n\n\n");
-		/*
+
 		if (!flagsOnly) {
 			tasksIfNotFlagsOnly();
 		}
@@ -158,7 +158,7 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-         */
+
 		try {
 			startTask("Adding Late Fee to Delinquent Contractor Invoices ...");
 			addLateFeeToDelinquentInvoices();
@@ -166,7 +166,7 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		 /*
+
 		try {
 			startTask("Bump Dead Accounts that still have balances...");
 			contractorAccountDAO.updateRecalculationForDeadAccountsWithBalances();
@@ -180,7 +180,7 @@ public class Cron extends PicsActionSupport {
 		 *
 		 * This is actually Canceling an account, not a deactivation.
 		 */
-		/*
+
 		try {
 			startTask("Inactivating Accounts via Billing Status...");
 			deactivateNonRenewalAccounts();
@@ -252,7 +252,7 @@ public class Cron extends PicsActionSupport {
 		}
 
         move90DayPendingAccountsToDeclinedStatus();
-*/
+
         report.append(Strings.NEW_LINE).append(Strings.NEW_LINE).append(Strings.NEW_LINE)
 				.append("Completed Cron Job at: ");
 		report.append(new Date().toString());
