@@ -3,7 +3,7 @@
 # except for .gitignore
 !.gitignore
 
-/target
+target/
 /bin
 *.iml
 *.log
@@ -19,3 +19,4 @@ rebel-remote.xml
 /js
 /struts
 /v7
+pics-legacy/junitExcelBuilderTest.xls
