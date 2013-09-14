@@ -13,6 +13,7 @@
         <module>pics-web</module>
         <module>pics-legacy</module>
         <module>service-nace</module>
+        <module>service-qbwc</module>
     </modules>
 
     <repositories>
