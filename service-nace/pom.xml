@@ -7,10 +7,9 @@
         <groupId>com.picsauditing</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+    <artifactId>service-nace</artifactId>
     <modelVersion>4.0.0</modelVersion>
     <name>NACE Web Service</name>
-
-    <artifactId>service-nace</artifactId>
 
     <dependencies>
         <dependency>
