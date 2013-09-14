@@ -10,10 +10,11 @@
     <description>Top level parent POM for PICS Organizer</description>
 
     <modules>
-        <module>pics-web</module>
-        <module>pics-legacy</module>
         <module>service-nace</module>
         <module>service-qbwc</module>
+        <module>pics-security</module>
+        <module>pics-legacy</module>
+        <module>pics-web</module>
     </modules>
 
     <repositories>
