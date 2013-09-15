@@ -13,5 +13,17 @@
     <name>Dynamic Reports Engine</name>
     <description>Generic engine for processing dynamic reports</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.picsauditing</groupId>
+            <artifactId>pics-util</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.picsauditing</groupId>
+            <artifactId>pics-security</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
