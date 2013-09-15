@@ -235,12 +235,13 @@
             <artifactId>pics-security</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.picsauditing</groupId>-->
-            <!--<artifactId>pics-reports-core</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
         <dependency>
+            <groupId>com.picsauditing</groupId>
+            <artifactId>pics-dr-engine</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <!-- Classes in this module aren't being used at this point -->
             <groupId>com.picsauditing</groupId>
             <artifactId>service-nace</artifactId>
             <version>1.0-SNAPSHOT</version>

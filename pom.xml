@@ -15,6 +15,9 @@
         <module>pics-security</module>
         <module>pics-legacy</module>
         <module>pics-web</module>
+        <module>pics-dr-engine</module>
+        <module>pics-database</module>
+        <module>pics-util</module>
     </modules>
 
     <repositories>
