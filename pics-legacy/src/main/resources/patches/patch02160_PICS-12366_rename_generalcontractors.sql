@@ -21,6 +21,7 @@ FROM contractor_operator);
 
 DROP TRIGGER IF EXISTS `generalcontractors_two_ids_before_insert` ;
 
+DELIMITER //
 CREATE DEFINER = `pics_admin`@`%` TRIGGER `generalcontractors_two_ids_before_insert` BEFORE INSERT ON `contractor_operator`
 FOR EACH
 ROW BEGIN
@@ -42,10 +43,12 @@ IF @cnt >1 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'A contractor_operato
 
 END IF ;
 
-END;
+END; //
+DELIMITER ;
 
 DROP TRIGGER IF EXISTS `generalcontractors_two_ids_before_update` ;
 
+DELIMITER //
 CREATE DEFINER = `pics_admin`@`%` TRIGGER `generalcontractors_two_ids_before_update` BEFORE UPDATE ON `contractor_operator` FOR EACH ROW BEGIN SET @cnt =0;
 
 IF new.gcID IS NULL THEN SET @cnt = @cnt +1;
@@ -64,4 +67,5 @@ IF @cnt >1 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'A contractor_operato
 
 END IF ;
 
-END;
+END;//
+DELIMITER ;
