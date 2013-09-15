@@ -37,7 +37,7 @@ public class EncodedKeyTest {
 		for (int i = 0; i < TEST_SIZE; i++) {
 			String secretKey = EncodedKey.newServerSecretKey();
 			keys.add(secretKey);
-			assertEquals(76+1+10+2, secretKey.length());
+			assertEquals(76 + 1 + 10 + 2, secretKey.length());
 		}
 		assertEquals(TEST_SIZE, keys.size());
 	}

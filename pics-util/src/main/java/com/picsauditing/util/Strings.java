@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.picsauditing.security.EncodedMessage;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,7 +209,13 @@ public class Strings {
 		stringBuilder.append("'");
 	}
 
-	/**
+    public static String hashUrlSafe(String seed) {
+        String value = EncodedMessage.hash(seed);
+        value = value.replace("+", "_");
+        return value;
+    }
+
+    /**
 	 * Take an arbitrary string and return an integer if it could be an
 	 * accountID. Other wise return a 0 Examples: <br />
 	 * 11883 returns 11883<br />
