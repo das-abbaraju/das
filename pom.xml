@@ -10,8 +10,11 @@
     <description>Top level parent POM for PICS Organizer</description>
 
     <modules>
-        <module>pics-web</module>
+        <module>service-nace</module>
+        <module>service-qbwc</module>
+        <module>pics-security</module>
         <module>pics-legacy</module>
+        <module>pics-web</module>
     </modules>
 
     <repositories>
@@ -21,29 +24,6 @@
         <repository>
             <id>pics</id>
             <url>http://maven.picsauditing.com</url>
-        </repository>
-        <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases/</url>
-        </repository>
-        <repository>
-            <id>itextpdf.com</id>
-            <name>Maven Repository for iText</name>
-            <url>http://maven.itextpdf.com/</url>
-        </repository>
-        <repository>
-            <id>terracotta.org</id>
-            <name>Terracotta</name>
-            <url>http://repo.terracotta.org/maven2</url>
-        </repository>
-        <repository>
-            <id>OSGEO GeoTools repo</id>
-            <url>http://download.osgeo.org/webdav/geotools</url>
-        </repository>
-        <repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
         </repository>
     </repositories>
     <pluginRepositories>
