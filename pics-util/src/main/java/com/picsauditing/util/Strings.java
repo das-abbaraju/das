@@ -6,15 +6,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.picsauditing.access.Permissions;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
-
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.security.EncodedMessage;
 
 public class Strings {
 
@@ -89,7 +83,7 @@ public class Strings {
 	}
 
 	public static String implode(int[] array, String delimiter) {
-		if (ArrayUtils.isEmpty(array))
+		if (array == null || array.length == 0)
 			return EMPTY_STRING;
 
 		StringBuffer buffer = new StringBuffer();
@@ -124,21 +118,22 @@ public class Strings {
 		return genericImplode(collection, ",", NO_STRING_ESCAPE_STRATEGY);
 	}
 
-	public static String implodeIDs(Collection<? extends BaseTable> collection) {
-		if (collection == null)
-			return Strings.EMPTY_STRING;
-
-		StringBuffer buffer = new StringBuffer();
-		for (BaseTable o : collection) {
-			if (buffer.length() > 0) {
-				buffer.append(",");
-			}
-
-			buffer.append(o.getId());
-		}
-
-		return buffer.toString();
-	}
+    // TODO FIX ME TREVOR
+//	public static String implodeIDs(Collection<? extends BaseTable> collection) {
+//		if (collection == null)
+//			return Strings.EMPTY_STRING;
+//
+//		StringBuffer buffer = new StringBuffer();
+//		for (BaseTable o : collection) {
+//			if (buffer.length() > 0) {
+//				buffer.append(",");
+//			}
+//
+//			buffer.append(o.getId());
+//		}
+//
+//		return buffer.toString();
+//	}
 
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		return genericImplode(collection, delimiter, NO_STRING_ESCAPE_STRATEGY);
@@ -149,9 +144,9 @@ public class Strings {
 	}
 
 	private static <E> String genericArrayImplode(E[] array, String delimiter, int escapeType) {
-		if (ArrayUtils.isEmpty(array)) {
-			return EMPTY_STRING;
-		}
+        if (array == null || array.length == 0) {
+            return EMPTY_STRING;
+        }
 
 		StringBuilder builder = new StringBuilder();
 		for (E entity : array) {
@@ -166,9 +161,9 @@ public class Strings {
 	}
 
 	private static <E> String genericImplode(Collection<E> collection, String delimiter, int escapeType) {
-		if (CollectionUtils.isEmpty(collection)) {
-			return EMPTY_STRING;
-		}
+        if (collection == null || collection.size() == 0) {
+            return EMPTY_STRING;
+        }
 
 		StringBuilder builder = new StringBuilder();
 		for (E entity : collection) {
@@ -211,16 +206,6 @@ public class Strings {
 		}
 
 		stringBuilder.append("'");
-	}
-
-	/**
-	 * @param seed
-	 * @return TODO move to EncodedKey
-	 */
-	public static String hashUrlSafe(String seed) {
-		String value = EncodedMessage.hash(seed);
-		value = value.replace("+", "_");
-		return value;
 	}
 
 	/**

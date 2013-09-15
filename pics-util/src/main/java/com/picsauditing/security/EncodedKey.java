@@ -60,4 +60,10 @@ public class EncodedKey {
         new KeyCode(key).verifySufficientlyComplex();
     }
 
+    public static String hashUrlSafe(String seed) {
+        String value = EncodedMessage.hash(seed);
+        value = value.replace("+", "_");
+        return value;
+    }
+
 }
