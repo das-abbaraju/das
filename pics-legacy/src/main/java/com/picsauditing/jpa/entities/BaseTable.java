@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.database.TableWithID;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ import com.picsauditing.search.IndexableField;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, JSONAware, Translatable {
+public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, JSONAware, Translatable, TableWithID {
 
 	protected int id;
 	protected User createdBy;

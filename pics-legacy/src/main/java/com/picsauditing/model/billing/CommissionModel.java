@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.database.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class CommissionModel {
 			return;
 		}
 
-		paymentCommissionDAO.deleteData("t.invoiceCommission.id IN (" + Strings.implodeIDs(invoiceCommissions) + ")");
+		paymentCommissionDAO.deleteData("t.invoiceCommission.id IN (" + StringUtil.implodeIDs(invoiceCommissions) + ")");
 	}
 
 	private void deleteExistingInvoiceCommissions(int invoiceId) {

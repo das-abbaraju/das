@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.database.StringUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.access.Permissions;
@@ -100,7 +101,7 @@ public class SmartFacilitySuggest {
 	}
 
 	static public List<BasicDynaBean> getSimilarOperators(ContractorAccount contractor, int limit) throws SQLException {
-		String opIDs = Strings.implodeIDs(contractor.getOperatorAccounts());
+		String opIDs = StringUtil.implodeIDs(contractor.getOperatorAccounts());
 
 		if (Strings.isEmpty(opIDs)) {
 			return Collections.emptyList();

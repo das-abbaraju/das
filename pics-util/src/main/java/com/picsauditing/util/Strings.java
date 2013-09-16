@@ -119,23 +119,6 @@ public class Strings {
 		return genericImplode(collection, ",", NO_STRING_ESCAPE_STRATEGY);
 	}
 
-    // TODO FIX ME TREVOR
-//	public static String implodeIDs(Collection<? extends BaseTable> collection) {
-//		if (collection == null)
-//			return Strings.EMPTY_STRING;
-//
-//		StringBuffer buffer = new StringBuffer();
-//		for (BaseTable o : collection) {
-//			if (buffer.length() > 0) {
-//				buffer.append(",");
-//			}
-//
-//			buffer.append(o.getId());
-//		}
-//
-//		return buffer.toString();
-//	}
-
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		return genericImplode(collection, delimiter, NO_STRING_ESCAPE_STRATEGY);
 	}
