@@ -29,6 +29,14 @@
                                                 headerKey=""
                                                 headerValue="- Refund Method -" />
                                     </li>
+                                    <li>
+                                        <label>Check/Credit Card Number: </label>
+                                        <s:textfield name="transactionNumber"/>
+                                    </li>
+                                    <li>
+                                        <label>Credit Card Receipt ID: </label>
+                                        <s:textfield name="transactionID"/>
+                                    </li>
                                 </ol>
                             </fieldset>
                             <fieldset class="form submit">

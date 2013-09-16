@@ -50,9 +50,10 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
-    private int creditMemoID;
 	private InvoiceCreditMemo creditMemo;
     private PaymentMethod paymentMethod;
+    private String transactionNumber;
+    private String transactionID;
 
 	@Override
 	public void prepare() {
@@ -129,6 +130,14 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         refund.setAmountApplied(amount.abs());
         refund.setAuditColumns(permissions);
         refund.setPaymentMethod(paymentMethod);
+        if (paymentMethod == PaymentMethod.CreditCard) {
+            refund.setCcNumber(transactionNumber);
+            refund.setTransactionID(transactionID);
+        }
+        else
+        {
+            refund.setCheckNumber(transactionNumber);
+        }
         refund.setStatus(TransactionStatus.Paid);
         refund.setAccount(contractor);
 
@@ -165,4 +174,19 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         this.paymentMethod = paymentMethod;
     }
 
+    public String getTransactionNumber() {
+        return transactionNumber;
+    }
+
+    public void setTransactionNumber(String transactionNumber) {
+        this.transactionNumber = transactionNumber;
+    }
+
+    public String getTransactionID() {
+        return transactionID;
+    }
+
+    public void setTransactionID(String transactionID) {
+        this.transactionID = transactionID;
+    }
 }
