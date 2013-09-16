@@ -29,26 +29,6 @@
 				${searchTerm}
 			</s:param>
 		</s:text>
-		<br/>
-		<s:if test="searchEngine.commonFilterSuggest.size() > 0">
-			<s:text name="MainSearch.TryAddingToSearch">
-				<s:param>
-					<s:iterator value="searchEngine.commonFilterSuggest" var="sug">
-						<s:url var="additional_search_terms" action="Search">
-							<s:param name="button">
-								search
-							</s:param>
-							<s:param name="searchTerm">
-								${searchTerm}<s:if test="!isStringEmpty(#sug)"> ${sug.replace(' ', '-')}</s:if>
-							</s:param>
-						</s:url>
-						<a href="${additional_search_terms}">
-							${sug.toLowerCase()}
-						</a> 
-					</s:iterator>
-				</s:param>
-			</s:text>
-		</s:if>
 	</div>
 </div>
 <div id="pageResults">
