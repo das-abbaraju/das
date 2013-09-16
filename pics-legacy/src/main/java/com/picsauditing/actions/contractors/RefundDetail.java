@@ -150,6 +150,14 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         return refundApplied;
     }
 
+    public List<PaymentMethod> getRefundMethods() {
+        List<PaymentMethod> refundMethods = new ArrayList<PaymentMethod>();
+        refundMethods.add(PaymentMethod.Check);
+        refundMethods.add(PaymentMethod.CreditCard);
+        refundMethods.add(PaymentMethod.EFT);
+        return refundMethods;
+    }
+
 	public int getId() {
 		return id;
 	}

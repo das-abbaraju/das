@@ -24,7 +24,7 @@
                                     <li>
                                         <label>Refund Method: </label>
                                         <s:select
-                                                list="@com.picsauditing.jpa.entities.PaymentMethod@values()"
+                                                list="refundMethods"
                                                 name="paymentMethod"
                                                 headerKey=""
                                                 headerValue="- Refund Method -" />
