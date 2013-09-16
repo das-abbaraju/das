@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.DiscriminatorOptions;
 
 import javax.persistence.*;
@@ -14,6 +17,7 @@ public abstract class TransactionApplied extends BaseTable {
 
     private BigDecimal amount = BigDecimal.ZERO;
 
+    @ReportField(type = FieldType.Float, importance = FieldImportance.Required)
     public BigDecimal getAmount() {
         return amount;
     }

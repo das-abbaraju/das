@@ -22,7 +22,7 @@ public class InvoiceTable extends AbstractTable {
         Field tax = new Field("Tax", "IFNULL((SELECT ii.amount FROM invoice_item ii JOIN invoice_fee fee ON ii.feeID = fee.id AND fee.feeClass IN (" +
                 Strings.implodeForDB(TaxService.TAX_FEE_CLASSES) +
                 ") WHERE ii.invoiceID = " + ReportOnClause.ToAlias + ".id),0)", FieldType.Float);
-        tax.setImportance(FieldImportance.Average);
+        tax.setImportance(FieldImportance.Required);
         addField(tax);
 
         Field taxlessTotalAmount = new Field("TaxlessTotalAmount", "(" +
@@ -32,7 +32,7 @@ public class InvoiceTable extends AbstractTable {
                 ") WHERE ii.invoiceID = " +
                 ReportOnClause.ToAlias +
                 ".id),0))", FieldType.Float);
-        taxlessTotalAmount.setImportance(FieldImportance.Average);
+        taxlessTotalAmount.setImportance(FieldImportance.Required);
         addField(taxlessTotalAmount);
     }
 
