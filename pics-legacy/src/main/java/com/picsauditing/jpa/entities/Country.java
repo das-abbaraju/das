@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 import javax.persistence.Column;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.Collator;
 import java.util.*;
 
@@ -521,5 +522,17 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
             userID = permissions.getAdminID();
         }
         setAuditColumns(new User(userID));
+    }
+
+    // TODO This is in the wrong class. It should be in a FeeService or similar. See FeeService.getRegionalAmountOverrides()
+    @Transient
+    public BigDecimal getAmount(InvoiceFee invoiceFee) {
+        for (InvoiceFeeCountry countryFeeAmountOverride : getAmountOverrides()) {
+            if (countryFeeAmountOverride.getInvoiceFee().equals(invoiceFee)) {
+                return countryFeeAmountOverride.getAmount();
+            }
+        }
+
+        return invoiceFee.getAmount();
     }
 }
