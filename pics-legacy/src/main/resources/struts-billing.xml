@@ -43,6 +43,12 @@
 			class="com.picsauditing.actions.contractors.InvoiceDetail">
 			<result>struts/contractors/invoice_detail.jsp</result>
 		</action>
+
+        <action name="RefundDetail"
+                class="com.picsauditing.actions.contractors.RefundDetail">
+            <result>struts/contractors/refund-detail.jsp</result>
+        </action>
+
 		<action name="BillingAddress"
 			class="com.picsauditing.actions.contractors.BillingAddress">
 			<result>struts/contractors/billing_address.jsp</result>

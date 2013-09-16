@@ -184,7 +184,7 @@
                                                 <s:else>
                                                     <li>
                                                         <a class="pay"
-                                                           href="InvoiceDetail.action?invoice.id=<s:property value="transaction.id"/>&button=refund">
+                                                           href="RefundDetail.action?creditMemo.id=<s:property value="transaction.id"/>">
                                                             <s:text name="button.Refund"/>
                                                         </a>
                                                     </li>
