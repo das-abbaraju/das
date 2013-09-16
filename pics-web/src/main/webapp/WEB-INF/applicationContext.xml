@@ -284,8 +284,7 @@
         <property name="waitForTasksToCompleteOnShutdown" value="true"/>
     </bean>
 
-    <!-- this is intentionally a singleton -->
-    <bean id="translationLookupEventListener" class="com.picsauditing.model.events.TranslationLookupEventListener" />
+    <bean id="translationLookupEventListener" class="com.picsauditing.model.events.TranslationLookupEventListener" scope="prototype"/>
 
     <bean id="applicationEventMulticaster"
           class="org.springframework.context.event.SimpleApplicationEventMulticaster">
