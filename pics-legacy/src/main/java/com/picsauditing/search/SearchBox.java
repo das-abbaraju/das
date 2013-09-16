@@ -235,12 +235,6 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 		List<BasicDynaBean> queryList = db.select(query, true);
 		totalRows = db.getAllRows();
 
-		if (totalRows > PAGEBREAK) {
-			String commonTermQuery = searchEngine.buildCommonTermQuery(terms, ignoreTerms, totalRows);
-			List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
-			searchEngine.buildCommonSuggest(commonList, searchTerm);
-		}
-
 		if (queryList != null && queryList.size() > 0) {
 			fullList = getFullResults(queryList);
 		} else {

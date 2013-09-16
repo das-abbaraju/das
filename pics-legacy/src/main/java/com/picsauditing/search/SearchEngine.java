@@ -27,7 +27,6 @@ public class SearchEngine {
 	protected final String indexTable = "app_index";
 	protected final String indexStats = "app_index_stats";
 
-	protected List<String> commonFilterSuggest = new ArrayList<String>();
 	protected List<String> nullTerms = new ArrayList<String>();
 
 	protected Database db = new Database();
@@ -87,18 +86,6 @@ public class SearchEngine {
 			cSb.append(" AND a.value NOT IN (").append(ignore).append(")");
 		cSb.append(" GROUP BY a.value HAVING cc/").append(total).append(" <.8\n").append("ORDER BY cc DESC LIMIT 10");
 		return cSb.toString();
-	}
-
-	public void buildCommonSuggest(List<BasicDynaBean> commonList, String check) {
-		List<String> sA = buildTerm(check, true, false);
-		for (BasicDynaBean bdb : commonList) {
-			String term = bdb.get("term").toString();
-			for (String str : sA) {
-				if (term.equals(str))
-					break;
-			}
-			commonFilterSuggest.add(term);
-		}
 	}
 
 	/**
@@ -441,14 +428,6 @@ public class SearchEngine {
 
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public List<String> getCommonFilterSuggest() {
-		return commonFilterSuggest;
-	}
-
-	public void setCommonFilterSuggest(List<String> commonFilterSuggest) {
-		this.commonFilterSuggest = commonFilterSuggest;
 	}
 
 	public List<String> getNullTerms() {
