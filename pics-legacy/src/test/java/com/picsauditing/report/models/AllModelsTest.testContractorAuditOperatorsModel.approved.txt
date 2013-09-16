@@ -62,6 +62,7 @@ EmrAnswer
 FatalitiesAnswer
 PQFID
 PQFTypeName
+PQFVerification
 PreviousAuditAuditFor
 PreviousAuditEffectiveDate
 PreviousAuditExpiresDate
