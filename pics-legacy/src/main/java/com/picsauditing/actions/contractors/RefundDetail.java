@@ -130,14 +130,18 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         refund.setAmountApplied(amount.abs());
         refund.setAuditColumns(permissions);
         refund.setPaymentMethod(paymentMethod);
-        if (paymentMethod == PaymentMethod.CreditCard) {
-            refund.setCcNumber(transactionNumber);
-            refund.setTransactionID(transactionID);
-        }
-        else
-        {
-            refund.setCheckNumber(transactionNumber);
-        }
+		switch (paymentMethod) {
+			case CreditCard:
+				refund.setCcNumber(transactionNumber);
+				refund.setTransactionID(transactionID);
+				break;
+			case Check:
+				refund.setCheckNumber(transactionNumber);
+				break;
+			default:
+				break;
+		}
+
         refund.setStatus(TransactionStatus.Paid);
         refund.setAccount(contractor);
 
