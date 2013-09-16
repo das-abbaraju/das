@@ -126,7 +126,7 @@ public class TranslationServiceAdapter implements TranslationService {
     private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String locale, Element element) {
         TranslationWrapper translation;
         Map<String,String> localeToText = (Map<String,String>) element.getObjectValue();
-        if (Strings.isEmpty(localeToText.get(locale))) {
+        if (!localeToText.containsKey(locale)) {
             translation = cacheMiss(key, locale, localeToText);
         } else {
             translation = translationFromMap(key, locale, localeToText);
@@ -517,11 +517,15 @@ public class TranslationServiceAdapter implements TranslationService {
 
     private List<TranslationWrapper> wildCardTranslations(String key, String locale) {
         List<TranslationWrapper> translations = translationsFromWildCardCache(key, locale);
-        if (translations == null || translations.isEmpty()) {
+        if ((translations == null || translations.isEmpty()) && !wildcardCacheExistsForKey(key)) {
             translations = translationsFromWebResourceByWildcard(key, locale);
             cacheWildcardTranslation(key, locale, translations);
         }
         return translations;
+    }
+
+    private boolean wildcardCacheExistsForKey(String key) {
+        return wildcardCache.isKeyInCache(key);
     }
 
     private List<TranslationWrapper> translationsFromWildCardCache(String key, String locale) {
