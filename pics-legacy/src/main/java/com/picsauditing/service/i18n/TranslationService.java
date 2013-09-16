@@ -26,6 +26,8 @@ public interface TranslationService {
 
 	Map<String, String> getText(String key);
 
+    Map<String, String> getTextLike(String key, String locale);
+
 	boolean hasKey(String key, Locale locale);
 
     boolean hasKeyInLocale(String key, String locale);

@@ -378,6 +378,13 @@ public class TranslationServiceAdapter implements TranslationService {
         return translationsToReturn;
 	}
 
+    @Override
+    public Map<String, String> getTextLike(String key, String locale) {
+        Map<String, String> translationsForJS = new HashMap<>();
+        populateTranslationsForJSByWildCardAndPublishUse(key, translationsForJS, locale);
+        return translationsForJS;
+    }
+
     private Map<String, String> cachedTranslationsForKey(String key) {
         Element element = cache.get(key);
         Map<String,String> cachedTranslations =  new HashMap<>();
