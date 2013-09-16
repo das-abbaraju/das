@@ -194,7 +194,7 @@ public class DateBean {
 	}
 
 	/**
-	 * WCB year starts September 1 the next year e.g. Sep.1, 2012 would be 2013
+	 * WCB year starts November 1 the next year e.g. Sep.1, 2012 would be 2013
 	 * e.g. Aug 31, 2012 would be 2012
 	 */
 	public static String getWCBYear(Date date) {
@@ -203,7 +203,7 @@ public class DateBean {
 			wcbYearStart.setTime(date);
 		}
 
-		wcbYearStart.set(Calendar.MONTH, Calendar.SEPTEMBER);
+		wcbYearStart.set(Calendar.MONTH, Calendar.NOVEMBER);
 		wcbYearStart.set(Calendar.DAY_OF_MONTH, 1);
 
 		Calendar now = Calendar.getInstance();
@@ -243,7 +243,7 @@ public class DateBean {
 	}
 
 	/**
-	 * The Grace Period is from September 1 - January 31 of next year.
+	 * The Grace Period is from November 1 - January 31 of next year.
 	 *
 	 * @return
 	 */
@@ -256,7 +256,7 @@ public class DateBean {
 		calendar.setTime(now);
 
 		int month = calendar.get(Calendar.MONTH);
-		if (month >= Calendar.SEPTEMBER && month <= Calendar.DECEMBER) {
+		if (month >= Calendar.NOVEMBER && month <= Calendar.DECEMBER) {
 			return true;
 		}
 
