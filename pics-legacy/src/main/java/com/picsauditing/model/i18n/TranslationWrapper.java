@@ -1,11 +1,14 @@
 package com.picsauditing.model.i18n;
 
+import com.picsauditing.jpa.entities.TranslationQualityRating;
+
 public class TranslationWrapper {
 
 	private int keyID;
 	private String key;
 	private String translation;
 	private String locale;
+    private TranslationQualityRating qualityRating;
     private boolean retrievedByWildcard = false;
 	private int createdBy;
 	private int updatedBy;
@@ -26,6 +29,10 @@ public class TranslationWrapper {
 		return locale;
 	}
 
+    public TranslationQualityRating getQualityRating() {
+        return qualityRating;
+    }
+
     public boolean isRetrievedByWildcard() {
         return retrievedByWildcard;
     }
@@ -43,6 +50,7 @@ public class TranslationWrapper {
 		private String key;
 		private String translation;
 		private String locale;
+        private TranslationQualityRating qualityRating;
         private boolean retrievedByWildcard = false;
 		private int createdBy;
 		private int updatedBy;
@@ -56,6 +64,7 @@ public class TranslationWrapper {
             key = seed.getKey();
             translation = seed.getTranslation();
             locale = seed.getLocale();
+            qualityRating = seed.getQualityRating();
             retrievedByWildcard = seed.isRetrievedByWildcard();
             createdBy = seed.getCreatedBy();
             updatedBy = seed.getUpdatedBy();
@@ -81,6 +90,11 @@ public class TranslationWrapper {
 			return this;
 		}
 
+        public Builder qualityRating(TranslationQualityRating qualityRating) {
+            this.qualityRating = qualityRating;
+            return this;
+        }
+
         public Builder retrievedByWildcard(boolean retrievedByWildcard) {
             this.retrievedByWildcard = retrievedByWildcard;
             return this;
@@ -102,7 +116,8 @@ public class TranslationWrapper {
 			translationWrapper.key = key;
 			translationWrapper.translation = translation;
 			translationWrapper.locale = locale;
-			translationWrapper.retrievedByWildcard = retrievedByWildcard;
+            translationWrapper.qualityRating = qualityRating;
+            translationWrapper.retrievedByWildcard = retrievedByWildcard;
 			translationWrapper.createdBy = createdBy;
 			translationWrapper.updatedBy = updatedBy;
 			return translationWrapper;

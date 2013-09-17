@@ -103,7 +103,12 @@ public class I18nCache implements TranslationService, Serializable {
 		return cache.row(TranslationUtil.prepareKeyForCache(key));
 	}
 
-	public String getText(String key, String locale) {
+    @Override
+    public Map<String, String> getTextLike(String key, String locale) {
+        return null;  // At this time, this is only needed in new TranslationServiceAdapter
+    }
+
+    public String getText(String key, String locale) {
 		updateCacheUsed(key);
 
 		String value = cache.get(TranslationUtil.prepareKeyForCache(key), locale);

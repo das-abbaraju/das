@@ -92,6 +92,10 @@ public class ContractorAuditFilesModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
+
+        Field fileDescription = fields.get("ContractorAuditFileDescription".toUpperCase());
+        fileDescription.setUrl("ContractorAuditFileUpload.action?auditID={AuditID}");
+
 		return fields;
 	}
 }

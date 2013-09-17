@@ -43,7 +43,12 @@ public class EchoTranslationService implements TranslationService {
 		};
 	}
 
-	@Override
+    @Override
+    public Map<String, String> getTextLike(String key, String locale) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public boolean hasKey(String key, Locale locale) {
 		return true;
 	}

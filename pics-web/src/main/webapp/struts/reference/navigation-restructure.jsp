@@ -431,7 +431,7 @@
                                 <li>Reports > Legacy Reports</li>
                                 <li>Manage</li>
                                 <li>Company</li>
-                                <li>Manage (User Accounts)</li>
+                                <li>Company (Users)</li>
                             </ul>
                         </div>
                     </div>

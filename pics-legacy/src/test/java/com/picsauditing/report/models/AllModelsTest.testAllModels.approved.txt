@@ -396,6 +396,7 @@ EmrAnswer
 FatalitiesAnswer
 PQFID
 PQFTypeName
+PQFVerification
 PreviousAuditAuditFor
 PreviousAuditEffectiveDate
 PreviousAuditExpiresDate
@@ -1336,6 +1337,8 @@ ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
 ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
@@ -1348,6 +1351,14 @@ PaymentCheckNumber
 PaymentCreationDate
 PaymentCurrency
 PaymentID
+PaymentInvoicePaymentAmount
+PaymentInvoicePaymentCreationDate
+PaymentInvoicePaymentInvoiceCreationDate
+PaymentInvoicePaymentInvoiceID
+PaymentInvoicePaymentInvoiceInvoiceType
+PaymentInvoicePaymentInvoiceTax
+PaymentInvoicePaymentInvoiceTaxlessTotalAmount
+PaymentInvoicePaymentUpdateDate
 PaymentPaymentMethod
 PaymentStatus
 PaymentTotalAmount

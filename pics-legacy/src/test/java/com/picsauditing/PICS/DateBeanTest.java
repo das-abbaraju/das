@@ -337,7 +337,7 @@ public class DateBeanTest {
 
 		assertEquals("2011", DateBean.getWCBYear(calendar.getTime()));
 
-		calendar.set(Calendar.MONTH, 8);
+		calendar.set(Calendar.MONTH, 10);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		calendar.set(Calendar.YEAR, 2011);
 
@@ -635,7 +635,7 @@ public class DateBeanTest {
 		assertFalse(result);
 
 		// start of grace period
-		now = new Date("9/1/2012");
+		now = new Date("11/1/2012");
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertTrue(result);
 

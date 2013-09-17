@@ -9,6 +9,7 @@ public class PaymentTable extends AbstractTable {
 
     public static final String Account = "Account";
     public static final String Item = "Item";
+    public static final String InvoicePayment = "InvoicePayment";
 
     public PaymentTable() {
 		super("invoice");
@@ -23,5 +24,9 @@ public class PaymentTable extends AbstractTable {
                 new ReportOnClause("accountID"));
         addRequiredKey(accountJoin);
         accountJoin.setMinimumImportance(FieldImportance.Average);
+
+        ReportForeignKey invoicePayment = new ReportForeignKey(InvoicePayment, new InvoicePaymentTable(),
+                new ReportOnClause("id","paymentID"));
+        addRequiredKey(invoicePayment);
     }
 }

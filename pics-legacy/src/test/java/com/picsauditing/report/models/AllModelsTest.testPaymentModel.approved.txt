@@ -26,6 +26,8 @@ ContractorAuditGUARD
 ContractorBalance
 ContractorDocuGUARD
 ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
@@ -39,6 +41,14 @@ PaymentCheckNumber
 PaymentCreationDate
 PaymentCurrency
 PaymentID
+PaymentInvoicePaymentAmount
+PaymentInvoicePaymentCreationDate
+PaymentInvoicePaymentInvoiceCreationDate
+PaymentInvoicePaymentInvoiceID
+PaymentInvoicePaymentInvoiceInvoiceType
+PaymentInvoicePaymentInvoiceTax
+PaymentInvoicePaymentInvoiceTaxlessTotalAmount
+PaymentInvoicePaymentUpdateDate
 PaymentPaymentMethod
 PaymentStatus
 PaymentTotalAmount

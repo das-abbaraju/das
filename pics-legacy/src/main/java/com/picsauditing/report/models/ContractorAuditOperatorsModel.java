@@ -139,6 +139,12 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         clientSite.setSuffixValue("");
         fields.put(clientSite.getName().toUpperCase(), clientSite);
 
+        Field verify = new Field("PQFVerification","'Verify'",FieldType.Operator);
+        verify.setFilterable(false);
+        verify.setUrl("VerifyView.action?id={AccountID}");
+        verify.requirePermission(OpPerms.AuditVerification);
+        fields.put(verify.getName().toUpperCase(), verify);
+
         return fields;
 	}
 }

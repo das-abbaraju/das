@@ -3,6 +3,7 @@ package com.picsauditing.service.i18n;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.model.events.TranslationLookupEvent;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.TranslationLookupData;
@@ -126,7 +127,7 @@ public class TranslationServiceAdapter implements TranslationService {
     private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String locale, Element element) {
         TranslationWrapper translation;
         Map<String,String> localeToText = (Map<String,String>) element.getObjectValue();
-        if (Strings.isEmpty(localeToText.get(locale))) {
+        if (!localeToText.containsKey(locale)) {
             translation = cacheMiss(key, locale, localeToText);
         } else {
             translation = translationFromMap(key, locale, localeToText);
@@ -170,6 +171,7 @@ public class TranslationServiceAdapter implements TranslationService {
                     .key(key)
                     .locale(actualLocaleFromJson(json))
                     .translation(translationTextFromJson(json))
+                    .qualityRating(qualityRatingFromJson(json))
                     .build();
         }
         return translation;
@@ -205,15 +207,43 @@ public class TranslationServiceAdapter implements TranslationService {
     }
 
     private String keyFromJson(JSONObject json) {
-        return (String) json.get("key");
+        Object best = json.get("best");
+        if (best instanceof JSONObject) {
+            return (String)((JSONObject)best).get("key");
+        } else {
+            return (String) json.get("key");
+        }
     }
 
     private String actualLocaleFromJson(JSONObject json) {
-        return (String) json.get("locale");
+        Object best = json.get("best");
+        if (best instanceof JSONObject) {
+            return (String)((JSONObject)best).get("locale");
+        } else {
+            return (String) json.get("locale");
+        }
     }
 
     private String translationTextFromJson(JSONObject json) {
-        return (String) json.get("value");
+        Object best = json.get("best");
+        if (best instanceof JSONObject) {
+            return (String)((JSONObject)best).get("value");
+        } else {
+            return (String) json.get("value");
+        }
+    }
+
+    private TranslationQualityRating qualityRatingFromJson(JSONObject json) {
+        Object best = json.get("best");
+        if (best instanceof JSONObject) {
+            return TranslationQualityRating.valueOf((String)((JSONObject)best).get("qualityRating"));
+        } else {
+            if (json.get("qualityRating") != null) {
+                return TranslationQualityRating.valueOf((String) json.get("qualityRating"));
+            } else {
+                return TranslationQualityRating.Good;
+            }
+        }
     }
 
     private ClientResponse makeServiceApiCall(String url) {
@@ -378,6 +408,13 @@ public class TranslationServiceAdapter implements TranslationService {
         return translationsToReturn;
 	}
 
+    @Override
+    public Map<String, String> getTextLike(String key, String locale) {
+        Map<String, String> translationsForJS = new HashMap<>();
+        populateTranslationsForJSByWildCardAndPublishUse(key, translationsForJS, locale);
+        return translationsForJS;
+    }
+
     private Map<String, String> cachedTranslationsForKey(String key) {
         Element element = cache.get(key);
         Map<String,String> cachedTranslations =  new HashMap<>();
@@ -517,11 +554,15 @@ public class TranslationServiceAdapter implements TranslationService {
 
     private List<TranslationWrapper> wildCardTranslations(String key, String locale) {
         List<TranslationWrapper> translations = translationsFromWildCardCache(key, locale);
-        if (translations == null || translations.isEmpty()) {
+        if ((translations == null || translations.isEmpty()) && !wildcardCacheExistsForKey(key)) {
             translations = translationsFromWebResourceByWildcard(key, locale);
             cacheWildcardTranslation(key, locale, translations);
         }
         return translations;
+    }
+
+    private boolean wildcardCacheExistsForKey(String key) {
+        return wildcardCache.isKeyInCache(key);
     }
 
     private List<TranslationWrapper> translationsFromWildCardCache(String key, String locale) {
