@@ -1,5 +1,6 @@
 package com.picsauditing.model.i18n.translation.strategy;
 
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.util.Strings;
 import org.junit.Before;
@@ -29,6 +30,17 @@ public class EmptyTranslationStrategyTest {
     public void testTransformTranslation_EmptyStringTranslationReturnsEmptyValue() throws Exception {
         when(translationWrapper.getKey()).thenReturn(testKey);
         when(translationWrapper.getTranslation()).thenReturn("");
+
+        TranslationWrapper translation = emptyTranslationStrategy.transformTranslation(translationWrapper);
+
+        assertTrue(Strings.EMPTY_STRING.equals(translation.getTranslation()));
+    }
+
+    @Test
+    public void testTransformTranslation_BadTranslationReturnsEmptyValue() throws Exception {
+        when(translationWrapper.getKey()).thenReturn(testKey);
+        when(translationWrapper.getTranslation()).thenReturn("Bad Translation");
+        when(translationWrapper.getQualityRating()).thenReturn(TranslationQualityRating.Bad);
 
         TranslationWrapper translation = emptyTranslationStrategy.transformTranslation(translationWrapper);
 
