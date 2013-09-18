@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.database.UpdateableListItem;
 import com.picsauditing.jpa.entities.builders.FlagDataBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -17,7 +18,7 @@ import com.picsauditing.report.tables.FieldImportance;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_data")
-public class FlagData extends BaseTable implements Comparable<FlagData> {
+public class FlagData extends BaseTable implements Comparable<FlagData>, UpdateableListItem {
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -114,8 +115,8 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 		return true;
 	}
 
-	@Override
-	public void update(BaseTable change) {
+    @Override
+    public void update(UpdateableListItem change) {
 		FlagData fd = (FlagData) change;
 		if (!equals(change))
 			// Don't update flag data for the wrong contractor/operator/criteria
