@@ -138,6 +138,15 @@ public class URLUtils implements StreamContentProvider {
 		return request;
 	}
 
+	public String getRequestIPAddress() {
+		if (getRequest() == null) return Strings.EMPTY_STRING;
+		String ipAddress = getRequest().getHeader("X-FORWARDED-FOR");
+		if (ipAddress == null) {
+			ipAddress = getRequest().getRemoteAddr();
+		}
+		return ipAddress;
+	}
+
 	private HttpServletResponse getResponse() {
 		if (response == null) {
 			response = ServletActionContext.getResponse();

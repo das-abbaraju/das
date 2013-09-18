@@ -22,7 +22,7 @@ public class SapAppPropertyUtil extends AppPropertyUtil {
 	}
 
 	public boolean isSAPBusinessUnitEnabledForObject(Account account) {
-		CountryUtil.hydrateAccountBusinessUnitIfNecessary(account);
+		CountryUtil.hydrateBusinessUnitIfNecessary(account);
 		return isSAPBusinessUnitEnabled(account.getCountry().getBusinessUnit().getId());
 	}
 
@@ -35,7 +35,7 @@ public class SapAppPropertyUtil extends AppPropertyUtil {
 	}
 
 	public boolean isSAPBusinessUnitSetSyncTrueEnabledForObject(Account account) {
-		CountryUtil.hydrateAccountBusinessUnitIfNecessary(account);
+		CountryUtil.hydrateBusinessUnitIfNecessary(account);
 		return isSAPBusinessUnitSetSyncTrueEnabled(account.getCountry().getBusinessUnit().getId());
 	}
 

@@ -26,8 +26,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -57,13 +60,6 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.LoginMethod;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
 import com.picsauditing.security.CookieSupport;
@@ -72,12 +68,6 @@ import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.AppVersion;
-import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.PicsDateFormat;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.URLUtils;
 import com.picsauditing.util.system.PicsEnvironment;
 
 @SuppressWarnings("serial")
@@ -1177,6 +1167,30 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return value.toString();
 	}
 
+	protected String getPicsAddress() {
+		String address = Strings.EMPTY_STRING;
+		try {
+			Country country = CountryUtil.getCountryFromAccountOrIP(account);
+			address = country.getBusinessUnit().getAddress().replace("\n","<br/>");
+			return address;
+		} catch (IOException e) {
+			logger.error(e.getMessage()+"\n"+ExceptionUtils.getFullStackTrace(e));
+			return Strings.EMPTY_STRING;
+		}
+	}
+
+	protected String getPicsDisplayName() {
+		String displayName = Strings.EMPTY_STRING;
+		try {
+			Country country = CountryUtil.getCountryFromAccountOrIP(account);
+			displayName = country.getBusinessUnit().getDisplayName();
+			return displayName;
+		} catch (IOException e) {
+			logger.error(e.getMessage()+"\n"+ExceptionUtils.getFullStackTrace(e));
+			return Strings.EMPTY_STRING;
+		}
+	}
+
 	public String getPicsPhoneNumber() {
 		return getPicsPhoneNumber(permissions.getCountry());
 	}
@@ -1347,5 +1361,4 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return (Permissions) ActionContext.getContext().getSession()
 				.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 	}
-
 }
