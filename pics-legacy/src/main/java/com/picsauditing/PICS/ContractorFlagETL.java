@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.flags.FlagAnswerParser;
 import com.picsauditing.PICS.flags.MultiYearValueCalculator;
 import com.picsauditing.PICS.flags.OshaResult;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.FlagCriteriaContractorDAO;
-import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -231,8 +228,8 @@ public class ContractorFlagETL {
 	}
 
 	private void saveFlagCriteriaContractorChanges(ContractorAccount contractor, Set<FlagCriteriaContractor> changes) {
-		Iterator<FlagCriteriaContractor> flagCriteriaList = BaseTable.insertUpdateDeleteManaged(
-				contractor.getFlagCriteria(), changes).iterator();
+		Iterator<FlagCriteriaContractor> flagCriteriaList = CollectionDAO.insertUpdateDeleteManaged(
+                contractor.getFlagCriteria(), changes).iterator();
 		while (flagCriteriaList.hasNext()) {
 			FlagCriteriaContractor criteriaData = flagCriteriaList.next();
 			contractor.getFlagCriteria().remove(criteriaData);

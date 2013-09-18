@@ -94,11 +94,6 @@ public class AuditorSchedule extends BaseTable {
 	}
 
 	@Override
-	public void fromJSON(JSONObject obj) {
-		super.fromJSON(obj);
-	}
-
-	@Override
 	public JSONObject toJSON() {
 		return toJSON(true);
 	}

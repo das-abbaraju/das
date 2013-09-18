@@ -12,6 +12,17 @@
     <artifactId>pics-database</artifactId>
     <name>General PICS Database Tools</name>
 
+    <repositories>
+        <repository>
+            <id>OSGEO GeoTools repo</id>
+            <url>http://download.osgeo.org/webdav/geotools</url>
+        </repository>
+        <repository>
+            <id>Hibernate Spatial repo</id>
+            <url>http://www.hibernatespatial.org/repository</url>
+        </repository>
+    </repositories>
+
     <build>
         <resources>
             <resource>
@@ -87,6 +98,11 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
             <!-- Basic JSON utilities -->
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -96,6 +112,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.25</version>
+        </dependency>
+
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
         </dependency>
     </dependencies>
 </project>

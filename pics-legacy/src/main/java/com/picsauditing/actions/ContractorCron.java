@@ -792,7 +792,7 @@ public class ContractorCron extends PicsActionSupport {
 			co.setBaselineFlagDetail(flagJson.toString());
 		}
 
-		Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
+		Iterator<FlagData> flagDataList = CollectionDAO.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
 		while (flagDataList.hasNext()) {
 			FlagData flagData = flagDataList.next();
 			co.getFlagDatas().remove(flagData);

@@ -329,6 +329,9 @@
 				var element_id = element.attr('id');
 
 				element.trigger('updateDependent');
+
+				$('body').find('.group-title').remove();
+
 				element.replaceWith(data);
 
 				// re-enable ambest questions on audit category reload
