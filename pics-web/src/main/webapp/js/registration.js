@@ -423,6 +423,11 @@
                     url: element.attr('data-url'),
                     success: function (data, textStatus, XMLHttpRequest) {
                         var pics_phone = $('span.pics_phone_number').html();
+                        var pics_display_name = $('span.pics_display_name').html();
+                        var pics_address = $('span.pics_address').html();
+
+                        var country = $('#Registration_contractor_country_isoCode').select2('val');
+                        console.log(country)
 
                         var modal = PICS.modal({
                             height: 550,
@@ -430,13 +435,17 @@
                             title: element.text(),
                             content: data,
                             buttons: [{
-                                html: '<a href="ContractorAgreement!print.action" class="btn info" target="_blank">' + translate('JS.global.print') + '</a>'
+                                html: '<a href="ContractorAgreement!print.action?country='+country+'" class="btn info" target="_blank">' + translate('JS.global.print') + '</a>'
                             }]
                         });
 
                         var $agreement_phone = $('.modal-body').find('.pics_phone_number');
+                        var $agreement_display_name = $('.modal-body').find('.pics_display_name');
+                        var $agreement_address = $('.modal-body').find('.pics_address');
 
                         $agreement_phone.html(pics_phone);
+                        $agreement_display_name.html(pics_display_name);
+                        $agreement_address.html(pics_address);
 
                         modal.show();
                     }
