@@ -1167,28 +1167,16 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return value.toString();
 	}
 
-	protected String getPicsAddress() {
-		String address = Strings.EMPTY_STRING;
-		try {
-			Country country = CountryUtil.getCountryFromAccountOrIP(account);
-			address = country.getBusinessUnit().getAddress().replace("\n","<br/>");
-			return address;
-		} catch (IOException e) {
-			logger.error(e.getMessage()+"\n"+ExceptionUtils.getFullStackTrace(e));
-			return Strings.EMPTY_STRING;
-		}
+	public String getPicsAddress() {
+		Country country = CountryUtil.getCountryDefaultToUs(account);
+		String address = country.getBusinessUnit().getAddress().replace("\n", "<br/>");
+		return address;
 	}
 
-	protected String getPicsDisplayName() {
-		String displayName = Strings.EMPTY_STRING;
-		try {
-			Country country = CountryUtil.getCountryFromAccountOrIP(account);
-			displayName = country.getBusinessUnit().getDisplayName();
-			return displayName;
-		} catch (IOException e) {
-			logger.error(e.getMessage()+"\n"+ExceptionUtils.getFullStackTrace(e));
-			return Strings.EMPTY_STRING;
-		}
+	public String getPicsDisplayName() {
+		Country country = CountryUtil.getCountryDefaultToUs(account);
+		String displayName = country.getBusinessUnit().getDisplayName();
+		return displayName;
 	}
 
 	public String getPicsPhoneNumber() {

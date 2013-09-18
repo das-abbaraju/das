@@ -4,8 +4,6 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Country;
 
-import java.io.IOException;
-
 public class CountryUtil {
 	private static CountryDAO countryDAO;
 
@@ -19,15 +17,13 @@ public class CountryUtil {
 		}
 	}
 
-	public static Country getCountryFromAccountOrIP(Account account) throws IOException {
+	public static Country getCountryDefaultToUs(Account account) {
 		Country country = null;
 		if (account != null && account.getCountry() != null) {
 			hydrateBusinessUnitIfNecessary(account);
 			country = account.getCountry();
 		} else {
-			Geo geo = new Geo();
-			String countryCode = geo.getCountryCodeFromRequestIP();
-			country = countryDAO.find(countryCode);
+			country = countryDAO.find("US");
 		}
 		return country;
 	}

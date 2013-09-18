@@ -427,7 +427,7 @@
                         var pics_address = $('span.pics_address').html();
 
                         var country = $('#Registration_contractor_country_isoCode').select2('val');
-                        console.log(country)
+//                        console.log(country)
 
                         var modal = PICS.modal({
                             height: 550,

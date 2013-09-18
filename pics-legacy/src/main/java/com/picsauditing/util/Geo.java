@@ -1,10 +1,6 @@
 package com.picsauditing.util;
 
 
-import org.json.simple.JSONObject;
-
-import java.io.*;
-
 public class Geo {
 	private static final Object COUNTRY_CODE = "country_code";
 	private URLUtils urlUtils = SpringUtils.getBean(SpringUtils.URL_UTILS);
@@ -38,28 +34,5 @@ public class Geo {
 
 	public static Location middle(Location location1, Location location2) {
 		return new Location((location1.getLatitude() - location2.getLatitude())/2, (location1.getLongitude() - location2.getLongitude())/2);
-	}
-
-	public String getInformationFromRequestIP() throws IOException {
-		String ipAddress = urlUtils.getRequestIPAddress();
-		return urlUtils.getResponseFrom(buildHostIpLookupUrl(ipAddress));
-	}
-
-	public String getCountryCodeFromRequestIP() throws IOException {
-		JSONObject json = JSONUtilities.parseJsonFromInput(
-				new BufferedReader(
-						new InputStreamReader(
-								new ByteArrayInputStream(
-										getInformationFromRequestIP().getBytes()
-								)
-						)
-				)
-		);
-		String countryCode = (String) json.get(COUNTRY_CODE);
-		return countryCode;
-	}
-
-	public String buildHostIpLookupUrl(String ip) {
-		return "http://api.hostip.info/get_json.php?ip=" + ip;
 	}
 }
