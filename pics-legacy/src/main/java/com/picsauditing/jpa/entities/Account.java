@@ -805,7 +805,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Override
 	public void fromJSON(JSONObject obj) {
-		super.fromJSON(obj);
 		name = (String) obj.get("name");
 	}
 
