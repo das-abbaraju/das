@@ -15,12 +15,12 @@
 			cluetipClass: 'jtip',
 			sticky: true
 		};
-		
+
 		<%-- cluetip --%>
 		$('#node_<s:property value="#q.id"/> .cluetip').cluetip($.extend({
 			local: true
 		}, cluetipOptions));
-		
+
 		<%-- translation cluetip --%>
 		$('#node_<s:property value="#q.id"/> .cluetip-translation').cluetip(cluetipOptions);
 	});
@@ -35,20 +35,20 @@
 	<s:if test="#q.required">
 		<s:set name="questionStillRequired" value="true" />
 	</s:if>
-	
+
 	<s:if test="#q.requiredQuestion.id > 0">
 		<s:set name="dependsAnswer" value="answerMap.get(#q.requiredQuestion.id)" />
-		
+
 		<s:if test="#q.requiredAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
         	<% // Policies must have either Policy Expiration Date OR In Good Standing %>
            	<s:set name="questionStillRequired" value="true" />
         </s:if>
-        
+
 		<s:if test="#q.requiredAnswer == 'NOTNULL' && #dependsAnswer != null && #dependsAnswer.answer != ''">
         	<% // If dependsOnQuestion is a textfield, textbox or a select box etc where the dependsOnAnswer is not null %>
            	<s:set name="questionStillRequired" value="true" />
         </s:if>
-        
+
 		<s:if test="#dependsAnswer != null && #q.requiredAnswer == #dependsAnswer.answer">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>
@@ -70,6 +70,12 @@
 
 <s:set name="hidden" value="!#q.isVisible(answerMap)" />
 
+<s:if test="#q.title != null && !#q.title.equals('') && !#q.title.equals(#q.getI18nKey('title'))">
+	<h4 class="group-title groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
+		<s:property value="#q.title" escape="false"/>
+	</h4>
+</s:if>
+
 <div id="node_<s:property value="#q.id"/>" class="clearfix question
 	<s:if test="#shaded && #category.columns == 1"> shaded</s:if>
 	<s:if test="#hidden"> hide</s:if>
@@ -86,43 +92,43 @@
 		<s:if test="#questionStillRequired">
 			<img src="images/star.png" class="required" alt="<s:text name="AuditQuestion.required" />">
 		</s:if>
-		
+
 		<s:url action="Audit" var="question_number_url">
             <s:param name="auditID">${conAudit.id}</s:param>
         </s:url>
-        
+
         <a href="${question_number_url}#categoryID=${category.topParent.id}&questionID=${q.id}" class="questionNumber"><s:property value="#q.expandedNumber"/></a>
-		
+
 		<s:property value="getStrippedHref(#q.name)" escape="false"/>
-		
+
 		<s:if test="#q.helpText != null && !#q.helpText.equals(#q.getI18nKey('helpText')) && !#q.helpText.equals('')">
 			<a class="cluetip" href="#" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />">
 				<img src="images/help-icon.png" />
 			</a>
-			
+
 			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
 				<span title="<s:property value="#q.name"/>">
 					<s:property value="#q.helpText" escape="false" />
 				</span>
 			</div>
 		</s:if>
-		
+
 		<s:if test="permissions.admin">
 			<a class="cluetip-translation debug" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
 				<img src="images/preview.gif">
 			</a>
 		</s:if>
-		
+
 		<s:if test="permissions.admin">
 			<s:url var="editQuestion" action="ManageQuestion">
 				<s:param name="id">${id}</s:param>
 			</s:url>
-			
+
 			<a class="edit-question debug" href="${editQuestion}" target="_blank">
 				<img src="images/edit_pencil.png" />
 			</a>
 		</s:if>
-		
+
 		<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0">
 			<br />
 			<a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">

@@ -325,6 +325,8 @@
 
 		// question methods
 		execute: function(element, url, data) {
+			$('body').find('.group-title').remove();
+
 			$.post(url, data, function(data, textStatus, XMLHttpRequest) {
 				var element_id = element.attr('id');
 
