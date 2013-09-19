@@ -16,6 +16,8 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -41,8 +43,6 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class RefundDetail extends ContractorActionSupport implements Preparable {
 
-	private static final String SAVE_BUTTON = "save";
-
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
@@ -54,6 +54,7 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
     private PaymentMethod paymentMethod;
     private String transactionNumber;
     private String transactionID;
+    private String bankName;
 
 	@Override
 	public void prepare() {
@@ -137,6 +138,7 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 				break;
 			case Check:
 				refund.setCheckNumber(transactionNumber);
+                refund.setNotes(bankName);
 				break;
 			default:
 				break;
@@ -162,7 +164,15 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         return refundMethods;
     }
 
-	public int getId() {
+    public Map<String, String> getBankNames() {
+        Map<String, String> bankNames = new HashMap<String, String>();
+        bankNames.put("BOW","Bank of the West");
+        bankNames.put("CB","Citibank");
+        bankNames.put("HSBC","HSBC Bank");
+        return Collections.unmodifiableMap(bankNames);
+    }
+
+    public int getId() {
 		return id;
 	}
 
@@ -200,5 +210,13 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 
     public void setTransactionID(String transactionID) {
         this.transactionID = transactionID;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 }

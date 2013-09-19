@@ -30,6 +30,11 @@
                                                 headerValue="- Refund Method -" />
                                     </li>
                                     <li>
+                                        <label>Bank: (Check only) </label>
+                                        <s:select list="bankNames" name="bankName" headerKey="" headerValue="- Bank Name -"
+                                                  listKey="key" listValue="value" />
+                                    </li>
+                                    <li>
                                         <label>Check/Credit Card Number: </label>
                                         <s:textfield name="transactionNumber"/>
                                     </li>

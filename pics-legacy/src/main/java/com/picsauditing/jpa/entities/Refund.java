@@ -17,6 +17,7 @@ public class Refund extends Transaction {
 	private String checkNumber;
 	private String transactionID;
 	private String ccNumber;
+    private String notes;
 
 	private List<PaymentAppliedToRefund> payments = new ArrayList<PaymentAppliedToRefund>();
 
@@ -64,6 +65,14 @@ public class Refund extends Transaction {
 	public void setCcNumber(String ccNumber) {
 		this.ccNumber = ccNumber;
 	}
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
 	@Transient
 	public String getCcType() {
