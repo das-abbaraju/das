@@ -276,6 +276,10 @@
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
+    <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationLogger"/>
+    <bean id="translationUsageListener" class="com.picsauditing.model.i18n.TranslationUsageListener"/>
+    <bean id="translateRestClient" class="com.picsauditing.service.i18n.TranslateRestClient"/>
+
     <bean id="taskExecutor"
           class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="100"/>

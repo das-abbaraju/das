@@ -16,7 +16,6 @@ public class TranslationLookupEventListener implements ApplicationListener<Trans
 
     @Override
     public void onApplicationEvent(TranslationLookupEvent event) {
-        final TranslationLookupData lookupData = (TranslationLookupData) event.getSource();
-        translationUsagePublisher.publish(new ArrayList<TranslationLookupData>() {{ add(lookupData); }}) ;
+        translationUsagePublisher.publish(event.getSource());
     }
 }

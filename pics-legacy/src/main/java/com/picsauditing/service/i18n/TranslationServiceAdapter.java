@@ -3,7 +3,6 @@ package com.picsauditing.service.i18n;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
-import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.model.events.TranslationLookupEvent;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.TranslationLookupData;
@@ -11,15 +10,12 @@ import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.sun.jersey.api.client.*;
 import net.sf.ehcache.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskRejectedException;
-import org.springframework.http.MediaType;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -35,10 +31,6 @@ public class TranslationServiceAdapter implements TranslationService {
     public static final String DEFAULT_LANGUAGE = "en";
     public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
 
-    private static final String TRANSLATION_URL =
-            ((System.getProperty("translation.server") == null) ? "http://translate.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
-    private static final String LOCALES_URL = TRANSLATION_URL + "locales/";
-    private static final String UPDATE_URL = TRANSLATION_URL + "saveOrUpdate/";
     private static final String CACHE_NAME = "i18n";
     private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
     private static final String APP_PROPERTY_TRANSLATION_STRATEGY_NAME = "TranslationTransformStrategy";
@@ -49,9 +41,9 @@ public class TranslationServiceAdapter implements TranslationService {
     private static AppPropertyProvider appPropertyProvider;
     private static TranslationStrategy translationStrategy;
     private static TranslationKeyValidator translationKeyValidator = new TranslationKeyValidator();
-    private static final String ERROR_STRING = "ERROR";
+    private static Date dateLastCleared;
 
-    private Client client;
+    private TranslateRestClient translateRestClient;
 
     TranslationServiceAdapter() {
         // CacheManager.create returns the existing singleton if it already exists
@@ -108,7 +100,7 @@ public class TranslationServiceAdapter implements TranslationService {
         if (translationKeyValidator.validateKey(key)) {
             Element element = cache.get(key);
             if (element == null) {
-                translation = translationFromWebResource(key, locale);
+                translation = translateRestClient().translationFromWebResource(key, locale);
                 cacheTranslationIfReturned(key, locale, translation);
             } else {
                 translation = translationFromCacheOrWebResourceIfLocaleCacheMiss(key, locale, element);
@@ -136,7 +128,7 @@ public class TranslationServiceAdapter implements TranslationService {
     }
 
     private TranslationWrapper cacheMiss(String key, String locale, Map<String, String> localeToText) {
-        TranslationWrapper translation = translationFromWebResource(key, locale);
+        TranslationWrapper translation = translateRestClient().translationFromWebResource(key, locale);
         if (translation != null) {
             localeToText.put(locale, translation.getTranslation());
         }
@@ -158,143 +150,13 @@ public class TranslationServiceAdapter implements TranslationService {
         }
     }
 
-    private TranslationWrapper translationFromWebResource(String key, String locale) {
-        TranslationWrapper translation;
-        ClientResponse response = makeServiceApiCall(getTranslationUrl(key, locale));
-
-        if (response.getStatus() != 200) {
-            logger.error("Failed : HTTP error code : {}", response.getStatus());
-            translation = new TranslationWrapper.Builder().key(key).locale(locale).translation(ERROR_STRING).build();
-        } else {
-            JSONObject json = parseJson(response.getEntity(String.class));
-            translation = new TranslationWrapper.Builder()
-                    .key(key)
-                    .locale(actualLocaleFromJson(json))
-                    .translation(translationTextFromJson(json))
-                    .qualityRating(qualityRatingFromJson(json))
-                    .build();
-        }
-        return translation;
-    }
-
-    private List<TranslationWrapper> translationsFromWebResourceByWildcard(String key, String locale) {
-        List<TranslationWrapper> translations = new ArrayList<>();
-        ClientResponse response = makeServiceApiCall(getTranslationLikeUrl(key, locale));
-
-        if (response.getStatus() != 200) {
-            logger.error("Failed : HTTP error code : {}", response.getStatus());
-            translations.add(new TranslationWrapper.Builder().key(key).locale(locale).translation(ERROR_STRING).build());
-        } else {
-            JSONArray json = parseJsonArray(response.getEntity(String.class));
-            for (Object jsonObject : json) {
-                translations.add(new TranslationWrapper.Builder()
-                        .key(keyFromJson(((JSONObject) jsonObject)))
-                        .locale(actualLocaleFromJson(((JSONObject) jsonObject)))
-                        .translation(translationTextFromJson(((JSONObject) jsonObject)))
-                        .retrievedByWildcard(true)
-                        .build());
-            }
-        }
-        return translations;
-    }
-
-    private JSONArray parseJsonArray(String jsonString) {
-        return (JSONArray) JSONValue.parse(jsonString);
-    }
-
-    private JSONObject parseJson(String jsonString) {
-        return (JSONObject) JSONValue.parse(jsonString);
-    }
-
-    private String keyFromJson(JSONObject json) {
-        Object best = json.get("best");
-        if (best instanceof JSONObject) {
-            return (String)((JSONObject)best).get("key");
-        } else {
-            return (String) json.get("key");
-        }
-    }
-
-    private String actualLocaleFromJson(JSONObject json) {
-        Object best = json.get("best");
-        if (best instanceof JSONObject) {
-            return (String)((JSONObject)best).get("locale");
-        } else {
-            return (String) json.get("locale");
-        }
-    }
-
-    private String translationTextFromJson(JSONObject json) {
-        Object best = json.get("best");
-        if (best instanceof JSONObject) {
-            return (String)((JSONObject)best).get("value");
-        } else {
-            return (String) json.get("value");
-        }
-    }
-
-    private TranslationQualityRating qualityRatingFromJson(JSONObject json) {
-        Object best = json.get("best");
-        if (best instanceof JSONObject) {
-            return TranslationQualityRating.valueOf((String)((JSONObject)best).get("qualityRating"));
-        } else {
-            if (json.get("qualityRating") != null) {
-                return TranslationQualityRating.valueOf((String) json.get("qualityRating"));
-            } else {
-                return TranslationQualityRating.Good;
-            }
-        }
-    }
-
-    private ClientResponse makeServiceApiCall(String url) {
-        Client client = client();
-        ClientResponse response = null;
-        WebResource webResource = client.resource(url);
-        if (webResource != null) {
-            logger.debug("getting ClientResponse from {}", webResource);
-            // TODO wrap in try for unknown host exceptions, etc.
-            response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
-            logger.debug("received response {}", response);
-        }
-        return response;
-    }
-
-    private Client client() {
-        if (client == null) {
-            client = Client.create();
-        }
-        return client;
-    }
-
-
-    private String getTranslationUrl(String key, String locale) {
-        StringBuilder url = urlBase(locale);
-        url.append(key);
-
-        // TODO: I don't think we're using this
-        StringBuffer referrer = referrer();
-        if (referrer != null) {
-            url.append("?referrer=").append(referrer);
-        }
-        return url.toString();
-    }
-
-    private StringBuilder urlBase(String locale) {
-        StringBuilder url = new StringBuilder(TRANSLATION_URL).append(locale).append("/");
-        return url;
-    }
-
-    private StringBuffer referrer() {
+    private String referrer() {
         try {
-            return ServletActionContext.getRequest().getRequestURL();
+            return ServletActionContext.getRequest().getRequestURL().toString();
         } catch (Exception e) {
             logger.warn("No ServletActionContext Request available");
-            return new StringBuffer("UNKNOWN");
+            return new String("REFERRER_UNKNOWN");
         }
-    }
-
-    private String getTranslationLikeUrl(String key, String locale) {
-        return urlBase(locale).append("like/").append(key).append("%25").toString();
     }
 
     // TODO: is this a good name?
@@ -334,7 +196,7 @@ public class TranslationServiceAdapter implements TranslationService {
         TranslationLookupData data = new TranslationLookupData();
         data.setLocaleRequest(localeRequested);
         data.setLocaleResponse(translation.getLocale());
-        data.setReferrer(getTranslationUrl(translation.getKey(), localeRequested));
+        data.setReferrer(referrer());
         data.setRequestDate(new Date());
         data.setPageName(pageName());
         data.setMsgKey(translation.getKey());
@@ -392,9 +254,14 @@ public class TranslationServiceAdapter implements TranslationService {
         return getText(key, Strings.parseLocale(locale), args);
     }
 
+    /* This method is returning a map of key,translationValue for all locale translations for the requested
+       key. It does this by asking the service for all the locales it has for a key (always one service call at
+       least). It then sees if we have a local cache for the key in these locales and those that are not in
+       local cache are called for from the service and added to the cache.
+    */
 	@Override
 	public Map<String, String> getText(String key) {
-        JSONArray locales = allLocalesForKey(key);
+        List locales = translateRestClient().allLocalesForKey(key);
 
         Map<String, String> translationsToReturn = new HashMap();
         Map<String, String> cachedTranslations = updateCacheWithLocalesNotPreviouslyRequested(key, locales);
@@ -411,20 +278,11 @@ public class TranslationServiceAdapter implements TranslationService {
     @Override
     public Map<String, String> getTextLike(String key, String locale) {
         Map<String, String> translationsForJS = new HashMap<>();
-        populateTranslationsForJSByWildCardAndPublishUse(key, translationsForJS, locale);
+        translationsForJS.putAll(populateTranslationsForJSByWildCardAndPublishUse(key, locale));
         return translationsForJS;
     }
 
-    private Map<String, String> cachedTranslationsForKey(String key) {
-        Element element = cache.get(key);
-        Map<String,String> cachedTranslations =  new HashMap<>();
-        if (element != null && element.getObjectValue() != null) {
-            cachedTranslations =  (Map<String,String>) element.getObjectValue();
-        }
-        return cachedTranslations;
-    }
-
-    private Map<String, String> updateCacheWithLocalesNotPreviouslyRequested(String key, JSONArray locales) {
+    private Map<String, String> updateCacheWithLocalesNotPreviouslyRequested(String key, List locales) {
         Map<String, String> cachedTranslations = cachedTranslationsForKey(key);
 
         for (int i = 0; i < locales.size(); i++) {
@@ -436,21 +294,13 @@ public class TranslationServiceAdapter implements TranslationService {
         return cachedTranslationsForKey(key);
     }
 
-    private JSONArray allLocalesForKey(String key) {
-        JSONArray locales = new JSONArray();
-        ClientResponse response = makeServiceApiCall(getLocalesUrl(key));
-        if (response.getStatus() != 200) {
-            logger.error("Failed : HTTP error code : {}", response.getStatus());
-            // locales.add("en_US");
-        } else {
-            JSONObject json = parseJson(response.getEntity(String.class));
-            locales = (JSONArray) json.get("locales");
+    private Map<String, String> cachedTranslationsForKey(String key) {
+        Element element = cache.get(key);
+        Map<String,String> cachedTranslations =  new HashMap<>();
+        if (element != null && element.getObjectValue() != null) {
+            cachedTranslations =  (Map<String,String>) element.getObjectValue();
         }
-        return locales;
-    }
-
-    private String getLocalesUrl(String key) {
-        return new StringBuilder(LOCALES_URL).append(key).toString();
+        return cachedTranslations;
     }
 
     @Override
@@ -472,35 +322,18 @@ public class TranslationServiceAdapter implements TranslationService {
         if (Strings.isEmpty(locale)) {
             return false;
         } else {
-            TranslationWrapper translation = translationFromWebResource(key, locale);
-            return (locale.equals(translation.getLocale()));
+            TranslationWrapper translation = translateRestClient().translationFromWebResource(key, locale);
+            return (translation != null && locale.equals(translation.getLocale()));
         }
     }
 
     @Override
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) {
-        Client client = client();
-        ClientResponse response = null;
-        WebResource webResource = client.resource(UPDATE_URL);
-        if (webResource != null) {
-            JSONObject formData = new JSONObject();
-            formData.put("key", key);
-            formData.put("value", translation);
-            formData.put("qualityRating", QUALITY_GOOD);
-            for (String locale : requiredLanguages) {
-                formData.remove("locale");
-                formData.put("locale", locale);
-                response = webResource
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .type(MediaType.APPLICATION_JSON_VALUE)
-                        .post(ClientResponse.class, formData.toJSONString());
-                if (response.getStatus() == 200) {
-                    // let's just decache all locales
-                    cache.remove(key);
-                }
-            }
+        boolean ok = translateRestClient().saveTranslation(key, translation, requiredLanguages);
+        if (ok) {
+            // let's just decache all locales
+            cache.remove(key);
         }
-
 	}
 
     @Override
@@ -536,33 +369,31 @@ public class TranslationServiceAdapter implements TranslationService {
         List<Map<String, String>> localeListOfTranslationMaps = new ArrayList<>();
 
         for (String locale : locales) {
-            populateTranslationsForJSByWildCardAndPublishUse(actionName + "." + methodName, translationsForJS, locale);
-            populateTranslationsForJSByWildCardAndPublishUse(actionName + "." + ACTION_TRANSLATION_KEYWORD, translationsForJS, locale);
+            translationsForJS.putAll(populateTranslationsForJSByWildCardAndPublishUse(actionName + "." + methodName, locale));
+            translationsForJS.putAll(populateTranslationsForJSByWildCardAndPublishUse(actionName + "." + ACTION_TRANSLATION_KEYWORD, locale));
         }
 
         localeListOfTranslationMaps.add(translationsForJS);
         return localeListOfTranslationMaps;
     }
 
-    private void populateTranslationsForJSByWildCardAndPublishUse(String key, Map<String, String> translationsForJS, String locale) {
+    private Map<String, String> populateTranslationsForJSByWildCardAndPublishUse(String key, String locale) {
+        Map<String, String> translationsForJS = new HashMap<>();
         List<TranslationWrapper> translations = wildCardTranslations(key, locale);
         for (TranslationWrapper translation : translations) {
             translationsForJS.put(translation.getKey(), translation.getTranslation());
             publishTranslationLookupEventIfReturned(locale, translation);
         }
+        return translationsForJS;
     }
 
     private List<TranslationWrapper> wildCardTranslations(String key, String locale) {
         List<TranslationWrapper> translations = translationsFromWildCardCache(key, locale);
-        if ((translations == null || translations.isEmpty()) && !wildcardCacheExistsForKey(key)) {
-            translations = translationsFromWebResourceByWildcard(key, locale);
+        if ((translations == null || translations.isEmpty())) {
+            translations = translateRestClient().translationsFromWebResourceByWildcard(key, locale);
             cacheWildcardTranslation(key, locale, translations);
         }
         return translations;
-    }
-
-    private boolean wildcardCacheExistsForKey(String key) {
-        return wildcardCache.isKeyInCache(key);
     }
 
     private List<TranslationWrapper> translationsFromWildCardCache(String key, String locale) {
@@ -589,8 +420,12 @@ public class TranslationServiceAdapter implements TranslationService {
             localeToKeyToValue = TreeBasedTable.create();
         }
 
-        for (TranslationWrapper translation : translations) {
-            localeToKeyToValue.put(requestedLocale, translation.getKey(), translation.getTranslation());
+        if (translations == null || translations.isEmpty()) {
+            localeToKeyToValue.put(requestedLocale, "", "");
+        } else {
+            for (TranslationWrapper translation : translations) {
+                localeToKeyToValue.put(requestedLocale, translation.getKey(), translation.getTranslation());
+            }
         }
         wildcardCache.put(new Element(wildcardKey, localeToKeyToValue));
     }
@@ -599,13 +434,15 @@ public class TranslationServiceAdapter implements TranslationService {
 	public void clear() {
 		synchronized (this) {
             INSTANCE = null;
+            cache.removeAll();
+            wildcardCache.removeAll();
+            dateLastCleared = new Date();
         }
 	}
 
 	@Override
 	public Date getLastCleared() {
-		// TODO Auto-generated method stub
-		return null;
+		return dateLastCleared;
 	}
 
     private static AppPropertyProvider appPropertyProvider() {
@@ -617,5 +454,12 @@ public class TranslationServiceAdapter implements TranslationService {
 
     public static void registerTranslationStrategy(TranslationStrategy strategy) {
         translationStrategy = strategy;
+    }
+
+    private TranslateRestClient translateRestClient() {
+        if (translateRestClient == null) {
+            translateRestClient = new TranslateRestClient();
+        }
+        return translateRestClient;
     }
 }

@@ -15,6 +15,7 @@ public interface TranslationService {
 	public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
 	public static final String ACTION_TRANSLATION_KEYWORD = "ACTION";
 	public static final String QUALITY_GOOD = "2";
+    public static final String ERROR_STRING = "ERROR";
 
 	String getText(String key, Locale locale);
 
