@@ -31,5 +31,4 @@ public class InsuranceCriteriaDisplay {
         }
         return results;
     }
-
 }

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -223,9 +224,25 @@ public class ContractorCron extends PicsActionSupport {
         }
         rulesRunner.setContractor(contractor);
 
+        contractor.setInsuranceCriteriaContractorOperators(new ArrayList<InsuranceCriteriaContractorOperator>());
+        dao.deleteData(InsuranceCriteriaContractorOperator.class, "t.contractorAccount.id = " + contractor.getId());
+
         for (ContractorOperator contractorOperator : contractor.getOperators()) {
             OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
-            rulesRunner.runInsuranceCriteriaRulesForOperator(operatorAccount);
+
+
+
+
+
+
+
+            try {
+                rulesRunner.runInsuranceCriteriaRulesForOperator(operatorAccount);
+            } catch (RuntimeException e) {
+                logger.error(e.getMessage() + " for contractor " + contractor.getName()
+                        + " working for " + operatorAccount.getName());
+                continue;
+            }
         }
 
     }

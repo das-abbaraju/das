@@ -189,6 +189,19 @@ public class ContractorAccount extends Account implements JSONable {
 		return list;
 	}
 
+    @Transient
+    public List<OperatorAccount> getOperatorAndCorporateAccounts() {
+        List<OperatorAccount> list = new ArrayList<OperatorAccount>();
+        for (ContractorOperator co : operators) {
+            if (!co.getOperatorAccount().getStatus().isDeactivated()
+                    && !co.getOperatorAccount().getStatus().isDeleted()) {
+                list.add(co.getOperatorAccount());
+            }
+        }
+        Collections.sort(list);
+        return list;
+    }
+
 	@Transient
 	public List<ContractorOperator> getNonCorporateOperators() {
 		return new Grepper<ContractorOperator>() {
@@ -1932,7 +1945,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	public OperatorAccount getOperator(int opId) {
-		for (OperatorAccount operator : getOperatorAccounts()) {
+		for (OperatorAccount operator : getOperatorAndCorporateAccounts()) {
 			if (operator.getId() == opId) {
 				return operator;
 			}
