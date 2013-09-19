@@ -364,7 +364,7 @@
 								
 								<s:iterator value="contactTypes" var="contact_type">
 									<s:if test="declined">
-										<s:if test="contractor.status.requested">
+										<s:if test="showDeclinedButton">
 											<a
 												href="javascript:;"
 												class="picsbutton negative contact-note-required"
@@ -376,60 +376,60 @@
 										<%-- else show nothing --%>
 									</s:if>
 									<s:else>
-										<a
-											href="javascript:;"
+                                        <a
+                                        href="javascript:;"
 											class="picsbutton contact-note-required"
-											data-type="${contact_type}"
-											data-placeholder="<s:text name="%{note}" />">
-											<s:text name="%{button}" />
-										</a>
-									</s:else>
-								</s:iterator>
-								<s:if test="contractor.status.requested">
-									<a
-										href="javascript:;"
-										class="picsbutton duplicated-show">
-										<s:text name="RequestNewContractor.Duplicated" />
-									</a>
-								</s:if>
-							</li>
-							<li id="contact_note" class="hide">
-								<textarea name="contactNote" cols="80" rows="3"></textarea>
-							</li>
-
-							<li id="duplicated_contractor_id" class="hide">
-								<s:text name="RequestNewContractor.placeholder.EnterContractorId" var="contractorIdPlaceholder" />
-									<input name="duplicateContractor" type="text" placeholder="${contractorIdPlaceholder}" />
-							</li>
-							<li>
-								<a
-									id="duplicated_contractor_cancel_button"
-									href="javascript:;"
-									class="picsbutton duplicated-hide hide duplicated_contractor_button">
-									<s:text name="RequestNewContractor.button.Cancel" />
-								</a>
-								<s:submit
-									cssClass="picsbutton primary hide duplicated_contractor_button"
-									method="resolveDuplicate"
-									value="%{getText('RequestNewContractor.button.Apply')}"
-								/>
+                                        data-type="${contact_type}"
+                                        data-placeholder="<s:text name="%{note}" />">
+                                        <s:text name="%{button}" />
+                                    </a>
+                                </s:else>
+                            </s:iterator>
+                            <s:if test="showDuplicatedButton">
+                                <a
+                                    href="javascript:;"
+                                    class="picsbutton duplicated-show">
+                                    <s:text name="RequestNewContractor.Duplicated" />
+                                </a>
+                            </s:if>
+                        </li>
+                        <li id="contact_note" class="hide">
+                            <textarea name="contactNote" cols="80" rows="3"></textarea>
 							</li>
 
-							<s:fielderror fieldName="duplicateContractor" theme="formhelp" />
+                        <li id="duplicated_contractor_id" class="hide">
+                            <s:text name="RequestNewContractor.placeholder.EnterContractorId" var="contractorIdPlaceholder" />
+                                <input name="duplicateContractor" type="text" placeholder="${contractorIdPlaceholder}" />
+                        </li>
+                        <li>
+                            <a
+                                id="duplicated_contractor_cancel_button"
+                                href="javascript:;"
+                                class="picsbutton duplicated-hide hide duplicated_contractor_button">
+                                <s:text name="RequestNewContractor.button.Cancel" />
+                            </a>
+                            <s:submit
+                                cssClass="picsbutton primary hide duplicated_contractor_button"
+                                method="resolveDuplicate"
+                                value="%{getText('RequestNewContractor.button.Apply')}"
+                            />
+                        </li>
 
-						</s:if>
-					</ol>
-				</fieldset>
-			</s:if>
+                        <s:fielderror fieldName="duplicateContractor" theme="formhelp" />
 
-			<fieldset class="form submit">
-				<s:submit
-					cssClass="picsbutton positive"
-					id="save_request_form"
-					method="save"
-					value="%{getText('button.Save')}"
-				/>
-			</fieldset>
-		</s:form>
-	</div>
+                    </s:if>
+                </ol>
+            </fieldset>
+        </s:if>
+
+        <fieldset class="form submit">
+            <s:submit
+                cssClass="picsbutton positive"
+                id="save_request_form"
+                method="save"
+                value="%{getText('button.Save')}"
+            />
+        </fieldset>
+    </s:form>
+</div>
 </body>

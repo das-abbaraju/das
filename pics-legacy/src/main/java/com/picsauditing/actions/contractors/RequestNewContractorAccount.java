@@ -554,4 +554,14 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	public void validate() {
 		validator.validate(ActionContext.getContext().getValueStack(), new DelegatingValidatorContext(this));
 	}
+
+	public boolean isShowDeclinedButton() {
+		AccountStatus accountStatus = getContractor().getStatus();
+		return accountStatus.allowRegistrationToBeMarkedDeclined();
+	}
+
+	public boolean isShowDuplicatedButton() {
+		AccountStatus accountStatus = getContractor().getStatus();
+		return accountStatus.allowRegistrationToBeMarkedDuplicated();
+	}
 }
