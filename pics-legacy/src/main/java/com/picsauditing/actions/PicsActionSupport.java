@@ -1169,7 +1169,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getPicsAddress() {
 		Country country = CountryUtil.getCountryDefaultToUs(account);
-		String address = country.getBusinessUnit().getAddress().replace("\n", "<br/>");
+		String address = country.getBusinessUnit().getAddress().replace("\\n", "<br/>");
 		return address;
 	}
 

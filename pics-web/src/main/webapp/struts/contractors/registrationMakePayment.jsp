@@ -193,7 +193,7 @@
 		 				<s:a href="#" cssClass="refund-policy modal-link" data-url="RefundPolicy.action"><s:text name="RegistrationMakePayment.RefundPolicy" /></s:a>
 		 			</li>
 		 			<li>
-		 				<s:a href="#" cssClass="contractor-agreement modal-link" data-url="ContractorAgreement.action"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
+		 				<s:a href="#" cssClass="contractor-agreement modal-link" data-url="ContractorAgreement.action?id=${contractor.id}"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
 		 			</li>
 		 		</ul>
                 <p class="phone">

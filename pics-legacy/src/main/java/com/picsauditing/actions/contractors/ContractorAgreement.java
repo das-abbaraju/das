@@ -14,6 +14,7 @@ public class ContractorAgreement extends ContractorActionSupport {
 
 	@Anonymous
 	public String execute() throws Exception {
+        findContractor();
 		if (permissions == null) {
 			loadPermissions();
 		}
