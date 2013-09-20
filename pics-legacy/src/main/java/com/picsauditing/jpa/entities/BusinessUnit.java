@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 @Entity
@@ -49,5 +50,12 @@ public class BusinessUnit implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	@Transient
+	public String getAddressSingleLine() {
+		String address = getAddress();
+		String singleLine = address.replaceAll("\n", ", ");
+		return singleLine;
 	}
 }
