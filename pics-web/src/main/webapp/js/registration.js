@@ -130,11 +130,16 @@
         updatePageLanguageBasedOnSelectedLanguageAndDialect: function (event) {
             var $input = $(document.createElement('input'));
 
-                $input.attr('name', 'request_locale');
-                $input.attr('value', this.getRequestLocale());
-                $('.registration-form').append($input);
+                $input.attr({
+                    type: 'hidden',
+                    name: 'request_locale',
+                    value: this.getRequestLocale()
+                });
 
-                $('.registration-form').submit();
+                $('.registration-form')
+                    .append($input)
+                    .submit()
+                    .remove();
         }
 	};
 
