@@ -97,4 +97,21 @@ public class Refund extends Transaction {
 		super.updateAmountApplied();
 	}
 
+    @Deprecated // Only used for invoices and invoice credit memos
+    @Transient
+    public List<TransactionItem> getItems() {
+        return null;
+    }
+
+    @Deprecated // Only used for invoices and invoice credit memos
+    @Transient
+    public TransactionItem getTaxItem() {
+        return null;
+    }
+
+    @Deprecated // Only used for invoices and invoice credit memos
+    @Transient
+    public void updateTotalAmount() {
+        return;
+    }
 }

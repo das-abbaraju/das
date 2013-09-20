@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Table(name = "invoice_item")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "transactionType", discriminatorType = DiscriminatorType.STRING)
-public class TransactionItem extends BaseTable{
+public abstract class TransactionItem extends BaseTable{
 
     protected InvoiceFee invoiceFee;
     protected BigDecimal amount = BigDecimal.ZERO;
@@ -44,4 +44,6 @@ public class TransactionItem extends BaseTable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+    public abstract void setTransaction(Transaction transaction);
 }

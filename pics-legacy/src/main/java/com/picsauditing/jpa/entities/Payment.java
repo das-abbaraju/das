@@ -15,7 +15,6 @@ import javax.persistence.Transient;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.braintree.CreditCard;
 
 @SuppressWarnings("serial")
@@ -118,4 +117,21 @@ public class Payment extends Transaction {
 		super.updateAmountApplied();
 	}
 
+    @Deprecated // Only used for invoices and invoice credit memos
+    @Transient
+    public List<TransactionItem> getItems() {
+        return null;
+    }
+
+    @Deprecated // Only used for invoices and invoice credit memos
+    @Transient
+    public TransactionItem getTaxItem() {
+        return null;
+    }
+
+    @Deprecated // Only used for invoices and invoice credit memos
+    @Transient
+    public void updateTotalAmount() {
+        return;
+    }
 }

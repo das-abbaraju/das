@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -18,7 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -167,4 +167,13 @@ public abstract class Transaction extends BaseTable {
 			status = TransactionStatus.Unpaid;
 		}
 	}
+
+    @Transient
+    public abstract <T extends TransactionItem> List<T> getItems();
+
+    @Transient
+    public abstract <T extends TransactionItem> T getTaxItem();
+
+    @Transient
+    public abstract void updateTotalAmount();
 }

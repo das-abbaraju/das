@@ -8,12 +8,11 @@ import com.picsauditing.jpa.entities._
 import scala.beans.BeanProperty
 import scala.collection.JavaConversions._
 import com.picsauditing.access.{OpPerms, RequiredPermission}
-import scala.Some
 import java.lang.{Integer => int}
 import java.util.{List => StrutsList}
 import com.picsauditing.util.SapAppPropertyUtil
-import java.io.PrintStream
 import scala.Some
+import com.picsauditing.PICS.TaxService
 
 @RequiredPermission(OpPerms.Billing)
 class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {
@@ -22,6 +21,8 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
   private val creditMemoDAO: CreditMemoDAO = null
   @Autowired
   private val invoiceDAO: InvoiceDAO = null
+  @Autowired
+  private val taxService: TaxService = null
 
   var sapAppPropertyUtil: SapAppPropertyUtil = null
 
@@ -71,6 +72,8 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       }
       case None => {} // Do nothing.
     }
+
+    taxService.applyTax(returnForInvoice.getCreditMemo)
     returnForInvoice
   }
 
@@ -114,5 +117,4 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
     creditMemo.getCreditMemo.setStatus(TransactionStatus.Paid)
     creditMemoDAO.save(creditMemo)
   }
-
 }

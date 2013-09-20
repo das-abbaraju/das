@@ -72,4 +72,8 @@ public class InvoiceItem extends TransactionItem {
 	public void setQbRefundID(String qbRefundID) {
 		this.qbRefundID = qbRefundID;
 	}
+
+    public void setTransaction(Transaction transaction) {
+        setInvoice((Invoice) transaction);
+    }
 }

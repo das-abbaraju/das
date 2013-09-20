@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.PICS.TaxService;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -78,4 +80,33 @@ public class InvoiceCreditMemo extends Transaction {
         return amountApplied;
     }
 
+    @Transient
+    public boolean hasTax() {
+        return (getTaxItem() != null);
+    }
+
+    @Transient
+    public ReturnItem getTaxItem() {
+        for (ReturnItem item : returnItems) {
+            InvoiceFee invoiceFee = item.getInvoiceFee();
+            if (invoiceFee == null) {
+                continue;
+            }
+
+            if (TaxService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    @Transient
+    public void updateTotalAmount() {
+        totalAmount = BigDecimal.ZERO;
+
+        for (ReturnItem item : returnItems) {
+            totalAmount = totalAmount.add(item.getAmount());
+        }
+    }
 }

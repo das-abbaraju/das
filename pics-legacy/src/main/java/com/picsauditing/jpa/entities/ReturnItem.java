@@ -37,4 +37,8 @@ public class ReturnItem extends TransactionItem {
     public void setReturnedItem(InvoiceItem returnedItem) {
         this.returnedItem = returnedItem;
     }
+
+    public void setTransaction(Transaction transaction) {
+        setCreditMemo((InvoiceCreditMemo) transaction);
+    }
 }

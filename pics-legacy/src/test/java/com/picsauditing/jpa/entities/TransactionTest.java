@@ -3,9 +3,12 @@ package com.picsauditing.jpa.entities;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.persistence.Transient;
 
 public class TransactionTest {
 
@@ -69,6 +72,22 @@ public class TransactionTest {
 
 	@SuppressWarnings("serial")
 	private class EmptyImplementation extends Transaction {
+        @Deprecated // Only used for invoices and invoice credit memos
+        @Transient
+        public List<TransactionItem> getItems() {
+            return null;
+        }
 
+        @Deprecated // Only used for invoices and invoice credit memos
+        @Transient
+        public TransactionItem getTaxItem() {
+            return null;
+        }
+
+        @Deprecated // Only used for invoices and invoice credit memos
+        @Transient
+        public void updateTotalAmount() {
+            return;
+        }
 	}
 }

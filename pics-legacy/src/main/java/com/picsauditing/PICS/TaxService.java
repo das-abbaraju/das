@@ -36,14 +36,14 @@ public class TaxService {
         return true;
     }
 
-    public void applyTax(Invoice invoice) throws Exception {
-        CountrySubdivision countrySubdivision = invoice.getAccount().getCountrySubdivision();
-        Country country = invoice.getAccount().getCountry();
+    public void applyTax(Transaction transaction) throws Exception {
+        CountrySubdivision countrySubdivision = transaction.getAccount().getCountrySubdivision();
+        Country country = transaction.getAccount().getCountry();
 
         if (!country.isTaxable())
 			return;
 
-        InvoiceItem taxItem = invoice.getTaxItem();
+        TransactionItem taxItem = transaction.getTaxItem();
 
         FeeClass feeClass;
         if (taxItem != null) {
@@ -55,8 +55,8 @@ public class TaxService {
 
         InvoiceFee taxInvoiceFee = getTaxInvoiceFee(feeClass, country, countrySubdivision);
 
-		applyTaxInvoiceFeeToInvoice(invoice, taxInvoiceFee);
-		invoice.updateTotalAmount();
+		applyTaxInvoiceFeeToTransaction(transaction, taxInvoiceFee);
+        transaction.updateTotalAmount();
 	}
 
     public InvoiceFee getTaxInvoiceFee(FeeClass feeClass, Country country, CountrySubdivision countrySubdivision) throws Exception {
@@ -108,14 +108,14 @@ public class TaxService {
         return null;
     }
 
-	private void applyTaxInvoiceFeeToInvoice(Invoice invoice, InvoiceFee taxInvoiceFee) {
+	private void applyTaxInvoiceFeeToTransaction(Transaction transaction, InvoiceFee taxInvoiceFee) {
 		if (taxInvoiceFee == null)
 			return;
 
         BigDecimal totalBeforeTax = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
-        InvoiceItem taxItem = null;
+        TransactionItem taxItem = null;
 
-        for (InvoiceItem item : invoice.getItems()) {
+        for (TransactionItem item : transaction.getItems()) {
             if (item.getInvoiceFee().equals(taxInvoiceFee))
                 taxItem = item;
             else
@@ -124,15 +124,23 @@ public class TaxService {
 
         BigDecimal taxAmount = taxInvoiceFee.getTax(totalBeforeTax);
 
-        updateInvoiceTax(invoice, taxInvoiceFee, taxItem, taxAmount);
+        updateInvoiceTax(transaction, taxInvoiceFee, taxItem, taxAmount);
 	}
 
-    private void updateInvoiceTax(Invoice invoice, InvoiceFee taxInvoiceFee, InvoiceItem taxItem, BigDecimal taxAmount) {
+    private void updateInvoiceTax(Transaction transaction, InvoiceFee taxInvoiceFee, TransactionItem taxItem, BigDecimal taxAmount) {
         if (taxItem == null) {
-            taxItem = new InvoiceItem(taxInvoiceFee, taxAmount, null);
-            taxItem.setInvoice(invoice);
+            if (transaction instanceof Invoice) {
+                taxItem = new InvoiceItem(taxInvoiceFee, taxAmount, null);
+            }
+            else if (transaction instanceof InvoiceCreditMemo) {
+                taxItem = new ReturnItem();
+                taxItem.setInvoiceFee(taxInvoiceFee);
+                taxItem.setAmount(taxAmount);
+            }
+
+            taxItem.setTransaction(transaction);
             taxItem.setAuditColumns(new User(User.SYSTEM));
-            invoice.getItems().add(taxItem);
+            transaction.getItems().add(taxItem);
         } else {
             if (taxItem.getAmount().equals(taxAmount))
                 return;
@@ -140,7 +148,6 @@ public class TaxService {
             taxItem.setAmount(taxAmount);
         }
 
-        AccountingSystemSynchronization.setToSynchronize(invoice);
+        AccountingSystemSynchronization.setToSynchronize(transaction);
     }
-
 }
