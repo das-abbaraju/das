@@ -169,7 +169,6 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         Map<String, String> bankNames = new HashMap<String, String>();
         bankNames.put("BOW","Bank of the West");
         bankNames.put("CB","Citibank");
-        bankNames.put("HSBC","HSBC Bank");
         return Collections.unmodifiableMap(bankNames);
     }
 
