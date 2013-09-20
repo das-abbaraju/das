@@ -31,7 +31,14 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
                 boxLabel: PICS.text('Report.execute.subscribeSetting.labelMonthly'),
                     inputValue: 'Monthly'
             }]
-        }]
+        }, {
+            xtype: 'component',
+            html:  new Ext.Template([
+                '<p class="subscription-info">',
+                        PICS.text('Report.execute.subscribeSetting.subscriptionInfo1') + '<br />',
+                        PICS.text('Report.execute.subscribeSetting.subscriptionInfo2'),
+                '</p>'
+            ])
     }],
 
     layout: {
