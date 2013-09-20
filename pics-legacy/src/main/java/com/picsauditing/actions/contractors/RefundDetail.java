@@ -110,7 +110,8 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
                 invoiceDAO.save(refundApplied);
                 billingService.syncBalance(contractor);
                 contractorAccountDao.save(contractor);
-                addActionMessage("Refund created for " + amountApplied.abs().doubleValue() + " " + creditMemo.getCurrency());
+                BigDecimal absolute = amountApplied.abs();
+                addActionMessage("Refund created for " + absolute.toString() + " " + creditMemo.getCurrency());
             }
         }
         else {
