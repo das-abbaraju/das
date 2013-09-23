@@ -121,6 +121,16 @@
 		<level value="error" />
 	</logger>
 
+	<logger name="com.tacitknowledge">
+		<level value="INFO" />
+		<appender-ref ref="STDOUT"/>
+	</logger>
+
+	<logger name="com.picsauditing.autopatches">
+		<level value="INFO" />
+		<appender-ref ref="STDOUT"/>
+	</logger>
+
 	<logger name="com.picsauditing.PICS.I18nCache" level="${loglevel_translations:-error}">
 		<appender-ref ref="MissingTranslationAppender"/>
 	</logger>
