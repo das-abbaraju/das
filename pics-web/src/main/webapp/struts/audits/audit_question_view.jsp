@@ -86,7 +86,12 @@
 			<s:else>
 				<s:property value="#a.answer" />
 			</s:else>
-		</s:elseif>
+            <s:set var="suggestion" value = "getSuggestion(#q)" />
+            <s:if test="#suggestion != null" >
+                <s:property value="#suggestion.suggestion" />
+            </s:if>
+
+        </s:elseif>
 		<s:else>
 			<s:property value="#a.answer" />
 		</s:else>

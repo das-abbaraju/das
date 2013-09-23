@@ -14,6 +14,9 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.auditBuilder.AuditQuestionSuggestion;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,23 +27,6 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InsuranceCriteriaContractorOperator;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
@@ -61,6 +47,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
 	protected AuditDecisionTableDAO auditDecisionTableDAO;
+    @Autowired
+    protected AuditPeriodService auditPeriodService;
 
 	protected String mode = null;
 	static private String VIEW = "View";
@@ -81,6 +69,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	private Set<Integer> operatorIds = new TreeSet<Integer>();
 	private List<OperatorAccount> operators;
 	private List<AuditCategory> cats = new ArrayList<AuditCategory>();
+
+    private Map<Integer, AuditQuestionSuggestion> suggestions = new HashMap<>();
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
@@ -249,6 +239,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			if (!Strings.isEmpty(message)) {
 				addAlertMessage(message);
 			}
+
 		}
 
 		return SUCCESS;
@@ -462,6 +453,70 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		return null;
 	}
+
+    public AuditQuestionSuggestion getSuggestion(AuditQuestion question) {
+        AuditQuestionSuggestion suggestion = null;
+        for (AuditQuestionFunction function:question.getFunctions()) {
+            if (function.getType().equals(QuestionFunctionType.Rollup)) {
+                suggestion = getRollupSuggestion(function);
+                return suggestion;
+            }
+        }
+        return suggestion;
+    }
+
+    private AuditQuestionSuggestion getRollupSuggestion(AuditQuestionFunction function) {
+        AuditQuestionFunctionWatcher watcher = getRollupWatcher(function);
+        if (watcher == null)
+            return null;
+        int questionId = watcher.getQuestion().getId();
+
+        String[] params = new String[3];
+        String textKey = null;
+        String noneKey = null;
+        params[2]= watcher.getQuestion().getAuditType().getName();
+        if (watcher.getQuestion().getAuditType().getPeriod().isMonthly()) {
+            textKey = "Suggestion.Rollup.Monthly";
+            noneKey = "Suggestion.Rollup.Monthly.None";
+            if (function.getQuestion().getAuditType().getPeriod().isQuarterly())
+                params[0] = "3";
+            else
+                params[0] = "12";
+        } else if (watcher.getQuestion().getAuditType().getPeriod().isQuarterly()) {
+            textKey = "Suggestion.Rollup.Quarterly";
+            noneKey = "Suggestion.Rollup.Quarterly.None";
+            params[0] = "4";
+        }
+        if (textKey == null) {
+            return null;
+        }
+
+        int count = 0;
+        List<String> list = auditPeriodService.getChildPeriodAuditFors(conAudit.getAuditFor());
+        for (String auditFor:list) {
+            ContractorAudit audit = auditPeriodService.findAudit(contractor.getAudits(), watcher.getQuestion().getAuditType(), auditFor);
+            if (audit != null && audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+                count++;
+            }
+        }
+
+        params[1] = "" + count;
+        if (count == 0)
+            textKey = noneKey;
+
+        AuditQuestionSuggestion suggestion = new AuditQuestionSuggestion();
+        suggestion.setSuggestion(getText(textKey, params));
+
+        return suggestion;
+    }
+
+    private AuditQuestionFunctionWatcher getRollupWatcher(AuditQuestionFunction function) {
+        List<AuditQuestionFunctionWatcher> watchers = function.getWatchers();
+        if (watchers.size() == 0)
+            return null;
+
+        return watchers.get(0);
+    }
 
 	public AnswerMap getAnswerMap() {
 		return answerMap;

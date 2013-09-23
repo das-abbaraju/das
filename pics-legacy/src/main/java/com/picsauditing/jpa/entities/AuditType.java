@@ -96,6 +96,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
     protected int anchorMonth = 1;
     protected int advanceDays = 0;
     protected int maximumActive = 1;
+    protected AuditType parent = null;
+    protected AuditStatus rollbackStatus = null;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -544,5 +546,25 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
     public void setMaximumActive(int maximumActive) {
         this.maximumActive = maximumActive;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "parentID", nullable = true)
+    public AuditType getParent() {
+        return parent;
+    }
+
+    public void setParent(AuditType parent) {
+        this.parent = parent;
+    }
+
+    @Column(name = "rollbackStatus", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public AuditStatus getRollbackStatus() {
+        return rollbackStatus;
+    }
+
+    public void setRollbackStatus(AuditStatus rollbackStatus) {
+        this.rollbackStatus = rollbackStatus;
     }
 }

@@ -22,6 +22,42 @@ public class AuditPeriodService {
         return null;
     }
 
+    public List<String> getChildPeriodAuditFors(String parentAuditFor) {
+        List<String> auditFors = new ArrayList<>();
+
+        boolean isMonthly = parentAuditFor.indexOf("-") >= 0;
+        boolean isQuarterly = parentAuditFor.indexOf(":") >= 0;
+
+        if (isQuarterly) {
+            String[] tokens = parentAuditFor.split(":");
+            int quarter = Integer.parseInt(tokens[1]);
+            if (quarter == 1) {
+                auditFors.add(String.format("%s-%02d", tokens[0], 1));
+                auditFors.add(String.format("%s-%02d", tokens[0], 2));
+                auditFors.add(String.format("%s-%02d", tokens[0], 3));
+            } else if (quarter == 2) {
+                auditFors.add(String.format("%s-%02d", tokens[0], 4));
+                auditFors.add(String.format("%s-%02d", tokens[0], 5));
+                auditFors.add(String.format("%s-%02d", tokens[0], 6));
+            } else if (quarter == 3) {
+                auditFors.add(String.format("%s-%02d", tokens[0], 7));
+                auditFors.add(String.format("%s-%02d", tokens[0], 8));
+                auditFors.add(String.format("%s-%02d", tokens[0], 9));
+            } else {
+                auditFors.add(String.format("%s-%02d", tokens[0], 10));
+                auditFors.add(String.format("%s-%02d", tokens[0], 11));
+                auditFors.add(String.format("%s-%02d", tokens[0], 12));
+            }
+        } else if (!isMonthly) { // yearly
+            auditFors.add(String.format("%s:%d", parentAuditFor, 1));
+            auditFors.add(String.format("%s:%d", parentAuditFor, 2));
+            auditFors.add(String.format("%s:%d", parentAuditFor, 3));
+            auditFors.add(String.format("%s:%d", parentAuditFor, 4));
+        }
+
+        return auditFors;
+    }
+
     public List<String> getAuditForByDate(AuditType auditType, Date currentDate) {
         List<String> auditFors = new ArrayList<>();
 
@@ -39,7 +75,7 @@ public class AuditPeriodService {
             createQuarterlyAuditFors(auditType, auditFors, date);
         }
 
-        if (auditType.getPeriod().isAnnual()) {
+        if (auditType.getPeriod().isYearlyCustomDate()) {
             createAnnualAuditFors(auditType, currentDate, auditFors, date);
         }
 
@@ -161,7 +197,7 @@ public class AuditPeriodService {
             year = Integer.parseInt(values[0]);
             int quarter = Integer.parseInt(values[1]);
             month = getMonthFromQuarter(quarter);
-        } else if (auditType.getPeriod().isAnnual()) {
+        } else if (auditType.getPeriod().isYearlyCustomDate()) {
             year = Integer.parseInt(auditFor);
             if (auditType.getPeriod().isYearly())  {
                 month = 0;

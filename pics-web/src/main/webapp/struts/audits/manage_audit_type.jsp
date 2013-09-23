@@ -428,6 +428,35 @@
             </pics:fieldhelp>
 
         </li>
+            <li>
+                <label>Parent Audit Id:</label>
+                <s:textfield id="auditParentID" name="auditParentID" value="%{auditType.parent.id}"/>
+
+                <pics:fieldhelp title="Parent Audit">
+                    <p>
+                        Used to connect monthly, quareterly, and yearly audits
+                    </p>
+                </pics:fieldhelp>
+
+            </li>
+            <li>
+                <label>Rollback Status:</label>
+                <s:select
+                        list="@com.picsauditing.jpa.entities.AuditStatus@values()"
+                        listValue="name()"
+                        listKey="name()"
+                        name="rollbackStatusName"
+                        headerKey=""
+                        headerValue="- Select A Status -"
+                        />
+
+                <pics:fieldhelp title="Custom Date Month">
+                    <p>
+                        Moves the audit back to this status if a question answered after it is complete.  :eave blank if  there is no change.
+                    </p>
+                </pics:fieldhelp>
+
+            </li>
         </s:if>
                     <li>
                         <label><s:text name="ManageAuditType.RequiredLanguages" />:</label>

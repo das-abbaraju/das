@@ -40,6 +40,8 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 	protected String editPerm;
 	protected String ruleType;
 	protected int ruleID;
+    protected String rollbackStatusName = "";
+    protected String auditParentID = "";
 
 	protected List<WorkflowStep> steps;
 
@@ -137,6 +139,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		}
 
 		if (auditType != null) {
+            rollbackStatusName = (auditType.getRollbackStatus() != null) ? 
 			boolean renumbered = false;
 			int i = 1;
 			for (AuditCategory category : auditType.getCategories()) {
@@ -157,7 +160,23 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		return "top";
 	}
 
-	public String findTranslations() throws IOException {
+    public String getAuditParentID() {
+        return auditParentID;
+    }
+
+    public void setAuditParentID(String auditParentID) {
+        this.auditParentID = auditParentID;
+    }
+
+    public String getRollbackStatusName() {
+        return rollbackStatusName;
+    }
+
+    public void setRollbackStatusName(String rollbackStatusName) {
+        this.rollbackStatusName = rollbackStatusName;
+    }
+
+    public String findTranslations() throws IOException {
 		Set<String> usedKeys = translationKeysGenerator.generateAuditTypeKeys(auditType);
 
 		populateSessionVariablesForManageTranslationsRedirect(usedKeys);
@@ -225,6 +244,25 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			} else {
 				auditType.setAccount(null);
 			}
+
+            auditType.setRollbackStatus(null);
+            if (!Strings.isEmpty(rollbackStatusName)) {
+                try {
+                    auditType.setRollbackStatus(Enum.valueOf(AuditStatus.class, rollbackStatusName));
+                } catch (Exception e) {
+                }
+            }
+
+            auditType.setParent(null);
+            if (!Strings.isEmpty(auditParentID)) {
+                try {
+                    int auditId = Integer.parseInt(auditParentID);
+                    AuditType parentAudit = new AuditType();
+                    parentAudit.setId(auditId);
+                    auditType.setParent(parentAudit);
+                } catch (Exception e) {
+                }
+            }
 
 			if (editPerm != null && !editPerm.isEmpty()) {
 				auditType.setEditPermission(OpPerms.valueOf(editPerm));

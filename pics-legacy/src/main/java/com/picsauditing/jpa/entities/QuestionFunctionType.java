@@ -14,6 +14,10 @@ public enum QuestionFunctionType {
 	 * The question should be a "Calculation" type to restrict it from being edited.
 	 */
 	Calculation,
+    /**
+     * This is to calculate the sum of a particular question type in an audit class over a certain period.
+     */
+    Rollup,
 	/**
 	 * This is a proposed function type for {@link QuestionFunction} that determine the visibility of a question
 	 */

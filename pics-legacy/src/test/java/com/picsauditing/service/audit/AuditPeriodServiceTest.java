@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class AuditPeriodServiceTest extends PicsTest {
@@ -22,6 +23,42 @@ public class AuditPeriodServiceTest extends PicsTest {
         super.setUp();
 
         test = new AuditPeriodService();
+    }
+
+    @Test
+    public void testGetChildPeriodAuditFors() {
+        List<String> answers = null;
+
+        answers = test.getChildPeriodAuditFors("2010");
+        assertEquals(4, answers.size());
+        assertEquals("2010:1", answers.get(0));
+        assertEquals("2010:2", answers.get(1));
+        assertEquals("2010:3", answers.get(2));
+        assertEquals("2010:4", answers.get(3));
+
+        answers = test.getChildPeriodAuditFors("2010:1");
+        assertEquals(3, answers.size());
+        assertEquals("2010-01", answers.get(0));
+        assertEquals("2010-02", answers.get(1));
+        assertEquals("2010-03", answers.get(2));
+
+        answers = test.getChildPeriodAuditFors("2010:2");
+        assertEquals(3, answers.size());
+        assertEquals("2010-04", answers.get(0));
+        assertEquals("2010-05", answers.get(1));
+        assertEquals("2010-06", answers.get(2));
+
+        answers = test.getChildPeriodAuditFors("2010:3");
+        assertEquals(3, answers.size());
+        assertEquals("2010-07", answers.get(0));
+        assertEquals("2010-08", answers.get(1));
+        assertEquals("2010-09", answers.get(2));
+
+        answers = test.getChildPeriodAuditFors("2010:4");
+        assertEquals(3, answers.size());
+        assertEquals("2010-10", answers.get(0));
+        assertEquals("2010-11", answers.get(1));
+        assertEquals("2010-12", answers.get(2));
     }
 
     @Test

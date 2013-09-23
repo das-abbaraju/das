@@ -91,11 +91,18 @@ public final class AuditQuestionFunction extends BaseTable {
 		this.watchers = functions;
 	}
 
+    @Transient
+    public Object calculate(AnswerMap answerMap) {
+        return calculate(answerMap, null);
+    }
+
 	@Transient
-	public Object calculate(AnswerMap answerMap) {
-		Object result;
+	public Object calculate(AnswerMap answerMap, String currentAnswer) {
+            Object result;
 		try {
-			result = function.calculate(new FunctionInput.Builder().answerMap(answerMap).watchers(watchers).build());
+            FunctionInput input = new FunctionInput.Builder().answerMap(answerMap).watchers(watchers).build();
+            input.setCurrentAnswer(currentAnswer);
+			result = function.calculate(input);
 		}
 		catch (NumberFormatException e) {
 			result = "Audit.missingParameter";

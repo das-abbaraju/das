@@ -23,7 +23,7 @@ public enum AuditTypePeriod {
         return CustomDate == this;
     }
 
-    public boolean isAnnual() {
+    public boolean isYearlyCustomDate() {
         return Yearly == this || CustomDate == this;
     }
 

@@ -212,7 +212,7 @@
     							<td class="buttonAction">
     								<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
     									<s:if test="displayButton(#currentCao, #step)">
-                                            <s:if test="#step.newStatus.toString() == 'Incomplete'">
+                                            <s:if test="#step.newStatus.toString() == 'Incomplete' && conAudit.auditType.classType.policy">
                                                 <s:set var="button_class">
                                                     policy-reject ${step.newStatus.color}
                                                 </s:set>

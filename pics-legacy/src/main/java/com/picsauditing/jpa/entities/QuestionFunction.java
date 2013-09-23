@@ -847,6 +847,28 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
+    LWDR_SUMMARY {
+        @Override
+        public  Object calculate(FunctionInput input) {
+            Map<String, String> params = getParameterMap(input);
+            if (Strings.isEmpty(params.get("lostWorkCases"))
+                    || Strings.isEmpty(params.get("hours"))) {
+                return MISSING_PARAMETER;
+            }
+
+            BigDecimal lostWorkCases = new BigDecimal(params.get("lostWorkCases").replace(",", "")).setScale(7);
+            BigDecimal hours = new BigDecimal(params.get("hours").replace(",", "")).setScale(7);
+
+            BigDecimal result;
+            try {
+                result = lostWorkCases.multiply(new BigDecimal(200000).setScale(7)).divide(hours, 7, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+            } catch (java.lang.ArithmeticException e) {
+                return MISSING_PARAMETER;
+            }
+
+            return result;
+        }
+    },
 	SPMVI {
 		@Override
 		public  Object calculate(FunctionInput input) {
@@ -873,6 +895,28 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
+    SPMVI_SUMMARY {
+        @Override
+        public  Object calculate(FunctionInput input) {
+            Map<String, String> params = getParameterMap(input);
+            if (Strings.isEmpty(params.get("incidents"))
+                    || Strings.isEmpty(params.get("miles"))) {
+                return MISSING_PARAMETER;
+            }
+
+            BigDecimal incidents = new BigDecimal(params.get("incidents").replace(",", "")).setScale(7);
+            BigDecimal miles = new BigDecimal(params.get("miles").replace(",", "")).setScale(7);
+
+            BigDecimal result;
+            try {
+                result = incidents.multiply(new BigDecimal(1000000).setScale(7)).divide(miles, 7, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+            } catch (java.lang.ArithmeticException e) {
+                return MISSING_PARAMETER;
+            }
+
+            return result;
+        }
+    },
 	QUARTERLY {
 		@Override
 		public  Object calculate(FunctionInput input) {
@@ -975,6 +1019,27 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
+    ROLLUP {
+        @Override
+        public  Object calculate(FunctionInput input) {
+           // placeholder so a function can be designated, actual function is done in code
+           return MISSING_PARAMETER;
+        }
+    },
+    CLEAR_ON_NO {
+        @Override
+        public  Object calculate(FunctionInput input) {
+            Map<String, String> params = getParameterMap(input);
+            if (Strings.isEmpty(params.get("yesNo"))) {
+                return MISSING_PARAMETER;
+            }
+
+            if ("No".equals(params.get("didDrive")))
+                return "";
+
+            return input.getCurrentAnswer();
+        }
+    },
 	DOUBLE {
 		@Override
 		public  Object calculate(FunctionInput input) {
@@ -1015,6 +1080,7 @@ public enum QuestionFunction {
 		private final Map<String, String> params;
 		private final AnswerMap answerMap;
 		private final Collection<AuditQuestionFunctionWatcher> watchers;
+        private String currentAnswer = null;
 
 		private FunctionInput(Builder builder) {
 			this.params = builder.params;
@@ -1022,7 +1088,15 @@ public enum QuestionFunction {
 			this.watchers = builder.watchers;
 		}
 
-		public static class Builder {
+        public String getCurrentAnswer() {
+            return currentAnswer;
+        }
+
+        public void setCurrentAnswer(String currentAnswer) {
+            this.currentAnswer = currentAnswer;
+        }
+
+        public static class Builder {
 			private Map<String, String> params;
 			private AnswerMap answerMap;
 			private Collection<AuditQuestionFunctionWatcher> watchers = Collections.emptyList();

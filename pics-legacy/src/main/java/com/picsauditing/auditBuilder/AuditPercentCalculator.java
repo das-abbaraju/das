@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class AuditPercentCalculator {
 	protected AuditQuestionDAO auditQuestionDAO;
 	@Autowired
 	protected AuditCategoryDataDAO auditCategoryDataDAO;
+    @Autowired
+    protected AuditPeriodService auditPeriodService;
+    @Autowired
+    protected ContractorAuditDAO contractorAuditDAO;
 
 	protected float subScorePossible;
 	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator.class);
@@ -62,61 +67,16 @@ public class AuditPercentCalculator {
 		Set<Integer> questionIDs = collectQuestionIdsFromAuditCatData(catData);
 		Collection<Integer> functionWatcherQuestionIds = collectFunctionWatcherQuestionIdsFromAuditCatData(catData);
 
-		AnswerMap currentWatcherAnswers = auditDataDAO.findAnswersByAuditAndQuestions(catData.getAudit(),
-				functionWatcherQuestionIds);
+        // Run Rollup Functions
+        runRollupFunctions(catData, validDate);
 
-		// Run functions to update answers
-		for (AuditQuestion question : catData.getCategory().getQuestions())
-			if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
-				AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
-				boolean newTarget = false;
+        AnswerMap currentWatcherAnswers = auditDataDAO.findAnswersByAuditAndQuestions(catData.getAudit(),
+                functionWatcherQuestionIds);
 
-				if (target == null) {
-					target = new AuditData();
-					target.setAudit(catData.getAudit());
-					target.setQuestion(question);
-					newTarget = true;
-				}
+        // Run functions to update answers
+        runCalculationFunctions(catData, validDate, currentWatcherAnswers);
 
-				String results = null;
-
-				for (AuditQuestionFunction function : question.getFunctions()) {
-					if (function.getType() == QuestionFunctionType.Calculation) {
-						if (!target.isAnswered() || function.isOverwrite()) {
-							if (function.getFunction() == QuestionFunction.AUDIT_SCORE) {
-								results = String.valueOf(catData.getAudit().getScore());
-							} else {
-								Object calculation = function.calculate(currentWatcherAnswers);
-								if (calculation != null) {
-									results = calculation.toString();
-									break;
-								}
-							}
-						}
-					}
-				}
-
-				if (results != null) {
-					target.setAnswer(results);
-					target.setAuditColumns(new User(User.SYSTEM));
-				}
-
-				if (newTarget) {
-					auditDataDAO.save(target);
-				}
-
-				for (AuditQuestionFunctionWatcher aqfw : question.getFunctionWatchers()) {
-					if (aqfw.getFunction().getQuestion().getCategory().getId() != question.getCategory().getId()) {
-						AuditCatData aqfwCatData = findCatData(catData.getAudit(), aqfw.getFunction().getQuestion().getCategory());
-						if (aqfwCatData == null) {
-							continue;
-						}
-						updatePercentageCompleted(aqfwCatData);
-					}
-				}
-			}
-
-		// Get a map of all answers in this audit
+        // Get a map of all answers in this audit
 		List<AuditData> requiredAnswers = new ArrayList<AuditData>();
 		for (AuditData answer : catData.getAudit().getData())
 			if (questionIDs.contains(answer.getQuestion().getId()))
@@ -242,7 +202,121 @@ public class AuditPercentCalculator {
 		// categoryDataDAO.save(catData);
 	}
 
-	private AuditCatData findCatData(ContractorAudit audit, AuditCategory category) {
+    private void runCalculationFunctions(AuditCatData catData, Date validDate, AnswerMap currentWatcherAnswers) {
+        for (AuditQuestion question : catData.getCategory().getQuestions())
+            if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
+                AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
+                boolean newTarget = false;
+
+                if (target == null) {
+                    target = new AuditData();
+                    target.setAudit(catData.getAudit());
+                    target.setQuestion(question);
+                    newTarget = true;
+                }
+
+                String results = null;
+
+                for (AuditQuestionFunction function : question.getFunctions()) {
+                    if (function.getType() == QuestionFunctionType.Calculation) {
+                        if (!target.isAnswered() || function.isOverwrite()) {
+                            if (function.getFunction() == QuestionFunction.AUDIT_SCORE) {
+                                results = String.valueOf(catData.getAudit().getScore());
+                            } else {
+                                Object calculation = function.calculate(currentWatcherAnswers);
+                                if (calculation != null) {
+                                    results = calculation.toString();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (results != null) {
+                    target.setAnswer(results);
+                    target.setAuditColumns(new User(User.SYSTEM));
+                }
+
+                if (newTarget) {
+                    auditDataDAO.save(target);
+                }
+
+                for (AuditQuestionFunctionWatcher aqfw : question.getFunctionWatchers()) {
+                    if (aqfw.getFunction().getQuestion().getCategory().getId() != question.getCategory().getId()) {
+                        AuditCatData aqfwCatData = findCatData(catData.getAudit(), aqfw.getFunction().getQuestion().getCategory());
+                        if (aqfwCatData == null) {
+                            continue;
+                        }
+                        updatePercentageCompleted(aqfwCatData);
+                    }
+                }
+            }
+    }
+
+    private void runRollupFunctions(AuditCatData catData, Date validDate) {
+        for (AuditQuestion question : catData.getCategory().getQuestions())
+            if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
+                AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
+                boolean newTarget = false;
+
+                if (target == null) {
+                    target = new AuditData();
+                    target.setAudit(catData.getAudit());
+                    target.setQuestion(question);
+                    newTarget = true;
+                }
+
+                String results = null;
+
+                for (AuditQuestionFunction function : question.getFunctions()) {
+                    if (function.getType() == QuestionFunctionType.Rollup) {
+                        results = calculateRollup(catData.getAudit().getContractorAccount().getId(),
+                                function, catData.getAudit().getAuditFor());
+                        if (results != null) {
+                            target.setAnswer(results);
+                            target.setAuditColumns(new User(User.SYSTEM));
+                        }
+
+                        auditDataDAO.save(target);
+                    }
+                }
+            }
+    }
+
+    private String calculateRollup(int conId, AuditQuestionFunction function, String parentAuditFor) {
+        if (function.getWatchers().size() == 0)
+            return null;
+        int questionId = function.getWatchers().get(0).getQuestion().getId();
+        int auditTypeId = function.getWatchers().get(0).getQuestion().getAuditType().getId();
+
+        List<String> auditFors = auditPeriodService.getChildPeriodAuditFors(parentAuditFor);
+        List<ContractorAudit> sourceAudits = contractorAuditDAO.findAuditsByContractorAuditTypeAuditFors(conId, auditTypeId, auditFors);
+
+        int sum = 0;
+        boolean foundOne = false;
+        for (ContractorAudit audit:sourceAudits) {
+            if (audit.hasCaoStatus(AuditStatus.Complete)) {
+                AuditData data = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), questionId);
+                if (data != null) {
+                    try {
+                        sum += Integer.parseInt(data.getAnswer());
+                        foundOne = true;
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }
+
+        if (foundOne) {
+            return "" + sum;
+        }
+
+        return null;
+    }
+
+    private AuditCatData findCatData(ContractorAudit audit, AuditCategory category) {
 		for (AuditCatData catData:audit.getCategories()) {
 			if (catData.getCategory().getId() == category.getId()) {
 				return catData;
