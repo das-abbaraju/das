@@ -7,11 +7,6 @@
     <s:set var="actions_path" value="%{''}" />
 <% } %>
 
-<%-- class to identify whether the report item can be drag-and-drop sorted --%>
-<s:set var="sortable_class" value="%{#report.pinned ? 'ui-state-disabled' : ''}" />
-
-    <s:if test="#report.pinned">
-
 <ul class="report-list unstyled">
     <s:iterator value="#reports" var="report" status="rowstatus">
         <%-- Url --%>
@@ -22,19 +17,19 @@
         <s:url action="Report" var="report_url">
             <s:param name="report">${report.id}</s:param>
         </s:url>
-
+        
         <%-- Favorite Class --%>
         <s:set name="favorite_class" value="%{#report.favorite ? 'favorite' : 'unfavorite'}" />
 
         <%-- Icon --%>
         <s:set name="is_favorite_class" value="%{#report.favorite ? 'selected' : ''}" />
 
-        <li id="${report.id}" class="report clearfix ${sortable_class}">
+        <li id="${report.id}" class="report clearfix">
             <s:if test="#actions_path != ''">
                 <%-- hidden options may be being passed from the parent include --%>
                 <s:include value="%{#actions_path}" />
             </s:if>
-
+            
             <a href="${report_favorite_url}" class="${favorite_class}" data-report-id="${report.id}">
                 <i class="icon-star ${is_favorite_class}"></i>
             </a>

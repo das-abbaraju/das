@@ -27,14 +27,12 @@
             /*** Nothing below this line is coupled to the Reports Manager Favorites page. ***/
 
                     $(TOP_LIST_SELECTOR).sortable({
-                        items: 'li:not(.ui-state-disabled)',
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [BOTTOM_LIST_SELECTOR],
                         update: onTopListUpdate
                     });
 
                     $(BOTTOM_LIST_SELECTOR).sortable({
-                        items: 'li:not(.ui-state-disabled)',
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [TOP_LIST_SELECTOR],
                         update: onBottomListUpdate
