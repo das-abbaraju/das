@@ -13,7 +13,7 @@
 		String username = request.getParameter("username".trim());
 		String taxId = request.getParameter("taxId");
 		String companyName = request.getParameter("companyName");
-		TranslationService translationService = getTranslationService.getTranslationService();
+		TranslationService translationService = TranslationServiceFactory.getTranslationService();
 		Locale locale = Locale.getDefault();
 
 		if (!Strings.isEmpty(username)) {
