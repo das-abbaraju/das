@@ -6,7 +6,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
@@ -357,6 +356,11 @@ public final class MenuBuilder {
             manageMenu.addChild("QuickBooks Sync", "QBSyncList.action?currency=USD", "QuickBooksSync_USD");
             manageMenu.addChild("QuickBooks Sync Edit", "QBSyncEdit.action", "QuickBooksSyncEdit");
         }
+
+	    // Fixme Remove when no longer needed!
+	    if (permissions.isOperatorCorporate() && permissions.getAccountStatus().isDemo()) {
+		    manageMenu.addChild("Request Company", "RequestNewContractorAccount.action", "RequestNewContractorAccount");
+	    }
     }
 
     private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {
