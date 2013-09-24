@@ -347,6 +347,14 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		return "icon_" + auditType + ".gif";
 	}
 
+    @Transient
+    public boolean isRollback() {
+        if (isAnnualAddendum() || getClassType().isPolicy() || getRollbackStatus() != null)
+            return true;
+
+        return false;
+    }
+
 	@Transient
 	public boolean isShowManual() {
 		if (this.id == IMPLEMENTATION_AUDIT) {

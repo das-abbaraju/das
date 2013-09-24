@@ -102,6 +102,7 @@ public final class AuditQuestionFunction extends BaseTable {
 		try {
             FunctionInput input = new FunctionInput.Builder().answerMap(answerMap).watchers(watchers).build();
             input.setCurrentAnswer(currentAnswer);
+            input.setExpression(expression);
 			result = function.calculate(input);
 		}
 		catch (NumberFormatException e) {

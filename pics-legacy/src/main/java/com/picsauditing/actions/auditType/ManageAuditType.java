@@ -139,7 +139,13 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		}
 
 		if (auditType != null) {
-            rollbackStatusName = (auditType.getRollbackStatus() != null) ? 
+            if (auditType.getRollbackStatus() != null) {
+                rollbackStatusName = auditType.getRollbackStatus().name();
+            }
+            if (auditType.getParent() != null) {
+                auditParentID = "" + auditType.getParent().getId();
+            }
+
 			boolean renumbered = false;
 			int i = 1;
 			for (AuditCategory category : auditType.getCategories()) {

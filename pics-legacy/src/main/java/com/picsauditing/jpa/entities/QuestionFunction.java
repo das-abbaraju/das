@@ -2,10 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -58,6 +55,12 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
+    SIMPLE_MATH {
+        @Override
+        public Object calculate(FunctionInput input) {
+            return evaluateSimpleMath(input);
+        }
+    },
 	/**
 	 * Canadian WCB Surcharge
 	 *
@@ -66,7 +69,7 @@ public enum QuestionFunction {
 	WCB_SURCHARGE {
 		@Override
 		public Object calculate(FunctionInput input) {
-			Map<String, String> params = input.getParams();
+			Map<String, String> params = getParameterMap(input);
 			if (Strings.isEmpty(params.get("netPremiumRate")) || Strings.isEmpty(params.get("industryRate"))) {
 				return MISSING_PARAMETER;
 			}
@@ -1034,8 +1037,22 @@ public enum QuestionFunction {
                 return MISSING_PARAMETER;
             }
 
-            if ("No".equals(params.get("didDrive")))
+            if ("No".equals(params.get("yesNo")))
                 return "";
+
+            return input.getCurrentAnswer();
+        }
+    },
+    ZERO_ON_NO {
+        @Override
+        public  Object calculate(FunctionInput input) {
+            Map<String, String> params = getParameterMap(input);
+            if (Strings.isEmpty(params.get("yesNo"))) {
+                return MISSING_PARAMETER;
+            }
+
+            if ("No".equals(params.get("yesNo")))
+                return "0";
 
             return input.getCurrentAnswer();
         }
@@ -1081,8 +1098,17 @@ public enum QuestionFunction {
 		private final AnswerMap answerMap;
 		private final Collection<AuditQuestionFunctionWatcher> watchers;
         private String currentAnswer = null;
+        private String expression = null;
 
-		private FunctionInput(Builder builder) {
+        String operatorPrecedence = "+-  */()";
+        StringBuilder constant = new StringBuilder();
+        StringBuilder identifier = new StringBuilder();
+        boolean processingConstant = false;
+        boolean processingIdentifier = false;
+        Stack<BigDecimal> operandStack = new Stack<>();
+        Stack<Character> operatorStack = new Stack();
+
+        private FunctionInput(Builder builder) {
 			this.params = builder.params;
 			this.answerMap = builder.answerMap;
 			this.watchers = builder.watchers;
@@ -1094,6 +1120,14 @@ public enum QuestionFunction {
 
         public void setCurrentAnswer(String currentAnswer) {
             this.currentAnswer = currentAnswer;
+        }
+
+        public String getExpression() {
+            return expression;
+        }
+
+        public void setExpression(String expression) {
+            this.expression = expression;
         }
 
         public static class Builder {
@@ -1160,7 +1194,148 @@ public enum QuestionFunction {
 
 		return params;
 	}
-	protected Object calculateRate(int totalCases, int manHours, BigDecimal normalizer) {
+
+    protected Object evaluateSimpleMath(FunctionInput input) {
+        if (Strings.isEmpty(input.getExpression()))
+            return MISSING_PARAMETER;
+        String answer = null;
+        Map<String, String> params = getParameterMap(input);
+
+        try {
+            for (char c : input.getExpression().toCharArray()) {
+                if (Character.isWhitespace(c)) {
+                    processIdentifierOrConstant(input, params);
+                } else if ((Character.isDigit(c) || c == '.') && input.processingIdentifier) {
+                    addToIdentifier(input, c);
+                } else if (Character.isDigit(c) || c == '.') {
+                    addToNumber(input, c);
+                } else if (Character.isLetter(c)) {
+                    addToIdentifier(input, c);
+                } else if (c != ' ' && input.operatorPrecedence.indexOf(c) >= 0) { // operator
+                    processIdentifierOrConstant(input, params);
+                    processOperator(input, c);
+                } else { // end of constant or identifier
+                    throw new Exception("Unknown character '" + c + "'");
+                }
+            }
+            processIdentifierOrConstant(input, params);
+            while (input.operatorStack.size() > 0) {
+                evaluate(input);
+            }
+
+            if (input.operandStack.size() != 1) {
+                throw new Exception("No or too many operands.");
+            }
+
+            answer = input.operandStack.pop().setScale(2, RoundingMode.HALF_UP).toString();
+        } catch (Exception e) {
+            return MISSING_PARAMETER;
+        }
+
+        return answer;
+    }
+
+    private void processOperator(FunctionInput input, char op) throws Exception{
+        if (op == '(') {
+            return;
+        } else if (op == ')') {
+            evaluate(input);
+        } else {
+            if (input.operatorStack.size() == 0 || greaterPrecedence(input, op)) {
+                input.operatorStack.push(op);
+            } else {
+                evaluate(input);
+                input.operatorStack.push(op);
+            }
+        }
+    }
+
+    private boolean greaterPrecedence(FunctionInput input, char op) {
+        int opPrec = input.operatorPrecedence.indexOf(op);
+        int stackPrec = input.operatorPrecedence.indexOf(input.operatorStack.peek().charValue());
+
+        if (opPrec > stackPrec + 2)
+            return true;
+
+        return false;
+    }
+
+    private void evaluate(FunctionInput input) throws Exception {
+        if (input.operatorStack.size() == 0) {
+            throw new Exception("Evaluate called with no operators.");
+        }
+
+        if (input.operandStack.size() < 2) {
+            throw new Exception("Evaluate called with not enough operands.");
+        }
+
+        BigDecimal operand2 = input.operandStack.pop();
+        BigDecimal operand1 = input.operandStack.pop();
+
+        char operator = input.operatorStack.pop().charValue();
+
+        switch(operator) {
+            case '+':
+                input.operandStack.push(operand1.add(operand2));
+                break;
+            case '-':
+                input.operandStack.push(operand1.subtract(operand2));
+                break;
+            case '*':
+                input.operandStack.push(operand1.multiply(operand2));
+                break;
+            case '/':
+                input.operandStack.push(operand1.divide(operand2, 7, BigDecimal.ROUND_HALF_UP));
+                break;
+            default:
+                throw new Exception("Unknown operator '" + operator + "'.");
+        }
+    }
+
+    private void addToNumber(FunctionInput input, char c) {
+        input.constant.append(c);
+        input.processingConstant = true;
+    }
+
+    private void addToIdentifier(FunctionInput input, char c) {
+        input.identifier.append(c);
+        input.processingIdentifier = true;
+    }
+
+    private void processIdentifierOrConstant(FunctionInput input, Map<String, String> params) throws Exception {
+        if (input.processingIdentifier) {
+            processIdentifier(input, params);
+        } else if (input.processingConstant) {
+            processConstant(input);
+        }
+    }
+
+    private void processConstant(FunctionInput input) throws Exception {
+        BigDecimal value = new BigDecimal(input.constant.toString());
+        value.setScale(7, BigDecimal.ROUND_HALF_UP);
+
+        input.operandStack.push(value);
+        input.processingConstant = false;
+        input.constant = new StringBuilder();
+    }
+
+    private void processIdentifier(FunctionInput input, Map<String, String> params) throws Exception {
+        String var = params.get(input.identifier.toString());
+        if (var == null) {
+            throw new Exception("unknown identifier");
+        }
+
+        var = var.trim().replace(",", "");
+
+        BigDecimal value = new BigDecimal(var);
+        value.setScale(7, BigDecimal.ROUND_HALF_UP);
+
+        input.operandStack.push(value);
+        input.identifier = new StringBuilder();
+        input.processingIdentifier = false;
+    }
+
+    protected Object calculateRate(int totalCases, int manHours, BigDecimal normalizer) {
 		BigDecimal cases = new BigDecimal(totalCases).setScale(7);
 		BigDecimal hours = new BigDecimal(manHours).setScale(7);
 

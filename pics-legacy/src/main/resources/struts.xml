@@ -761,7 +761,31 @@
 			<result name="top">struts/audits/audit_selectType.jsp</result>
 		</action>
 
-		<action name="ManageTransformOption"
+        <action name="ManageQuestionFunction" class="com.picsauditing.actions.auditType.ManageQuestionFunction">
+            <result>/struts/audits/manage_question_function.jsp</result>
+            <result name="save" type="redirectAction">
+                <param name="actionName">ManageQuestion</param>
+                <param name="id">${question.id}</param>
+            </result>
+            <result name="delete" type="redirectAction">
+                <param name="actionName">ManageQuestion</param>
+                <param name="id">${question.id}</param>
+            </result>
+        </action>
+
+        <action name="ManageQuestionFunctionWatcher" class="com.picsauditing.actions.auditType.ManageQuestionFunctionWatcher">
+            <result>/struts/audits/manage_question_function_watcher.jsp</result>
+            <result name="save" type="redirectAction">
+                <param name="actionName">ManageQuestion</param>
+                <param name="id">${question.id}</param>
+            </result>
+            <result name="delete" type="redirectAction">
+                <param name="actionName">ManageQuestion</param>
+                <param name="id">${question.id}</param>
+            </result>
+        </action>
+
+        <action name="ManageTransformOption"
 		        class="com.picsauditing.actions.auditType.ManageTransformOption">
 			<result>struts/audits/manage_transform_option.jsp</result>
 		</action>

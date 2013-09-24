@@ -215,10 +215,9 @@ public class AuditPercentCalculator {
                     newTarget = true;
                 }
 
-                String results = null;
-
                 for (AuditQuestionFunction function : question.getFunctions()) {
                     if (function.getType() == QuestionFunctionType.Calculation) {
+                        String results = null;
                         if (!target.isAnswered() || function.isOverwrite()) {
                             if (function.getFunction() == QuestionFunction.AUDIT_SCORE) {
                                 results = String.valueOf(catData.getAudit().getScore());
@@ -226,16 +225,14 @@ public class AuditPercentCalculator {
                                 Object calculation = function.calculate(currentWatcherAnswers);
                                 if (calculation != null) {
                                     results = calculation.toString();
-                                    break;
                                 }
+                            }
+                            if (results != null) {
+                                target.setAnswer(results);
+                                target.setAuditColumns(new User(User.SYSTEM));
                             }
                         }
                     }
-                }
-
-                if (results != null) {
-                    target.setAnswer(results);
-                    target.setAuditColumns(new User(User.SYSTEM));
                 }
 
                 if (newTarget) {

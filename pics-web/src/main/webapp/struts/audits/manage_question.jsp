@@ -358,12 +358,13 @@
             	</ol>
         	</fieldset>
             
-        	<s:if test="question.functions.size() > 0">
-            	<fieldset>
-            		<h2>Functions</h2>
+            <fieldset>
+            	<h2>Functions</h2>
+                <s:if test="question.functions.size() > 0">
             		<table class="report">
                 		<thead>
                     		<tr>
+                                <th>Id</th>
                     			<th>
                                     Type
                                 </th>
@@ -376,17 +377,20 @@
                     		</tr>
                 		</thead>
                         
-                		<s:iterator value="question.functions">
+                		<s:iterator value="question.functions" var="f">
                 			<tr>
-                				<td>
-                                    <s:property value="type"/>
+                                <td>
+                                    <a href="ManageQuestionFunction.action?questionId=<s:property value="question.id" />&id=<s:property value="#f.id" />" class="edit"><s:property value="#f.id"/></a>
+                                </td>
+                                <td>
+                                    <s:property value="#f.type"/>
                                 </td>
                 				<td>
-                                    <s:property value="function"/>
+                                    <s:property value="#f.function"/>
                                 </td>
                 				<td>
                 					<table class="inner">
-                    					<s:iterator value="watchers" var="w">
+                    					<s:iterator value="#f.watchers" var="w">
                     						<tr>
                     							<td>
                                                     <s:property value="#w.question.id"/>
@@ -401,19 +405,28 @@
                 			</tr>
                 		</s:iterator>
             		</table>
-            	</fieldset>
-        	</s:if>
-            
-        	<s:if test="question.functionWatchers.size() > 0">
-            	<fieldset>
-            		<h2>Function Watchers</h2>
+                </s:if>
+                <s:if test="id != 0">
+                    <a href="ManageQuestionFunction.action?questionId=<s:property value="id" />" class="add">Add Function</a>
+                </s:if>
+            </fieldset>
+
+            <fieldset>
+            <h2>Function Watchers</h2>
+            	<s:if test="question.functionWatchers.size() > 0">
             		<table class="report">
                 		<thead>
                     		<tr>
+                                <th>
+                                    Id
+                                <th>
+                                    Parameter Name
+                                </th>
+                                </th>
                     			<th>
                                     Type
                                 </th>
-                    			<th>
+                                <th>
                                     Function
                                 </th>
                     			<th>
@@ -424,13 +437,19 @@
                         
                 		<s:iterator value="question.functionWatchers" var="w">
                 			<tr>
-                				<td>
+                                <td>
+                                    <a href="ManageQuestionFunctionWatcher.action?questionId=<s:property value="question.id" />&id=<s:property value="#w.id" />" class="edit"><s:property value="#w.id"/></a>
+                                </td>
+                                <td>
+                                    <s:property value="#w.uniqueCode"/>
+                                </td>
+                                <td>
                                     <s:property value="#w.function.type"/>
                                 </td>
                 				<td>
                                     <s:property value="#w.function.function"/>
                                 </td>
-                				<td>
+                                <td>
                 					<table class="inner">
                 						<tr>
                 							<td>
@@ -445,9 +464,12 @@
                 			</tr>
                 		</s:iterator>
             		</table>
-            	</fieldset>
-        	</s:if>
-            
+                </s:if>
+                <s:if test="id != 0">
+                    <a class="add" href="ManageQuestionFunctionWatcher.action?questionId=<s:property value="id" />"/>Add Function Watcher</a>
+                </s:if>
+            </fieldset>
+
         	<fieldset class="form">
             	<h2 class="formLegend">Additional Options</h2>
                 
