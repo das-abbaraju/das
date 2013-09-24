@@ -21,8 +21,6 @@
         <module>picsorg-reports</module>
         <module>pics-legacy</module>
         <module>pics-web</module>
-        <module>pics-dr-domain</module>
-        <module>pics-database-domain</module>
     </modules>
 
     <repositories>
