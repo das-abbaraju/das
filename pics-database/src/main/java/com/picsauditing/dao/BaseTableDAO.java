@@ -1,6 +1,6 @@
 package com.picsauditing.dao;
 
-import com.picsauditing.database.TableWithID;
+import com.picsauditing.database.domain.TableWithID;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 

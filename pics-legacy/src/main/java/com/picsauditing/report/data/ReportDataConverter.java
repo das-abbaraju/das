@@ -1,12 +1,10 @@
 package com.picsauditing.report.data;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.report.fields.DisplayType;
+import com.picsauditing.dr.domain.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.TimeZoneUtil;

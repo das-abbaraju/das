@@ -1,5 +1,6 @@
 package com.picsauditing.database;
 
+import com.picsauditing.database.domain.TableWithID;
 import com.picsauditing.util.Strings;
 
 import java.util.Collection;

@@ -2,6 +2,8 @@ package com.picsauditing.report.fields;
 
 import static org.junit.Assert.assertEquals;
 
+import com.picsauditing.dr.domain.fields.DisplayType;
+import com.picsauditing.dr.domain.fields.FilterType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

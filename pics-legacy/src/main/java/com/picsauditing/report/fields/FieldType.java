@@ -3,6 +3,8 @@ package com.picsauditing.report.fields;
 import javax.persistence.EnumType;
 
 import com.picsauditing.actions.autocomplete.AbstractAutocompleteService;
+import com.picsauditing.dr.domain.fields.DisplayType;
+import com.picsauditing.dr.domain.fields.FilterType;
 import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.jpa.entities.*;
 

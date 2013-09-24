@@ -9,6 +9,8 @@ import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dr.domain.fields.DisplayType;
+import com.picsauditing.dr.domain.fields.FilterType;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;

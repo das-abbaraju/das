@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.FilterExpression;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;

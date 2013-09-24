@@ -14,6 +14,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.dr.domain.fields.FilterType;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

@@ -5,7 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.picsauditing.database.UpdateableListItem;
+import com.picsauditing.database.domain.UpdateableListItem;
 import com.picsauditing.jpa.entities.builders.FlagCriteriaContractorBuilder;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;

@@ -14,8 +14,11 @@
         <module>service-nace</module>
         <module>service-qbwc</module>
         <module>pics-security</module>
+        <module>pics-database-domain</module>
         <module>pics-database</module>
         <module>pics-dr-engine</module>
+        <module>pics-dr-domain</module>
+        <module>picsorg-reports</module>
         <module>pics-legacy</module>
         <module>pics-web</module>
     </modules>

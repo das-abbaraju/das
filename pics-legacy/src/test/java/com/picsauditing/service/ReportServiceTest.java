@@ -54,7 +54,7 @@ import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
 

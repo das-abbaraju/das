@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.database.UpdateableListItem;
+import com.picsauditing.database.domain.UpdateableListItem;
 import com.picsauditing.jpa.entities.builders.FlagDataBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;

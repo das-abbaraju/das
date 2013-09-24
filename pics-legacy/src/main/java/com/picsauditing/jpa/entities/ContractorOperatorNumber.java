@@ -11,7 +11,6 @@ import javax.persistence.Transient;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.ReportField;
 
 @SuppressWarnings("serial")

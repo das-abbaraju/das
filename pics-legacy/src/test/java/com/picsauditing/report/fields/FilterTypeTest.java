@@ -2,6 +2,8 @@ package com.picsauditing.report.fields;
 
 import static org.junit.Assert.*;
 
+import com.picsauditing.dr.domain.fields.FilterType;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import org.junit.Test;
 
 public class FilterTypeTest {

@@ -18,6 +18,9 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.util.PicsDateFormat;
 
+/**
+ * TODO Move to pics-util
+ */
 public class DateBeanTest {
 
 	TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");

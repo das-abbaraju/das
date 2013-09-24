@@ -1,5 +1,8 @@
 package com.picsauditing.report.fields;
 
+import com.picsauditing.dr.domain.fields.DisplayType;
+import com.picsauditing.dr.domain.fields.FilterType;
+
 public enum SqlFunction {
 
 	Count(DisplayType.Number, FilterType.Number, true),
@@ -42,11 +45,11 @@ public enum SqlFunction {
 		return displayType;
 	}
 
-    public DisplayType getDisplayType() {
+    public DisplayType getDisplayTypeOverride() {
         return displayType;
     }
 
-    public FilterType getFilterType() {
+    public FilterType getFilterTypeOverride() {
         return filterType;
     }
 

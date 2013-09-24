@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 public class FilterTest {

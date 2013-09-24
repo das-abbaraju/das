@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.database.TableWithID;
+import com.picsauditing.database.domain.TableWithID;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import org.json.simple.JSONAware;

@@ -1,4 +1,4 @@
-package com.picsauditing.database;
+package com.picsauditing.database.domain;
 
 public interface TableWithID {
 

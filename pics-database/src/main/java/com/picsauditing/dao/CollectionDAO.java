@@ -1,6 +1,6 @@
 package com.picsauditing.dao;
 
-import com.picsauditing.database.UpdateableListItem;
+import com.picsauditing.database.domain.UpdateableListItem;
 
 import java.util.ArrayList;
 import java.util.Collection;

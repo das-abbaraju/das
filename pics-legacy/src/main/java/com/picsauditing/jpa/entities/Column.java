@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.dr.domain.fields.DisplayType;
 import com.picsauditing.report.fields.*;
 
 @Entity

@@ -47,7 +47,7 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.service.PermissionService;

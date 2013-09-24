@@ -11,6 +11,4 @@
     <artifactId>pics-security</artifactId>
     <name>PICS General Security Layer</name>
 
-    <dependencies>
-    </dependencies>
 </project>

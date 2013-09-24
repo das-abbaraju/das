@@ -8,8 +8,8 @@ import java.util.List;
 
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.dr.domain.fields.FilterType;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
