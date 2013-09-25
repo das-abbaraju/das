@@ -34,7 +34,7 @@ module.exports = function(grunt) {
         prod: {
             src: [
                 '<banner:meta.banner>',
-                '<config:lint.files>'
+                '<%= lint.files %>'
             ],
             dest: 'js/script.js'
         }
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
         prod: {
             src: [
                 '<banner:meta.banner>',
-                '<config:lint.files>'
+                '<%= lint.files %>'
             ],
             dest: 'js/script.js'
         }
@@ -84,7 +84,7 @@ module.exports = function(grunt) {
             }
         },
         prod: {
-            src: '<config:recess.debug.src>',
+            src: '<%= recess.debug.src %>',
             dest: 'css/style.css',
             options: {
                 compress: true
@@ -95,15 +95,15 @@ module.exports = function(grunt) {
     watch: {
         all: {
             files: [
-                '<config:lint.files>',
-                '<config:watch.compass.files>'
+                '<%= lint.files %>',
+                '<%= watch.compass.files %>'
             ],
             tasks: 'concat compass:debug recess:debug'
         },
 
         js: {
             files: [
-                '<config:lint.files>'
+                '<%= lint.files %>'
             ],
             tasks: 'concat'
         },
@@ -135,11 +135,23 @@ module.exports = function(grunt) {
         }
     },
 
-    uglify: {}
+    uglify: {
+        prod: {
+            src: [
+                '<banner:meta.banner>',
+                '<%= lint.files %>'
+            ],
+            dest: 'js/script.js'
+        }
+    }
   });
 
-  grunt.loadNpmTasks('grunt-compass');
-  grunt.loadNpmTasks('grunt-recess');
+  grunt.loadNpmTasks('../../node_modules/grunt-contrib-jshint');
+  grunt.loadNpmTasks('../../node_modules/grunt-contrib-watch');
+  grunt.loadNpmTasks('../../node_modules/grunt-contrib-concat');
+  grunt.loadNpmTasks('../../node_modules/grunt-contrib-uglify');
+  grunt.loadNpmTasks('../../node_modules/grunt-compass');
+  grunt.loadNpmTasks('../../node_modules/grunt-recess');
 
   // grunt
   grunt.registerTask('default', 'Description...', function () {
@@ -151,9 +163,9 @@ module.exports = function(grunt) {
   // grunt build-all
   grunt.registerTask('build-all', 'Description...', function (environment) {
       if (environment == 'prod') {
-          grunt.task.run('min compass:debug recess:prod');
+          grunt.task.run('uglify', 'compass:debug', 'recess:prod');
       } else {
-          grunt.task.run('concat compass:debug recess:debug');
+          grunt.task.run('concat', 'compass:debug', 'recess:debug');
       }
   });
 
@@ -162,7 +174,7 @@ module.exports = function(grunt) {
   // grunt build-js
   grunt.registerTask('build-js', 'Description...', function (environment) {
       if (environment == 'prod') {
-          grunt.task.run('min');
+          grunt.task.run('uglify');
       } else {
           grunt.task.run('concat');
       }
@@ -173,9 +185,9 @@ module.exports = function(grunt) {
   // grunt build-compass
   grunt.registerTask('build-compass', 'Description...', function (environment) {
       if (environment == 'prod') {
-          grunt.task.run('compass:debug recess:prod');
+          grunt.task.run('compass:debug', 'recess:prod');
       } else {
-          grunt.task.run('compass:debug recess:debug');
+          grunt.task.run('compass:debug', 'recess:debug');
       }
   });
 
