@@ -1,6 +1,7 @@
 package com.picsauditing.service.audit;
 
 import com.picsauditing.PicsTest;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypePeriod;
 import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
 import com.picsauditing.service.audit.AuditPeriodService;
@@ -23,6 +24,57 @@ public class AuditPeriodServiceTest extends PicsTest {
         super.setUp();
 
         test = new AuditPeriodService();
+    }
+
+    @Test
+    public void testGetParentAuditFor() {
+        String answer;
+        AuditType parent = new AuditType();
+        parent.setPeriod(AuditTypePeriod.Quarterly);
+
+        answer = test.getParentAuditFor(parent, "2012-01");
+        assertEquals("2012:1", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-03");
+        assertEquals("2012:1", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-04");
+        assertEquals("2012:2", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-06");
+        assertEquals("2012:2", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-07");
+        assertEquals("2012:3", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-09");
+        assertEquals("2012:3", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-10");
+        assertEquals("2012:4", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-12");
+        assertEquals("2012:4", answer);
+
+        answer = test.getParentAuditFor(parent, "2012-12");
+        assertEquals("2012:4", answer);
+
+        parent.setPeriod(AuditTypePeriod.Yearly);
+
+        answer = test.getParentAuditFor(parent, "2012-12");
+        assertEquals("2012", answer);
+
+        answer = test.getParentAuditFor(parent, "2012:1");
+        assertEquals("2012", answer);
+
+        answer = test.getParentAuditFor(parent, "2012:2");
+        assertEquals("2012", answer);
+
+        answer = test.getParentAuditFor(parent, "2012:3");
+        assertEquals("2012", answer);
+
+        answer = test.getParentAuditFor(parent, "2012:4");
+        assertEquals("2012", answer);
     }
 
     @Test
