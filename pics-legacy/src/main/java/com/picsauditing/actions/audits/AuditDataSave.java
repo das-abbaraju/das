@@ -9,6 +9,7 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.models.audits.CaoSaveModel;
 import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.service.AuditDataService;
 import com.picsauditing.service.ContractorAuditService;
@@ -61,8 +62,11 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private AuditBuilder auditBuilder;
+    @Autowired
+    private CaoSaveModel caoSaveModel;
 
-	public String execute() throws Exception {
+
+    public String execute() throws Exception {
 
 		AuditCatData catData;
 		try {
@@ -221,7 +225,9 @@ public class AuditDataSave extends AuditActionSupport {
 								caowDAO.save(caow);
 								updateAudit = true;
 							}
-							break;
+
+                            caoSaveModel.updateParentAuditOnCompleteIncomplete(tempAudit, newStatus);
+                            break;
 						}
 					}
 					if (updateAudit) {

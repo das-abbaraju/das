@@ -344,6 +344,7 @@ public class CaoSave extends AuditActionSupport {
 			EventSubscriptionBuilder.pqfSubmittedForCao(cao);
 		
 		caoSaveModel.updatePqfOnIncomplete(cao.getAudit(), newStatus);
+        caoSaveModel.updateParentAuditOnCompleteIncomplete(cao.getAudit(), newStatus);
 
 		caoDAO.save(cao);
 		

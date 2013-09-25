@@ -3,17 +3,14 @@ package com.picsauditing.models.audits;
 import java.util.List;
 import java.util.Locale;
 
+import com.picsauditing.dao.BaseTableDAO;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.audit.AuditPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
@@ -26,6 +23,12 @@ import com.picsauditing.util.Strings;
 public class CaoSaveModel {
 	@Autowired
 	protected AuditPercentCalculator auditPercentCalculator;
+    @Autowired
+    protected AuditPeriodService auditPeriodService;
+    @Autowired
+    protected BasicDAO dao;
+
+    private User systemUser = new User(User.SYSTEM);
 
 	TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
@@ -78,4 +81,44 @@ public class CaoSaveModel {
 			auditPercentCalculator.percentCalculateComplete(audit, true);
 		}
 	}
+
+    public void updateParentAuditOnCompleteIncomplete(ContractorAudit audit, AuditStatus newStatus) {
+        if (!newStatus.isComplete() && !newStatus.isIncomplete())
+            return;
+
+        List<ContractorAudit> audits = audit.getContractorAccount().getAudits();
+        ContractorAudit temp = audit;
+
+        while (temp != null) {
+            AuditType parentAuditType = temp.getAuditType().getParent();
+            if (parentAuditType != null) {
+                String auditFor = auditPeriodService.getParentAuditFor(parentAuditType, temp.getAuditFor());
+                if (auditFor != null) {
+                    ContractorAudit parentAudit = auditPeriodService.findAudit(audits, parentAuditType, auditFor);
+                    if (parentAudit != null) {
+                        auditPercentCalculator.percentCalculateComplete(parentAudit, true);
+                        if (newStatus.isIncomplete() && parentAudit.hasCaoStatus(AuditStatus.Complete))
+                            moveCompletedCaosToImcomplete(parentAudit);
+                        temp = parentAudit;
+                    } else
+                        break;
+                } else
+                    break;
+            } else
+                break;
+        }
+    }
+
+    private void moveCompletedCaosToImcomplete(ContractorAudit audit) {
+        for (ContractorAuditOperator cao:audit.getOperatorsVisible()) {
+            if (cao.getStatus().isComplete()) {
+                ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Incomplete, null);
+                if (caow != null) {
+                    caow.setNotes("Moved due to associated audit changed");
+                    caow.setAuditColumns(systemUser);
+                    dao.save(caow);
+                }
+            }
+        }
+    }
 }

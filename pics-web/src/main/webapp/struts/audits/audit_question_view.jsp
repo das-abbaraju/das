@@ -80,15 +80,20 @@
 			<s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />
 		</s:if>
 		<s:elseif test="#q.questionType == 'Calculation'">
-			<s:if test="hasKey(#a.answer)">
-				<s:text name="%{#a.answer}" />			
-			</s:if>
-			<s:else>
-				<s:property value="#a.answer" />
-			</s:else>
+            <s:if test="#a.answer != null">
+                <s:if test="hasKey(#a.answer)">
+                    <s:text name="%{#a.answer}" />
+                </s:if>
+                <s:else>
+                    <s:property value="#a.answer" />
+                </s:else>
+            </s:if>
+            <s:else>
+                -
+            </s:else>
             <s:set var="suggestion" value = "getSuggestion(#q)" />
             <s:if test="#suggestion != null" >
-                <s:property value="#suggestion.suggestion" />
+                <span class="magic" ><s:property value="#suggestion.suggestion" /></span>
             </s:if>
 
         </s:elseif>

@@ -495,7 +495,7 @@ public class ContractorAuditController extends AuditActionSupport {
         List<String> list = auditPeriodService.getChildPeriodAuditFors(conAudit.getAuditFor());
         for (String auditFor:list) {
             ContractorAudit audit = auditPeriodService.findAudit(contractor.getAudits(), watcher.getQuestion().getAuditType(), auditFor);
-            if (audit != null && audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+            if (audit != null && audit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
                 count++;
             }
         }

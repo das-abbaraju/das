@@ -273,10 +273,9 @@ public class AuditPercentCalculator {
                         if (results != null) {
                             target.setAnswer(results);
                             target.setAuditColumns(new User(User.SYSTEM));
+                            auditDataDAO.save(target);
                         }
-
-                        auditDataDAO.save(target);
-                    }
+                   }
                 }
             }
     }
@@ -310,7 +309,7 @@ public class AuditPercentCalculator {
             return "" + sum;
         }
 
-        return null;
+        return QuestionFunction.MISSING_PARAMETER;
     }
 
     private AuditCatData findCatData(ContractorAudit audit, AuditCategory category) {

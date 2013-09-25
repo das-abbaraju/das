@@ -22,6 +22,42 @@ public class AuditPeriodService {
         return null;
     }
 
+    public String getParentAuditFor(AuditType parentAuditType, String childAuditFor) {
+        boolean isMonthly = childAuditFor.indexOf("-") >= 0;
+        boolean isQuarterly = childAuditFor.indexOf(":") >= 0;
+        int quarter = 0;
+        int month = 0;
+        int year = 0;
+        String[] tokens = null;
+
+        try {
+            if (isMonthly) {
+                tokens = childAuditFor.split("-");
+                month = Integer.parseInt(tokens[1]);
+            } else if (isQuarterly) {
+                tokens = childAuditFor.split(":");
+                quarter = Integer.parseInt(tokens[1]);
+            }
+            year = Integer.parseInt(tokens[0]);
+        } catch (Exception e) {
+        }
+
+        if (isMonthly && parentAuditType.getPeriod().isQuarterly()) {
+            quarter = 1;
+            if (month > 3)
+                quarter = 2;
+            if (month > 6)
+                quarter = 3;
+            if (month > 9)
+                quarter = 4;
+            return "" + year + ":" + quarter;
+        } else if (parentAuditType.getPeriod().isYearlyCustomDate()) {
+            return "" + year;
+        }
+
+        return null;
+    }
+
     public List<String> getChildPeriodAuditFors(String parentAuditFor) {
         List<String> auditFors = new ArrayList<>();
 
