@@ -485,12 +485,6 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		// Make sure we can edit this user
-		// PICS Employees can edit any user (right?)
-		// Corporate users can edit child operators
-		// Operators (unless switched to corporate) can only edit their own users
-		// Contractors can only edit their own users
-
 		// checking to see if primary account user is set
 		if (!isSaveAction && (!isPrimaryUserEstablished() || isUserPrimaryContact())) {
 			setPrimaryAccount = true;
