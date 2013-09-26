@@ -920,7 +920,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Transient
-	public boolean isOkayToChangeCaoStatus(ContractorAuditOperator cao) {
+	public boolean pqfIsOkayToChangeCaoStatus(ContractorAuditOperator cao) {
 		if (auditType.isPicsPqf() && cao.getPercentVerified() == 100) {
 			for (AuditData data : getData()) {
 				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF && data.isUnverified()) {

@@ -64,4 +64,19 @@ public class AuditTypeBuilder {
         type.setAnchorMonth(anchorMonth);
         return this;
     }
+
+    public AuditTypeBuilder contractorCanView() {
+        type.setCanContractorView(true);
+        return this;
+    }
+
+    public AuditTypeBuilder contractorCanEdit() {
+        type.setCanContractorEdit(true);
+        return this;
+    }
+
+    public AuditTypeBuilder workflow(Workflow workflow) {
+        type.setWorkFlow(workflow);
+        return this;
+    }
 }

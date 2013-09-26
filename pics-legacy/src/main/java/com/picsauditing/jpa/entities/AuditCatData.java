@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.AuditCatDataBuilder;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -175,4 +177,8 @@ public class AuditCatData extends BaseTable implements java.io.Serializable, Com
 	public int compareTo(AuditCatData o) {
 		return getCategory().compareTo(o.getCategory());
 	}
+
+    public static AuditCatDataBuilder builder() {
+        return new AuditCatDataBuilder();
+    }
 }

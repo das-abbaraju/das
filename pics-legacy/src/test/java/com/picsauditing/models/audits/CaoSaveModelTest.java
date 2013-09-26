@@ -134,7 +134,7 @@ public class CaoSaveModelTest extends PicsTest {
 		data.setAuditor(EntityFactory.makeUser());
 		pqf.getData().add(data);
 
-		caoSaveModel.updatePqfOnIncomplete(pqf, AuditStatus.Incomplete);
+		caoSaveModel.unverifySafetyManualQuestionInPqf(pqf, AuditStatus.Incomplete);
 		assertNull(data.getAuditor());
 		assertFalse(data.isVerified());
 	}

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.audit.CaoAutoAdvancer;
 import com.picsauditing.service.audit.AuditPeriodService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -449,129 +450,111 @@ public class AuditPercentCalculator {
 	 * @param conAudit
 	 * @param recalcCats
 	 */
-	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
-		if (recalcCats)
-			recalcAllAuditCatDatas(conAudit);
+    public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
+        percentCalculateComplete(conAudit, recalcCats, true);
+    }
 
-		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
-				conAudit.getContractorAccount());
+    public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats, boolean advanceCaos) {
+        if (recalcCats)
+            recalcAllAuditCatDatas(conAudit);
 
-		Set<AuditCategory> auditCategories = builder.calculate(conAudit);
+        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
+                conAudit.getContractorAccount());
 
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			int required = 0;
-			int answered = 0;
-			int verified = 0;
+        Set<AuditCategory> auditCategories = builder.calculate(conAudit);
 
-			float scoreWeight = 0;
-			float score = 0;
+        for (ContractorAuditOperator cao : conAudit.getOperators()) {
+            int required = 0;
+            int answered = 0;
+            int verified = 0;
 
-			for (AuditCatData data : conAudit.getCategories()) {
-				boolean applies = false;
-				if (data.isOverride())
-					applies = data.isApplies();
-				else {
-					if (data.isApplies()) {
-						if (conAudit.getAuditType().isDesktop() && cao.getStatus().after(AuditStatus.Incomplete))
-							applies = true;
-						else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
-							// Import PQF and Welcome Call don't have any
-							// operators, so just always assume the
-							// categories apply
-							applies = true;
-						else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
-							applies = true;
-						else {
-							applies = builder.isCategoryApplicable(data.getCategory(), cao);
-							AuditCategory parent = data.getCategory().getParent();
-							while (parent != null && applies) {
-								applies = builder.isCategoryApplicable(parent, cao);
-								parent = parent.getParent();
-							}
-						}
-					}
-				}
+            float scoreWeight = 0;
+            float score = 0;
 
-				if (applies) {
-					required += data.getNumRequired();
-					answered += data.getRequiredCompleted();
-					verified += data.getNumVerified();
+            for (AuditCatData data : conAudit.getCategories()) {
+                boolean applies = false;
+                if (data.isOverride())
+                    applies = data.isApplies();
+                else {
+                    if (data.isApplies()) {
+                        if (conAudit.getAuditType().isDesktop() && cao.getStatus().after(AuditStatus.Incomplete))
+                            applies = true;
+                        else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
+                            // Import PQF and Welcome Call don't have any
+                            // operators, so just always assume the
+                            // categories apply
+                            applies = true;
+                        else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
+                            applies = true;
+                        else {
+                            applies = builder.isCategoryApplicable(data.getCategory(), cao);
+                            AuditCategory parent = data.getCategory().getParent();
+                            while (parent != null && applies) {
+                                applies = builder.isCategoryApplicable(parent, cao);
+                                parent = parent.getParent();
+                            }
+                        }
+                    }
+                }
 
-					if (conAudit.getAuditType().getScoreType() == ScoreType.Percent
-							|| conAudit.getAuditType().getScoreType() == ScoreType.Actual) {
-						if (data.getScorePossible() > 0) {
-							score += data.getScore();
-							scoreWeight += data.getScorePossible();
-						}
-					}
-				}
-			}
+                if (applies) {
+                    required += data.getNumRequired();
+                    answered += data.getRequiredCompleted();
+                    verified += data.getNumVerified();
 
-			if (scoreWeight > 0) {
-				if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
-					conAudit.setScore((int) Math.min(Math.round(score), 100L));
-				else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
-					conAudit.setScore((int) Math.round(score));
-			}
+                    if (conAudit.getAuditType().getScoreType() == ScoreType.Percent
+                            || conAudit.getAuditType().getScoreType() == ScoreType.Actual) {
+                        if (data.getScorePossible() > 0) {
+                            score += data.getScore();
+                            scoreWeight += data.getScorePossible();
+                        }
+                    }
+                }
+            }
 
-			int percentComplete = 0;
-			int percentVerified = 0;
-			if (required > 0) {
-				percentComplete = (int) Math.floor(100 * answered / required);
-				if (percentComplete >= 100) {
-					percentComplete = 100;
-				}
-				percentVerified = (int) Math.floor(100 * verified / required);
-				if (percentVerified >= 100) {
-					percentVerified = 100;
-				}
-			} else {
-				percentComplete = 100;
-				percentVerified = 100;
-			}
+            if (scoreWeight > 0) {
+                if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
+                    conAudit.setScore((int) Math.min(Math.round(score), 100L));
+                else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
+                    conAudit.setScore((int) Math.round(score));
+            }
 
-			cao.setPercentComplete(percentComplete);
-			cao.setPercentVerified(percentVerified);
+            int percentComplete = 0;
+            int percentVerified = 0;
+            if (required > 0) {
+                percentComplete = (int) Math.floor(100 * answered / required);
+                if (percentComplete >= 100) {
+                    percentComplete = 100;
+                }
+                percentVerified = (int) Math.floor(100 * verified / required);
+                if (percentVerified >= 100) {
+                    percentVerified = 100;
+                }
+            } else {
+                percentComplete = 100;
+                percentVerified = 100;
+            }
 
-			ContractorAuditOperator caoWithStatus = null;
-			if (cao.getStatus().isPending()) {
-				if (conAudit.getAuditType().isPicsPqf() && percentComplete == 100) {
-					if (percentVerified == 100)
-						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Complete);
-					if (caoWithStatus == null)
-						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Submitted);
-					if (caoWithStatus == null)
-						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Resubmitted);
-				} else if (conAudit.getAuditType().isDesktop()) {
-					caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Complete);
-					if (caoWithStatus == null)
-						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Submitted);
-				}
-			}
+            cao.setPercentComplete(percentComplete);
+            cao.setPercentVerified(percentVerified);
 
-			if (caoWithStatus != null) {
-				ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
-				caoW.setCao(cao);
-				// TODO: I18N
-				caoW.setNotes("Advancing status because 100 percent complete.");
-				caoW.setPreviousStatus(cao.getStatus());
-				caoW.setAuditColumns(new User(User.SYSTEM));
-				caoW.setStatus(caoWithStatus.getStatus());
-				caoDAO.save(caoW);
+            if (advanceCaos) {
+                ContractorAuditOperatorWorkflow caow = CaoAutoAdvancer.advanceCaoStatus(conAudit, cao, percentComplete, percentVerified);
+                if (caow != null) {
+                    caoDAO.save(caow);
+                }
+            }
+        }
 
-				cao.changeStatus(caoWithStatus.getStatus(), null);
-			}
-		}
+        if (conAudit.getAuditType().getScoreType() == ScoreType.Weighted) {
+            calculateWeightedScore(conAudit);
+        }
+        if (conAudit.getAuditType().getScoreType() == ScoreType.Aggregate) {
+            calculateStraightAggregate(conAudit);
+        }
+    }
 
-		if (conAudit.getAuditType().getScoreType() == ScoreType.Weighted) {
-			calculateWeightedScore(conAudit);
-		}
-		if (conAudit.getAuditType().getScoreType() == ScoreType.Aggregate) {
-			calculateStraightAggregate(conAudit);
-		}
-	}
-
-	private void calculateStraightAggregate(ContractorAudit scoredAudit) {
+    private void calculateStraightAggregate(ContractorAudit scoredAudit) {
 		float runningTotal = 0;
 		for (AuditData auditData : scoredAudit.getData()) {
 			runningTotal += auditData.getStraightScoreValue();
@@ -643,14 +626,6 @@ public class AuditPercentCalculator {
 			subScorePossible = scorePossible;
 		}
 		return subScore;
-	}
-
-	private ContractorAuditOperator findCaoWithStatus(ContractorAudit conAudit, AuditStatus auditStatus) {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().equals(auditStatus))
-				return cao;
-		}
-		return null;
 	}
 
 	/**

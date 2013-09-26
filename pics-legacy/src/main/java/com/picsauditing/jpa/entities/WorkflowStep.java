@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.WorkflowStepBuilder;
 import com.picsauditing.model.i18n.TranslatableString;
 
 @Entity
@@ -105,4 +106,8 @@ public class WorkflowStep extends BaseTable {
 	public void setHelpText(String helpText) {
 		this.helpText = helpText;
 	}
+
+    public static WorkflowStepBuilder builder() {
+        return new WorkflowStepBuilder();
+    }
 }

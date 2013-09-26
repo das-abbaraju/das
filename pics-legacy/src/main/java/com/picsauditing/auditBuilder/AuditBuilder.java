@@ -576,7 +576,7 @@ public class AuditBuilder {
 		while (list.hasNext()) {
 			ContractorAuditOperator cao = list.next();
 			if (conAudit.getAuditType().isPicsPqf() && status.isComplete() &&
-					!conAudit.isOkayToChangeCaoStatus(cao)) {
+					!conAudit.pqfIsOkayToChangeCaoStatus(cao)) {
 				continue;
 			}
 			ContractorAuditOperatorWorkflow caow = cao.changeStatus(status, null);

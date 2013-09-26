@@ -455,7 +455,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 */
 	public List<ContractorAudit> getAudits() {
 
-		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
+		List<ContractorAudit> temp = new ArrayList<>();
 		try {
 			// Is this ever used? We should just make sure findContractor() has
 			// already been called

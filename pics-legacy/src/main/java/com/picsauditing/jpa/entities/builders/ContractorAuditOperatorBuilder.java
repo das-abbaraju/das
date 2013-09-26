@@ -33,8 +33,8 @@ public class ContractorAuditOperatorBuilder {
         return this;
     }
 
-    public ContractorAuditOperatorBuilder audit(ContractorAudit insurancePolicy) {
-        cao.setAudit(insurancePolicy);
+    public ContractorAuditOperatorBuilder audit(ContractorAudit audit) {
+        cao.setAudit(audit);
         return this;
     }
 
@@ -60,6 +60,21 @@ public class ContractorAuditOperatorBuilder {
                         .operator(operator)
                         .build()
         );
+        return this;
+    }
+
+    public ContractorAuditOperatorBuilder id(int id) {
+        cao.setId(id);
+        return this;
+    }
+
+    public ContractorAuditOperatorBuilder percentComplete(int percentComplete) {
+        cao.setPercentComplete(percentComplete);
+        return this;
+    }
+
+    public ContractorAuditOperatorBuilder percentVerified(int percentVerified) {
+        cao.setPercentVerified(percentVerified);
         return this;
     }
 }

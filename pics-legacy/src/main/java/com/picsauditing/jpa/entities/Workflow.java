@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.WorkflowBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,4 +117,7 @@ public class Workflow extends BaseTable {
 		this.useStateForEdit = useStateForEdit;
 	}
 
+    public static WorkflowBuilder builder() {
+        return new WorkflowBuilder();
+    }
 }

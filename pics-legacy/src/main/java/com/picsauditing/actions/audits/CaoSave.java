@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
+import com.picsauditing.service.audit.CaoAutoAdvancer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +20,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditSubStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
@@ -303,13 +289,16 @@ public class CaoSave extends AuditActionSupport {
 
 	private void save(int id) throws RecordNotFoundException, EmailException, IOException {
 		ContractorAuditOperator cao = getCaoByID(id);
-		if (cao == null)
+		if (cao == null) {
 			throw new RecordNotFoundException("ContractorAuditOperator");
+        }
 
+        auditPercentCalculator.percentCalculateComplete(cao.getAudit(), true, false);
 		WorkflowStep step = getWorkflowStep(cao);
 
-		if (hasActionErrors())
+		if (hasActionErrors()) {
 			return;
+        }
 
 		AuditStatus prevStatus = cao.getStatus();
 		AuditStatus newStatus = step.getNewStatus();
@@ -340,29 +329,26 @@ public class CaoSave extends AuditActionSupport {
 					Account.PicsID, null, null);
 		}
 		
-		if (cao.getAudit().getAuditType().isPicsPqf() && newStatus.isSubmitted())
+		if (cao.getAudit().getAuditType().isPicsPqf() && newStatus.isSubmitted()) {
 			EventSubscriptionBuilder.pqfSubmittedForCao(cao);
-		
-		caoSaveModel.updatePqfOnIncomplete(cao.getAudit(), newStatus);
+        }
+
+        caoSaveModel.unverifySafetyManualQuestionInPqf(cao.getAudit(), newStatus);
         caoSaveModel.updateParentAuditOnCompleteIncomplete(cao.getAudit(), newStatus);
+	
 
 		caoDAO.save(cao);
 		
 		// TODO: Change the Database Schema so that the notes are saved in either the 
 		// contractor_audit_operator_workflow table or the note table, but NOT BOTH.
 		updateCaoWorkflow(prevStatus, cao, note);
-		
-		caoSaveModel.updatePqfOnSubmittedResubmitter(cao.getAudit(), newStatus);
-		
-		if (newStatus.isSubmittedResubmitted() && cao.getAudit().isOkayToChangeCaoStatus(cao)) {
-			ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Complete, permissions);
-			if (caow != null) {
-				caow.setNotes("Auto completed based previously completed verification");
-				caow.setAuditColumns(new User(User.SYSTEM));
-				caowDAO.save(caow);
-			}
-		}
-		
+
+        ContractorAuditOperatorWorkflow caow = CaoAutoAdvancer.advanceAlreadyVerifiedPqfCao(newStatus, cao, permissions);
+        if (caow != null) {
+            caowDAO.save(caow);
+            CaoAutoAdvancer.advanceAllCaoStatuses(conAudit, caoDAO);
+        }
+
 		autoExpireOldAudits(cao.getAudit(), newStatus);
 	}
 
@@ -404,38 +390,36 @@ public class CaoSave extends AuditActionSupport {
 				break;
 			}
 		}
-
-		doWorkflowStepValidation(cao, step);
+        doWorkflowStepValidation(cao, step);
 
 		return step;
 	}
 
-	private void doWorkflowStepValidation(ContractorAuditOperator cao, WorkflowStep step) {
-		String forString = " for " + cao.getOperator().getName();
-		
-		if (step == null)
-			addActionError("No action specified" + forString);
-		else {
-			if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
-				if (cao.getPercentVerified() < 100)
-					addActionError("Please complete all requirements" + forString);
-			}
+    private void doWorkflowStepValidation(ContractorAuditOperator cao, WorkflowStep step) {
+        String forString = " for " + cao.getOperator().getName();
 
-			if (!cao.getStatus().equals(step.getOldStatus()))
-				addActionError("This action cannot be performed because it is not longer in the " + step.getOldStatus()
-						+ " state" + forString);
+        if (step == null)
+            addActionError("No action specified" + forString);
+        else {
+            if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
+                if (cao.getPercentVerified() < 100)
+                    addActionError("Please complete all requirements" + forString);
+            }
 
-			if (step.isNoteRequired() && Strings.isEmpty(note))
-				addActionError("You must enter a note" + forString);
+            if (!cao.getStatus().equals(step.getOldStatus()))
+                addActionError("This action cannot be performed because it is not longer in the " + step.getOldStatus()
+                        + " state" + forString);
 
-			auditPercentCalculator.percentCalculateComplete(cao.getAudit(), true);
+            if (step.isNoteRequired() && Strings.isEmpty(note))
+                addActionError("You must enter a note" + forString);
 
-			if (step.getNewStatus().isSubmittedResubmitted()) {
-				if (cao.getPercentComplete() < 100)
-					addActionError("Please complete all required questions" + forString + ". Please click Recalculate to update percent complete.");
-			}
-		}
-	}
+            if (step.getNewStatus().isSubmittedResubmitted()) {
+                if (cao.getPercentComplete() < 100)
+                    addActionError("Please complete all required questions" + forString + ". Please click Recalculate to update percent complete.");
+            }
+        }
+    }
+
 
 	private boolean isNextWorkflowStep(ContractorAuditOperator cao, WorkflowStep workflowStep) {
 		return (workflowStep.getOldStatus() != null 

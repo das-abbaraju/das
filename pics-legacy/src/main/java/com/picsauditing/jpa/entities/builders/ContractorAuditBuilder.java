@@ -47,4 +47,17 @@ public class ContractorAuditBuilder {
         audit.setAuditFor(auditFor);
         return this;
     }
+
+    public ContractorAuditBuilder id(int id) {
+        audit.setId(id);
+        return this;
+    }
+
+    public ContractorAuditBuilder category(AuditCatData catData) {
+        if (audit.getCategories() == null) {
+            audit.setCategories(new ArrayList<AuditCatData>());
+        }
+        audit.getCategories().add(catData);
+        return this;
+    }
 }

@@ -327,22 +327,22 @@ public class ContractorAuditTest {
 		cao.setPercentVerified(100);
 		question.setId(AuditQuestion.MANUAL_PQF);
 		data.setVerified(true);
-		assertTrue(contractorAudit.isOkayToChangeCaoStatus(cao));
+		assertTrue(contractorAudit.pqfIsOkayToChangeCaoStatus(cao));
 
 		cao.setPercentVerified(100);
 		question.setId(AuditQuestion.MANUAL_PQF);
 		data.setVerified(false);
-		assertFalse(contractorAudit.isOkayToChangeCaoStatus(cao));
+		assertFalse(contractorAudit.pqfIsOkayToChangeCaoStatus(cao));
 
 		cao.setPercentVerified(100);
 		question.setId(21);
 		data.setVerified(true);
-		assertTrue(contractorAudit.isOkayToChangeCaoStatus(cao));
+		assertTrue(contractorAudit.pqfIsOkayToChangeCaoStatus(cao));
 
 		cao.setPercentVerified(99);
 		question.setId(AuditQuestion.MANUAL_PQF);
 		data.setVerified(true);
-		assertFalse(contractorAudit.isOkayToChangeCaoStatus(cao));
+		assertFalse(contractorAudit.pqfIsOkayToChangeCaoStatus(cao));
 
 	}
 }

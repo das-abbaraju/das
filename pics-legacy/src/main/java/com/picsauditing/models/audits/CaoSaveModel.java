@@ -7,6 +7,7 @@ import com.picsauditing.dao.BaseTableDAO;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -63,22 +64,15 @@ public class CaoSaveModel {
 		return commentHeader + auditData.getComment() + "\n";
 	}
 
-	public void updatePqfOnIncomplete(ContractorAudit audit, AuditStatus newStatus) {
+	public void unverifySafetyManualQuestionInPqf(ContractorAudit audit, AuditStatus newStatus) {
 		if (audit.getAuditType().isPicsPqf() && newStatus.isIncomplete()) {
 			for (AuditData data : audit.getData()) {
 				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
 					data.setVerified(false);
 					data.setAuditor(null);
-					auditPercentCalculator.percentCalculateComplete(audit, true);
 					break;
 				}
 			}
-		}
-	}
-
-	public void updatePqfOnSubmittedResubmitter(ContractorAudit audit, AuditStatus newStatus) {
-		if (newStatus.isSubmittedResubmitted() && audit.getAuditType().isPicsPqf()) {
-			auditPercentCalculator.percentCalculateComplete(audit, true);
 		}
 	}
 
