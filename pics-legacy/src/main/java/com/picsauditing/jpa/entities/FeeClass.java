@@ -1,16 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.FeeService;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.auditBuilder.AuditTypesBuilder;
-import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.util.SpringUtils;
-import java.math.BigDecimal;
-import java.util.*;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.*;
 
 /**
  * The business logic in FeeClass needs to be pulled out into a service to make

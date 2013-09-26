@@ -270,4 +270,15 @@ public class Invoice extends Transaction {
             }
         return subtotal;
     }
+
+	@Transient
+	public List<InvoiceItem> getRefundableItems() {
+		List<InvoiceItem> refundableItems = new ArrayList<InvoiceItem>();
+		for (InvoiceItem item : items) {
+			if (item.getInvoiceFee().isRefundable()) {
+				refundableItems.add(item);
+			}
+		}
+		return refundableItems;
+	}
 }

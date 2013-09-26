@@ -39,7 +39,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <s:iterator value="invoice.items">
+                            <s:iterator value="invoice.refundableItems">
 
                                 <s:set name="o" value="[0]" />
                                 <s:set name="item_name" value="invoiceFee.fee" />

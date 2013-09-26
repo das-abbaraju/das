@@ -134,4 +134,10 @@ public class Payment extends Transaction {
     public void updateTotalAmount() {
         return;
     }
+
+	@Deprecated // Only used for invoices and invoice credit memos
+	@Transient
+	public BigDecimal getTaxlessSubtotal() {
+		return null;
+	}
 }

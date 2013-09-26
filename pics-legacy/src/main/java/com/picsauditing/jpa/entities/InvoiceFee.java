@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.PICS.TaxService;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -269,11 +270,12 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isTax() {
-		if (TaxService.TAX_FEE_CLASSES.contains(feeClass)) {
-			return true;
-		}
+		return TaxService.TAX_FEE_CLASSES.contains(feeClass);
+	}
 
-		return false;
+	@Transient
+	public boolean isRefundable() {
+		return !FeeService.NON_REFUNDABLE_FEE_CLASSES().contains(feeClass);
 	}
 
 }

@@ -464,4 +464,8 @@ public class FeeService {
             return FeeService.getRegionalAmountOverride(contractor, fee);
         }
     }
+
+	public static List<FeeClass> NON_REFUNDABLE_FEE_CLASSES() {
+		return TaxService.TAX_FEE_CLASSES;
+	}
 }

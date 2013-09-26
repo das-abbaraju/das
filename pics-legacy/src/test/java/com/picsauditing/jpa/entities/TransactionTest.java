@@ -1,14 +1,13 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.*;
-
-import java.math.BigDecimal;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class TransactionTest {
 
@@ -89,5 +88,11 @@ public class TransactionTest {
         public void updateTotalAmount() {
             return;
         }
+
+		@Deprecated // Only used for invoices and invoice credit memos
+		@Transient
+		public BigDecimal getTaxlessSubtotal() {
+			return null;
+		}
 	}
 }

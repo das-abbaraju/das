@@ -176,4 +176,7 @@ public abstract class Transaction extends BaseTable {
 
     @Transient
     public abstract void updateTotalAmount();
+
+	@Transient
+	public abstract <T extends BigDecimal> T getTaxlessSubtotal();
 }

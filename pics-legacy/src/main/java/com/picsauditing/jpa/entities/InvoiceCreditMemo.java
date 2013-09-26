@@ -109,4 +109,14 @@ public class InvoiceCreditMemo extends Transaction {
             totalAmount = totalAmount.add(item.getAmount());
         }
     }
+
+	@Transient
+	public BigDecimal getTaxlessSubtotal() {
+		BigDecimal subtotal = BigDecimal.ZERO;
+		for (ReturnItem item : returnItems)
+			if (!item.getInvoiceFee().isTax()) {
+				subtotal = item.getAmount().add(subtotal);
+			}
+		return subtotal;
+	}
 }
