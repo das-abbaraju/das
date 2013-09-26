@@ -31,3 +31,4 @@ Copyright &copy; 2011 PICS
 </html>
 "
 where tokenName = "SubscriptionFooter"
+;
