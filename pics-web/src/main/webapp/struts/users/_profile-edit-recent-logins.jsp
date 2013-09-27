@@ -24,7 +24,7 @@
 		<s:iterator value="recentLogins">
 			<tr>
 				<td>
-                    <s:date name="loginDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+                    <s:date name="loginDate" format="%{@com.picsauditing.util.PicsDateFormat@DateAndTimeNoTimezone}" />
                 </td>
 
 				<td>

@@ -623,7 +623,7 @@
 						<tbody>
 							<s:iterator value="recentLogins">
 								<tr>
-									<td><s:date name="loginDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+									<td><s:date name="loginDate" format="%{@com.picsauditing.util.PicsDateFormat@DateAndTimeNoTimezone}" /></td>
 									<td><a
 										href="http://www.hostip.info/?spip=<s:property value="remoteAddress" />">
 											<s:property value="remoteAddress" />

@@ -29,13 +29,15 @@
                     $(TOP_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [BOTTOM_LIST_SELECTOR],
-                        update: onTopListUpdate
+                        update: onTopListUpdate,
+                        items: 'li:not(.ui-state-disabled)'
                     });
 
                     $(BOTTOM_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [TOP_LIST_SELECTOR],
-                        update: onBottomListUpdate
+                        update: onBottomListUpdate,
+                        items: 'li:not(.ui-state-disabled)'
                     });
                 }
             }

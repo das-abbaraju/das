@@ -294,47 +294,8 @@ public class FlagDataCalculator {
 				}
 				return r;
 			} else {
-				// Any other audit, PQF, or Policy
-				for (ContractorAudit ca : con.getAudits()) {
-					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
-						if (!worksForOperator) {
-							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete)) {
-								return false;
-							}
-						}
-
-						List<ContractorAuditOperator> caos = ca.getOperators();
-						if (ca.getAuditType().isWCB()) {
-							caos = findCaosForCurrentWCB(con, criteria.getAuditType());
-						}
-
-						for (ContractorAuditOperator cao : caos) {
-							if (cao.isVisible() && cao.hasCaop(getOperator().getId())) {
-								if (flagCAO(criteria, cao)) {
-									return false;
-								} else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly()) {
-									return false;
-								}
-
-								if (!criteria.getAuditType().isHasMultiple()) {
-									// There aren't any more so we might as
-									// we'll return flagged right now
-									return true;
-								}
-							}
-						}
-					}
-				}
-
-				if (criteria.isFlaggableWhenMissing()) {
-					// isFlaggableWhenMissing would be really useful for
-					// Manual Audits or Implementation Audits
-					return true;
-				}
-			}
-
-			return null;
-
+                return checkAuditStatus(criteria, con);
+            }
 		} else {
             if (!auditIsApplicableForThisOperator(opCriteria, criteria, con)) {
                 return null;
@@ -474,6 +435,60 @@ public class FlagDataCalculator {
 			}
 		}
 	}
+
+    private Boolean checkAuditStatus(FlagCriteria criteria, ContractorAccount con) {
+        // Any other audit, PQF, or Policy
+        int count = 0;
+        int notApplicableCount = 0;
+        List<ContractorAudit> audits = con.getAuditByAuditType(criteria.getAuditType());
+        for (ContractorAudit ca : audits) {
+            if (!ca.isExpired()) {
+                if (!worksForOperator) {
+                    if (ca.hasCaoStatusAfter(AuditStatus.Incomplete)) {
+                        count++;
+                        continue;
+                    }
+                }
+
+                List<ContractorAuditOperator> caos = ca.getOperators();
+                if (ca.getAuditType().isWCB()) {
+                    caos = findCaosForCurrentWCB(con, criteria.getAuditType());
+                }
+
+                boolean foundApplicableCao = false;
+                for (ContractorAuditOperator cao : caos) {
+                    if (cao.isVisible() && cao.hasCaop(getOperator().getId())) {
+                        foundApplicableCao = true;
+                        if (flagCAO(criteria, cao)) {
+                            count++;
+                            break;
+                        } else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly()) {
+                            count++;
+                            break;
+                        }
+                    }
+                }
+                if (!foundApplicableCao)
+                    notApplicableCount++;
+            } else
+                notApplicableCount++;
+        }
+
+        if (audits.size() == 0 || notApplicableCount == audits.size()) {
+            if (criteria.isFlaggableWhenMissing()) {
+                return true;
+            }
+            return null;
+        } else if (count + notApplicableCount == audits.size()) {
+            return false;
+        } else if (criteria.getAuditType().isHasMultiple()) {
+            return true;
+        } else if (count > 0) {
+            return false;
+        }
+
+        return true;
+    }
 
     private boolean criteriaEligibleForRulesBasedInsurance(FlagCriteriaOperator opCriteria) {
         return opCriteria.getCriteria().isInsurance()

@@ -1010,6 +1010,19 @@ public class ContractorAccount extends Account implements JSONable {
 		return annualAList;
 	}
 
+    @Transient
+    public List<ContractorAudit> getAuditByAuditType(AuditType auditType) {
+        List<ContractorAudit> auditList = new ArrayList<ContractorAudit>();
+
+        for (ContractorAudit ca:getAudits()) {
+            if (ca.getAuditType().equals(auditType)) {
+                auditList.add(ca);
+            }
+        }
+
+        return auditList;
+    }
+
 	@ReportField(type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors, importance = FieldImportance.Average)
 	public boolean isRenew() {
 		return renew;
