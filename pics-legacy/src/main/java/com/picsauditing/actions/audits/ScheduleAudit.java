@@ -654,9 +654,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public String cancelAudit() throws Exception {
 		if (conAudit.getScheduledDate() != null && isNeedsReschedulingFee() ) {
 			// Create invoice
-			String notes = "Fee for cancelling " + getText(conAudit.getAuditType().getI18nKey("name"))
-					+ " within 48 hours of scheduled date "
-					+ DateBean.format(conAudit.getScheduledDate(), "MMM dd, yyyy");
+			String notes = getTextParameterized("ScheduleAudit.message.cancelAudit", getText(conAudit.getAuditType().getI18nKey("name")), conAudit.getScheduledDate());
 
 			createInvoice(rescheduling, notes);
 		}
