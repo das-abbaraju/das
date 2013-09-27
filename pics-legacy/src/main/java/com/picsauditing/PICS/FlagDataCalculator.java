@@ -439,9 +439,10 @@ public class FlagDataCalculator {
     private Boolean checkAuditStatus(FlagCriteria criteria, ContractorAccount con) {
         // Any other audit, PQF, or Policy
         int count = 0;
+        int notApplicableCount = 0;
         List<ContractorAudit> audits = con.getAuditByAuditType(criteria.getAuditType());
         for (ContractorAudit ca : audits) {
-            if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
+            if (!ca.isExpired()) {
                 if (!worksForOperator) {
                     if (ca.hasCaoStatusAfter(AuditStatus.Incomplete)) {
                         count++;
@@ -468,16 +469,17 @@ public class FlagDataCalculator {
                     }
                 }
                 if (!foundApplicableCao)
-                    count++;
-            }
+                    notApplicableCount++;
+            } else
+                notApplicableCount++;
         }
 
-        if (audits.size() == 0) {
+        if (audits.size() == 0 || notApplicableCount == audits.size()) {
             if (criteria.isFlaggableWhenMissing()) {
                 return true;
             }
-            return false;
-        } else if (count == audits.size()) {
+            return null;
+        } else if (count + notApplicableCount == audits.size()) {
             return false;
         } else if (criteria.getAuditType().isHasMultiple()) {
             return true;

@@ -927,7 +927,7 @@ public class FlagDataCalculatorTest {
 
 		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
 
-		assertFalse(result);
+		assertNull(result);
 	}
 
 	@Test
