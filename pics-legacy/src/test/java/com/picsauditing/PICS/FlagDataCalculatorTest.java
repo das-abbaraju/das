@@ -65,6 +65,8 @@ public class FlagDataCalculatorTest {
 	protected FlagDataOverrideDAO flagDataOverrideDAO;
     @Mock
     protected BasicDAO dao;
+    @Mock
+    protected FlagCriteria multiCriteria;
 
 	@Before
 	public void setUp() throws Exception {
@@ -119,6 +121,68 @@ public class FlagDataCalculatorTest {
         featureToggle = SpringUtils.getBean("FeatureToggle");
         reset(featureToggle);
 	}
+
+    @Test
+    public void testAuditTypeHasMultiple() throws Exception {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setHasMultiple(true);
+        List<ContractorAudit> audits = makeContractorAudits(contractor, auditType);
+        contractor.setAudits(audits);
+
+        when(multiCriteria.getAuditType()).thenReturn(auditType);
+        when(multiCriteria.getRequiredStatus()).thenReturn(AuditStatus.Resubmit);
+        calculator.setOperator(audits.get(0).getOperators().get(0).getOperator());
+
+        Boolean result;
+        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
+        assertNotNull(result);
+        assertTrue(result.booleanValue());
+
+        audits.get(0).getOperators().get(0).changeStatus(AuditStatus.Complete, null);
+        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
+        assertNotNull(result);
+        assertTrue(result.booleanValue());
+
+        audits.get(1).getOperators().get(0).changeStatus(AuditStatus.Complete, null);
+        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
+        assertNotNull(result);
+        assertFalse(result.booleanValue());
+    }
+
+    private List<ContractorAudit> makeContractorAudits(ContractorAccount contractor, AuditType auditType) {
+        OperatorAccount operator = EntityFactory.makeOperator();
+
+        List<ContractorAudit> audits = new ArrayList<>();
+        ContractorAudit audit1 = createAudit(auditType, contractor);
+        addCaoCaop(audit1, operator);
+        audits.add(audit1);
+        ContractorAudit audit2 = createAudit(auditType, contractor);
+        addCaoCaop(audit2, operator);
+        audits.add(audit2);
+        return audits;
+    }
+
+    private ContractorAudit createAudit(AuditType auditType, ContractorAccount contractor) {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(auditType, contractor);
+        contractor.getAudits().add(audit);
+
+        return audit;
+    }
+
+    private void addCaoCaop(ContractorAudit audit, OperatorAccount operator) {
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setAudit(audit);
+        cao.setOperator(operator);
+        cao.changeStatus(AuditStatus.Pending, null);
+
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        caop.setCao(cao);
+        caop.setOperator(operator);
+        cao.getCaoPermissions().add(caop);
+
+        audit.getOperators().add(cao);
+    }
 
 	@Test
 	public void testClearFlags() throws Exception {
@@ -863,7 +927,7 @@ public class FlagDataCalculatorTest {
 
 		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
 
-		assertNull(result);
+		assertFalse(result);
 	}
 
 	@Test
