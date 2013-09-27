@@ -45,7 +45,7 @@
                     <propertyFileWillOverride>false</propertyFileWillOverride>
                     <verbose>true</verbose>
                     <propertyFile>${project.basedir}/liquibase/liquibase.properties</propertyFile>
-                    <changeLogFile>${project.basedir}/liquibase/db.changelog-master.xml</changeLogFile>
+                    <changeLogFile>${project.basedir}/liquibase/changelogMaster.xml</changeLogFile>
                 </configuration>
                 <!--<executions>-->
                     <!--<execution>-->
