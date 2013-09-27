@@ -82,6 +82,8 @@ public class UsersManage extends PicsActionSupport {
 	protected UserManagementService userManagementService;
 	@Autowired
 	private GroupManagementService groupManagementService;
+	@Autowired
+	private UserLoginLogDAO userLoginLogDAO;
 
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
@@ -828,8 +830,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public List<UserLoginLog> getRecentLogins() {
-		UserLoginLogDAO loginLogDao = SpringUtils.getBean("UserLoginLogDAO");
-		return loginLogDao.findRecentLogins(user.getId(), 10);
+		return userLoginLogDAO.findRecentLogins(user.getId(), 10);
 	}
 
 	public Comparator<UserGroup> getGroupNameComparator() {
