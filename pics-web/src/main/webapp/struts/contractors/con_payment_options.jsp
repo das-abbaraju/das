@@ -339,8 +339,6 @@
 					</s:if>
 					
 					<li>
-						<a href="PrivacyPolicy.action" rel="facebox" class="ext"><s:text name="Footer.Privacy" /></a> | 
-						<a href="RefundPolicy.action" rel="facebox" class="ext"><s:text name="ContractorPaymentOptions.RefundPolicy" /></a> |
 						<a href="ContractorAgreement.action?id=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorPaymentOptions.ContractorAgreement" /></a>
 					</li>
 					
