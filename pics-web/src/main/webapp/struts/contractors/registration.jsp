@@ -242,9 +242,6 @@
 
 		<div class="actions">
 			<div class="info-agreement">
-				<p>
-					<s:text name="Registration.AgreeTC" />
-				</p>
 			</div>
 
 			<s:submit
