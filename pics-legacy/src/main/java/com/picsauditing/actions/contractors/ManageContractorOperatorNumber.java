@@ -108,7 +108,6 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 		addErrorIfNullContractor();
 		addErrorIfNonActiveDemoOperator();
 		addErrorIfNullType();
-		addErrorIfExistsSameTypeAndOperator();
 		addErrorIfNullValue();
 	}
 
@@ -127,19 +126,6 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 	private void addErrorIfNullType() {
 		if (number.getType() == null)
 			addActionError(getText("ManageContractorOperatorNumber.MissingType"));
-	}
-
-	private void addErrorIfExistsSameTypeAndOperator() {
-		if (contractor != null && number != null && number.getOperator() != null) {
-			for (ContractorOperatorNumber contractorOperatorNumber : contractor.getContractorOperatorNumbers()) {
-				if (contractorOperatorNumber.getOperator().equals(number.getOperator())) {
-					if (contractorOperatorNumber.getType() == number.getType()
-							&& contractorOperatorNumber.getId() != number.getId()) {
-						addActionError(getText("ManageContractorOperatorNumber.NumberTypeAlreadyExists"));
-					}
-				}
-			}
-		}
 	}
 
 	private void addErrorIfNullValue() {
