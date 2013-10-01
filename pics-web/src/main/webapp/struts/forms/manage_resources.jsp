@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ taglib prefix="S" uri="/struts-tags" %>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
@@ -60,13 +61,7 @@ $(function() {
 		<li>
 			<label><s:text name="global.Operator" />: </label>
 			<s:if test="id==0 && parentId==0">
-				<s:if test="permissions.admin" >
-					<s:textfield name="accountName" id="operator" cssClass="autocomplete" value="%{account.name}" />
-					<div id="operator_display"></div>
-				</s:if>
-				<s:else>
 					<s:select name="account" list="facilities" listValue="name" />
-				</s:else>
 			</s:if>
 			<s:else>
 				<s:property value="account.name" />
