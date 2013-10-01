@@ -195,7 +195,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setDontReassign(true);
 			}
 
-			if (contractor.getStatus().isPending() && insideSalesId > 0) {
+			if (insideSalesId > 0) {
 				User newRep = userDAO.find(insideSalesId);
 
 				if (newRep != null) {

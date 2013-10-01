@@ -16,6 +16,7 @@ import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.validator.ContractorValidator;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -29,6 +30,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
+import static org.mockito.Mockito.verify;
 
 public class ContractorEditTest extends PicsActionTest {
 	private ContractorEdit classUnderTest;
@@ -93,9 +95,14 @@ public class ContractorEditTest extends PicsActionTest {
 		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
 		when(translationService.getText(anyString(), any(Locale.class))).thenReturn("foo");
 		when(translationService.getText(anyString(), any(Locale.class), any())).thenReturn("foo");
-
-
 	}
+
+//    @Test
+//    public void testSaveISR() throws Exception {
+//        when(permissions.isContractor()).thenReturn(true);
+//        classUnderTest.save();
+//        verify(mockContractor).setCurrentInsideSalesRepresentative(any(User.class), Matchers.anyInt());
+//    }
 
 	/**
 	 * This test is inspired by PICS-6840. The solution to which was to
