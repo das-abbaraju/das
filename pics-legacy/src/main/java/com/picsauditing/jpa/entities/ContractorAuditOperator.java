@@ -169,7 +169,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.flag = flag;
 	}
 
-	@ReportField(type = FieldType.Date)
+	@ReportField(type = FieldType.DateTime)
 	public Date getStatusChangedDate() {
 		return statusChangedDate;
 	}
