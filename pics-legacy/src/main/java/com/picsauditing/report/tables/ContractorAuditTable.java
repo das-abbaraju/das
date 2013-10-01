@@ -148,40 +148,6 @@ public class ContractorAuditTable extends AbstractTable {
         addOptionalKey(new ReportForeignKey(PreviousAudit, new ContractorAuditTable(),
                 new ReportOnClause("previousAuditID", "id")));
 
-        // Insurance
-        {
-            // General Liability
-            addOptionalKey(new ReportForeignKey(GLEachOccurrence, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2074")));
-
-            addOptionalKey(new ReportForeignKey(GLGeneralAggregate, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2079")));
-
-            // Auto Liability
-            addOptionalKey(new ReportForeignKey(ALCombinedSingle, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2155")));
-
-            // Workers' Comp
-            addOptionalKey(new ReportForeignKey(WCEachAccident, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2149")));
-
-            // Excess/Umbrella Liability
-            addOptionalKey(new ReportForeignKey(EXEachOccurrence, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 2161")));
-
-            // Employers' Liability
-            addOptionalKey(new ReportForeignKey(ELLimit, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 14359")));
-
-            // Public and Product Liability
-            addOptionalKey(new ReportForeignKey(PPLLimit, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 10230")));
-
-            // Professional Liability
-            addOptionalKey(new ReportForeignKey(PROILimit, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 11934")));
-        }
-
         // Annual Updates
         {
             addOptionalKey(new ReportForeignKey(Fatalities, new AuditDataTable(),

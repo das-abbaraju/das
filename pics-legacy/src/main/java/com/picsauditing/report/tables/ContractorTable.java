@@ -27,13 +27,6 @@ public class ContractorTable extends AbstractTable {
     public static final String CemexPostEval = "CemexPostEval";
     public static final String PQF = "PQF";
     public static final String WelcomeCall = "WelcomeCall";
-    public static final String GeneralLiability = "GeneralLiability";
-    public static final String AutoLiability = "AutoLiability";
-    public static final String WorkersComp = "WorkersComp";
-    public static final String ExcessLiability = "ExcessLiability";
-    public static final String EmployerLiability = "EmployerLiability";
-    public static final String PublicProductLiability = "PublicProductLiability";
-    public static final String ProfessionalIndemnity = "ProfessionalIndemnity";
 
     public ContractorTable() {
         super("contractor_info");
@@ -87,27 +80,6 @@ public class ContractorTable extends AbstractTable {
 
         addOptionalKey(new ReportForeignKey(WelcomeCall, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.WELCOME)));
-
-        addOptionalKey(new ReportForeignKey(GeneralLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 13 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
-
-        addOptionalKey(new ReportForeignKey(AutoLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 15 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
-
-        addOptionalKey(new ReportForeignKey(WorkersComp, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 14 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
-
-        addOptionalKey(new ReportForeignKey(ExcessLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 16 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
-
-        addOptionalKey(new ReportForeignKey(EmployerLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 23 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
-
-        addOptionalKey(new ReportForeignKey(PublicProductLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 310 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
-
-        addOptionalKey(new ReportForeignKey(ProfessionalIndemnity, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 378 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
 
         addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
                 new ReportOnClause("requestedByID")));

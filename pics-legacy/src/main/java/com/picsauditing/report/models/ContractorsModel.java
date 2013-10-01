@@ -28,28 +28,6 @@ public class ContractorsModel extends AbstractModel {
 		}
 		contractor.join(ContractorTable.PQF);
 
-        ModelSpec general = contractor.join(ContractorTable.GeneralLiability);
-        general.join(ContractorAuditTable.GLEachOccurrence);
-        general.join(ContractorAuditTable.GLGeneralAggregate);
-
-        ModelSpec auto = contractor.join(ContractorTable.AutoLiability);
-        auto.join(ContractorAuditTable.ALCombinedSingle);
-
-        ModelSpec workers = contractor.join(ContractorTable.WorkersComp);
-        workers.join(ContractorAuditTable.WCEachAccident);
-
-        ModelSpec excess = contractor.join(ContractorTable.ExcessLiability);
-        excess.join(ContractorAuditTable.EXEachOccurrence);
-
-        ModelSpec employer = contractor.join(ContractorTable.EmployerLiability);
-        employer.join(ContractorAuditTable.ELLimit);
-
-        ModelSpec publicProduct = contractor.join(ContractorTable.PublicProductLiability);
-        publicProduct.join(ContractorAuditTable.PPLLimit);
-
-        ModelSpec professional = contractor.join(ContractorTable.ProfessionalIndemnity);
-        professional.join(ContractorAuditTable.PROILimit);
-
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
@@ -189,38 +167,36 @@ public class ContractorsModel extends AbstractModel {
         officeIn.setRequiredJoin("ContractorPQF");
         fields.put(officeIn.getName().toUpperCase(), officeIn);
 
-        Field GLEachOccurrence = fields.get("ContractorGeneralLiabilityGLEachOccurrenceAnswer".toUpperCase());
-        GLEachOccurrence.setType(FieldType.Number);
-        GLEachOccurrence.setDatabaseColumnName("REPLACE(" + GLEachOccurrence.getDatabaseColumnName() + ",',','')");
+        Field GLEachOccurrence = addInsuranceLimit("ContractorGeneralLiabilityGLEachOccurrenceAnswer",13,2074);
+        fields.put(GLEachOccurrence.getName().toUpperCase(), GLEachOccurrence);
+        Field GLGeneralAggregate = addInsuranceLimit("ContractorGeneralLiabilityGLGeneralAggregateAnswer",13,2079);
+        fields.put(GLGeneralAggregate.getName().toUpperCase(), GLGeneralAggregate);
+        Field ALCombinedSingle = addInsuranceLimit("ContractorAutoLiabilityALCombinedSingleAnswer",15,2155);
+        fields.put(ALCombinedSingle.getName().toUpperCase(), ALCombinedSingle);
+        Field WCEachAccident = addInsuranceLimit("ContractorWorkersCompWCEachAccidentAnswer",14,2149);
+        fields.put(WCEachAccident.getName().toUpperCase(), WCEachAccident);
+        Field EXEachOccurrence = addInsuranceLimit("ContractorExcessLiabilityEXEachOccurrenceAnswer",16,2161);
+        fields.put(EXEachOccurrence.getName().toUpperCase(), EXEachOccurrence);
+        Field ELLimit = addInsuranceLimit("ContractorEmployerLiabilityELLimitAnswer",23,14359);
+        fields.put(ELLimit.getName().toUpperCase(), ELLimit);
+        Field PPLLimit = addInsuranceLimit("ContractorPublicProductLiabilityPPLLimitAnswer",310,10230);
+        fields.put(PPLLimit.getName().toUpperCase(), PPLLimit);
+        Field PROILimit = addInsuranceLimit("ContractorProfessionalIndemnityPROILimitAnswer",378,11934);
+        fields.put(PROILimit.getName().toUpperCase(), PROILimit);
 
-        Field GLGeneralAggregate = fields.get("ContractorGeneralLiabilityGLGeneralAggregateAnswer".toUpperCase());
-        GLGeneralAggregate.setType(FieldType.Number);
-        GLGeneralAggregate.setDatabaseColumnName("REPLACE(" + GLGeneralAggregate.getDatabaseColumnName() + ",',','')");
-
-        Field ALCombinedSingle = fields.get("ContractorAutoLiabilityALCombinedSingleAnswer".toUpperCase());
-        ALCombinedSingle.setType(FieldType.Number);
-        ALCombinedSingle.setDatabaseColumnName("REPLACE(" + ALCombinedSingle.getDatabaseColumnName() + ",',','')");
-
-        Field WCEachAccident = fields.get("ContractorWorkersCompWCEachAccidentAnswer".toUpperCase());
-        WCEachAccident.setType(FieldType.Number);
-        WCEachAccident.setDatabaseColumnName("REPLACE(" + WCEachAccident.getDatabaseColumnName() + ",',','')");
-
-        Field EXEachOccurrence = fields.get("ContractorExcessLiabilityEXEachOccurrenceAnswer".toUpperCase());
-        EXEachOccurrence.setType(FieldType.Number);
-        EXEachOccurrence.setDatabaseColumnName("REPLACE(" + EXEachOccurrence.getDatabaseColumnName() + ",',','')");
-
-        Field ELMonetaryLimit = fields.get("ContractorEmployerLiabilityELLimitAnswer".toUpperCase());
-        ELMonetaryLimit.setType(FieldType.Number);
-        ELMonetaryLimit.setDatabaseColumnName("REPLACE(" + ELMonetaryLimit.getDatabaseColumnName() + ",',','')");
-
-        Field PPLMonetaryLimit = fields.get("ContractorPublicProductLiabilityPPLLimitAnswer".toUpperCase());
-        PPLMonetaryLimit.setType(FieldType.Number);
-        PPLMonetaryLimit.setDatabaseColumnName("REPLACE(" + PPLMonetaryLimit.getDatabaseColumnName() + ",',','')");
-
-        Field PROLEachOccurrence = fields.get("ContractorProfessionalIndemnityPROILimitAnswer".toUpperCase());
-        PROLEachOccurrence.setType(FieldType.Number);
-        PROLEachOccurrence.setDatabaseColumnName("REPLACE(" + PROLEachOccurrence.getDatabaseColumnName() + ",',','')");
-
-        return fields;
+       return fields;
 	}
+
+    private Field addInsuranceLimit(String name, int auditTypeID, int questionID) {
+        Field insuranceLimit = new Field(name,
+                "(SELECT REPLACE(pd.answer,',','') FROM pqfdata pd " +
+                        " JOIN contractor_audit ca ON pd.auditID = ca.id " +
+                        " WHERE pd.questionID = " + questionID +
+                        " AND ca.conID = Contractor.id " +
+                        " AND ca.auditTypeID = " + auditTypeID +
+                        " AND (ca.expiresDate > NOW() OR ca.expiresDate IS NULL) " +
+                        " LIMIT 1)", FieldType.Number);
+        insuranceLimit.setImportance(FieldImportance.Required);
+        return insuranceLimit;
+    }
 }
