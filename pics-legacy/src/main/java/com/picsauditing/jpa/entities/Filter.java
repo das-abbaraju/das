@@ -105,8 +105,8 @@ public class Filter extends ReportElement {
 
 		String columnSql = getSql();
 
-		boolean isEmpty = operator.equals(QueryFilterOperator.Empty) || (!negateOperator && operator.equals(QueryFilterOperator.NotEmpty));
-		boolean isNotEmpty = operator.equals(QueryFilterOperator.NotEmpty) || (negateOperator && operator.equals(QueryFilterOperator.Empty));
+		boolean isEmpty = operator.equals(QueryFilterOperator.Empty) /*|| (!negateOperator && operator.equals(QueryFilterOperator.NotEmpty))*/;
+		boolean isNotEmpty = operator.equals(QueryFilterOperator.NotEmpty) /*|| (negateOperator && operator.equals(QueryFilterOperator.Empty))*/;
 
 		if (isEmpty) {
 			return columnSql + " IS NULL OR " + columnSql + " = ''";
