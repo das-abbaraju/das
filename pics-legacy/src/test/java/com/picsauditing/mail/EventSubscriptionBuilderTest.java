@@ -12,9 +12,7 @@ import java.util.List;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.jpa.entities.*;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -51,6 +49,8 @@ public class EventSubscriptionBuilderTest extends PicsTranslationTest {
 	@Autowired
 	private EmailTemplateDAO emailTemplateDAO;
 
+    private EmailSender originalStaticEmailSender;
+
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", (EmailBuilder) null);
@@ -60,10 +60,17 @@ public class EventSubscriptionBuilderTest extends PicsTranslationTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
+        originalStaticEmailSender = Whitebox.getInternalState(EventSubscriptionBuilder.class, "emailSender");
 		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", emailBuilder);
+        Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailSender", emailSender);
 
 		when(emailBuilder.build()).thenReturn(email);
 	}
+
+    @After
+    public void tearDown() throws Exception {
+        Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailSender", originalStaticEmailSender);
+    }
 
 	@Test
 	public void testNotifyUpcomingImplementationAudit() throws Exception {
