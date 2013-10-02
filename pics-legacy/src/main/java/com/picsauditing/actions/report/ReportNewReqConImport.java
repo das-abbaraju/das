@@ -183,7 +183,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			RichTextString richText = cell.getRichStringCellValue();
 			if (richText != null) {
 				String cellValue = richText.getString();
-				if (!Strings.isEmpty(cellValue) && cellValue.contains("Account")) {
+				if (!Strings.isEmpty(cellValue) && cellValue.contains("Company Name")) {
 					return true;
 				}
 			}
@@ -209,19 +209,20 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		request.setTaxID(getString(row, RegistrationRequestColumn.TaxID));
 		request.setAddress(getString(row, RegistrationRequestColumn.Address));
 		request.setCity(getString(row, RegistrationRequestColumn.City));
+        // Country Subdivision
+        String subdivision = getString(row, RegistrationRequestColumn.CountrySubdivision);
 		request.setZip(getString(row, RegistrationRequestColumn.Zip));
+        request.setCountry((Country) getValue(row, RegistrationRequestColumn.Country));
 		request.setRequestedByUserOther(getString(row, RegistrationRequestColumn.RequestedByOther));
 		request.setOperatorTags(getString(row, RegistrationRequestColumn.Tags));
 		request.setReasonForRegistration(getString(row, RegistrationRequestColumn.ReasonForRegistration));
 		// Notes
 		prependToRequestNotes(getString(row, RegistrationRequestColumn.Notes), request);
 		// Other objects
-		request.setRequestedBy((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
-		request.setCountry((Country) getValue(row, RegistrationRequestColumn.Country));
-		request.setRequestedByUser((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
-		request.setDeadline((Date) getValue(row, RegistrationRequestColumn.Deadline));
-		// Country Subdivision
-		String subdivision = getString(row, RegistrationRequestColumn.CountrySubdivision);
+//        request.setDeadline((Date) getValue(row, RegistrationRequestColumn.Deadline));
+//		request.setRequestedBy((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
+//        String requestedBy =  getString(row, RegistrationRequestColumn.RequestedByUser);
+//		request.setRequestedByUser((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
 
 		if (subdivision != null && !subdivision.contains("-")) {
 			if (request.getCountry() != null) {

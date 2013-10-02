@@ -338,11 +338,11 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("Zip", getText("ContractorRegistrationRequest.zip")));
 		excelSheet.addColumn(new ExcelColumn("Country", getText("ContractorRegistrationRequest.country")));
 
+        excelSheet.addColumn(new ExcelColumn("RequestedUser",
+                getText("ContractorRegistrationRequest.requestedByUser")));
 		if (!permissions.isOperatorCorporate()) {
-			excelSheet.addColumn(new ExcelColumn("RequestedByID", getText("ContractorRegistrationRequest.requestedBy"),
-					ExcelCellType.Integer));
-			excelSheet.addColumn(new ExcelColumn("RequestedUser",
-					getText("ContractorRegistrationRequest.requestedByUser")));
+            excelSheet.addColumn(new ExcelColumn("RequestedByID", getText("ContractorRegistrationRequest.requestedBy"),
+                    ExcelCellType.Integer));
 			excelSheet.addColumn(new ExcelColumn("RequestedByUserOther",
 					getText("ContractorRegistrationRequest.requestedByUserOther")));
 		}

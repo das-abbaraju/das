@@ -59,6 +59,9 @@
 					<td>
 						<s:text name="ContractorRegistrationRequest.requestedBy" />
 					</td>
+                    <td>
+                        <s:text name="RequestedContractorsAjax.header.RequestedBy" />
+                    </td>
 					<td>
 						<a href="javascript: changeOrderBy('form1','creationDate');">
 							<s:text name="global.CreationDate" />
@@ -130,6 +133,9 @@
 						<td title="${crr.get('RequestedUser')}">
 							${crr.get('RequestedBy')}
 						</td>
+                        <td title="${crr.get('RequestedUser')}">
+                            ${crr.get('RequestedUser')}
+                        </td>
 						<td class="report-date">
 							<s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 						</td>
