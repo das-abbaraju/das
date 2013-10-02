@@ -54,7 +54,13 @@ public class ContractorNumbersModel extends AbstractModel {
 			}
 		}
 
-		return permissionQueryBuilder.buildWhereClause();
+        String where = permissionQueryBuilder.buildWhereClause();
+
+        if (permissions.isOperatorCorporate()) {
+            where += " AND (OperatorContractorNumber.opID IN (" + permissionQueryBuilder.getOperatorIDs() + "))";
+        }
+
+        return where;
 	}
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {
