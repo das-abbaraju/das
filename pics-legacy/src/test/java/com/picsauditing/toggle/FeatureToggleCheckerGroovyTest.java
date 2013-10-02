@@ -180,7 +180,30 @@ public class FeatureToggleCheckerGroovyTest {
 		trueScript(scriptBody);
 	}
 
-	@Test
+    @Test
+    public void testGroovyScript_PermissionsNotAccountID() throws Exception {
+        when(permissions.getAccountId()).thenReturn(1813);
+        String scriptBody = "!(permissions.accountId in [1813, 31828])";
+        falseScript(scriptBody);
+
+        when(permissions.getAccountId()).thenReturn(12345);
+        trueScript(scriptBody);
+    }
+
+    @Test
+    public void testGroovyScript_PermissionsNotCorporateAccountID() throws Exception {
+        when(permissions.getPrimaryCorporateAccountID()).thenReturn(6115);
+        String scriptBody = "!(permissions.primaryCorporateAccountID in [6115])";
+        falseScript(scriptBody);
+
+        when(permissions.getPrimaryCorporateAccountID()).thenReturn(12345);
+        trueScript(scriptBody);
+
+        when(permissions.getPrimaryCorporateAccountID()).thenReturn(5960);
+        trueScript(scriptBody);
+    }
+
+    @Test
 	public void testGroovyScript_SimpleTrueBoolean() throws Exception {
 		String scriptBody = "true";
 		trueScript(scriptBody);
