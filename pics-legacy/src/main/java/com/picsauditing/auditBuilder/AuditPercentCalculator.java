@@ -90,7 +90,6 @@ public class AuditPercentCalculator {
 			if (question.isValidQuestion(validDate)) {
 				AuditQuestion questionBeingReviewed = question;
 				boolean isRequired = questionBeingReviewed.isRequired();
-				;
 
 				AuditData answer = answers.get(questionBeingReviewed.getId());
 

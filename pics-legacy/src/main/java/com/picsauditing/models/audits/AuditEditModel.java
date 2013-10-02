@@ -155,12 +155,16 @@ public class AuditEditModel {
 		boolean canEdit = type.isCanContractorEdit();
 
 		if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.PQF) && !conAudit.getAuditType().isPicsPqf()) {
+            boolean nothingPendingOrIncomplete = true;
 			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-				if (cao.getStatus().after(AuditStatus.Submitted)) {
-					canEdit = false;
+				if (cao.getStatus().before(AuditStatus.Submitted)) {
+                    nothingPendingOrIncomplete = false;
 					break;
 				}
 			}
+            if (nothingPendingOrIncomplete) {
+                canEdit = false;
+            }
 		}
 		if (conAudit.getAuditType().getWorkFlow().getId() == 5
 				|| conAudit.getAuditType().getWorkFlow().getId() == 3) {

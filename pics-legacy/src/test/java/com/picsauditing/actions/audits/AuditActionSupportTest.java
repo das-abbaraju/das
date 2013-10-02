@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.picsauditing.jpa.entities.*;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -202,6 +203,93 @@ public class AuditActionSupportTest extends PicsTest {
 		cao2.setStatus(AuditStatus.Complete);
 		assertFalse(test.isCanEditCategory(category));
 	}
+
+    @Test
+    public void testIsCanEditCategory_PqfSpecific_CategoryIncomplete_CompleteAndPendingCaos() throws Exception {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(111, contractor);
+        audit.getAuditType().setClassType(AuditTypeClass.PQF);
+        audit.getAuditType().setCanContractorEdit(true);
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+        when(permissions.isContractor()).thenReturn(true);
+
+        ContractorAuditOperator cao1 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+        ContractorAuditOperator cao2 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+        audit.getOperators().add(cao1);
+        audit.getOperators().add(cao2);
+
+        AuditCategory category = EntityFactory.makeAuditCategory(100);
+        category.setAuditType(audit.getAuditType());
+        audit.getAuditType().getCategories().add(category);
+
+        AuditCatData auditCatData = AuditCatData.builder()
+                .category(category)
+                .numberAnswered(4)
+                .numberRequired(5)
+                .build();
+        audit.setCategories(Arrays.asList(new AuditCatData[]{auditCatData}));
+
+        cao1.setStatus(AuditStatus.Complete);
+        cao2.setStatus(AuditStatus.Pending);
+        assertTrue(test.isCanEditCategory(category));
+    }
+
+    @Test
+         public void testIsCanEditCategory_PqfSpecific_CategoryComplete_CompleteAndPendingCaos() throws Exception {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(111, contractor);
+        audit.getAuditType().setClassType(AuditTypeClass.PQF);
+        audit.getAuditType().setCanContractorEdit(true);
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+        when(permissions.isContractor()).thenReturn(true);
+
+        ContractorAuditOperator cao1 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+        ContractorAuditOperator cao2 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+        audit.getOperators().add(cao1);
+        audit.getOperators().add(cao2);
+
+        AuditCategory category = EntityFactory.makeAuditCategory(100);
+        category.setAuditType(audit.getAuditType());
+        audit.getAuditType().getCategories().add(category);
+
+        AuditCatData auditCatData = AuditCatData.builder()
+                .category(category)
+                .numberAnswered(5)
+                .numberRequired(5)
+                .build();
+        audit.setCategories(Arrays.asList(new AuditCatData[]{auditCatData}));
+
+        cao1.setStatus(AuditStatus.Complete);
+        cao2.setStatus(AuditStatus.Pending);
+        assertFalse(test.isCanEditCategory(category));
+    }
+
+    @Test
+    public void testIsCanEditCategory_PqfSpecific_CategoryCompleted_PendingCaos() throws Exception {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(111, contractor);
+        audit.getAuditType().setClassType(AuditTypeClass.PQF);
+        audit.getAuditType().setCanContractorEdit(true);
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+        when(permissions.isContractor()).thenReturn(true);
+
+        ContractorAuditOperator cao1 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+        ContractorAuditOperator cao2 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+        audit.getOperators().add(cao1);
+        audit.getOperators().add(cao2);
+
+        AuditCategory category = EntityFactory.makeAuditCategory(100);
+        category.setAuditType(audit.getAuditType());
+        audit.getAuditType().getCategories().add(category);
+
+        AuditCatData auditCatData = AuditCatData.builder()
+                .category(category)
+                .numberAnswered(5)
+                .numberRequired(5)
+                .build();
+        audit.setCategories(Arrays.asList(new AuditCatData[]{auditCatData}));
+
+        cao1.setStatus(AuditStatus.Pending);
+        cao2.setStatus(AuditStatus.Pending);
+        assertTrue(test.isCanEditCategory(category));
+    }
 
 	@SuppressWarnings("deprecation")
 	@Test

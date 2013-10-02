@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities.builders;
 
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 
 public class AuditCatDataBuilder {
     private AuditCatData auditCatData = new AuditCatData();
@@ -21,6 +22,11 @@ public class AuditCatDataBuilder {
 
     public AuditCatDataBuilder numberVerified(int numberVerified) {
         auditCatData.setNumVerified(numberVerified);
+        return this;
+    }
+
+    public AuditCatDataBuilder category(AuditCategory category) {
+        auditCatData.setCategory(category);
         return this;
     }
 }
