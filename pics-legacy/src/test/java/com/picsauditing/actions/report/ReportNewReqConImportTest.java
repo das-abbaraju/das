@@ -118,7 +118,7 @@ public class ReportNewReqConImportTest extends PicsTranslationTest {
 	@Test
 	public void testSkipHeaderRow_HeaderRow() throws Exception {
 		when(cell.getRichStringCellValue()).thenReturn(richText);
-		when(richText.getString()).thenReturn("Account");
+		when(richText.getString()).thenReturn("Company Name");
 		when(row.getCell(anyInt())).thenReturn(cell);
 
 		Boolean skipHeaderRow = Whitebox.invokeMethod(reportNewReqConImport, "skipHeaderRow", row);
