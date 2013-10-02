@@ -1,4 +1,34 @@
 <decorators defaultdir="/decorators">
+    <decorator name="ignoreMe">
+        <pattern>/ReportApi!print.action</pattern>
+        <pattern>/*Ajax.action</pattern>
+        <pattern>/*Ajax!*.action</pattern>
+        <pattern>/PyCron.action</pattern>
+        <pattern>/keepalive.jsp</pattern>
+        <pattern>/clearcache.jsp</pattern>
+        <pattern>/*ajax*</pattern>
+        <pattern>/*JSON.action</pattern>
+        <pattern>/*json*</pattern>
+        <pattern>/*Autocomplete.action</pattern>
+        <pattern>/*CSV.action</pattern>
+        <pattern>/Download*</pattern>
+        <pattern>/AuditDataUpload.action</pattern>
+        <pattern>/CertificateUpload.action</pattern>
+        <pattern>/ReportNewReqConImport.action</pattern>
+        <pattern>/ManageEmployeesUpload.action</pattern>
+        <pattern>/EmployeeNCCERUpload.action</pattern>
+        <pattern>/user_edit.jsp</pattern>
+        <pattern>/exception_handler.jsp</pattern>
+        <pattern>/reasons.html</pattern>
+        <pattern>/ChartXML*</pattern>
+        <pattern>/con_pricing.jsp</pattern>
+        <pattern>/AuditFileUpload.action</pattern>
+        <pattern>/*External.action</pattern>
+        <pattern>/Liveagent.action</pattern>
+        <pattern>/PrintIolRmpAudit.action</pattern>
+        <pattern>/PreviewEmail.action</pattern>
+        <pattern>/ManageReports!allFavoriteReportsAjax.action</pattern>
+    </decorator>
     <decorator name="layout" page="layout.jsp">
         <pattern>/About.action</pattern>
         <pattern>/CreateReport*.action</pattern>
@@ -48,34 +78,5 @@
         <pattern>/ContractorPricing.action</pattern>
         <pattern>/con_pricing.jsp</pattern>
         <pattern>/pricing_matrix.jsp</pattern>
-    </decorator>
-    <decorator name="ignoreMe">
-        <pattern>/ReportApi!print.action</pattern>
-        <pattern>/*Ajax.action</pattern>
-        <pattern>/*Ajax!*.action</pattern>
-        <pattern>/PyCron.action</pattern>
-        <pattern>/keepalive.jsp</pattern>
-        <pattern>/clearcache.jsp</pattern>
-        <pattern>/*ajax*</pattern>
-        <pattern>/*JSON.action</pattern>
-        <pattern>/*json*</pattern>
-        <pattern>/*Autocomplete.action</pattern>
-        <pattern>/*CSV.action</pattern>
-        <pattern>/Download*</pattern>
-        <pattern>/AuditDataUpload.action</pattern>
-        <pattern>/CertificateUpload.action</pattern>
-        <pattern>/ReportNewReqConImport.action</pattern>
-        <pattern>/ManageEmployeesUpload.action</pattern>
-        <pattern>/EmployeeNCCERUpload.action</pattern>
-        <pattern>/user_edit.jsp</pattern>
-        <pattern>/exception_handler.jsp</pattern>
-        <pattern>/reasons.html</pattern>
-        <pattern>/ChartXML*</pattern>
-        <pattern>/con_pricing.jsp</pattern>
-        <pattern>/AuditFileUpload.action</pattern>
-        <pattern>/*External.action</pattern>
-        <pattern>/Liveagent.action</pattern>
-        <pattern>/PrintIolRmpAudit.action</pattern>
-        <pattern>/PreviewEmail.action</pattern>
     </decorator>
 </decorators>

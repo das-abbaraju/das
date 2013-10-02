@@ -9,6 +9,10 @@
 
 		<action name="ReportApi" class="com.picsauditing.actions.report.ReportApi">
 			<result name="print">struts/report/print.jsp</result>
+			<result name="success" type="stream">
+				<param name="contentType">application/javascript</param>
+				<param name="inputName">inputStream</param>
+			</result>
 		</action>
 
 		<action name="ReportTester"
@@ -31,6 +35,8 @@
 			<result name="sharedWithList">/struts/report/manage-report/_shared-with.jsp</result>
 			<result name="searchList">/struts/report/manage-report/_search.jsp</result>
 			<result name="accessList">/struts/report/manage-report/_access.jsp</result>
+
+            <result name="allFavoriteReportsAjax">/struts/report/manage-report/all-favorite-reports-ajax.jsp</result>
 		</action>
 
 		<action name="CreateReport" class="com.picsauditing.actions.report.CreateReport">
