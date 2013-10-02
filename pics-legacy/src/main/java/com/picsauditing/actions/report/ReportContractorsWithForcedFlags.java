@@ -106,4 +106,15 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		excelSheet.addColumn(new ExcelColumn("forceend", "End Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("forceend", "End Date", ExcelCellType.Date));
 	}
+
+    @Override
+    protected void filterOnFlagStatus() {
+        if (!searchForNew && filterOn(getFilter().getFlagStatus())) {
+            String list = Strings.implodeForDB(getFilter().getFlagStatus(), ",");
+
+            sql.addWhere("ff.forceFlag IN (" + list + ")");
+            setFiltered(true);
+        }
+    }
+
 }
