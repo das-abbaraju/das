@@ -126,7 +126,7 @@
 									<s:property value="#fileDesc"/>&nbsp;&nbsp;
 									
 									<s:if test="(permissions.operatorCorporate && !permissions.auditor) || !#data.requirementOpen">
-										<s:property value="question.requirement" />
+										<s:property value="question.requirement" escapeHtml="false" />
 										<s:if test="#data.dateVerified != null">
 											<br/>
 											<div class="verified-answer">
@@ -138,18 +138,23 @@
 										</s:if>
 									</s:if>
 									<s:else>
-										<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="<s:text name="Audit.help.UploadRequirements" />"><s:property value="question.requirement" /></a>
-									</s:else>	
+                                        <s:property value="question.requirement" escapeHtml="false" />
+									</s:else>
 									<br/>
-									
-									<s:if test="comment.length() > 0">
+
+                                    <s:if test="comment.length() > 0">
 										<span class="redMain"><b><s:text name="Audit.message.SafetyProfessionalComment" />: </b><s:property value="comment" escape="false"/></span>
 									</s:if>
-									
-									<s:if test="permissions.auditor">
-									<br/>
-										<a href="Audit.action?auditID=<s:property value="#data.audit.id"/>#categoryID=<s:property value="#data.question.category.id"/>&onlyReqs=true&mode=Edit"><s:text name="Audit.button.CloseRequirement" /></a>									
+
+                                    <br/><span>
+                                    <s:if test="(!permissions.operatorCorporate || permissions.auditor) && #data.requirementOpen">
+                                        <a href="#" style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="<s:text name="Audit.help.UploadRequirements" />"><s:text name="Audit.button.UploadRequirements"/></a>&nbsp;&nbsp;&nbsp;
+                                    </s:if>
+
+                                    <s:if test="permissions.auditor">
+										<a href="Audit.action?auditID=<s:property value="#data.audit.id"/>#categoryID=<s:property value="#data.question.category.id"/>&onlyReqs=true&mode=Edit"><s:text name="Audit.button.CloseRequirement" /></a>
 									</s:if>
+                                    </span>
 								</td>
 							</tr>
 						</s:iterator>
@@ -235,7 +240,7 @@
 									<s:property value="#fileDesc"/>&nbsp;&nbsp;
 									
 									<s:if test="permissions.operatorCorporate || !#data.requirementOpen">
-										<s:property value="question.requirement" />
+										<s:property value="question.requirement" escapeHtml="false" />
 										<s:if test="#data.dateVerified != null">
 											<br/>
 											<div class="verified-answer">
@@ -247,7 +252,8 @@
 										</s:if>
 									</s:if>
 									<s:else>
-										<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="<s:text name="Audit.help.UploadRequirements" />"><s:property value="question.requirement" /></a>
+                                        <s:property value="question.requirement" escapeHtml="false" />
+										<br/><a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="<s:text name="Audit.help.UploadRequirements" />"><s:text name="Audit.button.UploadRequirements"/></a>
 									</s:else>	
 									<br/>
 									
