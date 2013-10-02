@@ -19,6 +19,8 @@ public class PermissionQueryBuilder {
 	protected Permissions permissions;
 
 	private boolean workingFacilities = true;
+    private boolean excludeWorkStatus;
+    private boolean ignoreDefaultStatuses;
 
 	private Set<AccountStatus> visibleStatuses = new HashSet<AccountStatus>();
 
@@ -135,7 +137,7 @@ public class PermissionQueryBuilder {
 
 		where += " IN (" + getOperatorIDs() + ")";
 
-		if (showOnlyApprovedContractors()) {
+		if (showOnlyApprovedContractors() && !excludeWorkStatus) {
 			where += " AND " + alias + ".workStatus = 'Y'";
 		}
 
@@ -179,9 +181,11 @@ public class PermissionQueryBuilder {
 	}
 
 	public void addDefaultStatuses() {
-		visibleStatuses.add(AccountStatus.Active);
-		if (permissions.getAccountStatus().isDemo())
-			visibleStatuses.add(AccountStatus.Demo);
+        if (!ignoreDefaultStatuses) {
+            visibleStatuses.add(AccountStatus.Active);
+            if (permissions.getAccountStatus().isDemo())
+                visibleStatuses.add(AccountStatus.Demo);
+        }
 	}
 
 	public void addVisibleStatus(AccountStatus status) {
@@ -210,4 +214,21 @@ public class PermissionQueryBuilder {
 	public void setWorkingFacilities(boolean workingFacilities) {
 		this.workingFacilities = workingFacilities;
 	}
+
+    public boolean isExcludeWorkStatus() {
+        return excludeWorkStatus;
+    }
+
+    public void setExcludeWorkStatus(boolean excludeWorkStatus) {
+        this.excludeWorkStatus = excludeWorkStatus;
+    }
+
+    public boolean isIgnoreDefaultStatuses() {
+        return ignoreDefaultStatuses;
+    }
+
+    public void setIgnoreDefaultStatuses(boolean ignoreDefaultStatuses) {
+        this.ignoreDefaultStatuses = ignoreDefaultStatuses;
+    }
+
 }

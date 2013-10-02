@@ -750,6 +750,65 @@ ForcedFlagPercent
 ReportingClientID
 ReportingClientName
 
+Model: ContractorRequests
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountAddress
+AccountAddress2
+AccountAddress3
+AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountFax
+AccountFullAddress
+AccountID
+AccountLegalName
+AccountManager
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountPhone
+AccountRequiresCompetencyReview
+AccountRequiresOQ
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+AccountWebUrl
+AccountZip
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorDocuGUARD
+ContractorDontReassign
+ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserName
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorProductRisk
+ContractorProductRiskVerified
+ContractorSafetyRisk
+ContractorSafetyRiskVerified
+ContractorSoleProprietor
+ContractorTagTagID
+ContractorTransportationRisk
+ContractorTransportationRiskVerified
+ContractorWorksAtClientSite
+ContractorWorksForReportingClient
+DirectTradeName
+TradeName
+
 Model: Contractors
 Permission: Permissions{permissions=[]}
 ----------------------------------------

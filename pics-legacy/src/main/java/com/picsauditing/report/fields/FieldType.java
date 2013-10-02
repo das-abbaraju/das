@@ -55,6 +55,7 @@ public enum FieldType {
 	OshaRateType(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, OshaRateType.class, EnumType.STRING),
 	OshaType(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, OshaType.class, EnumType.STRING),
 	PaymentMethod(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, PaymentMethod.class, EnumType.STRING),
+    RequestedDeclinedAccountStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, RequestedDeclinedAccountStatus.class, EnumType.STRING),
 	String(FilterType.String, DisplayType.String, SqlFunctionProfile.String, null, null),
     SupplierDiversity(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, SupplierDiversity.class, null),
 	Trade(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null, null),
