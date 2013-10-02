@@ -217,6 +217,10 @@ public class FacilityChanger {
 		// operator table that is the viewableBy default
 		OperatorAccount viewableBy = operator;
 		for (Facility f : operator.getCorporateFacilities()) {
+            if (f.getCorporate().isInPicsConsortium()) {
+                continue;
+            }
+
 			viewableBy = f.getCorporate();
 		}
 
