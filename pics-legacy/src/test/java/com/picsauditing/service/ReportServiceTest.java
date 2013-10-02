@@ -62,6 +62,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 
     private JSONArray parameters;
     private boolean removeAggregates;
+    private boolean removeLimit;
 
 	private ReportService reportService;
 
@@ -126,7 +127,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		when(reportDao.runQuery(eq(selectSql.toString()))).thenReturn(mockReportSearchResults);
 		when(permissions.isAdmin()).thenReturn(true);
 
-		JSONObject responseJson = reportService.buildJsonResponse(reportContext, parameters, removeAggregates);
+		JSONObject responseJson = reportService.buildJsonResponse(reportContext, parameters, removeAggregates, removeLimit);
 
 		assertEquals(3, responseJson.size());
 

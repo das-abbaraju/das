@@ -70,7 +70,7 @@ public class ReportService {
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
-    public JSONObject buildJsonResponse(ReportContext reportContext, JSONArray parameters, boolean removeAggregates) throws ReportValidationException,
+    public JSONObject buildJsonResponse(ReportContext reportContext, JSONArray parameters, boolean removeAggregates, boolean removeLimit) throws ReportValidationException,
             RecordNotFoundException, SQLException {
         Report report = createOrLoadReport(reportContext, parameters, removeAggregates);
         SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
@@ -96,7 +96,7 @@ public class ReportService {
         }
 
         if (reportContext.includeData) {
-            JSONObject dataJson = buildDataJson(report, reportContext, sql);
+            JSONObject dataJson = buildDataJson(report, reportContext, sql, removeLimit);
             responseJson.put(LEVEL_RESULTS, dataJson);
         }
 
@@ -267,7 +267,7 @@ public class ReportService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONObject buildDataJson(Report report, ReportContext reportContext, SelectSQL sql)
+	private JSONObject buildDataJson(Report report, ReportContext reportContext, SelectSQL sql, boolean removeLimit)
 			throws ReportValidationException, PicsSqlException {
 		JSONObject dataJson = new JSONObject();
 
@@ -276,7 +276,9 @@ public class ReportService {
 			dataJson.put(DEBUG_SQL, debugSQL);
 		}
 
-		sql.setPageNumber(reportContext.limit, reportContext.pageNumber);
+        if (!removeLimit) {
+		    sql.setPageNumber(reportContext.limit, reportContext.pageNumber);
+        }
 
         List<BasicDynaBean> queryResults = null;
         if (!sql.getFields().isEmpty()) {

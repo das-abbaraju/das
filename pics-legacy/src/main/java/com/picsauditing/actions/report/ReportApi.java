@@ -66,6 +66,7 @@ public class ReportApi extends PicsApiSupport {
 
     protected String dynamicParameters;
     protected boolean removeAggregates;
+    protected boolean removeLimit;
 
     private SubscriptionTimePeriod frequency = SubscriptionTimePeriod.None;
 
@@ -82,7 +83,7 @@ public class ReportApi extends PicsApiSupport {
         }
 
 		try {
-			json = reportService.buildJsonResponse(reportContext, params, removeAggregates);
+			json = reportService.buildJsonResponse(reportContext, params, removeAggregates, removeLimit);
 		} catch (ReportValidationException rve) {
 			logger.error("Invalid report in ReportApi.execute()", rve);
 			writeJsonException(json, rve);
@@ -370,6 +371,14 @@ public class ReportApi extends PicsApiSupport {
         this.dynamicParameters = dynamicParameters;
     }
 
+    public boolean isRemoveLimit() {
+        return removeLimit;
+    }
+
+    public void setRemoveLimit(boolean removeLimit) {
+        this.removeLimit = removeLimit;
+    }
+
     public User getUser() {
         return user;
     }
@@ -377,4 +386,5 @@ public class ReportApi extends PicsApiSupport {
     public void setUser(User user) {
         this.user = user;
     }
+
 }

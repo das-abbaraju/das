@@ -82,7 +82,7 @@ public class DataFeed extends ReportApi implements ParameterAware {
 	        report = reportService.createOrLoadReport(reportContext, params, removeAggregates);
 
 	        if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
-		        json = reportService.buildJsonResponse(reportContext, params, removeAggregates);
+		        json = reportService.buildJsonResponse(reportContext, params, removeAggregates, removeLimit);
 
                 if (PicsActionSupport.XML.equals(outputFormat)) {
                     adjustForBetterSchema();
