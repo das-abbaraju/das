@@ -571,6 +571,21 @@ public class ManageReports extends PicsActionSupport {
 				.sortDirection(direction).build();
 	}
 
+    public String allFavoriteReportsAjax() {
+		try {
+			List<ReportUser> favorites = reportPreferencesService.buildFavorites(permissions.getUserId());
+			reportFavoriteList = reportFavoriteInfoConverter.convert(favorites);
+
+			if (CollectionUtils.isEmpty(reportFavoriteList)) {
+				reportFavoriteList = Collections.emptyList();
+			}
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!favorites.action", e);
+		}
+
+        return "allFavoriteReportsAjax";
+    }
+
 	public List<ReportFavoriteInfo> getReportFavoriteListOverflow() {
 		return reportFavoriteListOverflow;
 	}
