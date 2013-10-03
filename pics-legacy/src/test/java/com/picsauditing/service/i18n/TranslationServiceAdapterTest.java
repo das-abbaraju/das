@@ -67,6 +67,7 @@ public class TranslationServiceAdapterTest {
 
         context = new HashMap<>();
         context.put(StrutsStatics.HTTP_REQUEST, request);
+        context.put(ActionContext.ACTION_NAME, "TestPage");
         actionContext = new ActionContext(context);
         ActionContext.setContext(actionContext);
 
@@ -82,15 +83,12 @@ public class TranslationServiceAdapterTest {
     }
 
     @Test
-    public void testNullActionNameParsesFromReferrer() throws Exception {
+    public void testNullActionNamePageNameIsDefault() throws Exception {
         context.put(ActionContext.ACTION_NAME, null);
-        StringBuffer referrer = new StringBuffer("http://localhost:9000/api/en_US/ContractorRegistrationServices.title?referrer=http://ajiva.local:8080/RegistrationServiceEvaluation.action");
-        when(request.getRequestURL()).thenReturn(referrer);
 
         String pageName = Whitebox.invokeMethod(translationService, "pageName");
 
-        assertTrue("RegistrationServiceEvaluation".equals(pageName));
-
+        assertTrue(TranslationServiceAdapter.DEFAULT_PAGENAME.equals(pageName));
     }
 
     @Test
@@ -110,16 +108,6 @@ public class TranslationServiceAdapterTest {
         String pageName = Whitebox.invokeMethod(translationService, "pageName");
 
         assertTrue("UNKNOWN".equals(pageName));
-    }
-
-    @Test
-    public void testParsePageFromReferrer() throws Exception {
-        StringBuffer referrer = new StringBuffer("http://localhost:9000/api/en_US/ContractorRegistrationServices.title?referrer=http://ajiva.local:8080/RegistrationServiceEvaluation.action");
-        when(request.getRequestURL()).thenReturn(referrer);
-
-        String pageName = Whitebox.invokeMethod(translationService, "parsePageFromReferrer");
-
-        assertTrue("RegistrationServiceEvaluation".equals(pageName));
     }
 
     @Test

@@ -19,9 +19,6 @@ import org.springframework.core.task.TaskRejectedException;
 
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 public class TranslationServiceAdapter implements TranslationService {
 
@@ -30,6 +27,8 @@ public class TranslationServiceAdapter implements TranslationService {
 
     public static final String DEFAULT_LANGUAGE = "en";
     public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
+    public static final String DEFAULT_PAGENAME = "UNKNOWN";
+    public static final String DEFAULT_REFERRER = "REFERRER_UNKNOWN";
 
     private static final String CACHE_NAME = "i18n";
     private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
@@ -136,7 +135,7 @@ public class TranslationServiceAdapter implements TranslationService {
     }
 
     private boolean translationReturned(TranslationWrapper translation) {
-        return translation != null && !"ERROR".equals(translation.getTranslation());
+        return translation != null && !ERROR_STRING.equals(translation.getTranslation()) && !DEFAULT_PAGENAME.equals(pageName());
     }
 
     // note that we're caching the requested key and locale, not the returned ones
@@ -155,7 +154,7 @@ public class TranslationServiceAdapter implements TranslationService {
             return ServletActionContext.getRequest().getRequestURL().toString();
         } catch (Exception e) {
             logger.warn("No ServletActionContext Request available");
-            return new String("REFERRER_UNKNOWN");
+            return DEFAULT_REFERRER;
         }
     }
 
@@ -209,24 +208,12 @@ public class TranslationServiceAdapter implements TranslationService {
         try {
             String pageName = ServletActionContext.getContext().getName();
             if (Strings.isEmpty(pageName )) {
-                pageName = parsePageFromReferrer();
+                pageName = DEFAULT_PAGENAME;
             }
             return pageName;
         } catch (Exception e) {
             logger.warn("No ServletActionContext Request available");
-            return "UNKNOWN";
-        }
-    }
-
-    private String parsePageFromReferrer() {
-        String referrer = referrer().toString();
-        Pattern ptrn= Pattern.compile(".*/(.*)\\.action$");
-        Matcher matcher = ptrn.matcher(referrer);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        else {
-            return "UNKNOWN";
+            return DEFAULT_PAGENAME;
         }
     }
 
