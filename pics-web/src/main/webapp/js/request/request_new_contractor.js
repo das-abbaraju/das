@@ -28,11 +28,6 @@
                         showAnim : 'fadeIn',
                         minDate: 1
                     });
-                    
-                    // TODO: Trigger to be removed after completion of PICS-12493.
-                    if (!$.trim($('#country_subdivision').html())) {
-                        $('#country').trigger('change');
-                    }
                 }
             },
             
@@ -77,14 +72,15 @@
             },
             
             loadCountrySubdivision: function(event) {
-                var isocode = $(event.target).val();
-                
+                var isocode = $(event.target).val(),
+                    selected_isocode = $('#country_subdivision').attr('data');
+
                 if ($.trim(isocode)) {
                     PICS.ajax({
                         url: 'CountrySubdivisionListAjax.action',
                         data: {
                             countryString: isocode,
-                            countrySubdivisionString: isocode,
+                            countrySubdivisionString: selected_isocode,
                             needsSuffix: false,
                             required: true,
                             prefix: 'contractor.'

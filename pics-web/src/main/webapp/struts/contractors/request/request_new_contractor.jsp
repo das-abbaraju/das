@@ -195,20 +195,15 @@
 								value="%{contractor.country.isoCode}"
 							/>
 						</li>
-						<li id="country_subdivision">
-							<s:if test="contractor.country != null && contractor.country.hasCountrySubdivisions">
-								<s:select
-									id="countrySubdivision_sel"
-									label="%{getCountrySubdivisionLabelFor(contractor.country.isoCode)}"
-									list="getCountrySubdivisionList(contractor.country.isoCode)"
-									listKey="isoCode"
-									listValue="simpleName"
-									name="contractor.countrySubdivision"
-									required="true"
-									theme="formhelp"
-									value="%{contractor.countrySubdivision.isoCode}"
-								/>
-							</s:if>
+						<li id="country_subdivision" data="<s:property value="contractor.countrySubdivision.isoCode"/>">
+                            <s:include value="/struts/contractors/_country_subdivision_select.jsp">
+                                <s:param name="country_iso_code" value="contractor.country.isoCode" />
+                                <s:param name="subdivision_id">countrySubdivision_sel</s:param>
+                                <s:param name="select_name">contractor.countrySubdivision</s:param>
+                                <s:param name="selected_subdivision_iso_code" value="contractor.countrySubdivision.isoCode" />
+                                <s:param name="select_theme">formhelp</s:param>
+                                <s:param name="mark_required">true</s:param>
+                            </s:include>
 						</li>
 						<li>
 							<s:textfield

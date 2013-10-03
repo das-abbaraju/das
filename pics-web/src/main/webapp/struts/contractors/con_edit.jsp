@@ -4,83 +4,16 @@
 <%@ page import="com.picsauditing.util.URLUtils" %>
 <%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
+<s:set var="subdivisionList" value="getCountrySubdivisionList(contractor.country.isoCode)" />
+<s:set var="iso_code" value="contractor.country.isoCode" />
+<s:set var="country_subdivision" value="contractor.countrySubdivision" />
+<s:set var="billing_country_subdivision" value="contractor.billingCountrySubdivision" />
+
 <title><s:property value="contractor.name" /></title>
 
 <meta name="help" content="User_Manual_for_Contractors">
 
 <s:include value="conHeader.jsp" />
-
-<script type="text/javascript">
-	function changeCountrySubdivision() {
-        var elementID = 'countrySubdivision_li';
-        var prefix = '';
-        var countrySubdivisionString = '<s:property value="contractor.countrySubdivision.isoCode"/>';
-
-        changeCountrySubdivisionFor(elementID, prefix, countrySubdivisionString);
-	}
-
-	function changeBillingCountrySubdivision() {
-        var elementID = 'billing_countrySubdivision_li';
-        var prefix = 'contractor.billingCountrySubdivision';
-        var countrySubdivisionString = '<s:property value="contractor.billingCountrySubdivision.isoCode"/>';
-
-        changeCountrySubdivisionFor(elementID, prefix, countrySubdivisionString);
-		$('#country_display').val($('#contractorCountry option:selected').text());
-	}
-
-    function changeCountrySubdivisionFor(elementID, prefix, countrySubdivisionString) {
-        $('#' + elementID).load(
-            'CountrySubdivisionListAjax.action',
-            {
-                countryString: $('#contractorCountry').val()
-                ,   prefix: prefix
-                ,   needsSuffix: "false"
-                ,   countrySubdivisionString: countrySubdivisionString
-            }
-        );
-    }
-
-	function countryChanged(country) {
-		// hide taxID and zip code
-		if (country == 'AE') {
-			$('#tax_li').hide();
-			$('#zip_li').hide();
-		} else {
-			$('#tax_li').show();
-			$('#zip_li').show();
-
-			if (country == 'US'){
-				$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.US')+':');
-				$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.US.help'));
-			} else if (country == 'CA') {
-				$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.CA')+':');
-				$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.CA.help'));
-			} else {
-				$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
-				$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
-			}
-		}
-
-		changeCountrySubdivision();
-		changeBillingCountrySubdivision();
-	}
-
-	$(function() {
-		countryChanged($("#contractorCountry").val());
-		$('.datepicker').datepicker();
-		$('.cluetip').cluetip({
-			closeText: "<img src='images/cross.png' width='16' height='16'>",
-			arrows: true,
-			cluetipClass: 'jtip',
-			local: true,
-			clickThrough: false
-		});
-
-		$('#save').delegate('#removeImportPQFButton', 'click', function(e) {
-			return confirm('Are you sure you want to remove this audit?');
-		});
-	});
-</script>
 
 <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
     <s:if test="permissions.admin && unpaidInvoices.size() > 0">
@@ -150,7 +83,7 @@
     							<label><s:text name="ContractorEdit.PrimaryAddress.City"/>:</label>
     							<s:textfield name="contractor.city" size="20" />
     						</li>
-    						<li>
+    						<li class="country">
     							<label><s:text name="Country" />:</label>
     							<s:select
     								list="countryList"
@@ -158,10 +91,17 @@
     								id="contractorCountry"
     								listKey="isoCode"
     								listValue="name"
-    								value="contractor.country.isoCode"
-    								onchange="countryChanged(this.value)" />
+    								value="contractor.country.isoCode" />
     						</li>
-    						<li id="countrySubdivision_li"></li>
+    						<li id="countrySubdivision_li" data="<s:property value="#country_subdivision"/>">
+                                <s:include value="/struts/contractors/_country_subdivision_select.jsp">
+                                    <s:param name="country_iso_code">${iso_code}</s:param>
+                                    <s:param name="subdivision_id">contractor_countrySubdivision</s:param>
+                                    <s:param name="select_name">countrySubdivision</s:param>
+                                    <s:param name="selected_subdivision_iso_code">${country_subdivision}</s:param>
+                                    <s:param name="select_theme">pics</s:param>
+                                </s:include>
+    						</li>
     
     						<s:if test="contractor.country.isoCode != 'AE'">
     							<li id="zip_li">
@@ -235,9 +175,17 @@
     						</li>
     						<li>
     							<label><s:text name="ContractorEdit.billingCountry" />:</label>
-    							<input type="text" disabled="disabled" id="country_display"/>
+                                <input type="text" disabled="disabled" id="billing_country" value="${contractor.country.name}"/>
     						</li>
-    						<li id="billing_countrySubdivision_li"></li>
+    						<li id="billing_countrySubdivision_li" data="<s:property value="#billing_country_subdivision"/>">
+                                <s:include value="/struts/contractors/_country_subdivision_select.jsp">
+                                    <s:param name="country_iso_code">${iso_code}</s:param>
+                                    <s:param name="subdivision_id">contractor_billing_countrySubdivision</s:param>
+                                    <s:param name="select_name">countrySubdivision</s:param>
+                                    <s:param name="selected_subdivision_iso_code">${billing_country_subdivision}</s:param>
+                                    <s:param name="select_theme">pics</s:param>
+                                </s:include>
+    						</li>
     						<li id="billing_zip_li">
     							<label><s:text name="ContractorEdit.billingZip"/>:</label>
     							<s:textfield name="contractor.billingZip" size="7" />

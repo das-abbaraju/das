@@ -20,6 +20,7 @@
 				<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode" headerKey=""
 					headerValue="- Country -" listValue="name" value="jobSite.country.isoCode"></s:select>
 			</li>
+            <%-- TODO: Replace label and select with _country_subdivision_select.jsp template. Page currently broken so leaving it alone--%>
 			<li class="loadCountrySubdivisions">
 				<s:if test="jobSite.country.isoCode != ''">
 					<label><s:text name="CountrySubdivision" />:</label>

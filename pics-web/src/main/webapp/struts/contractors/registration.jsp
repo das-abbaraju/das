@@ -24,13 +24,13 @@
 </s:else>
 
 <s:if test="contractor.country.isoCode != ''">
-	<s:set var="country_value" value="contractor.country.isoCode" />
+	<s:set var="country_iso_code" value="contractor.country.isoCode" />
 </s:if>
 <s:else>
-	<s:set var="country_value" value="'US'" />
+	<s:set var="country_iso_code" value="'US'" />
 </s:else>
 
-<s:if test="getCountrySubdivisionList(#country_value).size == 0">
+<s:if test="getCountrySubdivisionList(#country_iso_code).size == 0">
 	<s:set var="countrySubdivision_display" value="'display: none;'" />
 </s:if>
 <s:else>
@@ -180,11 +180,13 @@
 
 					<%-- Hack to override company address for UK --%>
 					<div id="company_address_fields">
-						<s:if test="#country_value != 'GB'">
+						<s:if test="#country_iso_code != 'GB'">
 							<s:include value="/struts/contractors/_registration-company-address.jsp" />
 						</s:if>
 						<s:else>
-							<s:include value="/struts/contractors/united-kingdom/_registration-company-address.jsp" />
+							<s:include value="/struts/contractors/united-kingdom/_registration-company-address.jsp">
+                                <s:param name="country_iso_code" value="#country_iso_code" />
+							</s:include>
 						</s:else>
 					</div>
 					<%-- End hack --%>

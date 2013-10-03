@@ -293,9 +293,14 @@ $(function() {
 										headerValue="- Country -" headerKey="" listValue="name"
 										onchange="getCountrySubdivisions(this.value);"></s:select>
 								</li>
-								<li class="loadCountrySubdivisions"><label><s:text name="CountrySubdivision" />:</label>
-									<s:select list="getCountrySubdivisionList('US')" id="countrySubdivision_sel" name="countrySubdivision.isoCode" 
-										headerKey="" headerValue="- Country Subdivision -" listKey="isoCode" listValue="name" value="countrySubdivisionString"/>
+								<li class="loadCountrySubdivisions">
+                                    <s:include value="/struts/contractors/_country_subdivision_select.jsp">
+                                        <s:param name="country_iso_code">US</s:param>
+                                        <s:param name="subdivision_id">countrySubdivision_sel</s:param>
+                                        <s:param name="select_name">countrySubdivision.isoCode</s:param>
+                                        <s:param name="selected_subdivision_iso_code" value="countrySubdivisionString" />
+                                        <s:param name="select_theme">pics</s:param>
+                                    </s:include>
 								</li>
 								<li><label><s:text name="JobSite.projectStart" />:</label>
 									<s:textfield name="siteStart" size="20" cssClass="datepicker" />

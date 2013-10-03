@@ -6,22 +6,11 @@
     <s:set var="countryString" value="countryString" />
 </s:if>
 
-<s:if test="getCountrySubdivisionList(#countryString).size() > 0">
-    <s:select
-        cssClass="contractor-countrySubdivision"
-        headerKey=""
-        headerValue="- %{getText('CountrySubdivisionList.list.select.header')} -"
-        id="countrySubdivision_sel"
-        label="%{getCountrySubdivisionLabelKeyFor(#countryString)}"
-        list="getCountrySubdivisionList(#countryString)"
-        listKey="isoCode"
-        listValue="simpleName"
-        name="%{countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')}"
-        theme="pics"
-        value="accountCountrySubdivision"
-    />
-	<span class="redMain" id="countrySubdivision_req">*</span>
-	<pics:fieldhelp title="Country Subdivision">
-		<s:text name="ContractorAccount.countrySubdivision.isoCode.fieldhelp"/>
-	</pics:fieldhelp>
-</s:if>
+<s:include value="/struts/contractors/_country_subdivision_select.jsp">
+    <s:param name="country_iso_code" value="countryString" />
+    <s:param name="subdivision_id">countrySubdivision_sel</s:param>
+    <s:param name="select_name" value="countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')"></s:param>
+    <s:param name="selected_subdivision_iso_code" value="accountCountrySubdivision" />
+    <s:param name="select_theme">pics</s:param>
+    <s:param name="mark_required" value="required" />
+</s:include>
