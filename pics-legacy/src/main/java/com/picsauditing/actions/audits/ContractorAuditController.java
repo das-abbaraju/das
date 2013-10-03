@@ -456,7 +456,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
     public boolean isRollupAudit() {
         for (AuditCategory category:conAudit.getVisibleCategories()) {
-            for (AuditQuestion question::category.getEffectiveQuestions(conAudit.getEffectiveDate())) {
+            for (AuditQuestion question:category.getEffectiveQuestions(conAudit.getEffectiveDate())) {
                 for (AuditQuestionFunction function:question.getFunctions()) {
                     if (function.getType().equals(QuestionFunctionType.Rollup)) {
                         return true;
