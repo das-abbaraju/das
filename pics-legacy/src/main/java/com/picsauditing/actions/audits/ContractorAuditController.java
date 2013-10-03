@@ -480,12 +480,6 @@ public class ContractorAuditController extends AuditActionSupport {
 
     public AuditQuestionSuggestion getSuggestion(AuditQuestion question) {
         AuditQuestionSuggestion suggestion = null;
-        for (AuditQuestionFunction function:question.getFunctions()) {
-            if (function.getType().equals(QuestionFunctionType.Rollup)) {
-                suggestion = getRollupSuggestion(function);
-                return suggestion;
-            }
-        }
         return suggestion;
     }
 
