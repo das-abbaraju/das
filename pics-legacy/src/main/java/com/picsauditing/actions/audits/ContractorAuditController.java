@@ -454,6 +454,30 @@ public class ContractorAuditController extends AuditActionSupport {
 		return null;
 	}
 
+    public boolean isRollupAudit() {
+        for (AuditCategory category:conAudit.getVisibleCategories()) {
+            for (AuditQuestion question::category.getEffectiveQuestions(conAudit.getEffectiveDate())) {
+                for (AuditQuestionFunction function:question.getFunctions()) {
+                    if (function.getType().equals(QuestionFunctionType.Rollup)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isRollupQuestion(AuditQuestion question) {
+        for (AuditQuestionFunction function:question.getFunctions()) {
+            if (function.getType().equals(QuestionFunctionType.Rollup)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public AuditQuestionSuggestion getSuggestion(AuditQuestion question) {
         AuditQuestionSuggestion suggestion = null;
         for (AuditQuestionFunction function:question.getFunctions()) {
