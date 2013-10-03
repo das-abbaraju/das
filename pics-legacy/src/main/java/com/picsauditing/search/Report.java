@@ -19,7 +19,7 @@ import com.picsauditing.util.LinkBuilder;
 @SuppressWarnings("serial")
 public class Report extends TranslationActionSupport {
 	private final static Logger logger = LoggerFactory.getLogger(Report.class);
-	
+
 	private SelectSQL sql;
 	private List<SelectSQL> unionSql = new ArrayList<SelectSQL>();
 
@@ -49,8 +49,8 @@ public class Report extends TranslationActionSupport {
 		Logger logger = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
 		StopWatch sw = new Slf4JStopWatch(logger);
 
-		List<BasicDynaBean> pageData = db.select(sqlText, true);
-		
+		List<BasicDynaBean> pageData = db.selectReadOnly(sqlText, true);
+
 		sw.stop("Report", "Profiling database queries");
 
 		returnedRows = pageData.size();

@@ -30,9 +30,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class ReportDAO extends PicsDAO {
 
-	@Autowired
-	private FeatureToggle featureToggle;
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportDAO.class);
 
 	public ReportSearchResults runQuery(String sql) throws SQLException {
@@ -42,11 +39,7 @@ public class ReportDAO extends PicsDAO {
 	}
 
 	private List<BasicDynaBean> queryDatabase(Database database, String sql) throws SQLException {
-		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_READ_ONLY_DATASOURCE)) {
-			return database.selectReadOnly(sql, true);
-		}
-
-		return database.select(sql, true);
+        return database.selectReadOnly(sql, true);
 	}
 
 	static String getOrderBySort(String sortType) {
