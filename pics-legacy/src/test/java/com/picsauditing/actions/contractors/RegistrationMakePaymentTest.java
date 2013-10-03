@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.picsauditing.EntityFactory;
+import com.picsauditing.actions.audits.OpenAuditsMailer;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,9 +19,6 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.Strings;
 
@@ -31,6 +32,8 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 	private ContractorOperator contractorOperator;
 	@Mock
 	private BillingNoteModel billingNoteModel;
+    @Mock
+    private ContractorAccountDAO contractorAccountDao;
 
 	@Before
 	public void setup() throws Exception {
@@ -41,8 +44,34 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 		nonCorporateOperators = new ArrayList<ContractorOperator>();
 		when(contractor.getId()).thenReturn(1);
 
+        Whitebox.setInternalState(registrationMakePayment, "contractorAccountDao", contractorAccountDao);
 		Whitebox.setInternalState(registrationMakePayment, "billingNoteModel", billingNoteModel);
 	}
+
+    @Test
+    public void testSetWorkingStatusOfAutoApprovesRelationship() throws Exception {
+        OperatorAccount operator = EntityFactory.makeOperator();
+        operator.setAutoApproveRelationships(true);
+
+        ContractorOperator co1 = new ContractorOperator();
+        ContractorOperator co2 = new ContractorOperator();
+
+        co1.setOperatorAccount(operator);
+        co1.setWorkStatus(ApprovalStatus.P);
+        co2.setOperatorAccount(operator);
+        co2.setWorkStatus(ApprovalStatus.D);
+
+        List<ContractorOperator> list = new ArrayList<>();
+        list.add(co1);
+        list.add(co2);
+        when(contractor.getOperators()).thenReturn(list);
+
+        Whitebox.setInternalState(registrationMakePayment, "contractor", contractor);
+        Whitebox.invokeMethod(registrationMakePayment, "updateWorkStatusForAutoApproveRelationships");
+
+        assertTrue(co1.getWorkStatus().isYes());
+        assertFalse(co2.getWorkStatus().isYes());
+    }
 
 	// if they have not specified a safety risk
 	// and they are not only a material supplier or transportation services

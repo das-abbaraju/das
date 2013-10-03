@@ -280,6 +280,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 			contractorAccountDao.save(contractor);
 		}
 
+        updateWorkStatusForAutoApproveRelationships();
+
 		// Reload permissions for this user so they view just their country
 		// specific questions.
 		if (complete) {
@@ -300,7 +302,16 @@ public class RegistrationMakePayment extends RegistrationAction {
 		return BLANK;
 	}
 
-	private String contractorRiskUrl() {
+    private void updateWorkStatusForAutoApproveRelationships() {
+        for (ContractorOperator co:contractor.getOperators()) {
+            if (co.isWorkStatusPending() && co.getOperatorAccount().isAutoApproveRelationships()) {
+                co.setWorkStatus(ApprovalStatus.Y);
+                contractorAccountDao.save(contractor);
+            }
+        }
+    }
+
+    private String contractorRiskUrl() {
 		String url = "";
 		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly() || contractor
 				.isTransportationServices()))
