@@ -84,16 +84,23 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
     protected String csrFax;
     protected String csrEmail;
     protected String csrAddress;
+    protected String csrAddress2;
     protected String csrCity;
-    protected CountrySubdivision csrCountrySubdivision;
+    protected String csrCountry;
+    protected String csrCountrySubdivision;
     protected String csrZip;
 
     protected String isrPhone;
     protected String isrFax;
     protected String isrEmail;
+
+    @Deprecated
     protected String isrAddress;
+    @Deprecated
     protected String isrCity;
+    @Deprecated
     protected CountrySubdivision isrCountrySubdivision;
+    @Deprecated
     protected String isrZip;
 
 	protected BusinessUnit businessUnit;
@@ -247,6 +254,14 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
         this.csrAddress = csrAddress;
     }
 
+    public String getCsrAddress2() {
+        return csrAddress2;
+    }
+
+    public void setCsrAddress2(String csrAddress2) {
+        this.csrAddress2 = csrAddress2;
+    }
+
     public String getCsrCity() {
         return csrCity;
     }
@@ -255,13 +270,19 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
         this.csrCity = csrCity;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "csrCountrySubdivision")
-    public CountrySubdivision getCsrCountrySubdivision() {
+    public String getCsrCountry() {
+        return csrCountry;
+    }
+
+    public void setCsrCountry(String csrCountry) {
+        this.csrCountry = csrCountry;
+    }
+
+    public String getCsrCountrySubdivision() {
         return csrCountrySubdivision;
     }
 
-    public void setCsrCountrySubdivision(CountrySubdivision csrCountrySubdivision) {
+    public void setCsrCountrySubdivision(String csrCountrySubdivision) {
         this.csrCountrySubdivision = csrCountrySubdivision;
     }
 
@@ -299,36 +320,44 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
         this.isrEmail = isrEmail;
     }
 
+    @Deprecated
     public String getIsrAddress() {
         return isrAddress;
     }
 
+    @Deprecated
     public void setIsrAddress(String isrAddress) {
         this.isrAddress = isrAddress;
     }
 
+    @Deprecated
     public String getIsrCity() {
         return isrCity;
     }
 
+    @Deprecated
     public void setIsrCity(String isrCity) {
         this.isrCity = isrCity;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "isrCountrySubdivision")
+    @Deprecated
     public CountrySubdivision getIsrCountrySubdivision() {
         return isrCountrySubdivision;
     }
 
+    @Deprecated
     public void setIsrCountrySubdivision(CountrySubdivision isrCountrySubdivision) {
         this.isrCountrySubdivision = isrCountrySubdivision;
     }
 
+    @Deprecated
     public String getIsrZip() {
         return isrZip;
     }
 
+    @Deprecated
     public void setIsrZip(String isrZip) {
         this.isrZip = isrZip;
     }

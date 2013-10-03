@@ -59,17 +59,10 @@
                             <li><label>Fax: </label><s:textfield name="country.csrFax" /></li>
                             <li><label>Email: </label><s:textfield name="country.csrEmail" /></li>
                             <li><label>Address: </label><s:textfield name="country.csrAddress" size="35" /></li>
+                            <li><label>Address2: </label><s:textfield name="country.csrAddress2" size="35" /></li>
                             <li><label>City: </label><s:textfield name="country.csrCity"  size="20" /></li>
-                            <li><label>Subdivision: </label>
-                                <s:select id="csr_subdivision"
-                                          name="country.csrCountrySubdivision.isoCode"
-                                          value="country.csrCountrySubdivision.isoCode"
-                                          list="countrySubdivisionList"
-                                          listKey="isoCode"
-                                          listValue="name"
-                                          headerKey=""
-                                          headerValue=" - Subdivision - "/>
-                            </li>
+                            <li><label>Country: </label><s:textfield name="country.csrCountry"  size="5" /></li>
+                            <li><label>Subdivision: </label><s:textfield name="country.csrCountrySubdivision"  size="5" /></li>
                             <li><label>Zip: </label><s:textfield name="country.csrZip" size="7" /></li>
                         </ol>
                     </fieldset>
@@ -79,19 +72,6 @@
                             <li><label>Phone: </label><s:textfield name="country.isrPhone" /></li>
                             <li><label>Fax: </label><s:textfield name="country.isrFax" /></li>
                             <li><label>Email: </label><s:textfield name="country.isrEmail" /></li>
-                            <li><label>Address: </label><s:textfield name="country.isrAddress" size="35" /></li>
-                            <li><label>City: </label><s:textfield name="country.isrCity"  size="20" /></li>
-                            <li><label>Subdivision: </label>
-                                <s:select id="isr_subdivision"
-                                          name="country.isrCountrySubdivision.isoCode"
-                                          value="country.isrCountrySubdivision.isoCode"
-                                          list="countrySubdivisionList"
-                                          listKey="isoCode"
-                                          listValue="name"
-                                          headerKey=""
-                                          headerValue=" - Subdivision - "/>
-                            </li>
-                            <li><label>Zip: </label><s:textfield name="country.isrZip" size="7" /></li>
                         </ol>
                     </fieldset>
                     <fieldset class="form">
