@@ -70,7 +70,7 @@ public class FeatureToggleCheckerGroovyTest {
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "featureToggleProvider", featureToggleProvider);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "appPropertyDAO", appPropertyDAO);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "logger", logger);
-        Whitebox.setInternalState(featureToggleCheckerGroovy, "actionContext", actionContext);
+        featureToggleCheckerGroovy.setActionContext(ActionContext.getContext());
 
 		when(appPropertyDAO.find(toggleName)).thenReturn(appPropertyFeature);
 
@@ -314,6 +314,7 @@ public class FeatureToggleCheckerGroovyTest {
 
     @Test
     public void testGetPermissions_NullPermissions() throws Exception {
+        Whitebox.setInternalState(featureToggleCheckerGroovy, "actionContext", actionContext);
         featureToggleCheckerGroovy.setPermissions(null);
         featureToggleCheckerGroovy.getPermissions();
         verify(actionContext).getSession();
@@ -321,6 +322,7 @@ public class FeatureToggleCheckerGroovyTest {
 
     @Test
     public void testGetPermissions_AnonPermissions() throws Exception {
+        Whitebox.setInternalState(featureToggleCheckerGroovy, "actionContext", actionContext);
         featureToggleCheckerGroovy.setPermissions(new Permissions());
         featureToggleCheckerGroovy.getPermissions();
         verify(actionContext).getSession();
