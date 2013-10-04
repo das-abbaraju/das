@@ -29,6 +29,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private CacheManager cacheManager;
 	private Permissions permissions;
 	private Map<String, Object> dynamicToggleVariables = new HashMap<String, Object>();
+    private ActionContext actionContext;
 
 	@Autowired
 	private FeatureToggleProvider featureToggleProvider;
@@ -197,9 +198,9 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	}
 
 	public Permissions getPermissions() {
-        if (permissions == null) {
+        if (permissions == null || permissions.getAccountId() == 0 || permissions.getUserId() == 0) {
             try {
-                permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+                permissions = (Permissions) getActionContext().getSession().get("permissions");
             } catch (Exception e) {
                 logger.warn("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
             }
@@ -208,8 +209,19 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		return permissions;
 	}
 
-	public void setPermissions(Permissions permissions) {
-		this.permissions = permissions;
-	}
+    public void setPermissions(Permissions permissions) {
+        this.permissions = permissions;
+    }
 
+    public ActionContext getActionContext() {
+        if (actionContext == null) {
+            actionContext = ActionContext.getContext();
+        }
+
+        return actionContext;
+    }
+
+    public void setActionContext(ActionContext actionContext) {
+        this.actionContext = actionContext;
+    }
 }

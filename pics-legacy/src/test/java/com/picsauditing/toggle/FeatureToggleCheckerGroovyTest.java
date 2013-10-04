@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.*;
 import groovy.lang.Script;
 
@@ -53,6 +54,8 @@ public class FeatureToggleCheckerGroovyTest {
 	private Permissions permissions;
 	@Mock
 	private Logger logger;
+    @Mock
+    private ActionContext actionContext;
 
 	@Before
 	public void setUp() throws Exception {
@@ -67,6 +70,7 @@ public class FeatureToggleCheckerGroovyTest {
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "featureToggleProvider", featureToggleProvider);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "appPropertyDAO", appPropertyDAO);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "logger", logger);
+        Whitebox.setInternalState(featureToggleCheckerGroovy, "actionContext", actionContext);
 
 		when(appPropertyDAO.find(toggleName)).thenReturn(appPropertyFeature);
 
@@ -306,6 +310,20 @@ public class FeatureToggleCheckerGroovyTest {
 
         when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
         falseScript(scriptBody);
+    }
+
+    @Test
+    public void testGetPermissions_NullPermissions() throws Exception {
+        featureToggleCheckerGroovy.setPermissions(null);
+        featureToggleCheckerGroovy.getPermissions();
+        verify(actionContext).getSession();
+    }
+
+    @Test
+    public void testGetPermissions_AnonPermissions() throws Exception {
+        featureToggleCheckerGroovy.setPermissions(new Permissions());
+        featureToggleCheckerGroovy.getPermissions();
+        verify(actionContext).getSession();
     }
 
     private void trueScript(String scriptBody) throws Exception {
