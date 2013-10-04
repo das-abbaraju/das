@@ -23,7 +23,7 @@ public class VATWebValidator {
                     + ".  This is potentially business critical!");
         }
 
-        if (!result.equals("true")) {
+        if (!"true".equals(result)) {
             throw new ValidationException();
         }
     }
