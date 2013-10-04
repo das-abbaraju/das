@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset pschlesinger:1
+--changeset pschlesinger:2
 SELECT IFNULL(column_name, null) INTO @colName
 FROM information_schema.columns
 WHERE table_name = 'ref_sap_business_unit'
