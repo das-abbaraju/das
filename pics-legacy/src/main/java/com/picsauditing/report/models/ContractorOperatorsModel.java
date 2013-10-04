@@ -45,6 +45,7 @@ public class ContractorOperatorsModel extends AbstractModel {
 		contractor.alias = "Contractor";
 		contractor.minimumImportance = FieldImportance.Average;
 
+        contractor.join(ContractorTable.Watch);
         contractor.join(ContractorTable.Tag);
 
         ModelSpec csr = contractor.join(ContractorTable.CustomerService);
@@ -79,9 +80,6 @@ public class ContractorOperatorsModel extends AbstractModel {
         if (permissions.isOperatorCorporate()) {
             Field operatorName = fields.get("ContractorOperatorOperatorName".toUpperCase());
             operatorName.setUrl("FacilitiesEdit.action?operator={ContractorOperatorOperatorID}");
-        }
-        if (!permissions.isPicsEmployee()) {
-            fields.remove("ContractorOperatorBaselineFlag".toUpperCase());
         }
 
         return fields;

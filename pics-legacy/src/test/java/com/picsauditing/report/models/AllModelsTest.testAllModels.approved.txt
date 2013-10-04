@@ -739,6 +739,8 @@ ContractorSafetyRisk
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
+ContractorWatchCreationDate
+ContractorWatchwatch
 CustomerServiceEndDate
 CustomerServiceOwnerPercent
 CustomerServiceRole
