@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.*;
 import groovy.lang.Script;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,7 +72,11 @@ public class FeatureToggleCheckerGroovyTest {
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "featureToggleProvider", featureToggleProvider);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "appPropertyDAO", appPropertyDAO);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "logger", logger);
-        featureToggleCheckerGroovy.setActionContext(ActionContext.getContext());
+
+        HashMap<String,Object> sessionContext = new HashMap<String, Object>();
+        sessionContext.put("permissions",permissions);
+        ActionContext context = new ActionContext(sessionContext);
+        featureToggleCheckerGroovy.setActionContext(context);
 
 		when(appPropertyDAO.find(toggleName)).thenReturn(appPropertyFeature);
 
