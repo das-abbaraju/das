@@ -297,6 +297,13 @@ function loadStatus(caoID, addUserNote){
 		</div>
 	</s:if>
 
+    <s:if test="isRollupAudit()">
+        <div class="info">
+            <p><strong>Please check answers marked with</strong><img src="images/icon-magic.png" class="magic-icon"/></p>
+            <p>We've auto-filled some answers based off of previous audits. Please review the marked answers as they may be inaccurate due to incomplete audits.</p>
+        </div>
+    </s:if>
+
 	<s:if test="auditID > 0 && showCaoTable">
 		<div id="auditHeader" class="auditHeader">
 			<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">

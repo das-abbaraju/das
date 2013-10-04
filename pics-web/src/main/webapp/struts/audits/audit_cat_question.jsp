@@ -97,7 +97,14 @@
             <s:param name="auditID">${conAudit.id}</s:param>
         </s:url>
 
-        <a href="${question_number_url}#categoryID=${category.topParent.id}&questionID=${q.id}" class="questionNumber"><s:property value="#q.expandedNumber"/></a>
+        <div id="icon-and-question-number">
+            <s:set var="isRollupQuestion" value="isRollupQuestion(#q)" />
+            <s:if test="#isRollupQuestion">
+                <img src="images/icon-magic.png" />
+            </s:if>
+
+            <a href="${question_number_url}#categoryID=${category.topParent.id}&questionID=${q.id}" class="questionNumber"><s:property value="#q.expandedNumber"/></a>
+        </div>
 
 		<s:property value="getStrippedHref(#q.name)" escape="false"/>
 

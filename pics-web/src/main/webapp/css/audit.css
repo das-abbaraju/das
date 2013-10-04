@@ -146,8 +146,7 @@ h3.subCategory {
 	font-size: 22px;
 }
 
-.categoryNumber, 
-.questionNumber 
+.categoryNumber
 {
 	display: block;
 	float: right;
@@ -165,6 +164,17 @@ h3.subCategory {
 {
 	color: #8E8D8B;
 	padding-right: 13px;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 0 18px 5px 10px;
+}
+
+#icon-and-question-number {
+    float: right;
+}
+
+.magic-icon {
+    margin-left: 10px;
 }
 
 .audit_category .audit_category .categoryNumber
