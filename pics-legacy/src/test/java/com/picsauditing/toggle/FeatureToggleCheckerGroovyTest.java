@@ -23,6 +23,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -78,6 +79,11 @@ public class FeatureToggleCheckerGroovyTest {
 		Cache cache = cacheManager.getCache(cacheName);
 		cache.removeAll();
 	}
+
+    @After
+    public void tearDown() throws Exception {
+        featureToggleCheckerGroovy.setActionContext(null);
+    }
 
 	@Ignore("too slow to run every time")
 	@Test
