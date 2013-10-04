@@ -314,7 +314,7 @@ public class FeatureToggleCheckerGroovyTest {
 
     @Test
     public void testGetPermissions_NullPermissions() throws Exception {
-        Whitebox.setInternalState(featureToggleCheckerGroovy, "actionContext", actionContext);
+        featureToggleCheckerGroovy.setActionContext(actionContext);
         featureToggleCheckerGroovy.setPermissions(null);
         featureToggleCheckerGroovy.getPermissions();
         verify(actionContext).getSession();
@@ -322,7 +322,7 @@ public class FeatureToggleCheckerGroovyTest {
 
     @Test
     public void testGetPermissions_AnonPermissions() throws Exception {
-        Whitebox.setInternalState(featureToggleCheckerGroovy, "actionContext", actionContext);
+        featureToggleCheckerGroovy.setActionContext(actionContext);
         featureToggleCheckerGroovy.setPermissions(new Permissions());
         featureToggleCheckerGroovy.getPermissions();
         verify(actionContext).getSession();
