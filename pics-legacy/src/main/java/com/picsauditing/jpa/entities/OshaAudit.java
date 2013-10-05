@@ -56,6 +56,8 @@ public class OshaAudit implements OshaVisitable {
     private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
     public static boolean isSafetyStatisticsCategory(int categoryId) {
+        // why not?
+        // return SAFETY_STATISTICS_CATEGORY_IDS.contains(categoryId);
         for (int safetyStatisticsCategory : SAFETY_STATISTICS_CATEGORY_IDS) {
             if (categoryId == safetyStatisticsCategory)
                 return true;

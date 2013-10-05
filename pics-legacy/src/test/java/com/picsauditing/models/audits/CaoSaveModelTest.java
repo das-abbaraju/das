@@ -142,6 +142,9 @@ public class CaoSaveModelTest extends PicsTest {
 	@Test
 	public void testAddCommentsToNote() throws Exception {
 		AuditData normalAuditData = setupAuditData();
+        while (OshaAudit.SAFETY_STATISTICS_CATEGORY_IDS.contains(normalAuditData.getQuestion().getCategory().getId())) {
+            normalAuditData.getQuestion().setCategory(EntityFactory.makeAuditCategory());
+        }
 
 		assertEquals("Comment : O hai\n", caoSaveModel.addAuditDataComment(normalAuditData));
 	}
@@ -191,9 +194,7 @@ public class CaoSaveModelTest extends PicsTest {
 	}
 
 	private AuditData setupAuditData() {
-		AuditData auditData = new AuditData();
-
-		auditData = EntityFactory.makeAuditData("Yes");
+        AuditData auditData = EntityFactory.makeAuditData("Yes");
 
 		auditData.setComment("O hai");
 		auditData.setVerified(false);
