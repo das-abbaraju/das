@@ -299,8 +299,8 @@ function loadStatus(caoID, addUserNote){
 
     <s:if test="isRollupAudit()">
         <div class="info">
-            <p><strong>Please check answers marked with</strong><img src="images/icon-magic.png" class="magic-icon"/></p>
-            <p>We've auto-filled some answers based off of previous audits. Please review the marked answers as they may be inaccurate due to incomplete audits.</p>
+            <p><strong><s:text name="Audit.message.PleaseCheckAnswers" /></strong><img src="images/icon-magic.png" class="magic-icon"/></p>
+            <p><s:text name="Audit.message.AutofilledAnswersMayBeInaccurate" /></p>
         </div>
     </s:if>
 
