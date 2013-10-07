@@ -32,7 +32,7 @@ import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.EncodedMessage;
 
-public class PasswordValidatorTest extends PicsTranslationTest {
+public class PasswordValidatorTest  {
 
 	private PasswordValidator passwordValidator;
 
@@ -47,10 +47,6 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
-
-		when(translationService.getText(anyString(), any(Locale.class), anyList())).then(returnArgumentsToString());
-		when(translationService.getText(anyString(), any(Locale.class))).then(returnArgumentsToString());
 
 		passwordValidator = new PasswordValidator();
 
@@ -95,7 +91,7 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
 		assertTrue(errorMessages.size() > 0);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordCannotBeUserName", user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordCannotBeUserName"));
 	}
 
 	@Test
@@ -105,21 +101,18 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
 		assertTrue(errorMessages.size() > 0);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters",
-				user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustContainNumbersAndCharacters"));
 
 		newPassword = "1234567890";
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
 		assertTrue(errorMessages.size() > 0);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters",
-				user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustContainNumbersAndCharacters"));
 
 		newPassword = "1234567abc";
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
-		assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters",
-				user)));
+		assertFalse(errorMessages.contains("PasswordValidator.error.PasswordMustContainNumbersAndCharacters"));
 	}
 
 	@Test
@@ -130,7 +123,7 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
 		assertTrue(errorMessages.size() > 0);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordCannotBeCurrentPassword", user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordCannotBeCurrentPassword"));
 	}
 
 	@Test
@@ -140,8 +133,8 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
 		assertTrue(errorMessages.size() > 0);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user,
-				PasswordSecurityLevel.Normal.minLength)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustMeetMinimumLength::" +
+                PasswordSecurityLevel.Normal.minLength));
 	}
 
 	@Test
@@ -151,10 +144,10 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
 		assertTrue(errorMessages.size() > 0);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user,
-				PasswordSecurityLevel.High.minLength)));
-		assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordMustBeMixedCase", user)));
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainSpecialCharacter", user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustMeetMinimumLength::" +
+                PasswordSecurityLevel.High.minLength));
+		assertFalse(errorMessages.contains("PasswordValidator.error.PasswordMustBeMixedCase"));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustContainSpecialCharacter"));
 	}
 
 	@Test
@@ -164,10 +157,10 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
 
 		assertTrue(errorMessages.size() > 0);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user,
-				PasswordSecurityLevel.Maximum.minLength)));
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustBeMixedCase", user)));
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainSpecialCharacter", user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustMeetMinimumLength::" +
+				PasswordSecurityLevel.Maximum.minLength));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustBeMixedCase"));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordMustContainSpecialCharacter"));
 	}
 
 	@Test
@@ -176,7 +169,7 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 
 		String newPassword = "hello1";
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
-		assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
+		assertFalse(errorMessages.contains("PasswordValidator.error.PasswordUsedTooRecently"));
 	}
 
 	@Test
@@ -185,11 +178,11 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 
 		String newPassword = "hello1";
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordUsedTooRecently"));
 
 		newPassword = "hello6";
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
-		assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
+		assertFalse(errorMessages.contains("PasswordValidator.error.PasswordUsedTooRecently"));
 	}
 
 	@Test
@@ -198,11 +191,11 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 
 		String newPassword = "hello1";
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
-		assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
+		assertTrue(errorMessages.contains("PasswordValidator.error.PasswordUsedTooRecently"));
 
 		newPassword = "hello6";
 		errorMessages = passwordValidator.validatePassword(user, newPassword);
-		assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
+		assertFalse(errorMessages.contains("PasswordValidator.error.PasswordUsedTooRecently"));
 	}
 
 	@Test
@@ -243,14 +236,6 @@ public class PasswordValidatorTest extends PicsTranslationTest {
 
 	private Date getDateXMonthsAgo(int monthsAgo) {
 		return DateBean.addMonths(new Date(), monthsAgo);
-	}
-
-	private String getText(String key, User user) {
-		return passwordValidator.getText(key, user);
-	}
-
-	private String getText(String key, User user, Object... args) {
-		return passwordValidator.getText(key, user, args);
 	}
 
 	private Answer<String> returnArgumentsToString() {

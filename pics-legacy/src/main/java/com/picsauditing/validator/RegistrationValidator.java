@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +56,12 @@ public class RegistrationValidator implements Validator {
 				valueStack.findString("countrySubdivision"),
 				(LanguageModel) valueStack.findValue("supportedLanguages"), valueStack.findString(CONFIRM_PASSWORD_KEY));
 		for (String key : errors.keySet()) {
-			validatorContext.addFieldError(key, getText(errors.get(key), validatorContext.getLocale()));
+            String[] params = errors.get(key).split("::");
+            if (params.length > 1) {
+                validatorContext.addFieldError(key, getText(params[0], validatorContext.getLocale(), params[1]));
+            } else {
+			    validatorContext.addFieldError(key, getText(errors.get(key), validatorContext.getLocale()));
+            }
 		}
 	}
 
@@ -225,4 +231,7 @@ public class RegistrationValidator implements Validator {
 		return TranslationServiceFactory.getTranslationService().getText(key, locale);
 	}
 
+    private String getText(String key, Locale locale, String... args) {
+        return TranslationServiceFactory.getTranslationService().getText(key, locale, args);
+    }
 }
