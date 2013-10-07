@@ -91,6 +91,7 @@
             <s:else>
                 -
             </s:else>
+            <%-- suggestions are available but not needed at this time --%>
             <s:set var="suggestion" value = "getSuggestion(#q)" />
             <s:if test="#suggestion != null" >
                 <span class="magic" ><s:property value="#suggestion.suggestion" /></span>

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-public class PasswordValidator extends BasicTranslationSupport {
+public class PasswordValidator {
 
 	public static final String REGEX_ALL_LETTERS = ".*[a-zA-Z].*";
 	public static final String REGEX_ALL_NUMBERS = ".*[0-9].*";
@@ -30,16 +30,16 @@ public class PasswordValidator extends BasicTranslationSupport {
         }
 
         if (newPassword.equalsIgnoreCase(user.getUsername())) {
-            errorMessages.addElement(getText("PasswordValidator.error.PasswordCannotBeUserName", user));
+            errorMessages.addElement("PasswordValidator.error.PasswordCannotBeUserName");
         }
 
         if (!newPassword.matches(REGEX_ALL_LETTERS) || !newPassword.matches(REGEX_ALL_NUMBERS)) {
-            errorMessages.addElement(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters", user));
+            errorMessages.addElement("PasswordValidator.error.PasswordMustContainNumbersAndCharacters");
         }
 
         String encryptedNewPassword = EncodedMessage.hash(newPassword + user.getId());
         if (encryptedNewPassword.equals(user.getPassword())) {
-            errorMessages.addElement(getText("PasswordValidator.error.PasswordCannotBeCurrentPassword", user));
+            errorMessages.addElement("PasswordValidator.error.PasswordCannotBeCurrentPassword");
         }
 
         enforceAccountPasswordPreferences(user, newPassword, errorMessages);
@@ -56,12 +56,12 @@ public class PasswordValidator extends BasicTranslationSupport {
         }
 
         if (newPassword.length() < passwordSecurityLevel.minLength) {
-            errorMessages.addElement(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user, passwordSecurityLevel.minLength));
+            errorMessages.addElement("PasswordValidator.error.PasswordMustMeetMinimumLength::" + passwordSecurityLevel.minLength);
         }
 
         if (passwordSecurityLevel.enforceMixedCase) {
             if (!Strings.isMixedCase(newPassword)) {
-                errorMessages.addElement(getText("PasswordValidator.error.PasswordMustBeMixedCase", user));
+                errorMessages.addElement("PasswordValidator.error.PasswordMustBeMixedCase");
             }
         }
 
@@ -69,13 +69,13 @@ public class PasswordValidator extends BasicTranslationSupport {
             boolean found = Pattern.compile(REGEX_NON_WORD_CHARACTER).matcher(newPassword).find();
 
             if (!found) {
-                errorMessages.addElement(getText("PasswordValidator.error.PasswordMustContainSpecialCharacter", user));
+                errorMessages.addElement("PasswordValidator.error.PasswordMustContainSpecialCharacter");
             }
         }
 
         if (passwordSecurityLevel.enforceHistory()) {
             if (passwordHistoryListContainsPassword(newPassword, user, passwordSecurityLevel)) {
-                errorMessages.add(getText("PasswordValidator.error.PasswordUsedTooRecently", user));
+                errorMessages.add("PasswordValidator.error.PasswordUsedTooRecently");
             }
         }
     }

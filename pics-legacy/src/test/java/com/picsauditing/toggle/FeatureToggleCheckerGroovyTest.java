@@ -11,10 +11,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.*;
 import groovy.lang.Script;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,6 +24,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,6 +56,8 @@ public class FeatureToggleCheckerGroovyTest {
 	private Permissions permissions;
 	@Mock
 	private Logger logger;
+    @Mock
+    private ActionContext actionContext;
 
 	@Before
 	public void setUp() throws Exception {
@@ -68,12 +73,22 @@ public class FeatureToggleCheckerGroovyTest {
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "appPropertyDAO", appPropertyDAO);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "logger", logger);
 
+        HashMap<String,Object> sessionContext = new HashMap<String, Object>();
+        sessionContext.put("permissions",permissions);
+        ActionContext context = new ActionContext(sessionContext);
+        featureToggleCheckerGroovy.setActionContext(context);
+
 		when(appPropertyDAO.find(toggleName)).thenReturn(appPropertyFeature);
 
 		CacheManager cacheManager = CacheManager.getInstance();
 		Cache cache = cacheManager.getCache(cacheName);
 		cache.removeAll();
 	}
+
+    @After
+    public void tearDown() throws Exception {
+        featureToggleCheckerGroovy.setActionContext(null);
+    }
 
 	@Ignore("too slow to run every time")
 	@Test
@@ -306,6 +321,22 @@ public class FeatureToggleCheckerGroovyTest {
 
         when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
         falseScript(scriptBody);
+    }
+
+    @Test
+    public void testGetPermissions_NullPermissions() throws Exception {
+        featureToggleCheckerGroovy.setActionContext(actionContext);
+        featureToggleCheckerGroovy.setPermissions(null);
+        featureToggleCheckerGroovy.getPermissions();
+        verify(actionContext).getSession();
+    }
+
+    @Test
+    public void testGetPermissions_AnonPermissions() throws Exception {
+        featureToggleCheckerGroovy.setActionContext(actionContext);
+        featureToggleCheckerGroovy.setPermissions(new Permissions());
+        featureToggleCheckerGroovy.getPermissions();
+        verify(actionContext).getSession();
     }
 
     private void trueScript(String scriptBody) throws Exception {

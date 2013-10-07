@@ -657,14 +657,6 @@ p.url a {
 	zoom: 1;
 }
 
-span.magic {
-    padding-left: 17px;
-    margin-left: 25px;
-    background: url('../images/icon-magic.png') no-repeat left center;
-    zoom: 1;
-}
-
-
 div.contact {
 	position: relative;
 	top: -3px;
