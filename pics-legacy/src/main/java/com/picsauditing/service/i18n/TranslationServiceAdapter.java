@@ -250,7 +250,7 @@ public class TranslationServiceAdapter implements TranslationService {
     */
 	@Override
 	public Map<String, String> getText(String key) {
-        List locales = translateRestClient().allLocalesForKey(key);
+        List<String> locales = translateRestClient().allLocalesForKey(key);
 
         Map<String, String> translationsToReturn = new HashMap();
         Map<String, String> cachedTranslations = updateCacheWithLocalesNotPreviouslyRequested(key, locales);
@@ -271,25 +271,27 @@ public class TranslationServiceAdapter implements TranslationService {
         return translationsForJS;
     }
 
-    private Map<String, String> updateCacheWithLocalesNotPreviouslyRequested(String key, List locales) {
-        Map<String, String> cachedTranslations = cachedTranslationsForKey(key);
+    private Map<String, String> updateCacheWithLocalesNotPreviouslyRequested(String key, List<String> locales) {
+        Map<String, String> cachedTranslations = new HashMap<>();
 
-        for (int i = 0; i < locales.size(); i++) {
-            String locale = (String) locales.get(i);
-            if (!cachedTranslations.containsKey(locale)) {
-                getText(key, locale);
-            }
+        for (String locale : locales) {
+            getText(key, locale);
         }
-        return cachedTranslationsForKey(key);
-    }
 
-    private Map<String, String> cachedTranslationsForKey(String key) {
-        Element element = cache.get(key);
-        Map<String,String> cachedTranslations =  new HashMap<>();
-        if (element != null && element.getObjectValue() != null) {
-            cachedTranslations =  (Map<String,String>) element.getObjectValue();
+        Table<String, String, String> requestedlocaleToReturnedLocaleToText = cachedTranslationsForKey(key);
+        for (String locale : locales) {
+            cachedTranslations.putAll(requestedlocaleToReturnedLocaleToText.row(locale));
         }
         return cachedTranslations;
+    }
+
+    private Table<String, String, String> cachedTranslationsForKey(String key) {
+        Element element = cache.get(key);
+        Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
+        if (element != null && element.getObjectValue() != null) {
+            requestedlocaleToReturnedLocaleToText =  (Table<String, String, String>) element.getObjectValue();
+        }
+        return requestedlocaleToReturnedLocaleToText;
     }
 
     @Override
