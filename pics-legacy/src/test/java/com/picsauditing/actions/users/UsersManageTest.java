@@ -1,8 +1,43 @@
 package com.picsauditing.actions.users;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
 import com.opensymphony.xwork2.Action;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -11,27 +46,12 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.jpa.entities.builders.UserBuilder;
 import com.picsauditing.model.group.GroupManagementService;
 import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.validator.InputValidator;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 public class UsersManageTest extends PicsActionTest {
 
@@ -499,6 +519,43 @@ public class UsersManageTest extends PicsActionTest {
 		user.setAccount(account);
 		usersManage.setUser(user);
 		usersManage.setAccount(account);
+	}
+	
+	/*private boolean isUserNotUnderAccount() {
+		return user != null && user.getAccount() != null && user.getAccount().getId() != permissions.getAccountId();
+	}*/
+	
+	@Test
+	public void testIsUserNotUnderAccount_NullUser() throws Exception {
+		Boolean result = Whitebox.invokeMethod(usersManage, "isUserNotUnderAccount", (User) null, (Permissions) null);
+		
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testIsUserNotUnderAccount_UserAccountIsNull() throws Exception {
+		User user = new User();
+		
+		Boolean result = Whitebox.invokeMethod(usersManage, "isUserNotUnderAccount", user, (Permissions) null);
+		
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testIsUserNotUnderAccount() throws Exception {
+		User user = setupTest_IsUserNotUnderAccount();
+		
+		Boolean result = Whitebox.invokeMethod(usersManage, "isUserNotUnderAccount", user, permissions);
+		
+		assertTrue(result);
+	}
+
+	private User setupTest_IsUserNotUnderAccount() {
+		Account account = new Account();
+		account.setId(123);
+		User user = new UserBuilder().account(account).build();
+		when(permissions.getAccountId()).thenReturn(456);
+		return user;
 	}
 
 }

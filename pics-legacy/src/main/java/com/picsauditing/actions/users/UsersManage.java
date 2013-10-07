@@ -1,11 +1,52 @@
 package com.picsauditing.actions.users;
 
+import java.net.URLEncoder;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.struts2.ServletActionContext;
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.*;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.UserAccessDAO;
+import com.picsauditing.dao.UserGroupDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.UserSwitch;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.group.GroupManagementService;
@@ -16,27 +57,14 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.struts2.ServletActionContext;
-import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import java.net.URLEncoder;
-import java.sql.SQLException;
-import java.util.*;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {
 	protected User user;
 	protected Account account;
-
+	
 	private boolean sendActivationEmail = false;
 	private boolean setPrimaryAccount = false;
 
@@ -85,10 +113,11 @@ public class UsersManage extends PicsActionSupport {
 	@Autowired
 	private UserLoginLogDAO userLoginLogDAO;
 
-	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
+	private final Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	private final Logger logger = LoggerFactory.getLogger(UsersManage.class);
 
+	@Override
 	public String execute() throws Exception {
 		startup();
 
@@ -472,7 +501,7 @@ public class UsersManage extends PicsActionSupport {
 
 		// Make sure we can edit users in this account
 		boolean permissionsDoesNotMatchAccount = permissions.getAccountId() != account.getId();
-		boolean userNotUnderAccount = user != null && user.getAccount().getId() != permissions.getAccountId();
+		boolean userNotUnderAccount = isUserNotUnderAccount(user, permissions);
 
 		if (permissionsDoesNotMatchAccount || userNotUnderAccount) {
 			if (!permissions.isPicsEmployee() && !permissions.isOperatorCorporate()) {
@@ -496,6 +525,10 @@ public class UsersManage extends PicsActionSupport {
 		if (account != null && account.isContractor()) {
 			isActive = "All";
 		}
+	}
+
+	private boolean isUserNotUnderAccount(User user, Permissions permissions) {
+		return user != null && user.getAccount() != null && user.getAccount().getId() != permissions.getAccountId();
 	}
 
 	private boolean isPrimaryUserEstablished() {
@@ -689,6 +722,7 @@ public class UsersManage extends PicsActionSupport {
 		this.userIsGroup = userIsGroup;
 	}
 
+	@Override
 	public User getUser() {
 		return user;
 	}
@@ -697,6 +731,7 @@ public class UsersManage extends PicsActionSupport {
 		this.user = user;
 	}
 
+	@Override
 	public Account getAccount() {
 		return account;
 	}
@@ -1065,6 +1100,7 @@ public class UsersManage extends PicsActionSupport {
 	public Locale[] getSortedLocales() {
 		Locale[] locales = Locale.getAvailableLocales();
 		Comparator<Locale> localeComparator = new Comparator<Locale>() {
+			@Override
 			public int compare(Locale locale1, Locale locale2) {
 				return locale1.getDisplayName().compareTo(locale2.getDisplayName());
 			}
@@ -1077,6 +1113,7 @@ public class UsersManage extends PicsActionSupport {
 	public List<Locale> getSortedSpokenLanguages() {
 		List<Locale> languages = user.getSpokenLanguages();
 		Comparator<Locale> localeComparator = new Comparator<Locale>() {
+			@Override
 			public int compare(Locale locale1, Locale locale2) {
 				return locale1.getDisplayName().compareTo(locale2.getDisplayName());
 			}
@@ -1100,6 +1137,7 @@ public class UsersManage extends PicsActionSupport {
 	public List<Country> getSortedCountryList() {
 		List<Country> countryList = countryDAO.findAll();
 		Collections.sort(countryList, new Comparator<Country>() {
+			@Override
 			public int compare(Country o1, Country o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
