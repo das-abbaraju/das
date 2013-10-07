@@ -3,19 +3,20 @@ package com.picsauditing.service.i18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
-import com.picsauditing.model.i18n.TranslationLookupData;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.sun.jersey.api.client.*;
 import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import com.picsauditing.models.database.TranslationUsage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TranslateRestClient {
     private static final Logger logger = LoggerFactory.getLogger(TranslateRestClient.class);
+    private static final ObjectMapper mapper = new ObjectMapper(); // thread-safe as long as we don't modify the configuration
     private static final String TRANSLATION_URL =
             ((System.getProperty("translation.server") == null) ? "http://translate.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
     private static final String LOCALES_URL = TRANSLATION_URL + "locales/";
@@ -103,12 +104,19 @@ public class TranslateRestClient {
         return true;
     }
 
-    public boolean updateTranslationLog(TranslationLookupData lookupData) {
+    public boolean updateTranslationLog(List<TranslationUsage> lookupData) {
+        return doUpdateTranslationLog(lookupData);
+    }
+
+    public boolean updateTranslationLog(TranslationUsage lookupData) {
+        return doUpdateTranslationLog(lookupData);
+    }
+
+    private boolean doUpdateTranslationLog(Object lookupData) {
         Client client = client();
         WebResource webResource = client.resource(LOG_URL);
         if (webResource != null) {
             try {
-                ObjectMapper mapper = new ObjectMapper();
                 String jsonString = mapper.writeValueAsString(lookupData);
                 ClientResponse response = webResource
                         .accept(MediaType.APPLICATION_JSON_VALUE)

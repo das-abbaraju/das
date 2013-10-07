@@ -276,19 +276,20 @@
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
-    <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationLogger"/>
-    <bean id="translationUsageListener" class="com.picsauditing.model.i18n.TranslationUsageListener"/>
+    <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationUsageLogSynchronizer"/>
     <bean id="translateRestClient" class="com.picsauditing.service.i18n.TranslateRestClient"/>
+    <bean id="translationUsageLogger" class="com.picsauditing.model.i18n.TranslationKeyAggregateUsageLogger"/>
+    <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.TranslationUsageDAO"/>
 
     <bean id="taskExecutor"
           class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="100"/>
-        <property name="maxPoolSize" value="1000"/>
-        <property name="queueCapacity" value="2000"/>
+        <property name="maxPoolSize" value="100"/>
+        <property name="queueCapacity" value="0"/>
         <property name="waitForTasksToCompleteOnShutdown" value="true"/>
     </bean>
 
-    <bean id="translationLookupEventListener" class="com.picsauditing.model.events.TranslationLookupEventListener" scope="prototype"/>
+    <bean id="translationLookupEventListener" class="com.picsauditing.model.events.i18n.TranslationLookupEventListener" scope="prototype"/>
 
     <bean id="applicationEventMulticaster"
           class="org.springframework.context.event.SimpleApplicationEventMulticaster">
