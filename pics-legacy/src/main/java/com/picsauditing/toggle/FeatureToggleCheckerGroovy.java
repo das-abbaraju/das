@@ -200,7 +200,8 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 
 	public Permissions getPermissions() {
         if (permissions == null || permissions.getAccountId() == 0 || permissions.getUserId() == 0) {
-            System.out.println("permissions has the account of " + permissions);
+            if (permissions != null)
+                System.out.println("permissions has the account of " + permissions);
             System.out.println("permission needs to be refreshed");
             try {
                 permissions = (Permissions) getActionContext().getSession().get("permissions");
@@ -208,7 +209,8 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
                 logger.warn("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
             }
 
-            System.out.println("new permissions has the account of " + permissions.getAccountId());
+            if (permissions != null)
+                System.out.println("new permissions has the account of " + permissions.getAccountId());
         }
 
 		return permissions;
