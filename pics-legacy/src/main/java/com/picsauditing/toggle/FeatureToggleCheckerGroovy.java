@@ -199,8 +199,8 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	}
 
 	public Permissions getPermissions() {
-        System.out.println("permissions has the account of " + permissions.getAccountId());
         if (permissions == null || permissions.getAccountId() == 0 || permissions.getUserId() == 0) {
+            System.out.println("permissions has the account of " + permissions);
             System.out.println("permission needs to be refreshed");
             try {
                 permissions = (Permissions) getActionContext().getSession().get("permissions");
