@@ -1,13 +1,9 @@
 <beans:beans xmlns="http://www.springframework.org/schema/rabbit"
 	xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:tx="http://www.springframework.org/schema/tx" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
-	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd" 
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd"
 	default-autowire="byName">
 
 	<!--  the connection settings for this are in /resources/amqp_connection.properties -->
@@ -95,13 +91,6 @@
 	  </bindings>
 	</direct-exchange>
 	
-    <queue id="translation-usage" name="translation-usage" />
-    <direct-exchange name="translation-usage-exchange">
-        <bindings>
-            <binding queue="translation-usage" key="translation-usage"/>
-        </bindings>
-    </direct-exchange>
-
 	<template message-converter="messageConverter" id="FlagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
 	<beans:bean id="FlagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
 		<beans:property name="amqpTemplate" ref="FlagChangeTemplate" />
@@ -117,12 +106,6 @@
 	</beans:bean>
 
     <template message-converter="messageConverter" id="CsrAssignmentSingleTemplate" connection-factory="connectionFactory" exchange="csr-assignments-single-exchange" queue="csr-assignments-single"/>
-
-    <template message-converter="messageConverter" id="TranslationUsageTemplate" connection-factory="connectionFactory" exchange="translation-usage-exchange"/>
-    <beans:bean id="TranslationUsagePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
-        <beans:property name="amqpTemplate" ref="TranslationUsageTemplate" />
-        <beans:property name="featureToggleName" value="Toggle.TranslationServiceAdapter" />
-    </beans:bean>
 
     <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
         <beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
@@ -149,9 +132,5 @@
 	<beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter">
 		<beans:property name="javaTypeMapper" ref="defaultJavaTypeMapper"/>
 	</beans:bean>
-
-    <listener-container id="translationLoggerListenerContainer" connection-factory="connectionFactory" concurrency="1" requeue-rejected="false" >
-        <listener queues="translation-usage" ref="translationUsageListener" method="onMessage" />
-    </listener-container>
 
 </beans:beans>

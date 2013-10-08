@@ -1,4 +1,4 @@
-package com.picsauditing.model.events;
+package com.picsauditing.model.events.i18n;
 
 import org.springframework.context.ApplicationEvent;
 

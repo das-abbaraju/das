@@ -1,7 +1,6 @@
-package com.picsauditing.model.events;
+package com.picsauditing.model.events.i18n;
 
-import com.picsauditing.messaging.Publisher;
-import com.picsauditing.model.i18n.TranslationLookupData;
+import com.picsauditing.model.i18n.TranslationUsageLogger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,7 +15,7 @@ public class TranslationLookupEventListenerTest {
     private TranslationLookupData translationLookupData;
 
     @Mock
-    private Publisher translationUsagePublisher;
+    private TranslationUsageLogger usageLogger;
     @Mock
     private TranslationLookupEvent event;
 
@@ -28,12 +27,12 @@ public class TranslationLookupEventListenerTest {
         translationLookupData = new TranslationLookupData();
 
         when(event.getSource()).thenReturn(translationLookupData);
-        Whitebox.setInternalState(translationLookupEventListener, "translationUsagePublisher", translationUsagePublisher);
+        Whitebox.setInternalState(translationLookupEventListener, "usageLogger", usageLogger);
     }
 
     @Test
     public void testOnApplicationEvent_ProxiesToPublisher() throws Exception {
         translationLookupEventListener.onApplicationEvent(event);
-        verify(translationUsagePublisher).publish(translationLookupData);
+        verify(usageLogger).logTranslationUsage(translationLookupData);
     }
 }
