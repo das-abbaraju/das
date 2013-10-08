@@ -1,5 +1,7 @@
 package com.picsauditing.toggle;
 
+import com.picsauditing.access.Permissions;
+
 public interface FeatureToggle {
 	String TOGGLE_BADGE = "Toggle.Badge_v2";
     String TOGGLE_V7CHARTS = "Toggle.ShowGoogleCharts";
@@ -37,4 +39,6 @@ public interface FeatureToggle {
 	boolean isFeatureEnabled(String toggleName);
 
 	void addToggleVariable(String name, Object value);
+
+    void setPermissions(Permissions permissions);
 }
