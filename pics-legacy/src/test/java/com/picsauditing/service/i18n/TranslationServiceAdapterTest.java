@@ -161,7 +161,7 @@ public class TranslationServiceAdapterTest {
     }
 
     private void cacheTestTranslation() throws Exception {
-        TranslationWrapper translation = new TranslationWrapper.Builder().translation(TEST_TRANSLATION_VALUE).build();
+        TranslationWrapper translation = new TranslationWrapper.Builder().translation(TEST_TRANSLATION_VALUE).locale(TEST_LOCALE.toString()).build();
         Whitebox.invokeMethod(translationService, "cacheTranslationIfReturned", new Object[]{TEST_KEY, TEST_LOCALE.toString(), translation});
     }
 

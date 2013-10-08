@@ -3,9 +3,9 @@ package com.picsauditing.service.i18n;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
-import com.picsauditing.model.events.TranslationLookupEvent;
+import com.picsauditing.model.events.i18n.TranslationLookupEvent;
 import com.picsauditing.model.general.AppPropertyProvider;
-import com.picsauditing.model.i18n.TranslationLookupData;
+import com.picsauditing.model.events.i18n.TranslationLookupData;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.SpringUtils;
@@ -29,6 +29,7 @@ public class TranslationServiceAdapter implements TranslationService {
     public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
     public static final String DEFAULT_PAGENAME = "UNKNOWN";
     public static final String DEFAULT_REFERRER = "REFERRER_UNKNOWN";
+    public static final int NUMBER_OF_LOGGING_EVENT_RETRIES = 2;
 
     private static final String CACHE_NAME = "i18n";
     private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
@@ -117,19 +118,19 @@ public class TranslationServiceAdapter implements TranslationService {
 
     private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String locale, Element element) {
         TranslationWrapper translation;
-        Map<String,String> localeToText = (Map<String,String>) element.getObjectValue();
-        if (!localeToText.containsKey(locale)) {
-            translation = cacheMiss(key, locale, localeToText);
+        Table<String, String, String> requestedlocaleToTextToReturnedLocale = (Table<String, String, String>) element.getObjectValue();
+        if (!requestedlocaleToTextToReturnedLocale.containsRow(locale)) {
+            translation = cacheMiss(key, locale, requestedlocaleToTextToReturnedLocale);
         } else {
-            translation = translationFromMap(key, locale, localeToText);
+            translation = translationFrom(key, locale, requestedlocaleToTextToReturnedLocale);
         }
         return translation;
     }
 
-    private TranslationWrapper cacheMiss(String key, String locale, Map<String, String> localeToText) {
+    private TranslationWrapper cacheMiss(String key, String locale,Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
         TranslationWrapper translation = translateRestClient().translationFromWebResource(key, locale);
         if (translation != null) {
-            localeToText.put(locale, translation.getTranslation());
+            requestedlocaleToReturnedLocaleToText.put(locale, translation.getLocale(), translation.getTranslation());
         }
         return translation;
     }
@@ -138,12 +139,11 @@ public class TranslationServiceAdapter implements TranslationService {
         return translation != null && !ERROR_STRING.equals(translation.getTranslation()) && !DEFAULT_PAGENAME.equals(pageName());
     }
 
-    // note that we're caching the requested key and locale, not the returned ones
     private void cacheTranslationIfReturned(String key, String locale, TranslationWrapper translation) {
         if (translationReturned(translation)) {
-            Map<String,String> localeToText = new HashMap<>();
-            localeToText.put(locale, translation.getTranslation());
-            Element element = new Element(key, localeToText);
+            Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
+            requestedlocaleToReturnedLocaleToText.put(locale, translation.getLocale(), translation.getTranslation());
+            Element element = new Element(key, requestedlocaleToReturnedLocaleToText);
             logger.debug("adding {} {} to cache", key, locale);
             cache.put(element);
         }
@@ -158,12 +158,14 @@ public class TranslationServiceAdapter implements TranslationService {
         }
     }
 
-    // TODO: is this a good name?
-    private TranslationWrapper translationFromMap(String key, String locale, Map<String,String> localeToText) {
+    private TranslationWrapper translationFrom(String key, String locale, Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
+        Map<String,String> foo = requestedlocaleToReturnedLocaleToText.row(locale);
+        String returnedLocale = foo.keySet().iterator().next();
+        String translation = foo.get(returnedLocale);
         return new TranslationWrapper.Builder()
             .key(key)
-            .locale(locale)
-            .translation(localeToText.get(locale))
+            .locale(returnedLocale)
+            .translation(translation)
             .build();
     }
 
@@ -172,7 +174,7 @@ public class TranslationServiceAdapter implements TranslationService {
             TranslationLookupData data = createPublishData(locale, translation);
             int notAcceptedCount = 0;
             boolean notAccepted = true;
-            while(notAccepted && notAcceptedCount < 8) {
+            while(notAccepted && notAcceptedCount < NUMBER_OF_LOGGING_EVENT_RETRIES) {
                 if (notAcceptedCount > 0) {
                     logger.warn("Retrying publish. Tries: {}", notAcceptedCount);
                 }
@@ -248,7 +250,7 @@ public class TranslationServiceAdapter implements TranslationService {
     */
 	@Override
 	public Map<String, String> getText(String key) {
-        List locales = translateRestClient().allLocalesForKey(key);
+        List<String> locales = translateRestClient().allLocalesForKey(key);
 
         Map<String, String> translationsToReturn = new HashMap();
         Map<String, String> cachedTranslations = updateCacheWithLocalesNotPreviouslyRequested(key, locales);
@@ -269,25 +271,27 @@ public class TranslationServiceAdapter implements TranslationService {
         return translationsForJS;
     }
 
-    private Map<String, String> updateCacheWithLocalesNotPreviouslyRequested(String key, List locales) {
-        Map<String, String> cachedTranslations = cachedTranslationsForKey(key);
+    private Map<String, String> updateCacheWithLocalesNotPreviouslyRequested(String key, List<String> locales) {
+        Map<String, String> cachedTranslations = new HashMap<>();
 
-        for (int i = 0; i < locales.size(); i++) {
-            String locale = (String) locales.get(i);
-            if (!cachedTranslations.containsKey(locale)) {
-                getText(key, locale);
-            }
+        for (String locale : locales) {
+            getText(key, locale);
         }
-        return cachedTranslationsForKey(key);
-    }
 
-    private Map<String, String> cachedTranslationsForKey(String key) {
-        Element element = cache.get(key);
-        Map<String,String> cachedTranslations =  new HashMap<>();
-        if (element != null && element.getObjectValue() != null) {
-            cachedTranslations =  (Map<String,String>) element.getObjectValue();
+        Table<String, String, String> requestedlocaleToReturnedLocaleToText = cachedTranslationsForKey(key);
+        for (String locale : locales) {
+            cachedTranslations.putAll(requestedlocaleToReturnedLocaleToText.row(locale));
         }
         return cachedTranslations;
+    }
+
+    private Table<String, String, String> cachedTranslationsForKey(String key) {
+        Element element = cache.get(key);
+        Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
+        if (element != null && element.getObjectValue() != null) {
+            requestedlocaleToReturnedLocaleToText =  (Table<String, String, String>) element.getObjectValue();
+        }
+        return requestedlocaleToReturnedLocaleToText;
     }
 
     @Override
