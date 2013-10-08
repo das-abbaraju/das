@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+<!--    Example changeset   -->
+    <include file="./liquibase/sshacter1_PICS-00000_ExampleChangeSetDDL.sql"/>
+    <include file="./liquibase/sshacter2_PICS-00000_ExampleChangeSetDML.sql"/>
+
+<!--    Release 6.62 (patch)   -->
+    <include file="./liquibase/kchase1PICS-12980_UpdateWorkStatus.sql"/>
+
+<!--    Release 6.63   -->
+    <include file="./liquibase/mdo4_PICS-12878_change_all_users_to_allow_switch_to_v7_except_BASF.sql"/>
+    <!--    <include file="./liquibase/mdo5_PICS-12874_add_columns_to_ref_country.sql"/> -->
+    <include file="./liquibase/dalvarado3PICS-12926_Remove_bad_myschedule_timeslots.sql"/>
+    <include file="./liquibase/sshacter3_PICS-13066_UpdatePricingForNorway.sql"/>
+    <include file="./liquibase/pschlesinger1_PICS-12857_ModifyBizUnitTblStructureAddSapCode.sql"/>
+    <include file="./liquibase/pschlesinger2_PICS-12857_ModifyBizUnitTblStructureRemoveUnneededColumns.sql"/>
+    <include file="./liquibase/pschlesinger3_PICS-12857_AddingKnownSapCodes.sql"/>
+    <include file="./liquibase/pschlesinger4_PICS-12857_DropSapCodesFromRefBizUnit.sql"/>
+
+</databaseChangeLog>
