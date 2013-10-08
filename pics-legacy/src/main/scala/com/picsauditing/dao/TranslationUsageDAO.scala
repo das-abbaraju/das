@@ -1,18 +1,13 @@
 package com.picsauditing.dao
 
-import javax.sql.DataSource
-import org.springframework.beans.factory.annotation.Autowired
 import scala.slick.driver.MySQLDriver.simple._
 import com.picsauditing.models.database.{TranslationUsages, TranslationUsage}
 import java.util.Date
 import Database.threadLocalSession
 import java.sql.SQLIntegrityConstraintViolationException
 import com.picsauditing.model.events.i18n.TranslationLookupData
-import java.text.SimpleDateFormat
 
-class TranslationUsageDAO {
-  @Autowired
-  private val dataSource:  DataSource = null;
+class TranslationUsageDAO extends PICSDataAccess {
 
   private val findIdByKeyLocalePageEnv = for {
     (msgKey, msgLocale, pageName, environment)  <- Parameters[(String, String, String, String)]
@@ -24,7 +19,7 @@ class TranslationUsageDAO {
   } yield t.id
 
   def logKeyUsage(keyUsage: TranslationLookupData) = {
-    Database.forDataSource(dataSource) withSession {
+    db withSession {
       findIdByKeyLocalePageEnv(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getEnvironment).firstOption match {
         case None => { insertNewTranslationKeyUsage(keyUsage) }
         case Some(id) => { updateTranslationKeyUsageTimeById(id) }
@@ -34,9 +29,11 @@ class TranslationUsageDAO {
 
   def updateTranslationKeyUsageTimeById(id: Long): Int = {
     val now = new Date()
-    (for {
-      usage <- TranslationUsages if usage.id === id && usage.lastUsed < new java.sql.Date(now.getTime)
-    } yield (usage.lastUsed ~ usage.synchronizedBatch ~ usage.synchronizedDate)).update(now, null, null)
+    val keyUsage = for {
+        usage <- TranslationUsages
+        if usage.id === id && usage.lastUsed < now
+      } yield usage.lastUsed ~ usage.synchronizedBatch ~ usage.synchronizedDate
+    keyUsage update(now, null, null)
   }
 
   def insertNewTranslationKeyUsage(keyUsage: TranslationLookupData) = {
@@ -63,5 +60,5 @@ class TranslationUsageDAO {
     }
   }
 
-  implicit def dateToDate(x: java.util.Date): java.sql.Date = new java.sql.Date(x.getTime)
+  implicit private[this] def dateToDate(x: java.util.Date): java.sql.Date = new java.sql.Date(x.getTime)
 }
