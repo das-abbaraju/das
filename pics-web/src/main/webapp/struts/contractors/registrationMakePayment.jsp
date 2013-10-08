@@ -182,18 +182,14 @@
 	 		</table>
 
 	 		<div class="policy">
-	 			<ul>
-		 			<li>
-		 				<s:a href="#" cssClass="view-pricing modal-link" data-url="ContractorPricing.action?con=${contractor.id}"><s:text name="RegistrationMakePayment.ViewPricing" /></s:a>
-		 			</li>
-		 			<li>
-		 				<s:a href="#" cssClass="contractor-agreement modal-link" data-url="ContractorAgreement.action?id=${contractor.id}"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
-		 			</li>
-		 		</ul>
-                <p class="phone">
+                <s:a href="#" cssClass="view-pricing modal-link" data-url="ContractorPricing.action?con=${contractor.id}"><s:text name="RegistrationMakePayment.ViewPricing" /></s:a>
+                <p>
                     <s:text name="ContractorRegistration.title" />:
                     ${contractor.country.isrPhone}
                 </p>
+                <div id="contractor_agreement">
+                    <input id="accept_contractor_agreement" type="checkbox"><s:text name="RegistrationMakePayment.AgreeToTermsAndConditions" /> <s:a href="#" cssClass="contractor-agreement modal-link" data-url="ContractorAgreement.action?id=${contractor.id}"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
+                </div>
 	 		</div>
 
 	 		<div class="modal hide fade">
@@ -292,11 +288,14 @@
 
 						<s:textfield id="ccexp" name="ccexp" theme="simple" />
 					</li>
+
 					<li class="actions">
 						<s:submit
+                            id="submit_payment_button"
 							method="completeRegistration"
 							key="button.SubmitPayment"
 							cssClass="btn success"
+                            disabled="true"
 						/>
 
                        	<a href="https://www.braintreegateway.com/merchants/89hr924yx28jmb8g/verified"
@@ -337,6 +336,7 @@
 				<s:submit id='pro-forma-button'
 					key="Registration.ProForma.Email.Button"
 					cssClass="btn success"
+                    disabled="true"
 				/>
 			</s:form>
 
