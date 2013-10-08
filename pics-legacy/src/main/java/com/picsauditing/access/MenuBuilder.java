@@ -149,7 +149,8 @@ public final class MenuBuilder {
 
             companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), "ContractorView.action", "contractor_dashboard");
             companyMenu.addChild(getText("global.Notes"), "ContractorNotes.action", "contractor_notes");
-            companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
+            if (permissions.isShowClientSitesLink())
+                companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
             companyMenu.addChild(getText("global.Users"), "UsersManage.action", "users_manage");
             companyMenu.addChild(getText("ContractorTrades.title"), contractorTrades, "contractor_trades");
             companyMenu.addChild(getText("global.Resources"), "ContractorForms.action", "contractor_forms");

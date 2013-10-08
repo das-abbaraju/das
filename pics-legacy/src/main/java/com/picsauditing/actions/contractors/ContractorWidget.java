@@ -84,6 +84,10 @@ public class ContractorWidget extends ContractorActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			return false;
 		}
+
+        if (!permissions.isShowClientSitesLink())
+            return false;
+
 		if (Calendar.getInstance().get(Calendar.MONTH) == 0)
 			if (contractor.getViewedFacilities() == null) {
 				return true;

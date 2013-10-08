@@ -359,6 +359,7 @@ public class EntityFactory {
 	public static User makeUser() {
 		User user = new User(counter++);
 		user.setAccount(new Account());
+        user.getAccount().setType("Admin");
 		user.getAccount().setId(Account.PicsID);
 		user.getAccount().setCountry(mostCommonCountries().get("US"));
 		return user;

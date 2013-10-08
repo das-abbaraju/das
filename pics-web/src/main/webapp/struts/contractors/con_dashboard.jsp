@@ -850,7 +850,7 @@
 		<div class="panel_header">
 			<s:text name="ContractorView.AllLocations"/>
 
-			<s:if test="permissions.admin || permissions.contractor || permissions.corporate">
+			<s:if test="permissions.admin || (permissions.contractor && permissions.showClientSitesLink) || permissions.corporate">
 				<a href="ContractorFacilities.action?id=${id}">
 					<s:text name="ContractorFacilities.ContractorFacilities.AddFacilities"/>
 				</a>

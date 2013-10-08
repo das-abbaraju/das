@@ -1023,6 +1023,17 @@ public class ContractorAccount extends Account implements JSONable {
         return auditList;
     }
 
+    @Transient
+    public boolean isCanContractorAddClientSites() {
+        for (OperatorAccount operator : getOperatorAndCorporateAccounts()) {
+            if (operator.getId() == 42399) { // IHG
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 	@ReportField(type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors, importance = FieldImportance.Average)
 	public boolean isRenew() {
 		return renew;

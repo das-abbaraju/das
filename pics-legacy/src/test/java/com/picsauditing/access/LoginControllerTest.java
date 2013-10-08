@@ -330,6 +330,9 @@ public class LoginControllerTest extends PicsActionTest {
         when(switchUser.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUserId()).thenReturn(NOT_ZERO);
 		when(switchUser.getLocale()).thenReturn(Locale.ENGLISH);
+        Account account = new Account();
+        account.setType("Admin");
+        when(switchUser.getAccount()).thenReturn(account);
 
 		String actionResult = loginController.execute();
 
@@ -355,6 +358,9 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_NormalLogin() throws Exception {
 		normalLoginSetup();
+        Account account = new Account();
+        account.setType("Admin");
+        when(user.getAccount()).thenReturn(account);
 		String actionResult = loginController.execute();
 		verify(permissionBuilder).login(user);
 		verify(user).setLastLogin((Date) any());
@@ -439,6 +445,9 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testExecute_RedirectNormallyIfPasswordNotExpired() throws Exception {
 		normalLoginSetup();
 		when(userService.isPasswordExpired(user)).thenReturn(false);
+        Account account = new Account();
+        account.setType("Admin");
+        when(user.getAccount()).thenReturn(account);
 
 		String actionResult = loginController.execute();
 

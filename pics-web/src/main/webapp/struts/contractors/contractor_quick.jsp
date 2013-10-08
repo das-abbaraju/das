@@ -184,7 +184,7 @@
 				</tr>
 				</s:iterator>
 			</table>
-			<s:if test="permissions.admin || permissions.contractor">
+			<s:if test="permissions.admin || permissions.showClientSitesLink">
 				<a class="edit" href="ContractorFacilities.action?id=<s:property value="contractor.id" />">
 					<s:text name="ContractorQuick.EditFacilities" />
 				</a>

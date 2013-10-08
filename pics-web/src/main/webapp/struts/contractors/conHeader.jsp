@@ -248,7 +248,7 @@ function loadStatus(caoID, addUserNote){
 					</li>
 				</s:else>
 
-				<s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser">
+                <s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser && permissions.showClientSitesLink">
 					<li>
 						<a href="ContractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('contractor_facilities')">class="current"</s:if>>
 							<s:text name="global.Facilities" />

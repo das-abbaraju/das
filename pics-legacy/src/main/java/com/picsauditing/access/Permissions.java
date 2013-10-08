@@ -13,17 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.picsauditing.access.builders.PermissionsBuilder;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.strutsutil.AjaxUtils;
 
@@ -73,6 +67,7 @@ public class Permissions implements Serializable {
 	private boolean active = false;
 	private boolean generalContractor = false;
 	private boolean gcFree = false;
+    private boolean showClientSitesLink = true;
 	private AccountStatus accountStatus = AccountStatus.Pending;
 	private long sessionCookieTimeoutInSeconds;
 	private int rememberMeTimeInSeconds;
@@ -106,6 +101,7 @@ public class Permissions implements Serializable {
         accountID = 0;
         accountName = "";
         accountType = "";
+        showClientSitesLink = true;
         country = "";
         accountStatus = AccountStatus.Pending;
         approvesRelationships = false;
@@ -179,6 +175,9 @@ public class Permissions implements Serializable {
 		accountID = user.getAccount().getId();
 		topAccountID = accountID;
 		accountType = user.getAccount().getType();
+        if ("Contractor".endsWith(accountType)) {
+            showClientSitesLink = ((ContractorAccount) user.getAccount()).isCanContractorAddClientSites();
+        }
 		accountName = user.getAccount().getName();
 		accountStatus = user.getAccount().getStatus();
 		requiresOQ = user.getAccount().isRequiresOQ();
@@ -272,7 +271,15 @@ public class Permissions implements Serializable {
 		}
 	}
 
-	public int getUserId() {
+    public boolean isShowClientSitesLink() {
+        return showClientSitesLink;
+    }
+
+    public void setShowClientSitesLink(boolean showClientSitesLink) {
+        this.showClientSitesLink = showClientSitesLink;
+    }
+
+    public int getUserId() {
 		return userID;
 	}
 
