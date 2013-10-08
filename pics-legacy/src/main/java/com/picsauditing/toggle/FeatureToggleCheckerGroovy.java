@@ -86,7 +86,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		try {
 			Object scriptResult = script.run();
 			if (scriptResult instanceof Boolean) {
-                System.out.println("script result: " + scriptResult.toString());
+                System.out.println("FeatureToggle " + toggleName + " is " + scriptResult.toString());
                 logger.debug("FeatureToggle \"{}\" is {}", toggleName, scriptResult.toString());
 				return (Boolean) scriptResult;
 			} else {
