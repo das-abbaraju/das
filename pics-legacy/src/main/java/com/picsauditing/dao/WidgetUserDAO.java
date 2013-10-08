@@ -67,6 +67,10 @@ public class WidgetUserDAO extends PicsDAO {
 			query.setParameter(1, ONLY_AUDITOR_WIDGETS_TO_INHERIT); // ddooly
         }
 
+        System.out.println("User is operator : " + permissions.isOperator());
+        System.out.println("User is corporate : " + permissions.isCorporate());
+        System.out.println("V7Charts are : " + featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7CHARTS));
+
         if (permissions.isOperator() && featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7CHARTS)) {
             query.setParameter(1, 618); // george.orlando
         }

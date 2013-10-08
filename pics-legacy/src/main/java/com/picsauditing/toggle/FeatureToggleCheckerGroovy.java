@@ -86,7 +86,8 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		try {
 			Object scriptResult = script.run();
 			if (scriptResult instanceof Boolean) {
-				logger.debug("FeatureToggle \"{}\" is {}", toggleName, scriptResult.toString());
+                System.out.println("script result: " + scriptResult.toString());
+                logger.debug("FeatureToggle \"{}\" is {}", toggleName, scriptResult.toString());
 				return (Boolean) scriptResult;
 			} else {
 				logger.debug("FeatureToggle \"{}\" script returned a non-boolean result; result will be false",
@@ -198,12 +199,16 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	}
 
 	public Permissions getPermissions() {
+        System.out.println("permissions has the account of " + permissions.getAccountId());
         if (permissions == null || permissions.getAccountId() == 0 || permissions.getUserId() == 0) {
+            System.out.println("permission needs to be refreshed");
             try {
                 permissions = (Permissions) getActionContext().getSession().get("permissions");
             } catch (Exception e) {
                 logger.warn("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
             }
+
+            System.out.println("new permissions has the account of " + permissions.getAccountId());
         }
 
 		return permissions;
