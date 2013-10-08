@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,6 +25,8 @@ public class WidgetUserDAOTest {
     private EntityManager em;
     @Mock
     private Query query;
+    @Mock
+    private FeatureToggle featureToggleChecker;
 
     @Before
     public void setup() throws Exception {
@@ -34,6 +37,7 @@ public class WidgetUserDAOTest {
         when(permissions.getUserId()).thenReturn(CURRENT_USER_ID);
 
         Whitebox.setInternalState(widgetUserDAO, "em", em);
+        Whitebox.setInternalState(widgetUserDAO, "featureToggleChecker", featureToggleChecker);
     }
 
     @Test
