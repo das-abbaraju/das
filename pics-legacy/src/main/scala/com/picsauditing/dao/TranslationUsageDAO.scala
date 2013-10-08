@@ -31,7 +31,7 @@ class TranslationUsageDAO extends PICSDataAccess {
     val now = new Date()
     val keyUsage = for {
         usage <- TranslationUsages
-        if usage.id === id && usage.lastUsed < now
+        if usage.id === id && usage.lastUsed < new java.sql.Date(now.getTime)
       } yield usage.lastUsed ~ usage.synchronizedBatch ~ usage.synchronizedDate
     keyUsage update(now, null, null)
   }

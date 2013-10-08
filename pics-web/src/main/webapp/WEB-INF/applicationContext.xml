@@ -278,8 +278,8 @@
 
     <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationUsageLogSynchronizer"/>
     <bean id="translateRestClient" class="com.picsauditing.service.i18n.TranslateRestClient"/>
-    <bean id="translationUsageLogger" class="com.picsauditing.model.i18n.TranslationKeyAggregateUsageLogger"/>
-    <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.TranslationUsageDAO"/>
+    <bean id="translationUsageLogger" class="com.picsauditing.model.i18n.TranslationKeyAggregateUsageLogger" scope="prototype"/>
+    <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.TranslationUsageDAO" scope="prototype"/>
 
     <bean id="taskExecutor"
           class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">

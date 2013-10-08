@@ -9,6 +9,6 @@ trait PICSDataAccess {
   @Autowired
   private val dataSource: DataSource = null
 
-  val db = Database.forDataSource(dataSource)
+  def db = Database.forDataSource(dataSource)
 
 }
