@@ -11,13 +11,13 @@ update token set velocityCode='${contractor.country.businessUnit.addressSingleLi
 update token set velocityCode='${contractor.country.phone}' where tokenName='CountrySpecificMainPhone';
 update token set velocityCode='${contractor.country.salesPhone}' where tokenName='CountrySpecificSalesPhone';
 update token set velocityCode='${contractor.country.picsEmail}' where tokenName='CountrySpecificEmail';
-update token set velocityCode='${contractor.country.english}' where tokenName='CSRCountry';
+update token set velocityCode='${contractor.country.csrCountry}' where tokenName='CSRCountry';
 
 update app_translation set msgValue="${contractor.currentCsr.name}" where msgKey="Token.31.velocityCode";
 update app_translation set msgValue="${contractor.country.csrPhone}" where msgKey="Token.32.velocityCode";
 update app_translation set msgValue="${contractor.country.csrFax}" where msgKey="Token.34.velocityCode";
 update app_translation set msgValue="${contractor.country.csrEmail}" where msgKey="Token.33.velocityCode";
-update app_translation set msgValue="${contractor.country.english}" where msgKey="Token.85.velocityCode";
+update app_translation set msgValue="${contractor.country.csrCountry}" where msgKey="Token.85.velocityCode";
 update app_translation set msgValue="${contractor.country.businessUnit.displayName}" where msgKey="Token.46.velocityCode";
 update app_translation set msgValue="${contractor.country.businessUnit.addressSingleLine}" where msgKey="Token.47.velocityCode";
 update app_translation set msgValue="${contractor.country.phone}" where msgKey="Token.43.velocityCode";
