@@ -23103,7 +23103,8 @@ PICS.define('select2.Select2', {
                 TOP_LIST_SELECTOR = '#favorite_reports .report-list',
                 BOTTOM_LIST_SELECTOR = '#favorite_reports_overflow .report-list',
                 UPDATE_URL = 'ManageReports!updateFavoritesOrder.action',
-                UPDATE_PARAMETER_NAME = 'reports';
+                UPDATE_PARAMETER_NAME = 'reports',
+                UPDATE_SUCCESS_CALLBACK = PICS.getClass('report.manage-report.FavoritesController').refreshFavorites
 
             function init() {
                 if ($('.ManageReports-page #favorite_reports_container').length > 0) {
@@ -23114,14 +23115,14 @@ PICS.define('select2.Select2', {
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [BOTTOM_LIST_SELECTOR],
                         update: onTopListUpdate,
-                        items: 'li:not(.ui-state-disabled)'
+                        items: '>li:not(.ui-state-disabled)'
                     });
 
                     $(BOTTOM_LIST_SELECTOR).sortable({
                         containment: CONTAINMENT_SELECTOR,
                         connectWith: [TOP_LIST_SELECTOR],
                         update: onBottomListUpdate,
-                        items: 'li:not(.ui-state-disabled)'
+                        items: '>li:not(.ui-state-disabled)'
                     });
                 }
             }
@@ -23228,17 +23229,46 @@ PICS.define('select2.Select2', {
                 return $(TOP_LIST_SELECTOR).children().length > TOP_LIST_MAX;
             }
 
-            function updateOrder() {
-                var top_list_item_ids = $(TOP_LIST_SELECTOR).sortable('toArray'),
-                    bottom_list_item_ids = $(BOTTOM_LIST_SELECTOR).sortable('toArray'),
-                    list_item_ids = $.merge(top_list_item_ids, bottom_list_item_ids),
-                    data = {};
+            function enableSortingOfAllListItems() {
+                $(TOP_LIST_SELECTOR).sortable('option', 'items', '>li');
+                $(BOTTOM_LIST_SELECTOR).sortable('option', 'items', '>li');
+            }
 
-                data[UPDATE_PARAMETER_NAME] = list_item_ids.toString();
+            function disableSortingOfListItemsOfClass(cls) {
+                $(TOP_LIST_SELECTOR).sortable('option', 'items', '>li:not(.' + cls + ')');
+                $(BOTTOM_LIST_SELECTOR).sortable('option', 'items', '>li:not(.' + cls + ')');
+            }
+
+            function getItemIdsAsCsvString() {
+                var top_list_item_ids = $(TOP_LIST_SELECTOR).sortable('toArray');
+                    bottom_list_item_ids = $(BOTTOM_LIST_SELECTOR).sortable('toArray');
+                    list_item_ids = $.merge(top_list_item_ids, bottom_list_item_ids);
+
+                return list_item_ids.toString();
+            }
+
+            function getAllItemIdsAsCsvString() {
+                var item_ids_csv_list;
+
+                // Temporarily include all items, so they are included
+                enableSortingOfAllListItems();
+
+                item_ids_csv_list = getItemIdsAsCsvString();
+
+                disableSortingOfListItemsOfClass('ui-state-disabled')
+
+                return item_ids_csv_list;
+            }
+
+            function updateOrder() {
+                var data = {};
+
+                data[UPDATE_PARAMETER_NAME] = getAllItemIdsAsCsvString();
 
                 PICS.ajax({
                     url: UPDATE_URL,
-                    data: data
+                    data: data,
+                    success: UPDATE_SUCCESS_CALLBACK
                 });
             }
 
