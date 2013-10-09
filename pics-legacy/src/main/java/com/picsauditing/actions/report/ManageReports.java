@@ -651,6 +651,11 @@ public class ManageReports extends PicsActionSupport {
 		return pagination;
 	}
 
+    public int getUserFavoritesCount() {
+        List<ReportUser> favorites = reportUserDAO.findAllFavorite(permissions.getUserId());
+        return favorites.size();
+    }
+
 	public void setPagination(Pagination<ReportInfo> pagination) {
 		this.pagination = pagination;
 	}

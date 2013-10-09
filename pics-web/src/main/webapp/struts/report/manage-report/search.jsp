@@ -14,7 +14,7 @@
 
 <s:include value="/struts/report/manage-report/_menu.jsp" />
 
-<s:if test="reportFavoriteList.isEmpty()">
+<s:if test="userFavoritesCount == 0">
 	<div class="row">
 		<section id="search_reports_instructions" class="offset3 span6">
 			<h1><s:text name="ManageReports.search.instructions.header" /></h1>
