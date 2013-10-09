@@ -539,7 +539,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 	
 	private void updateUserDisplayName(User user) {
-		if (user != null && !user.isGroup()) {
+		if (user != null && !user.isGroup() && (userIsGroup == null || userIsGroup == YesNo.No)) {
 			user.updateDisplayNameBasedOnFirstAndLastName();
 		}
 	}
