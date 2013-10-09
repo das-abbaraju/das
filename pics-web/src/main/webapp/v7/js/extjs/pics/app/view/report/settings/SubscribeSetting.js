@@ -7,9 +7,9 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     id: 'report_subscribe',
 
     items: [{
-      xtype: 'fieldset',
-      title: PICS.text('Report.execute.subscribeSetting.legendTitle') + ':',
-      items: [{
+        xtype: 'fieldset',
+        title: PICS.text('Report.execute.subscribeSetting.legendTitle') + ':',
+        items: [{
             xtype: 'radiogroup',
             defaults: {
                 flex: 1,
@@ -31,14 +31,15 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
                 boxLabel: PICS.text('Report.execute.subscribeSetting.labelMonthly'),
                     inputValue: 'Monthly'
             }]
-        }, {
-            xtype: 'component',
-            html:  new Ext.Template([
-                '<p class="subscription-info">',
-                        PICS.text('Report.execute.subscribeSetting.subscriptionInfo1') + '<br />',
-                        PICS.text('Report.execute.subscribeSetting.subscriptionInfo2'),
-                '</p>'
-            ])
+        }]
+    }, {
+        xtype: 'component',
+        html: new Ext.Template([
+            '<p class="subscription-info">',
+                    PICS.text('Report.execute.subscribeSetting.subscriptionInfo2') + '<br />',
+                    PICS.text('Report.execute.subscribeSetting.subscriptionInfo1'),
+            '</p>'
+        ])
     }],
 
     layout: {

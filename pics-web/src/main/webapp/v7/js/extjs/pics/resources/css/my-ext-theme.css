@@ -9096,12 +9096,15 @@ textarea.x-form-invalid-field {
 /* line 102, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe .x-fieldset-body {
   margin-left: 27px; }
-/* line 107, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_subscribe fieldset {
-  margin-top: 14px; }
 /* line 112, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe legend {
   padding-bottom: 10px; }
+
+#report_subscribe p {
+  color: #666;
+  font-size: 11px;
+  text-align: center;
+  width: 280px ; }
 
 /* line 121, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit,
