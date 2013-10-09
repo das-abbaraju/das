@@ -653,20 +653,16 @@ public final class MenuBuilder {
     public static String getMibewURL(Locale locale, Permissions permissions) throws UnsupportedEncodingException {
         String mibew_language_code = TranslationServiceFactory.getTranslationService().getText("Mibew.LanguageCode", locale);
 
-        StringBuilder mibewURL = new StringBuilder();
-        mibewURL.append("https://chat.picsorganizer.com/client.php?");
-        mibewURL.append("locale=");
-        mibewURL.append(URLEncoder.encode(mibew_language_code, "UTF-8"));
-        mibewURL.append("&style=PICS&name=");
-        mibewURL.append(URLEncoder.encode(permissions.getName(), "UTF-8"));
-        mibewURL.append("&accountName=");
-        mibewURL.append(URLEncoder.encode(permissions.getAccountName(), "UTF-8"));
-        mibewURL.append("&accountId=");
-        mibewURL.append(permissions.getAccountId());
-        mibewURL.append("&userId=");
-        mibewURL.append(permissions.getUserId());
-        mibewURL.append("&email=");
-        mibewURL.append(URLEncoder.encode(permissions.getEmail(), "UTF-8"));
+        StringBuilder mibewURL = new StringBuilder("https://chat.picsorganizer.com/client.php?")
+                .append("locale=").append(URLEncoder.encode(mibew_language_code, "UTF-8"))
+                .append("&style=PICS");
+        if (permissions.isLoggedIn()) {
+            mibewURL.append("&name=").append(URLEncoder.encode(permissions.getName(), "UTF-8"))
+                .append("&accountName=").append(URLEncoder.encode(permissions.getAccountName(), "UTF-8"))
+                .append("&accountId=").append(permissions.getAccountId())
+                .append("&userId=").append(permissions.getUserId())
+                .append("&email=").append(URLEncoder.encode(permissions.getEmail(), "UTF-8")).toString();
+        }
         return mibewURL.toString();
     }
 }
