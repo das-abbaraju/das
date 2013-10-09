@@ -525,6 +525,10 @@ public class UsersManage extends PicsActionSupport {
 		if (account != null && account.isContractor()) {
 			isActive = "All";
 		}
+		
+		if (!user.isGroup()) {
+			user.updateDisplayNameBasedOnFirstAndLastName();
+		}		
 	}
 
 	private boolean isUserNotUnderAccount(User user, Permissions permissions) {
