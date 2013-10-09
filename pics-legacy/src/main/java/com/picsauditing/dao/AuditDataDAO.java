@@ -107,8 +107,10 @@ public class AuditDataDAO extends PicsDAO {
 		for (AuditData row : result) {
 			int questionId = row.getQuestion().getId();
 			if (indexedResult.containsKey(questionId)) {
-				if (row.getCreationDate().after(indexedResult.get(questionId).getCreationDate())) {
-					indexedResult.put(questionId, row);
+				if (row.getCreationDate() != null && indexedResult.get(questionId).getCreationDate() != null) {
+					if (row.getCreationDate().after(indexedResult.get(questionId).getCreationDate())) {
+						indexedResult.put(questionId, row);
+					}
 				}
 			} else {
 				indexedResult.put(questionId, row);
