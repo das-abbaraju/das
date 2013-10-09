@@ -1,82 +1,101 @@
-#ManageReports_search_page
-{
+#ManageReports_search_page {
+    #search_reports_instructions {
+        background: #EBF5FE;
+        border-radius: 5px;
+        color: #75B9E8;
+        margin-bottom: 28px;
+        margin-top: 28px;
+        padding: 10px 20px;
+    }
+
+    #search_reports_instructions p {
+        font-size: 13px;
+    }
+
+    #search_reports_instructions h1 {
+        font-size: 17px;
+        line-height: 1;
+        margin-bottom: 5px;
+    }
+
     #report_search
     {
         margin-bottom: 40px;
-        text-align: center;
+        text-align: left;
     }
-    
+
     #report_search_form
     {
-        margin: 0;
-        
+        margin-left: 5px;
+        position: relative;
+
         input
         {
             background: #f1f1f2;
             padding-left: 30px;
         }
-        
+
         .icon-search
         {
+            bottom: 8px;
             color: #666;
-            left: -312px;
-            margin-left: -14px;
-            position: relative;
+            left: 10px;
+            position: absolute;
         }
-        
+
         input:focus ~ .icon-search
         {
-        	color: #73bbe8;
+            color: #73bbe8;
         }
     }
-    
+
     .lt-ie8 #report_search_form
     {
         display: inline;
     }
-    
+
     .report-list
     {
         .report
         {
             line-height: 20px;
         }
-        
+
         .report > .favorite,
         .report > .unfavorite
         {
-        	float: left;
-        	line-height: 48px;
-        	margin: 0 10px;
+            float: left;
+            line-height: 48px;
+            margin: 0 10px;
         }
-        
+
         .summary
         {
-        	margin: 0 120px 0 40px;
+            margin: 0 120px 0 40px;
             padding: 6px 0 8px;
         }
-        
+
         .name
         {
             float: none;
             line-height: 14px;
         }
-        
+
         .created-by
         {
             line-height: 14px;
         }
-        
+
         .description
         {
             font-size: 12px;
             line-height: 14px;
             margin: 0;
             overflow: hidden;
-        	text-overflow: ellipsis;
+            text-overflow: ellipsis;
             white-space: nowrap;
         }
-        
+
         .number-favorites
         {
             color: #e67e1c;
@@ -86,48 +105,4 @@
             margin-right: 20px;
         }
     }
-}
-
-@media (min-width: 1200px) {
-	#ManageReports_search_page
-	{
-		#report_search_form
-	    {
-	        .icon-search
-	        {
-	        	left: -382px;
-	        }
-        }
-	}
-}
-
-@media (max-width: 979px) and (min-width: 768px) {
-	#ManageReports_search_page
-	{
-		#report_search_form
-	    {
-	        .icon-search
-	        {
-	            left: -242px;
-	        }
-        }
-	}
-}
-
-@media (max-width: 767px) {
-	#ManageReports_search_page
-	{
-		#report_search_form
-	    {
-	    	input
-	    	{
-		    	padding-left: 14px;
-	    	}
-	    	
-	        .icon-search
-	        {
-	            display: none;
-	        }
-        }
-	}
 }
