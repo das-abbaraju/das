@@ -32,9 +32,10 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public static final String CANADA_ISO_CODE = "CA";
 	public static final String US_ISO_CODE = "US";
 	public static final String CHINA_ISO_CODE = "CN";
+    public static final String AUSTRALIA_ISO_CODE = "AU";
 
-	public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays
-			.asList(US_ISO_CODE, CANADA_ISO_CODE)));
+    public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays
+			.asList(US_ISO_CODE, CANADA_ISO_CODE, AUSTRALIA_ISO_CODE)));
 
 	public static final Comparator<Country> NAME_COMPARATOR = new Comparator<Country>() {
 		Collator collator = Collator.getInstance();
