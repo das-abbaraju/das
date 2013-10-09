@@ -39,6 +39,7 @@ public class ContractorAuditOperatorCemexModel extends AbstractModel {
 	@Override
 	public String getWhereClause(List<Filter> filters) {
 		super.getWhereClause(filters);
+        permissionQueryBuilder.setAccountAlias("ContractorAccount");
 
 		String where = permissionQueryBuilder.buildWhereClause();
 
