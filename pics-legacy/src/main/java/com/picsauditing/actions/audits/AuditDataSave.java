@@ -293,7 +293,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 			if (conAudit.getAuditType().getClassType().isPolicy() && checkFlagCriteria()) {
 				contractor.setLastRecalculation(null);
-				contractor.setNeedsRecalculation(ContractorAccount.MAX_RECALC);
+				contractor.incrementRecalculation(10);
 			}
 
 			// refresh auditData since it might be not a complete representation

@@ -274,6 +274,9 @@ public class RegistrationMakePayment extends RegistrationAction {
 			contractorAccountDao.save(contractor);
 		}
 
+        contractor.incrementRecalculation(10);
+        contractorAccountDao.save(contractor);
+
 		closeRelatedRegistrationRequests();
 		if (contractor.getStatus().equals(AccountStatus.Requested)) {
 			contractor.setStatus(AccountStatus.Active);

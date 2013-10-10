@@ -313,6 +313,9 @@ public class CaoSave extends AuditActionSupport {
 
 		ContractorAccount con = cao.getAudit().getContractorAccount();
 		con.incrementRecalculation();
+        if (cao.getAudit().getAuditType().isPicsPqf() || cao.getAudit().getAuditType().isAnnualAddendum()) {
+            con.incrementRecalculation(5);
+        }
 		contractorAccountDao.save(con);
 
 		checkNewStatus(step, cao);
