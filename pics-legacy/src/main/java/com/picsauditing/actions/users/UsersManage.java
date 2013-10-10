@@ -509,7 +509,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 
 			boolean accountIsNotChildOperator = !permissions.getOperatorChildren().contains(account.getId());
-			boolean userIsNotUnderChildOperator = isUserNotUnderChildOperator(user, permissions);
+			boolean userIsNotUnderChildOperator = user != null && !permissions.getOperatorChildren().contains(user.getAccount().getId());
 
 			if (accountIsNotChildOperator || userIsNotUnderChildOperator) {
 				permissions.tryPermission(OpPerms.AllOperators);
@@ -529,11 +529,6 @@ public class UsersManage extends PicsActionSupport {
 
 	private boolean isUserNotUnderAccount(User user, Permissions permissions) {
 		return user != null && user.getAccount() != null && user.getAccount().getId() != permissions.getAccountId();
-	}
-	
-	private boolean isUserNotUnderChildOperator(User user, Permissions permissions) {
-		return (user != null && user.getAccount() != null && 
-				!permissions.getOperatorChildren().contains(user.getAccount().getId()));
 	}
 
 	private boolean isPrimaryUserEstablished() {

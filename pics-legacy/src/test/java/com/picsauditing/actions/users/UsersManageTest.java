@@ -521,6 +521,10 @@ public class UsersManageTest extends PicsActionTest {
 		usersManage.setAccount(account);
 	}
 	
+	/*private boolean isUserNotUnderAccount() {
+		return user != null && user.getAccount() != null && user.getAccount().getId() != permissions.getAccountId();
+	}*/
+	
 	@Test
 	public void testIsUserNotUnderAccount_NullUser() throws Exception {
 		Boolean result = Whitebox.invokeMethod(usersManage, "isUserNotUnderAccount", (User) null, (Permissions) null);
@@ -552,36 +556,6 @@ public class UsersManageTest extends PicsActionTest {
 		User user = new UserBuilder().account(account).build();
 		when(permissions.getAccountId()).thenReturn(456);
 		return user;
-	}
-	
-	@Test
-	public void testIsUserNotUnderChildOperator_NullUser() throws Exception {
-		Boolean result = Whitebox.invokeMethod(usersManage, "isUserNotUnderAccount", (User) null, (Permissions) null);
-		
-		assertFalse(result);
-	}
-	
-	@Test
-	public void testIsUserNotUnderChildOperator_UserAccountIsNull() throws Exception {
-		User user = new User();
-		
-		Boolean result = Whitebox.invokeMethod(usersManage, "isUserNotUnderAccount", user, (Permissions) null);
-		
-		assertFalse(result);
-	}
-	
-	@Test
-	public void testIsUserNotUnderChildOperator() throws Exception {
-		User user = setupTest_IsUserNotUnderChildOperator();
-		
-		Boolean result = Whitebox.invokeMethod(usersManage, "isUserNotUnderAccount", user, permissions);
-		
-		assertTrue(result);
-	}
-
-	private User setupTest_IsUserNotUnderChildOperator() {
-		when(permissions.getOperatorChildren()).thenReturn(new HashSet<Integer>(789));
-		return setupTest_IsUserNotUnderAccount();
 	}
 
 }
