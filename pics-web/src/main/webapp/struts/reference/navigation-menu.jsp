@@ -63,7 +63,7 @@
                         PICS has always prided itself on its personal and reliable Customer Support. To view help topics, chat or talk to your CSR, or email us; simply select Support in your menu.
                     </p>
                     <p>
-                        You can also this and any other reference material in the Reference section of the Support menu.
+                        Also, you can access this page, and any other reference material, at any time by going to the Reference section of the Support menu.
                     </p>
                 </section>
             </div>
