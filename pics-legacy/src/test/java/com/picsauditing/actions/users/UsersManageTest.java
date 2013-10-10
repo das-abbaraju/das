@@ -10,11 +10,12 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.group.GroupManagementService;
-import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.model.user.UserManagementService;
+import com.picsauditing.model.user.UserManager;
 import com.picsauditing.validator.InputValidator;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
+import static org.mockito.Matchers.any;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class UsersManageTest extends PicsActionTest {
@@ -175,7 +176,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testUnlock_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("UsersManage.Unlocked"), eq(Locale.ENGLISH), any())).thenReturn("unlocked");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
@@ -193,7 +193,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testMove_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("UsersManage.SuccessfullyMoved"), eq(Locale.ENGLISH), anyVararg())).thenReturn("SuccessfullyMoved");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
@@ -214,7 +213,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testMove_ErrorDoesNotProxyAddsErrorAndRedirects() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("NotOkToMove"), eq(Locale.ENGLISH), any())).thenReturn("NotOkToMove");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
@@ -238,7 +236,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDeactivate_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("UsersManage.UserInactivated"), eq(Locale.ENGLISH), anyVararg())).thenReturn("UserInactivated");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
@@ -257,7 +254,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDeactivate_NotOkAddsMessageAndRedirects() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("NotOkToDeactivate"), eq(Locale.ENGLISH), anyVararg())).thenReturn("NotOkToDeactivate");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
@@ -280,7 +276,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testActivate_Happy() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("UsersManage.UserActivated"), eq(Locale.ENGLISH), anyVararg())).thenReturn("UserActivated");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
@@ -298,7 +293,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDelete_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("UsersManage.SuccessfullyRemoved"), eq(Locale.ENGLISH), anyVararg())).thenReturn("SuccessfullyRemoved");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
@@ -317,7 +311,6 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDelete_AddsErrorMessageAndRedirects_NotOk() throws Exception {
-	    when(permissions.getAccountId()).thenReturn(456);
         when(translationService.getText(eq("NotOkToDelete"), eq(Locale.ENGLISH), anyVararg())).thenReturn("NotOkToDelete");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
