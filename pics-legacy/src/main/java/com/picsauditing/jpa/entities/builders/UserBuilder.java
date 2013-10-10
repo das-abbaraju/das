@@ -1,23 +1,24 @@
 package com.picsauditing.jpa.entities.builders;
 
-import java.util.Date;
-import java.util.Locale;
-
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.access.builders.PermissionsBuilder;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.YesNo;
 
+import java.util.Date;
+import java.util.Locale;
+
 public class UserBuilder {
-    private final User user = new User();
+    private User user = new User();
 
     public User build() {
         user.setUsingVersion7Menus(false);
         return user;
     }
 
-    public UserBuilder account(Account account) {
+    public UserBuilder account(OperatorAccount account) {
         user.setAccount(account);
         user.setUsingVersion7MenusDate(new Date());
         return  this;
