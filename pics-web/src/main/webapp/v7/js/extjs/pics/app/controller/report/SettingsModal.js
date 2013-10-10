@@ -28,6 +28,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'hideReportInfoButton',
         selector: 'button[action=hide-report-info]'
+    }, {
+        ref: 'alertConfirmEdit',
+        selector: 'reportalertconfirm'
     }],
 
     stores: [
@@ -68,7 +71,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
-                click: this.editReport
+                click: this.confirmEdit
             },
 
             'reportsettingsmodal reportcopysetting button[action=copy]':  {
@@ -100,6 +103,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsubscribesetting radiogroup': {
                 change: this.requestSubscription
+            },
+
+            'reportalertconfirm button[action=rename]':  {
+                click: this.editReport
+            },
+
+            'reportalertconfirm button[action=copy]':  {
+                click: this.copyReport
+            },
+
+            'reportalertconfirm button[action=cancel]': {
+                click: this.closeConfirmEdit
             }
         });
 
@@ -137,7 +152,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 edit_setting_form = edit_setting_view.getForm(),
                 subscribe_setting_view = this.getSubscribeSetting(),
                 subscribe_setting_form = subscribe_setting_view.getForm();
-    
+
         if (edit_setting_form) {
             edit_setting_form.loadRecord(report);
         }
@@ -168,13 +183,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         // Remove the Report Info panel
         this.hideReportInfoIfVisible();
-        
+
         // reset the edit form
         edit_setting_form.loadRecord(edit_setting_form.getRecord());
-        
+
         // reset the copy form
         copy_setting_form.reset();
-        
+
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
 
@@ -182,6 +197,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (is_editable) {
             share_setting_view.updateAccountDisplayfield('');
             share_editable_icon.removeCls('selected');
+        }
+    },
+
+    closeConfirmEdit: function () {
+        confirm_box = this.getAlertConfirmEdit();
+
+        if (confirm_box) {
+            confirm_box.destroy();
         }
     },
 
@@ -205,6 +228,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             copy_setting_view = this.getCopySetting(),
             copy_setting_form = copy_setting_view.getForm();
 
+        this.closeConfirmEdit();
+
         if (copy_setting_form.isValid()) {
             copy_setting_form.updateRecord(report);
         }
@@ -212,11 +237,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.copyReport();
     },
 
+    confirmEdit: function () {
+        var confirm_box = Ext.create('PICS.view.report.alert.Confirm');
+
+        confirm_box.show();
+    },
+
     editReport: function (cmp, e, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
             edit_setting_view = this.getEditSetting(),
             edit_setting_form = edit_setting_view.getForm(),
             that = this;
+
+        this.closeConfirmEdit();
 
         if (edit_setting_form.isValid()) {
             edit_setting_form.updateRecord();
@@ -293,7 +326,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
 
         report_info_container.addCls('report-info-container');
-        
+
         var report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting', {
             renderTo: report_info_container
         });

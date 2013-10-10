@@ -7,7 +7,7 @@ Ext.define('PICS.ux.window.Window', {
                 var body_el = Ext.getBody();
 
                 this.mon(body_el, 'click', function (event, html, eOpts) {
-                    cmp.hide();
+                    cmp.destroy();
                 }, cmp, {
                     delegate: '.x-mask'
                 });
@@ -17,5 +17,5 @@ Ext.define('PICS.ux.window.Window', {
         this.callParent(arguments);
     },
 
-    closeAction: 'hide'
+    closeAction: 'destroy'
 });
