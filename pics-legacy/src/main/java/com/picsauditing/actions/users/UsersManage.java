@@ -526,7 +526,9 @@ public class UsersManage extends PicsActionSupport {
 			isActive = "All";
 		}
 		
-		updateUserDisplayName(user);
+		if (!user.isGroup()) {
+			user.updateDisplayNameBasedOnFirstAndLastName();
+		}		
 	}
 
 	private boolean isUserNotUnderAccount(User user, Permissions permissions) {
@@ -536,12 +538,6 @@ public class UsersManage extends PicsActionSupport {
 	private boolean isUserNotUnderChildOperator(User user, Permissions permissions) {
 		return (user != null && user.getAccount() != null && 
 				!permissions.getOperatorChildren().contains(user.getAccount().getId()));
-	}
-	
-	private void updateUserDisplayName(User user) {
-		if (user != null && !user.isGroup()) {
-			user.updateDisplayNameBasedOnFirstAndLastName();
-		}
 	}
 
 	private boolean isPrimaryUserEstablished() {
