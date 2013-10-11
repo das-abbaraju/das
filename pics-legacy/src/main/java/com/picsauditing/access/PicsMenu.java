@@ -18,17 +18,24 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
+import org.apache.struts2.ServletActionContext;
 
 public class PicsMenu {
 
-	static private TranslationService translationService = TranslationServiceFactory.getTranslationService();
-
 	static private String getText(String key) {
-		return translationService.getText(key, TranslationActionSupport.getLocaleStatic());
+        if ("Login".equals(ServletActionContext.getContext().getName())) {
+            return TranslationServiceFactory.getNonLoggingTranslationService().getText(key, TranslationActionSupport.getLocaleStatic());
+        } else {
+		    return TranslationServiceFactory.getTranslationService().getText(key, TranslationActionSupport.getLocaleStatic());
+        }
 	}
 
 	static private String getTitle(String key) {
-		return translationService.getText(key + ".title", TranslationActionSupport.getLocaleStatic());
+        if ("Login".equals(ServletActionContext.getContext().getName())) {
+            return TranslationServiceFactory.getNonLoggingTranslationService().getText(key + ".title", TranslationActionSupport.getLocaleStatic());
+        } else {
+		    return TranslationServiceFactory.getTranslationService().getText(key + ".title", TranslationActionSupport.getLocaleStatic());
+        }
 	}
 
 	/**

@@ -11,7 +11,6 @@ public class TranslationLookupData {
     private String pageName;
     private Date requestDate;
     private boolean retrievedByWildcard = false;
-    private String ipAddress;
 
     public String getMsgKey() {
         return msgKey;
@@ -75,13 +74,5 @@ public class TranslationLookupData {
 
     public void setRetrievedByWildcard(boolean retrievedByWildcard) {
         this.retrievedByWildcard = retrievedByWildcard;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
     }
 }

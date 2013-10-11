@@ -13,8 +13,7 @@ case class TranslationUsage(
         firstUsed: Option[Date],
         lastUsed: Option[Date],
         synchronizedBatch: Option[String],
-        synchronizedDate: Option[Date],
-        ipAddress: Option[String]
+        synchronizedDate: Option[Date]
 ) {
   def getId() = { id.getOrElse(null) }
   def getFirstUsed() = { firstUsed.getOrElse(null) }
@@ -42,8 +41,6 @@ object TranslationUsages extends Table[TranslationUsage]("translation_usage") {
 
   def synchronizedDate = column[Date]("synchronizedDate", O.DBType("Date"))
 
-  def ipAddress = column[String]("ipAddress")
-
-  def * = id.? ~ msgKey ~ msgLocale ~ pageName ~ environment ~ firstUsed.? ~ lastUsed.? ~ synchronizedBatch.? ~ synchronizedDate.? ~ ipAddress.? <>
+  def * = id.? ~ msgKey ~ msgLocale ~ pageName ~ environment ~ firstUsed.? ~ lastUsed.? ~ synchronizedBatch.? ~ synchronizedDate.? <>
     (TranslationUsage, TranslationUsage.unapply _)
 }

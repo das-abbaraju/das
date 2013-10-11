@@ -48,8 +48,7 @@ class TranslationUsageDAO extends PICSDataAccess {
           Some(new Date()),
           Some(new Date()),
           None,
-          None,
-          Some(keyUsage.getIpAddress)
+          None
         )
       )
     } catch {

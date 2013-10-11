@@ -203,17 +203,16 @@ public class TranslationServiceAdapter implements TranslationService {
         data.setRequestDate(new Date());
         data.setPageName(pageName());
         data.setMsgKey(translation.getKey());
-        data.setEnvironment(environment);
+        data.setEnvironment(environment());
         data.setRetrievedByWildcard(translation.isRetrievedByWildcard());
-        data.setIpAddress(ipAddress());
         return data;
     }
 
-    private String ipAddress() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
+    private String environment() {
+        if (environment == null) {
             return "UNKNOWN";
+        } else {
+            return environment;
         }
     }
 
