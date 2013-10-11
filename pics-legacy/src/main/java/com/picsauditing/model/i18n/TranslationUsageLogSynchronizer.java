@@ -79,7 +79,8 @@ public class TranslationUsageLogSynchronizer {
                 new Some(rs.getDate("firstUsed")),
                 new Some(rs.getDate("lastUsed")),
                 new Some(rs.getString("synchronizedBatch")),
-                new Some(rs.getDate("synchronizedDate"))
+                new Some(rs.getDate("synchronizedDate")),
+                new Some(rs.getString("ipAddress"))
             );
         }
     }

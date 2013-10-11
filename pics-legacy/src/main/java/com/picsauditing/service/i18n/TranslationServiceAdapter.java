@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskRejectedException;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -203,7 +205,16 @@ public class TranslationServiceAdapter implements TranslationService {
         data.setMsgKey(translation.getKey());
         data.setEnvironment(environment);
         data.setRetrievedByWildcard(translation.isRetrievedByWildcard());
+        data.setIpAddress(ipAddress());
         return data;
+    }
+
+    private String ipAddress() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            return "UNKNOWN";
+        }
     }
 
     private String pageName() {
