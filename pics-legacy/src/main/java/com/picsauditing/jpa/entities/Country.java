@@ -33,6 +33,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public static final String US_ISO_CODE = "US";
 	public static final String CHINA_ISO_CODE = "CN";
     public static final String AUSTRALIA_ISO_CODE = "AU";
+    public static final String SOUTH_AFRICA_ISO_CODE = "ZA";
 
     public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays
 			.asList(US_ISO_CODE, CANADA_ISO_CODE, AUSTRALIA_ISO_CODE)));
@@ -491,7 +492,12 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		return UK_ISO_CODE.equals(isoCode);
 	}
 
-	@Transient
+    @Transient
+    public boolean isZA() {
+        return SOUTH_AFRICA_ISO_CODE.equals(isoCode);
+    }
+
+    @Transient
 	public boolean isFrance() {
 		return FRANCE_ISO_CODE.equals(isoCode);
 	}
@@ -505,23 +511,6 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public boolean isEuropeanUnion() {
 		return (isEuroZone() || EUROPEAN_UNION_ALSO.contains(isoCode));
 	}
-
-    @Transient
-    public boolean isTaxable() {
-        return (getTaxFeeClass() != null);
-    }
-
-    @Transient
-    public FeeClass getTaxFeeClass() {
-        if(isCanada()) {
-            return FeeClass.CanadianTax;
-        }
-        else if (isUK()) {
-            return FeeClass.VAT;
-        }
-
-        return null;
-    }
 
     public void setAuditColumns() {
         updateDate = new Date();

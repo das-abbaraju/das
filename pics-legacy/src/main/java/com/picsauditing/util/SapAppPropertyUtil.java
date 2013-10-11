@@ -2,6 +2,7 @@ package com.picsauditing.util;
 
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Transaction;
+import com.picsauditing.toggle.FeatureToggle;
 
 public class SapAppPropertyUtil extends AppPropertyUtil {
 	protected static SapAppPropertyUtil instance;
@@ -18,7 +19,7 @@ public class SapAppPropertyUtil extends AppPropertyUtil {
 	}
 
 	public boolean isSAPBusinessUnitEnabled(int needle) {
-		return isInCSV(SAP_BIZ_UNITS_ENABLED, needle);
+		return isInCSV(FeatureToggle.SAP_BIZ_UNITS_ENABLED, needle);
 	}
 
 	public boolean isSAPBusinessUnitEnabledForObject(Account account) {
@@ -31,7 +32,7 @@ public class SapAppPropertyUtil extends AppPropertyUtil {
 	}
 
 	public boolean isSAPBusinessUnitSetSyncTrueEnabled(int needle) {
-		return isInCSV(SAP_BIZ_UNITS_SET_SYNC_TRUE_ENABLED, needle);
+		return isInCSV(FeatureToggle.SAP_BIZ_UNITS_SET_SYNC_TRUE_ENABLED, needle);
 	}
 
 	public boolean isSAPBusinessUnitSetSyncTrueEnabledForObject(Account account) {

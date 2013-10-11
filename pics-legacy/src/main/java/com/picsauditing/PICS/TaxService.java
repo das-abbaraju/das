@@ -4,9 +4,12 @@ import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -15,6 +18,10 @@ public class TaxService {
 
     @Autowired
     protected InvoiceFeeCountryDAO invoiceFeeCountryDAO;
+    @Autowired
+    protected FeatureToggle featureToggleChecker;
+
+    protected SapAppPropertyUtil sapAppPropertyUtil;
 
     public static final ArrayList<FeeClass> TAX_FEE_CLASSES = new ArrayList<FeeClass>() {{
         add(FeeClass.GST);
@@ -40,7 +47,7 @@ public class TaxService {
         CountrySubdivision countrySubdivision = transaction.getAccount().getCountrySubdivision();
         Country country = transaction.getAccount().getCountry();
 
-        if (!country.isTaxable())
+        if (!isTaxable(country))
 			return;
 
         TransactionItem taxItem = transaction.getTaxItem();
@@ -50,7 +57,7 @@ public class TaxService {
             feeClass = taxItem.getInvoiceFee().getFeeClass();
         }
         else {
-            feeClass = country.getTaxFeeClass();
+            feeClass = getTaxFeeClass(country);
         }
 
         InvoiceFee taxInvoiceFee = getTaxInvoiceFee(feeClass, country, countrySubdivision);
@@ -149,5 +156,37 @@ public class TaxService {
         }
 
         AccountingSystemSynchronization.setToSynchronize(transaction);
+    }
+
+    public boolean isTaxable(Country country) {
+        return (getTaxFeeClass(country) != null);
+    }
+
+    public FeeClass getTaxFeeClass(Country country) {
+        if(country.isCanada()) {
+            return FeeClass.CanadianTax;
+        }
+        else {
+            int SouthAfricaBusinessUnit = 5;
+
+            if (country.isUK() ||
+                    (country.isZA() && getSapAppPropertyUtil().isSAPBusinessUnitEnabled(SouthAfricaBusinessUnit))) {
+                return FeeClass.VAT;
+            }
+        }
+
+        return null;
+    }
+
+    public SapAppPropertyUtil getSapAppPropertyUtil() {
+        if (sapAppPropertyUtil == null) {
+            sapAppPropertyUtil = SapAppPropertyUtil.factory();
+        }
+
+        return sapAppPropertyUtil;
+    }
+
+    public void setSapAppPropertyUtil(SapAppPropertyUtil sapAppPropertyUtil) {
+        this.sapAppPropertyUtil = sapAppPropertyUtil;
     }
 }

@@ -35,6 +35,8 @@ public interface FeatureToggle {
 	String TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION = "Toggle.EmptyStringIsValidTranslation";
 	String TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE = "Toggle.UseNewTranslationsDataSource";
     String TOGGLE_USE_PERIODIC_AUDIT = "Toggle.PeriodicAudit";
+    String SAP_BIZ_UNITS_ENABLED = "SAP.BusinessUnits.Enabled";
+    String SAP_BIZ_UNITS_SET_SYNC_TRUE_ENABLED = "SAP.BusinessUnits.SetSyncTrue.Enabled";
 
 	boolean isFeatureEnabled(String toggleName);
 

@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -46,6 +47,7 @@ public class TaxServiceTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(taxService, "invoiceFeeCountryDAO", invoiceFeeCountryDAO);
+        taxService.setSapAppPropertyUtil(sapAppPropertyUtil);
         setupInvoiceFeeCountries();
 		setupMocks();
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
@@ -546,5 +548,39 @@ public class TaxServiceTest {
         ReturnItem taxReturnItem = creditMemo.getTaxItem();
         assertNull(taxReturnItem);
         assertEquals(new BigDecimal("-300.00"), creditMemo.getTotalAmount());
+    }
+
+    @Test
+    public void testTaxClass_EnabledZA() throws Exception {
+        when(sapAppPropertyUtil.isSAPBusinessUnitEnabled(5)).thenReturn(true);
+
+        FeeClass canadian = taxService.getTaxFeeClass(new Country(Country.CANADA_ISO_CODE));
+        assertTrue(canadian == FeeClass.CanadianTax);
+
+        FeeClass GreatBritain = taxService.getTaxFeeClass(new Country(Country.UK_ISO_CODE));
+        assertTrue(GreatBritain == FeeClass.VAT);
+
+        FeeClass SouthAfrican = taxService.getTaxFeeClass(new Country(Country.SOUTH_AFRICA_ISO_CODE));
+        assertTrue(SouthAfrican == FeeClass.VAT);
+
+        FeeClass USA = taxService.getTaxFeeClass(new Country(Country.US_ISO_CODE));
+        assertNull(USA);
+    }
+
+    @Test
+    public void testTaxClass_DisabledZA() throws Exception {
+        when(sapAppPropertyUtil.isSAPBusinessUnitEnabled(5)).thenReturn(false);
+
+        FeeClass canadian = taxService.getTaxFeeClass(new Country(Country.CANADA_ISO_CODE));
+        assertTrue(canadian == FeeClass.CanadianTax);
+
+        FeeClass GreatBritain = taxService.getTaxFeeClass(new Country(Country.UK_ISO_CODE));
+        assertTrue(GreatBritain == FeeClass.VAT);
+
+        FeeClass SouthAfrican = taxService.getTaxFeeClass(new Country(Country.SOUTH_AFRICA_ISO_CODE));
+        assertNull(SouthAfrican);
+
+        FeeClass USA = taxService.getTaxFeeClass(new Country(Country.US_ISO_CODE));
+        assertNull(USA);
     }
 }
