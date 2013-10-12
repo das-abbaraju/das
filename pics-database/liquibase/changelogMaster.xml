@@ -8,7 +8,7 @@
     <include file="./liquibase/sshacter2_PICS-00000_ExampleChangeSetDML.sql"/>
 
 <!--    Release 6.62 (patch)   -->
-    <include file="./liquibase/kchase1PICS-12980_UpdateWorkStatus.sql"/>
+    <include file="./liquibase/PICS-12980_UpdateWorkStatus.sql"/>
 
 <!--    Release 6.63   -->
     <include file="./liquibase/mdo4_PICS-12878_change_all_users_to_allow_switch_to_v7_except_BASF.sql"/>
