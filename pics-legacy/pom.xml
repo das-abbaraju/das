@@ -995,6 +995,11 @@
             <artifactId>slick_2.10</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-rest-plugin</artifactId>
+			<version>${struts.version}</version>
+		</dependency>
     </dependencies>
 
 </project>

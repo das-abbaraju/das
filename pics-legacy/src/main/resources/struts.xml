@@ -13,6 +13,30 @@
 	<constant name="struts.mapper.alwaysSelectFullNamespace"
 	          value="false"/>
 	<constant name="struts.patternMatcher" value="regex"/>
+	<constant name="struts.action.extension" value="action,"/>
+	
+	<bean type="org.apache.struts2.dispatcher.mapper.ActionMapper" name="picsRestful"
+          class="com.picsauditing.strutsutil.PicsRestfulActionMapper"/>
+    <constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
+    <constant name="struts.mapper.prefixMapping" value="/alex:picsRestful,:struts"/>
+    <constant name="struts.mapper.idParameterName" value="id"/>
+
+    <bean type="org.apache.struts2.views.util.UrlHelper" name="picsUrlHelper"
+          class="com.picsauditing.strutsutil.url.UrlHelperFacade"/>
+    <constant name="struts.view.urlHelper" value="picsUrlHelper"/>
+
+    <!-- We don't want to use the RestActionInvocation, so the value here is set because none of 
+         our namespaces have IGNORE in all caps -->
+    <constant name="struts.rest.namespace" value="IGNORE"/>
+    
+    <!--  Verify that this is not impacting any of our other struts configuration -->
+    <constant name="struts.mapper.indexMethodName" value="index"/>
+    <constant name="struts.mapper.getMethodName" value="show"/>
+    <constant name="struts.mapper.postMethodName" value="insert"/>
+    <constant name="struts.mapper.editMethodName" value="edit"/>
+    <constant name="struts.mapper.newMethodName" value="create"/>
+    <constant name="struts.mapper.deleteMethodName" value="delete"/>
+    <constant name="struts.mapper.putMethodName" value="update"/>
 
 	<package name="com.picsauditing" extends="struts-default">
 		<result-types>
@@ -46,7 +70,12 @@
 			<interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor"/>
 			<interceptor name="FirstTimeUserInterceptor"
 			             class="com.picsauditing.interceptors.FirstTimeUserInterceptor"/>
+			<interceptor name="restWorkflowInterceptor" class="org.apache.struts2.rest.RestWorkflowInterceptor"/>
+            <interceptor name="picsRestInterceptor" class="com.picsauditing.interceptors.PicsRestInterceptor"/>
+            <interceptor name="picsRestWorkflowInterceptor"
+                         class="com.picsauditing.interceptors.PicsRestWorkflowInterceptor"/>
 
+			<!-- Default Interceptor Stack for PICS Action Classes -->
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception"/>
 				<interceptor-ref name="alias"/>
@@ -85,6 +114,55 @@
 				</interceptor-ref>
 				<interceptor-ref name="redirectMessage"/>
 				<interceptor-ref name="annotationWorkflow"/>
+			</interceptor-stack>
+			
+			<!-- Default Interceptor Stack for PICS Action Classes -->
+			<interceptor-stack name="pics-rest-stack">
+				<interceptor-ref name="exception"/>
+                <interceptor-ref name="alias"/>
+                <!-- maybe we can kill this -->
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="cachecontrol"/>
+                <interceptor-ref name="security"/>
+                <!-- <interceptor-ref name="prepare" /> -->
+                <interceptor-ref name="i18n"/>
+                <interceptor-ref name="prepare"/>
+                <interceptor-ref name="chain"/>
+                <interceptor-ref name="debugging"/>
+                <interceptor-ref name="profiling"/>
+                <!-- maybe we can kill this -->
+                <interceptor-ref name="scopedModelDriven"/>
+                <!-- maybe we can kill this -->
+                <interceptor-ref name="modelDriven"/>
+                <!-- maybe we can kill this -->
+                <interceptor-ref name="fileUpload"/>
+                <interceptor-ref name="checkbox"/>
+                <interceptor-ref name="multiselect"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="ReportUsageInterceptor"/>
+                <interceptor-ref name="FirstTimeUserInterceptor"/>
+                <interceptor-ref name="picsRestInterceptor"/>
+                <interceptor-ref name="params">
+                    <param name="excludeParams">dojo\..*</param>
+                    <param name="excludeParams">struts\..*</param>
+                </interceptor-ref>
+                <interceptor-ref name="conversionError"/>
+                <interceptor-ref name="validation">
+                    <param name="excludeMethods">
+                        ajaxAdd,ajaxRemove,search,execute,input,back,cancel,browse,index,show,create,edit
+                    </param>
+                </interceptor-ref>
+                <interceptor-ref name="jsonValidation"/>
+                <interceptor-ref name="workflow">
+                    <param name="excludeMethods">input,back,cancel,browse,create,edit,insert,update,index,show</param>
+                </interceptor-ref>
+                <interceptor-ref name="picsRestWorkflowInterceptor">
+                    <param name="includeMethods">create,edit,insert,update</param>
+                </interceptor-ref>
+                <interceptor-ref name="redirectMessage"/>
+                <interceptor-ref name="annotationWorkflow">
+                    <param name="excludeMethods">create,edit,insert,update</param>
+                </interceptor-ref>
 			</interceptor-stack>
 
 		</interceptors>
@@ -1276,5 +1354,5 @@
 
 	<!-- Drools & RBIC -->
 	<include file="struts-rbic.xml"/>
-
+	
 </struts>
