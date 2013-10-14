@@ -12,16 +12,12 @@
 
 <!--    Release 6.63   -->
     <include file="./liquibase/mdo4_PICS-12878_change_all_users_to_allow_switch_to_v7_except_BASF.sql"/>
-    <!--    
-			<include file="./liquibase/mdo5_PICS-12874_add_columns_to_ref_country.sql"/>
-    David's patch is broken
-	-->
-	<include file="./liquibase/dalvarado1_PICS-12926_Remove_bad_myschedule_timeslots.sql"/>
+    <!--    <include file="./liquibase/mdo5_PICS-12874_add_columns_to_ref_country.sql"/>	-->
+    <include file="./liquibase/dalvarado1_PICS-12926_Remove_bad_myschedule_timeslots.sql"/>
     <include file="./liquibase/sshacter3_PICS-13066_UpdatePricingForNorway.sql"/>
-	<!--
-		 Phil's patches are broken
+    <!--
     <include file="./liquibase/pschlesinger1_PICS-12857_ModifyBizUnitTblStructureAddSapCode.sql"/>
-	<include file="./liquibase/pschlesinger2_PICS-12857_ModifyBizUnitTblStructureRemoveUnneededColumns.sql"/>
+    <include file="./liquibase/pschlesinger2_PICS-12857_ModifyBizUnitTblStructureRemoveUnneededColumns.sql"/>
     -->
     <include file="./liquibase/pschlesinger3_PICS-12857_AddingKnownSapCodes.sql"/>
 	<!--
