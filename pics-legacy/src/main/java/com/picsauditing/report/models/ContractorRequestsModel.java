@@ -49,6 +49,8 @@ public class ContractorRequestsModel extends AbstractModel {
         permissionQueryBuilder.setIgnoreDefaultStatuses(true);
         permissionQueryBuilder.addVisibleStatus(AccountStatus.Requested);
         permissionQueryBuilder.addVisibleStatus(AccountStatus.Declined);
+        permissionQueryBuilder.addVisibleStatus(AccountStatus.Pending);
+        permissionQueryBuilder.addVisibleStatus(AccountStatus.Active);
 
 		return permissionQueryBuilder.buildWhereClause();
 	}
@@ -56,11 +58,11 @@ public class ContractorRequestsModel extends AbstractModel {
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
-        Field accountStatus = new Field("AccountStatus","Account.status",FieldType.RequestedDeclinedAccountStatus);
+        Field accountStatus = new Field("AccountStatus","Account.status",FieldType.RegistrationRequestAccountStatus);
         fields.put(accountStatus.getName().toUpperCase(), accountStatus);
 
 		Field accountName = fields.get("AccountName".toUpperCase());
-		accountName.setUrl("ContractorView.action?id={AccountID}");
+		accountName.setUrl("RequestNewContractorAccount.action?contractor={AccountID}");
 
         Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
         accountManager.setVisible(false);

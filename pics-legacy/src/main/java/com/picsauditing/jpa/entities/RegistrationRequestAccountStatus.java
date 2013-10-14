@@ -6,9 +6,11 @@ import com.picsauditing.access.Permissions;
 
 import javax.persistence.Transient;
 
-public enum RequestedDeclinedAccountStatus implements Translatable, PermissionAware {
+public enum RegistrationRequestAccountStatus implements Translatable, PermissionAware {
 	Requested,
-	Declined;
+	Declined,
+    Pending,
+    Active;
 
 	public boolean isRequested() {
         return this == Requested;
@@ -16,6 +18,14 @@ public enum RequestedDeclinedAccountStatus implements Translatable, PermissionAw
 
     public boolean isDeclined() {
         return this == Declined;
+    }
+
+    public boolean isPending() {
+        return this == Pending;
+    }
+
+    public boolean isActive() {
+        return this == Active;
     }
 
     @Transient

@@ -40,7 +40,7 @@ OptionValue	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,L
 OshaRateType	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 OshaType	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 PaymentMethod	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
-RequestedDeclinedAccountStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
+RegistrationRequestAccountStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 String	String	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 SupplierDiversity	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 Trade	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
