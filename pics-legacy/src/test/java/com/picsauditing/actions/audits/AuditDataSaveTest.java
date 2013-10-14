@@ -184,6 +184,20 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
 	}
 
+    @Test
+    public void testCheckUniqueCode_PolicyExpirationDate() throws Exception {
+        Date date;
+        SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
+
+        auditData.setAnswer("2025-01-31");
+
+        setupCheckUniqueCode("policyExpirationDate");
+        Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
+        assertNotNull(audit.getExpiresDate());
+        date = audit.getExpiresDate();
+        assertEquals("2025-02-01", format.format(date));
+    }
+
 	@Test
 	public void testCheckUniqueCode_PolicyEffectiveDate() throws Exception {
 		Date date;
