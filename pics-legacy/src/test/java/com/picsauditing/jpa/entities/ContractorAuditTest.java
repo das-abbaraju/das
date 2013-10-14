@@ -32,6 +32,19 @@ public class ContractorAuditTest {
 		contractorAudit = new ContractorAudit();
 	}
 
+    @Test
+    public void testSsipExirationRenewal() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType(AuditType.SSIP);
+        contractorAudit.setAuditType(auditType);
+        Calendar expires = Calendar.getInstance();
+        expires.add(Calendar.DATE, 30);
+        contractorAudit.setExpiresDate(expires.getTime());
+        assertTrue(contractorAudit.willExpireSoon());
+        expires.add(Calendar.DATE, 2);
+        contractorAudit.setExpiresDate(expires.getTime());
+        assertFalse(contractorAudit.willExpireSoon());
+    }
+
 	@Test
 	public void testExpiredUpToAWeekAgo_ExpirationDateIsToday() {
 		contractorAudit.setExpiresDate(DateBean.addField(new Date(), Calendar.HOUR, 1));

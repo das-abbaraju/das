@@ -360,7 +360,9 @@ public class ContractorAudit extends AbstractIndexableTable {
 			return daysToExpiration <= 15;
 		} else if (auditType.getId() == AuditType.COR) {
 			return daysToExpiration <= 180;
-		} else {
+		} else if (auditType.getId() == AuditType.SSIP) {
+            return daysToExpiration <= 30;
+        } else {
 			return daysToExpiration <= 90;
 		}
 	}
