@@ -16,6 +16,4 @@ execute addColumn;
 deallocate prepare addColumn;
 
 set @colName = null;
-COLLATE=utf8_general_ci CHECKSUM=0 DELAY_KEY_WRITE=0
-;
 

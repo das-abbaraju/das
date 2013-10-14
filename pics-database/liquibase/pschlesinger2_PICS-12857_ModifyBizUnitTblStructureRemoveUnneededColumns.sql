@@ -32,6 +32,4 @@ execute dropColumn;
 deallocate prepare dropColumn;
 
 set @colName = null;
-COLLATE=utf8_general_ci CHECKSUM=0 DELAY_KEY_WRITE=0
-;
 
