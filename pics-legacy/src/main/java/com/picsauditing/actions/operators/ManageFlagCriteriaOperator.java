@@ -224,6 +224,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	}
 
     public List<OperatorTag> getTags() {
+        tags = operatorTagDAO.findByOperator(id, false);
         return tags;
     }
 
