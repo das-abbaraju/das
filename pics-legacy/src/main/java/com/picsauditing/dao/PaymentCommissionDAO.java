@@ -31,8 +31,17 @@ public class PaymentCommissionDAO extends BaseTableDAO<PaymentCommission> {
 		query.setParameter("paymentId", paymentId);
 		return query.getResultList();
 	}
-	
-	public List<PaymentCommission> findByInvoiceCommissionId(int invoiceCommissionId) {
+
+    public List<PaymentCommission> findByPaymentIdInvoiceId(int paymentId, int invoiceId) {
+        Query query = em.createQuery("SELECT pc FROM PaymentCommission pc " +
+                "WHERE pc.payment.id = :paymentId " +
+                " AND pc.invoiceCommission.invoice.id = :invoiceId");
+        query.setParameter("paymentId", paymentId);
+        query.setParameter("invoiceId", invoiceId);
+        return query.getResultList();
+    }
+
+    public List<PaymentCommission> findByInvoiceCommissionId(int invoiceCommissionId) {
 		return findByInvoiceCommissionIds(Arrays.asList(invoiceCommissionId));
 	}
 	

@@ -1,55 +1,62 @@
 package com.picsauditing.salecommission.payment.strategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-
+import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.PaymentCommissionDAO;
+import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
 
 /**
- * This class contains all the logic for the processing of PaymentCommissions 
+ * This class contains all the logic for the processing of PaymentCommissions
  */
-public abstract class AbstractPaymentCommissionStrategy implements PaymentCommissionStrategy<Payment> {
-	
-	@Autowired
-	protected PaymentCommissionDAO paymentCommissionDAO;
-	
-	@Override
-	public final void processPaymentCommission(Payment payment) {
-		final List<Transaction> transactions = getTransactions(payment);
-		if (strategyAlreadyProcessed(transactions)) {
-			return;
-		}
+public abstract class AbstractPaymentCommissionStrategy implements PaymentCommissionStrategy<PaymentApplied> {
 
-		processPaymentCommissions(payment);
-	}
-	
-	protected abstract boolean strategyAlreadyProcessed(final List<Transaction> transactions);
-	
-	protected abstract void processPaymentCommissions(final Payment payment);
-	
-	private final List<Transaction> getTransactions(final Payment payment) {
-		if (payment == null) {
-			return Collections.emptyList();
-		}
-		
-		List<PaymentAppliedToInvoice> paymentAppliedToInvoices = payment.getInvoices();
-		if (CollectionUtils.isEmpty(paymentAppliedToInvoices)) {
-			return Collections.emptyList();
-		}
-		
-		List<Transaction> transactions = new ArrayList<Transaction>();
-		for (PaymentAppliedToInvoice paymentAppliedToInvoice : paymentAppliedToInvoices) {
-			transactions.add(paymentAppliedToInvoice.getInvoice());
-		}
-		
-		return transactions;
-	}
+    @Autowired
+    protected InvoiceCommissionDAO invoiceCommissionDAO;
+    @Autowired
+    protected PaymentCommissionDAO paymentCommissionDAO;
+
+    @Override
+    public final void processPaymentCommission(PaymentApplied paymentApplied) {
+        processPaymentCommissions(paymentApplied);
+    }
+
+    protected abstract void processPaymentCommissions(final PaymentApplied paymentApplied);
+
+    protected BigDecimal calculateActivationPoints(InvoiceCommission invoiceCommission, PaymentAppliedToInvoice paymentApplied) {
+        if (invoiceCommission.getPoints().equals(BigDecimal.ZERO))
+            return BigDecimal.ZERO;
+
+        return calculatePaymentPercentOfInvoice(invoiceCommission, paymentApplied).multiply(invoiceCommission.getPoints());
+    }
+
+    protected BigDecimal calculateRevenueAmount(InvoiceCommission invoiceCommission, PaymentAppliedToInvoice paymentApplied) {
+        if (invoiceCommission.getRevenuePercent().equals(BigDecimal.ZERO)) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, paymentApplied).multiply(
+                invoiceCommission.getRevenuePercent());
+        BigDecimal revenueAmount = invoiceCommission.getInvoice().getCommissionableAmount().multiply(revenuePercent);
+        return revenueAmount;
+    }
+
+    protected BigDecimal calculatePaymentPercentOfInvoice(InvoiceCommission invoiceCommission, PaymentAppliedToInvoice paymentApplied) {
+        BigDecimal totalAmount = invoiceCommission.getInvoice().getTotalAmount();
+
+        if (invoiceCommission.getInvoice().getId() == paymentApplied.getInvoice().getId()) {
+            BigDecimal amountApplied = paymentApplied.getAmount();
+
+            if (totalAmount != null && amountApplied != null) {
+                return BigDecimal.valueOf(amountApplied.doubleValue() / totalAmount.doubleValue());
+            }
+        }
+
+        return BigDecimal.ZERO;
+    }
 
 }

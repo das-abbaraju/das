@@ -178,8 +178,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						payment.setStatus(TransactionStatus.Unpaid);
 						paymentDAO.save(payment);
 
-						notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.PAYMENT));
-
 						return SUCCESS;
 					} catch (Exception e) {
 						addNote("Credit Card transaction failed: " + e.getMessage());
@@ -197,8 +195,15 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 
-				notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
+                unapplyAll();
 				paymentDAO.remove(payment);
+
+                for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
+                    ip.getInvoice().updateAmountApplied();
+                }
+                for (PaymentAppliedToRefund ip : payment.getRefunds()) {
+                    ip.getRefund().updateAmountApplied();
+                }
 
 				addActionMessage("Successfully Deleted Payment");
 
@@ -213,8 +218,15 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					transactionCondition = null;
 
 					unapplyAll();
-					notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
+
 					paymentDAO.remove(payment); // per Aaron's request
+
+                    for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
+                        ip.getInvoice().updateAmountApplied();
+                    }
+                    for (PaymentAppliedToRefund ip : payment.getRefunds()) {
+                        ip.getRefund().updateAmountApplied();
+                    }
 
 					if (message != null) {
 						addActionMessage(message);
@@ -256,8 +268,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					AccountingSystemSynchronization.setToSynchronize(refund);
 					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
 					paymentDAO.save(refund);
-
-					notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REFUND));
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
 					return SUCCESS;
@@ -284,7 +294,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToInvoice pa = iterInvoice.next();
 							if (pa.getInvoice().getId() == txnID) {
 								paymentDAO.removePaymentInvoice(pa, getUser());
-								notifyDataChange(new PaymentDataEvent(pa.getPayment(), PaymentEventType.REMOVE));
+								notifyDataChange(new PaymentDataEvent(pa, PaymentEventType.REMOVE));
 								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
@@ -294,7 +304,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToRefund pa = iterRefund.next();
 							if (pa.getRefund().getId() == txnID) {
 								paymentDAO.removePaymentRefund(pa, getUser());
-								notifyDataChange(new PaymentDataEvent(pa.getPayment(), PaymentEventType.REMOVE));
 								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
@@ -310,7 +319,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
 							for (Invoice txn : contractor.getInvoices()) {
 								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
+									PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
 											amountApplyMap.get(txnID));
 
 									// Email Receipt to Contractor
@@ -330,7 +339,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 										 * failed.
 										 */
 									}
-								}
+
+                                    notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.SAVE));
+                                }
 							}
 
 							for (Refund txn : contractor.getRefunds()) {
@@ -347,8 +358,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			payment.updateAmountApplied();
 			AccountingSystemSynchronization.setToSynchronize(payment);
 			paymentDAO.save(payment);
-
-			notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
 
 			if (message != null) {
 				addActionMessage(message);
@@ -409,6 +418,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		while (iterInvoice.hasNext()) {
 			PaymentAppliedToInvoice pa = iterInvoice.next();
 			paymentDAO.removePaymentInvoice(pa, getUser());
+            notifyDataChange(new PaymentDataEvent(pa, PaymentEventType.REMOVE));
 		}
 
 		Iterator<PaymentAppliedToRefund> iterRefund = payment.getRefunds().iterator();
