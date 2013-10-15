@@ -97,15 +97,15 @@ public class TranslationServiceAdapter implements TranslationService {
             : null;
     }
 
-    private TranslationWrapper doTranslation(String key, String locale) {
+    private TranslationWrapper doTranslation(String key, String requestedLocale) {
         TranslationWrapper translation;
         if (translationKeyValidator.validateKey(key)) {
             Element element = cache.get(key);
             if (element == null) {
-                translation = translateRestClient().translationFromWebResource(key, locale);
-                cacheTranslationIfReturned(key, locale, translation);
+                translation = translateRestClient().translationFromWebResource(key, requestedLocale);
+                cacheTranslationIfReturned(key, requestedLocale, translation);
             } else {
-                translation = translationFromCacheOrWebResourceIfLocaleCacheMiss(key, locale, element);
+                translation = translationFromCacheOrWebResourceIfLocaleCacheMiss(key, requestedLocale, element);
             }
         } else {
             logger.error("The key {} is invalid", key);
@@ -118,21 +118,21 @@ public class TranslationServiceAdapter implements TranslationService {
         return new TranslationWrapper.Builder().key(ERROR_STRING).translation(ERROR_STRING).build();
     }
 
-    private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String locale, Element element) {
+    private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String requestedLocale, Element element) {
         TranslationWrapper translation;
         Table<String, String, String> requestedlocaleToTextToReturnedLocale = (Table<String, String, String>) element.getObjectValue();
-        if (!requestedlocaleToTextToReturnedLocale.containsRow(locale)) {
-            translation = cacheMiss(key, locale, requestedlocaleToTextToReturnedLocale);
+        if (!requestedlocaleToTextToReturnedLocale.containsRow(requestedLocale)) {
+            translation = cacheMiss(key, requestedLocale, requestedlocaleToTextToReturnedLocale);
         } else {
-            translation = translationFrom(key, locale, requestedlocaleToTextToReturnedLocale);
+            translation = translationFrom(key, requestedLocale, requestedlocaleToTextToReturnedLocale);
         }
         return translation;
     }
 
-    private TranslationWrapper cacheMiss(String key, String locale,Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
-        TranslationWrapper translation = translateRestClient().translationFromWebResource(key, locale);
+    private TranslationWrapper cacheMiss(String key, String requestedLocale, Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
+        TranslationWrapper translation = translateRestClient().translationFromWebResource(key, requestedLocale);
         if (translation != null) {
-            requestedlocaleToReturnedLocaleToText.put(locale, translation.getLocale(), translation.getTranslation());
+            requestedlocaleToReturnedLocaleToText.put(requestedLocale, translation.getLocale(), translation.getTranslation());
         }
         return translation;
     }
@@ -141,12 +141,11 @@ public class TranslationServiceAdapter implements TranslationService {
         return translation != null && !ERROR_STRING.equals(translation.getTranslation()) && !DEFAULT_PAGENAME.equals(pageName());
     }
 
-    private void cacheTranslationIfReturned(String key, String locale, TranslationWrapper translation) {
+    private void cacheTranslationIfReturned(String key, String requestedLocale, TranslationWrapper translation) {
         if (translationReturned(translation)) {
             Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
-            requestedlocaleToReturnedLocaleToText.put(locale, translation.getLocale(), translation.getTranslation());
+            requestedlocaleToReturnedLocaleToText.put(requestedLocale, translation.getLocale(), translation.getTranslation());
             Element element = new Element(key, requestedlocaleToReturnedLocaleToText);
-            logger.debug("adding {} {} to cache", key, locale);
             cache.put(element);
         }
     }
@@ -160,13 +159,14 @@ public class TranslationServiceAdapter implements TranslationService {
         }
     }
 
-    private TranslationWrapper translationFrom(String key, String locale, Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
-        Map<String,String> foo = requestedlocaleToReturnedLocaleToText.row(locale);
-        String returnedLocale = foo.keySet().iterator().next();
-        String translation = foo.get(returnedLocale);
+    private TranslationWrapper translationFrom(String key, String requestedLocale, Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
+        Map<String,String> returnedLocaleToText = requestedlocaleToReturnedLocaleToText.row(requestedLocale);
+        String returnedLocale = returnedLocaleToText.keySet().iterator().next();
+        String translation = returnedLocaleToText.get(returnedLocale);
         return new TranslationWrapper.Builder()
             .key(key)
             .locale(returnedLocale)
+            .requestedLocale(requestedLocale)
             .translation(translation)
             .build();
     }
@@ -306,25 +306,16 @@ public class TranslationServiceAdapter implements TranslationService {
 
     @Override
 	public boolean hasKey(String key, Locale locale) {
-        if (Strings.isEmpty(key) || key.contains(" ")) {
-            return false;
-        }
-        String translation = getText(key, locale.toString());
-        return !Strings.isEmpty(translation);
+        return translationKeyValidator.validateKey(key) ? true : false;
 	}
 
     @Override
-    public boolean hasKeyInLocale(String key, String locale) {
-        // We're caching the requested locale and not the actual returned locale, which means that hasKey
-        // will have the fallback translation as a cache for the requested locale, which means we either
-        // have to also cache the requested locale, or we have to make a service call and compare the actual locale
-        // with the requested. In the spirit of not prematurely optimizing, we'll just make the service call since
-        // this call is used in very small, very specific places in the code
-        if (Strings.isEmpty(locale)) {
+    public boolean hasKeyInLocale(String key, String requestedLocale) {
+        if (Strings.isEmpty(requestedLocale)) {
             return false;
         } else {
-            TranslationWrapper translation = translateRestClient().translationFromWebResource(key, locale);
-            return (translation != null && locale.equals(translation.getLocale()));
+            TranslationWrapper translation = doTranslation(key, requestedLocale);
+            return (translation != null && requestedLocale.equals(translation.getLocale()));
         }
     }
 

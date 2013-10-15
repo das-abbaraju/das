@@ -13,16 +13,6 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
     <link rel="stylesheet" type="text/css" media="all" href="css/invoice.css?v=<s:property value="version"/>"/>
 
-    <style type="text/css" media="print">
-        h1 {
-            display: none;
-        }
-
-        input[type=submit] {
-            display: none;
-        }
-    </style>
-
     <script type="text/javascript">
         var ccNumber = '${ccNumber}';
 
