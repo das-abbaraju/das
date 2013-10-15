@@ -10,6 +10,7 @@
 			<result name="blank">/struts/blank.jsp</result>
             <result name="defaultAddressFields">/struts/contractors/_registration-company-address.jsp</result>
             <result name="GBAddressFields">/struts/contractors/united-kingdom/_registration-company-address.jsp</result>
+            <result name="AUAddressFields">/struts/contractors/australia/_registration-company-address.jsp</result>
 		</action>
 		
         <action name="RegistrationAjax" class="com.picsauditing.actions.contractors.Registration" method="dialects">

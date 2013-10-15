@@ -502,6 +502,12 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		return FRANCE_ISO_CODE.equals(isoCode);
 	}
 
+    @Transient
+    public boolean isAustralia() {
+        return AUSTRALIA_ISO_CODE.equals(isoCode);
+    }
+
+
 	@Transient
 	public boolean isEuroZone() {
 		return EUROZONE.contains(isoCode);

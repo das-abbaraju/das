@@ -175,12 +175,18 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	public String getCompanyAddressFields() {
 		if (isUKContractor()) {
 			return "GBAddressFields";
-		} else {
+		} if (isAUContractor()) {
+            return "AUAddressFields";
+        }else {
 			return "defaultAddressFields";
 		}
 	}
 
-	private boolean isUKContractor() {
+    private boolean isAUContractor() {
+        return contractor != null && contractor.getCountry() != null && contractor.getCountry().isAustralia();
+    }
+
+    private boolean isUKContractor() {
 		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isUK();
 	}
 
