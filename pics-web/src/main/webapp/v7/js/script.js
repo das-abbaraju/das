@@ -21349,7 +21349,9 @@ PICS.define('country.Country', {
 }(jQuery));
 (function(window, $) {
     function toSlug(strict) {
-        slug = this
+        var slug = this;
+
+        slug = slug
             // Make all letters lower-case
             .toLowerCase()
             // Replace 1 or more hyphens with an empty string
@@ -21365,14 +21367,17 @@ PICS.define('country.Country', {
         // Remove leading or trailing spaces or hyphens
         slug = slug.replace(/^[-\s]|[-\s]$/g,'')
 
-        if (isValidSlug(slug)) {
+        // Replace 1 or more hyphens with a single hyphen (results from above operation)
+        slug = slug.replace(/-+/g, '-')
+
+        if (isValidUri(slug)) {
             return slug;
         }
 
         return false;
     }
 
-    function isValidSlug(slug) {
+    function isValidUri(slug) {
         var regex_uri = /^((?:[a-z0-9.-]|%[0-9A-F]{2}){3,})(?::(\d+))?((?:\/(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})*)*)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i;
 
         return regex_uri.test(slug);

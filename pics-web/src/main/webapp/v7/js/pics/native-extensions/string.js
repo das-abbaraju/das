@@ -1,6 +1,8 @@
 (function(window, $) {
     function toSlug(strict) {
-        slug = this
+        var slug = this;
+
+        slug = slug
             // Make all letters lower-case
             .toLowerCase()
             // Replace 1 or more hyphens with an empty string
@@ -15,6 +17,9 @@
 
         // Remove leading or trailing spaces or hyphens
         slug = slug.replace(/^[-\s]|[-\s]$/g,'')
+
+        // Replace 1 or more hyphens with a single hyphen (sometimes results from above operations)
+        slug = slug.replace(/-{2,}/g, '-')
 
         if (isValidUri(slug)) {
             return slug;
