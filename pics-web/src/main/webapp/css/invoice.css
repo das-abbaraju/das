@@ -91,3 +91,32 @@ table.allborder th.right, table.allborder td.right {
 {
 	width: 35px;
 }
+
+@media print {
+	h1,
+	header,
+	.alert,
+	#internalnavcontainer,
+	#environment,
+	#notify,
+	#helpbox,
+	#toolbox,
+	.footer,
+	input[type=submit],
+	br[clear="all"] {
+	    display: none;
+	}
+
+	#main {
+		margin: 0;
+	}
+
+	body,
+	#content {
+		padding: 0 !important;
+	}
+
+	#bodyholder {
+		border: 0;
+	}
+}
