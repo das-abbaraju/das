@@ -22,45 +22,37 @@ public abstract class AbstractPaymentCommissionStrategy implements PaymentCommis
 
     @Override
     public final void processPaymentCommission(PaymentApplied paymentApplied) {
-        if (strategyAlreadyProcessed(paymentApplied)) {
-            return;
-        }
-
         processPaymentCommissions(paymentApplied);
     }
 
-    protected abstract boolean strategyAlreadyProcessed(final PaymentApplied paymentApplied);
-
     protected abstract void processPaymentCommissions(final PaymentApplied paymentApplied);
 
-    protected BigDecimal calculateActivationPoints(InvoiceCommission invoiceCommission, Payment payment) {
+    protected BigDecimal calculateActivationPoints(InvoiceCommission invoiceCommission, PaymentAppliedToInvoice paymentApplied) {
         if (invoiceCommission.getPoints().equals(BigDecimal.ZERO))
             return BigDecimal.ZERO;
 
-        return calculatePaymentPercentOfInvoice(invoiceCommission, payment).multiply(invoiceCommission.getPoints());
+        return calculatePaymentPercentOfInvoice(invoiceCommission, paymentApplied).multiply(invoiceCommission.getPoints());
     }
 
-    protected BigDecimal calculateRevenueAmount(InvoiceCommission invoiceCommission, Payment payment) {
+    protected BigDecimal calculateRevenueAmount(InvoiceCommission invoiceCommission, PaymentAppliedToInvoice paymentApplied) {
         if (invoiceCommission.getRevenuePercent().equals(BigDecimal.ZERO)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, payment).multiply(
+        BigDecimal revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, paymentApplied).multiply(
                 invoiceCommission.getRevenuePercent());
         BigDecimal revenueAmount = invoiceCommission.getInvoice().getCommissionableAmount().multiply(revenuePercent);
         return revenueAmount;
     }
 
-    protected BigDecimal calculatePaymentPercentOfInvoice(InvoiceCommission invoiceCommission, Payment payment) {
+    protected BigDecimal calculatePaymentPercentOfInvoice(InvoiceCommission invoiceCommission, PaymentAppliedToInvoice paymentApplied) {
         BigDecimal totalAmount = invoiceCommission.getInvoice().getTotalAmount();
 
-        for (PaymentAppliedToInvoice invoicePayment : payment.getInvoices()) {
-            if (invoiceCommission.getInvoice().getId() == invoicePayment.getInvoice().getId()) {
-                BigDecimal amountApplied = invoicePayment.getAmount();
+        if (invoiceCommission.getInvoice().getId() == paymentApplied.getInvoice().getId()) {
+            BigDecimal amountApplied = paymentApplied.getAmount();
 
-                if (totalAmount != null && amountApplied != null) {
-                    return BigDecimal.valueOf(amountApplied.doubleValue() / totalAmount.doubleValue());
-                }
+            if (totalAmount != null && amountApplied != null) {
+                return BigDecimal.valueOf(amountApplied.doubleValue() / totalAmount.doubleValue());
             }
         }
 

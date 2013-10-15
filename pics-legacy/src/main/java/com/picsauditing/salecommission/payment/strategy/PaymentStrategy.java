@@ -23,7 +23,8 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
         if (paymentApplied == null) {
             return;
         }
-        int invoiceId = ((PaymentAppliedToInvoice) paymentApplied).getInvoice().getId();
+        PaymentAppliedToInvoice paymentAppliedToInvoice = (PaymentAppliedToInvoice) paymentApplied;
+        int invoiceId = paymentAppliedToInvoice.getInvoice().getId();
         List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoiceId);
 
         for (InvoiceCommission invoiceCommission : invoiceCommissions) {
@@ -31,19 +32,10 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
             paymentCommission.setInvoiceCommission(invoiceCommission);
             paymentCommission.setPayment(paymentApplied.getPayment());
             paymentCommission.setAuditColumns(paymentApplied.getPayment().getUpdatedBy());
-            paymentCommission.setActivationPoints(calculateActivationPoints(invoiceCommission, paymentApplied.getPayment()));
-            paymentCommission.setPaymentAmount(calculateRevenueAmount(invoiceCommission, paymentApplied.getPayment()));
+            paymentCommission.setActivationPoints(calculateActivationPoints(invoiceCommission, paymentAppliedToInvoice));
+            paymentCommission.setPaymentAmount(calculateRevenueAmount(invoiceCommission, paymentAppliedToInvoice));
 
             paymentCommissionDAO.save(paymentCommission);
         }
-    }
-
-    @Override
-    protected boolean strategyAlreadyProcessed(PaymentApplied paymentApplied) {
-        if (paymentApplied instanceof PaymentAppliedToInvoice) {
-            return CollectionUtils.isNotEmpty(paymentCommissionDAO.findByPaymentIdInvoiceId(paymentApplied.getPayment().getId(), ((PaymentAppliedToInvoice) paymentApplied).getInvoice().getId()));
-        }
-
-        return false;
     }
 }

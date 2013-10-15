@@ -11,21 +11,13 @@ import java.util.List;
 public class PaymentRemoveStrategy extends AbstractPaymentCommissionStrategy {
 
     @Override
-    protected boolean strategyAlreadyProcessed(PaymentApplied paymentApplied) {
-        if (paymentApplied instanceof PaymentAppliedToInvoice) {
-            return CollectionUtils.isEmpty(paymentCommissionDAO.findByPaymentIdInvoiceId(paymentApplied.getPayment().getId(), ((PaymentAppliedToInvoice) paymentApplied).getInvoice().getId()));
-        }
-
-        return false;
-    }
-
-    @Override
     protected void processPaymentCommissions(final PaymentApplied paymentApplied) {
         if (paymentApplied == null) {
             return;
         }
 
-        int invoiceId = ((PaymentAppliedToInvoice) paymentApplied).getInvoice().getId();
+        PaymentAppliedToInvoice paymentAppliedToInvoice = (PaymentAppliedToInvoice) paymentApplied;
+        int invoiceId = paymentAppliedToInvoice.getInvoice().getId();
         List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoiceId);
 
         for (InvoiceCommission invoiceCommission : invoiceCommissions) {
@@ -33,8 +25,8 @@ public class PaymentRemoveStrategy extends AbstractPaymentCommissionStrategy {
             paymentCommission.setInvoiceCommission(invoiceCommission);
             paymentCommission.setPayment(paymentApplied.getPayment());
             paymentCommission.setAuditColumns(paymentApplied.getPayment().getUpdatedBy());
-            paymentCommission.setActivationPoints(calculateActivationPoints(invoiceCommission, paymentApplied.getPayment()).negate());
-            paymentCommission.setPaymentAmount(calculateRevenueAmount(invoiceCommission, paymentApplied.getPayment()).negate());
+            paymentCommission.setActivationPoints(calculateActivationPoints(invoiceCommission, paymentAppliedToInvoice).negate());
+            paymentCommission.setPaymentAmount(calculateRevenueAmount(invoiceCommission, paymentAppliedToInvoice).negate());
 
             paymentCommissionDAO.save(paymentCommission);
         }
