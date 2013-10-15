@@ -21348,14 +21348,22 @@ PICS.define('country.Country', {
     });
 }(jQuery));
 (function(window, $) {
-    function toSlug() {
+    function toSlug(strict) {
         slug = this
             // Make all letters lower-case
             .toLowerCase()
-            // Replace 1 or more hyphens with a single space
-            .replace(/-+/g, ' ')
+            // Replace 1 or more hyphens with an empty string
+            .replace(/-+/g, '')
             // Replace 1 or more spaces with a single hyphen
             .replace(/\s+/g, '-');
+
+        if (strict == 'strict') {
+            // Remove any character that is not alphanumeric, a hyphen, or an underscore
+            slug = slug.replace(/[^A-Za-z0-9-_]+/g,'');
+        }
+
+        // Remove leading or trailing spaces or hyphens
+        slug = slug.replace(/^[-\s]|[-\s]$/g,'')
 
         if (isValidSlug(slug)) {
             return slug;
