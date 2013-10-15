@@ -27,7 +27,9 @@ public class SeleniumDAO {
 		if (CollectionUtils.isEmpty(deletables)) return;
         deleteFromAuditTypeRules(deletables);
         deleteFromAuditCategoryRules(deletables);
-		deleteFromAccounts(deletables);
+//		deleteFromAccounts(deletables);
+        deleteFromContractors(deletables);
+        deleteFromClientSites(deletables);
 		deleteFromUsers(deletables);
 		deleteFromEmployees(deletables);
 	}
@@ -62,7 +64,27 @@ public class SeleniumDAO {
 		accountDeleter.setIds(IDs).execute();
 	}
 
-	public static List<Integer> getAccountIDNumbersFrom(List<SeleniumDeletable> deletable) {
+    private void deleteFromClientSites(List<SeleniumDeletable> deletables) throws Exception {
+        List<Integer> IDs = getClientSiteIDNumbersFrom(deletables);
+        if (IDs.isEmpty()) return;
+        accountDeleter.setIds(IDs).execute();
+    }
+
+    private void deleteFromContractors(List<SeleniumDeletable> deletables) throws Exception {
+        List<Integer> IDs = getContractorIDNumbersFrom(deletables);
+        if (IDs.isEmpty()) return;
+        accountDeleter.setIds(IDs).execute();
+    }
+
+    public static List<Integer> getClientSiteIDNumbersFrom(List<SeleniumDeletable> deletable) {
+        return getIDNumbers(deletable, "isClientSite");
+    }
+
+    public static List<Integer> getContractorIDNumbersFrom(List<SeleniumDeletable> deletable) {
+        return getIDNumbers(deletable, "isContractor");
+    }
+
+    public static List<Integer> getAccountIDNumbersFrom(List<SeleniumDeletable> deletable) {
 		return getIDNumbers(deletable, "isAnAccount");
 	}
 
