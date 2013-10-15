@@ -10,6 +10,11 @@ public class SeleniumWrapper implements SeleniumDeletable {
 	
 	private static final String USER = "USER";
 	private static final String EMPLOYEE = "EMPLOYEE";
+    private static final String CONTRACTOR = "CONTRACTOR";
+    private static final String OPERATOR = "OPERATOR";
+    private static final String ADMIN = "ADMIN";
+    private static final String CORPORATE = "CORPORATE";
+    private static final String ASSESSMENT = "ASSESSMENT";
 	
 	private int ID;
 	private String NAME;
@@ -62,4 +67,11 @@ public class SeleniumWrapper implements SeleniumDeletable {
 		return TYPE.equals(USER);
 	}
 
+    public boolean isClientSite() {
+        return TYPE.equals(OPERATOR) || TYPE.equals(CORPORATE);
+    }
+
+    public boolean isContractor() {
+        return TYPE.equals(CONTRACTOR);
+    }
 }
