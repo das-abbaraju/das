@@ -67,25 +67,6 @@ public class PaymentStrategyTest {
         invoiceCommissions.add(invoiceCommission);
     }
 
-	@Test
-	public void testProcessPaymentCommission_PaymentAlreadyProcessed() {
-        ArrayList<PaymentCommission> paymentCommissions = new ArrayList<PaymentCommission>();
-        paymentCommissions.add(new PaymentCommission());
-
-        when(paymentCommissionDAO.findByPaymentIdInvoiceId(2, 1)).thenReturn(paymentCommissions);
-		paymentStrategy.processPaymentCommission(paymentApplied);
-
-        verify(invoiceCommissionDAO, never()).findByInvoiceId(1);
-	}
-
-    @Test
-    public void testProcessPaymentCommission_RemoveAlreadyProcessed() {
-        when(paymentCommissionDAO.findByPaymentIdInvoiceId(2,1)).thenReturn(new ArrayList<PaymentCommission>());
-        paymentRemoveStrategy.processPaymentCommission(paymentApplied);
-
-        verify(invoiceCommissionDAO, never()).findByInvoiceId(1);
-    }
-
     @Test
     public void testProcessPaymentCommission_PaymentProcessed() {
         when(paymentCommissionDAO.findByPaymentIdInvoiceId(2,1)).thenReturn(new ArrayList<PaymentCommission>());

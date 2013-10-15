@@ -21,7 +21,7 @@ public abstract class AbstractPaymentCommissionStrategy implements PaymentCommis
     protected PaymentCommissionDAO paymentCommissionDAO;
 
     @Override
-    public final void processPaymentCommission(PaymentApplied paymentApplied) {
+    public void processPaymentCommission(PaymentApplied paymentApplied) {
         processPaymentCommissions(paymentApplied);
     }
 

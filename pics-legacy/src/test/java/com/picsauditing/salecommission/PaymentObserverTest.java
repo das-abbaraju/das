@@ -39,6 +39,8 @@ public class PaymentObserverTest {
 	private PaymentStrategy paymentStrategy;
 	@Mock
 	private PaymentRemoveStrategy paymentRemoveStrategy;
+    @Mock
+    PaymentAppliedToInvoice paymentApplied;
 
 	@Before
 	public void setUp() throws Exception {
@@ -55,12 +57,12 @@ public class PaymentObserverTest {
 	public void testUpdate_FeatureNotEnabled() {
 		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
-		verify(invoiceDataEvent, never()).getData();
+		verify(paymentDataEvent, never()).getData();
 	}
 
 	@Test
 	public void testUpdate_NotPaymentDataEvent() {
-		paymentObserver.update(new DataObservable(), invoiceDataEvent);
+		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
 		verify(paymentDataEvent, never()).getData();
 	}
@@ -117,7 +119,7 @@ public class PaymentObserverTest {
 	public void testUpdate_NoStrategyExecutedBecauseTypeIsNull() {
 		setupDataEvent(null);
 
-		paymentObserver.update(new DataObservable(), invoiceDataEvent);
+		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
 		verify(paymentStrategy, never()).processPaymentCommission(any(PaymentApplied.class));
 		verify(paymentRemoveStrategy, never()).processPaymentCommission(any(PaymentApplied.class));
@@ -126,10 +128,9 @@ public class PaymentObserverTest {
 	private void setupDataEvent(PaymentEventType paymentEventType) {
 		setupFeatureToggleToEnabled();
 		when(paymentDataEvent.getPaymentEventType()).thenReturn(paymentEventType);
-        PaymentAppliedToInvoice paymentApplied = new PaymentAppliedToInvoice();
-        paymentApplied.setPayment(new Payment());
-        paymentApplied.setInvoice(new Invoice());
         when(paymentDataEvent.getData()).thenReturn(paymentApplied);
+        when(paymentApplied.getPayment()).thenReturn(new Payment());
+        when(paymentApplied.getInvoice()).thenReturn(new Invoice());
 	}
 
 	private void setupFeatureToggleToEnabled() {
