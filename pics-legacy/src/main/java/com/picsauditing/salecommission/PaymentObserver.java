@@ -3,6 +3,7 @@ package com.picsauditing.salecommission;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.picsauditing.jpa.entities.PaymentApplied;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class PaymentObserver implements Observer {
 			PaymentDataEvent event = (PaymentDataEvent) arg;
 			logger.info("Got payment id = {}", event.getData().getId());
 
-			PaymentCommissionStrategy<Payment> strategy = null;
+			PaymentCommissionStrategy<PaymentApplied> strategy = null;
 			switch (event.getPaymentEventType()) {
 			case PAYMENT:
 			case SAVE:

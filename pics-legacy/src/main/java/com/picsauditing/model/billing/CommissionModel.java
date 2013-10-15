@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 
 import com.picsauditing.database.StringUtil;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,6 @@ import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.PaymentCommissionDAO;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceCommission;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.salecommission.invoice.strategy.CommissionAudit;
 import com.picsauditing.util.Strings;
 
@@ -91,12 +87,12 @@ public class CommissionModel {
 			return;
 		}
 
-		for (PaymentAppliedToInvoice paymentToInvoice : paymentsToInvoice) {
-			if (paymentToInvoice == null || paymentToInvoice.getPayment() == null) {
+		for (PaymentApplied paymentApplied : paymentsToInvoice) {
+			if (paymentApplied == null || paymentApplied.getPayment() == null) {
 				continue;
 			}
 
-			DataEvent<Payment> dataEvent = new PaymentDataEvent(paymentToInvoice.getPayment(), PaymentEventType.PAYMENT);
+			DataEvent<PaymentApplied> dataEvent = new PaymentDataEvent(paymentApplied, PaymentEventType.PAYMENT);
 			salesCommissionDataObservable.setChanged();
 			salesCommissionDataObservable.notifyObservers(dataEvent);
 		}

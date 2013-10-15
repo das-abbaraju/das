@@ -46,12 +46,6 @@ public class PaymentDAO extends PicsDAO {
 		if (row != null) {
 			em.remove(row);
 		}
-		for (PaymentAppliedToInvoice ip : row.getInvoices()) {
-			ip.getInvoice().updateAmountApplied();
-		}
-		for (PaymentAppliedToRefund ip : row.getRefunds()) {
-			ip.getRefund().updateAmountApplied();
-		}
 		row = null;
 	}
 
