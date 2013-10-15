@@ -32,17 +32,18 @@ public class TranslateRestClient {
         return client;
     }
 
-    public TranslationWrapper translationFromWebResource(String key, String locale) {
+    public TranslationWrapper translationFromWebResource(String key, String requestedLocale) {
         TranslationWrapper translation;
-        ClientResponse response = makeServiceApiCall(getTranslationUrl(key, locale));
+        ClientResponse response = makeServiceApiCall(getTranslationUrl(key, requestedLocale));
 
         if (response.getStatus() != 200) {
-            translation = failedResponseTranslation(key, locale, response);
+            translation = failedResponseTranslation(key, requestedLocale, response);
         } else {
             JSONObject json = parseJson(response.getEntity(String.class));
             translation = new TranslationWrapper.Builder()
                     .key(key)
                     .locale(actualLocaleFromJson(json))
+                    .requestedLocale(requestedLocale)
                     .translation(translationTextFromJson(json))
                     .qualityRating(qualityRatingFromJson(json))
                     .build();
@@ -62,6 +63,7 @@ public class TranslateRestClient {
                 translations.add(new TranslationWrapper.Builder()
                         .key(keyFromJson(((JSONObject) jsonObject)))
                         .locale(actualLocaleFromJson(((JSONObject) jsonObject)))
+                        .requestedLocale(locale)
                         .translation(translationTextFromJson(((JSONObject) jsonObject)))
                         .qualityRating(qualityRatingFromJson(((JSONObject) jsonObject)))
                         .retrievedByWildcard(true)

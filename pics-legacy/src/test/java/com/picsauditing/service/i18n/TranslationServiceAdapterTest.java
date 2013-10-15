@@ -435,7 +435,7 @@ public class TranslationServiceAdapterTest {
     }
 
     @Test
-    public void testHasKey_EmptyTranslationReturnsFalse() throws Exception {
+    public void testHasKey_EmptyTranslationReturnsTrue() throws Exception {
         when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE.toString())).thenReturn(
                 new TranslationWrapper.Builder()
                         .key(TEST_KEY)
@@ -443,7 +443,7 @@ public class TranslationServiceAdapterTest {
                         .translation("")
                         .build()
         );
-        assertFalse(translationService.hasKey(TEST_KEY, TEST_LOCALE));
+        assertTrue(translationService.hasKey(TEST_KEY, TEST_LOCALE));
     }
 
     @Test
