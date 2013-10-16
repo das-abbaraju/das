@@ -25,7 +25,6 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class QaUserCreatorTest extends PicsActionTest {
@@ -88,8 +87,7 @@ public class QaUserCreatorTest extends PicsActionTest {
 
     @Test
     public void testExecute_UsernameEndsInGuid() throws Exception {
-        doCallRealMethod().when(user).setUsername(anyString());
-        doCallRealMethod().when(user).getUsername();
+	    when(userManagementService.initializeNewUser(account)).thenReturn(new User());
 
         qaUserCreator.execute();
 
