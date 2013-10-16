@@ -1,8 +1,8 @@
 package com.picsauditing.access;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class MenuWriterTest {
 
@@ -82,7 +82,7 @@ public class MenuWriterTest {
 
     @Test
     public void testConvertToSimpleJSON () {
-    	String json = "{'id':'parent_id_menu','text':'parent_name','menu':{'items':[{'text':'child_name','menu':{'items':[{'text':'subChild_name'}]},'target':'child_target','url':'child_url'}]}}";
+    	String json = "{'id':'parent_id_menu','text':'parent_name','menu':{'items':[{'text':'child_name','menu':{'items':[{'text':'subChild_name'}]},'target':'child_target','url':'/child_url'}]}}";
     	json = convertQuotes(json);
 
     	MenuComponent parent = new MenuComponent();

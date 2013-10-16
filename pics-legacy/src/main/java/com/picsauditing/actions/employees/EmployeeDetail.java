@@ -12,7 +12,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class EmployeeDetail extends AccountActionSupport {
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected LegacyEmployeeDAO legacyEmployeeDAO;
 	@Autowired
 	protected AssessmentResultDAO assessmentResultDAO;
 	@Autowired

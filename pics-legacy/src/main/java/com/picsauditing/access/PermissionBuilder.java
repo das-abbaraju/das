@@ -1,16 +1,16 @@
 package com.picsauditing.access;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.picsauditing.model.i18n.LanguageModel;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Identifiable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class PermissionBuilder {
 
@@ -26,6 +26,13 @@ public class PermissionBuilder {
 		permissions.login(user);
 		populatePermissionsWithUserInfo(permissions, user);
 		build(permissions);
+		return permissions;
+	}
+
+	public Permissions login(AppUser appUser, Identifiable identifiable) {
+		Permissions permissions = new Permissions();
+		permissions.login(appUser, identifiable);
+
 		return permissions;
 	}
 

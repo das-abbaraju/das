@@ -13,6 +13,10 @@
         <action name="SeleniumKey" class="com.picsauditing.selenium.SeleniumKey">
         </action>
 
+        <!-- Auth Layer -->
+        <action name="AuthService" class="com.picsauditing.authentication.service.AuthService">
+        </action>
+
 		<!-- Exceptions -->
 		<action name="ReportExceptions" class="com.picsauditing.actions.report.ReportExceptions">
 			<result>struts/reports/report_exceptions.jsp</result>

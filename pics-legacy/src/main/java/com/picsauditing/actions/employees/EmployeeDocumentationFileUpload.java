@@ -1,7 +1,7 @@
 package com.picsauditing.actions.employees;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class EmployeeDocumentationFileUpload extends PicsActionSupport {
 	@Autowired
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 
 	private Employee employee;
 	private OperatorCompetency competency;
@@ -63,7 +63,7 @@ public class EmployeeDocumentationFileUpload extends PicsActionSupport {
 		employeeFile.setExpiration(expiration);
 		employeeFile.setAuditColumns(permissions);
 
-		employeeDAO.save(employeeFile);
+		legacyEmployeeDAO.save(employeeFile);
 		employee.getCompetencyFiles().add(employeeFile);
 	}
 

@@ -1,0 +1,41 @@
+#employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page,
+#employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page,
+#employee_guard_contractor_matrix_employee_to_skills_employeeToSkills_page,
+#employee_guard_contractor_matrix_skills_to_employee_groups_skillsToRoles_page
+{
+	.matrix
+	{
+	
+		.contains,
+		.complete,
+		.expire,
+		.incomplete
+		{
+			text-align: center;
+		}
+		
+		.contains
+		{
+			background-color: #c3e0f9;
+			color: #226396;
+		}
+		
+		.complete
+		{
+			background-color: #acf5ac;
+			color: #229322;
+		}
+		
+		.expire
+		{
+			background-color: #fcf3cc;
+			color: #e67e1c;
+		}
+		
+		.incomplete
+		{
+			background-color: #ffc6c9;
+			color: #ac030c;
+		}
+	}
+}

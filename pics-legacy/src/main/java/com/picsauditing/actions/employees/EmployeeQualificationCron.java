@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.dao.JobTaskDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeQualification;
@@ -19,11 +19,11 @@ import com.picsauditing.jpa.entities.JobTask;
 public class EmployeeQualificationCron extends PicsActionSupport {
 
 	private JobTaskDAO taskDAO;
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 	private int employeeID;
 
-	public EmployeeQualificationCron(EmployeeDAO employeeDAO, JobTaskDAO taskDAO) {
-		this.employeeDAO = employeeDAO;
+	public EmployeeQualificationCron(LegacyEmployeeDAO legacyEmployeeDAO, JobTaskDAO taskDAO) {
+		this.legacyEmployeeDAO = legacyEmployeeDAO;
 		this.taskDAO = taskDAO;
 	}
 
@@ -33,14 +33,14 @@ public class EmployeeQualificationCron extends PicsActionSupport {
 		if (button != null) {
 			if (button.equals("employee")) {
 				if (employeeID > 0) {
-					Employee employee = employeeDAO.find(employeeID);
+					Employee employee = legacyEmployeeDAO.find(employeeID);
 					calculate(employee);
 				} else {
 					String yesterday = DateBean.toDBFormat(DateBean.addDays(new Date(), -1));
 					String where = "needsRecalculation > 0 OR lastRecalculation < '" + yesterday + 
 						"' OR lastRecalculation IS NULL ORDER BY needsRecalculation DESC, lastRecalculation ASC";
 					
-					List<Employee> employeesToRecalculate = employeeDAO.findWhere(where, 10);
+					List<Employee> employeesToRecalculate = legacyEmployeeDAO.findWhere(where, 10);
 
 					for (Employee employee : employeesToRecalculate) {
 						calculate(employee);
@@ -59,7 +59,7 @@ public class EmployeeQualificationCron extends PicsActionSupport {
 		while (iterator.hasNext()) {
 			EmployeeQualification eq = iterator.next();
 			iterator.remove();
-			employeeDAO.remove(eq);
+			legacyEmployeeDAO.remove(eq);
 		}
 		
 		List<JobTask> applicableTasks = taskDAO.findByEmployee(employee.getId());
@@ -88,7 +88,7 @@ public class EmployeeQualificationCron extends PicsActionSupport {
 		
 		employee.setNeedsRecalculation(0);
 		employee.setLastRecalculation(new Date());
-		employeeDAO.save(employee);
+		legacyEmployeeDAO.save(employee);
 	}
 
 	public int getEmployeeID() {

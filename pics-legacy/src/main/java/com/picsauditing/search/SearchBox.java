@@ -24,7 +24,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AbstractIndexableTable;
 import com.picsauditing.jpa.entities.Account;
@@ -47,7 +47,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 	@Autowired
 	private ContractorAuditDAO contractorAuditDAO;
 	@Autowired
-	private EmployeeDAO empDAO;
+	private LegacyEmployeeDAO empDAO;
 	@Autowired
 	private UserDAO userDAO;
 

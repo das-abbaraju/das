@@ -1,6 +1,9 @@
 package com.picsauditing.controller;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.employeeguard.forms.AddAnotherForm;
+import com.picsauditing.employeeguard.forms.SearchForm;
+import com.picsauditing.util.Strings;
 
 public class PicsRestActionSupport extends PicsActionSupport {
 
@@ -22,4 +25,11 @@ public class PicsRestActionSupport extends PicsActionSupport {
 		this.id = id;
 	}
 
+	protected boolean isSearch(SearchForm searchForm) {
+		return searchForm != null && Strings.isNotEmpty(searchForm.getSearchTerm());
+	}
+
+	protected boolean addAnother(AddAnotherForm form) {
+		return form != null && form.isAddAnother();
+	}
 }

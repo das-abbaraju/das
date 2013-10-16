@@ -20,7 +20,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -46,7 +46,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected LegacyEmployeeDAO legacyEmployeeDAO;
 	@Autowired
 	protected EmployeeSiteDAO esDAO;
 	@Autowired

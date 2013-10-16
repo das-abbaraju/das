@@ -9,16 +9,18 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.google.common.collect.ImmutableSet;
+import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.jpa.entities.builders.UserBuilder;
 import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
@@ -55,7 +57,7 @@ import com.picsauditing.validator.InputValidator;
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 4) })
-public class User extends AbstractIndexableTable implements java.io.Serializable, Comparable<User>, JSONable {
+public class User extends AbstractIndexableTable implements java.io.Serializable, Comparable<User>, JSONable, Identifiable {
 	private static final Logger logger = LoggerFactory.getLogger(User.class);
 
 	public static String DEFAULT_AUDITOR = "- Auditor -";
@@ -84,7 +86,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	// grant privileges
 
-	private String username;
+	private AppUser appUser = new AppUser();
 	private YesNo isGroup;
 	private String email;
 	// TODO - read GMail to see if emails are bouncing and auto update this
@@ -100,7 +102,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private String phoneIndex;
 	private String fax;
 
-	private String password;
 	private Date passwordChanged;
 	private String resetHash;
 	private boolean forcePasswordReset;
@@ -160,7 +161,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 			this.updateDate = u.getUpdateDate();
 		}
 
-		this.username = u.getUsername();
+		this.appUser = u.getAppUser();
 		this.isGroup = u.getIsGroup();
 		this.email = EmailAddressUtils.validate(u.getEmail());
 		this.emailConfirmedDate = u.getEmailConfirmedDate();
@@ -171,7 +172,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.phone = u.getPhone();
 		this.phoneIndex = u.getPhoneIndex();
 		this.fax = u.getFax();
-		this.password = u.getPassword();
 		this.passwordChanged = u.getPasswordChanged();
 		this.resetHash = u.getResetHash();
 		this.forcePasswordReset = u.isForcePasswordReset();
@@ -188,15 +188,26 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.subscriptions = u.getSubscriptions();
 	}
 
-	@Column(name = "username", length = 100, nullable = false, unique = true)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name="appUserID")
+	public AppUser getAppUser() {
+		return appUser;
+	}
+
+	public void setAppUser(AppUser appUser) {
+		this.appUser = appUser;
+	}
+
+	@Transient
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 6)
 	@ReportField(type = FieldType.String, importance = FieldImportance.Low)
 	public String getUsername() {
-		return username;
+		return getAppUser().getUsername();
 	}
 
+	@Transient
 	public void setUsername(String username) {
-		this.username = sanitizeField(username);
+		getAppUser().setUsername(sanitizeField(username));
 	}
 
 	@Transient
@@ -227,6 +238,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Column(name = "email", length = 100)
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
 	@ReportField(type = FieldType.String, width = 150, importance = FieldImportance.Average)
+	@Override
 	public String getEmail() {
 		return email;
 	}
@@ -255,6 +267,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.name = name;
 	}
 
+	@Override
 	@ReportField(type = FieldType.String, width = 75, importance = FieldImportance.Average)
 	public String getFirstName() {
 		return firstName;
@@ -264,6 +277,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.firstName = sanitizeField(firstName);
 	}
 
+	@Override
 	@ReportField(type = FieldType.String, width = 75, importance = FieldImportance.Average)
 	public String getLastName() {
 		return lastName;
@@ -304,12 +318,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.lastLogin = lastLogin;
 	}
 
+	@Transient
 	public String getPassword() {
-		return password;
+		return getAppUser().getPassword();
 	}
 
+	@Transient
 	public void setPassword(String password) {
-		this.password = password;
+		getAppUser().setPassword(password);
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -365,6 +381,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Column(name = "phone", length = 50)
+	@Override
 	@ReportField(type = FieldType.String, width = 125, importance = FieldImportance.Average)
 	public String getPhone() {
 		return phone;
@@ -770,7 +787,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 			obj.put("fax", fax);
 			obj.put("phone", phone);
 			obj.put("lastLogin", lastLogin);
-			obj.put("username", username);
+			obj.put("username", getUsername());
 
 			JSONArray dtoGroups = new JSONArray();
 			for (UserGroup userGroup : groups) {
@@ -788,7 +805,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public boolean isEncryptedPasswordEqual(String query) {
-		return password != null && password.endsWith(EncodedMessage.hash(query + this.getId()));
+		return getPassword() != null && getPassword().endsWith(EncodedMessage.hash(query + this.getId()));
 	}
 
 	@Transient
@@ -1020,7 +1037,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public boolean isRemoved() {
-		return (isActive == YesNo.No || username.startsWith("DELETE-"));
+		return (isActive == YesNo.No || getUsername().startsWith("DELETE-"));
 	}
 
 	@Transient
@@ -1089,7 +1106,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public boolean isDeleted() {
-		return Strings.isNotEmpty(username) && username.startsWith(DELETED_PREFIX);
+		return Strings.isNotEmpty(getUsername()) && getUsername().startsWith(DELETED_PREFIX);
 	}
 
     public static UserBuilder builder() {

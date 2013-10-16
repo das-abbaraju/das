@@ -1,0 +1,171 @@
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.employee-guard" extends="com.picsauditing" namespace="/employee-guard">
+		<action name="Breadcrumb" class="com.picsauditing.employeeguard.controllers.BreadcrumbAction">
+			<result name="success">/struts/employee-guard/_breadcrumbs.jsp</result>
+		</action>
+
+		<action name="welcome" class="com.picsauditing.employeeguard.controllers.LoginAction">
+			<result name="list">/struts/employee-guard/account/login.jsp</result>
+			<result name="login">/struts/employee-guard/account/login.jsp</result>
+		</action>
+        <action name="welcome/submit" class="com.picsauditing.employeeguard.controllers.LoginAction" method="login">
+            <result name="login">/struts/employee-guard/account/login.jsp</result>
+        </action>
+		<action name="sign-up" class="com.picsauditing.employeeguard.controllers.AccountAction">
+			<result name="list">/struts/employee-guard/account/create.jsp</result>
+			<result name="create">/struts/employee-guard/account/create.jsp</result>
+		</action>
+	</package>
+
+	<!-- Operator -->
+	<package name="com.picsauditing.employee-guard.operator" extends="com.picsauditing.employee-guard" namespace="/employee-guard/operator">
+		<!-- Dashboard -->
+		<action name="dashboard" class="com.picsauditing.employeeguard.controllers.operator.DashboardAction">
+			<result name="dashboard">/struts/employee-guard/operator/dashboard.jsp</result>
+		</action>
+
+		<!-- Project -->
+		<action name="project" class="com.picsauditing.employeeguard.controllers.operator.ProjectAction">
+			<result name="create">/struts/employee-guard/operator/project/create.jsp</result>
+			<result name="edit">/struts/employee-guard/operator/project/edit.jsp</result>
+			<result name="list">/struts/employee-guard/operator/project/list.jsp</result>
+			<result name="show">/struts/employee-guard/operator/project/show.jsp</result>
+		</action>
+
+		<!-- Role -->
+		<action name="role" class="com.picsauditing.employeeguard.controllers.operator.RoleAction">
+			<result name="create">/struts/employee-guard/operator/role/create.jsp</result>
+			<result name="edit">/struts/employee-guard/operator/role/edit.jsp</result>
+			<result name="list">/struts/employee-guard/operator/role/list.jsp</result>
+		</action>
+
+		<!-- Skill -->
+		<action name="skill" class="com.picsauditing.employeeguard.controllers.operator.SkillAction">
+			<result name="create">/struts/employee-guard/operator/skill/create.jsp</result>
+			<result name="create-form">/struts/employee-guard/operator/skill/_create-form.jsp</result>
+			<result name="edit">/struts/employee-guard/operator/skill/edit.jsp</result>
+			<result name="edit-form">/struts/employee-guard/operator/skill/_edit-form.jsp</result>
+			<result name="list">/struts/employee-guard/operator/skill/list.jsp</result>
+			<result name="show">/struts/employee-guard/operator/skill/show.jsp</result>
+		</action>
+	</package>
+
+	<!-- Contractor -->
+	<package name="com.picsauditing.employee-guard.contractor" extends="com.picsauditing.employee-guard" namespace="/employee-guard/contractor">
+		<!-- Dashboard -->
+		<action name="dashboard" class="com.picsauditing.employeeguard.controllers.contractor.DashboardAction">
+			<result name="dashboard">/struts/employee-guard/contractor/dashboard.jsp</result>
+		</action>
+
+		<!-- Employee -->
+		<action name="employee" class="com.picsauditing.employeeguard.controllers.contractor.EmployeeAction">
+			<result name="create">/struts/employee-guard/contractor/employee/create.jsp</result>
+			<result name="edit">/struts/employee-guard/contractor/employee/edit.jsp</result>
+			<result name="list">/struts/employee-guard/contractor/employee/list.jsp</result>
+			<result name="show">/struts/employee-guard/contractor/employee/show.jsp</result>
+			<result name="personal-form">/struts/employee-guard/contractor/employee/_personal-form.jsp</result>
+			<result name="employment-form">/struts/employee-guard/contractor/employee/_employment-form.jsp</result>
+			<result name="assignment-form">/struts/employee-guard/contractor/employee/_assignment-form.jsp</result>
+            <result name="photo" type="stream"></result>
+		</action>
+
+		<action name="employee/import-export" class="com.picsauditing.employeeguard.controllers.importexport.EmployeeImportExportAction" method="importExport">
+			<result name="import-export">/struts/employee-guard/contractor/employee/import-export.jsp</result>
+		</action>
+
+		<action name="employee/export" class="com.picsauditing.employeeguard.controllers.importexport.EmployeeImportExportAction" method="download">
+		</action>
+
+		<action name="employee/import" class="com.picsauditing.employeeguard.controllers.importexport.EmployeeImportExportAction" method="upload">
+		</action>
+
+        <action name="employee/import-template" class="com.picsauditing.employeeguard.controllers.importexport.EmployeeImportExportAction" method="template">
+        </action>
+
+		<!-- Matrix -->
+		<action name="matrix/employee-groups-to-employees" class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="rolesToEmployees">
+			<result name="roles-to-employees">/struts/employee-guard/contractor/matrix/roles-to-employees.jsp</result>
+		</action>
+
+		<action name="matrix/employee-to-skills" class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="employeeToSkills">
+			<result name="employee-to-skills">/struts/employee-guard/contractor/matrix/employee-to-skills.jsp</result>
+		</action>
+
+		<action name="matrix/employees-to-skills" class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="employeesToSkills">
+			<result name="employees-to-skills">/struts/employee-guard/contractor/matrix/employees-to-skills.jsp</result>
+		</action>
+
+		<action name="matrix/skills-to-employee-groups" class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="skillsToRoles">
+			<result name="skills-to-roles">/struts/employee-guard/contractor/matrix/skills-to-roles.jsp</result>
+		</action>
+
+		<!-- Group -->
+		<action name="employee-group" class="com.picsauditing.employeeguard.controllers.contractor.GroupAction">
+			<result name="create">/struts/employee-guard/contractor/group/create.jsp</result>
+			<result name="edit">/struts/employee-guard/contractor/group/edit.jsp</result>
+			<result name="list">/struts/employee-guard/contractor/group/list.jsp</result>
+			<result name="show">/struts/employee-guard/contractor/group/show.jsp</result>
+			<result name="name-skills-form">/struts/employee-guard/contractor/group/_name-skills-form.jsp</result>
+			<result name="employees-form">/struts/employee-guard/contractor/group/_employees-form.jsp</result>
+		</action>
+
+		<!-- Skill -->
+		<action name="skill" class="com.picsauditing.employeeguard.controllers.contractor.SkillAction">
+			<result name="create">/struts/employee-guard/contractor/skill/create.jsp</result>
+			<result name="create-form">/struts/employee-guard/contractor/skill/_create-form.jsp</result>
+			<result name="edit">/struts/employee-guard/contractor/skill/edit.jsp</result>
+			<result name="edit-form">/struts/employee-guard/contractor/skill/_edit-form.jsp</result>
+			<result name="list">/struts/employee-guard/contractor/skill/list.jsp</result>
+			<result name="show">/struts/employee-guard/contractor/skill/show.jsp</result>
+		</action>
+	</package>
+
+	<!-- Employee -->
+	<package name="com.picsauditing.employee-guard.employee" extends="com.picsauditing.employee-guard" namespace="/employee-guard/employee">
+		<!-- Dashboard -->
+		<action name="dashboard" class="com.picsauditing.employeeguard.controllers.employee.DashboardAction">
+			<result name="dashboard">/struts/employee-guard/employee/dashboard.jsp</result>
+		</action>
+
+		<!-- Profile -->
+		<action name="profile" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction">
+			<result name="show">/struts/employee-guard/employee/employee/show.jsp</result>
+			<result name="photo" type="stream"></result>
+            <result name="personal-form">/struts/employee-guard/employee/employee/_personal-form.jsp</result>
+		</action>
+
+		<action name="live-id" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction" method="badge">
+			<result name="badge">/struts/employee-guard/employee/badge/badge.jsp</result>
+		</action>
+
+		<action name="profile/settings" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction" method="settings">
+			<result name="settings">/struts/employee-guard/employee/setting/settings.jsp</result>
+		</action>
+
+		<!-- Certificates  -->
+		<action name="skills/certificate" class="com.picsauditing.employeeguard.controllers.employee.DocumentAction">
+			<result name="create">/struts/employee-guard/employee/certificate/create.jsp</result>
+			<result name="edit-form">/struts/employee-guard/employee/certificate/_certificates-form.jsp</result>
+			<result name="list">/struts/employee-guard/employee/certificate/list.jsp</result>
+			<result name="show">/struts/employee-guard/employee/certificate/show.jsp</result>
+		</action>
+
+		<!--  Manage Skill -->
+		<!--<action name="skills" class="com.picsauditing.employeeguard.controllers.employee.SkillAction" method="list">
+			<result name="list">/struts/employee-guard/employee/manage-skill/list.jsp</result>
+		</action>-->
+
+        <!-- Skills -->
+        <!--<action name="skills/manage-skill" class="com.picsauditing.employeeguard.controllers.employee.SkillAction">-->
+		<action name="skills" class="com.picsauditing.employeeguard.controllers.employee.SkillAction">
+            <result name="list">/struts/employee-guard/employee/manage-skill/list.jsp</result>
+		</action>
+
+        <action name="skill" class="com.picsauditing.employeeguard.controllers.employee.SkillAction">
+            <result name="show">/struts/employee-guard/employee/manage-skill/show.jsp</result>
+            <result name="certification">/struts/employee-guard/employee/manage-skill/_certification-form.jsp</result>
+            <result name="training">/struts/employee-guard/employee/manage-skill/_training-form.jsp</result>
+        </action>
+	</package>
+</struts>

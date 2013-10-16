@@ -1,19 +1,17 @@
 package com.picsauditing.security;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Date;
+import com.picsauditing.util.Base64;
+import com.picsauditing.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.picsauditing.util.Base64;
-import com.picsauditing.util.Strings;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Date;
 
 public class SessionSecurity {
 	public static final String SESSION_COOKIE_DOMAIN = "picsorganizer.com";
@@ -92,10 +90,12 @@ public class SessionSecurity {
 		try {
 			String[] cookieParts = picsSessionCooke.split("\\|");
 			Integer userID = Integer.parseInt(cookieParts[0]);
-			Date cookieCreationTime = new Date(Long.parseLong(cookieParts[1]));
+			Integer appUserID = Integer.parseInt(cookieParts[1]);
+			Date cookieCreationTime = new Date(Long.parseLong(cookieParts[2]));
 			sessionCookie.setUserID(userID);
+			sessionCookie.setAppUserID(appUserID);
 			sessionCookie.setCookieCreationTime(cookieCreationTime);
-			sessionCookie.setEmbeddedData(cookieParts[2]);
+			sessionCookie.setEmbeddedData(cookieParts[3]);
 		} catch (Exception e) {
 			logger.error("unable to create SessionCookie object from session cookie passed: {}", e.getMessage());
 		}
