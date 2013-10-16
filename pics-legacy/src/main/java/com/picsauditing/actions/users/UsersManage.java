@@ -1,51 +1,15 @@
 package com.picsauditing.actions.users;
 
-import java.net.URLEncoder;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.struts2.ServletActionContext;
-import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.UserAccessDAO;
-import com.picsauditing.dao.UserGroupDAO;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
-import com.picsauditing.jpa.entities.UserGroup;
-import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.jpa.entities.UserSwitch;
-import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.service.AppUserService;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.group.GroupManagementService;
@@ -58,10 +22,22 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.struts2.ServletActionContext;
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import java.net.URLEncoder;
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {
-    protected User user;
+	protected User user;
 	protected Account account;
 
 	private boolean sendActivationEmail = false;
@@ -110,6 +86,10 @@ public class UsersManage extends PicsActionSupport {
 	@Autowired
 	private GroupManagementService groupManagementService;
 	@Autowired
+	private AppUserService appUserService;
+	@Autowired
+	private AppUserDAO appUserDAO;
+	@Autowired
 	private UserLoginLogDAO userLoginLogDAO;
 
 	private final Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
@@ -150,18 +130,18 @@ public class UsersManage extends PicsActionSupport {
 
 		for (UserAccess userAccess : user.getOwnedPermissions()) {
 			switch (userAccess.getOpPerm()) {
-			case ContractorAdmin:
-				conAdmin = true;
-				break;
-			case ContractorBilling:
-				conBilling = true;
-				break;
-			case ContractorSafety:
-				conSafety = true;
-				break;
-			case ContractorInsurance:
-				conInsurance = true;
-				break;
+				case ContractorAdmin:
+					conAdmin = true;
+					break;
+				case ContractorBilling:
+					conBilling = true;
+					break;
+				case ContractorSafety:
+					conSafety = true;
+					break;
+				case ContractorInsurance:
+					conInsurance = true;
+					break;
 			}
 		}
 
@@ -177,11 +157,11 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String add() {
-        if (userIsGroup.isTrue()) {
-            user = groupManagementService.initializeNewGroup(account);
-        } else {
-            user = userManagementService.initializeNewUser(account);
-        }
+		if (userIsGroup.isTrue()) {
+			user = groupManagementService.initializeNewGroup(account);
+		} else {
+			user = userManagementService.initializeNewUser(account);
+		}
 		return SUCCESS;
 	}
 
@@ -191,44 +171,44 @@ public class UsersManage extends PicsActionSupport {
 
 		user.setIsGroup(userIsGroup);
 
-        initializedNeededLazyCollections();
+		initializedNeededLazyCollections();
 
 		validateInputAndRecordErrors();
 		if (hasFieldErrors() || hasActionErrors()) {
-            // TODO: the code to refresh the user on validation error has been here for a long time (years), but this seems
-            // like really bad UX to me, shouldn't it put back the user entered values?
+			// TODO: the code to refresh the user on validation error has been here for a long time (years), but this seems
+			// like really bad UX to me, shouldn't it put back the user entered values?
 			userManagementService.resetUser(user);
 			return INPUT_ERROR;
 		}
 
-        setUserAccountIfNeeded();
+		setUserAccountIfNeeded();
 
-        if (user.getId() == 0) {
-            newUser = true;
-        }
+		if (user.getId() == 0) {
+			newUser = true;
+		}
 
-        if (user.isGroup()) {
-            if (groupManagementService.isGroupnameAvailable(user)) {
-                groupManagementService.setUsernameToGeneratedGroupname(user);
-                groupManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
-                addActionMessage(getText("UsersManage.GroupSavedSuccessfully"));
-            } else {
-                addActionError(getText("UsersManage.GroupnameNotAvailable"));
-                groupManagementService.resetGroup(user);
-                return SUCCESS;
-            }
-        } else {
-            if (user.getAccount().isContractor()) {
-                UserGroupManagementStatus status = userManagementService.contractorUserIsSavable(user, account, permissionsForContractorAccount());
-                if (!status.isOk) {
-                    addActionErrorFromStatus(status);
-                    return SUCCESS;
-                }
-                updateUserRoles();
-            }
+		if (user.isGroup()) {
+			if (groupManagementService.isGroupnameAvailable(user)) {
+				groupManagementService.setUsernameToGeneratedGroupname(user);
+				groupManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
+				addActionMessage(getText("UsersManage.GroupSavedSuccessfully"));
+			} else {
+				addActionError(getText("UsersManage.GroupnameNotAvailable"));
+				groupManagementService.resetGroup(user);
+				return SUCCESS;
+			}
+		} else {
+			if (user.getAccount().isContractor()) {
+				UserGroupManagementStatus status = userManagementService.contractorUserIsSavable(user, account, permissionsForContractorAccount());
+				if (!status.isOk) {
+					addActionErrorFromStatus(status);
+					return SUCCESS;
+				}
+				updateUserRoles();
+			}
 
-            saveNonGroupUser();
-        }
+			saveNonGroupUser();
+		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
 			return this.setUrlForRedirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
@@ -237,85 +217,90 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-    private List<OpPerms> permissionsForContractorAccount() {
-        List<OpPerms> permissionsBeingAdded = new ArrayList<OpPerms>();
-        if (conAdmin) {
-            permissionsBeingAdded.add(OpPerms.ContractorAdmin);
-        }
-        if (conInsurance) {
-            permissionsBeingAdded.add(OpPerms.ContractorInsurance);
-        }
-        if (conSafety) {
-            permissionsBeingAdded.add(OpPerms.ContractorSafety);
-        }
-        if (conBilling) {
-            permissionsBeingAdded.add(OpPerms.ContractorBilling);
-        }
-        return permissionsBeingAdded;
-    }
+	private List<OpPerms> permissionsForContractorAccount() {
+		List<OpPerms> permissionsBeingAdded = new ArrayList<OpPerms>();
+		if (conAdmin) {
+			permissionsBeingAdded.add(OpPerms.ContractorAdmin);
+		}
+		if (conInsurance) {
+			permissionsBeingAdded.add(OpPerms.ContractorInsurance);
+		}
+		if (conSafety) {
+			permissionsBeingAdded.add(OpPerms.ContractorSafety);
+		}
+		if (conBilling) {
+			permissionsBeingAdded.add(OpPerms.ContractorBilling);
+		}
+		return permissionsBeingAdded;
+	}
 
-    private void saveNonGroupUser() throws Exception {
-        user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
+	private void saveNonGroupUser() throws Exception {
+		user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 
-        updateShadowCSR();
+		updateShadowCSR();
 
-        user.updateDisplayNameBasedOnFirstAndLastName();
+		user.updateDisplayNameBasedOnFirstAndLastName();
 
-        // Send activation email if set
-        if (sendActivationEmail && user.getId() == 0) {
-            setUserResetHash();
-            addActionMessage(sendActivationEmail(user, permissions));
-        }
+		// Send activation email if set
+		if (sendActivationEmail && user.getId() == 0) {
+			setUserResetHash();
+			addActionMessage(sendActivationEmail(user, permissions));
+		}
 
-        if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null) {
-            user.getAccount().setPrimaryContact(user);
-        }
-        user.setUsingVersion7Menus(isUsingVersion7Menus());
-        if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
-            user.setUsingDynamicReports(isUsingVersion7Menus());
-        }
+		if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null) {
+			user.getAccount().setPrimaryContact(user);
+		}
+		user.setUsingVersion7Menus(isUsingVersion7Menus());
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			user.setUsingDynamicReports(isUsingVersion7Menus());
+		}
 
-        try {
-            user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
-            addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
-        } catch (ConstraintViolationException e) {
-            addActionError(getText("UsersManage.UsernameInUse"));
-        } catch (DataIntegrityViolationException e) {
-            addActionError(getText("UsersManage.UsernameInUse"));
-        }
-    }
+		try {
+			if (user.getAppUser().getId() == 0) {
+				int appUserID = Integer.parseInt(appUserService.createNewAppUser(user.getAppUser().getUsername(), "").get("id").toString());
+				user.setAppUser(appUserDAO.find(appUserID));
+			}
 
-    private void setUserAccountIfNeeded() {
-        if (user.getAccount() == null) {
-            user.setAccount(new Account());
-            if (user.getId() == 0) {
-                user.setAccount(account);
-            } else if (!permissions.hasPermission(OpPerms.AllOperators)) {
-                user.getAccount().setId(permissions.getAccountId());
-            }
-        }
-    }
+			user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
+			addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
+		} catch (ConstraintViolationException e) {
+			addActionError(getText("UsersManage.UsernameInUse"));
+		} catch (DataIntegrityViolationException e) {
+			addActionError(getText("UsersManage.UsernameInUse"));
+		}
+	}
 
-    private void initializedNeededLazyCollections() {
-        user.getGroups().size();
-        user.getOwnedPermissions().size();
-    }
+	private void setUserAccountIfNeeded() {
+		if (user.getAccount() == null) {
+			user.setAccount(new Account());
+			if (user.getId() == 0) {
+				user.setAccount(account);
+			} else if (!permissions.hasPermission(OpPerms.AllOperators)) {
+				user.getAccount().setId(permissions.getAccountId());
+			}
+		}
+	}
 
-    private void updateUserRoles() {
-        Map<OpPerms, Boolean> requestedPermState = new HashMap<>();
-        requestedPermState.put(OpPerms.ContractorAdmin, conAdmin);
-        requestedPermState.put(OpPerms.ContractorBilling, conBilling);
-        requestedPermState.put(OpPerms.ContractorSafety, conSafety);
-        requestedPermState.put(OpPerms.ContractorInsurance, conInsurance);
+	private void initializedNeededLazyCollections() {
+		user.getGroups().size();
+		user.getOwnedPermissions().size();
+	}
 
-        List<UserGroupManagementStatus> statuses = userManagementService.updateUserPermissions(user, account, permissions, requestedPermState);
+	private void updateUserRoles() {
+		Map<OpPerms, Boolean> requestedPermState = new HashMap<>();
+		requestedPermState.put(OpPerms.ContractorAdmin, conAdmin);
+		requestedPermState.put(OpPerms.ContractorBilling, conBilling);
+		requestedPermState.put(OpPerms.ContractorSafety, conSafety);
+		requestedPermState.put(OpPerms.ContractorInsurance, conInsurance);
 
-        for (UserGroupManagementStatus status : statuses) {
-            if (!status.isOk) {
-                addActionErrorFromStatus(status);
-            }
-        }
-    }
+		List<UserGroupManagementStatus> statuses = userManagementService.updateUserPermissions(user, account, permissions, requestedPermState);
+
+		for (UserGroupManagementStatus status : statuses) {
+			if (!status.isOk) {
+				addActionErrorFromStatus(status);
+			}
+		}
+	}
 
 	private void updateShadowCSR() {
 		if (shadowID == 0) {
@@ -358,11 +343,11 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
-    // NOTE: unlocking does not validate or save any of the form fields - it only unlocks
+	// NOTE: unlocking does not validate or save any of the form fields - it only unlocks
 	public String unlock() throws Exception {
 		startup();
 
-        userManagementService.unlock(user);
+		userManagementService.unlock(user);
 
 		addActionMessage(getText("UsersManage.Unlocked"));
 
@@ -372,65 +357,65 @@ public class UsersManage extends PicsActionSupport {
 	public String move() throws Exception {
 		startup();
 
-        UserGroupManagementStatus status = validateUserOrGroupIsMovable();
-        if (!status.isOk) {
-            addActionErrorFromStatus(status);
-        } else {
-            userManagementService.moveUserToNewAccount(user, moveToAccount);
-    		addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
-				.getName()));
-        }
+		UserGroupManagementStatus status = validateUserOrGroupIsMovable();
+		if (!status.isOk) {
+			addActionErrorFromStatus(status);
+		} else {
+			userManagementService.moveUserToNewAccount(user, moveToAccount);
+			addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
+					.getName()));
+		}
 		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
-    private UserGroupManagementStatus validateUserOrGroupIsMovable() {
-        UserGroupManagementStatus status;
-        if (!user.isGroup()) {
-            status = userManagementService.userIsMovable(user);
-        } else {
-            status = groupManagementService.groupIsMovable(user);
-        }
-        return status;
-    }
+	private UserGroupManagementStatus validateUserOrGroupIsMovable() {
+		UserGroupManagementStatus status;
+		if (!user.isGroup()) {
+			status = userManagementService.userIsMovable(user);
+		} else {
+			status = groupManagementService.groupIsMovable(user);
+		}
+		return status;
+	}
 
 
-    @RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
 	public String deactivate() throws Exception {
 		startup();
-        UserGroupManagementStatus status = validateUserOrGroupIsDeactivatable();
-        if (!status.isOk) {
-            addActionErrorFromStatus(status);
-        } else {
-            deactivateUserOrGroup();
-            addActionMessage(getTextParameterized("UsersManage.UserInactivated", user.isGroup() ? 1 : 0,
-                user.isGroup() ? user.getName() : user.getUsername()));
-        }
+		UserGroupManagementStatus status = validateUserOrGroupIsDeactivatable();
+		if (!status.isOk) {
+			addActionErrorFromStatus(status);
+		} else {
+			deactivateUserOrGroup();
+			addActionMessage(getTextParameterized("UsersManage.UserInactivated", user.isGroup() ? 1 : 0,
+					user.isGroup() ? user.getName() : user.getUsername()));
+		}
 		return SUCCESS;
 	}
 
-    private void deactivateUserOrGroup() throws Exception {
-        if (!user.isGroup()) {
-            userManagementService.deactivate(user, permissions);
-        } else {
-            groupManagementService.deactivate(user, permissions);
-        }
-    }
+	private void deactivateUserOrGroup() throws Exception {
+		if (!user.isGroup()) {
+			userManagementService.deactivate(user, permissions);
+		} else {
+			groupManagementService.deactivate(user, permissions);
+		}
+	}
 
-    private UserGroupManagementStatus validateUserOrGroupIsDeactivatable() {
-        UserGroupManagementStatus status;
-        if (!user.isGroup()) {
-            status = userManagementService.userIsDeactivatable(user, account);
-        } else {
-            status = groupManagementService.groupIsDeactivatable(user);
-        }
-        return status;
-    }
+	private UserGroupManagementStatus validateUserOrGroupIsDeactivatable() {
+		UserGroupManagementStatus status;
+		if (!user.isGroup()) {
+			status = userManagementService.userIsDeactivatable(user, account);
+		} else {
+			status = groupManagementService.groupIsDeactivatable(user);
+		}
+		return status;
+	}
 
-    @RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
 	public String activate() throws Exception {
 		startup();
 
-        userManagementService.activateUser(user);
+		userManagementService.activateUser(user);
 
 		removeFromExclusionList();
 
@@ -445,47 +430,47 @@ public class UsersManage extends PicsActionSupport {
 	public String delete() throws Exception {
 		startup();
 
-        UserGroupManagementStatus status = validateUserOrGroupIsDeletable();
-        if (!status.isOk) {
-            addActionErrorFromStatus(status);
-        } else {
-            deleteUserOrGroup();
-    		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
-				user.isGroup() ? user.getName() : user.getUsername()));
-	    	user = null;
-        }
+		UserGroupManagementStatus status = validateUserOrGroupIsDeletable();
+		if (!status.isOk) {
+			addActionErrorFromStatus(status);
+		} else {
+			deleteUserOrGroup();
+			addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
+					user.isGroup() ? user.getName() : user.getUsername()));
+			user = null;
+		}
 
 		return SUCCESS;
 	}
 
-    private void deleteUserOrGroup() throws Exception {
-        if (!user.isGroup()) {
-            userManagementService.delete(user, permissions);
-        } else {
-            groupManagementService.delete(user, permissions);
-        }
-    }
+	private void deleteUserOrGroup() throws Exception {
+		if (!user.isGroup()) {
+			userManagementService.delete(user, permissions);
+		} else {
+			groupManagementService.delete(user, permissions);
+		}
+	}
 
-    private void addActionErrorFromStatus(UserGroupManagementStatus status) {
-        if (Strings.isEmpty(status.errorDetail)) {
-            addActionError(getText(status.notOkErrorKey));
-        } else {
-            addActionError(getTextParameterized(status.notOkErrorKey, status.errorDetail));
-        }
-    }
+	private void addActionErrorFromStatus(UserGroupManagementStatus status) {
+		if (Strings.isEmpty(status.errorDetail)) {
+			addActionError(getText(status.notOkErrorKey));
+		} else {
+			addActionError(getTextParameterized(status.notOkErrorKey, status.errorDetail));
+		}
+	}
 
-    private UserGroupManagementStatus validateUserOrGroupIsDeletable() {
-        UserGroupManagementStatus status;
-        if (!user.isGroup()) {
-            status = userManagementService.userIsDeletable(user);
-        } else {
-            status = groupManagementService.groupIsDeletable(user);
-        }
-        return status;
-    }
+	private UserGroupManagementStatus validateUserOrGroupIsDeletable() {
+		UserGroupManagementStatus status;
+		if (!user.isGroup()) {
+			status = userManagementService.userIsDeletable(user);
+		} else {
+			status = groupManagementService.groupIsDeletable(user);
+		}
+		return status;
+	}
 
 
-    private void startup() throws Exception {
+	private void startup() throws Exception {
 		if (permissions.isContractor()) {
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		} else {
@@ -557,13 +542,13 @@ public class UsersManage extends PicsActionSupport {
 		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), user.getId());
 		addFieldErrorIfMessage("user.username", errorMessageKey);
 
-        if (permissions.hasGroup(User.GROUP_CSR)) {
-            errorMessageKey = inputValidator.validatePicsCSRPhoneNumber(user.getPhone(), false);
-            addFieldErrorIfMessage("user.phone", errorMessageKey);
-        } else {
-		    errorMessageKey = inputValidator.validatePhoneNumber(user.getPhone(), false);
-		    addFieldErrorIfMessage("user.phone", errorMessageKey);
-        }
+		if (permissions.hasGroup(User.GROUP_CSR)) {
+			errorMessageKey = inputValidator.validatePicsCSRPhoneNumber(user.getPhone(), false);
+			addFieldErrorIfMessage("user.phone", errorMessageKey);
+		} else {
+			errorMessageKey = inputValidator.validatePhoneNumber(user.getPhone(), false);
+			addFieldErrorIfMessage("user.phone", errorMessageKey);
+		}
 
 		errorMessageKey = inputValidator.validatePhoneNumber(user.getFax(), false);
 		addFieldErrorIfMessage("user.fax", errorMessageKey);
@@ -1001,7 +986,7 @@ public class UsersManage extends PicsActionSupport {
 		return false;
 	}
 
-    // TODO Technical Debt: PICS-9613
+	// TODO Technical Debt: PICS-9613
 	public String sendRecoveryEmail(User user) {
 		try {
 			String serverName = ServletActionContext.getRequest().getServerName();
@@ -1116,7 +1101,7 @@ public class UsersManage extends PicsActionSupport {
 		List<String> countries = user.getCountriesServiced();
 		List<Country> listOfCountriesServiced = new ArrayList<Country>();
 
-		for (String countryString: countries) {
+		for (String countryString : countries) {
 			listOfCountriesServiced.add(countryDAO.findbyISO(countryString));
 		}
 
