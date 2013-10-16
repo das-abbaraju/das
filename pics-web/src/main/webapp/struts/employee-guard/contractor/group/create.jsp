@@ -14,7 +14,7 @@
 </s:include>
 
 <tw:form formName="contractor_group_create" action="${contractor_group_create_url}" method="post"
-         class="form-horizontal" role="form">
+         class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group ${name_error_class}">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>

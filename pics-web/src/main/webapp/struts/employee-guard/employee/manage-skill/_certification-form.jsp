@@ -9,7 +9,9 @@
 </s:url>
 <s:url action="skills" var="employee_skills_list_url" />
 
-<tw:form formName="employee_skill_certification" action="${employee_skill_url}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+
+asdfas
+<tw:form formName="employee_skill_certification" action="${employee_skill_url}" method="post" enctype="multipart/form-data" class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group">
             <tw:label labelName="documentId" class="col-md-3 control-label"><strong>Proof</strong></tw:label>

@@ -8,7 +8,7 @@
 </s:url>
 <s:url action="skills/certificate" method="create" var="employee_skill_create_url" />
 
-<tw:form formName="employee_skill_edit" action="${employee_skill_edit_url}" method="post" class="form-horizontal" enctype="multipart/form-data">
+<tw:form formName="employee_skill_edit" action="${employee_skill_edit_url}" method="post" class="form-horizontal js-validation" enctype="multipart/form-data">
     <fieldset>
         <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>

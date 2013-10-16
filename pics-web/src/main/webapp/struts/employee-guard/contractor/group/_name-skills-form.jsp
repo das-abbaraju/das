@@ -9,7 +9,7 @@
     <s:param name="id">${id}</s:param>
 </s:url>
 
-<tw:form formName="contractor_group_edit_name_skills" action="${contractor_group_edit_url}" method="post" class="form-horizontal"
+<tw:form formName="contractor_group_edit_name_skills" action="${contractor_group_edit_url}" method="post" class="form-horizontal js-validation"
          role="form">
     <fieldset>
         <div class="form-group ${name_error_class}">

@@ -1,16 +1,13 @@
 PICS.define('employee-guard.FormValidation', {
     methods: (function () {
         function init() {
-            $('#contractor_employee_create_form').on('click', '[type="submit"]', submitFormForValidation);
-            $('#contractor_skill_create_form').on('click', '[type="submit"]', submitFormForValidation);
-            $('#contractor_group_create_form').on('click', '[type="submit"]', submitFormForValidation);
-            $('#employee_skill_create_form').on('click', '[type="submit"]', submitFormForValidation);
+            $('body').on('click', '.js-validation [type="submit"]', submitFormForValidation);
         }
 
         function submitFormForValidation(event) {
             var $element = $(event.target),
                 $form = $element.closest('form'),
-                url = $form.attr('action'),
+                url = url = $form.attr('action'),
                 data = $form.serializeArray();
 
             //halt form submission

@@ -12,7 +12,7 @@
     <div id="login-container" class="col-md-4 col-md-offset-4">
         <img src="/v7/img/logo/logo-large.png" class="logo img-responsive">
 
-        <tw:form formName="employee_guard_create_account" action="${employee_guard_account_create_url}" method="post" class="form-horizontal login-form" role="form">
+        <tw:form formName="employee_guard_create_account" action="${employee_guard_account_create_url}" method="post" class="form-horizontal login-form js-validation" role="form">
             <input type="hidden" name="hashCode" value="${hashCode}" />
 
             <div class="form-group">

@@ -11,7 +11,7 @@
     <s:param name="id">${employee.id}</s:param>
 </s:url>
 
-<tw:form formName="contractor_employee_edit_personal" action="${contractor_employee_edit_url}" method="post" class="form-horizontal" autocomplete="off" role="form">
+<tw:form formName="contractor_employee_edit_personal" action="${contractor_employee_edit_url}" method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
     <div class="form-group ${first_name_error_class}">
         <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First
             Name</strong></tw:label>
