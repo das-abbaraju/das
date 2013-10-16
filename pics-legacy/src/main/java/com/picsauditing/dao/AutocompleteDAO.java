@@ -46,7 +46,10 @@ public class AutocompleteDAO {
 
 		if (permissions.isOperatorCorporate()) {
 			sql.append(" WHERE accountID IN (");
-			sql.append(permissions.getAccountId()).append(",").append(Strings.implode(permissions.getOperatorChildren()));
+			sql.append(permissions.getAccountId());
+            if (permissions.getOperatorChildren().size() > 0) {
+                sql.append(",").append(Strings.implode(permissions.getOperatorChildren()));
+            }
 			sql.append(") ");
 		}
 
