@@ -21,6 +21,9 @@ public class UsersModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "User");
 
+        ModelSpec userGroup = spec.join(UserTable.Group);
+        userGroup.join(UserGroupTable.Group);
+
 		ModelSpec account = spec.join(UserTable.Account);
 		account.alias = "Account";
 
