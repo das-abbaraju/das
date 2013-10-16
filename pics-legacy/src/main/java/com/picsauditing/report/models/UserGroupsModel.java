@@ -1,8 +1,5 @@
 package com.picsauditing.report.models;
 
-import java.util.List;
-import java.util.Map;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
@@ -10,16 +7,22 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 
-public class UsersModel extends AbstractModel {
+import java.util.List;
+import java.util.Map;
+
+public class UserGroupsModel extends AbstractModel {
 
 	public static final String ACCOUNT_TYPE = "AccountType";
 
-	public UsersModel(Permissions permissions) {
+	public UserGroupsModel(Permissions permissions) {
 		super(permissions, new UserTable());
 	}
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "User");
+
+        ModelSpec userGroup = spec.join(UserTable.Group);
+        userGroup.join(UserGroupTable.Group);
 
 		ModelSpec account = spec.join(UserTable.Account);
 		account.alias = "Account";
@@ -52,13 +55,6 @@ public class UsersModel extends AbstractModel {
 		Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
-
-        Field accountManager = new Field("UserGroup","User.id",FieldType.UserGroup);
-        accountManager.setVisible(false);
-        accountManager.setPrefixValue("SELECT userID FROM calc_inherited_user_group ciug " +
-                "WHERE groupID IN ");
-        accountManager.setSuffixValue("");
-        fields.put(accountManager.getName().toUpperCase(), accountManager);
 
         return fields;
 	}

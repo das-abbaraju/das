@@ -40,17 +40,6 @@ public enum ModelType {
     ReportPermissions,
     ReportUsers,
     UserAssignments,
+    UserGroups,
 	Users;
-
-//    ContractorAuditOperatorWorkflows,
-//    Country,
-//    EmailExclusions,
-//    Emails,
-//    EmailSubscriptions,
-//    EmployeeAssessments,
-//    Employees,
-//    ExceptionLogs,
-//    RegistrationRequests,
-//    Resources,
-//    UserGroups,
 }

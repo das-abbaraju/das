@@ -1530,6 +1530,47 @@ UserAssignmentUserName
 UserAssignmentUserPhone
 UserAssignmentUserTimezone
 
+Model: UserGroups
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountManagerUserID
+AccountManagerUserName
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+AccountType
+ReportingClientID
+ReportingClientName
+UserAssignmentCapacity
+UserCreationDate
+UserDepartment
+UserEmail
+UserFax
+UserFirstName
+UserGroupGroupID
+UserGroupGroupName
+UserID
+UserIsActive
+UserIsGroup
+UserLastLogin
+UserLastName
+UserLocale
+UserName
+UserPhone
+UserTimezone
+UserUsername
+UserUsingVersion7Menus
+
 Model: Users
 Permission: Permissions{permissions=[]}
 ----------------------------------------
@@ -1558,8 +1599,6 @@ UserEmail
 UserFax
 UserFirstName
 UserGroup
-UserGroupGroupID
-UserGroupGroupName
 UserID
 UserIsActive
 UserIsGroup
