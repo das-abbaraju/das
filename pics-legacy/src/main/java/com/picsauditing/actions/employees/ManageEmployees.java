@@ -282,6 +282,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		errorMessageKey = inputValidator.validateEmail(employee.getEmail(), false);
 		addFieldErrorIfMessage("employee.email", errorMessageKey);
 
+        if (permissions.hasGroup(User.GROUP_CSR)) {
+            errorMessageKey = inputValidator.validatePicsCSRPhoneNumber(employee.getPhone(), false);
+            addFieldErrorIfMessage("user.phone", errorMessageKey);
+        } else {
+            errorMessageKey = inputValidator.validatePhoneNumber(employee.getPhone(), false);
+            addFieldErrorIfMessage("user.phone", errorMessageKey);
+        }
+
 		errorMessageKey = inputValidator.validatePhoneNumber(employee.getPhone(), false);
 		addFieldErrorIfMessage("employee.phone", errorMessageKey);
 

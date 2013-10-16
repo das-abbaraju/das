@@ -557,8 +557,13 @@ public class UsersManage extends PicsActionSupport {
 		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), user.getId());
 		addFieldErrorIfMessage("user.username", errorMessageKey);
 
-		errorMessageKey = inputValidator.validatePhoneNumber(user.getPhone(), false);
-		addFieldErrorIfMessage("user.phone", errorMessageKey);
+        if (permissions.hasGroup(User.GROUP_CSR)) {
+            errorMessageKey = inputValidator.validatePicsCSRPhoneNumber(user.getPhone(), false);
+            addFieldErrorIfMessage("user.phone", errorMessageKey);
+        } else {
+		    errorMessageKey = inputValidator.validatePhoneNumber(user.getPhone(), false);
+		    addFieldErrorIfMessage("user.phone", errorMessageKey);
+        }
 
 		errorMessageKey = inputValidator.validatePhoneNumber(user.getFax(), false);
 		addFieldErrorIfMessage("user.fax", errorMessageKey);
