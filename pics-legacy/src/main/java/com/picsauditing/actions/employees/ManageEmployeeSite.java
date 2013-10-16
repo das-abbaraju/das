@@ -69,7 +69,7 @@ public class ManageEmployeeSite extends ManageEmployees {
 					employeeCompetency.setCompetency(operatorCompetency);
 					employeeCompetency.setEmployee(employee);
 					employeeCompetency.setAuditColumns(permissions);
-					employeeDAO.save(employeeCompetency);
+					legacyEmployeeDAO.save(employeeCompetency);
 				}
 			}
 		}

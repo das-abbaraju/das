@@ -1,25 +1,20 @@
 package com.picsauditing.access;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.picsauditing.access.builders.PermissionsBuilder;
+import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.strutsutil.AjaxUtils;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -34,6 +29,7 @@ public class Permissions implements Serializable {
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 
 	private int userID;
+	private int appUserID;
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 
@@ -89,6 +85,7 @@ public class Permissions implements Serializable {
 
 	public void clear() {
         userID = 0;
+		appUserID = 0;
         loggedIn = false;
         active = false;
         username = "";
@@ -140,9 +137,23 @@ public class Permissions implements Serializable {
         setStableLocale(user);
 	}
 
+	public void login(AppUser appUser, Identifiable identifiable) {
+		clear();
+		if (appUser == null || appUser.getId() == 0) {
+			return;
+		}
+
+		appUserID = appUser.getId();
+		loggedIn = true;
+		username = appUser.getUsername();
+		name = identifiable.getFirstName() + " " + identifiable.getLastName();
+		email = identifiable.getEmail();
+	}
+
     public Permissions loginWithoutVerifyingLanguage(User user) {
         clear();
         userID = user.getId();
+	    appUserID = user.getAppUser().getId();
         loggedIn = true;
         forcePasswordReset = user.isForcePasswordReset();
         active = user.isActiveB();
@@ -289,6 +300,10 @@ public class Permissions implements Serializable {
 
     public String getUserIdString() {
 		return Integer.toString(userID);
+	}
+
+	public int getAppUserID() {
+		return appUserID;
 	}
 
 	public boolean isLoggedIn() {

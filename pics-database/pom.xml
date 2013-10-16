@@ -42,10 +42,10 @@
                 <version>2.0.1</version>
                 <configuration>
                     <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                    <propertyFileWillOverride>true</propertyFileWillOverride>
+                    <propertyFileWillOverride>false</propertyFileWillOverride>
                     <verbose>true</verbose>
-                    <propertyFile>${liquibase.propertyFile}</propertyFile>
-                    <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
+                    <propertyFile>${project.basedir}/liquibase/liquibase.properties</propertyFile>
+                    <changeLogFile>${project.basedir}/liquibase/changelogMaster.xml</changeLogFile>
                 </configuration>
                 <!--<executions>-->
                     <!--<execution>-->

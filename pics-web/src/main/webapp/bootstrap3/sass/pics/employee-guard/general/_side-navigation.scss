@@ -1,0 +1,34 @@
+#side-navigation {
+	background-color: $default_tint;
+
+	.nav > .active > a,
+	.nav > .active:hover > a,
+	.nav > .active:focus > a {
+	    background-color: rgba(0, 0, 0, 0);
+	    font-weight: bold;
+	    border-right: 1px solid $primary_light;
+	    color: $primary_light;
+	}
+	.nav > li > a {
+	    color: #454545;
+	    display: block;
+	    padding: 5px 20px;
+	}
+
+	.nav .nav {
+	    display: none;
+
+	    li a {
+			font-size: 90%;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			padding-left: 30px;
+
+	    }
+	}
+
+
+	.nav > .active > ul {
+	    display: block;
+	}
+}

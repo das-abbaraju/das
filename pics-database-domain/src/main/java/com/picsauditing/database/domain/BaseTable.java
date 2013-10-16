@@ -8,7 +8,7 @@ import javax.persistence.MappedSuperclass;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @MappedSuperclass
-public abstract class BaseTable implements TableWithID {
+public abstract class BaseTable implements RowsIdentifiableByKey {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(nullable = false)

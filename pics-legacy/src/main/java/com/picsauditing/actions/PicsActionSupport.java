@@ -1,5 +1,42 @@
 package com.picsauditing.actions;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.MainPage;
+import com.picsauditing.access.*;
+import com.picsauditing.actions.users.ChangePassword;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.controller.ViewNamespace;
+import com.picsauditing.controller.ViewNamespaceAware;
+import com.picsauditing.dao.*;
+import com.picsauditing.employeeguard.daos.ProfileDAO;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectUser;
+import com.picsauditing.security.CookieSupport;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.strutsutil.FileDownloadContainer;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.*;
+import com.picsauditing.util.system.PicsEnvironment;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.RequestAware;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -11,68 +48,13 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.util.*;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.RequestAware;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.inject.Inject;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.MainPage;
-import com.picsauditing.access.AjaxNotLoggedInException;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.SecurityAware;
-import com.picsauditing.access.UserAgentParser;
-import com.picsauditing.actions.users.ChangePassword;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectUser;
-import com.picsauditing.security.CookieSupport;
-import com.picsauditing.security.SessionCookie;
-import com.picsauditing.security.SessionSecurity;
-import com.picsauditing.strutsutil.AdvancedValidationAware;
-import com.picsauditing.strutsutil.FileDownloadContainer;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.system.PicsEnvironment;
-
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
-		AdvancedValidationAware {
+		AdvancedValidationAware, ViewNamespaceAware {
 
     private static final String NO_SESSION = "NO SESSION";
 
@@ -99,6 +81,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String REDIRECT = "redirect";
 	public static final String INPUT_ERROR = "inputError";
 	public static final String[] DATAFEED_FORMATS = { JSON, XML };
+
+	private static final ViewNamespaceAware namespaceAware = new ViewNamespace();
 
 	@Autowired
 	protected AppPropertyDAO propertyDAO;
@@ -314,6 +298,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return;
 		}
 
+		int clientSessionAppUserID = getClientSessionAppUserID();
+		if (clientSessionAppUserID > 0) {
+			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
+			loginAppUser(clientSessionAppUserID);
+			return;
+		}
+
 		if (autoLogin) {
 			String autoLoginID = System.getProperty("pics.autoLogin");
 			if (Strings.isNotEmpty(autoLoginID)) {
@@ -333,6 +324,32 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 		} catch (Exception e) {
 			logger.error("Problem autologging in.  Id supplied was: {}", userID);
+		}
+	}
+
+	private void loginAppUser(int appUserID) {
+		try {
+			// Try finding a normal PICSORG user first
+			int userID = userDAO.findUserIDByAppUserID(appUserID);
+
+			if (userID > 0) {
+				login(userID);
+			} else {
+				// Try profile
+				ProfileDAO profileDAO = SpringUtils.getBean("ProfileDAO");
+				Profile profile = profileDAO.findByAppUserId(appUserID);
+
+				if (profile != null) {
+					AppUserDAO appUserDAO = SpringUtils.getBean("AppUserDAO");
+					AppUser appUser = appUserDAO.find(appUserID);
+
+					permissions = permissionBuilder.login(appUser, profile);
+
+					ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Problem logging in. App User Id supplied was: {}", appUserID);
 		}
 	}
 
@@ -871,6 +888,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
+	protected int getClientSessionAppUserID() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie != null) {
+			return sessionCookie.getAppUserID();
+		}
+
+		return 0;
+	}
+
 	protected boolean isRememberMeSetInCookie() {
         return isRememberMeSetInCookie(validSessionCookie());
     }
@@ -1002,7 +1028,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		doSetCookie(sessionCookieContent, maxAge);
 	}
 
-	private void doSetCookie(String sessionCookieContent, int maxAge) {
+	protected void doSetCookie(String sessionCookieContent, int maxAge) {
 		try {
 			String cookieContent = URLEncoder.encode(sessionCookieContent, "US-ASCII");
 			addClientSessionCookieToResponse(cookieContent, maxAge);
@@ -1014,6 +1040,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected void addClientSessionCookieToResponse() {
 		addClientSessionCookieToResponse(false, 0);
+	}
+
+	protected String sessionCookieContent() {
+		return sessionCookieContent(false, 0);
 	}
 
 	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
@@ -1031,6 +1061,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
         Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
         cookie.setMaxAge(maxAge);
+	    cookie.setPath("/");
         if (!isLocalhostEnvironment()) {
             cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
         }
@@ -1076,6 +1107,27 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getMethodName() {
 		return ServletActionContext.getActionMapping().getMethod();
+	}
+
+	/**
+	 * Construct a unique page id for the HTML
+	 *
+	 * @return
+	 */
+	@Override
+
+	public String getUniquePageId() {
+		return namespaceAware.getUniquePageId();
+	}
+
+	/**
+	 * Construct a page id for the HTML (may represent many pages)
+	 *
+	 * @return
+	 */
+	@Override
+	public String getPageId() {
+		return namespaceAware.getPageId();
 	}
 
 	public String getProtocol() {

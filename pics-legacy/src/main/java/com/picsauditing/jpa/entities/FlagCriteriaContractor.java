@@ -5,7 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.picsauditing.database.domain.UpdateableListItem;
+import com.picsauditing.database.domain.UpdatableListItem;
 import com.picsauditing.jpa.entities.builders.FlagCriteriaContractorBuilder;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -14,7 +14,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria_contractor")
-public class FlagCriteriaContractor extends BaseTable implements Comparable<FlagCriteriaContractor>, UpdateableListItem {
+public class FlagCriteriaContractor extends BaseTable implements Comparable<FlagCriteriaContractor>, UpdatableListItem {
 
 	private ContractorAccount contractor;
 	private FlagCriteria criteria;
@@ -96,7 +96,7 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 	}
 
     @Override
-    public void update(UpdateableListItem change) {
+    public void update(UpdatableListItem change) {
 		FlagCriteriaContractor fcc = (FlagCriteriaContractor) change;
 
 		if (!Strings.isEqualNullSafe(fcc.getAnswer(), answer)) {

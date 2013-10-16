@@ -1,0 +1,36 @@
+.has-info .help-block,
+.has-info .control-label {
+	color: $info_med;
+}
+
+.has-info .form-control {
+	border-color: $info_med;
+}
+
+.has-success .help-block,
+.has-success .control-label {
+	color: $success_med;
+}
+
+.has-success .form-control {
+	border-color: $success_med;
+}
+
+.has-warning .help-block,
+.has-warning .control-label {
+	color: $warning_med;
+}
+
+.has-warning .form-control {
+	border-color: $warning_med;
+}
+
+.has-error .help-block,
+.has-error .control-label {
+	color: $danger_med;
+}
+
+.has-error .form-control {
+	border-color: $danger_med;
+}
+

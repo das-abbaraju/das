@@ -18,7 +18,7 @@
 	<bean type="org.apache.struts2.dispatcher.mapper.ActionMapper" name="picsRestful"
           class="com.picsauditing.strutsutil.PicsRestfulActionMapper"/>
     <constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
-    <constant name="struts.mapper.prefixMapping" value="/alex:picsRestful,:struts"/>
+    <constant name="struts.mapper.prefixMapping" value="/employee-guard:picsRestful,:struts"/>
     <constant name="struts.mapper.idParameterName" value="id"/>
 
     <bean type="org.apache.struts2.views.util.UrlHelper" name="picsUrlHelper"
@@ -74,6 +74,8 @@
             <interceptor name="picsRestInterceptor" class="com.picsauditing.interceptors.PicsRestInterceptor"/>
             <interceptor name="picsRestWorkflowInterceptor"
                          class="com.picsauditing.interceptors.PicsRestWorkflowInterceptor"/>
+            <interceptor name="formBindingInterceptor"
+                         class="com.picsauditing.interceptors.PicsFormBindingInterceptor"/>
 
 			<!-- Default Interceptor Stack for PICS Action Classes -->
 			<interceptor-stack name="picsStack">
@@ -142,6 +144,7 @@
                 <interceptor-ref name="ReportUsageInterceptor"/>
                 <interceptor-ref name="FirstTimeUserInterceptor"/>
                 <interceptor-ref name="picsRestInterceptor"/>
+                <interceptor-ref name="formBindingInterceptor"/>
                 <interceptor-ref name="params">
                     <param name="excludeParams">dojo\..*</param>
                     <param name="excludeParams">struts\..*</param>
@@ -178,6 +181,7 @@
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="login-redirect" type="redirectAction">
 				<param name="actionName">Login</param>
+                <param name="namespace">/</param>
 				<param name="button">logout</param>
 			</result>
 			<result name="login-overlay" type="httpheader">
@@ -196,10 +200,13 @@
 			<result name="xml" type="xml"></result>
 			<result name="file" type="file"></result>
 			<result name="403">/struts/exception/403.jsp</result>
+            <result name="404">/struts/exception/404-force.jsp</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception" result="Exception"/>
 			<exception-mapping exception="com.picsauditing.access.UnauthorizedException" result="403"/>
+            <exception-mapping exception="com.picsauditing.access.PageNotFoundException" result="404"/>
+
 			<exception-mapping exception="com.picsauditing.access.GeneralContractorNotApprovedException"
 			                   result="GeneralContractorNotApprovedException"/>
 			<exception-mapping exception="com.picsauditing.access.NotLoggedInException" result="login-redirect"/>
@@ -1355,4 +1362,7 @@
 	<!-- Drools & RBIC -->
 	<include file="struts-rbic.xml"/>
 	
+    <!-- EmployeeGUARD V3 -->
+    <include file="struts-employee-guard.xml"/>
+
 </struts>

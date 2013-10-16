@@ -1,0 +1,29 @@
+body
+{
+	padding-top: 50px;
+	padding-bottom: 26px;
+	position: relative;
+}
+
+[data-view="contractor"]
+{
+	padding-top: 80px;
+}
+
+@media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
+	body,
+	[data-view="contractor"]
+	{
+		padding-top: 0;
+	}
+}
+
+// layouts
+@import 'simple-layout';
+
+// components
+@import 'environment';
+@import 'menu/primary-navigation';
+@import 'menu/secondary-navigation';
+@import 'page-actions';
+@import 'page-header';

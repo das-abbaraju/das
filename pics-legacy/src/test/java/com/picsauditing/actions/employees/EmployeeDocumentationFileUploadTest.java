@@ -1,18 +1,12 @@
 package com.picsauditing.actions.employees;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.LegacyEmployeeDAO;
+import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
+import com.picsauditing.util.URLUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,13 +15,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.OperatorCompetency;
-import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
-import com.picsauditing.util.URLUtils;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 
@@ -38,7 +35,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 	@Mock
 	private Employee employee;
 	@Mock
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 	@Mock
 	private OperatorCompetency operatorCompetency;
 	@Mock
@@ -55,7 +52,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 		employeeDocumentationFileUpload.setFileFileName("filename.file");
 		employeeDocumentationFileUpload.setExpiration(expiration);
 
-		Whitebox.setInternalState(employeeDocumentationFileUpload, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(employeeDocumentationFileUpload, "legacyEmployeeDAO", legacyEmployeeDAO);
 		Whitebox.setInternalState(employeeDocumentationFileUpload, "urlUtils", urlUtils);
 	}
 
@@ -131,7 +128,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 
 		employeeDocumentationFileUpload.setFile(file);
 		assertEquals(PicsActionSupport.REDIRECT, employeeDocumentationFileUpload.save());
-		verify(employeeDAO).save(fileCaptor.capture());
+		verify(legacyEmployeeDAO).save(fileCaptor.capture());
 
 		assertFalse(employeeDocumentationFileUpload.hasActionErrors());
 		assertTrue(employeeDocumentationFileUpload.hasActionMessages());

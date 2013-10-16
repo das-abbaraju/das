@@ -1,0 +1,39 @@
+.table thead > tr > th  {
+	background-color: #454545;
+	border: 0px;
+	color: $pics_cool_grey;
+	font-weight: normal;
+}
+
+tr th.icon {
+	text-align: center;
+}
+
+th.incomplete-skills i {
+	color: $danger_light;
+}
+
+th.expire-skills i {
+	color: $warning_light;
+}
+
+.table tbody > tr > td {
+	border: 0px;
+	vertical-align: middle;
+}
+
+td.number {
+	text-align: right;
+}
+
+.table-striped > tbody > tr:nth-child(odd) td {
+	background-color: $pics_cool_grey;
+}
+
+.table-hover tbody tr:hover td {
+	background-color: $primary-tint;
+}
+
+.table td a {
+	display: block;
+}

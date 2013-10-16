@@ -21,7 +21,10 @@ public class LoginService {
 	public User loginNormally(String username, String password) throws LoginException {
 
 		User user = loadUserByUsername(username);
+		return loginNormally(user, username, password);
+	}
 
+	public User loginNormally(User user, String username, String password) throws LoginException {
 		verifyUserExists(user, username);
 		verifyUserStatusForLogin(user);
 		verifyPasswordIsCorrect(user, password);
@@ -45,35 +48,39 @@ public class LoginService {
 	}
 
 	public HomePageType postLoginHomePageTypeForRedirect(String preLoginUrl, User user) {
-		Account account = user.getAccount();
-		if (account.isContractor()) {
-            if (account.getStatus().isDeactivated()) {
-				return HomePageType.Deactivated;
-			} else if (account.getStatus().isDeclined()) {
-                return HomePageType.Declined;
-            } else {
-                if (account.getStatus().isPending() && Strings.isNotEmpty(preLoginUrl) && preLoginUrl.contains("InvoiceDetail") ) {
-                    for (Invoice invoice : ((ContractorAccount) account).getInvoices()) {
-                        String linkToInvoice = "InvoiceDetail.action?invoice.id=" + invoice.getId();
-                        if (preLoginUrl.contains(linkToInvoice)) {
-                            return HomePageType.PreLogin;
-                        }
-                    }
-                }
+		if (user != null) {
+			Account account = user.getAccount();
+			if (account.isContractor()) {
+				if (account.getStatus().isDeactivated()) {
+					return HomePageType.Deactivated;
+				} else if (account.getStatus().isDeclined()) {
+					return HomePageType.Declined;
+				} else {
+					if (account.getStatus().isPending() && Strings.isNotEmpty(preLoginUrl) && preLoginUrl.contains("InvoiceDetail")) {
+						for (Invoice invoice : ((ContractorAccount) account).getInvoices()) {
+							String linkToInvoice = "InvoiceDetail.action?invoice.id=" + invoice.getId();
+							if (preLoginUrl.contains(linkToInvoice)) {
+								return HomePageType.PreLogin;
+							}
+						}
+					}
 
-                ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
-				if (step.isDone() && Strings.isNotEmpty(preLoginUrl)) {
+					ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
+					if (step.isDone() && Strings.isNotEmpty(preLoginUrl)) {
+						return HomePageType.PreLogin;
+					} else {
+						return HomePageType.ContractorRegistrationStep;
+					}
+				}
+			} else {
+				if (Strings.isNotEmpty(preLoginUrl)) {
 					return HomePageType.PreLogin;
 				} else {
-                    return HomePageType.ContractorRegistrationStep;
+					return HomePageType.HomePage;
 				}
 			}
 		} else {
-			if (Strings.isNotEmpty(preLoginUrl)) {
-                return HomePageType.PreLogin;
-			} else {
-                return HomePageType.HomePage;
-			}
+			return HomePageType.EmployeeGUARD;
 		}
 	}
 

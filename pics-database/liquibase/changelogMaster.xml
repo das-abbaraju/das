@@ -8,7 +8,7 @@
     <include file="./liquibase/sshacter2_PICS-00000_ExampleChangeSetDML.sql"/>
 
 <!--    Release 6.62 (patch)   -->
-    <include file="./liquibase/PICS-12980_UpdateWorkStatus.sql"/>
+    <include file="./liquibase/kchase1_PICS-12980_UpdateWorkStatus.sql"/>
 
 <!--    Release 6.63   -->
     <include file="./liquibase/mdo4_PICS-12878_change_all_users_to_allow_switch_to_v7_except_BASF.sql"/>
@@ -19,5 +19,13 @@
     <include file="./liquibase/pschlesinger2_PICS-12857_ModifyBizUnitTblStructureRemoveUnneededColumns.sql"/>
     <include file="./liquibase/pschlesinger3_PICS-12857_AddingKnownSapCodes.sql"/>
     <include file="./liquibase/pschlesinger4_PICS-12857_DropSapCodesFromRefBizUnit.sql"/>
+
+    <!--    Release 6.64   -->
+    <include file="./liquibase/kchase2_PICS-12919_updateTokens.sql"/>
+    <include file="./liquibase/kchase3_PICS-13011_HuntsmanTags.sql"/>
+    <include file="./liquibase/kchase4_PICS-13049_CSRShiftHours.sql"/>
+    <include file="./liquibase/gmeurer1_PICS-12602_AddTableForAggregatingTranslationLogs.sql"/>
+    <include file="./liquibase/sshacter4_PICS-13124_CreateTranslationStoredProcedure.sql"/>
+    <include file="./liquibase/lkam1_PICS-8562_AddAustralianStates.sql"/>
 
 </databaseChangeLog>

@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+<breadcrumbs>
+    <breadcrumb>
+        <hint>employee-guard</hint>
+        <children>
+            <breadcrumb>
+                <hint>operator</hint>
+                <label>EmployeeGUARD</label>
+                <uri>/employee-guard/operator/dashboard</uri>
+                <children>
+                    <breadcrumb>
+                        <hint>project</hint>
+                        <children>
+                            <breadcrumb>
+                                <hint>create</hint>
+                                <label>Add Project</label>
+                                <uri>/employee-guard/operator/project/create</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit Project</label>
+                                <uri>/employee-guard/operator/project/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>Project</label>
+                                <uri>/employee-guard/operator/project/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>skill</hint>
+                        <label>Skills</label>
+                        <uri>/employee-guard/operator/skill</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>create</hint>
+                                <label>Add Skill</label>
+                                <uri>/employee-guard/operator/skill/create</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit Skill</label>
+                                <uri>/employee-guard/operator/skill/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>Skill</label>
+                                <uri>/employee-guard/operator/skill/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>group</hint>
+                        <label>Groups</label>
+                        <uri>/employee-guard/operator/group</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>create</hint>
+                                <label>Add Group</label>
+                                <uri>/employee-guard/operator/group/create</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit Group</label>
+                                <uri>/employee-guard/operator/group/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>Group</label>
+                                <uri>/employee-guard/operator/group/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                </children>
+            </breadcrumb>
+
+            <breadcrumb>
+                <hint>contractor</hint>
+                <label>EmployeeGUARD</label>
+                <uri>/employee-guard/contractor/dashboard</uri>
+                <children>
+                    <breadcrumb>
+                        <hint>employee</hint>
+                        <label>Employees</label>
+                        <uri>/employee-guard/contractor/employee</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>create</hint>
+                                <label>Add Employee</label>
+                                <uri>/employee-guard/contractor/employee/create</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit Employee</label>
+                                <uri>/employee-guard/contractor/employee/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>import-export</hint>
+                                <label>Import / Export Employees</label>
+                                <uri>/employee-guard/contractor/employee/import-export</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/contractor/employee/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>skill</hint>
+                        <label>Skills</label>
+                        <uri>/employee-guard/contractor/skill</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>create</hint>
+                                <label>Add Skill</label>
+                                <uri>/employee-guard/contractor/skill/create</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit Skill</label>
+                                <uri>/employee-guard/contractor/skill/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/contractor/skill/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>employee-group</hint>
+                        <label>Employee Groups</label>
+                        <uri>/employee-guard/contractor/employee-group</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>create</hint>
+                                <label>Add Employee Group</label>
+                                <uri>create</uri>
+                                <uri>/employee-guard/contractor/employee-group/create</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit Employee Group</label>
+                                <uri>/employee-guard/contractor/employee-group/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/contractor/employee-group/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>site-project</hint>
+                        <label>Sites and Projects</label>
+                        <uri>/employee-guard/contractor/site-project</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>assign</hint>
+                                <label>Assign Employees</label>
+                                <uri>/employee-guard/contractor/site-project/assign</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>matrix</hint>
+                        <label>Quick Manage</label>
+                        <uri>/employee-guard/contractor/matrix</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>employee-groups-to-employees</hint>
+                                <label>Employee Groups to Employees</label>
+                                <uri>/employee-guard/contractor/matrix/employee-groups-to-employees</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>employee-to-skillz</hint>
+                                <label>Employees to Skills</label>
+                                <uri>/employee-guard/contractor/matrix/employee-to-skills</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>employee-to-sites</hint>
+                                <label>Employees to Sites and Projects</label>
+                                <uri>/employee-guard/contractor/matrix/employees-to-sites</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>skills-to-employee-groups</hint>
+                                <label>Skills to Employee Groups</label>
+                                <uri>/employee-guard/contractor/matrix/skills-to-employee-groups</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                </children>
+            </breadcrumb>
+
+            <breadcrumb>
+                <hint>employee</hint>
+                <label>Dashboard</label>
+                <uri>/employee-guard/employee/dashboard</uri>
+                <children>
+                    <breadcrumb>
+                        <hint>skills</hint>
+                        <label>Skills</label>
+                        <uri>/employee-guard/employee/skills</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>manage-skill</hint>
+                                <label>Manage Skill</label>
+                                <uri>/employee-guard/employee/skills/manage-skill</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>certificate</hint>
+                                <label>Certificates</label>
+                                <uri>/employee-guard/employee/skills/certificate</uri>
+                                <children>
+                                    <breadcrumb>
+                                        <hint>create</hint>
+                                        <label>Add Certificate</label>
+                                        <uri>/employee-guard/employee/skills/certificate/create</uri>
+                                    </breadcrumb>
+                                    <breadcrumb>
+                                        <hint>edit</hint>
+                                        <label>Edit Certificate</label>
+                                        <uri>/employee-guard/employee/skills/certificate/{id}/edit</uri>
+                                    </breadcrumb>
+                                    <breadcrumb>
+                                        <hint>show</hint>
+                                        <label>Certificate</label>
+                                        <uri>/employee-guard/employee/skills/certificate/{id}</uri>
+                                    </breadcrumb>
+                                </children>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>skill</hint>
+                        <label>Skills</label>
+                        <uri>/employee-guard/employee/skills</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/employee/skill/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+
+                    <breadcrumb>
+                        <hint>live-id</hint>
+                        <label>Live ID</label>
+                        <uri>/employee-guard/employee/live-id</uri>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>profile</hint>
+                        <label>{name}</label>
+                        <uri>/employee-guard/employee/profile/{id}</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit Profile</label>
+                                <uri>/employee-guard/employee/profile/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>settings</hint>
+                                <label>Settings</label>
+                                <uri>/employee-guard/employee/profile/${id}/settings</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                </children>
+            </breadcrumb>
+        </children>
+    </breadcrumb>
+</breadcrumbs>

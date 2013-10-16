@@ -1,0 +1,36 @@
+.modal {
+	top: 80px;
+	overflow-y: auto;
+	outline: 0;
+
+	.modal-header {
+		background-color: $pics_cool_grey;
+		@include border-radius(6px);
+		padding-left: 20px;
+	}
+
+	.modal-title {
+		font-size: 24px;
+	}
+
+	.modal-body	{
+		p {
+			margin-bottom: 0px;
+		}
+	}
+
+	.modal-footer {
+		border: none;
+		margin-top: 0px;
+		padding-top: 0px;
+	}
+}
+
+/*Override to prevent shift on modal open.  Menu issue?*/
+body.modal-open,
+.modal-open
+.navbar-fixed-top,
+.modal-open
+.navbar-fixed-bottom {
+    margin-right: 0px;
+}

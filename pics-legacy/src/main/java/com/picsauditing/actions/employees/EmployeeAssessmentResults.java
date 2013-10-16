@@ -11,7 +11,7 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentResultDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.Employee;
@@ -25,7 +25,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	@Autowired
 	protected AssessmentTestDAO testDAO;
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected LegacyEmployeeDAO legacyEmployeeDAO;
 
 	protected Account account;
 	protected Employee employee;

@@ -16,7 +16,7 @@ import javax.persistence.Column;
 import java.util.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "LegacyEmployee")
 @Table(name = "employee")
 @IndexableOverride(overrides = {@IndexOverrideWeight(methodName = "getId", weight = 3)})
 public class Employee extends AbstractIndexableTable implements Comparable<Employee> {

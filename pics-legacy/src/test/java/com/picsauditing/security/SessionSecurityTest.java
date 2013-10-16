@@ -1,17 +1,17 @@
 package com.picsauditing.security;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
-
-import java.util.Date;
-
-import javax.crypto.SecretKey;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 public class SessionSecurityTest {
 	private static String secretKeyspec = "9KuRXTx0cnuZefrt0EIfXd1MFqKvMY9x7OSub0B1EGLpR69b1Z+sdB7p6PT3Sy5rhl6qXKYyINdPJoHMWCqBNQ==";
@@ -42,8 +42,8 @@ public class SessionSecurityTest {
 	// Then
 	@Test
 	public void testCookieIsValid_CookieWasNotAltered() throws Exception {
-		String testCookie1 = "64036|1348850723991|{}";
-		String testCookie2 = "64036|1348850723991|{\"switchTo\":941}";
+		String testCookie1 = "64036|12345|1348850723991|{}";
+		String testCookie2 = "64036|12345|1348850723991|{\"switchTo\":941}";
 
 		testCookie1 = testCookie1 + '|' + EncodedMessage.hmacBase64(testCookie1, secretKey);
 		testCookie2 = testCookie2 + '|' + EncodedMessage.hmacBase64(testCookie2, secretKey);
@@ -65,10 +65,10 @@ public class SessionSecurityTest {
 
 	@Test
 	public void testCookieIsValid_CookieDataWasAltered() throws Exception {
-		String testCookieDataOriginal = "64036|1348850723991|{}";
-		String testCookieDataAltered = "74036|1348850723991|{}";
-		String testCookieDataAltered2 = "64036|1348850727791|{}";
-		String testCookieDataAltered3 = "64036|1348850723991|{\"switchTo\":941}";
+		String testCookieDataOriginal = "64036|12345|1348850723991|{}";
+		String testCookieDataAltered = "74036|12345|1348850723991|{}";
+		String testCookieDataAltered2 = "64036|12345|1348850727791|{}";
+		String testCookieDataAltered3 = "64036|12345|1348850723991|{\"switchTo\":941}";
 
 		String hmac = EncodedMessage.hmacBase64(testCookieDataOriginal, secretKey);
 		String testCookieAltered = testCookieDataAltered + '|' + hmac;
@@ -89,10 +89,11 @@ public class SessionSecurityTest {
 		Date now = new Date();
 		SessionCookie sessionCookie = new SessionCookie();
 		sessionCookie.setUserID(123);
+		sessionCookie.setAppUserID(456);
 		sessionCookie.setCookieCreationTime(now);
 
 		String hmac = EncodedMessage.hmacBase64(sessionCookie.toString(), secretKey);
-		String expectedCookieContent = "123|" + now.getTime() + "||" + hmac;
+		String expectedCookieContent = "123|456|" + now.getTime() + "||" + hmac;
 		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
 
 		assertThat(sessionCookie.toString(), is(equalTo(expectedCookieContent)));
@@ -100,7 +101,7 @@ public class SessionSecurityTest {
 
 	@Test
 	public void testCookieIsValid_CookieHashWasAltered() throws Exception {
-		String testCookieDataOriginal = "64036|1348850723991|{}";
+		String testCookieDataOriginal = "64036|12345|1348850723991|{}";
 
 		String hmac = EncodedMessage.hmacBase64(testCookieDataOriginal, secretKey);
 		String alteredHmac = "A8363" + hmac.substring(5);
@@ -111,7 +112,7 @@ public class SessionSecurityTest {
 
 	@Test
 	public void testCookieIsValid_CookieReencodedWithCounterfeitSecretKey() throws Exception {
-		String testCookieDataOriginal = "64036|1348850723991|{}";
+		String testCookieDataOriginal = "64036|12345|1348850723991|{}";
 
 		String hmac = EncodedMessage.hmacBase64(testCookieDataOriginal, counterfeitSecretKey);
 		String testCookieAltered = testCookieDataOriginal + '|' + hmac;
@@ -125,7 +126,7 @@ public class SessionSecurityTest {
 	// Then
 	@Test
 	public void testParseSessionCookie_Usecase() throws Exception {
-		String testCookie = "64036|1348850723991|{ \"switchTo\" : 941 }|gQsT/YcdKDby8HOZ1uYQA10HbGI=";
+		String testCookie = "64036|12345|1348850723991|{ \"switchTo\" : 941 }|gQsT/YcdKDby8HOZ1uYQA10HbGI=";
 
 		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+       default-autowire="autodetect">
+	
+	<!-- EmployeeGUARD -->
+	<bean id="AppUserDAO" class="com.picsauditing.authentication.dao.AppUserDAO"/>
+	<bean id="EmailHashDAO" class="com.picsauditing.authentication.dao.EmailHashDAO" />
+	<bean id="AccountGroupDAO" class="com.picsauditing.employeeguard.daos.AccountGroupDAO"/>
+    <bean id="AccountGroupEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountGroupEmployeeDAO"/>
+    <bean id="AccountSkillDAO" class="com.picsauditing.employeeguard.daos.AccountSkillDAO"/>
+    <bean id="AccountSkillEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO"/>
+	<bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
+	<bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
+	<bean id="ProfileDocumentDAO" class="com.picsauditing.employeeguard.daos.ProfileDocumentDAO"/>
+	<!-- Services -->
+	<bean id="AccountGroupEmployeeService" class="com.picsauditing.employeeguard.services.AccountGroupEmployeeService"/>
+	<bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
+    <bean id="AccountSkillEmployeeService" class="com.picsauditing.employeeguard.services.AccountSkillEmployeeService"/>
+	<bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
+	<bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService" />
+	<bean id="EmailService" class="com.picsauditing.employeeguard.services.EmailService" />
+	<bean id="EmployeeLoginService" class="com.picsauditing.employeeguard.services.LoginService"/>
+    <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
+    <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
+    <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>
+    <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
+    <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
+	<!-- Factories -->
+    <bean id="FormBuilderFactory" class="com.picsauditing.employeeguard.forms.factory.FormBuilderFactory" />
+    <bean id="CompanySkillsFormBuilder" class="com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder" />
+    <bean id="EmployeeProfileEditFormBuilder" class="com.picsauditing.employeeguard.forms.factory.EmployeeProfileEditFormBuilder" />
+    <bean id="EmployeeProfileFormBuilder" class="com.picsauditing.employeeguard.forms.factory.EmployeeProfileFormBuilder" />
+	<!-- Validators -->
+    <bean id="EmployeeFormValidator" class="com.picsauditing.employeeguard.validators.employee.EmployeeFormValidator" scope="prototype"/>
+    <bean id="EmployeeEmploymentFormValidator" class="com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator" scope="prototype"/>
+    <bean id="GroupFormValidator" class="com.picsauditing.employeeguard.validators.group.GroupFormValidator" scope="prototype"/>
+    <bean id="ProfileFormValidator" class="com.picsauditing.employeeguard.validators.profile.ProfileFormValidator" scope="prototype"/>
+    <bean id="ProfileDocumentFormValidator" class="com.picsauditing.employeeguard.validators.document.ProfileDocumentFormValidator" scope="prototype"/>
+    <bean id="SkillFormValidator" class="com.picsauditing.employeeguard.validators.skill.SkillFormValidator" scope="prototype"/>
+	<!-- End of EmployeeGUARD -->
+
+</beans>

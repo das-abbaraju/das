@@ -2,11 +2,17 @@ package com.picsauditing.access;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
+import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -39,13 +45,19 @@ public class LoginController extends PicsActionSupport {
 	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
 
-    // FOR TESTING ONLY
-    protected static ReportUserDAO reportUserDAO;
+	// FOR TESTING ONLY
+	protected static ReportUserDAO reportUserDAO;
 
 	@Autowired
 	private LoginService loginService;
 	@Autowired
+	private com.picsauditing.employeeguard.services.LoginService egLoginService;
+	@Autowired
+	private AppUserDAO appUserDAO;
+	@Autowired
 	protected PermissionBuilder permissionBuilder;
+	@Autowired
+	private ProfileService profileService;
 
 	private User user;
 	private String email;
@@ -206,6 +218,11 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		doSwitchToUser(switchToUser);
+
+		if (hasActionErrors()) {
+			throw new AccountNotFoundException();
+		}
+
 		username = permissions.getUsername();
 		logSwitchToAttempt(user);
 		return setRedirectUrlPostLogin();
@@ -231,8 +248,19 @@ public class LoginController extends PicsActionSupport {
 			password = "switchUser";
 		} else {
 			// TODO Verify the user has access to login
-			permissions.setAccountPerms(user);
-			password = "switchAccount";
+			if (user != null) {
+				permissions.setAccountPerms(user);
+				password = "switchAccount";
+			} else {
+				AppUser appUser = appUserDAO.findByAppUserID(permissions.getAppUserID());
+				if (appUser != null) {
+					Profile profile = profileService.findByAppUserId(appUser.getId());
+					permissions.login(appUser, profile);
+				} else {
+					setActionErrorHeader(getText("Login.Failed"));
+					logAndMessageError(getText("Login.PasswordIncorrect"));
+				}
+			}
 		}
 		ActionContext.getContext().getSession().put("permissions", permissions);
 	}
@@ -293,8 +321,37 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		try {
-			user = loginService.loginNormally(username, password);
+			AppUser appUser = appUserDAO.findByUserName(username);
+			if (appUser == null) {
+				setActionErrorHeader(getText("Login.Failed"));
+				logAndMessageError(getText("Login.PasswordIncorrect"));
+				return ERROR;
+			} else {
+				user = userDAO.findUserByAppUserID(appUser.getId());
+			}
 
+			if (user != null) {
+				user = loginService.loginNormally(user, username, password);
+			} else {
+				Profile profile = profileService.findByAppUserId(appUser.getId());
+				if (profile == null) {
+					setActionErrorHeader(getText("Login.Failed"));
+					logAndMessageError(getText("Login.PasswordIncorrect"));
+					return ERROR;
+				} else {
+					JSONObject result = egLoginService.loginViaRest(username, EncodedMessage.hash(password));
+					permissions = permissionBuilder.login(appUser, profile);
+
+					if ("SUCCESS".equals(result.get("status").toString())) {
+						doSetCookie(result.get("cookie").toString(), 10);
+						return setUrlForRedirect("/employee-guard/employee/dashboard");
+					} else {
+						setActionErrorHeader(getText("Login.Failed"));
+						logAndMessageError(getText("Login.PasswordIncorrect"));
+						return ERROR;
+					}
+				}
+			}
 		} catch (AccountNotFoundException e) {
 			setActionErrorHeader(getText("Login.Failed"));
 			logAndMessageError(getText("Login.PasswordIncorrect"));
@@ -379,38 +436,34 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private String determineRedirectUrlFromHomePageType(String preLoginUrl, HomePageType homePageType) {
-		String redirectURL = null;
 		switch (homePageType) {
 			case PreLogin:
-				redirectURL = preLoginUrl;
-				break;
+				return preLoginUrl;
 			case ContractorRegistrationStep:
 				ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) user.getAccount());
-				redirectURL = step.getUrl();
-				break;
+				return step.getUrl();
 			case HomePage:
 				if (user.isUsingVersion7Menus()) {
-                    MenuBuilder.reportUserDAO = setReportUserDAO();
-					redirectURL = MenuBuilder.getHomePage(permissions);
+					MenuBuilder.reportUserDAO = setReportUserDAO();
+					return MenuBuilder.getHomePage(permissions);
 				} else {
 					MenuComponent menu = PicsMenu.getMenu(permissions);
-					redirectURL = PicsMenu.getHomePage(menu, permissions);
+					return PicsMenu.getHomePage(menu, permissions);
 				}
-				break;
 			case Deactivated:
-				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
-				break;
+				return DEACTIVATED_ACCOUNT_PAGE;
 			case Declined:
 				// per PICS-10995 - declined is an internal status and doesn't need to be shown on a special page
 				// just show them deactivated
-				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
-				break;
+				return DEACTIVATED_ACCOUNT_PAGE;
+			case EmployeeGUARD:
+				return "/employee-guard/employee/dashboard";
+			default:
+				return null;
 		}
-
-		return redirectURL;
 	}
 
-    private String getPreLoginUrl() {
+	private String getPreLoginUrl() {
 		// Find out if the user previously timed out on a page, so we can forward to it if appropriate for the user
 		String urlPreLogin = null;
 		Cookie cookie = CookieSupport.cookieFromRequest(getRequest(), CookieSupport.PRELOGIN_URL_COOKIE_NAME);
@@ -521,9 +574,9 @@ public class LoginController extends PicsActionSupport {
 		this.sessionTimeout = sessionTimeout;
 	}
 
-    public static ReportUserDAO setReportUserDAO() {
-        if (reportUserDAO == null)
-            return SpringUtils.getBean("ReportUserDAO");
-        return reportUserDAO;
-    }
+	public static ReportUserDAO setReportUserDAO() {
+		if (reportUserDAO == null)
+			return SpringUtils.getBean("ReportUserDAO");
+		return reportUserDAO;
+	}
 }

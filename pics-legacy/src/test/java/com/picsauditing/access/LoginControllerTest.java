@@ -1,55 +1,43 @@
 package com.picsauditing.access;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-
-import javax.servlet.http.Cookie;
-
-import com.picsauditing.dao.ReportUserDAO;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.powermock.reflect.Whitebox;
-
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import org.json.simple.JSONObject;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.powermock.reflect.Whitebox;
+
+import javax.servlet.http.Cookie;
+import java.util.*;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class LoginControllerTest extends PicsActionTest {
 	private LoginController loginController;
@@ -62,6 +50,14 @@ public class LoginControllerTest extends PicsActionTest {
 	protected AppPropertyDAO propertyDAO;
 	@Mock
 	private UserLoginLogDAO loginLogDAO;
+	@Mock
+	private AppUserDAO appUserDAO;
+	@Mock
+	private ProfileService profileService;
+	@Mock
+	private com.picsauditing.employeeguard.services.LoginService egLoginService;
+	@Mock
+	private AppUser appUser;
 	@Mock
 	private User user;
 	@Mock
@@ -108,6 +104,9 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "permissionBuilder", permissionBuilder);
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
+		Whitebox.setInternalState(loginController, "appUserDAO", appUserDAO);
+		Whitebox.setInternalState(loginController, "profileService", profileService);
+		Whitebox.setInternalState(loginController, "egLoginService", egLoginService);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
 		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
@@ -124,6 +123,18 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userDAO.findName(anyString())).thenReturn(user);
 		when(userDAO.find(941)).thenReturn(user);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
+		when(appUserDAO.findByUserName(anyString())).thenReturn(appUser);
+
+		List<AppUser> appUserList = new ArrayList<>();
+		appUserList.add(new AppUser());
+
+		when(appUserDAO.findListByUserName(anyString())).thenReturn(appUserList);
+		when(profileService.findByAppUserId(anyInt())).thenReturn(new Profile());
+
+		JSONObject result = new JSONObject();
+		result.put("status", "SUCCESS");
+		result.put("cookie", "whatevz");
+		when(egLoginService.loginViaRest(anyString(), anyString())).thenReturn(result);
 	}
 
 	private void setupSpringUtils() {
@@ -321,11 +332,12 @@ public class LoginControllerTest extends PicsActionTest {
 	// As a logged in user
 	// Given user wishes to switch to another user
 	@Test
-	public void testExcecute_SwitchToUser() throws Exception {
+	public void testExecute_SwitchToUser() throws Exception {
 		normalLoginSetup();
 		when(permissions.hasPermission(OpPerms.SwitchUser)).thenReturn(true);
 		loginController.setSwitchToUser(SWITCH_USER_ID);
 		when(userDAO.find(SWITCH_USER_ID)).thenReturn(switchUser);
+		when(switchUser.getAppUser()).thenReturn(appUser);
 		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
         when(switchUser.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUserId()).thenReturn(NOT_ZERO);
@@ -503,6 +515,8 @@ public class LoginControllerTest extends PicsActionTest {
 		loginController.setUsername("test");
 		loginController.setPassword("test password");
 		when(userDAO.findName("test")).thenReturn(user);
+		when(userDAO.findUserByAppUserID(anyInt())).thenReturn(user);
+		when(user.getAppUser()).thenReturn(appUser);
 		when(user.getIsActive()).thenReturn(YesNo.Yes);
 		when(user.getUsername()).thenReturn("joesixpack");
 		when(user.isEncryptedPasswordEqual("test password")).thenReturn(true);

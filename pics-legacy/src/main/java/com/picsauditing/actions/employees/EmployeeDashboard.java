@@ -7,7 +7,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.contractors.ContractorDocuments;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
@@ -18,7 +18,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class EmployeeDashboard extends ContractorDocuments {
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected LegacyEmployeeDAO legacyEmployeeDAO;
 
 	private int auditTypeID;
 	private int year;

@@ -41,6 +41,13 @@
         <pattern>/ReportTester*.action</pattern>
         <pattern>/InvoiceRefund.action</pattern>
     </decorator>
+    <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
+        <pattern>/employee-guard/*</pattern>
+    </decorator>
+    <decorator name="bootstrap3-simple-layout" page="bootstrap3-simple-layout.jsp">
+        <pattern>/employee-guard/welcome*</pattern>
+        <pattern>/employee-guard/sign-up*</pattern>
+    </decorator>
     <decorator name="contractor-layout" page="contractor-layout.jsp">
     	<pattern>/Temp*.action</pattern>
     </decorator>

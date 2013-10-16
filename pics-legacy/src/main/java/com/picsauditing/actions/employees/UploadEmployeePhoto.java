@@ -15,7 +15,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ImageUtil;
@@ -23,7 +23,7 @@ import com.picsauditing.util.ImageUtil;
 @SuppressWarnings("serial")
 public class UploadEmployeePhoto extends AccountActionSupport {
 	@Autowired
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 
 	protected Employee employee;
 
@@ -118,7 +118,7 @@ public class UploadEmployeePhoto extends AccountActionSupport {
 				// addActionMessage();
 				addAlertMessage(getText("EmployeePhotoUpload.message.PhotoUploaded"));
 			}
-			employeeDAO.save(employee);
+			legacyEmployeeDAO.save(employee);
 		}
 
 		return SUCCESS;
@@ -142,7 +142,7 @@ public class UploadEmployeePhoto extends AccountActionSupport {
 				}
 				ImageIO.write(bImg, "jpg", f);
 				employee.setPhoto(FileUtils.getExtension(f.getName()));
-				employeeDAO.save(employee);
+				legacyEmployeeDAO.save(employee);
 			} catch (IOException e) {
 				Logger logger = LoggerFactory.getLogger(UploadEmployeePhoto.class);
 				logger.error("Could not crop image");
@@ -168,7 +168,7 @@ public class UploadEmployeePhoto extends AccountActionSupport {
 			if (f.delete()) {
 				addActionMessage("Photo deleted successfully");
 				employee.setPhoto(null);
-				employeeDAO.save(employee);
+				legacyEmployeeDAO.save(employee);
 				step = 1;
 			} else {
 				addActionError("Error deleting photo");
