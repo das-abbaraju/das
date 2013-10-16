@@ -1,6 +1,8 @@
 <!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<package name="com.picsauditing.employee-guard" extends="com.picsauditing" namespace="/employee-guard">
+        <default-interceptor-ref name="pics-rest-stack" />
+
 		<action name="Breadcrumb" class="com.picsauditing.employeeguard.controllers.BreadcrumbAction">
 			<result name="success">/struts/employee-guard/_breadcrumbs.jsp</result>
 		</action>
@@ -20,6 +22,8 @@
 
 	<!-- Operator -->
 	<package name="com.picsauditing.employee-guard.operator" extends="com.picsauditing.employee-guard" namespace="/employee-guard/operator">
+        <default-interceptor-ref name="pics-rest-stack" />
+
 		<!-- Dashboard -->
 		<action name="dashboard" class="com.picsauditing.employeeguard.controllers.operator.DashboardAction">
 			<result name="dashboard">/struts/employee-guard/operator/dashboard.jsp</result>
@@ -53,6 +57,8 @@
 
 	<!-- Contractor -->
 	<package name="com.picsauditing.employee-guard.contractor" extends="com.picsauditing.employee-guard" namespace="/employee-guard/contractor">
+        <default-interceptor-ref name="pics-rest-stack" />
+
 		<!-- Dashboard -->
 		<action name="dashboard" class="com.picsauditing.employeeguard.controllers.contractor.DashboardAction">
 			<result name="dashboard">/struts/employee-guard/contractor/dashboard.jsp</result>
@@ -123,6 +129,8 @@
 
 	<!-- Employee -->
 	<package name="com.picsauditing.employee-guard.employee" extends="com.picsauditing.employee-guard" namespace="/employee-guard/employee">
+        <default-interceptor-ref name="pics-rest-stack" />
+
 		<!-- Dashboard -->
 		<action name="dashboard" class="com.picsauditing.employeeguard.controllers.employee.DashboardAction">
 			<result name="dashboard">/struts/employee-guard/employee/dashboard.jsp</result>

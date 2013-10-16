@@ -6,6 +6,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
@@ -316,6 +317,14 @@ public class AuditMenuBuilder {
 					String auditOverridePage = urlUtils().getActionUrl("AuditOverride", "id", contractor.getId());
 					MenuComponent createNewAudit = new MenuComponent(getText("EmployeeGUARD.CreateNewAudit"), auditOverridePage);
 					addToServiceMenu(Service.EMPLOYEEGUARD, createNewAudit);
+				}
+
+				if (AccountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
+					MenuComponent egV3 = new MenuComponent();
+					egV3.setUrl("/employee-guard/contractor/dashboard");
+					egV3.setTitle("Version 3");
+					egV3.setName("Version 3");
+					addToServiceMenu(Service.EMPLOYEEGUARD, egV3);
 				}
 
 				addToStartOfServiceMenu(Service.EMPLOYEEGUARD, summary);
