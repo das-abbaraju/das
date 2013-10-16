@@ -144,7 +144,17 @@ public class EmailQueueDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<String> findEmailAddressExclusions() {
+    public List<Integer> findContractorsWithRecentEmails(String timeframe, int templateId) {
+        String sql = "SELECT DISTINCT conID "
+                + "FROM email_queue eq "
+                + "WHERE eq.templateID=" + templateId + " "
+                + "AND eq.conID is not null "
+                + "AND eq.creationDate > DATE_SUB(CURDATE(), INTERVAL " + timeframe + ")";
+        Query query = em.createNativeQuery(sql);
+        return query.getResultList();
+    }
+
+    public List<String> findEmailAddressExclusions() {
 		String sql = "SELECT DISTINCT email FROM email_exclusion ee ";
 		Query query = em.createNativeQuery(sql);
 		return query.getResultList();

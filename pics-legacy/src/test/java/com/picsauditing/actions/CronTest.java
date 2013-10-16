@@ -125,6 +125,51 @@ public class CronTest extends PicsActionTest {
 				new AppProperty("admin_email_address", "foo@example.com"));
 	}
 
+    @Test
+    public void testSplitPendingAndDeliquentInvoices() throws Exception {
+        ContractorAccount deactContractor = EntityFactory.makeContractor();
+        ContractorAccount delinContractor = EntityFactory.makeContractor();
+
+        Calendar date = Calendar.getInstance();
+
+        Invoice deactInvoice = new Invoice();
+        deactInvoice.setAccount(deactContractor);
+        date.add(Calendar.DATE, -1);
+        deactInvoice.setDueDate(date.getTime());
+        Invoice delinInvoice = new Invoice();
+        delinInvoice.setAccount(delinContractor);
+        date.add(Calendar.DATE, 6);
+        delinInvoice.setDueDate(date.getTime());
+
+        List<Invoice> invoices = new ArrayList<>();
+        invoices.add(deactInvoice);
+        invoices.add(delinInvoice);
+
+        List<Integer> idList = new ArrayList<>();
+        idList.add(deactContractor.getId());
+        idList.add(delinContractor.getId());
+
+        when(emailQueueDAO.findContractorsWithRecentEmails(org.mockito.Matchers.anyString(), org.mockito.Matchers.anyInt())).thenReturn(idList);
+
+        Map<ContractorAccount, Integer> map = Whitebox.invokeMethod(cron, "splitPendingAndDeliquentInvoices", invoices);
+        assertTrue(map.size() == 0);
+    }
+
+    @Test
+    public void testRemoveContractorsWithRecentlySentEmail() throws Exception {
+        List<ContractorAccount> contractorList = new ArrayList<>();
+        contractorList.add(EntityFactory.makeContractor());
+        contractorList.add(EntityFactory.makeContractor());
+        contractorList.add(EntityFactory.makeContractor());
+
+        List<Integer> idList = new ArrayList<>();
+        idList.add(contractorList.get(1).getId()); // get middle contractor
+
+        when(emailQueueDAO.findContractorsWithRecentEmails(org.mockito.Matchers.anyString(), org.mockito.Matchers.anyInt())).thenReturn(idList);
+        Whitebox.invokeMethod(cron, "removeContractorsWithRecentlySentEmail", contractorList, 1);
+        assertTrue(contractorList.size() == 2);
+    }
+
 	@Test
 	public void testExcecute_VerifyExtractMethodOfDecliningPendingAccounts() throws Exception {
 		cron.setFlagsOnly(true);
