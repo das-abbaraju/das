@@ -145,7 +145,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.Currency, importance = FieldImportance.Average)
+	@ReportField(importance = FieldImportance.Average)
 	public Currency getCurrency() {
 		return currency;
 	}
