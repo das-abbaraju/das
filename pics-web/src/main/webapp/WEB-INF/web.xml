@@ -11,7 +11,6 @@
 		<param-name>FTP_DIR</param-name>
 		<param-value>P:/Development/ftp_dir</param-value>
 	</context-param>
-    <!--
 	<context-param>
     	<param-name>migration.systemname</param-name>
     	<param-value>PICSORG</param-value>
@@ -36,18 +35,15 @@
 	    <param-name>migration.strategy</param-name>
 	<param-value>com.tacitknowledge.util.migration.MissingPatchMigrationRunnerStrategy</param-value>
 	</context-param>
-	-->
 
 	<listener>
 		<listener-class>
 			org.springframework.web.context.ContextLoaderListener
 		</listener-class>
 	</listener>
-    <!--
 	<listener>
     	<listener-class>com.tacitknowledge.util.migration.jdbc.WebAppJNDIMigrationLauncher</listener-class>
 	</listener>
-	-->
 	<filter>
 		<filter-name>pageLogger</filter-name>
 		<filter-class>
