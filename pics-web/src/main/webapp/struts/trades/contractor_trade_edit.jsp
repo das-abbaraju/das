@@ -6,7 +6,7 @@
 	<a href="ContractorTrades!tradeAjax.action?contractor=${contractor.id}&trade=${trade.id}&mode=View" class="trade view"><s:text name="global.View" /></a>
 </s:if>
 
-<s:form id="trade-form">
+<s:form id="trade-form" onsubmit="$('#addButton').attr('disabled', true); return true;">
 
 	<s:hidden name="contractor"/>
 	<s:hidden name="trade"/>
