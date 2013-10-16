@@ -1008,6 +1008,7 @@ ContractorSingleTagOperatorTagTag
 ContractorSoleProprietor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
+ContractorWorksAtClientSite
 ContractorWorksForReportingClient
 
 Model: ContractorTrades
@@ -1284,16 +1285,8 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 AccountType
-GroupsDepartment
-GroupsEmail
-GroupsFax
-GroupsFirstName
 GroupsID
-GroupsLastName
-GroupsLocale
 GroupsName
-GroupsPhone
-GroupsTimezone
 OperatorAutoApproveInsurance
 OperatorCanSeeInsurance
 OperatorDiscountExpiration
@@ -1565,6 +1558,8 @@ UserEmail
 UserFax
 UserFirstName
 UserGroup
+UserGroupGroupID
+UserGroupGroupName
 UserID
 UserIsActive
 UserIsGroup

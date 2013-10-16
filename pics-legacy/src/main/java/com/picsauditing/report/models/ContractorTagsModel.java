@@ -80,6 +80,14 @@ public class ContractorTagsModel extends AbstractModel {
             flagColor.setUrl("ContractorFlag.action?id={ContractorAccountID}");
         }
 
+        Field clientSite = new Field("ContractorWorksAtClientSite","ContractorAccount.id",FieldType.Operator);
+        clientSite.setVisible(false);
+        clientSite.setPrefixValue("SELECT co.subID " +
+                "FROM generalcontractors co " +
+                "WHERE co.genID IN ");
+        clientSite.setSuffixValue("");
+        fields.put(clientSite.getName().toUpperCase(), clientSite);
+
         Field reportingClient = new Field("ContractorWorksForReportingClient","ContractorAccount.id",FieldType.Operator);
         reportingClient.setVisible(false);
         reportingClient.setPrefixValue("SELECT co.subID " +
