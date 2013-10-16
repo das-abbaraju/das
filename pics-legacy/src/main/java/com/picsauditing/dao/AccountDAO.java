@@ -1,18 +1,25 @@
 package com.picsauditing.dao;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unchecked")
 public class AccountDAO extends PicsDAO {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AccountDAO.class);
+
 	public Account find(int id) {
 		Account a = em.find(Account.class, id);
 		return a;
@@ -82,6 +89,16 @@ public class AccountDAO extends PicsDAO {
 		
 		Query query = em.createQuery("FROM Account a " + where + " ORDER BY a.id");
 		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+
+    public List<Account> findByIds(List<Integer> accountIds) {
+        if (CollectionUtils.isEmpty(accountIds)) {
+            return Collections.emptyList();
+        }
+
+        TypedQuery<Account> query = em.createQuery("FROM Account a WHERE a.id IN ( :accountIds )", Account.class);
+        query.setParameter("accountIds", accountIds);
 		return query.getResultList();
 	}
 }

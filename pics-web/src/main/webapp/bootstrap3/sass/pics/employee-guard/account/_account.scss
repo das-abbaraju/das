@@ -1,0 +1,61 @@
+.employee_guard_welcome-page,
+.employee_guard_sign_up-page {
+	background-color: $pics_blue;
+
+	.row {
+		padding-top: 40px;
+	}
+
+	#login-container {
+		background: $pics_cool_grey;
+		@include box-shadow(#131313 0 2px 8px);
+		padding: 40px 60px;
+		margin-bottom: 20px;
+	}
+
+	.logo {
+		margin: 0px auto 30px auto;
+		max-width: 200px;
+		min-width: 100px;
+		width: 100%;
+	}
+
+	.form-group {
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+
+	.locale-label {
+		padding-left: 0px;
+		text-align: left;
+	}
+
+	.locale-select {
+		padding-left: 5px;
+		padding-right: 0px;
+	}
+
+	.form-actions {
+		margin-top: 25px;
+
+		.btn-primary {
+			margin-bottom: 20px;
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	body#employee_guard_sign_up_index_page,
+	body#employee_guard_welcome_index_page {
+		padding-top: 0px;
+		padding-bottom: 0px;
+
+		#login-container {
+			margin-bottom: 0px;
+		}
+
+		.row {
+			padding-top: 0px;
+		}
+	}
+}

@@ -1,5 +1,5 @@
 package com.picsauditing.access;
 
 public enum HomePageType {
-	PreLogin, ContractorRegistrationStep, HomePage, Deactivated, Declined;
+	PreLogin, ContractorRegistrationStep, HomePage, Deactivated, Declined, EmployeeGUARD;
 }

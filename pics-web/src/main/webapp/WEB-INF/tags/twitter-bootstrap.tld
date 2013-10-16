@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+
+	<description>Twitter Bootstrap 2.x Tag Library</description>
+	<display-name>Twitter Bootstrap 2.x taglib</display-name>
+	<tlib-version>0.1</tlib-version>
+	<short-name>tw</short-name>
+	<uri>http://picsauditing.com/tw-taglibs</uri>
+
+	<tag>
+		<description>button tag.</description>
+		<name>button</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.ButtonTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>button name</description>
+			<name>buttonName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+	
+	<tag>
+		<description>error tag.</description>
+		<name>error</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.ErrorTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>error name</description>
+			<name>errorName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>form tag.</description>
+		<name>form</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.FormTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>form name</description>
+			<name>formName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>input tag.</description>
+		<name>input</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.InputTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>input name</description>
+			<name>inputName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>read only</description>
+			<name>readonly</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>disabled</description>
+			<name>disabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>label tag.</description>
+		<name>label</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.LabelTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>label name</description>
+			<name>labelName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>option tag.</description>
+		<name>option</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.OptionTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>selected</description>
+			<name>selected</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>select tag.</description>
+		<name>select</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.SelectTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>select name</description>
+			<name>selectName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>disabled</description>
+			<name>disabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>multiple</description>
+			<name>multiple</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>textarea tag.</description>
+		<name>textarea</name>
+		<tag-class>com.picsauditing.tags.twitterbootstrap.TextareaTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>textarea name</description>
+			<name>textareaName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>read only</description>
+			<name>readonly</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>disabled</description>
+			<name>disabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+</taglib>

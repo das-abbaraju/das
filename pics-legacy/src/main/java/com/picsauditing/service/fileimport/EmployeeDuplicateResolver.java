@@ -1,26 +1,26 @@
 package com.picsauditing.service.fileimport;
 
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeSite;
 
 import java.util.*;
 
 class EmployeeDuplicateResolver {
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 
 	private List<Employee> duplicateEmployees = Collections.emptyList();
 	private List<Employee> uniqueEmployees = Collections.emptyList();
 	private Set<Employee> employees;
 
-	public EmployeeDuplicateResolver(final Set<Employee> employees, final EmployeeDAO employeeDAO) {
+	public EmployeeDuplicateResolver(final Set<Employee> employees, final LegacyEmployeeDAO legacyEmployeeDAO) {
 		this.employees = Collections.unmodifiableSet(employees);
-		this.employeeDAO = employeeDAO;
+		this.legacyEmployeeDAO = legacyEmployeeDAO;
 	}
 
 	public void resolveDuplicates() {
 		if (employees != null && !employees.isEmpty()) {
-			List<Employee> existingEmployees = employeeDAO.findByFirstNameLastNameAndAccount(employees);
+			List<Employee> existingEmployees = legacyEmployeeDAO.findByFirstNameLastNameAndAccount(employees);
 
 			if (existingEmployees != null && !existingEmployees.isEmpty()) {
 				duplicateEmployees = new ArrayList<>();

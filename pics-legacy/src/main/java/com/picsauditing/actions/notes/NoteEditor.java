@@ -32,7 +32,7 @@ public class NoteEditor extends AccountActionSupport {
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
     @Autowired
     private UserSwitchDAO userSwitchDAO;
     @Autowired
@@ -316,7 +316,7 @@ public class NoteEditor extends AccountActionSupport {
 	}
 
 	public List<Employee> getEmployeeList() {
-		return employeeDAO.findByAccount(account);
+		return legacyEmployeeDAO.findByAccount(account);
 	}
 
 	public String getAccountType() {

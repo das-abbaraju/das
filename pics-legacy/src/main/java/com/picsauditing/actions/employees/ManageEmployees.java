@@ -7,7 +7,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.jpa.entities.*;
@@ -25,7 +25,7 @@ import java.util.*;
 public class ManageEmployees extends AccountActionSupport implements Preparable {
 
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected LegacyEmployeeDAO legacyEmployeeDAO;
 	@Autowired
 	protected JobSiteDAO jobSiteDAO;
 	@Autowired
@@ -155,7 +155,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		employee.setAuditColumns(permissions);
-		employeeDAO.save(employee);
+		legacyEmployeeDAO.save(employee);
 
 		if (employeeIsNew) {
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
@@ -218,7 +218,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public String inactivate() {
 		if (employee != null) {
 			employee.setStatus(UserStatus.Inactive);
-			employeeDAO.save(employee);
+			legacyEmployeeDAO.save(employee);
 			addActionMessage("Employee " + employee.getDisplayName() + " Successfully deactivated.");
 		}
 
@@ -233,7 +233,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 		if (employee != null) {
 			employee.setStatus(UserStatus.Active);
-			employeeDAO.save(employee);
+			legacyEmployeeDAO.save(employee);
 
 			parameters.put("employee", employee.getId());
 		}
@@ -245,7 +245,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public String delete() {
 		if (employee != null) {
 			employee.setStatus(UserStatus.Deleted);
-			employeeDAO.save(employee);
+			legacyEmployeeDAO.save(employee);
 			addActionMessage("Employee " + employee.getDisplayName() + " Successfully deleted.");
 			employee = null;
 		}
@@ -494,7 +494,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	@SuppressWarnings("unchecked")
 	public JSONArray getPreviousTitlesJSON() {
 		JSONArray a = new JSONArray();
-		a.addAll(employeeDAO.findCommonTitles());
+		a.addAll(legacyEmployeeDAO.findCommonTitles());
 		return a;
 	}
 
@@ -649,7 +649,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	private void loadActiveEmployees() {
-		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+		activeEmployees = legacyEmployeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 	}
 
 	private void checkSsn() {

@@ -1,7 +1,7 @@
 package com.picsauditing.actions.employees;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
@@ -26,7 +26,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class ImportEmployees extends PicsActionSupport {
 	@Autowired
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 	@Autowired
 	private EmployeeImport employeeImport;
 	@Autowired
@@ -236,7 +236,7 @@ public class ImportEmployees extends PicsActionSupport {
 							int index = cell.getColumnIndex() - getEmployeeInfo().length;
 							// Get operators?
 							if (index >= 0 && operators.size() > index && operators.get(index) != null) {
-								employeeDAO.save(e);
+								legacyEmployeeDAO.save(e);
 
 								EmployeeSite es = new EmployeeSite();
 								es.setEmployee(e);
@@ -249,7 +249,7 @@ public class ImportEmployees extends PicsActionSupport {
 				}
 			}
 
-			employeeDAO.save(e);
+			legacyEmployeeDAO.save(e);
 			return true;
 		}
 

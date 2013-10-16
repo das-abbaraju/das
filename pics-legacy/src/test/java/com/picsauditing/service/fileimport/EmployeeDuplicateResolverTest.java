@@ -1,6 +1,6 @@
 package com.picsauditing.service.fileimport;
 
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class EmployeeDuplicateResolverTest {
 	@Mock
 	private Account account;
 	@Mock
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -42,9 +42,9 @@ public class EmployeeDuplicateResolverTest {
 		List<Employee> existing = new ArrayList<>();
 		existing.add(employee);
 
-		when(employeeDAO.findByFirstNameLastNameAndAccount(imported)).thenReturn(existing);
+		when(legacyEmployeeDAO.findByFirstNameLastNameAndAccount(imported)).thenReturn(existing);
 
-		duplicateResolver = new EmployeeDuplicateResolver(imported, employeeDAO);
+		duplicateResolver = new EmployeeDuplicateResolver(imported, legacyEmployeeDAO);
 		duplicateResolver.resolveDuplicates();
 
 		assertFalse(duplicateResolver.getDuplicateEmployees().isEmpty());

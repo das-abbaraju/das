@@ -1,12 +1,12 @@
 package com.picsauditing.access;
 
+import com.picsauditing.util.Strings;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.picsauditing.util.Strings;
 
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
@@ -89,7 +89,15 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     }
 
     public String getUrl() {
-        return url;
+		if (Strings.isEmpty(url) || url.startsWith("http")) {
+			return url;
+        }
+
+		if (url.startsWith("/")) {
+            return url;
+		} else {
+			return "/" + url;
+		}
     }
 
     public void setUrl(String url) {

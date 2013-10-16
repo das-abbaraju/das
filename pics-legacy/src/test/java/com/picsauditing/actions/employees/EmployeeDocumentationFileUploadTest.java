@@ -23,7 +23,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
@@ -38,7 +38,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 	@Mock
 	private Employee employee;
 	@Mock
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 	@Mock
 	private OperatorCompetency operatorCompetency;
 	@Mock
@@ -55,7 +55,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 		employeeDocumentationFileUpload.setFileFileName("filename.file");
 		employeeDocumentationFileUpload.setExpiration(expiration);
 
-		Whitebox.setInternalState(employeeDocumentationFileUpload, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(employeeDocumentationFileUpload, "employeeDAO", legacyEmployeeDAO);
 		Whitebox.setInternalState(employeeDocumentationFileUpload, "urlUtils", urlUtils);
 	}
 
@@ -131,7 +131,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 
 		employeeDocumentationFileUpload.setFile(file);
 		assertEquals(PicsActionSupport.REDIRECT, employeeDocumentationFileUpload.save());
-		verify(employeeDAO).save(fileCaptor.capture());
+		verify(legacyEmployeeDAO).save(fileCaptor.capture());
 
 		assertFalse(employeeDocumentationFileUpload.hasActionErrors());
 		assertTrue(employeeDocumentationFileUpload.hasActionMessages());

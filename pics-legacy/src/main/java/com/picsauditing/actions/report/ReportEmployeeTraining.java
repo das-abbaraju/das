@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
@@ -20,7 +20,7 @@ import com.picsauditing.report.RecordNotFoundException;
 @SuppressWarnings("serial")
 public class ReportEmployeeTraining extends ReportEmployee {
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected LegacyEmployeeDAO legacyEmployeeDAO;
 	@Autowired
 	protected ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired

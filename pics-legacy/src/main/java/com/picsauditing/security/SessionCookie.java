@@ -1,17 +1,19 @@
 package com.picsauditing.security;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.HashMap;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picsauditing.util.Strings;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SessionCookie {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	private int userID;
+	private int appUserID;
+	private int profileID;
 	private Date cookieCreationTime;
 	private Map<String, Object> embeddedData = new HashMap<String, Object>();
 	private String validationHash;
@@ -22,6 +24,22 @@ public class SessionCookie {
 
 	public void setUserID(int userID) {
 		this.userID = userID;
+	}
+
+	public int getAppUserID() {
+		return appUserID;
+	}
+
+	public void setAppUserID(int appUserID) {
+		this.appUserID = appUserID;
+	}
+
+	public int getProfileID() {
+		return profileID;
+	}
+
+	public void setProfileID(int profileID) {
+		this.profileID = profileID;
 	}
 
 	public Date getCookieCreationTime() {
@@ -75,7 +93,9 @@ public class SessionCookie {
 
 	public String toString() {
 		try {
-			StringBuffer thisAsString = new StringBuffer().append(userID).append('|')
+			StringBuffer thisAsString = new StringBuffer()
+					.append(userID).append('|')
+					.append(appUserID).append('|')
 					.append(cookieCreationTime.getTime()).append('|');
 			if (embeddedData != null && embeddedData.size() > 0) {
 				thisAsString.append(mapper.writeValueAsString(embeddedData));

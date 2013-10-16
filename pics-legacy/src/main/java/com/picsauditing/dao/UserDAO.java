@@ -1,21 +1,23 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.ContractorWatch;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.security.EncodedKey;
+import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.util.Strings;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
@@ -83,22 +85,6 @@ public class UserDAO extends PicsDAO {
 				+ "where grp.groupID = atype.editAudit", User.class);
 		userList.addAll(query.getResultList());
 
-		/*
-		SELECT * FROM users u
-JOIN usergroup member ON member.userID = u.id
-JOIN users grp ON grp.id = member.groupID
-JOIN useraccess ua ON ua.userID = grp.id
-WHERE ua.accessType='AuditEdit'
-AND grp.accountID=10566;
-		 */
-		/* 
-		 * SELECT *
-from users u
-Join usergroup grp on u.id=grp.userID
-join audit_type atype on atype.assignAudit in (84453)
-where grp.groupID = atype.editAudit;
-
-		 */
 		return userList;
 	}
 
@@ -164,8 +150,8 @@ where grp.groupID = atype.editAudit;
 			userName = "";
 
 		try {
-			Query query = em.createQuery("SELECT u FROM User u WHERE username = ?");
-			query.setParameter(1, userName);
+			Query query = em.createNativeQuery("SELECT u.* FROM users u JOIN app_user a ON a.id = u.appUserID WHERE a.username = :username", User.class);
+			query.setParameter("username", userName);
 			return (User) query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
@@ -245,9 +231,9 @@ where grp.groupID = atype.editAudit;
         EncodedKey.verifySufficientlyComplex(apiKey);
 
 		try {
-			Query query = em.createQuery("SELECT u FROM User u WHERE apiKey = ?");
-			query.setParameter(1, apiKey);
-			return (User) query.getSingleResult();
+			TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.apiKey = :apiKey", User.class);
+			query.setParameter("apiKey", apiKey);
+			return query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -270,5 +256,27 @@ where grp.groupID = atype.editAudit;
         }
 
         return Collections.EMPTY_LIST;
+	}
+
+	public User findUserByAppUserID(int appUserID) {
+		Query query = em.createNativeQuery("select u.* from users u WHERE u.appUserID = :appUserID", User.class);
+		query.setParameter("appUserID", appUserID);
+
+		try {
+			return (User) query.getSingleResult();
+		} catch (Exception e) {
+		}
+
+		return null;
+	}
+
+
+	public int findUserIDByAppUserID(int appUserID) {
+		User user = findUserByAppUserID(appUserID);
+		if (user != null) {
+			return user.getId();
+		}
+
+		return 0;
     }
 }

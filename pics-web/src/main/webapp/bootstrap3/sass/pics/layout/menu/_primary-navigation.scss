@@ -1,0 +1,325 @@
+#primary_navigation
+{
+    z-index: 1000;
+
+    .navbar-inner
+    {
+        background: #eaeaea;
+        @include background-image(linear-gradient(#fff, #eaeaea));
+    }
+
+    .brand
+    {
+        // svg fallback for ie6/7/8
+        background: url(../img/logo/logo-icon.png) no-repeat;
+        background: rgba(0,0,0,0) url(../img/logo/logo-icon.svg) no-repeat;
+        display: block;
+        height: 32px;
+        margin: 8px 10px 9px 0;
+        padding: 0;
+        width: 32px;
+    }
+
+    [data-toggle=collapse]
+    {
+        border: 0;
+        background-color: transparent;
+        color: #454545;
+        display: none;
+        float: right;
+        line-height: 50px;
+    }
+
+    .nav > li > a
+    {
+        border: 1px solid transparent;
+        border-bottom: 0;
+        color: $pics_blue;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 14px 10px;
+
+        &:hover
+        {
+        	color: #c66603;
+        }
+    }
+
+    .nav li.dropdown.open > .dropdown-toggle,
+    .nav li.dropdown.active > .dropdown-toggle,
+    .nav li.dropdown.open.active > .dropdown-toggle
+    {
+        background: $pics_cool_grey;
+        @include background-image(linear-gradient(#eaeaea, $pics_cool_grey));
+        @include border-radius(0);
+        border: 1px solid #aeaeae;
+        border-top: 1px solid #999999;
+        border-bottom: 0px;
+        color: #C66603;
+    }
+
+    .nav li.dropdown.switch-to.open > .dropdown-toggle,
+    .nav li.dropdown.switch-to.active > .dropdown-toggle,
+    .nav li.dropdown.switch-to.open.active > .dropdown-toggle
+    {
+    	background-color: #3f93c0 \9;
+	    background-color: #3f93c0;
+	    background-image: none;
+	    outline: 0;
+	    @include box-shadow(inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05));
+	    color: #fff;
+    }
+
+    .navbar-search
+    {
+        margin: 0;
+        line-height: 49px;
+        padding: 0 15px;
+
+        .icon-search
+        {
+            color: #ccc;
+            left: 24px;
+            position: absolute;
+            top: 16px;
+        }
+
+        .search-query
+        {
+            line-height: normal;
+            padding: 4px 14px 4px 32px;
+        }
+
+        .search-query:focus ~ .icon-search
+        {
+            color: #73bbe8;
+        }
+    }
+
+    #user_menu
+    {
+    	border-left: 1px solid #e7e7e7;
+    }
+
+    .nav .switch-to
+    {
+    	> a
+    	{
+    		color: #fff;
+		    background-color: #3f93c0;
+    		@include text-shadow(0 -1px 0 rgba(0, 0, 0, 0.25));
+    		@include background-image(linear-gradient($pics_light_blue, #3f93c0));
+		    background-repeat: repeat-x;
+		    *background-color: #3f93c0;
+		    border-color: #3f93c0 #3f93c0 #336699;
+		    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+		    display: block;
+		    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73bbe8', endColorstr='#ff3f93c0', GradientType=0);
+		    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+		    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+		    padding: 6px 15px 7px;
+    	}
+
+	   	> a:hover,
+		> a:focus
+		{
+		    background-color: #3f93c0;
+		    background-position: 0 -15px;
+		    color: #fff;
+		    text-decoration: none;
+		    @include transition(background-position .1s linear);
+		}
+
+		> a:active
+		{
+			background-color: #3f93c0 \9;
+		    background-color: #3f93c0;
+		    background-image: none;
+		    outline: 0;
+		    @include box-shadow(inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05));
+		}
+
+	    .account
+		{
+		    display: inline-block;
+		    display: inline \9;
+		    line-height: 16px;
+		    margin-right: 5px;
+		    text-align: right;
+
+			span
+			{
+			    font-size: 10px;
+			}
+		}
+
+		.icon-cog
+		{
+			vertical-align: 5px;
+		}
+    }
+}
+
+.lt-ie9 .nav > li > a
+{
+    padding: 16px 10px;
+}
+
+@media (min-width: 1200px) {
+    #primary_navigation
+    {
+        .brand
+        {
+            margin-right: 15px;
+        }
+
+        .nav > li > a
+        {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+}
+
+@media (max-width: 979px) {
+    #primary_navigation
+    {
+        margin-bottom: 0;
+
+        .navbar-inner
+        {
+            background: $pics_cool_grey;
+        }
+
+        .brand
+        {
+            margin-left: 5px;
+        }
+
+        [data-toggle=collapse]
+        {
+            display: block;
+        }
+
+        .nav > li > a
+        {
+            @include border-radius(0);
+            padding: 6px 5px;
+
+            &:hover
+            {
+            	background-color: $pics_cool_grey;
+            }
+
+            &[data-toggle="dropdown"]:after
+            {
+				bottom: 1px;
+            	content: '\2304';
+				font-size: 20px;
+				margin-left: 2px;
+            	position: relative;
+            }
+        }
+
+        .primary-navigation-items
+        {
+            .nav > li > .dropdown-menu
+            {
+                background: #eaeaea;
+                display: none;
+            }
+
+            .nav > .open > .dropdown-menu
+            {
+                display: block;
+            }
+
+            .dropdown-menu a
+            {
+                @include border-radius(0);
+                color: #454545;
+                font-weight: normal;
+
+                &:hover
+                {
+                    background: #dcdcdc;
+                    color: $pics_link_blue;
+                }
+            }
+
+            .dropdown-submenu > a:after
+            {
+            	margin: 0;
+            }
+
+            .dropdown-submenu:hover > a,
+            .dropdown-submenu:focus > a
+            {
+                background: #eaeaea;
+            }
+        }
+
+        .nav li.dropdown.open > .dropdown-toggle,
+        .nav li.dropdown.active > .dropdown-toggle,
+        .nav li.dropdown.open.active > .dropdown-toggle
+        {
+            background: $pics_cool_grey;
+            border: 1px solid transparent;
+            border-bottom: 0;
+        }
+
+        .nav li.dropdown.switch-to.open > .dropdown-toggle,
+	    .nav li.dropdown.switch-to.active > .dropdown-toggle,
+	    .nav li.dropdown.switch-to.open.active > .dropdown-toggle
+	    {
+		    background-color: #3f93c0;
+		    @include box-shadow(none);
+	    }
+
+        .navbar-search
+        {
+            .icon-search
+            {
+            	top: 6px;
+            }
+
+            .search-query
+            {
+                box-sizing: border-box;
+                display: block;
+                min-height: 30px;
+                width: 100%;
+            }
+        }
+
+        #user_menu
+        {
+        	border: 0;
+        }
+
+        .nav .switch-to
+	    {
+	    	> a,
+	    	> a:hover,
+	    	> a:active
+	    	{
+	        	background: #3f93c0;
+	    	}
+
+		    .account
+		    {
+		    	span
+		    	{
+		        	display: none;
+		    	}
+		    }
+
+		    .icon-cog
+		    {
+		        vertical-align: 0;
+		    }
+    	}
+    }
+}
+
+@import 'user-search-list';

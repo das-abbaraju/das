@@ -45,6 +45,7 @@ public class SpringUtils implements ApplicationContextAware {
 	public static final String EMAIL_REQUEST_PUBLISHER = "EmailRequestPublisher";
 	public static final String CONTRACTOR_SUBMENU_BUILDER = "ContractorSubmenuBuilder";
 	public static final String URL_UTILS = "StreamContentProvider";
+	public static final String EMPLOYEE_DAO = "EmployeeDAO";
 
 	private static ApplicationContext applicationContext;
 

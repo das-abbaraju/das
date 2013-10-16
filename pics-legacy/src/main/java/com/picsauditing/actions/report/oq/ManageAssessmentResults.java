@@ -7,7 +7,7 @@ import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentResultDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
@@ -20,7 +20,7 @@ public class ManageAssessmentResults extends ReportActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentResultDAO resultDAO;
 	private AssessmentTestDAO testDAO;
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 	
 	private int id;
 	private int companyID;
@@ -35,11 +35,11 @@ public class ManageAssessmentResults extends ReportActionSupport {
 	private String subHeading = "Manage Assessment Results";
 	
 	public ManageAssessmentResults(AccountDAO accountDAO, AssessmentResultDAO resultDAO, 
-			AssessmentTestDAO testDAO, EmployeeDAO employeeDAO) {
+			AssessmentTestDAO testDAO, LegacyEmployeeDAO legacyEmployeeDAO) {
 		this.accountDAO = accountDAO;
 		this.resultDAO = resultDAO;
 		this.testDAO = testDAO;
-		this.employeeDAO = employeeDAO;
+		this.legacyEmployeeDAO = legacyEmployeeDAO;
 		
 		orderByDefault = "a.name, e.firstName, t.qualificationType, t.qualificationMethod";
 	}
@@ -114,7 +114,7 @@ public class ManageAssessmentResults extends ReportActionSupport {
 					addActionError("Missing Assessment Test");
 				
 				if (employeeID > 0)
-					result.setEmployee(employeeDAO.find(employeeID));
+					result.setEmployee(legacyEmployeeDAO.find(employeeID));
 				else if (result.getEmployee() == null)
 					addActionError("Missing Employee");
 				
@@ -227,6 +227,6 @@ public class ManageAssessmentResults extends ReportActionSupport {
 	
 	public List<Employee> getEmployees() {
 		// How do we want to do this? By company?
-		return employeeDAO.findByAccount(accountDAO.find(companyID));
+		return legacyEmployeeDAO.findByAccount(accountDAO.find(companyID));
 	}
 }

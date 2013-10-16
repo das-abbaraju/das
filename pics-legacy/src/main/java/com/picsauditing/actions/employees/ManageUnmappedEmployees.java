@@ -10,7 +10,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
@@ -21,14 +21,14 @@ import com.picsauditing.report.RecordNotFoundException;
 public class ManageUnmappedEmployees extends AccountActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentTestDAO testDAO;
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 
 	protected int employeeID;
 	protected int stageID;
 	
-	public ManageUnmappedEmployees(AccountDAO accountDAO, AssessmentTestDAO testDAO, EmployeeDAO employeeDAO) {
+	public ManageUnmappedEmployees(AccountDAO accountDAO, AssessmentTestDAO testDAO, LegacyEmployeeDAO legacyEmployeeDAO) {
 		this.accountDAO = accountDAO;
-		this.employeeDAO = employeeDAO;
+		this.legacyEmployeeDAO = legacyEmployeeDAO;
 		this.testDAO = testDAO;
 	}
 
@@ -107,7 +107,7 @@ public class ManageUnmappedEmployees extends AccountActionSupport {
 								employee.setFirstName(stage.getFirstName());
 								employee.setLastName(stage.getLastName());
 								employee.setAccount(account);
-								employee = (Employee) employeeDAO.save(employee);
+								employee = (Employee) legacyEmployeeDAO.save(employee);
 							}
 							
 							stage.setPicsEmployee(employee);
@@ -145,7 +145,7 @@ public class ManageUnmappedEmployees extends AccountActionSupport {
 	
 	// Lists
 	public List<Employee> getEmployees() {
-		return employeeDAO.findByAccount(account);
+		return legacyEmployeeDAO.findByAccount(account);
 	}
 	
 	public Map<String, List<AssessmentResultStage>> getUnmapped() {

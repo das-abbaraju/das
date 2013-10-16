@@ -2,28 +2,26 @@ package com.picsauditing.actions.employees;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Map;
 
 import java.io.FileInputStream;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.FileUtils;
 
 public class EmpImg extends PicsActionSupport {
 
-	private EmployeeDAO employeeDAO;
+	private LegacyEmployeeDAO legacyEmployeeDAO;
 
 	protected InputStream inputStream;
 	protected Employee employee;
 
 	private int employeeID;
 
-	public EmpImg(EmployeeDAO employeeDAO) {
-		this.employeeDAO = employeeDAO;
+	public EmpImg(LegacyEmployeeDAO legacyEmployeeDAO) {
+		this.legacyEmployeeDAO = legacyEmployeeDAO;
 	}
 
 	public String execute() {

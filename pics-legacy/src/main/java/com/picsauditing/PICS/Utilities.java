@@ -1,22 +1,16 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.jsoup.Jsoup;
-import org.springframework.util.CollectionUtils;
-
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.SpringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.jsoup.Jsoup;
+import org.springframework.util.CollectionUtils;
+
+import java.util.*;
 
 /**
  * A set of generic Utilities. We should consider moving this into the Strings
@@ -252,5 +246,18 @@ public class Utilities {
 
 	public static <T> T coalesce(T a, T b, T c, T d, T e) {
 		return a != null ? a : coalesce(b, c, d, e);
+	}
+
+	public static List<Integer> primitiveArrayToList(int[] array) {
+		if (ArrayUtils.isEmpty(array)) {
+			return Collections.emptyList();
+		}
+
+		ArrayList<Integer> result = new ArrayList<>();
+		for (int item : array) {
+			result.add(item);
+		}
+
+		return result;
 	}
 }
