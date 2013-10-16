@@ -19,5 +19,6 @@
     <include file="./liquibase/pschlesinger2_PICS-12857_ModifyBizUnitTblStructureRemoveUnneededColumns.sql"/>
     <include file="./liquibase/pschlesinger3_PICS-12857_AddingKnownSapCodes.sql"/>
     <include file="./liquibase/pschlesinger4_PICS-12857_DropSapCodesFromRefBizUnit.sql"/>
-
+<!--   Release 6.64   --> 
+	<include file="./liquibase/gmeurer1_PICS-12602_AddTableForAggregatingTranslationLogs.sql"/>
 </databaseChangeLog>
