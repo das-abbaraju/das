@@ -2,7 +2,7 @@ package com.picsauditing.database.domain;
 
 import java.util.Date;
 
-public interface TableCreated {
+public interface CreatableRows {
 
     public int getCreatedById();
 

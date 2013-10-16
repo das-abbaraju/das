@@ -2,7 +2,7 @@ package com.picsauditing.database.domain;
 
 import java.util.Date;
 
-public interface TableDeleted {
+public interface SoftDeletableRows {
     public int getDeletedById();
 
     public void setDeletedById(int userID);

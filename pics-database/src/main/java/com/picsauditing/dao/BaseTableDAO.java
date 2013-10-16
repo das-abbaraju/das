@@ -1,6 +1,6 @@
 package com.picsauditing.dao;
 
-import com.picsauditing.database.domain.TableWithID;
+import com.picsauditing.database.domain.RowsIdentifiableByKey;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +10,7 @@ import javax.persistence.Query;
 import java.util.Collection;
 import java.util.List;
 
-public class BaseTableDAO<T extends TableWithID> {
+public class BaseTableDAO<T extends RowsIdentifiableByKey> {
 
     protected EntityManager em;
     protected Class<T> clazz;
@@ -33,7 +33,7 @@ public class BaseTableDAO<T extends TableWithID> {
     }
 
     @Transactional(propagation = Propagation.NESTED)
-    public TableWithID save(T entity) {
+    public RowsIdentifiableByKey save(T entity) {
         if (entity.getId() == 0) {
             em.persist(entity);
         } else {
