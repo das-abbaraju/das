@@ -188,7 +188,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 						payment.setCcNumber(creditCard.getCardNumber());
 
 						// Only if the transaction succeeds
-						PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
+						PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
 						AccountingSystemSynchronization.setToSynchronize(payment);
 
 						paymentDAO.save(payment);
@@ -200,7 +200,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 						billingService.activateContractor(contractor, invoice);
 						contractorAccountDao.save(contractor);
 
-						notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.SAVE));
+						notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentDataEvent.PaymentEventType.SAVE));
 
 						addNote(contractor, "Credit Card transaction completed and emailed the receipt for "
 								+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), NoteCategory.Billing,

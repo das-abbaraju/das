@@ -1,37 +1,34 @@
 package com.picsauditing.salecommission.payment.strategy;
 
-import java.util.Collection;
-import java.util.List;
-
+import com.picsauditing.jpa.entities.InvoiceCommission;
+import com.picsauditing.jpa.entities.PaymentApplied;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
+import com.picsauditing.jpa.entities.PaymentCommission;
 import org.apache.commons.collections.CollectionUtils;
 
-import com.picsauditing.PICS.Utilities;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentCommission;
-import com.picsauditing.jpa.entities.Transaction;
-import com.picsauditing.util.Strings;
+import java.util.List;
 
 public class PaymentRemoveStrategy extends AbstractPaymentCommissionStrategy {
 
-	@Override
-	protected boolean strategyAlreadyProcessed(List<Transaction> transactions) {
-		if (CollectionUtils.isEmpty(transactions)) {
-			return true;
-		}
+    @Override
+    protected void processPaymentCommissions(final PaymentApplied paymentApplied) {
+        if (paymentApplied == null) {
+            return;
+        }
 
-		Collection<Integer> ids = Utilities.getIdsBaseTableEntities(transactions);
-		return CollectionUtils.isEmpty(paymentCommissionDAO.findWhere("t.invoiceCommission.invoice.id IN ("
-				+ Strings.implode(ids) + ")"));
-	}
+        PaymentAppliedToInvoice paymentAppliedToInvoice = (PaymentAppliedToInvoice) paymentApplied;
+        int invoiceId = paymentAppliedToInvoice.getInvoice().getId();
+        List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoiceId);
 
-	@Override
-	protected void processPaymentCommissions(final Payment payment) {
-		List<PaymentCommission> paymentCommissions = paymentCommissionDAO.findByPaymentId(payment.getId());
-		if (CollectionUtils.isEmpty(paymentCommissions)) {
-			return;
-		}
+        for (InvoiceCommission invoiceCommission : invoiceCommissions) {
+            PaymentCommission paymentCommission = new PaymentCommission();
+            paymentCommission.setInvoiceCommission(invoiceCommission);
+            paymentCommission.setPayment(paymentApplied.getPayment());
+            paymentCommission.setAuditColumns(paymentApplied.getPayment().getUpdatedBy());
+            paymentCommission.setActivationPoints(calculateActivationPoints(invoiceCommission, paymentAppliedToInvoice).negate());
+            paymentCommission.setPaymentAmount(calculateRevenueAmount(invoiceCommission, paymentAppliedToInvoice).negate());
 
-		paymentCommissionDAO.deleteData("t.id IN ("
-				+ Strings.implode(Utilities.getIdsBaseTableEntities(paymentCommissions)) + ")");
-	}
+            paymentCommissionDAO.save(paymentCommission);
+        }
+    }
 }

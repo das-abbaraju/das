@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.User;
 
 // TODO: This should be part of a TransactionVisitor
 public class PaymentProcessor {
-	public static void ApplyPaymentToInvoice(Payment payment, Invoice invoice, User user, BigDecimal amount) {
+	public static PaymentAppliedToInvoice ApplyPaymentToInvoice(Payment payment, Invoice invoice, User user, BigDecimal amount) {
 		payment.setCurrency(invoice.getCurrency());
 
 		PaymentAppliedToInvoice pa = new PaymentAppliedToInvoice();
@@ -25,6 +25,8 @@ public class PaymentProcessor {
 		payment.updateAmountApplied();
 		invoice.getPayments().add(pa);
 		invoice.updateAmountApplied();
+
+        return pa;
 	}
 
 	public static void ApplyPaymentToRefund(Payment payment, Refund refund, User user, BigDecimal amount) {

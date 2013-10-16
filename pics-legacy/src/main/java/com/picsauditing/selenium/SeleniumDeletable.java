@@ -11,4 +11,6 @@ public interface SeleniumDeletable {
 	public boolean isAnAccount();
 	public boolean isAnEmployee();
 	public boolean isUser();
+    public boolean isClientSite();
+    public boolean isContractor();
 }

@@ -197,7 +197,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         }
 
         Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.BadDebtCreditMemo);
-        PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions), payment.getTotalAmount());
+        PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions), payment.getTotalAmount());
         payment.setStatus(TransactionStatus.BadDebt);
         payment.setAuditColumns(getUser());
         AccountingSystemSynchronization.setToSynchronize(payment);
@@ -207,7 +207,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         contractor.setBalance(BigDecimal.ZERO);
         contractorAccountDao.save(contractor);
 
-        notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
+        notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.REMOVE));
 
         addNote("Invoice marked as 'Bad Debt'.", billingNoteModel.findUserForPaymentNote(permissions));
     }
@@ -310,8 +310,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         // refund or void manually.
         payment.setStatus(TransactionStatus.Unpaid);
         paymentDAO.save(payment);
-
-        notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
     }
 
     private void process(Payment payment) throws Exception {
@@ -324,7 +322,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         payment.setCcNumber(creditCard.getCardNumber());
 
         // Only if the invoice succeeds
-        PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions),
+        PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment,
+                invoice,
+                billingNoteModel.findUserForPaymentNote(permissions),
                 payment.getTotalAmount());
         AccountingSystemSynchronization.setToSynchronize(payment);
 
@@ -336,7 +336,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         billingService.activateContractor(contractor, invoice);
         contractorAccountDao.save(contractor);
 
-        notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
+        notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.SAVE));
 
         addNote("Credit Card invoice completed and emailed the receipt for "
 				+ invoice.getTotalAmount() + Strings.SINGLE_SPACE
