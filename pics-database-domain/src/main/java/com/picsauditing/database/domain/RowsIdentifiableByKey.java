@@ -1,6 +1,6 @@
 package com.picsauditing.database.domain;
 
-public interface TableWithID {
+public interface RowsIdentifiableByKey {
 
     public int getId();
 

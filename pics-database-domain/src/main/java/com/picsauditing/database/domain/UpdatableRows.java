@@ -2,7 +2,7 @@ package com.picsauditing.database.domain;
 
 import java.util.Date;
 
-public interface TableUpdated extends TableCreated {
+public interface UpdatableRows extends CreatableRows {
 
     public int getUpdatedById();
 

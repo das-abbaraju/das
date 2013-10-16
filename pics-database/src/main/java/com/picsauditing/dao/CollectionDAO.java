@@ -1,6 +1,6 @@
 package com.picsauditing.dao;
 
-import com.picsauditing.database.domain.UpdateableListItem;
+import com.picsauditing.database.domain.UpdatableListItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 public class CollectionDAO {
 
     // UPDATE must be Overridden in the inheriting class
-    public static <T extends UpdateableListItem> Collection<T> insertUpdateDeleteManaged(Collection<T> dbLinkedList,
+    public static <T extends UpdatableListItem> Collection<T> insertUpdateDeleteManaged(Collection<T> dbLinkedList,
                                                                                          Collection<T> changes) {
         // update/delete
         Iterator<T> dbIterator = dbLinkedList.iterator();
@@ -43,7 +43,7 @@ public class CollectionDAO {
     // IMPORTANT NOTE: Only use this as a necessity. Performance using this
     // operation is severely degraded
     // compared to the hibernate managed insert/update/delete above
-    public static <T extends UpdateableListItem> void insertUpdateDeleteExplicit(Collection<T> unLinkedList,
+    public static <T extends UpdatableListItem> void insertUpdateDeleteExplicit(Collection<T> unLinkedList,
                                                                                  Collection<T> changes, BaseTableDAO dao) {
         // update/delete
         Collection<T> deletes = new ArrayList<T>();

@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.database.domain.TableWithID;
+import com.picsauditing.database.domain.RowsIdentifiableByKey;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import org.json.simple.JSONAware;
@@ -18,7 +18,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, JSONAware, Translatable, TableWithID {
+public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, JSONAware, Translatable, RowsIdentifiableByKey {
 
     protected int id;
     protected User createdBy;
