@@ -1,4 +1,5 @@
-DROP PROCEDURE IF EXISTS	etlTranslationUsage;
+DROP PROCEDURE IF EXISTS	etlTranslationUsage
+;
 
 DELIMITER //
 CREATE DEFINER=`pics_admin`@`%` PROCEDURE	etlTranslationUsage
@@ -20,12 +21,12 @@ BEGIN
 **	Modnumber:	00
 **	Modification:	Original
 
-IF a row in translation_usage exists
-for a given (`msgKey`, `msgLocale`, `pageName`,`environment`) (same as the unique key)
-where the lastUsed date is < now (this is a daily aggregation),
+IF a row in translation_usage exists 
+for a given (`msgKey`, `msgLocale`, `pageName`,`environment`) (same as the unique key) 
+where the lastUsed date is < now (this is a daily aggregation), 
 then update lastUsed date to now AND set synchronizedBatch to null AND set synchronizedDate to null
 
-IF the row does not exist,
+IF the row does not exist, 
 INSERT msgKey, msgLocale, pageName, environment to passed values
 AND firstUsed = now and lastUsed = now
 
@@ -48,6 +49,7 @@ DECLARE RowExists_fg	TINYINT	DEFAULT 0;
 DECLARE ProcFailed_fg	BOOLEAN DEFAULT FALSE;
 
 DECLARE	p_id	INT(11) DEFAULT 0;
+DECLARE p_lastUsed	DATE DEFAULT "0000-00-00";
 ###############################################################################
 ETL:
 BEGIN
@@ -59,8 +61,10 @@ BEGIN
 	#######################################################################
 	SELECT
 		translation_usage.id
+	,	translation_usage.lastUsed
 	INTO
 		p_id
+	,	p_lastUsed
 	FROM
 		translation_usage
 	WHERE	1=1
@@ -68,24 +72,26 @@ BEGIN
 	AND	translation_usage.msgLocale	= _msgLocale
 	AND	translation_usage.pageName	= _pageName
 	AND	translation_usage.environment	= _environment
-	AND	translation_usage.lastUsed	< DATE(NOW())
 	;
 
 	IF
 		FOUND_ROWS()	> 0
 	THEN
-		UPDATE
-			translation_usage
-		SET
-			lastUsed 	= DATE(NOW())
-		,	synchronizedBatch 	= NULL
-		,	synchronizedDate 	= NULL
-		WHERE	1=1
-		AND	id 	= p_id
-		;
-		LEAVE	ETL;
+		IF
+			p_lastUsed	< DATE(NOW())
+		THEN
+			UPDATE
+				translation_usage
+			SET
+				lastUsed 	= DATE(NOW())
+			,	synchronizedBatch 	= NULL
+			,	synchronizedDate 	= NULL
+			WHERE	1=1
+			AND	id 	= p_id
+			;
+		END IF;
 	ELSE
-		INSERT IGNORE INTO 	translation_usage
+		INSERT INTO 	translation_usage
 		(
 			msgKey
 		,	msgLocale
@@ -104,12 +110,11 @@ BEGIN
 		,	DATE(NOW())
 		)
 		;
-		LEAVE	ETL;
 	END IF;
 	#######################################################################
 END ETL;
 ###############################################################################
 END
 //
-
-
+DELIMITER ;
+;
