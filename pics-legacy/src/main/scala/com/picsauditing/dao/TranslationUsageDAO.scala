@@ -6,8 +6,14 @@ import java.util.Date
 import Database.threadLocalSession
 import java.sql.SQLIntegrityConstraintViolationException
 import com.picsauditing.model.events.i18n.TranslationLookupData
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import Q.interpolation
+import org.slf4j.{LoggerFactory, Logger}
 
 class TranslationUsageDAO extends PICSDataAccess {
+  private val logger: Logger = LoggerFactory.getLogger(classOf[TranslationUsageDAO])
+
+  def usageEtlSProc(msgKey: String, msgLocale: String, pageName: String, environment: String) = sqlu"{ call etlTranslationUsage($msgKey, $msgLocale, $pageName, $environment) }".first
 
   private val findIdByKeyLocalePageEnv = for {
     (msgKey, msgLocale, pageName, environment)  <- Parameters[(String, String, String, String)]
@@ -19,6 +25,25 @@ class TranslationUsageDAO extends PICSDataAccess {
   } yield t.id
 
   def logKeyUsage(keyUsage: TranslationLookupData) = {
+    // I'm leaving in the regular slick db stuff as an example or in case we decide to go back to it should the sproc
+    // prove not to be faster
+    // doLogKeyUsageByInsert(keyUsage)
+    doLogKeyUsageBySProc(keyUsage)
+  }
+
+  def doLogKeyUsageBySProc(keyUsage: TranslationLookupData) = {
+    db withSession {
+      try {
+        usageEtlSProc(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getEnvironment)
+      } catch {
+        case e: Throwable => {
+          logger.error(e.getMessage)
+        }
+      }
+    }
+  }
+
+  def doLogKeyUsageByInsert(keyUsage: TranslationLookupData) = {
     db withSession {
       findIdByKeyLocalePageEnv(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getEnvironment).firstOption match {
         case None => { insertNewTranslationKeyUsage(keyUsage) }
