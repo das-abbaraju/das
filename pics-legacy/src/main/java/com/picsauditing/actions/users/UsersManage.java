@@ -7,6 +7,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -24,8 +25,10 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,6 +193,11 @@ public class UsersManage extends PicsActionSupport {
 		if (user.isGroup()) {
 			if (groupManagementService.isGroupnameAvailable(user)) {
 				groupManagementService.setUsernameToGeneratedGroupname(user);
+
+				if (user.getAppUser().getId() == 0) {
+					saveNewAppUser(user);
+				}
+
 				groupManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
 				addActionMessage(getText("UsersManage.GroupSavedSuccessfully"));
 			} else {
@@ -257,8 +265,7 @@ public class UsersManage extends PicsActionSupport {
 
 		try {
 			if (user.getAppUser().getId() == 0) {
-				int appUserID = Integer.parseInt(appUserService.createNewAppUser(user.getAppUser().getUsername(), "").get("id").toString());
-				user.setAppUser(appUserDAO.find(appUserID));
+				saveNewAppUser(user);
 			}
 
 			user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
@@ -268,6 +275,14 @@ public class UsersManage extends PicsActionSupport {
 		} catch (DataIntegrityViolationException e) {
 			addActionError(getText("UsersManage.UsernameInUse"));
 		}
+	}
+
+	private void saveNewAppUser(User user) {
+		String username = user.getUsername();
+		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
+		int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
+		AppUser appUser = appUserDAO.findByAppUserID(appUserID);
+		user.setAppUser(appUser);
 	}
 
 	private void setUserAccountIfNeeded() {
