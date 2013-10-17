@@ -53,10 +53,6 @@ public class ContractorTagsModel extends AbstractModel {
 
         String where = permissionQueryBuilder.buildWhereClause();
 
-        if (permissions.isOperatorCorporate()) {
-            where += " AND (ContractorSingleTagOperatorTag.opID IN (" + permissionQueryBuilder.getOperatorIDs() + "))";
-        }
-
         return where;
 	}
 
