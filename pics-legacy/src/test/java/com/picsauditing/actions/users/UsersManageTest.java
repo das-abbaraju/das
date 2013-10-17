@@ -4,19 +4,22 @@ import com.opensymphony.xwork2.Action;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.group.GroupManagementService;
+import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.model.user.UserManagementService;
-import com.picsauditing.model.user.UserManager;
 import com.picsauditing.validator.InputValidator;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,9 +32,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.Matchers.any;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class UsersManageTest extends PicsActionTest {
@@ -44,6 +47,8 @@ public class UsersManageTest extends PicsActionTest {
 	@Mock
 	private User user;
 	@Mock
+	private AppUser appUser;
+	@Mock
 	private User group;
 	@Mock
 	private UserGroup userGroup;
@@ -55,12 +60,16 @@ public class UsersManageTest extends PicsActionTest {
 	private FeatureToggle featureToggle;
     @Mock
     private Account account;
+	@Mock
+	private AppUserService appUserService;
     @Mock
     private UserManagementService userManagementService;
     @Mock
     private GroupManagementService groupManagementService;
     @Mock
     private AccountDAO accountDAO;
+	@Mock
+	private AppUserDAO appUserDAO;
     @Mock
     private EmailQueueDAO emailQueueDAO;
 
@@ -73,6 +82,8 @@ public class UsersManageTest extends PicsActionTest {
         PicsTestUtil.autowireDAOsFromDeclaredMocks(usersManage, this);
 		Whitebox.setInternalState(usersManage, "inputValidator", inputValidator);
 		Whitebox.setInternalState(usersManage, "featureToggle", featureToggle);
+		Whitebox.setInternalState(usersManage, "appUserDAO", appUserDAO);
+		Whitebox.setInternalState(usersManage, "appUserService", appUserService);
         Whitebox.setInternalState(usersManage, "userManagementService", userManagementService);
         Whitebox.setInternalState(usersManage, "groupManagementService", groupManagementService);
 
@@ -106,10 +117,16 @@ public class UsersManageTest extends PicsActionTest {
     public void testSave_NewGroup_NameIsAvailable() throws Exception {
         saveGroupCommon();
 
+	    JSONObject jsonObject = mock(JSONObject.class);
+
         when(translationService.getText(eq("UsersManage.GroupSavedSuccessfully"), eq(Locale.ENGLISH), any())).thenReturn("GroupSavedSuccessfully");
         when(groupManagementService.isGroupnameAvailable(user)).thenReturn(true);
         // newUser (e.g. new group)
         when(user.getId()).thenReturn(0);
+	    when(appUser.getId()).thenReturn(0);
+	    when(appUserService.createNewAppUser(anyString(), anyString())).thenReturn(jsonObject);
+	    when(jsonObject.get(anyString())).thenReturn(1);
+	    when(appUserDAO.findByAppUserID(anyInt())).thenReturn(appUser);
 
         usersManage.save();
 
@@ -169,6 +186,7 @@ public class UsersManageTest extends PicsActionTest {
     private void saveGroupCommon() {
         when(user.isGroup()).thenReturn(true);
         when(user.getAccount()).thenReturn(account);
+	    when(user.getAppUser()).thenReturn(appUser);
         usersManage.setUser(user);
         usersManage.setAccount(account);
         usersManage.setUserIsGroup(YesNo.Yes);
