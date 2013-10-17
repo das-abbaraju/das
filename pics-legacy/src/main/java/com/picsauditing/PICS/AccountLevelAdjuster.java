@@ -29,7 +29,6 @@ public class AccountLevelAdjuster {
 		contractor.setRenew(true);
 		resetPqfToPending(contractor, permissions);
 		auditBuilder.buildAudits(contractor);
-		contractor.setLastUpgradeDate(new Date());
 	}
 
 	private void resetPqfToPending(ContractorAccount contractor, Permissions permissions) {

@@ -75,7 +75,6 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		LowMedHigh oldSafety = contractor.getSafetyRisk();
 		LowMedHigh oldProduct = contractor.getProductRisk();
 		LowMedHigh oldTransportation = contractor.getTransportationRisk();
-		boolean needsUpgrades = false;
 		boolean needsPqfReset = false;
 
 		if (contractor.getAccountLevel().isListOnly()) {
@@ -100,9 +99,6 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			contractor.setSafetyRiskVerified(new Date());
 			flagClearCache();
 
-			if (oldSafety.compareTo(safetyRisk) < 0)
-				needsUpgrades = true;
-
 			if (isRiskChanged(oldSafety, safetyRisk))
 				needsPqfReset = true;
 
@@ -115,9 +111,6 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			contractor.setProductRisk(productRisk);
 			contractor.setProductRiskVerified(new Date());
 			flagClearCache();
-
-			if (oldProduct.compareTo(productRisk) < 0)
-				needsUpgrades = true;
 
 			if (isRiskChanged(oldProduct, productRisk))
 				needsPqfReset = true;
@@ -134,9 +127,6 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			contractor.setTransportationRisk(transportationRisk);
 			contractor.setTransportationRiskVerified(new Date());
 			flagClearCache();
-
-			if (oldTransportation.compareTo(transportationRisk) < 0)
-				needsUpgrades = true;
 		} else if (contractor.getTransportationRisk() == null && transportationRisk != null) {
 			noteSummary.add("set transportation risk level to " + transportationRisk.toString());
 			contractor.setTransportationRisk(transportationRisk);
@@ -156,11 +146,6 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 		if (!safetyRisk.equals(oldSafety) || (productRisk != null && !productRisk.equals(oldProduct))
 				|| (transportationRisk != null && !transportationRisk.equals(oldTransportation))) {
-			// If contractor risk level being raised, stamp the last upgrade
-			// date
-			if (needsUpgrades)
-				contractor.setLastUpgradeDate(new Date());
-
 			if (needsPqfReset) {
 				resetPqf();
 			}

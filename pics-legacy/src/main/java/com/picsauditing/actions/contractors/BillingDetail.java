@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.BillingNoteModel;
 
@@ -21,18 +22,6 @@ import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.Transaction;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.YesNo;
 
 @SuppressWarnings("serial")
 public class BillingDetail extends ContractorActionSupport {
@@ -81,6 +70,11 @@ public class BillingDetail extends ContractorActionSupport {
 					new User(permissions.getUserId()), contractor.getBillingStatus());
 
 			invoice = billingService.saveInvoice(invoice);
+
+
+            if (invoice.getInvoiceType() == InvoiceType.Upgrade) {
+                contractor.setLastUpgradeDate(null);
+            }
 
 			contractor.getInvoices().add(invoice);
 			billingService.syncBalance(contractor);

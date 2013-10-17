@@ -122,7 +122,6 @@ public class FacilityChanger {
 			accountLevelAdjuster.upgradeToFullAccount(contractor, permissions);
 		}
 
-		contractor.setLastUpgradeDate(new Date());
 		accountLevelAdjuster.setListOnlyIfPossible(contractor);
 		contractorAccountDAO.save(contractor);
 

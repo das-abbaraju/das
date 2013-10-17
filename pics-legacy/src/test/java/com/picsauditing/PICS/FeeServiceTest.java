@@ -34,6 +34,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     private ContractorAccount contractor;
 
     @Mock
+    private ContractorAccount contractorAccount;
+    @Mock
 	private InvoiceFeeDAO feeDAO;
     @Mock
     private Invoice invoice;
@@ -279,14 +281,14 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
         contractor.setFees(contractorFees);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly,100)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 100)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
         feeService.syncMembershipFees(contractor);
 
-        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getCurrentAmount(),BigDecimal.ZERO);
-        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getNewAmount(),BigDecimal.ZERO);
+        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getCurrentAmount(), BigDecimal.ZERO);
+        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getNewAmount(), BigDecimal.ZERO);
         assertEquals(contractor.getFees().get(FeeClass.ListOnly).getCurrentAmount(),BigDecimal.TEN);
         assertEquals(contractor.getFees().get(FeeClass.ListOnly).getNewAmount(),BigDecimal.TEN);
     }
@@ -316,7 +318,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
 
         when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 100)).thenReturn(invoiceFee1);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD,100)).thenReturn(invoiceFee2);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 100)).thenReturn(invoiceFee2);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
         when(invoiceFee2.getAmount()).thenReturn(new BigDecimal(20));
@@ -325,7 +327,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         feeService.syncMembershipFees(contractor);
 
         assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(), BigDecimal.TEN);
-        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),BigDecimal.ZERO);
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(), BigDecimal.ZERO);
         assertEquals(contractor.getFees().get(FeeClass.InsureGUARD).getCurrentAmount(),new BigDecimal(20));
         assertEquals(contractor.getFees().get(FeeClass.InsureGUARD).getNewAmount(),BigDecimal.ZERO);
     }
@@ -356,7 +358,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,50)).thenReturn(invoiceFee3);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 50)).thenReturn(invoiceFee3);
         when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 50)).thenReturn(invoiceFee2);
         when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 50)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
@@ -545,7 +547,10 @@ public class FeeServiceTest extends PicsTranslationTest {
     @Test
     public void calcMembershipFees_contractorListOnly() {
         Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
-        contractorFees.put(FeeClass.ListOnly, new ContractorFee());
+        ContractorFee listOnlyContractorFee = new ContractorFee();
+        listOnlyContractorFee.setCurrentLevel(invoiceFee1);
+        when(invoiceFee1.isListonly()).thenReturn(true);
+        contractorFees.put(FeeClass.ListOnly, listOnlyContractorFee);
 
         List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
         contractorOperators.add(contractorOperator1);
@@ -579,14 +584,17 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         feeService.calculateContractorInvoiceFees(contractor, true);
 
-        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getCurrentAmount(),BigDecimal.ZERO);
-        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getNewAmount(),BigDecimal.TEN);
+        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getCurrentAmount(), BigDecimal.ZERO);
+        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getNewAmount(), BigDecimal.TEN);
     }
 
     @Test
     public void calcMembershipFees_contractorBidOnly() {
         Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
-        contractorFees.put(FeeClass.BidOnly, new ContractorFee());
+        ContractorFee bidOnlyContractorFee = new ContractorFee();
+        bidOnlyContractorFee.setCurrentLevel(invoiceFee1);
+        when(invoiceFee1.isListonly()).thenReturn(true);
+        contractorFees.put(FeeClass.BidOnly, bidOnlyContractorFee);
 
         List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
         contractorOperators.add(contractorOperator1);
@@ -619,8 +627,8 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         feeService.calculateContractorInvoiceFees(contractor, true);
 
-        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getCurrentAmount(),BigDecimal.ZERO);
-        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getNewAmount(),BigDecimal.TEN);
+        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getCurrentAmount(), BigDecimal.ZERO);
+        assertEquals(contractor.getFees().get(FeeClass.BidOnly).getNewAmount(), BigDecimal.TEN);
     }
 
     @Test
@@ -1067,8 +1075,8 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         feeService.calculateContractorInvoiceFees(contractor, true);
 
-        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(),new BigDecimal(20));
-        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(), new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(), new BigDecimal(20));
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getCurrentAmount(),BigDecimal.ZERO);
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getNewAmount(),BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP));
     }
@@ -1124,8 +1132,8 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         feeService.calculateContractorInvoiceFees(contractor, true);
 
-        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(),new BigDecimal(20));
-        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(), new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(), new BigDecimal(20));
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getCurrentAmount(),BigDecimal.ZERO);
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getNewAmount(),BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP));
     }
@@ -1292,5 +1300,26 @@ public class FeeServiceTest extends PicsTranslationTest {
         assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),BigDecimal.TEN);
         assertEquals(contractor.getFees().get(FeeClass.ImportFee).getCurrentAmount(),BigDecimal.TEN);
         assertEquals(contractor.getFees().get(FeeClass.ImportFee).getNewAmount(),BigDecimal.TEN);
+    }
+
+    @Test
+    public void calculateUpgradeDate_setUpgradeDate() {
+        when(contractorAccount.getBillingStatus()).thenReturn(BillingStatus.Current);
+        feeService.calculateUpgradeDate(contractorAccount, BillingStatus.Upgrade);
+        verify(contractorAccount, times(1)).setLastUpgradeDate(null);
+    }
+
+    @Test
+    public void calculateUpgradeDate_saveUpgradeDate() {
+        when(contractorAccount.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
+        feeService.calculateUpgradeDate(contractorAccount, BillingStatus.Upgrade);
+        verify(contractorAccount, never()).setLastUpgradeDate(any(Date.class));
+    }
+
+    @Test
+    public void calculateUpgradeDate_clearUpgradeDate() {
+        when(contractorAccount.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
+        feeService.calculateUpgradeDate(contractorAccount, BillingStatus.Current);
+        verify(contractorAccount, times(1)).setLastUpgradeDate(any(Date.class));
     }
 }

@@ -40,6 +40,7 @@ public class FeeService {
 
         int payingFacilities = contractor.getPayingFacilities();
 
+        BillingStatus currentBillingStatus = contractor.getBillingStatus();
         boolean foundMembership = false;
         boolean foundMembershipDate = false;
         boolean foundPaymentExpires = false;
@@ -82,6 +83,20 @@ public class FeeService {
 
         if (!foundMembershipDate)
             contractor.setMembershipDate(null);
+
+        calculateUpgradeDate(contractor, currentBillingStatus);
+    }
+
+    public void calculateUpgradeDate(ContractorAccount contractor, BillingStatus currentBillingStatus) {
+        BillingStatus newBillingStatus = contractor.getBillingStatus();
+        if (currentBillingStatus != newBillingStatus) {
+            if (currentBillingStatus != BillingStatus.Upgrade && newBillingStatus == BillingStatus.Upgrade) {
+                contractor.setLastUpgradeDate(new Date());
+            }
+            else if (currentBillingStatus == BillingStatus.Upgrade && newBillingStatus != BillingStatus.Upgrade) {
+                contractor.setLastUpgradeDate(null);
+            }
+        }
     }
 
     private int identifyMembership(Map<FeeClass, InvoiceFee> foundFeeClasses, int payingFacilities, InvoiceFee invoiceFee, FeeClass feeClass) {
@@ -185,6 +200,7 @@ public class FeeService {
             return;
         }
 
+        BillingStatus currentBillingStatus = contractor.getBillingStatus();
         boolean hasEmployeeAudits = false;
         boolean hasHseCompetency = false;
         boolean requiresOQ = false;
@@ -248,6 +264,8 @@ public class FeeService {
         }
 
         buildFeeNewLevels(contractor, payingFacilities, hasEmployeeAudits, hasHseCompetency, requiresOQ, feeClasses, operatorsRequiringInsureGUARD);
+
+        calculateUpgradeDate(contractor, currentBillingStatus);
     }
 
     private void buildFeeNewLevels(ContractorAccount contractor, int payingFacilities, boolean hasEmployeeAudits, boolean hasHseCompetency, boolean requiresOQ, Set<FeeClass> feeClasses, Set<OperatorAccount> operatorsRequiringInsureGUARD) {

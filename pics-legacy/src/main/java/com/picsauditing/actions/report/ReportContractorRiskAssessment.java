@@ -222,10 +222,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 		noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
 
-		// How can this happen?
-		if (newSafetyRisk.ordinal() > currentSafetyRisk.ordinal()) {
-			con.setLastUpgradeDate(new Date());
-		} else if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
+		if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
 			buildAndSendBillingRiskDowngradeEmail(currentSafetyRisk, newSafetyRisk);
 		}
 

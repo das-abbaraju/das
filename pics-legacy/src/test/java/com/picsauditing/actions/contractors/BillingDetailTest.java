@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,19 +45,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.PermissionToViewContractor;
@@ -342,6 +330,17 @@ public class BillingDetailTest extends PicsActionTest {
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 		verify(contractor, times(1)).setStatus(AccountStatus.Active);
 		verify(noteDao, times(1)).save(any(Note.class));
+	}
+
+    @Test
+    public void testExecute_clearUpgradeDate() throws Exception {
+        setupForCreate();
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Upgrade);
+
+        String actionResult = billingDetail.execute();
+
+        assertEquals(PicsActionSupport.BLANK, actionResult);
+        verify(contractor,times(1)).setLastUpgradeDate(null);
 	}
 
 }
