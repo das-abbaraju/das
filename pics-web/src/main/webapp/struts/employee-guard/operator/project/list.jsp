@@ -14,45 +14,82 @@
 	</s:param>
 </s:include>
 
-<tw:form formName="operator_project_search" action="${operator_project_list_url}">
+<tw:form formName="operator_project_search" action="${operator_project_list_url}" class="search-query" role="form">
     <fieldset>
-        <tw:input inputName="search" type="text" class="search-query col-md-4" placeholder="Search by name" />
+    	<div class="search-wrapper col-md-4">
+	        <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search by name" value="${searchForm.searchTerm}" />
+	        <i class="icon-search"></i>
+	        <ul id="operator_project_search" class="search-results"></ul>
     </fieldset>
 </tw:form>
 
-<table class="table table-striped table-bordered table-condensed">
-	<tr>
-		<th>#</th>
-		<th>Name</th>
-		<th>Location</th>
-		<th>Start Date</th>
-		<th>End Date</th>
-		<th>Actions</th>
-	</tr>
+<div class="table-responsive">
+	<table class="table table-striped table-condensed table-hover">
+		<thead>
+            <tr>
+				<th>Site</th>
+				<th>Project</th>
+				<th>Location</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+			</tr>
+		</thead>
 
-	<s:iterator value="projects" var="project">
-		<s:url action="project" method="delete" var="operator_project_delete_url">
-			<s:param name="id">${project.id}</s:param>
-		</s:url>
-		<s:url action="project" method="edit" var="operator_project_edit_url">
-			<s:param name="id">${project.id}</s:param>
-		</s:url>
-        <s:url action="project" var="operator_project_show_url">
-            <s:param name="id">${project.id}</s:param>
-        </s:url>
+		<tbody>
 
+			<s:iterator value="projects" var="project">
+		        <s:url action="project" var="operator_project_show_url">
+		            <s:param name="id">${project.id}</s:param>
+		        </s:url>
+
+				<tr>
+					<td>${project.site}</td>
+					<td>
+		                <a href="${operator_project_show_url}">${project.name}</a>
+		            </td>
+					<td>${project.location}</td>
+					<td>${project.start_date}</td>
+		            <td>${project.end_date}</td>
+				</tr>
+			</s:iterator>
+		</tbody>
+	</table>
+
+<%--
+	<table class="table table-striped table-bordered table-condensed">
 		<tr>
-			<td>${project.id}</td>
-			<td>
-                <a href="${operator_project_show_url}">${project.name}</a>
-            </td>
-			<td>${project.location}</td>
-			<td>${project.start_date}</td>
-            <td>${project.end_date}</td>
-			<td>
-				<a href="${operator_project_edit_url}">Edit</a>
-				<a href="${operator_project_delete_url}">Delete</a>
-			</td>
+			<th>#</th>
+			<th>Name</th>
+			<th>Location</th>
+			<th>Start Date</th>
+			<th>End Date</th>
+			<th>Actions</th>
 		</tr>
-	</s:iterator>
-</table>
+
+		<s:iterator value="projects" var="project">
+			<s:url action="project" method="delete" var="operator_project_delete_url">
+				<s:param name="id">${project.id}</s:param>
+			</s:url>
+			<s:url action="project" method="edit" var="operator_project_edit_url">
+				<s:param name="id">${project.id}</s:param>
+			</s:url>
+	        <s:url action="project" var="operator_project_show_url">
+	            <s:param name="id">${project.id}</s:param>
+	        </s:url>
+
+			<tr>
+				<td>${project.id}</td>
+				<td>
+	                <a href="${operator_project_show_url}">${project.name}</a>
+	            </td>
+				<td>${project.location}</td>
+				<td>${project.start_date}</td>
+	            <td>${project.end_date}</td>
+				<td>
+					<a href="${operator_project_edit_url}">Edit</a>
+					<a href="${operator_project_delete_url}">Delete</a>
+				</td>
+			</tr>
+		</s:iterator>
+	</table> --%>
+</div>

@@ -9,8 +9,6 @@
 </s:url>
 <s:url action="skills" var="employee_skills_list_url" />
 
-
-asdfas
 <tw:form formName="employee_skill_certification" action="${employee_skill_url}" method="post" enctype="multipart/form-data" class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group">

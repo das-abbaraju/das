@@ -5,6 +5,12 @@
 <s:url action="skill" var="operator_skill_url" />
 <s:url action="role" var="operator_role_url" />
 <s:url action="project" var="operator_project_url" />
+<s:url action="employee" method="editCorporateSection" var="corporate_skill_edit_url">
+    <s:param name="id">${id}</s:param>
+</s:url>
+<s:url action="employee" method="editSiteSection" var="site_skill_edit_url">
+    <s:param name="id">${id}</s:param>
+</s:url>
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
@@ -28,27 +34,53 @@
         </li> --%>
 
     </ul>
- <%--    <div class="col-md-9">
-        <section class="employee-guard-section">
+   <div class="col-md-9">
+<%--         <section class="employee-guard-section">
             <h1>Updates</h1>
 
             <div class="content"></div>
+        </section> --%>
+
+        <section class="employee-guard-section edit-container" data-url="${corporate_skill_edit_url}">
+            <h1>
+                <div class="row">
+                    <div class="col-md-9 col-xs-9">Corporate Skills</div>
+                    <div class="col-md-3 col-xs-3 edit">
+                        <i class="icon-edit icon-large edit-toggle"></i>
+                    </div>
+                </div>
+            </h1>
+
+            <div class="content">
+                <dl class="employee-guard-information edit-display-values">
+                    <dt class="col-md-3">Required Skills</dt>
+                    <dd class="col-md-9">
+                        <s:set var="contractor_skills" value="group.skills"/>
+                        <s:include value="/struts/employee-guard/contractor/skill/_list.jsp"/>
+                    </dd>
+                </dl>
+            </div>
         </section>
 
-        <section class="employee-guard-section">
-            <h1>Site Skills</h1>
+        <section class="employee-guard-section edit-container" data-url="${site_skill_edit_url}">
+            <h1>
+                <div class="row">
+                    <div class="col-md-9 col-xs-9">Site Skills</div>
+                    <div class="col-md-3 col-xs-3 edit">
+                        <i class="icon-edit icon-large edit-toggle"></i>
+                    </div>
+                </div>
+            </h1>
 
-            <div class="content"></div>
-        </section>
-
-        <section class="employee-guard-section">
-            <h1>Current Projects</h1>
-
-            <div class="content"></div>
-        </section>
-
-        <section class="employee-guard-section">
-            <h1>Status Changes</h1>
+            <div class="content">
+                <dl class="employee-guard-information edit-display-values">
+                    <dt class="col-md-3">BASF Houston Texas</dt>
+                    <dd class="col-md-9">
+                        <s:set var="contractor_skills" value="group.skills"/>
+                        <s:include value="/struts/employee-guard/contractor/skill/_list.jsp"/>
+                    </dd>
+                </dl>
+            </div>
         </section>
     </div>
- --%></div>
+</div>
