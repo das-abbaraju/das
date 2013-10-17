@@ -62,9 +62,6 @@ public class ContractorAuditDatasModel extends AbstractModel {
             questionName.setUrl("ManageQuestion.action?id={QuestionID}");
         }
 
-        Field auditDataAnswer = fields.get("AuditDataAnswer".toUpperCase());
-        auditDataAnswer.setType(FieldType.Float);
-
         return fields;
     }
 }
