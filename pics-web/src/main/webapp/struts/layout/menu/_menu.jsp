@@ -19,7 +19,13 @@
                 </button>
             </s:if>
 
-            <a class="brand" href="/"></a>
+            <%-- FIXME clean up menu links --%>
+            <s:if test="permissions.userId > 0">
+                <a class="brand" href="/"></a>
+            </s:if>
+            <s:else>
+                <a class="brand" href="/employee-guard/employee/dashboard"></a>
+            </s:else>
 
             <div class="nav-collapse collapse primary-navigation-items">
                 <ul class="nav pull-left">

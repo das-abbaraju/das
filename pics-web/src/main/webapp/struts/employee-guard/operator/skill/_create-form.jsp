@@ -10,7 +10,7 @@
 <s:url action="skill" var="operator_skill_list_url" />
 <s:url action="skill" method="create" var="operator_skill_create_url" />
 
-<tw:form formName="operator_skill_create" action="${operator_skill_create_url}" method="post" class="form-horizontal">
+<tw:form formName="operator_skill_create" action="${operator_skill_create_url}" method="post" class="form-horizontal js-validation">
     <fieldset>
         <div class="control-group ${name_error_class}">
             <tw:label labelName="name"><strong>Name</strong></tw:label>
@@ -19,14 +19,14 @@
                 <tw:error errorName="name" />
             </div>
         </div>
-        
+
         <div class="control-group">
             <tw:label labelName="description">Description</tw:label>
             <div class="controls">
                 <tw:textarea textareaName="description" class="form-control" tabindex="2">${skillForm.description}</tw:textarea>
             </div>
         </div>
-        
+
         <div class="control-group ${type_error_class}">
             <tw:label labelName="type"><strong>Type</strong></tw:label>
             <div class="controls">
@@ -37,11 +37,11 @@
                 <tw:error errorName="skillType" />
             </div>
         </div>
-        
+
         <s:if test="#is_skill_of_training_type">
             <s:include value="/struts/employee-guard/operator/skill/_training-form.jsp" />
         </s:if>
-        
+
         <div class="control-group">
             <div class="controls">
                 <tw:label labelName="company_required" class="checkbox">
@@ -49,13 +49,13 @@
                 </tw:label>
             </div>
         </div>
-        
+
         <div class="control-group">
             <div class="controls">
                 <tw:label labelName="add_another" class="checkbox">
                     <tw:input inputName="add_another" type="checkbox" value="true" /> Add Another
                 </tw:label>
-                
+
                 <tw:button buttonName="save" type="submit" class="btn btn-success">Save</tw:button>
                 <a href="${operator_skill_list_url}" class="btn btn-default">Cancel</a>
             </div>

@@ -16,7 +16,7 @@
 </s:include>
 
 <tw:form formName="contractor_employee_create" action="${contractor_employee_create_url}" method="post"
-         class="form-horizontal" enctype="multipart/form-data" autocomplete="off" role="form">
+         class="form-horizontal js-validation" enctype="multipart/form-data" autocomplete="off" role="form">
     <fieldset>
         <div class="row">
             <div class="col-md-3">

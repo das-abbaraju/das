@@ -115,7 +115,6 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		int appUserID = appUserDAO.findListByUserName(username).get(0).getId();
 		int picsUserID = userDAO.findUserIDByAppUserID(appUserID);
 
-
 		SessionCookie sessionCookie = new SessionCookie();
 		Date now = new Date();
 		sessionCookie.setUserID(picsUserID);

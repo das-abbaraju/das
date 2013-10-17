@@ -441,6 +441,8 @@ public class Cron extends PicsActionSupport {
 			throws EmailException, IOException, ParseException {
 		Map<OperatorAccount, List<ContractorAccount>> operatorContractors = new HashMap<OperatorAccount, List<ContractorAccount>>();
 
+        removeContractorsWithRecentlySentEmail(list, templateID);
+
 		for (ContractorAccount contractor : list) {
 			if (contractor.getPrimaryContact() != null
 					&& !emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
@@ -517,7 +519,25 @@ public class Cron extends PicsActionSupport {
 		}
 	}
 
-	private void sendEmailContractorRegistrationRequest() throws Exception {
+    private void removeContractorsWithRecentlySentEmail(List<ContractorAccount> list, int templateID) {
+        if (list.size() == 0)
+            return;
+
+        List<Integer> ids = emailQueueDAO.findContractorsWithRecentEmails("20 HOUR", templateID);
+        if (ids.size() == 0)
+            return;
+
+        Iterator<ContractorAccount> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            ContractorAccount contractor = iterator.next();
+            if (ids.contains(contractor.getId())) {
+                list.remove(contractor);
+//                iterator.remove();
+            }
+        }
+    }
+
+    private void sendEmailContractorRegistrationRequest() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 
 		int[] pendingEmailTemplates = { EmailTemplate.pendingFinalEmailTemplate, EmailTemplate.pendingLastChanceEmailTemplate,
@@ -818,11 +838,15 @@ public class Cron extends PicsActionSupport {
 	private Map<ContractorAccount, Integer> splitPendingAndDeliquentInvoices(List<Invoice> invoices) {
 		Map<ContractorAccount, Integer> contractors = new TreeMap<ContractorAccount, Integer>();
 
+        List<Integer> recentlyDeactivatedIds = emailQueueDAO.findContractorsWithRecentEmails("20 HOUR", 48);
+        List<Integer> recentlyOpenInvoicesIds = emailQueueDAO.findContractorsWithRecentEmails("20 HOUR", 50);
+
 		for (Invoice invoice : invoices) {
 			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
 			if (invoice.getDueDate().before(new Date())) {
-				contractors.put(cAccount, 48); // deactivation
-			} else {
+                if (!recentlyDeactivatedIds.contains(cAccount.getId()))
+				    contractors.put(cAccount, 48); // deactivation
+			} else if (!recentlyOpenInvoicesIds.contains(cAccount.getId())) {
 				contractors.put(cAccount, 50); // open
 			}
 		}

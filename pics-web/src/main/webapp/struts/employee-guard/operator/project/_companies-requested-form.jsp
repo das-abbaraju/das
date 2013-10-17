@@ -8,24 +8,10 @@
 </s:url>
 
 <tw:form formName="contractor_employee_edit_employment" action="${contractor_employee_edit_url}" method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
-    <div class="form-group">
-        <tw:label labelName="employeeId" class="col-md-3 control-label">Employee ID</tw:label>
-        <div class="col-md-4">
-            <tw:input inputName="employeeId" class="form-control" type="text" autofocus="true" tabindex="1" value="${employee.slug}"/>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <tw:label labelName="title" class="col-md-3 control-label">Title</tw:label>
-        <div class="col-md-4">
-            <tw:input inputName="title" class="form-control" type="text" tabindex="2" value="${employee.positionName}"/>
-        </div>
-    </div>
-
     <s:set var="selected_groups" value="employee.groups"/>
 
     <div class="form-group">
-        <tw:label labelName="groups" class="col-md-3 control-label">Employee Groups</tw:label>
+        <tw:label labelName="groups" class="col-md-3 control-label">Companies</tw:label>
         <div class="col-md-4">
             <tw:select selectName="groups" multiple="true" class="form-control" tabindex="3">
                 <s:iterator value="employeeGroups" var="contractor_group">

@@ -2,7 +2,6 @@ PICS.define('employee-guard.AjaxFormEditing', {
     methods: (function () {
         function init() {
             $('.edit-toggle').on('click', requestEditForm);
-            $('.edit-container').on('click', '[type="submit"]', submitFormForValidation);
             $('.edit-container').on('click', '.cancel', cancelEdit);
         }
 
@@ -50,54 +49,6 @@ PICS.define('employee-guard.AjaxFormEditing', {
             $form.remove();
 
             enableAllEditToggles();
-        }
-
-        function submitFormForValidation(event) {
-            var $element = $(event.target),
-                $container = $element.closest('.edit-container'),
-                $form = $container.find('form'),
-                url = $container.attr('data-url'),
-                data = $form.serializeArray();
-
-            //halt form submission
-            event.preventDefault();
-
-            // serialized form including json validator interceptors
-            data.push({
-                name: 'struts.enableJSONValidation',
-                value: true
-            }, {
-                name: 'struts.validateOnly',
-                value: true
-            });
-
-            PICS.ajax({
-                url: url,
-                context: $form,
-                dataType: 'json',
-                data: data,
-                success: displayValidationErrors
-            });
-        }
-
-        function displayValidationErrors(data) {
-            var $form = this,
-                field_with_error;
-
-            clearFieldErrors($form);
-
-            if (data.fieldErrors) {
-                for (var id in data.fieldErrors) {
-                    field_with_error = $('[name="' + id + '"]');
-                    field_with_error.closest('.form-group ').addClass("has-error");
-                }
-            } else {
-                $form.submit();
-            }
-        }
-
-        function clearFieldErrors($form) {
-            $form.find('.has-error').removeClass('has-error')
         }
 
         function hideDisplayValues($element) {

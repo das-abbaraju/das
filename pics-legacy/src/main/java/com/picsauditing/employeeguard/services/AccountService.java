@@ -27,6 +27,11 @@ public class AccountService {
         return  mapAccountsToAccountModels(accounts);
     }
 
+	public static boolean isEmployeeGUARDEnabled(int accountId) {
+		// FIXME lookup actual values
+		return accountId == 1100 || accountId == 54578;
+	}
+
     private List<AccountModel> mapAccountsToAccountModels(List<Account> accounts) {
         if (CollectionUtils.isEmpty(accounts)) {
             return Collections.emptyList();

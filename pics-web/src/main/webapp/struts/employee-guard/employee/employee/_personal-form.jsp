@@ -2,17 +2,13 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-<s:set var="first_name_error_class" value="%{hasFieldError('personalInfo.first_name') ? 'error' : ''}" />
-<s:set var="last_name_error_class" value="%{hasFieldError('personalInfo.last_name') ? 'error' : ''}" />
-<s:set var="email_error_class" value="%{hasFieldError('personalInfo.email') ? 'error' : ''}" />
-
 <%-- Url --%>
 <s:url action="profile" method="edit" var="employee_profile_edit_url">
     <s:param name="id">${id}</s:param>
 </s:url>
 
 <tw:form formName="employee_profile_edit" action="${employee_profile_edit_url}"
-         method="post" class="form-horizontal" autocomplete="off" role="form">
+         method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
     <div class="form-group">
         <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First Name</strong></tw:label>
         <div class="col-md-4">

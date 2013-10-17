@@ -195,7 +195,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @ReportField(type = FieldType.Currency, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
+    @ReportField(requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
     public Currency getCurrency() {
         return currency;
     }

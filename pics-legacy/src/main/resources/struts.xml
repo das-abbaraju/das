@@ -38,7 +38,7 @@
     <constant name="struts.mapper.deleteMethodName" value="delete"/>
     <constant name="struts.mapper.putMethodName" value="update"/>
 
-	<package name="com.picsauditing" extends="struts-default">
+    <package name="com.picsauditing" extends="struts-default" namespace="/">
 		<result-types>
 			<result-type name="plain-text"
 			             class="com.picsauditing.strutsutil.PlainTextResult"/>

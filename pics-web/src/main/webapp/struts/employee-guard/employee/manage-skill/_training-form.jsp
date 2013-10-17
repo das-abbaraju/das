@@ -8,7 +8,7 @@
 </s:url>
 <s:url action="skills" var="employee_skills_list_url" />
 
-<tw:form formName="employee_manage_skill_training" action="${employee_skill_url}" method="post" class="form-horizontal" role="form">
+<tw:form formName="employee_manage_skill_training" action="${employee_skill_url}" method="post" class="form-horizontal js-validation" role="form">
 
     <fieldset>
         <div class="form-group">

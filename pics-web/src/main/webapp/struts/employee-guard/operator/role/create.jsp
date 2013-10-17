@@ -13,7 +13,7 @@
     <s:param name="title">Add Role</s:param>
 </s:include>
 1
-<tw:form formName="operator_role_create" action="${operator_role_create_url}" method="post" class="form-horizontal" role="form">
+<tw:form formName="operator_role_create" action="${operator_role_create_url}" method="post" class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group ${name_error_class}">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
