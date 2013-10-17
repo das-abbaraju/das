@@ -23,14 +23,14 @@ public class ChartFlagCount extends ChartSSAction {
 		chart.setShowValues(true);
 
 		SelectSQL sql = new SelectSQL("accounts a");
-		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
+		sql.addJoin("JOIN contractor_operator co ON a.id = co.conID");
 		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
-		sql.addWhere("gc.flag != 'Clear'");
+		sql.addWhere("co.flag != 'Clear'");
 
 		if (permissions.isOperatorCorporate()) {
-			sql.addWhere("gc.genID = " + permissions.getAccountId());
+			sql.addWhere("co.opID = " + permissions.getAccountId());
 			if (permissions.isGeneralContractor() || !permissions.hasPermission(OpPerms.ViewUnApproved)) {
-				sql.addWhere("gc.workStatus = 'Y'");
+				sql.addWhere("co.workStatus = 'Y'");
 			}
 
 			sql.addField("flag as label");
@@ -39,13 +39,13 @@ public class ChartFlagCount extends ChartSSAction {
 			sql.addOrderBy("label");
 		} else if (permissions.hasGroup(User.GROUP_CSR)) {
 			sql.addJoin("JOIN contractor_info c ON a.id = c.id");
-			sql.addJoin("JOIN accounts oper ON oper.id = gc.genID");
+			sql.addJoin("JOIN accounts oper ON oper.id = co.opID");
             sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
 			sql.addWhere("au.userID = " + permissions.getShadowedUserID());
 			sql.addWhere("oper.type = 'Operator'");
 
-			sql.addField("gc.flag");
-			sql.addGroupBy("gc.flag, a.name");
+			sql.addField("co.flag");
+			sql.addGroupBy("co.flag, a.name");
 
 			String derived = sql.toString();
 			sql = new SelectSQL("(" + derived + ") t");

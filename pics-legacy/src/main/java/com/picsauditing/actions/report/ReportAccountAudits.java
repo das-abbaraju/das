@@ -82,7 +82,7 @@ public class ReportAccountAudits extends ReportAccount {
 			sql.addGroupBy("a.name");
 		}
 		if (permissions.isOperatorCorporate()) {
-			sql.addField("gc.waitingOn");
+			sql.addField("co.waitingOn");
 
             List<Integer> accountIds = new ArrayList<Integer>(permissions.getCorporateParent());
             accountIds.add(permissions.getAccountId());

@@ -51,20 +51,20 @@ public class FlagColorSubscription extends SqlSubscriptionBuilder {
 			sql.setFromTable("accounts a");
 			// Only send out results on the contractors in the general
 			// contractor table that have approved work status
-			sql.addJoin("JOIN generalcontractors gc ON gc.flag = '" + flagColor.toString()
-					+ "' AND a.id = gc.subID AND gc.genID IN (" + Strings.implode(operators, ",") + ")");
-			sql.addJoin("JOIN operators o ON gc.genID = o.id");
+			sql.addJoin("JOIN contractor_operator co ON co.flag = '" + flagColor.toString()
+					+ "' AND a.id = co.conID AND co.opID IN (" + Strings.implode(operators, ",") + ")");
+			sql.addJoin("JOIN operators o ON co.opID = o.id");
 			sql.addJoin("JOIN accounts oa ON o.id = oa.id");
 			if (flagColor != FlagColor.Green || o.isOperator())
-				sql.addWhere("(gc.workStatus = 'Y' OR o.approvesRelationships = 'No')");
+				sql.addWhere("(co.workStatus = 'Y' OR o.approvesRelationships = 'No')");
 			sql.addWhere("a.status = 'Active'");
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");
-			sql.addField("gc.flag AS flag");
+			sql.addField("co.flag AS flag");
 			sql.addField("oa.name AS opName");
 			sql.addField("o.id AS opID");
-			sql.addField("gc.waitingOn AS waitingOn");
-			sql.addField("gc.flagLastUpdated AS changedOn");
+			sql.addField("co.waitingOn AS waitingOn");
+			sql.addField("co.flagLastUpdated AS changedOn");
 
 			sql.addOrderBy("oa.name, a.name");
 

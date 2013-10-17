@@ -32,7 +32,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 
 		if (permissions.hasPermission(OpPerms.ManageOperators)) {
 			types.add(Account.OPERATOR_ACCOUNT_TYPE);
-			sql.addJoin("LEFT JOIN (SELECT genID, count(*) as opCount FROM generalContractors GROUP BY genID) op ON op.genID = a.id");
+			sql.addJoin("LEFT JOIN (SELECT opID, count(*) as opCount FROM contractor_operator GROUP BY opID) op ON op.opID = a.id");
 			sql.addField("opCount");
 			// check to see for any requested contractors
 			sql.addJoin("LEFT JOIN (SELECT requestedByID, count(*) as conCount FROM contractor_info GROUP BY requestedByID) requested ON requested.requestedByID = a.id");

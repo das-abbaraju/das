@@ -1007,8 +1007,8 @@ public class Cron extends PicsActionSupport {
 
 	public void expireFlagChanges() throws Exception {
 
-		String query = "UPDATE generalcontractors gc ";
-		query += "JOIN accounts a ON gc.subID = a.id ";
+		String query = "UPDATE contractor_operator co ";
+		query += "JOIN accounts a ON co.conID = a.id ";
 		query += "JOIN contractor_info c ON a.id = c.id ";
 		query += "SET baselineFlag = flag, ";
 		query += "baselineFlagDetail = flagDetail, ";
@@ -1019,11 +1019,11 @@ public class Cron extends PicsActionSupport {
 		query += "AND (flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY) ";
 		// Automatically approve a. Audited - Unspecified Facility
 		// and a. PQF Only - Unspecified Facility
-		query += "OR genID IN (10403,2723) ";
+		query += "OR opID IN (10403,2723) ";
 		// Ignore Flag Changes for newly created contractors
 		query += "OR a.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
 		// Ignore Flag Changes for recently added contractors
-		query += "OR gc.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
+		query += "OR co.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
 		// Ignore Clear Flag Changes
 		query += "OR flag = 'Clear' OR baselineFlag = 'Clear'";
 		// Removed Forced Overall Flags
@@ -1112,10 +1112,10 @@ public class Cron extends PicsActionSupport {
 		StringBuilder query = new StringBuilder();
 		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
-		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
-		query.append("from generalcontractors gc ");
-		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in ("
+		query.append("count(*) total, sum(case when co.flag = co.baselineFlag THEN 0 ELSE 1 END) changes ");
+		query.append("from contractor_operator co ");
+		query.append("join accounts c on co.conID = c.id and c.status = 'Active' ");
+		query.append("join accounts o on co.opID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in ("
 				+ Strings.implode(OperatorUtil.operatorsIdsUsedForInternalPurposes()) + ") ");
 		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");

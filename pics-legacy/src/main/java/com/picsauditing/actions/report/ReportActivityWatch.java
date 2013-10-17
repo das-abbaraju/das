@@ -118,13 +118,13 @@ public class ReportActivityWatch extends ReportAccount {
 		}
 
 		if (flagColorChange) {
-			joins.add("JOIN accounts oper ON oper.id = gc.genID AND oper.type = 'Operator'");
-			SelectSQL sql2 = buildWatch("FlagColorChange", "generalcontractors gc", "gc.subID", "gc.flagLastUpdated",
-					"gc.flag", "oper.name", "''", "''",
-					"CONCAT('ContractorFlag.action?id=', gc.subID,'&opID=',gc.genID)", joins);
+			joins.add("JOIN accounts oper ON oper.id = co.opID AND oper.type = 'Operator'");
+			SelectSQL sql2 = buildWatch("FlagColorChange", "contractor_operator co", "co.conID", "co.flagLastUpdated",
+					"co.flag", "oper.name", "''", "''",
+					"CONCAT('ContractorFlag.action?id=', co.conID,'&opID=',co.opID)", joins);
 
 			if (permissions.isOperatorCorporate())
-				sql2.addWhere("gc.genID IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")");
+				sql2.addWhere("co.opID IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")");
 
 			watchOptions.add("(" + sql2.toString() + ")");
 			joins.clear();

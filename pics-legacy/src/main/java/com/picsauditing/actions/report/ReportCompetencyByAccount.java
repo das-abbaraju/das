@@ -128,12 +128,12 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				}
 			}
 
-			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (%s)", Strings
+			sql.addJoin(String.format("JOIN contractor_operator co ON co.conID = a.id AND co.opID IN (%s)", Strings
 					.implode(opIDs)));
 			sql.addJoin(String.format(
-					"LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = a.id",
+					"LEFT JOIN (SELECT conID FROM contractor_operator WHERE opID = %d) cow ON cow.conID = a.id",
 					permissions.getAccountId()));
-			sql.addField("CASE ISNULL(gcw.subID) WHEN 0 THEN 1 ELSE 0 END worksFor");
+			sql.addField("CASE ISNULL(cow.conID) WHEN 0 THEN 1 ELSE 0 END worksFor");
 		}
 
 		sql.addField("COUNT(distinct e.id) eCount");

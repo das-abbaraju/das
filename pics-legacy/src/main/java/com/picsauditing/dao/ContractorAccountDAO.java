@@ -308,9 +308,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	public void updateContractorByOperator(OperatorAccount operator) {
 		String subSelect = "";
 		if (operator.isOperator()) {
-			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
+			subSelect += "SELECT co.conID FROM contractor_operator co WHERE co.opID = " + operator.getId();
 		} else if (operator.isCorporate()) {
-			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = "
+			subSelect += "SELECT co.conID FROM contractor_operator co JOIN facilities f on co.opID = f.opID WHERE f.corporateID = "
 					+ operator.getId();
 		} else {
 			return;
@@ -325,9 +325,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	public int findContractorsNeedingRecalculation(OperatorAccount operator) {
 		String subSelect = "";
 		if (operator.isOperator()) {
-			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
+			subSelect += "SELECT co.conID FROM contractor_operator co WHERE co.opID = " + operator.getId();
 		} else if (operator.isCorporate()) {
-			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = "
+			subSelect += "SELECT co.conID FROM contractor_operator co JOIN facilities f on co.opID = f.opID WHERE f.corporateID = "
 					+ operator.getId();
 		} else {
 			return 0;
@@ -439,8 +439,8 @@ public class ContractorAccountDAO extends PicsDAO {
 	public List<OperatorAccount> findPicsCountryCorporates(int conID) {
 		// finds all PICS country based corporates (excludes PICS Global and
 		// PICS PSM)
-		String sql = "select a.*, o.* from generalcontractors gc join accounts a on a.id = gc.genID join operators o ON o.id = a.id "
-				+ "where gc.subID = "
+		String sql = "select a.*, o.* from contractor_operator co join accounts a on a.id = co.opID join operators o ON o.id = a.id "
+				+ "where co.conID = "
 				+ conID
 				+ " and a.name like 'PICS%' and a.type = 'Corporate' "
 				+ "and a.id not in (4,8);";

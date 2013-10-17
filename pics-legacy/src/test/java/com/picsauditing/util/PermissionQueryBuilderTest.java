@@ -115,8 +115,8 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		when(permissions.isOperator()).thenReturn(true);
 		setPermissionAccount();
 
-		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
-				+ ACCOUNT_ID + ") AND gc.workStatus = 'Y')";
+		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
+				+ ACCOUNT_ID + ") AND co.workStatus = 'Y')";
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
@@ -126,7 +126,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		setPermissionAccount();
 
 		builder.setWorkingFacilities(false);
-		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
 				+ ACCOUNT_ID + "))";
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
@@ -138,7 +138,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		setPermissionAccount();
 
 		builder.setWorkingFacilities(false);
-		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
 				+ ACCOUNT_ID + "))";
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
@@ -176,7 +176,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		setPermissionAccount();
 
 		builder.setContractorOperatorAlias("flag");
-		String whereClause = "a.status IN ('Active') AND flag.genID IN (" + ACCOUNT_ID + ") AND flag.workStatus = 'Y'";
+		String whereClause = "a.status IN ('Active') AND flag.opID IN (" + ACCOUNT_ID + ") AND flag.workStatus = 'Y'";
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
@@ -198,9 +198,9 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		when(permissions.getOperatorChildren()).thenReturn(CLIENT_SITES);
 
 		builder.setContractorOperatorAlias("flag");
-		String whereClause = "a.status IN ('Active') " + "AND a.id IN (SELECT gc.subID "
-				+ "FROM generalcontractors gc " + "WHERE gc.genID IN (" + Strings.implode(CLIENT_SITES, ",")
-				+ ") AND gc.workStatus = 'Y')";
+		String whereClause = "a.status IN ('Active') " + "AND a.id IN (SELECT co.conID FROM contractor_operator co " +
+                "WHERE co.opID IN (" + Strings.implode(CLIENT_SITES, ",")
+				+ ") AND co.workStatus = 'Y')";
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
@@ -221,8 +221,8 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		when(permissions.getOperatorChildren()).thenReturn(CLIENT_SITES);
 		setPermissionAccount();
 
-		String expected = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
-				+ Strings.implode(CLIENT_SITES, ",") + ") AND gc.workStatus = 'Y')";
+		String expected = "a.status IN ('Active') AND a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
+				+ Strings.implode(CLIENT_SITES, ",") + ") AND co.workStatus = 'Y')";
 		assertContains(expected, builder.buildWhereClause());
 	}
 
@@ -246,7 +246,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		when(permissions.isGeneralContractor()).thenReturn(false);
 		when(permissions.hasPermission(OpPerms.ViewUnApproved)).thenReturn(true);
 
-		String expected = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+		String expected = "a.status IN ('Active') AND a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
 				+ Strings.implode(CLIENT_SITES, ",") + "))";
 		assertContains(expected, builder.buildWhereClause());
 	}
@@ -259,8 +259,8 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		when(permissions.isGeneralContractor()).thenReturn(false);
 		when(permissions.hasPermission(OpPerms.ViewUnApproved)).thenReturn(false);
 
-		String expected = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
-				+ Strings.implode(CLIENT_SITES, ",") + ") AND gc.workStatus = 'Y')";
+		String expected = "a.status IN ('Active') AND a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
+				+ Strings.implode(CLIENT_SITES, ",") + ") AND co.workStatus = 'Y')";
 		assertContains(expected, builder.buildWhereClause());
 	}
 
@@ -272,8 +272,8 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		when(permissions.isGeneralContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ViewUnApproved)).thenReturn(false);
 
-		String expected = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
-				+ Strings.implode(CLIENT_SITES, ",") + ") AND gc.workStatus = 'Y')";
+		String expected = "a.status IN ('Active') AND a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
+				+ Strings.implode(CLIENT_SITES, ",") + ") AND co.workStatus = 'Y')";
 		assertContains(expected, builder.buildWhereClause());
 	}
 

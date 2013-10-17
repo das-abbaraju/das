@@ -34,18 +34,18 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 			sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
 			sql.addJoin("JOIN audit_question q ON q.id = d.questionID " + "AND q.columnHeader = 'Certificate' "
 					+ "AND q.questionType = 'FileCertificate' " + "AND q.number = 1");
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
+			sql.addJoin("JOIN contractor_operator co ON co.conID = a.id");
 			if (o.isOperator())
-				sql.addWhere("gc.genID = " + o.getInheritInsuranceCriteria().getId());
+				sql.addWhere("co.opID = " + o.getInheritInsuranceCriteria().getId());
 			if (o.isCorporate())
-				sql.addJoin("JOIN facilities f ON f.corporateID = " + o.getId() + " AND f.opID = gc.genID");
+				sql.addJoin("JOIN facilities f ON f.corporateID = " + o.getId() + " AND f.opID = co.opID");
 			sql
 					.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1 AND cao.status = '"
 							+ caoStatus + "'");
 			sql.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
 					+ o.getId());
-			sql.addJoin("JOIN accounts o ON o.id = gc.genID");
-			sql.addJoin("JOIN audit_category_rule acr ON acr.opID = gc.genID AND acr.catID = q.categoryID");
+			sql.addJoin("JOIN accounts o ON o.id = co.opID");
+			sql.addJoin("JOIN audit_category_rule acr ON acr.opID = co.opID AND acr.catID = q.categoryID");
 			sql.addField("a.id AS conID");
 			sql.addField("a.name AS conName");
 			sql.addField("o.id AS opID");

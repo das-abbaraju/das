@@ -36,10 +36,10 @@ public class ReportEmployeeTurnover extends ReportAccount {
 				"0 AS hired12, 0 AS fired12\nFROM accounts a \nJOIN employee e ON a.id = e.accountID";
 		
 		if (permissions.isOperator())
-			query += "\nJOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = " + 
+			query += "\nJOIN contractor_operator co ON co.conID = a.id AND co.opID = " +
 			permissions.getAccountId();
 		else if (permissions.isCorporate()) {
-			query += "\nJOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN " +
+			query += "\nJOIN contractor_operator co ON co.conID = a.id AND co.opID IN " +
 			"(SELECT id FROM operators WHERE parentID = " + permissions.getAccountId() + ")";
 		}
 		
@@ -97,10 +97,10 @@ public class ReportEmployeeTurnover extends ReportAccount {
 		subQuery += Strings.implode(fields) + "\nFROM accounts a\nJOIN employee e ON a.id = e.accountID";
 		
 		if (permissions.isOperator())
-			subQuery += "\nJOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = " + 
+			subQuery += "\nJOIN contractor_operator co ON co.conID = a.id AND co.opID = " +
 					permissions.getAccountId();
 		else if (permissions.isCorporate()) {
-			subQuery += "\nJOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN " +
+			subQuery += "\nJOIN contractor_operator co ON co.conID = a.id AND co.opID IN " +
 					"(SELECT id FROM operators WHERE parentID = " + permissions.getAccountId() + ")";
 		}
 		

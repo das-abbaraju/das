@@ -282,7 +282,7 @@ public class SqlBuilderTest {
 		SelectSQL sql = new SqlBuilder().initializeReportAndBuildSql(report, permissions);
 
 		String sqlResult = sql.toString();
-		String expected = "JOIN generalcontractors AS ContractorFlag ON Contractor.id = ContractorFlag.subID AND ContractorFlag.genID = "
+		String expected = "JOIN contractor_operator AS ContractorFlag ON Contractor.id = ContractorFlag.conID AND ContractorFlag.opID = "
 				+ permissions.getAccountId();
 		assertContains(expected, sqlResult);
 	}

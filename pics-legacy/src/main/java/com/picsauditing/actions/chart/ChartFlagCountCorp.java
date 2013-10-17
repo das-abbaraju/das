@@ -69,17 +69,17 @@ public class ChartFlagCountCorp extends ChartMSAction {
 		sql.addField("flag as series");
 		sql.addField("op.name as label");
 		sql.addField("count(*) as value");
-		sql.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search%26filter.flagStatus=',gc.flag,'%26filter.operator=',op.id) as link");
+		sql.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search%26filter.flagStatus=',co.flag,'%26filter.operator=',op.id) as link");
 		sql.addGroupBy("series, label");
 		sql.addOrderBy("series, label");
-		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
-		sql.addJoin("JOIN operators o on o.id = gc.genID");
-		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
-		sql.addJoin("JOIN facilities fac ON fac.opID = gc.genID");
+		sql.addJoin("JOIN contractor_operator co ON a.id = co.conID");
+		sql.addJoin("JOIN operators o on o.id = co.opID");
+		sql.addJoin("JOIN accounts op ON op.id = co.opID");
+		sql.addJoin("JOIN facilities fac ON fac.opID = co.opID");
 		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo')" : ")"));
 		sql.addWhere("op.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo')" : ")"));
-		sql.addWhere("gc.flag != 'Clear'");
-		sql.addWhere("o.approvesRelationships='No' OR gc.workStatus='Y'");
+		sql.addWhere("co.flag != 'Clear'");
+		sql.addWhere("o.approvesRelationships='No' OR co.workStatus='Y'");
 		sql.addWhere("fac.corporateID = " + permissions.getAccountId());
 		return sql;
 	}

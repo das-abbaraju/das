@@ -46,10 +46,10 @@ public class SearchEngine {
 		Hashtable<Integer, Integer> results = new Hashtable<Integer, Integer>();
 		String conQuery = "";
 		if (perm.isCorporate()) {
-			conQuery = "SELECT gc.subID id FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID ="
+			conQuery = "SELECT co.conID id FROM contractor_operator co JOIN facilities f ON f.opID = co.opID AND f.corporateID ="
 					+ perm.getAccountId() + " GROUP BY id";
 		} else if (perm.isOperator()) {
-			conQuery = "SELECT gc.subID id FROM generalcontractors gc WHERE gc.genID = " + perm.getAccountId();
+			conQuery = "SELECT co.conID id FROM contractor_operator co WHERE co.opID = " + perm.getAccountId();
 		} else
 			return results;
 		List<BasicDynaBean> temp;
@@ -193,7 +193,7 @@ public class SearchEngine {
 							+ accountStatuses + "))\n");
 				} else {
 					sql.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
-							.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+							.append("(SELECT co.conID id, 'C' rType FROM contractor_operator co\nJOIN facilities f ON f.opID = co.opID AND f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN (" + accountStatuses
 									+ "))\n");
@@ -215,13 +215,13 @@ public class SearchEngine {
 							.append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =")
 							.append(currPerm.getAccountId())
 							.append(")\n")
-							.append("UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+							.append("UNION\n(select co.conID FROM contractor_operator co JOIN facilities f ON f.opID = co.opID AND f.corporateID =")
 							.append(currPerm.getAccountId()).append(")\n) AS rE on e.accountID = rE.id)\n");
 				}
 				sql.append(") AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
 			} else if (currPerm.isOperator()) {
 				sql.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n")
-						.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =")
+						.append("(SELECT co.conID id, 'C' rType FROM contractor_operator co WHERE co.opID =")
 						.append(currPerm.getAccountId())
 						.append(") AS acc ON a.id = acc.id WHERE a.status IN (" + accountStatuses + ") )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
@@ -232,7 +232,7 @@ public class SearchEngine {
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
 							"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e JOIN "
-									+ "generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
+									+ "contractor_operator co ON co.conID = e.accountID WHERE co.opID =")
 							.append(currPerm.getAccountId()).append(")");
 				}
 				sql.append("\n) AS r1\nON foreignKey = r1.id AND indexType = r1.rType");

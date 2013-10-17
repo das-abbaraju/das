@@ -21,9 +21,9 @@ public class DelinquentAccounts extends ReportContractorInvoice {
 		sql.addField("DATEDIFF(ADDDATE(i.dueDate, 90),NOW()) AS DaysLeft");
 		if(permissions.seesAllContractors()) {
 			sql.addField("(i.totalAmount - i.amountApplied) AS invoiceAmount");
-			sql.addField("COUNT(gcon.genid) as facilityCount");
-			sql.addJoin("LEFT JOIN generalcontractors gcon on gcon.subid = a.id");
-			sql.addGroupBy("gcon.subid, i.id");
+			sql.addField("COUNT(conOp.opID) as facilityCount");
+			sql.addJoin("LEFT JOIN contractor_operator conOp on conOp.conID = a.id");
+			sql.addGroupBy("conOp.conID, i.id");
 		}
 		getFilter().setShowStatus(false);
 	}

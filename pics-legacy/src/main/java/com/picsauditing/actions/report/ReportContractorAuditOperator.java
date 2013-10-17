@@ -57,11 +57,11 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
         sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 
-        if (sql.hasJoin("generalcontractors gc")) {
+        if (sql.hasJoin("contractor_operator co")) {
         	if (!permissions.isOperatorCorporate()) // done for open requirements
-        		sql.addWhere("gc.subID = a.id AND gc.genID = cao.opID");
+        		sql.addWhere("co.conID = a.id AND co.opID = cao.opID");
         } else {
-            sql.addJoin("JOIN generalcontractors gc ON gc.subID=a.id AND gc.genID = cao.opID");
+            sql.addJoin("JOIN contractor_operator co ON co.conID=a.id AND co.opID = cao.opID");
         }
 
         sql.addWhere("cao.visible = 1");

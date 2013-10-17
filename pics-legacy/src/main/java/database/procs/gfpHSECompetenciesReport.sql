@@ -80,7 +80,7 @@ BEGIN
 	,	Set1.email
 	,	Set1.phone
 	,	Set1.twicExpiration
-	,	ISNULL(gcw.subID) notWorksFor
+	,	ISNULL(cow.conID) notWorksFor
 	,	Set1.roles
 	,	Set1.skilled
 	,	Set1.required
@@ -88,23 +88,23 @@ BEGIN
 	FROM
 		Set1
 	JOIN
-		generalcontractors
-	ON	generalcontractors.subID	= Set1.accountID
+		contractor_operator
+	ON	contractor_operator.conID	= Set1.accountID
 	JOIN
 		facilities
-	ON	generalcontractors.genID	= facilities.opID
+	ON	contractor_operator.opID	= facilities.opID
 	AND 	facilities.corporateID > 0
 	AND	facilities.corporateID	NOT IN (4,5,6,7,8,9,10,11) 
 	AND	facilities.corporateID	IN (1336,17248,4,5,1488,8,33394)
-	AND	Set1.accountID	= generalcontractors.subID
+	AND	Set1.accountID	= contractor_operator.conID
 	JOIN
 		accounts	gen
-	ON	gen.id	= generalcontractors.genID
+	ON	gen.id	= contractor_operator.opID
 	AND 	gen.status	= 'Active'
 	LEFT JOIN
-		generalcontractors	gcw
-	ON	gcw.subID	= Set1.accountID
-	AND 	gcw.genID	= 1202
+		contractor_operator	cow
+	ON	cow.conID	= Set1.accountID
+	AND 	cow.opID	= 1202
 	GROUP BY
 		Set1.employeeID
 	;

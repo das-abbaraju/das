@@ -38,10 +38,10 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 	public static SelectSQL buildAccountQuery() {
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addJoin("JOIN contractor_info c ON c.id = a.id");
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = c.id");
-		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
+		sql.addJoin("JOIN contractor_operator co ON co.conID = c.id");
+		sql.addJoin("JOIN accounts op ON op.id = co.opID");
 		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
-		sql.addJoin("LEFT JOIN users requestedUser ON requestedUser.id = gc.requestedByUserID");
+		sql.addJoin("LEFT JOIN users requestedUser ON requestedUser.id = co.requestedByUserID");
 		sql.addJoin("LEFT JOIN users pics ON pics.id = c.lastContactedByInsideSales");
 		sql.addJoin("LEFT JOIN contractor_tag ct ON ct.conID = c.id");
 		sql.addJoin("LEFT JOIN operator_tag ot ON ct.tagID = ot.id > 0");
@@ -63,8 +63,8 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		sql.addField("op.id AS RequestedByID");
 		sql.addField("requestedUser.id AS RequestedUserID");
 		sql.addField("requestedUser.name AS RequestedUser");
-		sql.addField("gc.requestedByUser AS RequestedByUserOther");
-		sql.addField("gc.deadline");
+		sql.addField("co.requestedByUser AS RequestedByUserOther");
+		sql.addField("co.deadline");
 		sql.addField("pics.name AS ContactedBy");
 		sql.addField("pics.id AS ContactedByID");
 		sql.addField("c.lastContactedByInsideSalesDate AS lastContactDate");
@@ -81,15 +81,15 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		// Find requested or denied or pending but not active that have been requested,
 		// being careful to excluded those rows which contractor cron corporate rollup created
-		String whereClause = "(gc.createdBy != 1 or gc.createdBy IS NULL) " +
+		String whereClause = "(co.createdBy != 1 or co.createdBy IS NULL) " +
 				"AND (a.status = 'Requested' " +
 					"OR (a.status = 'Declined' AND a.reason IS NOT NULL) " +
 					"OR (a.status = 'Pending' AND a.id IN " +
-						"(SELECT subID FROM generalcontractors WHERE (requestedByUser IS NOT NULL OR requestedByUserID > 0))))";
+						"(SELECT conID FROM contractor_operator WHERE (requestedByUser IS NOT NULL OR requestedByUserID > 0))))";
 
 		sql.addWhere(whereClause);
 
-		sql.addGroupBy("c.id, gc.id");
+		sql.addGroupBy("c.id, co.id");
 
 		return sql;
 	}
@@ -163,12 +163,12 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.isCorporate()) {
 				getFilter().setShowOperator(true);
-				sql.addWhere("gc.genID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
+				sql.addWhere("co.opID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
 						+ permissions.getAccountId() + ")");
 				legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
 						+ permissions.getAccountId() + ")");
 			} else {
-				sql.addWhere("gc.genID = " + permissions.getAccountId());
+				sql.addWhere("co.opID = " + permissions.getAccountId());
 				legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
 			}
 		}
@@ -238,7 +238,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		if (filterOn(f.getOperator())) {
 			String list = Strings.implode(f.getOperator(), ",");
 
-			sql.addWhere("gc.genID IN (" + list + ")");
+			sql.addWhere("co.opID IN (" + list + ")");
 			legacy.addWhere("cr.requestedByID IN (" + list + ")");
 
 			setFiltered(true);
@@ -270,7 +270,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		}
 
 		if (filterOn(f.getExcludeOperators())) {
-			sql.addWhere("gc.genID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
+			sql.addWhere("co.opID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
 			legacy.addWhere("cr.requestedByID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
 
 			setFiltered(true);

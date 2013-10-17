@@ -68,8 +68,8 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 SELECT *
 FROM flag_data AS FlagData
-JOIN generalcontractors AS ContractorFlag ON FlagData.conID = ContractorFlag.subID AND FlagData.opID = ContractorFlag.genID
-JOIN accounts AS ContractorOperatorOperator ON ContractorFlag.genID = ContractorOperatorOperator.id
+JOIN contractor_operator AS ContractorFlag ON FlagData.conID = ContractorFlag.conID AND FlagData.opID = ContractorFlag.opID
+JOIN accounts AS ContractorOperatorOperator ON ContractorFlag.opID = ContractorOperatorOperator.id
 JOIN flag_criteria_operator AS OperatorCriteria ON FlagData.criteriaID = OperatorCriteria.criteriaID AND FlagData.opID = OperatorCriteria.opID
 JOIN flag_criteria AS FlagCriteria ON FlagData.criteriaID = FlagCriteria.id
 JOIN accounts AS Account ON FlagData.conID = Account.id
@@ -88,9 +88,9 @@ Model: ContractorOperators
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 SELECT *
-FROM generalcontractors AS ContractorOperator
-JOIN accounts AS ContractorOperatorOperator ON ContractorOperator.genID = ContractorOperatorOperator.id
-JOIN contractor_info AS Contractor ON ContractorOperator.subID = Contractor.id
+FROM contractor_operator AS ContractorOperator
+JOIN accounts AS ContractorOperatorOperator ON ContractorOperator.opID = ContractorOperatorOperator.id
+JOIN contractor_info AS Contractor ON ContractorOperator.conID = Contractor.id
 JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
 WHERE (1 = 0) 
 
@@ -132,7 +132,7 @@ Model: ForcedFlags
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 SELECT *
-FROM (SELECT gc.subID AS conID, gc.genID AS opID, gc.forceBegin, gc.forceEnd, gc.forcedBy, gc.forceFlag, 'Overall' AS label FROM generalcontractors gc WHERE gc.forceFlag IS NOT NULL UNION SELECT fdo.conID, fdo.opID, fdo.updateDate AS forceBegin, fdo.forceEnd, fdo.updatedBy AS forcedBy, fdo.forceFlag, CONCAT(fc1.id, '.label') AS label FROM flag_data_override fdo JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id WHERE fdo.forceFlag IS NOT NULL ) AS ContractorFlag
+FROM (SELECT co.conID AS conID, co.opID AS opID, co.forceBegin, co.forceEnd, co.forcedBy, co.forceFlag, 'Overall' AS label FROM contractor_operator co WHERE co.forceFlag IS NOT NULL UNION SELECT fdo.conID, fdo.opID, fdo.updateDate AS forceBegin, fdo.forceEnd, fdo.updatedBy AS forcedBy, fdo.forceFlag, CONCAT(fc1.id, '.label') AS label FROM flag_data_override fdo JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id WHERE fdo.forceFlag IS NOT NULL ) AS ContractorFlag
 JOIN contractor_info AS ContractorFlagContractor ON ContractorFlag.conID = ContractorFlagContractor.id
 JOIN accounts AS Account ON ContractorFlagContractor.id = Account.id AND Account.type = 'Contractor'
 
@@ -140,11 +140,11 @@ Model: ForcedFlagPercents
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 SELECT *
-FROM (SELECT gc.genID AS opID, gc.subID as conID, gc.workStatus, (ROUND(COUNT(DISTINCT CASE WHEN gc.forceFlag IS NOT NULL OR fdo.forceFlag IS NOT NULL THEN gc.`subID` ELSE NULL END)/COUNT(DISTINCT subID)*100,2)) AS percentForced 
-FROM generalcontractors gc 
-JOIN accounts a ON gc.subID = a.id AND a.status = 'Active'
-LEFT JOIN flag_data_override fdo ON fdo.`conID` = gc.`subID` AND fdo.`opID` = gc.`genID` 
-GROUP BY gc.genID) AS ForcedFlag
+FROM (SELECT co.opID AS opID, co.conID as conID, co.workStatus, (ROUND(COUNT(DISTINCT CASE WHEN co.forceFlag IS NOT NULL OR fdo.forceFlag IS NOT NULL THEN co.`conID` ELSE NULL END)/COUNT(DISTINCT conID)*100,2)) AS percentForced
+FROM contractor_operator co
+JOIN accounts a ON co.conID = a.id AND a.status = 'Active'
+LEFT JOIN flag_data_override fdo ON fdo.`conID` = co.`conID` AND fdo.`opID` = co.`opID`
+GROUP BY co.opID) AS ForcedFlag
 JOIN accounts AS ContractorOperatorOperator ON ForcedFlag.opID = ContractorOperatorOperator.id
 WHERE (1 = 0) 
 

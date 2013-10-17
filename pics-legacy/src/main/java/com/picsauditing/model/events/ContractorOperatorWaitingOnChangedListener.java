@@ -19,8 +19,8 @@ public class ContractorOperatorWaitingOnChangedListener implements ApplicationLi
 	
 	/*
 	 * The business logic behind this is:
-	 * 		When gc.waitingOn is set to WaitingOn.Contractor, the clock starts.
-	 * 		When gc.waitingOn is set to <> WaitingOn.Contractor, the clock stops.
+	 * 		When co.waitingOn is set to WaitingOn.Contractor, the clock starts.
+	 * 		When co.waitingOn is set to <> WaitingOn.Contractor, the clock stops.
 	 * It doesn't matter what the previous value was. Since this is a change event, we know
 	 * that it changed to WaitingOn.Contractor or to something not WaitingOn.Contractor and
 	 * in either case, we need to update the lastStepToGreenDate.

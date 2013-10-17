@@ -99,16 +99,16 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 
 	@SuppressWarnings("unchecked")
 	JSONObject bruteForce() throws SQLException {
-		String sql = "select a.id, a.name, a.address, a.address2, a.address3, a.city, a.countrySubdivision, a.zip, a.country, c.taxID, con.type, con.value, gc.flag"
+		String sql = "select a.id, a.name, a.address, a.address2, a.address3, a.city, a.countrySubdivision, a.zip, a.country, c.taxID, con.type, con.value, co.flag"
 				+ " from accounts a"
 				+ " join contractor_info c on a.id = c.id"
-				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?"				
-				+ " left join contractor_operator_number con on c.id = con.conID and con.opID = gc.genID"
+				+ " join contractor_operator co on co.conID = c.id and co.opID = ?"
+				+ " left join contractor_operator_number con on c.id = con.conID and con.opID = co.opID"
 				+ " where a.status IN ('Active')";
 		String sqlCount = "select count(a.id)" 
 				+ " from accounts a" 
 				+ " join contractor_info c on a.id = c.id"
-				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?"
+				+ " join contractor_operator co on co.conID = c.id and co.opID = ?"
 				+ " where a.status IN ('Active')";
 
 		JSONObject output = new JSONObject();

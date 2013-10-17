@@ -23,12 +23,12 @@ public class ContractorFlagDifference extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		
-		String sql = "SELECT SQL_CALC_FOUND_ROWS gc.subID conID,con.name as ContractorName, gc.genID opID, op.name as OperatorName, gc.flag newColor, f.flag oldColor, gc.waitingOn newwaitingon, f.waitingon oldwaitingOn "
-			  + "FROM generalcontractors gc "
-			  + "JOIN pics_yesterday.generalcontractors f ON gc.genID = f.genID AND gc.subID = f.subID "
-			  + "JOIN accounts op ON op.id = gc.genid "
-			  + "JOIN accounts con ON con.id = gc.subid "
-			  + "LEFT JOIN flag_dirty fd ON fd.conid = gc.subid AND fd.opId = gc.genid ";
+		String sql = "SELECT SQL_CALC_FOUND_ROWS co.conID conID,con.name as ContractorName, co.opID opID, op.name as OperatorName, co.flag newColor, f.flag oldColor, co.waitingOn newwaitingon, f.waitingon oldwaitingOn "
+			  + "FROM contractor_operator co "
+			  + "JOIN pics_yesterday.contractor_operator f ON co.opID = f.opID AND co.conID = f.conID "
+			  + "JOIN accounts op ON op.id = co.opID "
+			  + "JOIN accounts con ON con.id = co.conID "
+			  + "LEFT JOIN flag_dirty fd ON fd.conid = co.conID AND fd.opId = co.opID ";
 		
 		String baseWhere = "WHERE con.status = 'Active' "
 		  + "AND op.status = 'Active' "
@@ -36,7 +36,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		  + "AND op.type = 'Operator' "
 		  + "AND fd.id IS NULL ";
 		
-		String where = "AND gc.flag != f.flag ";
+		String where = "AND co.flag != f.flag ";
 		String orderBy = "ORDER BY con.name, op.name";
 		
 		if ("delete".equals(button)) {
@@ -46,13 +46,13 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		}
 		
 		if(("oldWaitingOn").equals(button)){
-			where = "AND gc.waitingOn != f.waitingOn";
+			where = "AND co.waitingOn != f.waitingOn";
 			orderBy = "ORDER BY f.waitingOn,con.name,op.name";
 		}
 		
 		if(("newWaitingOn").equals(button)){
-			where = "AND gc.waitingOn != f.waitingOn";
-			orderBy = "ORDER BY gc.waitingOn,con.name,op.name";
+			where = "AND co.waitingOn != f.waitingOn";
+			orderBy = "ORDER BY co.waitingOn,con.name,op.name";
 		}
 		
 		if(("oldFlag").equals(button)){
@@ -60,7 +60,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		}
 
 		if(("newFlag").equals(button)){
-			orderBy = "ORDER BY gc.flag,con.name,op.name";
+			orderBy = "ORDER BY co.flag,con.name,op.name";
 		}
 		
 		if(("contractor").equals(button)){

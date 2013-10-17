@@ -30,8 +30,8 @@ public class FlagDataOverride extends BaseTable {
 
 	@ManyToOne
 	@JoinColumns(
-		{ @JoinColumn(name = "opID", referencedColumnName = "genID", insertable=false, updatable=false),
-		  @JoinColumn(name = "conID", referencedColumnName = "subID", insertable=false, updatable=false) })
+		{ @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
+		  @JoinColumn(name = "conID", referencedColumnName = "conID", insertable=false, updatable=false) })
 	public ContractorOperator getContractorOperator() {
 		return contractorOperator;
 	}

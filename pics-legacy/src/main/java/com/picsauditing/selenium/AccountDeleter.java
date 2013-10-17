@@ -45,8 +45,8 @@ public class AccountDeleter extends Deleter {
 			t.delete(db);
 		}
 		{
-			Delete t = new Delete("generalcontractors");
-			t.addJoin("WHERE t.genID IN (" + IDs + ") OR t.subID IN (" + IDs + ")");
+			Delete t = new Delete("contractor_operator");
+			t.addJoin("WHERE t.opID IN (" + IDs + ") OR t.conID IN (" + IDs + ")");
 			t.delete(db);
 		}
 		{

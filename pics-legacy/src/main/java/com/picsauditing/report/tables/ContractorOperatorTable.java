@@ -14,7 +14,7 @@ public class ContractorOperatorTable extends AbstractTable {
     public static final String RequestedByUser = "RequestedByUser";
 
 	public ContractorOperatorTable() {
-		super("generalcontractors");
+		super("contractor_operator");
 		addFields(ContractorOperator.class);
 
         Field creationDate = addCreationDate();
@@ -61,7 +61,7 @@ public class ContractorOperatorTable extends AbstractTable {
         Field contractorOperatorTag = new Field("Tag", "(SELECT GROUP_CONCAT(o.tag ORDER BY o.tag SEPARATOR ', ') FROM contractor_tag c " +
                 " JOIN operator_tag o ON c.tagID = o.id AND o.active = 1 " +
                 " WHERE " + ReportOnClause.ToAlias + ".subID = c.conID AND o.opID IN (SELECT f.corporateID FROM facilities f WHERE f.opID = "
-                + ReportOnClause.ToAlias + ".genID UNION SELECT " + ReportOnClause.ToAlias + ".genID))", FieldType.String);
+                + ReportOnClause.ToAlias + ".opID UNION SELECT " + ReportOnClause.ToAlias + ".opID))", FieldType.String);
         contractorOperatorTag.setFilterable(false);
         contractorOperatorTag.setWidth(300);
         contractorOperatorTag.setImportance(FieldImportance.Required);
@@ -69,17 +69,17 @@ public class ContractorOperatorTable extends AbstractTable {
 
         Field contractorFlagOverride = new Field("FlagIsForced", "(" + ReportOnClause.ToAlias + ".forceEnd IS NOT NULL OR " +
                 " EXISTS(SELECT * FROM flag_data_override fdo " +
-                " WHERE fdo.conID = " + ReportOnClause.ToAlias + ".subID " +
-                " AND fdo.opID = " + ReportOnClause.ToAlias + ".genID " +
+                " WHERE fdo.conID = " + ReportOnClause.ToAlias + ".conID " +
+                " AND fdo.opID = " + ReportOnClause.ToAlias + ".opID " +
                 " AND fdo.forceEnd IS NOT NULL))", FieldType.Boolean);
         addField(contractorFlagOverride);
 	}
 
 	public void addJoins() {
-		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("genID"));
+		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
 		addRequiredKey(operator);
 
-		addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("subID")));
+		addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
 
 		ReportForeignKey forcedByUser = new ReportForeignKey(ForcedByUser, new UserTable(), new ReportOnClause("forcedBy"));
 		forcedByUser.setMinimumImportance(FieldImportance.Average);

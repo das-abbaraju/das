@@ -34,8 +34,8 @@ public class ReportEmployeeList extends ReportEmployee {
 
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.isOperator()) {
-				String where = "a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.subID = a.id "
-						+ "AND gc.genID = %1$d) OR a.id = %1$d";
+				String where = "a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.conID = a.id "
+						+ "AND co.opID = %1$d) OR a.id = %1$d";
 
 				if (permissions.isRequiresCompetencyReview()) {
 					where = "a.id IN (SELECT f.opID FROM facilities f JOIN facilities c "

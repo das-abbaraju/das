@@ -41,7 +41,7 @@ public class AccountTable extends AbstractTable {
         addOptionalKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
 
 		ReportForeignKey contractorOperatorKey = addOptionalKey(new ReportForeignKey(ContractorOperator,
-				new ContractorOperatorTable(), new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = "
+				new ContractorOperatorTable(), new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".opID = "
 						+ ReportOnClause.AccountID)));
 
 		addOptionalKey(new ReportForeignKey(Contact, new UserTable(), new ReportOnClause("contactID")))

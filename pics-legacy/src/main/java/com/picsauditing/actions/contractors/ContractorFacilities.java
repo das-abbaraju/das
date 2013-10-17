@@ -332,7 +332,7 @@ public class ContractorFacilities extends ContractorActionSupport {
         showAll.addField("a.transportationServices");
         showAll.addWhere("a.type = 'Operator'");
         showAll.addWhere("a.status = 'Active'");
-        showAll.addWhere("a.id NOT IN (SELECT genID from generalContractors WHERE subID = " + contractor.getId() + " )");
+        showAll.addWhere("a.id NOT IN (SELECT opID from contractor_operator WHERE conID = " + contractor.getId() + " )");
         showAll.addOrderBy("a.name");
 
         List<BasicDynaBean> data = db.select(showAll.toString(), true);

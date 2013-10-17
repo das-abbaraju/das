@@ -39,19 +39,19 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			sql.setFromTable("accounts a");
 			// Only send out results on the contractors in the general
 			// contractor table that have approved work status
-			sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID AND gc.genID IN ("
+			sql.addJoin("JOIN contractor_operator co ON a.id = co.conID AND co.opID IN ("
 					+ Strings.implode(operators, ",") + ")");
-			sql.addJoin("JOIN operators o ON gc.genID = o.id");
+			sql.addJoin("JOIN operators o ON co.opID = o.id");
 			sql.addJoin("JOIN accounts oa ON o.id = oa.id");
-			sql.addJoin("JOIN flag_archive f2 ON gc.subID = f2.conID AND gc.genID = f2.opID AND gc.flag <> f2.flag");
+			sql.addJoin("JOIN flag_archive f2 ON co.conID = f2.conID AND co.opID = f2.opID AND co.flag <> f2.flag");
 
 			sql.addWhere("f2.creationDate = '" + df.format(subscription.getTimePeriod().getNearestComparisonDate()) + "'");
-			sql.addWhere("(gc.workStatus = 'Y' OR o.approvesRelationships = 'No')");
+			sql.addWhere("(co.workStatus = 'Y' OR o.approvesRelationships = 'No')");
 			sql.addWhere("a.status = 'Active'");
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");
 			sql.addField("f2.flag AS oldFlag");
-			sql.addField("gc.flag AS flag");
+			sql.addField("co.flag AS flag");
 			sql.addField("oa.name AS opName");
 			sql.addField("o.id AS opID");
 
