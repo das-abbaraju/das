@@ -11,7 +11,9 @@ public class ContractorTable extends AbstractTable {
 
     public static final String Account = "Account";
     public static final String AccountUser = "AccountUser";
+    public static final String ContractorOperator = "ContractorOperator";
     public static final String CustomerService = "CustomerService";
+    public static final String LastContactedByInsideSales = "LastContactedByInsideSales";
     public static final String InsideSales = "InsideSales";
     public static final String RecommendedCSR = "RecommendedCSR";
     public static final String Flag = "Flag";
@@ -57,12 +59,18 @@ public class ContractorTable extends AbstractTable {
                 new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
         flagKey.setMinimumImportance(FieldImportance.Low);
 
+        ReportForeignKey contractorOperator = addRequiredKey(new ReportForeignKey(ContractorOperator, new ContractorOperatorTable(),
+                new ReportOnClause("id", "subID")));
+        contractorOperator.setMinimumImportance(FieldImportance.Required);
+
         ReportForeignKey csr = new ReportForeignKey(CustomerService, new AccountUserTable(), new ReportOnClause("id",
                 "accountID", ReportOnClause.ToAlias + ".role = '" + UserAccountRole.PICSCustomerServiceRep + "' AND " +
                 ReportOnClause.ToAlias + ".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()"));
 
         ReportForeignKey csrKey = addOptionalKey(csr);
         csrKey.setMinimumImportance(FieldImportance.Average);
+
+        addOptionalKey(new ReportForeignKey(LastContactedByInsideSales, new UserTable(), new ReportOnClause("lastContactedByInsideSales")));
 
         ReportForeignKey insideSales = new ReportForeignKey(InsideSales, new AccountUserTable(), new ReportOnClause("id",
                 "accountID", ReportOnClause.ToAlias + ".role = '" + UserAccountRole.PICSInsideSalesRep + "' AND " +
@@ -91,7 +99,7 @@ public class ContractorTable extends AbstractTable {
 
         ReportForeignKey tag = new ReportForeignKey(SingleTag, new ContractorTagTable(), new ReportOnClause("id", "conID","(("
                 + ReportOnClause.ToAlias + ".tagID IN (SELECT id FROM operator_tag WHERE opID IN (SELECT corporateID FROM facilities WHERE opID IN ({CURRENT_ACCOUNTID}) " +
-                "OR corporateID IN ({CURRENT_ACCOUNTID})))) OR {CURRENT_ACCOUNTID} = 1100)"));
+                "OR corporateID IN ({CURRENT_ACCOUNTID})))) OR {CURRENT_ACCOUNTID} = 1100 OR opID = {CURRENT_ACCOUNTID})"));
         addOptionalKey(tag);
 
         ReportForeignKey tagView = new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID"));

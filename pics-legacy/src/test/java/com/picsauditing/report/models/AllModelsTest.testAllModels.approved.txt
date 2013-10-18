@@ -518,6 +518,7 @@ AccountTimezone
 AccountTransportationServices
 ContractorFlagFlagColor
 ContractorFlagNetworkLevel
+ContractorFlagTag
 ContractorFlagWaitingOn
 ContractorFlagWorkStatus
 ContractorOperatorOperatorCity
@@ -577,6 +578,7 @@ AccountTimezone
 AccountTransportationServices
 ContractorFlagFlagColor
 ContractorFlagNetworkLevel
+ContractorFlagTag
 ContractorFlagWaitingOn
 ContractorFlagWorkStatus
 ContractorOperatorOperatorCity
@@ -797,19 +799,25 @@ ContractorEmployeeGUARD
 ContractorInsideSalesUserID
 ContractorInsideSalesUserName
 ContractorInsureGUARD
+ContractorLastContactedByInsideSalesID
+ContractorLastContactedByInsideSalesName
 ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
+ContractorRequestedByDeadline
+ContractorRequestedByNetworkLevel
+ContractorRequestedByOperatorID
+ContractorRequestedByOperatorName
+ContractorRequestedByRequestedByUserID
+ContractorRequestedByRequestedByUserName
+ContractorRequestedByTag
+ContractorRequestedByUserOther
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
-ContractorWorksAtClientSite
-ContractorWorksForReportingClient
-DirectTradeName
-TradeName
 
 Model: Contractors
 Permission: Permissions{permissions=[]}
@@ -908,6 +916,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorOperatorFlagColor
 ContractorOperatorNetworkLevel
+ContractorOperatorTag
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk

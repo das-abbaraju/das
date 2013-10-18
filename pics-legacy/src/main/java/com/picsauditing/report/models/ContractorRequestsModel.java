@@ -18,18 +18,19 @@ public class ContractorRequestsModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
         ModelSpec contractor = new ModelSpec(null, "Contractor");
+
+        contractor.join(ContractorTable.LastContactedByInsideSales);
+
         {
             ModelSpec account = contractor.join(ContractorTable.Account);
             account.alias = "Account";
             account.join(AccountTable.Contact);
         }
 
-        ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
-        contractorTrade.alias = "ContractorTrade";
-        ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
-        directTrade.alias = "DirectTrade";
-        ModelSpec trade = directTrade.join(TradeTable.Children);
-        trade.alias = "Trade";
+        ModelSpec requestedBy = contractor.join(ContractorTable.ContractorOperator);
+        requestedBy.alias = "ContractorRequestedBy";
+        requestedBy.join(ContractorOperatorTable.Operator);
+        requestedBy.join(ContractorOperatorTable.RequestedByUser);
 
         ModelSpec insideSales = contractor.join(ContractorTable.InsideSales);
         insideSales.minimumImportance = FieldImportance.Required;
@@ -58,11 +59,20 @@ public class ContractorRequestsModel extends AbstractModel {
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
+
+        fields.remove("ContractorRequestedByFlagColor".toUpperCase());
+
         Field accountStatus = new Field("AccountStatus","Account.status",FieldType.RegistrationRequestAccountStatus);
         fields.put(accountStatus.getName().toUpperCase(), accountStatus);
 
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("RequestNewContractorAccount.action?contractor={AccountID}");
+
+        Field requestedByOtherUser = new Field("ContractorRequestedByUserOther","ContractorRequestedBy.requestedByUser",FieldType.String);
+        fields.put(requestedByOtherUser.getName().toUpperCase(), requestedByOtherUser);
+
+        Field requestedByDeadline = new Field("ContractorRequestedByDeadline","ContractorRequestedBy.deadline",FieldType.String);
+        fields.put(requestedByDeadline.getName().toUpperCase(), requestedByDeadline);
 
         Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
         accountManager.setVisible(false);
@@ -74,23 +84,6 @@ public class ContractorRequestsModel extends AbstractModel {
         accountManager.setSuffixValue("");
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
-        Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
-        clientSite.setVisible(false);
-        clientSite.setPrefixValue("SELECT co.subID " +
-                "FROM generalcontractors co " +
-                "WHERE co.genID IN ");
-        clientSite.setSuffixValue("");
-        fields.put(clientSite.getName().toUpperCase(), clientSite);
-
-        Field reportingClient = new Field("ContractorWorksForReportingClient","Account.id",FieldType.Operator);
-        reportingClient.setVisible(false);
-        reportingClient.setPrefixValue("SELECT co.subID " +
-                "FROM generalcontractors co " +
-                "JOIN operators o ON o.id = co.genID " +
-                "WHERE o.reportingID IN ");
-        reportingClient.setSuffixValue("");
-        fields.put(reportingClient.getName().toUpperCase(), reportingClient);
-
-       return fields;
+        return fields;
 	}
 }

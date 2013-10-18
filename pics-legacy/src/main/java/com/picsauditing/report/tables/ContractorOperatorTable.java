@@ -11,6 +11,7 @@ public class ContractorOperatorTable extends AbstractTable {
 	public static final String Operator = "Operator";
 	public static final String Contractor = "Contractor";
 	public static final String ForcedByUser = "ForcedByUser";
+    public static final String RequestedByUser = "RequestedByUser";
 
 	public ContractorOperatorTable() {
 		super("generalcontractors");
@@ -59,9 +60,11 @@ public class ContractorOperatorTable extends AbstractTable {
         // TODO: We should find a way to attach this to ContractorTagView instead of here
         Field contractorOperatorTag = new Field("Tag", "(SELECT GROUP_CONCAT(o.tag ORDER BY o.tag SEPARATOR ', ') FROM contractor_tag c " +
                 " JOIN operator_tag o ON c.tagID = o.id AND o.active = 1 " +
-                " WHERE " + ReportOnClause.ToAlias + ".subID = c.conID AND " + ReportOnClause.ToAlias + ".genID = o.opID)", FieldType.String);
+                " WHERE " + ReportOnClause.ToAlias + ".subID = c.conID AND o.opID IN (SELECT f.corporateID FROM facilities f WHERE f.opID = "
+                + ReportOnClause.ToAlias + ".genID UNION SELECT " + ReportOnClause.ToAlias + ".genID))", FieldType.String);
         contractorOperatorTag.setFilterable(false);
         contractorOperatorTag.setWidth(300);
+        contractorOperatorTag.setImportance(FieldImportance.Required);
         addField(contractorOperatorTag);
 
         Field contractorFlagOverride = new Field("FlagIsForced", "(" + ReportOnClause.ToAlias + ".forceEnd IS NOT NULL OR " +
@@ -81,5 +84,8 @@ public class ContractorOperatorTable extends AbstractTable {
 		ReportForeignKey forcedByUser = new ReportForeignKey(ForcedByUser, new UserTable(), new ReportOnClause("forcedBy"));
 		forcedByUser.setMinimumImportance(FieldImportance.Average);
 		addOptionalKey(forcedByUser);
+
+        ReportForeignKey requestedByUser = new ReportForeignKey(RequestedByUser, new UserTable(), new ReportOnClause("requestedByUserID"));
+        addOptionalKey(requestedByUser);
 	}
 }
