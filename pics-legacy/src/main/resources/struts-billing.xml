@@ -56,6 +56,7 @@
 		<action name="PaymentDetail"
 			class="com.picsauditing.actions.contractors.PaymentDetail">
 			<result>struts/contractors/payment_detail.jsp</result>
+            <result name="error">struts/contractors/payment_detail.jsp</result>
 		</action>
 		<action name="PaymentDetailAjax"
 			class="com.picsauditing.actions.contractors.PaymentDetail">

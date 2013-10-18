@@ -11,6 +11,7 @@ import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.*;
@@ -25,6 +26,7 @@ import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -45,6 +47,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
+	private InvoiceDAO invoiceDAO;
+	@Autowired
 	private BillingService billingService;
 	@Autowired
 	private EmailSender emailSender;
@@ -54,6 +58,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private BillingNoteModel billingNoteModel;
+
 
 	private Payment payment;
 	private PaymentMethod method = null;
@@ -88,8 +93,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
         }
 
         if (FIND_CC_BUTTON.equals(button)) {
-			creditCard = paymentService.getCreditCard(contractor);
-			method = PaymentMethod.CreditCard;
+			findCreditCardForContractor();
 			return SUCCESS;
 		}
 
@@ -97,282 +101,421 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			method = contractor.getPaymentMethod();
 		}
 
-		if (payment == null || payment.getId() == 0) {
+		if (paymentIsNullOrUnsaved()) {
 			// Useful during development, we can remove this later
-			for (Invoice invoice : contractor.getInvoices()) {
-				invoice.updateAmountApplied();
-			}
+			updateAmountAppliedOnContractorInvoices();
 		} else {
 			payment.updateAmountApplied();
-			for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
-				ip.getInvoice().updateAmountApplied();
-			}
-
-			// Activate the contractor if an activation invoice is fully applied
-			// (this will occur on the redirect)
-			if (contractor.getStatus().isPendingOrDeactivated()) {
-				for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
-					if (billingService.activateContractor(contractor, ip.getInvoice())) {
-						contractorAccountDao.save(contractor);
-						break;
-					}
-				}
-			}
+			updateAmountAppliedOnPaymentInvoices();
+			activateContractorIfAppropriate();
 		}
 
 		if (button != null) {
-			if (payment == null || payment.getId() == 0) {
-				// If we have a button but no payment, then we're creating a new
-				// payment
-				payment.setAccount(contractor);
-				payment.setAuditColumns(permissions);
-				payment.setPaymentMethod(method);
-				Currency appliedInvoiceCurrency = getCurrencyOfAppliedInvoices(contractor, amountApplyMap);
-				payment.setCurrency(appliedInvoiceCurrency);
+			return handleButton();
+		}
 
-				if (payment.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
-					addActionError("Payments must be greater than zero");
-					return SUCCESS;
-				}
-				if (method.isCreditCard()) {
-					try {
-						if (creditCard == null || creditCard.getCardNumber() == null) {
-							creditCard = paymentService.getCreditCard(contractor);
-						}
-						paymentService.processPayment(payment, null);
-						payment.setCcNumber(creditCard.getCardNumber());
+		for (Invoice invoice : contractor.getInvoices()) {
+			adjustAmountApplyMap(invoice);
+		}
 
-						addNote("Credit Card transaction completed and emailed the receipt for "
-								+ payment.getCurrency().getSymbol() + payment.getTotalAmount());
-					} catch (NoBrainTreeServiceResponseException re) {
-						addNote("Credit Card service connection error: " + re.getMessage());
+		return SUCCESS;
+	}
 
-						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setTemplate(EmailTemplate.BRAIN_TREE_ERROR_EMAIL_TEMPLATE);
-						emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
-						emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
-						emailBuilder.setPermissions(permissions);
-						emailBuilder.addToken("permissions", permissions);
-						emailBuilder.addToken("contractor", contractor);
-						emailBuilder.addToken("billingusers", contractor.getUsersByRole(OpPerms.ContractorBilling));
-						emailBuilder.addToken("invoice", null);
+	private void adjustAmountApplyMap(Invoice invoice) {
+		if (!amountApplyMap.containsKey(invoice.getId())) {
+			amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
+		}
+	}
 
-						EmailQueue emailQueue;
-						try {
-							emailQueue = emailBuilder.build();
-							emailQueue.setVeryHighPriority();
-							emailQueue.setSubjectViewableById(Account.PicsID);
-							emailQueue.setBodyViewableById(Account.PicsID);
-							emailSender.send(emailQueue);
-						} catch (Exception e) {
-							PicsLogger
-									.log("Cannot send email error message or determine credit processing status for contractor "
-											+ contractor.getName() + " (" + contractor.getId() + ")");
-						}
+	private String handleButton() throws IOException {
+		if (paymentIsNullOrUnsaved()) {
+			try {
+				processSeeminglyNewPayment();
+			} catch (Exception e) {
+				addActionError("One or more of the invoices is already paid in full");
+				return ERROR;
+			}
+		}
 
-						addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
-								+ getText("PicsBillingPhone") + ".");
+		String message = null;
+		if (DELETE_BUTTON.equalsIgnoreCase(button)) {
+			return processDeletePayment();
+		}
 
-						// Assuming paid status per Aaron so that he can refund
-						// or void manually.
-						payment.setStatus(TransactionStatus.Unpaid);
-						paymentDAO.save(payment);
+		if (VOID_CC_BUTTON.equalsIgnoreCase(button)) {
+			return processVoidPayment();
+		}
 
-						return SUCCESS;
-					} catch (Exception e) {
-						addNote("Credit Card transaction failed: " + e.getMessage());
-						this.addActionError("Failed to charge credit card. " + e.getMessage());
-						return SUCCESS;
-					}
-
-				} // Do nothing for checks
+		if (button.startsWith(REFUND_BUTTON)) {
+			if (anyErrorsInRefund()) {
+				return ERROR;
 			}
 
-			String message = null;
-			if (DELETE_BUTTON.equalsIgnoreCase(button)) {
-				if (payment.getQbListID() != null) {
-					addActionError("You can't delete a payment that has already been synced with QuickBooks.");
-					return SUCCESS;
-				}
-
-                unapplyAll();
-				paymentDAO.remove(payment);
-
-                for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
-                    ip.getInvoice().updateAmountApplied();
-                }
-                for (PaymentAppliedToRefund ip : payment.getRefunds()) {
-                    ip.getRefund().updateAmountApplied();
-                }
-
-				addActionMessage("Successfully Deleted Payment");
-
-				return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
+			try {
+				message = handleRefund(message);
+			} catch (Exception e) {
+				addActionError("Failed to cancel credit card transaction: " + e.getMessage());
+				return ERROR;
 			}
+		}
 
-			if (VOID_CC_BUTTON.equalsIgnoreCase(button)) {
-				try {
-					paymentService.voidTransaction(payment.getTransactionID());
-					message = "Successfully canceled credit card transaction";
-					payment.setStatus(TransactionStatus.Void);
-					transactionCondition = null;
-
-					unapplyAll();
-
-					paymentDAO.remove(payment); // per Aaron's request
-
-                    for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
-                        ip.getInvoice().updateAmountApplied();
-                    }
-                    for (PaymentAppliedToRefund ip : payment.getRefunds()) {
-                        ip.getRefund().updateAmountApplied();
-                    }
-
-					if (message != null) {
-						addActionMessage(message);
-					}
-
-					return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
-				} catch (Exception e) {
-					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
-					return SUCCESS;
-				}
+		if (amountApplyMap.size() > 0 ) {
+			if (isUnapply()) {
+				return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 			}
+			handleApply();
+		}
 
-			if (button.startsWith(REFUND_BUTTON)) {
-				if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
-					addActionError("You can't refund negative amounts");
-					return SUCCESS;
-				}
+		savePaymentToDB();
 
-				if (refundAmount.compareTo(payment.getBalance()) > 0) {
-					addActionError("You can't refund more than the remaining balance");
-					return SUCCESS;
-				}
+		if (message != null) {
+			addActionMessage(message);
+		}
 
-				try {
-					Refund refund = new Refund();
-					refund.setTotalAmount(refundAmount);
-					refund.setAccount(contractor);
-					refund.setAuditColumns(permissions);
-					refund.setStatus(TransactionStatus.Paid);
-					if (REFUND_ON_BRAIN_TREE_PICS_BUTTON.equals(button)) {
-						if (payment.getPaymentMethod().isCreditCard()) {
-							paymentService.processRefund(payment.getTransactionID(), refundAmount);
-							message = "Successfully refunded credit card on BrainTree";
-							refund.setCcNumber(payment.getCcNumber());
-							refund.setTransactionID(payment.getTransactionID());
-						}
-					}
+		return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
+	}
 
-					AccountingSystemSynchronization.setToSynchronize(refund);
-					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
-					paymentDAO.save(refund);
-				} catch (Exception e) {
-					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
-					return SUCCESS;
-				}
+	private boolean paymentIsNullOrUnsaved() {
+		return payment == null || payment.getId() == 0;
+	}
+
+	private void processSeeminglyNewPayment() throws Exception {
+		makeSureNoInvoiceIsPaidInFull();
+
+		addDetailsToPayment();
+
+		if (paymentHasFlaws()) {
+			throw new Exception();
+		}
+
+		if (method.isCreditCard()) {
+			handleCreditCard();
+		} // Do nothing for checks
+	}
+
+	private void makeSureNoInvoiceIsPaidInFull() throws Exception {
+		for (Integer invoiceID : amountApplyMap.keySet()) {
+			Invoice invoice = invoiceDAO.find(invoiceID);
+			if (invoice != null && invoice.isApplied() && !amountApplyMap.get(invoiceID).equals(BigDecimal.ZERO.setScale(2))) {
+				throw new Exception();
 			}
+		}
+	}
 
-			if (amountApplyMap.size() > 0) {
-				boolean collected = false;
-				if (SAVE_BUTTON.equals(button)) {
-					button = APPLY_BUTTON;
+	private String handleRefund(String message) throws Exception {
+		Refund refund = generateRefund();
+
+		if (isBrainTreeCreditCardRefund()) {
+			paymentService.processRefund(payment.getTransactionID(), refundAmount);
+			message = "Successfully refunded credit card on BrainTree";
+		}
+
+		saveRefundToDB(refund);
+		return message;
+	}
+
+	private void handleApply() throws IOException {
+		boolean collected = false;
+		if (SAVE_BUTTON.equals(button)) {
+			button = APPLY_BUTTON;
+		}
+
+		if (COLLECT_PAYMENT_BUTTON.equals(button)) {
+			collected = true;
+			button = APPLY_BUTTON;
+		}
+
+		if (APPLY_BUTTON.equals(button)) {
+			adjustContractorIfChangingPaymentMethodOnAccount();
+			applyPayments(collected);
+		}
+	}
+
+	private boolean isUnapply() throws IOException {
+		if (UNAPPLY_BUTTON.equals(button) && processUnapplyPayment()) {
+			return true;
+		}
+		return false;
+	}
+
+	private void applyPayments(boolean collected) {
+		for (int txnID : amountApplyMap.keySet()) {
+			if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
+				for (Invoice txn : contractor.getInvoices()) {
+					if (txn.getId() == txnID) {
+						PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
+								amountApplyMap.get(txnID));
+						emailReceiptToContractor(collected, txn);
+
+
+						notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.SAVE));
+}
 				}
 
-				if (COLLECT_PAYMENT_BUTTON.equals(button)) {
-					collected = true;
-					button = APPLY_BUTTON;
-				}
+				applyPaymentToRefundForTransaction(txnID);
+			}
+		}
+	}
 
-				if (UNAPPLY_BUTTON.equals(button)) {
-					// Find the Invoice or Refund # passed through the
-					// amountApplyMap and remove it
-					for (int txnID : amountApplyMap.keySet()) {
-						Iterator<PaymentAppliedToInvoice> iterInvoice = payment.getInvoices().iterator();
-						while (iterInvoice.hasNext()) {
-							PaymentAppliedToInvoice pa = iterInvoice.next();
-							if (pa.getInvoice().getId() == txnID) {
-								paymentDAO.removePaymentInvoice(pa, getUser());
-								notifyDataChange(new PaymentDataEvent(pa, PaymentEventType.REMOVE));
-								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
-							}
-						}
+	private boolean paymentHasFlaws() {
+		if (payment.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
+			addActionError("Payments must be greater than zero");
+			return true;
+		}
+		return false;
+	}
 
-						Iterator<PaymentAppliedToRefund> iterRefund = payment.getRefunds().iterator();
-						while (iterRefund.hasNext()) {
-							PaymentAppliedToRefund pa = iterRefund.next();
-							if (pa.getRefund().getId() == txnID) {
-								paymentDAO.removePaymentRefund(pa, getUser());
-								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
-							}
-						}
-					}
-				}
-				if (APPLY_BUTTON.equals(button)) {
-					if (changePaymentMethodOnAccount) {
-						contractor.setPaymentMethod(method);
-						contractor.setAuditColumns(permissions);
-						contractorAccountDao.save(contractor);
-					}
-					for (int txnID : amountApplyMap.keySet()) {
-						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
-							for (Invoice txn : contractor.getInvoices()) {
-								if (txn.getId() == txnID) {
-									PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
-											amountApplyMap.get(txnID));
-
-									// Email Receipt to Contractor
-									try {
-										if (collected) {
-											EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn);
-										}
-									} catch (Exception e) {
-										/**
-										 * The above can throw an exception if a
-										 * user doesn't have an email address
-										 * defined. If this happens, then a
-										 * payment will be processed online
-										 * without a record being saved on PICS.
-										 * We should still create the Payment in
-										 * PICS even if the email sending
-										 * failed.
-										 */
-									}
-
-                                    notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.SAVE));
-                                }
-							}
-
-							for (Refund txn : contractor.getRefunds()) {
-								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
-											amountApplyMap.get(txnID));
-								}
-							}
-						}
-					}
+	private void activateContractorIfAppropriate() {
+		// Activate the contractor if an activation invoice is fully applied
+		// (this will occur on the redirect)
+		if (contractor.getStatus().isPendingOrDeactivated()) {
+			for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
+				if (billingService.activateContractor(contractor, ip.getInvoice())) {
+					contractorAccountDao.save(contractor);
+					break;
 				}
 			}
+		}
+	}
 
-			payment.updateAmountApplied();
-			AccountingSystemSynchronization.setToSynchronize(payment);
+	private void findCreditCardForContractor() throws Exception {
+		creditCard = paymentService.getCreditCard(contractor);
+		method = PaymentMethod.CreditCard;
+	}
+
+
+	private void saveRefundToDB(Refund refund) {
+		AccountingSystemSynchronization.setToSynchronize(refund);
+		PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
+		paymentDAO.save(refund);
+	}
+
+	private void savePaymentToDB() {
+		payment.updateAmountApplied();
+		AccountingSystemSynchronization.setToSynchronize(payment);
+		paymentDAO.save(payment);
+	}
+
+	private boolean isBrainTreeCreditCardRefund() {
+		return REFUND_ON_BRAIN_TREE_PICS_BUTTON.equals(button) && payment.getPaymentMethod().isCreditCard();
+	}
+
+	private boolean anyErrorsInRefund() {
+		if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
+			addActionError("You can't refund negative amounts");
+			return true;
+		}
+
+		if (refundAmount.compareTo(payment.getBalance()) > 0) {
+			addActionError("You can't refund more than the remaining balance");
+			return true;
+		}
+		return false;
+	}
+
+	private void handleCreditCard() throws Exception {
+		try {
+			processCreditCardPaymentThroughBrainTree();
+
+			addNote("Credit Card transaction completed and emailed the receipt for "
+					+ payment.getCurrency().getSymbol() + payment.getTotalAmount());
+		} catch (NoBrainTreeServiceResponseException re) {
+			addNote("Credit Card service connection error: " + re.getMessage());
+
+			sendEmailBraintreeFailure();
+
+			addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
+					+ getText("PicsBillingPhone") + ".");
+
+			// Assuming paid status per Aaron so that he can refund
+			// or void manually.
+			payment.setStatus(TransactionStatus.Unpaid);
 			paymentDAO.save(payment);
+			throw re;
+		} catch (Exception e) {
+			addNote("Credit Card transaction failed: " + e.getMessage());
+			this.addActionError("Failed to charge credit card. " + e.getMessage());
+			throw e;
+		}
+	}
+
+	private void emailReceiptToContractor(boolean collected, Invoice txn) {
+		// Email Receipt to Contractor
+		try {
+			if (collected) {
+				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn);
+			}
+		} catch (Exception e) {
+			/**
+			 * The above can throw an exception if a
+			 * user doesn't have an email address
+			 * defined. If this happens, then a
+			 * payment will be processed online
+			 * without a record being saved on PICS.
+			 * We should still create the Payment in
+			 * PICS even if the email sending
+			 * failed.
+			 */
+		}
+	}
+
+	private void applyPaymentToRefundForTransaction(int txnID) {
+		for (Refund txn : contractor.getRefunds()) {
+			if (txn.getId() == txnID) {
+				PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
+						amountApplyMap.get(txnID));
+			}
+		}
+	}
+
+	private void adjustContractorIfChangingPaymentMethodOnAccount() {
+		if (changePaymentMethodOnAccount) {
+			contractor.setPaymentMethod(method);
+			contractor.setAuditColumns(permissions);
+			contractorAccountDao.save(contractor);
+		}
+	}
+
+	private boolean processUnapplyPayment() throws IOException {
+		// Find the Invoice or Refund # passed through the
+		// amountApplyMap and remove it
+		for (int txnID : amountApplyMap.keySet()) {
+			Iterator<PaymentAppliedToInvoice> iterInvoice = payment.getInvoices().iterator();
+			while (iterInvoice.hasNext()) {
+				PaymentAppliedToInvoice pa = iterInvoice.next();
+				if (pa.getInvoice().getId() == txnID) {
+					paymentDAO.removePaymentInvoice(pa, getUser());
+					notifyDataChange(new PaymentDataEvent(pa, PaymentEventType.REMOVE));
+					return true;
+				}
+			}
+
+			Iterator<PaymentAppliedToRefund> iterRefund = payment.getRefunds().iterator();
+			while (iterRefund.hasNext()) {
+				PaymentAppliedToRefund pa = iterRefund.next();
+				if (pa.getRefund().getId() == txnID) {
+					paymentDAO.removePaymentRefund(pa, getUser());
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private String processVoidPayment() {
+		String message;
+		try {
+			paymentService.voidTransaction(payment.getTransactionID());
+			message = "Successfully canceled credit card transaction";
+			payment.setStatus(TransactionStatus.Void);
+			transactionCondition = null;
+
+			unapplyAll();
+
+			paymentDAO.remove(payment); // per Aaron's request
+
+			updateAmountAppliedOnPaymentInvoices();
+			updateAmountAppliedOnPaymentRefunds();
 
 			if (message != null) {
 				addActionMessage(message);
 			}
 
-			return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
+			return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
+		} catch (Exception e) {
+			addActionError("Failed to cancel credit card transaction: " + e.getMessage());
+			return ERROR;
+		}
+	}
+
+	private String processDeletePayment() throws IOException {
+		if (payment.getQbListID() != null) {
+			addActionError("You can't delete a payment that has already been synced with QuickBooks.");
+			return ERROR;
 		}
 
+		unapplyAll();
+		paymentDAO.remove(payment);
+
+		updateAmountAppliedOnPaymentInvoices();
+		updateAmountAppliedOnPaymentRefunds();
+
+		addActionMessage("Successfully Deleted Payment");
+
+		return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
+	}
+
+	private Refund generateRefund() {
+		Refund refund = new Refund();
+		refund.setTotalAmount(refundAmount);
+		refund.setAccount(contractor);
+		refund.setAuditColumns(permissions);
+		refund.setStatus(TransactionStatus.Paid);
+		if (isBrainTreeCreditCardRefund()) {
+			refund.setCcNumber(payment.getCcNumber());
+			refund.setTransactionID(payment.getTransactionID());
+		}
+		return refund;
+	}
+
+	private void updateAmountAppliedOnPaymentRefunds() {
+		for (PaymentAppliedToRefund ip : payment.getRefunds()) {
+ip.getRefund().updateAmountApplied();
+}
+	}
+
+
+	private void updateAmountAppliedOnPaymentInvoices() {
+		for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
+			ip.getInvoice().updateAmountApplied();
+		}
+	}
+
+	private void updateAmountAppliedOnContractorInvoices() {
 		for (Invoice invoice : contractor.getInvoices()) {
-			if (!amountApplyMap.containsKey(invoice.getId())) {
-				amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
-			}
+			invoice.updateAmountApplied();
 		}
+	}
 
-		return SUCCESS;
+	private void processCreditCardPaymentThroughBrainTree() throws Exception {
+		if (creditCard == null || creditCard.getCardNumber() == null) {
+			creditCard = paymentService.getCreditCard(contractor);
+		}
+		paymentService.processPayment(payment, null);
+		payment.setCcNumber(creditCard.getCardNumber());
+	}
+
+	private void addDetailsToPayment() {
+		payment.setAccount(contractor);
+		payment.setAuditColumns(permissions);
+		payment.setPaymentMethod(method);
+		Currency appliedInvoiceCurrency = getCurrencyOfAppliedInvoices(contractor, amountApplyMap);
+		payment.setCurrency(appliedInvoiceCurrency);
+	}
+
+	private void sendEmailBraintreeFailure() {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(EmailTemplate.BRAIN_TREE_ERROR_EMAIL_TEMPLATE);
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
+		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.addToken("permissions", permissions);
+		emailBuilder.addToken("contractor", contractor);
+		emailBuilder.addToken("billingusers", contractor.getUsersByRole(OpPerms.ContractorBilling));
+		emailBuilder.addToken("invoice", null);
+
+		EmailQueue emailQueue;
+		try {
+			emailQueue = emailBuilder.build();
+			emailQueue.setVeryHighPriority();
+			emailQueue.setSubjectViewableById(Account.PicsID);
+			emailQueue.setBodyViewableById(Account.PicsID);
+			emailSender.send(emailQueue);
+		} catch (Exception e) {
+			PicsLogger
+					.log("Cannot send email error message or determine credit processing status for contractor "
+							+ contractor.getName() + " (" + contractor.getId() + ")");
+		}
 	}
 
 	private Currency getCurrencyOfAppliedInvoices(ContractorAccount contractor, Map<Integer, BigDecimal> amountApplyMap) {

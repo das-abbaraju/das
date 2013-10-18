@@ -1173,7 +1173,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.payments = payments;
 	}
 
-	@OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, targetEntity = Transaction.class)
 	@Where(clause = "tableType='R'")
 	public List<Refund> getRefunds() {
 		return refunds;
