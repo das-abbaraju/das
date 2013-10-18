@@ -47,6 +47,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
+	private InvoiceDAO invoiceDAO;
+	@Autowired
 	private BillingService billingService;
 	@Autowired
 	private EmailSender emailSender;
@@ -56,8 +58,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private BillingNoteModel billingNoteModel;
-	@Autowired
-	private InvoiceDAO invoiceDAO;
+
 
 	private Payment payment;
 	private PaymentMethod method = null;
@@ -92,7 +93,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
         }
 
         if (FIND_CC_BUTTON.equals(button)) {
-			return findCreditCardForContractor();
+			CreditCard creditCard1 = findCreditCardForContractor();
+			return SUCCESS;
 		}
 
 		if (method == null) {
@@ -194,7 +196,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private void makeSureNoInvoiceIsPaidInFull() throws Exception {
 		for (Integer invoiceID : amountApplyMap.keySet()) {
 			Invoice invoice = invoiceDAO.find(invoiceID);
-			if (invoice.isApplied()) {
+			if (invoice != null && invoice.isApplied() && !amountApplyMap.get(invoiceID).equals(BigDecimal.ZERO.setScale(2))) {
 				throw new Exception();
 			}
 		}
@@ -276,10 +278,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
-	private String findCreditCardForContractor() throws Exception {
+	private CreditCard findCreditCardForContractor() throws Exception {
 		creditCard = paymentService.getCreditCard(contractor);
 		method = PaymentMethod.CreditCard;
-		return SUCCESS;
+		return creditCard;
 	}
 
 
