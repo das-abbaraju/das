@@ -73,7 +73,6 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 	public List<AccountSkill> search(String searchTerm, int accountId) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId = :accountId " +
 				"AND (s.name LIKE :searchTerm " +
-//				"OR s.skillType.toString() LIKE :searchTerm " +
 				"OR s.description LIKE :searchTerm)", AccountSkill.class);
 		query.setParameter("accountId", accountId);
 		query.setParameter("searchTerm", "%" + searchTerm + "%");

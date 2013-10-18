@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import com.picsauditing.access.builders.PermissionsBuilder;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.strutsutil.AjaxUtils;

@@ -20,10 +20,7 @@ import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.SkillInfo;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.services.EmailHashService;
-import com.picsauditing.employeeguard.services.EmailService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.GroupService;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.util.PhotoUtil;
@@ -36,7 +33,9 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -60,6 +59,10 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private FormBuilderFactory formBuilderFactory;
 	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private PhotoUtil photoUtil;
+	@Autowired
+	private ProfileDocumentService profileDocumentService;
 
 	/* Forms */
 	@FormBinding("contractor_employee_create")
@@ -82,6 +85,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	/* Misc data */
 	private InputStream inputStream;
 	private Table<Employee, String, Integer> employeeSkillStatuses;
+	private UrlBuilder urlBuilder;
 
 	/* Pages */
 	// FIXME: Add back in support for OR OpPerms logic?
@@ -146,20 +150,17 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	public String photo() throws FileNotFoundException {
 		if (NumberUtils.toInt(id) > 0) {
 			employee = employeeService.findEmployee(id, permissions.getAccountId());
-			File employeePhoto = PhotoUtil.getPhotoForEmployee(employee, permissions.getAccountId(), getFtpDir());
+			inputStream = photoUtil.getPhotoStreamForEmployee(employee, permissions.getAccountId(), getFtpDir());
 
-			if (employeePhoto != null && employeePhoto.exists()) {
-				inputStream = new FileInputStream(employeePhoto);
-			} else if (employee.getProfile() != null) {
-				File profilePhoto = PhotoUtil.getPhotoForProfile(employee.getProfile(), getFtpDir());
-				if (profilePhoto != null && profilePhoto.exists()) {
-					inputStream = new FileInputStream(profilePhoto);
-				}
+			if (inputStream == null) {
+				// Try profile
+				inputStream = photoUtil.getPhotoStreamForProfile(profileDocumentService.getPhotoDocumentFromProfile(employee.getProfile()), getFtpDir());
 			}
 		}
 
 		if (inputStream == null) {
-			inputStream = new FileInputStream(PhotoUtil.getDefaultPhoto(getFtpDir()));
+			// If neither employee photo or profile photo exists
+			inputStream = photoUtil.getDefaultPhotoStream(getFtpDir());
 		}
 
 		return "photo";
@@ -203,7 +204,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	private String redirectToList() throws Exception {
-		String url = new UrlBuilder().action("employee").build();
+		String url = urlBuilder().action("employee").build();
 		return setUrlForRedirect(url);
 	}
 
@@ -227,6 +228,14 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 				employeeSkillStatuses.put(employee, status.getDisplayValue(), employeeSkillStatuses.get(employee, status.getDisplayValue()) + 1);
 			}
 		}
+	}
+
+	private UrlBuilder urlBuilder() {
+		if (urlBuilder == null) {
+			urlBuilder = new UrlBuilder();
+		}
+
+		return urlBuilder;
 	}
 
 	/* Validation */

@@ -8,7 +8,6 @@ import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.EmailHash;
-import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.forms.ProfileForm;
 import com.picsauditing.employeeguard.services.EmailHashService;
@@ -17,14 +16,12 @@ import com.picsauditing.employeeguard.services.LoginService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.validators.profile.ProfileFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.EncodedMessage;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.FailedLoginException;
-import java.util.Date;
 
 public class AccountAction extends PicsRestActionSupport {
 	private static final long serialVersionUID = -3897271223264803860L;
@@ -57,8 +54,7 @@ public class AccountAction extends PicsRestActionSupport {
 		EmailHash emailHash = emailHashService.findByHash(hashCode);
 
 		profile = new Profile();
-
-		if (emailHash != null) {
+		if (emailHash.getEmployee() != null) {
 			profile.setFirstName(emailHash.getEmployee().getFirstName());
 			profile.setLastName(emailHash.getEmployee().getLastName());
 			profile.setEmail(emailHash.getEmailAddress());
@@ -83,15 +79,13 @@ public class AccountAction extends PicsRestActionSupport {
 			return ERROR;
 		}
 
-		Profile profile = profileForm.buildProfile(NumberUtils.toInt(createAppUserResult.get("id").toString()));
-		profileService.create(profile);
+		String appUserID = createAppUserResult.get("id").toString();
+		Profile profile = profileForm.buildProfile(NumberUtils.toInt(appUserID));
+		profile = profileService.create(profile);
 
 		EmailHash emailHash = emailHashService.findByHash(hashCode);
-		emailHash.setExpirationDate(new Date());
-		emailHashService.save(emailHash);
-		Employee employee = emailHash.getEmployee();
-		employee.setProfile(profile);
-		employeeService.save(employee, employee.getAccountId(), User.SYSTEM);
+		employeeService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
+		emailHashService.expire(emailHash);
 
 		JSONObject loginResult = loginService.loginViaRest(profileForm.getEmail(), EncodedMessage.hash(profileForm.getPassword()));
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {

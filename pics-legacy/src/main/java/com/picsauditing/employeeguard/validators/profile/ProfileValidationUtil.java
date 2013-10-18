@@ -12,14 +12,19 @@ public class ProfileValidationUtil {
 		switch (field) {
 			case FIRST_NAME:
 				return validateFirstName(profileForm);
+
 			case LAST_NAME:
 				return validateLastName(profileForm);
+
 			case EMAIL:
 				return validateEmail(profileForm);
+
 			case EMAIL_RETYPE:
 				return validateEmailRetype(profileForm);
+
 			case PASSWORD:
 				return validatePassword(profileForm);
+
 			default:
 				throw new IllegalArgumentException("You have not set up validation for that field: " + field);
 		}

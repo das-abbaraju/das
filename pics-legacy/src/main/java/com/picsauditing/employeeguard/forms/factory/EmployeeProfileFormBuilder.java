@@ -24,8 +24,6 @@ import java.util.Map;
 public class EmployeeProfileFormBuilder {
 
 	@Autowired
-	private AccountGroupEmployeeService accountGroupEmployeeService;
-	@Autowired
 	private AccountService accountService;
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;

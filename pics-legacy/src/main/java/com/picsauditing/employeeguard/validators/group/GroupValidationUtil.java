@@ -4,11 +4,11 @@ import com.picsauditing.util.Strings;
 
 public class GroupValidationUtil {
 
-	public enum RoleField {
+	public enum Field {
 		NAME
 	}
 
-	public static boolean valid(String value, RoleField field) {
+	public static boolean valid(String value, Field field) {
 		switch (field) {
 			case NAME:
 				return validateName(value);

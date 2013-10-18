@@ -1,35 +1,41 @@
 package com.picsauditing.employeeguard.util;
 
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.employeeguard.entities.DocumentType;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
-import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.FileSystemAccessor;
+import com.picsauditing.util.Strings;
+import edu.emory.mathcs.backport.java.util.Collections;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PhotoUtil {
-	public static final String[] VALID_PHOTO_EXTENSIONS = new String[]{"jpg", "png", "gif"};
 
-	public static void sendPhotoToFilesDirectory(File photo, String directory, int id, String extension, String filename) throws Exception {
-		FileUtils.moveFile(photo, directory, "files/" + FileUtils.thousandize(id), filename, extension, true);
+	public static final Set<String> VALID_PHOTO_EXTENSIONS =
+			Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jpg", "png", "gif")));
+	public static final String DEFAULT_PHOTO_FILE = "/files/dummy.jpg";
+
+	@Autowired
+	private FileSystemAccessor fileSystemAccessor;
+
+	public void sendPhotoToFilesDirectory(final File photo, final String directory, final int id, final String extension, final String filename) throws Exception {
+		fileSystemAccessor.moveFile(photo, directory, "files/" + fileSystemAccessor.thousandize(id), filename, extension, true);
 	}
 
-	public static File getPhotoForProfile(final Profile profile, final String directory) {
-		ProfileDocument photoDocument = getPhotoDocumentFromProfile(profile);
-		if (photoDocument != null) {
-			File file = new File(directory + "/files/" + FileUtils.thousandize(profile.getId()) + photoDocument.getFileName());
-			if (file.exists()) {
-				return file;
-			}
+	public File getPhotoForProfile(final ProfileDocument photoDocument, final String directory) {
+		if (photoDocument == null) {
+			return null;
 		}
 
-		return null;
-	}
-
-	public static File getDefaultPhoto(final String directory) {
-		File file = new File(directory + "/files/dummy.jpg");
+		String filePath = getFilePath(directory, photoDocument.getProfile().getId(), photoDocument.getFileName());
+		File file = fileSystemAccessor.getFile(filePath);
 		if (file.exists()) {
 			return file;
 		}
@@ -37,30 +43,30 @@ public class PhotoUtil {
 		return null;
 	}
 
-	public static ProfileDocument getPhotoDocumentFromProfile(final Profile profile) {
-		for (ProfileDocument profileDocument : profile.getDocuments()) {
-			if (profileDocument.getDocumentType() == DocumentType.Photo) {
-				return profileDocument;
-			}
+	public File getDefaultPhoto(final String directory) {
+		File file = fileSystemAccessor.getFile(directory + DEFAULT_PHOTO_FILE);
+		if (file.exists()) {
+			return file;
 		}
 
 		return null;
 	}
 
-	public static void deleteExistingProfilePhoto(String directory, Profile profile) {
-		File file = getPhotoForProfile(profile, directory);
+	public void deleteExistingProfilePhoto(final String directory, final ProfileDocument photoDocument) {
+		File file = getPhotoForProfile(photoDocument, directory);
 		if (file != null && file.exists()) {
-			FileUtils.deleteFile(file);
+			fileSystemAccessor.deleteFile(file);
 		}
 	}
 
-	public static File getPhotoForEmployee(Employee employee, int accountId, String directory) {
+	public File getPhotoForEmployee(final Employee employee, final int accountId, final String directory) {
 		int id = employee.getId();
 		String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
 
 		File file;
 		for (String extension : VALID_PHOTO_EXTENSIONS) {
-			file = new File(directory + "/files/" + FileUtils.thousandize(id) + filename + "." + extension);
+			String pathname = getFilePath(directory, id, filename, extension);
+			file = fileSystemAccessor.getFile(pathname);
 
 			if (file != null && file.exists()) {
 				return file;
@@ -70,22 +76,54 @@ public class PhotoUtil {
 		return null;
 	}
 
-	public static boolean isValidExtension(String extension) {
-		return FileUtils.checkFileExtension(extension, VALID_PHOTO_EXTENSIONS);
+	public String getFilePath(final String directory, int id, String filename) {
+		return getFilePath(directory, id, filename, Strings.EMPTY_STRING);
 	}
 
-    public static File getFile(String directory, ProfileDocument document) {
-        if (document == null) {
-            return null;
-        }
+	public String getFilePath(final String directory, int id, String filename, String extention) {
+		return directory + "/files/" + fileSystemAccessor.thousandize(id) + filename + "." + extention;
+	}
 
-        File file = new File(directory + "/files/" + FileUtils.thousandize(document.getProfile().getId())
-                + document.getFileName());
+	public boolean isValidExtension(final String extension) {
+		return fileSystemAccessor.checkExtentions(extension, VALID_PHOTO_EXTENSIONS);
+	}
 
-        if (file.exists()) {
-            return file;
-        }
+	public File getFile(final String directory, final ProfileDocument document) {
+		if (document == null) {
+			return null;
+		}
 
-        return null;
-    }
+		String pathName = directory + "/files/" + fileSystemAccessor.thousandize(document.getProfile().getId())
+				+ document.getFileName();
+		File file = fileSystemAccessor.getFile(pathName);
+
+		if (file.exists()) {
+			return file;
+		}
+
+		return null;
+	}
+
+	public InputStream getPhotoStreamForEmployee(final Employee employee, final int accountId, final String directory) throws FileNotFoundException {
+		File file = getPhotoForEmployee(employee, accountId, directory);
+		return streamPhoto(file);
+	}
+
+	public InputStream getPhotoStreamForProfile(final ProfileDocument profileDocument, final String directory) throws FileNotFoundException {
+		File file = getPhotoForProfile(profileDocument, directory);
+		return streamPhoto(file);
+	}
+
+	public InputStream getDefaultPhotoStream(final String directory) throws FileNotFoundException {
+		File file = getDefaultPhoto(directory);
+		return streamPhoto(file);
+	}
+
+	private InputStream streamPhoto(File file) throws FileNotFoundException {
+		if (file != null && file.exists()) {
+			return new FileInputStream(file);
+		}
+
+		return null;
+	}
 }

@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
-import com.picsauditing.jpa.entities.Identifiable;
+import com.picsauditing.database.domain.Identifiable;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;

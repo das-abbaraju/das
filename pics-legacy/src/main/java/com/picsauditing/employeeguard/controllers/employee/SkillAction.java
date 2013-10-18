@@ -32,7 +32,6 @@ public class SkillAction extends PicsRestActionSupport {
 	private ProfileDocumentService profileDocumentService;
 	@Autowired
 	private SkillService skillService;
-
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;
 

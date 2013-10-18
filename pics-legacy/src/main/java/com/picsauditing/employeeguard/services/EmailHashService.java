@@ -29,7 +29,8 @@ public class EmailHashService {
 		return emailHashDAO.findByHash(hash);
 	}
 
-	public void save(EmailHash emailHash) {
+	public void expire(EmailHash emailHash) {
+		emailHash.setExpirationDate(new Date());
 		emailHashDAO.save(emailHash);
 	}
 

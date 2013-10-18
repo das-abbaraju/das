@@ -2,7 +2,7 @@ package com.picsauditing.access;
 
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Identifiable;
+import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.toggle.FeatureToggle;

@@ -12,7 +12,7 @@ public class GroupFormValidator extends AbstractValidator<GroupNameSkillsForm> {
 
 	@Override
 	public void performValidation(GroupNameSkillsForm groupForm) {
-		if (!GroupValidationUtil.valid(groupForm.getName(), GroupValidationUtil.RoleField.NAME)) {
+		if (!GroupValidationUtil.valid(groupForm.getName(), GroupValidationUtil.Field.NAME)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_FORM, "name"), "Name is missing");
 			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_NAME_SKILLS_FORM, "name"), "Name is missing");
 		}

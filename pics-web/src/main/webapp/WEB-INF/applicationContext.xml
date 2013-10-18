@@ -203,6 +203,7 @@
     <bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"
           scope="prototype"/>
     <bean id="ContractorDashboardApprovalMessage" class="com.picsauditing.model.user.ContractorDashboardApprovalMessage"/>
+    <bean id="FileSystemAccessor" class="com.picsauditing.util.FileSystemAccessor"/>
 
     <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder" scope="prototype"/>
     <bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel"/>

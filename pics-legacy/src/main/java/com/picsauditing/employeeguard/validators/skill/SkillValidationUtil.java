@@ -23,7 +23,7 @@ public class SkillValidationUtil {
     }
 
     private static boolean validateExpiration(SkillForm skillForm) {
-        if (skillForm.getSkillType().isTraining()) {
+        if (skillForm.getSkillType() != null && skillForm.getSkillType().isTraining()) {
             return (skillForm.isDoesNotExpire() ||
                     (skillForm.getIntervalType().isApplicableExpiration() && skillForm.getIntervalPeriod() > 0));
         }

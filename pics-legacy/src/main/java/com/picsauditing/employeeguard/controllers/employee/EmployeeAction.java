@@ -27,6 +27,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 	private ProfileDocumentService profileDocumentService;
     @Autowired
     private FormBuilderFactory formBuilderFactory;
+    @Autowired
+    private PhotoUtil photoUtil;
 
     @FormBinding("employee_profile_edit")
     private EmployeeProfileEditForm personalInfo;
@@ -57,12 +59,12 @@ public class EmployeeAction extends PicsRestActionSupport {
 	@SkipValidation
 	public String photo() throws FileNotFoundException {
 		profile = profileService.findById(id);
-		File photo = PhotoUtil.getPhotoForProfile(profile, getFtpDir());
+		File photo = photoUtil.getPhotoForProfile(profileDocumentService.getPhotoDocumentFromProfile(profile), getFtpDir());
 
 		if (photo != null && photo.exists()) {
 			inputStream = new FileInputStream(photo);
 		} else {
-			inputStream = new FileInputStream(PhotoUtil.getDefaultPhoto(getFtpDir()));
+			inputStream = new FileInputStream(photoUtil.getDefaultPhoto(getFtpDir()));
 		}
 
 		return "photo";
@@ -73,11 +75,10 @@ public class EmployeeAction extends PicsRestActionSupport {
 	}
 
 	public String update() throws Exception {
-        Profile profile = null;
+        Profile profile = profileService.findById(id);
 		if (personalInfo != null) {
 			profile = profileService.update(personalInfo, id, permissions.getAppUserID());
 		} else if (profilePhotoForm != null) {
-			profile = profileService.findById(id);
 			profileDocumentService.update(profilePhotoForm, getFtpDir(), profile, permissions.getAppUserID());
 		}
 
@@ -90,7 +91,6 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	public String badge() {
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
-		id = Integer.toString(profile.getId());
 
         personalInfo = formBuilderFactory.getEmployeeProfileEditFormBuilder().build(profile);
 
@@ -99,9 +99,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	public String settings() {
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
-		id = Integer.toString(profile.getId());
 
-        personalInfo = formBuilderFactory.getEmployeeProfileEditFormBuilder().build(profile);
+		personalInfo = formBuilderFactory.getEmployeeProfileEditFormBuilder().build(profile);
 
 		return "settings";
 	}

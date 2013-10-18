@@ -15,12 +15,11 @@ import com.picsauditing.employeeguard.services.LoginService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.EncodedMessage;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
 
 public class LoginAction extends PicsRestActionSupport {
 	private static final long serialVersionUID = 3274071143261978073L;
@@ -60,13 +59,7 @@ public class LoginAction extends PicsRestActionSupport {
 			throw new PageNotFoundException();
 		}
 
-		if (employee.getProfile() != null) {
-			profile = employee.getProfile();
-		} else {
-			profile = new Profile();
-			profile.setFirstName(employee.getFirstName());
-			profile.setLastName(employee.getLastName());
-		}
+		prepareProfile(employee);
 
 		Account account = accountDAO.find(employee.getAccountId());
 		if (account != null) {
@@ -76,20 +69,31 @@ public class LoginAction extends PicsRestActionSupport {
 		return LIST;
 	}
 
+	private void prepareProfile(Employee employee) {
+		if (employee.getProfile() != null) {
+			profile = employee.getProfile();
+		} else {
+			profile = new Profile();
+			profile.setFirstName(employee.getFirstName());
+			profile.setLastName(employee.getLastName());
+		}
+	}
+
 	@Anonymous
 	public String login() throws Exception {
 		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), EncodedMessage.hash(loginForm.getPassword()));
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
-			throw new Exception();
+			throw new PageNotFoundException();
 		} else {
-			doSetCookie(loginResult.get("cookie").toString(), 10);
+			String cookieContent = loginResult.get("cookie").toString();
 
+			doSetCookie(cookieContent, 10);
+			SessionCookie cookie = SessionSecurity.parseSessionCookie(cookieContent);
+
+			Profile profile = profileService.findByAppUserId(cookie.getAppUserID());
 			EmailHash emailHash = emailHashService.findByHash(hashCode);
-			emailHash.setExpirationDate(new Date());
-			emailHashService.save(emailHash);
-			Employee employee  = emailHash.getEmployee();
-			employee.setProfile(profileService.findByAppUserId(appUserDAO.findListByUserName(loginForm.getUsername()).get(0).getId()));
-			employeeService.save(employee, employee.getAccountId(), User.SYSTEM);
+			employeeService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
+			emailHashService.expire(emailHash);
 
 			return setUrlForRedirect("/employee-guard/employee/dashboard");
 		}

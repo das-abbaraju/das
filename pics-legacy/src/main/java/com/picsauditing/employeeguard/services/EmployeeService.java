@@ -2,11 +2,13 @@ package com.picsauditing.employeeguard.services;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
@@ -38,6 +40,8 @@ public class EmployeeService {
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Autowired
+	private PhotoUtil photoUtil;
 
 	public Employee findEmployee(final String id, final int accountId) {
 		int employeeId = NumberUtils.toInt(id);
@@ -215,10 +219,10 @@ public class EmployeeService {
 	public Employee updatePhoto(PhotoForm photoForm, String directory, String id, int accountId) throws Exception {
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 
-		if (PhotoUtil.isValidExtension(extension)) {
+		if (photoUtil.isValidExtension(extension)) {
 			int employeeId = NumberUtils.toInt(id);
 			String filename = PICSFileType.employee_photo.filename(employeeId) + "-" + accountId;
-			PhotoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, employeeId, extension, filename);
+			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, employeeId, extension, filename);
 		} else {
 			throw new IllegalArgumentException("Invalid file format");
 		}
@@ -319,5 +323,11 @@ public class EmployeeService {
 		}
 
 		return Collections.emptyList();
+	}
+
+	public void linkEmployeeToProfile(Employee employee, final Profile profile) {
+		employee.setProfile(profile);
+		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
+		employeeDAO.save(employee);
 	}
 }

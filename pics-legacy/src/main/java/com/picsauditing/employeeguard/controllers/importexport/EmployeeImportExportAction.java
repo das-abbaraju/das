@@ -20,9 +20,11 @@ public class EmployeeImportExportAction extends ImportExportActionSupport {
 	private Map<String, Object> contractor_employee_import = new HashMap<>();
 	private Map<String, Object> contractor_employee_export = new HashMap<>();
 
+	private UrlBuilder urlBuilder;
+
 	@Override
 	protected void processUpload() throws Exception {
-		employeeService.importEmployees(upload, permissions.getAccountId(), permissions.getUserId());
+		employeeService.importEmployees(upload, permissions.getAccountId(), permissions.getAppUserID());
 	}
 
 	// TODO: i18n
@@ -72,12 +74,12 @@ public class EmployeeImportExportAction extends ImportExportActionSupport {
 
 	@Override
 	protected String invalidUploadRedirect() throws Exception {
-		return setUrlForRedirect(new UrlBuilder().action("employee/import-export").build());
+		return setUrlForRedirect(urlBuilder().action("employee/import-export").build());
 	}
 
 	@Override
 	protected String successfulUploadRedirect() throws Exception {
-		return setUrlForRedirect(new UrlBuilder().action("employee").build());
+		return setUrlForRedirect(urlBuilder().action("employee").build());
 	}
 
 	public Map<String, Object> getContractor_employee_import() {
@@ -94,5 +96,13 @@ public class EmployeeImportExportAction extends ImportExportActionSupport {
 
 	public void setContractor_employee_export(Map<String, Object> contractor_employee_export) {
 		this.contractor_employee_export = contractor_employee_export;
+	}
+
+	private UrlBuilder urlBuilder() {
+		if (urlBuilder == null) {
+			urlBuilder = new UrlBuilder();
+		}
+
+		return urlBuilder;
 	}
 }

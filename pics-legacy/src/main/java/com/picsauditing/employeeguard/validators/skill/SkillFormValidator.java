@@ -8,8 +8,6 @@ public class SkillFormValidator extends AbstractValidator<SkillForm> {
 
 	public static final String SKILL_FORM = "skillForm";
 
-	// private Map<String, String> errors = new HashMap<>();
-
 	@Override
 	public void performValidation(SkillForm skillForm) {
 		if (!SkillValidationUtil.valid(skillForm, SkillValidationUtil.SkillField.NAME)) {

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0"
 	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+        >
 
 	<persistence-unit name="punit" transaction-type="RESOURCE_LOCAL">
 
@@ -74,6 +75,20 @@
 		<class>com.picsauditing.jpa.entities.Widget</class>
 		<class>com.picsauditing.jpa.entities.WidgetUser</class>
 		<class>com.picsauditing.jpa.entities.YesNo</class>
+
+        <class>com.picsauditing.employeeguard.entities.AccountGroup</class>
+        <class>com.picsauditing.employeeguard.entities.AccountGroupEmployee</class>
+        <class>com.picsauditing.employeeguard.entities.AccountSkill</class>
+        <class>com.picsauditing.employeeguard.entities.AccountSkillEmployee</class>
+        <class>com.picsauditing.employeeguard.entities.AccountSkillGroup</class>
+        <class>com.picsauditing.employeeguard.entities.EmailHash</class>
+        <class>com.picsauditing.employeeguard.entities.Employee</class>
+        <class>com.picsauditing.employeeguard.entities.Profile</class>
+        <class>com.picsauditing.employeeguard.entities.ProfileDocument</class>
+        <class>com.picsauditing.employeeguard.entities.Project</class>
+        <class>com.picsauditing.employeeguard.entities.ProjectCompany</class>
+        <class>com.picsauditing.employeeguard.entities.ProjectGroup</class>
+        <class>com.picsauditing.employeeguard.entities.ProjectSkill</class>
 
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />

@@ -16,22 +16,22 @@ public class AccountGroupEmployeeService {
 	}
 
 	public Map<Integer, List<AccountGroupEmployee>> getMapOfAccountGroupEmployeeByAccountId(final Profile profile) {
-		if (profile != null) {
-			Map<Integer, List<AccountGroupEmployee>> map = new HashMap<>();
+		if (profile == null) {
+			return Collections.emptyMap();
+		}
+		
+		Map<Integer, List<AccountGroupEmployee>> map = new HashMap<>();
 
-			List<AccountGroupEmployee> accountGroupEmployees = findByProfile(profile);
-			for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
-				int accountId = accountGroupEmployee.getEmployee().getAccountId();
-				if (map.get(accountId) == null) {
-					map.put(accountId, new ArrayList<AccountGroupEmployee>());
-				}
-
-				map.get(accountId).add(accountGroupEmployee);
+		List<AccountGroupEmployee> accountGroupEmployees = findByProfile(profile);
+		for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
+			int accountId = accountGroupEmployee.getEmployee().getAccountId();
+			if (map.get(accountId) == null) {
+				map.put(accountId, new ArrayList<AccountGroupEmployee>());
 			}
 
-			return map;
+			map.get(accountId).add(accountGroupEmployee);
 		}
 
-		return Collections.emptyMap();
+		return map;
 	}
 }

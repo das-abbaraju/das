@@ -22,6 +22,8 @@ import java.util.List;
 public class ProfileDocumentService {
 	@Autowired
 	private ProfileDocumentDAO profileDocumentDAO;
+    @Autowired
+    private PhotoUtil photoUtil;
 
 	public ProfileDocument getDocument(String id) {
 		return profileDocumentDAO.find(NumberUtils.toInt(id));
@@ -84,10 +86,10 @@ public class ProfileDocumentService {
 
 	public void update(final ProfilePhotoForm profilePhotoForm, final String directory, final Profile profile, final int appUserID) throws Exception {
 		String extension = FileUtils.getExtension(profilePhotoForm.getPhotoFileName());
-		if (PhotoUtil.isValidExtension(extension)) {
+		if (photoUtil.isValidExtension(extension)) {
 			Date now = new Date();
 			String filename = PICSFileType.profile_photo.filename(profile.getId());
-			ProfileDocument profileDocument = PhotoUtil.getPhotoDocumentFromProfile(profile);
+			ProfileDocument profileDocument = getPhotoDocumentFromProfile(profile);
 
 			if (profileDocument == null) {
 				profileDocument = new ProfileDocument();
@@ -98,7 +100,7 @@ public class ProfileDocumentService {
 			} else {
 				profileDocument.setUpdatedBy(appUserID);
 				profileDocument.setUpdatedDate(now);
-				PhotoUtil.deleteExistingProfilePhoto(directory, profile);
+                photoUtil.deleteExistingProfilePhoto(directory, getPhotoDocumentFromProfile(profile));
 			}
 
 			profileDocument.setName("Profile photo");
@@ -108,8 +110,18 @@ public class ProfileDocumentService {
 			profileDocument.setStartDate(now);
 			profileDocument.setEndDate(ProfileDocument.END_OF_TIME);
 
-			PhotoUtil.sendPhotoToFilesDirectory(profilePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
+            photoUtil.sendPhotoToFilesDirectory(profilePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
 			profileDocumentDAO.save(profileDocument);
 		}
 	}
+
+    public ProfileDocument getPhotoDocumentFromProfile(final Profile profile) {
+        for (ProfileDocument profileDocument : profile.getDocuments()) {
+            if (profileDocument.getDocumentType() == DocumentType.Photo) {
+                return profileDocument;
+            }
+        }
+
+        return null;
+    }
 }

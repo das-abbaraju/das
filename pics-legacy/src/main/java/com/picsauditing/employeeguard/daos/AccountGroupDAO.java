@@ -29,25 +29,27 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 	}
 
 	public List<AccountGroup> findGroupByAccountIdAndNames(int accountId, List<String> names) {
-		if (accountId > 0 && CollectionUtils.isNotEmpty(names)) {
-			TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId = :accountId AND g.name IN ( :names )", AccountGroup.class);
-			query.setParameter("accountId", accountId);
-			query.setParameter("names", names);
-			return query.getResultList();
+		// Not sure if we need to check accountId
+		if (accountId <= 0 && CollectionUtils.isEmpty(names)) {
+			return Collections.emptyList();
 		}
-
-		return Collections.emptyList();
+			
+		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId = :accountId AND g.name IN ( :names )", AccountGroup.class);
+		query.setParameter("accountId", accountId);
+		query.setParameter("names", names);
+		return query.getResultList();
 	}
 
 	public AccountGroup findGroupByAccountIdAndName(int accountId, String name) {
-		if (accountId > 0 && Strings.isNotEmpty(name)) {
-			TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId = :accountId AND g.name = :name", AccountGroup.class);
-			query.setParameter("accountId", accountId);
-			query.setParameter("name", name);
-			return query.getSingleResult();
+		// Not sure if we need to check the accountId
+		if (accountId <= 0 && Strings.isEmpty(name)) {
+			return null;
 		}
 
-		return null;
+		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId = :accountId AND g.name = :name", AccountGroup.class);
+		query.setParameter("accountId", accountId);
+		query.setParameter("name", name);
+		return query.getSingleResult();
 	}
 
 	public List<AccountGroup> search(String searchTerm, int accountId) {
@@ -57,10 +59,5 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 		query.setParameter("accountId", accountId);
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
-	}
-
-	public void delete(int id, int accountId) {
-		AccountGroup group = findGroupByAccount(id, accountId);
-		super.delete(group);
 	}
 }

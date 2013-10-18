@@ -5,19 +5,19 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.employeeguard.entities.AccountGroup;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.util.web.UrlBuilder;
 import com.picsauditing.employeeguard.validators.group.GroupFormValidator;
+import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.util.web.UrlBuilder;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -54,6 +54,9 @@ public class GroupAction extends PicsRestActionSupport {
 	private List<AccountGroup> groups;
 	private List<AccountSkill> groupSkills;
 	private List<Employee> groupEmployees;
+
+	/* Other */
+	private UrlBuilder urlBuilder;
 
 	/* Pages */
 
@@ -117,7 +120,7 @@ public class GroupAction extends PicsRestActionSupport {
 
 	public String insert() throws Exception {
 		group = groupForm.buildAccountGroup();
-		groupService.save(group, permissions.getAccountId(), permissions.getUserId());
+		groupService.save(group, permissions.getAccountId(), permissions.getAppUserID());
 
 		if (addAnother(groupForm)) {
 			return setUrlForRedirect("/employee-guard/contractor/employee-group/create");
@@ -128,22 +131,22 @@ public class GroupAction extends PicsRestActionSupport {
 
 	public String update() throws Exception {
 		if (groupNameSkillsForm != null) {
-			group = groupService.update(groupNameSkillsForm, id, permissions.getAccountId(), permissions.getUserId());
+			group = groupService.update(groupNameSkillsForm, id, permissions.getAccountId(), permissions.getAppUserID());
 		} else {
-			group = groupService.update(groupEmployeesForm, id, permissions.getAccountId(), permissions.getUserId());
+			group = groupService.update(groupEmployeesForm, id, permissions.getAccountId(), permissions.getAppUserID());
 		}
 
 		return setUrlForRedirect("/employee-guard/contractor/employee-group/" + group.getId());
 	}
 
 	public String delete() throws Exception {
-		groupService.delete(id, permissions.getAccountId(), permissions.getUserId());
+		groupService.delete(id, permissions.getAccountId(), permissions.getAppUserID());
 
 		return redirectToList();
 	}
 
 	private String redirectToList() throws Exception {
-		String url = new UrlBuilder().action("employee-group").build();
+		String url = urlBuilder().action("employee-group").build();
 		return setUrlForRedirect(url);
 	}
 
@@ -157,6 +160,14 @@ public class GroupAction extends PicsRestActionSupport {
 
 	private void loadEmployees() {
 		groupEmployees = employeeService.getEmployeesForAccount(permissions.getAccountId());
+	}
+
+	private UrlBuilder urlBuilder() {
+		if (urlBuilder == null) {
+			urlBuilder = new UrlBuilder();
+		}
+
+		return urlBuilder;
 	}
 
 	/* Validation */

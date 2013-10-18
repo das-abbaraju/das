@@ -45,5 +45,10 @@ public abstract class BaseEntityDAO<E extends BaseEntity> {
         em.detach(entity);
         return entity;
     }
+    
+    public E refresh(E entity) {
+    	em.refresh(entity);
+    	return entity;
+    }
 
 }

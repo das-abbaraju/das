@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.jpa.entities.builders.UserBuilder;
 import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;

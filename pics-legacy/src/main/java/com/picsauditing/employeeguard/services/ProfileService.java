@@ -1,10 +1,10 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.ProfileDAO;
-import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
-import com.picsauditing.jpa.entities.Identifiable;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ public class ProfileService {
 		return profileDAO.findByAppUserId(appUserId);
 	}
 
-	public void create(Profile profile) {
-        EntityHelper.setCreateAuditFields(profile, Identifiable.SYSTEM, new Date());
+	public Profile create(Profile profile) {
+		EntityHelper.setCreateAuditFields(profile, Identifiable.SYSTEM, new Date());
 
 		String hash = Strings.hashUrlSafe(profile.getId() + profile.getEmail());
 		profile.setSlug("PID-" + hash.substring(0, 8).toUpperCase());
 
-		profileDAO.save(profile);
+		return profileDAO.save(profile);
 	}
 
 	public Profile update(EmployeeProfileEditForm employeeProfileEditForm, String profileID, int userId) {
@@ -39,7 +39,7 @@ public class ProfileService {
 		profile.setEmail(employeeProfileEditForm.getEmail());
 		profile.setPhone(employeeProfileEditForm.getPhone());
 
-        EntityHelper.setUpdateAuditFields(profile, userId, new Date());
+		EntityHelper.setUpdateAuditFields(profile, userId, new Date());
 
 		return profileDAO.save(profile);
 	}

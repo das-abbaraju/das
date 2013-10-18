@@ -5,17 +5,17 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.forms.binding.FormBinding;
-import com.picsauditing.employeeguard.forms.SearchForm;
-import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.forms.SearchForm;
+import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.validators.document.ProfileDocumentFormValidator;
+import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.validator.Validator;
-import com.picsauditing.employeeguard.validators.document.ProfileDocumentFormValidator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -158,8 +158,16 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 		return document;
 	}
 
-	public void setDocument(ProfileDocument document) {
-		this.document = document;
+	public List<ProfileDocument> getDocuments() {
+		return documents;
+	}
+
+	public SearchForm getSearchForm() {
+		return searchForm;
+	}
+
+	public void setSearchForm(SearchForm searchForm) {
+		this.searchForm = searchForm;
 	}
 
 	public DocumentForm getDocumentForm() {
@@ -168,9 +176,5 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 
 	public void setDocumentForm(DocumentForm documentForm) {
 		this.documentForm = documentForm;
-	}
-
-	public List<ProfileDocument> getDocuments() {
-		return documents;
 	}
 }
