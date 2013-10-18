@@ -85,7 +85,7 @@ public class RequestNewContractorValidator implements Validator {
 
 		if (deadline == null) {
 			addFieldError("requestRelationship.deadline", getText("RequestNewContractor.error.SelectDeadline"));
-		} else if (deadline.before(new Date())) {
+		} else if (deadline.before(new Date()) && contractor.getId() == 0) {
 			addFieldError("requestRelationship.deadline", getText("RequestNewContractor.error.PastDeadline"));
 		}
 
