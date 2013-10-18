@@ -345,6 +345,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 		}
 	}
 
+    public List<OperatorAccount> getOperatorList() throws Exception {
+        List<OperatorAccount> list;
+        if (permissions.isAdmin()) {
+            list = operatorDAO.findWhere(false, "a.status in ('Active')");
+        } else {
+            list = super.getOperatorList();
+        }
+        return list;
+    }
+
 	private void loadTags() {
 		int operatorID = 0;
 
