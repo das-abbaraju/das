@@ -66,6 +66,7 @@ public class BrainTree {
                             .setProcessorID(Currency.SEK, property(SEK_PROCESSOR))
                             .setProcessorID(Currency.USD, property(USD_PROCESSOR))
                             .setProcessorID(Currency.ZAR, property(ZAR_PROCESSOR))
+                            .setProcessorID(Currency.AUD, property(AUD_PROCESSOR))
                             .build();
                     service = new BrainTreeService(auth);
                 }
@@ -90,6 +91,7 @@ public class BrainTree {
     private static final String SEK_PROCESSOR = "brainTree.processor_id.sek";
     private static final String USD_PROCESSOR = "brainTree.processor_id.us";
     private static final String ZAR_PROCESSOR = "brainTree.processor_id.zar";
+    private static final String AUD_PROCESSOR = "brainTree.processor_id.aud";
 
 
     private class PaymentToBe implements PaymentData {
