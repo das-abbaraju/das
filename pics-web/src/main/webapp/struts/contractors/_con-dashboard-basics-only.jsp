@@ -10,7 +10,7 @@
 	</span>
 </h1>
 
-<s:if test="contractor.autoAddClientSite && !contractor.status.requested" >
+<s:if test="contractor.autoAddClientSite && contractor.status.active" >
     <s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
         <s:param name="contractor">${contractor.id}</s:param>
     </s:url>

@@ -44,16 +44,7 @@ public class ContractorRequestsModel extends AbstractModel {
 
 	@Override
 	public String getWhereClause(List<Filter> filters) {
-		super.getWhereClause(filters);
-
-        permissionQueryBuilder.setExcludeWorkStatus(true);
-        permissionQueryBuilder.setIgnoreDefaultStatuses(true);
-        permissionQueryBuilder.addVisibleStatus(AccountStatus.Requested);
-        permissionQueryBuilder.addVisibleStatus(AccountStatus.Declined);
-        permissionQueryBuilder.addVisibleStatus(AccountStatus.Pending);
-        permissionQueryBuilder.addVisibleStatus(AccountStatus.Active);
-
-		return permissionQueryBuilder.buildWhereClause();
+        return "Account.status IN ('Requested','Declined','Pending','Active')";
 	}
 
 	@Override
