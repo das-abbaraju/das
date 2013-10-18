@@ -2,8 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-<s:set var="name_error_class" value="%{hasFieldError('contractor_group_create.name') ? 'error' : ''}"/>
-
 <%-- Url --%>
 <s:url action="employee-group" var="contractor_group_list_url"/>
 <s:url action="employee-group" method="create" var="contractor_group_create_url"/>

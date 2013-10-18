@@ -32,8 +32,8 @@
     <table class="table table-striped table-condensed table-hover">
         <thead>
         <tr>
-            <th class="icon number-of-employees"><i class="icon-user icon-large" data-toggle="tooltip"
-                                                    data-placement="top" title="" data-original-title="Employees"></i>
+            <th class="icon number-of-employees">
+                <i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Employees"></i>
             </th>
             <th>Employee Group</th>
             <th>Required Skills</th>

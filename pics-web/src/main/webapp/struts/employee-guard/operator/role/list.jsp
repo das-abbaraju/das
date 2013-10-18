@@ -10,45 +10,43 @@
 <s:include value="/struts/employee-guard/_page-header.jsp">
 	<s:param name="title">Job Roles</s:param>
 	<s:param name="actions">
-		<a href="${operator_role_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i>Job Roles</a>
+		<a href="${operator_role_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> Job Role</a>
 	</s:param>
 </s:include>
 
-<tw:form formName="operator_role_search" action="${operator_role_list_url}">
+<%-- Pagination --%>
+<s:include value="/struts/employee-guard/_pagination.jsp" />
+
+<tw:form formName="operator_role_search" action="${operator_role_list_url}" class="search-query" role="form">
     <fieldset>
-        <tw:input inputName="search" type="text" class="search-query col-md-4" placeholder="Search by name" />
+    	<div class="search-wrapper col-md-4">
+        	<tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search by name" value="${searchForm.searchTerm}" />
+        	<i class="icon-search"></i>
+        	<ul id="operator_role_search" class="search-results"></ul>
+        </div>
     </fieldset>
 </tw:form>
-<table class="table table-striped table-bordered table-condensed">
-	<tr>
-		<th>#</th>
-		<th>Name</th>
-		<th>Skills</th>
-		<th><i class="icon-user"></i></th>
-		<th>Actions</th>
-	</tr>
-
-	<s:iterator value="roles" var="role">
-		<s:url action="role" method="delete" var="operator_role_delete_url">
-			<s:param name="id">${role.id}</s:param>
-		</s:url>
-		<s:url action="role" method="edit" var="operator_role_edit_url">
-			<s:param name="id">${role.id}</s:param>
-		</s:url>
-
-		<tr>
-			<td>${role.id}</td>
-			<td>${role.name}</td>
-			<td>
-                <s:iterator value="#role.skills" var="skill">
-                    <span class="label">${skill.name}</span>
-                </s:iterator>
-            </td>
-			<td><span class="badge badge-info">${role.employees.size()}</span></td>
-			<td>
-				<a href="${operator_role_edit_url}">Edit</a>
-				<a href="${operator_role_delete_url}">Delete</a>
-			</td>
-		</tr>
-	</s:iterator>
-</table>
+<div class="table-responsive">
+	<table class="table table-striped table-condensed table-hover">
+		<thead>
+			<tr>
+				<th>Job Role</th>
+				<th>Required Skills</th>
+			</tr>
+		</thead>
+		<tbody>
+			<s:iterator value="roles" var="role">
+				<s:url action="role" var="operator_role_show_url">
+                	<s:param name="id">${role.id}</s:param>
+            	</s:url>
+				<tr>
+					<td><a href="${operator_role_show_url}">${role.name}</a></td>
+					<td>
+						<s:set name="operator_skills" value="#role.skills"/>
+                    	<s:include value="/struts/employee-guard/operator/skill/_list.jsp"/>
+		            </td>
+				</tr>
+			</s:iterator>
+		</tbody>
+	</table>
+</div>

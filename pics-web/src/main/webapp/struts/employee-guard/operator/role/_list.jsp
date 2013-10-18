@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-
 <s:if test="!#operator_roles.isEmpty()">
     <ul class="employee-guard-list roles">
         <s:iterator value="#operator_roles" var="operator_role">
