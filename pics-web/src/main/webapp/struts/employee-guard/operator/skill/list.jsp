@@ -17,29 +17,39 @@
 <%-- Pagination --%>
 <s:include value="/struts/employee-guard/_pagination.jsp" />
 
-<tw:form formName="operator_skill_search" action="${operator_skill_list_url}">
+<tw:form formName="operator_skill_search" action="${operator_skill_list_url}" class="search-query" role="form">
     <fieldset>
-        <tw:input inputName="search" type="text" class="search-query col-md-4" placeholder="Search by name" />
+        <div class="search-wrapper col-md-4">
+            <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search by name" value="${searchForm.searchTerm}" />
+            <i class="icon-search"></i>
+            <ul id="operator-skill-search" class="search-results"></ul>
+        </div>
     </fieldset>
 </tw:form>
 
-<table class="table table-striped table-bordered table-condensed">
-    <tr>
-        <th class="col-md-5">Skill</th>
-        <th class="col-md-7">Roles</th>
-    </tr>
+<div class="table-responsive">
+    <table class="table table-striped table-condensed table-hover">
+        <thead>
+            <tr>
+                <th class="col-md-5">Skill</th>
+                <th class="col-md-7">Job Roles</th>
+            </tr>
+        </thead>
 
-    <s:iterator value="skills" var="skill">
-        <s:url action="skill" var="operator_skill_show_url">
-            <s:param name="id">${skill.id}</s:param>
-        </s:url>
+        <tbody>
+            <s:iterator value="skills" var="operatorSkill">
+                <s:url action="skill" var="operator_skill_show_url">
+                    <s:param name="id">${operatorSkill.id}</s:param>
+                </s:url>
 
-        <tr>
-            <td><a href="${operator_skill_show_url}">${skill.name}</a></td>
-            <td>
-                <s:set name="operator_roles" value="#skill.groups"/>
-                <s:include value="/struts/employee-guard/operator/role/_list.jsp" />
-            </td>
-        </tr>
-    </s:iterator>
-</table>
+                <tr>
+                    <td><a href="${operator_skill_show_url}">${operatorSkill.name}</a></td>
+                    <td>
+                        <s:set name="operator_roles" value="#operatorSkill.groups"/>
+                        <s:include value="/struts/employee-guard/operator/role/_list.jsp" />
+                    </td>
+                </tr>
+            </s:iterator>
+        </tbody>
+    </table>
+</div>

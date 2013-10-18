@@ -22,7 +22,8 @@ PICS.define('employee-guard.AjaxFormEditing', {
 
         function showEditForm(request_data) {
             var $container = this,
-                $display_values = $container.find('.edit-display-values');
+                $display_values = $container.find('.edit-display-values'),
+                jQueryElements = PICS.getClass('employee-guard.BindjQueryElements');
 
             if (request_data.length > 0) {
                 hideDisplayValues($display_values);
@@ -30,12 +31,7 @@ PICS.define('employee-guard.AjaxFormEditing', {
 
             $container.append(request_data);
 
-            bindHandlersAfterAjaxRequest()
-        }
-
-        function bindHandlersAfterAjaxRequest() {
-            enableToolips();
-            enableDatePicker();
+            jQueryElements.bindAll();
         }
 
         function cancelEdit(event){
@@ -65,18 +61,6 @@ PICS.define('employee-guard.AjaxFormEditing', {
 
         function enableAllEditToggles() {
             $('.edit-toggle').show();
-        }
-
-        function enableToolips() {
-            $('body').tooltip({
-                selector:'[data-toggle=tooltip]'
-            });
-        }
-
-        function enableDatePicker() {
-            var date_picker = PICS.getClass('employee-guard.DatePicker');
-
-            date_picker.init();
         }
 
         return {

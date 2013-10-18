@@ -29,7 +29,7 @@
         </div>
 
         <div class="form-group ${type_error_class}">
-            <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Type</strong></tw:label>
+            <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Skill Type</strong></tw:label>
             <div class="col-md-4 col-xs-11">
                 <tw:select selectName="skillType" class="form-control skillType" tabindex="3">
                     <tw:option value="Certification" selected="${skillForm.skillType == 'Certification'}">Certification</tw:option>
@@ -49,7 +49,7 @@
         <s:set var="selected_groups" value="skillForm.groups" />
 
         <div class="form-group">
-            <tw:label labelName="groups" class="col-md-3 control-label">Employee Groups</tw:label>
+            <tw:label labelName="groups" class="col-md-3 control-label"><strong>Employee Groups</strong></tw:label>
             <div class="col-md-4">
                 <tw:select selectName="groups" multiple="true" class="form-control contractor-skill-employee-groups" tabindex="7" >
                     <s:iterator value="skillGroups" var="contractor_group">

@@ -13892,7 +13892,8 @@ PICS.define('employee-guard.AjaxFormEditing', {
 
         function showEditForm(request_data) {
             var $container = this,
-                $display_values = $container.find('.edit-display-values');
+                $display_values = $container.find('.edit-display-values'),
+                jQueryElements = PICS.getClass('employee-guard.BindjQueryElements');
 
             if (request_data.length > 0) {
                 hideDisplayValues($display_values);
@@ -13900,12 +13901,7 @@ PICS.define('employee-guard.AjaxFormEditing', {
 
             $container.append(request_data);
 
-            bindHandlersAfterAjaxRequest()
-        }
-
-        function bindHandlersAfterAjaxRequest() {
-            enableToolips();
-            enableDatePicker();
+            jQueryElements.bindAll();
         }
 
         function cancelEdit(event){
@@ -13937,23 +13933,49 @@ PICS.define('employee-guard.AjaxFormEditing', {
             $('.edit-toggle').show();
         }
 
-        function enableToolips() {
-            $('body').tooltip({
-                selector:'[data-toggle=tooltip]'
-            });
-        }
-
-        function enableDatePicker() {
-            var date_picker = PICS.getClass('employee-guard.DatePicker');
-
-            date_picker.init();
-        }
-
         return {
             init: init
         };
     }())
 });
+/**
+ * Ajax Binding
+ *
+ * This re-intializes jQuery plugin elements for code returned in an ajax request.
+ *
+ */
+PICS.define('employee-guard.BindjQueryElements', {
+	methods: (function () {
+	    function init() {
+	    }
+
+        function tooltips() {
+            $('body').tooltip({
+                selector:'[data-toggle=tooltip]'
+            });
+        }
+
+        function datePicker() {
+            var date_picker = PICS.getClass('employee-guard.DatePicker');
+
+            date_picker.init();
+        }
+
+        function bindAll() {
+        	tooltips();
+        	datePicker();
+        }
+
+        return {
+            init: init,
+            tooltips: tooltips,
+            datePicker: datePicker
+        };
+
+	}())
+});
+
+
 PICS.define('employee-guard.contractor.employee.EmployeeController', {
     methods: (function () {
         function init() {
@@ -14106,6 +14128,8 @@ PICS.define('employee-guard.employee.skill.Edit', {
 	    	var $form = this;
 
 	    	$form.replaceWith(data);
+
+			PICS.getClass('employee-guard.BindjQueryElements').tooltips();
 	    }
 
 	    function toggleEmployeeGroups(event) {
@@ -14607,6 +14631,88 @@ PICS.define('employee-guard.FormValidation', {
         }
     });
 }(jQuery));
+PICS.define('employee-guard.operator.skill.Edit', {
+	methods: (function () {
+	    function init() {
+	    	var $skill_page = $('.employee_guard_operator_skill-page');
+
+			if ($skill_page.length > 0) {
+				$skill_page.on('click', '.checkbox .required', toggleEmployeeGroups);
+				$skill_page.on('change', '.skillType', changeSkillType)
+				$skill_page.on('click', '.checkbox .no-expiration', toggleExpirationFields)
+				if ($('.checkbox .required').is(':checked')) {
+					disableEmployeeGroups();
+				}
+			}
+	    }
+
+	    function changeSkillType(event) {
+            var $element = $(event.target),
+                $form = $element.closest('form'),
+                $section = $element.closest('section');
+                url = $section.attr('data-url');
+
+            PICS.ajax({
+                url: url,
+                type: 'GET',
+                data: $form.serialize(),
+                context: $form,
+                success: updateSkillForm
+            });
+
+	    }
+
+	    function updateSkillForm(data) {
+	    	var $form = this;
+
+	    	$form.replaceWith(data);
+	    	PICS.getClass('employee-guard.BindjQueryElements').tooltips();
+	    }
+
+	    function toggleEmployeeGroups(event) {
+	    	var $element = $(event.target),
+	    		selected = $element.is(':checked');
+
+	    	if (selected) {
+				disableEmployeeGroups();
+	    	} else {
+	    		enableEmployeeGroups();
+	    	}
+	    }
+
+	    function disableEmployeeGroups() {
+	    	$('.operator-skill-employee-groups').attr('disabled', 'disabled');
+	    }
+
+	    function enableEmployeeGroups() {
+			$('.operator-skill-employee-groups').removeAttr('disabled');
+	    }
+
+	    function toggleExpirationFields(event) {
+	    	var $element = $(event.target),
+	    		selected = $element.is(':checked');
+
+	    	if (selected) {
+				disableExpiration();
+	    	} else {
+	    		enableExpiration();
+	    	}
+	    }
+
+	    function disableExpiration() {
+	    	$('.expiration-date').attr('disabled', 'disabled');
+	    }
+
+	    function enableExpiration() {
+			$('.expiration-date').removeAttr('disabled');
+	    }
+
+        return {
+            init: init
+        };
+
+	}())
+});
 (function ($) {
     PICS.define('layout.menu.Menu', {
         methods: {

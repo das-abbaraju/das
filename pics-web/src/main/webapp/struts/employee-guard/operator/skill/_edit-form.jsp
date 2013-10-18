@@ -51,7 +51,7 @@
         </div>
 
         <s:if test="#is_skill_of_training_type">
-            <s:include value="/struts/employee-guard/operatot/skill/_training-form.jsp"/>
+            <s:include value="/struts/employee-guard/operator/skill/_training-form.jsp"/>
         </s:if>
 
         <s:set var="selected_groups" value="skillForm.groups"/>

@@ -6,4 +6,6 @@
     <s:param name="title">Add Skill</s:param>
 </s:include>
 
-<s:include value="/struts/employee-guard/operator/skill/_create-form.jsp" />
+<div class="col-md-9">
+	<s:include value="/struts/employee-guard/operator/skill/_create-form.jsp" />
+</div>

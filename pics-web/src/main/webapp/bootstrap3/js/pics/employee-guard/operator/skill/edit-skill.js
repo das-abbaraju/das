@@ -1,7 +1,7 @@
-PICS.define('employee-guard.employee.skill.Edit', {
+PICS.define('employee-guard.operator.skill.Edit', {
 	methods: (function () {
 	    function init() {
-	    	var $skill_page = $('.employee_guard_contractor_skill-page');
+	    	var $skill_page = $('.employee_guard_operator_skill-page');
 
 			if ($skill_page.length > 0) {
 				$skill_page.on('click', '.checkbox .required', toggleEmployeeGroups);
@@ -33,8 +33,7 @@ PICS.define('employee-guard.employee.skill.Edit', {
 	    	var $form = this;
 
 	    	$form.replaceWith(data);
-
-			PICS.getClass('employee-guard.BindjQueryElements').tooltips();
+	    	PICS.getClass('employee-guard.BindjQueryElements').tooltips();
 	    }
 
 	    function toggleEmployeeGroups(event) {
@@ -49,11 +48,11 @@ PICS.define('employee-guard.employee.skill.Edit', {
 	    }
 
 	    function disableEmployeeGroups() {
-	    	$('.contractor-skill-employee-groups').attr('disabled', 'disabled');
+	    	$('.operator-skill-employee-groups').attr('disabled', 'disabled');
 	    }
 
 	    function enableEmployeeGroups() {
-			$('.contractor-skill-employee-groups').removeAttr('disabled');
+			$('.operator-skill-employee-groups').removeAttr('disabled');
 	    }
 
 	    function toggleExpirationFields(event) {
