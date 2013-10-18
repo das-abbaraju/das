@@ -93,7 +93,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
         }
 
         if (FIND_CC_BUTTON.equals(button)) {
-			CreditCard creditCard1 = findCreditCardForContractor();
+			findCreditCardForContractor();
 			return SUCCESS;
 		}
 
@@ -278,10 +278,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
-	private CreditCard findCreditCardForContractor() throws Exception {
+	private void findCreditCardForContractor() throws Exception {
 		creditCard = paymentService.getCreditCard(contractor);
 		method = PaymentMethod.CreditCard;
-		return creditCard;
 	}
 
 
