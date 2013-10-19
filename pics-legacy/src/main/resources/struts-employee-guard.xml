@@ -53,6 +53,10 @@
 			<result name="list">/struts/employee-guard/operator/skill/list.jsp</result>
 			<result name="show">/struts/employee-guard/operator/skill/show.jsp</result>
 		</action>
+
+        <action name="assignments" class="com.picsauditing.employeeguard.controllers.operator.AssignmentsAction">
+            <result name="show">/struts/employee-guard/operator/assignments/show.jsp</result>
+        </action>
 	</package>
 
 	<!-- Contractor -->
