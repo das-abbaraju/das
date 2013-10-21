@@ -229,9 +229,10 @@
 			reset: function(event) {
 				event.preventDefault();
 
-				var element = $(this).parents('div.question:first');
-				var form = $('form.qform', element);
-				var url = 'AuditDataSaveAjax.action';
+				var $question = $(this).parents('div.question:first'),
+					$wrapper = $question.closest('.title-question-wrapper'),
+					form = $('form.qform', $question),
+					url = 'AuditDataSaveAjax.action';
 
 				var data = $.map(form.serializeArray(), function(data, i) {
 					if (data.name == 'auditData.answer') {
@@ -241,16 +242,17 @@
 					return data;
 				});
 
-				element.block({
+				$question.block({
 					message : translate('JS.Audit.ClearingAnswer')
                 });
 
-				AUDIT.question.execute(element, url, data);
+				AUDIT.question.execute($wrapper, url, data);
 			},
 			save: function(event) {
-			    var element = $(this),
-			        form = $('form.qform', element),
-			        radio_button = element.find('input:radio'),
+			    var $question = $(this),
+			    	$wrapper = $question.closest('.title-question-wrapper'),
+			        form = $('form.qform', $question),
+			        radio_button = $question.find('input:radio'),
 			        url = 'AuditDataSaveAjax.action';
 
 			    var data = form.serializeArray();
@@ -260,17 +262,18 @@
 			        return false;
 			    }
 
-				element.block({
+				$question.block({
 					message: translate('JS.Audit.SavingAnswer')
                 });
 
-				AUDIT.question.execute(element, url, data);
+				AUDIT.question.execute($wrapper, url, data);
 			},
 			verify: function(event) {
-			    var element = $(this).parents('div.question:first');
-			    var form = $('form.qform', element);
-			    var url = 'AuditDataSaveAjax.action';
-			    var data = form.serializeArray();
+			    var $question = $(this).parents('div.question:first'),
+			    	$wrapper = $question.closest('.title-question-wrapper'),
+			    	form = $('form.qform', $question),
+			    	url = 'AuditDataSaveAjax.action',
+			    	data = form.serializeArray();
 
 				data.push({
 					name: 'toggleVerify',
@@ -282,11 +285,11 @@
 					value: 'verify'
 				});
 
-				element.block({
+				$question.block({
 					message: $(this).val() + 'ing...'
 				});
 
-				AUDIT.question.execute(element, url, data);
+				AUDIT.question.execute($wrapper, url, data);
 			}
 		},
 
@@ -324,18 +327,16 @@
 		},
 
 		// question methods
-		execute: function(element, url, data) {
+		execute: function(wrapper, url, data) {
 			$.post(url, data, function(data, textStatus, XMLHttpRequest) {
-				var element_id = element.attr('id');
+				var question_id = wrapper.children('div.question').attr('id');
 
-				element.trigger('updateDependent');
+				wrapper.children('div.question').trigger('updateDependent');
 
-				$('body').find('.group-title').remove();
-
-				element.replaceWith(data);
+				wrapper.replaceWith(data);
 
 				// re-enable ambest questions on audit category reload
-				AUDIT.am_best_suggest.autocomplete($('#' + element_id + ' ' + '#ambest'));
+				AUDIT.am_best_suggest.autocomplete($('#' + question_id + ' ' + '#ambest'));
 
 				AUDIT.question.initTagit();
 			});

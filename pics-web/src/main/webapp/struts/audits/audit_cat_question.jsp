@@ -70,100 +70,103 @@
 
 <s:set name="hidden" value="!#q.isVisible(answerMap)" />
 
-<s:if test="#q.title != null && !#q.title.equals('') && !#q.title.equals(#q.getI18nKey('title'))">
-	<h4 class="group-title groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
-		<s:property value="#q.title" escape="false"/>
-	</h4>
-</s:if>
+<div class="title-question-wrapper">
 
-<div id="node_<s:property value="#q.id"/>" class="clearfix question
-	<s:if test="#shaded && #category.columns == 1"> shaded</s:if>
-	<s:if test="#hidden"> hide</s:if>
-	<s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if>
-	<s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if>
-	<s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if>
-	<s:if test="affectsAudit"> affectsAudit</s:if>
-	<s:if test="#q.functionWatchers.size > 0"> hasFunctions</s:if>
-	<s:if test="#questionStillRequired">required</s:if>
-	<s:if test="#q.questionType == 'Check Box'">checkbox</s:if>
-	${save}
-">
-	<h3>
-		<s:if test="#questionStillRequired">
-			<img src="images/star.png" class="required" alt="<s:text name="AuditQuestion.required" />">
-		</s:if>
-
-		<s:url action="Audit" var="question_number_url">
-            <s:param name="auditID">${conAudit.id}</s:param>
-        </s:url>
-
-        <div id="icon-and-question-number">
-            <s:set var="isRollupQuestion" value="isRollupQuestion(#q)" />
-            <s:if test="#isRollupQuestion">
-                <img src="images/icon-magic.png" />
-            </s:if>
-
-            <a href="${question_number_url}#categoryID=${category.topParent.id}&questionID=${q.id}" class="questionNumber"><s:property value="#q.expandedNumber"/></a>
-        </div>
-
-		<s:property value="getStrippedHref(#q.name)" escape="false"/>
-
-		<s:if test="#q.helpText != null && !#q.helpText.equals(#q.getI18nKey('helpText')) && !#q.helpText.equals('')">
-			<a class="cluetip" href="#" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />">
-				<img src="images/help-icon.png" />
-			</a>
-
-			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
-				<span title="<s:property value="#q.name"/>">
-					<s:property value="#q.helpText" escape="false" />
-				</span>
-			</div>
-		</s:if>
-
-		<s:if test="permissions.admin">
-			<a class="cluetip-translation debug" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
-				<img src="images/preview.gif">
-			</a>
-		</s:if>
-
-		<s:if test="permissions.admin">
-			<s:url var="editQuestion" action="ManageQuestion">
-				<s:param name="id">${id}</s:param>
-			</s:url>
-
-			<a class="edit-question debug" href="${editQuestion}" target="_blank">
-				<img src="images/edit_pencil.png" />
-			</a>
-		</s:if>
-
-		<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0">
-			<br />
-			<a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">
-				<s:text name="Audit.OshaCitations" />
-			</a>
-		</s:if>
-		<s:if test="(#q.id == 9208) && #a.answer.length() > 0">
-			<br />
-			<a href="http://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&query_string=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">
-				<s:text name="Audit.USDOT" />
-			</a>
-		</s:if>
-	</h3>
-
-	<%-- Question modes --%>
-
-	<s:if test="#mode == 'View' || #mode == 'ViewAll'">
-		<s:include value="audit_question_view.jsp"></s:include>
+	<s:if test="#q.title != null && !#q.title.equals('') && !#q.title.equals(#q.getI18nKey('title'))">
+		<h4 class="group-title groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
+			<s:property value="#q.title" escape="false"/>
+		</h4>
 	</s:if>
-	<s:elseif test="#mode == 'Edit'">
-	 	<s:if test="isCanEditCategory(#category) && #q.questionType != 'Calculation'">
-			<s:include value="audit_question_edit.jsp"></s:include>
-		</s:if>
-		<s:else>
+
+	<div id="node_<s:property value="#q.id"/>" class="clearfix question
+		<s:if test="#shaded && #category.columns == 1"> shaded</s:if>
+		<s:if test="#hidden"> hide</s:if>
+		<s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if>
+		<s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if>
+		<s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if>
+		<s:if test="affectsAudit"> affectsAudit</s:if>
+		<s:if test="#q.functionWatchers.size > 0"> hasFunctions</s:if>
+		<s:if test="#questionStillRequired">required</s:if>
+		<s:if test="#q.questionType == 'Check Box'">checkbox</s:if>
+		${save}
+	">
+		<h3>
+			<s:if test="#questionStillRequired">
+				<img src="images/star.png" class="required" alt="<s:text name="AuditQuestion.required" />">
+			</s:if>
+
+			<s:url action="Audit" var="question_number_url">
+	            <s:param name="auditID">${conAudit.id}</s:param>
+	        </s:url>
+
+	        <div id="icon-and-question-number">
+	            <s:set var="isRollupQuestion" value="isRollupQuestion(#q)" />
+	            <s:if test="#isRollupQuestion">
+	                <img src="images/icon-magic.png" />
+	            </s:if>
+
+	            <a href="${question_number_url}#categoryID=${category.topParent.id}&questionID=${q.id}" class="questionNumber"><s:property value="#q.expandedNumber"/></a>
+	        </div>
+
+			<s:property value="getStrippedHref(#q.name)" escape="false"/>
+
+			<s:if test="#q.helpText != null && !#q.helpText.equals(#q.getI18nKey('helpText')) && !#q.helpText.equals('')">
+				<a class="cluetip" href="#" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />">
+					<img src="images/help-icon.png" />
+				</a>
+
+				<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
+					<span title="<s:property value="#q.name"/>">
+						<s:property value="#q.helpText" escape="false" />
+					</span>
+				</div>
+			</s:if>
+
+			<s:if test="permissions.admin">
+				<a class="cluetip-translation debug" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
+					<img src="images/preview.gif">
+				</a>
+			</s:if>
+
+			<s:if test="permissions.admin">
+				<s:url var="editQuestion" action="ManageQuestion">
+					<s:param name="id">${id}</s:param>
+				</s:url>
+
+				<a class="edit-question debug" href="${editQuestion}" target="_blank">
+					<img src="images/edit_pencil.png" />
+				</a>
+			</s:if>
+
+			<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0">
+				<br />
+				<a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">
+					<s:text name="Audit.OshaCitations" />
+				</a>
+			</s:if>
+			<s:if test="(#q.id == 9208) && #a.answer.length() > 0">
+				<br />
+				<a href="http://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&query_string=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">
+					<s:text name="Audit.USDOT" />
+				</a>
+			</s:if>
+		</h3>
+
+		<%-- Question modes --%>
+
+		<s:if test="#mode == 'View' || #mode == 'ViewAll'">
 			<s:include value="audit_question_view.jsp"></s:include>
-		</s:else>
-	</s:elseif>
-	<s:elseif test="#mode == 'Verify'">
-		<s:include value="audit_question_edit.jsp"></s:include>
-	</s:elseif>
+		</s:if>
+		<s:elseif test="#mode == 'Edit'">
+		 	<s:if test="isCanEditCategory(#category) && #q.questionType != 'Calculation'">
+				<s:include value="audit_question_edit.jsp"></s:include>
+			</s:if>
+			<s:else>
+				<s:include value="audit_question_view.jsp"></s:include>
+			</s:else>
+		</s:elseif>
+		<s:elseif test="#mode == 'Verify'">
+			<s:include value="audit_question_edit.jsp"></s:include>
+		</s:elseif>
+	</div>
 </div>

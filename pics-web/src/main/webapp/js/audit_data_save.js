@@ -72,10 +72,12 @@ function showCertUpload(certID, questionID) {
 }
 
 function reloadQuestion(qid) {
-	var element = $('#node_' + qid);
-	var url = 'AuditDataSaveAjax.action';
-	var data;
-	var inputs = element.find('form.qform :input.get_request');
+	var $question = $('#node_' + qid),
+		$wrapper = $question.closest('.title-question-wrapper'),
+		url = 'AuditDataSaveAjax.action',
+		data,
+		inputs = $question.find('form.qform :input.get_request');
+
 	if (inputs.length) {
 		data = inputs.serializeArray();
 		data.push({ name:'button', value:'reload' });
@@ -87,12 +89,12 @@ function reloadQuestion(qid) {
 		};
 	}
 	
-	element.block({
+	$question.block({
 		message: translate('JS.Audit.ReloadingQuestion')
 	});
 
 	$.post(url, data, function(data, textStatus, XMLHttpRequest) {
-		element.replaceWith(data);
+		$wrapper.replaceWith(data);
 		
 		AUDIT.question.initTagit();
 	});
