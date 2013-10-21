@@ -2176,6 +2176,31 @@ td.number {
   display: block;
 }
 
+/* For tables with status colors and icons */
+/* line 43, ../sass/pics/employee-guard/general/_table.scss */
+.table-status th.status-title {
+  text-align: center;
+}
+/* line 47, ../sass/pics/employee-guard/general/_table.scss */
+.table-status tbody tr td.status {
+  text-align: center;
+}
+/* line 51, ../sass/pics/employee-guard/general/_table.scss */
+.table-status tbody tr td.status.complete, .table-status tbody tr td.status.pending {
+  background-color: #d6f0e4;
+  color: #33b679;
+}
+/* line 56, ../sass/pics/employee-guard/general/_table.scss */
+.table-status tbody tr td.status.expiring {
+  background-color: #fef5d9;
+  color: #f4b400;
+}
+/* line 61, ../sass/pics/employee-guard/general/_table.scss */
+.table-status tbody tr td.status.expired {
+  background-color: #fadbd8;
+  color: #e74c3c;
+}
+
 /* line 1, ../sass/pics/employee-guard/general/_well.scss */
 .well-required-for {
   border: 0px;

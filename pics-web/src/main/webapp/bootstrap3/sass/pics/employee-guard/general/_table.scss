@@ -37,3 +37,30 @@ td.number {
 .table td a {
 	display: block;
 }
+
+/* For tables with status colors and icons */
+.table-status {
+	th.status-title {
+		text-align: center;
+	}
+
+	tbody tr td.status {
+		text-align: center;
+
+		&.complete,
+		&.pending {
+			background-color: $success_tint;
+			color: $success_light;
+		}
+
+		&.expiring {
+			background-color: $warning_tint;
+			color: $warning_med;
+		}
+
+		&.expired {
+			background-color: $danger_tint;
+			color: $danger_light;
+		}
+	}
+}
