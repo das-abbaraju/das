@@ -20,7 +20,7 @@ public class VATWebValidator extends HystrixCommand<Boolean> {
     private static final String HYSTRIX_COMMAND_GROUP = "VATWebValidator";
     private static final String VALIDATION_OK_STRING = "true";
     private static final String ERROR_STRING = "Trouble validating VAT code using http://isvat.appspot.com/. VAT code was: {}. This is potentially business critical!";
-    private static final int THREAD_TIMEOUT_MS = 5000;
+    static final int THREAD_TIMEOUT_MS = 5000;
     private static final int THREAD_POOL_SIZE = 20;
     private static final int WEB_CONNECT_TIMEOUT_MS = 1000;
     private static final int WEB_READ_TIMEOUT_MS = 1000;
@@ -67,10 +67,10 @@ public class VATWebValidator extends HystrixCommand<Boolean> {
         try {
             countryPrefix = vatCode.substring(0, 2);
             numbers = vatCode.substring(2, vatCode.length());
-            return runValidation(countryPrefix, numbers);
         } catch (Exception e) {
             return false;
         }
+        return runValidation(countryPrefix, numbers);
     }
 
     private boolean runValidation(String countryPrefix, String numbers) throws Exception {

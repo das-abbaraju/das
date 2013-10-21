@@ -260,16 +260,6 @@ public class TranslationServiceAdapterTest {
     }
 
     @Test
-    public void testPublishTranslationLookupEventIfReturned_RejectedTaskExcecutorRetries() throws Exception {
-        when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE.toString())).thenReturn(TEST_TRANSLALATION);
-        doThrow(new TaskRejectedException("testing")).doNothing().when(applicationContext).publishEvent(any(ApplicationEvent.class));
-
-        translationService.getText(TEST_KEY, TEST_LOCALE.toString());
-
-        verify(applicationContext, times(2)).publishEvent(any(ApplicationEvent.class));
-    }
-
-    @Test
     public void testGetText_WithArgs_GetProperlyFormatted() throws Exception {
         String value = "This is {0} and this is {1}";
         String expected = "This is One and this is Two";
