@@ -12,7 +12,9 @@ public enum Currency {
     ZAR("ZAR", "R"),        //South African Rand    (symbol placed after amounts)
     NOK("NOK", "kr"),       //Norwegian Krone       (symbol placed after amounts)
     DKK("DKK", "kr"),       //Danish Krone          (symbol placed after amounts)
-    AUD("AUD", "$");        //Australian Dollar     (symbol placed after amounts)
+    AUD("AUD", "$"),        //Australian Dollar     (symbol placed after amounts)
+    TRY("TRY", "TL"),       //Turkish Lira          (symbol placed after amounts)
+    CHF("CHF", "Fr");       //Swiss Franc           (symbol placed after amounts)
 
 	private String display;
 	private String symbol;
