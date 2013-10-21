@@ -419,11 +419,6 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="AuditDataUpdates"
-			class="com.picsauditing.actions.report.ReportAuditDataUpdate">
-			<result>struts/reports/audit_update.jsp</result>
-		</action>
-
 		<action name="ReportLifetimeMembership"
 			class="com.picsauditing.actions.report.ReportLifetimeMembership">
 			<result>struts/reports/lifetime_membership.jsp</result>

@@ -275,9 +275,6 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar)) {
 			addChildAction(subMenu, "AuditCalendar");
 		}
-		if (permissions.hasPermission(OpPerms.AuditVerification)) {
-			subMenu.addChild("Answer Updates", "AuditDataUpdates.action", "AuditDataUpdates");
-		}
 		if (permissions.isAuditor()) {
 			subMenu.addChild("Close Open Reqs", "ReportOpenRequirements.action", "CloseOpenReqs");
 		}
