@@ -14,10 +14,10 @@
 	          value="false"/>
 	<constant name="struts.patternMatcher" value="regex"/>
 	<constant name="struts.action.extension" value="action,"/>
-	
+
 	<bean type="org.apache.struts2.dispatcher.mapper.ActionMapper" name="picsRestful"
           class="com.picsauditing.strutsutil.PicsRestfulActionMapper"/>
-    <constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
+    <constant name="struts.mapper.class" value="com.picsauditing.strutsutil.PicsPrefixActionMapper"/>
     <constant name="struts.mapper.prefixMapping" value="/employee-guard:picsRestful,:struts"/>
     <constant name="struts.mapper.idParameterName" value="id"/>
 
@@ -25,10 +25,10 @@
           class="com.picsauditing.strutsutil.url.UrlHelperFacade"/>
     <constant name="struts.view.urlHelper" value="picsUrlHelper"/>
 
-    <!-- We don't want to use the RestActionInvocation, so the value here is set because none of 
+    <!-- We don't want to use the RestActionInvocation, so the value here is set because none of
          our namespaces have IGNORE in all caps -->
     <constant name="struts.rest.namespace" value="IGNORE"/>
-    
+
     <!--  Verify that this is not impacting any of our other struts configuration -->
     <constant name="struts.mapper.indexMethodName" value="index"/>
     <constant name="struts.mapper.getMethodName" value="show"/>
@@ -117,7 +117,7 @@
 				<interceptor-ref name="redirectMessage"/>
 				<interceptor-ref name="annotationWorkflow"/>
 			</interceptor-stack>
-			
+
 			<!-- Default Interceptor Stack for PICS Action Classes -->
 			<interceptor-stack name="pics-rest-stack">
 				<interceptor-ref name="exception"/>
@@ -1361,7 +1361,7 @@
 
 	<!-- Drools & RBIC -->
 	<include file="struts-rbic.xml"/>
-	
+
     <!-- EmployeeGUARD V3 -->
     <include file="struts-employee-guard.xml"/>
 
