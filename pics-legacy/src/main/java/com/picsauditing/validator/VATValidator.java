@@ -6,7 +6,8 @@ import com.picsauditing.jpa.entities.Country;
 public class VATValidator {
 
     private final static String GREECE = "GR";
-    private VATWebValidator webValidator = new VATWebValidator();
+    // for test injection
+    private VATWebValidator webValidator;
 
     public String validatedVATfromAudit(AuditData data) throws ValidationException {
         Country contractorCountry = data.getAudit().getContractorAccount().getCountry();
@@ -20,7 +21,10 @@ public class VATValidator {
         String finalCode = (vatCode.startsWith(prefix)) ? vatCode : prefix + vatCode;
 
         if (!demoVatNumber(vatCode)) {
-            webValidator.webValidate(finalCode);
+            VATWebValidator webValidator = webValidator(finalCode);
+            if (!webValidator.execute()) {
+                throw new ValidationException("The VAT code is not valid");
+            };
         }
 
         return finalCode;
@@ -48,5 +52,13 @@ public class VATValidator {
     private boolean demoVatNumber(String vatCode) {
         return vatCode.equalsIgnoreCase("999999999") ||
                 vatCode.equalsIgnoreCase("4111111111111111");
+    }
+
+    private VATWebValidator webValidator(String finalCode) {
+        if (webValidator != null) {
+            return webValidator;
+        } else {
+            return new VATWebValidator(finalCode);
+        }
     }
 }

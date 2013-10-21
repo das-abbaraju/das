@@ -62,6 +62,7 @@ public class VATValidatorTest {
 
         PicsTestUtil.forceSetPrivateField(classUnderTest, "webValidator", webValidator);
 
+        when(webValidator.execute()).thenReturn(Boolean.TRUE);
         when(mockData.getAudit()).thenReturn(mockAudit);
         when(mockAudit.getContractorAccount()).thenReturn(mockContractor);
     }
@@ -87,7 +88,7 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(IRELAND);
         String testVat = "00000"; // A bogus VAT
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         classUnderTest.validatedVATfromAudit(mockData); // Should throw an error.
     }
 
@@ -96,7 +97,7 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "0";
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         classUnderTest.validatedVATfromAudit(mockData);
     }
 
@@ -105,7 +106,7 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(GERMANY);
         String testVat = "11";
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         classUnderTest.validatedVATfromAudit(mockData);
     }
 
@@ -130,7 +131,7 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(GERMANY);
         String testVat = "";
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         classUnderTest.validatedVATfromAudit(mockData);
     }
 
@@ -139,7 +140,7 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "yes";
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         assertEquals(GREAT_BRITAIN_ISO + testVat.toUpperCase(), classUnderTest.validatedVATfromAudit(mockData));
     }
 
@@ -148,7 +149,7 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "xxxxxx983";
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         assertEquals(GREAT_BRITAIN_ISO + testVat.toUpperCase(), classUnderTest.validatedVATfromAudit(mockData));
     }
 
@@ -157,7 +158,7 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "no";
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         assertEquals(GREAT_BRITAIN_ISO + testVat.toUpperCase(), classUnderTest.validatedVATfromAudit(mockData));
     }
 
@@ -166,8 +167,12 @@ public class VATValidatorTest {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "n/a";
         when(mockData.getAnswer()).thenReturn(testVat);
-        doThrow(new ValidationException()).when(webValidator).webValidate(anyString());
+        setupValidationIsFalse();
         assertEquals(GREAT_BRITAIN_ISO + testVat.toUpperCase(), classUnderTest.validatedVATfromAudit(mockData));
+    }
+
+    private void setupValidationIsFalse() {
+        when(webValidator.execute()).thenReturn(Boolean.FALSE);
     }
 
     @Test

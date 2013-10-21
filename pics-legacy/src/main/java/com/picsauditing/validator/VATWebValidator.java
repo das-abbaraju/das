@@ -1,73 +1,90 @@
 package com.picsauditing.validator;
 
+import com.netflix.hystrix.*;
+import com.sun.jersey.api.client.*;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Map;
 
-public class VATWebValidator {
+/*
+    Please see https://github.com/Netflix/Hystrix/wiki
+ */
+public class VATWebValidator extends HystrixCommand<Boolean> {
     private static final Logger logger = LoggerFactory.getLogger(VATWebValidator.class);
+    private static final String VALIDATION_URL = "http://isvat.appspot.com";
+    private static Client client;
+    private static WebResource webResource;
+    private static final String HYSTRIX_COMMAND_GROUP = "VATWebValidator";
+    private static final String VALIDATION_OK_STRING = "true";
+    private static final String ERROR_STRING = "Trouble validating VAT code using http://isvat.appspot.com/. VAT code was: {}. This is potentially business critical!";
+    private static final int THREAD_TIMEOUT_MS = 5000;
+    private static final int THREAD_POOL_SIZE = 20;
+    private static final int WEB_CONNECT_TIMEOUT_MS = 1000;
+    private static final int WEB_READ_TIMEOUT_MS = 1000;
+    private String vatCode;
 
-    public void webValidate(String vatCode) throws ValidationException {
-        String countryPrefix = vatCode.substring(0, 2);
-        String numbers = vatCode.substring(2, vatCode.length());
+    /*
+        The jersey client is threadsafe as long as you don't attempt to change the configuration after creation.
+        Also, using getEntity (get(String)), it will close its own connections/resources/streams.
+     */
+    static {
+        ClientConfig cc = new DefaultClientConfig();
+        Map<String, Object> props = cc.getProperties();
+        props.put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, WEB_CONNECT_TIMEOUT_MS);
+        props.put(ClientConfig.PROPERTY_READ_TIMEOUT, WEB_READ_TIMEOUT_MS);
+        client = Client.create(cc);
+        webResource = client.resource(VALIDATION_URL);
+    }
 
-        String result = null;
+    public VATWebValidator(String vatCode) {
+        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(HYSTRIX_COMMAND_GROUP))
+            .andCommandPropertiesDefaults(
+                HystrixCommandProperties.Setter().withExecutionIsolationThreadTimeoutInMilliseconds(THREAD_TIMEOUT_MS)
+            ).andThreadPoolPropertiesDefaults(
+                HystrixThreadPoolProperties.Setter().withCoreSize(THREAD_POOL_SIZE)
+            )
+        );
+        this.vatCode = vatCode;
+    }
+
+    @Override
+    protected Boolean run() throws Exception {
+        return webValidate();
+    }
+
+    @Override
+    protected Boolean getFallback() {
+        logger.error(ERROR_STRING, vatCode);
+        return Boolean.TRUE;
+    }
+
+    public boolean webValidate() throws Exception {
+        String countryPrefix;
+        String numbers;
         try {
-            result = runValidation(countryPrefix, numbers);
-        } catch (IOException e) {
-            logger.error("Trouble connecting to http://isvat.appspot.com/ using VAT Code: "
-                    + vatCode
-                    + ".  This is potentially business critical!");
-        }
-
-        if (!"true".equals(result)) {
-            throw new ValidationException();
+            countryPrefix = vatCode.substring(0, 2);
+            numbers = vatCode.substring(2, vatCode.length());
+            return runValidation(countryPrefix, numbers);
+        } catch (Exception e) {
+            return false;
         }
     }
 
-    private String runValidation(String countryPrefix, String numbers) throws IOException {
-        HttpURLConnection connection = null;
-        OutputStream output = null;
-        BufferedReader br = null;
-        String result = null;
-        try {
-            connection = (HttpURLConnection) new URL(
-                    "http://isvat.appspot.com/" + countryPrefix + "/" + numbers + "/"
-            ).openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-            connection.setDoOutput(true);
-            output = connection.getOutputStream();
-
-            InputStream input = connection.getInputStream();
-
-            br = new BufferedReader(new InputStreamReader(input));
-            result = br.readLine();
-        } catch (IOException e) {
-            // Don't keep the contractor from registering if there's a connection problem.
-            result = "true" ;
-            throw e;
+    private boolean runValidation(String countryPrefix, String numbers) throws Exception {
+        String response = webResource.path(countryPrefix + "/" + numbers).get(String.class);
+        if (VALIDATION_OK_STRING.equals(response)) {
+            return true;
+        } else {
+            return false;
         }
-        finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException e) {}
-            }
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {}
-            }
+    }
 
-           return result;
-        }
+    // for injecting test client for unit tests
+    public static void registerWebClient(Client webclient) {
+        client = webclient;
+        webResource = client.resource(VALIDATION_URL);
     }
 }

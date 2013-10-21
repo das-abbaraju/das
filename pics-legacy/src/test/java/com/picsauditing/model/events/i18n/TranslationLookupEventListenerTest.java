@@ -1,5 +1,6 @@
 package com.picsauditing.model.events.i18n;
 
+import com.picsauditing.model.i18n.TranslationLookupData;
 import com.picsauditing.model.i18n.TranslationUsageLogger;
 import org.junit.Before;
 import org.junit.Test;
