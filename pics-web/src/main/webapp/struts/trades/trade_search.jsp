@@ -31,8 +31,8 @@
 		
 		<pics:permission perm="ManageTrades" type="Edit">
 			<div id="indexTrades">
-				<s:form>
-					<s:submit action="TradeTaxonomy!index" value="Reindex Trade Nested Set" title="Click this button after rearranging the trades." />
+				<s:form action="TradeTaxonomy" >
+					<s:submit method="index" value="Reindex Trade Nested Set" title="Click this button after rearranging the trades." />
 				</s:form>
 			</div>
 		</pics:permission>
