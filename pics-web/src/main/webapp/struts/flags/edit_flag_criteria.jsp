@@ -69,13 +69,13 @@
     				</s:if>
     			</li>
     			<li>
-    				<s:select list="criteriaCategory" name="criteria.category" theme="formhelp" headerValue="- Category -" label="Category"/>
+    				<s:select list="criteriaCategory" name="criteria.category" headerValue="- Category -" label="Category"/>
     			</li>
     			<li>
-    				<s:textfield name="criteria.displayOrder" theme="formhelp"/>
+    				<s:textfield name="criteria.displayOrder" />
     			</li>
     			<li>
-    				<s:textfield name="criteria.label" value='%{(criteria.id > 0) ? criteria.label : ""}' theme="formhelp" maxlength="30"/>
+    				<s:textfield name="criteria.label" value='%{(criteria.id > 0) ? criteria.label : ""}' maxlength="30"/>
                     
                     <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                         <s:param name="translation_key">FlagCriteria.${criteria.id}.label</s:param>
@@ -83,7 +83,7 @@
                     </s:include>
     			</li>
     			<li>
-                    <s:textarea name="criteria.description" value='%{(criteria.id > 0) ? criteria.description : ""}' theme="formhelp" cols="30" rows="4" />
+                    <s:textarea name="criteria.description" value='%{(criteria.id > 0) ? criteria.description : ""}' cols="30" rows="4" />
 
                     <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                         <s:param name="translation_key">FlagCriteria.${criteria.id}.description</s:param>
@@ -98,10 +98,10 @@
             
     		<ol>
     			<li>
-    				<s:select name="criteria.dataType" list="datatypeList" theme="formhelp"/>
+    				<s:select name="criteria.dataType" list="datatypeList" />
     			</li>
     			<li>
-    				<s:select name="criteria.comparison" list="comparisonList" theme="formhelp"/>
+    				<s:select name="criteria.comparison" list="comparisonList" />
     			</li>
     			<li>
     				<label><s:text name="FlagCriteria.defaultValue"/>:</label>
@@ -119,7 +119,7 @@
                     </pics:fieldhelp>
     			</li>
     			<li>
-    				<s:checkbox name="criteria.allowCustomValue" theme="formhelp"/>
+    				<s:checkbox name="criteria.allowCustomValue" />
     			</li>
     		</ol>
     	</fieldset>
@@ -156,13 +156,13 @@
             
     		<ol>
     			<li>
-    				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" theme="formhelp"/>
+    				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" />
     			</li>
     			<li>
-    				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" theme="formhelp"/>
+    				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" />
     			</li>
     			<li>
-    				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" theme="formhelp"/>
+    				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" />
     			</li>
     		</ol>
     	</fieldset>
@@ -170,8 +170,8 @@
     	<fieldset>
     		<ol>
     			<li>
-    				<s:select name="criteria.requiredStatusComparison" list="comparisonList" theme="form"/>
-                    
+    				<s:select name="criteria.requiredStatusComparison" list="comparisonList" />
+
     				<pics:fieldhelp title="Audit Status">
     					<ul>
     						<li>&lt; means statuses before this one (Default)</li>
@@ -182,7 +182,7 @@
     				</pics:fieldhelp>
     			</li>
     			<li>
-    				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" theme="form"/>
+    				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" />
                     
     				<pics:fieldhelp title="Audit Status">This is only used for Audit Type Flag Criteria except for Annual Updates. 
         				Annual Updates assumes the required status is Submitted. If left blank, then any status is acceptable (not flagged).
@@ -192,13 +192,13 @@
                     </pics:fieldhelp>
     			</li>
     			<li>
-    				<s:checkbox name="criteria.insurance" theme="formhelp"/>
+    				<s:checkbox name="criteria.insurance" />
     			</li>
     			<li>
-    				<s:select name="criteria.optionCode" list="optionCodeList" theme="formhelp"/>
+    				<s:select name="criteria.optionCode" list="optionCodeList" />
     			</li>
     			<li>
-    				<s:checkbox name="criteria.flaggableWhenMissing" theme="formhelp"/>
+    				<s:checkbox name="criteria.flaggableWhenMissing" />
     			</li>
     			<li>
     				<label><s:text name="ManageAuditType.RequiredLanguages" />:</label>
@@ -221,7 +221,6 @@
     					allowUpDownOnLeft="false"
     					allowUpDownOnRight="false"
     					buttonCssClass="arrow"
-    					theme="pics"
     				>
     					<s:param name="sort" value="'false'" />
     				</s:optiontransferselect>
