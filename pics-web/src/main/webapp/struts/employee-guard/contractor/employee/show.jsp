@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+         errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
@@ -24,7 +25,8 @@
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Employee: ${employee.firstName} ${employee.lastName}</s:param>
     <s:param name="actions">
-        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Employee</button>
+        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Employee
+        </button>
     </s:param>
 </s:include>
 
@@ -56,20 +58,20 @@
 
             <div class="content">
                 <div class="list-group skill-list">
-                    <s:iterator var="skill_info" value="skillInfoList" >
+                    <s:iterator var="skill_info" value="skillInfoList">
                         <s:set var="skill_status">${skill_info.skillStatus.displayValue}</s:set>
                         <s:url action="skill" var="employee_skill_url">
                             <s:param name="id">${skill_info.id}</s:param>
                         </s:url>
 
                         <s:set var="skill_icon">icon-ok-sign</s:set>
-                        <s:if test="#skill_info.skillStatus.expired" >
+                        <s:if test="#skill_info.skillStatus.expired">
                             <s:set var="skill_icon">icon-minus-sign-alt</s:set>
                         </s:if>
-                        <s:elseif test="#skill_info.skillStatus.expiring" >
+                        <s:elseif test="#skill_info.skillStatus.expiring">
                             <s:set var="skill_icon">icon-warning-sign</s:set>
                         </s:elseif>
-                        <s:elseif test="#skill_info.skillStatus.pending" >
+                        <s:elseif test="#skill_info.skillStatus.pending">
                             <s:set var="skill_icon">icon-ok-circle</s:set>
                         </s:elseif>
                         <s:elseif test="#skill_info.skillStatus.complete">

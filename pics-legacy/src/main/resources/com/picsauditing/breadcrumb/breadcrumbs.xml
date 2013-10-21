@@ -5,11 +5,13 @@
         <children>
             <breadcrumb>
                 <hint>operator</hint>
-                <label>EmployeeGUARD</label>
+                <label>Dashboard</label>
                 <uri>/employee-guard/operator/dashboard</uri>
                 <children>
                     <breadcrumb>
                         <hint>project</hint>
+                        <label>Projects</label>
+                        <uri>/employee-guard/operator/project</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
@@ -39,36 +41,26 @@
                                 <uri>/employee-guard/operator/skill/create</uri>
                             </breadcrumb>
                             <breadcrumb>
-                                <hint>edit</hint>
-                                <label>Edit Skill</label>
-                                <uri>/employee-guard/operator/skill/{id}/edit</uri>
-                            </breadcrumb>
-                            <breadcrumb>
                                 <hint>show</hint>
-                                <label>Skill</label>
+                                <label>{name}</label>
                                 <uri>/employee-guard/operator/skill/{id}</uri>
                             </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>
-                        <hint>group</hint>
-                        <label>Groups</label>
-                        <uri>/employee-guard/operator/group</uri>
+                        <hint>role</hint>
+                        <label>Job Roles</label>
+                        <uri>/employee-guard/operator/role</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add Group</label>
-                                <uri>/employee-guard/operator/group/create</uri>
-                            </breadcrumb>
-                            <breadcrumb>
-                                <hint>edit</hint>
-                                <label>Edit Group</label>
-                                <uri>/employee-guard/operator/group/{id}/edit</uri>
+                                <label>Add Job Role</label>
+                                <uri>/employee-guard/operator/role/create</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>show</hint>
-                                <label>Group</label>
-                                <uri>/employee-guard/operator/group/{id}</uri>
+                                <label>{name}</label>
+                                <uri>/employee-guard/operator/role/{id}</uri>
                             </breadcrumb>
                         </children>
                     </breadcrumb>
@@ -89,11 +81,6 @@
                                 <hint>create</hint>
                                 <label>Add Employee</label>
                                 <uri>/employee-guard/contractor/employee/create</uri>
-                            </breadcrumb>
-                            <breadcrumb>
-                                <hint>edit</hint>
-                                <label>Edit Employee</label>
-                                <uri>/employee-guard/contractor/employee/{id}/edit</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>import-export</hint>
@@ -118,11 +105,6 @@
                                 <uri>/employee-guard/contractor/skill/create</uri>
                             </breadcrumb>
                             <breadcrumb>
-                                <hint>edit</hint>
-                                <label>Edit Skill</label>
-                                <uri>/employee-guard/contractor/skill/{id}/edit</uri>
-                            </breadcrumb>
-                            <breadcrumb>
                                 <hint>show</hint>
                                 <label>{name}</label>
                                 <uri>/employee-guard/contractor/skill/{id}</uri>
@@ -139,11 +121,6 @@
                                 <label>Add Employee Group</label>
                                 <uri>create</uri>
                                 <uri>/employee-guard/contractor/employee-group/create</uri>
-                            </breadcrumb>
-                            <breadcrumb>
-                                <hint>edit</hint>
-                                <label>Edit Employee Group</label>
-                                <uri>/employee-guard/contractor/employee-group/{id}/edit</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>show</hint>

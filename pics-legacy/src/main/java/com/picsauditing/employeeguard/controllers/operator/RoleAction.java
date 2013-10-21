@@ -2,23 +2,24 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.employeeguard.entities.AccountGroup;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.util.web.UrlBuilder;
 import com.picsauditing.employeeguard.validators.group.GroupFormValidator;
+import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.util.web.UrlBuilder;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class RoleAction extends PicsRestActionSupport {
 
@@ -215,5 +216,13 @@ public class RoleAction extends PicsRestActionSupport {
 
 	public void setRoleEmployeesForm(GroupEmployeesForm roleEmployeesForm) {
 		this.roleEmployeesForm = roleEmployeesForm;
+	}
+
+	public String getDisplayName() {
+		if (role != null) {
+			return role.getName();
+		}
+
+		return null;
 	}
 }

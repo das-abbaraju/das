@@ -2,23 +2,27 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-<%-- Url --%>
-<s:url action="skill" var="operator_skill_list_url" />
-<s:url action="skill" method="create" var="operator_skill_create_url" />
+<s:set var="is_skill_of_training_type" value="operator_skill_create.type == 'Training' ? true : false" />
+<s:set var="name_error_class" value="%{hasFieldError('operator_skill_create.name') ? 'error' : ''}" />
+<s:set var="type_error_class" value="%{hasFieldError('operator_skill_create.type') ? 'error' : ''}" />
 
-<tw:form formName="operator_skill_create" action="${operator_skill_create_url}" method="post" class="form-horizontal js-validation" role="form">
+<%-- Url --%>
+<s:url action="skill" var="operator_skill_list_url"/>
+<s:url action="skill" method="create" var="operator_skill_create_url"/>
+
+<tw:form formName="operator_skill_create" action="${operator_skill_create_url}" method="post" class="form-horizontal js-validation">
     <fieldset>
-        <div class="form-group ${name_error_class}">
-            <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
-            <div class="col-md-4">
+        <div class="control-group ${name_error_class}">
+            <tw:label labelName="name"><strong>Name</strong></tw:label>
+            <div class="controls">
                 <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${skillForm.name}"/>
-                <tw:error errorName="name"/>
+                <tw:error errorName="name" />
             </div>
         </div>
 
-        <div class="form-group">
-            <tw:label labelName="description" class="col-md-3 control-label">Description</tw:label>
-            <div class="col-md-4">
+        <div class="control-group">
+            <tw:label labelName="description">Description</tw:label>
+            <div class="controls">
                 <tw:textarea textareaName="description" class="form-control" tabindex="2">${skillForm.description}</tw:textarea>
             </div>
         </div>
@@ -27,10 +31,11 @@
             <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Skill Type</strong></tw:label>
             <div class="col-md-4 col-xs-11">
                 <tw:select selectName="skillType" class="form-control skillType" tabindex="3">
-                    <tw:option value="Certification" selected="${skillForm.skillType == 'Certification'}">Certification</tw:option>
+                    <tw:option value="Certification"
+                               selected="${skillForm.skillType == 'Certification'}">Certification</tw:option>
                     <tw:option value="Training" selected="${skillForm.skillType == 'Training'}">Training</tw:option>
                 </tw:select>
-                <tw:error errorName="skillType"/>
+                <tw:error errorName="skillType" />
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
                <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="Certificates require an uploaded file and expiration to be supplied. Training is honor-based." data-container="body"></i>
@@ -38,43 +43,49 @@
         </div>
 
         <s:if test="#is_skill_of_training_type">
-            <s:include value="/struts/employee-guard/operator/skill/_training-form.jsp"/>
+            <s:include value="/struts/employee-guard/operator/skill/_training-form.jsp" />
         </s:if>
 
-        <s:set var="selected_groups" value="skillForm.groups" />
-
         <div class="form-group">
-            <tw:label labelName="groups" class="col-md-3 control-label"><strong>Employee Groups</strong></tw:label>
+            <tw:label labelName="groups" class="col-md-3 control-label"><strong>Job Roles</strong></tw:label>
             <div class="col-md-4">
-                <tw:select selectName="groups" multiple="true" class="form-control operator-skill-employee-groups" tabindex="7" >
-                    <s:iterator value="skillGroups" var="operator_group">
-                        <s:set var="is_selected" value="false" />
-                        <s:iterator value="#selected_groups" var="selected_group">
-                            <s:if test="#selected_group == #operator_group.name">
-                                <s:set var="is_selected" value="true" />
+                <tw:select selectName="groups" multiple="true" class="form-control operator-skill-employee-groups"
+                           tabindex="7">
+                    <s:iterator value="roles" var="operator_role">
+                        <s:set var="is_selected" value="false"/>
+                        <s:iterator value="#selected_roles" var="selected_role">
+                            <s:if test="#selected_role == #operator_role.name">
+                                <s:set var="is_selected" value="true"/>
                             </s:if>
                         </s:iterator>
 
-                        <tw:option value="${operator_group.name}" selected="${is_selected}">${operator_group.name}</tw:option>
+                        <tw:option value="${operator_role.name}"
+                                   selected="${is_selected}">${operator_role.name}</tw:option>
                     </s:iterator>
                 </tw:select>
 
                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label">
-                        <tw:input inputName="required" class="required" type="checkbox" value="true" tabindex="8" /> Required for all employees
+                        <tw:input inputName="required" class="required" type="checkbox" value="true"
+                                  tabindex="8"/> Required for all employees
                     </tw:label>
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-4 col-md-offset-3">
-                <div classs="checkbox">
-                    <tw:label labelName="addAnother" class="control-label">
-                        <tw:input inputName="addAnother" type="checkbox" value="true" tabindex="9" /> Add Another
-                    </tw:label>
-                </div>
+        <div class="control-group">
+            <div class="controls">
+                <tw:label labelName="company_required" class="checkbox">
+                    <tw:input inputName="company_required" type="checkbox" value="true" /> Required for all employees
+                </tw:label>
             </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <tw:label labelName="add_another" class="checkbox">
+                    <tw:input inputName="add_another" type="checkbox" value="true"/> Add Another
+                </tw:label>
 
             <div class="col-md-9 col-md-offset-3 form-actions">
                 <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="10" >Add</tw:button>

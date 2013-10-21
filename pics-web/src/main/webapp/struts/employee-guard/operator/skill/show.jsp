@@ -23,7 +23,7 @@
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
     <s:param name="delete_url">${operator_skill_delete_url}</s:param>
     <s:param name="modal_title">Delete Skill</s:param>
-    <s:param name="modal_message">Deleting will remove the skill from all employee groups and associated employees.</s:param>
+    <s:param name="modal_message">Deleting will remove the skill from all job roles and associated employees.</s:param>
 </s:include>
 
 <div class="row">
@@ -62,37 +62,18 @@
                         </dd>
                     </s:if>
 
-                    <dt class="col-md-3">Employee Groups</dt>
+                    <dt class="col-md-3">Job Roles</dt>
                     <dd class="col-md-9">
                         <s:if test="skill.ruleType.required">
                             Required for all employees
                         </s:if>
                         <s:else>
-                            <s:set var="operator_roles" value="skill.groups" />
-                            <s:include value="/struts/employee-guard/operator/role/_list.jsp" />
+                            <s:set var="operator_groups" value="skill.groups"/>
+                            <s:include value="/struts/employee-guard/operator/role/_list.jsp"/>
                         </s:else>
                     </dd>
                 </dl>
             </div>
         </section>
     </div>
-<%--     <div class="col-md-3">
-        <section class="employee-guard-section edit-container" id="skill_employees">
-            <h1>
-                <div class="row">
-                    <div class="col-md-9">
-                        <i class="icon-user icon-large"></i> Employees
-                    </div>
-                    <div class="col-md-3 edit">
-                        <i class="icon-edit icon-large edit-toggle"></i>
-                    </div>
-                </div>
-            </h1>
-
-            <div class="content">
-                <s:set name="contractor_employees" value="skill.employees"/>
-                <s:include value="/struts/employee-guard/contractor/employee/_list.jsp"/>
-            </div>
-        </section>
-    </div> --%>
 </div>

@@ -20,12 +20,14 @@
     <s:param name="id">${id}</s:param>
 </s:url>
 
-<tw:form formName="operator_skill_edit" action="${operator_skill_update_url}" method="post" class="form-horizontal" role="form">
+<tw:form formName="operator_skill_edit" action="${operator_skill_update_url}" method="post" class="form-horizontal"
+         role="form">
     <fieldset>
         <div class="form-group ${name_error_class}">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-4">
-                <tw:input inputName="name" class="form-control" type="text" autofocus="true" tabindex="1" value="${skill.name}"/>
+                <tw:input inputName="name" class="form-control" type="text" autofocus="true" tabindex="1"
+                          value="${skill.name}"/>
                 <tw:error errorName="name"/>
             </div>
         </div>
@@ -33,20 +35,25 @@
         <div class="form-group">
             <tw:label labelName="description" class="col-md-3 control-label">Description</tw:label>
             <div class="col-md-4">
-                <tw:textarea textareaName="description" class="form-control" tabindex="2" >${skill.description}</tw:textarea>
+                <tw:textarea textareaName="description" class="form-control"
+                             tabindex="2">${skill.description}</tw:textarea>
             </div>
         </div>
 
         <div class="form-group ${type_error_class}">
             <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Type</strong></tw:label>
             <div class="col-md-4 col-xs-11">
-                <tw:select selectName="skillType" value="${skill.skillType}" class="form-control skillType" tabindex="3">
-                    <tw:option value="Certification" selected="${skill.skillType == 'Certification'}">Certification</tw:option>
+                <tw:select selectName="skillType" value="${skill.skillType}" class="form-control skillType"
+                           tabindex="3">
+                    <tw:option value="Certification"
+                               selected="${skill.skillType == 'Certification'}">Certification</tw:option>
                     <tw:option value="Training" selected="${skill.skillType == 'Training'}">Training</tw:option>
                 </tw:select>
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
-                <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="Certificates require an uploaded file and expiration to be supplied. Training is honor-based." data-container="body"></i>
+                <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title=""
+                   data-original-title="Certificates require an uploaded file and expiration to be supplied. Training is honor-based."
+                   data-container="body"></i>
             </div>
         </div>
 
@@ -54,16 +61,17 @@
             <s:include value="/struts/employee-guard/operator/skill/_training-form.jsp"/>
         </s:if>
 
-        <s:set var="selected_groups" value="skillForm.groups"/>
+        <s:set var="selected_roles" value="skillForm.groups"/>
 
         <div class="form-group">
-            <tw:label labelName="groups" class="col-md-3 control-label">Employee Groups</tw:label>
+            <tw:label labelName="groups" class="col-md-3 control-label">Job Roles</tw:label>
             <div class="col-md-4">
-                <tw:select selectName="groups" multiple="true" class="form-control operator-skill-employee-groups" tabindex="7" disabled="${disable_groups}" >
-                    <s:iterator value="skillGroups" var="operator_role">
+                <tw:select selectName="groups" multiple="true" class="form-control operator-skill-employee-groups"
+                           tabindex="7" disabled="${disable_groups}">
+                    <s:iterator value="roles" var="operator_role">
                         <s:set var="is_selected" value="false"/>
-                        <s:iterator value="#selected_groups" var="selected_group">
-                            <s:if test="#selected_group == #operator_role.name">
+                        <s:iterator value="#selected_roles" var="selected_role">
+                            <s:if test="#selected_role == #operator_role.name">
                                 <s:set var="is_selected" value="true"/>
                             </s:if>
                         </s:iterator>
@@ -77,10 +85,11 @@
                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label required-for-all">
                         <s:if test="skillForm.required">
-                            <tw:input inputName="required" class="required" type="checkbox" value="true" checked="checked" tabindex="8"/>
+                            <tw:input inputName="required" class="required" type="checkbox" value="true"
+                                      checked="checked" tabindex="8"/>
                         </s:if>
                         <s:else>
-                            <tw:input inputName="required" class="required" type="checkbox" value="true" tabindex="8" />
+                            <tw:input inputName="required" class="required" type="checkbox" value="true" tabindex="8"/>
                         </s:else>
                         Required for all employees
                     </tw:label>
@@ -91,7 +100,8 @@
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
                 <tw:button buttonName="update" type="submit" class="btn btn-success" tabindex="9">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="10">Cancel</tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"
+                           tabindex="10">Cancel</tw:button>
             </div>
         </div>
     </fieldset>

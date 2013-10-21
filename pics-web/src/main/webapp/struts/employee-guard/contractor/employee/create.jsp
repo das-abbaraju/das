@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+         errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
@@ -49,7 +50,7 @@
                     <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First
                         Name</strong></tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="firstName" class="form-control" tabindex="1" type="text" autofocus="true" />
+                        <tw:input inputName="firstName" class="form-control" tabindex="1" type="text" autofocus="true"/>
                         <tw:error errorName="firstName"/>
                     </div>
                 </div>
