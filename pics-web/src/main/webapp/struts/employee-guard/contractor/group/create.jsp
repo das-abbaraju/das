@@ -14,7 +14,7 @@
 <tw:form formName="contractor_group_create" action="${contractor_group_create_url}" method="post"
          class="form-horizontal js-validation" role="form">
     <fieldset>
-        <div class="form-group ${name_error_class}">
+        <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-4">
                 <tw:input inputName="name" class="form-control" tabindex="1" type="text" autofocus="true" />
