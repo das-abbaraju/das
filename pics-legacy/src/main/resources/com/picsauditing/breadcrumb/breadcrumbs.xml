@@ -5,7 +5,7 @@
         <children>
             <breadcrumb>
                 <hint>operator</hint>
-                <label>Dashboard</label>
+                <label>EmployeeGUARD</label>
                 <uri>/employee-guard/operator/dashboard</uri>
                 <children>
                     <breadcrumb>

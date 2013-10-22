@@ -125,11 +125,11 @@ public class SkillService {
 		if (CollectionUtils.isNotEmpty(groupNames)) {
 			List<AccountGroup> accountGroups = accountGroupDAO.findGroupByAccountIdAndNames(updatedSkill.getAccountId(), groupNames);
 
-			for (AccountSkillGroup AccountSkillGroup : accountSkillGroups) {
-				AccountGroup group = AccountSkillGroup.getGroup();
+			for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
+				AccountGroup group = accountSkillGroup.getGroup();
 				int index = accountGroups.indexOf(group);
 				if (index >= 0) {
-					AccountSkillGroup.setGroup(accountGroups.get(index));
+					accountSkillGroup.setGroup(accountGroups.get(index));
 				}
 			}
 		}

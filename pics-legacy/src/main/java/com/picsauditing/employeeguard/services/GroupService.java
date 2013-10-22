@@ -64,29 +64,28 @@ public class GroupService {
 
 	public AccountGroup update(GroupNameSkillsForm groupNameSkillsForm, String id, int accountId, int appUserId) {
 		AccountGroup accountGroupInDatabase = getGroup(id, accountId);
+		accountGroupInDatabase.setName(groupNameSkillsForm.getName());
+		accountGroupInDatabase = accountGroupDAO.save(accountGroupInDatabase);
 
-		AccountGroup updatedAccountGroup = new AccountGroup(accountGroupInDatabase);
-		updatedAccountGroup.setName(groupNameSkillsForm.getName());
+		List<AccountSkillGroup> newAccountSkillGroups = new ArrayList<>();
 
 		if (ArrayUtils.isNotEmpty(groupNameSkillsForm.getSkills())) {
 			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupNameSkillsForm.getSkills())));
 			for (AccountSkill accountSkill : skills) {
-				updatedAccountGroup.getSkills().add(new AccountSkillGroup(updatedAccountGroup, accountSkill));
+				newAccountSkillGroups.add(new AccountSkillGroup(accountGroupInDatabase, accountSkill));
 			}
 		}
 
 		List<AccountSkillGroup> accountSkillGroups = IntersectionAndComplementProcess.intersection(
-				updatedAccountGroup.getSkills(),
+				newAccountSkillGroups,
 				accountGroupInDatabase.getSkills(),
                 AccountSkillGroup.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
 
-		updatedAccountGroup.setSkills(accountSkillGroups);
-		updatedAccountGroup.setEmployees(accountGroupInDatabase.getEmployees());
+		accountGroupInDatabase.setSkills(accountSkillGroups);
+		accountSkillEmployeeService.linkEmployeesToSkill(accountGroupInDatabase, appUserId);
 
-		accountSkillEmployeeService.linkEmployeesToSkill(updatedAccountGroup, appUserId);
-
-		return accountGroupDAO.save(updatedAccountGroup);
+		return accountGroupDAO.save(accountGroupInDatabase);
 	}
 
 	public AccountGroup update(GroupEmployeesForm groupEmployeesForm, String id, int accountId, int appUserId) {
