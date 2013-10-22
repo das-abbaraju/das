@@ -449,6 +449,10 @@
 								<label>Answer</label>
 								<s:textfield name="rule.questionAnswer" />
 							</li>
+                                    <li class="requiresComparator">
+								<label>Audit Year</label>
+                                <s:select id="auditYear" name="rule.yearToCheck" list="@com.picsauditing.jpa.entities.PastAuditYear@values()" listValue="displayName"/>
+							</li>
 						</ol>
 					</fieldset>
 					

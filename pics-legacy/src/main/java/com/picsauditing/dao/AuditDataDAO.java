@@ -13,15 +13,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import com.picsauditing.jpa.entities.ContractorAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
@@ -118,6 +117,18 @@ public class AuditDataDAO extends PicsDAO {
 		}
 
 		return indexedResult;
+	}
+
+	public List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
+		Query query = em.createQuery("SELECT d FROM AuditData d " +
+				"WHERE d.audit.contractorAccount = :contractor " +
+				"AND d.question = :question " +
+				"AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate > :today)");
+		query.setParameter("contractor", contractor);
+		query.setParameter("question", question);
+		query.setParameter("today", new Date());
+
+		return query.getResultList();
 	}
 
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {

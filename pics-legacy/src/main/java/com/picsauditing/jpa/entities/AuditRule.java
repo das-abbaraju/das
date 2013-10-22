@@ -13,6 +13,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
@@ -32,6 +34,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected AccountLevel accountLevel;
 	protected AuditType dependentAuditType;
 	protected AuditStatus dependentAuditStatus;
+	private PastAuditYear yearToCheck;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -371,6 +374,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 			return questionComparator.equals(QuestionComparator.Empty);
 		}
 
+		// todo: Revisit. If an ineffective/expired question was effective/not expired when it was answered, is the answer
+		// not still valid now? If it is valid, why would we exclude it here?
 		Date auditEffectiveDate = (data.getAudit().getEffectiveDate() != null) ? data.getAudit().getEffectiveDate()
 				: new Date();
 		if (auditEffectiveDate.before(data.getQuestion().getEffectiveDate()))
@@ -565,7 +570,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return dependentAuditStatus;
 	}
 
-
 	@Transient
 	public String getDependentAuditStatusLabel() {
 		return dependentAuditStatus == null ? "*" : dependentAuditStatus.toString();
@@ -573,5 +577,22 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	public void setDependentAuditStatus(AuditStatus dependentAuditStatus) {
 		this.dependentAuditStatus = dependentAuditStatus;
+	}
+
+	@Enumerated(EnumType.STRING)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {
+			@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.PastAuditYear"),
+			@Parameter(name = "identifierMethod", value = "getDbValue"),
+			@Parameter(name = "valueOfMethod", value = "fromDbValue")})
+	public PastAuditYear getYearToCheck() {
+		return yearToCheck;
+	}
+
+	public void setYearToCheck(PastAuditYear yearToCheck) {
+		this.yearToCheck = yearToCheck;
+	}
+
+	public boolean appliesToASpecificYear() {
+		return yearToCheck != PastAuditYear.Any;
 	}
 }
