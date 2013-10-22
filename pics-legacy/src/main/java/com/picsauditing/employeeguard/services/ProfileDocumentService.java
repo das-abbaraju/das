@@ -2,15 +2,15 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
-import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
-import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.entities.DocumentType;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
+import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.employeeguard.util.PhotoUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,8 +22,8 @@ import java.util.List;
 public class ProfileDocumentService {
 	@Autowired
 	private ProfileDocumentDAO profileDocumentDAO;
-    @Autowired
-    private PhotoUtil photoUtil;
+	@Autowired
+	private PhotoUtil photoUtil;
 
 	public ProfileDocument getDocument(String id) {
 		return profileDocumentDAO.find(NumberUtils.toInt(id));
@@ -100,7 +100,7 @@ public class ProfileDocumentService {
 			} else {
 				profileDocument.setUpdatedBy(appUserID);
 				profileDocument.setUpdatedDate(now);
-                photoUtil.deleteExistingProfilePhoto(directory, getPhotoDocumentFromProfile(profile));
+				photoUtil.deleteExistingProfilePhoto(directory, getPhotoDocumentFromProfile(profile));
 			}
 
 			profileDocument.setName("Profile photo");
@@ -110,18 +110,20 @@ public class ProfileDocumentService {
 			profileDocument.setStartDate(now);
 			profileDocument.setEndDate(ProfileDocument.END_OF_TIME);
 
-            photoUtil.sendPhotoToFilesDirectory(profilePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
+			photoUtil.sendPhotoToFilesDirectory(profilePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
 			profileDocumentDAO.save(profileDocument);
 		}
 	}
 
-    public ProfileDocument getPhotoDocumentFromProfile(final Profile profile) {
-        for (ProfileDocument profileDocument : profile.getDocuments()) {
-            if (profileDocument.getDocumentType() == DocumentType.Photo) {
-                return profileDocument;
-            }
-        }
+	public ProfileDocument getPhotoDocumentFromProfile(final Profile profile) {
+		if (profile != null) {
+			for (ProfileDocument profileDocument : profile.getDocuments()) {
+				if (profileDocument.getDocumentType() == DocumentType.Photo) {
+					return profileDocument;
+				}
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 }

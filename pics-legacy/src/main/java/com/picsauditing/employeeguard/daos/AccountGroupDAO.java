@@ -30,7 +30,7 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 
 	public List<AccountGroup> findGroupByAccountIdAndNames(int accountId, List<String> names) {
 		// Not sure if we need to check accountId
-		if (accountId <= 0 && CollectionUtils.isEmpty(names)) {
+		if (accountId <= 0 || CollectionUtils.isEmpty(names)) {
 			return Collections.emptyList();
 		}
 			
@@ -42,7 +42,7 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 
 	public AccountGroup findGroupByAccountIdAndName(int accountId, String name) {
 		// Not sure if we need to check the accountId
-		if (accountId <= 0 && Strings.isEmpty(name)) {
+		if (accountId <= 0 || Strings.isEmpty(name)) {
 			return null;
 		}
 

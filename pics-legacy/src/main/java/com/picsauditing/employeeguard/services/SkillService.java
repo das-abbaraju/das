@@ -158,6 +158,7 @@ public class SkillService {
 		Date deletedDate = new Date();
 		EntityHelper.softDelete(accountSkill, appUserId, deletedDate);
 		EntityHelper.softDelete(accountSkill.getGroups(), appUserId, deletedDate);
+		EntityHelper.softDelete(accountSkill.getEmployees(), appUserId, deletedDate);
 
 		accountSkillDAO.save(accountSkill);
 	}

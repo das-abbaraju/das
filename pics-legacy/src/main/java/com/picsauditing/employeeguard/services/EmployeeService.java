@@ -309,6 +309,7 @@ public class EmployeeService {
 		Date deletedDate = new Date();
 		EntityHelper.softDelete(employee, appUserId, deletedDate);
 		EntityHelper.softDelete(employee.getGroups(), appUserId, deletedDate);
+		EntityHelper.softDelete(employee.getSkills(), appUserId, deletedDate);
 
 		employeeDAO.save(employee);
 	}
