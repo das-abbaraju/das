@@ -13895,12 +13895,19 @@ PICS.define('employee-guard.AjaxFormEditing', {
                 $display_values = $container.find('.edit-display-values'),
                 jQueryElements = PICS.getClass('employee-guard.BindjQueryElements');
 
+            //hide display values
             if (request_data.length > 0) {
                 hideDisplayValues($display_values);
             }
 
-            $container.append(request_data);
+            //write form to page
+            if ($container.is('section')) {
+                $container.find('.content').append(request_data);
+            } else {
+                $container.append(request_data);
+            }
 
+            //rebind jquery plugin code
             jQueryElements.bindAll();
         }
 

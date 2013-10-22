@@ -10,7 +10,7 @@
 <tw:form formName="contractor_employee_edit" action="${contractor_employee_edit_url}" method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
     <div class="form-group">
         <tw:label labelName="skills" class="col-md-3 control-label">Requssired Skills</tw:label>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <tw:select selectName="skills" multiple="true" class="form-control" tabindex="2">
                 <s:iterator value="groupSkills" var="company_skill">
                     <s:set var="is_selected" value="false"/>
