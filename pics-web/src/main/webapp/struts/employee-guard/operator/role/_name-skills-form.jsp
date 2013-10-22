@@ -13,9 +13,7 @@
         <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-3">
-                <tw:input inputName="name" class="form-control" type="text" value="${role.name}" autofocus="true"
-                          tabindex="1"/>
-                <tw:error errorName="name"/>
+                <tw:input inputName="name" class="form-control" type="text" value="${role.name}" autofocus="true" tabindex="1"/>
             </div>
         </div>
 
@@ -33,8 +31,7 @@
                             </s:if>
                         </s:iterator>
 
-                        <tw:option value="#operator_skill.id"
-                                   selected="${is_selected}">${operator_skill.name}</tw:option>
+                        <tw:option value="#operator_skill.id" selected="${is_selected}">${operator_skill.name}</tw:option>
                     </s:iterator>
                 </tw:select>
             </div>
@@ -43,8 +40,7 @@
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
                 <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="3">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"
-                           tabindex="4">Cancel</tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="4">Cancel</tw:button>
             </div>
         </div>
     </fieldset>

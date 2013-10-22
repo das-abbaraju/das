@@ -9,8 +9,9 @@
             </s:url>
 
             <li>
-                <a href="${operator_role_show_url}"><span
-                        class="label label-pics">${operator_role.group.name}</span></a>
+                <a href="${operator_role_show_url}">
+                    <span class="label label-pics">${operator_role.group.name}</span>
+                </a>
             </li>
         </s:iterator>
     </ul>
