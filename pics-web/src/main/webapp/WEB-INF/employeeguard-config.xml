@@ -14,6 +14,7 @@
     <bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
     <bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
     <bean id="ProfileDocumentDAO" class="com.picsauditing.employeeguard.daos.ProfileDocumentDAO"/>
+    <bean id="SoftDeletedEmployeeDAO" class="com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO"/>
     <!-- Services -->
     <bean id="AccountGroupEmployeeService" class="com.picsauditing.employeeguard.services.AccountGroupEmployeeService"/>
     <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>

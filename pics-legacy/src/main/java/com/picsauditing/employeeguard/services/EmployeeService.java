@@ -5,10 +5,9 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
@@ -42,6 +41,8 @@ public class EmployeeService {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private PhotoUtil photoUtil;
+	@Autowired
+	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
 	public Employee findEmployee(final String id, final int accountId) {
 		int employeeId = NumberUtils.toInt(id);
@@ -326,9 +327,9 @@ public class EmployeeService {
 		return Collections.emptyList();
 	}
 
-	public void linkEmployeeToProfile(Employee employee, final Profile profile) {
+	public void linkEmployeeToProfile(SoftDeletedEmployee employee, final Profile profile) {
 		employee.setProfile(profile);
 		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
-		employeeDAO.save(employee);
+		softDeletedEmployeeDAO.save(employee);
 	}
 }

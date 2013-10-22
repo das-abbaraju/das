@@ -89,6 +89,7 @@
         <class>com.picsauditing.employeeguard.entities.ProjectCompany</class>
         <class>com.picsauditing.employeeguard.entities.ProjectGroup</class>
         <class>com.picsauditing.employeeguard.entities.ProjectSkill</class>
+        <class>com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee</class>
 
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />

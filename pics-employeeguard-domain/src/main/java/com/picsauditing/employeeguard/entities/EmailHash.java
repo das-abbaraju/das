@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
 
-import org.hibernate.annotations.WhereJoinTable;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,8 +14,7 @@ public class EmailHash {
 	private String hash;
 	@ManyToOne
 	@JoinColumn(name = "account_employeeID")
-	@WhereJoinTable(clause = "deletedBy = 0 OR deletedBy > 0")
-	private Employee employee;
+	private SoftDeletedEmployee employee;
 	private String emailAddress;
 	private Date creationDate;
 	private Date expirationDate;
@@ -36,11 +35,11 @@ public class EmailHash {
 		this.hash = hash;
 	}
 
-	public Employee getEmployee() {
+	public SoftDeletedEmployee getEmployee() {
 		return employee;
 	}
 
-	public void setEmployee(Employee employee) {
+	public void setEmployee(SoftDeletedEmployee employee) {
 		this.employee = employee;
 	}
 
