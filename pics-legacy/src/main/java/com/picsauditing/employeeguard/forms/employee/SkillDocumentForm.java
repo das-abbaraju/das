@@ -1,5 +1,7 @@
 package com.picsauditing.employeeguard.forms.employee;
 
+import java.util.Calendar;
+
 public class SkillDocumentForm {
 
 	//    public enum Proof { Certified, Document, None }
@@ -33,5 +35,15 @@ public class SkillDocumentForm {
 
 	public void setDocumentId(int documentId) {
 		this.documentId = documentId;
+	}
+
+	public boolean isDoesNotExpire() {
+		if (skillInfo != null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, 3000);
+			return skillInfo.getEndDate().after(calendar.getTime());
+		}
+
+		return false;
 	}
 }

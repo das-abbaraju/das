@@ -53,7 +53,7 @@
                     </fieldset>
                     <div class="checkbox">
                         <tw:label labelName="noExpiration" class="control-label">
-                            <tw:input inputName="noExpiration" type="checkbox" class="no-expiration" /> Does not expire
+                            <tw:input inputName="noExpiration" type="checkbox" class="no-expiration" value="true" /> Does not expire
                         </tw:label>
                     </div>
                 </div>

@@ -1,9 +1,8 @@
 package com.picsauditing.employeeguard.forms.factory;
 
+import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.forms.employee.SkillInfo;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
-import com.picsauditing.util.Strings;
 
 public class SkillDocumentFormBuilder {
 
@@ -23,7 +22,7 @@ public class SkillDocumentFormBuilder {
     private String getProof(SkillInfo skillInfo, ProfileDocument profileDocument) {
         if (skillInfo.getSkillType().isCertification() && profileDocument != null) {
             return profileDocument.getFileName();
-        } else if (skillInfo.getSkillType().isTraining() && Strings.isNotEmpty(skillInfo.getEndDate())) {
+        } else if (skillInfo.getSkillType().isTraining() && skillInfo.getEndDate() != null) {
             return "I certify that I have meet all requirements.";
         }
 

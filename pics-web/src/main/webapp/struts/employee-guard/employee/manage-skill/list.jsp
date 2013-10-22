@@ -12,7 +12,7 @@
     </s:param>
 </s:include>
 
-<s:if test="#companySkillInfoList.size() > 0">
+<s:if test="companySkillInfoList.size() > 0">
     <div class="row">
         <%--<div class="col-md-3">
             <s:include value="/struts/employee-guard/employee/manage-skill/_sidenav.jsp"></s:include>
