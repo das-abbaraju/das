@@ -37,36 +37,3 @@
         </div>
     </fieldset>
 </tw:form>
-
-<%-- <tw:form formName="employee_manage_skill_certification" action="${employee_manage_skill_url}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
-    <fieldset>
-        <h2>${skillDocumentForm.skillInfo.name}</h2>
-
-        <p>
-                ${skillDocumentForm.skillInfo.description}
-        </p>
-
-        <div class="form-group">
-            <tw:label labelName="proof" class="col-md-3 control-label"><strong>Proof</strong></tw:label>
-            <div class="col-md-4">
-                <tw:select selectName="proof" class="form-control">
-                    <tw:option value=""></tw:option>
-                </tw:select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-4">
-                <tw:input inputName="file" type="file" class="hidden" />
-                <a href="${employee_skill_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> Upload New</a>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="update" type="submit" class="btn btn-primary">Update</tw:button>
-                <a href="${employee_skills_list_url}" class="btn btn-default">Cancel</a>
-            </div>
-        </div>
-    </fieldset>
-</tw:form> --%>

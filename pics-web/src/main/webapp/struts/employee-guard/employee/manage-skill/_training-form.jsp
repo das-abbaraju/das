@@ -9,7 +9,6 @@
 <s:url action="skills" var="employee_skills_list_url" />
 
 <tw:form formName="employee_manage_skill_training" action="${employee_skill_url}" method="post" class="form-horizontal js-validation" role="form">
-
     <fieldset>
         <div class="form-group">
             <tw:label labelName="proof" class="col-md-3 control-label"><strong>Proof</strong></tw:label>
@@ -29,42 +28,4 @@
             </div>
         </div>
     </fieldset>
-
-
-<%--     <fieldset>
-        <h2>${skillDocumentForm.skillInfo.name}</h2>
-
-        <p>
-            ${skillDocumentForm.skillInfo.description}
-        </p>
-
-        <div class="form-group">
-            <tw:label labelName="proof" class="col-md-3 control-label"><strong>Proof</strong></tw:label>
-            <div class="col-md-9">
-                <div class="checkbox">
-                    <tw:label labelName="proof" class="control-label">
-                        <tw:input inputName="proof" type="checkbox" /> I certify that I have met all requirements.
-                    </tw:label>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <tw:label labelName="complete_year" class="col-md-3 control-label"><strong>Completed</strong></tw:label>
-            <div class="controls">
-                <tw:input inputName="complete_year" type="text" class="input-mini" placeholder="YYYY" />
-                <tw:input inputName="complete_month" type="text" class="input-mini" placeholder="MM" />
-                <tw:input inputName="complete_day" type="text" class="input-mini" placeholder="DD" />
-
-                <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd"><i class="icon-calendar"></i></a>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="update" type="submit" class="btn btn-primary">Update</tw:button>
-                <a href="${employee_skills_list_url}" class="btn btn-default">Cancel</a>
-            </div>
-        </div>
-    </fieldset> --%>
 </tw:form>

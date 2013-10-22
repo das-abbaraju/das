@@ -13,7 +13,7 @@
 </s:include>
 
 <div class="row">
-    <div class="col-md-9 skill-show">
+    <div class="col-md-8 skill-show">
         <div class="edit-container" data-url="${edit_employee_skill_url}">
             <%-- if skill is incomplete --%>
             <s:if test="skillDocumentForm.skillInfo.skillStatus.expired">
@@ -64,7 +64,7 @@
             <s:include value="/struts/employee-guard/employee/manage-skill/_certification-form.jsp" />
         </s:else> --%>
 
-    <%--<div class="col-md-3 well well-required-for">Required For:
+    <%--<div class="col-md-4 well well-required-for">Required For:
         <ul>
             <li>PICS</li>
         </ul>
