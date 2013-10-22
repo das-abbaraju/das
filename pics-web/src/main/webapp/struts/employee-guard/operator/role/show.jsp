@@ -28,7 +28,7 @@
 </s:include>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-8">
         <section class="employee-guard-section edit-container" data-url="${operator_role_name_skills_url}">
             <h1>
                 <div class="row">
@@ -54,4 +54,24 @@
             </div>
         </section>
     </div>
+<%-- Non MVP Markup
+    <div class="col-md-4">
+        <section class="employee-guard-section edit-container" data-url="${operator_role_name_skills_url}">
+            <h1>
+                <div class="row">
+                    <div class="col-md-9 col-xs-9">
+                        <i class="icon-sitemap icon-large"></i> Current Projects
+                    </div>
+                    <div class="col-md-3 col-xs-3 edit">
+                        <i class="icon-edit icon-large edit-toggle"></i>
+                    </div>
+                </div>
+            </h1>
+
+            <div class="content">
+                <dl class="employee-guard-information edit-display-values">
+                </dl>
+            </div>
+        </section>
+    </div> --%>
 </div>

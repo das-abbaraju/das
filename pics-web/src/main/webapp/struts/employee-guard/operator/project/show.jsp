@@ -15,6 +15,9 @@
 <s:url action="operator-project" method="editCompaniesRequestedSection" var="operator_companies_requested_url">
     <s:param name="id">${id}</s:param>
 </s:url>
+<s:url action="assignments" var="operator_assignments_url">
+    <s:param name="id">${id}</s:param>
+</s:url>
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
@@ -32,7 +35,7 @@
 </s:include>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
 		<section class="employee-guard-section edit-container" data-url="${operator_project_url}">
 		    <h1>
 		        <div class="row">
@@ -69,38 +72,12 @@
 			<%-- <s:include value="/struts/employee-guard/operator/project/_projects-form.jsp" /> --%>
 
 		</section>
-	</div>
 
-	<div class="col-md-6">
-		<section class="employee-guard-section-full edit-container" data-url="${contractor_employee_employment_url}">
-		    <h1>
-		        <div class="row">
-		            <div class="col-md-9 col-xs-9">
-		                <i class="icon-building icon-large"></i> Companies Requested for Project
-		            </div>
-		            <div class="col-md-3 col-xs-3 edit">
-		                <i class="icon-edit icon-large edit-toggle"></i>
-		            </div>
-		        </div>
-		    </h1>
-
-		    <div class="content">
-				<s:set name="contractor_employees" value="group.employees"/>
-				<s:include value="/struts/employee-guard/contractor/employee/_list.jsp"/>
-			</div>
-
-			<%-- <s:include value="/struts/employee-guard/operator/project/_companies-requested-form.jsp" /> --%>
-
-		</section>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-6">
 		<section class="employee-guard-section edit-container" data-url="${operator_project_url}">
 		    <h1>
 		        <div class="row">
 		            <div class="col-md-9 col-xs-9">
-		                <i class="icon-group icon-large"></i> Job Roles
+		                <i class="icon-group icon-large"></i> Project Job Roles
 		            </div>
 		            <div class="col-md-3 col-xs-3 edit">
 		                <i class="icon-edit icon-large edit-toggle"></i>
@@ -136,6 +113,38 @@
 
 			<%-- <s:include value="/struts/employee-guard/operator/project/_job-roles-form.jsp" /> --%>
 
+		</section>
+
+		<section class="employee-guard-section-full edit-container" data-url="${contractor_employee_employment_url}">
+		    <h1>
+		        <div class="row">
+		            <div class="col-md-9 col-xs-9">
+		                <i class="icon-building icon-large"></i> Companies Requested for Project
+		            </div>
+		            <div class="col-md-3 col-xs-3 edit">
+		                <i class="icon-edit icon-large edit-toggle"></i>
+		            </div>
+		        </div>
+		    </h1>
+
+		    <div class="content">
+				<s:set name="contractor_employees" value="group.employees"/>
+				<s:include value="/struts/employee-guard/contractor/employee/_list.jsp"/>
+			</div>
+
+			<%-- <s:include value="/struts/employee-guard/operator/project/_companies-requested-form.jsp" /> --%>
+
+		</section>
+	</div>
+	<div class="col-md-4">
+		<section class="employee-guard-section" data-url="${operator_project_url}">
+		    <h1>
+				<i class="icon-sitemap icon-large"></i> Assigned Employees
+		    </h1>
+
+		    <div class="content">
+				<a href="${operator_assignments_url}" class="btn btn-primary btn-block"><i class="icon-table"></i> Current Assignments</a>
+			</div>
 		</section>
 	</div>
 </div>
