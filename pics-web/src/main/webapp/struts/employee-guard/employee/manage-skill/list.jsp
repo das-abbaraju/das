@@ -12,11 +12,7 @@
     </s:param>
 </s:include>
 
-<%-- TODO: Temp Code until actual is hooked up --%>
-<%-- TODO: Remove me please --%>
-<s:set var="employeeSkills" value="1" />
-
-<s:if test="#employeeSkills > 0">
+<s:if test="#companySkillInfoList.size() > 0">
     <div class="row">
         <%--<div class="col-md-3">
             <s:include value="/struts/employee-guard/employee/manage-skill/_sidenav.jsp"></s:include>

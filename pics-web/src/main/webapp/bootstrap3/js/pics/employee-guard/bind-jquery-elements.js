@@ -29,7 +29,8 @@ PICS.define('employee-guard.BindjQueryElements', {
         return {
             init: init,
             tooltips: tooltips,
-            datePicker: datePicker
+            datePicker: datePicker,
+            bindAll: bindAll
         };
 
 	}())
