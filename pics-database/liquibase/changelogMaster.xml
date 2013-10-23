@@ -21,6 +21,7 @@
     <include file="./liquibase/pschlesinger4_PICS-12857_DropSapCodesFromRefBizUnit.sql"/>
     <include file="./liquibase/gmeurer1_PICS-12602_AddTableForAggregatingTranslationLogs.sql"/>
     <include file="./liquibase/kchase4_PICS-13049_CSRShiftHours.sql"/>
+    <include file="./liquibase/PICS-12919_updateTokens.sql"/>
 
     <!--    Release 6.64   -->
     <include file="./liquibase/kchase2_PICS-12919_updateTokens.sql"/>
