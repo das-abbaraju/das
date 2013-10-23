@@ -91,9 +91,9 @@ public class SkillService {
 			accountSkillInDatabase.getGroups().clear();
 		}
 
-		EntityHelper.setUpdateAuditFields(updatedAccountSkill, appUserId, new Date());
+		EntityHelper.setUpdateAuditFields(accountSkillInDatabase, appUserId, new Date());
 
-		accountSkillEmployeeService.linkEmployeesToSkill(updatedAccountSkill, appUserId);
+		accountSkillEmployeeService.linkEmployeesToSkill(accountSkillInDatabase, appUserId);
 
 		return accountSkillDAO.save(accountSkillInDatabase);
 	}

@@ -27,16 +27,22 @@
         <div class="form-group">
             <tw:label labelName="expireYear" class="col-md-3 control-label"><strong>Expires</strong></tw:label>
             <div class="col-md-4">
-                <fieldset class="expiration-date">
+                <s:set var="is_disabled" value="%{''}" />
+                <s:set var="disabled_attribute" value="%{''}" />
+                <s:if test="documentForm.noExpiration">
+                    <s:set var="is_disabled" value="%{'disabled'}" />
+                    <s:set var="disabled_attribute" value="%{'disabled=\"disabled\"'}" />
+                </s:if>
+                <fieldset class="expiration-date ${is_disabled}" ${disabled_attribute}>
                     <div class="row date">
                         <div class="col-md-4 col-sm-4 col-xs-6">
-                            <tw:input inputName="expireYear" type="text" placeholder="YYYY" class="form-control year" value="${documentForm.expireYear}" />
+                            <tw:input inputName="expireYear" type="text" placeholder="YYYY" class="form-control year" value="${documentForm.expireYear > 0 ? documentForm.expireYear : ''}" />
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3">
-                            <tw:input inputName="expireMonth" type="text" placeholder="MM" class="form-control month" value="${documentForm.expireMonth}" />
+                            <tw:input inputName="expireMonth" type="text" placeholder="MM" class="form-control month" value="${documentForm.expireMonth > 0 ? documentForm.expireMonth : ''}" />
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3">
-                            <tw:input inputName="expireDay" type="text" placeholder="DD" class="form-control day" value="${documentForm.expireDay}" />
+                            <tw:input inputName="expireDay" type="text" placeholder="DD" class="form-control day" value="${documentForm.expireDay > 0 ? documentForm.expireDay : ''}" />
                         </div>
                         <div class="col-md-1 col-sm-1 col-xs-12">
                             <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd"><i class="icon-calendar"></i></a>
@@ -45,7 +51,13 @@
                 </fieldset>
                 <div class="checkbox">
                     <tw:label labelName="noExpiration" class="control-label">
-                        <tw:input inputName="noExpiration" type="checkbox" class="no-expiration" value="true" /> Does not expire
+                        <s:if test="documentForm.noExpiration">
+                            <tw:input inputName="noExpiration" type="checkbox" class="no-expiration" value="true" checked="checked" />
+                        </s:if>
+                        <s:else>
+                            <tw:input inputName="noExpiration" type="checkbox" class="no-expiration" value="true" />
+                        </s:else>
+                        Does not expire
                     </tw:label>
                 </div>
             </div>

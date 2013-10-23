@@ -1,9 +1,8 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.entities.builders.ProfileDocumentBuilder;
+import com.picsauditing.employeeguard.forms.AddAnotherForm;
 
 import java.io.File;
 import java.util.Calendar;
@@ -133,11 +132,15 @@ public class DocumentForm implements AddAnotherForm {
 	        documentForm.setFileFileName(profileDocument.getFileName());
 	        documentForm.setFileContentType(profileDocument.getFileType());
 
-	        documentForm.setExpireYear(calendar.get(Calendar.YEAR));
-	        documentForm.setExpireMonth(calendar.get(Calendar.MONTH) + 1);
-	        documentForm.setExpireDay(calendar.get(Calendar.DAY_OF_MONTH));
+	        if (calendar.get(Calendar.YEAR) > 3000) {
+		        documentForm.setNoExpiration(true);
+	        } else {
+		        documentForm.setNoExpiration(false);
+		        documentForm.setExpireYear(calendar.get(Calendar.YEAR));
+		        documentForm.setExpireMonth(calendar.get(Calendar.MONTH) + 1);
+		        documentForm.setExpireDay(calendar.get(Calendar.DAY_OF_MONTH));
+	        }
 
-            documentForm.setNoExpiration(DateBean.getEndOfTime().equals(profileDocument.getEndDate()) ? true : false);
             return documentForm;
         }
     }
