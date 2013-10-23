@@ -8,7 +8,7 @@
     <version>1.0-SNAPSHOT</version>
     <name>Main POM</name>
     <description>Top level parent POM for PICS Organizer</description>
-<!-- comment -->
+
     <modules>
         <module>pics-util</module>
         <module>service-nace</module>
