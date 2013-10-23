@@ -9,6 +9,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.json.JSONValidationInterceptor;
 
 import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
@@ -49,10 +50,14 @@ public class PicsValidationInterceptor extends JSONValidationInterceptor {
 		setResponseHeaders(response);
 
 		if (validatorContext.hasErrors()) {
-			response.getWriter().print(super.buildResponse((ValidationAware) invocation.getAction()));
-		} else {
-			response.getWriter().print("{}");
-		}
+            PicsFormBindingInterceptor.ErrorPreResultListener errorPreResultListener =
+                    (PicsFormBindingInterceptor.ErrorPreResultListener) ActionContext.getContext().getValueStack()
+                    .getContext().get(PicsFormBindingInterceptor.ERROR_PRE_RESULT_LISTENER);
+            errorPreResultListener.beforeResult(invocation, Action.NONE);
+            response.getWriter().print(super.buildResponse((ValidationAware) invocation.getAction()));
+        } else {
+            response.getWriter().print("{}");
+        }
 
 		return Action.NONE;
 	}

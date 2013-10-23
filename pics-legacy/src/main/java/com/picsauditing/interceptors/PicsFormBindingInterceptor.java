@@ -1,5 +1,18 @@
 package com.picsauditing.interceptors;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.dispatcher.multipart.MultiPartRequestWrapper;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
@@ -7,12 +20,6 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.picsauditing.forms.binding.ActionFormBindingAnnotationCache;
 import com.picsauditing.util.Strings;
-import org.apache.commons.collections.MapUtils;
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.dispatcher.multipart.MultiPartRequestWrapper;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 public class PicsFormBindingInterceptor extends AbstractInterceptor {
 
@@ -32,12 +39,9 @@ public class PicsFormBindingInterceptor extends AbstractInterceptor {
 
         ErrorPreResultListener listener = new ErrorPreResultListener(propertyName, formName, params);
         invocation.addPreResultListener(listener);
-//        invocation.getStack().set(ERROR_PRE_RESULT_LISTENER, listener);
         ActionContext.getContext().getValueStack().getContext().put(ERROR_PRE_RESULT_LISTENER, listener);
 
         String actionResult = invocation.invoke();
-
-//		replaceFormName(params, propertyName, formName);
 
         return actionResult;
     }
