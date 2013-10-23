@@ -125,7 +125,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] generalContractor;
 	protected int[] insideSalesID;
 
-	protected String generalContractorAlias = "gc";
+	protected String generalContractorAlias = "co";
 
 	// // setting the filter
 	public boolean isShowContractor() {

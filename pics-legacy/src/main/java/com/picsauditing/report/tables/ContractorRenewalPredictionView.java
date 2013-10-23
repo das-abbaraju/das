@@ -24,8 +24,8 @@ public class ContractorRenewalPredictionView extends AbstractTable {
     private static String getSelectClause() {
         SelectSQL sql = new SelectSQL("accounts");
         sql.addJoin("JOIN contractor_info ON contractor_info.id = accounts.id");
-        sql.addJoin("JOIN generalcontractors ON generalcontractors.subID = contractor_info.id");
-        sql.addJoin("JOIN accounts clients ON clients.id = generalcontractors.genID AND clients.type = 'Operator'");
+        sql.addJoin("JOIN contractor_operator ON contractor_operator.conID = contractor_info.id");
+        sql.addJoin("JOIN accounts clients ON clients.id = contractor_operator.opID AND clients.type = 'Operator'");
         sql.addGroupBy("accounts.id");
         sql.addField("accounts.id AS conID");
         String predictor = INTERSECT +
@@ -45,7 +45,7 @@ public class ContractorRenewalPredictionView extends AbstractTable {
     }
 
     private static String getAverageFlagColor() {
-        SelectCase column = new SelectCase("generalcontractors.flag");
+        SelectCase column = new SelectCase("contractor_operator.flag");
         column.addCondition("'Green'", 3);
         column.addCondition("'Amber'", 2);
         column.setElse(1);

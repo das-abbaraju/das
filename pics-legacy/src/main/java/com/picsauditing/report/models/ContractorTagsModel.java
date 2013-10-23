@@ -78,17 +78,17 @@ public class ContractorTagsModel extends AbstractModel {
 
         Field clientSite = new Field("ContractorWorksAtClientSite","ContractorAccount.id",FieldType.Operator);
         clientSite.setVisible(false);
-        clientSite.setPrefixValue("SELECT co.subID " +
-                "FROM generalcontractors co " +
-                "WHERE co.genID IN ");
+        clientSite.setPrefixValue("SELECT co.conID " +
+                "FROM contractor_operator co " +
+                "WHERE co.opID IN ");
         clientSite.setSuffixValue("");
         fields.put(clientSite.getName().toUpperCase(), clientSite);
 
         Field reportingClient = new Field("ContractorWorksForReportingClient","ContractorAccount.id",FieldType.Operator);
         reportingClient.setVisible(false);
-        reportingClient.setPrefixValue("SELECT co.subID " +
-                "FROM generalcontractors co " +
-                "JOIN operators o ON o.id = co.genID " +
+        reportingClient.setPrefixValue("SELECT co.conID " +
+                "FROM contractor_operator co " +
+                "JOIN operators o ON o.id = co.opID " +
                 "WHERE o.reportingID IN ");
         reportingClient.setSuffixValue("");
         fields.put(reportingClient.getName().toUpperCase(), reportingClient);

@@ -41,7 +41,7 @@ var flags = {
 		"Amber": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Amber', '')" escape="false"/>'
 }
 
-function resolveFlags(detail, baseline, title, gcId, id, opId) {
+function resolveFlags(detail, baseline, title, coId, id, opId) {
 	var changes = {};
 	$.each(baseline, function(criteriaID, data) {
 		if (includeDetail(data, detail[criteriaID])) {
@@ -80,7 +80,7 @@ function resolveFlags(detail, baseline, title, gcId, id, opId) {
 	} else {
 		output.append('<tr><td/>?<td/></tr>');
 	}
-	$('#detail_' + gcId).html(output);
+	$('#detail_' + coId).html(output);
 	output.cluetip({
 		sticky : true,
 		hoverClass : 'cluetip',
@@ -101,8 +101,8 @@ function resolveFlags(detail, baseline, title, gcId, id, opId) {
 		}
 	});
 }
-function addDetailsClueTips(gcID){
-	$("#add_details_" + gcID + " a").cluetip({
+function addDetailsClueTips(coID){
+	$("#add_details_" + coID + " a").cluetip({
 		sticky : true,
 		hoverClass : 'cluetip',
 		mouseOutClose : true,
@@ -176,7 +176,7 @@ function caoDetailsClueTips(caoID){
 	</thead>
 	<tbody>
 	<s:iterator value="data" status="stat">
-		<s:set name="gcID" value="get('gcID')"></s:set>
+		<s:set name="coID" value="get('coID')"></s:set>
 		<s:set name="caoID" value="get('caoID')"></s:set>
 		<tr id="row<s:property value="#gcID"/>">
 			<td class="nobr"><a title="<s:property value="get(\'name\')" escape="true" /> (Last Updated: <s:date name="get('flagLastUpdated')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />)"
@@ -187,10 +187,10 @@ function caoDetailsClueTips(caoID){
 				<img src="images/icon_<s:property value="get('flag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" /></a></td>
 			<td>
 				<span class="nobr">
-					<a href="<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>,'<s:property value="get('gcIDs')"/>'); return false;">Approve <s:property value="get('flag')"/></a>
+					<a href="<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>,'<s:property value="get('coIDs')"/>'); return false;">Approve <s:property value="get('flag')"/></a>
 				</span>
 			</td>
-			<td id="detail_<s:property value="get('gcID')"/>">
+			<td id="detail_<s:property value="get('coID')"/>">
 				<script type="text/javascript">
 					resolveFlags(
 						<s:property value="get('flagDetail')" escape="false"/>,
@@ -210,8 +210,8 @@ function caoDetailsClueTips(caoID){
 			<pics:permission perm="AllContractors">
 				<td><s:property value="get('opName')"/></td>
 			</pics:permission>
-			<td id="add_details_<s:property value="get('gcID')"/>">
-				<a title="Additional Details" rel="ContractorFlagChangesAjaxAddDetails.action?id=<s:property value="get('gcID')"/>">
+			<td id="add_details_<s:property value="get('coID')"/>">
+				<a title="Additional Details" rel="ContractorFlagChangesAjaxAddDetails.action?id=<s:property value="get('coID')"/>">
 					<s:date name="get('flagLastUpdated')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 				</a>
 				<script type="text/javascript">

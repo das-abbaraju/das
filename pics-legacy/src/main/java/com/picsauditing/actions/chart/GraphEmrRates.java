@@ -79,7 +79,7 @@ public class GraphEmrRates extends ChartMSAction {
 
 		if (permissions.isAdmin() || permissions.isCorporate()) {
 			if (operatorIDs != null && operatorIDs.length > 0) {
-				sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+				sql.addWhere("a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN ("
 						+ Strings.implode(operatorIDs, ",") + "))");
 			}
 		}

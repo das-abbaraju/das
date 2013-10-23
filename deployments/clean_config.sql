@@ -7,7 +7,7 @@ update email_queue set toAddresses = 'tester@picsauditing.com', ccAddresses = nu
 where status = 'Pending'
 and (toAddresses not like '%picsauditing.com' or ccAddresses not like '%picsauditing.com');
 
-update generalcontractors set baselineFlag = flag, baselineFlagDetail = flagDetail;
+update contractor_operator set baselineFlag = flag, baselineFlagDetail = flagDetail;
 update flag_data set baselineFlag = flag;
 
 update app_properties set value = '2J862r8678vrx3d3evk6m44B9RHXcWUv' where property = 'brainTree.key';

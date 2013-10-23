@@ -42,8 +42,8 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 			sql.addWhere("au.userID = " + permissions.getUserId());
 		}
 
-		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
-		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
+		sql.addJoin("JOIN contractor_operator co on co.conID = a.id");
+		sql.addJoin("JOIN accounts operator on operator.id = co.opID");
 
 		if (permissions.isAdmin()) {
 			sql.addField("GROUP_CONCAT(operator.name ORDER BY operator.name ASC SEPARATOR ', ') AS opName");
@@ -52,12 +52,12 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 			sql.addField("operator.name AS opName");
 
 		sql.addField("operator.id AS opId");
-		sql.addField("gc.flag");
-		sql.addField("lower(gc.flag) AS lflag");
+		sql.addField("co.flag");
+		sql.addField("lower(co.flag) AS lflag");
 		
 		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
 		sql.addWhere("operator.type = 'Operator'");
-		sql.addField("gc.workStatus");
+		sql.addField("co.workStatus");
 		if (!Strings.isEmpty(opIds))
 			sql.addWhere("operator.id in (" + opIds + ")");
 	}

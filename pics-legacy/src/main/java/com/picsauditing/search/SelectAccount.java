@@ -138,7 +138,7 @@ public class SelectAccount extends SelectSQL {
 
 	/**
 	 * Limit contractor search to the accounts I can see based on my perms If
-	 * I'm an operator join to gc.flag and gc.workStatus too
+	 * I'm an operator join to co.flag and co.workStatus too
 	 * 
 	 * @param permissions
 	 */
@@ -152,27 +152,27 @@ public class SelectAccount extends SelectSQL {
 				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
 			}
 
-			if (!this.hasJoin("generalcontractors gc")) {
-				String operatorRelationship = "gc.genID IN (" + operatorVisibility + ")";
+			if (!this.hasJoin("contractor_operator co")) {
+				String operatorRelationship = "co.opID IN (" + operatorVisibility + ")";
 
-				this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND " + operatorRelationship);
-				this.addJoin("JOIN operators gco ON gco.id = gc.genID");
+				this.addJoin("JOIN contractor_operator co ON co.conID = a.id AND " + operatorRelationship);
+				this.addJoin("JOIN operators coo ON coo.id = co.opID");
 
-				this.addWhere("gc.subID IN (SELECT subID FROM generalcontractors WHERE genID = "
+				this.addWhere("co.conID IN (SELECT conID FROM contractor_operator WHERE opID = "
 						+ permissions.getAccountId() + ")");
 			}
 
-			this.addField("REPLACE(gc.workStatus,'F','') as workStatus");
+			this.addField("REPLACE(co.workStatus,'F','') as workStatus");
 
 			String flag = "%s AS %s";
 
 			if (permissions.isGeneralContractor()) {
-				flag = "CASE gco.doContractorsPay WHEN 'No' THEN '' ELSE %s END %s";
+				flag = "CASE coo.doContractorsPay WHEN 'No' THEN '' ELSE %s END %s";
 			}
 
-			this.addField(String.format(flag, "gc.flag", "flag"));
-			this.addField(String.format(flag, "lower(gc.flag)", "lflag"));
-			this.addField("gc.forceEnd");
+			this.addField(String.format(flag, "co.flag", "flag"));
+			this.addField(String.format(flag, "lower(co.flag)", "lflag"));
+			this.addField("co.forceEnd");
 		}
 
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);

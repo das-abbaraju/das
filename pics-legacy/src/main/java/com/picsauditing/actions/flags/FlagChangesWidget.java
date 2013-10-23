@@ -34,25 +34,25 @@ public class FlagChangesWidget extends PicsActionSupport {
         sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
 		sql.addWhere("au.userID = " + permissions.getShadowedUserID());
 
-		sql.addJoin("JOIN generalcontractors gc_flag ON gc_flag.subid = a.id AND gc_flag.flag != gc_flag.baselineFlag");
-		sql.addField("gc_flag.id gcID");
-		sql.addField("gc_flag.flag");
-		sql.addField("gc_flag.baselineFlag");
-		sql.addField("gc_flag.baselineApproved");
-		sql.addField("gc_flag.baselineApprover");
+		sql.addJoin("JOIN contractor_operator co_flag ON co_flag.conID = a.id AND co_flag.flag != co_flag.baselineFlag");
+		sql.addField("co_flag.id coID");
+		sql.addField("co_flag.flag");
+		sql.addField("co_flag.baselineFlag");
+		sql.addField("co_flag.baselineApproved");
+		sql.addField("co_flag.baselineApprover");
 
-		sql.addJoin("JOIN accounts operator on operator.id = gc_flag.genid");
+		sql.addJoin("JOIN accounts operator on operator.id = co_flag.opID");
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
-		sql.addField("case when gc_flag.baselineFlag = 'Green' then 1 when gc_flag.baselineFlag is null then "
-				+ "2 when gc_flag.baselineFlag = 'Amber' then 3 when gc_flag.baselineFlag = 'Red' then 4 "
-				+ "when gc_flag.baselineFlag = 'Clear' then 5 end as `baselineEnum`");
-		sql.addField("case when gc_flag.flag = 'Green' then 1 when gc_flag.flag is null then "
-				+ "2 when gc_flag.flag = 'Amber' then 3 when gc_flag.flag = 'Red' then 4 "
-				+ "when gc_flag.flag = 'Clear' then 5 end as `flagEnum`");
+		sql.addField("case when co_flag.baselineFlag = 'Green' then 1 when co_flag.baselineFlag is null then "
+				+ "2 when co_flag.baselineFlag = 'Amber' then 3 when co_flag.baselineFlag = 'Red' then 4 "
+				+ "when co_flag.baselineFlag = 'Clear' then 5 end as `baselineEnum`");
+		sql.addField("case when co_flag.flag = 'Green' then 1 when co_flag.flag is null then "
+				+ "2 when co_flag.flag = 'Amber' then 3 when co_flag.flag = 'Red' then 4 "
+				+ "when co_flag.flag = 'Clear' then 5 end as `flagEnum`");
 		sql.addField("c.membershipDate");
-		sql.addField("gc_flag.flagLastUpdated");
+		sql.addField("co_flag.flagLastUpdated");
 		sql.addOrderBy("baselineEnum, flagEnum DESC, a.name, operator.name");
 
 		sql.setLimit(10);

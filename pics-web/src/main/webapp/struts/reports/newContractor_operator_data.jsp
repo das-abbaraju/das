@@ -194,7 +194,7 @@
        								${row.get('id')}
        							</s:param>
        						</s:url>
-        					<s:if test="get('genID') > 0">
+        					<s:if test="get('opID') > 0">
         						<s:if test="get('status') == 'Requested'">
         							<s:url action="RequestNewContractorAccount" var="requested_contractor">
     	    							<s:param name="contractor">

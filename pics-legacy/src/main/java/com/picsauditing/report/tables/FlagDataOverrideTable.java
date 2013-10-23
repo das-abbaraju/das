@@ -32,8 +32,8 @@ public class FlagDataOverrideTable extends AbstractTable {
 		addRequiredKey(new ReportForeignKey(Contractor, new AccountTable(), new ReportOnClause("conID")));
 
 		ReportForeignKey contractorOperator = new ReportForeignKey(ContractorOperator, new ContractorOperatorTable(),
-				new ReportOnClause("conID", "subID", ReportOnClause.FromAlias + ".opID = " + ReportOnClause.ToAlias
-						+ ".genID"));
+				new ReportOnClause("conID", "conID", ReportOnClause.FromAlias + ".opID = " + ReportOnClause.ToAlias
+						+ ".opID"));
 		contractorOperator.setMinimumImportance(FieldImportance.Average);
 		addJoinKey(contractorOperator);
 

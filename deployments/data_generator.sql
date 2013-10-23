@@ -4,8 +4,8 @@ insert into employee (firstName, lastName, accountID)
 select * from 
 (select * from test.random_names 
 order by rand() limit 1000) n, 
-(select distinct subID from generalcontractors
-where genID IN (select opID from facilities where corporateID = 1336)
+(select distinct conID from contractor_operator
+where opID IN (select opID from facilities where corporateID = 1336)
 ) t
 Order by rand() limit 20000
 

@@ -137,11 +137,11 @@ public class ContractorOperatorDAO extends PicsDAO {
 	}
 
 	public int getTotalFlagChanges() {
-		String sql = "select count(*) from generalcontractors gc " + "join accounts a on a.id=gc.genId "
-				+ "join accounts contractor on contractor.id = gc.subID " + "where gc.flag != gc.baselineFlag "
-				+ "AND a.type='Operator' " + "AND (gc.baselineFlag != 'Clear') " + "AND (gc.flag != 'Clear') "
-				+ "AND (gc.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
-				+ "AND (gc.forceFlag IS NULL OR NOW() >= gc.forceEnd) " + "AND (contractor.type='Contractor') "
+		String sql = "select count(*) from contractor_operator co " + "join accounts a on a.id=co.opID "
+				+ "join accounts contractor on contractor.id = co.conID " + "where co.flag != co.baselineFlag "
+				+ "AND a.type='Operator' " + "AND (co.baselineFlag != 'Clear') " + "AND (co.flag != 'Clear') "
+				+ "AND (co.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
+				+ "AND (co.forceFlag IS NULL OR NOW() >= co.forceEnd) " + "AND (contractor.type='Contractor') "
 				+ "AND (contractor.status IN ('Active')) "
 				+ "AND (contractor.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK))";
 		Query query = em.createNativeQuery(sql);
@@ -149,11 +149,11 @@ public class ContractorOperatorDAO extends PicsDAO {
 	}
 
 	public int getOperatorsAffectedByFlagChanges() {
-		String sql = "select count(distinct gc.genid) from generalcontractors gc "
-				+ "join accounts a on a.id=gc.genId " + "join accounts contractor on contractor.id = gc.subID "
-				+ "where gc.flag != gc.baselineFlag " + "AND a.type='Operator' " + "AND (gc.baselineFlag != 'Clear') "
-				+ "AND (gc.flag != 'Clear') " + "AND (gc.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
-				+ "AND (gc.forceFlag IS NULL OR NOW() >= gc.forceEnd) " + "AND (contractor.type='Contractor') "
+		String sql = "select count(distinct co.opID) from contractor_operator co "
+				+ "join accounts a on a.id=co.opID " + "join accounts contractor on contractor.id = co.conID "
+				+ "where co.flag != co.baselineFlag " + "AND a.type='Operator' " + "AND (co.baselineFlag != 'Clear') "
+				+ "AND (co.flag != 'Clear') " + "AND (co.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
+				+ "AND (co.forceFlag IS NULL OR NOW() >= co.forceEnd) " + "AND (contractor.type='Contractor') "
 				+ "AND (contractor.status IN ('Active')) "
 				+ "AND (contractor.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK))";
 		Query query = em.createNativeQuery(sql);

@@ -22,8 +22,8 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 
 			SelectSQL sql = new SelectAccount();
 			String forceFlagsJoin = "JOIN (SELECT conid,opid,forcebegin,forceend,forcedby,forceflag,label FROM"
-					+ " (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'FlagCriteria.Overall' AS label FROM generalcontractors gc"
-					+ " WHERE gc.forceFlag IS NOT NULL"
+					+ " (SELECT co.conID as conid, co.opID as opid, co.forcebegin, co.forceend, co.forcedBy, co.forceflag, 'FlagCriteria.Overall' AS label FROM contractor_operator co"
+					+ " WHERE co.forceFlag IS NOT NULL"
 					+ " UNION"
 					+ " SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, CONCAT('FlagCriteria.', fc1.id, '.label') as label FROM flag_data_override fdo"
 					+ " JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id" + " WHERE fdo.forceFlag IS NOT NULL) t"
@@ -33,7 +33,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			sql.addJoin("JOIN accounts o ON o.id = ff.opid");
 			sql.addJoin("LEFT JOIN users u ON u.id = ff.forcedBy");
 			sql.addJoin("LEFT JOIN accounts fa ON fa.id = u.accountID");
-			sql.addJoin("LEFT JOIN generalcontractors gc ON gc.genid = o.id and gc.subid = ff.conid");
+			sql.addJoin("LEFT JOIN contractor_operator co ON co.opID = o.id and co.conID = ff.conid");
 			sql.addWhere("a.status = 'Active'");
 			sql.addWhere("o.status = 'Active'");
 			sql.addWhere("ff.forceFlag IS NOT NULL");
@@ -56,7 +56,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			sql.addField("u.id as forcedById");
 			sql.addField("u.name AS forcedBy");
 			sql.addField("fa.name AS forcedByAccount");
-			sql.addField("gc.workStatus");
+			sql.addField("co.workStatus");
 
 			report.setLimit(100);
 			report.setSql(sql);

@@ -38,13 +38,13 @@ public class ReportContractorApproval extends ReportAccount {
         String where = "1";
 
         if (filterOn(getFilter().getWorkStatus()))
-            where = "gc.workStatus LIKE '" + getFilter().getWorkStatus() + "%'";
+            where = "co.workStatus LIKE '" + getFilter().getWorkStatus() + "%'";
 
         if (permissions.isOperatorCorporate()) {
-            sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID=" + permissions.getAccountId());
-            sql.addField("gc.creationDate as dateAdded");
-            sql.addField("gc.flag");
-            sql.addField("gc.workStatus");
+            sql.addJoin("JOIN contractor_operator co ON co.conID = a.id AND co.opID=" + permissions.getAccountId());
+            sql.addField("co.creationDate as dateAdded");
+            sql.addField("co.flag");
+            sql.addField("co.workStatus");
 
             sql.addWhere(where);
         }

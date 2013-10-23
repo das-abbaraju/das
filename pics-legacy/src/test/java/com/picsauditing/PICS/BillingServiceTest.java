@@ -123,9 +123,9 @@ public class BillingServiceTest extends PicsTranslationTest {
 
 		when(invoiceFee.isMembership()).thenReturn(true);
 
-		List<ContractorOperator> generalContractors = new ArrayList<ContractorOperator>();
-		generalContractors.add(contractorOperator);
-		when(contractor.getNonCorporateOperators()).thenReturn(generalContractors);
+		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
+        contractorOperators.add(contractorOperator);
+		when(contractor.getNonCorporateOperators()).thenReturn(contractorOperators);
 		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
 		when(operator.getDoContractorsPay()).thenReturn("Yes");
 		when(operator.getName()).thenReturn("Test Operator");

@@ -50,9 +50,9 @@ public class ContractorTradesModel extends AbstractModel {
 
 		Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
 		clientSite.setVisible(false);
-		clientSite.setPrefixValue("SELECT co.subID " +
-				"FROM generalcontractors co " +
-				"WHERE co.genID IN ");
+		clientSite.setPrefixValue("SELECT co.conID " +
+				"FROM contractor_operator co " +
+				"WHERE co.opID IN ");
 		clientSite.setSuffixValue("");
 		fields.put(clientSite.getName().toUpperCase(), clientSite);
 

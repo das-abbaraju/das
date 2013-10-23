@@ -131,7 +131,7 @@ public class ReportEmployeeTraining extends ReportEmployee {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = " + operator.getId());
+		sql.addJoin("JOIN contractor_operator co ON co.conID = a.id AND co.opID = " + operator.getId());
 		sql.addField("CASE WHEN DATE_ADD(e.updateDate, INTERVAL 1 YEAR) < NOW() "
 				+ "THEN DATE_ADD(e.updateDate, INTERVAL 1 YEAR) ELSE e.updateDate END AS completionDate");
 		sql.addField("1 AS completed1");

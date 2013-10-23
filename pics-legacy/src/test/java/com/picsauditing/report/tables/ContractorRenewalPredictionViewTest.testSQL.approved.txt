@@ -1,4 +1,4 @@
-(SELECT accounts.id AS conID, ROUND(100 * (0.16065856 + (0.08340467 * AVG(CASE generalcontractors.flag WHEN 'Green' THEN 3 WHEN 'Amber' THEN 2 ELSE 1 END))
+(SELECT accounts.id AS conID, ROUND(100 * (0.16065856 + (0.08340467 * AVG(CASE contractor_operator.flag WHEN 'Green' THEN 3 WHEN 'Amber' THEN 2 ELSE 1 END))
  + (0.20098547 * CASE contractor_info.paymentMethod WHEN 'Check' THEN 1 ELSE 0 END)
  + (0.461150415 * IFNULL(contractor_info.ccOnFile,0))
  + (0.065215233 * IFNULL(contractor_info.ccExpiration > contractor_info.paymentExpires,0))
@@ -6,6 +6,6 @@
 )) AS predictor
 FROM accounts
 JOIN contractor_info ON contractor_info.id = accounts.id
-JOIN generalcontractors ON generalcontractors.subID = contractor_info.id
-JOIN accounts clients ON clients.id = generalcontractors.genID AND clients.type = 'Operator'
+JOIN contractor_operator ON contractor_operator.conID = contractor_info.id
+JOIN accounts clients ON clients.id = contractor_operator.opID AND clients.type = 'Operator'
 GROUP BY accounts.id )

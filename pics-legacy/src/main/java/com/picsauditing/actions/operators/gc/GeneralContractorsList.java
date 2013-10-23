@@ -81,17 +81,17 @@ public class GeneralContractorsList extends ReportActionSupport {
 
 	protected void buildQuery() {
 		sql.addJoin("JOIN accounts a ON a.id = f.opID AND a.status = 'Active' AND a.generalContractor = 1");
-		sql.addJoin("JOIN generalcontractors gc ON gc.genID = a.id");
-		sql.addJoin("JOIN accounts con ON con.id = gc.subID AND con.status = 'Active'");
+		sql.addJoin("JOIN contractor_operator co ON co.opID = a.id");
+		sql.addJoin("JOIN accounts con ON con.id = co.conID AND con.status = 'Active'");
 
 		sql.addWhere("f.corporateID = " + permissions.getAccountId());
 		sql.addWhere("f.type = 'GeneralContractor'");
-		sql.addWhere("gc.subID IN (SELECT subID FROM generalcontractors WHERE genID = " + permissions.getAccountId()
+		sql.addWhere("co.conID IN (SELECT conID FROM contractor_operator WHERE opID = " + permissions.getAccountId()
 				+ ")");
 
 		sql.addField("a.id");
 		sql.addField("a.name");
-		sql.addField("count(gc.subID) subsShared");
+		sql.addField("count(co.conID) subsShared");
 
 		sql.addGroupBy("a.id");
 

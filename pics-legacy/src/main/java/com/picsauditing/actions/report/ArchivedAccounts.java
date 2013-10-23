@@ -31,13 +31,13 @@ public class ArchivedAccounts extends ReportAccount {
 		super.buildQuery();
 
 		if (permissions.isOperatorCorporate()) {
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
-			sql.addField("gc.flag");
+			sql.addJoin("JOIN contractor_operator co ON co.conID = a.id");
+			sql.addField("co.flag");
 
 			if (permissions.isCorporate()) {
-				sql.addJoin("JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId());
+				sql.addJoin("JOIN facilities f ON f.opID = co.opID AND f.corporateID = " + permissions.getAccountId());
 			} else if (permissions.isOperator()) {
-				sql.addWhere("gc.genID = " + permissions.getAccountId());
+				sql.addWhere("co.opID = " + permissions.getAccountId());
 			}
 		}
 

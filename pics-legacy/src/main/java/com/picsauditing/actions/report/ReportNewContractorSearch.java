@@ -92,25 +92,25 @@ public class ReportNewContractorSearch extends ReportAccount {
 		if (permissions.isOperatorCorporate()) {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
-			sql.addJoin("LEFT JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
+			sql.addJoin("LEFT JOIN contractor_operator co ON co.conID = a.id AND co.opID = "
 					+ permissions.getAccountId());
-			sql.addField("gc.genID");
-			sql.addField("gc.workStatus");
-			sql.addField("gc.flag");
-			sql.addField("lower(gc.flag) AS lflag");
+			sql.addField("co.opID");
+			sql.addField("co.workStatus");
+			sql.addField("co.flag");
+			sql.addField("lower(co.flag) AS lflag");
 		}
 
 		if (getFilter().isInParentCorporation()) {
 			String whereQuery = "";
 			if (permissions.isOperator())
-				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc "
-						+ "JOIN facilities f ON gc.genID = f.opID "
+				whereQuery += "a.id IN (SELECT conID FROM contractor_operator co "
+						+ "JOIN facilities f ON co.opID = f.opID "
 						+ "JOIN facilities myf ON f.corporateID = myf.corporateID AND myf.opID = "
 						+ permissions.getAccountId() + " AND myf.corporateID NOT IN("
 						+ Strings.implode(Account.PICS_CORPORATE) + ")) ";
 			if (permissions.isCorporate())
-				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc "
-						+ "JOIN facilities f ON gc.genID = f.opID AND f.corporateID = " + permissions.getAccountId()
+				whereQuery += "a.id IN (SELECT conID FROM contractor_operator co "
+						+ "JOIN facilities f ON co.opID = f.opID AND f.corporateID = " + permissions.getAccountId()
 						+ ") ";
 			sql.addWhere(whereQuery);
 		}
@@ -373,7 +373,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		Map<Integer, String> conIDs = new HashMap<Integer, String>();
 		for (BasicDynaBean d : data) {
 			String worksfor = "";
-			if (d.get("genID") == null)
+			if (d.get("opID") == null)
 				worksfor = "false";
 			conIDs.put(Integer.parseInt(d.get("id").toString()), worksfor);
 		}

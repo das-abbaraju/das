@@ -99,15 +99,15 @@ public class ContractorOperatorsModel extends AbstractModel {
         }
 
 		if (permissions.isContractor()) {
-			return CONTRACTOR_OPERATOR + ".subID = " + permissions.getAccountId();
+			return CONTRACTOR_OPERATOR + ".conID = " + permissions.getAccountId();
 		}
 
 		if (permissions.isOperator()) {
-			return approvedWorkStatus + CONTRACTOR_OPERATOR + ".genID = " + permissions.getAccountId();
+			return approvedWorkStatus + CONTRACTOR_OPERATOR + ".opID = " + permissions.getAccountId();
 		}
 
 		if (permissions.isCorporate()) {
-            return approvedWorkStatus + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
+            return approvedWorkStatus + CONTRACTOR_OPERATOR + ".opID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
 		}
 
 		return "1 = 0";

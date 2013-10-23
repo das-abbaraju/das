@@ -2,17 +2,17 @@
 TRUNCATE TABLE stats_gco_count;
 
 INSERT INTO stats_gco_count 
-SELECT gc.genID opID, null, count(*) total FROM generalcontractors gc 
-JOIN accounts a ON a.id = gc.genID AND a.type = 'Operator' 
-GROUP BY gc.genID; 
+SELECT co.opID opID, null, count(*) total FROM contractor_operator co
+JOIN accounts a ON a.id = co.opID AND a.type = 'Operator'
+GROUP BY co.opID;
 
 INSERT INTO stats_gco_count 
-SELECT g1.genID opID, g2.genID opID2, count(*) total 
-FROM generalcontractors g1 
-JOIN generalcontractors g2 on g1.subID = g2.subID and g1.id != g2.id 
-JOIN accounts a1 ON a1.id = g1.genID AND a1.type = 'Operator' 
-JOIN accounts a2 ON a2.id = g2.genID AND a2.type = 'Operator' 
-GROUP BY g1.genID, g2.genID;
+SELECT g1.opID opID, g2.opID opID2, count(*) total
+FROM contractor_operator g1
+JOIN contractor_operator g2 on g1.conID = g2.conID and g1.id != g2.id
+JOIN accounts a1 ON a1.id = g1.opID AND a1.type = 'Operator'
+JOIN accounts a2 ON a2.id = g2.opID AND a2.type = 'Operator'
+GROUP BY g1.opID, g2.opID;
 
 -- remove old data from the contractor_cron_log
 DELETE FROM contractor_cron_log WHERE DATEDIFF(NOW(), startDate) > 7;

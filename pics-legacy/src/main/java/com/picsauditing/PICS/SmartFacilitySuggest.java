@@ -44,8 +44,8 @@ public class SmartFacilitySuggest {
 		Database db = database();
 
 		SelectSQL sql = new SelectSQL("accounts o");
-		sql.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
-		sql.addJoin("JOIN accounts c ON gc.subID = c.id");
+		sql.addJoin("JOIN contractor_operator co ON co.opID = o.id");
+		sql.addJoin("JOIN accounts c ON co.conID = c.id");
 		sql.addWhere("o.type = 'Operator'");
 
 		sql.addWhere("c.status IN ('Active', 'Pending')");
@@ -58,7 +58,7 @@ public class SmartFacilitySuggest {
 
 		sql.addWhere("c.country = '" + contractor.getCountry().getIsoCode() + "'");
 		if (recentlyAdded)
-			sql.addWhere("gc.creationDate > '" + getTwoMonthsAgo() + "'");
+			sql.addWhere("co.creationDate > '" + getTwoMonthsAgo() + "'");
 		if (zipLength > 0)
 			sql.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, zipLength) + "%'");
 

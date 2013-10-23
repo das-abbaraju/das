@@ -20,7 +20,7 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "generalcontractors")
+@Table(name = "contractor_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
 	private OperatorAccount operatorAccount;
@@ -50,7 +50,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private String reasonForRegistration;
 
 	@ManyToOne
-	@JoinColumn(name = "genID", nullable = false, updatable = false)
+	@JoinColumn(name = "opID", nullable = false, updatable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -60,7 +60,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "subID", nullable = false, updatable = false)
+	@JoinColumn(name = "conID", nullable = false, updatable = false)
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
 	}
@@ -135,10 +135,10 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		}
 
 		String ids = Strings.implode(idList, ",");
-		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'"
-				+ " AND genid IN (" + ids + ")";
+		String where = "conID = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'"
+				+ " AND opID IN (" + ids + ")";
 
-		SelectSQL sql = new SelectSQL("generalcontractors", where);
+		SelectSQL sql = new SelectSQL("contractor_operator", where);
 		sql.setLimit(1);
 
 		try {

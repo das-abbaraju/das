@@ -73,7 +73,7 @@ public class PermissionQueryBuilder {
 		if (!Strings.isEmpty(contractorOperatorAlias) && permissions.isOperator())
 			return query + buildContractorOperatorClause(contractorOperatorAlias);
 
-		String contractorOperatorAlias = isHQL() ? "co" : "gc";
+		String contractorOperatorAlias = isHQL() ? "co" : "co";
 
 		if (permissions.isOnlyAuditor())
 			subSQL = buildAuditorSubquery();
@@ -111,8 +111,8 @@ public class PermissionQueryBuilder {
 			contractorColumn = alias + ".contractorAccount";
 			contractorOperatorTable = "ContractorOperator " + alias;
 		} else {
-			contractorColumn = alias + ".subID";
-			contractorOperatorTable = "generalcontractors " + alias;
+			contractorColumn = alias + ".conID";
+			contractorOperatorTable = "contractor_operator " + alias;
 		}
 
 		String subquery = "SELECT " + contractorColumn + " FROM " + contractorOperatorTable;
@@ -132,7 +132,7 @@ public class PermissionQueryBuilder {
 		if (isHQL()) {
 			where += ".operatorAccount.id";
 		} else {
-			where += ".genID";
+			where += ".opID";
 		}
 
 		where += " IN (" + getOperatorIDs() + ")";

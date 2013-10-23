@@ -123,11 +123,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		if (permissions.isGeneralContractor()
 				&& !contractor.isAutoApproveRelationships()) {
-			OperatorAccount gc = new OperatorAccount();
-			gc.setId(permissions.getAccountId());
+			OperatorAccount generalContractor = new OperatorAccount();
+            generalContractor.setId(permissions.getAccountId());
 
 			ContractorOperator contractorOperator = contractor
-					.getContractorOperatorForOperator(gc);
+					.getContractorOperatorForOperator(generalContractor);
 			if (contractorOperator != null
 					&& contractorOperator.getOperatorAccount().getId() == permissions
 							.getAccountId()

@@ -32,8 +32,8 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		super.buildQuery();
 		
 		String forceFlagsJoin = "JOIN (SELECT conid,opid,forcebegin,forceend,forcedby,forceflag,label, flagActive FROM"+ 
-		" (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'FlagCriteria.Overall' AS label, 'ReportContractorsWithForcedFlags.FlagStatus.Active' AS flagActive FROM generalcontractors gc" +
-		" WHERE gc.forceFlag IS NOT NULL" +
+		" (SELECT co.conID as conid, co.opID as opid, co.forcebegin, co.forceend, co.forcedBy, co.forceflag, 'FlagCriteria.Overall' AS label, 'ReportContractorsWithForcedFlags.FlagStatus.Active' AS flagActive FROM contractor_operator co" +
+		" WHERE co.forceFlag IS NOT NULL" +
 		" UNION" +
 		" SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, CONCAT('FlagCriteria.', fc1.id, '.label') as label, 'ReportContractorsWithForcedFlags.FlagStatus.Active' AS flagActive FROM flag_data_override fdo"+
 		" JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id"+
@@ -56,7 +56,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addJoin("JOIN accounts o ON o.id = ff.opid");
 		sql.addJoin("LEFT JOIN users u ON u.id = ff.forcedBy");
 		sql.addJoin("LEFT JOIN accounts fa ON fa.id = u.accountID");
-		sql.addJoin("JOIN generalcontractors gc ON gc.genid = o.id and gc.subid = ff.conid");
+		sql.addJoin("JOIN contractor_operator co ON co.opID = o.id and co.conID = ff.conid");
 		sql.addWhere("ff.forceFlag IS NOT NULL");
 		if(permissions.isOperatorCorporate()) {
 			String opIds = " ff.opid = " + permissions.getAccountId() + " OR " + " ff.opid = " + permissions.getTopAccountID() + " OR ";
@@ -77,7 +77,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("u.id as forcedById"); 
 		sql.addField("u.name AS forcedBy");
 		sql.addField("fa.name AS forcedByAccount");
-		sql.addField("gc.workStatus");
+		sql.addField("co.workStatus");
 		sql.addField("ff.flagActive");
 		
 		if (filterOn(getFilter().getOperator())) {

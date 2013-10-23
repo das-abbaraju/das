@@ -165,13 +165,13 @@ public class GraphTrirRates extends ChartMSAction {
 		}
 		
 		if (permissions.isOperatorCorporate()) {
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
+			sql.addJoin("JOIN contractor_operator co ON co.conID = a.id");
 
 			if (permissions.isOperator())
-				sql.addWhere("gc.genID = " + permissions.getAccountId());
+				sql.addWhere("co.opID = " + permissions.getAccountId());
 
 			if (permissions.isCorporate()) {
-				sql.addWhere("gc.genID IN (SELECT id FROM operators WHERE parentID = " + permissions.getAccountId()
+				sql.addWhere("co.opID IN (SELECT id FROM operators WHERE parentID = " + permissions.getAccountId()
 						+ ")");
 			}
 		}

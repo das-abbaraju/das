@@ -1,8 +1,8 @@
 
 
-INSERT INTO `generalcontractors` 
+INSERT INTO `contractor_operator`
 (
-  `id`,`genID`,`subID`,`type`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,
+  `id`,`opID`,`conID`,`type`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,
   `workStatus`,`flag`,`waitingOn`,`forceFlag`,`forceBegin`,`forceEnd`,`forcedBy`,
   `relationshipType`,`processCompletion`,`flagLastUpdated`,`forceReason`,
   `contractorType`,`baselineFlag`,`baselineApprover`,`baselineApproved`,
@@ -20,9 +20,9 @@ NULL, '2009-01-01 00:00:00', '2011-08-31 06:07:41', NULL,
 NULL
 );
 
-INSERT INTO `generalcontractors` 
+INSERT INTO `contractor_operator`
 (
-  `id`,`genID`,`subID`,`type`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,
+  `id`,`opID`,`conID`,`type`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,
   `workStatus`,`flag`,`waitingOn`,`forceFlag`,`forceBegin`,`forceEnd`,`forcedBy`,
   `relationshipType`,`processCompletion`,`flagLastUpdated`,`forceReason`,
   `contractorType`,`baselineFlag`,`baselineApprover`,`baselineApproved`,`flagDetail,
@@ -32,9 +32,9 @@ values (
 '711', '1068', '357', 'ContractorOperator', '2504', '2006-04-25 00:00:00', '1', '2012-04-29 20:34:16', 'Y', 'Amber', '0', NULL, NULL, NULL, NULL, NULL, '2009-01-01 00:00:00', '2012-02-28 12:13:03', NULL, 'Onsite', 'Amber', '1', '2012-03-14 00:44:16', '{"564":{"category":"Statistics","flag":"Green","label":"Fatalities "},"505":{"category":"Statistics","flag":"Green","label":"EMR "},"142":{"category":"Paperwork","flag":"Green","label":"Annual Update"},"583":{"category":"Statistics","flag":"Green","label":"Fatalities "},"584":{"category":"Statistics","flag":"Green","label":"Fatalities "},"559":{"category":"Statistics","flag":"Green","label":"TRIR Avg"},"690":{"category":"Statistics","flag":"Amber","label":"Severity Rate Average"},"554":{"category":"Statistics","flag":"Green","label":"LWCR Avg"},"133":{"category":"Paperwork","flag":"Green","label":"PQF"},"135":{"category":"Audits","flag":"Green","label":"Implementation Audit"},"134":{"category":"Audits","flag":"Green","label":"Manual Audit"}}', '{"564":{"category":"Statistics","flag":"Green","label":"Fatalities "},"505":{"category":"Statistics","flag":"Green","label":"EMR "},"142":{"category":"Paperwork","flag":"Green","label":"Annual Update"},"583":{"category":"Statistics","flag":"Green","label":"Fatalities "},"584":{"category":"Statistics","flag":"Green","label":"Fatalities "},"559":{"category":"Statistics","flag":"Green","label":"TRIR Avg"},"690":{"category":"Statistics","flag":"Amber","label":"Severity Rate Average"},"554":{"category":"Statistics","flag":"Green","label":"LWCR Avg"},"133":{"category":"Paperwork","flag":"Green","label":"PQF"},"135":{"category":"Audits","flag":"Green","label":"Implementation Audit"},"134":{"category":"Audits","flag":"Green","label":"Manual Audit"}}', NULL
 );
 
-INSERT INTO `generalcontractors` 
+INSERT INTO `contractor_operator`
 (
-  `id`,`genID`,`subID`,`type`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,
+  `id`,`opID`,`conID`,`type`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,
   `workStatus`,`flag`,`waitingOn`,`forceFlag`,`forceBegin`,`forceEnd`,`forcedBy`,
   `relationshipType`,`processCompletion`,`flagLastUpdated`,`forceReason`,
   `contractorType`,`baselineFlag`,`baselineApprover`,`baselineApproved`,`flagDetail,

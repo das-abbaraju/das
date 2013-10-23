@@ -129,36 +129,36 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 			status += ", 'Demo'";
 		}
 
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
+		sql.addJoin("JOIN contractor_operator co ON co.conID = a.id");
 		sql.addJoin("JOIN contractor_info c ON c.id = a.id");
 		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
-		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.opID = gc.genID AND fdo.conID = gc.subID");
+		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.opID = co.opID AND fdo.conID = co.conID");
 
-		SelectSQL innerJoin = new SelectSQL("generalcontractors gc");
-		innerJoin.addJoin("JOIN accounts o ON o.id = gc.genID");
-		innerJoin.addWhere("gc.genID IN ("
+		SelectSQL innerJoin = new SelectSQL("contractor_operator co");
+		innerJoin.addJoin("JOIN accounts o ON o.id = co.opID");
+		innerJoin.addWhere("co.opID IN ("
 				+ (permissions.isGeneralContractor() ? permissions.getAccountId() : visibleOperators) + ")");
 		innerJoin.addField("o.id");
 		innerJoin.addField("o.name");
-		innerJoin.addField("gc.subID");
+		innerJoin.addField("co.conID");
 
-		sql.addJoin("JOIN (" + innerJoin.toString() + ") gen ON gen.subID = a.id");
-		sql.addJoin("JOIN accounts o ON o.id = gc.genID");
+		sql.addJoin("JOIN (" + innerJoin.toString() + ") gen ON gen.conID = a.id");
+		sql.addJoin("JOIN accounts o ON o.id = co.opID");
 
 		sql.addWhere("a.type = 'Contractor'");
 		sql.addWhere("a.status IN (" + status + ")");
-		sql.addWhere("gc.genID IN ("
+		sql.addWhere("co.opID IN ("
 				+ (permissions.isGeneralContractor() ? visibleOperators : permissions.getAccountId()) + ")");
 
 		sql.addField("a.id, a.name, a.status, a.type, a.phone, a.fax, a.creationDate");
 		sql.addField("c.riskLevel, c.safetyRisk, c.productRisk");
-		sql.addField("gc.workStatus, gc.genID, gc.subID, gc.forceEnd, gc.flag, LOWER(gc.flag) lflag");
+		sql.addField("co.workStatus, co.opID, co.conID, co.forceEnd, co.flag, LOWER(co.flag) lflag");
 		sql.addField("fdo.forceEnd dataForceEnd");
 
 		if (permissions.isGeneralContractor()) {
-			sql.addField("o.id gcID, o.name gcName");
+			sql.addField("o.id coID, o.name coName");
 		} else {
-			sql.addField("gen.id gcID, gen.name gcName");
+			sql.addField("gen.id coID, gen.name coName");
 		}
 
 		addFilterToSQL();
@@ -172,8 +172,8 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 			contractor.setType("Contractor");
 
 			OperatorAccount operator = new OperatorAccount();
-			operator.setId(Integer.parseInt(bean.get("gcID").toString()));
-			operator.setName(bean.get("gcName").toString());
+			operator.setId(Integer.parseInt(bean.get("coID").toString()));
+			operator.setName(bean.get("coName").toString());
 
 			FlagColor flag = null;
 

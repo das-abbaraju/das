@@ -33,14 +33,14 @@ public class ChartWaitingOnCountCorp extends ChartMSAction {
 		sql.addField("op.name as label");
 		sql.addField("count(*) as value");
 		sql
-				.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search&filter.waitingOn=',gc.waitingOn,'&filter.operator=',op.id) as link");
+				.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search&filter.waitingOn=',co.waitingOn,'&filter.operator=',op.id) as link");
 		sql.addGroupBy("series, label");
 		sql.addOrderBy("series, label");
-		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
-		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
+		sql.addJoin("JOIN contractor_operator co ON a.id = co.conID");
+		sql.addJoin("JOIN accounts op ON op.id = co.opID");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("op.status IN ('Active','Demo')");
-		sql.addWhere("gc.genID IN (SELECT fac.opID from facilities fac where fac.corporateID = "
+		sql.addWhere("co.opID IN (SELECT fac.opID from facilities fac where fac.corporateID = "
 				+ permissions.getAccountId() + ")");
 
 		ChartDAO db = new ChartDAO();

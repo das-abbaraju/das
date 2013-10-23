@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS `generalcontractors`;
+DROP TABLE IF EXISTS `contractor_operator`;
 
-CREATE TABLE `generalcontractors` (
+CREATE TABLE `contractor_operator` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `genID` int(11) NOT NULL,
-  `subID` int(11) NOT NULL,
+  `opID` int(11) NOT NULL,
+  `conID` int(11) NOT NULL,
   `type` varchar(25) DEFAULT NULL,
   `createdBy` int(11) DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE `generalcontractors` (
   `baselineFlagDetail` text,
   `lastStepToGreenDate` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `subID` (`subID`,`genID`),
-  KEY `genID` (`genID`),
-  CONSTRAINT `FK_generalcontractors_con` FOREIGN KEY (`subID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_generalcontractors_op` FOREIGN KEY (`genID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
+  UNIQUE KEY `conID` (`conID`,`opID`),
+  KEY `opID` (`opID`),
+  CONSTRAINT `FK_contractor_operator_con` FOREIGN KEY (`conID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_contractor_operator_op` FOREIGN KEY (`opID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=275407 DEFAULT CHARSET=latin1;

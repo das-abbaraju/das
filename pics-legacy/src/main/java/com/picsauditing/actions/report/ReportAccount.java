@@ -485,10 +485,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
         if (filterOn(getFilter().getOperator())) {
             if (getFilter().isShowAnyOperator()) {
                 String opIDs = Strings.implode(getFilter().getOperator());
-                sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN (SELECT opID FROM facilities WHERE corporateID IN (" + opIDs + ") OR opID IN (" + opIDs + ")))");
+                sql.addWhere(" EXISTS (SELECT * FROM contractor_operator WHERE a.id = conID AND opID IN (SELECT opID FROM facilities WHERE corporateID IN (" + opIDs + ") OR opID IN (" + opIDs + ")))");
             } else {
                 for (int opID : getFilter().getOperator()) {
-                    sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN (SELECT opID FROM facilities WHERE corporateID IN (" + opID + ") OR opID IN (" + opID + ")))");
+                    sql.addWhere(" EXISTS (SELECT * FROM contractor_operator WHERE a.id = conID AND opID IN (SELECT opID FROM facilities WHERE corporateID IN (" + opID + ") OR opID IN (" + opID + ")))");
                 }
             }
 
@@ -498,7 +498,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
     protected void filterOnOperatorSingle() {
         if (getFilter().getOperatorSingle() > 0) {
-            sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID = "
+            sql.addWhere("a.id IN (SELECT conID FROM contractor_operator WHERE opID = "
                     + getFilter().getOperatorSingle() + ")");
         }
     }

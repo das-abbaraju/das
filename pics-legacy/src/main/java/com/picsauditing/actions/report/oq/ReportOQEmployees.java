@@ -107,7 +107,7 @@ public class ReportOQEmployees extends ReportEmployee {
 
 		if (permissions.isOperatorCorporate()) {
 			sql.addWhere(String.format(
-					"a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = %1$d) OR a.id = %1$d",
+					"a.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID = %1$d) OR a.id = %1$d",
 					permissions.getAccountId()));
 		}
 

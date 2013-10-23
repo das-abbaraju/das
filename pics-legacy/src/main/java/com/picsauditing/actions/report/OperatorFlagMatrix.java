@@ -72,8 +72,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 			sql.addWhere("fc.category = '" + category + "'");
 		}
 		
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id "
-				+ "AND gc.genID = fd.opID AND gc.flag IN ('Red', 'Amber')");
+		sql.addJoin("JOIN contractor_operator co ON co.conID = a.id "
+				+ "AND co.opID = fd.opID AND co.flag IN ('Red', 'Amber')");
 
 		sql.addWhere("fd.flag in('Red','Amber')");
 

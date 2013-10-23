@@ -60,8 +60,8 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 			}
 		}
 
-		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
-		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
+		sql.addJoin("JOIN contractor_operator co on co.conID = a.id");
+		sql.addJoin("JOIN accounts operator on operator.id = co.opID");
 
 		if (permissions.isOperatorCorporate()) {
 			if (download) {
@@ -73,7 +73,7 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
-		sql.addField("gc.flag as flag");
+		sql.addField("co.flag as flag");
 		sql.addField("workStatus");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("operator.id in (" + Strings.implode(ops, ",") + ")");

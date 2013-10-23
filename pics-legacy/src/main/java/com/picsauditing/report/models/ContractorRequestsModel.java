@@ -67,14 +67,31 @@ public class ContractorRequestsModel extends AbstractModel {
 
         Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
         accountManager.setVisible(false);
-        accountManager.setPrefixValue("SELECT co.subID " +
-                "FROM generalcontractors co " +
-                "JOIN account_user au ON au.accountID = co.genID " +
+        accountManager.setPrefixValue("SELECT co.conID " +
+                "FROM contractor_operator co " +
+                "JOIN account_user au ON au.accountID = co.opID " +
                 "JOIN users u ON au.userID = u.id " +
                 "WHERE u.id IN ");
         accountManager.setSuffixValue("");
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
-        return fields;
+        Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
+        clientSite.setVisible(false);
+        clientSite.setPrefixValue("SELECT co.conID " +
+                "FROM contractor_operator co " +
+                "WHERE co.opID IN ");
+        clientSite.setSuffixValue("");
+        fields.put(clientSite.getName().toUpperCase(), clientSite);
+
+        Field reportingClient = new Field("ContractorWorksForReportingClient","Account.id",FieldType.Operator);
+        reportingClient.setVisible(false);
+        reportingClient.setPrefixValue("SELECT co.conID " +
+                "FROM contractor_operator co " +
+                "JOIN operators o ON o.id = co.opID " +
+                "WHERE o.reportingID IN ");
+        reportingClient.setSuffixValue("");
+        fields.put(reportingClient.getName().toUpperCase(), reportingClient);
+
+       return fields;
 	}
 }
