@@ -475,6 +475,10 @@ footer .footer-menu a {
 	margin: 10px 0px;
 }
 
+.no-label {
+	margin-left: 160px;
+}
+
 /* registration step */
 .registration-header .registration-step {
 	background: url(../images/registration/header_step_bg.jpg) no-repeat;
