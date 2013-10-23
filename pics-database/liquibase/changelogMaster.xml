@@ -27,5 +27,6 @@
     <include file="./liquibase/kchase4_PICS-13049_CSRShiftHours.sql"/>
     <include file="./liquibase/sshacter4_PICS-13124_CreateTranslationStoredProcedure.sql"/>
     <include file="./liquibase/lkam1_PICS-8562_AddAustralianStates.sql"/>
+    <include file="./liquibase/pschlesinger5_PICS-12529_AddStartAndEndDateColumnsToInvoiceItem.sql"/>
 
 </databaseChangeLog>
