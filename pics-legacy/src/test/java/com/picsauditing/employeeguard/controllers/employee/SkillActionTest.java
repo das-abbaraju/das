@@ -7,7 +7,6 @@ import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
@@ -21,7 +20,7 @@ import org.powermock.reflect.Whitebox;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -112,13 +111,12 @@ public class SkillActionTest extends PicsActionTest {
 	@Test
 	public void testUpdate() throws Exception {
 		skillAction.setId(ID);
-		skillAction.setSkillDocumentForm(new SkillDocumentForm());
+		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
+		skillAction.setSkillDocumentForm(skillDocumentForm);
 		assertEquals(PicsActionSupport.REDIRECT, skillAction.update());
 		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
 		verify(skillService).getSkill(ID);
-		verify(accountSkillEmployeeService).getAccountSkillEmployeeForProfileAndSkill(any(Profile.class), any(AccountSkill.class));
-		verify(profileDocumentService).getDocument(anyString());
-		verify(accountSkillEmployeeService).linkProfileDocumentToEmployeeSkill(any(AccountSkillEmployee.class), any(ProfileDocument.class));
+		verify(accountSkillEmployeeService).update(any(AccountSkillEmployee.class), eq(skillDocumentForm));
 	}
 
 	@Test
@@ -127,7 +125,6 @@ public class SkillActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, skillAction.update());
 		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
 		verify(skillService).getSkill("ID2");
-		verify(accountSkillEmployeeService).getAccountSkillEmployeeForProfileAndSkill(any(Profile.class), any(AccountSkill.class));
-		verify(accountSkillEmployeeService).save(any(AccountSkillEmployee.class));
+		verify(accountSkillEmployeeService).update(any(AccountSkillEmployee.class), any(SkillDocumentForm.class));
 	}
 }

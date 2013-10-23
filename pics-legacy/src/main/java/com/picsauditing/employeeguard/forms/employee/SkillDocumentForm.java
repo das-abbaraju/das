@@ -12,6 +12,7 @@ public class SkillDocumentForm {
 	private SkillInfo skillInfo;
 	private String proof;
 	private int documentId;
+	private boolean verified;
 
 	public SkillInfo getSkillInfo() {
 		return skillInfo;
@@ -35,6 +36,14 @@ public class SkillDocumentForm {
 
 	public void setDocumentId(int documentId) {
 		this.documentId = documentId;
+	}
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
 	}
 
 	public boolean isDoesNotExpire() {

@@ -6,16 +6,24 @@
 <s:url action="skill" method="edit" var="employee_skill_url">
     <s:param name="id">${id}</s:param>
 </s:url>
-<s:url action="skills" var="employee_skills_list_url" />
+<s:url action="skills" var="employee_skills_list_url"/>
 
-<tw:form formName="employee_manage_skill_training" action="${employee_skill_url}" method="post" class="form-horizontal js-validation" role="form">
+<tw:form formName="employee_skill_training" action="${employee_skill_url}" method="post"
+         class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group">
-            <tw:label labelName="proof" class="col-md-3 control-label"><strong>Proof</strong></tw:label>
+            <tw:label labelName="verified" class="col-md-3 control-label"><strong>Proof</strong></tw:label>
             <div class="col-md-9">
                 <div class="checkbox">
-                    <tw:label labelName="proof" class="control-label">
-                        <tw:input inputName="proof" type="checkbox" /> I certify that I have met all requirements.
+                    <tw:label labelName="verified" class="control-label">
+                        <s:if test="skillDocumentForm.verified">
+                            <tw:input inputName="verified" type="checkbox" value="true" checked="checked"/>
+                        </s:if>
+                        <s:else>
+                            <tw:input inputName="verified" type="checkbox" value="true"/>
+                        </s:else>
+
+                        I certify that I have met all requirements.
                     </tw:label>
                 </div>
             </div>

@@ -1,21 +1,20 @@
 package com.picsauditing.employeeguard.controllers.employee;
 
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.forms.employee.SkillInfo;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.services.calculator.ExpirationCalculator;
+import com.picsauditing.forms.binding.FormBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class SkillAction extends PicsRestActionSupport {
 	private List<ProfileDocument> documents;
 	private List<CompanySkillInfo> companySkillInfoList;
 
-	@FormBinding("employee_skill_certification")
+	@FormBinding({"employee_skill_certification", "employee_skill_training"})
 	private SkillDocumentForm skillDocumentForm;
 
 	public String index() {
@@ -79,6 +78,11 @@ public class SkillAction extends PicsRestActionSupport {
 	}
 
 	public String training() {
+		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
+		AccountSkill accountSkill = skillService.getSkill(id);
+		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
+		skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(accountSkillEmployee);
+
 		return "training";
 	}
 
@@ -105,13 +109,7 @@ public class SkillAction extends PicsRestActionSupport {
 		AccountSkill accountSkill = skillService.getSkill(id);
 		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
 
-		if (accountSkill.getSkillType().isCertification()) {
-			ProfileDocument document = profileDocumentService.getDocument(Integer.toString(skillDocumentForm.getDocumentId()));
-			accountSkillEmployee = accountSkillEmployeeService.linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
-		} else {
-			accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
-			accountSkillEmployeeService.save(accountSkillEmployee);
-		}
+		accountSkillEmployeeService.update(accountSkillEmployee, skillDocumentForm);
 
 		return setUrlForRedirect("/employee-guard/employee/skill/" + accountSkillEmployee.getSkill().getId());
 	}
