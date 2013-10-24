@@ -61,7 +61,7 @@ public class ContractorTable extends AbstractTable {
         flagKey.setMinimumImportance(FieldImportance.Low);
 
         ReportForeignKey contractorOperator = addRequiredKey(new ReportForeignKey(ContractorOperator, new ContractorOperatorTable(),
-                new ReportOnClause("id", "subID")));
+                new ReportOnClause("id", "conID")));
         contractorOperator.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey csr = new ReportForeignKey(CustomerService, new AccountUserTable(), new ReportOnClause("id",
