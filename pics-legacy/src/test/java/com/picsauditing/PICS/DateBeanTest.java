@@ -727,14 +727,15 @@ public class DateBeanTest {
 	public void testAddOneYear() throws ParseException {
 		Date original = new GregorianCalendar(2004,GregorianCalendar.FEBRUARY,29).getTime();
 		Date expected = new GregorianCalendar(2005,GregorianCalendar.FEBRUARY,28).getTime();
-		assertEquals(expected, DateBean.addOneYear(original));
+		Date actual = DateBean.addXYears(original,1);
+		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void testAddNineMonths() throws ParseException {
 		Date original = new GregorianCalendar(2003,GregorianCalendar.MAY,31).getTime();
 		Date expected = new GregorianCalendar(2004,GregorianCalendar.FEBRUARY,29).getTime();
-		Date actual = DateBean.addNineMonths(original);
+		Date actual = DateBean.addXMonths(original,9);
 		assertEquals(expected, actual);
 	}
 
@@ -742,7 +743,7 @@ public class DateBeanTest {
 	public void testAddOneMonth() throws ParseException {
 		Date original = new GregorianCalendar(2004,GregorianCalendar.JANUARY,31).getTime();
 		Date expected = new GregorianCalendar(2004,GregorianCalendar.FEBRUARY,29).getTime();
-		Date actual = DateBean.addOneMonth(original);
+		Date actual = DateBean.addXMonths(original,1);
 		assertEquals(expected, actual);
 	}
 

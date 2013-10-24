@@ -853,21 +853,14 @@ public class DateBean {
         Days, Months
     }
 
-	public static Date addOneYear(Date date) {
+	public static Date addXYears(Date date, Integer x) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		cal.add(Calendar.YEAR, 1);
-		Date oneYearLater = cal.getTime();
-		return oneYearLater;
+		cal.add(Calendar.YEAR, x);
+		Date newDate = cal.getTime();
+		return newDate;
 	}
 
-	public static Date addNineMonths(Date date) {
-		return addXMonths(date,9);
-	}
-
-	public static Date addOneMonth(Date date) {
-		return addXMonths(date,1);
-	}
 
 	public static Date addXMonths(Date date, Integer x) {
 		Calendar cal = Calendar.getInstance();

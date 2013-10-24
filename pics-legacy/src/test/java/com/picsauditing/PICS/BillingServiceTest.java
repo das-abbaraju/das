@@ -363,7 +363,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 	public void testAddRevRecIfAppropriate_Activation() {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.Activation;
-		Date paymentExpiresDate = DateBean.addOneYear(invoiceCreationDate);
+		Date paymentExpiresDate = DateBean.addXYears(invoiceCreationDate,1);
 
 		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
 
@@ -385,7 +385,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 	 public void testAddRevRecIfAppropriate_Renewal() {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.Renewal;
-		Date paymentExpiresDate = DateBean.addOneYear(invoiceCreationDate);
+		Date paymentExpiresDate = DateBean.addXYears(invoiceCreationDate,1);
 
 		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
 
@@ -396,7 +396,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 	public void testAddRevRecIfAppropriate_LateFee() {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.LateFee;
-		Date paymentExpiresDate = DateBean.addNineMonths(invoiceCreationDate);
+		Date paymentExpiresDate = DateBean.addXMonths(invoiceCreationDate,9);
 
 		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
 
@@ -429,7 +429,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 				continue;
 			}
 			if (invoice.getInvoiceType() == InvoiceType.Renewal) {
-				assertEquals(DateBean.addOneMonth(invoiceCreationDate),invoiceItem1.getStartDate());
+				assertEquals(DateBean.addXMonths(invoiceCreationDate,1),invoiceItem1.getStartDate());
 			} else {
 				assertEquals(invoiceCreationDate,invoiceItem1.getStartDate());
 			}
@@ -441,45 +441,35 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private void prepForRevRecTesting(Date invoiceCreationDate) {
 		invoiceItems.clear();
 
-		InvoiceItem agItem = new InvoiceItem();
-		InvoiceFee agItemFee = new InvoiceFee();
-		agItem.setInvoiceFee(agItemFee);
-		agItemFee.setFeeClass(FeeClass.AuditGUARD);
+		InvoiceItem agItem = buildInvoiceItem(FeeClass.AuditGUARD);
 		invoiceItems.add(agItem);
 
-		InvoiceItem dgItem = new InvoiceItem();
-		InvoiceFee dgItemFee = new InvoiceFee();
-		dgItem.setInvoiceFee(dgItemFee);
-		dgItemFee.setFeeClass(FeeClass.DocuGUARD);
+		InvoiceItem dgItem = buildInvoiceItem(FeeClass.DocuGUARD);
 		invoiceItems.add(dgItem);
 
-		InvoiceItem igItem = new InvoiceItem();
-		InvoiceFee igItemFee = new InvoiceFee();
-		igItem.setInvoiceFee(igItemFee);
-		igItemFee.setFeeClass(FeeClass.InsureGUARD);
+		InvoiceItem igItem = buildInvoiceItem(FeeClass.InsureGUARD);
 		invoiceItems.add(igItem);
 
-		InvoiceItem lateFeeItem = new InvoiceItem();
-		InvoiceFee lateFeeItemFee = new InvoiceFee();
-		lateFeeItem.setInvoiceFee(lateFeeItemFee);
-		lateFeeItemFee.setFeeClass(FeeClass.AuditGUARD);
+		InvoiceItem lateFeeItem = buildInvoiceItem(FeeClass.LateFee);
 		invoiceItems.add(lateFeeItem);
 
-		InvoiceItem taxItem = new InvoiceItem();
-		InvoiceFee taxItemFee = new InvoiceFee();
-		taxItem.setInvoiceFee(taxItemFee);
-		taxItemFee.setFeeClass(FeeClass.CanadianTax);
+		InvoiceItem taxItem = buildInvoiceItem(FeeClass.CanadianTax);
 		invoiceItems.add(taxItem);
 
-		InvoiceItem freeItem = new InvoiceItem();
-		InvoiceFee freeItemFee = new InvoiceFee();
-		freeItem.setInvoiceFee(freeItemFee);
-		freeItemFee.setFeeClass(FeeClass.Free);
+		InvoiceItem freeItem = buildInvoiceItem(FeeClass.Free);
 		invoiceItems.add(freeItem);
 
 		when(invoice.getItems()).thenReturn(invoiceItems);
 
 		when(invoice.getCreationDate()).thenReturn(invoiceCreationDate);
 		when(invoice.getAccount()).thenReturn(contractor);
+	}
+
+	private InvoiceItem buildInvoiceItem(FeeClass feeClass) {
+		InvoiceItem item = new InvoiceItem();
+		InvoiceFee invoiceFee = new InvoiceFee();
+		item.setInvoiceFee(invoiceFee);
+		invoiceFee.setFeeClass(feeClass);
+		return item;
 	}
 }

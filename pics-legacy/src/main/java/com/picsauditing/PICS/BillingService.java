@@ -623,7 +623,7 @@ public class BillingService {
 			}
 			ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
 			if (invoice.getInvoiceType() == InvoiceType.Renewal) {
-				invoiceItem.setStartDate(DateBean.addOneMonth(invoice.getCreationDate()));
+				invoiceItem.setStartDate(DateBean.addXMonths(invoice.getCreationDate(),1));
 			} else {
 				invoiceItem.setStartDate(invoice.getCreationDate());
 			}
