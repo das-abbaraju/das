@@ -1,16 +1,7 @@
 package com.picsauditing.PICS;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.TreeMap;
-
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Days;
@@ -18,8 +9,9 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.util.PicsDateFormat;
-import com.picsauditing.util.Strings;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DateBean {
 	public static String NULL_DATE = "0/0/00";
@@ -860,4 +852,29 @@ public class DateBean {
     public enum Interval {
         Days, Months
     }
+
+	public static Date addOneYear(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.YEAR, 1);
+		Date oneYearLater = cal.getTime();
+		return oneYearLater;
+	}
+
+	public static Date addNineMonths(Date date) {
+		return addXMonths(date,9);
+	}
+
+	public static Date addOneMonth(Date date) {
+		return addXMonths(date,1);
+	}
+
+	public static Date addXMonths(Date date, Integer x) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.MONTH, x);
+		Date newDate = cal.getTime();
+		return newDate;
+	}
+
 }
