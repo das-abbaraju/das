@@ -25,9 +25,11 @@
 
     <!--    Release 6.64   -->
     <include file="./liquibase/kchase3_PICS-13011_HuntsmanTags.sql"/>
-    <include file="./liquibase/kchase4_PICS-13049_CSRShiftHours.sql"/>
     <include file="./liquibase/sshacter4_PICS-13124_CreateTranslationStoredProcedure.sql"/>
     <include file="./liquibase/lkam1_PICS-8562_AddAustralianStates.sql"/>
     <include file="./liquibase/pschlesinger5_PICS-12529_AddStartAndEndDateColumnsToInvoiceItem.sql"/>
+    <include file="./liquibase/mdo6_PICS-13106_newAT&AQSlugs.sql"/>
+    <include file="./liquibase/mdo7_PICS-13106_defaultAuditSlugs.sql"/>
+    <include file="./liquibase/mdo8_PICS-13106_uniqueAuditSlugs.sql"/>
 
 </databaseChangeLog>
