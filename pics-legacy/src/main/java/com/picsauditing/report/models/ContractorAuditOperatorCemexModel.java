@@ -1,13 +1,11 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +24,8 @@ public class ContractorAuditOperatorCemexModel extends AbstractModel {
 
         cemexPostEval.join(ContractorAuditTable.SingleCAO);
 
-        for (Integer questionID : ContractorAuditTable.CEMEX_POST_EVAL_DATA.keySet()) {
-            ModelSpec data = cemexPostEval.join(ContractorAuditTable.CEMEX_POST_EVAL_DATA.get(questionID));
+        for (Integer questionID : ContractorAuditTable.SUNCOR_DRUG_ALCOHOL_DATA.keySet()) {
+            ModelSpec data = cemexPostEval.join(ContractorAuditTable.SUNCOR_DRUG_ALCOHOL_DATA.get(questionID));
             if (questionID == 16605 || questionID == 14719 || questionID == 14720) {
                 data.minimumImportance = FieldImportance.Average;
             }
@@ -58,8 +56,8 @@ public class ContractorAuditOperatorCemexModel extends AbstractModel {
 		Field accountName = fields.get("ContractorAccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={ContractorAccountID}");
 
-        for (Integer questionID : ContractorAuditTable.CEMEX_POST_EVAL_DATA.keySet()) {
-            String question = "ContractorCemexPostEval" + ContractorAuditTable.CEMEX_POST_EVAL_DATA.get(questionID);
+        for (Integer questionID : ContractorAuditTable.SUNCOR_DRUG_ALCOHOL_DATA.keySet()) {
+            String question = "ContractorCemexPostEval" + ContractorAuditTable.SUNCOR_DRUG_ALCOHOL_DATA.get(questionID);
             String answerName = question + "Answer";
             Field answer = fields.get(answerName.toUpperCase());
             if (questionID == 17072)
