@@ -818,6 +818,8 @@ ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
+ContractorWorksAtClientSite
+ContractorWorksForReportingClient
 
 Model: Contractors
 Permission: Permissions{permissions=[]}
