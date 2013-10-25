@@ -139,12 +139,17 @@
                             Manage Translations
                         </a>
                     </li>
-                    <li>                    
+                    <li>
                         <a
-                            class="edit translate" 
-							href="ManageAuditType!findTranslations.action?id=<s:property value="auditType.id"/>">
-                            Translation Portal
+                                class="edit translate"
+                                href="ManageTranslations.action?button=Search&key=AuditType.<s:property value="auditType.id"/>."
+                                target="_BLANK">
+                            Manage Translations
                         </a>
+                    </li>
+                    <li>
+                        <label>Slug:</label>
+                        <s:textfield name="auditType.slug" />
                     </li>
                     <li>
                         <label>Class:</label>

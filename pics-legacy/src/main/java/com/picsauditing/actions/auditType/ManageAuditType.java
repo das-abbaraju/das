@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -29,6 +30,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageAuditType extends RequiredLanguagesSupport implements Preparable {
 	protected int id = 0;
+    protected String slug;
 	protected AuditType auditType = null;
 	protected AuditCategory category = null;
 	protected AuditQuestion question = null;
@@ -596,5 +598,26 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		static final String SAVE = "save";
 		static final String MOVE = "move";
 	}
+
+    public String slugExists() {
+        List<AuditType> auditTypeSlugList = auditTypeDAO.findBySlug(AuditType.class, slug);
+        boolean isUnique = false;
+
+        if (auditTypeSlugList.isEmpty() || (auditTypeSlugList.size() == 1 && auditTypeSlugList.get(0).getId() == id)) {
+            isUnique = true;
+        }
+
+        json = new JSONObject();
+        json.put("isUnique",isUnique);
+        return JSON;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
 }

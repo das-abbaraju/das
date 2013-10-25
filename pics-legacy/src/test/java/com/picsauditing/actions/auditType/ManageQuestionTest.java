@@ -2,6 +2,7 @@ package com.picsauditing.actions.auditType;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -175,4 +177,48 @@ public class ManageQuestionTest extends PicsTranslationTest {
 		verify(auditExtractOption).setStoppingPoint(TEXT_IS_TRIMMED);
 	}
 
+    @Test
+    public void testSlugExists_DoesNotExist()
+            throws Exception {
+        when(auditQuestionDAO.findBySlug(AuditQuestion.class, "slug")).thenReturn(new ArrayList());
+        Whitebox.setInternalState(manageQuestion, "slug", "slug");
+
+        manageQuestion.slugExists();
+        assertEquals("{\"isUnique\":true}", manageQuestion.getJson().toString());
+    }
+
+    @Test
+    public void testSlugExists_ExistsAsItself()
+            throws Exception {
+        List<AuditQuestion> list = new ArrayList<AuditQuestion>();
+        AuditQuestion question = new AuditQuestion();
+        question.setId(100);
+        list.add(question);
+        when(auditQuestionDAO.findBySlug(AuditQuestion.class, "slug")).thenReturn(list);
+        Whitebox.setInternalState(manageQuestion, "slug", "slug");
+        Whitebox.setInternalState(manageQuestion, "id", 100);
+
+        manageQuestion.slugExists();
+        assertEquals("{\"isUnique\":true}",manageQuestion.getJson().toString());
+    }
+
+    @Test
+    public void testSlugExists_ExistsAsDuplicate()
+            throws Exception {
+        List<AuditQuestion> list = new ArrayList<AuditQuestion>();
+        AuditQuestion question = new AuditQuestion();
+        question.setId(100);
+        list.add(question);
+
+        AuditQuestion question2 = new AuditQuestion();
+        question2.setId(101);
+        list.add(question2);
+
+        when(auditQuestionDAO.findBySlug(AuditQuestion.class, "slug")).thenReturn(list);
+        Whitebox.setInternalState(manageQuestion, "slug", "slug");
+        Whitebox.setInternalState(manageQuestion, "id", 100);
+
+        manageQuestion.slugExists();
+        assertEquals("{\"isUnique\":false}",manageQuestion.getJson().toString());
+    }
 }

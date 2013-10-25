@@ -72,6 +72,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public static final int ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS = 3;
 
 	protected String name;
+    private String slug;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
 	protected int displayOrder = 100;
 	protected String description;
@@ -116,6 +117,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public AuditType(AuditType a) {
 		this.account = a.getAccount();
 		this.name = a.getName();
+        this.slug = a.getSlug();
 		this.canContractorEdit = a.isCanContractorEdit();
 		this.canContractorView = a.isCanContractorView();
 		this.classType = a.getClassType();
@@ -145,7 +147,15 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		this.name = name;
 	}
 
-	@Enumerated(EnumType.STRING)
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    @Enumerated(EnumType.STRING)
 	@ReportField(type = FieldType.AuditTypeClass, i18nKeyPrefix = "AuditTypeClass", importance = FieldImportance.Required)
 	public AuditTypeClass getClassType() {
 		return classType;
@@ -574,5 +584,12 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
     public void setRollbackStatus(AuditStatus rollbackStatus) {
         this.rollbackStatus = rollbackStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 31 * getId();
+        result = 31 * result + (getSlug() != null ? getSlug().hashCode() : 0);
+        return result;
     }
 }

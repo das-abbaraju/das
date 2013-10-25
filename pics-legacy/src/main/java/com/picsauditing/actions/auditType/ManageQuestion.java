@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
+import com.picsauditing.jpa.entities.*;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
@@ -13,14 +15,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.importpqf.ImportStopAt;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditExtractOption;
-import com.picsauditing.jpa.entities.AuditOptionGroup;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditTransformOption;
-import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
@@ -32,6 +26,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	@Autowired
 	protected AuditOptionValueDAO auditOptionValueDAO;
 
+    protected String slug;
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
 	private List<AuditOptionGroup> optionTypes;
@@ -451,4 +446,26 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			}
 		}
 	}
+
+    public String slugExists() {
+        List<AuditQuestion> auditQuestionSlugList = auditQuestionDAO.findBySlug(AuditQuestion.class, slug);
+        boolean isUnique = false;
+
+        if (auditQuestionSlugList.isEmpty() || (auditQuestionSlugList.size() == 1 && auditQuestionSlugList.get(0).getId() == id)) {
+            isUnique = true;
+        }
+
+        json = new JSONObject();
+        json.put("isUnique",isUnique);
+        return JSON;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
 }
