@@ -69,13 +69,14 @@
     				</s:if>
     			</li>
     			<li>
+                    <%-- TODO: add theme="formhelp" back in --%>
     				<s:select list="criteriaCategory" name="criteria.category" headerValue="- Category -" label="Category"/>
     			</li>
     			<li>
-    				<s:textfield name="criteria.displayOrder" />
+    				<s:textfield name="criteria.displayOrder" theme="formhelp"/>
     			</li>
     			<li>
-    				<s:textfield name="criteria.label" value='%{(criteria.id > 0) ? criteria.label : ""}' maxlength="30"/>
+    				<s:textfield name="criteria.label" value='%{(criteria.id > 0) ? criteria.label : ""}' theme="formhelp" maxlength="30"/>
                     
                     <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                         <s:param name="translation_key">FlagCriteria.${criteria.id}.label</s:param>
@@ -83,7 +84,7 @@
                     </s:include>
     			</li>
     			<li>
-                    <s:textarea name="criteria.description" value='%{(criteria.id > 0) ? criteria.description : ""}' cols="30" rows="4" />
+                    <s:textarea name="criteria.description" value='%{(criteria.id > 0) ? criteria.description : ""}' theme="formhelp" cols="30" rows="4" />
 
                     <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                         <s:param name="translation_key">FlagCriteria.${criteria.id}.description</s:param>
@@ -98,10 +99,12 @@
             
     		<ol>
     			<li>
+                    <%-- TODO: add theme="formhelp" back in --%>
     				<s:select name="criteria.dataType" list="datatypeList" />
     			</li>
     			<li>
-    				<s:select name="criteria.comparison" list="comparisonList" />
+                    <%-- TODO: add theme="formhelp" back in and figure out why this break the page --%>
+    				<s:select name="criteria.comparison" list="comparisonList" /> 
     			</li>
     			<li>
     				<label><s:text name="FlagCriteria.defaultValue"/>:</label>
@@ -119,7 +122,7 @@
                     </pics:fieldhelp>
     			</li>
     			<li>
-    				<s:checkbox name="criteria.allowCustomValue" />
+    				<s:checkbox name="criteria.allowCustomValue" theme="formhelp" />
     			</li>
     		</ol>
     	</fieldset>
@@ -156,13 +159,15 @@
             
     		<ol>
     			<li>
+                    <%-- TODO: add theme="formhelp" back in --%>
     				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" />
     			</li>
     			<li>
+                    <%-- TODO: add theme="formhelp" back in --%>
     				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" />
     			</li>
     			<li>
-    				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" />
+    				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" theme="formhelp" />
     			</li>
     		</ol>
     	</fieldset>
@@ -170,7 +175,8 @@
     	<fieldset>
     		<ol>
     			<li>
-    				<s:select name="criteria.requiredStatusComparison" list="comparisonList" />
+                    <%-- TODO: add theme="form" back in and figure out why this break the page --%>
+    				<s:select name="criteria.requiredStatusComparison" list="comparisonList" />   
 
     				<pics:fieldhelp title="Audit Status">
     					<ul>
@@ -182,6 +188,7 @@
     				</pics:fieldhelp>
     			</li>
     			<li>
+                    <%-- TODO: add theme="form" back in --%>
     				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" />
                     
     				<pics:fieldhelp title="Audit Status">This is only used for Audit Type Flag Criteria except for Annual Updates. 
@@ -192,13 +199,14 @@
                     </pics:fieldhelp>
     			</li>
     			<li>
-    				<s:checkbox name="criteria.insurance" />
+    				<s:checkbox name="criteria.insurance" theme="formhelp" />
     			</li>
     			<li>
+                    <%-- TODO: add theme="formhelp" back in --%>
     				<s:select name="criteria.optionCode" list="optionCodeList" />
     			</li>
     			<li>
-    				<s:checkbox name="criteria.flaggableWhenMissing" />
+    				<s:checkbox name="criteria.flaggableWhenMissing" theme="formhelp" />
     			</li>
     			<li>
     				<label><s:text name="ManageAuditType.RequiredLanguages" />:</label>
@@ -221,6 +229,7 @@
     					allowUpDownOnLeft="false"
     					allowUpDownOnRight="false"
     					buttonCssClass="arrow"
+                        theme="pics"
     				>
     					<s:param name="sort" value="'false'" />
     				</s:optiontransferselect>
