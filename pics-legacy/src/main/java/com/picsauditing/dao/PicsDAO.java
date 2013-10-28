@@ -251,7 +251,7 @@ abstract public class PicsDAO {
 	}
 
     public <T extends BaseTable> List<T> findBySlug(Class<T> clazz, String slug) {
-        return findWhere(clazz, "t.slug = " + slug);
+        return findWhere(clazz, "t.slug = '" + slug + "'");
     }
 
 }

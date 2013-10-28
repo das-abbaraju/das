@@ -599,16 +599,29 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		static final String MOVE = "move";
 	}
 
-    public String slugExists() {
-        List<AuditType> auditTypeSlugList = auditTypeDAO.findBySlug(AuditType.class, slug);
-        boolean isUnique = false;
-
-        if (auditTypeSlugList.isEmpty() || (auditTypeSlugList.size() == 1 && auditTypeSlugList.get(0).getId() == id)) {
-            isUnique = true;
-        }
+    public String validateSlug() {
+        boolean isUnique = !slugService.slugHasDuplicate(AuditType.class, getSlug(), getId());
+        boolean isURI = slugService.slugIsURICompliant(getSlug());
 
         json = new JSONObject();
         json.put("isUnique",isUnique);
+        json.put("isURI",isURI);
+        return JSON;
+    }
+
+    public String generateSlug() {
+        load(id);
+
+        json = new JSONObject();
+
+        try {
+            String slug = slugService.generateSlug(AuditType.class, auditType.getName(), auditType.getId());
+            json.put("slug",slug);
+        }
+        catch (Exception e) {
+            addActionError(e.getMessage());
+        }
+
         return JSON;
     }
 

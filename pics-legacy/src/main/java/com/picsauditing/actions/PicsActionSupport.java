@@ -84,6 +84,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	private static final ViewNamespaceAware namespaceAware = new ViewNamespace();
 
+    @Autowired
+    protected SlugService slugService;
 	@Autowired
 	protected AppPropertyDAO propertyDAO;
 	@Autowired

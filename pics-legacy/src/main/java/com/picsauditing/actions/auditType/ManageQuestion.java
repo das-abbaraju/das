@@ -447,16 +447,29 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 		}
 	}
 
-    public String slugExists() {
-        List<AuditQuestion> auditQuestionSlugList = auditQuestionDAO.findBySlug(AuditQuestion.class, slug);
-        boolean isUnique = false;
-
-        if (auditQuestionSlugList.isEmpty() || (auditQuestionSlugList.size() == 1 && auditQuestionSlugList.get(0).getId() == id)) {
-            isUnique = true;
-        }
+    public String validateSlug() {
+        boolean isUnique = slugService.slugHasDuplicate(AuditQuestion.class, getSlug(), getId());
+        boolean isURI = slugService.slugIsURICompliant(getSlug());
 
         json = new JSONObject();
         json.put("isUnique",isUnique);
+        json.put("isURI",isURI);
+        return JSON;
+    }
+
+    public String generateSlug() {
+        load(id);
+
+        json = new JSONObject();
+
+        try {
+            String slug = slugService.generateSlug(AuditQuestion.class, question.getName(), question.getId());
+            json.put("slug",slug);
+        }
+        catch (Exception e) {
+            addActionError(e.getMessage());
+        }
+
         return JSON;
     }
 
