@@ -626,6 +626,7 @@ public class BillingService {
 			}
 			invoiceItem.setRevenueStartDate(invoiceItemStartDate);
 			invoiceItem.setRevenueFinishDate(invoiceItemEndDate);
+			invoiceItemDAO.save(invoiceItem);
 		}
 	}
 

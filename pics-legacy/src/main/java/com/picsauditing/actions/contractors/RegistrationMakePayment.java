@@ -719,10 +719,10 @@ public class RegistrationMakePayment extends RegistrationAction {
 		}
 
 		Invoice newInvoice = billingService.createInvoice(contractor, BillingStatus.Activation, getUser());
-		billingService.addRevRecInfoIfAppropriateToItems(invoice);
 		if (contractor.isHasMembershipChanged()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
+			billingService.addRevRecInfoIfAppropriateToItems(newInvoice);
             billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.UPDATE));
