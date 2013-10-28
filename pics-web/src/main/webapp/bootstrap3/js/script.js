@@ -14219,17 +14219,16 @@ PICS.define('employee-guard.DatePicker', {
 
         function changeDate(event) {
             var $element = $(event.target),
-                $row = $element.closest('.row.date'),
                 date = $element.data('date');
 
-            updateDateFields($row, date);
+            updateDateFields(date);
         }
 
-        function updateDateFields($row, date) {
+        function updateDateFields(date) {
             var date_split = date.split('-'),
-                $year = $row.find('.year'),
-                $month = $row.find('.month'),
-                $day = $row.find('.day');
+                $year = $('.date .year'),
+                $month = $('.date .month'),
+                $day = $('.date .day');
 
                 $year.val(date_split[0]);
                 $month.val(date_split[1]);

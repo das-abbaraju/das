@@ -38,13 +38,13 @@
                     <fieldset class="expiration-date">
                         <div class="row date">
                             <div class="col-md-4 col-sm-4 col-xs-6">
-                                <tw:input inputName="expireYear" type="text" placeholder="YYYY" maxlength="4" class="form-control year" />
+                                <tw:input inputName="expireYear" type="text" placeholder="YYYY" class="form-control year" />
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <tw:input inputName="expireMonth" type="text" placeholder="MM" maxlength="2" class="form-control month" />
+                                <tw:input inputName="expireMonth" type="text" placeholder="MM" class="form-control month" />
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <tw:input inputName="expireDay" type="text" placeholder="DD" maxlength="2" class="form-control day" />
+                                <tw:input inputName="expireDay" type="text" placeholder="DD" class="form-control day" />
                             </div>
                             <div class="col-md-1 col-sm-1 col-xs-12">
                                 <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd"><i class="icon-calendar"></i></a>

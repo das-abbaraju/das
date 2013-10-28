@@ -45,13 +45,13 @@
                     <fieldset class="expiration-date">
                         <div class="row date">
                             <div class="col-md-4 col-sm-4 col-xs-6">
-                                <tw:input inputName="startYear" type="text" placeholder="YYYY" maxlength="4" class="form-control year" value="${documentForm.startYear}" />
+                                <tw:input inputName="startYear" type="text" placeholder="YYYY" class="form-control year" value="${documentForm.startYear}" />
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <tw:input inputName="startMonth" type="text" placeholder="MM" maxlength="2" class="form-control month" value="${documentForm.startMonth}" />
+                                <tw:input inputName="startMonth" type="text" placeholder="MM" class="form-control month" value="${documentForm.startMonth}" />
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <tw:input inputName="startDay" type="text" placeholder="DD" maxlength="2" class="form-control day" value="${documentForm.startDay}" />
+                                <tw:input inputName="startDay" type="text" placeholder="DD" class="form-control day" value="${documentForm.startDay}" />
                             </div>
                             <div class="col-md-1 col-sm-1 col-xs-12">
                                 <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd"><i class="icon-calendar"></i></a>
@@ -67,13 +67,13 @@
                     <fieldset class="expiration-date">
                         <div class="row date">
                             <div class="col-md-4 col-sm-4 col-xs-6">
-                                <tw:input inputName="endYear" type="text" placeholder="YYYY" maxlength="4" class="form-control year" value="${documentForm.endYear}" />
+                                <tw:input inputName="endYear" type="text" placeholder="YYYY" class="form-control year" value="${documentForm.endYear}" />
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <tw:input inputName="endMonth" type="text" placeholder="MM" maxlength="2" class="form-control month" value="${documentForm.endMonth}" />
+                                <tw:input inputName="endMonth" type="text" placeholder="MM" class="form-control month" value="${documentForm.endMonth}" />
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <tw:input inputName="endDay" type="text" placeholder="DD" maxlength="2" class="form-control day" value="${documentForm.endDay}" />
+                                <tw:input inputName="endDay" type="text" placeholder="DD" class="form-control day" value="${documentForm.endDay}" />
                             </div>
                             <div class="col-md-1 col-sm-1 col-xs-12">
                                 <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd"><i class="icon-calendar"></i></a>
