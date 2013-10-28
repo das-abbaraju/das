@@ -13895,12 +13895,19 @@ PICS.define('employee-guard.AjaxFormEditing', {
                 $display_values = $container.find('.edit-display-values'),
                 jQueryElements = PICS.getClass('employee-guard.BindjQueryElements');
 
+            //hide display values
             if (request_data.length > 0) {
                 hideDisplayValues($display_values);
             }
 
-            $container.append(request_data);
+            //write form to page
+            if ($container.is('section')) {
+                $container.find('.content').append(request_data);
+            } else {
+                $container.append(request_data);
+            }
 
+            //rebind jquery plugin code
             jQueryElements.bindAll();
         }
 
@@ -13969,7 +13976,8 @@ PICS.define('employee-guard.BindjQueryElements', {
         return {
             init: init,
             tooltips: tooltips,
-            datePicker: datePicker
+            datePicker: datePicker,
+            bindAll: bindAll
         };
 
 	}())
@@ -14211,16 +14219,17 @@ PICS.define('employee-guard.DatePicker', {
 
         function changeDate(event) {
             var $element = $(event.target),
+                $row = $element.closest('.row.date'),
                 date = $element.data('date');
 
-            updateDateFields(date);
+            updateDateFields($row, date);
         }
 
-        function updateDateFields(date) {
+        function updateDateFields($row, date) {
             var date_split = date.split('-'),
-                $year = $('.date .year'),
-                $month = $('.date .month'),
-                $day = $('.date .day');
+                $year = $row.find('.year'),
+                $month = $row.find('.month'),
+                $day = $row.find('.day');
 
                 $year.val(date_split[0]);
                 $month.val(date_split[1]);

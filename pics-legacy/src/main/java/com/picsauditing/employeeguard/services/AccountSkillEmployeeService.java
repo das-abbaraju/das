@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.services.calculator.ExpirationCalculator;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class AccountSkillEmployeeService {
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
+	@Autowired
+	private ProfileDocumentService profileDocumentService;
 
 	public List<AccountSkillEmployee> findByProfile(final Profile profile) {
 		return accountSkillEmployeeDAO.findByProfile(profile);
@@ -162,5 +165,23 @@ public class AccountSkillEmployeeService {
 
 	public void save(AccountSkillEmployee accountSkillEmployee) {
 		accountSkillEmployeeDAO.save(accountSkillEmployee);
+	}
+
+	public void update(AccountSkillEmployee accountSkillEmployee, final SkillDocumentForm skillDocumentForm) {
+		AccountSkill skill = accountSkillEmployee.getSkill();
+		SkillType skillType = skill.getSkillType();
+
+		if (skillType.isCertification()) {
+			ProfileDocument document = profileDocumentService.getDocument(Integer.toString(skillDocumentForm.getDocumentId()));
+			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
+		} else if (skillType.isTraining()) {
+			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
+				accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+			} else {
+				accountSkillEmployee.setEndDate(null);
+			}
+
+			accountSkillEmployeeDAO.save(accountSkillEmployee);
+		}
 	}
 }

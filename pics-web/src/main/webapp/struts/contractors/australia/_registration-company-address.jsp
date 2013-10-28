@@ -12,7 +12,7 @@
 	<s:textfield name="contractor.address" />
 </li>
 <li class="address">
-    <s:textfield name="contractor.address2" label="&nbsp;" />
+    <s:textfield name="contractor.address2" cssClass="no-label"/>
 </li>
 <li class="city">
 	<s:textfield name="contractor.city" />

@@ -6,8 +6,8 @@ import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
-import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.LoginForm;
 import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.EmployeeService;
@@ -54,7 +54,7 @@ public class LoginAction extends PicsRestActionSupport {
 		}
 
 		EmailHash hash = emailHashService.findByHash(hashCode);
-		Employee employee = hash.getEmployee();
+		SoftDeletedEmployee employee = hash.getEmployee();
 		if (employee == null) {
 			throw new PageNotFoundException();
 		}
@@ -69,7 +69,7 @@ public class LoginAction extends PicsRestActionSupport {
 		return LIST;
 	}
 
-	private void prepareProfile(Employee employee) {
+	private void prepareProfile(SoftDeletedEmployee employee) {
 		if (employee.getProfile() != null) {
 			profile = employee.getProfile();
 		} else {

@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.jpa.entities.Account;
 import org.mockito.Mockito;
 
@@ -23,7 +23,13 @@ public class EmailHashServiceFactory {
 		Mockito.reset(emailHashService);
 
 		EmailHash emailHash = new EmailHash();
-		Employee employee = new EmployeeBuilder(Identifiable.SYSTEM, Account.PicsID).firstName(FIRST_NAME).lastName(LAST_NAME).email(EMAIL).build();
+		SoftDeletedEmployee employee = new SoftDeletedEmployee();
+		employee.setAccountId(Account.PicsID);
+		employee.setId(Identifiable.SYSTEM);
+		employee.setFirstName(FIRST_NAME);
+		employee.setLastName(LAST_NAME);
+		employee.setEmail(EMAIL);
+
 		emailHash.setEmployee(employee);
 		emailHash.setEmailAddress(employee.getEmail());
 

@@ -947,4 +947,16 @@ public class ContractorAudit extends AbstractIndexableTable {
     public static ContractorAuditBuilder builder() {
         return new ContractorAuditBuilder();
     }
+
+	@Transient
+	public int getAuditYear() {
+		int year = 0;
+		if (getAuditFor() != null) {
+			try {
+				year = Integer.parseInt(getAuditFor());
+			} catch (NumberFormatException ignored) {
+			}
+		}
+		return year;
+	}
 }

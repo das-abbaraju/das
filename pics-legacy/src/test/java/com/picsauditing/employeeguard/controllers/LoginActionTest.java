@@ -9,8 +9,8 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.EmailHash;
-import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.LoginForm;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.jpa.entities.Account;
@@ -127,7 +127,7 @@ public class LoginActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, loginAction.login());
 		verify(emailHashService).findByHash(validHash);
 		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
-		verify(employeeService).linkEmployeeToProfile(any(Employee.class), any(Profile.class));
+		verify(employeeService).linkEmployeeToProfile(any(SoftDeletedEmployee.class), any(Profile.class));
 	}
 
 	@Test(expected = PageNotFoundException.class)

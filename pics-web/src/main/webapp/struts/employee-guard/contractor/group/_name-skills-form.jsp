@@ -14,7 +14,7 @@
     <fieldset>
         <div class="form-group ${name_error_class}">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <tw:input inputName="name" class="form-control" type="text" value="${group.name}" autofocus="true" tabindex="1" />
                 <tw:error errorName="name"/>
             </div>
@@ -24,7 +24,7 @@
 
         <div class="form-group">
             <tw:label labelName="skills" class="col-md-3 control-label">Required Skills</tw:label>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <tw:select selectName="skills" multiple="true" class="form-control" tabindex="2">
                     <s:iterator value="groupSkills" var="company_skill">
                         <s:set var="is_selected" value="false"/>

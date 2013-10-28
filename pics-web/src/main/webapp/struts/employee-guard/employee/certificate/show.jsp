@@ -30,7 +30,7 @@
 </s:include>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-8">
         <section class="employee-guard-section edit-container" data-url="${employee_skill_edit_url}">
             <h1>
                 <div class="row">
@@ -63,7 +63,7 @@
             </div>
         </section>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <%-- Linked skills --%>
     </div>
 </div>

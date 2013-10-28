@@ -1,11 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-         errorPage="/exception_handler.jsp" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
-
-<s:set var="first_name_error_class" value="%{hasFieldError('contractor_employee_create.first_name') ? 'error' : ''}"/>
-<s:set var="last_name_error_class" value="%{hasFieldError('contractor_employee_create.last_name') ? 'error' : ''}"/>
-<s:set var="email_error_class" value="%{hasFieldError('contractor_employee_create.email') ? 'error' : ''}"/>
 
 <%-- Url --%>
 <s:url action="employee" var="contractor_employee_list_url"/>
@@ -16,50 +11,30 @@
     <s:param name="title">Add Employee</s:param>
 </s:include>
 
-<tw:form formName="contractor_employee_create" action="${contractor_employee_create_url}" method="post"
-         class="form-horizontal js-validation" enctype="multipart/form-data" autocomplete="off" role="form">
+<tw:form formName="contractor_employee_create" action="${contractor_employee_create_url}" method="post" class="form-horizontal js-validation" enctype="multipart/form-data" autocomplete="off" role="form">
     <fieldset>
         <div class="row">
             <div class="col-md-3">
                 <s:include value="/struts/employee-guard/employee/photo/_photo.jsp">
                     <s:url action="employee" method="photo" var="image_url">
-                        <s:param name="id">
-                            0
-                        </s:param>
+                        <s:param name="id">0</s:param>
                     </s:url>
-                    <s:set var="alt_text">
-                        Profile photo
-                    </s:set>
+                    <s:set var="alt_text">Profile photo</s:set>
                 </s:include>
             </div>
 
-
-                <%-- <div class="col-md-9">
-                    <div class="form-group ">
-                        <label for="contractor_employee_edit_title" class="control-label col-md-3">Title</label>
-                        <div class="col-md-3">
-                            <input id="contractor_employee_edit_title" class="form-control" name="contractor_employee_edit.title" value="aa" type="text">
-                        </div>
-                    </div>
-                </div>
-                 --%>
-
-
             <div class="col-md-9">
-                <div class="form-group ${first_name_error_class}">
-                    <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First
-                        Name</strong></tw:label>
+                <div class="form-group">
+                    <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First Name</strong></tw:label>
                     <div class="col-md-4">
                         <tw:input inputName="firstName" class="form-control" tabindex="1" type="text" autofocus="true"/>
-                        <tw:error errorName="firstName"/>
                     </div>
                 </div>
 
-                <div class="form-group ${last_name_error_class}">
+                <div class="form-group">
                     <tw:label labelName="lastName" class="col-md-3 control-label"><strong>Last Name</strong></tw:label>
                     <div class="col-md-4">
                         <tw:input inputName="lastName" class="form-control" tabindex="2" type="text"/>
-                        <tw:error errorName="lastName"/>
                     </div>
                 </div>
 
@@ -92,17 +67,6 @@
                     </div>
                 </div>
 
-                    <%-- <div class="control-group">
-                        <tw:label labelName="classification">Classification</tw:label>
-                        <div class="controls">
-                            <tw:select selectName="classification">
-                                <s:iterator value="@com.picsauditing.jpa.entities.EmployeeClassification@values()" var="classification">
-                                    <tw:option value="${classification.dbValue}">${classification.displayName}</tw:option>
-                                </s:iterator>
-                            </tw:select>
-                        </div>
-                    </div> --%>
-
                 <s:set var="selected_groups" value="employeeForm.groups"/>
 
                 <div class="form-group">
@@ -117,8 +81,7 @@
                                     </s:if>
                                 </s:iterator>
 
-                                <tw:option value="${contractor_group.name}"
-                                           selected="${is_selected}">${contractor_group.name}</tw:option>
+                                <tw:option value="${contractor_group.name}" selected="${is_selected}">${contractor_group.name}</tw:option>
                             </s:iterator>
                         </tw:select>
                     </div>

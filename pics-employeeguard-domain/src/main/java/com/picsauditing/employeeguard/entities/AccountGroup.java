@@ -40,7 +40,7 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
 	private List<AccountSkillGroup> skills = new ArrayList<>();
 

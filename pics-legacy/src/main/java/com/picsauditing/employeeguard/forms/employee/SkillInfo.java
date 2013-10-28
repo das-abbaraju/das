@@ -3,10 +3,12 @@ package com.picsauditing.employeeguard.forms.employee;
 import com.picsauditing.employeeguard.entities.SkillType;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
+import java.util.Date;
+
 public class SkillInfo {
 
     private int id;
-    private String endDate;
+    private Date endDate;
     private String name;
     private String description;
     private SkillType skillType;
@@ -21,11 +23,11 @@ public class SkillInfo {
         this.id = id;
     }
 
-    public String getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 

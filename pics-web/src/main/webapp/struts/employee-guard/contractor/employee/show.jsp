@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-         errorPage="/exception_handler.jsp" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
@@ -25,8 +24,7 @@
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Employee: ${employee.firstName} ${employee.lastName}</s:param>
     <s:param name="actions">
-        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Employee
-        </button>
+        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Employee</button>
     </s:param>
 </s:include>
 

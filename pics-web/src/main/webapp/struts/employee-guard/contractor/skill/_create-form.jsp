@@ -3,8 +3,6 @@
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
 <s:set var="is_skill_of_training_type" value="skillForm.skillType != null && skillForm.skillType.training ? true : false"/>
-<s:set var="name_error_class" value="%{hasFieldError('contractor_skill_create.name') ? 'error' : ''}"/>
-<s:set var="type_error_class" value="%{hasFieldError('contractor_skill_create.type') ? 'error' : ''}"/>
 
 <%-- Url --%>
 <s:url action="skill" var="contractor_skill_list_url"/>

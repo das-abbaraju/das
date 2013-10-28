@@ -1,20 +1,9 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
 
 public abstract class AuditBuilderBase {
@@ -47,7 +36,7 @@ public abstract class AuditBuilderBase {
 		if (contractor.isTransportationServices())
 			contractorTypes.add(ContractorType.Transportation);
 	}
-	
+
 	protected Map<Integer, OperatorTag> getRequiredTags(List<? extends AuditRule> rules) {
 		Map<Integer, OperatorTag> tagsNeeded = new HashMap<Integer, OperatorTag>();
 		for (AuditRule rule : rules) {
@@ -63,7 +52,8 @@ public abstract class AuditBuilderBase {
 		}
 		return tagsNeeded;
 	}
-	
+
+	// Warning: This assumes that there is a single answer per question, which is NOT guaranteed. Consider evaluateRule() instead.
 	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers, Map<Integer, OperatorTag> opTags) {
 		if (rule.getQuestion() != null && !rule.isMatchingAnswer(contractorAnswers.get(rule.getQuestion().getId()))) {
 			return false;
@@ -76,4 +66,55 @@ public abstract class AuditBuilderBase {
 		return true;
 	}
 
+	boolean evaluateRule(AuditRule rule, Map<Integer, List<AuditData>> allQuestionAnswers, Map<Integer, OperatorTag> opTags) {
+
+		if (!evaluateRuleForQuestion(rule, allQuestionAnswers)) {
+			return false;
+		}
+
+		if (rule.getTag() != null && opTags.get(rule.getTag().getId()) == null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean evaluateRuleForQuestion(AuditRule rule, Map<Integer, List<AuditData>> allQuestionAnswers) {
+		if (rule.getQuestion() != null) {
+			List<AuditData> questionAnswers = allQuestionAnswers.get(rule.getQuestion().getId());
+
+			AuditData questionAnswer = chooseAnswerToEvaluate(rule, questionAnswers);
+			if (!rule.isMatchingAnswer(questionAnswer)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	AuditData chooseAnswerToEvaluate(AuditRule rule, List<AuditData> questionAnswers) {
+		AuditData questionAnswer;
+
+		if (rule.appliesToASpecificYear()) {
+			questionAnswer = findAnswerForSpecificYear(rule, questionAnswers);
+		} else {
+			questionAnswer = questionAnswers.get(0);
+		}
+		return questionAnswer;
+	}
+
+	private AuditData findAnswerForSpecificYear(AuditRule rule, List<AuditData> questionAnswers) {
+		for (AuditData questionAnswer : questionAnswers) {
+			if (answerYearMatchesRuleYear(questionAnswer, rule)) {
+				return questionAnswer;
+			}
+		}
+		return null;
+	}
+
+	private boolean answerYearMatchesRuleYear(AuditData questionAnswer, AuditRule rule) {
+		int answerYear = questionAnswer.getAudit().getAuditYear();
+		int ruleYear = rule.getYearToCheck().getYear();
+
+		return answerYear == ruleYear;
+	}
 }

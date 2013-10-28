@@ -4,8 +4,6 @@
 
 <s:set var="is_skill_of_training_type"
        value="skillForm.skillType != null && skillForm.skillType.training ? true : false"/>
-<s:set var="name_error_class" value="%{hasFieldError('operator_skill_edit.name') ? 'error' : ''}"/>
-<s:set var="type_error_class" value="%{hasFieldError('operator_skill_edit.type') ? 'error' : ''}"/>
 <s:set var="required_for_all" value="%{skillForm.required ? 'checked' : ''}"/>
 <s:set var="disable_groups" value="%{skillForm.required ? true : ''}"/>
 
@@ -20,14 +18,12 @@
     <s:param name="id">${id}</s:param>
 </s:url>
 
-<tw:form formName="operator_skill_edit" action="${operator_skill_update_url}" method="post" class="form-horizontal"
-         role="form">
+<tw:form formName="operator_skill_edit" action="${operator_skill_update_url}" method="post" class="form-horizontal" role="form">
     <fieldset>
         <div class="form-group ${name_error_class}">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-4">
-                <tw:input inputName="name" class="form-control" type="text" autofocus="true" tabindex="1"
-                          value="${skill.name}"/>
+                <tw:input inputName="name" class="form-control" type="text" autofocus="true" tabindex="1" value="${skill.name}"/>
                 <tw:error errorName="name"/>
             </div>
         </div>
@@ -35,16 +31,14 @@
         <div class="form-group">
             <tw:label labelName="description" class="col-md-3 control-label">Description</tw:label>
             <div class="col-md-4">
-                <tw:textarea textareaName="description" class="form-control"
-                             tabindex="2">${skill.description}</tw:textarea>
+                <tw:textarea textareaName="description" class="form-control" tabindex="2">${skill.description}</tw:textarea>
             </div>
         </div>
 
         <div class="form-group ${type_error_class}">
             <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Type</strong></tw:label>
             <div class="col-md-4 col-xs-11">
-                <tw:select selectName="skillType" value="${skill.skillType}" class="form-control skillType"
-                           tabindex="3">
+                <tw:select selectName="skillType" value="${skill.skillType}" class="form-control skillType"tabindex="3">
                     <tw:option value="Certification"
                                selected="${skill.skillType == 'Certification'}">Certification</tw:option>
                     <tw:option value="Training" selected="${skill.skillType == 'Training'}">Training</tw:option>
@@ -76,8 +70,7 @@
                             </s:if>
                         </s:iterator>
 
-                        <tw:option value="${operator_role.name}"
-                                   selected="${is_selected}">${operator_role.name}</tw:option>
+                        <tw:option value="${operator_role.name}" selected="${is_selected}">${operator_role.name}</tw:option>
                     </s:iterator>
                 </tw:select>
             </div>
@@ -85,8 +78,7 @@
                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label required-for-all">
                         <s:if test="skillForm.required">
-                            <tw:input inputName="required" class="required" type="checkbox" value="true"
-                                      checked="checked" tabindex="8"/>
+                            <tw:input inputName="required" class="required" type="checkbox" value="true" checked="checked" tabindex="8"/>
                         </s:if>
                         <s:else>
                             <tw:input inputName="required" class="required" type="checkbox" value="true" tabindex="8"/>
@@ -100,8 +92,7 @@
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
                 <tw:button buttonName="update" type="submit" class="btn btn-success" tabindex="9">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"
-                           tabindex="10">Cancel</tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="10">Cancel</tw:button>
             </div>
         </div>
     </fieldset>

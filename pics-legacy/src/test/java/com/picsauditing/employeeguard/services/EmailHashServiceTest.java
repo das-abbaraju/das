@@ -1,8 +1,10 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.authentication.dao.EmailHashDAO;
+import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,6 +24,8 @@ public class EmailHashServiceTest {
 
     @Mock
     private EmailHashDAO emailHashDAO;
+	@Mock
+	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
     @Before
     public void setup() {
@@ -30,6 +34,7 @@ public class EmailHashServiceTest {
         emailHashService = new EmailHashService();
 
         Whitebox.setInternalState(emailHashService, "emailHashDAO", emailHashDAO);
+        Whitebox.setInternalState(emailHashService, "softDeletedEmployeeDAO", softDeletedEmployeeDAO);
     }
 
     @Test
@@ -70,13 +75,16 @@ public class EmailHashServiceTest {
     @Test
     public void testCreateNewHash() throws Exception {
         Employee employee = buildEmployee();
+	    SoftDeletedEmployee softDeletedEmployee = buildSoftDeletedEmployee();
+
+	    when(softDeletedEmployeeDAO.find(any())).thenReturn(softDeletedEmployee);
 
         EmailHash result = emailHashService.createNewHash(employee);
 
-        verifyCreateNewHash(employee, result);
+        verifyCreateNewHash(softDeletedEmployee, result);
     }
 
-    private void verifyCreateNewHash(Employee employee, EmailHash result) {
+    private void verifyCreateNewHash(SoftDeletedEmployee employee, EmailHash result) {
         assertEquals(employee, result.getEmployee());
         assertEquals(employee.getEmail(), result.getEmailAddress());
         assertNotNull(result.getHash());
@@ -90,4 +98,10 @@ public class EmailHashServiceTest {
         employee.setEmail("employee_email@test.com");
         return employee;
     }
+
+	private SoftDeletedEmployee buildSoftDeletedEmployee() {
+		SoftDeletedEmployee employee = new SoftDeletedEmployee();
+		employee.setEmail("employee_email@test.com");
+		return employee;
+	}
 }

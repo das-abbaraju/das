@@ -6,8 +6,8 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.EmailHash;
-import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.ProfileForm;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.security.EncodedMessage;
@@ -126,7 +126,7 @@ public class AccountActionTest extends PicsActionTest {
 		verify(appUserService).createNewAppUser(username, hashedPassword);
 		verify(profileService).create(any(Profile.class));
 		verify(emailHashService).findByHash(EmailHashServiceFactory.VALID_HASH);
-		verify(employeeService).linkEmployeeToProfile(any(Employee.class), any(Profile.class));
+		verify(employeeService).linkEmployeeToProfile(any(SoftDeletedEmployee.class), any(Profile.class));
 		verify(emailHashService).expire(any(EmailHash.class));
 		verify(loginService).loginViaRest(username, hashedPassword);
 		verify(response).addCookie(any(Cookie.class));

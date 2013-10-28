@@ -91,9 +91,9 @@ public class SkillService {
 			accountSkillInDatabase.getGroups().clear();
 		}
 
-		EntityHelper.setUpdateAuditFields(updatedAccountSkill, appUserId, new Date());
+		EntityHelper.setUpdateAuditFields(accountSkillInDatabase, appUserId, new Date());
 
-		accountSkillEmployeeService.linkEmployeesToSkill(updatedAccountSkill, appUserId);
+		accountSkillEmployeeService.linkEmployeesToSkill(accountSkillInDatabase, appUserId);
 
 		return accountSkillDAO.save(accountSkillInDatabase);
 	}
@@ -125,11 +125,11 @@ public class SkillService {
 		if (CollectionUtils.isNotEmpty(groupNames)) {
 			List<AccountGroup> accountGroups = accountGroupDAO.findGroupByAccountIdAndNames(updatedSkill.getAccountId(), groupNames);
 
-			for (AccountSkillGroup AccountSkillGroup : accountSkillGroups) {
-				AccountGroup group = AccountSkillGroup.getGroup();
+			for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
+				AccountGroup group = accountSkillGroup.getGroup();
 				int index = accountGroups.indexOf(group);
 				if (index >= 0) {
-					AccountSkillGroup.setGroup(accountGroups.get(index));
+					accountSkillGroup.setGroup(accountGroups.get(index));
 				}
 			}
 		}
@@ -158,6 +158,7 @@ public class SkillService {
 		Date deletedDate = new Date();
 		EntityHelper.softDelete(accountSkill, appUserId, deletedDate);
 		EntityHelper.softDelete(accountSkill.getGroups(), appUserId, deletedDate);
+		EntityHelper.softDelete(accountSkill.getEmployees(), appUserId, deletedDate);
 
 		accountSkillDAO.save(accountSkill);
 	}

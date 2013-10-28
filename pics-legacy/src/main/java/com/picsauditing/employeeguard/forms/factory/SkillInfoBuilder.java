@@ -1,12 +1,11 @@
 package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.employeeguard.forms.employee.SkillInfo;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.forms.employee.SkillInfo;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.util.PicsDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +16,7 @@ public class SkillInfoBuilder {
     public SkillInfo build(AccountSkill accountSkill, SkillStatus skillStatus, Date endDate) {
         SkillInfo skillInfo = new SkillInfo();
         skillInfo.setId(accountSkill.getId());
-        skillInfo.setEndDate(PicsDateFormat.formatDateIsoOrBlank(endDate));
+        skillInfo.setEndDate(endDate);
 
 	    Date endOfTime = DateBean.addDays(DateBean.getEndOfTime(), -1);
 

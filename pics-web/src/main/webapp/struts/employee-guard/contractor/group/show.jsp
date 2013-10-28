@@ -29,7 +29,7 @@
 </s:include>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-8">
 		<section class="employee-guard-section edit-container" data-url="${contractor_employee_group_url}">
 		    <h1>
 		        <div class="row">
@@ -56,8 +56,8 @@
 		</section>
 	</div>
 
-	<div class="col-md-3">
-		<section class="employee-guard-section-full edit-container" data-url="${contractor_employee_employment_url}">
+	<div class="col-md-4">
+		<section class="employee-guard-section edit-container" data-url="${contractor_employee_employment_url}">
 		    <h1>
 		        <div class="row">
 		            <div class="col-md-9 col-xs-9">

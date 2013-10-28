@@ -33,8 +33,7 @@ public class ProfileDocumentValidationUtil {
 	}
 
 	private static boolean validateFile(DocumentForm documentForm) {
-//        return documentForm.getFile() != null; // we could also validate file type
-		return true;
+		return documentForm.getFile() != null; // we could also validate file type
 	}
 
 	private static boolean validateExpirationDate(DocumentForm documentForm) {
