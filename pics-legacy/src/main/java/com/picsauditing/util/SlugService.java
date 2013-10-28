@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SlugService {
     @Autowired
-    BasicDAO basicDao;
+    public BasicDAO basicDao;
 
     public <T extends BaseTable> String generateSlug(Class<T> clazz, String slugable, int id) throws Exception {
         String slug = createSlugFromText(slugable);

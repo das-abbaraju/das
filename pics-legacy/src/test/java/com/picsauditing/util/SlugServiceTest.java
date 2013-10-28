@@ -3,6 +3,7 @@ package com.picsauditing.util;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dr.domain.fields.QueryFilterOperator;
@@ -45,7 +46,7 @@ public class SlugServiceTest extends PicsTranslationTest {
 	private SlugService slugService;
 
 	@Mock
-	private PicsDAO basicDao;
+	private BasicDAO basicDao;
 
 	@Before
 	public void setUp() throws Exception {
