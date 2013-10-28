@@ -17,8 +17,8 @@ public abstract class TransactionItem extends BaseTable{
     protected InvoiceFee invoiceFee;
     protected BigDecimal amount = BigDecimal.ZERO;
     protected String description;
-	protected Date startDate;
-	protected Date endDate;
+	protected Date revenueStartDate;
+	protected Date revenueFinishDate;
 
 	@ManyToOne
 	@JoinColumn(name = "feeID")
@@ -49,21 +49,21 @@ public abstract class TransactionItem extends BaseTable{
 	}
 
 	@Temporal(TemporalType.DATE)
-	public Date getStartDate() {
-		return startDate;
+	public Date getRevenueStartDate() {
+		return revenueStartDate;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setRevenueStartDate(Date revenueStartDate) {
+		this.revenueStartDate = revenueStartDate;
 	}
 
 	@Temporal(TemporalType.DATE)
-	public Date getEndDate() {
-		return endDate;
+	public Date getRevenueFinishDate() {
+		return revenueFinishDate;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setRevenueFinishDate(Date revenueFinishDate) {
+		this.revenueFinishDate = revenueFinishDate;
 	}
 
 	public abstract void setTransaction(Transaction transaction);

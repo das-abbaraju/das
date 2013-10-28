@@ -11,7 +11,8 @@ set
   billingAddress = null,
   billingCity = null,
   billingCountrySubdivision = null,
-  billingCountry = null
+  billingCountry = null,
+  billingZip = null
 where
   accounts.status != 'Demo'
 and

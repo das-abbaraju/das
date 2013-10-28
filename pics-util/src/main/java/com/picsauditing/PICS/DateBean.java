@@ -578,6 +578,16 @@ public class DateBean {
 		return cal.getTime();
 	}
 
+	public static Date addYears(Date startDate, int years) {
+		if (startDate == null || years == 0) {
+			return null;
+		}
+
+		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.YEAR, years);
+
+		return cal.getTime();
+	}
+
 	public static Date addDays(Date startDate, int days) {
 		if (startDate == null || days == 0) {
 			return null;
@@ -852,22 +862,5 @@ public class DateBean {
     public enum Interval {
         Days, Months
     }
-
-	public static Date addXYears(Date date, Integer x) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.add(Calendar.YEAR, x);
-		Date newDate = cal.getTime();
-		return newDate;
-	}
-
-
-	public static Date addXMonths(Date date, Integer x) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.add(Calendar.MONTH, x);
-		Date newDate = cal.getTime();
-		return newDate;
-	}
 
 }

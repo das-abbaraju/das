@@ -616,18 +616,77 @@ public class BillingService {
 		return note;
 	}
 
-	public void addRevRecInfoIfAppropriateToItems(Invoice invoice) {
+	public void addRevRecInfoIfAppropriateToItems(Invoice invoice) throws Exception {
+		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
+		Date invoiceItemStartDate = calculateInvoiceItemStartDateFor(invoice);
+		Date invoiceItemEndDate = calculateInvoiceItemEndDateFor(invoice,contractor);
 		for (InvoiceItem invoiceItem : invoice.getItems()) {
 			if (!FeeService.isRevRecDeferred(invoiceItem.getInvoiceFee())) {
 				continue;
 			}
-			ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
-			if (invoice.getInvoiceType() == InvoiceType.Renewal) {
-				invoiceItem.setStartDate(DateBean.addXMonths(invoice.getCreationDate(),1));
-			} else {
-				invoiceItem.setStartDate(invoice.getCreationDate());
-			}
-			invoiceItem.setEndDate(contractor.getPaymentExpires());
+			invoiceItem.setRevenueStartDate(invoiceItemStartDate);
+			invoiceItem.setRevenueFinishDate(invoiceItemEndDate);
 		}
+	}
+
+	private Date calculateInvoiceItemEndDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
+		switch (invoice.getInvoiceType()) {
+			case Activation:
+				return DateBean.addYears(invoice.getCreationDate(), 1);
+			case Renewal:
+				return DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
+			default:
+				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
+				if (previousInvoice == null) {
+					throw new Exception("Cannot calculate revenue recognition "
+							+" for contractor "+contractor.getId()
+							+ " for invoice "+invoice.getId()
+							+ " of type "+invoice.getInvoiceType()
+							+" because cannot find a non-voided previous activation or renewal invoice");
+				}
+				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
+				if (previousEndDate == null) {
+					throw new Exception("Cannot calculate revenue recognition "
+							+" for contractor "+contractor.getId()
+							+ " for invoice "+invoice.getId()
+							+ " of type "+invoice.getInvoiceType()
+							+" because previous non-voided activation or renewal invoice "+previousInvoice.getId()
+							+" doesn't have an invoice item with an end date");
+				}
+				return previousEndDate;
+		}
+	}
+
+	public Date getInvoiceItemEndDateFrom(Invoice invoice) {
+		for (InvoiceItem invoiceItem : invoice.getItems()) {
+			if (invoiceItem.getRevenueFinishDate() != null) {
+				return invoiceItem.getRevenueFinishDate();
+			}
+		}
+		return null;
+	}
+
+	private Date calculateInvoiceItemStartDateFor(Invoice invoice) {
+		if (invoice.getInvoiceType() == InvoiceType.Renewal) {
+			return DateBean.addMonths(invoice.getCreationDate(), 1);
+		} else {
+			return invoice.getCreationDate();
+		}
+	}
+
+	public Invoice findLastActivationOrRenewalInvoiceFor(ContractorAccount contractor) {
+		for (Invoice invoice : contractor.getSortedInvoices()) {
+			if (invoice.getStatus() == TransactionStatus.Void) {
+				continue;
+			}
+			switch (invoice.getInvoiceType()) {
+			  case Activation:
+			  case Renewal:
+				  return invoice;
+			  default:
+				  continue;
+			}
+  		}
+		return null;
 	}
 }

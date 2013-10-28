@@ -72,6 +72,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private InvoiceFeeCountry override;
 	@Mock
 	private Invoice invoice;
+	@Mock
+	private Invoice previousInvoiceActivation;
+	@Mock
+	private InvoiceItem previousInvoiceItem;
 
 	@Before
 	public void setUp() {
@@ -353,17 +357,17 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 
 		when(auditDataDAO.findContractorAuditAnswers(anyInt(), anyInt(), anyInt())).thenReturn(null);
-
+		preparePriorHistoryForContractor();
 		billingService.createInvoice(contractor, BillingStatus.Current, user);
 
 		verify(taxService).applyTax(any(Invoice.class));
 	}
 
 	@Test
-	public void testAddRevRecIfAppropriate_Activation() {
+	public void testAddRevRecIfAppropriate_Activation() throws Exception {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.Activation;
-		Date paymentExpiresDate = DateBean.addXYears(invoiceCreationDate,1);
+		Date paymentExpiresDate = DateBean.addYears(invoiceCreationDate, 1);
 
 		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
 
@@ -371,7 +375,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testAddRevRecIfAppropriate_Upgrade() {
+	public void testAddRevRecIfAppropriate_Upgrade() throws Exception {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.Upgrade;
 		Date paymentExpiresDate = twoHundredDaysFromNow;
@@ -382,10 +386,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	 public void testAddRevRecIfAppropriate_Renewal() {
+	 public void testAddRevRecIfAppropriate_Renewal() throws Exception {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.Renewal;
-		Date paymentExpiresDate = DateBean.addXYears(invoiceCreationDate,1);
+		Date paymentExpiresDate = DateBean.addYears(invoiceCreationDate, 1);
 
 		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
 
@@ -393,10 +397,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testAddRevRecIfAppropriate_LateFee() {
+	public void testAddRevRecIfAppropriate_LateFee() throws Exception {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.LateFee;
-		Date paymentExpiresDate = DateBean.addXMonths(invoiceCreationDate,9);
+		Date paymentExpiresDate = DateBean.addMonths(invoiceCreationDate, 9);
 
 		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
 
@@ -404,7 +408,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testAddRevRecIfAppropriate_OtherFees() {
+	public void testAddRevRecIfAppropriate_OtherFees() throws Exception {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.OtherFees;
 		Date paymentExpiresDate = twoHundredDaysFromNow;
@@ -414,7 +418,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		validateInvoiceItemsForRevRec(invoiceCreationDate,paymentExpiresDate, invoiceType);
 	}
 
-	private void testAddRevRecIfAppropriate(Date invoiceCreationDate, InvoiceType invoiceType, Date paymentExpiresDate) {
+	private void testAddRevRecIfAppropriate(Date invoiceCreationDate, InvoiceType invoiceType, Date paymentExpiresDate) throws Exception {
 		prepForRevRecTesting(invoiceCreationDate);
 		when(invoice.getInvoiceType()).thenReturn(invoiceType);
 		when(contractor.getPaymentExpires()).thenReturn(paymentExpiresDate);
@@ -424,17 +428,17 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private void validateInvoiceItemsForRevRec(Date invoiceCreationDate, Date paymentExpiresDate, InvoiceType invoiceType) {
 		for (InvoiceItem invoiceItem1 : invoiceItems) {
 			if (!FeeService.isRevRecDeferred(invoiceItem1.getInvoiceFee())) {
-				assertNull(invoiceItem1.getStartDate());
-				assertNull(invoiceItem1.getEndDate());
+				assertNull(invoiceItem1.getRevenueStartDate());
+				assertNull(invoiceItem1.getRevenueFinishDate());
 				continue;
 			}
 			if (invoice.getInvoiceType() == InvoiceType.Renewal) {
-				assertEquals(DateBean.addXMonths(invoiceCreationDate,1),invoiceItem1.getStartDate());
+				assertEquals(DateBean.addMonths(invoiceCreationDate, 1),invoiceItem1.getRevenueStartDate());
 			} else {
-				assertEquals(invoiceCreationDate,invoiceItem1.getStartDate());
+				assertEquals(invoiceCreationDate,invoiceItem1.getRevenueStartDate());
 			}
 
-			assertEquals(paymentExpiresDate,invoiceItem1.getEndDate());
+			assertEquals(paymentExpiresDate,invoiceItem1.getRevenueFinishDate());
 		}
 	}
 
@@ -463,6 +467,18 @@ public class BillingServiceTest extends PicsTranslationTest {
 
 		when(invoice.getCreationDate()).thenReturn(invoiceCreationDate);
 		when(invoice.getAccount()).thenReturn(contractor);
+		preparePriorHistoryForContractor();
+	}
+
+	private void preparePriorHistoryForContractor() {
+		List<Invoice> previousInvoiceListActivation = new ArrayList<Invoice>();
+		List<InvoiceItem> previousInvoiceItemList = new ArrayList<InvoiceItem>();
+		previousInvoiceListActivation.add(previousInvoiceActivation);
+		previousInvoiceItemList.add(previousInvoiceItem);
+		when(previousInvoiceActivation.getItems()).thenReturn(previousInvoiceItemList);
+		when(previousInvoiceItem.getRevenueFinishDate()).thenReturn(DateBean.addMonths(new Date(), 10));
+		when(previousInvoiceActivation.getInvoiceType()).thenReturn(InvoiceType.Activation);
+		when(contractor.getSortedInvoices()).thenReturn(previousInvoiceListActivation);
 	}
 
 	private InvoiceItem buildInvoiceItem(FeeClass feeClass) {

@@ -708,6 +708,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		if (invoice == null) {
             // TODO: refactor this method to get the billing status within
 			invoice = billingService.createInvoice(contractor, contractor.getBillingStatus(), getUser());
+			billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			contractor.getInvoices().add(invoice);
 			billingService.saveInvoice(invoice);
             billingService.syncBalance(contractor);
@@ -718,6 +719,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		}
 
 		Invoice newInvoice = billingService.createInvoice(contractor, BillingStatus.Activation, getUser());
+		billingService.addRevRecInfoIfAppropriateToItems(invoice);
 		if (contractor.isHasMembershipChanged()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
