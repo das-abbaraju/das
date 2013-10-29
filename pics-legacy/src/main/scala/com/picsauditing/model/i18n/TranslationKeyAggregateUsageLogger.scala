@@ -1,22 +1,11 @@
 package com.picsauditing.model.i18n
 
-import org.springframework.beans.factory.annotation.Autowired
-import com.picsauditing.dao.TranslationUsageDAO
-import com.picsauditing.model.events.i18n.TranslationLookupData
-import com.picsauditing.toggle.FeatureToggle
-
 class TranslationKeyAggregateUsageLogger extends TranslationUsageLogger {
-  private final val featureToggleName = FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER
 
-  @Autowired
-  val usageLogger: TranslationUsageDAO = null
-
-  @Autowired
-  val featureToggleChecker: FeatureToggle = null
-
+  // this is not feature toggled because it is only used by the new TranslationServiceAdapter
   def logTranslationUsage(usage: TranslationLookupData) {
-    if (featureToggleChecker.isFeatureEnabled(featureToggleName))
-      usageLogger.logKeyUsage(usage)
+    val usageLogger: TranslationUsageLogCommand  = new TranslationUsageLogCommand(usage)
+    usageLogger.queue
   }
 
 }
