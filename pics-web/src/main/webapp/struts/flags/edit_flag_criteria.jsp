@@ -69,8 +69,7 @@
     				</s:if>
     			</li>
     			<li>
-                    <%-- TODO: add theme="formhelp" back in --%>
-    				<s:select list="criteriaCategory" name="criteria.category" headerValue="- Category -" label="Category"/>
+    				<s:select list="criteriaCategory" name="criteria.category" headerValue="- Category -" label="Category" theme="formhelp" />
     			</li>
     			<li>
     				<s:textfield name="criteria.displayOrder" theme="formhelp"/>
@@ -99,12 +98,10 @@
             
     		<ol>
     			<li>
-                    <%-- TODO: add theme="formhelp" back in --%>
-    				<s:select name="criteria.dataType" list="datatypeList" />
+    				<s:select name="criteria.dataType" list="datatypeList" theme="formhelp" />
     			</li>
     			<li>
-                    <%-- TODO: add theme="formhelp" back in and figure out why this break the page --%>
-    				<s:select name="criteria.comparison" list="comparisonList" /> 
+    				<s:select name="criteria.comparison" list="comparisonList" theme="formhelp" />
     			</li>
     			<li>
     				<label><s:text name="FlagCriteria.defaultValue"/>:</label>
@@ -159,12 +156,10 @@
             
     		<ol>
     			<li>
-                    <%-- TODO: add theme="formhelp" back in --%>
-    				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" />
+    				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" theme="formhelp" />
     			</li>
     			<li>
-                    <%-- TODO: add theme="formhelp" back in --%>
-    				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" />
+    				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" theme="formhelp" />
     			</li>
     			<li>
     				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" theme="formhelp" />
@@ -175,8 +170,7 @@
     	<fieldset>
     		<ol>
     			<li>
-                    <%-- TODO: add theme="form" back in and figure out why this break the page --%>
-    				<s:select name="criteria.requiredStatusComparison" list="comparisonList" />   
+    				<s:select name="criteria.requiredStatusComparison" list="comparisonList" theme="form" />
 
     				<pics:fieldhelp title="Audit Status">
     					<ul>
@@ -188,8 +182,7 @@
     				</pics:fieldhelp>
     			</li>
     			<li>
-                    <%-- TODO: add theme="form" back in --%>
-    				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" />
+    				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" theme="form" />
                     
     				<pics:fieldhelp title="Audit Status">This is only used for Audit Type Flag Criteria except for Annual Updates. 
         				Annual Updates assumes the required status is Submitted. If left blank, then any status is acceptable (not flagged).
@@ -202,8 +195,7 @@
     				<s:checkbox name="criteria.insurance" theme="formhelp" />
     			</li>
     			<li>
-                    <%-- TODO: add theme="formhelp" back in --%>
-    				<s:select name="criteria.optionCode" list="optionCodeList" />
+    				<s:select name="criteria.optionCode" list="optionCodeList" theme="formhelp" />
     			</li>
     			<li>
     				<s:checkbox name="criteria.flaggableWhenMissing" theme="formhelp" />
