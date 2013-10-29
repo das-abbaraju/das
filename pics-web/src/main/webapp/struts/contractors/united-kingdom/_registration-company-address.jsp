@@ -8,6 +8,7 @@
 </li>
 
 <li class="address">
+	<%-- unspecified label overrides strut's assignment of the element's name value as the label--%>
     <s:textfield name="contractor.address2" label="" cssClass="no-label"/>
 </li>
 
