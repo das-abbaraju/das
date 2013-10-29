@@ -4,15 +4,20 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
+import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
@@ -30,6 +35,12 @@ public class UserManagerTest {
 
     @Mock
     private UserDAO userDAO;
+	@Mock
+	private AppUserDAO appUserDAO;
+	@Mock
+	private AppUserService appUserService;
+	@Mock
+	private AppUser appUser;
     @Mock
     private Account account;
     @Mock
@@ -122,6 +133,15 @@ public class UserManagerTest {
 
     @Test
     public void testInitializeNewUser_SetsIsGroupToNo() throws Exception {
+	    Whitebox.setInternalState(userManager, "appUserService", appUserService);
+	    Whitebox.setInternalState(userManager, "appUserDAO", appUserDAO);
+
+	    JSONObject json = new JSONObject();
+	    json.put("id", "1");
+
+	    when(appUserService.createNewAppUser(any(String.class), any(String.class))).thenReturn(json);
+	    when(appUserDAO.findByAppUserID(any(Integer.class))).thenReturn(appUser);
+
         User user = userManager.initializeNewUser(account);
         assertThat(YesNo.No, is(equalTo(user.getIsGroup())));
     }
@@ -396,6 +416,15 @@ public class UserManagerTest {
 
     @Test
     public void testInitializeNewUser() throws Exception {
+	    Whitebox.setInternalState(userManager, "appUserService", appUserService);
+	    Whitebox.setInternalState(userManager, "appUserDAO", appUserDAO);
+
+	    JSONObject json = new JSONObject();
+	    json.put("id", "1");
+
+	    when(appUserService.createNewAppUser(any(String.class), any(String.class))).thenReturn(json);
+	    when(appUserDAO.findByAppUserID(any(Integer.class))).thenReturn(appUser);
+
         User user = userManager.initializeNewUser(account);
         assertThat(account, is(equalTo(user.getAccount())));
         assertThat(YesNo.No, is(equalTo(user.getIsGroup())));

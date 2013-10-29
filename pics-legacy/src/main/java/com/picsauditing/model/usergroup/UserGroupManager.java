@@ -1,10 +1,15 @@
 package com.picsauditing.model.usergroup;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang.math.NumberUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /*
@@ -15,6 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UserGroupManager {
     @Autowired
     protected UserDAO userDAO;
+	@Autowired
+	protected AppUserDAO appUserDAO;
+	@Autowired
+	protected AppUserService appUserService;
 
     protected void resetUserOrGroup(User user) throws Exception {
         userDAO.refresh(user);
@@ -22,10 +31,19 @@ public class UserGroupManager {
 
     protected User initializeNewUserOrGroup(Account account) {
         User user = new User();
+	    saveNewAppUser(user);
         user.setAccount(account);
         user.setActive(true);
         return user;
     }
+
+	private void saveNewAppUser(User user) {
+		String username = user.getUsername();
+		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
+		int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
+		AppUser appUser = appUserDAO.findByAppUserID(appUserID);
+		user.setAppUser(appUser);
+	}
 
     protected void deactivate(User user, Permissions permissions) throws Exception {
         userDAO.refresh(user);
