@@ -4,6 +4,9 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.validation.AjaxValidator;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
 import com.picsauditing.util.*;
 import com.picsauditing.jpa.entities.*;
@@ -14,8 +17,10 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +64,10 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	protected PermissionBuilder permissionBuilder;
 	@Autowired
 	private RegistrationValidator registrationValidator;
+	@Autowired
+	private AppUserService appUserService;
+	@Autowired
+	private AppUserDAO appUserDAO;
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
@@ -207,6 +216,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
 		}
 
+		saveNewAppUser(user);
+
 		userDAO.save(user);
 
 		// requires id for user to exist to seed the password properly
@@ -234,6 +245,14 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		addNoteThatRequestRegistered();
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
+	}
+
+	private void saveNewAppUser(User user) {
+		String username = user.getUsername();
+		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
+		int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
+		AppUser appUser = appUserDAO.findByAppUserID(appUserID);
+		user.setAppUser(appUser);
 	}
 
 	public ContractorAccount getContractor() {
