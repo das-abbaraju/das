@@ -43,25 +43,46 @@ update token set velocityCode='${contractor.country.isrFax}' where tokenName='IS
 update token set velocityCode='${contractor.country.isrEmail}' where tokenName='ISREmail';
 
 -- insert update app translations
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.31.name', 'en', '${contractor.currentCsr.name}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.32.name', 'en', '${contractor.country.csrPhone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.34.name', 'en', '${contractor.country.csrFax}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.33.name', 'en', '${contractor.country.csrEmail}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.46.name', 'en', '${contractor.country.businessUnit.displayName}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.47.name', 'en', '${contractor.country.businessUnit.addressSingleLine}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.43.name', 'en', '${contractor.country.phone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.44.name', 'en', '${contractor.country.salesPhone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.45.name', 'en', '${contractor.country.picsEmail}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.85.name', 'en', '${contractor.country.csrCountry}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.67.name', 'en', '${contractor.country.csrAddress}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.68.name', 'en', '${contractor.country.csrAddress2}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.69.name', 'en', '${contractor.country.csrCity}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.70.name', 'en', '${contractor.country.csrCountrySubdivision}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.71.name', 'en', '${contractor.country.csrZip}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.72.name', 'en', '${contractor.country.currency}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.73.name', 'en', '${contractor.country.isrPhone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.74.name', 'en', '${contractor.country.isrFax}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
-Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.75.name', 'en', '${contractor.country.isrEmail}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.31.velocityCode', 'en', '${contractor.currentCsr.name}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.32.velocityCode', 'en', '${contractor.country.csrPhone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.34.velocityCode', 'en', '${contractor.country.csrFax}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.33.velocityCode', 'en', '${contractor.country.csrEmail}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.46.velocityCode', 'en', '${contractor.country.businessUnit.displayName}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.47.velocityCode', 'en', '${contractor.country.businessUnit.addressSingleLine}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.43.velocityCode', 'en', '${contractor.country.phone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.44.velocityCode', 'en', '${contractor.country.salesPhone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.45.velocityCode', 'en', '${contractor.country.picsEmail}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.85.velocityCode', 'en', '${contractor.country.csrCountry}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.67.velocityCode', 'en', '${contractor.country.csrAddress}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.68.velocityCode', 'en', '${contractor.country.csrAddress2}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.69.velocityCode', 'en', '${contractor.country.csrCity}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.70.velocityCode', 'en', '${contractor.country.csrCountrySubdivision}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.71.velocityCode', 'en', '${contractor.country.csrZip}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.72.velocityCode', 'en', '${contractor.country.currency}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.73.velocityCode', 'en', '${contractor.country.isrPhone}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.74.velocityCode', 'en', '${contractor.country.isrFax}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.75.velocityCode', 'en', '${contractor.country.isrEmail}', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+
+-- names
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.31.name', 'en', 'CSRName', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.32.name', 'en', 'CSRPhone', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.34.name', 'en', 'CSRFax', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.33.name', 'en', 'CSREmail', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.46.name', 'en', 'CountrySpecificPicsName', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.47.name', 'en', 'CountrySpecificOfficeAddress', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.43.name', 'en', 'CountrySpecificMainPhone', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.44.name', 'en', 'CountrySpecificSalesPhone', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.45.name', 'en', 'CountrySpecificEmail', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.85.name', 'en', 'CSRCountry', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.67.name', 'en', 'CSRAddress', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.68.name', 'en', 'CSRAddress2', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.69.name', 'en', 'CSRCity', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.70.name', 'en', 'CSRState', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.71.name', 'en', 'CSRZip', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.72.name', 'en', 'CountryCurrency', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.73.name', 'en', 'ISRPhone', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.74.name', 'en', 'ISRFax', 37745, 37745, NOW(), NOW(), 2, 1,'en');
+Insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, qualityRating, applicable, sourceLanguage) values ('Token.75.name', 'en', 'ISREmail', 37745, 37745, NOW(), NOW(), 2, 1,'en');
 
 update app_translation set msgValue='${contractor.currentCsr.name}' where msgKey='Token.31.velocityCode';
 update app_translation set msgValue='${contractor.country.csrPhone}' where msgKey='Token.32.velocityCode';
@@ -82,3 +103,24 @@ update app_translation set msgValue='${contractor.country.currency}' where msgKe
 update app_translation set msgValue='${contractor.country.isrPhone}' where msgKey='Token.73.velocityCode';
 update app_translation set msgValue='${contractor.country.isrFax}' where msgKey='Token.74.velocityCode';
 update app_translation set msgValue='${contractor.country.isrEmail}' where msgKey='Token.75.velocityCode';
+
+-- names
+update app_translation set msgValue='CSRName' where msgKey='Token.31.name';
+update app_translation set msgValue='CSRPhone' where msgKey='Token.32.name';
+update app_translation set msgValue='CSREmail' where msgKey='Token.34.name';
+update app_translation set msgValue='CSRFax' where msgKey='Token.33.name';
+update app_translation set msgValue='CountrySpecificPicsName' where msgKey='Token.46.name';
+update app_translation set msgValue='CountrySpecificOfficeAddress' where msgKey='Token.47.name';
+update app_translation set msgValue='CountrySpecificMainPhone' where msgKey='Token.43.name';
+update app_translation set msgValue='CountrySpecificSalesPhone' where msgKey='Token.44.name';
+update app_translation set msgValue='CountrySpecificEmail' where msgKey='Token.45.name';
+update app_translation set msgValue='CSRCountry' where msgKey='Token.85.name';
+update app_translation set msgValue='CSRAddress' where msgKey='Token.67.name';
+update app_translation set msgValue='CSRAddress2' where msgKey='Token.68.name';
+update app_translation set msgValue='CSRCity' where msgKey='Token.69.name';
+update app_translation set msgValue='CSRState' where msgKey='Token.70.name';
+update app_translation set msgValue='CSRZip' where msgKey='Token.71.name';
+update app_translation set msgValue='CountryCurrency' where msgKey='Token.72.name';
+update app_translation set msgValue='ISRPhone' where msgKey='Token.73.name';
+update app_translation set msgValue='ISRFax' where msgKey='Token.74.name';
+update app_translation set msgValue='ISREmail' where msgKey='Token.75.name';
