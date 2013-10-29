@@ -638,27 +638,36 @@ public class BillingService {
 				return DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
 			default:
 				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
-				if (previousInvoice == null) {
-					throw new Exception("Cannot calculate revenue recognition "
-							+" for contractor "+contractor.getId()
-							+ " for invoice "+invoice.getId()
-							+ " of type "+invoice.getInvoiceType()
-							+" because cannot find a non-voided previous activation or renewal invoice");
-				}
 				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
-				if (previousEndDate == null) {
-					throw new Exception("Cannot calculate revenue recognition "
-							+" for contractor "+contractor.getId()
-							+ " for invoice "+invoice.getId()
-							+ " of type "+invoice.getInvoiceType()
-							+" because previous non-voided activation or renewal invoice "+previousInvoice.getId()
-							+" doesn't have an invoice item with an end date");
+				if (previousInvoice == null || previousEndDate == null) {
+					throw new Exception(generateExceptionStringForInabilityToCalculateRevRec(contractor,invoice,previousInvoice));
 				}
 				return previousEndDate;
 		}
 	}
 
+	private String generateExceptionStringForInabilityToCalculateRevRec(ContractorAccount contractor, Invoice invoice, Invoice previousInvoice) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Cannot calculate revenue recognition for contractor ");
+		stringBuilder.append(contractor.getId());
+		stringBuilder.append(" for invoice ");
+		stringBuilder.append(invoice.getId());
+		stringBuilder.append(" of type ");
+		stringBuilder.append(invoice.getInvoiceType());
+		if (previousInvoice == null) {
+			stringBuilder.append(" because cannot find a non-voided previous activation or renewal invoice");
+		} else {
+			stringBuilder.append(" because previous non-voided activation or renewal invoice ");
+			stringBuilder.append(+previousInvoice.getId());
+			stringBuilder.append(" doesn't have an invoice item with an end date");
+		}
+		return stringBuilder.toString();
+	}
+
 	public Date getInvoiceItemEndDateFrom(Invoice invoice) {
+		if (invoice == null) {
+			return null;
+		}
 		for (InvoiceItem invoiceItem : invoice.getItems()) {
 			if (invoiceItem.getRevenueFinishDate() != null) {
 				return invoiceItem.getRevenueFinishDate();
