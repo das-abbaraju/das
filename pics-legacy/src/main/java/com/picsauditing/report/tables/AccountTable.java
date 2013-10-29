@@ -38,7 +38,7 @@ public class AccountTable extends AbstractTable {
 
 	protected void addJoins() {
 		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("id"))).setMinimumImportance(FieldImportance.Average);
-        addOptionalKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
+        addJoinKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
 
 		ReportForeignKey contractorOperatorKey = addOptionalKey(new ReportForeignKey(ContractorOperator,
 				new ContractorOperatorTable(), new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".opID = "
