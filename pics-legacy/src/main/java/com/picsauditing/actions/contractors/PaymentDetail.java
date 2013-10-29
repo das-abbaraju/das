@@ -159,14 +159,14 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			}
 		}
 
-		if (amountApplyMap.size() > 0 ) {
+        savePaymentToDB();
+
+        if (amountApplyMap.size() > 0 ) {
 			if (isUnapply()) {
 				return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 			}
 			handleApply();
 		}
-
-		savePaymentToDB();
 
 		if (message != null) {
 			addActionMessage(message);
@@ -293,7 +293,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private void savePaymentToDB() {
 		payment.updateAmountApplied();
 		AccountingSystemSynchronization.setToSynchronize(payment);
-		paymentDAO.save(payment);
+		payment = paymentDAO.save(payment);
 	}
 
 	private boolean isBrainTreeCreditCardRefund() {

@@ -33,6 +33,14 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String Lwcr = "Lwcr";
     public static final String Trir = "Trir";
 
+    public static final HashMap<Integer,String> SUNCOR_DRUG_ALCOHOL_DATA;
+    static
+    {
+        SUNCOR_DRUG_ALCOHOL_DATA = new HashMap<Integer, String>();
+        SUNCOR_DRUG_ALCOHOL_DATA.put(14413,"ContractSubcontractors");
+        SUNCOR_DRUG_ALCOHOL_DATA.put(14414,"GreaterADPolicy");
+    }
+
     public static final HashMap<Integer,String> CEMEX_POST_EVAL_DATA;
     static
     {
@@ -161,6 +169,14 @@ public class ContractorAuditTable extends AbstractTable {
 
             addOptionalKey(new ReportForeignKey(Trir, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));
+        }
+
+        // SUNCOR
+        {
+            for (Integer questionID : SUNCOR_DRUG_ALCOHOL_DATA.keySet()) {
+                addOptionalKey(new ReportForeignKey(SUNCOR_DRUG_ALCOHOL_DATA.get(questionID), new AuditDataTable(),
+                        new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + questionID)));
+            }
         }
 
         // CEMEX
