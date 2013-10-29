@@ -5,7 +5,6 @@ import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -445,6 +444,8 @@ public class CronTest extends PicsActionTest {
 		assertEquals(lateFee,lateInvoice.getTotalAmount());
 		assertEquals(InvoiceType.LateFee,lateInvoice.getInvoiceType());
 		assertEquals(FeeClass.LateFee,lateInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
-		assertEquals(invoiceDueDate,lateInvoice.getDueDate());
+		assertEquals(invoiceDueDate.getDay(),lateInvoice.getDueDate().getDay());
+		assertEquals(invoiceDueDate.getMonth(),lateInvoice.getDueDate().getMonth());
+		assertEquals(invoiceDueDate.getYear(),lateInvoice.getDueDate().getYear());
 	}
 }
