@@ -48,6 +48,10 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 
 	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Edit)
 	public String save() throws Exception {
+        if (!permissions.hasPermission(OpPerms.EditTags)) {
+            addActionError(getText("OperatorTags.error.CannotEditTag"));
+        }
+
 		for (OperatorTag tag : tags) {
 			if (tag != null) {
 				if (tag.getId() == 0) {
@@ -80,6 +84,10 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 
 	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Delete)
 	public String remove() throws Exception {
+        if (!permissions.hasPermission(OpPerms.EditTags)) {
+            addActionError(getText("OperatorTags.error.CannotEditTag"));
+        }
+
 		OperatorTag t = operatorTagDAO.find(tagID);
 		if (!t.getAuditCategoryRules().isEmpty() || !t.getNonExpiredAuditTypeRules().isEmpty()
 				|| !t.getOperatorFlagCriteria().isEmpty()) {

@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="http://picsauditing.com/taglibs" %>
 <table class="report" style="position: static">
 	<s:set name="tagRemovable" value="false" />
 	<s:iterator value="contractor.operatorTags" var="contractorTag">
@@ -9,21 +10,25 @@
 					<td><s:if test="tag.operator.id != permissions.accountId"><s:property value="tag.operator.name" />: </s:if><s:property value="tag.tag" /></td>
 					<td><s:text name="global.TaggedBy"/>: <s:set var="o" value="contractorTag" /><s:set var="addBy" value="contractorTag.createdBy" /><s:date var="addDate" name="contractorTag.creationDate"/><s:include value="../who.jsp" />
 					</td>
-					<s:if test="#tagRemovable">
-						<td><img src="images/cross.png" width="18" height="18" /><a
-								href="#" onclick="javascript:return removeTag(<s:property value="id"/>);"><s:text name="button.Remove"/></a>
-						</td>
-					</s:if>
+                    <pics:permission perm="EditTags">
+                        <s:if test="#tagRemovable">
+                            <td><img src="images/cross.png" width="18" height="18" /><a
+                                    href="#" onclick="javascript:return removeTag(<s:property value="id"/>);"><s:text name="button.Remove"/></a>
+                            </td>
+                        </s:if>
+                    </pics:permission>
 				</tr>
 			</s:if>
 		</s:if>
 	</s:iterator>
-	<s:if test = "operatorTags.size() > 0 ">
-		<tr>
-			<td colspan="<s:property value="#tagRemovable ? 3 : 2" />"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" headerKey="0" headerValue="- %{getText('Filters.header.Tag')} -"/><input
-			type="button" onclick="javascript: return addTag();" value="<s:text name="global.Add" />"></td>
-		</tr>
-	</s:if>
+    <pics:permission perm="EditTags">
+        <s:if test = "operatorTags.size() > 0 ">
+            <tr>
+                <td colspan="<s:property value="#tagRemovable ? 3 : 2" />"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" headerKey="0" headerValue="- %{getText('Filters.header.Tag')} -"/><input
+                        type="button" onclick="javascript: return addTag();" value="<s:text name="global.Add" />"></td>
+            </tr>
+        </s:if>
+    </pics:permission>
 	<s:if test="runTagConCronAjax">
 		<script type="text/javascript">
 			$('#opTagAjax').show();
