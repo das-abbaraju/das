@@ -13,8 +13,6 @@ public class InvoiceItem extends TransactionItem {
 	private Date paymentExpires;
 	private boolean returned = false;
 	private String qbRefundID;
-	private Date startDate;
-	private Date endDate;
 
 	public InvoiceItem() {
 	}
@@ -78,22 +76,4 @@ public class InvoiceItem extends TransactionItem {
     public void setTransaction(Transaction transaction) {
         setInvoice((Invoice) transaction);
     }
-
-	@Temporal(TemporalType.DATE)
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
 }

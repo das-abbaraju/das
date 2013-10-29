@@ -1,22 +1,18 @@
 package com.picsauditing.PICS;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
+import com.picsauditing.util.PicsDateFormat;
 import org.joda.time.LocalDate;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.util.PicsDateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 /**
  * TODO Move to pics-util
@@ -726,5 +722,29 @@ public class DateBeanTest {
         int daysBetween = DateBean.daysBetween(startDate.getTime(), endDate.getTime());
         assertEquals(31, daysBetween);
     }
+
+	@Test
+	public void testAddOneYear() throws ParseException {
+		Date original = new GregorianCalendar(2004,GregorianCalendar.FEBRUARY,29).getTime();
+		Date expected = new GregorianCalendar(2005,GregorianCalendar.FEBRUARY,28).getTime();
+		Date actual = DateBean.addYears(original,1);
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testAddNineMonths() throws ParseException {
+		Date original = new GregorianCalendar(2003,GregorianCalendar.MAY,31).getTime();
+		Date expected = new GregorianCalendar(2004,GregorianCalendar.FEBRUARY,29).getTime();
+		Date actual = DateBean.addMonths(original,9);
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testAddOneMonth() throws ParseException {
+		Date original = new GregorianCalendar(2004,GregorianCalendar.JANUARY,31).getTime();
+		Date expected = new GregorianCalendar(2004,GregorianCalendar.FEBRUARY,29).getTime();
+		Date actual = DateBean.addMonths(original,1);
+		assertEquals(expected, actual);
+	}
 
 }

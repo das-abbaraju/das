@@ -68,7 +68,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems,
 					new User(permissions.getUserId()), contractor.getBillingStatus());
-
+			billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			invoice = billingService.saveInvoice(invoice);
 
 

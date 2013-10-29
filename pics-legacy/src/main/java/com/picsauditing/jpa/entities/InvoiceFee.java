@@ -277,5 +277,4 @@ public class InvoiceFee extends BaseTable {
 	public boolean isRefundable() {
 		return !FeeService.NON_REFUNDABLE_FEE_CLASSES().contains(feeClass);
 	}
-
 }

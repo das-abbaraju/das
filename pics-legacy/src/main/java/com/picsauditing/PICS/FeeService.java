@@ -486,4 +486,8 @@ public class FeeService {
 	public static List<FeeClass> NON_REFUNDABLE_FEE_CLASSES() {
 		return TaxService.TAX_FEE_CLASSES;
 	}
+
+	public static boolean isRevRecDeferred(InvoiceFee fee) {
+		return !fee.isTax() && !fee.isFree();
+	}
 }

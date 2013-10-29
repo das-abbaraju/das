@@ -1,7 +1,10 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.PICS.FeeService;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @DiscriminatorValue("C")
@@ -15,6 +18,10 @@ public class ReturnItem extends TransactionItem {
     public ReturnItem(InvoiceItem item) {
         returnedItem = item;
         invoiceFee = item.invoiceFee;
+		if (returnedItem.getRevenueFinishDate() != null) {
+			revenueStartDate = new Date();
+			revenueFinishDate = returnedItem.getRevenueFinishDate();
+		}
         amount = item.getAmount().multiply(BigDecimal.valueOf(-1));
     }
 
