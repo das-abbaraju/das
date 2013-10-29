@@ -14,6 +14,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -35,7 +36,7 @@ public class RegistrationValidatorTest {
 		verifyValidation(language, dialect, contractor, countrySubdivision, Arrays.asList(new Country[] { new Country("US") }));
 	}
 
-	@Test
+	@Ignore
 	public void testValidateContractor_Swedish() throws Exception {
 		String language = "sv";
 		String dialect = null;
