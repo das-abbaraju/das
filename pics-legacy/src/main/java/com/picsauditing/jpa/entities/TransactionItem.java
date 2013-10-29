@@ -6,6 +6,7 @@ import com.picsauditing.report.tables.FieldImportance;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "invoice_item")
@@ -16,6 +17,8 @@ public abstract class TransactionItem extends BaseTable{
     protected InvoiceFee invoiceFee;
     protected BigDecimal amount = BigDecimal.ZERO;
     protected String description;
+	protected Date revenueStartDate;
+	protected Date revenueFinishDate;
 
 	@ManyToOne
 	@JoinColumn(name = "feeID")
@@ -45,5 +48,23 @@ public abstract class TransactionItem extends BaseTable{
 		this.description = description;
 	}
 
-    public abstract void setTransaction(Transaction transaction);
+	@Temporal(TemporalType.DATE)
+	public Date getRevenueStartDate() {
+		return revenueStartDate;
+	}
+
+	public void setRevenueStartDate(Date revenueStartDate) {
+		this.revenueStartDate = revenueStartDate;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getRevenueFinishDate() {
+		return revenueFinishDate;
+	}
+
+	public void setRevenueFinishDate(Date revenueFinishDate) {
+		this.revenueFinishDate = revenueFinishDate;
+	}
+
+	public abstract void setTransaction(Transaction transaction);
 }

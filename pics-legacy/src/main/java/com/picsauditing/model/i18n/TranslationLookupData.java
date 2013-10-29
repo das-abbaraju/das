@@ -1,4 +1,4 @@
-package com.picsauditing.model.events.i18n;
+package com.picsauditing.model.i18n;
 
 import java.util.Date;
 

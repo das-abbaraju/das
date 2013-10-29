@@ -94,6 +94,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private String visibleAnswer;
 
 	private String name;
+    private String slug;
 
 	private String questionType;
 	private AuditOptionGroup option;
@@ -139,6 +140,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public AuditQuestion(AuditQuestion a, AuditCategory ac) {
 		this.number = a.number;
 		this.name = a.getName();
+        this.slug = a.getSlug();
 		this.questionType = a.questionType;
 		this.option = a.option;
 		this.hasRequirement = a.hasRequirement;
@@ -195,7 +197,15 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		this.name = name;
 	}
 
-	@Transient
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    @Transient
 	@Override
 	public String getI18nKey() {
 		if (Strings.isEmpty(uniqueCode)) {
@@ -853,5 +863,12 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static AuditQuestionBuilder builder() {
 		return new AuditQuestionBuilder();
 	}
+
+    @Override
+    public int hashCode() {
+        int result = 31 * getId();
+        result = 31 * result + (getSlug() != null ? getSlug().hashCode() : 0);
+        return result;
+    }
 
 }

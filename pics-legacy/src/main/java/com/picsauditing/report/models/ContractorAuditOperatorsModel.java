@@ -125,8 +125,8 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         Field contractorsRequiringAnnualUpdateEmail = new Field(
 				CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL,
 				"(Audit.auditTypeID = 1 AND AuditOperator.status = 'Resubmit') " +
-				"OR (Audit.auditTypeID = 11 AND Audit.auditFor = 2012 AND AuditOperator.status = 'Pending') " +
-				"OR (AuditType.classType = 'PQF' AND DATE(Audit.expiresDate) = '2013-03-15' AND AuditOperator.status = 'Pending')",
+				"OR (Audit.auditTypeID = 11 AND Audit.auditFor = 2013 AND AuditOperator.status = 'Pending') " +
+				"OR (AuditType.classType = 'PQF' AND DATE(Audit.expiresDate) = '2014-03-15' AND AuditOperator.status = 'Pending')",
 				FieldType.Boolean);
 		contractorsRequiringAnnualUpdateEmail.requirePermission(OpPerms.DevelopmentEnvironment);
 		fields.put(CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL.toUpperCase(), contractorsRequiringAnnualUpdateEmail);

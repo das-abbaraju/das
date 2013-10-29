@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -29,6 +30,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageAuditType extends RequiredLanguagesSupport implements Preparable {
 	protected int id = 0;
+    protected String slug;
 	protected AuditType auditType = null;
 	protected AuditCategory category = null;
 	protected AuditQuestion question = null;
@@ -596,5 +598,39 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		static final String SAVE = "save";
 		static final String MOVE = "move";
 	}
+
+    public String validateSlug() {
+        boolean isUnique = !slugService.slugHasDuplicate(AuditType.class, getSlug(), getId());
+        boolean isURI = slugService.slugIsURICompliant(getSlug());
+
+        json = new JSONObject();
+        json.put("isUnique",isUnique);
+        json.put("isURI",isURI);
+        return JSON;
+    }
+
+    public String generateSlug() {
+        load(id);
+
+        json = new JSONObject();
+
+        try {
+            String slug = slugService.generateSlug(AuditType.class, auditType.getName(), auditType.getId());
+            json.put("slug",slug);
+        }
+        catch (Exception e) {
+            addActionError(e.getMessage());
+        }
+
+        return JSON;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
 }

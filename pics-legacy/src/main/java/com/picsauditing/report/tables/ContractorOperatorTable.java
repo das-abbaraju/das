@@ -60,7 +60,7 @@ public class ContractorOperatorTable extends AbstractTable {
         // TODO: We should find a way to attach this to ContractorTagView instead of here
         Field contractorOperatorTag = new Field("Tag", "(SELECT GROUP_CONCAT(o.tag ORDER BY o.tag SEPARATOR ', ') FROM contractor_tag c " +
                 " JOIN operator_tag o ON c.tagID = o.id AND o.active = 1 " +
-                " WHERE " + ReportOnClause.ToAlias + ".subID = c.conID AND o.opID IN (SELECT f.corporateID FROM facilities f WHERE f.opID = "
+                " WHERE " + ReportOnClause.ToAlias + ".conID = c.conID AND o.opID IN (SELECT f.corporateID FROM facilities f WHERE f.opID = "
                 + ReportOnClause.ToAlias + ".opID UNION SELECT " + ReportOnClause.ToAlias + ".opID))", FieldType.String);
         contractorOperatorTag.setFilterable(false);
         contractorOperatorTag.setWidth(300);

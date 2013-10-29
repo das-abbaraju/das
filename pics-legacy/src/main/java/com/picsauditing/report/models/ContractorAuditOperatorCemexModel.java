@@ -1,13 +1,11 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

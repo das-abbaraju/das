@@ -1,16 +1,7 @@
 package com.picsauditing.PICS;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.TreeMap;
-
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Days;
@@ -18,8 +9,9 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.util.PicsDateFormat;
-import com.picsauditing.util.Strings;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DateBean {
 	public static String NULL_DATE = "0/0/00";
@@ -586,6 +578,16 @@ public class DateBean {
 		return cal.getTime();
 	}
 
+	public static Date addYears(Date startDate, int years) {
+		if (startDate == null || years == 0) {
+			return null;
+		}
+
+		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.YEAR, years);
+
+		return cal.getTime();
+	}
+
 	public static Date addDays(Date startDate, int days) {
 		if (startDate == null || days == 0) {
 			return null;
@@ -860,4 +862,5 @@ public class DateBean {
     public enum Interval {
         Days, Months
     }
+
 }

@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
@@ -19,8 +20,7 @@ import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -71,6 +71,14 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private SapAppPropertyUtil sapAppPropertyUtil;
 	@Mock
 	private InvoiceFeeCountry override;
+	@Mock
+	private Invoice invoice;
+	@Mock
+	private Invoice previousInvoiceActivation;
+	@Mock
+	private InvoiceItem previousInvoiceItem;
+	@Mock
+	private InvoiceItemDAO invoiceItemDAO;
 
 	@Before
 	public void setUp() {
@@ -81,6 +89,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
 		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
 		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
+		Whitebox.setInternalState(billingService, "invoiceItemDAO", invoiceItemDAO);
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		assert (OAMocksSet.isEmpty());
 
@@ -352,10 +361,135 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 
 		when(auditDataDAO.findContractorAuditAnswers(anyInt(), anyInt(), anyInt())).thenReturn(null);
-
+		preparePriorHistoryForContractor();
 		billingService.createInvoice(contractor, BillingStatus.Current, user);
 
 		verify(taxService).applyTax(any(Invoice.class));
 	}
 
+	@Test
+	public void testAddRevRecIfAppropriate_Activation() throws Exception {
+		Date invoiceCreationDate = new Date();
+		InvoiceType invoiceType = InvoiceType.Activation;
+		Date paymentExpiresDate = DateBean.addYears(invoiceCreationDate, 1);
+
+		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
+
+		validateInvoiceItemsForRevRec(invoiceCreationDate,paymentExpiresDate, invoiceType);
+	}
+
+	@Test
+	public void testAddRevRecIfAppropriate_Upgrade() throws Exception {
+		Date invoiceCreationDate = new Date();
+		InvoiceType invoiceType = InvoiceType.Upgrade;
+		Date paymentExpiresDate = twoHundredDaysFromNow;
+
+		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
+
+		validateInvoiceItemsForRevRec(invoiceCreationDate,paymentExpiresDate, invoiceType);
+	}
+
+	@Test
+	 public void testAddRevRecIfAppropriate_Renewal() throws Exception {
+		Date invoiceCreationDate = new Date();
+		InvoiceType invoiceType = InvoiceType.Renewal;
+		Date paymentExpiresDate = DateBean.addYears(invoiceCreationDate, 1);
+
+		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
+
+		validateInvoiceItemsForRevRec(invoiceCreationDate,paymentExpiresDate, invoiceType);
+	}
+
+	@Test
+	public void testAddRevRecIfAppropriate_LateFee() throws Exception {
+		Date invoiceCreationDate = new Date();
+		InvoiceType invoiceType = InvoiceType.LateFee;
+		Date paymentExpiresDate = DateBean.addMonths(invoiceCreationDate, 9);
+
+		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
+
+		validateInvoiceItemsForRevRec(invoiceCreationDate,paymentExpiresDate, invoiceType);
+	}
+
+	@Test
+	public void testAddRevRecIfAppropriate_OtherFees() throws Exception {
+		Date invoiceCreationDate = new Date();
+		InvoiceType invoiceType = InvoiceType.OtherFees;
+		Date paymentExpiresDate = twoHundredDaysFromNow;
+
+		testAddRevRecIfAppropriate(invoiceCreationDate, invoiceType, paymentExpiresDate);
+
+		validateInvoiceItemsForRevRec(invoiceCreationDate,paymentExpiresDate, invoiceType);
+	}
+
+	private void testAddRevRecIfAppropriate(Date invoiceCreationDate, InvoiceType invoiceType, Date paymentExpiresDate) throws Exception {
+		prepForRevRecTesting(invoiceCreationDate);
+		when(invoice.getInvoiceType()).thenReturn(invoiceType);
+		when(contractor.getPaymentExpires()).thenReturn(paymentExpiresDate);
+		billingService.addRevRecInfoIfAppropriateToItems(invoice);
+	}
+
+	private void validateInvoiceItemsForRevRec(Date invoiceCreationDate, Date paymentExpiresDate, InvoiceType invoiceType) {
+		for (InvoiceItem invoiceItem1 : invoiceItems) {
+			if (!FeeService.isRevRecDeferred(invoiceItem1.getInvoiceFee())) {
+				assertNull(invoiceItem1.getRevenueStartDate());
+				assertNull(invoiceItem1.getRevenueFinishDate());
+				continue;
+			}
+			if (invoice.getInvoiceType() == InvoiceType.Renewal) {
+				assertEquals(DateBean.addMonths(invoiceCreationDate, 1),invoiceItem1.getRevenueStartDate());
+			} else {
+				assertEquals(invoiceCreationDate,invoiceItem1.getRevenueStartDate());
+			}
+
+			assertEquals(paymentExpiresDate,invoiceItem1.getRevenueFinishDate());
+		}
+	}
+
+	private void prepForRevRecTesting(Date invoiceCreationDate) {
+		invoiceItems.clear();
+
+		InvoiceItem agItem = buildInvoiceItem(FeeClass.AuditGUARD);
+		invoiceItems.add(agItem);
+
+		InvoiceItem dgItem = buildInvoiceItem(FeeClass.DocuGUARD);
+		invoiceItems.add(dgItem);
+
+		InvoiceItem igItem = buildInvoiceItem(FeeClass.InsureGUARD);
+		invoiceItems.add(igItem);
+
+		InvoiceItem lateFeeItem = buildInvoiceItem(FeeClass.LateFee);
+		invoiceItems.add(lateFeeItem);
+
+		InvoiceItem taxItem = buildInvoiceItem(FeeClass.CanadianTax);
+		invoiceItems.add(taxItem);
+
+		InvoiceItem freeItem = buildInvoiceItem(FeeClass.Free);
+		invoiceItems.add(freeItem);
+
+		when(invoice.getItems()).thenReturn(invoiceItems);
+
+		when(invoice.getCreationDate()).thenReturn(invoiceCreationDate);
+		when(invoice.getAccount()).thenReturn(contractor);
+		preparePriorHistoryForContractor();
+	}
+
+	private void preparePriorHistoryForContractor() {
+		List<Invoice> previousInvoiceListActivation = new ArrayList<Invoice>();
+		List<InvoiceItem> previousInvoiceItemList = new ArrayList<InvoiceItem>();
+		previousInvoiceListActivation.add(previousInvoiceActivation);
+		previousInvoiceItemList.add(previousInvoiceItem);
+		when(previousInvoiceActivation.getItems()).thenReturn(previousInvoiceItemList);
+		when(previousInvoiceItem.getRevenueFinishDate()).thenReturn(DateBean.addMonths(new Date(), 10));
+		when(previousInvoiceActivation.getInvoiceType()).thenReturn(InvoiceType.Activation);
+		when(contractor.getSortedInvoices()).thenReturn(previousInvoiceListActivation);
+	}
+
+	private InvoiceItem buildInvoiceItem(FeeClass feeClass) {
+		InvoiceItem item = new InvoiceItem();
+		InvoiceFee invoiceFee = new InvoiceFee();
+		item.setInvoiceFee(invoiceFee);
+		invoiceFee.setFeeClass(feeClass);
+		return item;
+	}
 }

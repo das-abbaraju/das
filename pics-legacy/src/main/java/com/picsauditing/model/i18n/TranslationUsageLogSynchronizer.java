@@ -4,6 +4,7 @@ import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
 import com.picsauditing.service.i18n.TranslateRestClient;
+import com.picsauditing.toggle.FeatureToggle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,22 +29,26 @@ public class TranslationUsageLogSynchronizer {
                     "WHERE t.synchronizedBatch IS NULL " + // " OR t.synchronizedDate < DATE_SUB(@now, INTERVAL 1 DAY)) " +
                     "ORDER BY t.lastUsed ASC " +
                     "LIMIT " + LIMIT;
-    @Autowired
-    private TranslateRestClient translateRestClient;
 
     @Autowired
+    private TranslateRestClient translateRestClient;
+    @Autowired
     private DataSource dataSource;
+    @Autowired
+    private FeatureToggle featureToggleChecker;
 
     private JdbcTemplate jdbcTemplate;
 
     // @Scheduled(fixedDelay = 300000)
     @Scheduled(fixedDelay = 60000)
     public void executeCron() throws Exception {
-        List<TranslationUsage> usageToSynchronize = findAndLockKeyUsageToProcess();
-        if (usageToSynchronize.size() > 0) {
-            if (!translateRestClient.updateTranslationLog(usageToSynchronize)) {
-                logger.error("Unable to synchronize translation key usage");
-            };
+        if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)) {
+            List<TranslationUsage> usageToSynchronize = findAndLockKeyUsageToProcess();
+            if (usageToSynchronize.size() > 0) {
+                if (!translateRestClient.updateTranslationLog(usageToSynchronize)) {
+                    logger.error("Unable to synchronize translation key usage");
+                };
+            }
         }
     }
 

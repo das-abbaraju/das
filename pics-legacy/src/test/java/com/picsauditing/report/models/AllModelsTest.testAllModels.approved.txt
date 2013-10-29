@@ -232,6 +232,53 @@ ContractorAuditFileID
 ContractorAuditFileReviewed
 ContractorAuditFileUploadDate
 
+Model: ContractorAuditOperatorSuncor
+Permission: Permissions{permissions=[]}
+----------------------------------------
+ContractorAccountAddress
+ContractorAccountAddress2
+ContractorAccountAddress3
+ContractorAccountCity
+ContractorAccountCountry
+ContractorAccountCountrySubdivision
+ContractorAccountCreationDate
+ContractorAccountFax
+ContractorAccountFullAddress
+ContractorAccountID
+ContractorAccountLegalName
+ContractorAccountLevel
+ContractorAccountMaterialSupplier
+ContractorAccountName
+ContractorAccountOffsiteServices
+ContractorAccountOnsiteServices
+ContractorAccountPhone
+ContractorAccountRequiresCompetencyReview
+ContractorAccountRequiresOQ
+ContractorAccountStatus
+ContractorAccountTimezone
+ContractorAccountTransportationServices
+ContractorAccountWebUrl
+ContractorAccountZip
+ContractorAuditGUARD
+ContractorDocuGUARD
+ContractorDontReassign
+ContractorEmployeeGUARD
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorProductRisk
+ContractorProductRiskVerified
+ContractorSafetyRisk
+ContractorSafetyRiskVerified
+ContractorSoleProprietor
+ContractorSuncorDrugAlcoholPolicyCaoID
+ContractorSuncorDrugAlcoholPolicyCaoStatus
+ContractorSuncorDrugAlcoholPolicyContractSubcontractorsAnswer
+ContractorSuncorDrugAlcoholPolicyGreaterADPolicyAnswer
+ContractorSuncorDrugAlcoholPolicyID
+ContractorSuncorDrugAlcoholPolicyTypeName
+ContractorTransportationRisk
+ContractorTransportationRiskVerified
+
 Model: ContractorAuditOperatorCemex
 Permission: Permissions{permissions=[]}
 ----------------------------------------

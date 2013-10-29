@@ -165,6 +165,7 @@ public class BillingService {
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM), billingStatus);
+			addRevRecInfoIfAppropriateToItems(invoice);
 			taxService.applyTax(invoice);
 		}
 		return invoice;
@@ -174,36 +175,14 @@ public class BillingService {
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
         BigDecimal invoiceCommissionable = calculateInvoiceCommissionable(invoiceItems);
 
-		Invoice invoice = new Invoice();
-		invoice.setAccount(contractor);
-		invoice.setCurrency(contractor.getCountry().getCurrency());
-		invoice.setStatus(TransactionStatus.Unpaid);
-		invoice.setItems(invoiceItems);
-		invoice.setTotalAmount(invoiceTotal);
-        invoice.setCommissionableAmount(invoiceCommissionable);
-		invoice.setAuditColumns(auditUser);
+		Invoice invoice = generateInvoice(contractor, invoiceItems, auditUser, billingStatus, invoiceTotal, invoiceCommissionable);
 
-        invoice.setInvoiceType(convertBillingStatusToInvoiceType(billingStatus));
-
-		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
-			AccountingSystemSynchronization.setToSynchronize(invoice);
-		}
+		syncInvoiceIfAppropriate(invoiceTotal, invoice);
 
 		calculateAndSetDueDateOn(invoice, contractor);
 		setContractorRenewToTrueIfNeeded(contractor);
 
-		// Add the list of operators if this invoice has a membership level
-		// on it
-		boolean hasMembership = false;
-		for (InvoiceItem item : invoiceItems) {
-			if (item.getInvoiceFee().isMembership()) {
-				hasMembership = true;
-			}
-		}
-
-		if (hasMembership) {
-			invoice.setNotes(invoiceModel.getSortedClientSiteList(contractor));
-		}
+		addNotesToInvoiceIfHaveMembership(contractor, invoiceItems, invoice);
 
 		for (InvoiceItem item : invoiceItems) {
 			item.setInvoice(invoice);
@@ -213,7 +192,37 @@ public class BillingService {
 		return invoice;
 	}
 
-    private InvoiceType convertBillingStatusToInvoiceType(BillingStatus billingStatus) {
+	private void syncInvoiceIfAppropriate(BigDecimal invoiceTotal, Invoice invoice) {
+		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
+			AccountingSystemSynchronization.setToSynchronize(invoice);
+		}
+	}
+
+	private void addNotesToInvoiceIfHaveMembership(ContractorAccount contractor, List<InvoiceItem> invoiceItems, Invoice invoice) {
+		boolean hasMembership = false;
+		for (InvoiceItem item : invoiceItems) {
+			if (item.getInvoiceFee().isMembership()) {
+				invoice.setNotes(invoiceModel.getSortedClientSiteList(contractor));
+				break;
+			}
+		}
+	}
+
+	private Invoice generateInvoice(ContractorAccount contractor, List<InvoiceItem> invoiceItems, User auditUser, BillingStatus billingStatus, BigDecimal invoiceTotal, BigDecimal invoiceCommissionable) {
+		Invoice invoice = new Invoice();
+		invoice.setAccount(contractor);
+		invoice.setCurrency(contractor.getCountry().getCurrency());
+		invoice.setStatus(TransactionStatus.Unpaid);
+		invoice.setItems(invoiceItems);
+		invoice.setTotalAmount(invoiceTotal);
+		invoice.setCommissionableAmount(invoiceCommissionable);
+		invoice.setAuditColumns(auditUser);
+
+		invoice.setInvoiceType(convertBillingStatusToInvoiceType(billingStatus));
+		return invoice;
+	}
+
+	private InvoiceType convertBillingStatusToInvoiceType(BillingStatus billingStatus) {
         switch (billingStatus) {
             case Upgrade:
                 return InvoiceType.Upgrade;
@@ -605,5 +614,89 @@ public class BillingService {
 		note.setStatus(NoteStatus.Closed);
 		dao.save(note);
 		return note;
+	}
+
+	public void addRevRecInfoIfAppropriateToItems(Invoice invoice) throws Exception {
+		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
+		Date invoiceItemStartDate = calculateInvoiceItemStartDateFor(invoice);
+		Date invoiceItemEndDate = calculateInvoiceItemEndDateFor(invoice,contractor);
+		for (InvoiceItem invoiceItem : invoice.getItems()) {
+			if (!FeeService.isRevRecDeferred(invoiceItem.getInvoiceFee())) {
+				continue;
+			}
+			invoiceItem.setRevenueStartDate(invoiceItemStartDate);
+			invoiceItem.setRevenueFinishDate(invoiceItemEndDate);
+			invoiceItemDAO.save(invoiceItem);
+		}
+	}
+
+	private Date calculateInvoiceItemEndDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
+		switch (invoice.getInvoiceType()) {
+			case Activation:
+				return DateBean.addYears(invoice.getCreationDate(), 1);
+			case Renewal:
+				return DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
+			default:
+				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
+				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
+				if (previousInvoice == null || previousEndDate == null) {
+					throw new Exception(generateExceptionStringForInabilityToCalculateRevRec(contractor,invoice,previousInvoice));
+				}
+				return previousEndDate;
+		}
+	}
+
+	private String generateExceptionStringForInabilityToCalculateRevRec(ContractorAccount contractor, Invoice invoice, Invoice previousInvoice) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Cannot calculate revenue recognition for contractor ");
+		stringBuilder.append(contractor.getId());
+		stringBuilder.append(" for invoice ");
+		stringBuilder.append(invoice.getId());
+		stringBuilder.append(" of type ");
+		stringBuilder.append(invoice.getInvoiceType());
+		if (previousInvoice == null) {
+			stringBuilder.append(" because cannot find a non-voided previous activation or renewal invoice");
+		} else {
+			stringBuilder.append(" because previous non-voided activation or renewal invoice ");
+			stringBuilder.append(+previousInvoice.getId());
+			stringBuilder.append(" doesn't have an invoice item with an end date");
+		}
+		return stringBuilder.toString();
+	}
+
+	public Date getInvoiceItemEndDateFrom(Invoice invoice) {
+		if (invoice == null) {
+			return null;
+		}
+		for (InvoiceItem invoiceItem : invoice.getItems()) {
+			if (invoiceItem.getRevenueFinishDate() != null) {
+				return invoiceItem.getRevenueFinishDate();
+			}
+		}
+		return null;
+	}
+
+	private Date calculateInvoiceItemStartDateFor(Invoice invoice) {
+		if (invoice.getInvoiceType() == InvoiceType.Renewal) {
+			return DateBean.addMonths(invoice.getCreationDate(), 1);
+		} else {
+			return invoice.getCreationDate();
+		}
+	}
+
+	public Invoice findLastActivationOrRenewalInvoiceFor(ContractorAccount contractor) {
+		for (Invoice invoice : contractor.getSortedInvoices()) {
+			if (invoice.getStatus() == TransactionStatus.Void) {
+				continue;
+			}
+			switch (invoice.getInvoiceType()) {
+			  case Activation:
+			  case Renewal:
+				  return invoice;
+			  default:
+				  continue;
+			}
+  		}
+		return null;
 	}
 }

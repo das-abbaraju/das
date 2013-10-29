@@ -26,6 +26,7 @@ public class ContractorTable extends AbstractTable {
     public static final String ContractorTrade = "ContractorTrade";
     public static final String ContractorFee = "ContractorFee";
 
+    public static final String SuncorDrugAlcoholPolicy = "SuncorDrugAlcoholPolicy";
     public static final String CemexPostEval = "CemexPostEval";
     public static final String PQF = "PQF";
     public static final String WelcomeCall = "WelcomeCall";
@@ -60,7 +61,7 @@ public class ContractorTable extends AbstractTable {
         flagKey.setMinimumImportance(FieldImportance.Low);
 
         ReportForeignKey contractorOperator = addRequiredKey(new ReportForeignKey(ContractorOperator, new ContractorOperatorTable(),
-                new ReportOnClause("id", "subID")));
+                new ReportOnClause("id", "conID")));
         contractorOperator.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey csr = new ReportForeignKey(CustomerService, new AccountUserTable(), new ReportOnClause("id",
@@ -77,6 +78,10 @@ public class ContractorTable extends AbstractTable {
                 ReportOnClause.ToAlias + ".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()"));
         ReportForeignKey insideSalesRep = addOptionalKey(insideSales);
         insideSalesRep.setMinimumImportance(FieldImportance.Average);
+
+        ReportForeignKey suncor = new ReportForeignKey(SuncorDrugAlcoholPolicy, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 425"));
+        addRequiredKey(suncor);
 
         ReportForeignKey cemex = new ReportForeignKey(CemexPostEval, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 456"));
