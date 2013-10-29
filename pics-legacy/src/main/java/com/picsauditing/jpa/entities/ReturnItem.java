@@ -18,7 +18,7 @@ public class ReturnItem extends TransactionItem {
     public ReturnItem(InvoiceItem item) {
         returnedItem = item;
         invoiceFee = item.invoiceFee;
-		if (FeeService.isRevRecDeferred(invoiceFee)) {
+		if (returnedItem.getRevenueFinishDate() != null) {
 			revenueStartDate = new Date();
 			revenueFinishDate = returnedItem.getRevenueFinishDate();
 		}

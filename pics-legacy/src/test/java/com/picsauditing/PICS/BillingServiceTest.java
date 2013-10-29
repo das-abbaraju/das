@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
@@ -76,6 +77,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private Invoice previousInvoiceActivation;
 	@Mock
 	private InvoiceItem previousInvoiceItem;
+	@Mock
+	private InvoiceItemDAO invoiceItemDAO;
 
 	@Before
 	public void setUp() {
@@ -86,6 +89,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
 		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
 		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
+		Whitebox.setInternalState(billingService, "invoiceItemDAO", invoiceItemDAO);
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		assert (OAMocksSet.isEmpty());
 
