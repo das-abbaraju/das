@@ -2,8 +2,7 @@ package com.picsauditing.service.i18n;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.model.general.AppPropertyProvider;
-import com.picsauditing.model.i18n.ThreadLocalLocale;
-import com.picsauditing.model.i18n.TranslationWrapper;
+import com.picsauditing.model.i18n.*;
 import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -52,13 +51,15 @@ public class TranslationServiceAdapterTest {
     private AppPropertyProvider appPropertyProvider;
     @Mock
     protected HttpServletRequest request;
+    @Mock
+    private TranslationUsageLogger usageLogger;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         Whitebox.setInternalState(TranslationServiceAdapter.class, "appPropertyProvider", appPropertyProvider);
-        translationService = (TranslationServiceAdapter)TranslationServiceAdapter.getInstance();
+        translationService = (TranslationServiceAdapter)TranslationServiceAdapter.getInstance(usageLogger);
         Whitebox.setInternalState(translationService, "translateRestClient", client);
         Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
         cache = Whitebox.getInternalState(TranslationServiceAdapter.class, "cache");
@@ -221,7 +222,7 @@ public class TranslationServiceAdapterTest {
     public void testGetInstance_WithReturnKeyOnEmptyTranslationSetsRightStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn("ReturnKeyOnEmptyTranslation");
         translationService.clear();
-        TranslationServiceAdapter.getInstance();
+        TranslationServiceAdapter.getInstance(usageLogger);
 
         TranslationStrategy strategy = Whitebox.getInternalState(TranslationServiceAdapter.class, "translationStrategy");
 
@@ -232,7 +233,7 @@ public class TranslationServiceAdapterTest {
     public void testGetInstance_WithNoAppPropertyForStrategySetsRightStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn(null);
         translationService.clear();
-        TranslationServiceAdapter.getInstance();
+        TranslationServiceAdapter.getInstance(usageLogger);
 
         TranslationStrategy strategy = Whitebox.getInternalState(TranslationServiceAdapter.class, "translationStrategy");
 
@@ -243,7 +244,7 @@ public class TranslationServiceAdapterTest {
     public void testGetText_WhenKeyHasSpacesGetErrorBackWithReturnKeyStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn("ReturnKeyOnEmptyTranslation");
         translationService.clear();
-        TranslationServiceAdapter.getInstance();
+        TranslationServiceAdapter.getInstance(usageLogger);
 
         assertTrue("ERROR".equals(translationService.getText("This is a bad key", Locale.ENGLISH)));
     }
@@ -252,20 +253,10 @@ public class TranslationServiceAdapterTest {
     public void testGetText_WhenKeyHasSpacesGetBlankBackWithEmptyTranslationStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn(null);
         translationService.clear();
-        TranslationServiceAdapter.getInstance();
+        TranslationServiceAdapter.getInstance(usageLogger);
 
 
         assertTrue(Strings.isEmpty(translationService.getText("This is a bad key", Locale.ENGLISH)));
-    }
-
-    @Test
-    public void testPublishTranslationLookupEventIfReturned_RejectedTaskExcecutorRetries() throws Exception {
-        when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE.toString())).thenReturn(TEST_TRANSLALATION);
-        doThrow(new TaskRejectedException("testing")).doNothing().when(applicationContext).publishEvent(any(ApplicationEvent.class));
-
-        translationService.getText(TEST_KEY, TEST_LOCALE.toString());
-
-        verify(applicationContext, times(2)).publishEvent(any(ApplicationEvent.class));
     }
 
     @Test

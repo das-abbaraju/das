@@ -9,9 +9,10 @@ from locked_iterator import LockedIterator
 logging.config.fileConfig("logging-mail.conf")
 
 SERVER = "http://%s/"
-SERVERS = ['localhost:8080']
-APPLICATION_SERVER_LOAD_THRESHOLD = '4.0'
-CRON_SERVER_LOAD_THRESHOLD = 3.0
+SERVERS = ['jobs1.sc9.picsorganizer.com']
+#SERVERS = ['jobs2.nj3.picsorganizer.com']
+APPLICATION_SERVER_LOAD_THRESHOLD = '6.0'
+CRON_SERVER_LOAD_THRESHOLD = 6.0
 MAX_WORKERS = 15
 con_running = set()
 running_lock = Lock()

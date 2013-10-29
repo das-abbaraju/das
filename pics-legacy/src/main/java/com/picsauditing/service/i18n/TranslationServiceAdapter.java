@@ -3,22 +3,18 @@ package com.picsauditing.service.i18n;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
-import com.picsauditing.model.events.i18n.TranslationLookupEvent;
 import com.picsauditing.model.general.AppPropertyProvider;
-import com.picsauditing.model.events.i18n.TranslationLookupData;
+import com.picsauditing.model.i18n.TranslationLookupData;
+import com.picsauditing.model.i18n.TranslationUsageLogger;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.model.i18n.translation.strategy.*;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import net.sf.ehcache.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.task.TaskRejectedException;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -31,7 +27,6 @@ public class TranslationServiceAdapter implements TranslationService {
     public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
     public static final String DEFAULT_PAGENAME = "UNKNOWN";
     public static final String DEFAULT_REFERRER = "REFERRER_UNKNOWN";
-    public static final int NUMBER_OF_LOGGING_EVENT_RETRIES = 2;
 
     private static final String CACHE_NAME = "i18n";
     private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
@@ -44,6 +39,7 @@ public class TranslationServiceAdapter implements TranslationService {
     private static TranslationStrategy translationStrategy;
     private static TranslationKeyValidator translationKeyValidator = new TranslationKeyValidator();
     private static Date dateLastCleared;
+    private static TranslationUsageLogger translationUsageLogger;
 
     private TranslateRestClient translateRestClient;
 
@@ -54,12 +50,13 @@ public class TranslationServiceAdapter implements TranslationService {
         wildcardCache = manager.getCache(WILDCARD_CACHE_NAME);
     }
 
-	public static TranslationService getInstance() {
+	public static TranslationService getInstance(TranslationUsageLogger usageLogger) {
         TranslationService service = INSTANCE;
         if (service == null) {
             synchronized (TranslationServiceAdapter.class) {
                 service = INSTANCE;
                 if (service == null) {
+                    translationUsageLogger = usageLogger;
                     registerTranslationTransformStrategy();
                     INSTANCE = new TranslationServiceAdapter();
                 }
@@ -86,7 +83,7 @@ public class TranslationServiceAdapter implements TranslationService {
 	@Override
 	public String getText(String key, String locale) {
         TranslationWrapper translation = getTextForKey(key, locale);
-        publishTranslationLookupEventIfReturned(locale, translation);
+        logTranslationLookupIfReturned(locale, translation);
         return (translation == null) ? DEFAULT_TRANSLATION : translation.getTranslation();
 	}
 
@@ -171,27 +168,10 @@ public class TranslationServiceAdapter implements TranslationService {
             .build();
     }
 
-    private void publishTranslationLookupEventIfReturned(String locale, TranslationWrapper translation) {
-        if (translationReturned(translation)) {
+    private void logTranslationLookupIfReturned(String locale, TranslationWrapper translation) {
+        if (translationUsageLogger != null && translationReturned(translation)) {
             TranslationLookupData data = createPublishData(locale, translation);
-            int notAcceptedCount = 0;
-            boolean notAccepted = true;
-            while(notAccepted && notAcceptedCount < NUMBER_OF_LOGGING_EVENT_RETRIES) {
-                if (notAcceptedCount > 0) {
-                    logger.warn("Retrying publish. Tries: {}", notAcceptedCount);
-                }
-                try {
-                    SpringUtils.publishEvent(new TranslationLookupEvent(data));
-                    notAccepted = false;
-                } catch (TaskRejectedException e) {
-                    try {
-                        logger.warn("TaskExecuter rejected this publish: {}", e.getMessage());
-                        notAcceptedCount++;
-                        Thread.sleep(250);
-                    } catch (InterruptedException e1) {
-                    }
-                }
-            }
+            translationUsageLogger.logTranslationUsage(data);
         }
     }
 
@@ -374,7 +354,7 @@ public class TranslationServiceAdapter implements TranslationService {
         List<TranslationWrapper> translations = wildCardTranslations(key, locale);
         for (TranslationWrapper translation : translations) {
             translationsForJS.put(translation.getKey(), translation.getTranslation());
-            publishTranslationLookupEventIfReturned(locale, translation);
+            logTranslationLookupIfReturned(locale, translation);
         }
         return translationsForJS;
     }

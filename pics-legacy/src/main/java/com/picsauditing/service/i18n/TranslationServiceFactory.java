@@ -6,7 +6,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
 import com.picsauditing.model.general.AppPropertyProvider;
-import com.picsauditing.model.i18n.ThreadLocalLocale;
+import com.picsauditing.model.i18n.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import com.spun.util.ObjectUtils;
@@ -28,7 +28,7 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            return NonLoggingTranslationServiceAdapter.getInstance();
+            return TranslationServiceAdapter.getInstance(new TranslationKeyDoNothingLogger());
         }
 
         return I18nCache.getInstance();
@@ -40,7 +40,7 @@ public class TranslationServiceFactory {
 		}
 
 		if (useTranslationServiceAdapter()) {
-			return TranslationServiceAdapter.getInstance();
+			return TranslationServiceAdapter.getInstance(new TranslationKeyAggregateUsageLogger());
 		}
 
 		return I18nCache.getInstance();
