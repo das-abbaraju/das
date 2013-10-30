@@ -2,7 +2,7 @@
 
 --changeset rbeaini:1
 
-drop table if exists app_user;
+DROP TABLE IF EXISTS app_user;
 
 CREATE TABLE IF NOT EXISTS app_user
  (
