@@ -24,7 +24,7 @@
     <include file="./liquibase/kchase2_PICS-12919_updateTokens.sql"/>
 
     <!--    Release 6.64   -->
-<!--    <include file="./liquibase/dalvarado4_PICS-12464_Add_audit_type_rule.yearToCheck.sql"/> -->
+    <include file="./liquibase/dalvarado4_PICS-12464_Add_audit_type_rule.yearToCheck.sql"/>
     <include file="./liquibase/kchase3_PICS-13011_HuntsmanTags.sql"/>
     <include file="./liquibase/kchase5_PICS-13054_RemoveTags.sql"/>
     <include file="./liquibase/sshacter4_PICS-13124_CreateTranslationStoredProcedure.sql"/>
