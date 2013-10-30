@@ -11,6 +11,7 @@ public enum ModelType {
     ContractorAuditOperatorCemex,
     ContractorAuditOperators,
     ContractorAuditOperatorWorkflows,
+    ContractorCorporations,
     ContractorFees,
     ContractorFlagCriteriaDatas,
     ContractorFlagDatas,
