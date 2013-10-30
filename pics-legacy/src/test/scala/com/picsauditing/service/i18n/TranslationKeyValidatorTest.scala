@@ -38,6 +38,30 @@ class TranslationKeyValidatorTest extends FlatSpec with BeforeAndAfterAll with M
     }
   }
 
+  it should "return false when the key contains <" in new TestSetup {
+    expectResult(false) {
+      translationKeyValidator validateKey("Thiskeyhas.a<bad.character")
+    }
+  }
+
+  it should "return false when the key is only <" in new TestSetup {
+    expectResult(false) {
+      translationKeyValidator validateKey("<")
+    }
+  }
+
+  it should "return false when the key starts with =" in new TestSetup {
+    expectResult(false) {
+      translationKeyValidator validateKey("=My.Bad.Key")
+    }
+  }
+
+  it should "return false when the key ends with =" in new TestSetup {
+    expectResult(false) {
+      translationKeyValidator validateKey("My.Bad.Key=")
+    }
+  }
+
   trait TestSetup {
     val translationKeyValidator = new TranslationKeyValidator
   }

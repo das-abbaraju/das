@@ -3,4 +3,11 @@
 <#else>
 	<#assign labelKey><@s.property value="getTranslationName(parameters.name)"/></#assign>
 </#if>
-<label><@s.text name="${labelKey}"/>:</label>
+<#assign translation><@s.text name="${labelKey}"/></#assign>
+<label>
+    <#if translation?has_content>
+        ${translation}:
+    <#else>
+        ${labelKey}:
+    </#if>
+</label>
