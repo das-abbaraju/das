@@ -1,0 +1,4 @@
+
+    <label for="test_id">
+            Translated Text
+    </label>
