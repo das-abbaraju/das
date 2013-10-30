@@ -937,8 +937,8 @@ public class Cron extends PicsActionSupport {
 		lateFeeItem.setInvoice(lateFeeInvoice);
 		lateFeeItem = (InvoiceItem) invoiceItemDAO.save(lateFeeItem);
 		invoiceWhichIsLate.setLateFeeInvoice(lateFeeInvoice);
-		invoiceDAO.save(invoiceWhichIsLate);
-		return lateFeeInvoice;
+		Invoice savedInvoice = invoiceDAO.save(invoiceWhichIsLate);
+		return savedInvoice;
 	}
 
 	public Invoice generateLateFeeInvoice(Invoice invoiceWhichIsLate, InvoiceItem lateFeeItem) {
@@ -949,7 +949,7 @@ public class Cron extends PicsActionSupport {
 		lateFeeInvoice.updateAmountApplied();
 		lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
 		lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
-		lateFeeInvoice.setDueDate(invoiceWhichIsLate.getDueDate());
+		lateFeeInvoice.setDueDate(lateFeeInvoice.getCreationDate());
 		return lateFeeInvoice;
 	}
 
