@@ -2,11 +2,15 @@ package com.picsauditing.model.group;
 
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -35,6 +39,12 @@ public class GroupManagerTest {
 
     @Mock
     private UserDAO userDAO;
+	@Mock
+	private AppUserDAO appUserDAO;
+	@Mock
+	private AppUserService appUserService;
+	@Mock
+	private AppUser appUser;
     @Mock
     private User group;
     @Mock
@@ -116,6 +126,15 @@ public class GroupManagerTest {
 
     @Test
     public void testInitializeNewGroup() throws Exception {
+	    Whitebox.setInternalState(groupManager, "appUserService", appUserService);
+	    Whitebox.setInternalState(groupManager, "appUserDAO", appUserDAO);
+
+	    JSONObject json = new JSONObject();
+	    json.put("id", "1");
+
+	    when(appUserService.createNewAppUser(any(String.class), any(String.class))).thenReturn(json);
+	    when(appUserDAO.findByAppUserID(any(Integer.class))).thenReturn(appUser);
+
         User group = groupManager.initializeNewGroup(account);
         assertThat(account, is(equalTo(group.getAccount())));
         assertThat(YesNo.Yes, is(equalTo(group.getIsGroup())));
