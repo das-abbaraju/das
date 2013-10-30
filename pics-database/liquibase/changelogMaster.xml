@@ -38,4 +38,6 @@
     <include file="./liquibase/mdo8_PICS-13106_uniqueAuditSlugs.sql"/>
 	<include file="./liquibase/rbeaini1_PICS-13265_Add_AppUser_Table_For_EmployeeGuard.sql"/>
 	<include file="./liquibase/rbeaini2_PICS-13265_Populate_AppUser_Table_for_EmployeeGuard.sql"/>
+    <include file="./liquibase/sshacter5_PICS-12402_EmployeeGUARDTables.sql"/>
+    <include file="./liquibase/sshacter6_PICS-13255_EmployeeGUARDProjectTables.sql"/>
 </databaseChangeLog>
