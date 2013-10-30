@@ -12,7 +12,7 @@
 	<include file="./liquibase/mdo1_PICS-13219_newAUDCurrency.sql"/>
 <!--    Release 6.63   -->
     <include file="./liquibase/mdo4_PICS-12878_change_all_users_to_allow_switch_to_v7_except_BASF.sql"/>
-    <!--    <include file="./liquibase/mdo5_PICS-12874_add_columns_to_ref_country.sql"/>	-->
+    <include file="./liquibase/mdo5_PICS-12874_add_columns_to_ref_country.sql"/>
     <include file="./liquibase/dalvarado1_PICS-12926_Remove_bad_myschedule_timeslots.sql"/>
     <include file="./liquibase/sshacter3_PICS-13066_UpdatePricingForNorway.sql"/>
     <include file="./liquibase/pschlesinger1_PICS-12857_ModifyBizUnitTblStructureAddSapCode.sql"/>
@@ -37,5 +37,6 @@
     <include file="./liquibase/mdo6_PICS-13106_newATAQSlugs.sql"/>
     <include file="./liquibase/mdo7_PICS-13106_defaultAuditSlugs.sql"/>
     <include file="./liquibase/mdo8_PICS-13106_uniqueAuditSlugs.sql"/>
-
+	<include file="./liquibase/rbeaini1_PICS-13265_Add_AppUser_Table_For_EmployeeGuard.sql"/>
+	<include file="./liquibase/rbeaini2_PICS-13265_Populate_AppUser_Table_for_EmployeeGuard.sql"/>
 </databaseChangeLog>
