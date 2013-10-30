@@ -1,6 +1,9 @@
 --liquibase formatted sql
 
 --changeset rbeaini:1
+
+drop table if exists app_user;
+
 CREATE TABLE IF NOT EXISTS app_user
  (
    id  INT(11) NOT NULL AUTO_INCREMENT COMMENT "Authentication / Authorization ID"
