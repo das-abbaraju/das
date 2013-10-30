@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import com.picsauditing.models.database.TranslationUsage;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,7 +164,12 @@ public class TranslateRestClient {
 
 
     private String getTranslationUrl(String key, String locale) {
-        return urlBase(locale).append(key).toString();
+        try {
+            return urlBase(locale).append(URLEncoder.encode(key, "UTF-8")).toString();
+        } catch (UnsupportedEncodingException e) {
+            // this won't happen unless somehow they deprecate UTF-8
+            return null;
+        }
     }
 
     private String getTranslationLikeUrl(String key, String locale) {
