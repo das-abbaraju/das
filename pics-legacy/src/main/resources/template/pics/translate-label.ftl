@@ -5,7 +5,14 @@
 </#if>
 
 <@s.if test="hasKey('${labelKey}') && '${labelKey}' != ''">
-	<label for="${parameters.id?html}"><@s.text name="${labelKey}"/></label>
+    <#assign translation><@s.text name="${labelKey}"/></#assign>
+    <label for="${parameters.id?html}">
+        <#if translation?has_content>
+            ${translation}
+        <#else>
+            ${labelKey}
+        </#if>
+    </label>
 </@s.if>
 <@s.elseif test="'${labelKey}' != ''">
 	<label for="${parameters.id?html}">${labelKey}</label>
