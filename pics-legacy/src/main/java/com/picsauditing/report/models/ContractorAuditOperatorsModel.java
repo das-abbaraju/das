@@ -72,6 +72,8 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         trir.alias = "Trir";
 
         conAudit.join(ContractorAuditTable.Lwcr);
+        conAudit.join(ContractorAuditTable.Afr);
+        conAudit.join(ContractorAuditTable.Air);
 
         ModelSpec emr = conAudit.join(ContractorAuditTable.Emr);
         emr.alias = "Emr";
@@ -121,6 +123,10 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         emr.setType(FieldType.Number);
         Field lwcr = fields.get("AuditLwcrAnswer".toUpperCase());
         lwcr.setType(FieldType.Number);
+        Field air = fields.get("AuditAirAnswer".toUpperCase());
+        air.setType(FieldType.Number);
+        Field afr = fields.get("AuditAfrAnswer".toUpperCase());
+        afr.setType(FieldType.Number);
 
         Field contractorsRequiringAnnualUpdateEmail = new Field(
 				CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL,

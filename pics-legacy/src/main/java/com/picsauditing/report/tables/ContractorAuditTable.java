@@ -32,6 +32,8 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String Emr = "Emr";
     public static final String Lwcr = "Lwcr";
     public static final String Trir = "Trir";
+    public static final String Air = "Air";
+    public static final String Afr = "Afr";
 
     public static final HashMap<Integer,String> SUNCOR_DRUG_ALCOHOL_DATA;
     static
@@ -169,6 +171,12 @@ public class ContractorAuditTable extends AbstractTable {
 
             addOptionalKey(new ReportForeignKey(Trir, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));
+
+            addOptionalKey(new ReportForeignKey(Air, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 20236")));
+
+            addOptionalKey(new ReportForeignKey(Afr, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 9060")));
         }
 
         // SUNCOR

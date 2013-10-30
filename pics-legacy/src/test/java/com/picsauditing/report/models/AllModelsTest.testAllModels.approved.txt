@@ -394,6 +394,8 @@ AccountOnsiteServices
 AccountStatus
 AccountTimezone
 AccountTransportationServices
+AuditAfrAnswer
+AuditAirAnswer
 AuditAssignedDate
 AuditAuditFor
 AuditAuditLocation
