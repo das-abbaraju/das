@@ -20,6 +20,7 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -931,6 +932,7 @@ public class FlagDataCalculatorTest {
 	}
 
 	@Test
+    @Ignore
 	public void testIsFlagged_WCB_RedFlagged() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccountWithWCBs(AuditStatus.Submitted);
 		FlagCriteria flagCriteria = buildFakeFlagCriteria();
