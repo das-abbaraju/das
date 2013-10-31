@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.sun.jersey.api.client.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -50,10 +49,16 @@ public class TranslateRestClientTest {
 
         when(client.resource(anyString())).thenReturn(webResource);
         when(webResource.accept(MediaType.APPLICATION_JSON_VALUE)).thenReturn(builder);
+        when(webResource.path(anyString())).thenReturn(webResource);
         when(builder.get(ClientResponse.class)).thenReturn(response);
         when(response.getStatus()).thenReturn(200);
 
-        Whitebox.setInternalState(translateRestClient, "client", client);
+        TranslateRestClient.registerWebClient(client);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        TranslateRestClient.resetWebClient();
     }
 
     @Test

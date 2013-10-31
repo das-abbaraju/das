@@ -5,14 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import com.sun.jersey.api.client.*;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import com.picsauditing.models.database.TranslationUsage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TranslateRestClient {
     private static final Logger logger = LoggerFactory.getLogger(TranslateRestClient.class);
@@ -23,37 +24,37 @@ public class TranslateRestClient {
     private static final String UPDATE_URL = TRANSLATION_URL + "saveOrUpdate/";
     private static final String LOG_URL = TRANSLATION_URL + "logTranslationUsage/";
 
-    private Client client;
+    private static final int WEB_CONNECT_TIMEOUT_MS = 1000;
+    private static final int WEB_READ_TIMEOUT_MS = 1000;
 
-    private Client client() {
-        if (client == null) {
-            client = Client.create();
-        }
-        return client;
+    private static Client client;
+    private static WebResource webResource;
+
+    /*
+        The jersey client is threadsafe as long as you don't attempt to change the configuration after creation.
+        Also, using getEntity (get(String)), it will close its own connections/resources/streams.
+     */
+    static {
+        resetWebClient();
+    }
+
+    public static void resetWebClient() {
+        ClientConfig cc = new DefaultClientConfig();
+        Map<String, Object> props = cc.getProperties();
+        props.put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, WEB_CONNECT_TIMEOUT_MS);
+        props.put(ClientConfig.PROPERTY_READ_TIMEOUT, WEB_READ_TIMEOUT_MS);
+        client = Client.create(cc);
+        webResource = client.resource(TRANSLATION_URL);
     }
 
     public TranslationWrapper translationFromWebResource(String key, String requestedLocale) {
-        TranslationWrapper translation;
-        ClientResponse response = makeServiceApiCall(getTranslationUrl(key, requestedLocale));
-
-        if (response.getStatus() != 200) {
-            translation = failedResponseTranslation(key, requestedLocale, response);
-        } else {
-            JSONObject json = parseJson(response.getEntity(String.class));
-            translation = new TranslationWrapper.Builder()
-                    .key(key)
-                    .locale(actualLocaleFromJson(json))
-                    .requestedLocale(requestedLocale)
-                    .translation(translationTextFromJson(json))
-                    .qualityRating(qualityRatingFromJson(json))
-                    .build();
-        }
-        return translation;
+        TranslateCommand command = new TranslateCommand(key, requestedLocale);
+        return command.execute();
     }
 
     public List<TranslationWrapper> translationsFromWebResourceByWildcard(String key, String locale) {
         List<TranslationWrapper> translations = new ArrayList<>();
-        ClientResponse response = makeServiceApiCall(getTranslationLikeUrl(key, locale));
+        ClientResponse response = makeServiceApiCall(getTranslationLikePath(key, locale));
 
         if (response.getStatus() != 200) {
             translations.add(failedResponseTranslation(key, locale, response));
@@ -84,23 +85,20 @@ public class TranslateRestClient {
     }
 
     public boolean saveTranslation(String key, String translation, List<String> requiredLanguages) {
-        Client client = client();
-        WebResource webResource = client.resource(UPDATE_URL);
-        if (webResource != null) {
-            JSONObject formData = new JSONObject();
-            formData.put("key", key);
-            formData.put("value", translation);
-            formData.put("qualityRating", TranslationService.QUALITY_GOOD);
-            for (String locale : requiredLanguages) {
-                formData.remove("locale");
-                formData.put("locale", locale);
-                ClientResponse response = webResource
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .type(MediaType.APPLICATION_JSON_VALUE)
-                        .post(ClientResponse.class, formData.toJSONString());
-                if (response.getStatus() != 200) {
-                    return false;
-                }
+        webResource.path(UPDATE_URL);
+        JSONObject formData = new JSONObject();
+        formData.put("key", key);
+        formData.put("value", translation);
+        formData.put("qualityRating", TranslationService.QUALITY_GOOD);
+        for (String locale : requiredLanguages) {
+            formData.remove("locale");
+            formData.put("locale", locale);
+            ClientResponse response = webResource
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .type(MediaType.APPLICATION_JSON_VALUE)
+                    .post(ClientResponse.class, formData.toJSONString());
+            if (response.getStatus() != 200) {
+                return false;
             }
         }
         return true;
@@ -115,28 +113,25 @@ public class TranslateRestClient {
     }
 
     private boolean doUpdateTranslationLog(Object lookupData) {
-        Client client = client();
-        WebResource webResource = client.resource(LOG_URL);
-        if (webResource != null) {
-            try {
-                String jsonString = mapper.writeValueAsString(lookupData);
-                ClientResponse response = webResource
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .type(MediaType.APPLICATION_JSON_VALUE)
-                        .post(ClientResponse.class, jsonString);
-                if (response.getStatus() == 200) {
-                    return true;
-                }
-            } catch (JsonProcessingException e) {
-                logger.error("Unable to create json payload {}", e);
+        webResource.path(LOG_URL);
+        try {
+            String jsonString = mapper.writeValueAsString(lookupData);
+            ClientResponse response = webResource
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .type(MediaType.APPLICATION_JSON_VALUE)
+                    .post(ClientResponse.class, jsonString);
+            if (response.getStatus() == 200) {
+                return true;
             }
+        } catch (JsonProcessingException e) {
+            logger.error("Unable to create json payload {}", e);
         }
         return false;
     }
 
     public List<String> allLocalesForKey(String key) {
         JSONArray locales = new JSONArray();
-        ClientResponse response = makeServiceApiCall(getLocalesUrl(key));
+        ClientResponse response = makeServiceApiCall(getLocalesPath(key));
         if (response.getStatus() != 200) {
             logger.error("Failed : HTTP error code : {}", response.getStatus());
             // locales.add("en_US");
@@ -147,34 +142,31 @@ public class TranslateRestClient {
         return locales;
     }
 
-    private ClientResponse makeServiceApiCall(String url) {
-        Client client = client();
+    private ClientResponse makeServiceApiCall(String path) {
         ClientResponse response = null;
-        WebResource webResource = client.resource(url);
-        if (webResource != null) {
-            logger.debug("getting ClientResponse from {}", webResource);
-            // TODO wrap in try for unknown host exceptions, etc.
-            response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
-            logger.debug("received response {}", response);
-        }
+        webResource.path(path);
+        logger.debug("getting ClientResponse from {}", webResource);
+        // TODO wrap in try for unknown host exceptions, etc.
+        response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
+        logger.debug("received response {}", response);
         return response;
     }
 
 
-    private String getTranslationUrl(String key, String locale) {
-        return urlBase(locale).append(key).toString();
+    private String getTranslationPath(String key, String locale) {
+        return pathBase(locale).append(key).toString();
     }
 
-    private String getTranslationLikeUrl(String key, String locale) {
-        return urlBase(locale).append("like/").append(key).append("%25").toString();
+    private String getTranslationLikePath(String key, String locale) {
+        return pathBase(locale).append("like/").append(key).append("%25").toString();
     }
 
-    private String getLocalesUrl(String key) {
+    private String getLocalesPath(String key) {
         return new StringBuilder(LOCALES_URL).append(key).toString();
     }
 
-    private StringBuilder urlBase(String locale) {
-        StringBuilder url = new StringBuilder(TRANSLATION_URL).append(locale).append("/");
+    private StringBuilder pathBase(String locale) {
+        StringBuilder url = new StringBuilder(locale).append("/");
         return url;
     }
 
@@ -226,5 +218,10 @@ public class TranslateRestClient {
         }
     }
 
+    // for injecting test client for unit tests
+    public static void registerWebClient(Client webclient) {
+        client = webclient;
+        webResource = client.resource(TRANSLATION_URL);
+    }
 
 }
