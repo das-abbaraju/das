@@ -42,7 +42,7 @@
 <s:if test="#subdivision_list.size() > 0">
     <s:if test="#select_theme == 'formhelp'">
         <s:select
-            label="%{getCountrySubdivisionLabelFor(#country_iso_code)}"
+            label="%{getCountrySubdivisionLabelKeyFor(#country_iso_code)}"
             id="%{subdivision_id}"
             name="%{select_name}"
             list="#subdivision_list"
@@ -56,7 +56,7 @@
     </s:if>
     <s:else>
         <s:select
-            label="%{getCountrySubdivisionLabelFor(#country_iso_code)}"
+            label="%{getCountrySubdivisionLabelKeyFor(#country_iso_code)}"
             id="%{subdivision_id}"
             name="%{select_name}"
             list="#subdivision_list"

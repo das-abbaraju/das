@@ -78,6 +78,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/operator/define_competencies.js?v=${version}"></script>
 <script type="text/javascript" src="js/request/registration_gap_analysis.js?v=${version}"></script>
 <script type="text/javascript" src="js/request/request_new_contractor.js?v=${version}"></script>
+<script src="js/billing/InvoiceDetailController.js?v=${version}"></script>
 
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>

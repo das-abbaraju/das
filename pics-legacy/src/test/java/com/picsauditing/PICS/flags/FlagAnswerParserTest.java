@@ -77,8 +77,21 @@ public class FlagAnswerParserTest {
 		String result = FlagAnswerParser.parseAnswer(flagCriteria, auditData);
 		assertEquals("Another Answer", result);
 	}
-	
-//	public void testParseAnswer_
+
+    @Test
+	public void testParseAnswer_Number() {
+        setupMocks("Number", "number", "3");
+        String result = FlagAnswerParser.parseAnswer(flagCriteria, auditData);
+        assertEquals("3.0", result);
+
+        setupMocks("Number", "number", "3.15");
+        result = FlagAnswerParser.parseAnswer(flagCriteria, auditData);
+        assertEquals("3.15", result);
+
+        setupMocks("Number", "number", "any text");
+        result = FlagAnswerParser.parseAnswer(flagCriteria, auditData);
+        assertEquals("", result);
+    }
 	
 	private void setupMocksMultipleChoice(String uniqueCode, boolean isMultipleChoice) {
 		when(option.getUniqueCode()).thenReturn(uniqueCode);

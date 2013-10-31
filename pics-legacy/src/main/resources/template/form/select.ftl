@@ -68,15 +68,7 @@
 		<#if tag.contains(parameters.nameValue, itemKey) == true>
  selected="selected"<#rt/>
 		</#if>
-	><@s.if test="isTranslatable(itemValue)">
-		<@s.text name="%{itemValue.i18nKey}"/>
-	</@s.if>
-	<@s.elseif test="hasKey('${itemValue}')">
-		<@s.text name="${itemValue}"/>
-	</@s.elseif>
-	<@s.else>
-		${itemValue?html}
-	</@s.else></option><#lt/>
+	>${itemValue?html}</option><#lt/>
 </@s.iterator>
 
 <#include "/${parameters.templateDir}/simple/optgroup.ftl" />
