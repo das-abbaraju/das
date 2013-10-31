@@ -85,6 +85,34 @@ public class SlugServiceTest extends PicsTranslationTest {
     }
 
     @Test
+    public void testValidateSlug_AlreadyExists()
+            throws Exception {
+        ArrayList<AuditType> types = new ArrayList<AuditType>();
+        AuditType type = new AuditType();
+        type.setId(1);
+        types.add(type);
+        when(basicDao.findBySlug(AuditType.class, "manual-audit")).thenReturn(types);
+        try {
+            slugService.validateSlug(AuditType.class, "manual-audit",2);
+        }
+        catch (SlugFormatException sfe) {
+            assertEquals("manual-audit already exists",sfe.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidateSlug_URINotCompliant() throws Exception {
+        ArrayList<AuditType> types = new ArrayList<AuditType>();
+        when(basicDao.findBySlug(AuditType.class, "manual-audit")).thenReturn(types);
+        try {
+            slugService.validateSlug(AuditType.class, "Manual Audit###",2);
+        }
+        catch (SlugFormatException sfe) {
+            assertEquals("Manual Audit### is not URI compliant",sfe.getMessage());
+        }
+    }
+
+    @Test
     public void testSlugHasDuplicate_No()
             throws Exception {
         when(basicDao.findBySlug(AuditQuestion.class, "slug")).thenReturn(new ArrayList<AuditQuestion>());
