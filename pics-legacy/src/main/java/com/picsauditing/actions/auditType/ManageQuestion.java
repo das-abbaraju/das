@@ -449,7 +449,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	}
 
     public String validateSlug() {
-        boolean isUnique = slugService.slugHasDuplicate(AuditQuestion.class, getSlug(), getId());
+        boolean isUnique = !slugService.slugHasDuplicate(AuditQuestion.class, getSlug(), getId());
         boolean isURI = slugService.slugIsURICompliant(getSlug());
 
         json = new JSONObject();
