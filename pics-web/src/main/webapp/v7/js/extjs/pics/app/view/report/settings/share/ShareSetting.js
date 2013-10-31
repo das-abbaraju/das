@@ -49,7 +49,7 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             dock: 'bottom',
             items: [{
                 xtype: 'component',
-                html: '<a href="' + PICS.data.ServerCommunicationUrl.getReportAccessUrl() + '" target="_blank">' + PICS.text('Report.execute.shareSetting.shareLink') + '</a>'
+                html: '<a href="' + PICS.data.ServerCommunicationUrl.getReportAccessUrl() + '" target="_blank"><i class="icon-wrench"></i>' + PICS.text('Report.execute.shareSetting.shareLink') + '</a>'
             }, {
                 xtype: 'tbfill'
             }, {
@@ -114,7 +114,7 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             ])
         }];
 
-        this.id = 'report_share_no_permission';        
+        this.id = 'report_share_no_permission';
     },
 
     onAllowEditClick: function (event, target) {
