@@ -28,10 +28,10 @@ public class SlugService {
 
     private <T extends BaseTable> void validateSlug(Class<T> clazz, String slug, int id) throws Exception {
         if (slugHasDuplicate(clazz, slug, id)) {
-            throw new Exception("Slug Already Exists");
+            throw new SlugFormatException("Slug Already Exists");
         }
         else if (!slugIsURICompliant(slug)) {
-            throw new Exception("Slug is not URI Compliant");
+            throw new SlugFormatException("Slug is not URI Compliant");
         }
     }
 

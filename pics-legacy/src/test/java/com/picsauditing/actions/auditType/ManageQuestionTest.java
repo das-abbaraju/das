@@ -14,6 +14,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.SlugService;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,16 +28,14 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.importpqf.ImportStopAt;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditExtractOption;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.BaseTable;
 
 public class ManageQuestionTest extends PicsTranslationTest {
 
 	private ManageQuestion manageQuestion;
 	private List<AuditCategory> ancestors;
 
+    @Mock
+    private SlugService slugService;
 	@Mock
 	private AuditQuestionDAO auditQuestionDAO;
 	@Mock
@@ -55,6 +55,8 @@ public class ManageQuestionTest extends PicsTranslationTest {
 
 
 		manageQuestion = new ManageQuestion();
+
+        Whitebox.setInternalState(manageQuestion,"slugService",slugService);
 
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(manageQuestion, this);
 		when(auditQuestion.getCategory()).thenReturn(category);
@@ -176,4 +178,27 @@ public class ManageQuestionTest extends PicsTranslationTest {
 		verify(auditExtractOption).setStartingPoint(TEXT_IS_TRIMMED);
 		verify(auditExtractOption).setStoppingPoint(TEXT_IS_TRIMMED);
 	}
+
+    @Test
+    public void testValidateSlug() {
+        when(slugService.slugHasDuplicate(AuditQuestion.class,"manual-audit",0)).thenReturn(true);
+        when(slugService.slugIsURICompliant("manual-audit")).thenReturn(true);
+
+        Whitebox.setInternalState(manageQuestion, "slug", "manual-audit");
+
+        String response = manageQuestion.validateSlug();
+        assertEquals("json",response);
+        assertEquals("{\"isURI\":true,\"isUnique\":false}",manageQuestion.getJson().toString());
+    }
+
+    @Test
+    public void testGenerateSlug() throws Exception {
+        when(slugService.generateSlug(AuditQuestion.class,"Manual Audit",0)).thenReturn("manual-audit");
+
+        Whitebox.setInternalState(manageQuestion, "stringToSlugify", "Manual Audit");
+
+        String response = manageQuestion.generateSlug();
+        assertEquals("json",response);
+        assertEquals("{\"slug\":\"manual-audit\"}",manageQuestion.getJson().toString());
+    }
 }
