@@ -120,3 +120,17 @@ table.allborder th.right, table.allborder td.right {
 		border: 0;
 	}
 }
+
+.InvoiceDetail-page th.revenue-recognition {
+	width: 150px;
+}
+
+.InvoiceDetail-page .revenue-recognition {
+	display: none;
+	text-align: right;
+	text-align: center;
+}
+
+.InvoiceDetail-page .item-description [type=button] {
+	float: right;
+}
