@@ -31,6 +31,7 @@ import com.picsauditing.util.Strings;
 public class ManageAuditType extends RequiredLanguagesSupport implements Preparable {
 	protected int id = 0;
     protected String slug;
+    protected String stringToSlugify;
 	protected AuditType auditType = null;
 	protected AuditCategory category = null;
 	protected AuditQuestion question = null;
@@ -615,7 +616,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
         json = new JSONObject();
 
         try {
-            String slug = slugService.generateSlug(AuditType.class, auditType.getName(), auditType.getId());
+            String slug = slugService.generateSlug(AuditType.class, stringToSlugify, getId());
             json.put("slug",slug);
         }
         catch (Exception e) {
@@ -631,6 +632,14 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public String getStringToSlugify() {
+        return stringToSlugify;
+    }
+
+    public void setStringToSlugify(String stringToSlugify) {
+        this.stringToSlugify = stringToSlugify;
     }
 
 }
