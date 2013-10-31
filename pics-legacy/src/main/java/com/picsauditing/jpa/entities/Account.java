@@ -379,10 +379,12 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * North American Industry Classification System
 	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
-	 * 
+	 *
 	 * @return
+	 * NOTE: "fetch=FetchType.LAZY" is a workaround for a EntityNotFoundException issue with no FK in the db. (
+	 * See: http://stackoverflow.com/questions/13539050/entitynotfoundexception-in-hibernate-many-to-one-mapping-however-data-exist
 	 */
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "naics")
 	public Naics getNaics() {
 		return naics;

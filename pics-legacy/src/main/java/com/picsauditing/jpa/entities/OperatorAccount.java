@@ -304,8 +304,6 @@ public class OperatorAccount extends Account {
 		return inheritInsuranceCriteria;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "inheritInsuranceCriteria")
 	public void setInheritInsuranceCriteria(OperatorAccount inheritInsuranceCriteria) {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
