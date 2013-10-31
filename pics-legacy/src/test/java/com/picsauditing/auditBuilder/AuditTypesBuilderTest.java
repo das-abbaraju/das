@@ -155,6 +155,20 @@ public class AuditTypesBuilderTest {
 		assertEquals(null, auditData);
 	}
 
+    @Test
+    public void testChooseAnswerToEvaluate_whenNoSpecificYearNoAnswer() throws Exception {
+        AuditQuestion question = createAuditQuestion(10);
+        AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+        setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.Any);
+        auditTypeRules.add(auditTypeRule);
+
+        List<AuditData> answers = new ArrayList<>();
+
+        AuditData auditData = auditTypesBuilder.chooseAnswerToEvaluate(auditTypeRule, answers);
+
+        assertEquals(null, auditData);
+    }
+
 	private String currentYearMinus(int x) {
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 		return String.valueOf(currentYear - x);
