@@ -307,7 +307,7 @@
                 <th class="item-description" colspan="2">
                     <s:text name="InvoiceDetail.ItemDescription"/>
                     <pics:permission perm="Billing">
-                        <input id="revenue_recognition_button" type="button" value="Show Rev Rec" class="hide-revrec"></input>
+                        <input id="revenue_recognition_button" type="button" value="Show Rev Rec" class="hide-revrec" />
                     </pics:permission>
                 </th>
                 <th class="revenue-recognition">
