@@ -64,6 +64,7 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditBuilder auditBuilder;
     @Autowired
     private CaoSaveModel caoSaveModel;
+    private boolean verifyButton;
 
 
     public String execute() throws Exception {
@@ -105,7 +106,7 @@ public class AuditDataSave extends AuditActionSupport {
 				return SUCCESS;
 			}
 
-			boolean verifyButton = ("verify".equals(button));
+            verifyButton = ("verify".equals(button));
 			boolean commentChanged = false;
 			boolean answerChanged = false;
 
@@ -710,122 +711,6 @@ public class AuditDataSave extends AuditActionSupport {
 		return list;
 	}
 
-	private boolean answerFormatValid(AuditData auditData, AuditData databaseCopy) {
-
-		if (databaseCopy == null) {
-			databaseCopy = auditData;
-			databaseCopy.setQuestion(questionDao.find(databaseCopy.getQuestion().getId()));
-		}
-
-		String questionType = databaseCopy.getQuestion().getQuestionType();
-		AuditQuestion question = databaseCopy.getQuestion();
-		String answer = auditData.getAnswer();
-
-		if ("ESignature".equals(questionType)) {
-			if (eSignatureName == null && eSignatureTitle == null) {
-				setESignatureData(answer);
-			}
-
-			if ("Verify".equals(mode)) {
-				setESignatureData(databaseCopy.getAnswer());
-			}
-
-			if (eSignatureName == null && eSignatureTitle == null) {
-				auditData.setAnswer("");
-				auditData.setComment("");
-				return true;
-			}
-
-			if (Strings.isEmpty(eSignatureName)) {
-				addActionError(getText("AuditData.ESignature.name.missing"));
-			}
-
-			if (Strings.isEmpty(eSignatureTitle)) {
-				addActionError(getText("AuditData.ESignature.title.missing"));
-			}
-
-			if (hasActionErrors()) {
-				return false;
-			}
-
-			// Strip the first comma that results from the two part answer.
-			auditData.setAnswer(eSignatureName + " / " + eSignatureTitle);
-			auditData.setComment(getIP());
-		}
-
-		// Null or blank answers are always OK
-		if (Strings.isEmpty(answer)) {
-			return true;
-		}
-
-		if ("Tagit".equals(questionType) && "[]".equals(answer)) {
-			auditData.setAnswer("");
-			return true;
-		}
-
-		if ("Date".equals(questionType)) {
-			// todo: Revisit whether to call setAnswerToDateOrRecordError() which was unreachable but apparently intended
-			// to be called for the Date questionType.
-			return isDateValid(auditData);
-		}
-
-		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)
-				|| "Percent".equals(questionType)) {
-			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
-
-			boolean hasBadChar = false;
-			for (int i = 0; i < answer.length(); i++) {
-				char c = answer.charAt(i);
-				if (!Character.isDigit(c) && (c != '.') && (c != '-')) {
-					hasBadChar = true;
-				}
-			}
-
-			if (hasBadChar) {
-				addActionError(getText("AuditData.error.MustBeNumber"));
-				return false;
-			}
-
-			NumberFormat format;
-			if ("Decimal Number".equals(questionType)) {
-				format = new DecimalFormat("#,##0.000");
-			} else if ("Number".equals(questionType)) {
-				format = new DecimalFormat("###0");
-			} else if ("Percent".equals(questionType)) {
-				format = new DecimalFormat("##0.00");
-			} else {
-				format = new DecimalFormat("#,##0");
-			}
-
-			try {
-				BigDecimal value = new BigDecimal(answer);
-				if (isInvalidNegativeNumber(value, question)) {
-					addActionError(getText("Audit.message.InvalidNegativeNumber"));
-					return false;
-				} else if (isInvalidPercent(value, question)) {
-					addActionError(getText("Audit.message.InvalidPercent"));
-					return false;
-				}
-				auditData.setAnswer(format.format(value));
-			} catch (Exception ignore) {
-				addActionError(getText("Audit.message.InvalidFormat"));
-				return false;
-			}
-		}
-		// fixme: Unreachable! Duplicate if-check above.
-//		if ("Date".equals(questionType)) {
-//			return setAnswerToDateOrRecordError(auditData, answer);
-//		}
-
-		if ("Check Box".equals(questionType)) {
-			if (answer.equals("false")) {
-				auditData.setAnswer("");
-			}
-		}
-
-		return true;
-	}
-
 	private boolean processAndValidateBasedOnQuestionType(AuditData auditData, AuditData databaseCopy) {
 
 		String questionType = databaseCopy.getQuestion().getQuestionType();
@@ -922,7 +807,7 @@ public class AuditDataSave extends AuditActionSupport {
 			setESignatureData(answer);
 		}
 
-		if ("Verify".equals(mode)) {
+		if (verifyButton) {
 			setESignatureData(databaseCopy.getAnswer());
 		}
 
@@ -946,7 +831,11 @@ public class AuditDataSave extends AuditActionSupport {
 
 		// Strip the first comma that results from the two part answer.
 		auditData.setAnswer(eSignatureName + " / " + eSignatureTitle);
-		auditData.setComment(getIP());
+        if (verifyButton) {
+            auditData.setComment(databaseCopy.getComment());
+        } else {
+	    	auditData.setComment(getIP());
+        }
 
 		return true;
 	}
