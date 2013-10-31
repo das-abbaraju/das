@@ -165,7 +165,6 @@ public class BillingService {
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM), billingStatus);
-			addRevRecInfoIfAppropriateToItems(invoice);
 			taxService.applyTax(invoice);
 		}
 		return invoice;
@@ -626,7 +625,6 @@ public class BillingService {
 			}
 			invoiceItem.setRevenueStartDate(invoiceItemStartDate);
 			invoiceItem.setRevenueFinishDate(invoiceItemEndDate);
-			invoiceItemDAO.save(invoiceItem);
 		}
 	}
 
