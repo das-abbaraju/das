@@ -5,17 +5,17 @@
 <html>
     <head>
         <title>Manage Question</title>
-        
+
         <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css?v=${version}" />
-        
+
         <s:include value="../jquery.jsp"/>
-        
+
         <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js?v=${version}"></script>
         <script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js?v=${version}"></script>
-        
+
         <script type="text/javascript">
             $(function(){
             	$('select[name="question.questionType"]').change(function () {
@@ -28,7 +28,7 @@
             			$('#optionTypes').hide();
             		}
             	}).trigger('change');
-            
+
             	showFlags();
             	showAuditTypeRules();
             	showCategoryRules();
@@ -48,10 +48,10 @@
                     dateFormat: 'yy-mm-dd'
                 });
             });
-            
+
             function copyQuestion(atypeID) {
             	$('#copy_audit').load('ManageQuestionCopyAjax.action', {
-            	    button: 'text', 
+            	    button: 'text',
             	    id: atypeID
         	    }, function () {
             			$(this).dialog({
@@ -68,14 +68,14 @@
             					},
             					'Copy Question': function () {
             						var data = $('form#textForm').serialize();
-            						
+
             						data += "&button=Copy&originalID="+atypeID;
-            						
+
             						startThinking({
-            						    div: 'copy_audit', 
+            						    div: 'copy_audit',
             						    message: 'Copying Question...'
         						    });
-            						
+
             						$.ajax(
             							{
             								url: 'ManageQuestionCopyAjax.action',
@@ -84,9 +84,9 @@
             									stopThinking({
             									    div: 'copy_audit'
         									    });
-            									
+
             									$(this).dialog('close');
-            									
+
             									location.reload();
             								}
             							}
@@ -97,10 +97,10 @@
             		}
             	);
             }
-            
+
             function moveQuestion(atypeID) {
             	$('#copy_audit').load('ManageQuestionMoveAjax.action', {
-            	    button: 'text', 
+            	    button: 'text',
             	    'id': atypeID
         	    }, function () {
             			$(this).dialog({
@@ -116,14 +116,14 @@
             					},
             					'Move Question': function () {
             						var data = $('form#textForm').serialize();
-            						
+
             						data += "&button=Move&originalID="+atypeID;
-            						
+
             						startThinking({
-            						    div: 'copy_audit', 
+            						    div: 'copy_audit',
             						    message: 'Moving Question...'
         						    });
-            						
+
             						$.ajax({
         								url: 'ManageQuestionMoveAjax.action',
         								data: data,
@@ -131,9 +131,9 @@
         									stopThinking({
         									    div: 'copy_audit'
     									    });
-        									
+
         									$(this).dialog('close');
-        									
+
         									location.reload();
         								}
         							});
@@ -143,40 +143,40 @@
             		}
             	);
             }
-            
+
             function showFlags() {
             	var data = {
     				questionID: <s:property value="id"/>
             	};
-            	
+
             	startThinking({
-            	    div: "flags", 
+            	    div: "flags",
             	    message: "Loading Related Flag Criteria"
         	    });
-            	
+
             	$('#flags').load('FlagCriteriaListAjax.action', data);
             }
-            
+
             function showAuditTypeRules() {
             	var data = {
         			'comparisonRule.question.id': <s:property value="id"/>
             	};
-            	
+
             	$('#auditrules').think({
             	    message: "Loading Related Audit Rules..."
         	    }).load('AuditTypeRuleTableAjax.action', data);
             }
-            
+
             function showCategoryRules() {
             	var data = {
         			'comparisonRule.question.id': <s:property value="id"/>
             	};
-            	
+
             	$('#categoryrules').think({
             	    message: "Loading Related Category Rules..."
         	    }).load('CategoryRuleTableAjax.action', data);
             }
-            
+
             function toggleOtherOptionType() {
             	if ($('#optionTypes').val() == 0 || $('#optionTypes').val() == null) {
             		$('#optionTypeOther_text').show();
@@ -186,9 +186,9 @@
             		$('#optionTypeOther_hidden').val($('#optionTypes').val());
             	}
             }
-            
+
             function showOption() {
-            	if ($('#questionTypes select').val() == 'MultipleChoice' || 
+            	if ($('#questionTypes select').val() == 'MultipleChoice' ||
             	        $('#questionTypes select').val() == 'Tagit' ||
             	        $('#questionTypes select').val() == 'MultiSelect') {
             		$('#optionTypesArea').show();
@@ -201,22 +201,22 @@
             }
         </script>
     </head>
-    <body>
+    <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
         <s:include value="manage_audit_type_breadcrumbs.jsp" />
         <s:include value="../config_environment.jsp" />
         <s:include value="../actionMessages.jsp" />
-        
+
         <s:form id="save" cssClass="form">
         	<s:hidden name="id" />
         	<s:hidden name="parentID" value="%{question.category.id}"/>
-            
+
         	<fieldset class="form">
             	<h2 class="formLegend">Question</h2>
-                
+
             	<ol>
             		<li>
                         <label>ID:</label>
-            			
+
                         <s:if test="question.id > 0">
             				<s:property value="question.id" />
             				<s:set var="o" value="question" />
@@ -229,45 +229,41 @@
             		<li>
             			<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditQuestion.<s:property value="question.id"/>." target="_BLANK">Manage Translations</a>
             		</li>
-                    <li>
-                        <label>Slug:</label>
-                        <s:textfield name="auditType.slug" />
-                    </li>
             		<li>
                         <label>Question Type:</label>
             			<div id="questionTypes">
-            				<s:select list="questionTypes" 
-                                name="question.questionType" 
-                                headerKey="" 
-                                headerValue="" 
+            				<s:select list="questionTypes"
+                                name="question.questionType"
+                                headerKey=""
+                                headerValue=""
                                 onchange="showOption()" />
             			</div>
             		</li>
             		<li class="required">
             			<div id="optionTypesArea" style="display: none; clear: left;">
             				<label>Option Type:</label>
-            				<s:select list="optionTypes" 
-                                headerKey="0" 
-                                headerValue="- Other -" 
-                                listKey="id" 
-                                value="%{question.option.id}" 
-                                listValue="name" 
-                                id="optionTypes" 
+            				<s:select list="optionTypes"
+                                headerKey="0"
+                                headerValue="- Other -"
+                                listKey="id"
+                                value="%{question.option.id}"
+                                listValue="name"
+                                id="optionTypes"
                                 onchange="toggleOtherOptionType();" />
-            				
+
                             <pics:autocomplete action="OptionGroupAutocomplete" name="question.option" htmlName="question.option" value="question.option" htmlId="optionTypeOther" />
-                            
+
             				<a href="ManageOptionGroup.action?question=<s:property value="question.id" />&group.id=0&editOnly=true" class="add">Create Option</a>
             				<a href="ManageOptionGroup.action?question=<s:property value="question.id" />" class="preview">See all Option Types</a>
             			</div>
-                        
+
             			<pics:fieldhelp title="Option Type">
             				<p>The type of widget to use on the user interface.</p>
-                            
+
             				<ul>
             					<li>Yes/No</li>
             				</ul>
-                            
+
             				<p>Commonly used option types are listed in the dropdown.</p>
             				<p>If an option type is not listed, select "- Other -" and search by the option name.</p>
             				<p>If an option type does not exist, click on the "Create Option" link to create a new option type.</p>
@@ -276,19 +272,23 @@
             		<li>
                         <label>Question Text:</label>
             			<s:textarea name="question.name" rows="8" />
-                        
+
                         <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditQuestion.${question.id}.name</s:param>
                             <s:param name="include_locale_static">true</s:param>
                         </s:include>
             		</li>
-            		<li>
-	                    <label>Title:</label>
-						<s:textfield
-							name="question.title"
-							size="65"
-							value="%{(question.title != null && !question.title.equals(question.getI18nKey('title'))) ? question.title : ''}" />
-					</li>
+                    <li>
+                        <label>Title:</label>
+                        <s:textfield
+                            name="question.title"
+                            size="65"
+                            value="%{(question.title != null && !question.title.equals(question.getI18nKey('title'))) ? question.title : ''}" />
+                    </li>
+                    <li>
+                        <label>Slug:</label>
+                        <s:textfield name="question.slug" />
+                    </li>
             		<li>
                         <label>Required:</label>
             			<s:checkbox name="question.required" />
@@ -301,7 +301,7 @@
                         <s:date name="question.effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" var="question_effective_date" />
             			<s:textfield name="question.effectiveDate" value="%{#question_effective_date}" cssClass="datepicker" />
             		</li>
-                    
+
             		<s:if test="question.id > 0">
             			<li>
                             <label>Expiration Date:</label>
@@ -317,7 +317,7 @@
             				<s:date name="question.updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
             			</li>
             		</s:if>
-                    
+
             		<li>
                         <label>Column Header:</label>
 						<s:textfield
@@ -330,7 +330,7 @@
                         <label>Field Identifier:</label>
             			<s:textfield name="question.uniqueCode" size="20" maxlength="50"/>
             		</li>
-                    
+
             		<s:if test="question.category.languages.size > 1">
             			<li>
             				<label><s:text name="ManageAuditType.RequiredLanguages" />:</label>
@@ -361,7 +361,7 @@
             		</s:if>
             	</ol>
         	</fieldset>
-            
+
             <fieldset>
             	<h2>Functions</h2>
                 <s:if test="question.functions.size() > 0">
@@ -380,7 +380,7 @@
                                 </th>
                     		</tr>
                 		</thead>
-                        
+
                 		<s:iterator value="question.functions" var="f">
                 			<tr>
                                 <td>
@@ -438,7 +438,7 @@
                                 </th>
                     		</tr>
                 		</thead>
-                        
+
                 		<s:iterator value="question.functionWatchers" var="w">
                 			<tr>
                                 <td>
@@ -476,12 +476,12 @@
 
         	<fieldset class="form">
             	<h2 class="formLegend">Additional Options</h2>
-                
+
             	<ol>
             		<li>
                         <label>Has Requirement:</label>
             			<s:checkbox name="question.hasRequirement"/>
-            			
+
                         <pics:fieldhelp title="Has Requirement">
             				<p>If this is question has a requirement, you MUST make the question required as well.</p>
             			</pics:fieldhelp>
@@ -495,32 +495,32 @@
             			<s:textarea
             				name="question.requirement"
             				value="%{(question.requirement != null && !question.requirement.equals(question.getI18nKey('requirement'))) ? question.requirement : ''}" />
-                        
+
                         <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditQuestion.${question.id}.requirement</s:param>
                             <s:param name="include_locale_static">true</s:param>
                         </s:include>
             		</li>
-                    
+
             		<s:if test="auditType.scoreable">
             			<li class="scoreWeight" <s:if test="!(question.questionType.equals('MultipleChoice'))">style="display: none;"</s:if>>
                             <label>Score Weight:</label>
             				<s:textfield name="question.scoreWeight" />
-                            
+
             				<pics:fieldhelp title="Score Weight">
             					<p>This number will affect the strength of the score</p>
             				</pics:fieldhelp>
             			</li>
             		</s:if>
-                    
+
             		<li>
                         <label>Required by Question:</label>
             			<s:textfield name="requiredQuestionID" />
-            			
+
                         <s:if test="requiredQuestionID > 0">
                             <a href="?id=<s:property value="requiredQuestionID" />">Show</a>
                         </s:if>
-                        
+
             			<pics:fieldhelp title="Required by Question">
             				<p>The question the contractor must answer in order for this question to become required.</p>
             			</pics:fieldhelp>
@@ -528,7 +528,7 @@
             		<li>
                         <label>Required Answer:</label>
             			<s:textfield name="question.requiredAnswer" />
-                        
+
             			<pics:fieldhelp title="Required Answer">
             				<p>The answer the contractor must give on the "Required By" question in order for this question to become required.</p>
             			</pics:fieldhelp>
@@ -536,7 +536,7 @@
             		<li>
                         <label>Visible Question:</label>
             			<s:textfield name="visibleQuestionID" />
-            			
+
                         <pics:fieldhelp title="Visible Question">
             				<p>The question the contractor must answer in order for this question to be displayed.</p>
             			</pics:fieldhelp>
@@ -544,7 +544,7 @@
             		<li>
                         <label>Visible Answer:</label>
             			<s:textfield name="question.visibleAnswer" />
-            			
+
                         <pics:fieldhelp title="Visible Answer">
             				<p>The answer the contractor must give on the "Visible By" question in order for this question to be displayed.</p>
             			</pics:fieldhelp>
@@ -559,10 +559,10 @@
             		</li>
             	</ol>
         	</fieldset>
-            
+
         	<fieldset class="form">
             	<h2 class="formLegend">Help</h2>
-                
+
             	<ol>
             		<li>
                         <label>Show Comments:</label>
@@ -572,7 +572,7 @@
                         <label>Help Page:</label>
             			<div>
             				<s:textfield name="question.helpPage" size="30" maxlength="100" />
-            				
+
                             <s:if test="!isStringEmpty(question.helpPage)">
                                 <a href="http://help.picsauditing.com/wiki/<s:property value="question.helpPage"/>">Help Center</a>
                             </s:if>
@@ -587,7 +587,7 @@
 							name="question.helpText"
 							rows="4"
 							value="%{(question.helpText != null && !question.helpText.equals(question.getI18nKey('helpText'))) ? question.helpText : ''}" />
-	
+
 						<s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditQuestion.${question.id}.helpText</s:param>
                             <s:param name="include_locale_static">true</s:param>
@@ -595,11 +595,11 @@
             		</li>
             	</ol>
         	</fieldset>
-            
+
         	<s:if test="extractable">
         		<fieldset class="form">
             		<h2 class="formLegend">Extract Options</h2>
-                    
+
             		<ol>
             			<li>
                             <label>Define Extract Options:</label>
@@ -627,7 +627,7 @@
             			</li>
             		</ol>
         		</fieldset>
-                
+
         		<fieldset class="form">
         		<h2 class="formLegend">Transforms</h2>
         		<ol>
@@ -669,7 +669,7 @@
         		</div>
         	</fieldset>
         </s:form>
-        
+
         <ul id="allCategories" style="display: none" class="mcdropdown_menu">
         	<s:iterator value="category.ancestors.get(0).auditType.categories">
         		<s:if test="id != category.id">
@@ -679,33 +679,33 @@
         		</s:if>
         	</s:iterator>
         </ul>
-        
+
         <div id="copy_audit"></div>
-        
+
         <br/>
-        
+
         <h3>Related Flag Criteria</h3>
         <div id="flags"></div>
         <a href="ManageFlagCriteria!edit.action?criteria.displayOrder=999&criteria.question=<s:property value="question.id" />&criteria.requiredStatus=Submitted&criteria.category=Paperwork<s:if test="question.columnHeader" >&criteria.label=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" />&criteria.description=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" /></s:if>" class="add">Add New Question Flag Criteria</a>
-        
+
         <br />
         <br />
-        
+
         <h3>Related Audit Type Rules</h3>
         <div id="auditrules"></div>
-        
+
         <pics:permission perm="ManageAuditTypeRules" type="Edit" >
         	<a href="AuditTypeRuleEditor.action?button=New&ruleQuestionId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
         </pics:permission>
-        
+
         <br/>
         <br/>
-        
+
         <h3>Related Category Rules</h3>
         <div id="categoryrules"></div>
-        
+
         <pics:permission perm="ManageCategoryRules" type="Edit" >
         	<a href="CategoryRuleEditor.action?button=New&ruleQuestionId=<s:property value="id" />" class="add">Add New Category Rule</a>
         </pics:permission>
-    </body>
+    </div>
 </html>

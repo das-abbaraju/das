@@ -2555,3 +2555,8 @@ div.auditSubMenu a.current {
 #toolbox a.refund {
     background-image: url('../images/add_remove.png');
 }
+
+.slugifier-target ~ .error {
+	margin-left: 5px;
+	color: #ff0000;
+}

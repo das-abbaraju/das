@@ -63,6 +63,8 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/audit/audit.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/audit-controller.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/cao-table-controller.js?v=${version}"></script>
+<script src="js/audit/ManageAuditTypeController.js?v=${version}"></script>
+<script src="js/audit/ManageQuestionController.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/employee_competencies.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/employee_detail.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/manage_employees.js?v=${version}"></script>
@@ -79,6 +81,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/request/registration_gap_analysis.js?v=${version}"></script>
 <script type="text/javascript" src="js/request/request_new_contractor.js?v=${version}"></script>
 <script src="js/billing/InvoiceDetailController.js?v=${version}"></script>
+<script type="text/javascript" src="js/widget/Slugifier.js?v=${version}"></script>
 
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>
