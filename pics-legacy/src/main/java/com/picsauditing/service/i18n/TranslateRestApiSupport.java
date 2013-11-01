@@ -6,15 +6,14 @@ import com.picsauditing.model.i18n.TranslationWrapper;
 import com.sun.jersey.api.client.*;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-public abstract class TranslateRestApiSupport<R extends HystrixCommand<R>> {
+public abstract class TranslateRestApiSupport<R> extends HystrixCommand<R> {
 
     private static final Logger logger = LoggerFactory.getLogger(TranslateRestApiSupport.class);
     private static final int WEB_CONNECT_TIMEOUT_MS = 1000;
@@ -23,7 +22,7 @@ public abstract class TranslateRestApiSupport<R extends HystrixCommand<R>> {
             ((System.getProperty("translation.server") == null) ? "http://translate.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
 
     private static Client client;
-    private static WebResource webResource;
+    static WebResource webResource;
 
     /*
         The jersey client is threadsafe as long as you don't attempt to change the configuration after creation.
@@ -42,9 +41,13 @@ public abstract class TranslateRestApiSupport<R extends HystrixCommand<R>> {
         webResource = client.resource(TRANSLATION_URL);
     }
 
-
-    public TranslateRestApiSupport() {
-        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("TranslateApi"))
+    /*
+        I have chosen to use semaphore isolation for this command group despite it being a network call because this will be
+        a very copious call, there's really no useful fallback at this time (though if we ever have a distributed cache to
+        fall back on, that could be enough to change this)
+     */
+    public TranslateRestApiSupport(String commandGroup) {
+        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(commandGroup))
                 .andCommandPropertiesDefaults(
                         HystrixCommandProperties.Setter()
                                 .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE)
@@ -55,8 +58,7 @@ public abstract class TranslateRestApiSupport<R extends HystrixCommand<R>> {
     }
 
     ClientResponse makeServiceApiCall(String path) throws Exception {
-        webResource.path(path);
-        return webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
+        return webResource.path(path).accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
     }
 
     StringBuilder pathBase(String locale) {
@@ -76,6 +78,19 @@ public abstract class TranslateRestApiSupport<R extends HystrixCommand<R>> {
 
     JSONObject parseJson(String jsonString) {
         return (JSONObject) JSONValue.parse(jsonString);
+    }
+
+    JSONArray parseJsonArray(String jsonString) {
+        return (JSONArray) JSONValue.parse(jsonString);
+    }
+
+    String keyFromJson(JSONObject json) {
+        Object best = json.get("best");
+        if (best instanceof JSONObject) {
+            return (String)((JSONObject)best).get("key");
+        } else {
+            return (String) json.get("key");
+        }
     }
 
     String actualLocaleFromJson(JSONObject json) {
@@ -109,5 +124,9 @@ public abstract class TranslateRestApiSupport<R extends HystrixCommand<R>> {
         }
     }
 
+    public static void registerWebClient(Client webclient) {
+        client = webclient;
+        webResource = client.resource(TRANSLATION_URL);
+    }
 
 }

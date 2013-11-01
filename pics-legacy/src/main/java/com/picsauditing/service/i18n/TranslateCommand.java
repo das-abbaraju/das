@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 
 public class TranslateCommand extends TranslateRestApiSupport<TranslationWrapper> {
     private static final Logger logger = LoggerFactory.getLogger(TranslateCommand.class);
-    private String key;
-    private String requestedLocale;
+    private final String key;
+    private final String requestedLocale;
 
     public TranslateCommand(String key, String requestedLocale) {
-        super();
+        super("TranslateKey");
         this.key = key;
         this.requestedLocale = requestedLocale;
     }
@@ -27,26 +27,22 @@ public class TranslateCommand extends TranslateRestApiSupport<TranslationWrapper
         return failedResponseTranslation(key, requestedLocale, null);
     }
 
-    private TranslationWrapper translationFromWebResource() {
+    private TranslationWrapper translationFromWebResource() throws Exception {
         TranslationWrapper translation;
-        try {
-            ClientResponse response = makeServiceApiCall(getTranslationPath(key, requestedLocale));
-            if (response == null) {
-                translation = failedResponseTranslation(key, requestedLocale, null);
-            } else if (response.getStatus() != 200) {
-                translation = failedResponseTranslation(key, requestedLocale, String.valueOf(response.getStatus()));
-            } else {
-                JSONObject json = parseJson(response.getEntity(String.class));
-                translation = new TranslationWrapper.Builder()
-                        .key(key)
-                        .locale(actualLocaleFromJson(json))
-                        .requestedLocale(requestedLocale)
-                        .translation(translationTextFromJson(json))
-                        .qualityRating(qualityRatingFromJson(json))
-                        .build();
-            }
-        } catch (Exception e) {
+        ClientResponse response = makeServiceApiCall(getTranslationPath(key, requestedLocale));
+        if (response == null) {
             translation = failedResponseTranslation(key, requestedLocale, null);
+        } else if (response.getStatus() != 200) {
+            translation = failedResponseTranslation(key, requestedLocale, String.valueOf(response.getStatus()));
+        } else {
+            JSONObject json = parseJson(response.getEntity(String.class));
+            translation = new TranslationWrapper.Builder()
+                    .key(key)
+                    .locale(actualLocaleFromJson(json))
+                    .requestedLocale(requestedLocale)
+                    .translation(translationTextFromJson(json))
+                    .qualityRating(qualityRatingFromJson(json))
+                    .build();
         }
         return translation;
     }

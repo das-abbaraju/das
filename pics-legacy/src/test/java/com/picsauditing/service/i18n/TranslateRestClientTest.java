@@ -1,45 +1,42 @@
 package com.picsauditing.service.i18n;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picsauditing.jpa.entities.TranslationQualityRating;
-import com.picsauditing.model.i18n.TranslationWrapper;
-import com.sun.jersey.api.client.*;
+import com.picsauditing.models.database.TranslationUsage;
+import org.joda.time.DateTime;
 import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-import org.springframework.context.ApplicationContext;
-import org.springframework.http.MediaType;
+import scala.Option;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.mockito.Mockito.verify;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-
+/*
+    TranslateRestClient now basically only proxies to Hystrix Commands... so that's really all we have to test.
+ */
 public class TranslateRestClientTest {
     private static final String TEST_KEY = "Test.Key";
+    private static final String TEST_LOCALE = "en";
     private static final String TEST_TRANSLATION = "Testing testing... is this thing on?";
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final String TEST_PAGENAME = "TestPage";
+    private static final String TEST_ENV = "testing environment";
+    private static final String TEST_BATCH_NUM = "12345";
 
     private TranslateRestClient translateRestClient;
+    private List<String> languages;
+    private List<TranslationUsage> lookupData;
 
     @Mock
-    private WebResource webResource;
+    private TranslateCommand translateCommand;
     @Mock
-    private ClientResponse response;
+    private TranslateWildcardCommand translateWildcardCommand;
     @Mock
-    private WebResource.Builder builder;
+    private SaveTranslationCommand saveTranslationCommand;
     @Mock
-    private ApplicationContext applicationContext;
+    private AllLocalesForKeyCommand allLocalesForKeyCommand;
     @Mock
-    protected HttpServletRequest request;
-    @Mock
-    private Client client;
+    private UpdateTranslationUsageLogCommand updateTranslationUsageLogCommand;
 
     @Before
     public void setUp() throws Exception {
@@ -47,169 +44,81 @@ public class TranslateRestClientTest {
 
         translateRestClient = new TranslateRestClient();
 
-        when(client.resource(anyString())).thenReturn(webResource);
-        when(webResource.accept(MediaType.APPLICATION_JSON_VALUE)).thenReturn(builder);
-        when(webResource.path(anyString())).thenReturn(webResource);
-        when(builder.get(ClientResponse.class)).thenReturn(response);
-        when(response.getStatus()).thenReturn(200);
+        languages = new ArrayList<>();
+        languages.add(TEST_LOCALE);
 
-        TranslateRestClient.registerWebClient(client);
+        lookupData = new ArrayList<>();
+        lookupData.add(translationUsage());
+
+        Whitebox.setInternalState(translateRestClient, "translateCommand", translateCommand);
+        Whitebox.setInternalState(translateRestClient, "translateWildcardCommand", translateWildcardCommand);
+        Whitebox.setInternalState(translateRestClient, "saveTranslationCommand", saveTranslationCommand);
+        Whitebox.setInternalState(translateRestClient, "allLocalesForKeyCommand", allLocalesForKeyCommand);
+        Whitebox.setInternalState(translateRestClient, "updateTranslationUsageLogCommand", updateTranslationUsageLogCommand);
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        TranslateRestClient.resetWebClient();
-    }
-
-    @Test
-    public void testTranslationFromWebResource_Happy() throws Exception {
-        TranslationResponse responseO = new TranslationResponse(TEST_KEY, TEST_TRANSLATION, "en", TranslationQualityRating.Good);
-        when(response.getEntity(String.class)).thenReturn(makeJson(responseO, responseO));
-
-        TranslationWrapper translation = translateRestClient.translationFromWebResource(TEST_KEY, "en");
-
-        assertTrue(TEST_KEY.equals(translation.getKey()));
-        assertTrue(TEST_TRANSLATION.equals(translation.getTranslation()));
-        assertTrue("en".equals(translation.getLocale()));
-        assertTrue(TranslationQualityRating.Good.equals(translation.getQualityRating()));
+    @After
+    public void tearDown() throws Exception {
+        Whitebox.setInternalState(translateRestClient, "translateCommand", (TranslateCommand)null);
+        Whitebox.setInternalState(translateRestClient, "translateWildcardCommand", (TranslateWildcardCommand)null);
+        Whitebox.setInternalState(translateRestClient, "saveTranslationCommand", (SaveTranslationCommand)null);
+        Whitebox.setInternalState(translateRestClient, "allLocalesForKeyCommand", (AllLocalesForKeyCommand)null);
+        Whitebox.setInternalState(translateRestClient, "updateTranslationUsageLogCommand", (UpdateTranslationUsageLogCommand)null);
     }
 
     @Test
-    public void testTranslationFromWebResource_CreatesTranslationFromBest() throws Exception {
-        TranslationResponse best = new TranslationResponse(TEST_KEY, TEST_TRANSLATION, "en", TranslationQualityRating.Good);
-        TranslationResponse requested = new TranslationResponse(TEST_KEY, "French " + TEST_TRANSLATION, "fr", TranslationQualityRating.Bad);
-        when(response.getEntity(String.class)).thenReturn(makeJson(best, requested));
-
-        TranslationWrapper translation = translateRestClient.translationFromWebResource(TEST_KEY, "en");
-
-        assertTrue(TEST_KEY.equals(translation.getKey()));
-        assertTrue(TEST_TRANSLATION.equals(translation.getTranslation()));
-        assertTrue("en".equals(translation.getLocale()));
-        assertTrue(TranslationQualityRating.Good.equals(translation.getQualityRating()));
+    public void testTranslateRestClient_ProxiesToTranslateCommand() throws Exception {
+        translateRestClient.translationFromWebResource(TEST_KEY, TEST_LOCALE);
+        verify(translateCommand).execute();
     }
 
     @Test
-    public void testTranslationFromWebResource_BadResponseGivesErrorTranslation() throws Exception {
-        when(client.resource(anyString())).thenReturn(webResource);
-        when(response.getStatus()).thenReturn(500);
-
-        TranslationWrapper translation = translateRestClient.translationFromWebResource(TEST_KEY, "en");
-
-        assertTrue(TEST_KEY.equals(translation.getKey()));
-        assertTrue(TranslationService.ERROR_STRING.equals(translation.getTranslation()));
-        assertTrue("en".equals(translation.getLocale()));
-        assertTrue(TranslationQualityRating.Bad.equals(translation.getQualityRating()));
+    public void testTranslateRestClient_ProxiesToTranslateWildcardCommand() throws Exception {
+        translateRestClient.translationsFromWebResourceByWildcard(TEST_KEY, TEST_LOCALE);
+        verify(translateWildcardCommand).execute();
     }
 
     @Test
-    public void testTranslationsFromWebResourceByWildcard_BadResponseGivesErrorTranslation() throws Exception {
-        when(response.getStatus()).thenReturn(500);
-
-        List<TranslationWrapper> translations = translateRestClient.translationsFromWebResourceByWildcard(TEST_KEY, "en");
-        TranslationWrapper translation = translations.get(0);
-
-        assertTrue(TEST_KEY.equals(translation.getKey()));
-        assertTrue(TranslationService.ERROR_STRING.equals(translation.getTranslation()));
-        assertTrue("en".equals(translation.getLocale()));
-        assertTrue(TranslationQualityRating.Bad.equals(translation.getQualityRating()));
+    public void testTranslateRestClient_ProxiesToSaveTranslationCommand() throws Exception {
+        translateRestClient.saveTranslation(TEST_KEY, TEST_TRANSLATION, languages);
+        verify(saveTranslationCommand).execute();
     }
 
     @Test
-    public void testTranslationsFromWebResourceByWildcard_Happy() throws Exception {
-        TranslationResponse responseO = new TranslationResponse(TEST_KEY, TEST_TRANSLATION, "en", TranslationQualityRating.Good);
-        List<TranslationResponse> responses = new ArrayList();
-        responses.add(responseO);
-        responses.add(responseO);
-        when(response.getEntity(String.class)).thenReturn(makeJson(responses));
-
-        List<TranslationWrapper> translations = translateRestClient.translationsFromWebResourceByWildcard(TEST_KEY, "en");
-
-        for (TranslationWrapper translation : translations) {
-            assertTrue(TEST_KEY.equals(translation.getKey()));
-            assertTrue(TEST_TRANSLATION.equals(translation.getTranslation()));
-            assertTrue("en".equals(translation.getLocale()));
-        }
+    public void testTranslateRestClient_ProxiesToAllLocalesForKeyCommand() throws Exception {
+        translateRestClient.allLocalesForKey(TEST_KEY);
+        verify(allLocalesForKeyCommand).execute();
     }
 
-    private String makeJson(List stuff) throws JsonProcessingException {
-        return mapper.writeValueAsString(stuff);
+    @Test
+    public void testTranslateRestClient_ProxiesToUpdateTranslationUsageLogCommand() throws Exception {
+        translateRestClient.updateTranslationLog(lookupData);
+        verify(updateTranslationUsageLogCommand).execute();
     }
 
-    private String makeJson(TranslationResponse best, TranslationResponse requested) throws JsonProcessingException {
-        return mapper.writeValueAsString(new TranslationResponses(best, requested));
+    private TranslationUsage translationUsage() {
+        Date now = now();
+        Date yesterday = yesterday();
+
+        return new TranslationUsage(
+                Option.empty(),
+                TEST_KEY,
+                TEST_LOCALE,
+                TEST_PAGENAME,
+                TEST_ENV,
+                Option.apply(new java.sql.Date(yesterday.getTime())),
+                Option.apply(new java.sql.Date(now.getTime())),
+                Option.apply(TEST_BATCH_NUM),
+                Option.apply(new java.sql.Date(now.getTime()))
+        );
     }
 
-    private class TranslationResponses {
-        private TranslationResponse best;
-        private TranslationResponse requested;
-
-        public TranslationResponses(TranslationResponse best, TranslationResponse requested) {
-            this.best = best;
-            this.requested = requested;
-        }
-
-        public TranslationResponse getBest() {
-            return best;
-        }
-
-        public void setBest(TranslationResponse best) {
-            this.best = best;
-        }
-
-        public TranslationResponse getRequested() {
-            return requested;
-        }
-
-        public void setRequested(TranslationResponse requested) {
-            this.requested = requested;
-        }
+    private Date now() {
+        return new Date();
     }
 
-    private class TranslationResponse {
-        private String key;
-        private String value;
-        private String locale;
-        private TranslationQualityRating qualityRating;
-
-        public TranslationResponse() {}
-
-        public TranslationResponse(String key, String value, String locale, TranslationQualityRating qualityRating) {
-            this.key = key;
-            this.value = value;
-            this.locale = locale;
-            this.qualityRating = qualityRating;
-
-        }
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-
-        public String getLocale() {
-            return locale;
-        }
-
-        public void setLocale(String locale) {
-            this.locale = locale;
-        }
-
-        public TranslationQualityRating getQualityRating() {
-            return qualityRating;
-        }
-
-        public void setQualityRating(TranslationQualityRating qualityRating) {
-            this.qualityRating = qualityRating;
-        }
+    private Date yesterday() {
+        return new DateTime().minusDays(1).toDate();
     }
+
 }
