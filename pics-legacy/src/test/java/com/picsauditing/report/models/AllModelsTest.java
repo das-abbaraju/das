@@ -1,9 +1,11 @@
 package com.picsauditing.report.models;
 
+import static org.junit.Assert.*;
 import com.google.common.base.Joiner;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
@@ -130,6 +132,27 @@ public class AllModelsTest {
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         model = new PaymentsModel(permissions);
         Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testGetWhereClause_COModel() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+        model = new ContractorOperatorsModel(permissions);
+        assertEquals("", model.getWhereClause(new ArrayList<Filter>()));
+    }
+
+    @Test
+    public void testGetWhereClause_COModel_asOperator() throws Exception {
+        permissions.setAccountType("Operator");
+        model = new ContractorOperatorsModel(permissions);
+        assertEquals("Account.status IN ('Active') AND ContractorOperator.opID IN (1100) AND ContractorOperator.workStatus = 'Y'", model.getWhereClause(new ArrayList<Filter>()));
+    }
+
+    @Test
+    public void testGetWhereClause_COModel_asCorporate() throws Exception {
+        permissions.setAccountType("Corporate");
+        model = new ContractorOperatorsModel(permissions);
+        assertEquals("Account.status IN ('Active') AND Account.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN () AND co.workStatus = 'Y') AND ContractorOperator.opID IN ()", model.getWhereClause(new ArrayList<Filter>()));
     }
 
     private String getJoin() {
