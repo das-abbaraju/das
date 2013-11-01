@@ -286,6 +286,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.flagColor = flagColor;
 	}
 
+    @ReportField(type = FieldType.Date, importance = FieldImportance.Required)
 	public Date getFlagLastUpdated() {
 		return flagLastUpdated;
 	}
