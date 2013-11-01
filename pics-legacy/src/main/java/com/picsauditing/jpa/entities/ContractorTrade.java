@@ -44,7 +44,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 		this.trade = trade;
 	}
 
-	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean, visible = false)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean)
 	public boolean isSelfPerformed() {
 		return selfPerformed;
 	}
@@ -53,7 +53,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 		this.selfPerformed = selfPerformed;
 	}
 
-	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean, visible = false)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean)
 	public boolean isManufacture() {
 		return manufacture;
 	}
@@ -66,7 +66,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 	 * Number 1-9 that represents the frequency of that trade for a given business
 	 * @return
 	 */
-	@ReportField(importance = FieldImportance.Average, type = FieldType.Integer, visible = false)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getActivityPercent() {
 		return activityPercent;
 	}

@@ -102,6 +102,13 @@ public class ContractorsModel extends AbstractModel {
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
         }
 
+        Field selfPerformed = fields.get("ContractorTradeSelfPerformed".toUpperCase());
+        selfPerformed.setVisible(false);
+        Field manufacture = fields.get("ContractorTradeManufacture".toUpperCase());
+        manufacture.setVisible(false);
+        Field activityPercent = fields.get("ContractorTradeActivityPercent".toUpperCase());
+        activityPercent.setVisible(false);
+
         Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
         accountManager.setVisible(false);
         accountManager.setPrefixValue("SELECT co.conID " +
