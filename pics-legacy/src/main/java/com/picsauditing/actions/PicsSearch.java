@@ -228,7 +228,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 	 */
 	public void checkString(String check){
 		check = check.trim();
-		String q = Strings.escapeQuotes(check);
+		String q = Strings.escapeQuotesAndSlashes(check);
 		
 		if(check.matches("[a-zA-Z\\s*]+")){
 			possibleFields.put(SearchFields.AccountName, "'"+q+"%'");

@@ -66,7 +66,7 @@ public class AmBestDAO extends PicsDAO {
 	}
 
 	public List<AmBest> findByCompanyName(String name) {
-		name = Strings.escapeQuotes(name);
+		name = Strings.escapeQuotesAndSlashes(name);
 		Query q = em.createQuery("SELECT ab FROM AmBest ab " +
 				"WHERE ab.companyName LIKE '%" + parseCompany(name) + "%' " +
 					"OR ab.naic LIKE '" + name + "%' " +

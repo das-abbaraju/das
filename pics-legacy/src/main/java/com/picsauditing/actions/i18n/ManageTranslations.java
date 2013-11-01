@@ -275,12 +275,12 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		if (!Strings.isEmpty(search)) {
-			sql.addWhere("t1.msgValue LIKE '%" + Strings.escapeQuotes(search) + "%' OR LOWER(t1.msgKey) LIKE '%"
-					+ Strings.escapeQuotes(search).toLowerCase() + "%'");
+			sql.addWhere("t1.msgValue LIKE '%" + Strings.escapeQuotesAndSlashes(search) + "%' OR LOWER(t1.msgKey) LIKE '%"
+					+ Strings.escapeQuotesAndSlashes(search).toLowerCase() + "%'");
 		}
 
 		if (!Strings.isEmpty(key)) {
-			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Strings.escapeQuotes(key).toLowerCase() + "%'");
+			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Strings.escapeQuotesAndSlashes(key).toLowerCase() + "%'");
 		}
 
 		if (fromQualityRatings != null && fromQualityRatings.length > 0) {

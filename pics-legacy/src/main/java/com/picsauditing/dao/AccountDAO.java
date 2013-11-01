@@ -77,7 +77,7 @@ public class AccountDAO extends PicsDAO {
 	
 	public int findByID(String username) {
 		Query query = em.createQuery("SELECT id FROM Account WHERE username='?'");
-		query.setParameter(1, Strings.escapeQuotes(username));
+		query.setParameter(1, Strings.escapeQuotesAndSlashes(username));
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 	

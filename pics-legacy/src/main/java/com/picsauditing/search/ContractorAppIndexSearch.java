@@ -56,7 +56,7 @@ public class ContractorAppIndexSearch {
 
 		while (results.isEmpty() && termsArray.size() > 0) {
 			String query = searchEngine.buildQuery(null, termsArray, (Strings.isEmpty(searchType) ? null : "i1.indexType = '"
-					+ Strings.escapeQuotes(searchType) + "'"), null, 20, false, true);
+					+ Strings.escapeQuotesAndSlashes(searchType) + "'"), null, 20, false, true);
 
 			try {
 				results = database.select(query, false);

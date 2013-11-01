@@ -355,7 +355,7 @@ public class RequestNewContractor extends AccountActionSupport {
 		List<String> termsArray = searchEngine.sortSearchTerms(searchEngine.buildTerm(term, false, false), true);
 		while (results.isEmpty() && termsArray.size() > 0) {
 			String query = searchEngine.buildQuery(null, termsArray, (Strings.isEmpty(type) ? null : "i1.indexType = '"
-					+ Strings.escapeQuotes(type) + "'"), null, 20, false, true);
+					+ Strings.escapeQuotesAndSlashes(type) + "'"), null, 20, false, true);
 			try {
 				results = db.select(query, false);
 			} catch (SQLException e) {

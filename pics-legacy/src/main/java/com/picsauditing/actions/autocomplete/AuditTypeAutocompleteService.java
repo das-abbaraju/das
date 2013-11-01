@@ -27,7 +27,7 @@ public final class AuditTypeAutocompleteService extends AbstractAutocompleteServ
 					+ Strings.implode(permissions.getVisibleAuditTypes()) + ")";
 		}
 
-		String value = "%" + Strings.escapeQuotes(search) + "%";
+		String value = "%" + Strings.escapeQuotesAndSlashes(search) + "%";
 		List<AuditType> auditTypes = auditTypeDAO.findByTranslatableField(AuditType.class, permissionWhere, "name",
 				value, permissions.getLocale(), RESULT_SET_LIMIT);
 		return auditTypes;

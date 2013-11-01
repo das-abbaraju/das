@@ -54,7 +54,7 @@ public class TranslationsDAO implements TranslationDAO {
         Connection connection = null;
         try {
             connection = DBBean.getTranslationsConnection();
-            database.execute(connection, String.format(UPDATE_LAST_USED_DATE, Strings.escapeQuotes(key)));
+            database.execute(connection, String.format(UPDATE_LAST_USED_DATE, Strings.escapeQuotesAndSlashes(key)));
         } catch (Exception e) {
             logger.error("Error updating the last used by date for key {}: {}", key, e);
             throw new RuntimeException("Failed to reset lastUsed on msg_key because: " + e.getMessage());
@@ -109,7 +109,7 @@ public class TranslationsDAO implements TranslationDAO {
 
             long id = database.executeInsert(connection,
                         String.format(SAVE_TRANSLATION_KEY,
-                                Strings.escapeQuotes(key),
+                                Strings.escapeQuotesAndSlashes(key),
                                 User.SYSTEM,
                                 User.SYSTEM,
                                 User.SYSTEM));

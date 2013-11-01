@@ -114,7 +114,7 @@ public class ManageResources extends PicsActionSupport {
 		
 		if (id==0 && account==null) {
 			@SuppressWarnings("unchecked")
-			List<Account> accounts = accountDAO.findWhere("type not in ('Contractor') and name='" + Strings.escapeQuotes(accountName) + "'");
+			List<Account> accounts = accountDAO.findWhere("type not in ('Contractor') and name='" + Strings.escapeQuotesAndSlashes(accountName) + "'");
 			if (accounts.size() != 1) {
 				addActionError(getText("ManageResources.error.NoAccount"));
 				return SUCCESS;							

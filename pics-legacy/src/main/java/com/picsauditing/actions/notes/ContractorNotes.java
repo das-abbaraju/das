@@ -85,8 +85,8 @@ public class ContractorNotes extends ContractorActionSupport {
 	private String getFilters() {
 		String filterString = "";
 		if (!Strings.isEmpty(filter.getKeyword())) {
-			filterString += " AND (summary LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%'"
-					+ " OR body LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%')";
+			filterString += " AND (summary LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getKeyword()) + "%'"
+					+ " OR body LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getKeyword()) + "%')";
 		}
 		if (filter.getUserID() != null && filter.getUserID().length > 0) {
 			filterString += " AND createdBy.id IN (" + Strings.implode(filter.getUserID(), ",") + ")";
@@ -119,9 +119,9 @@ public class ContractorNotes extends ContractorActionSupport {
 			filterString += " AND 1=2";
 		}
 		if (!Strings.isEmpty(filter.getKeyword())) {
-			filterString += " AND (w.cao.audit.auditFor LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%'"
-					+ " OR w.notes LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%'"
-					+ " OR w.cao.operator.name LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%')";
+			filterString += " AND (w.cao.audit.auditFor LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getKeyword()) + "%'"
+					+ " OR w.notes LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getKeyword()) + "%'"
+					+ " OR w.cao.operator.name LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getKeyword()) + "%')";
 		}
 		if (filter.getUserID() != null && filter.getUserID().length > 0) {
 			filterString += " AND w.createdBy.id IN (" + Strings.implode(filter.getUserID(), ",") + ")";

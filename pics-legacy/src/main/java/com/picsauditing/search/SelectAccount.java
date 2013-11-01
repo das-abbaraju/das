@@ -132,7 +132,7 @@ public class SelectAccount extends SelectSQL {
 	public void setStartsWith(String startsWith) {
 		if (startsWith != null && startsWith.length() > 0) {
 			this.startsWith = startsWith;
-			this.addWhere("a.name LIKE '" + Strings.escapeQuotes(startsWith) + "%'");
+			this.addWhere("a.name LIKE '" + Strings.escapeQuotesAndSlashes(startsWith) + "%'");
 		}
 	}
 

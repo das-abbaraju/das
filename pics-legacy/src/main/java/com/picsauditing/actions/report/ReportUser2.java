@@ -29,7 +29,7 @@ public class ReportUser2 extends ReportActionSupport {
 	private void addFilterToSQL() {
 		ReportFilterUser f = getFilter();
 
-		String search = Strings.escapeQuotes(f.getSearch());
+		String search = Strings.escapeQuotesAndSlashes(f.getSearch());
 		if (search.length() >= 3) {			
 			StringBuffer where = new StringBuffer();
 			String phone = Strings.stripPhoneNumber(f.getSearch());
@@ -54,23 +54,23 @@ public class ReportUser2 extends ReportActionSupport {
 			sql.addWhere(where.toString());
 		} else {
 			if (filterOn(f.getStartsWith()))
-				sql.addWhere("u.name LIKE '" + Strings.escapeQuotes(f.getStartsWith()) + "%'");
+				sql.addWhere("u.name LIKE '" + Strings.escapeQuotesAndSlashes(f.getStartsWith()) + "%'");
 
 			if (filterOn(f.getContactName()))
-				sql.addWhere("u.name LIKE '%" + Strings.escapeQuotes(f.getContactName()) + "%'");
+				sql.addWhere("u.name LIKE '%" + Strings.escapeQuotesAndSlashes(f.getContactName()) + "%'");
 
 			String phone = Strings.stripPhoneNumber(f.getPhoneNumber());
 			if (filterOn(phone))
 				sql.addWhere("u.phoneIndex LIKE '" + phone + "%'");
 
 			if (filterOn(f.getEmailAddress()))
-				sql.addWhere("u.email LIKE '%" + Strings.escapeQuotes(f.getEmailAddress()) + "%'");
+				sql.addWhere("u.email LIKE '%" + Strings.escapeQuotesAndSlashes(f.getEmailAddress()) + "%'");
 
 			if (filterOn(f.getUserName()))
-				sql.addWhere("u.username LIKE '%" + Strings.escapeQuotes(f.getUserName()) + "%'");
+				sql.addWhere("u.username LIKE '%" + Strings.escapeQuotesAndSlashes(f.getUserName()) + "%'");
 
 			if (filterOn(f.getCompanyName()))
-				sql.addWhere("a.name LIKE '%" + Strings.escapeQuotes(f.getCompanyName()) + "%'");
+				sql.addWhere("a.name LIKE '%" + Strings.escapeQuotesAndSlashes(f.getCompanyName()) + "%'");
 			
 			if (isNumeric(f.getSearch())) {
 				if (filterOn(f.getSearch())) {

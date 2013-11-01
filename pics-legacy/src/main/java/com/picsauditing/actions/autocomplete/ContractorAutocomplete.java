@@ -21,9 +21,9 @@ public class ContractorAutocomplete extends AutocompleteActionSupport<Contractor
 		if (itemKeys == null) {
 			if (!Strings.isEmpty(q)) {
 				if (isSearchDigit())
-					return dao.findWhere("a.id LIKE '%" + Strings.escapeQuotes(q) + "%'");
+					return dao.findWhere("a.id LIKE '%" + Strings.escapeQuotesAndSlashes(q) + "%'");
 				else
-					return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotes(q) + "%'");
+					return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotesAndSlashes(q) + "%'");
 			}
 		} else if (itemKeys.length > 0) {
 			return dao.findWhere("a.id IN (" + Strings.implodeForDB(itemKeys, ",") + ")");

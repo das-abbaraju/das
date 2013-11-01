@@ -56,7 +56,7 @@ public class LocationAutocompleteService extends AbstractAutocompleteService<Aut
 		List<Country> matchingCountries = new ArrayList<>();
 		// search both iso and translated fields for the 2 letter combinations
 		if (search.length() == ISO_COUNTRY_CODE_LENGTH) {
-			matchingCountries.addAll(countryDAO.findWhere("isoCode LIKE '%" + Strings.escapeQuotes(search) + "'"));
+			matchingCountries.addAll(countryDAO.findWhere("isoCode LIKE '%" + Strings.escapeQuotesAndSlashes(search) + "'"));
 		}
 
 		matchingCountries.addAll(searchCountryByTranslation(search));
@@ -69,7 +69,7 @@ public class LocationAutocompleteService extends AbstractAutocompleteService<Aut
 		// search both iso and translated fields for the 2 letter combinations
 		if (search.length() == ISO_COUNTRY_CODE_LENGTH) {
 			matchingSubdivisions.addAll(countrySubdivisionDAO.findWhere("isoCode LIKE '%"
-					+ Strings.escapeQuotes(search) + "'"));
+					+ Strings.escapeQuotesAndSlashes(search) + "'"));
 		}
 
 		matchingSubdivisions.addAll(searchCountrySubdivisionByTranslation(search));
@@ -85,11 +85,11 @@ public class LocationAutocompleteService extends AbstractAutocompleteService<Aut
 	}
 
 	private List<Country> searchCountryByTranslation(String search) {
-		return countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(search) + "%");
+		return countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotesAndSlashes(search) + "%");
 	}
 
 	private List<CountrySubdivision> searchCountrySubdivisionByTranslation(String search) {
 		return countrySubdivisionDAO.findByTranslatableField(
-				CountrySubdivision.class, "%" + Strings.escapeQuotes(search) + "%");
+				CountrySubdivision.class, "%" + Strings.escapeQuotesAndSlashes(search) + "%");
 	}
 }

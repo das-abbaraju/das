@@ -79,7 +79,20 @@ public class Strings {
 		return value.replace(singleQuote, singleQuote + singleQuote);
 	}
 
-	public static String implode(int[] array) {
+    public static String escapeSlashes(String value) {
+        if (isEmpty(value))
+            return EMPTY_STRING;
+
+        String singleSlash = "\\";
+
+        return value.replace(singleSlash, singleSlash + singleSlash);
+    }
+
+    public static String escapeQuotesAndSlashes(String value) {
+        return escapeSlashes(escapeQuotes(value));
+    }
+
+    public static String implode(int[] array) {
 		return implode(array, ",");
 	}
 
@@ -172,7 +185,7 @@ public class Strings {
 			break;
 
 		case OBJECT_TO_STRING_ESCAPE_STRATEGY:
-			builder.append("'").append(escapeQuotes(String.valueOf(entity))).append("'");
+			builder.append("'").append(escapeQuotesAndSlashes(String.valueOf(entity))).append("'");
 			break;
 
 		default:
@@ -184,7 +197,7 @@ public class Strings {
 		stringBuilder.append("'");
 
 		if (entity instanceof String) {
-			stringBuilder.append(escapeQuotes((String) entity));
+			stringBuilder.append(escapeQuotesAndSlashes((String) entity));
 		} else {
 			stringBuilder.append(entity);
 		}

@@ -38,7 +38,7 @@ public class OperatorTagAutocompleteService extends AbstractAutocompleteService<
 		}
 
 		List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, " t.tag LIKE '%" +
-				Strings.escapeQuotes(search) + "%' " + permissionsQuery, RESULT_SET_LIMIT);
+				Strings.escapeQuotesAndSlashes(search) + "%' " + permissionsQuery, RESULT_SET_LIMIT);
 		if (CollectionUtils.isEmpty(tags)) {
 			return Collections.emptyList();
 		}
