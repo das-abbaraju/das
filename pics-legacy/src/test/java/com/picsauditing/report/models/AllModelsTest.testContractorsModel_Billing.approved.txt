@@ -79,6 +79,9 @@ ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorTagTagID
+ContractorTradeActivityPercent
+ContractorTradeManufacture
+ContractorTradeSelfPerformed
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorVatId

@@ -30,6 +30,7 @@ public class ContractorsModel extends AbstractModel {
 
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
+        contractorTrade.minimumImportance = FieldImportance.Average;
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
         directTrade.alias = "DirectTrade";
         ModelSpec trade = directTrade.join(TradeTable.Children);
