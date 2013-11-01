@@ -75,7 +75,7 @@
 <s:hidden name="id"></s:hidden>
 <s:hidden name="invoice.id"></s:hidden>
 <s:hidden name="button" value="save"></s:hidden>
-<table width="100%">
+<table width="100%" class="invoice_items">
 <tr>
     <td>
         <table width="100%">
@@ -304,8 +304,17 @@
         </s:if>
         <table width="100%" class="allborder">
             <tr>
-                <th colspan="2">
+                <th class="item-description" colspan="2">
                     <s:text name="InvoiceDetail.ItemDescription"/>
+                    <pics:permission perm="Billing">
+                        <input id="revenue_recognition_button" type="button" value="Show Rev Rec" class="hide-revrec" />
+                    </pics:permission>
+                </th>
+                <th class="revenue-recognition">
+                    Revenue Start Date
+                </th>
+                <th class="revenue-recognition">
+                    Revenue Finish Date
                 </th>
                 <th width="200px">
                     <s:text name="InvoiceDetail.FeeAmount"/>
@@ -350,6 +359,12 @@
                             <td style="border-left: 0">
                                 <s:property value="description"/>
                             </td>
+                            <td class="revenue-recognition">
+                                <s:property value="revenueStartDate" />
+                            </td>
+                            <td class="revenue-recognition">
+                                <s:property value="revenueFinishDate" />
+                            </td>
                             <td class="right">
                                 <s:property value="amount"/>
                                 <s:property value="transaction.currency"/>
@@ -380,7 +395,7 @@
                 <s:set var="subtotal_amount" value="transaction.taxlessSubtotal" />
 
                 <tr>
-                    <td class="big right" colspan="2">
+                    <td class="big right totals" colspan="2">
                         ${subtotal_label}
                     </td>
                     <td class="big right">
@@ -390,7 +405,7 @@
                 <s:iterator value="transaction.items">
                     <s:if test="invoiceFee.isTax()">
                         <tr>
-                            <td style="border-right: 0">
+                            <td class="tax-item-description" style="border-right: 0">
                                 <s:set name="o" value="[0]"/>
                                 <s:include value="../who.jsp"/>
                                 <s:property value="invoiceFee.fee"/>
@@ -434,7 +449,7 @@
             </s:if>
 
             <tr>
-                <th colspan="2" class="big right">
+                <th colspan="2" class="big right totals">
                     <s:text name="InvoiceDetail.InvoiceTotal"/>
                 </th>
                 <td class="big right">
@@ -444,7 +459,7 @@
             </tr>
             <s:if test="transaction.payments.size() > 0">
                 <tr>
-                    <th colspan="2" class="big right">
+                    <th colspan="2" class="big right totals">
                         <s:text name="InvoiceDetail.Payments"/>
                     </th>
                     <td class="right">
@@ -491,7 +506,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th colspan="2" class="big right">
+                    <th colspan="2" class="big right totals">
                         <s:text name="InvoiceDetail.Balance"/>
                     </th>
                     <td class="big right">

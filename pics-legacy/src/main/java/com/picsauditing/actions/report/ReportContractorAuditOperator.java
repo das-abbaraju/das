@@ -196,7 +196,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
             List<AuditData> answers = new ArrayList<AuditData>();
             for (int i = 0; i < theseAudits.size(); i += 1000) {
                 List<Integer> ids = new Vector<Integer>();
-                ids.addAll(theseAudits.subList(i, ((i + 1000) < theseAudits.size()) ? i + 1000 : theseAudits.size() - 1));
+                ids.addAll(theseAudits.subList(i, ((i + 1000) < theseAudits.size()) ? i + 1000 : theseAudits.size()));
                 answers.addAll(auditDataDao.findPolicyData(ids));
             }
 
@@ -229,10 +229,14 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
         }
 
         try {
-            return questionData.get(purpose).get(auditId);
+            Map<Integer, List<AuditData>> purposeData = questionData.get(purpose);
+            if (purposeData != null) {
+                return purposeData.get(auditId);
+            }
         } catch (Exception e) {
-            return new ArrayList<AuditData>();
         }
+
+        return new ArrayList<AuditData>();
     }
 
     public String getAMBestRatings(String comment) {

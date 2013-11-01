@@ -27,6 +27,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	protected AuditOptionValueDAO auditOptionValueDAO;
 
     protected String slug;
+    protected String stringToSlugify;
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
 	private List<AuditOptionGroup> optionTypes;
@@ -448,7 +449,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	}
 
     public String validateSlug() {
-        boolean isUnique = slugService.slugHasDuplicate(AuditQuestion.class, getSlug(), getId());
+        boolean isUnique = !slugService.slugHasDuplicate(AuditQuestion.class, getSlug(), getId());
         boolean isURI = slugService.slugIsURICompliant(getSlug());
 
         json = new JSONObject();
@@ -463,7 +464,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
         json = new JSONObject();
 
         try {
-            String slug = slugService.generateSlug(AuditQuestion.class, question.getName(), question.getId());
+            String slug = slugService.generateSlug(AuditQuestion.class, stringToSlugify, getId());
             json.put("slug",slug);
         }
         catch (Exception e) {
@@ -479,6 +480,15 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+
+    public String getStringToSlugify() {
+        return stringToSlugify;
+    }
+
+    public void setStringToSlugify(String stringToSlugify) {
+        this.stringToSlugify = stringToSlugify;
     }
 
 }
