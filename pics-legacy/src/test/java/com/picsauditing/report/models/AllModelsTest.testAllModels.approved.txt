@@ -551,6 +551,7 @@ ContractorCorporationBaselineFlag
 ContractorCorporationCreationDate
 ContractorCorporationFlagColor
 ContractorCorporationFlagIsForced
+ContractorCorporationFlagLastUpdated
 ContractorCorporationForceBegin
 ContractorCorporationForceEnd
 ContractorCorporationForceFlag
@@ -650,6 +651,7 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 ContractorFlagFlagColor
+ContractorFlagFlagLastUpdated
 ContractorFlagNetworkLevel
 ContractorFlagTag
 ContractorFlagWaitingOn
@@ -710,6 +712,7 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 ContractorFlagFlagColor
+ContractorFlagFlagLastUpdated
 ContractorFlagNetworkLevel
 ContractorFlagTag
 ContractorFlagWaitingOn
@@ -844,6 +847,7 @@ ContractorOperatorBaselineFlag
 ContractorOperatorCreationDate
 ContractorOperatorFlagColor
 ContractorOperatorFlagIsForced
+ContractorOperatorFlagLastUpdated
 ContractorOperatorForceBegin
 ContractorOperatorForceEnd
 ContractorOperatorForceFlag
@@ -938,6 +942,7 @@ ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorRequestedByDeadline
+ContractorRequestedByFlagLastUpdated
 ContractorRequestedByNetworkLevel
 ContractorRequestedByOperatorID
 ContractorRequestedByOperatorName
@@ -1050,6 +1055,7 @@ ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorOperatorFlagColor
+ContractorOperatorFlagLastUpdated
 ContractorOperatorNetworkLevel
 ContractorOperatorTag
 ContractorProductRisk
