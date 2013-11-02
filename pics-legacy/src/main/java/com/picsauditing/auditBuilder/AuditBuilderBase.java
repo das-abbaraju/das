@@ -92,11 +92,11 @@ public abstract class AuditBuilderBase {
 	}
 
 	AuditData chooseAnswerToEvaluate(AuditRule rule, List<AuditData> questionAnswers) {
-		AuditData questionAnswer;
+		AuditData questionAnswer = null;
 
 		if (rule.appliesToASpecificYear()) {
 			questionAnswer = findAnswerForSpecificYear(rule, questionAnswers);
-		} else {
+		} else if (questionAnswers.size() > 0) {
 			questionAnswer = questionAnswers.get(0);
 		}
 		return questionAnswer;

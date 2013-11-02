@@ -50,6 +50,7 @@ ContractorFlagBaselineFlag
 ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagIsForced
+ContractorFlagFlagLastUpdated
 ContractorFlagForceBegin
 ContractorFlagForceEnd
 ContractorFlagForceFlag

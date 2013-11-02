@@ -12,36 +12,36 @@ import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 
 public class ContractorAuditOperatorsModel extends AbstractModel {
-	public static final String CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL = "ContractorsRequiringAnnualUpdateEmail";
-	private static final String AUDIT_OPERATOR = "AuditOperator";
-	private static final String CONTRACTOR_OPERATOR = "ContractorOperator";
+    public static final String CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL = "ContractorsRequiringAnnualUpdateEmail";
+    private static final String AUDIT_OPERATOR = "AuditOperator";
+    private static final String CONTRACTOR_OPERATOR = "ContractorOperator";
 
-	public ContractorAuditOperatorsModel(Permissions permissions) {
-		super(permissions, new ContractorAuditOperatorTable());
-	}
+    public ContractorAuditOperatorsModel(Permissions permissions) {
+        super(permissions, new ContractorAuditOperatorTable());
+    }
 
-	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, AUDIT_OPERATOR);
+    public ModelSpec getJoinSpec() {
+        ModelSpec spec = new ModelSpec(null, AUDIT_OPERATOR);
 
-		ModelSpec operatorAccount = spec.join(ContractorAuditOperatorTable.Operator);
-		operatorAccount.alias = "AuditOperatorAccount";
+        ModelSpec operatorAccount = spec.join(ContractorAuditOperatorTable.Operator);
+        operatorAccount.alias = "AuditOperatorAccount";
 
-		ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
-		conAudit.alias = "Audit";
-		conAudit.join(ContractorAuditTable.Type);
-		conAudit.join(ContractorAuditTable.Auditor);
-		conAudit.join(ContractorAuditTable.ClosingAuditor);
+        ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
+        conAudit.alias = "Audit";
+        conAudit.join(ContractorAuditTable.Type);
+        conAudit.join(ContractorAuditTable.Auditor);
+        conAudit.join(ContractorAuditTable.ClosingAuditor);
 
         ModelSpec previousAudit = conAudit.join(ContractorAuditTable.PreviousAudit);
         previousAudit.alias = "PreviousAudit";
         previousAudit.minimumImportance = FieldImportance.Average;
 
-		ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
-		contractor.alias = "Contractor";
-		contractor.minimumImportance = FieldImportance.Average;
-		ModelSpec account = contractor.join(ContractorTable.Account);
-		account.alias = AbstractModel.ACCOUNT;
-		account.minimumImportance = FieldImportance.Average;
+        ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
+        contractor.alias = "Contractor";
+        contractor.minimumImportance = FieldImportance.Average;
+        ModelSpec account = contractor.join(ContractorTable.Account);
+        account.alias = AbstractModel.ACCOUNT;
+        account.minimumImportance = FieldImportance.Average;
 
         contractor.join(ContractorTable.Tag);
 
@@ -59,11 +59,11 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         manual.alias = "SafetyManual";
         manual.minimumImportance = FieldImportance.Average;
 
-		if (permissions.isOperatorCorporate()) {
-			ModelSpec flag = contractor.join(ContractorTable.Flag);
-			flag.alias = CONTRACTOR_OPERATOR;
-			flag.minimumImportance = FieldImportance.Average;
-		}
+        if (permissions.isOperatorCorporate()) {
+            ModelSpec flag = contractor.join(ContractorTable.Flag);
+            flag.alias = CONTRACTOR_OPERATOR;
+            flag.minimumImportance = FieldImportance.Average;
+        }
 
         ModelSpec fatalities = conAudit.join(ContractorAuditTable.Fatalities);
         fatalities.alias = "Fatalities";
@@ -79,41 +79,41 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         emr.alias = "Emr";
 
         return spec;
-	}
+    }
 
-	@Override
-	public String getWhereClause(List<Filter> filters) {
-		super.getWhereClause(filters);
-		permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
+    @Override
+    public String getWhereClause(List<Filter> filters) {
+        super.getWhereClause(filters);
+        permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
 
-		String where = permissionQueryBuilder.buildWhereClause();
+        String where = permissionQueryBuilder.buildWhereClause();
 
-		if (!where.isEmpty()) {
-			where += " AND ";
-		}
+        if (!where.isEmpty()) {
+            where += " AND ";
+        }
 
-		where += "AuditOperator.visible = 1";
+        where += "AuditOperator.visible = 1";
 
-		if (permissions.isOperatorCorporate()) {
-			// TODO: This looks like it can be further improved. Find a way to
-			// do this without having to implode all of the ids.
-			String opIDs = permissions.getAccountIdString();
-			if (permissions.isCorporate()) {
-				opIDs = Strings.implode(permissions.getOperatorChildren());
-			}
+        if (permissions.isOperatorCorporate()) {
+            // TODO: This looks like it can be further improved. Find a way to
+            // do this without having to implode all of the ids.
+            String opIDs = permissions.getAccountIdString();
+            if (permissions.isCorporate()) {
+                opIDs = Strings.implode(permissions.getOperatorChildren());
+            }
 
-			where += "\n AND " + AUDIT_OPERATOR
-					+ ".id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs + "))";
-		}
+            where += "\n AND " + AUDIT_OPERATOR
+                    + ".id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs + "))";
+        }
 
-		return where;
-	}
+        return where;
+    }
 
-	@Override
-	public Map<String, Field> getAvailableFields() {
-		Map<String, Field> fields = super.getAvailableFields();
-		Field accountName = fields.get("AccountName".toUpperCase());
-		accountName.setUrl("ContractorView.action?id={AccountID}");
+    @Override
+    public Map<String, Field> getAvailableFields() {
+        Map<String, Field> fields = super.getAvailableFields();
+        Field accountName = fields.get("AccountName".toUpperCase());
+        accountName.setUrl("ContractorView.action?id={AccountID}");
 
         Field fatalities = fields.get("FatalitiesAnswer".toUpperCase());
         fatalities.setType(FieldType.Number);
@@ -129,13 +129,13 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         afr.setType(FieldType.Number);
 
         Field contractorsRequiringAnnualUpdateEmail = new Field(
-				CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL,
-				"(Audit.auditTypeID = 1 AND AuditOperator.status = 'Resubmit') " +
-				"OR (Audit.auditTypeID = 11 AND Audit.auditFor = 2013 AND AuditOperator.status = 'Pending') " +
-				"OR (AuditType.classType = 'PQF' AND DATE(Audit.expiresDate) = '2014-03-15' AND AuditOperator.status = 'Pending')",
-				FieldType.Boolean);
-		contractorsRequiringAnnualUpdateEmail.requirePermission(OpPerms.DevelopmentEnvironment);
-		fields.put(CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL.toUpperCase(), contractorsRequiringAnnualUpdateEmail);
+                CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL,
+                "(Audit.auditTypeID = 1 AND AuditOperator.status = 'Resubmit') " +
+                        "OR (Audit.auditTypeID = 11 AND Audit.auditFor = " + getLastYear() + " AND AuditOperator.status = 'Pending') " +
+                        "OR (AuditType.classType = 'PQF' AND DATE(Audit.expiresDate) BETWEEN '" + getThisYear() + "-02-28' AND '" + getThisYear() + "-04-01' AND AuditOperator.status = 'Pending')",
+                FieldType.Boolean);
+        contractorsRequiringAnnualUpdateEmail.requirePermission(OpPerms.DevelopmentEnvironment);
+        fields.put(CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL.toUpperCase(), contractorsRequiringAnnualUpdateEmail);
 
         Field clientSite = new Field("ClientSite","Account.id",FieldType.Operator);
         clientSite.setVisible(false);
@@ -152,5 +152,13 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         fields.put(verify.getName().toUpperCase(), verify);
 
         return fields;
-	}
+    }
+
+    private String getLastYear() {
+        return "2013";
+    }
+
+    private String getThisYear() {
+        return "2014";
+    }
 }

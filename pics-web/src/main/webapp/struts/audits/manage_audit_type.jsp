@@ -11,28 +11,28 @@
             Create New Audit Type
         </s:else>
     </title>
-    
+
     <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
-    
+
     <s:include value="../jquery.jsp"/>
-    
+
     <script type="text/javascript">
         $(function(){
             var sortList = $('#list').sortable({
                 update: function() {
-                    $('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="auditType.id"/>&type=AuditType', 
-                        sortList.sortable('serialize').replace(/\[|\]/g,''), 
+                    $('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="auditType.id"/>&type=AuditType',
+                        sortList.sortable('serialize').replace(/\[|\]/g,''),
                         function() {sortList.effect('highlight', {color: '#FFFF11'}, 1000);}
                     );
                 }
             });
-            
+
             showFlags();
             showRules();
             showWorkFlowSteps();
-            
+
             $('.cluetip').cluetip({
                 closeText: "<img src='images/cross.png' width='16' height='16'>",
                 arrows: true,
@@ -40,34 +40,34 @@
                 local: true,
                 clickThrough: false
             });
-            
+
             <s:if test="">
                 var jsonObj = <s:property value="" />
-            </s:if>    
-        
+            </s:if>
+
             $('#save_workFlowID').live('change', function(){
-                var id = $(this).find(':selected').val(); 
-                
+                var id = $(this).find(':selected').val();
+
                 if(id > 0){
                     var link = $('<a>').attr({'href': 'ManageAuditWorkFlow.action?id='+id, 'class': 'go'}).append('Go');
                     $('.workflow_go').html(link);
                 } else {
                     $('.workflow_go').html('');
                 }
-                
+
                 showWorkFlowSteps();
             });
         });
-        
+
         function showFlags() {
             var data = {
                 auditTypeID: '<s:property value="id"/>'
             };
-            
+
             startThinking({ div: "flags", message: "Loading Related Flag Criteria" });
             $('#flags').load('FlagCriteriaListAjax.action', data);
         }
-        
+
         function showRules() {
             var data = {
                     'comparisonRule.auditType.id': '<s:property value="id"/>'
@@ -75,7 +75,7 @@
             startThinking({ div: "rules", message: "Loading Related Rules" });
             $('#rules').load('AuditTypeRuleTableAjax.action', data);
         }
-        
+
         function showWorkFlowSteps(){
             var data = {
                 workFlowID: $('#save_workFlowID').val()
@@ -85,28 +85,28 @@
         }
     </script>
 </head>
-<body>
+<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
     <s:include value="manage_audit_type_breadcrumbs.jsp" />
-    
+
     <s:include value="../config_environment.jsp" />
-    
+
     <s:if test="auditType.id > 0">
         <a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
     </s:if>
-    
+
     <s:form id="save">
         <s:hidden name="id"></s:hidden>
-        
+
         <div>
             <fieldset class="form">
                 <h2 class="formLegend">
                     Audit Type
                 </h2>
-                
+
                 <ol>
                     <li>
                         <label>ID:</label>
-                        
+
                         <s:if test="auditType.id > 0">
                             <s:property value="auditType.id" />
                             <s:set var="o" value="auditType" />
@@ -119,12 +119,12 @@
                     <li>
                         <label>Name:</label>
                         <s:textfield name="auditType.name" value='%{(auditType.id > 0) ? auditType.name : ""}'/>
-                        
+
                         <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditType.${auditType.id}.name</s:param>
                             <s:param name="include_locale_static">true</s:param>
                         </s:include>
-                        
+
                         <pics:fieldhelp title="Audit Name">
                             <p>
                                 The name of the document, policy type, audit, or operator specific form
@@ -133,7 +133,7 @@
                     </li>
                     <li>
                         <a
-                            class="edit translate" 
+                            class="edit translate"
                             href="ManageTranslations.action?button=Search&key=AuditType.<s:property value="auditType.id"/>."
                             target="_BLANK">
                             Manage Translations
@@ -162,7 +162,7 @@
                     <li>
                         <label>Description:</label>
                         <s:textfield name="auditType.description" />
-                        
+
                         <pics:fieldhelp title="Description">
                             <p>
                                 An optional description used for reference. Currently this is not used anywhere.
@@ -172,7 +172,7 @@
                     <li>
                         <label>Has Multiple:</label>
                         <s:checkbox name="auditType.hasMultiple" />
-                        
+
                         <pics:fieldhelp title="Has Multiple">
                             <p>
                                 Check this box if a given contractor can have more than one of these types of audits active at the same time.
@@ -183,7 +183,7 @@
                     <li>
                         <label>Can Renew:</label>
                         <s:checkbox name="auditType.renewable" />
-                        
+
                         <pics:fieldhelp title="Can Renew">
                             <p>
                                 Check this box if the document or audit is reusable at the end of its life.
@@ -201,7 +201,7 @@
                             headerKey=""
                             headerValue="- Score Type -"
                         />
-                        
+
                         <pics:fieldhelp title="Scoreable">
                             <p>
                                 This field is for scoreable audits.
@@ -225,7 +225,7 @@
                     <li>
                         <label>Is Scheduled:</label>
                         <s:checkbox name="auditType.scheduled" />
-                        
+
                         <pics:fieldhelp>
                             Check this box if this can be scheduled to be performed at a specific date and time
                         </pics:fieldhelp>
@@ -249,7 +249,7 @@
                     <li>
                         <label>Group ID Who Can Assign Audit:</label>
                         <s:textfield name="auditType.assignAudit" />
-                        
+
                         <pics:fieldhelp title="Description">
                             <p>
                                 Group Id of who can assign this audit to auditors.
@@ -259,7 +259,7 @@
                     <li>
                         <label>Group ID Who Are Auditors:</label>
                         <s:textfield name="auditType.editAudit" />
-                        
+
                         <pics:fieldhelp title="Description">
                             <p>
                                 Group Id of who are auditors of this audit.
@@ -286,18 +286,18 @@
                         <s:select
                             name="editPerm"
                             list="@com.picsauditing.access.OpPerms@values()"
-                            listValue="%{getText(getI18nKey('description'))}" 
+                            listValue="%{getText(getI18nKey('description'))}"
                             headerKey=""
                             headerValue="Only PICS"
                             listKey="name()"
                             value="editPerm"
                         />
-                        
+
                         <pics:fieldhelp title="Permission to Edit">
-                            For Operators and PICS Admins this will restrict the ability to edit this audit 
+                            For Operators and PICS Admins this will restrict the ability to edit this audit
                             type to that permission.
                         </pics:fieldhelp>
-                    </li>                
+                    </li>
                     <li>
                         <label>Workflow:</label>
                         <s:select
@@ -305,13 +305,13 @@
                             name="workFlowID"
                             listKey="id"
                             listValue="name"
-                            value="auditType.workFlow.id" 
+                            value="auditType.workFlow.id"
                             headerKey="0"
                             headerValue="- Select Workflow -"
                         />
-    
+
                         <div class="workflow_step_area"/></div>
-                        
+
                         <div class="workflow_go">
                             <s:if test="auditType.workFlow.id > 0">
                                 <a href="ManageAuditWorkFlow.action?id=<s:property value="auditType.workFlow.id" />" class="go">
@@ -319,7 +319,7 @@
                                 </a>
                             </s:if>
                         </div>
-                        
+
                         <pics:fieldhelp title="Workflow">
                             Required: This describes the workflow steps or lifecycle that this audit goes through.
                             If you're not sure, then start with Single Step Workflow, which is the simplest.
@@ -328,7 +328,7 @@
                     <li>
                         <label>Months to Expire:</label>
                         <s:textfield name="auditType.monthsToExpire" />
-                        
+
                         <pics:fieldhelp>Determines when the audit will expire.
                             <ul>
                                 <li>
@@ -491,19 +491,19 @@
                     </li>
                 </ol>
             </fieldset>
-            
+
             <fieldset class="form submit">
                 <input type="submit" class="picsbutton positive" name="button" value="Save" id="save" />
 
                 <s:if test="auditType.id > 0 && auditType.categories.size == 0">
                     <input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete" id="delete" />
                 </s:if>
-                
+
                 <input type="submit" class="picsbutton" name="button" value="UpdateAllAudits" id="updateAllAudits" />
             </fieldset>
         </div>
     </s:form>
-    
+
     <s:if test="id > 0">
         <div>
             <ul id="list" class="list">
@@ -521,49 +521,49 @@
                     </li>
                 </s:iterator>
             </ul>
-            
+
             <a
                 id="manage_audit_types_add_new_category"
                 class="add"
                 href="ManageCategory.action?button=AddNew&auditType=<s:property value="auditType.id"/>&category.auditType.id=<s:property value="auditType.id"/>">
                 Add New Category
             </a>
-            
+
             <div id="list-info"></div>
         </div>
-        
+
         <s:if test="auditType.categories.size > 1">
             <div class="info">
                 Drag and drop categories to change their order
             </div>
-            
+
             <br clear="all" />
         </s:if>
-        
+
         <br/>
-        
+
         <h3>
             Related Flag Criteria
         </h3>
-        
+
         <div id="flags"></div>
-        
+
         <pics:permission perm="EditFlagCriteria">
             <a href="ManageFlagCriteria!edit.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />&criteria.description=<s:property value="auditType.name" />%20is%20missing"
                 class="add" id="manageFlagCriteria">
                 Add New Audit Type Flag Criteria
             </a>
         </pics:permission>
-        
+
         <br/>
         <br/>
-        
+
         <h3>
             Related Rules
         </h3>
-        
+
         <div id="rules"></div>
-        
+
         <pics:permission perm="ManageAuditTypeRules" type="Edit" >
             <a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />"
                 class="add" id="auditTypeRuleEditor">
@@ -571,4 +571,4 @@
             </a>
         </pics:permission>
     </s:if>
-</body>
+</div>

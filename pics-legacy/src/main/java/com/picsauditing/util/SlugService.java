@@ -26,12 +26,12 @@ public class SlugService {
         return slug;
     }
 
-    private <T extends BaseTable> void validateSlug(Class<T> clazz, String slug, int id) throws Exception {
+    public <T extends BaseTable> void validateSlug(Class<T> clazz, String slug, int id) throws Exception {
         if (slugHasDuplicate(clazz, slug, id)) {
-            throw new Exception("Slug Already Exists");
+            throw new SlugFormatException(slug + " already exists");
         }
         else if (!slugIsURICompliant(slug)) {
-            throw new Exception("Slug is not URI Compliant");
+            throw new SlugFormatException(slug + " is not URI compliant");
         }
     }
 

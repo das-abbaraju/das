@@ -7324,6 +7324,26 @@ Ext.define('Ext.ZIndexManager', {
     Ext.WindowManager = Ext.WindowMgr = new this();
 });
 
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.Target
 
@@ -19978,6 +19998,26 @@ Ext.define('Ext.toolbar.Fill', {
     isFill : true,
     flex: 1
 });
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.Element
  * 
@@ -19999,23 +20039,17 @@ Ext.define('Ext.fx.target.Element', {
         if (val == undefined) {
             if (attr === 'x') {
                 val = el.getX();
-            }
-            else if (attr === 'y') {
+            } else if (attr === 'y') {
                 val = el.getY();
-            }
-            else if (attr === 'scrollTop') {
+            } else if (attr === 'scrollTop') {
                 val = el.getScroll().top;
-            }
-            else if (attr === 'scrollLeft') {
+            } else if (attr === 'scrollLeft') {
                 val = el.getScroll().left;
-            }
-            else if (attr === 'height') {
+            } else if (attr === 'height') {
                 val = el.getHeight();
-            }
-            else if (attr === 'width') {
+            } else if (attr === 'width') {
                 val = el.getWidth();
-            }
-            else {
+            } else {
                 val = el.getStyle(attr);
             }
         }
@@ -20030,7 +20064,8 @@ Ext.define('Ext.fx.target.Element', {
     setAttr: function(targetData) {
         var target = this.target,
             ln = targetData.length,
-            attrs, attr, o, i, j, ln2, element, value;
+            attrs, attr, o, i, j, ln2;
+            
         for (i = 0; i < ln; i++) {
             attrs = targetData[i].attrs;
             for (attr in attrs) {
@@ -20038,30 +20073,52 @@ Ext.define('Ext.fx.target.Element', {
                     ln2 = attrs[attr].length;
                     for (j = 0; j < ln2; j++) {
                         o = attrs[attr][j];
-                        element = o[0];
-                        value = o[1];
-                        if (attr === 'x') {
-                            element.setX(value);
-                        } else if (attr === 'y') {
-                            element.setY(value);
-                        } else if (attr === 'scrollTop') {
-                            element.scrollTo('top', value);
-                        } else if (attr === 'scrollLeft') {
-                            element.scrollTo('left',value);
-                        } else if (attr === 'width') {
-                            element.setWidth(value);
-                        } else if (attr === 'height') {
-                            element.setHeight(value);
-                        } else {
-                            element.setStyle(attr, value);
-                        }
+                        this.setElVal(o[0], attr, o[1]);
                     }
                 }
             }
         }
+    },
+    
+    setElVal: function(element, attr, value){
+        if (attr === 'x') {
+            element.setX(value);
+        } else if (attr === 'y') {
+            element.setY(value);
+        } else if (attr === 'scrollTop') {
+            element.scrollTo('top', value);
+        } else if (attr === 'scrollLeft') {
+            element.scrollTo('left',value);
+        } else if (attr === 'width') {
+            element.setWidth(value);
+        } else if (attr === 'height') {
+            element.setHeight(value);
+        } else {
+            element.setStyle(attr, value);
+        }
     }
 });
 
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.ElementCSS
  * 
@@ -20139,6 +20196,26 @@ Ext.define('Ext.fx.target.ElementCSS', {
         }
     }
 });
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.CompositeElement
  * 
@@ -20168,7 +20245,8 @@ Ext.define('Ext.fx.target.CompositeElement', {
 
     getAttr: function(attr, val) {
         var out      = [],
-            elements = this.target.elements,
+            target = this.target,
+            elements = target.elements,
             length   = elements.length,
             i,
             el;
@@ -20177,15 +20255,63 @@ Ext.define('Ext.fx.target.CompositeElement', {
             el = elements[i];
 
             if (el) {
-                el = this.target.getElement(el);
+                el = target.getElement(el);
                 out.push([el, this.getElVal(el, attr, val)]);
             }
         }
 
         return out;
+    },
+    
+    setAttr: function(targetData){
+        var target = this.target,
+            ln = targetData.length,
+            elements = target.elements,
+            ln3 = elements.length,
+            value, k,
+            attrs, attr, o, i, j, ln2;
+            
+        for (i = 0; i < ln; i++) {
+            attrs = targetData[i].attrs;
+            for (attr in attrs) {
+                if (attrs.hasOwnProperty(attr)) {
+                    ln2 = attrs[attr].length;
+                    for (j = 0; j < ln2; j++) {
+                        value = attrs[attr][j][1];
+                        for (k = 0; k < ln3; ++k) {
+                            el = elements[k];
+                            if (el) {
+                                el = target.getElement(el);
+                                this.setElVal(el, attr, value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 });
 
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.CompositeElementCSS
  * 
@@ -20208,6 +20334,26 @@ Ext.define('Ext.fx.target.CompositeElementCSS', {
         return Ext.fx.target.ElementCSS.prototype.setAttr.apply(this, arguments);
     }
 });
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.Sprite
 
@@ -20337,6 +20483,26 @@ Ext.define('Ext.fx.target.Sprite', {
     }
 });
 
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.CompositeSprite
 
@@ -20372,6 +20538,26 @@ Ext.define('Ext.fx.target.CompositeSprite', {
     }
 });
 
+/*
+This file is part of Ext JS 4.2
+
+Copyright (c) 2011-2013 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
+
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+*/
 /**
  * @class Ext.fx.target.Component
  * 
@@ -20414,13 +20600,13 @@ Ext.define('Ext.fx.target.Component', {
         }
     },
 
-    compMethod: {
-        top: 'setPosition',
-        left: 'setPosition',
-        x: 'setPagePosition',
-        y: 'setPagePosition',
-        height: 'setSize',
-        width: 'setSize',
+    setMethods: {
+        top:     'setPosition',
+        left:    'setPosition',
+        x:       'setPagePosition',
+        y:       'setPagePosition',
+        height:  'setSize',
+        width:   'setSize',
         opacity: 'setOpacity'
     },
 
@@ -20431,61 +20617,60 @@ Ext.define('Ext.fx.target.Component', {
 
     setAttr: function(targetData, isFirstFrame, isLastFrame) {
         var me = this,
-            target = me.target,
             ln = targetData.length,
-            attrs, attr, o, i, j, meth, targets, left, top, w, h;
+            attrs, attr, o, i, j, targets, left, top, w, h,
+            methodsToCall = {},
+            methodProps;
+
         for (i = 0; i < ln; i++) {
             attrs = targetData[i].attrs;
             for (attr in attrs) {
                 targets = attrs[attr].length;
-                meth = {
-                    setPosition: {},
-                    setPagePosition: {},
-                    setSize: {},
-                    setOpacity: {}
-                };
                 for (j = 0; j < targets; j++) {
                     o = attrs[attr][j];
-                    // We REALLY want a single function call, so push these down to merge them: eg
-                    // meth.setPagePosition.target = <targetComponent>
-                    // meth.setPagePosition['x'] = 100
-                    // meth.setPagePosition['y'] = 100
-                    meth[me.compMethod[attr]].target = o[0];
-                    meth[me.compMethod[attr]][attr] = o[1];
+                    methodProps = methodsToCall[me.setMethods[attr]] || (methodsToCall[me.setMethods[attr]] = {});
+                    methodProps.target = o[0];
+                    methodProps[attr] = o[1];
+                    // debugging code: Ext.log('Setting ' + o[0].id + "'s " + attr + ' to ' + o[1]);
                 }
-                if (meth.setPosition.target) {
-                    o = meth.setPosition;
-                    left = (o.left === undefined) ? undefined : parseFloat(o.left);
-                    top = (o.top === undefined) ? undefined : parseFloat(o.top);
-                    o.target.setPosition(left, top);
-                }
-                if (meth.setPagePosition.target) {
-                    o = meth.setPagePosition;
-                    o.target.setPagePosition(o.x, o.y);
-                }
-                if (meth.setSize.target) {
-                    o = meth.setSize;
-                    // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
-                    w = (o.width === undefined) ? o.target.getWidth() : parseFloat(o.width);
-                    h = (o.height === undefined) ? o.target.getHeight() : parseFloat(o.height);
+            }
+            if (methodsToCall.setPosition) {
+                o = methodsToCall.setPosition;
+                left = (o.left === undefined) ? undefined : parseFloat(o.left);
+                top = (o.top === undefined) ? undefined : parseFloat(o.top);
+                o.target.setPosition(left, top);
+            }
+            if (methodsToCall.setPagePosition) {
+                o = methodsToCall.setPagePosition;
+                o.target.setPagePosition(o.x, o.y);
+            }
+            if (methodsToCall.setSize) {
+                o = methodsToCall.setSize;
+                // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
+                w = (o.width === undefined) ? o.target.getWidth() : parseFloat(o.width);
+                h = (o.height === undefined) ? o.target.getHeight() : parseFloat(o.height);
 
-                    // Only set the size of the Component on the last frame, or if the animation was
-                    // configured with dynamic: true.
-                    // In other cases, we just set the target element size.
-                    // This will result in either clipping if animating a reduction in size, or the revealing of
-                    // the inner elements of the Component if animating an increase in size.
-                    // Component's animate function initially resizes to the larger size before resizing the
-                    // outer element to clip the contents.
-                    if (isLastFrame || me.dynamic) {
-                        o.target.setSize(w, h);
-                    } else {
-                        o.target.el.setSize(w, h);
-                    }
+                // Only set the size of the Component on the last frame, or if the animation was
+                // configured with dynamic: true.
+                // In other cases, we just set the target element size.
+                // This will result in either clipping if animating a reduction in size, or the revealing of
+                // the inner elements of the Component if animating an increase in size.
+                // Component's animate function initially resizes to the larger size before resizing the
+                // outer element to clip the contents.
+                o.target.el.setSize(w, h);
+                if (isLastFrame || me.dynamic) {
+                    // Defer the final sizing & layout until we are outside of this frame.
+                    // In case anything in the resulting layout calls animation.
+                    // If it does, *this* frame will fire again... recursively
+                    Ext.globalEvents.on({
+                        idle: Ext.Function.bind(o.target.setSize, o.target, [w, h]),
+                        single: true
+                    });
                 }
-                if (meth.setOpacity.target) {
-                    o = meth.setOpacity;
-                    o.target.el.setStyle('opacity', o.opacity);
-                }
+            }
+            if (methodsToCall.setOpacity) {
+                o = methodsToCall.setOpacity;
+                o.target.el.setStyle('opacity', o.opacity);
             }
         }
     }
@@ -67584,7 +67769,7 @@ Ext.define('PICS.ux.window.Window', {
                 var body_el = Ext.getBody();
 
                 this.mon(body_el, 'click', function (event, html, eOpts) {
-                    cmp.hide();
+                    cmp.destroy();
                 }, cmp, {
                     delegate: '.x-mask'
                 });
@@ -67594,7 +67779,7 @@ Ext.define('PICS.ux.window.Window', {
         this.callParent(arguments);
     },
 
-    closeAction: 'hide'
+    closeAction: 'destroy'
 });
 Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     extend: 'Ext.Component',
@@ -83611,9 +83796,9 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     id: 'report_subscribe',
 
     items: [{
-      xtype: 'fieldset',
-      title: PICS.text('Report.execute.subscribeSetting.legendTitle') + ':',
-      items: [{
+        xtype: 'fieldset',
+        title: PICS.text('Report.execute.subscribeSetting.legendTitle') + ':',
+        items: [{
             xtype: 'radiogroup',
             defaults: {
                 flex: 1,
@@ -83636,6 +83821,14 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
                     inputValue: 'Monthly'
             }]
         }]
+    }, {
+        xtype: 'component',
+        html: new Ext.Template([
+            '<p class="subscription-info">',
+                    PICS.text('Report.execute.subscribeSetting.subscriptionInfo2') + '<br />',
+                    PICS.text('Report.execute.subscribeSetting.subscriptionInfo1'),
+            '</p>'
+        ])
     }],
 
     layout: {
@@ -91659,7 +91852,7 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             dock: 'bottom',
             items: [{
                 xtype: 'component',
-                html: '<a href="' + PICS.data.ServerCommunicationUrl.getReportAccessUrl() + '" target="_blank">' + PICS.text('Report.execute.shareSetting.shareLink') + '</a>'
+                html: '<a href="' + PICS.data.ServerCommunicationUrl.getReportAccessUrl() + '" target="_blank"><i class="icon-wrench"></i>' + PICS.text('Report.execute.shareSetting.shareLink') + '</a>'
             }, {
                 xtype: 'tbfill'
             }, {
@@ -91724,7 +91917,7 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             ])
         }];
 
-        this.id = 'report_share_no_permission';        
+        this.id = 'report_share_no_permission';
     },
 
     onAllowEditClick: function (event, target) {
@@ -99054,6 +99247,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'hideReportInfoButton',
         selector: 'button[action=hide-report-info]'
+    }, {
+        ref: 'alertConfirmEdit',
+        selector: 'reportalertconfirm'
     }],
 
     stores: [
@@ -99094,7 +99290,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
-                click: this.editReport
+                click: this.confirmEdit
             },
 
             'reportsettingsmodal reportcopysetting button[action=copy]':  {
@@ -99126,6 +99322,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsubscribesetting radiogroup': {
                 change: this.requestSubscription
+            },
+
+            'reportalertconfirm button[action=rename]':  {
+                click: this.editReport
+            },
+
+            'reportalertconfirm button[action=copy]':  {
+                click: this.copyReport
+            },
+
+            'reportalertconfirm button[action=cancel]': {
+                click: this.closeConfirmEdit
             }
         });
 
@@ -99163,7 +99371,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 edit_setting_form = edit_setting_view.getForm(),
                 subscribe_setting_view = this.getSubscribeSetting(),
                 subscribe_setting_form = subscribe_setting_view.getForm();
-    
+
         if (edit_setting_form) {
             edit_setting_form.loadRecord(report);
         }
@@ -99194,13 +99402,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         // Remove the Report Info panel
         this.hideReportInfoIfVisible();
-        
+
         // reset the edit form
         edit_setting_form.loadRecord(edit_setting_form.getRecord());
-        
+
         // reset the copy form
         copy_setting_form.reset();
-        
+
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
 
@@ -99208,6 +99416,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (is_editable) {
             share_setting_view.updateAccountDisplayfield('');
             share_editable_icon.removeCls('selected');
+        }
+    },
+
+    closeConfirmEdit: function () {
+        confirm_box = this.getAlertConfirmEdit();
+
+        if (confirm_box) {
+            confirm_box.destroy();
         }
     },
 
@@ -99231,6 +99447,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             copy_setting_view = this.getCopySetting(),
             copy_setting_form = copy_setting_view.getForm();
 
+        this.closeConfirmEdit();
+
         if (copy_setting_form.isValid()) {
             copy_setting_form.updateRecord(report);
         }
@@ -99238,11 +99456,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.copyReport();
     },
 
+    confirmEdit: function () {
+        var confirm_box = Ext.create('PICS.view.report.alert.Confirm');
+
+        confirm_box.show();
+    },
+
     editReport: function (cmp, e, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
             edit_setting_view = this.getEditSetting(),
             edit_setting_form = edit_setting_view.getForm(),
             that = this;
+
+        this.closeConfirmEdit();
 
         if (edit_setting_form.isValid()) {
             edit_setting_form.updateRecord();
@@ -99319,7 +99545,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
 
         report_info_container.addCls('report-info-container');
-        
+
         var report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting', {
             renderTo: report_info_container
         });
