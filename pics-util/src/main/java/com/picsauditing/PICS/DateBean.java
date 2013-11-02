@@ -27,6 +27,9 @@ public class DateBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(DateBean.class);
 
+	public static final int ADD_OPERATION = 1;
+	public static final int SUBTRACT_OPERATION = -1;
+
 	static {
 		times.put(0, "06:00 AM");
 		times.put(1, "06:30 AM");
@@ -569,34 +572,32 @@ public class DateBean {
 	}
 
 	public static Date addMonths(Date startDate, int months) {
-		if (startDate == null || months == 0) {
-			return null;
-		}
-
-		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.MONTH, months);
-
-		return cal.getTime();
+		return adjustDate(startDate,months,Calendar.MONTH,ADD_OPERATION);
 	}
 
 	public static Date addYears(Date startDate, int years) {
-		if (startDate == null || years == 0) {
-			return null;
-		}
-
-		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.YEAR, years);
-
-		return cal.getTime();
+		return adjustDate(startDate,years,Calendar.YEAR,ADD_OPERATION);
 	}
 
 	public static Date addDays(Date startDate, int days) {
-		if (startDate == null || days == 0) {
+		return adjustDate(startDate,days,Calendar.DATE,ADD_OPERATION);
+	}
+
+	public static Date subtractDays(Date startDate, int days) {
+		return adjustDate(startDate,days,Calendar.DATE,SUBTRACT_OPERATION);
+	}
+
+	public static Date adjustDate(Date startDate, int qty, int typeOfAdjustment, int operation) {
+		if (startDate == null || qty == 0) {
 			return null;
 		}
 
-		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.DATE, days);
+		Calendar cal = initializeCalendarWithOffset(startDate, typeOfAdjustment, qty*operation);
 
 		return cal.getTime();
 	}
+
+
 
 	public static Date addField(Date startDate, int field, int amount) {
 		if (startDate == null || amount == 0) {

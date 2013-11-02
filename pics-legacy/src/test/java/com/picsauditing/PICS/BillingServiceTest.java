@@ -492,4 +492,24 @@ public class BillingServiceTest extends PicsTranslationTest {
 		invoiceFee.setFeeClass(feeClass);
 		return item;
 	}
+
+	@Test
+	 public void testAdjustActivationRenewalRevRecFinishDateInCaseOfLeapYear_LeapYearCase() {
+		Date invoiceCreationDate = new Date(2012,Calendar.FEBRUARY,29);
+		Invoice testInvoice = new Invoice();
+		testInvoice.setCreationDate(invoiceCreationDate);
+		Date expected = new Date (2013,Calendar.FEBRUARY,28);
+		Date actual = billingService.adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(testInvoice,expected);
+		assertEquals(expected,actual);
+	}
+
+	@Test
+	public void testAdjustActivationRenewalRevRecFinishDateInCaseOfLeapYear_NonLeapYearCase() {
+		Date invoiceCreationDate = new Date(2013,Calendar.FEBRUARY,28);
+		Invoice testInvoice = new Invoice();
+		testInvoice.setCreationDate(invoiceCreationDate);
+		Date expected = new Date (2014,Calendar.FEBRUARY,27);
+		Date actual = billingService.adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(testInvoice,expected);
+		assertEquals(expected,actual);
+	}
 }
