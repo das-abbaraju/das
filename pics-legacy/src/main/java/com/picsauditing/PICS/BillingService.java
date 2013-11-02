@@ -649,12 +649,11 @@ public class BillingService {
 	}
 
 	public Date adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(Invoice invoice, Date oneYearLater) {
-		Date returnMe = oneYearLater;
-		if (oneYearLater.getDay() == invoice.getCreationDate().getDay()) {
-			returnMe = DateBean.subtractDays(oneYearLater, 1);
+		if (oneYearLater.getDate() == invoice.getCreationDate().getDate()) {
+			return DateBean.subtractDays(oneYearLater, 1);
+		} else {
+			return oneYearLater;
 		}
-
-		return returnMe;
 	}
 
 	private String generateExceptionStringForInabilityToCalculateRevRec(ContractorAccount contractor, Invoice invoice, Invoice previousInvoice) {
