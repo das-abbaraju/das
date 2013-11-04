@@ -182,6 +182,7 @@ public class CaoSaveModelTest extends PicsTest {
 		emrAuditData.getQuestion().setCategory(EntityFactory.makeAuditCategory(AuditCategory.EMR));
 
 		AuditData normalAuditData = setupAuditData();
+        normalAuditData.getQuestion().getCategory().setId(1000);
 
 		AuditData oshaAuditData = setupAuditData();
 		oshaAuditData.getQuestion().setCategory(EntityFactory.makeAuditCategory(OshaAudit.CAT_ID_OSHA));
