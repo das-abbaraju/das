@@ -90,6 +90,7 @@ ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorTagTagID
+ContractorTrades
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchCreationDate

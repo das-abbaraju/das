@@ -101,6 +101,15 @@ public class ContractorsModel extends AbstractModel {
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
         }
 
+        Field contractorTrade = new Field("ContractorTrades", "(SELECT GROUP_CONCAT(tradeID ORDER BY tradeID SEPARATOR ', ') FROM contractor_trade ct " +
+                " WHERE Contractor.id = ct.conID)", FieldType.String);
+        contractorTrade.setFilterable(false);
+        contractorTrade.setWidth(300);
+        contractorTrade.setImportance(FieldImportance.Required);
+        contractorTrade.setTranslationPrefixAndSuffix("Trade","name");
+        contractorTrade.setSeparator(", ");
+        fields.put(contractorTrade.getName().toUpperCase(), contractorTrade);
+
         Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
         accountManager.setVisible(false);
         accountManager.setPrefixValue("SELECT co.conID " +
