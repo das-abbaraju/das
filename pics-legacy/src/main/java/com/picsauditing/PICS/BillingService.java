@@ -632,12 +632,10 @@ public class BillingService {
 		switch (invoice.getInvoiceType()) {
 			case Activation:
 				Date oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
-				Date adjustedEndDate = adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(invoice, oneYearLater);
-				return adjustedEndDate;
+				return oneYearLater;
 			case Renewal:
 				Date oneYearOneMonthLater = DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
-				adjustedEndDate = adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(invoice, oneYearOneMonthLater);
-				return adjustedEndDate;
+				return oneYearOneMonthLater;
 			default:
 				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
 				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
@@ -645,14 +643,6 @@ public class BillingService {
 					throw new Exception(generateExceptionStringForInabilityToCalculateRevRec(contractor,invoice,previousInvoice));
 				}
 				return previousEndDate;
-		}
-	}
-
-	public Date adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(Invoice invoice, Date oneYearLater) {
-		if (oneYearLater.getDate() == invoice.getCreationDate().getDate()) {
-			return DateBean.subtractDays(oneYearLater, 1);
-		} else {
-			return oneYearLater;
 		}
 	}
 
