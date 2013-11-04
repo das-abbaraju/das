@@ -617,8 +617,8 @@ public class BillingService {
 
 	public void addRevRecInfoIfAppropriateToItems(Invoice invoice) throws Exception {
 		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
-		Date invoiceItemStartDate = calculateInvoiceItemStartDateFor(invoice);
-		Date invoiceItemEndDate = calculateInvoiceItemEndDateFor(invoice,contractor);
+		Date invoiceItemStartDate = calculateInvoiceItemRevRecStartDateFor(invoice);
+		Date invoiceItemEndDate = calculateInvoiceItemRevRecFinishDateFor(invoice, contractor);
 		for (InvoiceItem invoiceItem : invoice.getItems()) {
 			if (!FeeService.isRevRecDeferred(invoiceItem.getInvoiceFee())) {
 				continue;
@@ -628,12 +628,16 @@ public class BillingService {
 		}
 	}
 
-	private Date calculateInvoiceItemEndDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
+	private Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
 		switch (invoice.getInvoiceType()) {
 			case Activation:
-				return DateBean.addYears(invoice.getCreationDate(), 1);
+				Date oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
+				Date adjustedEndDate = adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(invoice, oneYearLater);
+				return adjustedEndDate;
 			case Renewal:
-				return DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
+				Date oneYearOneMonthLater = DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
+				adjustedEndDate = adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(invoice, oneYearOneMonthLater);
+				return adjustedEndDate;
 			default:
 				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
 				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
@@ -641,6 +645,14 @@ public class BillingService {
 					throw new Exception(generateExceptionStringForInabilityToCalculateRevRec(contractor,invoice,previousInvoice));
 				}
 				return previousEndDate;
+		}
+	}
+
+	public Date adjustActivationRenewalRevRecFinishDateInCaseOfLeapYear(Invoice invoice, Date oneYearLater) {
+		if (oneYearLater.getDate() == invoice.getCreationDate().getDate()) {
+			return DateBean.subtractDays(oneYearLater, 1);
+		} else {
+			return oneYearLater;
 		}
 	}
 
@@ -674,7 +686,7 @@ public class BillingService {
 		return null;
 	}
 
-	private Date calculateInvoiceItemStartDateFor(Invoice invoice) {
+	private Date calculateInvoiceItemRevRecStartDateFor(Invoice invoice) {
 		if (invoice.getInvoiceType() == InvoiceType.Renewal) {
 			return DateBean.addMonths(invoice.getCreationDate(), 1);
 		} else {

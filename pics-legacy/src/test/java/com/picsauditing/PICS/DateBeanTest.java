@@ -747,4 +747,12 @@ public class DateBeanTest {
 		assertEquals(expected, actual);
 	}
 
+	@Test
+	public void testSubtractOneDay() throws ParseException {
+		Date original = new GregorianCalendar(2004,GregorianCalendar.JANUARY,1).getTime();
+		Date expected = new GregorianCalendar(2003,GregorianCalendar.DECEMBER,31).getTime();
+		Date actual = DateBean.subtractDays(original,1);
+		assertEquals(expected, actual);
+	}
+
 }
