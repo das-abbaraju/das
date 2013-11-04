@@ -65,17 +65,17 @@ public class ReportContractorResources extends ReportActionSupport {
 		if (Strings.isEmpty(filter.getTitleName())) {
 			sql.addWhere("o.parentID IS NULL");
 		} else {
-			sql.addWhere("(o.parentID IS NULL and o.formName like '%" + Strings.escapeQuotes(filter.getTitleName().trim())
+			sql.addWhere("(o.parentID IS NULL and o.formName like '%" + Strings.escapeQuotesAndSlashes(filter.getTitleName().trim())
 					+ "%') OR o.id IN (select of.parentID from operatorforms of where of.formName like '%"
-					+ Strings.escapeQuotes(filter.getTitleName().trim()) + "%' and of.parentID IS NOT NULL)");
+					+ Strings.escapeQuotesAndSlashes(filter.getTitleName().trim()) + "%' and of.parentID IS NOT NULL)");
 		}
 		
 		if (!ReportFilterAccount.getDefaultName().equals(filter.getAccountName())){
-			sql.addWhere("a.name LIKE '%" + Strings.escapeQuotes(filter.getAccountName()) + "%'");
+			sql.addWhere("a.name LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getAccountName()) + "%'");
 		}
 		
 		if (!Strings.isEmpty(filter.getStartsWith())) {
-			sql.addWhere("o.formName LIKE '" + Strings.escapeQuotes(filter.getStartsWith()) + "%'");
+			sql.addWhere("o.formName LIKE '" + Strings.escapeQuotesAndSlashes(filter.getStartsWith()) + "%'");
 		}
 
 		if (permissions.isContractor()) {

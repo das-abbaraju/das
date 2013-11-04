@@ -49,8 +49,8 @@ public class OperatorNotes extends OperatorActionSupport {
 	private String getFilters() {
 		String filterString = "";
 		if (!Strings.isEmpty(filter.getKeyword())) {
-			filterString += " AND (summary LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%'" +
-					" OR body LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%')";
+			filterString += " AND (summary LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getKeyword()) + "%'" +
+					" OR body LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getKeyword()) + "%')";
 		}
 		if (filter.getUserID() != null && filter.getUserID().length > 0) {
 			filterString += " AND createdBy.id IN (" + Strings.implode(filter.getUserID(), ",") + ")";

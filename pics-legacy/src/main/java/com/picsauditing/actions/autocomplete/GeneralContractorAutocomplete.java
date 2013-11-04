@@ -36,9 +36,9 @@ public class GeneralContractorAutocomplete extends AutocompleteActionSupport<Ope
 				}
 
 				if (isSearchDigit()) {
-					return dao.findWhere(false, "a.id LIKE '%" + Strings.escapeQuotes(q) + "%'" + visibleOperators);
+					return dao.findWhere(false, "a.id LIKE '%" + Strings.escapeQuotesAndSlashes(q) + "%'" + visibleOperators);
 				} else {
-					return dao.findWhere(false, "a.name LIKE '%" + Strings.escapeQuotes(q) + "%'" + visibleOperators);
+					return dao.findWhere(false, "a.name LIKE '%" + Strings.escapeQuotesAndSlashes(q) + "%'" + visibleOperators);
 				}
 			}
 		} else if (itemKeys.length > 0) {

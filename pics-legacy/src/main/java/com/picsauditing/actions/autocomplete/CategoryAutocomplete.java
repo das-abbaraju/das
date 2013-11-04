@@ -24,10 +24,10 @@ public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategor
 		if (auditTypeID != null && auditTypeID > 0)
 			where = "t.auditType.id =" + auditTypeID + " AND ";
 		if (isSearchDigit())
-			return auditCategoryDAO.findWhere(where + "t.id LIKE '" + Strings.escapeQuotes(q) + "%'");
+			return auditCategoryDAO.findWhere(where + "t.id LIKE '" + Strings.escapeQuotesAndSlashes(q) + "%'");
 		else
 			return auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name",
-					"%" + Strings.escapeQuotes(q) + "%");
+					"%" + Strings.escapeQuotesAndSlashes(q) + "%");
 	}
 
 	@Override

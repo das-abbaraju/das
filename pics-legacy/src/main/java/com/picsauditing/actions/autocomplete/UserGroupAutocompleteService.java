@@ -26,7 +26,7 @@ public class UserGroupAutocompleteService extends AbstractAutocompleteService<Us
             return Collections.emptyList();
         }
 
-        return dao.findWhere("u.isGroup = 'Yes' AND u.name LIKE '%" + Strings.escapeQuotes(search) + "%'", RESULT_SET_LIMIT);
+        return dao.findWhere("u.isGroup = 'Yes' AND u.name LIKE '%" + Strings.escapeQuotesAndSlashes(search) + "%'", RESULT_SET_LIMIT);
     }
 
     @Override

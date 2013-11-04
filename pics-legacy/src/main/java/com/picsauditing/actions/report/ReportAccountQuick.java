@@ -27,7 +27,7 @@ public class ReportAccountQuick extends ReportAccount {
 			if (id > 0) {
 				sql.addWhere("a.id = " + id);
 			} else {
-				sql.addWhere("a.dbaName LIKE '%" + Strings.escapeQuotes(accountName) + "%'" + " OR a.nameIndex LIKE '%"
+				sql.addWhere("a.dbaName LIKE '%" + Strings.escapeQuotesAndSlashes(accountName) + "%'" + " OR a.nameIndex LIKE '%"
 						+ Strings.indexName(accountName) + "%'");
 			}
 		}

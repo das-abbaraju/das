@@ -182,7 +182,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		ReportFilterNewContractor f = getFilter();
 
 		if (filterOn(f.getStartsWith())) {
-			String startsWith = Strings.escapeQuotes(f.getStartsWith());
+			String startsWith = Strings.escapeQuotesAndSlashes(f.getStartsWith());
 			sql.addWhere("a.name LIKE '" + startsWith + "%'");
 			legacy.addWhere("cr.name LIKE '" + startsWith + "%'");
 
@@ -190,7 +190,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		}
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
-			String accountName = Strings.escapeQuotes(f.getAccountName().trim());
+			String accountName = Strings.escapeQuotesAndSlashes(f.getAccountName().trim());
 
 			sql.addWhere("a.name LIKE '%" + accountName + "%'");
 			legacy.addWhere("cr.name LIKE '%" + accountName + "%'");

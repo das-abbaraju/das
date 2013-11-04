@@ -32,17 +32,17 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 		// search both iso and translated fields for the 5 letter combinations
 		if (search.length() == COUNTRY_SUBDIVISION_LENGTH) {
 			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findWhere("isoCode = '"
-					+ Strings.escapeQuotes(search) + "'");
+					+ Strings.escapeQuotesAndSlashes(search) + "'");
 			result.addAll(countrySubdivisionList);
 
 			countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(CountrySubdivision.class, "%"
-					+ Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
+					+ Strings.escapeQuotesAndSlashes(search) + "%", RESULT_SET_LIMIT);
 
 			result.addAll(countrySubdivisionList);
 		} else { // any more or less characters, then search only through
 					// translations
 			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(
-					CountrySubdivision.class, "%" + Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
+					CountrySubdivision.class, "%" + Strings.escapeQuotesAndSlashes(search) + "%", RESULT_SET_LIMIT);
 
 			result.addAll(countrySubdivisionList);
 		}

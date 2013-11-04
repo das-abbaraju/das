@@ -23,7 +23,7 @@ public class ContractorAutocompleteService extends AbstractAutocompleteService<C
 			return Collections.emptyList();
 		}
 
-		return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotes(search) + "%'", RESULT_SET_LIMIT);
+		return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotesAndSlashes(search) + "%'", RESULT_SET_LIMIT);
 	}
 
 	@Override

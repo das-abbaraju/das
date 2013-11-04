@@ -36,7 +36,7 @@ public class SelectFilter {
 	}
 	
 	public String getWhere() {
-		return getWhereRaw().replace("?", Strings.escapeQuotes(value));
+		return getWhereRaw().replace("?", Strings.escapeQuotesAndSlashes(value));
 	}
 	
 	protected String getWhereRaw() {

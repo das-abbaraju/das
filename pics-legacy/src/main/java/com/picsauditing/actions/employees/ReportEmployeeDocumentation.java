@@ -100,21 +100,21 @@ public class ReportEmployeeDocumentation extends ReportActionSupport {
 	private void addFilterToSQL() {
 		ReportFilterEmployee f = getFilter();
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
-			String accountName = Strings.escapeQuotes(f.getAccountName().trim());
+			String accountName = Strings.escapeQuotesAndSlashes(f.getAccountName().trim());
 			report.addFilter(new SelectFilter("name", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotes(accountName)
-					+ "%' OR a.id = '" + Strings.escapeQuotes(accountName) + "'", accountName));
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotesAndSlashes(accountName)
+					+ "%' OR a.id = '" + Strings.escapeQuotesAndSlashes(accountName) + "'", accountName));
 			f.setLimitEmployees(false);
 		}
 
 		if (filterOn(f.getFirstName())) {
-			String firstName = Strings.escapeQuotes(f.getFirstName().trim());
+			String firstName = Strings.escapeQuotesAndSlashes(f.getFirstName().trim());
 			sql.addWhere("e.firstName LIKE '%" + firstName + "%'");
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getLastName())) {
-			String lastName = Strings.escapeQuotes(f.getLastName().trim());
+			String lastName = Strings.escapeQuotesAndSlashes(f.getLastName().trim());
 			sql.addWhere("e.lastName LIKE '%" + lastName + "%'");
 			setFiltered(true);
 		}

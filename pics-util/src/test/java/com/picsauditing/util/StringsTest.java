@@ -251,7 +251,39 @@ public class StringsTest {
 				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
 	}
 
-	@Test
+    @Test
+    public void testNoSlash() {
+        assertEquals("abc", Strings.escapeSlashes("abc"));
+    }
+
+    @Test
+    public void testSingleSlash() {
+        assertEquals("ab" + backSlash + backSlash, Strings.escapeSlashes("ab" + backSlash));
+    }
+
+    @Test
+    public void testDoubleSingleSlash() {
+        assertEquals("ab" + backSlash + backSlash + backSlash + backSlash,
+                Strings.escapeSlashes("ab" + backSlash + backSlash));
+    }
+
+    @Test
+    public void testNoSlashOrQuote() {
+        assertEquals("abc", Strings.escapeQuotesAndSlashes("abc"));
+    }
+
+    @Test
+    public void testSingleSlashAndSingleQuote() {
+        assertEquals("ab" + backSlash + backSlash + singleQuote + singleQuote, Strings.escapeQuotesAndSlashes("ab" + backSlash + singleQuote));
+    }
+
+    @Test
+    public void testDoubleSingleSlashAndDoubleSingleQuote() {
+        assertEquals("ab" + backSlash + backSlash + backSlash + backSlash + singleQuote + singleQuote + singleQuote + singleQuote,
+                Strings.escapeQuotesAndSlashes("ab" + backSlash + backSlash + singleQuote + singleQuote));
+    }
+
+    @Test
 	public void nullToBlank() {
 		assertEquals("", Strings.nullToBlank(null));
 		assertEquals("", Strings.nullToBlank(""));

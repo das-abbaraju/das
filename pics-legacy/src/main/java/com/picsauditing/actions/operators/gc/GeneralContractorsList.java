@@ -106,8 +106,8 @@ public class GeneralContractorsList extends ReportActionSupport {
 		if (filterOn(getFilter().getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = getFilter().getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotes(accountName)
-					+ "%' OR a.id = '" + Strings.escapeQuotes(accountName) + "'", accountName));
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotesAndSlashes(accountName)
+					+ "%' OR a.id = '" + Strings.escapeQuotesAndSlashes(accountName) + "'", accountName));
 			sql.addField("a.dbaName");
 		}
 

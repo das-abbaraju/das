@@ -21,7 +21,7 @@ public final class AuditQuestionAutocompleteService extends AbstractAutocomplete
 	@Override
 	protected Collection<AuditQuestion> getItemsForSearch(String search, Permissions permissions) {
 		return auditQuestionDAO.findByTranslatableField(AuditQuestion.class, "name",
-				Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
+				Strings.escapeQuotesAndSlashes(search) + "%", RESULT_SET_LIMIT);
 	}
 
 	@Override

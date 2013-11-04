@@ -57,7 +57,7 @@ public class AuditRuleSearch extends ReportActionSupport {
 			sql.addWhere("op.id = " + filter.getOpID());
 		}
 		if (filterOn(filter.getOperator())) {
-			sql.addWhere("op.name LIKE '%" + Strings.escapeQuotes(filter.getOperator()) + "%'");
+			sql.addWhere("op.name LIKE '%" + Strings.escapeQuotesAndSlashes(filter.getOperator()) + "%'");
 		}
 		if (filterOn(filter.getInclude())) {
 			sql.addWhere("a_search.include = " + filter.getInclude());

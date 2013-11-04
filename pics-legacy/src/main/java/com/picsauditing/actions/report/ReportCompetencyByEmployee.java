@@ -121,25 +121,25 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 		ReportFilterEmployee f = getFilter();
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
-			String accountName = Strings.escapeQuotes(f.getAccountName().trim());
+			String accountName = Strings.escapeQuotesAndSlashes(f.getAccountName().trim());
 			report.addFilter(new SelectFilter("name", "Set1.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR Set1.name LIKE '%?%' OR Set1.dbaName LIKE '%" + Strings.escapeQuotes(accountName)
-					+ "%' OR Set1.accountID = '" + Strings.escapeQuotes(accountName) + "'", accountName));
+					+ "%' OR Set1.name LIKE '%?%' OR Set1.dbaName LIKE '%" + Strings.escapeQuotesAndSlashes(accountName)
+					+ "%' OR Set1.accountID = '" + Strings.escapeQuotesAndSlashes(accountName) + "'", accountName));
 			f.setLimitEmployees(false);
 		}
 
 		if (filterOn(f.getFirstName())) {
-			String firstName = Strings.escapeQuotes(f.getFirstName().trim());
+			String firstName = Strings.escapeQuotesAndSlashes(f.getFirstName().trim());
 			sql.addWhere("Set1.firstName LIKE '%" + firstName + "%'");
 		}
 
 		if (filterOn(f.getLastName())) {
-			String lastName = Strings.escapeQuotes(f.getLastName().trim());
+			String lastName = Strings.escapeQuotesAndSlashes(f.getLastName().trim());
 			sql.addWhere("Set1.lastName LIKE '%" + lastName + "%'");
 		}
 
 		if (filterOn(f.getEmail())) {
-			String email = Strings.escapeQuotes(f.getEmail().trim());
+			String email = Strings.escapeQuotesAndSlashes(f.getEmail().trim());
 			sql.addWhere("Set1.email LIKE '%" + email + "%'");
 		}
 

@@ -47,7 +47,7 @@ public class AppTranslationDAO extends PicsDAO implements TranslationDAO {
 	@Override
     public void updateTranslationLastUsed(String key) {
 		try {
-			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key)
+			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotesAndSlashes(key)
 					+ "'";
 			database.execute(sql);
 		} catch (Exception e) {
