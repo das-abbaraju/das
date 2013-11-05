@@ -79,10 +79,10 @@ ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorTagTagID
-ContractorTrades
 ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
+ContractorTrades
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorVatId
