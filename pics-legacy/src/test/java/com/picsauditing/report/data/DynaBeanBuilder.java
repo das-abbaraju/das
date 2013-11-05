@@ -46,6 +46,7 @@ public class DynaBeanBuilder {
         builder.addColumn("ContractorMembershipDate");
 
         builder.addColumn("ContractorLastUpgradeDate");
+        builder.addColumn("ContractorTrades");
 
         return builder.columns;
     }
@@ -60,6 +61,7 @@ public class DynaBeanBuilder {
         builder.addProperty("ContractorLastUpgradeDate", java.sql.Date.class);
         builder.addProperty("AccountZip", String.class);
         builder.addProperty("AccountCountry", String.class);
+        builder.addProperty("ContractorTrades", String.class);
 
         for (int i = 0; i < count; i++) {
             builder.addRow();
@@ -78,6 +80,7 @@ public class DynaBeanBuilder {
             builder.setValue("ContractorLastUpgradeDate", null);
             builder.setValue("AccountZip", "92614");
             builder.setValue("AccountCountry", "CA");
+            builder.setValue("ContractorTrades", "1, 2, 3, 4, 5");
         }
 
         return builder.getRows();
