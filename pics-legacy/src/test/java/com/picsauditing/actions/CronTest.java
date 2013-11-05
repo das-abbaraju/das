@@ -47,16 +47,6 @@ public class CronTest extends PicsActionTest {
     @Mock
     private EmailQueueDAO emailQueueDAO;
     @Mock
-    private EbixLoader ebixLoader;
-    @Mock
-    private InvoiceDAO invoiceDAO;
-    @Mock
-    private InvoiceFeeDAO invoiceFeeDAO;
-    @Mock
-    private InvoiceItemDAO invoiceItemDAO;
-    @Mock
-    private IndexerEngine indexer;
-    @Mock
     private FlagDataOverrideDAO flagDataOverrideDAO;
     @Mock
     private OperatorAccountDAO operatorDAO;
@@ -94,12 +84,6 @@ public class CronTest extends PicsActionTest {
         super.setUp(cron);
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(cron, this);
-        Whitebox.setInternalState(cron, "dao", dao);
-        Whitebox.setInternalState(cron, "emailSender", emailSender);
-        Whitebox.setInternalState(cron, "accountStatusChanges", accountStatusChanges);
-        Whitebox.setInternalState(cron, "ebixLoader", ebixLoader);
-        Whitebox.setInternalState(cron, "indexer", indexer);
-        Whitebox.setInternalState(cron, "reportDAO", reportDAO);
         cron.database = this.database;
 
         when(propertyDAO.find("admin_email_address")).thenReturn(
@@ -107,22 +91,10 @@ public class CronTest extends PicsActionTest {
     }
 
     @Test
-    public void testExecute_All() throws Exception {
-        // EBIX won't run because it requires an FTP connection TODO mock the FTP connection
-        // when(propertyDAO.find(anyString())).thenReturn(new AppProperty("mock_property", "mock_value"));
-        when(propertyDAO.getProperty("Cron.Task.EBIX_huntsmansync")).thenReturn("false");
-        cron.execute();
-        String report = cron.getReport();
-        report = report.replaceAll(" Cron Job at: ([A-Za-z 0-9:]*)", " Cron Job at: TIME_WAS_HERE");
-        report = report.replaceAll("\\([0-9]+ millis \\)", "\\(0 millis \\)");
-        Approvals.verify(report);
-    }
-
-    @Test
     public void testExecute_RunNone() throws Exception {
         when(propertyDAO.getProperty(anyString())).thenReturn("false");
         cron.execute();
-        String report = cron.getReport();
+        String report = cron.report.toString();
         report = report.replaceAll(" Cron Job at: ([A-Za-z 0-9:]*)", " Cron Job at: TIME_WAS_HERE");
         report = report.replaceAll("\\([0-9]+ millis \\)", "\\(0 millis \\)");
         Approvals.verify(report);

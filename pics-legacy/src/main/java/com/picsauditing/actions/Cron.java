@@ -84,9 +84,10 @@ public class Cron extends PicsActionSupport {
     private AddLateFees addLateFees;
     private DeactivateNonRenewalAccounts deactivateNonRenewalAccounts;
     private EmailDelinquentContractors emailDelinquentContractors;
+    private ExpireFlagChangesTask expireFlagChangesTask;
+    private ClearForcedFlagsTask clearForcedFlagsTask;
     private FlagChangesEmailTask flagChangesEmailTask;
     private ReportSuggestionsTask reportSuggestionsTask;
-    private ExpireFlagChangesTask expireFlagChangesTask;
 
     private void setUpTasks() {
         auditBuilderAddAuditRenewalsTask = new AuditBuilderAddAuditRenewalsTask(contractorAuditDAO, auditBuilder);
@@ -100,9 +101,14 @@ public class Cron extends PicsActionSupport {
         addLateFees = new AddLateFees(invoiceDAO, invoiceItemDAO, invoiceFeeDAO, billingService);
         deactivateNonRenewalAccounts = new DeactivateNonRenewalAccounts(contractorAccountDAO, billingService, accountStatusChanges);
         emailDelinquentContractors = new EmailDelinquentContractors(contractorAccountDAO, emailQueueDAO);
+        clearForcedFlagsTask = new ClearForcedFlagsTask(flagDataOverrideDAO, contractorOperatorDAO);
+        expireFlagChangesTask = new ExpireFlagChangesTask(getDatabase());
         flagChangesEmailTask = new FlagChangesEmailTask(getDatabase(), emailQueueDAO);
         reportSuggestionsTask = new ReportSuggestionsTask(getDatabase());
-        expireFlagChangesTask = new ExpireFlagChangesTask(getDatabase());
+    }
+
+    private Database getDatabase() {
+        return database;
     }
 
     @Anonymous
@@ -134,6 +140,7 @@ public class Cron extends PicsActionSupport {
         addLateFees.setEnabled(propertyDAO);
         report.append(addLateFees.execute());
 
+        // TODO Convert this to a CronTask
         try {
             startTask("Bump Dead Accounts that still have balances...");
             contractorAccountDAO.updateRecalculationForDeadAccountsWithBalances();
@@ -148,6 +155,7 @@ public class Cron extends PicsActionSupport {
         emailDelinquentContractors.setEnabled(propertyDAO);
         report.append(emailDelinquentContractors.execute());
 
+        // TODO Convert this to a CronTask
         try {
             startTask("Sending No Action Email to Bid Only Accounts ...");
             sendNoActionEmailToTrialAccounts();
@@ -155,13 +163,9 @@ public class Cron extends PicsActionSupport {
         } catch (Throwable t) {
             handleException(t);
         }
-        try {
-            startTask("Stamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
-            clearForceFlags();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+
+        clearForcedFlagsTask.setEnabled(propertyDAO);
+        report.append(clearForcedFlagsTask.execute());
 
         expireFlagChangesTask.setEnabled(propertyDAO);
         report.append(expireFlagChangesTask.execute());
@@ -172,6 +176,7 @@ public class Cron extends PicsActionSupport {
         flagChangesEmailTask.setEnabled(propertyDAO);
         report.append(flagChangesEmailTask.execute());
 
+        // TODO Convert this to a CronTask
         try {
             startTask("Checking Registration Requests Hold Dates...");
             checkRegistrationRequestsHoldDates();
@@ -183,7 +188,7 @@ public class Cron extends PicsActionSupport {
         movePendingAccountsToDeclined.setEnabled(propertyDAO);
         report.append(movePendingAccountsToDeclined.execute());
 
-        report.append(Strings.NEW_LINE).append(Strings.NEW_LINE).append(Strings.NEW_LINE)
+        report.append(Strings.NEW_LINE).append(Strings.NEW_LINE)
                 .append("Completed Cron Job at: ");
         report.append(new Date().toString());
 
@@ -254,16 +259,6 @@ public class Cron extends PicsActionSupport {
 
     }
 
-    private void stampNote(Account account, String text, NoteCategory noteCategory) {
-        Note note = new Note(account, system, text);
-        note.setCanContractorView(true);
-        note.setPriority(LowMedHigh.High);
-        note.setNoteCategory(noteCategory);
-        note.setAuditColumns(system);
-        note.setViewableById(Account.PicsID);
-        noteDao.save(note);
-    }
-
     public void sendNoActionEmailToTrialAccounts() throws Exception {
         List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
 
@@ -285,70 +280,14 @@ public class Cron extends PicsActionSupport {
         }
     }
 
-    private Database getDatabase() {
-        return database;
-    }
-
-    public void clearForceFlags() {
-        List<FlagDataOverride> fdos = flagDataOverrideDAO.findExpiredForceFlags();
-
-        Iterator<FlagDataOverride> fdoIter = fdos.iterator();
-        while (fdoIter.hasNext()) {
-            FlagDataOverride fdo = fdoIter.next();
-
-            // save history
-            FlagOverrideHistory foh = new FlagOverrideHistory();
-            foh.setOverride(fdo);
-            foh.setAuditColumns(system);
-            foh.setDeleted(false);
-            foh.setDeleteReason("Flag Data Override Expired");
-            dao.save(foh);
-
-            // Create note & Delete override
-            Note note = new Note(fdo.getContractor(), system, "Forced " + fdo.getCriteria().getLabel() + " Flag to "
-                    + fdo.getForceflag() + " Expired for " + fdo.getContractor().getName());
-            note.setCanContractorView(true);
-            note.setPriority(LowMedHigh.Med);
-            note.setNoteCategory(NoteCategory.Flags);
-            note.setAuditColumns(system);
-            note.setViewableBy(fdo.getOperator());
-            noteDao.save(note);
-
-            flagDataOverrideDAO.remove(fdo);
-            fdoIter.remove();
-        }
-
-        List<ContractorOperator> overrides = contractorOperatorDAO.findExpiredForceFlags();
-
-        Iterator<ContractorOperator> overrideIter = overrides.iterator();
-        while (overrideIter.hasNext()) {
-            ContractorOperator override = overrideIter.next();
-
-            // save history
-            FlagOverrideHistory foh = new FlagOverrideHistory();
-            foh.setOverride(override);
-            foh.setAuditColumns(permissions);
-            foh.setDeleted(false);
-            foh.setDeleteReason("Overall Flag Override Expired");
-            dao.save(foh);
-
-            // Create note & Remove override
-            Note note = new Note(override.getContractorAccount(), system, "Overall Forced Flag to "
-                    + override.getFlagColor() + " Expired for " + override.getContractorAccount().getName());
-            note.setCanContractorView(true);
-            note.setPriority(LowMedHigh.Med);
-            note.setNoteCategory(NoteCategory.Flags);
-            note.setAuditColumns(system);
-            note.setViewableBy(override.getOperatorAccount());
-            noteDao.save(note);
-
-            override.setForceEnd(null);
-            override.setForceFlag(null);
-            override.setForceBegin(null);
-            override.setForcedBy(null);
-
-            contractorOperatorDAO.save(override);
-        }
+    private void stampNote(Account account, String text, NoteCategory noteCategory) {
+        Note note = new Note(account, system, text);
+        note.setCanContractorView(true);
+        note.setPriority(LowMedHigh.High);
+        note.setNoteCategory(noteCategory);
+        note.setAuditColumns(system);
+        note.setViewableById(Account.PicsID);
+        noteDao.save(note);
     }
 
     private void checkRegistrationRequestsHoldDates() throws Exception {
@@ -364,7 +303,4 @@ public class Cron extends PicsActionSupport {
         }
     }
 
-    public String getReport() {
-        return report.toString();
-    }
 }

@@ -33,8 +33,7 @@ Skipping Cron.Task.EmailDelinquentContractors
 Starting Sending No Action Email to Bid Only Accounts ...
 	SUCCESS...(0 millis )
 
-Starting Stamping Notes and Expiring overall Forced Flags and Individual Data Overrides...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.ClearForcedFlags
 
 Skipping Cron.Task.ExpireFlagChanges
 
