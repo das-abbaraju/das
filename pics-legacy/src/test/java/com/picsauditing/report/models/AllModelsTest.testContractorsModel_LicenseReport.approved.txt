@@ -68,6 +68,10 @@ ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorTagTagID
+ContractorTradeActivityPercent
+ContractorTradeManufacture
+ContractorTradeSelfPerformed
+ContractorTrades
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchCreationDate
