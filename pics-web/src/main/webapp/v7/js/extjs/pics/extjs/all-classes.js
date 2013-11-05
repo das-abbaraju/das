@@ -96807,17 +96807,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
     id: 'column_list',
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
-        mode: 'SIMPLE',
-
-        listeners: {
-            // This probably belongs in the controller. When defined there, however, selectionchange
-            // doesn't fire on subsequent loads of the modal.
-            selectionchange: function () {
-                var add_button = Ext.ComponentQuery.query('reportcolumnmodal button[action=add]')[0];
-
-                this.getCount() ? add_button.setDisabled(false) : add_button.setDisabled(true);
-            }
-        }
+        mode: 'SIMPLE'
     })
 });
 Ext.define('PICS.view.report.modal.column-filter.FilterList', {
@@ -96829,17 +96819,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
     id: 'filter_list',
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
-        mode: 'SIMPLE',
-
-        listeners: {
-            // This probably belongs in the controller. When defined there, however, selectionchange
-            // doesn't fire on subsequent loads of the modal.
-            selectionchange: function () {
-                var add_button = Ext.ComponentQuery.query('reportfiltermodal button[action=add]')[0];
-
-                this.getCount() ? add_button.setDisabled(false) : add_button.setDisabled(true);
-            }
-        }
+        mode: 'SIMPLE'
     }),
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
@@ -98053,13 +98033,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     }, {
         ref: 'filterModalSearchBox',
         selector: 'reportfiltermodal textfield[name=search_box]'
-    }, {
-        ref: 'columnModalAddButton',
-        selector: 'reportcolumnmodal button[action=add]'
-    }, {
-        ref: 'filterModalAddButton',
-        selector: 'reportfiltermodal button[action=add]'
-     }],
+    }],
 
     stores: [
         'report.Reports',
@@ -98079,6 +98053,12 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             },
             'reportfiltermodal': {
                 beforehide: this.beforeFilterModalHide
+            },
+            'reportcolumnlist': {
+                afterrender: this.afterColumnListRender
+            },
+            'reportfilterlist': {
+                afterrender: this.afterFilterListRender
             },
             'reportcolumnmodal textfield[name=search_box]': {
                 keyup: this.onColumnModalTextfieldKeyup
@@ -98109,6 +98089,21 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             openfiltermodal: this.openFilterModal,
             scope: this
         });
+    },
+
+    afterColumnListRender: function (cmp) {
+        cmp.getSelectionModel().on('selectionchange', this.onCheckboxModelSelectionChange);
+    },
+
+    afterFilterListRender: function (cmp) {
+        cmp.getSelectionModel().on('selectionchange', this.onCheckboxModelSelectionChange);
+    },
+
+    onCheckboxModelSelectionChange: function (cmp) {
+        var modal_cmp = cmp.view.up('window'),
+            add_button = modal_cmp.down('button[action=add]');
+
+        this.getCount() ? add_button.setDisabled(false) : add_button.setDisabled(true);
     },
 
     beforeColumnModalHide: function (cmp, eOpts) {
