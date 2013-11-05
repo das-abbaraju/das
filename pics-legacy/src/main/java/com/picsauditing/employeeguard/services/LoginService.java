@@ -1,17 +1,20 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.util.Strings;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.UriBuilder;
 
 public class LoginService {
+	@Autowired
+	private AppPropertyDAO appPropertyDAO;
+
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
 
 	public JSONObject loginViaRest(String username, String password) {
@@ -31,10 +34,6 @@ public class LoginService {
 	}
 
 	private String requestHost() {
-		String requestURL = ServletActionContext.getRequest().getRequestURL().toString();
-		String requestURI = ServletActionContext.getRequest().getRequestURI();
-		String requestHost = requestURL.replace(requestURI, Strings.EMPTY_STRING);
-
-		return requestHost;
+		return appPropertyDAO.getProperty("AuthServiceHost");
 	}
 }
