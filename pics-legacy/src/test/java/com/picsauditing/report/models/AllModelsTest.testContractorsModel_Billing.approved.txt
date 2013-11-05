@@ -64,6 +64,7 @@ ContractorInsureGUARD
 ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
+ContractorNumberOfEmployees
 ContractorOfficeIn
 ContractorPQFID
 ContractorPQFTypeName

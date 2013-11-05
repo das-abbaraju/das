@@ -65,6 +65,7 @@ ContractorLastContactedByInsideSalesDate
 ContractorLcCorNotification
 ContractorLcCorPhase
 ContractorMembershipDate
+ContractorNumberOfEmployees
 ContractorOfficeIn
 ContractorPQFID
 ContractorPQFTypeName

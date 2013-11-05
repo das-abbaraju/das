@@ -76,6 +76,7 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
+ContractorNumberOfEmployees
 ContractorOfficeIn
 ContractorPQFID
 ContractorPQFTypeName
