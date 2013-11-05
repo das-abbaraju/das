@@ -66,12 +66,6 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             },
             'reportfiltermodal button[action=cancel]':  {
                 click: this.cancelFilterModal
-            },
-            'reportcolumnlist': {
-                selectionchange: this.onColumnListSelectionChange
-            },
-            'reportfilterlist': {
-                selectionchange: this.onFilterListSelectionChange
             }
         });
 
@@ -92,22 +86,6 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     beforeFilterModalHide: function (cmp, eOpts) {
         this.getFilterList().reset();
-    },
-
-    onColumnListSelectionChange: function (selection_model, selected, eOpts) {
-        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getColumnModalAddButton());
-    },
-
-    onFilterListSelectionChange: function (selection_model, selected, eOpts) {
-        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getFilterModalAddButton());
-    },
-
-    toggleAddButtonFromSelectionModelCount: function (selection_model, add_button) {
-        if (selection_model.getCount()) {
-            add_button.setDisabled(false);
-        } else {
-            add_button.setDisabled(true);
-        }
     },
 
     addColumn: function (cmp, event, eOpts) {
