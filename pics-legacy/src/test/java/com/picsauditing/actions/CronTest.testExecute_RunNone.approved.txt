@@ -1,0 +1,71 @@
+Running Cron Job on Server: null
+
+Address: null
+
+Cron Job initiated by: null
+
+Starting Cron Job at: TIME_WAS_HERE
+
+
+Skipping Cron.RunStep.AuditBuilder_addAuditRenewals
+
+Starting Running Huntsman EBIX Support...
+	SUCCESS...(0 millis )
+
+Starting Recalculating all the categories for Audits...
+	SUCCESS...(0 millis )
+
+Starting Starting Indexer...
+	SUCCESS...(0 millis )
+
+Starting Sending emails to contractors pending...
+	SUCCESS...(0 millis )
+
+Starting Sending emails to registration requests...
+	SUCCESS...(0 millis )
+
+Starting Sending email about upcoming implementation audits...
+	SUCCESS...(0 millis )
+
+Starting Adding Late Fee to Delinquent Contractor Invoices ...
+	No invoices require a late fee
+
+SUCCESS...(0 millis )
+
+Starting Bump Dead Accounts that still have balances...
+	SUCCESS...(0 millis )
+
+Starting Inactivating Accounts via Billing Status...
+	SUCCESS...(0 millis )
+
+Starting Sending Email to Delinquent Contractors ...
+	SUCCESS...(0 millis )
+
+Starting Sending No Action Email to Bid Only Accounts ...
+	SUCCESS...(0 millis )
+
+Starting Stamping Notes and Expiring overall Forced Flags and Individual Data Overrides...
+	SUCCESS...(0 millis )
+
+Starting Expiring Flag Changes...
+	SUCCESS...(0 millis )
+
+Starting Refresh Report Suggestions...
+	SUCCESS...(0 millis )
+
+Starting Emailing Flag Change Reports...
+	SUCCESS...(0 millis )
+
+Starting Checking System Status...
+	SUCCESS...(0 millis )
+
+Starting Checking Registration Requests Hold Dates...
+	SUCCESS...(0 millis )
+
+Starting Moving pending accounts past 90 days to declined
+	SUCCESS...(0 millis )
+
+
+
+
+Completed Cron Job at: TIME_WAS_HERE
