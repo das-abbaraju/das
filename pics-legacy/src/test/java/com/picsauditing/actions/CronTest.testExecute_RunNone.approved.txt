@@ -11,20 +11,15 @@ Skipping Cron.Task.AuditBuilder_addAuditRenewals
 
 Skipping Cron.Task.EBIX_huntsmansync
 
-Starting Recalculating all the categories for Audits...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.RecalculateAuditCategories
 
-Starting Starting Indexer...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.Indexer
 
-Starting Sending emails to contractors pending...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.EmailPendingContractors
 
-Starting Sending emails to registration requests...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.EmailRegistrationRequests
 
-Starting Sending email about upcoming implementation audits...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.EmailUpcomingImplementationAudits
 
 Starting Adding Late Fee to Delinquent Contractor Invoices ...
 	No invoices require a late fee
@@ -55,14 +50,10 @@ Starting Refresh Report Suggestions...
 Starting Emailing Flag Change Reports...
 	SUCCESS...(0 millis )
 
-Starting Checking System Status...
-	SUCCESS...(0 millis )
-
 Starting Checking Registration Requests Hold Dates...
 	SUCCESS...(0 millis )
 
-Starting Moving pending accounts past 90 days to declined
-	SUCCESS...(0 millis )
+Skipping Cron.Task.MovePendingAccountsToDeclined
 
 
 
