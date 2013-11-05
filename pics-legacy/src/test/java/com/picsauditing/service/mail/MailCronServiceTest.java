@@ -1,15 +1,16 @@
 package com.picsauditing.service.mail;
 
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ReportApi;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailStatus;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.TokenDAO;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.mail.subscription.ContractorAddedSubscription;
 import com.picsauditing.mail.subscription.DynamicReportsSubscription;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
@@ -18,12 +19,17 @@ import com.picsauditing.service.AppPropertyService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.VelocityAdaptorTest;
 import com.picsauditing.validator.ValidationException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+
+import org.springframework.context.ApplicationContext;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -34,7 +40,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class MailCronServiceTest {
+public class MailCronServiceTest extends PicsTranslationTest {
 
 	private MailCronService mailCronService;
 	private int subscriptionId = 123;
@@ -218,6 +224,88 @@ public class MailCronServiceTest {
 		String result = mailCronService.getSubscriptionIdsToSendAsCommaDelimited();
 
 		assertEquals("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0", result);
+	}
+
+	@Ignore("To test the full exception chain, un-ignore this test and add a printStackTrace() in sendEmailSubscription()")
+	@Test
+	public void testSendEmailSubscription_templateWithABadSubject_shouldLogAHelpfulSubscriptionException_PICS_13365() {
+		SpringUtils springUtils = new SpringUtils();
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		springUtils.setApplicationContext(applicationContext);
+		TokenDAO tokenDAO = mock(TokenDAO.class);
+		when(applicationContext.getBean("TokenDAO")).thenReturn(tokenDAO);
+
+		// Keeping it real as much as possible for exception testing
+		SubscriptionBuilder builder = new ContractorAddedSubscription();
+
+		EmailTemplateDAO emailTemplateDAO = mock(EmailTemplateDAO.class);
+		Whitebox.setInternalState(builder, "emailTemplateDAO", emailTemplateDAO);
+		EmailTemplate emailTemplate = buildEmailTemplateWithABadSubject();
+		when(emailTemplateDAO.find(Subscription.AmberFlags.getTemplateID())).thenReturn(emailTemplate);
+
+		OperatorAccount operatorAccount = buildOperatorAccount();
+		User user = buildUser(operatorAccount);
+		EmailSubscription emailSubscription = buildEmailSubscription(user, Subscription.AmberFlags);
+
+		ContractorAccount contractorAccount = buildContractorAccount();
+		ContractorOperator contractorOperator = buildContractorOperator(contractorAccount);
+
+		List<ContractorOperator> contractorOperators = buildContractorOperators(contractorOperator);
+		operatorAccount.setContractorOperators(contractorOperators);
+
+		mailCronService.sendEmailSubscription(emailSubscription, builder);
+	}
+
+	private List<ContractorOperator> buildContractorOperators(ContractorOperator contractorOperator) {
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+		contractorOperators.add(contractorOperator);
+		return contractorOperators;
+	}
+
+	private User buildUser(OperatorAccount operatorAccount) {
+		User user = new User();
+		user.setAccount(operatorAccount);
+		return user;
+	}
+
+	private ContractorOperator buildContractorOperator(ContractorAccount contractorAccount) {
+		Date creationDate = mock(Date.class);
+		when(creationDate.after(any(Date.class))).thenReturn(true);
+
+		ContractorOperator contractorOperator = new ContractorOperator();
+		contractorOperator.setCreationDate(creationDate);
+		contractorOperator.setContractorAccount(contractorAccount);
+		return contractorOperator;
+	}
+
+	private ContractorAccount buildContractorAccount() {
+		ContractorAccount contractorAccount = new ContractorAccount();
+		contractorAccount.setName("bar");
+		contractorAccount.setStatus(AccountStatus.Active);
+		return contractorAccount;
+	}
+
+	private EmailSubscription buildEmailSubscription(User user, Subscription subscription) {
+		EmailSubscription emailSubscription = new EmailSubscription();
+		emailSubscription.setUser(user);
+		emailSubscription.setTimePeriod(SubscriptionTimePeriod.None);
+		emailSubscription.setSubscription(subscription);
+		return emailSubscription;
+	}
+
+	private OperatorAccount buildOperatorAccount() {
+		OperatorAccount operatorAccount = new OperatorAccount();
+		operatorAccount.setName("foo");
+		return operatorAccount;
+	}
+
+	private EmailTemplate buildEmailTemplateWithABadSubject() {
+		EmailTemplate template = new EmailTemplate();
+		template.setId(10);
+		template.setSubject(VelocityAdaptorTest.EmailTemplate_107_translatedBody_sv);
+		template.setAllowsVelocity(true);
+
+		return template;
 	}
 
 	private EmailSubscription createEmailSubscription(Subscription subscription, Report report) {

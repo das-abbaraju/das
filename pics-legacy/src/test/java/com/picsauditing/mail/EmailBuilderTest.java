@@ -2,13 +2,17 @@ package com.picsauditing.mail;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.Token;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.VelocityAdaptorTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
@@ -137,5 +141,28 @@ public class EmailBuilderTest {
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
 
 		assertEquals(Locale.ENGLISH, locale);
+	}
+
+	@Test(expected = EmailBuildErrorException.class)
+	public void testBuild_templateWithABadSubject_shouldThrowAHelpfulException_PICS_13365() throws Exception {
+
+		// Note: the original ticket applies to the body template (not the subject), but this is the same issue.
+		EmailTemplate template = buildEmailTemplateWithABadSubject();
+		builder.setTemplate(template);
+		builder.addToken("i18nCache", null);
+		builder.setConID(55);
+		builder.setToAddresses("recipient@example.com");
+		Whitebox.setInternalState(builder, "picsTags", new ArrayList<Token>());
+
+		builder.build();
+	}
+
+	private EmailTemplate buildEmailTemplateWithABadSubject() {
+		EmailTemplate template = new EmailTemplate();
+		template.setId(10);
+		template.setSubject(VelocityAdaptorTest.EmailTemplate_107_translatedBody_sv);
+		template.setAllowsVelocity(true);
+
+		return template;
 	}
 }

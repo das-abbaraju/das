@@ -899,7 +899,7 @@ public class ContractorCron extends PicsActionSupport {
 	 * @throws EmailException
 	 * @throws NoUsersDefinedException
 	 */
-	private void runPolicies(ContractorAccount contractor) throws EmailException, IOException, NoUsersDefinedException {
+	private void runPolicies(ContractorAccount contractor) throws EmailException, IOException, NoUsersDefinedException, EmailBuildErrorException {
 		if (!runStep(ContractorCronStep.Policies)) {
 			return;
 		}
@@ -913,8 +913,7 @@ public class ContractorCron extends PicsActionSupport {
 		Set<EmailSubscription> unsentWeeklyInsuranceSubscriptions = getUnsentWeeklyInsuranceSubscriptions(contractor);
 
 		if (!expiringPolicies.isEmpty() && !unsentWeeklyInsuranceSubscriptions.isEmpty()) {
-			EventSubscriptionBuilder
-					.sendExpiringCertificatesEmail(unsentWeeklyInsuranceSubscriptions, expiringPolicies);
+			EventSubscriptionBuilder.sendExpiringCertificatesEmail(unsentWeeklyInsuranceSubscriptions, expiringPolicies);
 		}
 	}
 
