@@ -7,11 +7,10 @@ Cron Job initiated by: null
 Starting Cron Job at: TIME_WAS_HERE
 
 
-Starting Cron.RunStep.AuditBuilder_addAuditRenewals
+Starting Cron.Task.AuditBuilder_addAuditRenewals
 	SUCCESS...(0 millis )
 
-Starting Running Huntsman EBIX Support...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.EBIX_huntsmansync
 
 Starting Recalculating all the categories for Audits...
 	SUCCESS...(0 millis )

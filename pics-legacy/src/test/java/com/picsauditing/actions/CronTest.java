@@ -147,6 +147,9 @@ public class CronTest extends PicsActionTest {
 
     @Test
     public void testExecute_All() throws Exception {
+        // EBIX won't run because it requires an FTP connection TODO mock the FTP connection
+        // when(propertyDAO.find(anyString())).thenReturn(new AppProperty("mock_property", "mock_value"));
+        when(propertyDAO.getProperty("Cron.Task.EBIX_huntsmansync")).thenReturn("false");
         cron.execute();
         String report = cron.getReport();
         report = report.replaceAll(" Cron Job at: ([A-Za-z 0-9:]*)", " Cron Job at: TIME_WAS_HERE");

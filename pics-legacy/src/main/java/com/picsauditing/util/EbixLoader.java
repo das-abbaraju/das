@@ -1,164 +1,163 @@
 package com.picsauditing.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.SocketException;
-import java.util.List;
-
+import com.picsauditing.actions.cron.CronTask;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.actions.Cron;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.util.log.PicsLogger;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
-public class EbixLoader {
+public class EbixLoader extends CronTask {
+    private static String NAME = "EBIX_huntsmansync";
+    private AppPropertyDAO appPropDao;
+    private ContractorAuditDAO contractorAuditDAO;
+    private ContractorAccountDAO contractorAccountDAO;
 
-	private AppPropertyDAO appPropDao;
-	private ContractorAuditDAO contractorAuditDAO;
-	private ContractorAccountDAO contractorAccountDAO;
+    private final Logger logger = LoggerFactory.getLogger(EbixLoader.class);
 
-	private final Logger logger = LoggerFactory.getLogger(EbixLoader.class);
+    public EbixLoader(AppPropertyDAO appPropDao, ContractorAuditDAO contractorAuditDAO,
+                      ContractorAccountDAO contractorAccountDAO) {
+        super(NAME);
+        this.appPropDao = appPropDao;
+        this.contractorAuditDAO = contractorAuditDAO;
+        this.contractorAccountDAO = contractorAccountDAO;
+    }
 
-	public EbixLoader(AppPropertyDAO appPropDao, ContractorAuditDAO contractorAuditDAO,
-			ContractorAccountDAO contractorAccountDAO) {
-		this.appPropDao = appPropDao;
-		this.contractorAuditDAO = contractorAuditDAO;
-		this.contractorAccountDAO = contractorAccountDAO;
-	}
+    protected void run() {
+        String server = appPropDao.find("huntsmansync.ftp.server").getValue();
+        String username = appPropDao.find("huntsmansync.ftp.user").getValue();
+        String password = appPropDao.find("huntsmansync.ftp.password").getValue();
+        String folder = appPropDao.find("huntsmansync.ftp.folder").getValue();
 
-	public void load() throws SocketException, IOException {
-		String server = appPropDao.find("huntsmansync.ftp.server").getValue();
-		String username = appPropDao.find("huntsmansync.ftp.user").getValue();
-		String password = appPropDao.find("huntsmansync.ftp.password").getValue();
-		String folder = appPropDao.find("huntsmansync.ftp.folder").getValue();
+        logger.debug("Server: " + server);
+        logger.debug("username: " + username);
+        logger.debug("folder: " + folder);
 
-		PicsLogger.log("Server: " + server);
-		PicsLogger.log("username: " + username);
-		PicsLogger.log("folder: " + folder);
+        FTPClient ftp = new FTPClient();
 
-		// there may be other files in that folder. we can use this to filter
-		// down to the ones we want.
-		// String pattern =
-		// appPropDao.find("huntsmansync.ftp.filePattern").getValue();
+        logger.debug("logging in to server...");
 
-		FTPClient ftp = new FTPClient();
+        try {
+            ftp.connect(server);
+            ftp.enterLocalPassiveMode();
 
-		PicsLogger.log("logging in to server...");
+            ftp.login(username, password);
 
-		ftp.connect(server);
-		ftp.enterLocalPassiveMode();
+            ftp.changeWorkingDirectory(folder);
 
-		ftp.login(username, password);
+            String[] names = ftp.listNames();
 
-		ftp.changeWorkingDirectory(folder);
+            if (names != null) {
+                for (String fileName : names) {
+                    processFile(ftp, fileName);
+                }
+            }
 
-		String[] names = ftp.listNames();
+            ftp.logout();
+        } catch (IOException e) {
 
-		if (names != null) {
+        } finally {
+            try {
+                ftp.disconnect();
+            } catch (IOException e) {
+                logger.error("Failed to disconnect FTP because - " + e.getMessage());
+            }
+        }
+    }
 
-			for (String fileName : names) {
+    private void processFile(FTPClient ftp, String fileName) throws IOException {
+        logger.debug("Processing file: " + fileName);
 
-				PicsLogger.log("Processing file: " + fileName);
+        BufferedReader reader = null;
 
-				BufferedReader reader = null;
+        InputStream retrieveFileStream = ftp.retrieveFileStream(fileName);
 
-				InputStream retrieveFileStream = ftp.retrieveFileStream(fileName);
+        if (retrieveFileStream != null) {
 
-				if (retrieveFileStream != null) {
+            reader = new BufferedReader(new InputStreamReader(retrieveFileStream));
 
-					reader = new BufferedReader(new InputStreamReader(retrieveFileStream));
+            String line = null;
 
-					String line = null;
+            while ((line = reader.readLine()) != null) {
 
-					while ((line = reader.readLine()) != null) {
+                if (line.length() > 0) {
 
-						if (line.length() > 0) {
+                    String[] data = line.split(",");
+                    logger.debug("Processing data: " + data[0] + "/" + data[1]);
 
-							String[] data = line.split(",");
-							PicsLogger.log("Processing data: " + data[0] + "/" + data[1]);
+                    int contractorId = 0;
+                    try {
+                        contractorId = Integer.parseInt(data[0]);
+                    } catch (Exception ignoreStrings) {
+                        // Sometimes we get ids that are strings like
+                        // HC00000629
+                    }
 
-							int contractorId = 0;
-							try {
-								contractorId = Integer.parseInt(data[0]);
-							} catch (Exception ignoreStrings) {
-								// Sometimes we get ids that are strings like
-								// HC00000629
-							}
+                    if (data.length == 2 && contractorId > 0) {
 
-							if (data.length == 2 && contractorId > 0) {
+                        // the other field. comes in as a Y/N.
+                        AuditStatus status = AuditStatus.Pending;
+                        if (data[1].equals("Y"))
+                            status = AuditStatus.Complete;
 
-								// the other field. comes in as a Y/N.
-								AuditStatus status = AuditStatus.Pending;
-								if (data[1].equals("Y"))
-									status = AuditStatus.Complete;
+                        try {
+                            List<ContractorAudit> audits = null;
+                            ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
+                            if (conAccount != null) {
+                                audits = contractorAuditDAO.findWhere(900, "auditType.id = "
+                                        + AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
+                                        + conAccount.getId(), "");
+                            }
 
-								try {
-									List<ContractorAudit> audits = null;
-									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);									
-									if (conAccount != null) {									
-										audits = contractorAuditDAO.findWhere(900, "auditType.id = " 
-												+ AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
-												+ conAccount.getId(), "");
-									}
+                            if (CollectionUtils.isEmpty(audits)) {
+                                if (conAccount != null) {
+                                    logger.warn("WARNING: Ebix record found for contractor "
+                                            + conAccount.getId() + " but no Ebix Compliance audit was found");
+                                } else {
+                                    logger.warn("WARNING: Ebix record found for contractor MISSING CONTRACTOR ID but no Ebix Compliance audit was found");
+                                }
+                                continue;
+                            }
 
-									if (CollectionUtils.isEmpty(audits)) {
-										if (conAccount != null){
-											logger.warn("WARNING: Ebix record found for contractor "
-												+ conAccount.getId() + " but no Ebix Compliance audit was found");
-										} else {
-											logger.warn("WARNING: Ebix record found for contractor MISSING CONTRACTOR ID but no Ebix Compliance audit was found");
-										}
-										continue;
-									}
+                            for (ContractorAudit audit : audits) {
+                                logger.debug("Setting Ebix audit " + audit.getId() + " for contractor "
+                                        + conAccount.getId() + " to " + status.name());
+                                for (ContractorAuditOperator cao : audit.getOperators()) {
+                                    if (status != cao.getStatus()) {
+                                        cao.changeStatus(status, null);
+                                        contractorAuditDAO.save(audit);
 
-									for (ContractorAudit audit : audits) {
-										PicsLogger.log("Setting Ebix audit " + audit.getId() + " for contractor "
-												+ conAccount.getId() + " to " + status.name());
-										for (ContractorAuditOperator cao : audit.getOperators()) {
-											if (status != cao.getStatus()) {
-												cao.changeStatus(status, null);
-												contractorAuditDAO.save(audit);
+                                        conAccount.incrementRecalculation();
+                                        contractorAccountDAO.save(conAccount);
+                                    } else {
+                                        logger.debug("No change for Ebix audit " + audit.getId()
+                                                + " for contractor " + conAccount.getId() + ", "
+                                                + status.name());
+                                    }
+                                }
+                            }
 
-												conAccount.incrementRecalculation();
-												contractorAccountDAO.save(conAccount);
-											} else {
-												PicsLogger.log("No change for Ebix audit " + audit.getId()
-														+ " for contractor " + conAccount.getId() + ", "
-														+ status.name());
-											}
-										}
-									}
+                        } catch (Exception e) {
+                            logger.error("ERROR: Error Processing Ebix for contractor " + data[0]);
+                            e.printStackTrace();
+                        }
 
-								} catch (Exception e) {
-									PicsLogger.log("ERROR: Error Processing Ebix for contractor " + data[0]);
-									e.printStackTrace();
-								}
-
-							} else {
-								PicsLogger.log("Bad Data Found : " + data);
-							}
-						}
-					}
-				} else {
-					PicsLogger.log("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
-				}
-			}
-		}
-
-		ftp.logout();
-		ftp.disconnect();
-
-	}
+                    } else {
+                        logger.error("Bad Data Found : " + data);
+                    }
+                }
+            }
+        } else {
+            logger.error("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
+        }
+    }
 }

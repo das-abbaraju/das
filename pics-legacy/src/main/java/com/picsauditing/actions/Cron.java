@@ -80,8 +80,6 @@ public class Cron extends PicsActionSupport {
     @Autowired
     private ReportDAO reportDAO;
     @Autowired
-    private EbixLoader ebixLoader;
-    @Autowired
     private EmailSender emailSender;
     @Autowired
     private IndexerEngine indexer;
@@ -92,10 +90,13 @@ public class Cron extends PicsActionSupport {
     @Autowired
     private BillingService billingService;
     private List<String> emailExclusionList = new ArrayList<String>();
+
     private AuditBuilderAddAuditRenewalsTask auditBuilderAddAuditRenewalsTask;
+    private EbixLoader ebixLoader;
 
     private void setUpTasks() {
         auditBuilderAddAuditRenewalsTask = new AuditBuilderAddAuditRenewalsTask(contractorAuditDAO, auditBuilder);
+        ebixLoader = new EbixLoader(propertyDAO, contractorAuditDAO, contractorAccountDAO);
     }
 
     @Anonymous
@@ -103,7 +104,35 @@ public class Cron extends PicsActionSupport {
         setUpTasks();
         startReportLogging();
 
-        tasksIfNotFlagsOnly();
+        auditBuilderAddAuditRenewalsTask.setEnabled(propertyDAO);
+        report.append(auditBuilderAddAuditRenewalsTask.execute());
+
+        ebixLoader.setEnabled(propertyDAO);
+        report.append(ebixLoader.execute());
+
+        try {
+            // TODO we shouldn't recacluate audits, but only categories.
+            // This shouldn't be needed at all anymore
+            startTask("Recalculating all the categories for Audits...");
+            List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
+            for (ContractorAudit cAudit : conList) {
+                auditPercentCalculator.percentCalculateComplete(cAudit, true);
+                cAudit.setLastRecalculation(new Date());
+                cAudit.setAuditColumns(system);
+                contractorAuditDAO.save(cAudit);
+            }
+            endTask();
+        } catch (Throwable t) {
+            handleException(t);
+        }
+
+        try {
+            startTask("Starting Indexer...");
+            runIndexer();
+            endTask();
+        } catch (Throwable t) {
+            handleException(t);
+        }
 
         try {
             startTask("Sending emails to contractors pending...");
@@ -248,54 +277,6 @@ public class Cron extends PicsActionSupport {
         report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n\n");
         report.append("Starting Cron Job at: " + new Date().toString());
         report.append("\n\n\n");
-    }
-
-    private void tasksIfNotFlagsOnly() {
-        auditBuilderAddAuditRenewalsTask.setEnabled(propertyDAO);
-        report.append(auditBuilderAddAuditRenewalsTask.execute());
-
-        try {
-            // TODO - Move this to the db.picsauditing.com cron bash script
-			/*
-			 * OPTIMIZE TABLE
-			 * OSHA,accounts,auditCategories,auditData,auditQuestions
-			 * ,certificates,contractor_info," +
-			 * "forms,generalContractors,loginLog,users;
-			 */
-        } catch (Throwable t) {
-            handleException(t);
-        }
-
-        try {
-            startTask("Running Huntsman EBIX Support...");
-            processEbixData();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
-
-        try {
-            // TODO we shouldn't recacluate audits, but only categories.
-            // This shouldn't be needed at all anymore
-            startTask("Recalculating all the categories for Audits...");
-            List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
-            for (ContractorAudit cAudit : conList) {
-                auditPercentCalculator.percentCalculateComplete(cAudit, true);
-                cAudit.setLastRecalculation(new Date());
-                cAudit.setAuditColumns(system);
-                contractorAuditDAO.save(cAudit);
-            }
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        try {
-            startTask("Starting Indexer...");
-            runIndexer();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
     }
 
     @Anonymous
@@ -777,12 +758,6 @@ public class Cron extends PicsActionSupport {
     public void runIndexer() throws Exception {
         PicsLogger.start("");
         indexer.runAll(indexer.getEntries());
-        PicsLogger.stop();
-    }
-
-    public void processEbixData() throws Exception {
-        PicsLogger.start("cron_ebix");
-        ebixLoader.load();
         PicsLogger.stop();
     }
 

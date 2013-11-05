@@ -8,12 +8,12 @@ import java.util.List;
 
 public class AuditBuilderAddAuditRenewalsTask extends CronTask {
 
-    public static String RUN_AuditBuilder_addAuditRenewals = "Cron.RunStep.AuditBuilder_addAuditRenewals";
+    private static String NAME = "AuditBuilder_addAuditRenewals";
     private ContractorAuditDAO contractorAuditDAO;
     private AuditBuilder auditBuilder;
 
     public AuditBuilderAddAuditRenewalsTask(ContractorAuditDAO contractorAuditDAO, AuditBuilder auditBuilder) {
-        super(RUN_AuditBuilder_addAuditRenewals);
+        super(NAME);
         this.contractorAuditDAO = contractorAuditDAO;
         this.auditBuilder = auditBuilder;
     }

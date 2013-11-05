@@ -1,7 +1,6 @@
 package com.picsauditing.actions.cron;
 
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.util.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,15 +8,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 abstract public class CronTask {
+    private static String CRON_TASK_PREFIX = "Cron.Task.";
+    protected final Logger logger = LoggerFactory.getLogger(CronTask.class);
     protected String name;
     protected StringBuilder report = new StringBuilder();
     protected long startTime = 0L;
     protected boolean enabled = true;
 
-    protected final Logger logger = LoggerFactory.getLogger(CronTask.class);
-
     public CronTask(String name) {
-        this.name = name;
+        this.name = CRON_TASK_PREFIX + name;
     }
 
     public StringBuilder execute() {
