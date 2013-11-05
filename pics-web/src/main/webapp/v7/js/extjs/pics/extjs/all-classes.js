@@ -96807,7 +96807,17 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
     id: 'column_list',
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
-        mode: 'SIMPLE'
+        mode: 'SIMPLE',
+
+        listeners: {
+            // This probably belongs in the controller. When defined there, however, selectionchange
+            // doesn't fire on subsequent loads of the modal.
+            selectionchange: function () {
+                var add_button = Ext.ComponentQuery.query('reportcolumnmodal button[action=add]')[0];
+
+                this.getCount() ? add_button.setDisabled(false) : add_button.setDisabled(true);
+            }
+        }
     })
 });
 Ext.define('PICS.view.report.modal.column-filter.FilterList', {
@@ -96819,8 +96829,18 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
     id: 'filter_list',
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
-        mode: 'SIMPLE'
-    })
+        mode: 'SIMPLE',
+
+        listeners: {
+            // This probably belongs in the controller. When defined there, however, selectionchange
+            // doesn't fire on subsequent loads of the modal.
+            selectionchange: function () {
+                var add_button = Ext.ComponentQuery.query('reportfiltermodal button[action=add]')[0];
+
+                this.getCount() ? add_button.setDisabled(false) : add_button.setDisabled(true);
+            }
+        }
+    }),
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     extend: 'PICS.ux.window.Window',
@@ -98077,12 +98097,6 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             },
             'reportfiltermodal button[action=cancel]':  {
                 click: this.cancelFilterModal
-            },
-            'reportcolumnlist': {
-                selectionchange: this.onColumnListSelectionChange
-            },
-            'reportfilterlist': {
-                selectionchange: this.onFilterListSelectionChange
             }
         });
 
@@ -98103,22 +98117,6 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     beforeFilterModalHide: function (cmp, eOpts) {
         this.getFilterList().reset();
-    },
-
-    onColumnListSelectionChange: function (selection_model, selected, eOpts) {
-        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getColumnModalAddButton());
-    },
-
-    onFilterListSelectionChange: function (selection_model, selected, eOpts) {
-        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getFilterModalAddButton());
-    },
-
-    toggleAddButtonFromSelectionModelCount: function (selection_model, add_button) {
-        if (selection_model.getCount()) {
-            add_button.setDisabled(false);
-        } else {
-            add_button.setDisabled(true);
-        }
     },
 
     addColumn: function (cmp, event, eOpts) {
