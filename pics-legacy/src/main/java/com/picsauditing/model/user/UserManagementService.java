@@ -56,4 +56,6 @@ public interface UserManagementService {
     UserGroupManagementStatus userIsAddableToGroup(User user, User group);
 
     List<UserGroupManagementStatus> updateUserPermissions(User user, Account account, Permissions permissions, Map<OpPerms, Boolean> requestedPermState);
+
+	void saveNewAppUser(User user);
 }

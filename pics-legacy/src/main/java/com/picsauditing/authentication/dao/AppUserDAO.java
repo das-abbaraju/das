@@ -77,4 +77,25 @@ public class AppUserDAO {
 
 		return q.getSingleResult();
 	}
+
+	public boolean duplicateUsername(String username, int appUserID) {
+		try {
+			AppUser appUser = findByUserName(username);
+			if (appUser == null) {
+				return false;
+			}
+
+			int id = appUser.getId();
+			if (id > 0) {
+				// found a user with this username
+				if (id != appUserID)
+					// This is in use by another user
+					return true;
+			}
+		} catch (Exception e) {
+			//TODO
+		}
+
+		return false;
+	}
 }

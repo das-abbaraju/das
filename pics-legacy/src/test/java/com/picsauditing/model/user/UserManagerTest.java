@@ -137,6 +137,7 @@ public class UserManagerTest {
 	    Whitebox.setInternalState(userManager, "appUserDAO", appUserDAO);
 
 	    JSONObject json = new JSONObject();
+	    json.put("status", "FAIL");
 	    json.put("id", "1");
 
 	    when(appUserService.createNewAppUser(any(String.class), any(String.class))).thenReturn(json);
@@ -420,6 +421,7 @@ public class UserManagerTest {
 	    Whitebox.setInternalState(userManager, "appUserDAO", appUserDAO);
 
 	    JSONObject json = new JSONObject();
+	    json.put("status", "FAIL");
 	    json.put("id", "1");
 
 	    when(appUserService.createNewAppUser(any(String.class), any(String.class))).thenReturn(json);

@@ -323,4 +323,9 @@ public class UserManager extends UserGroupManager implements UserManagementServi
         }
     }
 
+	@Override
+	public void saveNewAppUser(User user) {
+		super.saveNewAppUser(user);
+	}
+
 }
