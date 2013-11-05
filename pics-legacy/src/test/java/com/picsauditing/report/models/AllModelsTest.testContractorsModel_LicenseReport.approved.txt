@@ -52,6 +52,7 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
+ContractorNumberOfEmployees
 ContractorOfficeIn
 ContractorPQFCALicenseExpDateAnswer
 ContractorPQFCALicenseNumberAnswer

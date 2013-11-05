@@ -117,6 +117,15 @@ public class ContractorsModel extends AbstractModel {
         contractorTrade.setSeparator(", ");
         fields.put(contractorTrade.getName().toUpperCase(), contractorTrade);
 
+        Field numberOfEmployees = new Field("ContractorNumberOfEmployees", "(SELECT CONCAT('US ', GROUP_CONCAT(ca.auditFor, ': ', fullTime.answer ORDER BY ca.auditFor SEPARATOR ', ')) " +
+                "FROM contractor_audit ca " +
+                "JOIN pqfdata fullTime ON ca.id = fullTime.auditID AND fullTime.questionID IN (2447) " +
+                "WHERE (ca.expiresDate >= NOW() OR ca.expiresDate IS NULL) " +
+                "AND ca.conID = Contractor.id)", FieldType.String);
+        numberOfEmployees.setWidth(300);
+        numberOfEmployees.setImportance(FieldImportance.Required);
+        fields.put(numberOfEmployees.getName().toUpperCase(), numberOfEmployees);
+
         Field selfPerformed = fields.get("ContractorTradeSelfPerformed".toUpperCase());
         selfPerformed.setVisible(false);
         Field manufacture = fields.get("ContractorTradeManufacture".toUpperCase());
