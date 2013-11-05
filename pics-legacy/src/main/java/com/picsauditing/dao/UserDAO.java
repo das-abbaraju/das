@@ -279,4 +279,15 @@ public class UserDAO extends PicsDAO {
 
 		return 0;
     }
+
+	public int findAppUserID(int userId) {
+		try {
+			Query q = em.createNativeQuery("SELECT u.appUserID FROM users u where u.id = :userID");
+			q.setParameter("userID", userId);
+
+			return (Integer) q.getSingleResult();
+		} catch (NoResultException e) {
+			return 0;
+		}
+	}
 }

@@ -27,4 +27,6 @@ public interface GroupManagementService {
     void delete(User user, Permissions permissions) throws Exception;
 
     boolean isGroupnameAvailable(User user);
+
+	void saveNewAppUser(User user);
 }
