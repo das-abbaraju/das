@@ -3,6 +3,7 @@ package com.picsauditing.report.models;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
@@ -26,7 +27,12 @@ public class ContractorsModel extends AbstractModel {
 			account.join(AccountTable.Country);
             account.join(AccountTable.LastLogin);
 		}
-		contractor.join(ContractorTable.PQF);
+		ModelSpec pqf = contractor.join(ContractorTable.PQF);
+
+        if (permissions.hasPermission(OpPerms.ContractorLicenseReport)) {
+            pqf.join(ContractorAuditTable.CALicenseNumber);
+            pqf.join(ContractorAuditTable.CALicenseExpDate);
+        }
 
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
@@ -200,6 +206,11 @@ public class ContractorsModel extends AbstractModel {
         fields.put(PPLLimit.getName().toUpperCase(), PPLLimit);
         Field PROILimit = addInsuranceLimit("ContractorProfessionalIndemnityPROILimitAnswer",378,11934);
         fields.put(PROILimit.getName().toUpperCase(), PROILimit);
+
+        if (permissions.hasPermission(OpPerms.ContractorLicenseReport)) {
+            Field CALicenseExpiration = fields.get("ContractorPQFCALicenseExpDateAnswer".toUpperCase());
+            CALicenseExpiration.setType(FieldType.Date);
+        }
 
        return fields;
 	}
