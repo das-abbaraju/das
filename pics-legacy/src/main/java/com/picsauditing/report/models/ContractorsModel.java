@@ -30,6 +30,7 @@ public class ContractorsModel extends AbstractModel {
 
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
+        contractorTrade.minimumImportance = FieldImportance.Average;
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
         directTrade.alias = "DirectTrade";
         ModelSpec trade = directTrade.join(TradeTable.Children);
@@ -100,6 +101,13 @@ public class ContractorsModel extends AbstractModel {
             Field flagColor = fields.get("ContractorFlagFlagColor".toUpperCase());
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
         }
+
+        Field selfPerformed = fields.get("ContractorTradeSelfPerformed".toUpperCase());
+        selfPerformed.setVisible(false);
+        Field manufacture = fields.get("ContractorTradeManufacture".toUpperCase());
+        manufacture.setVisible(false);
+        Field activityPercent = fields.get("ContractorTradeActivityPercent".toUpperCase());
+        activityPercent.setVisible(false);
 
         Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
         accountManager.setVisible(false);

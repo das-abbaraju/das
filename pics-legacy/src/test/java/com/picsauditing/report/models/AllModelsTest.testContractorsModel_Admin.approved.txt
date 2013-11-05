@@ -84,6 +84,9 @@ ContractorShowInDirectory
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorTagTagID
+ContractorTradeActivityPercent
+ContractorTradeManufacture
+ContractorTradeSelfPerformed
 ContractorTradesUpdated
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
