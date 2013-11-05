@@ -2,17 +2,149 @@ package com.picsauditing.models.audits;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.jpa.entities.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This model determines if an audit can be edited
  */
 public class AuditEditModel {
-
+    AuditCategory category;
 	ContractorAudit conAudit;
 	Permissions permissions;
+    AuditCategoryRuleCache auditCategoryRuleCache;
 
-	public boolean canEdit(ContractorAudit conAudit, Permissions permissions) {
+    public boolean isCanEditCategory(AuditCategory category, ContractorAudit conAudit, Permissions permissions, AuditCategoryRuleCache auditCategoryRuleCache) {
+        this.category= category;
+        this.conAudit= conAudit;
+        this.permissions = permissions;
+        this.auditCategoryRuleCache = auditCategoryRuleCache;
+
+        boolean result = true;
+
+		/*
+         * This is hardcoded for the HSE Competency Review. Contractors are only
+		 * allowed to edit the sub-categories of these audits.
+		 */
+        if (permissions.isContractor() && category.getAuditType().getId() == AuditType.HSE_COMPETENCY
+                && category.getParent() != null) {
+            result = false;
+        } else if (permissions.isContractor() && conAudit.getAuditType().isAnnualAddendum()) {
+            result = contractorCanEditAnnualUpdate(category);
+        } else if (permissions.isContractor() && conAudit.getAuditType().isPqf()) {
+            result = contractorCanEditPqf(category);
+        } else if (conAudit.getAuditType().getClassType().isPolicy()) {
+            result = userCanEditInsurancePolicy(category, result);
+        }
+        /*
+		 * Non-policy audits do not have restrictions on a per category basis.
+		 * If the user can see the category and has the 'Edit' view, they are
+		 * allowed to edit the audit.
+		 */
+        else if (!conAudit.getAuditType().getClassType().isPolicy()) {
+            result = true;
+        }
+
+        return result;
+    }
+
+    private boolean contractorCanEditPqf(AuditCategory category) {
+        boolean result;
+        boolean atLeastOneCaoAfterSubmitted = false;
+        for (ContractorAuditOperator cao: conAudit.getOperatorsVisible()) {
+            if (cao.getStatus().after(AuditStatus.Submitted)) {
+                atLeastOneCaoAfterSubmitted = true;
+                break;
+            }
+        }
+
+        if (atLeastOneCaoAfterSubmitted) {
+            AuditCatData foundAuditCatData = null;
+            for (AuditCatData auditCatData: conAudit.getCategories()) {
+                if (auditCatData.getCategory().equals(category)) {
+                    foundAuditCatData = auditCatData;
+                }
+            }
+            // Contractor should be able to edit a category if it's not completely filled out, regardless of the cao status
+            if (foundAuditCatData != null && foundAuditCatData.getNumAnswered() - foundAuditCatData.getNumRequired() < 0) {
+                result = true;
+            } else {
+                result = false;
+            }
+        } else {
+            result = true;
+        }
+        return result;
+    }
+
+    private boolean userCanEditInsurancePolicy(AuditCategory category, boolean result) {
+        if (permissions.isAdmin()) {
+            return true;
+        }
+    /*
+     * Single CAO audits (in this case, policies) are editable by the owners
+     * of that CAO
+     */
+        if (conAudit.getOperatorsVisible().size() == 1
+                && conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId())) {
+            result = true;
+        }
+
+            /*
+             * Contractors are only allowed to edit the limits and policy
+             * information BEFORE the policy is submitted. Once the policy is
+             * submitted we "lock" down these categories to prevent contractors from
+             * changing them.
+             *
+             * Contractors are still allowed to edit the attached certificates of
+             * this policy. For example, when the contractors add a new facility
+             * they should be allowed to add their certificate to that operator's
+             * insurance category.
+             */
+        if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
+            if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete, true) && !permissions.isAdmin()) {
+                result = false;
+            }
+        }
+
+        // check policy category fro cao after incomplete
+        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, conAudit.getContractorAccount());
+        for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+            setCategoryBuilderToSpecificCao(builder, cao);
+            if (builder.isCategoryApplicable(category, cao) && cao.getStatus().after(AuditStatus.Incomplete)) {
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    private boolean contractorCanEditAnnualUpdate(AuditCategory category) {
+        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
+                conAudit.getContractorAccount());
+        for (ContractorAuditOperator cao : conAudit.getOperators()) {
+            setCategoryBuilderToSpecificCao(builder, cao);
+
+            if (cao.getStatus().before(AuditStatus.Complete) && builder.isCategoryApplicable(category, cao)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void setCategoryBuilderToSpecificCao(AuditCategoriesBuilder builder, ContractorAuditOperator cao) {
+        Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+        for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+            operators.add(caop.getOperator());
+        }
+        builder.calculate(conAudit, operators);
+    }
+
+    public boolean isCanEditAudit(ContractorAudit conAudit, Permissions permissions) {
 		this.conAudit= conAudit;
 		this.permissions = permissions;
 

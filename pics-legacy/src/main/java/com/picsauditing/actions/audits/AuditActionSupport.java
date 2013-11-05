@@ -365,7 +365,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			if (type.getWorkFlow().isUseStateForEdit()) {
 				AuditEditModel model = new AuditEditModel();
-				return model.canEdit(conAudit, permissions);
+				return model.isCanEditAudit(conAudit, permissions);
 			}
 			if (type.getEditPermission() != null) {
 				return permissions.hasPermission(type.getEditPermission());
@@ -379,7 +379,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isContractor() && type.isCanContractorEdit()) {
             if (type.getWorkFlow().isUseStateForEdit()) {
                 AuditEditModel model = new AuditEditModel();
-                return model.canEdit(conAudit, permissions);
+                return model.isCanEditAudit(conAudit, permissions);
             }
 			if (newStatus.isSubmitted()) {
 				return true;
@@ -483,7 +483,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanEditAudit() {
-		return auditEditModel.canEdit(conAudit, permissions);
+		return auditEditModel.isCanEditAudit(conAudit, permissions);
 	}
 
 	public boolean isShowCaoTable() {
@@ -884,127 +884,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 	 * @return
 	 */
 	public boolean isCanEditCategory(AuditCategory category) throws RecordNotFoundException, NoRightsException {
-        boolean result = true;
         if (conAudit == null) {
             findConAudit();
         }
-		/*
-         * This is hardcoded for the HSE Competency Review. Contractors are only
-		 * allowed to edit the sub-categories of these audits.
-		 */
-        if (permissions.isContractor() && category.getAuditType().getId() == AuditType.HSE_COMPETENCY
-                && category.getParent() != null) {
-            result = false;
-        } else if (permissions.isContractor() && conAudit.getAuditType().isAnnualAddendum()) {
-            result = contractorCanEditAnnualUpdate(category);
-        } else if (permissions.isContractor() && conAudit.getAuditType().isPqf()) {
-            result = contractorCanEditPqf(category);
-        }
-        else if (conAudit.getAuditType().getClassType().isPolicy()) {
-            result = userCanEditInsurancePolicy(category, result);
-        }
-        /*
-		 * Non-policy audits do not have restrictions on a per category basis.
-		 * If the user can see the category and has the 'Edit' view, they are
-		 * allowed to edit the audit.
-		 */
-        else if (!conAudit.getAuditType().getClassType().isPolicy()) {
-            result = true;
+
+        if (conAudit == null) {
+            return false;
         }
 
-        return result;
-	}
-
-    private boolean contractorCanEditPqf(AuditCategory category) {
-        boolean result;
-        boolean atLeastOneCaoAfterSubmitted = false;
-        for (ContractorAuditOperator cao: conAudit.getOperatorsVisible()) {
-            if (cao.getStatus().after(AuditStatus.Submitted)) {
-                atLeastOneCaoAfterSubmitted = true;
-                break;
-            }
-        }
-
-        if (atLeastOneCaoAfterSubmitted) {
-            AuditCatData foundAuditCatData = null;
-            for (AuditCatData auditCatData: conAudit.getCategories()) {
-                if (auditCatData.getCategory().equals(category)) {
-                    foundAuditCatData = auditCatData;
-                }
-            }
-            // Contractor should be able to edit a category if it's not completely filled out, regardless of the cao status
-            if (foundAuditCatData != null && foundAuditCatData.getNumAnswered() - foundAuditCatData.getNumRequired() < 0) {
-                result = true;
-            } else {
-                result = false;
-            }
-        } else {
-            result = true;
-        }
-        return result;
-    }
-
-    private boolean userCanEditInsurancePolicy(AuditCategory category, boolean result) {
-    /*
-     * Single CAO audits (in this case, policies) are editable by the owners
-     * of that CAO
-     */
-        if (conAudit.getOperatorsVisible().size() == 1
-                && conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId())) {
-            result = true;
-        }
-
-        if (permissions.isAdmin()) {
-            result = true;
-        }
-            /*
-             * Contractors are only allowed to edit the limits and policy
-             * information BEFORE the policy is submitted. Once the policy is
-             * submitted we "lock" down these categories to prevent contractors from
-             * changing them.
-             *
-             * Contractors are still allowed to edit the attached certificates of
-             * this policy. For example, when the contractors add a new facility
-             * they should be allowed to add their certificate to that operator's
-             * insurance category.
-             */
-        if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
-            if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete, true) && !permissions.isAdmin()) {
-                result = false;
-            }
-        }
-
-        // check policy category fro cao after incomplete
-        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-        for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-            setCategoryBuilderToSpecificCao(builder, cao);
-            if (builder.isCategoryApplicable(category, cao) && cao.getStatus().after(AuditStatus.Incomplete)) {
-                result = false;
-            }
-        }
-        return result;
-    }
-
-    private boolean contractorCanEditAnnualUpdate(AuditCategory category) {
-        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
-        conAudit.getContractorAccount());
-        for (ContractorAuditOperator cao : conAudit.getOperators()) {
-            setCategoryBuilderToSpecificCao(builder, cao);
-
-            if (cao.getStatus().before(AuditStatus.Complete) && builder.isCategoryApplicable(category, cao)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void setCategoryBuilderToSpecificCao(AuditCategoriesBuilder builder, ContractorAuditOperator cao) {
-		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-			operators.add(caop.getOperator());
-		}
-		builder.calculate(conAudit, operators);
+        return auditEditModel.isCanEditCategory(category, conAudit, permissions, auditCategoryRuleCache);
 	}
 
 	public boolean isHasClosingAuditor() {
