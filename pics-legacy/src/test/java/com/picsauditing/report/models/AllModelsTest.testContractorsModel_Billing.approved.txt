@@ -80,6 +80,9 @@ ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorTagTagID
 ContractorTrades
+ContractorTradeActivityPercent
+ContractorTradeManufacture
+ContractorTradeSelfPerformed
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorVatId
