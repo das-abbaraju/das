@@ -8,6 +8,7 @@ import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
+import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.util.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -369,7 +370,13 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		emailBuilder.addToken("contactName", user.getName());
 		emailBuilder.addToken("userName", user.getUsername());
 
-		EmailQueue emailQueue = emailBuilder.build();
+		EmailQueue emailQueue = null;
+		try {
+			emailQueue = emailBuilder.build();
+		} catch (EmailBuildErrorException e) {
+			logger.error("sendWelcomeEmail(): Failed to send build email for user with id: {}. {}",
+					new Object[]{user.getId(), e.getMessage()});
+		}
 		emailQueue.setHtml(true);
 		emailQueue.setVeryHighPriority();
 		emailQueue.setSubjectViewableById(Account.EVERYONE);

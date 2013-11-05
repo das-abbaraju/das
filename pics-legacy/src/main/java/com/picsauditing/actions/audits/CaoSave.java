@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.*;
 import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.service.audit.CaoAutoAdvancer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -20,10 +23,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.models.audits.CaoSaveModel;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.EmailAddressUtils;
@@ -62,6 +61,8 @@ public class CaoSave extends AuditActionSupport {
 	// Update flags
 	private Set<FlagCriteriaContractor> contractorFlagCriteria;
 	private FlagDataCalculator flagCalculator;
+
+	private static final Logger logger = LoggerFactory.getLogger(CaoSave.class);
 
 	public String showHistory() {
 		if (caoID > 0) {
@@ -321,7 +322,12 @@ public class CaoSave extends AuditActionSupport {
 		checkNewStatus(step, cao);
 
 		if (step.getEmailTemplate() != null) {
-			sendStatusChangeEmail(step, cao);
+			try {
+				sendStatusChangeEmail(step, cao);
+			} catch (EmailBuildErrorException e) {
+				logger.error("CaoSave.save(): Failed to build email for status change for CAO with id: {}. {}",
+						new Object[]{cao.getId(), e.getMessage()});
+			}
 
 			String summary = "Email sent to contractor for Changed Status for "
 					+ cao.getAudit().getAuditType().getName().toString() + "(" + cao.getAudit().getId() + ") ";
@@ -432,7 +438,7 @@ public class CaoSave extends AuditActionSupport {
 
 	// TODO: Move this method so it is part of the Email Processing, not in the Action
 	private void sendStatusChangeEmail(WorkflowStep step, ContractorAuditOperator cao) throws EmailException,
-			IOException {
+			IOException, EmailBuildErrorException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(step.getEmailTemplate());
 

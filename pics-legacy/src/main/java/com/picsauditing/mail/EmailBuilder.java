@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.util.TemplateParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class EmailBuilder {
 		conID = 0;
 	}
 
-	public EmailQueue build() throws IOException {
+	public EmailQueue build() throws IOException, EmailBuildErrorException {
 		EmailQueue email = new EmailQueue();
 
 		email.setEmailTemplate(template);
@@ -149,11 +150,21 @@ public class EmailBuilder {
 		}
 
 		String subject = convertPicsTagsToVelocity(templateSubject, template.isAllowsVelocity());
-		subject = velocityAdaptor.merge(subject, tokens);
+		try {
+			subject = velocityAdaptor.merge(subject, tokens);
+		} catch (TemplateParseException e) {
+			throw new EmailBuildErrorException("Failed to merge tokens into the subject template for new emailQueue {toAddresses: "
+					+ email.getToAddresses() + contractorContext(email) + ", template id: " + template.getId() + "}", e, email);
+		}
 		email.setSubject(subject);
 
 		String body = convertPicsTagsToVelocity(templateBody, template.isAllowsVelocity());
-		body = velocityAdaptor.merge(body, tokens);
+		try {
+			body = velocityAdaptor.merge(body, tokens);
+		} catch (TemplateParseException e) {
+			throw new EmailBuildErrorException("Failed to merge tokens into the body template for new emailQueue {toAddresses: "
+					+ email.getToAddresses() + contractorContext(email) + ", template id: " + template.getId() + "}", e, email);
+		}
 
 		email.setBody(body);
 
@@ -163,6 +174,14 @@ public class EmailBuilder {
 			logger.debug(email.getBody());
 		}
 		return email;
+	}
+
+	private String contractorContext(EmailQueue email) {
+		String conInfo = "";
+		if (email.getContractorAccount() != null) {
+			conInfo = ", contractor id: " + email.getContractorAccount().getId();
+		}
+		return conInfo;
 	}
 
 	private String getHost() {
