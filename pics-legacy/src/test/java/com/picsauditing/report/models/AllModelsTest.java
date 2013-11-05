@@ -88,6 +88,14 @@ public class AllModelsTest {
     }
 
     @Test
+    public void testContractorsModel_LicenseReport() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.ContractorLicenseReport);
+        permissions.setAccountType("Admin");
+        model = new ContractorsModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
     public void testContractorsModel_Billing() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.Billing);
         permissions.setAccountType("Admin");
