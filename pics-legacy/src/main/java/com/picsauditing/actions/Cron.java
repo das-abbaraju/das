@@ -8,15 +8,14 @@ import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.search.Database;
-import com.picsauditing.util.*;
-import com.picsauditing.util.business.OperatorUtil;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.math.NumberUtils;
+import com.picsauditing.util.EbixLoader;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.IndexerEngine;
+import com.picsauditing.util.Strings;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -73,12 +70,9 @@ public class Cron extends PicsActionSupport {
     @Autowired
     private IndexerEngine indexer;
     @Autowired
-    private EmailBuilder emailBuilder;
-    @Autowired
     private AccountStatusChanges accountStatusChanges;
     @Autowired
     private BillingService billingService;
-
     private AuditBuilderAddAuditRenewalsTask auditBuilderAddAuditRenewalsTask;
     private EbixLoader ebixLoader;
     private RecalculateAuditsTask recalculateAudits;
@@ -89,6 +83,10 @@ public class Cron extends PicsActionSupport {
     private DeclineOldPendingAccounts movePendingAccountsToDeclined;
     private AddLateFees addLateFees;
     private DeactivateNonRenewalAccounts deactivateNonRenewalAccounts;
+    private EmailDelinquentContractors emailDelinquentContractors;
+    private FlagChangesEmailTask flagChangesEmailTask;
+    private ReportSuggestionsTask reportSuggestionsTask;
+    private ExpireFlagChangesTask expireFlagChangesTask;
 
     private void setUpTasks() {
         auditBuilderAddAuditRenewalsTask = new AuditBuilderAddAuditRenewalsTask(contractorAuditDAO, auditBuilder);
@@ -101,6 +99,10 @@ public class Cron extends PicsActionSupport {
         movePendingAccountsToDeclined = new DeclineOldPendingAccounts(contractorAccountDAO, accountStatusChanges);
         addLateFees = new AddLateFees(invoiceDAO, invoiceItemDAO, invoiceFeeDAO, billingService);
         deactivateNonRenewalAccounts = new DeactivateNonRenewalAccounts(contractorAccountDAO, billingService, accountStatusChanges);
+        emailDelinquentContractors = new EmailDelinquentContractors(contractorAccountDAO, emailQueueDAO);
+        flagChangesEmailTask = new FlagChangesEmailTask(getDatabase(), emailQueueDAO);
+        reportSuggestionsTask = new ReportSuggestionsTask(getDatabase());
+        expireFlagChangesTask = new ExpireFlagChangesTask(getDatabase());
     }
 
     @Anonymous
@@ -143,13 +145,8 @@ public class Cron extends PicsActionSupport {
         deactivateNonRenewalAccounts.setEnabled(propertyDAO);
         report.append(deactivateNonRenewalAccounts.execute());
 
-        try {
-            startTask("Sending Email to Delinquent Contractors ...");
-            sendDelinquentContractorsEmail();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+        emailDelinquentContractors.setEnabled(propertyDAO);
+        report.append(emailDelinquentContractors.execute());
 
         try {
             startTask("Sending No Action Email to Bid Only Accounts ...");
@@ -166,29 +163,14 @@ public class Cron extends PicsActionSupport {
             handleException(t);
         }
 
-        try {
-            startTask("Expiring Flag Changes...");
-            expireFlagChanges();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+        expireFlagChangesTask.setEnabled(propertyDAO);
+        report.append(expireFlagChangesTask.execute());
 
-        try {
-            startTask("Refresh Report Suggestions...");
-            reportDAO.updateReportSuggestions();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+        reportSuggestionsTask.setEnabled(propertyDAO);
+        report.append(reportSuggestionsTask.execute());
 
-        try {
-            startTask("Emailing Flag Change Reports...");
-            sendFlagChangesEmails();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+        flagChangesEmailTask.setEnabled(propertyDAO);
+        report.append(flagChangesEmailTask.execute());
 
         try {
             startTask("Checking Registration Requests Hold Dates...");
@@ -198,7 +180,8 @@ public class Cron extends PicsActionSupport {
             handleException(t);
         }
 
-        move90DayPendingAccountsToDeclinedStatus();
+        movePendingAccountsToDeclined.setEnabled(propertyDAO);
+        report.append(movePendingAccountsToDeclined.execute());
 
         report.append(Strings.NEW_LINE).append(Strings.NEW_LINE).append(Strings.NEW_LINE)
                 .append("Completed Cron Job at: ");
@@ -220,13 +203,6 @@ public class Cron extends PicsActionSupport {
         report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n\n");
         report.append("Starting Cron Job at: " + new Date().toString());
         report.append("\n\n\n");
-    }
-
-    @Anonymous
-    public String move90DayPendingAccountsToDeclinedStatus() throws Exception {
-        movePendingAccountsToDeclined.setEnabled(propertyDAO);
-        report.append(movePendingAccountsToDeclined.execute());
-        return SUCCESS;
     }
 
     private void handleException(Throwable t) {
@@ -288,71 +264,6 @@ public class Cron extends PicsActionSupport {
         noteDao.save(note);
     }
 
-    public void sendDelinquentContractorsEmail() throws Exception {
-        List<Invoice> pendingAndDelienquentInvoices = contractorAccountDAO.findPendingDelinquentAndDelinquentInvoices();
-        if (!pendingAndDelienquentInvoices.isEmpty()) {
-            Map<ContractorAccount, Integer> pendingAndDelinquentAccts = splitPendingAndDeliquentInvoices(pendingAndDelienquentInvoices);
-            sendEmailsTo(pendingAndDelinquentAccts);
-        }
-    }
-
-    private Map<ContractorAccount, Integer> splitPendingAndDeliquentInvoices(List<Invoice> invoices) {
-        Map<ContractorAccount, Integer> contractors = new TreeMap<ContractorAccount, Integer>();
-
-        List<Integer> recentlyDeactivatedIds = emailQueueDAO.findContractorsWithRecentEmails("20 HOUR", 48);
-        List<Integer> recentlyOpenInvoicesIds = emailQueueDAO.findContractorsWithRecentEmails("20 HOUR", 50);
-
-        for (Invoice invoice : invoices) {
-            ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
-            if (invoice.getDueDate().before(new Date())) {
-                if (!recentlyDeactivatedIds.contains(cAccount.getId()))
-                    contractors.put(cAccount, 48); // deactivation
-            } else if (!recentlyOpenInvoicesIds.contains(cAccount.getId())) {
-                contractors.put(cAccount, 50); // open
-            }
-        }
-
-        return contractors;
-    }
-
-    private void sendEmailsTo(Map<ContractorAccount, Integer> pendingAndDelinquentAccts) {
-        for (ContractorAccount cAccount : pendingAndDelinquentAccts.keySet()) {
-            try {
-                int templateID = pendingAndDelinquentAccts.get(cAccount);
-
-                emailBuilder.clear();
-                emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
-                emailBuilder.setTemplate(templateID);
-
-                EmailQueue email = emailBuilder.build();
-                email.setLowPriority();
-                email.setSubjectViewableById(Account.PicsID);
-                email.setBodyViewableById(Account.PicsID);
-                emailQueueDAO.save(email);
-                stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
-                        NoteCategory.Billing);
-            } catch (Exception e) {
-                sendInvalidEmailsToBilling(cAccount);
-            }
-        }
-    }
-
-    private void sendInvalidEmailsToBilling(ContractorAccount cAccount) {
-        EmailQueue email = new EmailQueue();
-        email.setToAddresses(EmailAddressUtils.getBillingEmail(cAccount.getCurrency()));
-        email.setContractorAccount(cAccount);
-        email.setSubject("Contractor Missing Email Address");
-        email.setBody(cAccount.getName() + " (" + cAccount.getId() + ") has no valid email address. "
-                + "The system is unable to send automated emails to this account. "
-                + "Attempted to send Overdue Invoice Email Reminder.");
-        email.setLowPriority();
-        email.setSubjectViewableById(Account.PicsID);
-        email.setBodyViewableById(Account.PicsID);
-        emailQueueDAO.save(email);
-        stampNote(email.getContractorAccount(), "Failed to send Deactivation Email because of no valid email address.",
-                NoteCategory.Billing);
-    }
-
     public void sendNoActionEmailToTrialAccounts() throws Exception {
         List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
 
@@ -372,129 +283,6 @@ public class Cron extends PicsActionSupport {
             stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(),
                     NoteCategory.General);
         }
-    }
-
-    public void expireFlagChanges() throws Exception {
-
-        String query = "UPDATE contractor_operator co ";
-        query += "JOIN accounts a ON co.conID = a.id ";
-        query += "JOIN contractor_info c ON a.id = c.id ";
-        query += "SET baselineFlag = flag, ";
-        query += "baselineFlagDetail = flagDetail, ";
-        query += "baselineApproved = NOW(), ";
-        query += "baselineApprover = 1 ";
-        query += "WHERE flag != baselineFlag ";
-        // Ignore Flag Changes that are two weeks old or longer
-        query += "AND (flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY) ";
-        // Automatically approve a. Audited - Unspecified Facility
-        // and a. PQF Only - Unspecified Facility
-        query += "OR opID IN (10403,2723) ";
-        // Ignore Flag Changes for newly created contractors
-        query += "OR a.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
-        // Ignore Flag Changes for recently added contractors
-        query += "OR co.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
-        // Ignore Clear Flag Changes
-        query += "OR flag = 'Clear' OR baselineFlag = 'Clear'";
-        // Removed Forced Overall Flags
-        query += "OR (forceFlag IS NOT NULL AND NOW() < forceEnd))";
-
-        getDatabase().executeUpdate(query);
-    }
-
-    private void sendFlagChangesEmails() throws Exception {
-        List<BasicDynaBean> data = getFlagChangeData();
-        if (CollectionUtils.isEmpty(data)) {
-            return;
-        }
-
-        sendFlagChangesEmail(EmailAddressUtils.PICS_FLAG_CHANGE_EMAIL, data);
-
-        Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
-        if (MapUtils.isNotEmpty(amMap)) {
-            for (String accountMgr : amMap.keySet()) {
-                if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
-                    List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
-                    sendFlagChangesEmail(accountMgr, flagChanges);
-                }
-            }
-        }
-    }
-
-    private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException {
-        EmailBuilder emailBuilder = new EmailBuilder();
-        emailBuilder.setTemplate(EmailTemplate.FLAG_CHANGES_EMAIL_TEMPLATE);
-        emailBuilder.setFromAddress(EmailAddressUtils.PICS_SYSTEM_EMAIL_ADDRESS);
-        emailBuilder.addToken("changes", flagChanges);
-        int totalFlagChanges = sumFlagChanges(flagChanges);
-        emailBuilder.addToken("totalFlagChanges", totalFlagChanges);
-        emailBuilder.setToAddresses(accountMgr);
-        EmailQueue email = emailBuilder.build();
-        email.setVeryHighPriority();
-        email.setSubjectViewableById(Account.PicsID);
-        email.setBodyViewableById(Account.PicsID);
-        emailQueueDAO.save(email);
-        emailBuilder.clear();
-    }
-
-    private int sumFlagChanges(List<BasicDynaBean> flagChanges) {
-        int totalChanges = 0;
-        if (CollectionUtils.isEmpty(flagChanges)) {
-            return totalChanges;
-        }
-
-        for (BasicDynaBean flagChangesByOperator : flagChanges) {
-            try {
-                Object operatorFlagChanges = flagChangesByOperator.get("changes");
-                if (operatorFlagChanges != null) {
-                    totalChanges += NumberUtils.toInt(operatorFlagChanges.toString(), 0);
-                }
-            } catch (Exception ignore) {
-            }
-        }
-
-        return totalChanges;
-    }
-
-    private Map<String, List<BasicDynaBean>> sortResultsByAccountManager(List<BasicDynaBean> data) {
-        // Sorting results into buckets by AM to add as tokens into the email
-        Map<String, List<BasicDynaBean>> amMap = new TreeMap<String, List<BasicDynaBean>>();
-
-        if (CollectionUtils.isEmpty(data)) {
-            return amMap;
-        }
-
-        for (BasicDynaBean bean : data) {
-            String accountMgr = (String) bean.get("accountManager");
-            if (accountMgr != null) {
-                if (amMap.get(accountMgr) == null) {
-                    amMap.put(accountMgr, new ArrayList<BasicDynaBean>());
-                }
-
-                amMap.get(accountMgr).add(bean);
-            }
-        }
-
-        return amMap;
-    }
-
-    private List<BasicDynaBean> getFlagChangeData() throws SQLException {
-        StringBuilder query = new StringBuilder();
-        query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
-        query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
-        query.append("count(*) total, sum(case when co.flag = co.baselineFlag THEN 0 ELSE 1 END) changes ");
-        query.append("from contractor_operator co ");
-        query.append("join accounts c on co.conID = c.id and c.status = 'Active' ");
-        query.append("join accounts o on co.opID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in ("
-                + Strings.implode(OperatorUtil.operatorsIdsUsedForInternalPurposes()) + ") ");
-        query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
-        query.append("and endDate > now() ");
-        query.append("LEFT join users u on au.userID = u.id ");
-        query.append("group by o.id) t ");
-        query.append("where changes >= 10 and changes/total > .05 ");
-        query.append("order by percent desc ");
-
-        List<BasicDynaBean> data = getDatabase().select(query.toString(), true);
-        return data;
     }
 
     private Database getDatabase() {
