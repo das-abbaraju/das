@@ -21,16 +21,12 @@ Skipping Cron.Task.EmailRegistrationRequests
 
 Skipping Cron.Task.EmailUpcomingImplementationAudits
 
-Starting Adding Late Fee to Delinquent Contractor Invoices ...
-	No invoices require a late fee
-
-SUCCESS...(0 millis )
+Skipping Cron.Task.AddLateFees
 
 Starting Bump Dead Accounts that still have balances...
 	SUCCESS...(0 millis )
 
-Starting Inactivating Accounts via Billing Status...
-	SUCCESS...(0 millis )
+Skipping Cron.Task.DeactivateNonRenewalAccounts
 
 Starting Sending Email to Delinquent Contractors ...
 	SUCCESS...(0 millis )

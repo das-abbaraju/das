@@ -8,13 +8,13 @@ import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
-public class MovePendingAccountsToDeclined extends CronTask {
+public class DeclineOldPendingAccounts extends CronTask {
     private static String NAME = "MovePendingAccountsToDeclined";
     protected Permissions permissions = null;
     private ContractorAccountDAO contractorAccountDAO;
     private AccountStatusChanges accountStatusChanges;
 
-    public MovePendingAccountsToDeclined(ContractorAccountDAO contractorAccountDAO, AccountStatusChanges accountStatusChanges) {
+    public DeclineOldPendingAccounts(ContractorAccountDAO contractorAccountDAO, AccountStatusChanges accountStatusChanges) {
         super(NAME);
         this.contractorAccountDAO = contractorAccountDAO;
         this.accountStatusChanges = accountStatusChanges;

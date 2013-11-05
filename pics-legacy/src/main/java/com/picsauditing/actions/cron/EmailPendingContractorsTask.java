@@ -18,7 +18,7 @@ import java.util.*;
 
 public class EmailPendingContractorsTask extends CronTask {
     private static String NAME = "EmailPendingContractors";
-    protected List<String> emailExclusionList;
+    List<String> emailExclusionList = new ArrayList<>();
     protected Permissions permissions = null;
     private EmailQueueDAO emailQueueDAO;
     private ContractorAccountDAO contractorAccountDAO;
@@ -41,7 +41,7 @@ public class EmailPendingContractorsTask extends CronTask {
         logger.debug("Excluding {1} emails", emailExclusionList.size());
     }
 
-    private void sendEmailPendingAccounts() throws Exception {
+    void sendEmailPendingAccounts() throws Exception {
         String exclude = Strings.implodeForDB(emailExclusionList);
 
         String where = "a.country IN ('US','CA') AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";

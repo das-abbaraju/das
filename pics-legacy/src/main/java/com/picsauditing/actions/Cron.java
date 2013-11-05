@@ -1,7 +1,6 @@
 package com.picsauditing.actions;
 
 import com.picsauditing.PICS.BillingService;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.cron.*;
@@ -11,7 +10,6 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
 import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.*;
 import com.picsauditing.util.business.OperatorUtil;
@@ -29,16 +27,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
-    public static final int MINIMUM_LATE_FEE = 20;
-    public static final double LATE_FEE_PERCENTAGE = 0.05;
     protected final static User system = new User(User.SYSTEM);
     private final Logger logger = LoggerFactory.getLogger(Cron.class);
     @Autowired
@@ -92,7 +86,9 @@ public class Cron extends PicsActionSupport {
     private EmailPendingContractorsTask emailPendingContractorsTask;
     private EmailRegistrationRequestsTask emailRegistrationRequestsTask;
     private EmailUpcomingImplementationAudits emailUpcomingImplementationAudits;
-    private MovePendingAccountsToDeclined movePendingAccountsToDeclined;
+    private DeclineOldPendingAccounts movePendingAccountsToDeclined;
+    private AddLateFees addLateFees;
+    private DeactivateNonRenewalAccounts deactivateNonRenewalAccounts;
 
     private void setUpTasks() {
         auditBuilderAddAuditRenewalsTask = new AuditBuilderAddAuditRenewalsTask(contractorAuditDAO, auditBuilder);
@@ -102,7 +98,9 @@ public class Cron extends PicsActionSupport {
         emailPendingContractorsTask = new EmailPendingContractorsTask(emailQueueDAO, contractorAccountDAO);
         emailRegistrationRequestsTask = new EmailRegistrationRequestsTask(contractorAccountDAO, emailQueueDAO, contractorRegistrationRequestDAO);
         emailUpcomingImplementationAudits = new EmailUpcomingImplementationAudits(contractorAuditDAO);
-        movePendingAccountsToDeclined = new MovePendingAccountsToDeclined(contractorAccountDAO, accountStatusChanges);
+        movePendingAccountsToDeclined = new DeclineOldPendingAccounts(contractorAccountDAO, accountStatusChanges);
+        addLateFees = new AddLateFees(invoiceDAO, invoiceItemDAO, invoiceFeeDAO, billingService);
+        deactivateNonRenewalAccounts = new DeactivateNonRenewalAccounts(contractorAccountDAO, billingService, accountStatusChanges);
     }
 
     @Anonymous
@@ -131,13 +129,8 @@ public class Cron extends PicsActionSupport {
         emailUpcomingImplementationAudits.setEnabled(propertyDAO);
         report.append(emailUpcomingImplementationAudits.execute());
 
-        try {
-            startTask("Adding Late Fee to Delinquent Contractor Invoices ...");
-            addLateFeeToDelinquentInvoices();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+        addLateFees.setEnabled(propertyDAO);
+        report.append(addLateFees.execute());
 
         try {
             startTask("Bump Dead Accounts that still have balances...");
@@ -147,19 +140,8 @@ public class Cron extends PicsActionSupport {
             handleException(t);
         }
 
-		/*
-         * Do not change the payment expires when deactivating accounts.
-		 *
-		 * This is actually Canceling an account, not a deactivation.
-		 */
-
-        try {
-            startTask("Inactivating Accounts via Billing Status...");
-            deactivateNonRenewalAccounts();
-            endTask();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+        deactivateNonRenewalAccounts.setEnabled(propertyDAO);
+        report.append(deactivateNonRenewalAccounts.execute());
 
         try {
             startTask("Sending Email to Delinquent Contractors ...");
@@ -245,19 +227,6 @@ public class Cron extends PicsActionSupport {
         movePendingAccountsToDeclined.setEnabled(propertyDAO);
         report.append(movePendingAccountsToDeclined.execute());
         return SUCCESS;
-    }
-
-    private void deactivateNonRenewalAccounts() {
-        String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
-        List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
-        for (ContractorAccount contractor : conAcctList) {
-            final String reason = contractor.getAccountLevel().isBidOnly() ? AccountStatusChanges
-                    .BID_ONLY_ACCOUNT_REASON : AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
-            billingService.syncBalance(contractor);
-            contractor.setAuditColumns(system);
-            accountStatusChanges.deactivateContractor(contractor, permissions, reason,
-                    "Automatically inactivating account based on expired membership");
-        }
     }
 
     private void handleException(Throwable t) {
@@ -382,97 +351,6 @@ public class Cron extends PicsActionSupport {
         emailQueueDAO.save(email);
         stampNote(email.getContractorAccount(), "Failed to send Deactivation Email because of no valid email address.",
                 NoteCategory.Billing);
-    }
-
-    public void addLateFeeToDelinquentInvoices() throws Exception {
-        List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
-        if (invoicesMissingLateFees.size() == 0) {
-            report.append("No invoices require a late fee\n\n");
-        }
-        for (Invoice i : invoicesMissingLateFees) {
-            if (invoiceHasReactivation(i)) {
-                report.append("Skipping this invoice because it's a reactivation invoice: " + i.getId() + "\n\n");
-                continue;
-            }
-            report.append("Create late fee invoice for delinquent invoice " + i.getId() + "\n\n");
-            Invoice lateFeeInvoice = addLateFeeToDelinquentInvoice(i);
-        }
-    }
-
-    private Invoice addLateFeeToDelinquentInvoice(Invoice invoiceWhichIsLate) {
-        // Calculate Late Fee
-        BigDecimal lateFee = calculateLateFeeFor(invoiceWhichIsLate);
-
-        InvoiceItem lateFeeItem = createLateFeeInvoiceItem(invoiceWhichIsLate, lateFee);
-
-        Invoice lateFeeInvoice = generateLateFeeInvoice(invoiceWhichIsLate, lateFeeItem);
-
-        lateFeeItem.setInvoice(lateFeeInvoice);
-
-        AccountingSystemSynchronization.setToSynchronize(lateFeeInvoice);
-
-        updateContractorAccountForLateInvoice(lateFeeInvoice);
-
-        lateFeeInvoice = saveLateFeeInvoiceAndRelated(invoiceWhichIsLate, lateFeeItem, lateFeeInvoice);
-        return lateFeeInvoice;
-    }
-
-    private void updateContractorAccountForLateInvoice(Invoice lateFeeInvoice) {
-        if (lateFeeInvoice.getAccount() instanceof ContractorAccount) {
-            billingService.syncBalance(((ContractorAccount) lateFeeInvoice.getAccount()));
-            invoiceItemDAO.save(lateFeeInvoice.getAccount());
-        }
-    }
-
-    private Invoice saveLateFeeInvoiceAndRelated(Invoice invoiceWhichIsLate, InvoiceItem lateFeeItem, Invoice lateFeeInvoice) {
-        lateFeeInvoice = (Invoice) invoiceDAO.save(lateFeeInvoice);
-        lateFeeItem.setInvoice(lateFeeInvoice);
-        lateFeeItem = (InvoiceItem) invoiceItemDAO.save(lateFeeItem);
-        invoiceWhichIsLate.setLateFeeInvoice(lateFeeInvoice);
-        Invoice savedInvoice = invoiceDAO.save(invoiceWhichIsLate);
-        return savedInvoice;
-    }
-
-    public Invoice generateLateFeeInvoice(Invoice invoiceWhichIsLate, InvoiceItem lateFeeItem) {
-        Invoice lateFeeInvoice = new Invoice();
-        lateFeeInvoice.setAccount(invoiceWhichIsLate.getAccount());
-        lateFeeInvoice.getItems().add(lateFeeItem);
-        lateFeeInvoice.updateTotalAmount();
-        lateFeeInvoice.updateAmountApplied();
-        lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
-        lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
-        lateFeeInvoice.setDueDate(lateFeeInvoice.getCreationDate());
-        return lateFeeInvoice;
-    }
-
-    public InvoiceItem createLateFeeInvoiceItem(Invoice invoiceWhichIsLate, BigDecimal lateFee) {
-        InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
-                ((ContractorAccount) invoiceWhichIsLate.getAccount()).getPayingFacilities());
-        InvoiceItem lateFeeItem = new InvoiceItem(fee);
-        lateFeeItem.setAmount(lateFee);
-        lateFeeItem.setAuditColumns(new User(User.SYSTEM));
-        lateFeeItem.setDescription("Assessed "
-                + new SimpleDateFormat(PicsDateFormat.American).format(new Date())
-                + " due to delinquent payment on invoice #" + invoiceWhichIsLate.getId() + " which was due on " + invoiceWhichIsLate.getDueDate() + ".");
-        return lateFeeItem;
-    }
-
-    public BigDecimal calculateLateFeeFor(Invoice invoiceWhichIsLate) {
-        BigDecimal lateFee = invoiceWhichIsLate.getTotalAmount().multiply(BigDecimal.valueOf(LATE_FEE_PERCENTAGE))
-                .setScale(0, BigDecimal.ROUND_HALF_UP);
-        if (lateFee.compareTo(BigDecimal.valueOf(MINIMUM_LATE_FEE)) < 1) {
-            lateFee = BigDecimal.valueOf(MINIMUM_LATE_FEE);
-        }
-        return lateFee;
-    }
-
-    private boolean invoiceHasReactivation(Invoice i) {
-        for (InvoiceItem ii : i.getItems()) {
-            if (ii.getInvoiceFee().isReactivation()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void sendNoActionEmailToTrialAccounts() throws Exception {
