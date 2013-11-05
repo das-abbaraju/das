@@ -16,8 +16,11 @@ public class ContractorAuditTable extends AbstractTable {
 	public static final String Auditor = "Auditor";
 	public static final String ClosingAuditor = "ClosingAuditor";
 	public static final String Data = "Data";
-    public static final String SafetyManual = "SafetyManual";
     public static final String PreviousAudit = "PreviousAudit";
+
+    public static final String SafetyManual = "SafetyManual";
+    public static final String CALicenseNumber = "CALicenseNumber";
+    public static final String CALicenseExpDate = "CALicenseExpDate";
 
     public static final String GLEachOccurrence = "GLEachOccurrence";
     public static final String GLGeneralAggregate = "GLGeneralAggregate";
@@ -152,11 +155,20 @@ public class ContractorAuditTable extends AbstractTable {
 		addOptionalKey(new ReportForeignKey(Data, new AuditDataTable(),
 				new ReportOnClause("id", "auditID")));
 
-        addOptionalKey(new ReportForeignKey(SafetyManual, new AuditDataTable(),
-                new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + AuditQuestion.MANUAL_PQF)));
-
         addOptionalKey(new ReportForeignKey(PreviousAudit, new ContractorAuditTable(),
                 new ReportOnClause("previousAuditID", "id")));
+
+        // PQF
+        {
+            addOptionalKey(new ReportForeignKey(SafetyManual, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + AuditQuestion.MANUAL_PQF)));
+
+            addOptionalKey(new ReportForeignKey(CALicenseNumber, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 401")));
+
+            addOptionalKey(new ReportForeignKey(CALicenseExpDate, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 755")));
+        }
 
         // Annual Updates
         {

@@ -14,6 +14,7 @@ import com.picsauditing.util.Strings;
 public class ContractorOperatorsModel extends AbstractModel {
 
 	public static final String CONTRACTOR_OPERATOR = "ContractorOperator";
+    public static final String ACCOUNT = "Account";
 
 	public ContractorOperatorsModel(Permissions permissions) {
 		super(permissions, new ContractorOperatorTable());
@@ -54,7 +55,7 @@ public class ContractorOperatorsModel extends AbstractModel {
         csrUser.alias = "CustomerServiceUser";
 
 		ModelSpec account = contractor.join(ContractorTable.Account);
-		account.alias = "Account";
+		account.alias = ACCOUNT;
 		account.minimumImportance = FieldImportance.Average;
 		account.join(AccountTable.Contact);
 
@@ -87,29 +88,15 @@ public class ContractorOperatorsModel extends AbstractModel {
 
 	@Override
 	public String getWhereClause(List<Filter> filters) {
-		// TODO This should be eventually moved into PQB
-		if (permissions.isAdmin()) {
-			return "";
-		}
+        super.getWhereClause(filters);
+        permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
 
-        String approvedWorkStatus = "";
-
-        if (!permissions.hasPermission(OpPerms.ViewUnApproved)) {
-            approvedWorkStatus = CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND ";
-        }
-
-		if (permissions.isContractor()) {
-			return CONTRACTOR_OPERATOR + ".conID = " + permissions.getAccountId();
-		}
-
-		if (permissions.isOperator()) {
-			return approvedWorkStatus + CONTRACTOR_OPERATOR + ".opID = " + permissions.getAccountId();
-		}
+        String whereClause = permissionQueryBuilder.buildWhereClause();
 
 		if (permissions.isCorporate()) {
-            return approvedWorkStatus + CONTRACTOR_OPERATOR + ".opID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
+            return whereClause + " AND " + CONTRACTOR_OPERATOR + ".opID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
 		}
 
-		return "1 = 0";
+		return whereClause;
 	}
 }

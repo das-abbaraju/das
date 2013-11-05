@@ -3,6 +3,7 @@ package com.picsauditing.report.models;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
@@ -26,10 +27,16 @@ public class ContractorsModel extends AbstractModel {
 			account.join(AccountTable.Country);
             account.join(AccountTable.LastLogin);
 		}
-		contractor.join(ContractorTable.PQF);
+		ModelSpec pqf = contractor.join(ContractorTable.PQF);
+
+        if (permissions.hasPermission(OpPerms.ContractorLicenseReport)) {
+            pqf.join(ContractorAuditTable.CALicenseNumber);
+            pqf.join(ContractorAuditTable.CALicenseExpDate);
+        }
 
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
+        contractorTrade.minimumImportance = FieldImportance.Average;
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
         directTrade.alias = "DirectTrade";
         ModelSpec trade = directTrade.join(TradeTable.Children);
@@ -100,6 +107,22 @@ public class ContractorsModel extends AbstractModel {
             Field flagColor = fields.get("ContractorFlagFlagColor".toUpperCase());
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
         }
+
+        Field contractorTrade = new Field("ContractorTrades", "(SELECT GROUP_CONCAT(tradeID ORDER BY tradeID SEPARATOR ', ') FROM contractor_trade ct " +
+                " WHERE Contractor.id = ct.conID)", FieldType.String);
+        contractorTrade.setFilterable(false);
+        contractorTrade.setWidth(300);
+        contractorTrade.setImportance(FieldImportance.Required);
+        contractorTrade.setTranslationPrefixAndSuffix("Trade","name");
+        contractorTrade.setSeparator(", ");
+        fields.put(contractorTrade.getName().toUpperCase(), contractorTrade);
+
+        Field selfPerformed = fields.get("ContractorTradeSelfPerformed".toUpperCase());
+        selfPerformed.setVisible(false);
+        Field manufacture = fields.get("ContractorTradeManufacture".toUpperCase());
+        manufacture.setVisible(false);
+        Field activityPercent = fields.get("ContractorTradeActivityPercent".toUpperCase());
+        activityPercent.setVisible(false);
 
         Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
         accountManager.setVisible(false);
@@ -183,6 +206,11 @@ public class ContractorsModel extends AbstractModel {
         fields.put(PPLLimit.getName().toUpperCase(), PPLLimit);
         Field PROILimit = addInsuranceLimit("ContractorProfessionalIndemnityPROILimitAnswer",378,11934);
         fields.put(PROILimit.getName().toUpperCase(), PROILimit);
+
+        if (permissions.hasPermission(OpPerms.ContractorLicenseReport)) {
+            Field CALicenseExpiration = fields.get("ContractorPQFCALicenseExpDateAnswer".toUpperCase());
+            CALicenseExpiration.setType(FieldType.Date);
+        }
 
        return fields;
 	}
