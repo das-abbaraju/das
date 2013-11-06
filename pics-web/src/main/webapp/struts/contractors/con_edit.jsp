@@ -103,7 +103,8 @@
                     id="contractorCountry"
                     listKey="isoCode"
                     listValue="name"
-                    value="contractor.country.isoCode"/>
+                    value="contractor.country.isoCode"
+                    cssClass="select2"/>
         </li>
         <li id="countrySubdivision_li" data="<s:property value="#country_subdivision"/>">
             <s:include value="/struts/contractors/_country_subdivision_select.jsp">
@@ -112,6 +113,7 @@
                 <s:param name="select_name">countrySubdivision</s:param>
                 <s:param name="selected_subdivision_iso_code">${country_subdivision}</s:param>
                 <s:param name="select_theme">pics</s:param>
+                <s:param name="select_css">select2</s:param>
             </s:include>
         </li>
 
@@ -127,7 +129,8 @@
                     name="contractor.timezone"
                     value="contractor.timezone.iD"
                     theme="form"
-                    list="@com.picsauditing.util.TimeZoneUtil@timeZones()"/>
+                    list="@com.picsauditing.util.TimeZoneUtil@timeZones()"
+                    cssClass="select2" />
         </li>
 
         <li>
@@ -136,7 +139,7 @@
                     name="contractor.locale"
                     list="supportedLanguages.visibleLocales"
                     listValue="displayName"
-                    />
+                    cssClass="select2" />
         </li>
 
         <li>
@@ -155,7 +158,7 @@
                     listKey="id"
                     listValue="name"
                     value="%{contractor.primaryContact.id}"
-                    />
+                    cssClass="select2" />
 
             <s:if test="permissions.admin">
                 <a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">
@@ -196,6 +199,7 @@
                 <s:param name="select_name">countrySubdivision</s:param>
                 <s:param name="selected_subdivision_iso_code">${billing_country_subdivision}</s:param>
                 <s:param name="select_theme">pics</s:param>
+                <s:param name="select_css">select2</s:param>
             </s:include>
         </li>
         <li id="billing_zip_li">
@@ -346,7 +350,11 @@
         <li>
             <label>Status:</label>
             <input type="hidden" name="currentStatus" value="<s:property value="contractor.status" />"/>
-            <s:select list="statusList" name="contractor.status" value="%{contractor.status}"/>
+            <s:select
+                list="statusList"
+                name="contractor.status"
+                value="%{contractor.status}"
+                cssClass="select2Min"/>
         </li>
         <li>
             <label>Will Renew:</label>
@@ -365,12 +373,20 @@
         </li>
         <li>
             <label>Account Level:</label>
-            <s:select list="@com.picsauditing.jpa.entities.AccountLevel@values()" name="contractor.accountLevel"/></li>
+            <s:select
+                list="@com.picsauditing.jpa.entities.AccountLevel@values()"
+                name="contractor.accountLevel"
+                cssClass="select2Min"/>
+        </li>
         <li>
             <label>Reason:</label>
-            <s:select list="deactivationReasons" name="contractor.reason" headerKey=""
-                      headerValue="- %{getText('Filters.header.DeactivationReason')} -"
-                      listKey="key" listValue="value"/>
+            <s:select
+                list="deactivationReasons"
+                name="contractor.reason"
+                headerKey=""
+                headerValue="- %{getText('Filters.header.DeactivationReason')} -"
+                listKey="key" listValue="value"
+                cssClass="select2Min"/>
         </li>
 
         <s:if test="canEditRiskLevel">
@@ -510,7 +526,7 @@
                         headerKey="0"
                         headerValue="AUTO ASSIGNED"
                         value="%{(contractor.dontReassign)?contractor.currentCsr.id:0}"
-                        />
+                        cssClass="select2" />
             </li>
             <s:if test="showISRAssginment()">
                 <li>
@@ -524,7 +540,7 @@
                             headerKey="0"
                             headerValue="- Please Select -"
                             value="%{contractor.currentInsideSalesRepresentative.id}"
-                            />
+                            cssClass="select2" />
                 </li>
             </s:if>
         </ol>
@@ -552,13 +568,12 @@
             </li>
             <li>
                 <s:select
-                        cssStyle="font-size: 12px;"
                         list="operatorList"
                         name="operatorIds"
                         listKey="id"
                         listValue="name"
                         multiple="true"
-                        size="10"/>
+                        cssClass="select2" />
             </li>
         </ol>
     </fieldset>

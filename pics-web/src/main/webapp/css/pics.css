@@ -1625,11 +1625,23 @@ div.blockDialog {
 	z-index: 12000 !important;
 }
 
-/* line 4, ../sass/pics/contractor-edit/_contractor-edit.scss */
+/* Contractor Edit page */
 .ContractorEdit-page #vat_wrapper
 {
   display: none;
 }
+
+/* keeps float on multi-select from clearing when within fieldset.form ol li, or form.form ol li  */
+.ContractorEdit-page .select2-container-multi .select2-choices li {
+    clear: none;
+    font-size: 12px;
+}
+
+.ContractorEdit-page .select2-container-multi .select2-choices {
+	background-image: none;
+}
+
+/* End Contractor Edit page */
 
 .search-result-status.account-demo
 {
