@@ -9,7 +9,12 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.EmployeeService;
+import com.picsauditing.employeeguard.services.GroupService;
+import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
+import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
+import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.util.web.UrlBuilder;
 import org.junit.Before;
@@ -86,21 +91,6 @@ public class GroupActionTest extends PicsActionTest {
 		assertEquals(PicsRestActionSupport.CREATE, groupAction.create());
 		assertFalse(groupAction.getGroupEmployees().isEmpty());
 		assertFalse(groupAction.getGroupSkills().isEmpty());
-		verify(employeeService).getEmployeesForAccount(Account.PicsID);
-		verify(skillService).getOptionalSkillsForAccount(Account.PicsID);
-	}
-
-	@Test
-	public void testEdit() throws Exception {
-		groupAction.setId(ID);
-
-		assertEquals(PicsRestActionSupport.EDIT, groupAction.edit());
-		assertNotNull(groupAction.getGroup());
-		assertNotNull(groupAction.getGroupForm());
-		assertFalse(groupAction.getGroupEmployees().isEmpty());
-		assertFalse(groupAction.getGroupSkills().isEmpty());
-
-		verify(groupService).getGroup(ID, Account.PicsID);
 		verify(employeeService).getEmployeesForAccount(Account.PicsID);
 		verify(skillService).getOptionalSkillsForAccount(Account.PicsID);
 	}

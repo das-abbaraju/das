@@ -39,10 +39,12 @@ public abstract class AbstractValidator<T> implements Validator {
 
 	protected abstract void performValidation(T form);
 
+    // TODO: Use a constant for "POST" and "PUT"
 	protected boolean validationNotApplicableToRequestMethod(HttpServletRequest request) {
 		return request != null && !request.getMethod().equals("POST") && !request.getMethod().equals("PUT");
 	}
 
+    // TODO: Use a constant for "POST"
 	protected boolean isPost() {
 		return "POST".equals(request.getMethod());
 	}

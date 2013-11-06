@@ -1,7 +1,11 @@
 package com.picsauditing.employeeguard.controllers;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.PageNotFoundException;
+import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.dao.AccountDAO;
@@ -13,15 +17,17 @@ import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.LoginService;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.validator.Validator;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class LoginAction extends PicsRestActionSupport {
+public class LoginAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final long serialVersionUID = 3274071143261978073L;
 
 	// FIXME replace with rest call in the future?
@@ -37,6 +43,8 @@ public class LoginAction extends PicsRestActionSupport {
 	private LoginService loginService;
 	@Autowired
 	private ProfileService profileService;
+    @Autowired
+    private LoginFormValidator loginFormValidator;
 
 	@FormBinding("employee_guard_login")
 	private LoginForm loginForm;
@@ -105,6 +113,21 @@ public class LoginAction extends PicsRestActionSupport {
 	public String logout() {
 		return NONE;
 	}
+
+    /* Validation */
+
+    @Override
+    public Validator getCustomValidator() {
+        return loginFormValidator;
+    }
+
+    @Override
+    public void validate() {
+        ValueStack valueStack = ActionContext.getContext().getValueStack();
+        DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
+
+        loginFormValidator.validate(valueStack, validatorContext);
+    }
 
 	/* getters + setters */
 

@@ -43,6 +43,8 @@ public class ProfileDocumentValidationUtil {
 			expiration.set(Calendar.MONTH, documentForm.getExpireMonth() - 1);
 			expiration.set(Calendar.DAY_OF_MONTH, documentForm.getExpireDay());
 
+            // TODO: Replace with a utility method that validates that the date is within a reasonable time-frame
+            // from the current time.
 			if (expiration.getTime().before(new Date())) {
 				return false;
 			}

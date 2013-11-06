@@ -23,6 +23,14 @@
 <s:set var="breadcrumbs">${param.breadcrumbs}</s:set>
 <% } %>
 
+<% if (request.getParameter("breadcrumb_id") != null) { %>
+<s:set var="breadcrumb_id">${param.breadcrumb_id}</s:set>
+<% } %>
+
+<% if (request.getParameter("breadcrumb_name") != null) { %>
+<s:set var="breadcrumb_name">${param.breadcrumb_name}</s:set>
+<% } %>
+
 <title>${param.title}</title>
 
 <div class="page-header pics">

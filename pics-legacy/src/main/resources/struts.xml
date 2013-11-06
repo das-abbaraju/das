@@ -5,7 +5,7 @@
 	<constant name="struts.objectFactory" value="spring"/>
 	<constant name="struts.objectFactory.spring.autoWire" value="type"/>
 
-	<constant name="struts.url.includeParams" value="none"/>
+	<constant name="stru  ts.url.includeParams" value="none"/>
 	<constant name="struts.multipart.maxSize" value="524288000"/>
 	<constant name="struts.multipart.saveDir" value="/var/pics/www_files/tmp"/>
 
@@ -16,8 +16,8 @@
 	<constant name="struts.action.extension" value="action,"/>
 
 	<bean type="org.apache.struts2.dispatcher.mapper.ActionMapper" name="picsRestful"
-          class="com.picsauditing.strutsutil.PicsRestfulActionMapper"/>
-    <constant name="struts.mapper.class" value="com.picsauditing.strutsutil.PicsPrefixActionMapper"/>
+          class="com.picsauditing.strutsutil.actionmapper.PicsRestfulActionMapper"/>
+    <constant name="struts.mapper.class" value="com.picsauditing.strutsutil.actionmapper.PicsPrefixActionMapper"/>
     <constant name="struts.mapper.prefixMapping" value="/employee-guard:picsRestful,:struts"/>
     <constant name="struts.mapper.idParameterName" value="id"/>
 

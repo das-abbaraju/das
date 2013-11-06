@@ -37,6 +37,16 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 		return query.getResultList();
 	}
 
+	public List<Employee> findByAccounts(final List<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<Employee> query = em.createQuery("FROM Employee e WHERE e.accountId IN (:accountIds)", Employee.class);
+		query.setParameter("accountIds", accountIds);
+		return query.getResultList();
+	}
+
 	public Employee findEmployeeByAccount(int employeeId, int accountId) {
 		TypedQuery<Employee> query = em.createQuery("FROM Employee e WHERE e.accountId = :accountId AND e.id = :employeeId", Employee.class);
 		query.setParameter("accountId", accountId);
@@ -115,5 +125,4 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 		Employee employee = findEmployeeByAccount(id, accountId);
 		super.delete(employee);
 	}
-
 }

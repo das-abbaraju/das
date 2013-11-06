@@ -1,16 +1,17 @@
 package com.picsauditing.employeeguard.entities;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Date;
 
 @Entity
-@Table(name = "project_requested_company")
+@Table(name = "project_account")
 public class ProjectCompany implements BaseEntity {
 	@Id
 	private int id;
 
-	@Column(name = "companyID")
-	private int companyId;
+	@Column(name = "accountID")
+	private int accountId;
 
 	@ManyToOne
 	@JoinColumn(name = "projectID", nullable = false)
@@ -29,6 +30,14 @@ public class ProjectCompany implements BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
+	public ProjectCompany() {
+	}
+
+	public ProjectCompany(Project project, int accountId) {
+		this.project = project;
+		this.accountId = accountId;
+	}
+
 	@Override
 	public int getId() {
 		return id;
@@ -39,12 +48,12 @@ public class ProjectCompany implements BaseEntity {
 		this.id = id;
 	}
 
-	public int getCompanyId() {
-		return companyId;
+	public int getAccountId() {
+		return accountId;
 	}
 
-	public void setCompanyId(int companyId) {
-		this.companyId = companyId;
+	public void setAccountId(int companyId) {
+		this.accountId = companyId;
 	}
 
 	public Project getProject() {
@@ -114,4 +123,47 @@ public class ProjectCompany implements BaseEntity {
 	public void setDeletedDate(Date deletedDate) {
 		this.deletedDate = deletedDate;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ProjectCompany that = (ProjectCompany) o;
+
+		if (accountId != that.accountId) return false;
+		if (project != null ? !project.equals(that.project) : that.project != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = accountId;
+		result = 31 * result + (project != null ? project.hashCode() : 0);
+		return result;
+	}
+
+	public static transient final Comparator<ProjectCompany> COMPARATOR = new Comparator<ProjectCompany>() {
+		@Override
+		public int compare(ProjectCompany o1, ProjectCompany o2) {
+			if (o1 == null && o2 == null) {
+				return 0;
+			}
+
+			if (areEqual(o1, o2)) {
+				return 0;
+			}
+
+			if (o1.getAccountId() != o2.getAccountId()) {
+				return -1;
+			}
+
+			return 1;
+		}
+
+		private boolean areEqual(ProjectCompany o1, ProjectCompany o2) {
+			return ((o1.getProject().equals(o2.getProject())) && o1.getAccountId() == o2.getAccountId());
+		}
+	};
 }

@@ -38,7 +38,7 @@ public class SkillAction extends PicsRestActionSupport {
 	private List<ProfileDocument> documents;
 	private List<CompanySkillInfo> companySkillInfoList;
 
-	@FormBinding({"employee_skill_certification", "employee_skill_training"})
+	@FormBinding({"employee_skill_file", "employee_skill_training"})
 	private SkillDocumentForm skillDocumentForm;
 
 	public String index() {
@@ -71,10 +71,10 @@ public class SkillAction extends PicsRestActionSupport {
 		return "edit-form";
 	}
 
-	public String certification() {
+	public String file() {
 		documents = profileDocumentService.getDocumentsForProfile(profileService.findByAppUserId(permissions.getAppUserID()).getId());
 
-		return "certification";
+		return "file";
 	}
 
 	public String training() {
@@ -132,22 +132,5 @@ public class SkillAction extends PicsRestActionSupport {
 
 	public void setSkillDocumentForm(SkillDocumentForm skillDocumentForm) {
 		this.skillDocumentForm = skillDocumentForm;
-	}
-
-	public String getDisplayName() {
-		AccountSkill accountSkill = skillService.getSkill(id);
-		if (accountSkill != null) {
-			return accountSkill.getName();
-		}
-
-		return null;
-	}
-
-	public boolean isHasSkills() {
-		for (CompanySkillInfo companySkillInfo : companySkillInfoList) {
-
-		}
-
-		return false;
 	}
 }

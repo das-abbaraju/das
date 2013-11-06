@@ -12,7 +12,7 @@
          class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group">
-            <tw:label labelName="verified" class="col-md-3 control-label"><strong>Proof</strong></tw:label>
+            <tw:label labelName="verified" class="col-md-3 control-label"><strong>File</strong></tw:label>
             <div class="col-md-9">
                 <div class="checkbox">
                     <tw:label labelName="verified" class="control-label">

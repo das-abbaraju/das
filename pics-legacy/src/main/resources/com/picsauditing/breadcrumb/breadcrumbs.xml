@@ -14,6 +14,18 @@
                         <uri>/employee-guard/operator/project</uri>
                         <children>
                             <breadcrumb>
+                                <hint>{projectId}</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/operator/project/{id}</uri>
+                                <children>
+                                    <breadcrumb>
+                                        <hint>assignments</hint>
+                                        <label>Assign Employees</label>
+                                        <uri>/employee-guard/operator/project/{id}/assignments/{id}</uri>
+                                    </breadcrumb>
+                                </children>
+                            </breadcrumb>
+                            <breadcrumb>
                                 <hint>create</hint>
                                 <label>Add Project</label>
                                 <uri>/employee-guard/operator/project/create</uri>
@@ -25,7 +37,7 @@
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>show</hint>
-                                <label>Project</label>
+                                <label>{name}</label>
                                 <uri>/employee-guard/operator/project/{id}</uri>
                             </breadcrumb>
                         </children>
@@ -130,14 +142,26 @@
                         </children>
                     </breadcrumb>
                     <breadcrumb>
-                        <hint>site-project</hint>
-                        <label>Sites and Projects</label>
-                        <uri>/employee-guard/contractor/site-project</uri>
+                        <hint>project</hint>
+                        <label>Projects</label>
+                        <uri>/employee-guard/contractor/project</uri>
                         <children>
                             <breadcrumb>
-                                <hint>assign</hint>
-                                <label>Assign Employees</label>
-                                <uri>/employee-guard/contractor/site-project/assign</uri>
+                                <hint>show</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/contractor/project/{id}</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>{projectId}</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/contractor/project/{id}</uri>
+                                <children>
+                                    <breadcrumb>
+                                        <hint>assignments</hint>
+                                        <label>Assign Employees</label>
+                                        <uri>/employee-guard/contractor/project/{id}/assignments/{id}</uri>
+                                    </breadcrumb>
+                                </children>
                             </breadcrumb>
                         </children>
                     </breadcrumb>
@@ -186,28 +210,6 @@
                                 <label>Manage Skill</label>
                                 <uri>/employee-guard/employee/skills/manage-skill</uri>
                             </breadcrumb>
-                            <breadcrumb>
-                                <hint>certificate</hint>
-                                <label>Certificates</label>
-                                <uri>/employee-guard/employee/skills/certificate</uri>
-                                <children>
-                                    <breadcrumb>
-                                        <hint>create</hint>
-                                        <label>Add Certificate</label>
-                                        <uri>/employee-guard/employee/skills/certificate/create</uri>
-                                    </breadcrumb>
-                                    <breadcrumb>
-                                        <hint>edit</hint>
-                                        <label>Edit Certificate</label>
-                                        <uri>/employee-guard/employee/skills/certificate/{id}/edit</uri>
-                                    </breadcrumb>
-                                    <breadcrumb>
-                                        <hint>show</hint>
-                                        <label>Certificate</label>
-                                        <uri>/employee-guard/employee/skills/certificate/{id}</uri>
-                                    </breadcrumb>
-                                </children>
-                            </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>
@@ -219,6 +221,28 @@
                                 <hint>show</hint>
                                 <label>{name}</label>
                                 <uri>/employee-guard/employee/skill/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
+                    <breadcrumb>
+                        <hint>file</hint>
+                        <label>My Files</label>
+                        <uri>/employee-guard/employee/file</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>create</hint>
+                                <label>Add File</label>
+                                <uri>/employee-guard/employee/file/create</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>edit</hint>
+                                <label>Edit File</label>
+                                <uri>/employee-guard/employee/file/{id}/edit</uri>
+                            </breadcrumb>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/employee/file/{id}</uri>
                             </breadcrumb>
                         </children>
                     </breadcrumb>

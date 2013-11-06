@@ -5,16 +5,18 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.validators.document.ProfileDocumentFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +25,27 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class DocumentAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final long serialVersionUID = -6816560877429952204L;
+	public static final String EMPLOYEE_SKILL_ID = "employee_skill_id";
+	public static final String EMPLOYEE_SKILL_REFERER_URL = "employee/skill/";
 
+	@Autowired
+	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
 	@Autowired
 	private ProfileDocumentFormValidator profileDocumentFormValidator;
 	@Autowired
 	private ProfileService profileService;
+	@Autowired
+	private SkillService skillService;
 
-	@FormBinding({"employee_skill_create", "employee_skill_edit"})
+	@FormBinding({"employee_file_create", "employee_file_edit"})
 	private DocumentForm documentForm;
-	@FormBinding("employee_skill_search")
+	@FormBinding("employee_file_search")
 	private SearchForm searchForm;
 
 	private ProfileDocument document;
@@ -64,23 +73,21 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	public String create() {
+		saveSkillRefererIdToSession();
+
 		return CREATE;
 	}
 
-	public String edit() {
-		document = profileDocumentService.getDocument(id);
-		documentForm = new DocumentForm.Builder().profileDocument(document).build();
+	private void saveSkillRefererIdToSession() {
+		if (Strings.isNotEmpty(getReferer()) && getReferer().contains(EMPLOYEE_SKILL_REFERER_URL)) {
+			int idIndex = getReferer().indexOf(EMPLOYEE_SKILL_REFERER_URL) + EMPLOYEE_SKILL_REFERER_URL.length();
 
-		return EDIT;
+			getSession().put(EMPLOYEE_SKILL_ID, getReferer().substring(idIndex));
+		}
 	}
 
 	@SkipValidation
-	public String deleteConfirmation() {
-		return "delete-confirmation";
-	}
-
-	@SkipValidation
-	public String editSkillSection() {
+	public String editFileSection() {
 		if (documentForm == null) {
 			document = profileDocumentService.getDocument(id);
 			documentForm = new DocumentForm.Builder().profileDocument(document).build();
@@ -119,22 +126,45 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
 		ProfileDocument profileDocument = profileDocumentService.create(profile, documentForm, getFtpDir(), permissions.getAppUserID());
 
-		return setUrlForRedirect("/employee-guard/employee/skills/certificate/" + profileDocument.getId());
+		if (getSession().containsKey(EMPLOYEE_SKILL_ID)) {
+			String skillId = saveDocumentToSkillInSession(profile, profileDocument);
+
+			return setUrlForRedirect("/employee-guard/employee/skill/" + skillId);
+		}
+
+		return setUrlForRedirect("/employee-guard/employee/file/" + profileDocument.getId());
 	}
 
-	public String update() throws IOException {
+	private String saveDocumentToSkillInSession(Profile profile, ProfileDocument profileDocument) {
+		String skillId = getSession().get(EMPLOYEE_SKILL_ID).toString();
+
+		AccountSkill accountSkill = skillService.getSkill(skillId);
+		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
+		accountSkillEmployeeService.update(accountSkillEmployee, profileDocument);
+
+		getSession().remove(EMPLOYEE_SKILL_ID);
+		return skillId;
+	}
+
+	private Map<String, Object> getSession() {
+		return ActionContext.getContext().getSession();
+	}
+
+	public String update() throws Exception {
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
 		document = documentForm.buildProfileDocument();
-		ProfileDocument profileDocument = profileDocumentService.update(id, profile.getId(), document, permissions.getAppUserID());
+        document.setDocumentType(DocumentType.Certificate);
+		ProfileDocument profileDocument = profileDocumentService.update(id, profile.getId(), document,
+                permissions.getAppUserID(), documentForm.getFile(), documentForm.getFileFileName(), getFtpDir());
 
-		return setUrlForRedirect("/employee-guard/employee/skills/certificate/" + profileDocument.getId());
+		return setUrlForRedirect("/employee-guard/employee/file/" + profileDocument.getId());
 	}
 
 	public String delete() throws IOException {
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
 		profileDocumentService.delete(id, profile.getId(), permissions.getAppUserID());
 
-		return setUrlForRedirect("/employee-guard/employee/skills/certificate");
+		return setUrlForRedirect("/employee-guard/employee/file");
 	}
 
     /* validators */

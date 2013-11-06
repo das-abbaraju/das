@@ -3,7 +3,7 @@
 <ol class="breadcrumb">
 	<s:iterator value="breadcrumbs" var="breadcrumb" status="status">
         <s:if test="#status.last == false">
-            <li><a href="${breadcrumb.uri(id)}">${breadcrumb.name}</a></li>
+            <li><a href="${breadcrumb.uri(id)}">${breadcrumb.name(displayName)}</a></li>
         </s:if>
         <s:else>
             <li class="active">${breadcrumb.name(displayName)}</li>

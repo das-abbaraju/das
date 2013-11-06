@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.controllers.employee;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.services.ProfileService;
-import com.picsauditing.employeeguard.services.ProfileServiceFactory;
+import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;

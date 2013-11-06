@@ -1,75 +1,228 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
+import com.picsauditing.employeeguard.services.external.BillingService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-// This is a stand-in for a "remote" service call
+/**
+ * This is a stand-in for a "remote" service call
+ */
 public class AccountService {
 
-    @Autowired
-    private AccountDAO accountDAO;
+	@Autowired
+	private AccountDAO accountDAO;
+	@Autowired
+	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
+	@Autowired
+	private OperatorAccountDAO operatorDAO;
+	@Autowired
+	private BillingService billingService;
 
-    public AccountModel getAccountById(int accountId) {
-        Account account = accountDAO.find(accountId);
-        return mapAccountToAccountModel(account);
-    }
-
-    public List<AccountModel> getAccountsByIds(List<Integer> accountIds) {
-        List<Account> accounts = accountDAO.findByIds(accountIds);
-        return  mapAccountsToAccountModels(accounts);
-    }
-
-	public static boolean isEmployeeGUARDEnabled(int accountId) {
-		// FIXME lookup actual values
-		return accountId == 1100 || accountId == 54578;
+	public AccountModel getAccountById(int accountId) {
+		Account account = accountDAO.find(accountId);
+		return mapAccountToAccountModel(account);
 	}
 
-    private List<AccountModel> mapAccountsToAccountModels(List<Account> accounts) {
-        if (CollectionUtils.isEmpty(accounts)) {
+	public List<AccountModel> getAccountsByIds(Collection<Integer> accountIds) {
+		List<Account> accounts = accountDAO.findByIds(accountIds);
+		return mapAccountsToAccountModels(accounts);
+	}
+
+	public List<AccountModel> getTopmostCorporateAccounts(final int accountId) {
+		if (accountId <= 0) {
+			return Collections.emptyList();
+		}
+
+		List<OperatorAccount> employeeGUARDCorporates = getEmployeeGUARDCorporates(accountId);
+		// We don't have a need to modify accounts, so we'll map these corporate accounts to AccountModels
+		return mapAccountsToAccountModels(employeeGUARDCorporates);
+	}
+
+	public List<Integer> getTopmostCorporateAccountIds(final int accountId) {
+		if (accountId <= 0) {
+			return Collections.emptyList();
+		}
+
+		return extractIdFromAccountModel(getEmployeeGUARDCorporates(accountId));
+	}
+
+	private List<OperatorAccount> getEmployeeGUARDCorporates(int accountId) {
+		OperatorAccount operator = operatorDAO.find(accountId);
+        if (operator == null) {
             return Collections.emptyList();
         }
 
-        List<AccountModel> accountModels = new ArrayList<>(accounts.size());
-        for (Account account : accounts) {
-            accountModels.add(mapAccountToAccountModel(account));
-        }
+		ArrayList<OperatorAccount> topDogs = new ArrayList<>();
+		ArrayList<Integer> visited = new ArrayList<>();
 
-        return accountModels;
-    }
+		List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, topDogs, visited);
+		return billingService.filterEmployeeGUARDAccounts(topmostCorporates);
+	}
 
-    private AccountModel mapAccountToAccountModel(Account account) {
-        return new AccountModel.Builder().accountType(getAccountTypeForAccount(account)).id(account.getId())
-                .name(account.getName()).build();
-    }
+	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<OperatorAccount> topDogs, List<Integer> visited) {
+		if (onlyHasPicsConsortiumOrNoParents(operator)) {
+			visited.add(operator.getId());
+			topDogs.add(operator);
+		} else {
+			for (OperatorAccount parent : operator.getParentOperators()) {
+				if (!parent.isInPicsConsortium() && !visited.contains(parent.getId())) {
+					visited.add(parent.getId());
+					getTopmostCorporates(parent, topDogs, visited);
+				}
+			}
+		}
 
-    private AccountType getAccountTypeForAccount(Account account) {
-        switch (account.getType()) {
-            case "Admin":
-                return AccountType.ADMIN_ACCOUNT;
+		return topDogs;
+	}
 
-            case "Assessment":
-                return AccountType.ASSESSMENT;
+	private boolean onlyHasPicsConsortiumOrNoParents(OperatorAccount operator) {
+		if (operator.getParentOperators().size() == 0) {
+			return true;
+		}
 
-            case "Contractor":
-                return AccountType.CONTRACTOR;
+		for (OperatorAccount parent : operator.getParentOperators()) {
+			if (!parent.isInPicsConsortium()) {
+				return false;
+			}
+		}
 
-            case "Corporate":
-                return AccountType.CORPORATE;
+		return true;
+	}
 
-            case "Operator":
-                return AccountType.OPERATOR;
+	public List<AccountModel> getChildOperators(final int accountId) {
+		OperatorAccount operator = operatorDAO.find(accountId);
+		if (operator == null) {
+			return Collections.emptyList();
+		}
 
-            default:
-                throw new IllegalArgumentException("Invalid account type " + account.getType());
-        }
-    }
+		List<OperatorAccount> accounts = billingService.filterEmployeeGUARDAccounts(operator.getChildOperators());
+		return mapAccountsToAccountModels(accounts);
+	}
 
+	public List<Integer> getChildOperatorIds(final int accountId) {
+		return extractIdFromAccountModel(getChildOperators(accountId).toArray(new AccountModel[0]));
+	}
+
+	public AccountType getAccountTypeByUserID(int userID) {
+		return getAccountByUserID(userID).getAccountType();
+	}
+
+	public AccountModel getAccountByUserID(int userID) {
+		return getAccountById(accountDAO.findByUserID(userID));
+	}
+
+	public List<AccountModel> getContractors(final int accountId) {
+		OperatorAccount operator = operatorDAO.find(accountId);
+		if (operator == null) {
+			return Collections.emptyList();
+		}
+
+		List<ContractorAccount> contractors = new ArrayList<>();
+		addContractorsFromOperator(operator, contractors);
+
+		if (operator.isCorporate()) {
+			for (OperatorAccount site : operator.getChildOperators()) {
+				addContractorsFromOperator(site, contractors);
+			}
+		}
+
+		List<ContractorAccount> accounts = billingService.filterEmployeeGUARDAccounts(contractors);
+
+		return mapAccountsToAccountModels(accounts);
+	}
+
+	public List<Integer> getContractorIds(final int accountId) {
+		return extractIdFromAccountModel(getContractors(accountId).toArray(new AccountModel[0]));
+	}
+
+	private void addContractorsFromOperator(OperatorAccount operator, List<ContractorAccount> contractors) {
+		for (ContractorOperator contractorOperator : operator.getContractorOperators()) {
+			contractors.add(contractorOperator.getContractorAccount());
+		}
+	}
+
+	public boolean isEmployeeGUARDEnabled(final int accountId) {
+		return accountEmployeeGuardDAO.isEmployeeGUARDEnabled(accountId);
+	}
+
+	private <E extends Account> List<AccountModel> mapAccountsToAccountModels(List<E> accounts) {
+		if (CollectionUtils.isEmpty(accounts)) {
+			return Collections.emptyList();
+		}
+
+		List<AccountModel> accountModels = new ArrayList<>(accounts.size());
+		for (Account account : accounts) {
+			accountModels.add(mapAccountToAccountModel(account));
+		}
+
+		return accountModels;
+	}
+
+	private AccountModel mapAccountToAccountModel(Account account) {
+		return new AccountModel.Builder().accountType(getAccountTypeForAccount(account)).id(account.getId())
+				.name(account.getName()).build();
+	}
+
+	private AccountType getAccountTypeForAccount(Account account) {
+		switch (account.getType()) {
+			case "Admin":
+				return AccountType.ADMIN_ACCOUNT;
+
+			case "Assessment":
+				return AccountType.ASSESSMENT;
+
+			case "Contractor":
+				return AccountType.CONTRACTOR;
+
+			case "Corporate":
+				return AccountType.CORPORATE;
+
+			case "Operator":
+				return AccountType.OPERATOR;
+
+			default:
+				throw new IllegalArgumentException("Invalid account type " + account.getType());
+		}
+	}
+
+	public List<Integer> extractIdFromAccountModel(AccountModel... accountModels) {
+		if (ArrayUtils.isEmpty(accountModels)) {
+			return Collections.emptyList();
+		}
+
+		List<Integer> ids = new ArrayList<>();
+		for (AccountModel accountModel : accountModels) {
+			ids.add(accountModel.getId());
+		}
+
+		return ids;
+	}
+
+	private List<Integer> extractIdFromAccountModel(List<? extends Account> accounts) {
+		if (CollectionUtils.isEmpty(accounts)) {
+			return Collections.emptyList();
+		}
+
+		List<Integer> ids = new ArrayList<>();
+		for (Account account : accounts) {
+			ids.add(account.getId());
+		}
+
+		return ids;
+	}
 }

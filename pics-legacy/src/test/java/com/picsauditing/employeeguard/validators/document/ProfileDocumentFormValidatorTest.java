@@ -1,6 +1,8 @@
 package com.picsauditing.employeeguard.validators.document;
 
 import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import com.opensymphony.xwork2.util.ValueStack;
@@ -10,6 +12,7 @@ import com.picsauditing.employeeguard.validators.factory.struts.ValidatorContext
 import com.picsauditing.employeeguard.validators.factory.struts.ValueStackFactory;
 import com.picsauditing.employeeguard.validators.skill.SkillFormValidator;
 import com.picsauditing.model.i18n.KeyValue;
+import com.picsauditing.strutsutil.AjaxUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,12 +40,35 @@ public class ProfileDocumentFormValidatorTest {
     @Test
     public void testNoValidationFailure() {
         when(request.getMethod()).thenReturn("POST");
-        ValueStack valueStack = ValueStackFactory.getValueStack(request, new KeyValue<String, Object>(SkillFormValidator.SKILL_FORM, buildDocumentFormNoValidationFailure()));
+        ValueStack valueStack = ValueStackFactory.getValueStack(request,
+                new KeyValue<String, Object>(ProfileDocumentFormValidator.PROFILE_DOCUMENT_FORM,
+                        buildDocumentFormNoValidationFailure()));
         ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
 
         profileDocumentFormValidator.validate(valueStack, validatorContext);
 
         assertFalse(validatorContext.hasErrors());
+    }
+
+    @Test
+    public void testFileValidationFailure_FileNameNotProvided() {
+        setupRequest_FileNameNotProvidedInAjaxValidationRequest();
+        ValueStack valueStack = ValueStackFactory.getValueStack(request,
+                new KeyValue<String, Object>(ProfileDocumentFormValidator.PROFILE_DOCUMENT_FORM,
+                        buildDocumentFormNoValidationFailure()));
+        ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
+
+        profileDocumentFormValidator.validate(valueStack, validatorContext);
+
+        assertEquals("Upload is missing", validatorContext.getFieldErrors()
+                .get(ProfileDocumentFormValidator.PROFILE_DOCUMENT_FORM + ".file").get(0));
+    }
+
+    private void setupRequest_FileNameNotProvidedInAjaxValidationRequest() {
+        when(request.getHeader(AjaxUtils.HTTP_HEADER_X_REQUESTED_WITH)).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER_VALUE);
+        when(request.getMethod()).thenReturn("POST");
+        when(request.getParameterValues(ProfileDocumentFormValidator.FILE_CREATE_FILENAME_REQUEST_PARAM))
+                .thenReturn(new String[]{""});
     }
 
     private DocumentForm buildDocumentFormNoValidationFailure() {

@@ -3,8 +3,9 @@
 
 <%-- Url --%>
 <s:url action="employee" var="contractor_employee_url" />
-<s:url action="skill" var="contractor_skill_url" />
 <s:url action="employee-group" var="contractor_role_url" />
+<s:url action="skill" var="contractor_skill_url" />
+<s:url action="project" var="contractor_project_url" />
 <s:url action="matrix/employee-groups-to-employees" var="contractor_employee_groups_to_employees_matrix_url" />
 <s:url action="matrix/employees-to-skills" var="contractor_employees_to_skills_matrix_url" />
 <s:url action="matrix/skills-to-employee-groups" var="contractor_skills_to_employee_groups_matrix_url" />
@@ -13,6 +14,7 @@
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">EmployeeGUARD</s:param>
     <s:param name="subtitle">Summary</s:param>
+    <s:param name="breadcrumbs">false</s:param>
 </s:include>
 
 <div class="row">
@@ -27,7 +29,7 @@
             <a href="${contractor_skill_url}"><i class="icon-certificate"></i>Skills</a>
         </li>
         <li>
-            <a href="#"><i class="icon-sitemap"></i>Projects</a>
+            <a href="${contractor_project_url}"><i class="icon-sitemap"></i>Projects</a>
         </li>
         <%-- <li>
             <a href="#"><i class="icon-ok"></i>Quick Manage</a>

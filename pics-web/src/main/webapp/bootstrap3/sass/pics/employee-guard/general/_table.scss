@@ -1,66 +1,70 @@
 .table thead > tr > th  {
-	background-color: #454545;
-	border: 0px;
-	color: $pics_cool_grey;
-	font-weight: normal;
+    background-color: #454545;
+    border: 0px;
+    color: $pics_cool_grey;
+    font-weight: normal;
 }
 
 tr th.icon {
-	text-align: center;
+    text-align: center;
 }
 
 th.incomplete-skills i {
-	color: $danger_light;
+    color: $danger_light;
 }
 
 th.expire-skills i {
-	color: $warning_light;
+    color: $warning_light;
 }
 
 .table tbody > tr > td {
-	border: 0px;
-	vertical-align: middle;
+    border: 0px;
+    vertical-align: middle;
 }
 
 td.number {
-	text-align: right;
+    text-align: right;
 }
 
 .table-striped > tbody > tr:nth-child(odd) td {
-	background-color: $pics_cool_grey;
+    background-color: $pics_cool_grey;
 }
 
 .table-hover tbody tr:hover td {
-	background-color: $primary-tint;
+    background-color: $primary-tint;
 }
 
 .table td a {
-	display: block;
+    display: block;
 }
 
 /* For tables with status colors and icons */
+/*.table-hover tbody tr:hover td.expired {
+    background-color: $danger_tint;
+}*/
+
 .table-status {
-	th.status-title {
-		text-align: center;
-	}
+    th.status-title {
+        text-align: center;
+    }
 
-	tbody tr td.status {
-		text-align: center;
+    tbody tr td.status {
+        text-align: center;
 
-		&.complete,
-		&.pending {
-			background-color: $success_tint;
-			color: $success_light;
-		}
+        &.complete,
+        &.pending {
+            background-color: $success_tint;
+            color: $success_light;
+        }
 
-		&.expiring {
-			background-color: $warning_tint;
-			color: $warning_med;
-		}
+        &.expiring {
+            background-color: $warning_tint;
+            color: $warning_med;
+        }
 
-		&.expired {
-			background-color: $danger_tint;
-			color: $danger_light;
-		}
-	}
+        &.expired {
+            background-color: $danger_tint;
+            color: $danger_light;
+        }
+    }
 }

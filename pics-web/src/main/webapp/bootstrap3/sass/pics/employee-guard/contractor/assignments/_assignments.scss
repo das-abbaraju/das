@@ -1,0 +1,77 @@
+#employee_assignment {
+    tr {
+        cursor: pointer;
+    }
+
+    /*Assigned Employee Styles*/
+    tr.assigned {
+        .assign-employee {
+            background-color: $warning_light;
+
+            a {
+                color: $warning_dark;
+            }
+        }
+
+        .complete,
+        .pending {
+            background-color: $success_tint;
+            color: $success_light;
+        }
+
+        .expiring {
+            background-color: $warning_tint;
+            color: $warning_med;
+        }
+
+        .expired {
+            background-color: $danger_tint;
+            color: $danger_light;
+        }
+    }
+
+    tbody > tr:nth-child(odd) td {
+        background-color: $pics_cool_grey;
+    }
+
+    tbody > tr:nth-child(even) td {
+        background: none;
+    }
+
+    tbody > tr:hover td {
+        background-color: $info-tint;
+
+        &.complete,
+        &.pending {
+            color: $success_light;
+        }
+
+        &.expiring {
+            color: $warning_med;
+        }
+
+        &.expired {
+            color: $danger_light;
+        }
+
+        &.assign-employee a {
+            color: $warning_dark;
+        }
+    }
+
+    td {
+        &.status,
+        &.assign-employee {
+            color: $default_dark;
+            text-align: center;
+
+            a {
+                color: $default_dark;
+            }
+        }
+
+        a {
+            display: inline;
+        }
+    }
+}

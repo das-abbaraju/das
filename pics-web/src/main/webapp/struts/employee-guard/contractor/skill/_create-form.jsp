@@ -11,11 +11,10 @@
 <tw:form formName="contractor_skill_create" action="${contractor_skill_create_url}" method="post"
          class="form-horizontal js-validation" role="form">
     <fieldset>
-        <div class="form-group ${name_error_class}">
+        <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-4">
                 <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${skillForm.name}"/>
-                <tw:error errorName="name"/>
             </div>
         </div>
 
@@ -26,14 +25,13 @@
             </div>
         </div>
 
-        <div class="form-group ${type_error_class}">
+        <div class="form-group">
             <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Skill Type</strong></tw:label>
             <div class="col-md-4 col-xs-11">
-                <tw:select selectName="skillType" class="form-control skillType" tabindex="3">
+                <tw:select selectName="skillType" class="form-control skillType select2Min" tabindex="3">
                     <tw:option value="Certification" selected="${skillForm.skillType == 'Certification'}">Certification</tw:option>
                     <tw:option value="Training" selected="${skillForm.skillType == 'Training'}">Training</tw:option>
                 </tw:select>
-                <tw:error errorName="skillType"/>
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
                <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="Certificates require an uploaded file and expiration to be supplied. Training is honor-based." data-container="body"></i>
@@ -47,9 +45,9 @@
         <s:set var="selected_groups" value="skillForm.groups" />
 
         <div class="form-group">
-            <tw:label labelName="groups" class="col-md-3 control-label"><strong>Employee Groups</strong></tw:label>
+            <tw:label labelName="groups" class="col-md-3 control-label">Employee Groups</tw:label>
             <div class="col-md-4">
-                <tw:select selectName="groups" multiple="true" class="form-control contractor-skill-employee-groups" tabindex="7" >
+                <tw:select selectName="groups" multiple="true" class="form-control contractor-skill-employee-groups select2" tabindex="7" >
                     <s:iterator value="skillGroups" var="contractor_group">
                         <s:set var="is_selected" value="false" />
                         <s:iterator value="#selected_groups" var="selected_group">
@@ -64,7 +62,7 @@
 
                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label">
-                        <tw:input inputName="required" class="required" type="checkbox" value="true" tabindex="8" /> Required for all employees
+                        <tw:input inputName="required" class="required now" type="checkbox" data-toggle="form-input" data-target=".contractor-skill-employee-groups" value="true" tabindex="8" /> Required for all employees
                     </tw:label>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
+import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
@@ -18,13 +19,14 @@ import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.validators.group.GroupFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
+import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
 
-public class GroupAction extends PicsRestActionSupport {
+public class GroupAction extends PicsRestActionSupport implements AjaxValidator {
 
 	private static final long serialVersionUID = -4767047559683194585L;
 
@@ -84,20 +86,6 @@ public class GroupAction extends PicsRestActionSupport {
 		loadEmployees();
 
 		return CREATE;
-	}
-
-	public String edit() throws PageNotFoundException {
-		loadGroup();
-		groupForm = new GroupForm.Builder().accountGroup(group).build();
-		loadSkills();
-		loadEmployees();
-
-		return EDIT;
-	}
-
-	@SkipValidation
-	public String deleteConfirmation() {
-		return "delete-confirmation";
 	}
 
 	@SkipValidation
@@ -172,6 +160,11 @@ public class GroupAction extends PicsRestActionSupport {
 
 	/* Validation */
 
+    // For the Ajax Validation
+    public Validator getCustomValidator() {
+        return groupFormValidator;
+    }
+
 	@Override
 	public void validate() {
 		prepareFormDataWhenValidationFails();
@@ -220,7 +213,7 @@ public class GroupAction extends PicsRestActionSupport {
 	public void setSearchForm(SearchForm searchForm) {
 		this.searchForm = searchForm;
 	}
-	
+
 	/* Model - Getters */
 
 	public AccountGroup getGroup() throws PageNotFoundException {
@@ -237,13 +230,5 @@ public class GroupAction extends PicsRestActionSupport {
 
 	public List<Employee> getGroupEmployees() {
 		return groupEmployees;
-	}
-
-	public String getDisplayName() {
-		if (group != null) {
-			return group.getName();
-		}
-
-		return null;
 	}
 }

@@ -7,21 +7,18 @@
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Skills</s:param>
-    <s:param name="actions">
-        <a href="${employee_skill_list_url}" class="btn btn-default">Certificates</a>
-    </s:param>
 </s:include>
 
 <s:if test="companySkillInfoList.size() > 0">
     <div class="row">
-        <%--<div class="col-md-3">
+        <div class="col-md-3">
             <s:include value="/struts/employee-guard/employee/manage-skill/_sidenav.jsp"></s:include>
-        </div>--%>
+        </div>
 
         <div class="col-md-9">
-            <s:iterator var="company_skill_info" value="companySkillInfoList">
-                <section class="employee-guard-section">
-                    <h1 id="${company_skill_info.accountModel.name}">${company_skill_info.accountModel.name}</h1>
+            <s:iterator var="company_skill_info" value="companySkillInfoList" status="loopvar">
+                <section class="employee-guard-section" id="section${loopvar.count}">
+                    <h1>${company_skill_info.accountModel.name}</h1>
 
                     <div class="content">
                         <div class="row">
@@ -48,16 +45,6 @@
                                             <i class="icon-warning-sign"></i>${expiring_skill.name}
                                         </a>
                                     </s:iterator>
-
-                                    <%--&lt;%&ndash; All skills link to skill show page &ndash;%&gt;
-                                    <s:url action="skills/manage-skill" var="employee_manage_skill_url">
-                                        <s:param name="id">1</s:param>
-                                    </s:url>
-
-                                    <a href="#" class="list-group-item expiring">
-                                        <i class="icon-warning-sign"></i>Creative Suite
-                                    </a>--%>
-
                                 </div>
                             </div>
 

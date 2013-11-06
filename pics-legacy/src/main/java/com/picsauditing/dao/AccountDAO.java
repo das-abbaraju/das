@@ -1,11 +1,5 @@
 package com.picsauditing.dao;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -14,6 +8,12 @@ import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class AccountDAO extends PicsDAO {
@@ -92,7 +92,7 @@ public class AccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-    public List<Account> findByIds(List<Integer> accountIds) {
+	public List<Account> findByIds(Collection<Integer> accountIds) {
         if (CollectionUtils.isEmpty(accountIds)) {
             return Collections.emptyList();
         }
@@ -100,5 +100,12 @@ public class AccountDAO extends PicsDAO {
         TypedQuery<Account> query = em.createQuery("FROM Account a WHERE a.id IN ( :accountIds )", Account.class);
         query.setParameter("accountIds", accountIds);
 		return query.getResultList();
+	}
+
+	public int findByUserID(int userID) {
+		Query q = em.createNativeQuery("SELECT a.id FROM accounts a LEFT JOIN users u ON u.accountID = a.id WHERE u.id = :userID");
+		q.setParameter("userID", userID);
+
+		return (Integer) q.getSingleResult();
 	}
 }

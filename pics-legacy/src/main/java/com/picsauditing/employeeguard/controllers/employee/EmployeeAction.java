@@ -1,15 +1,21 @@
 package com.picsauditing.employeeguard.controllers.employee;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
 import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.util.PhotoUtil;
+import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
+import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class EmployeeAction extends PicsRestActionSupport {
+public class EmployeeAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final long serialVersionUID = -490476912556033616L;
 
 	@Autowired
@@ -29,6 +35,8 @@ public class EmployeeAction extends PicsRestActionSupport {
     private FormBuilderFactory formBuilderFactory;
     @Autowired
     private PhotoUtil photoUtil;
+    @Autowired
+    private ProfileEditFormValidator profileEditFormValidator;
 
     @FormBinding("employee_profile_edit")
     private EmployeeProfileEditForm personalInfo;
@@ -105,6 +113,21 @@ public class EmployeeAction extends PicsRestActionSupport {
 		return "settings";
 	}
 
+    /* Validation */
+
+    @Override
+    public Validator getCustomValidator() {
+        return profileEditFormValidator;
+    }
+
+    @Override
+    public void validate() {
+        ValueStack valueStack = ActionContext.getContext().getValueStack();
+        DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
+
+        profileEditFormValidator.validate(valueStack, validatorContext);
+    }
+
 	/* getters + setters */
 
 	public ProfilePhotoForm getProfilePhotoForm() {
@@ -113,14 +136,6 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	public void setProfilePhotoForm(ProfilePhotoForm profilePhotoForm) {
 		this.profilePhotoForm = profilePhotoForm;
-	}
-
-	public String getDisplayName() {
-		if (employeeProfileForm != null) {
-			return employeeProfileForm.getDisplayName();
-		}
-
-		return null;
 	}
 
 	public Profile getProfile() {

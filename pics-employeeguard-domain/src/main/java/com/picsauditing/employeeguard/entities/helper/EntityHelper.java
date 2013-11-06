@@ -3,8 +3,7 @@ package com.picsauditing.employeeguard.entities.helper;
 import com.picsauditing.employeeguard.entities.BaseEntity;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 public class EntityHelper {
 
@@ -53,4 +52,16 @@ public class EntityHelper {
         }
     }
 
+    public static <E extends BaseEntity> List<Integer> getIdsForEntities(List<E> entities) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return Collections.emptyList();
+        }
+
+        List<Integer> ids = new ArrayList<>();
+        for (E entity : entities) {
+            ids.add(entity.getId());
+        }
+
+        return ids;
+    }
 }

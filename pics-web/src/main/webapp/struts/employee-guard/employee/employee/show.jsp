@@ -8,11 +8,10 @@
 </s:url>
 <s:url action="skill" var="employee_skill_list_url" />
 
-
-
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Profile</s:param>
+    <s:param name="breadcrumb_name">${profile.firstName} ${profile.lastName}</s:param>
 </s:include>
 
 <div class="row">

@@ -21,7 +21,7 @@
             <div class="form-group">
                 <tw:label labelName="locale" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></tw:label>
                 <div class="col-xs-11 col-md-11 locale-select">
-                    <tw:select selectName="locale" tabindex="1" class="form-control">
+                    <tw:select selectName="locale" tabindex="1" class="form-control select2">
                         <tw:option value="EN">English</tw:option>
                         <tw:option value="DK">Dansk</tw:option>
                     </tw:select>

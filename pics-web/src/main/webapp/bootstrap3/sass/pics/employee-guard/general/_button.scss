@@ -137,3 +137,22 @@
     position: relative;
   }
 }
+
+.btn-auto-width {
+    min-width: 0;
+}
+
+.icon-plus-sign {
+    color: #229322;
+}
+
+.edit-btn {
+    color: $pics_warm_grey;
+    margin-left: -15px;
+    text-decoration: none;
+
+    &:hover {
+        color: $info_med;
+        text-decoration: none;
+    }
+}

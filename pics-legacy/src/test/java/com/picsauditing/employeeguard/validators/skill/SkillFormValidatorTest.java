@@ -61,8 +61,6 @@ public class SkillFormValidatorTest {
 
         assertEquals("Skill name is missing", validatorContext.getFieldErrors().get(SkillFormValidator.SKILL_FORM
                 + ".name").get(0));
-        assertEquals("Expiration is invalid", validatorContext.getFieldErrors().get(SkillFormValidator.SKILL_FORM
-                + ".intervalPeriod").get(0));
     }
 
     private SkillForm buildSkillFormNameAndExpirationValidationFailure() {

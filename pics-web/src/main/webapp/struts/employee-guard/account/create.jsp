@@ -8,6 +8,9 @@
     <s:param name="hashCode">${hashCode}</s:param>
 </s:url>
 
+<%-- Terms of Service Modal --%>
+<s:include value="/struts/employee-guard/account/_terms-of-service.jsp" />
+
 <div class="row">
     <div id="login-container" class="col-md-4 col-md-offset-4">
         <img src="/v7/img/logo/logo-large.png" class="logo img-responsive">
@@ -18,7 +21,7 @@
             <div class="form-group">
                 <tw:label labelName="locale" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></tw:label>
                 <div class="col-xs-11 col-md-11 locale-select">
-                    <tw:select selectName="locale" tabindex="1" class="form-control">
+                    <tw:select selectName="locale" tabindex="1" class="form-control select2">
                         <tw:option value="EN">English</tw:option>
                         <tw:option value="DK">Dansk</tw:option>
                     </tw:select>
@@ -54,10 +57,12 @@
                 <tw:label labelName="password">Password</tw:label>
                 <tw:input class="form-control" inputName="password" type="password" tabindex="8" />
                 <tw:error errorName="password" />
+            </div>
 
+            <div class="form-group" id="terms_of_service">
                 <div class="checkbox">
                     <tw:label labelName="tos" class="control-label">
-                        <tw:input inputName="tos" class="required" type="checkbox" value="false"/> I agree to the <a href="#">Terms of Service</a>
+                        <tw:input inputName="tos" class="required" type="checkbox" value="true"/> I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">Terms of Service</a>
                     </tw:label>
                 </div>
             </div>

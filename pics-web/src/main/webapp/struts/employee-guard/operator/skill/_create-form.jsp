@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-<s:set var="is_skill_of_training_type" value="skillForm.skillType != null && skillForm.skillType.training ? true : false"/>
+<s:set var="is_skill_of_training_type" value="operatorSkillForm.skillType != null && operatorSkillForm.skillType.training ? true : false"/>
 
 <%-- Url --%>
 <s:url action="skill" var="operator_skill_list_url"/>
@@ -10,27 +10,27 @@
 
 <tw:form formName="operator_skill_create" action="${operator_skill_create_url}" method="post" class="form-horizontal js-validation" role="form">
     <fieldset>
-        <div class="form-group ${name_error_class}">
+        <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-4">
-                <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${skillForm.name}"/>
+                <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${operatorSkillForm.name}"/>
             </div>
         </div>
 
         <div class="form-group">
             <tw:label labelName="description" class="col-md-3 control-label">Description</tw:label>
             <div class="col-md-4">
-                <tw:textarea textareaName="description" class="form-control" tabindex="2">${skillForm.description}</tw:textarea>
+                <tw:textarea textareaName="description" class="form-control" tabindex="2">${operatorSkillForm.description}</tw:textarea>
             </div>
         </div>
 
         <div class="form-group">
             <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Skill Type</strong></tw:label>
             <div class="col-md-4 col-xs-11">
-                <tw:select selectName="skillType" class="form-control skillType" tabindex="3">
+                <tw:select selectName="skillType" class="form-control skillType select2Min" tabindex="3">
                     <tw:option value="Certification"
-                               selected="${skillForm.skillType == 'Certification'}">Certification</tw:option>
-                    <tw:option value="Training" selected="${skillForm.skillType == 'Training'}">Training</tw:option>
+                               selected="${operatorSkillForm.skillType == 'Certification'}">Certification</tw:option>
+                    <tw:option value="Training" selected="${operatorSkillForm.skillType == 'Training'}">Training</tw:option>
                 </tw:select>
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
@@ -43,9 +43,9 @@
         </s:if>
 
         <div class="form-group">
-            <tw:label labelName="groups" class="col-md-3 control-label"><strong>Job Roles</strong></tw:label>
+            <tw:label labelName="groups" class="col-md-3 control-label">Job Roles</tw:label>
             <div class="col-md-4">
-                <tw:select selectName="groups" multiple="true" class="form-control operator-skill-employee-groups" tabindex="7">
+                <tw:select selectName="groups" multiple="true" class="form-control select2 operator-skill-employee-groups" tabindex="7">
                     <s:iterator value="roles" var="operator_role">
                         <s:set var="is_selected" value="false"/>
                         <s:iterator value="#selected_roles" var="selected_role">
@@ -60,7 +60,7 @@
 
                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label">
-                        <tw:input inputName="required" class="required" type="checkbox" value="true" tabindex="8"/> Required for all employees
+                        <tw:input inputName="required" class="required" type="checkbox" data-toggle="form-input" data-target=".operator-skill-employee-groups" value="true" tabindex="8"/> Required for all employees
                     </tw:label>
                 </div>
             </div>

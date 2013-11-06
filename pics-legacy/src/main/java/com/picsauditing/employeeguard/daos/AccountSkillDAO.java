@@ -21,9 +21,23 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
-	public List<AccountSkill> findOptionalSkillsByAccount(int accountId) {
+	public List<AccountSkill> findOptionalSkillsByAccount(final int accountId) {
+		if (accountId == 0) {
+			return Collections.emptyList();
+		}
+
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId = :accountId AND s.ruleType = 'Optional'", AccountSkill.class);
 		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> findOptionalSkillsByAccounts(final List<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId IN (:accountIds) AND s.ruleType = 'Optional'", AccountSkill.class);
+		query.setParameter("accountIds", accountIds);
 		return query.getResultList();
 	}
 
@@ -54,9 +68,32 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 		return query.getSingleResult();
 	}
 
+	// TODO Deprecate, use accountID for security?
 	public List<AccountSkill> findByIds(List<Integer> skillIds) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.id IN (:skillIds)", AccountSkill.class);
 		query.setParameter("skillIds", skillIds);
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> findSkillsByAccountAndIds(final int accountId, final List<Integer> skillIds) {
+		if (accountId <= 0 || CollectionUtils.isEmpty(skillIds)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId = :accountId AND s.id IN (:skillIds)", AccountSkill.class);
+		query.setParameter("skillIds", skillIds);
+		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> findSkillsByAccountsAndIds(final List<Integer> accountIds, final List<Integer> skillIds) {
+		if (CollectionUtils.isEmpty(accountIds) || CollectionUtils.isEmpty(skillIds)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId IN (:accountIds) AND s.id IN (:skillIds)", AccountSkill.class);
+		query.setParameter("skillIds", skillIds);
+		query.setParameter("accountIds", accountIds);
 		return query.getResultList();
 	}
 
@@ -70,7 +107,7 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
-	public List<AccountSkill> search(String searchTerm, int accountId) {
+	public List<AccountSkill> search(final String searchTerm, final int accountId) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId = :accountId " +
 				"AND (s.name LIKE :searchTerm " +
 				"OR s.description LIKE :searchTerm)", AccountSkill.class);
@@ -87,6 +124,15 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 	public List<AccountSkill> findRequiredByAccount(final int accountId) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId = :accountId AND s.ruleType = 'Required'", AccountSkill.class);
 		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> search(final String searchTerm, final List<Integer> accountIds) {
+		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId IN (:accountIds) " +
+				"AND (s.name LIKE :searchTerm " +
+				"OR s.description LIKE :searchTerm)", AccountSkill.class);
+		query.setParameter("accountIds", accountIds);
+		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}
 }

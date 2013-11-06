@@ -149,4 +149,10 @@ public class PhotoUtilTest {
 
         assertEquals("/my/directory/files/122/my_file.jpg", result);
     }
+
+	@Test
+	public void testSendPhotoToFilesDirectory() throws Exception {
+		photoUtil.sendPhotoToFilesDirectory(file, "", 1, "", "");
+		verify(fileSystemAccessor, atLeastOnce()).moveFile(file, "", "files/", "", "", true);
+	}
 }

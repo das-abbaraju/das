@@ -12,13 +12,22 @@
 </s:url>
 
 <%-- Page title --%>
-<s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Job Role: ${role.name}</s:param>
-    <s:param name="actions">
-        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Job Role
-        </button>
-    </s:param>
-</s:include>
+<s:if test="permissions.accountId == role.accountId">
+    <s:include value="/struts/employee-guard/_page-header.jsp">
+        <s:param name="title">Job Role: ${role.name}</s:param>
+        <s:param name="actions">
+            <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Job Role
+            </button>
+        </s:param>
+        <s:param name="breadcrumb_name">${role.name}</s:param>
+    </s:include>
+</s:if>
+<s:else>
+    <s:include value="/struts/employee-guard/_page-header.jsp">
+        <s:param name="title">Job Role: ${role.name}</s:param>
+        <s:param name="breadcrumb_name">${role.name}</s:param>
+    </s:include>
+</s:else>
 
 <%-- Delete Confirmation --%>
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
@@ -35,9 +44,11 @@
                     <div class="col-md-9 col-xs-9">
                         <i class="icon-group icon-large"></i> Role
                     </div>
-                    <div class="col-md-3 col-xs-3 edit">
-                        <i class="icon-edit icon-large edit-toggle"></i>
-                    </div>
+                    <s:if test="permissions.accountId == role.accountId">
+                        <div class="col-md-3 col-xs-3 edit">
+                            <i class="icon-edit icon-large edit-toggle"></i>
+                        </div>
+                    </s:if>
                 </div>
             </h1>
 
@@ -54,24 +65,24 @@
             </div>
         </section>
     </div>
-<%-- Non MVP Markup
-    <div class="col-md-4">
-        <section class="employee-guard-section edit-container" data-url="${operator_role_name_skills_url}">
-            <h1>
-                <div class="row">
-                    <div class="col-md-9 col-xs-9">
-                        <i class="icon-sitemap icon-large"></i> Current Projects
+    <%-- Non MVP Markup
+        <div class="col-md-4">
+            <section class="employee-guard-section edit-container" data-url="${operator_role_name_skills_url}">
+                <h1>
+                    <div class="row">
+                        <div class="col-md-9 col-xs-9">
+                            <i class="icon-sitemap icon-large"></i> Current Projects
+                        </div>
+                        <div class="col-md-3 col-xs-3 edit">
+                            <i class="icon-edit icon-large edit-toggle"></i>
+                        </div>
                     </div>
-                    <div class="col-md-3 col-xs-3 edit">
-                        <i class="icon-edit icon-large edit-toggle"></i>
-                    </div>
-                </div>
-            </h1>
+                </h1>
 
-            <div class="content">
-                <dl class="employee-guard-information edit-display-values">
-                </dl>
-            </div>
-        </section>
-    </div> --%>
+                <div class="content">
+                    <dl class="employee-guard-information edit-display-values">
+                    </dl>
+                </div>
+            </section>
+        </div> --%>
 </div>

@@ -27,7 +27,7 @@
         <div class="form-group">
             <tw:label labelName="skills" class="col-md-3 control-label">Required Skills</tw:label>
             <div class="col-md-4">
-                <tw:select selectName="skills" multiple="true" class="form-control" tabindex="2">
+                <tw:select selectName="skills" multiple="true" class="form-control select2" tabindex="2">
                     <s:iterator value="groupSkills" var="company_skill">
                         <s:set var="is_selected" value="false"/>
                         <s:iterator value="#selected_skills" var="selected_skill">
@@ -47,7 +47,7 @@
         <div class="form-group">
             <tw:label labelName="employees" class="col-md-3 control-label">Employees</tw:label>
             <div class="col-md-4">
-                <tw:select selectName="employees" multiple="true" class="form-control" tabindex="3">
+                <tw:select selectName="employees" multiple="true" class="form-control select2" tabindex="3">
                     <s:iterator value="groupEmployees" var="contractor_employee">
                         <s:set var="is_selected" value="false"/>
                         <s:iterator value="#selected_employees" var="selected_employee">

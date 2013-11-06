@@ -2,7 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-
 <%-- Url --%>
 <s:url action="skill" method="delete" var="operator_skill_delete_url">
     <s:param name="id">${id}</s:param>
@@ -12,12 +11,22 @@
 </s:url>
 
 <%-- Page title --%>
-<s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Skill: ${skill.name}</s:param>
-    <s:param name="actions">
-        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Skill</button>
-    </s:param>
-</s:include>
+<s:if test="permissions.accountId == skill.accountId">
+    <s:include value="/struts/employee-guard/_page-header.jsp">
+        <s:param name="title">Skill: ${skill.name}</s:param>
+        <s:param name="actions">
+            <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Skill
+            </button>
+        </s:param>
+        <s:param name="breadcrumb_name">${skill.name}</s:param>
+    </s:include>
+</s:if>
+<s:else>
+    <s:include value="/struts/employee-guard/_page-header.jsp">
+        <s:param name="title">Skill: ${skill.name}</s:param>
+        <s:param name="breadcrumb_name">${skill.name}</s:param>
+    </s:include>
+</s:else>
 
 <%-- Delete Confirmation --%>
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
@@ -34,9 +43,11 @@
                     <div class="col-md-9 col-xs-9">
                         <i class="icon-certificate icon-large"></i> Skill
                     </div>
-                    <div class="col-md-3 col-xs-3 edit">
-                        <i class="icon-edit icon-large edit-toggle"></i>
-                    </div>
+                    <s:if test="permissions.accountId == skill.accountId">
+                        <div class="col-md-3 col-xs-3 edit">
+                            <i class="icon-edit icon-large edit-toggle"></i>
+                        </div>
+                    </s:if>
                 </div>
             </h1>
 
@@ -46,7 +57,7 @@
                     <dd class="col-md-9">${skill.name}</dd>
                     <dt class="col-md-3">Description</dt>
                     <dd class="col-md-9">${skill.description}</dd>
-                    <dt class="col-md-3">Type</dt>
+                    <dt class="col-md-3">Skill Type</dt>
                     <dd class="col-md-9">${skill.skillType}</dd>
 
                     <s:if test="skill.skillType.training">
@@ -68,7 +79,7 @@
                             Required for all employees
                         </s:if>
                         <s:else>
-                            <s:set var="operator_groups" value="skill.groups"/>
+                            <s:set var="operator_roles" value="skill.groups"/>
                             <s:include value="/struts/employee-guard/operator/role/_list.jsp"/>
                         </s:else>
                     </dd>
@@ -76,24 +87,24 @@
             </div>
         </section>
     </div>
-<%-- Not MVP Markup
-    <div class="col-md-4">
-        <section class="employee-guard-section edit-container" data-url="${operator_skill_edit_url}">
-            <h1>
-                <div class="row">
-                    <div class="col-md-9 col-xs-9">
-                        <i class="icon-user icon-large"></i> Skill Status
+    <%-- Not MVP Markup
+        <div class="col-md-4">
+            <section class="employee-guard-section edit-container" data-url="${operator_skill_edit_url}">
+                <h1>
+                    <div class="row">
+                        <div class="col-md-9 col-xs-9">
+                            <i class="icon-user icon-large"></i> Skill Status
+                        </div>
+                        <div class="col-md-3 col-xs-3 edit">
+                            <i class="icon-edit icon-large edit-toggle"></i>
+                        </div>
                     </div>
-                    <div class="col-md-3 col-xs-3 edit">
-                        <i class="icon-edit icon-large edit-toggle"></i>
-                    </div>
-                </div>
-            </h1>
+                </h1>
 
-            <div class="content">
-                <dl class="employee-guard-information edit-display-values">
-                </dl>
-            </div>
-        </section>
-    </div> --%>
+                <div class="content">
+                    <dl class="employee-guard-information edit-display-values">
+                    </dl>
+                </div>
+            </section>
+        </div> --%>
 </div>

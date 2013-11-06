@@ -27,6 +27,10 @@ public class AccountSkillEmployeeService {
 		return accountSkillEmployeeDAO.findByProfile(profile);
 	}
 
+	public List<AccountSkillEmployee> findByEmployeesAndSkills(final List<Employee> employees, final List<AccountSkill> accountSkills) {
+		return accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, accountSkills);
+	}
+
 	public AccountSkillEmployee linkProfileDocumentToEmployeeSkill(final AccountSkillEmployee accountSkillEmployee, final ProfileDocument profileDocument) {
 		accountSkillEmployee.setProfileDocument(profileDocument);
 		accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
@@ -37,11 +41,11 @@ public class AccountSkillEmployeeService {
 		return accountSkillEmployeeDAO.findByProfileAndSkill(profile, skill);
 	}
 
-	public void linkEmployeesToSkill(final AccountSkill skill, final int userId) {
+	public void linkEmployeesToSkill(final AccountSkill skill, final int appUserId) {
 		List<AccountSkillEmployee> newAccountSkillEmployees = getNewAccountSkillEmployees(skill);
 		List<AccountSkillEmployee> existingAccountSkillEmployees = getExistingAccountSkillEmployees(skill);
 		List<AccountSkillEmployee> employeeSkills = IntersectionAndComplementProcess.intersection(newAccountSkillEmployees,
-				existingAccountSkillEmployees, AccountSkillEmployee.COMPARATOR, new BaseEntityCallback(userId, new Date()));
+				existingAccountSkillEmployees, AccountSkillEmployee.COMPARATOR, new BaseEntityCallback(appUserId, new Date()));
 
 		accountSkillEmployeeDAO.save(employeeSkills);
 	}
@@ -103,6 +107,7 @@ public class AccountSkillEmployeeService {
 		Date now = new Date();
 
 		if (skill.getRuleType().isRequired()) {
+			// TODO we may need to apply a required skill across employees tied to a PROJECT
 			employees = employeeDAO.findByAccount(skill.getAccountId());
 		} else {
 			//find all skill groups
@@ -183,5 +188,19 @@ public class AccountSkillEmployeeService {
 
 			accountSkillEmployeeDAO.save(accountSkillEmployee);
 		}
+	}
+
+	public void update(AccountSkillEmployee accountSkillEmployee, final ProfileDocument document) {
+		AccountSkill skill = accountSkillEmployee.getSkill();
+		SkillType skillType = skill.getSkillType();
+
+		if (skillType.isCertification()) {
+			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
+			accountSkillEmployeeDAO.save(accountSkillEmployee);
+		}
+	}
+
+	public List<AccountSkillEmployee> getAccountSkillEmployeeForAccountAndSkills(final int accountId, final List<AccountSkill> accountSkills) {
+		return accountSkillEmployeeDAO.findByEmployeeAccountAndSkills(accountId, accountSkills);
 	}
 }

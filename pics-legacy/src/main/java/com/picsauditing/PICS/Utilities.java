@@ -45,7 +45,7 @@ public class Utilities {
 	 * maxLength. It truncates the text to the given length, before escaping it.
 	 * This means that we can safely truncate the text without worrying about
 	 * truncating in the middle of an escape sequence.
-	 * 
+	 *
 	 * Additionally, if the text is truncated, then "..." is appended in place
 	 * of the truncted text.
 	 */
@@ -220,6 +220,26 @@ public class Utilities {
 
 		return ids;
 	}
+
+    public static <K, V> boolean mapsAreEqual(Map<K, V> map1, Map<K, V> map2) {
+        if (map1 == map2) {
+            return true;
+        } else if ((map1 == null && map2 != null) || (map1 != null && map2 == null)) {
+            return false;
+        } else if (map1.size() != map2.size()) {
+            return false;
+        }
+
+        for (K key : map1.keySet()) {
+            if (!map2.containsKey(key)) {
+                return false;
+            } else if (!map1.get(key).equals(map2.get(key))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 	// from
 	// http://stackoverflow.com/questions/2768054/how-to-get-the-first-non-null-value-in-java

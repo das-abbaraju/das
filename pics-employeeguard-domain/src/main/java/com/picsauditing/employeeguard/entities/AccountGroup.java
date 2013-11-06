@@ -48,6 +48,10 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
 	private List<AccountGroupEmployee> employees = new ArrayList<>();
 
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	private List<ProjectRole> projects = new ArrayList<>();
+
 	public AccountGroup() {
 
 	}
@@ -164,6 +168,14 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 
 	public void setEmployees(List<AccountGroupEmployee> accountGroupEmployees) {
 		this.employees = accountGroupEmployees;
+	}
+
+	public List<ProjectRole> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<ProjectRole> projects) {
+		this.projects = projects;
 	}
 
 	@Override

@@ -129,7 +129,7 @@ body {
 }
 /* line 2, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation {
-  z-index: 1000;
+  z-index: 1001;
 }
 /* line 6, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-inner {
@@ -675,11 +675,6 @@ body {
 .page-actions button {
   margin-left: 10px;
 }
-/* line 11, ../sass/pics/layout/_page-actions.scss */
-.page-actions a .icon-plus-sign,
-.page-actions button .icon-plus-sign {
-  color: #229322;
-}
 
 /* line 4, ../sass/pics/layout/_page-header.scss */
 .page-header.pics {
@@ -701,6 +696,83 @@ body {
   font-weight: normal;
   line-height: 20px;
   margin: 0px;
+}
+
+/* line 1, ../sass/pics/plugins/_select2-overrides.scss */
+.form-control.select2-container {
+  color: #454545;
+}
+
+/*Single Select*/
+/* line 6, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-results .select2-highlighted {
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background: -webkit-linear-gradient(#3498db, #2980b9);
+}
+
+/* line 11, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-drop-active {
+  border-color: #73bbe8;
+}
+
+/* line 16, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container.form-control.select2-dropdown-open {
+  border-color: #73bbe8;
+  outline: 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
+  box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
+}
+/* line 22, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container .select2-choice {
+  background: none;
+  color: #454545;
+  line-height: inherit;
+  padding: 6px 12px;
+  height: 34px;
+}
+/* line 29, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container .select2-choice b {
+  display: none;
+}
+/* line 33, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container .select2-choice .select2-arrow {
+  color: #999999;
+  background: none;
+  border: 0px;
+  top: 7px;
+}
+
+/*Multi Select*/
+/* line 44, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container-multi .select2-choices .select2-search-choice {
+  padding: 3px 20px 3px 5px;
+  background: none;
+  background-color: #e6e6e6;
+  border: 1px solid #cccccc;
+  border-radius: 0px;
+}
+/* line 51, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container-multi .select2-choices .select2-search-choice a {
+  color: #999999;
+  font-size: 12px;
+}
+/* line 55, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container-multi .select2-choices .select2-search-choice a:hover {
+  color: #c0392b;
+}
+
+/* line 62, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container-multi .select2-search-choice-close {
+  background: none;
+  left: auto;
+  top: 3px;
+}
+
+/* line 69, ../sass/pics/plugins/_select2-overrides.scss */
+.select2-container .select2-choices {
+  font-size: 12px;
+  line-height: 12px;
 }
 
 /* line 5, ../sass/pics/employee-guard/mixins/_employee-guard-delete-confirmation.scss */
@@ -1050,25 +1122,104 @@ body {
 .employee_guard_sign_up-page .form-actions .btn-primary {
   margin-bottom: 20px;
 }
+/* line 46, ../sass/pics/employee-guard/account/_account.scss */
+.employee_guard_welcome-page #terms_of_service,
+.employee_guard_sign_up-page #terms_of_service {
+  margin-top: -15px;
+}
 
 @media (max-width: 767px) {
-  /* line 49, ../sass/pics/employee-guard/account/_account.scss */
+  /* line 53, ../sass/pics/employee-guard/account/_account.scss */
   body#employee_guard_sign_up_index_page,
   body#employee_guard_welcome_index_page {
     padding-top: 0px;
     padding-bottom: 0px;
   }
-  /* line 53, ../sass/pics/employee-guard/account/_account.scss */
+  /* line 57, ../sass/pics/employee-guard/account/_account.scss */
   body#employee_guard_sign_up_index_page #login-container,
   body#employee_guard_welcome_index_page #login-container {
     margin-bottom: 0px;
   }
-  /* line 57, ../sass/pics/employee-guard/account/_account.scss */
+  /* line 61, ../sass/pics/employee-guard/account/_account.scss */
   body#employee_guard_sign_up_index_page .row,
   body#employee_guard_welcome_index_page .row {
     padding-top: 0px;
   }
 }
+/* line 1, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment {
+  /*Assigned Employee Styles*/
+}
+/* line 2, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr {
+  cursor: pointer;
+}
+/* line 8, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr.assigned .assign-employee {
+  background-color: #fbcb43;
+}
+/* line 11, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr.assigned .assign-employee a {
+  color: #ec8c00;
+}
+/* line 17, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr.assigned .complete,
+#employee_assignment tr.assigned .pending {
+  background-color: #d6f0e4;
+  color: #33b679;
+}
+/* line 22, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr.assigned .expiring {
+  background-color: #fef5d9;
+  color: #f4b400;
+}
+/* line 27, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr.assigned .expired {
+  background-color: #fadbd8;
+  color: #e74c3c;
+}
+/* line 33, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tbody > tr:nth-child(odd) td {
+  background-color: #f1f1f2;
+}
+/* line 37, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tbody > tr:nth-child(even) td {
+  background: none;
+}
+/* line 41, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tbody > tr:hover td {
+  background-color: #ebf5fe;
+}
+/* line 45, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tbody > tr:hover td.complete, #employee_assignment tbody > tr:hover td.pending {
+  color: #33b679;
+}
+/* line 49, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tbody > tr:hover td.expiring {
+  color: #f4b400;
+}
+/* line 53, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tbody > tr:hover td.expired {
+  color: #e74c3c;
+}
+/* line 57, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tbody > tr:hover td.assign-employee a {
+  color: #ec8c00;
+}
+/* line 64, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment td.status, #employee_assignment td.assign-employee {
+  color: #b3b3b3;
+  text-align: center;
+}
+/* line 68, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment td.status a, #employee_assignment td.assign-employee a {
+  color: #b3b3b3;
+}
+/* line 73, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment td a {
+  display: inline;
+}
+
 /* line 2, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image {
   position: relative;
@@ -1813,6 +1964,35 @@ body {
   position: relative;
 }
 
+/* line 141, ../sass/pics/employee-guard/general/_button.scss */
+.btn-auto-width {
+  min-width: 0;
+}
+
+/* line 145, ../sass/pics/employee-guard/general/_button.scss */
+.icon-plus-sign {
+  color: #229322;
+}
+
+/* line 149, ../sass/pics/employee-guard/general/_button.scss */
+.edit-btn {
+  color: #808285;
+  margin-left: -15px;
+  text-decoration: none;
+}
+/* line 154, ../sass/pics/employee-guard/general/_button.scss */
+.edit-btn:hover {
+  color: #73bbe8;
+  text-decoration: none;
+}
+
+@media (min-width: 991px) {
+  /* line 3, ../sass/pics/employee-guard/general/_date-picker.scss */
+  .date .form-control {
+    padding: 6px;
+    text-align: center;
+  }
+}
 /* line 2, ../sass/pics/employee-guard/general/_field-error.scss */
 .has-info .help-block,
 .has-info .control-label {
@@ -2004,7 +2184,7 @@ button i {
   font-size: 24px;
 }
 /* line 17, ../sass/pics/employee-guard/general/_modal.scss */
-.modal .modal-body p {
+.modal .modal-body p:last-child {
   margin-bottom: 0px;
 }
 /* line 22, ../sass/pics/employee-guard/general/_modal.scss */
@@ -2177,25 +2357,28 @@ td.number {
 }
 
 /* For tables with status colors and icons */
-/* line 43, ../sass/pics/employee-guard/general/_table.scss */
+/*.table-hover tbody tr:hover td.expired {
+    background-color: $danger_tint;
+}*/
+/* line 47, ../sass/pics/employee-guard/general/_table.scss */
 .table-status th.status-title {
   text-align: center;
 }
-/* line 47, ../sass/pics/employee-guard/general/_table.scss */
+/* line 51, ../sass/pics/employee-guard/general/_table.scss */
 .table-status tbody tr td.status {
   text-align: center;
 }
-/* line 51, ../sass/pics/employee-guard/general/_table.scss */
+/* line 55, ../sass/pics/employee-guard/general/_table.scss */
 .table-status tbody tr td.status.complete, .table-status tbody tr td.status.pending {
   background-color: #d6f0e4;
   color: #33b679;
 }
-/* line 56, ../sass/pics/employee-guard/general/_table.scss */
+/* line 60, ../sass/pics/employee-guard/general/_table.scss */
 .table-status tbody tr td.status.expiring {
   background-color: #fef5d9;
   color: #f4b400;
 }
-/* line 61, ../sass/pics/employee-guard/general/_table.scss */
+/* line 65, ../sass/pics/employee-guard/general/_table.scss */
 .table-status tbody tr td.status.expired {
   background-color: #fadbd8;
   color: #e74c3c;
@@ -2210,6 +2393,30 @@ td.number {
 .well-required-for ul {
   list-style-type: none;
   padding-left: 0px;
+}
+
+/* line 1, ../sass/pics/employee-guard/navigation/_left-navigation.scss */
+.bs-sidebar.affix {
+  position: static;
+}
+
+@media (min-width: 992px) {
+  /* line 6, ../sass/pics/employee-guard/navigation/_left-navigation.scss */
+  .bs-sidebar.affix {
+    position: fixed;
+    top: 68px;
+    width: 213px;
+  }
+}
+@media (min-width: 1200px) {
+  /* line 14, ../sass/pics/employee-guard/navigation/_left-navigation.scss */
+  .bs-sidebar.affix {
+    width: 263px;
+  }
+}
+/* line 19, ../sass/pics/employee-guard/navigation/_left-navigation.scss */
+section.visible h1 {
+  margin-top: 0px;
 }
 
 /*ONCE BOOTSTRAP3 MARKUP IS IN PLACE, DELETE ME!!!*/
