@@ -140,15 +140,12 @@
                         </a>
                     </li>
                     <li>
-                        <a
-                                class="edit translate"
-                                href="ManageTranslations.action?button=Search&key=AuditType.<s:property value="auditType.id"/>."
-                                target="_BLANK">
-                            Manage Translations
-                        </a>
-                    </li>
-                    <li>
                         <label>Slug:</label>
+                        <pics:fieldhelp title="Slug">
+                            <p>
+                                A unique identifier for this audit type. Must use only lowercase letters [a-z], numbers [0-9] and underscores.
+                            </p>
+                        </pics:fieldhelp>
                         <s:textfield name="auditType.slug" />
                     </li>
                     <li>

@@ -287,6 +287,11 @@
                     </li>
                     <li>
                         <label>Slug:</label>
+                        <pics:fieldhelp title="Slug">
+                            <p>
+                                A unique identifier for this audit type. Must use only lowercase letters [a-z], numbers [0-9] and underscores.
+                            </p>
+                        </pics:fieldhelp>
                         <s:textfield name="question.slug" />
                     </li>
             		<li>

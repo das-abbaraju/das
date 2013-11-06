@@ -96820,7 +96820,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
         mode: 'SIMPLE'
-    })
+    }),
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     extend: 'PICS.ux.window.Window',
@@ -98033,13 +98033,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     }, {
         ref: 'filterModalSearchBox',
         selector: 'reportfiltermodal textfield[name=search_box]'
-    }, {
-        ref: 'columnModalAddButton',
-        selector: 'reportcolumnmodal button[action=add]'
-    }, {
-        ref: 'filterModalAddButton',
-        selector: 'reportfiltermodal button[action=add]'
-     }],
+    }],
 
     stores: [
         'report.Reports',
@@ -98060,6 +98054,12 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             'reportfiltermodal': {
                 beforehide: this.beforeFilterModalHide
             },
+            'reportcolumnlist': {
+                afterrender: this.afterColumnListRender
+            },
+            'reportfilterlist': {
+                afterrender: this.afterFilterListRender
+            },
             'reportcolumnmodal textfield[name=search_box]': {
                 keyup: this.onColumnModalTextfieldKeyup
             },
@@ -98077,12 +98077,6 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             },
             'reportfiltermodal button[action=cancel]':  {
                 click: this.cancelFilterModal
-            },
-            'reportcolumnlist': {
-                selectionchange: this.onColumnListSelectionChange
-            },
-            'reportfilterlist': {
-                selectionchange: this.onFilterListSelectionChange
             }
         });
 
@@ -98097,28 +98091,27 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         });
     },
 
+    afterColumnListRender: function (cmp) {
+        cmp.getSelectionModel().on('selectionchange', this.onCheckboxModelSelectionChange);
+    },
+
+    afterFilterListRender: function (cmp) {
+        cmp.getSelectionModel().on('selectionchange', this.onCheckboxModelSelectionChange);
+    },
+
+    onCheckboxModelSelectionChange: function (cmp) {
+        var modal_cmp = cmp.view.up('window'),
+            add_button = modal_cmp.down('button[action=add]');
+
+        this.getCount() ? add_button.setDisabled(false) : add_button.setDisabled(true);
+    },
+
     beforeColumnModalHide: function (cmp, eOpts) {
         this.getColumnList().reset();
     },
 
     beforeFilterModalHide: function (cmp, eOpts) {
         this.getFilterList().reset();
-    },
-
-    onColumnListSelectionChange: function (selection_model, selected, eOpts) {
-        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getColumnModalAddButton());
-    },
-
-    onFilterListSelectionChange: function (selection_model, selected, eOpts) {
-        this.toggleAddButtonFromSelectionModelCount(selection_model, this.getFilterModalAddButton());
-    },
-
-    toggleAddButtonFromSelectionModelCount: function (selection_model, add_button) {
-        if (selection_model.getCount()) {
-            add_button.setDisabled(false);
-        } else {
-            add_button.setDisabled(true);
-        }
     },
 
     addColumn: function (cmp, event, eOpts) {

@@ -8,5 +8,5 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
         mode: 'SIMPLE'
-    })
+    }),
 });
