@@ -10,9 +10,9 @@ import java.util.List;
 public class AuditBuilderAddAuditRenewalsTask implements CronTask {
 
     @Autowired
-    private ContractorAuditDAO contractorAuditDAO;
+    ContractorAuditDAO contractorAuditDAO;
     @Autowired
-    private AuditBuilder auditBuilder;
+    AuditBuilder auditBuilder;
 
     public String getDescription() {
         return "AuditBuilder_addAuditRenewals";

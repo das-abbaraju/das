@@ -3,6 +3,7 @@ package com.picsauditing.actions.cron;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -21,7 +22,7 @@ public class EmailDuplicateContractors {
         this.emailQueueDAO = emailQueueDAO;
     }
 
-    public boolean duplicationCheck(BaseTable contractor, String nameIndex) throws IOException {
+    public boolean duplicationCheck(BaseTable contractor, String nameIndex) throws IOException, EmailBuildErrorException {
         List<ContractorAccount> duplicateContractors = contractorAccountDAO
                 .findWhere(whereDuplicateNameIndex(nameIndex));
 

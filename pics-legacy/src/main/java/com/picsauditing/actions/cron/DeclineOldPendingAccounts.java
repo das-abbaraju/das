@@ -5,33 +5,40 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.model.account.AccountStatusChanges;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class DeclineOldPendingAccounts extends CronTaskOld {
-    private static String NAME = "MovePendingAccountsToDeclined";
+public class DeclineOldPendingAccounts implements CronTask {
     protected Permissions permissions = null;
-    private ContractorAccountDAO contractorAccountDAO;
-    private AccountStatusChanges accountStatusChanges;
+    @Autowired
+    ContractorAccountDAO contractorAccountDAO;
+    @Autowired
+    AccountStatusChanges accountStatusChanges;
 
-    public DeclineOldPendingAccounts(ContractorAccountDAO contractorAccountDAO, AccountStatusChanges accountStatusChanges) {
-        super(NAME);
-        this.contractorAccountDAO = contractorAccountDAO;
-        this.accountStatusChanges = accountStatusChanges;
+    public String getDescription() {
+        return "findPendingAccountsToMoveToDeclinedStatus and declineContractor";
     }
 
-    protected void run() {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() {
+        CronTaskResult results = new CronTaskResult(true, "");
         List<ContractorAccount> deactivateList = contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus();
-        logger.debug("Found {1} entries", deactivateList.size());
+        results.getLogger().append("Found " + deactivateList.size() + " contractor(s) to deactivate");
 
         if (CollectionUtils.isEmpty(deactivateList)) {
-            return;
+            return results;
         }
 
         for (ContractorAccount contractor : deactivateList) {
             accountStatusChanges.declineContractor(contractor, permissions,
                     AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
                     AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
+            results.getLogger().append(",  " + contractor.getId());
         }
+        return results;
     }
 }

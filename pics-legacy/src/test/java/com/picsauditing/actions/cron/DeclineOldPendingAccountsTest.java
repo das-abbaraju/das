@@ -23,14 +23,15 @@ public class DeclineOldPendingAccountsTest {
     private ContractorAccountDAO contractorAccountDAO;
     @Mock
     private AccountStatusChanges accountStatusChanges;
-
     private DeclineOldPendingAccounts cron;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        cron = new DeclineOldPendingAccounts(contractorAccountDAO, accountStatusChanges);
+        cron = new DeclineOldPendingAccounts();
+        cron.contractorAccountDAO = contractorAccountDAO;
+        cron.accountStatusChanges = accountStatusChanges;
     }
 
     @Test
@@ -40,7 +41,6 @@ public class DeclineOldPendingAccountsTest {
         verify(accountStatusChanges, never()).deactivateContractor(any(ContractorAccount.class),
                 any(Permissions.class), anyString(), anyString());
     }
-
 
     @Test
     public void testDeactivatePendingAccounts() throws Exception {
@@ -54,7 +54,7 @@ public class DeclineOldPendingAccountsTest {
 
         when(contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus()).thenReturn(cList);
 
-        cron.execute();
+        cron.run();
 
         verify(accountStatusChanges).declineContractor(cAccount, null,
                 AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,

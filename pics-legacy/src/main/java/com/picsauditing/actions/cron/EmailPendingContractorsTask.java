@@ -5,40 +5,48 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class EmailPendingContractorsTask extends CronTaskOld {
-    private static String NAME = "EmailPendingContractors";
-    List<String> emailExclusionList = new ArrayList<>();
+public class EmailPendingContractorsTask implements CronTask {
     protected Permissions permissions = null;
-    private EmailQueueDAO emailQueueDAO;
-    private ContractorAccountDAO contractorAccountDAO;
-    private EmailDuplicateContractors duplicateContractors;
+    List<String> emailExclusionList = new ArrayList<>();
+    @Autowired
+    EmailQueueDAO emailQueueDAO;
+    @Autowired
+    ContractorAccountDAO contractorAccountDAO;
+    @Autowired
+    EmailDuplicateContractors duplicateContractors;
 
-    public EmailPendingContractorsTask(EmailQueueDAO emailQueueDAO, ContractorAccountDAO contractorAccountDAO) {
-        super(NAME);
-        this.emailQueueDAO = emailQueueDAO;
-        this.contractorAccountDAO = contractorAccountDAO;
-        this.duplicateContractors = new EmailDuplicateContractors(contractorAccountDAO, emailQueueDAO);
+    public String getDescription() {
+        return "";
     }
 
-    protected void run() throws Exception {
-        getEmailExclusions();
-        sendEmailPendingAccounts();
+    public List<String> getSteps() {
+        return null;
     }
 
-    private void getEmailExclusions() {
-        emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
-        logger.debug("Excluding {1} emails", emailExclusionList.size());
+    public CronTaskResult run() {
+        CronTaskResult results = new CronTaskResult(true, "");
+        try {
+            emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
+            results.getLogger().append("Excluding " + emailExclusionList.size() + " emails");
+            sendEmailPendingAccounts();
+        } catch (Exception e) {
+            results.setSuccess(false);
+            results.getLogger().append(e.getMessage());
+        }
+        return results;
     }
 
     void sendEmailPendingAccounts() throws Exception {
@@ -69,7 +77,7 @@ public class EmailPendingContractorsTask extends CronTaskOld {
     }
 
     private void runAccountEmailBlast(List<ContractorAccount> list, int templateID, String newNote)
-            throws EmailException, IOException, ParseException {
+            throws EmailException, IOException, ParseException, EmailBuildErrorException {
         Map<OperatorAccount, List<ContractorAccount>> operatorContractors = new HashMap<>();
 
         removeContractorsWithRecentlySentEmail(list, templateID);

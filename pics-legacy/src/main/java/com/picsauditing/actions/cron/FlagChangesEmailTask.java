@@ -4,6 +4,7 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EmailAddressUtils;
@@ -95,7 +96,7 @@ public class FlagChangesEmailTask implements CronTask {
         return amMap;
     }
 
-    private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException {
+    private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException, EmailBuildErrorException {
         EmailBuilder emailBuilder = new EmailBuilder();
         emailBuilder.setTemplate(EmailTemplate.FLAG_CHANGES_EMAIL_TEMPLATE);
         emailBuilder.setFromAddress(EmailAddressUtils.PICS_SYSTEM_EMAIL_ADDRESS);

@@ -5,6 +5,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PicsDateFormat;
@@ -127,7 +128,7 @@ public class EmailRegistrationRequestsTask implements CronTask {
     }
 
     private void runCRREmailBlast(List<? extends BaseTable> list, int templateID, String newNote) throws IOException,
-            ParseException {
+            ParseException, EmailBuildErrorException {
         Map<User, List<BaseTable>> operatorContractors = new HashMap<User, List<BaseTable>>();
 
         for (BaseTable requestedContractor : list) {

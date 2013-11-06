@@ -40,7 +40,10 @@ public class AddLateFeesTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         cron = new AddLateFees();
-        // cron.database = database;
+        cron.invoiceDAO = invoiceDAO;
+        cron.invoiceFeeDAO = invoiceFeeDAO;
+        cron.invoiceItemDAO = invoiceItemDAO;
+        cron.billingService = billingService;
     }
 
     @Test
