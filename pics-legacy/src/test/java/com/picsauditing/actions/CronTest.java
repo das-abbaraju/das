@@ -13,6 +13,4 @@ public class CronTest extends PicsActionTest {
         cron.view();
         Assert.assertEquals("This is a test", cron.getTaskDescription());
     }
-
-
 }

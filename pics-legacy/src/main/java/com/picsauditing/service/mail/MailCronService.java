@@ -12,6 +12,7 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.subscription.MissingSubscriptionException;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
+import com.picsauditing.mail.subscription.SubscriptionException;
 import com.picsauditing.service.AppPropertyService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
@@ -131,17 +132,30 @@ public class MailCronService {
 	}
 
 	private void sendEmailSubscription(EmailSubscription emailSubscription) {
-		SubscriptionBuilder builder;
+		SubscriptionBuilder builder = getSubscriptionBuilder(emailSubscription);
+		sendEmailSubscription(emailSubscription, builder);
+	}
+
+	private SubscriptionBuilder getSubscriptionBuilder(EmailSubscription emailSubscription) {
+		SubscriptionBuilder builder = null;
 		try {
 			builder = subscriptionFactory.getBuilder(emailSubscription.getSubscription());
-			builder.sendSubscription(emailSubscription);
 		} catch (MissingSubscriptionException e) {
-			logger.error("processEmailSubscription(): Could not find a builder for emailSubscription with id: {}, subscription: {}. {}",
+			logger.error("getSubscriptionBuilder(): Could not find a builder for emailSubscription with id: {}, subscription: {}. {}",
 					new Object[]{emailSubscription.getId(), emailSubscription.getSubscription(), e.getMessage()});
+		}
+		return builder;
+	}
+
+	protected void sendEmailSubscription(EmailSubscription emailSubscription, SubscriptionBuilder builder) {
+		try {
+			builder.sendSubscription(emailSubscription);
 		} catch (IOException | MessagingException e) {
-			logger.error("processEmailSubscription(): Failed to send subscription for emailSubscription with id: {}. {}",
+			logger.error("sendEmailSubscription(): Failed to send subscription for emailSubscription with id: {}. {}",
 					new Object[]{emailSubscription.getId(), e.getMessage()});
 			setSubscriptionToBeReprocessedTomorrow(emailSubscription);
+		} catch (SubscriptionException e) {
+			logger.error("sendEmailSubscription(): Failed to send a subscription", e);
 		}
 	}
 

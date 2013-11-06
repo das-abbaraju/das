@@ -35,6 +35,7 @@ public class Field {
 	private boolean sortable = true;
 	private String preTranslation;
 	private String postTranslation;
+	private String separator;
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
 
@@ -203,6 +204,14 @@ public class Field {
 		this.postTranslation = postTranslation;
 	}
 
+    public String getSeparator() {
+        return separator;
+    }
+
+    public void setSeparator(String separator) {
+        this.separator = separator;
+    }
+
 	public Field requirePermission(OpPerms opPerm) {
 		requiredPermission = opPerm;
 		return this;
@@ -298,6 +307,7 @@ public class Field {
         copiedField.requiredJoin = requiredJoin;
 		copiedField.preTranslation = preTranslation;
 		copiedField.postTranslation = postTranslation;
+        copiedField.separator = separator;
 		copiedField.requiredPermission = requiredPermission;
 		copiedField.importance = importance;
         copiedField.prefixValue = prefixValue;

@@ -73,4 +73,9 @@ public class GroupManager extends UserGroupManager implements GroupManagementSer
     public UserGroupManagementStatus groupIsDeletable(User user) {
         return new UserGroupManagementStatus();
     }
+
+	@Override
+	public void saveNewAppUser(User user) {
+		super.saveNewAppUser(user);
+	}
 }
