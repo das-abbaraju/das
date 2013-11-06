@@ -124,6 +124,20 @@ public class FlagDataCalculatorTest {
 	}
 
     @Test
+    public void testAuditIsApplicableForThisOperator() throws Exception {
+        Boolean applicable;
+
+        calculator.setWorksForOperator(false);
+        applicable = Whitebox.invokeMethod(calculator, "auditIsApplicableForThisOperator", fcOp, fc, contractor);
+        assertTrue(applicable);
+
+        calculator.setWorksForOperator(true);
+        fc.getQuestion().getCategory().setAuditType(ca.getAuditType());
+        applicable = Whitebox.invokeMethod(calculator, "auditIsApplicableForThisOperator", fcOp, fc, contractor);
+        assertFalse(applicable);
+    }
+
+    @Test
     public void testAuditTypeHasMultiple() throws Exception {
         ContractorAccount contractor = EntityFactory.makeContractor();
         AuditType auditType = EntityFactory.makeAuditType();
