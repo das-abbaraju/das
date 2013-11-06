@@ -67,7 +67,7 @@ public class EventSubscriptionBuilder {
 		}
 	}
 
-	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException {
+	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException, EmailBuildErrorException {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
 		if (languageModel.invoiceIsToBeEmailedViaBPROCS(contractor)) {
@@ -86,7 +86,7 @@ public class EventSubscriptionBuilder {
 		emailRequestPublisher.publish(request);
 	}
 
-	private static EmailQueue buildInvoiceEmailQueueObject(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException {
+	private static EmailQueue buildInvoiceEmailQueueObject(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException, EmailBuildErrorException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(PICS_CONTRACTOR_INVOICE_TEMPLATE_ID);
 		// Adding this to cc Billing until they're confident the billing system
@@ -159,7 +159,7 @@ public class EventSubscriptionBuilder {
 	}
 
 	public static void sendExpiringCertificatesEmail(Set<EmailSubscription> contractorInsuranceSubscriptions,
-													 Set<ContractorAudit> expiringPolicies) throws EmailException, IOException {
+													 Set<ContractorAudit> expiringPolicies) throws EmailException, IOException, EmailBuildErrorException {
 		for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 			sendInsuranceEmail(contractorInsuranceSubscription, expiringPolicies);
 			contractorInsuranceSubscription.setLastSent(new Date());
@@ -226,7 +226,7 @@ public class EventSubscriptionBuilder {
 	}
 
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
-										   Set<ContractorAudit> expiringPolicies) throws IOException {
+										   Set<ContractorAudit> expiringPolicies) throws IOException, EmailBuildErrorException {
 
 		User user = insuranceSubscription.getUser();
 
@@ -275,6 +275,9 @@ public class EventSubscriptionBuilder {
 			subscriptionDAO.save(subscription);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (EmailBuildErrorException e) {
+			logger.error("sendSystemStatusEmail(): Failed to build email for subscription with id: {}. {}",
+					new Object[]{subscription.getId(), e.getMessage()});
 		}
 	}
 

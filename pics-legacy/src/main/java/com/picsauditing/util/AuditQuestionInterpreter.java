@@ -23,7 +23,7 @@ public class AuditQuestionInterpreter {
 			return question;
 		try {
 			question = adaptor.merge(question, data);
-		} catch (IOException e) {
+		} catch (IOException | TemplateParseException e) {
 			e.printStackTrace();
 		}
 		return question;

@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
+import com.picsauditing.authentication.dao.AppUserDAO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class InputValidator {
 
 	@Autowired
 	private UserDAO userDao;
+	@Autowired
+	private AppUserDAO appUserDAO;
 
 	public InputValidator setUserDao(UserDAO userDao) {
 		this.userDao = userDao;
@@ -96,7 +99,8 @@ public class InputValidator {
 	}
 
 	public boolean isUsernameTaken(String username, int currentUserId) {
-		return userDao.duplicateUsername(username, currentUserId);
+		int appUserID = userDao.findAppUserID(currentUserId);
+		return appUserDAO.duplicateUsername(username, appUserID);
 	}
 
 	public boolean isCompanyNameTaken(String companyName) {

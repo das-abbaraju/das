@@ -8,6 +8,7 @@ import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.util.Strings;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +46,21 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 
 	@ApiRequired
 	public String createNewAppUser() {
-		AppUser newAppUser = new AppUser();
-		newAppUser.setUsername(username);
-		newAppUser.setPassword(password);
+		if (Strings.isEmpty(username) || password == null) {
+			json.put("status", "FAIL");
+		} else {
+			AppUser newAppUser = new AppUser();
+			newAppUser.setUsername(username);
+			newAppUser.setPassword(password);
 
-		appUserDAO.save(newAppUser);
+			appUserDAO.save(newAppUser);
 
-		newAppUser = appUserDAO.findByUserNameAndPassword(username, password);
+			newAppUser = appUserDAO.findByUserNameAndPassword(username, password);
 
-		json.put("status", "SUCCESS");
-		json.put("id", newAppUser.getId());
+			json.put("status", "SUCCESS");
+			json.put("id", newAppUser.getId());
+		}
+
 		return JSON;
 	}
 

@@ -1,44 +1,51 @@
 package com.picsauditing.authentication.service;
 
-import com.picsauditing.util.Strings;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.UriBuilder;
 
 public class AppUserService {
+	@Autowired
+	private AppPropertyDAO appPropertyDAO;
+
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
 
 	public boolean isUserNameAvailable(String userName) {
-		String uri = "/AuthService!checkUserName.action?apiKey=" + key + "&username=" + userName;
+		String path = "/AuthService!checkUserName.action";
+		String query = "apiKey=" + key + "&username=" + userName;
 
-		Client client = Client.create(new DefaultClientConfig());
-		WebResource webResource = client.resource(UriBuilder.fromUri(requestHost() + uri).build());
-		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-		String output = response.getEntity(String.class);
-		return output.contains("Available");
+		return callRESTService(path, query).contains("Available");
 	}
 
 	public JSONObject createNewAppUser(String username, String password) {
-		String uri = "/AuthService!createNewAppUser.action?apiKey=" + key + "&username=" + username + "&password=" + password;
+		String path = "/AuthService!createNewAppUser.action";
+		String query = "apiKey=" + key + "&username=" + username + "&password=" + password;
+
+		return (JSONObject) JSONValue.parse(callRESTService(path, query));
+	}
+
+	private String callRESTService(String path, String query) {
+		String host = requestHost();
+		UriBuilder uriBuilder = UriBuilder.fromPath(path);
+		uriBuilder.replaceQuery(query);
+		uriBuilder.host(host);
+		uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
+		uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
 
 		Client client = Client.create(new DefaultClientConfig());
-		WebResource webResource = client.resource(UriBuilder.fromUri(requestHost() + uri).build());
+		WebResource webResource = client.resource(uriBuilder.build());
 		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-		String jsonString = response.getEntity(String.class);
-		return (JSONObject) JSONValue.parse(jsonString);
+		return response.getEntity(String.class);
 	}
 
 	private String requestHost() {
-		String requestURL = ServletActionContext.getRequest().getRequestURL().toString();
-		String requestURI = ServletActionContext.getRequest().getRequestURI();
-		String requestHost = requestURL.replace(requestURI, Strings.EMPTY_STRING);
-
-		return requestHost;
+		return appPropertyDAO.getProperty("AuthServiceHost");
 	}
 }

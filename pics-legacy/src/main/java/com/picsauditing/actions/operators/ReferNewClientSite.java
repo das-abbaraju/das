@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.EntityExistsException;
 
+import com.picsauditing.mail.EmailBuildErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -142,7 +143,7 @@ public class ReferNewClientSite extends PicsActionSupport {
 					+ (newClientSite.getNotes() != null ? "\n\n" + newClientSite.getNotes() : ""));
 	}
 
-	private void sendEmail() {
+	private void sendEmail() throws EmailBuildErrorException {
 		EmailBuilder emailBuilder = prepareEmailBuilder();
 		try {
 			EmailQueue q = emailBuilder.build();

@@ -195,7 +195,7 @@ public class UsersManage extends PicsActionSupport {
 				groupManagementService.setUsernameToGeneratedGroupname(user);
 
 				if (user.getAppUser().getId() == 0) {
-					saveNewAppUser(user);
+					groupManagementService.saveNewAppUser(user);
 				}
 
 				groupManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
@@ -265,7 +265,7 @@ public class UsersManage extends PicsActionSupport {
 
 		try {
 			if (user.getAppUser().getId() == 0) {
-				saveNewAppUser(user);
+				userManagementService.saveNewAppUser(user);
 			}
 
 			user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
@@ -275,14 +275,6 @@ public class UsersManage extends PicsActionSupport {
 		} catch (DataIntegrityViolationException e) {
 			addActionError(getText("UsersManage.UsernameInUse"));
 		}
-	}
-
-	private void saveNewAppUser(User user) {
-		String username = user.getUsername();
-		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
-		int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
-		AppUser appUser = appUserDAO.findByAppUserID(appUserID);
-		user.setAppUser(appUser);
 	}
 
 	private void setUserAccountIfNeeded() {

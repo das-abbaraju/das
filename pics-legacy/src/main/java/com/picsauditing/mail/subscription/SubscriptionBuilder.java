@@ -6,18 +6,14 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuildErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.toggle.FeatureToggle;
@@ -31,13 +27,20 @@ public abstract class SubscriptionBuilder {
 	private EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
+	@Autowired
+	private EmailTemplateDAO emailTemplateDAO;
 
     final static Logger logger = LoggerFactory.getLogger(SubscriptionBuilder.class);
 
 
-    public void sendSubscription(EmailSubscription subscription) throws IOException, MessagingException {
+    public void sendSubscription(EmailSubscription subscription) throws IOException, MessagingException, SubscriptionException {
         Map<String, Object> tokens = process(subscription);
-        EmailQueue queue = buildEmail(subscription, tokens);
+        EmailQueue queue;
+	    try {
+		    queue = buildEmail(subscription, tokens);
+	    } catch (EmailBuildErrorException e) {
+		    throw new SubscriptionException("Failed to build email for subscription id: " + subscription.getId(), e, subscription.getId());
+	    }
 
         if (queue != null) {
             if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)) {
@@ -62,13 +65,14 @@ public abstract class SubscriptionBuilder {
 
 	public abstract Map<String, Object> process(EmailSubscription subscription) throws IOException;
 
-	private EmailQueue buildEmail(EmailSubscription subscription, Map<String, Object> tokens) throws IOException {
+	private EmailQueue buildEmail(EmailSubscription subscription, Map<String, Object> tokens) throws IOException, EmailBuildErrorException {
 		if (tokens.size() > 0) {
 			int templateID = subscription.getSubscription().getTemplateID();
 			User user = subscription.getUser();
 
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(templateID);
+			EmailTemplate emailTemplate = emailTemplateDAO.find(templateID);
+			emailBuilder.setTemplate(emailTemplate);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			// TODO remove this after we update the templates from username to
 			// user.name

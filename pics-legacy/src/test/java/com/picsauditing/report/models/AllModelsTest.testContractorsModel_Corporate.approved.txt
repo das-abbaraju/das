@@ -76,6 +76,7 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
+ContractorNumberOfEmployees
 ContractorOfficeIn
 ContractorPQFID
 ContractorPQFTypeName
@@ -90,6 +91,10 @@ ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorTagTagID
+ContractorTradeActivityPercent
+ContractorTradeManufacture
+ContractorTradeSelfPerformed
+ContractorTrades
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchCreationDate

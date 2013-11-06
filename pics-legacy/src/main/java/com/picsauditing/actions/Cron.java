@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -39,11 +40,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.search.Database;
@@ -438,7 +434,7 @@ public class Cron extends PicsActionSupport {
 	}
 
 	private void runAccountEmailBlast(List<ContractorAccount> list, int templateID, String newNote)
-			throws EmailException, IOException, ParseException {
+			throws EmailException, IOException, ParseException, EmailBuildErrorException {
 		Map<OperatorAccount, List<ContractorAccount>> operatorContractors = new HashMap<OperatorAccount, List<ContractorAccount>>();
 
         removeContractorsWithRecentlySentEmail(list, templateID);
@@ -619,7 +615,7 @@ public class Cron extends PicsActionSupport {
 	}
 
 	private void runCRREmailBlast(List<? extends BaseTable> list, int templateID, String newNote) throws IOException,
-			ParseException {
+			ParseException, EmailBuildErrorException {
 		Map<User, List<BaseTable>> operatorContractors = new HashMap<User, List<BaseTable>>();
 
 		for (BaseTable requestedContractor : list) {
@@ -752,7 +748,7 @@ public class Cron extends PicsActionSupport {
 		}
 	}
 
-	private boolean duplicationCheck(Object contractor, String nameIndex) throws IOException {
+	private boolean duplicationCheck(Object contractor, String nameIndex) throws IOException, EmailBuildErrorException {
 		List<ContractorAccount> duplicateContractors = contractorAccountDAO
 				.findWhere(whereDuplicateNameIndex(nameIndex));
 
@@ -945,6 +941,7 @@ public class Cron extends PicsActionSupport {
 		Invoice lateFeeInvoice = new Invoice();
 		lateFeeInvoice.setAccount(invoiceWhichIsLate.getAccount());
 		lateFeeInvoice.getItems().add(lateFeeItem);
+		lateFeeInvoice.setCurrency(invoiceWhichIsLate.getAccount().getCurrency());
 		lateFeeInvoice.updateTotalAmount();
 		lateFeeInvoice.updateAmountApplied();
 		lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
@@ -1051,7 +1048,7 @@ public class Cron extends PicsActionSupport {
 		}
 	}
 
-	private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException {
+	private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException, EmailBuildErrorException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(EmailTemplate.FLAG_CHANGES_EMAIL_TEMPLATE);
 		emailBuilder.setFromAddress(EmailAddressUtils.PICS_SYSTEM_EMAIL_ADDRESS);

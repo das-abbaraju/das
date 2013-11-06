@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.tools.generic.DateTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,17 +27,29 @@ public class VelocityAdaptor {
 		}
 	}
 
-	public String merge(String template, Map<String, Object> data) throws IOException {
+	public String merge(String template, Map<String, Object> data) throws IOException, TemplateParseException {
 		StringWriter result = new StringWriter();
 		VelocityContext velocityContext = new VelocityContext(data);
 		velocityEngine.setProperty(VelocityEngine.SET_NULL_ALLOWED, true);
 		data.put("pics_dateTool", new DateTool());
-		velocityEngine.evaluate(velocityContext, result, "pics-template-engine", template);
+		try {
+			velocityEngine.evaluate(velocityContext, result, "pics-template-engine", template);
+		} catch (ParseErrorException e) {
+			throw new TemplateParseException("Failed to parse the template. See Caused by below for line and column:\n" + headFragment(template) , e, template);
+		}
 		return result.toString();
 	}
 
-	public static String mergeTemplate(String template, Map<String, Object> data) throws Exception {
+	public static String mergeTemplate(String template, Map<String, Object> data) throws IOException, TemplateParseException {
 		VelocityAdaptor adaptor = new VelocityAdaptor();
 		return adaptor.merge(template, data);
+	}
+
+	private String headFragment(String value) {
+		int fragmentSize = 500;
+		if (value != null && value.length() > fragmentSize) {
+			return "[Fragment]\n" + value.substring(0, fragmentSize) + "\n ...";
+		}
+		return value;
 	}
 }

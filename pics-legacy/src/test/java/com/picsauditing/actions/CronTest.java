@@ -8,6 +8,7 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.account.AccountStatusChanges;
@@ -434,6 +435,8 @@ public class CronTest extends PicsActionTest {
 		Date invoiceDueDate = new Date();
 		when(mockInvoice.getDueDate()).thenReturn(invoiceDueDate);
 		BigDecimal invoiceFeeAmount = new BigDecimal(100);
+		Currency contractorCurrency = Currency.CAD;
+		when(mockContractorAccount.getCurrency()).thenReturn(contractorCurrency);
 		when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
 		BigDecimal lateFee = cron.calculateLateFeeFor(mockInvoice);
 		InvoiceItem lateFeeInvoiceItem = cron.createLateFeeInvoiceItem(mockInvoice, lateFee);
@@ -442,6 +445,7 @@ public class CronTest extends PicsActionTest {
 		assertEquals(mockInvoice.getAccount(),lateInvoice.getAccount());
 		assertEquals(lateFeeInvoiceItem,lateInvoice.getItems().get(0));
 		assertEquals(lateFee,lateInvoice.getTotalAmount());
+		assertEquals(contractorCurrency,lateInvoice.getCurrency());
 		assertEquals(InvoiceType.LateFee,lateInvoice.getInvoiceType());
 		assertEquals(FeeClass.LateFee,lateInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
 		assertEquals(invoiceDueDate.getDay(),lateInvoice.getDueDate().getDay());

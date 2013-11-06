@@ -7,6 +7,7 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.TimeZoneUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,10 @@ public abstract class ReportDataConverter {
             return result;
         }
 
-        if (field.isTranslated() && column.hasNoSqlFunction()) {
+        if (field.isTranslated() && field.getSeparator() != null) {
+            result = translateValueElements(field, value.toString());
+        }
+        else if (field.isTranslated() && column.hasNoSqlFunction()) {
             String key = field.getI18nKey(value.toString());
             result = getText(key, locale);
         }
@@ -78,6 +82,19 @@ public abstract class ReportDataConverter {
         }
 
         return result;
+    }
+
+    private String translateValueElements(Field field, String values) {
+        String delimiter = field.getSeparator();
+        StringTokenizer tokenizer = new StringTokenizer(values, delimiter);
+        List<String> translations = new ArrayList<String>();
+        while(tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            String key = field.getI18nKey(token);
+            String translation = getText(key,locale);
+            translations.add(translation);
+        }
+        return Strings.implode(translations, delimiter);
     }
 
     private long safeConversionToLong(Object value) {

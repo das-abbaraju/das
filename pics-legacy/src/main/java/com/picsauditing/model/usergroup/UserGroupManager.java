@@ -37,12 +37,14 @@ public class UserGroupManager {
         return user;
     }
 
-	private void saveNewAppUser(User user) {
+	protected void saveNewAppUser(User user) {
 		String username = user.getUsername();
 		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
-		int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
-		AppUser appUser = appUserDAO.findByAppUserID(appUserID);
-		user.setAppUser(appUser);
+		if (appUserResponse != null && "SUCCESS".equals(appUserResponse.get("status").toString())) {
+			int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
+			AppUser appUser = appUserDAO.findByAppUserID(appUserID);
+			user.setAppUser(appUser);
+		}
 	}
 
     protected void deactivate(User user, Permissions permissions) throws Exception {

@@ -36,9 +36,10 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
 				// If added after necessary time period
 				if (co.getContractorAccount().getStatus().isActive()
 						&& co.getCreationDate().after(subscription.getTimePeriod().getComparisonDate())) {
-					if (operators.get(child) == null)
-						operators.put(child, new TreeMap<ContractorAccount, ContractorOperator>(
-								getContractorComparator()));
+					if (operators.get(child) == null) {
+						TreeMap<ContractorAccount, ContractorOperator> contractorAccountContractorOperatorTreeMap = new TreeMap<>(getContractorComparator());
+						operators.put(child, contractorAccountContractorOperatorTreeMap);
+					}
 					operators.get(child).put(co.getContractorAccount(), co);
 				}
 			}
