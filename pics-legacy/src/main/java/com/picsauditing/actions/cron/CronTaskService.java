@@ -13,7 +13,6 @@ import java.util.TreeSet;
 
 public class CronTaskService {
     protected final Logger logger = LoggerFactory.getLogger(CronTaskService.class);
-    protected String name;
     protected StringBuilder report = new StringBuilder();
     protected long startTime = 0L;
     private CronTask cronTask;
@@ -25,7 +24,6 @@ public class CronTaskService {
     public CronTaskService(String cronTaskName) throws CronTaskException {
         if (!getAllTasks().contains(cronTaskName))
             throw new CronTaskException(cronTaskName + " is not a registered CronTask");
-        Object cronTaskImpl = SpringUtils.getBean(cronTaskName);
         cronTask = (CronTask) SpringUtils.getBean(cronTaskName);
     }
 
@@ -63,14 +61,13 @@ public class CronTaskService {
         }
     }
 
-    @Deprecated
-    public StringBuilder execute() {
+    public StringBuilder getReport() {
         return report;
     }
 
     protected void startTask() {
         startTime = System.currentTimeMillis();
-        report.append("Starting " + name + "\n\t");
+        report.append("Starting " + cronTask.getDescription() + "\n\t");
     }
 
     private void endTask() {
@@ -82,17 +79,21 @@ public class CronTaskService {
 
     private CronTaskResult handleException(Throwable t) {
         CronTaskResult result = new CronTaskResult();
+        result.setSuccess(false);
+
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
+        result.getLogger().append(t.getMessage());
+        result.getLogger().append("\n");
+        result.getLogger().append(sw.toString());
+
         report.append("\n\n\n");
         report.append(t.getMessage());
+        report.append("\n");
         report.append(sw.toString());
         report.append("\n\n\n");
-        return result;
-    }
 
-    public String getName() {
-        return name;
+        return result;
     }
 
     public String getDescription() {
