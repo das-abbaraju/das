@@ -18,23 +18,31 @@ public class AppUserService {
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
 
 	public boolean isUserNameAvailable(String userName) {
-		String uri = "/AuthService!checkUserName.action?apiKey=" + key + "&username=" + userName;
+		String path = "/AuthService!checkUserName.action";
+		String query = "apiKey=" + key + "&username=" + userName;
 
-		Client client = Client.create(new DefaultClientConfig());
-		WebResource webResource = client.resource(UriBuilder.fromUri(requestHost() + uri).build());
-		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-		String output = response.getEntity(String.class);
-		return output.contains("Available");
+		return callRESTService(path, query).contains("Available");
 	}
 
 	public JSONObject createNewAppUser(String username, String password) {
-		String uri = "/AuthService!createNewAppUser.action?apiKey=" + key + "&username=" + username + "&password=" + password;
+		String path = "/AuthService!createNewAppUser.action";
+		String query = "apiKey=" + key + "&username=" + username + "&password=" + password;
+
+		return (JSONObject) JSONValue.parse(callRESTService(path, query));
+	}
+
+	private String callRESTService(String path, String query) {
+		String host = requestHost();
+		UriBuilder uriBuilder = UriBuilder.fromPath(path);
+		uriBuilder.replaceQuery(query);
+		uriBuilder.host(host);
+		uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
+		uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
 
 		Client client = Client.create(new DefaultClientConfig());
-		WebResource webResource = client.resource(UriBuilder.fromUri(requestHost() + uri).build());
+		WebResource webResource = client.resource(uriBuilder.build());
 		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-		String jsonString = response.getEntity(String.class);
-		return (JSONObject) JSONValue.parse(jsonString);
+		return response.getEntity(String.class);
 	}
 
 	private String requestHost() {
