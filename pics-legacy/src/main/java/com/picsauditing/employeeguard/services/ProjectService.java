@@ -69,8 +69,6 @@ public class ProjectService {
 	}
 
 	public Project save(Project project, final int accountId, final int appUserId) {
-		project.setAccountId(accountId);
-
 		linkRolesToProject(accountId, project);
 
 		Date now = new Date();
