@@ -71,6 +71,7 @@ public class Cron extends ActionSupport {
     }
 
     public String getOutput() {
-        return "RESULT = " + (result.wasSuccessful() ? "SUCCESS" : "FAILURE") + " \n" + result.getLog();
+        return "RESULT = " + (result.wasSuccessful() ? "SUCCESS" : "FAILURE") + " . . . (" + service.getRunTime() + " millis) \n" +
+                result.getLog() + "\n";
     }
 }
