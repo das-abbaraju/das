@@ -23,7 +23,7 @@ public class RecalculateAuditsTask implements CronTask {
         return null;
     }
 
-    public CronTaskResult run() throws Throwable {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         // TODO we shouldn't recalculate audits, but only categories.
         // This shouldn't be needed at all anymore

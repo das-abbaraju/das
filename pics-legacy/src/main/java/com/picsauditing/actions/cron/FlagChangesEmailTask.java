@@ -33,23 +33,29 @@ public class FlagChangesEmailTask implements CronTask {
         return null;
     }
 
-    public CronTaskResult run() throws Exception {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
-        List<BasicDynaBean> data = getFlagChangeData();
-        if (CollectionUtils.isEmpty(data)) {
-            return results;
-        }
+        try {
+            List<BasicDynaBean> data = null;
+            data = getFlagChangeData();
+            if (CollectionUtils.isEmpty(data)) {
+                return results;
+            }
 
-        sendFlagChangesEmail(EmailAddressUtils.PICS_FLAG_CHANGE_EMAIL, data);
+            sendFlagChangesEmail(EmailAddressUtils.PICS_FLAG_CHANGE_EMAIL, data);
 
-        Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
-        if (MapUtils.isNotEmpty(amMap)) {
-            for (String accountMgr : amMap.keySet()) {
-                if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
-                    List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
-                    sendFlagChangesEmail(accountMgr, flagChanges);
+            Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
+            if (MapUtils.isNotEmpty(amMap)) {
+                for (String accountMgr : amMap.keySet()) {
+                    if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
+                        List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
+                        sendFlagChangesEmail(accountMgr, flagChanges);
+                    }
                 }
             }
+        } catch (SQLException e) {
+        } catch (EmailBuildErrorException e) {
+        } catch (IOException e) {
         }
         return results;
     }

@@ -33,7 +33,9 @@ public class EmailDelinquentContractorsTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        cron = new EmailDelinquentContractors(contractorAccountDAO, emailQueueDAO);
+        cron = new EmailDelinquentContractors();
+        cron.contractorAccountDAO = contractorAccountDAO;
+        cron.emailQueueDAO = emailQueueDAO;
     }
 
     @Test

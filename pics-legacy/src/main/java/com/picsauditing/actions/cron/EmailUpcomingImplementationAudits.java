@@ -24,7 +24,7 @@ public class EmailUpcomingImplementationAudits implements CronTask {
         return null;
     }
 
-    public CronTaskResult run() throws Exception {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 7);
