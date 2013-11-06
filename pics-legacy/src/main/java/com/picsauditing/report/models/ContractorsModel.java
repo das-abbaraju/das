@@ -1,5 +1,6 @@
 package com.picsauditing.report.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -7,9 +8,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.jpa.entities.SupplierDiversity;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
+import com.picsauditing.search.SelectCase;
+import com.picsauditing.util.Strings;
 
 public class ContractorsModel extends AbstractModel {
 
@@ -160,14 +164,32 @@ public class ContractorsModel extends AbstractModel {
         reportingClient.setSuffixValue("");
         fields.put(reportingClient.getName().toUpperCase(), reportingClient);
 
-        Field supplierDiversity = new Field("ContractorSupplierDiversity","ContractorPQF.id",FieldType.SupplierDiversity);
-        supplierDiversity.setVisible(false);
-        supplierDiversity.setPrefixValue("SELECT pd.auditID " +
+        Field supplierDiversityFilter = new Field("ContractorSupplierDiversity","ContractorPQF.id",FieldType.SupplierDiversity);
+        supplierDiversityFilter.setVisible(false);
+        supplierDiversityFilter.setPrefixValue("SELECT pd.auditID " +
                 "FROM pqfdata pd " +
                 "WHERE (pd.answer = 'X' OR pd.answer = 'Yes') AND questionID IN ");
-        supplierDiversity.setSuffixValue("");
-        supplierDiversity.setRequiredJoin("ContractorPQF");
-        fields.put(supplierDiversity.getName().toUpperCase(), supplierDiversity);
+        supplierDiversityFilter.setSuffixValue("");
+        supplierDiversityFilter.setRequiredJoin("ContractorPQF");
+        fields.put(supplierDiversityFilter.getName().toUpperCase(), supplierDiversityFilter);
+
+        SelectCase supplierDiversityCase = new SelectCase();
+        List<Integer> supplierDiversityQuestions = new ArrayList<>();
+        for (SupplierDiversity supplierDiversity : SupplierDiversity.values()) {
+            supplierDiversityCase.addCondition("pd.questionID = " + supplierDiversity.getValue(), "'" + supplierDiversity + "'");
+            supplierDiversityQuestions.add(supplierDiversity.getValue());
+        }
+
+        Field supplierDiversityColumn = new Field("ContractorSupplierDiversityColumn","(SELECT GROUP_CONCAT(" + supplierDiversityCase.toString() +
+                " ORDER BY pd.questionID SEPARATOR ', ') " +
+                "FROM contractor_audit ca " +
+                "JOIN pqfdata pd ON ca.id = pd.auditID AND pd.questionID IN (" + Strings.implode(supplierDiversityQuestions) + ") AND (pd.answer = 'X' OR pd.answer = 'Yes') " +
+                "WHERE Contractor.id = ca.conID)",FieldType.SupplierDiversity);
+        supplierDiversityColumn.setFilterable(false);
+        supplierDiversityColumn.setRequiredJoin("ContractorPQF");
+        supplierDiversityColumn.setSeparator(", ");
+        supplierDiversityColumn.setTranslationPrefixAndSuffix("Filters.status"," ");
+        fields.put(supplierDiversityColumn.getName().toUpperCase(), supplierDiversityColumn);
 
         Field worksPeriodicIn = new Field("ContractorWorksPeriodicIn","ContractorPQF.id",FieldType.CountrySubdivision);
         worksPeriodicIn.setVisible(false);
