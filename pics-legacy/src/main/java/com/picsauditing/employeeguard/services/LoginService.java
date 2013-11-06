@@ -18,19 +18,26 @@ public class LoginService {
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
 
 	public JSONObject loginViaRest(String username, String password) {
-		Client client = Client.create(new DefaultClientConfig());
-		String uri = authenticateByCredentialsLink(username, password);
-		WebResource webResource = client.resource(UriBuilder.fromUri(uri).build());
-		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-		String jsonString = response.getEntity(String.class);
-		return (JSONObject) JSONValue.parse(jsonString);
-	}
-
-	private String authenticateByCredentialsLink(String username, String password) {
-		return requestHost() + "/AuthService!authenticateByCredentials.action" +
-				"?apiKey=" + key +
+		String path = "/AuthService!authenticateByCredentials.action";
+		String query = "?apiKey=" + key +
 				"&username=" + username +
 				"&password=" + password;
+
+		return (JSONObject) JSONValue.parse(callRESTService(path, query));
+	}
+
+	private String callRESTService(String path, String query) {
+		String host = requestHost();
+		UriBuilder uriBuilder = UriBuilder.fromPath(path);
+		uriBuilder.replaceQuery(query);
+		uriBuilder.host(host);
+		uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
+		uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
+
+		Client client = Client.create(new DefaultClientConfig());
+		WebResource webResource = client.resource(uriBuilder.build());
+		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
+		return response.getEntity(String.class);
 	}
 
 	private String requestHost() {
