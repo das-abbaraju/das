@@ -8,6 +8,7 @@ public class ProfileForm {
 	private String password;
 	private String firstName;
 	private String lastName;
+    private boolean tos;      // checkbox for Terms of Service
 
 	public String getEmail() {
 		return email;
@@ -49,7 +50,15 @@ public class ProfileForm {
 		this.lastName = lastName;
 	}
 
-	public Profile buildProfile(int userId) {
+    public boolean isTos() {
+        return tos;
+    }
+
+    public void setTos(boolean tos) {
+        this.tos = tos;
+    }
+
+    public Profile buildProfile(int userId) {
 		Profile profile = new Profile();
 		profile.setFirstName(firstName);
 		profile.setLastName(lastName);

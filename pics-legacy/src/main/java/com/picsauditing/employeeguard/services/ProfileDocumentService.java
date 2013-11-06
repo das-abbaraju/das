@@ -58,12 +58,28 @@ public class ProfileDocumentService {
 		return profileDocumentDAO.save(newProfileDocument);
 	}
 
-	public ProfileDocument update(String documentId, int profileId, ProfileDocument updatedProfileDocument, int appUserId) {
-		ProfileDocument profileDocumentFromDatabase = profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
+	public ProfileDocument update(String documentId, int profileId, ProfileDocument updatedProfileDocument,
+                                  int appUserId, File file, String filename, String directory) throws Exception {
+		ProfileDocument profileDocumentFromDatabase =
+                profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
 		profileDocumentFromDatabase.setEndDate(updatedProfileDocument.getEndDate());
 		profileDocumentFromDatabase.setName(updatedProfileDocument.getName());
+        profileDocumentFromDatabase.setFileName(updatedProfileDocument.getFileName());
+        profileDocumentFromDatabase.setFileType(updatedProfileDocument.getFileType());
+        profileDocumentFromDatabase.setFileSize(updatedProfileDocument.getFileSize());
+        profileDocumentFromDatabase.setDocumentType(updatedProfileDocument.getDocumentType());
 
 		EntityHelper.setUpdateAuditFields(profileDocumentFromDatabase, appUserId, new Date());
+
+        profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
+
+        Profile profile = profileDocumentFromDatabase.getProfile();
+
+        String extension = FileUtils.getExtension(filename).toLowerCase();
+        filename = PICSFileType.profile_certificate.filename(profile.getId()) + "-" + profileDocumentFromDatabase.getId();
+        FileUtils.moveFile(file, directory, "files/" + FileUtils.thousandize(profile.getId()), filename, extension, true);
+
+        profileDocumentFromDatabase.setFileName(filename + "." + extension);
 
 		return profileDocumentDAO.save(profileDocumentFromDatabase);
 	}

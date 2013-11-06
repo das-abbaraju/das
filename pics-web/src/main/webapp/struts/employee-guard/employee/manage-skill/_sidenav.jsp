@@ -2,19 +2,23 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-<nav id="side-navigation" class="navbar" role="navigation" data-spy="affix">
-    <ul class="nav" role="menu">
-        <li class="active">
-            <a href="#">All</a>
-        </li>
-        <li class="nav-divider"></li>
-        <s:iterator var="company_skill_info" value="companySkillInfoList">
-            <li>
-                <a href="#">${company_skill_info.accountModel.name}</a>
+<div class="bs-sidebar">
+    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
+        <ul class="nav" role="menu">
+            <li class="active">
+                <a href="#" data-filter="none">All</a>
             </li>
-        </s:iterator>
-    </ul>
-</nav>
+            <li class="nav-divider"></li>
+            <s:iterator var="company_skill_info" value="companySkillInfoList" status="loopvar">
+                <li>
+                    <a href="#" data-filter="section${loopvar.count}">${company_skill_info.accountModel.name}</a>
+                </li>
+            </s:iterator>
+        </ul>
+    </nav>
+</div>
+
+
 <%--
 <nav id="side-navigation" class="navbar" role="navigation" data-spy="affix">
     <ul class="nav" role="menu">

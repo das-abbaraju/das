@@ -4,13 +4,17 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.employeeguard.forms.ProfileForm;
 import com.picsauditing.employeeguard.validators.AbstractValidator;
+import com.picsauditing.validator.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProfileFormValidator extends AbstractValidator<ProfileForm> {
-	public static final String PROFILE_FORM = "personalInfo";
+
+	public static final String PROFILE_FORM = "profileForm";
 
 	@Autowired
 	private AppUserService appUserService;
+    @Autowired
+    private InputValidator inputValidator;
 
 	@Override
 	protected ProfileForm getFormFromValueStack(ValueStack valueStack) {
@@ -26,6 +30,10 @@ public class ProfileFormValidator extends AbstractValidator<ProfileForm> {
 		if (!ProfileValidationUtil.valid(profileForm, ProfileValidationUtil.ProfileField.LAST_NAME)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "lastName"), "Last name is missing");
 		}
+
+        if (!profileForm.isTos()) {
+            addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "tos"), "You must agree to the Terms of Service to Signup for EmployeeGUARD.");
+        }
 
 		performValidationOnEmail(profileForm);
 
@@ -45,6 +53,11 @@ public class ProfileFormValidator extends AbstractValidator<ProfileForm> {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "emailRetype"), "Re-entered email is missing or does not match");
 			emailValidationFails = true;
 		}
+
+        if (!InputValidator.NO_ERROR.equals(inputValidator.validateEmail(profileForm.getEmail()))) {
+            addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Invalid email format");
+            emailValidationFails = true;
+        }
 
 		if (!emailValidationFails && !appUserService.isUserNameAvailable(profileForm.getEmail())) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Email is already used");

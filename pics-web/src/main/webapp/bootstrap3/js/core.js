@@ -25,7 +25,7 @@ if (typeof console === "undefined"){
     window.console = {};
     window.console.log = function(){};
 }
-window.log=function(){log.history=log.history||[];log.history.push(arguments);if(this.console){console.log(Array.prototype.slice.call(arguments))}};
+window.log=function(){log.history=log.history||[];log.history.push(arguments);if(window.console){console.log(Array.prototype.slice.call(arguments))}};
 
 (function checkNumberofStylesheets() {
     $(document).ready(function () {

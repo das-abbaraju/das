@@ -44,6 +44,21 @@ public class ProfileDocumentBuilder {
         return this;
     }
 
+    public ProfileDocumentBuilder fileName(String filename) {
+        profileDocument.setFileName(filename);
+        return this;
+    }
+
+    public ProfileDocumentBuilder fileType(String fileType) {
+        profileDocument.setFileType(fileType);
+        return this;
+    }
+
+    public ProfileDocumentBuilder fileSize(int fileSize) {
+        profileDocument.setFileSize(fileSize);
+        return this;
+    }
+
     public ProfileDocument build() {
         return profileDocument;
     }

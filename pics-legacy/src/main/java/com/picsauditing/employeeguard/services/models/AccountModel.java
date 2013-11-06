@@ -48,4 +48,8 @@ public final class AccountModel {
             return new AccountModel(this);
         }
     }
+
+	public boolean isCorporate() {
+		return accountType == AccountType.CORPORATE;
+	}
 }

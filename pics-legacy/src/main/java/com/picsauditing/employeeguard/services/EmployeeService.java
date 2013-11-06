@@ -54,6 +54,10 @@ public class EmployeeService {
 		return employeeDAO.findByAccount(accountId);
 	}
 
+	public List<Employee> getEmployeesForAccounts(final List<Integer> accountIds) {
+		return employeeDAO.findByAccounts(accountIds);
+	}
+
 	public Employee save(Employee employee, final int accountId, final int appUserId) throws Exception {
 		Date now = new Date();
 

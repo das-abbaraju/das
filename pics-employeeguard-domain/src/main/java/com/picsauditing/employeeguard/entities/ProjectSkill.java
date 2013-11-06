@@ -1,16 +1,19 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Date;
 
 @Entity
 @Table(name = "project_account_skill")
 @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
-// TODO insert/update sql
+@SQLInsert(sql = "INSERT INTO project_account_skill (createdBy, createdDate, deletedBy, deletedDate, projectID, skillID, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 public class ProjectSkill implements BaseEntity {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@ManyToOne
@@ -33,6 +36,14 @@ public class ProjectSkill implements BaseEntity {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
+
+	public ProjectSkill() {
+	}
+
+	public ProjectSkill(Project project, AccountSkill skill) {
+		this.project = project;
+		this.skill = skill;
+	}
 
 	@Override
 	public int getId() {
@@ -119,4 +130,47 @@ public class ProjectSkill implements BaseEntity {
 	public void setDeletedDate(Date deletedDate) {
 		this.deletedDate = deletedDate;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ProjectSkill that = (ProjectSkill) o;
+
+		if (project != null ? !project.equals(that.project) : that.project != null) return false;
+		if (skill != null ? !skill.equals(that.skill) : that.skill != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = project.getId();
+		result = 31 * result + (skill != null ? skill.hashCode() : 0);
+		return result;
+	}
+
+	public static transient final Comparator<ProjectSkill> COMPARATOR = new Comparator<ProjectSkill>() {
+		@Override
+		public int compare(ProjectSkill o1, ProjectSkill o2) {
+			if (o1 == null && o2 == null) {
+				return 0;
+			}
+
+			if (areEqual(o1, o2)) {
+				return 0;
+			}
+
+			if (!o1.getSkill().equals(o2.getSkill())) {
+				return -1;
+			}
+
+			return 1;
+		}
+
+		private boolean areEqual(ProjectSkill o1, ProjectSkill o2) {
+			return (o1.getProject().equals(o2.getProject())) && o1.getSkill().equals(o2.getSkill());
+		}
+	};
 }

@@ -12,7 +12,7 @@
         <s:set var="selected_employees" value="group.employees"/>
 
         <div class="form-group">
-            <tw:select selectName="employees" multiple="true" class="form-control" autofocus="true" tabindex="1">
+            <tw:select selectName="employees" multiple="true" class="form-control select2" autofocus="true" tabindex="1">
                 <s:iterator value="groupEmployees" var="contractor_employee">
                     <s:set var="is_selected" value="false"/>
                     <s:iterator value="#selected_employees" var="selected_employee">

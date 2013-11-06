@@ -21,8 +21,7 @@
 <tw:form formName="contractor_group_search" action="${contractor_group_list_url}" class="search-query" role="form">
     <fieldset>
         <div class="search-wrapper col-md-4">
-            <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search by name"
-                      value="${searchForm.searchTerm}"/>
+            <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search Employee Groups" value="${searchForm.searchTerm}"/>
             <i class="icon-search"></i>
             <ul id="contractor_group_search" class="search-results"></ul>
         </div>

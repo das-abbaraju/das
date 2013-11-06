@@ -12,9 +12,9 @@ import com.picsauditing.employeeguard.forms.factory.EmployeeProfileEditFormBuild
 import com.picsauditing.employeeguard.forms.factory.EmployeeProfileFormBuilder;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.ProfileDocumentServiceFactory;
 import com.picsauditing.employeeguard.services.ProfileService;
-import com.picsauditing.employeeguard.services.ProfileServiceFactory;
+import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
+import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

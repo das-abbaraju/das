@@ -81,7 +81,7 @@ public class PhotoUtil {
 	}
 
 	public String getFilePath(final String directory, int id, String filename, String extention) {
-		return directory + "/files/" + fileSystemAccessor.thousandize(id) + filename + "." + extention;
+		return directory + "/files/" + fileSystemAccessor.thousandize(id) + filename + ((Strings.isEmpty(extention)) ? "" : ("." + extention));
 	}
 
 	public boolean isValidExtension(final String extension) {

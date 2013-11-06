@@ -1,6 +1,10 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
+import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
@@ -9,23 +13,27 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.validators.group.GroupFormValidator;
+import com.picsauditing.employeeguard.validators.group.RoleFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
+import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
 
-public class RoleAction extends PicsRestActionSupport {
+public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 
 	private static final long serialVersionUID = -7045370359496904122L;
 
 	/* Service + Validator */
+	@Autowired
+	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -33,7 +41,7 @@ public class RoleAction extends PicsRestActionSupport {
 	@Autowired
 	private SkillService skillService;
 	@Autowired
-	private GroupFormValidator roleFormValidator;
+	private RoleFormValidator roleFormValidator;
 
 	/* Forms */
 	@FormBinding("operator_role_create")
@@ -53,11 +61,13 @@ public class RoleAction extends PicsRestActionSupport {
 
 	/* Pages */
 	public String index() {
+		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
+
 		if (isSearch(getSearchForm())) {
 			String searchTerm = getSearchForm().getSearchTerm();
-			roles = roleService.search(searchTerm, permissions.getAccountId());
+			roles = roleService.search(searchTerm, accountIds);
 		} else {
-			roles = roleService.getGroupsForAccount(permissions.getAccountId());
+			roles = roleService.getGroupsForAccounts(accountIds);
 		}
 
 		Collections.sort(roles);
@@ -76,20 +86,6 @@ public class RoleAction extends PicsRestActionSupport {
 		loadEmployees();
 
 		return CREATE;
-	}
-
-	public String edit() throws PageNotFoundException {
-		loadRole();
-		roleForm = new OperatorJobRoleForm.Builder().accountGroup(role).build();
-		loadSkills();
-		loadEmployees();
-
-		return EDIT;
-	}
-
-	@SkipValidation
-	public String deleteConfirmation() {
-		return "delete-confirmation";
 	}
 
 	@SkipValidation
@@ -143,7 +139,12 @@ public class RoleAction extends PicsRestActionSupport {
 	}
 
 	private void loadRole() {
-		role = roleService.getGroup(id, permissions.getAccountId());
+		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
+
+		AccountGroup roleById = roleService.getGroup(id);
+		if (accountIds.contains(roleById.getAccountId())) {
+			role = roleById;
+		}
 	}
 
 	private void loadSkills() {
@@ -153,6 +154,23 @@ public class RoleAction extends PicsRestActionSupport {
 	private void loadEmployees() {
 		roleEmployees = employeeService.getEmployeesForAccount(permissions.getAccountId());
 	}
+
+	/* validation */
+
+	@Override
+	public Validator getCustomValidator() {
+		return roleFormValidator;
+	}
+
+	@Override
+	public void validate() {
+		ValueStack valueStack = ActionContext.getContext().getValueStack();
+		DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
+
+		roleFormValidator.validate(valueStack, validatorContext);
+	}
+
+	/* getters and setters */
 
 	public SearchForm getSearchForm() {
 		return searchForm;
@@ -216,13 +234,5 @@ public class RoleAction extends PicsRestActionSupport {
 
 	public void setRoleEmployeesForm(GroupEmployeesForm roleEmployeesForm) {
 		this.roleEmployeesForm = roleEmployeesForm;
-	}
-
-	public String getDisplayName() {
-		if (role != null) {
-			return role.getName();
-		}
-
-		return null;
 	}
 }

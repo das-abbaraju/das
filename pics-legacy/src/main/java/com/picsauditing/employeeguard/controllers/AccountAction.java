@@ -5,6 +5,7 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.PageNotFoundException;
+import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.EmailHash;
@@ -17,13 +18,14 @@ import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.validators.profile.ProfileFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.security.EncodedMessage;
+import com.picsauditing.validator.Validator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.FailedLoginException;
 
-public class AccountAction extends PicsRestActionSupport {
+public class AccountAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final long serialVersionUID = -3897271223264803860L;
 
 	@Autowired
@@ -95,6 +97,11 @@ public class AccountAction extends PicsRestActionSupport {
 			return setUrlForRedirect("/employee-guard/employee/dashboard");
 		}
 	}
+
+    @Override
+    public Validator getCustomValidator() {
+        return profileFormValidator;
+    }
 
 	@Override
 	public void validate() {

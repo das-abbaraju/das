@@ -11,8 +11,8 @@ public class SkillForm implements AddAnotherForm {
 	private SkillType skillType;
 	boolean required;
 	// Defaults?
-	private IntervalType intervalType = IntervalType.NOT_APPLICABLE;
-	private int intervalPeriod;
+	private IntervalType intervalType = IntervalType.YEAR;
+	private int intervalPeriod = 1;
 	boolean doesNotExpire;
 	boolean addAnother;
 
@@ -94,11 +94,21 @@ public class SkillForm implements AddAnotherForm {
 	}
 
 	public AccountSkill buildAccountSkill() {
+		if (doesNotExpire) {
+			intervalType = IntervalType.NO_EXPIRATION;
+			intervalPeriod = 0;
+		}
+
 		return new AccountSkillBuilder().name(name).description(description).skillType(skillType).required(required)
 				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).build();
 	}
 
 	public AccountSkill buildAccountSkill(int id, int accountId) {
+		if (doesNotExpire) {
+			intervalType = IntervalType.NO_EXPIRATION;
+			intervalPeriod = 0;
+		}
+
 		return new AccountSkillBuilder(id, accountId).name(name).description(description).skillType(skillType).required(required)
 				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).build();
 	}

@@ -19,6 +19,7 @@
     <s:param name="actions">
 		<button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Employee Group</button>
     </s:param>
+    <s:param name="breadcrumb_name">${group.name}</s:param>
 </s:include>
 
 <%-- Delete Confirmation --%>

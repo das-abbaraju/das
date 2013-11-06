@@ -82,23 +82,6 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		return CREATE;
 	}
 
-	public String edit() throws Exception {
-		loadSkill();
-		loadGroups();
-		skillForm = new SkillForm.Builder().accountSkill(skill).build();
-
-		if (AjaxUtils.isAjax(this.getRequest())) {
-			return "edit-form";
-		}
-
-		return EDIT;
-	}
-
-	@SkipValidation
-	public String deleteConfirmation() {
-		return "delete-confirmation";
-	}
-
 	@SkipValidation
 	public String editSkillSection() {
 		if (skillForm == null) {
@@ -216,13 +199,5 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 
 	public IntervalType[] getIntervalTypes() {
 		return IntervalType.getDisplayableOptions();
-	}
-
-	public String getDisplayName() {
-		if (skill != null) {
-			return skill.getName();
-		}
-
-		return null;
 	}
 }

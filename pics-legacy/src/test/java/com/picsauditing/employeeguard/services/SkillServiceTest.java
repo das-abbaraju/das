@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -82,16 +83,8 @@ public class SkillServiceTest {
 
         skillService.delete(Integer.toString(DELETE_SKILL_ID), ACCOUNT_ID, APP_USER_ID);
 
-        verifySkillServiceDelete(accountSkill);
-    }
-
-    private void verifySkillServiceDelete(AccountSkill accountSkill) {
         assertEquals(APP_USER_ID, accountSkill.getDeletedBy());
         assertNotNull(accountSkill.getDeletedDate());
-
-//        assertEquals(APP_USER_ID, accountSkill.getGroups().get(0).getDeletedBy());
-//        assertNotNull(accountSkill.getGroups().get(0).getDeletedDate());
-
         verify(accountSkillDAO).save(accountSkill);
     }
 

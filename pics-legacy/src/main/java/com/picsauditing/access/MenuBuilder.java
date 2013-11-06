@@ -5,7 +5,9 @@ import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
@@ -13,6 +15,7 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +46,11 @@ public final class MenuBuilder {
 			buildNotLoggedInMenubar(menubar);
 		} else {
 			if (permissions.getUserId() > 0) {
-				buildPICSMenu(permissions, favoriteReports, menubar);
+				if (inEmployeeMode()) {
+					buildEGMenubar(menubar, permissions);
+				} else {
+					buildPICSMenu(permissions, favoriteReports, menubar);
+				}
 			} else if (permissions.getAppUserID() > 0) {
 				buildEGMenubar(menubar, permissions);
 			}
@@ -388,7 +395,14 @@ public final class MenuBuilder {
 			manageMenu.addChild("QuickBooks Sync Edit", "QBSyncEdit.action", "QuickBooksSyncEdit");
 		}
 
-		// Fixme Remove when no longer needed!
+		if (permissions.isOperatorCorporate()) {
+			AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
+			if (accountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
+				manageMenu.addChild("EmployeeGUARD", "/employee-guard/operator/dashboard");
+			}
+		}
+
+		// FIXME Remove when no longer needed!
 		if (permissions.isOperatorCorporate() && permissions.getAccountStatus().isDemo()) {
 			manageMenu.addChild("Request Company", "RequestNewContractorAccount.action", "RequestNewContractorAccount");
 		}
@@ -532,6 +546,12 @@ public final class MenuBuilder {
 		FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
 		if (featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
 			userMenu.addChild(getText("Menu.SwitchToVersion6"), "ProfileEdit!version6Menu.action?u=" + permissions.getUserId(), "switch_to_v6");
+
+			if (isBothEGandPOUser(permissions)) {
+				if (inAdminMode()) {
+					userMenu.addChild(getText("Menu.SwitchToEmployeeMode"), "employee-guard/employee/dashboard", "");
+				}
+			}
 		}
 
 		if (switchedToAnotherUser(permissions)) {
@@ -539,6 +559,50 @@ public final class MenuBuilder {
 		}
 
 		userMenu.addChild(getText("Header.Logout"), "Login.action?button=logout", "logout");
+	}
+
+	private static boolean isBothEGandPOUser(Permissions permissions) {
+		int appUserID = permissions.getAppUserID();
+		return permissions.getUserId() > 0 && isEmployeeGUARDUser(appUserID);
+	}
+
+	private static boolean isPicsOrgUser(int appUserID) {
+		UserService userService = SpringUtils.getBean("UserService");
+		return userService.findByAppUserId(appUserID) != null;
+	}
+
+	private static boolean isPicsOrgUser(Permissions permissions) {
+		return permissions.getUserId() > 0;
+	}
+
+	private static boolean isEmployeeGUARDUser(int appUserID) {
+		ProfileService profileService = SpringUtils.getBean("ProfileService");
+		return profileService.findByAppUserId(appUserID) != null;
+	}
+
+	private static boolean inAdminMode() {
+		return !ServletActionContext.getRequest().getRequestURI().contains("employee-guard");
+	}
+
+	private static boolean inEmployeeMode() {
+		return ServletActionContext.getRequest().getRequestURI().contains("employee-guard/employee");
+	}
+
+	private static boolean isOfPicsOrgAccountType(AccountType accountType, Permissions permissions) {
+		if (isPicsOrgUser(permissions.getAppUserID())) {
+			return accountType == getPicsOrgAccountType(permissions);
+		}
+
+		return false;
+	}
+
+	private static AccountType getPicsOrgAccountType(Permissions permissions) {
+		if (isPicsOrgUser(permissions.getAppUserID())) {
+			AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
+			return accountService.getAccountTypeByUserID(permissions.getUserId());
+		}
+
+		return null;
 	}
 
 	private static boolean switchedToAnotherUser(Permissions permissions) {

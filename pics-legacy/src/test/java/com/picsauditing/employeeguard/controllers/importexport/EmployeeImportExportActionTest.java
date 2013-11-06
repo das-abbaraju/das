@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.controllers.importexport;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.EmployeeServiceFactory;
+import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.web.UrlBuilder;

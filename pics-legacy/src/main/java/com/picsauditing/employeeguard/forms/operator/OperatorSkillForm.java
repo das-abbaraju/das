@@ -11,8 +11,8 @@ public class OperatorSkillForm implements AddAnotherForm {
 	private SkillType skillType;
 	boolean required;
 	// Defaults?
-	private IntervalType intervalType = IntervalType.NOT_APPLICABLE;
-	private int intervalPeriod;
+	private IntervalType intervalType = IntervalType.YEAR;
+	private int intervalPeriod = 1;
 	boolean doesNotExpire;
 	boolean addAnother;
 

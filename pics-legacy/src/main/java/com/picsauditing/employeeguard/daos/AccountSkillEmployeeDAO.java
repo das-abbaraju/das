@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +102,38 @@ public class AccountSkillEmployeeDAO extends BaseEntityDAO<AccountSkillEmployee>
 
 		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee.profile = :profile", AccountSkillEmployee.class);
 		query.setParameter("profile", profile);
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> findByEmployeeAccount(final int accountId) {
+		if (accountId == 0) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee.accountId = :accountId", AccountSkillEmployee.class);
+		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> findByEmployeesAndSkills(final List<Employee> employees, final List<AccountSkill> accountSkills) {
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(accountSkills)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee IN (:employees) AND ase.skill IN (:skills)", AccountSkillEmployee.class);
+		query.setParameter("employees", employees);
+		query.setParameter("skills", accountSkills);
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> findByEmployeeAccountAndSkills(final int accountId, final List<AccountSkill> accountSkills) {
+		if (accountId == 0 || CollectionUtils.isEmpty(accountSkills)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee.accountId = :accountId AND ase.skill IN :skills", AccountSkillEmployee.class);
+		query.setParameter("accountId", accountId);
+		query.setParameter("skills", accountSkills);
 		return query.getResultList();
 	}
 }

@@ -15,6 +15,7 @@
 </s:url>
 <%--<s:url action="profile/settings" var="employee_profile_settings_url" />--%>
 <s:url action="skills" var="employee_skills_list_url" />
+<s:url action="file" var="employee_file_list_url" />
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
@@ -40,6 +41,9 @@
         </li>
         <li>
             <a href="${employee_profile_show_url}"><i class="icon-user"></i> Profile</a>
+        </li>
+        <li>
+            <a href="${employee_file_list_url}"><i class="icon-picture"></i> My Files</a>
         </li>
 <%--         <li>
             <a href="${employee_profile_settings_url}"><i class="icon-cog"></i> Settings</a>

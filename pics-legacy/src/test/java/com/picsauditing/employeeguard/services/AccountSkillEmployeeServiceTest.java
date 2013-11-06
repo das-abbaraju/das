@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.entities.IntervalType;
 import com.picsauditing.employeeguard.entities.SkillType;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
+import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

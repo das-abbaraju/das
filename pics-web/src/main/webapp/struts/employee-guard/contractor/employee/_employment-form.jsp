@@ -27,7 +27,7 @@
     <div class="form-group">
         <tw:label labelName="groups" class="col-md-3 control-label">Employee Groups</tw:label>
         <div class="col-md-4">
-            <tw:select selectName="groups" multiple="true" class="form-control" tabindex="3">
+            <tw:select selectName="groups" multiple="true" class="form-control select2" tabindex="3">
                 <s:iterator value="employeeGroups" var="contractor_group">
                     <s:set var="is_selected" value="false"/>
                     <s:iterator value="#selected_groups" var="selected_group">

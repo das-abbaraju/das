@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-<s:set var="edit_method" value="%{skillDocumentForm.skillInfo.skillType.training ? 'training' : 'certification'}" />
+<s:set var="edit_method" value="%{skillDocumentForm.skillInfo.skillType.training ? 'training' : 'file'}" />
 <s:url action="skill" method="%{#edit_method}" var="edit_employee_skill_url">
     <s:param name="id">${id}</s:param>
 </s:url>
@@ -10,6 +10,7 @@
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Skill: ${skillDocumentForm.skillInfo.name}</s:param>
+    <s:param name="breadcrumb_name">${skillDocumentForm.skillInfo.name}</s:param>
 </s:include>
 
 <div class="row">
@@ -38,7 +39,7 @@
             <p class="description">${skillDocumentForm.skillInfo.description}</p>
 
             <dl class="employee-guard-information edit-display-values">
-                <dt class="col-md-3">Proof</dt>
+                <dt class="col-md-3">File</dt>
                 <dd class="col-md-9">${skillDocumentForm.proof}</dd>
                 <dt class="col-md-3">Expires</dt>
                 <dd class="col-md-9">

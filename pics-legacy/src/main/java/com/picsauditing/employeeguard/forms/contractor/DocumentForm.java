@@ -94,7 +94,8 @@ public class DocumentForm implements AddAnotherForm {
 		    endDate = ProfileDocument.END_OF_TIME;
 	    }
 
-        return new ProfileDocumentBuilder().name(name).endDate(endDate).build();
+        return new ProfileDocumentBuilder().name(name).fileName(fileFileName).fileType(fileContentType)
+                .fileSize(file == null ? 0 : (int) file.length()).endDate(endDate).build();
     }
 
     @Override

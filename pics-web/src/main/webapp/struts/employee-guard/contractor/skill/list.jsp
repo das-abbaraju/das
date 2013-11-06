@@ -20,7 +20,7 @@
 <tw:form formName="contractor_skill_search" action="${contractor_skill_list_url}" class="search-query" role="form">
     <fieldset>
         <div class="search-wrapper col-md-4">
-            <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search by name" value="${searchForm.searchTerm}" />
+            <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search Skills" value="${searchForm.searchTerm}" />
             <i class="icon-search"></i>
             <ul id="contractor_skill_search" class="search-results"></ul>
     </fieldset>

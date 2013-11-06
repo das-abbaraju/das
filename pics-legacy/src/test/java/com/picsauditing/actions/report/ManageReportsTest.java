@@ -1,25 +1,5 @@
 package com.picsauditing.actions.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserService;
@@ -33,6 +13,22 @@ import com.picsauditing.service.ReportFavoriteInfoConverter;
 import com.picsauditing.service.ReportPreferencesService;
 import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ManageReportsTest extends PicsTranslationTest {
 
@@ -100,7 +96,7 @@ public class ManageReportsTest extends PicsTranslationTest {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 		reportUsers.add(new ReportUser());
 		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
+		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER_VALUE);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		String result = manageReports.favorites();
@@ -137,7 +133,7 @@ public class ManageReportsTest extends PicsTranslationTest {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 		reportUsers.add(new ReportUser());
 		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
+		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER_VALUE);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		String result = manageReports.search();
@@ -161,7 +157,7 @@ public class ManageReportsTest extends PicsTranslationTest {
 	@Test
 	public void testSearchList_AjaxDoesntLeaveReportUsersNull() {
 		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
-		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
+		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER_VALUE);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.search();

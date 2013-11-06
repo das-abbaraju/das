@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.controllers;
 
 import com.picsauditing.breadcrumb.Breadcrumb;
+import com.picsauditing.breadcrumb.BreadcrumbCache;
 import com.picsauditing.breadcrumb.BreadcrumbPathBuilder;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.util.Strings;
@@ -66,6 +67,7 @@ public class BreadcrumbAction extends PicsRestActionSupport {
 			}
 
 			breadcrumbs = BreadcrumbPathBuilder.getBreadcrumbs(requestUri);
+			BreadcrumbCache.getInstance().clear();
 		}
 
 		return breadcrumbs;

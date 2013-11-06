@@ -120,11 +120,6 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	@SkipValidation
-	public String deleteConfirmation() {
-		return "delete-confirmation";
-	}
-
-	@SkipValidation
 	public String editPersonalSection() {
 		loadEmployee();
 
@@ -326,14 +321,6 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	public Table<Employee, String, Integer> getEmployeeSkillStatuses() {
 		return employeeSkillStatuses;
-	}
-
-	public String getDisplayName() {
-		if (employee != null) {
-			return employee.getName();
-		}
-
-		return null;
 	}
 
 	public List<SkillInfo> getSkillInfoList() {

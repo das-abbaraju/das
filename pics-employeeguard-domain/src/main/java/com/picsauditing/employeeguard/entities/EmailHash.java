@@ -12,9 +12,11 @@ public class EmailHash {
 	@Id
 	private int id;
 	private String hash;
+
 	@ManyToOne
 	@JoinColumn(name = "account_employeeID")
 	private SoftDeletedEmployee employee;
+
 	private String emailAddress;
 	private Date creationDate;
 	private Date expirationDate;

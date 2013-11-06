@@ -44,7 +44,7 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 
 	private String fileName;
 	private String fileType;
-	private int fileSize;
+	private int fileSize; // TODO: We may want to change this to a long
 
 	private int createdBy;
 	private int updatedBy;

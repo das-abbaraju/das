@@ -1,17 +1,24 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
+import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.IntervalType;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.validators.skill.SkillFormValidator;
+import com.picsauditing.employeeguard.validators.skill.OperatorSkillFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.web.UrlBuilder;
+import com.picsauditing.validator.Validator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +26,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 
-public class SkillAction extends PicsRestActionSupport {
+public class SkillAction extends PicsRestActionSupport implements AjaxValidator {
 
 
 	/* Service + Validator */
+	@Autowired
+	private AccountService accountService;
 	@Autowired
 	private GroupService roleService;
 	@Autowired
 	private SkillService skillService;
 	@Autowired
-	private SkillFormValidator skillFormValidator;
+	private OperatorSkillFormValidator operatorSkillFormValidator;
 
 	/* Forms */
 	@FormBinding({"operator_skill_create", "operator_skill_edit"})
-	private OperatorSkillForm skillForm;
-	@FormBinding("")
+	private OperatorSkillForm operatorSkillForm;
+	@FormBinding("operator_skill_search")
 	private SearchForm searchForm;
 
 	/* Models */
@@ -43,11 +52,13 @@ public class SkillAction extends PicsRestActionSupport {
 
 	/* Pages */
 	public String index() {
+		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
+
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();
-			skills = skillService.search(searchTerm, permissions.getAccountId());
+			skills = skillService.search(searchTerm, accountIds);
 		} else {
-			skills = skillService.getSkillsForAccount(permissions.getAccountId());
+			skills = skillService.getSkillsForAccounts(accountIds);
 		}
 
 		Collections.sort(skills);
@@ -70,20 +81,13 @@ public class SkillAction extends PicsRestActionSupport {
 		return CREATE;
 	}
 
-	public String edit() throws Exception {
-		loadSkill();
-		skillForm = new OperatorSkillForm.Builder().accountSkill(skill).build();
-		loadRoles();
-
-		if (AjaxUtils.isAjax(this.getRequest())) {
-			return "edit-form";
-		}
-
-		return EDIT;
-	}
-
 	private void loadSkill() {
-		skill = skillService.getSkill(id, permissions.getAccountId());
+		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
+
+		AccountSkill skillById = skillService.getSkill(id);
+		if (accountIds.contains(skillById.getAccountId())) {
+			skill = skillById;
+		}
 	}
 
 	private void loadRoles() {
@@ -91,17 +95,12 @@ public class SkillAction extends PicsRestActionSupport {
 	}
 
 	@SkipValidation
-	public String deleteConfirmation() {
-		return "delete-confirmation";
-	}
-
-	@SkipValidation
 	public String editSkillSection() {
-		if (skillForm == null) {
+		if (operatorSkillForm == null) {
 			loadSkill();
-			skillForm = new OperatorSkillForm.Builder().accountSkill(skill).build();
+			operatorSkillForm = new OperatorSkillForm.Builder().accountSkill(skill).build();
 		} else {
-			skill = skillForm.buildAccountSkill();
+			skill = operatorSkillForm.buildAccountSkill();
 		}
 
 		loadRoles();
@@ -110,10 +109,10 @@ public class SkillAction extends PicsRestActionSupport {
 	}
 
 	public String insert() throws Exception {
-		skill = skillForm.buildAccountSkill();
+		skill = operatorSkillForm.buildAccountSkill();
 		skillService.save(skill, permissions.getAccountId(), permissions.getUserId());
 
-		if (addAnother(skillForm)) {
+		if (addAnother(operatorSkillForm)) {
 			return setUrlForRedirect("/employee-guard/operator/skill/create");
 		}
 
@@ -122,7 +121,7 @@ public class SkillAction extends PicsRestActionSupport {
 
 	public String update() throws Exception {
 		int accountId = permissions.getAccountId();
-		skill = skillForm.buildAccountSkill(NumberUtils.toInt(id), accountId);
+		skill = operatorSkillForm.buildAccountSkill(NumberUtils.toInt(id), accountId);
 		skill = skillService.update(skill, id, accountId, permissions.getUserId());
 
 		return setUrlForRedirect("/employee-guard/operator/skill/" + skill.getId());
@@ -139,15 +138,27 @@ public class SkillAction extends PicsRestActionSupport {
 		return setUrlForRedirect(url);
 	}
 
+	@Override
+	public Validator getCustomValidator() {
+		return operatorSkillFormValidator;
+	}
+
+	@Override
+	public void validate() {
+		ValueStack valueStack = ActionContext.getContext().getValueStack();
+		DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
+
+		operatorSkillFormValidator.validate(valueStack, validatorContext);
+	}
 
 	/* Form - Getters + Setters */
 
-	public OperatorSkillForm getSkillForm() {
-		return skillForm;
+	public OperatorSkillForm getOperatorSkillForm() {
+		return operatorSkillForm;
 	}
 
-	public void setSkillForm(OperatorSkillForm skillForm) {
-		this.skillForm = skillForm;
+	public void setOperatorSkillForm(OperatorSkillForm operatorSkillForm) {
+		this.operatorSkillForm = operatorSkillForm;
 	}
 
 	public SearchForm getSearchForm() {
@@ -172,11 +183,7 @@ public class SkillAction extends PicsRestActionSupport {
 		return roles;
 	}
 
-	public String getDisplayName() {
-		if (skill != null) {
-			return skill.getName();
-		}
-
-		return null;
+	public IntervalType[] getIntervalTypes() {
+		return IntervalType.getDisplayableOptions();
 	}
 }

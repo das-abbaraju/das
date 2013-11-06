@@ -64,4 +64,8 @@ public class UserService {
 		return false;
 	}
 
+	public User findByAppUserId(int appUserId) {
+		return userDAO.findUserByAppUserID(appUserId);
+	}
+
 }

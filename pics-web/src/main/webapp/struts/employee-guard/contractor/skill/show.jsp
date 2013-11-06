@@ -16,6 +16,7 @@
     <s:param name="actions">
         <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Skill</button>
     </s:param>
+    <s:param name="breadcrumb_name">${skill.name}</s:param>
 </s:include>
 
 <%-- Delete Confirmation --%>
@@ -45,7 +46,7 @@
                     <dd class="col-md-9">${skill.name}</dd>
                     <dt class="col-md-3">Description</dt>
                     <dd class="col-md-9">${skill.description}</dd>
-                    <dt class="col-md-3">Type</dt>
+                    <dt class="col-md-3">Skill Type</dt>
                     <dd class="col-md-9">${skill.skillType}</dd>
 
                     <s:if test="skill.skillType.training">

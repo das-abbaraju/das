@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 import org.perf4j.StopWatch;
@@ -319,12 +320,15 @@ public class AuditMenuBuilder {
 					addToServiceMenu(Service.EMPLOYEEGUARD, createNewAudit);
 				}
 
-				if (AccountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
-					MenuComponent egV3 = new MenuComponent();
-					egV3.setUrl("/employee-guard/contractor/dashboard");
-					egV3.setTitle("Version 3");
-					egV3.setName("Version 3");
-					addToServiceMenu(Service.EMPLOYEEGUARD, egV3);
+				if (permissions.isContractor()) {
+					AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
+					if (accountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
+						MenuComponent egV3 = new MenuComponent();
+						egV3.setUrl("/employee-guard/contractor/dashboard");
+						egV3.setTitle("Version 3");
+						egV3.setName("Version 3");
+						addToServiceMenu(Service.EMPLOYEEGUARD, egV3);
+					}
 				}
 
 				addToStartOfServiceMenu(Service.EMPLOYEEGUARD, summary);

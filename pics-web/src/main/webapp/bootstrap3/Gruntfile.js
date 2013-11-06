@@ -1,5 +1,6 @@
 /*global module:false*/
 module.exports = function(grunt) {
+  "use strict";
 
   // Project configuration.
   grunt.initConfig({
@@ -14,14 +15,15 @@ module.exports = function(grunt) {
 
     lint: {
         files: [
+            'js/strict-mode.js',
             'js/vendor/jquery/jquery-1.9.1.min.js',
             'js/vendor/jquery/jquery-ui-1.10.3.custom.js',
             'js/vendor/bootstrap/bootstrap.js',
             'js/vendor/bootstrap/bootstrap.typeahead.js',
             'js/vendor/bootstrap/bootstrap.tooltip.js',
             'js/vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
-            // 'js/vendor/bootstrap/bootstrap.affix.js',
-            // 'js/vendor/bootstrap/bootstrap.scrollspy.js',
+            'js/vendor/bootstrap/bootstrap.affix.js',
+            'js/vendor/bootstrap/bootstrap.scrollspy.js',
             'js/vendor/select2/select2.js',
             'js/vendor/prettify.js',
             'js/vendor/moment.js',
@@ -71,8 +73,9 @@ module.exports = function(grunt) {
                 'css/vendor/font-awesome/font-awesome.css',
                 'css/vendor/bootstrap-datepicker/datepicker.css',
                 'css/vendor/bootstrap-tooltip/tooltip.css',
-                'css/select2.css',
-                'css/select2-override.css',
+                'css/vendor/select2/select2.css',
+                'css/vendor/select2/select2-bootstrap.css',
+                'css/vendor/select2/select2-override.css',
                 'css/vendor/prettify.css',
                 'css/pics.css'
             ],
@@ -126,7 +129,8 @@ module.exports = function(grunt) {
             undef: true,
             boss: true,
             eqnull: true,
-            browser: true
+            browser: true,
+            strict: true
         },
         globals: {
             jQuery: true

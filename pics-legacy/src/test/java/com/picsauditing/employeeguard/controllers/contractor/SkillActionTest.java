@@ -7,9 +7,9 @@ import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
-import com.picsauditing.employeeguard.services.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.services.SkillServiceFactory;
+import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
+import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.web.UrlBuilder;
@@ -88,27 +88,9 @@ public class SkillActionTest extends PicsActionTest {
 
 	@Test
 	public void testCreate_Ajax() throws Exception {
-		when(request.getHeader("X-Requested-With")).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
+		when(request.getHeader("X-Requested-With")).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER_VALUE);
 
 		assertEquals("create-form", skillAction.create());
-		assertFalse(skillAction.getSkillGroups().isEmpty());
-	}
-
-	@Test
-	public void testEdit() throws Exception {
-		assertEquals(PicsRestActionSupport.EDIT, skillAction.edit());
-		assertNotNull(skillAction.getSkill());
-		assertNotNull(skillAction.getSkillForm());
-		assertFalse(skillAction.getSkillGroups().isEmpty());
-	}
-
-	@Test
-	public void testEdit_Ajax() throws Exception {
-		when(request.getHeader("X-Requested-With")).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
-
-		assertEquals(EDIT_FORM, skillAction.edit());
-		assertNotNull(skillAction.getSkill());
-		assertNotNull(skillAction.getSkillForm());
 		assertFalse(skillAction.getSkillGroups().isEmpty());
 	}
 

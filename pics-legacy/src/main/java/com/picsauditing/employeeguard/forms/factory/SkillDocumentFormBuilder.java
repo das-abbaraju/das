@@ -42,5 +42,4 @@ public class SkillDocumentFormBuilder {
 
 		return "None";
 	}
-
 }

@@ -10,7 +10,11 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
+import com.picsauditing.employeeguard.services.ProfileDocumentService;
+import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.factory.*;
 import com.picsauditing.jpa.entities.Account;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,8 +91,8 @@ public class SkillActionTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testCertification() throws Exception {
-		assertEquals("certification", skillAction.certification());
+	public void testFile() throws Exception {
+		assertEquals("file", skillAction.file());
 		assertNotNull(skillAction.getDocuments());
 		verify(profileDocumentService).getDocumentsForProfile(Identifiable.SYSTEM);
 	}

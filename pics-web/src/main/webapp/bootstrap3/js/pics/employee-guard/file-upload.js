@@ -1,8 +1,8 @@
 PICS.define('employee-guard.FileUpload', {
     methods: (function () {
         function init() {
-            $('.btn-import').on('click', importFile);
-            $('.file-import').on('change', showImportFilename);
+            $('body').on('click', '.btn-import', importFile);
+            $('body').on('change', '.file-import', changeImportedFile);
         }
 
         function importFile(event) {
@@ -13,15 +13,28 @@ PICS.define('employee-guard.FileUpload', {
             $file_input.click();
         }
 
-        function showImportFilename(event) {
-            var $element = $(event.target),
-                $form_group = $element.closest('.form-group'),
+        function changeImportedFile(event) {
+            var $element = $(event.target);
+
+            showImportFilename($element);
+            updateHiddenFilenameForValidation($element);
+        }
+
+        function showImportFilename($element) {
+            var $form_group = $element.closest('.form-group'),
                 $display_name = $form_group.find('.filename-display'),
                 filename = $element[0].files[0].name;
 
             if (filename) {
-                $display_name.html('<p>' + filename + '</p>');
+                $display_name.html(filename);
             }
+        }
+
+        function updateHiddenFilenameForValidation($element) {
+            var $validate_filename = $('#validate-filename');
+                filename = $element[0].files[0].name,
+
+            $validate_filename.val(filename);
         }
 
         return {

@@ -11,13 +11,23 @@ import java.util.List;
 
 public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 
-    public AccountGroupDAO() {
-        this.type = AccountGroup.class;
-    }
+	public AccountGroupDAO() {
+		this.type = AccountGroup.class;
+	}
 
 	public List<AccountGroup> findByAccount(int accountId) {
 		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId = :accountId", AccountGroup.class);
 		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
+	public List<AccountGroup> findByAccounts(final List<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId IN (:accountIds)", AccountGroup.class);
+		query.setParameter("accountIds", accountIds);
 		return query.getResultList();
 	}
 
@@ -33,7 +43,7 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 		if (accountId <= 0 || CollectionUtils.isEmpty(names)) {
 			return Collections.emptyList();
 		}
-			
+
 		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId = :accountId AND g.name IN ( :names )", AccountGroup.class);
 		query.setParameter("accountId", accountId);
 		query.setParameter("names", names);
@@ -41,7 +51,6 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 	}
 
 	public AccountGroup findGroupByAccountIdAndName(int accountId, String name) {
-		// Not sure if we need to check the accountId
 		if (accountId <= 0 || Strings.isEmpty(name)) {
 			return null;
 		}
@@ -52,11 +61,40 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 		return query.getSingleResult();
 	}
 
-	public List<AccountGroup> search(String searchTerm, int accountId) {
+	public List<AccountGroup> findGroupByAccountIdsAndNames(final List<Integer> accountIds, final List<String> names) {
+		// Not sure if we need to check accountId
+		if (CollectionUtils.isEmpty(accountIds) || CollectionUtils.isEmpty(names)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId IN (:accountIds) AND g.name IN ( :names )", AccountGroup.class);
+		query.setParameter("accountIds", accountIds);
+		query.setParameter("names", names);
+		return query.getResultList();
+	}
+
+	public List<AccountGroup> search(final String searchTerm, final int accountId) {
+		if (Strings.isEmpty(searchTerm) || accountId == 0) {
+			return Collections.emptyList();
+		}
+
 		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId = :accountId " +
 				"AND (g.name LIKE :searchTerm " +
 				"OR g.description LIKE :searchTerm)", AccountGroup.class);
 		query.setParameter("accountId", accountId);
+		query.setParameter("searchTerm", "%" + searchTerm + "%");
+		return query.getResultList();
+	}
+
+	public List<AccountGroup> search(final String searchTerm, final List<Integer> accountIds) {
+		if (Strings.isEmpty(searchTerm) || CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<AccountGroup> query = em.createQuery("FROM AccountGroup g WHERE g.accountId IN (:accountIds) " +
+				"AND (g.name LIKE :searchTerm " +
+				"OR g.description LIKE :searchTerm)", AccountGroup.class);
+		query.setParameter("accountIds", accountIds);
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}

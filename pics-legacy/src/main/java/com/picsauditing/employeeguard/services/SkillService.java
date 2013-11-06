@@ -43,6 +43,10 @@ public class SkillService {
 		return accountSkillDAO.findOptionalSkillsByAccount(accountId);
 	}
 
+	public List<AccountSkill> getOptionalSkillsForAccounts(final List<Integer> accountIds) {
+		return accountSkillDAO.findOptionalSkillsByAccounts(accountIds);
+	}
+
 	public List<AccountSkill> getSkillsForAccounts(List<Integer> accountIds) {
 		return accountSkillDAO.findByAccounts(accountIds);
 	}
@@ -171,4 +175,11 @@ public class SkillService {
 		return Collections.emptyList();
 	}
 
+	public List<AccountSkill> search(String searchTerm, List<Integer> accountIds) {
+		if (Strings.isEmpty(searchTerm)) {
+			return Collections.emptyList();
+		}
+
+		return accountSkillDAO.search(searchTerm, accountIds);
+	}
 }

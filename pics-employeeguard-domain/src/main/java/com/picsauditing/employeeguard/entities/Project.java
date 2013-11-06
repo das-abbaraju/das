@@ -1,33 +1,43 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "project")
-public class Project implements BaseEntity {
+@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@SQLInsert(sql = "INSERT INTO project (accountId, createdBy, createdDate, deletedBy, deletedDate, endDate, location, name, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+public class Project implements BaseEntity, Comparable<Project> {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private int accountID;
+	@Column(name = "accountID")
+	private int accountId;
 	private String name;
 	private String location;
 	private Date startDate;
 	private Date endDate;
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
-	private List<ProjectSkill> skills;
+	@BatchSize(size = 5)
+	private List<ProjectSkill> skills = new ArrayList<>();
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
-	private List<ProjectGroup> groups;
+	@BatchSize(size = 5)
+	private List<ProjectRole> roles = new ArrayList<>();
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
-	private List<ProjectCompany> companies;
+	@BatchSize(size = 5)
+	private List<ProjectCompany> companies = new ArrayList<>();
 
 	private int createdBy;
 	private Date createdDate;
@@ -46,12 +56,12 @@ public class Project implements BaseEntity {
 		this.id = id;
 	}
 
-	public int getAccountID() {
-		return accountID;
+	public int getAccountId() {
+		return accountId;
 	}
 
-	public void setAccountID(int accountID) {
-		this.accountID = accountID;
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
 	}
 
 	public String getName() {
@@ -94,12 +104,12 @@ public class Project implements BaseEntity {
 		this.skills = skills;
 	}
 
-	public List<ProjectGroup> getGroups() {
-		return groups;
+	public List<ProjectRole> getRoles() {
+		return roles;
 	}
 
-	public void setGroups(List<ProjectGroup> groups) {
-		this.groups = groups;
+	public void setRoles(List<ProjectRole> groups) {
+		this.roles = groups;
 	}
 
 	public List<ProjectCompany> getCompanies() {
@@ -168,5 +178,41 @@ public class Project implements BaseEntity {
 	@Override
 	public void setDeletedDate(Date deletedDate) {
 		this.deletedDate = deletedDate;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Project project = (Project) o;
+
+		if (accountId != project.accountId) return false;
+		if (id != project.id) return false;
+		if (name != null ? !name.equals(project.name) : project.name != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		result = 31 * result + accountId;
+		result = 31 * result + (name != null ? name.hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public int compareTo(final Project that) {
+		if (this == that) {
+			return 0;
+		}
+
+		int comparison = this.getName().compareToIgnoreCase(that.getName());
+		if (comparison != 0) {
+			return comparison;
+		}
+
+		return 0;
 	}
 }
