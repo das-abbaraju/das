@@ -9,6 +9,7 @@ import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import org.slf4j.{LoggerFactory, Logger}
 import com.picsauditing.model.i18n.TranslationLookupData
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 
 class TranslationUsageDAO extends PICSDataAccess {
   private val logger: Logger = LoggerFactory.getLogger(classOf[TranslationUsageDAO])
@@ -36,6 +37,9 @@ class TranslationUsageDAO extends PICSDataAccess {
       try {
         usageEtlSProc(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getEnvironment)
       } catch {
+        case e: MySQLIntegrityConstraintViolationException => {
+          // we are going to do nothing because this is a race condition inside the sproc we're calling.
+        }
         case e: Throwable => {
           logger.error(e.getMessage)
         }
