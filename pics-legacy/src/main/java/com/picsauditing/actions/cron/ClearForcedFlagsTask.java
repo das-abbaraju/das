@@ -3,25 +3,34 @@ package com.picsauditing.actions.cron;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.util.IndexerEngine;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-public class ClearForcedFlagsTask extends CronTask {
-    private static String NAME = "ClearForcedFlags";
+public class ClearForcedFlagsTask implements CronTask {
+    @Autowired
     private FlagDataOverrideDAO flagDataOverrideDAO;
+    @Autowired
     private ContractorOperatorDAO contractorOperatorDAO;
     private User system = new User(User.SYSTEM);
 
-    public ClearForcedFlagsTask(FlagDataOverrideDAO flagDataOverrideDAO, ContractorOperatorDAO contractorOperatorDAO) {
-        super(NAME);
-        this.flagDataOverrideDAO = flagDataOverrideDAO;
-        this.contractorOperatorDAO = contractorOperatorDAO;
+    public String getDescription() {
+        return "findDelinquentInvoicesMissingLateFees and add late fees";
     }
 
-    protected void run() {
+    public List<String> getSteps() {
+        List<String> steps = new ArrayList<>();
+        List<FlagDataOverride> fdos = flagDataOverrideDAO.findExpiredForceFlags();
+        for (FlagDataOverride fdo : fdos) {
+            steps.add(fdo.toString());
+        }
+        return steps;
+    }
+
+    public CronTaskResult run() throws CronTaskException {
+        CronTaskResult results = new CronTaskResult(true, "");
         List<FlagDataOverride> fdos = flagDataOverrideDAO.findExpiredForceFlags();
 
         Iterator<FlagDataOverride> fdoIter = fdos.iterator();
@@ -81,5 +90,6 @@ public class ClearForcedFlagsTask extends CronTask {
 
             contractorOperatorDAO.save(override);
         }
+        return results;
     }
 }

@@ -16,7 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class EmailPendingContractorsTask extends CronTask {
+public class EmailPendingContractorsTask extends CronTaskOld {
     private static String NAME = "EmailPendingContractors";
     List<String> emailExclusionList = new ArrayList<>();
     protected Permissions permissions = null;

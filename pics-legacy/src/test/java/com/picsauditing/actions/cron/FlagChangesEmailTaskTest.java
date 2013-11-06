@@ -26,8 +26,9 @@ public class FlagChangesEmailTaskTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-
-        cron = new FlagChangesEmailTask(database, emailQueueDAO);
+        cron = new FlagChangesEmailTask();
+        cron.database = database;
+        cron.emailQueueDAO = emailQueueDAO;
     }
 
     @Test

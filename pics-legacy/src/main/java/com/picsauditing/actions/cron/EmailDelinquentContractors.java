@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class EmailDelinquentContractors extends CronTask {
+public class EmailDelinquentContractors extends CronTaskOld {
     private static String NAME = "EmailDelinquentContractors";
     private ContractorAccountDAO contractorAccountDAO;
     private EmailQueueDAO emailQueueDAO;

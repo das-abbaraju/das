@@ -1,22 +1,47 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.jpa.entities.Indexable;
-import com.picsauditing.util.IndexerEngine;
+import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.util.PicsDateFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
-public class CheckRegistrationRequestsHoldDates extends CronTaskOld {
-    private static String NAME = "Indexer";
-    private IndexerEngine indexer;
+public class CheckRegistrationRequestsHoldDates implements CronTask {
 
-    public CheckRegistrationRequestsHoldDates(IndexerEngine indexer) {
-        super(NAME);
-        this.indexer = indexer;
+    @Autowired
+    PicsDAO dao;
+
+    @Override
+    public String getDescription() {
+        return "Checking Registration Requests Hold Dates";
     }
 
-    protected void run() {
-        Set<Class<? extends Indexable>> entries = indexer.getEntries();
-        logger.debug("Found {1} entries", entries.size());
-        indexer.runAll(entries);
+    @Override
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() {
+        List<ContractorRegistrationRequest> holdRequests = dao.findWhere(ContractorRegistrationRequest.class,
+                "t.status = 'Hold'");
+        Date now = new Date();
+        for (ContractorRegistrationRequest crr : holdRequests) {
+            if (now.after(crr.getHoldDate())) {
+                crr.setStatus(ContractorRegistrationRequestStatus.Active);
+                crr.setNotes(maskDateFormat(now) + " - System - hold date passed.  Request set to active \n\n"
+                        + crr.getNotes());
+            }
+        }
+        return new CronTaskResult(true, "success");
+    }
+
+    private String maskDateFormat(Date now) {
+        DateFormat dateFormat = new SimpleDateFormat(PicsDateFormat.Iso);
+        return dateFormat.format(now);
     }
 }

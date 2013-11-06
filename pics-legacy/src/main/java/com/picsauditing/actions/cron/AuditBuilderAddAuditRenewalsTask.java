@@ -3,30 +3,39 @@ package com.picsauditing.actions.cron;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class AuditBuilderAddAuditRenewalsTask extends CronTask {
+public class AuditBuilderAddAuditRenewalsTask implements CronTask {
 
-    private static String NAME = "AuditBuilder_addAuditRenewals";
+    @Autowired
     private ContractorAuditDAO contractorAuditDAO;
+    @Autowired
     private AuditBuilder auditBuilder;
 
-    public AuditBuilderAddAuditRenewalsTask(ContractorAuditDAO contractorAuditDAO, AuditBuilder auditBuilder) {
-        super(NAME);
-        this.contractorAuditDAO = contractorAuditDAO;
-        this.auditBuilder = auditBuilder;
+    public String getDescription() {
+        return "AuditBuilder_addAuditRenewals";
     }
 
-    protected void run() throws CronTaskException {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() throws CronTaskException {
+        CronTaskResult results = new CronTaskResult();
         List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
         for (ContractorAccount contractor : contractors) {
             try {
-                auditBuilder.buildAudits(contractor);
-                contractorAuditDAO.save(contractor);
+                // TODO Testing the cron DON'T COMMIT!!
+                // auditBuilder.buildAudits(contractor);
+                // contractorAuditDAO.save(contractor);
+                results.getLogger().append(", " + contractor.getId());
             } catch (Exception e) {
-                logger.error("AuditBuiler.addAuditRenewals() {}", e.getMessage());
+                results.getLogger().append("\nContractor ERROR id = " + contractor.getId() + " - " + e.getMessage());
             }
         }
+        results.setSuccess(true);
+        return results;
     }
 }

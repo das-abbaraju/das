@@ -6,21 +6,26 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
-public class EmailUpcomingImplementationAudits extends CronTask {
-    private static String NAME = "EmailUpcomingImplementationAudits";
+public class EmailUpcomingImplementationAudits implements CronTask {
+    @Autowired
     private ContractorAuditDAO contractorAuditDAO;
 
-    public EmailUpcomingImplementationAudits(ContractorAuditDAO contractorAuditDAO) {
-        super(NAME);
-        this.contractorAuditDAO = contractorAuditDAO;
+    public String getDescription() {
+        return "TODO";
     }
 
-    protected void run() {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() throws Exception {
+        CronTaskResult results = new CronTaskResult(true, "");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 7);
 
@@ -29,11 +34,13 @@ public class EmailUpcomingImplementationAudits extends CronTask {
         for (ContractorAudit ca : caList) {
             try {
                 EventSubscriptionBuilder.notifyUpcomingImplementationAudit(ca);
+                results.getLogger().append(", ").append(ca.getId());
             } catch (NoUsersDefinedException e) {
-                logger.error("NoUsersDefinedException in EmailUpcomingImplementationAudits for ContractorAudit = " + ca.getId());
+                results.getLogger().append("NoUsersDefinedException in EmailUpcomingImplementationAudits for ContractorAudit = " + ca.getId());
             } catch (IOException e) {
-                logger.error("IOException in EmailUpcomingImplementationAudits for ContractorAudit = " + ca.getId());
+                results.getLogger().append("IOException in EmailUpcomingImplementationAudits for ContractorAudit = " + ca.getId());
             }
         }
+        return results;
     }
 }

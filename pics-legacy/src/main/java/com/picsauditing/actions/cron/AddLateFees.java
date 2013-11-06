@@ -1,7 +1,6 @@
 package com.picsauditing.actions.cron;
 
 import com.picsauditing.PICS.BillingService;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -9,47 +8,52 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.PicsDateFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-public class AddLateFees extends CronTask {
-    private static String NAME = "AddLateFees";
-
+public class AddLateFees implements CronTask {
     public static final int MINIMUM_LATE_FEE = 20;
     public static final double LATE_FEE_PERCENTAGE = 0.05;
+    @Autowired
+    IndexerEngine indexer;
+    @Autowired
+    InvoiceDAO invoiceDAO;
+    @Autowired
+    InvoiceItemDAO invoiceItemDAO;
+    @Autowired
+    InvoiceFeeDAO invoiceFeeDAO;
+    @Autowired
+    BillingService billingService;
 
-    private IndexerEngine indexer;
-    private InvoiceDAO invoiceDAO;
-    private InvoiceItemDAO invoiceItemDAO;
-    private InvoiceFeeDAO invoiceFeeDAO;
-    private BillingService billingService;
-
-    public AddLateFees(InvoiceDAO invoiceDAO, InvoiceItemDAO invoiceItemDAO, InvoiceFeeDAO invoiceFeeDAO, BillingService billingService) {
-        super(NAME);
-        this.invoiceDAO = invoiceDAO;
-        this.invoiceItemDAO = invoiceItemDAO;
-        this.invoiceFeeDAO = invoiceFeeDAO;
-        this.billingService = billingService;
+    public String getDescription() {
+        return "findDelinquentInvoicesMissingLateFees and add late fees";
     }
 
-    protected void run() {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() throws CronTaskException {
+        CronTaskResult results = new CronTaskResult(true, "");
         List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
         if (invoicesMissingLateFees.size() == 0) {
-            return;
+            return results;
         }
-        logger.debug("Found {1} invoices that require a late fee", invoicesMissingLateFees.size());
+        results.getLogger().append("Found " +
+                invoicesMissingLateFees.size() + " invoices that require a late fee");
         for (Invoice i : invoicesMissingLateFees) {
             if (invoiceHasReactivation(i)) {
-                report.append("Skipping this invoice because it's a reactivation invoice: " + i.getId() + "\n\n");
+                results.getLogger().append("Skipping this invoice because it's a reactivation invoice: " + i.getId() + "\n\n");
                 continue;
             }
-            report.append("Create late fee invoice for delinquent invoice " + i.getId() + "\n\n");
+            results.getLogger().append("Create late fee invoice for delinquent invoice " + i.getId() + "\n\n");
             addLateFeeToDelinquentInvoice(i);
         }
+        return results;
     }
 
     private boolean invoiceHasReactivation(Invoice i) {

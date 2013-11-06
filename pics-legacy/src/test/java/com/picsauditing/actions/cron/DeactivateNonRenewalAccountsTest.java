@@ -33,7 +33,10 @@ public class DeactivateNonRenewalAccountsTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        cron = new DeactivateNonRenewalAccounts(contractorAccountDAO, billingService, accountStatusChanges);
+        cron = new DeactivateNonRenewalAccounts();
+        cron.contractorAccountDAO = contractorAccountDAO;
+        cron.accountStatusChanges = accountStatusChanges;
+        cron.billingService = billingService;
     }
 
     @Test
@@ -42,7 +45,7 @@ public class DeactivateNonRenewalAccountsTest {
         List<ContractorAccount> contractors = buildMockContractorList();
         when(contractorAccountDAO.findWhere(where)).thenReturn(contractors);
 
-        cron.execute();
+        cron.run();
 
         for (ContractorAccount contractor : contractors) {
             verifyContractor(contractor, contractor.getAccountLevel().isBidOnly());

@@ -13,6 +13,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.YesNo;
 
+// TODO This is a duplicate of EbixLoader...delete this file
 public class HuntsmanSync extends PicsActionSupport {
 
 	private AppPropertyDAO appPropDao = null;

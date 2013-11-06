@@ -1,28 +1,30 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Indexable;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.IndexerEngine;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class IndexerTask extends CronTask {
-    private static String NAME = "Indexer";
+public class IndexerTask implements CronTask {
+    @Autowired
     private IndexerEngine indexer;
 
-    public IndexerTask(IndexerEngine indexer) {
-        super(NAME);
-        this.indexer = indexer;
+    public String getDescription() {
+        return "Re Index all the contractor names";
     }
 
-    protected void run() {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() {
+        CronTaskResult results = new CronTaskResult(true, "");
         Set<Class<? extends Indexable>> entries = indexer.getEntries();
-        logger.debug("Found {1} entries", entries.size());
+        results.getLogger().append("Found " +
+                entries.size() + " entries");
         indexer.runAll(entries);
+        return results;
     }
 }

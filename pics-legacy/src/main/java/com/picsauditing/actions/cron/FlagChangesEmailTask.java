@@ -4,37 +4,39 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.OperatorUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-public class FlagChangesEmailTask extends CronTask {
-    private static String NAME = "FlagChangesEmail";
-    private Database database = new Database();
-    private EmailQueueDAO emailQueueDAO;
+public class FlagChangesEmailTask implements CronTask {
+    Database database = new Database();
+    @Autowired
+    EmailQueueDAO emailQueueDAO;
 
-    public FlagChangesEmailTask(Database database, EmailQueueDAO emailQueueDAO) {
-        super(NAME);
-        this.database = database;
-        this.emailQueueDAO = emailQueueDAO;
+    public String getDescription() {
+        return "TODO";
     }
 
-    protected void run() throws Exception {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() throws Exception {
+        CronTaskResult results = new CronTaskResult(true, "");
         List<BasicDynaBean> data = getFlagChangeData();
         if (CollectionUtils.isEmpty(data)) {
-            return;
+            return results;
         }
 
         sendFlagChangesEmail(EmailAddressUtils.PICS_FLAG_CHANGE_EMAIL, data);
@@ -48,6 +50,7 @@ public class FlagChangesEmailTask extends CronTask {
                 }
             }
         }
+        return results;
     }
 
     private List<BasicDynaBean> getFlagChangeData() throws SQLException {

@@ -1,6 +1,6 @@
 package com.picsauditing.util;
 
-import com.picsauditing.actions.cron.CronTask;
+import com.picsauditing.actions.cron.CronTaskOld;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class EbixLoader extends CronTask {
+public class EbixLoader extends CronTaskOld {
     private static String NAME = "EBIX_huntsmansync";
     private AppPropertyDAO appPropDao;
     private ContractorAuditDAO contractorAuditDAO;

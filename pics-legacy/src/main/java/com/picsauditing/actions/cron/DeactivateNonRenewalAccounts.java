@@ -7,31 +7,32 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.util.IndexerEngine;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class DeactivateNonRenewalAccounts extends CronTask {
-    private static String NAME = "DeactivateNonRenewalAccounts";
+public class DeactivateNonRenewalAccounts implements CronTask {
     protected Permissions permissions = null;
-    private IndexerEngine indexer;
-    private ContractorAccountDAO contractorAccountDAO;
-    private BillingService billingService;
-    private AccountStatusChanges accountStatusChanges;
+    @Autowired
+    IndexerEngine indexer;
+    @Autowired
+    ContractorAccountDAO contractorAccountDAO;
+    @Autowired
+    BillingService billingService;
+    @Autowired
+    AccountStatusChanges accountStatusChanges;
 
-    public DeactivateNonRenewalAccounts(ContractorAccountDAO contractorAccountDAO,
-                                        BillingService billingService, AccountStatusChanges accountStatusChanges) {
-        super(NAME);
-        this.contractorAccountDAO = contractorAccountDAO;
-        this.billingService = billingService;
-        this.accountStatusChanges = accountStatusChanges;
+    public String getDescription() {
+        return "Do not change the payment expires when deactivating accounts. " +
+                "This is actually Canceling an account, not a deactivation.";
     }
 
-    /*
-     * Do not change the payment expires when deactivating accounts.
-     *
-     * This is actually Canceling an account, not a deactivation.
-     */
-    protected void run() {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() throws CronTaskException {
+        CronTaskResult results = new CronTaskResult(true, "");
         String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
         List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
         for (ContractorAccount contractor : conAcctList) {
@@ -42,5 +43,6 @@ public class DeactivateNonRenewalAccounts extends CronTask {
             accountStatusChanges.deactivateContractor(contractor, permissions, reason,
                     "Automatically inactivating account based on expired membership");
         }
+        return results;
     }
 }

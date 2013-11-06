@@ -2,7 +2,6 @@ package com.picsauditing.actions.cron;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.*;
@@ -11,35 +10,39 @@ import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class EmailRegistrationRequestsTask extends CronTask {
-    private static String NAME = "EmailRegistrationRequests";
+public class EmailRegistrationRequestsTask implements CronTask {
     protected List<String> emailExclusionList;
     protected Permissions permissions = null;
+    @Autowired
     private EmailQueueDAO emailQueueDAO;
+    @Autowired
     private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
+    @Autowired
     private EmailDuplicateContractors duplicateContractors;
+    // this.duplicateContractors = new EmailDuplicateContractors(contractorAccountDAO, emailQueueDAO);
 
-    public EmailRegistrationRequestsTask(ContractorAccountDAO contractorAccountDAO, EmailQueueDAO emailQueueDAO, ContractorRegistrationRequestDAO contractorRegistrationRequestDAO) {
-        super(NAME);
-        this.contractorRegistrationRequestDAO = contractorRegistrationRequestDAO;
-        this.emailQueueDAO = emailQueueDAO;
-        this.duplicateContractors = new EmailDuplicateContractors(contractorAccountDAO, emailQueueDAO);
+    public String getDescription() {
+        return "TODO";
     }
 
-    protected void run() throws Exception {
-        getEmailExclusions();
-        sendEmailContractorRegistrationRequest();
+    public List<String> getSteps() {
+        return null;
     }
 
-    private void getEmailExclusions() {
+    public CronTaskResult run() throws Exception {
+        CronTaskResult results = new CronTaskResult(true, "");
         emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
-        logger.debug("Excluding {1} emails", emailExclusionList.size());
+        results.getLogger().append("Excluding " +
+                emailExclusionList.size() + " emails");
+        sendEmailContractorRegistrationRequest();
+        return results;
     }
 
     private void sendEmailContractorRegistrationRequest() throws Exception {

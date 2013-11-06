@@ -3,17 +3,21 @@ package com.picsauditing.actions.cron;
 import com.picsauditing.search.Database;
 
 import java.sql.SQLException;
+import java.util.List;
 
-public class ExpireFlagChangesTask extends CronTask {
-    private static String NAME = "ExpireFlagChanges";
-    private Database database;
+public class ExpireFlagChangesTask implements CronTask {
+    Database database = new Database();
 
-    public ExpireFlagChangesTask(Database database) {
-        super(NAME);
-        this.database = database;
+    public String getDescription() {
+        return "TODO";
     }
 
-    protected void run() throws SQLException {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() throws SQLException {
+        CronTaskResult results = new CronTaskResult();
         String query = "UPDATE contractor_operator co ";
         query += "JOIN accounts a ON co.conID = a.id ";
         query += "JOIN contractor_info c ON a.id = c.id ";
@@ -37,5 +41,8 @@ public class ExpireFlagChangesTask extends CronTask {
         query += "OR (forceFlag IS NOT NULL AND NOW() < forceEnd))";
 
         database.executeUpdate(query);
+
+        results.setSuccess(true);
+        return results;
     }
 }
