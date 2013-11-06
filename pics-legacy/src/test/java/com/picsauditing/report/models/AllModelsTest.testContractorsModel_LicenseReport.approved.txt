@@ -68,6 +68,7 @@ ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorSupplierDiversity
+ContractorSupplierDiversityColumn
 ContractorTagTagID
 ContractorTradeActivityPercent
 ContractorTradeManufacture
