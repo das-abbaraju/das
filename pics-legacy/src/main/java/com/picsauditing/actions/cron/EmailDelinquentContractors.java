@@ -6,29 +6,35 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.EmailAddressUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class EmailDelinquentContractors extends CronTaskOld {
-    private static String NAME = "EmailDelinquentContractors";
-    private ContractorAccountDAO contractorAccountDAO;
-    private EmailQueueDAO emailQueueDAO;
+public class EmailDelinquentContractors implements CronTask {
+    @Autowired
+    ContractorAccountDAO contractorAccountDAO;
+    @Autowired
+    EmailQueueDAO emailQueueDAO;
 
-    public EmailDelinquentContractors(ContractorAccountDAO contractorAccountDAO, EmailQueueDAO emailQueueDAO) {
-        super(NAME);
-        this.contractorAccountDAO = contractorAccountDAO;
-        this.emailQueueDAO = emailQueueDAO;
+    public String getDescription() {
+        return "AuditBuilder_addAuditRenewals";
     }
 
-    protected void run() throws Exception {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() {
+        CronTaskResult results = new CronTaskResult();
         List<Invoice> pendingAndDelinquentInvoices = contractorAccountDAO.findPendingDelinquentAndDelinquentInvoices();
         if (!pendingAndDelinquentInvoices.isEmpty()) {
             Map<ContractorAccount, Integer> pendingAndDelinquentAccts = splitPendingAndDeliquentInvoices(pendingAndDelinquentInvoices);
             sendEmailsTo(pendingAndDelinquentAccts);
         }
+        return results;
     }
 
     Map<ContractorAccount, Integer> splitPendingAndDeliquentInvoices(List<Invoice> invoices) {

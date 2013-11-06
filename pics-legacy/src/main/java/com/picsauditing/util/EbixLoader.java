@@ -1,6 +1,8 @@
 package com.picsauditing.util;
 
-import com.picsauditing.actions.cron.CronTaskOld;
+import com.picsauditing.actions.cron.CronTask;
+import com.picsauditing.actions.cron.CronTaskException;
+import com.picsauditing.actions.cron.CronTaskResult;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -8,6 +10,7 @@ import com.picsauditing.jpa.entities.*;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.io.BufferedReader;
@@ -16,23 +19,26 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class EbixLoader extends CronTaskOld {
-    private static String NAME = "EBIX_huntsmansync";
-    private AppPropertyDAO appPropDao;
-    private ContractorAuditDAO contractorAuditDAO;
-    private ContractorAccountDAO contractorAccountDAO;
+public class EbixLoader implements CronTask {
+    @Autowired
+    AppPropertyDAO appPropDao;
+    @Autowired
+    ContractorAuditDAO contractorAuditDAO;
+    @Autowired
+    ContractorAccountDAO contractorAccountDAO;
 
     private final Logger logger = LoggerFactory.getLogger(EbixLoader.class);
 
-    public EbixLoader(AppPropertyDAO appPropDao, ContractorAuditDAO contractorAuditDAO,
-                      ContractorAccountDAO contractorAccountDAO) {
-        super(NAME);
-        this.appPropDao = appPropDao;
-        this.contractorAuditDAO = contractorAuditDAO;
-        this.contractorAccountDAO = contractorAccountDAO;
+    public String getDescription() {
+        return "AuditBuilder_addAuditRenewals";
     }
 
-    protected void run() {
+    public List<String> getSteps() {
+        return null;
+    }
+
+    public CronTaskResult run() {
+        CronTaskResult results = new CronTaskResult();
         String server = appPropDao.find("huntsmansync.ftp.server").getValue();
         String username = appPropDao.find("huntsmansync.ftp.user").getValue();
         String password = appPropDao.find("huntsmansync.ftp.password").getValue();
@@ -72,6 +78,7 @@ public class EbixLoader extends CronTaskOld {
                 logger.error("Failed to disconnect FTP because - " + e.getMessage());
             }
         }
+        return results;
     }
 
     private void processFile(FTPClient ftp, String fileName) throws IOException {

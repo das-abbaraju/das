@@ -31,7 +31,7 @@ public class DeactivateNonRenewalAccounts implements CronTask {
         return null;
     }
 
-    public CronTaskResult run() throws CronTaskException {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
         List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);

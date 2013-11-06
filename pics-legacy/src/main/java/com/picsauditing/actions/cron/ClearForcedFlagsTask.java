@@ -29,7 +29,7 @@ public class ClearForcedFlagsTask implements CronTask {
         return steps;
     }
 
-    public CronTaskResult run() throws CronTaskException {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         List<FlagDataOverride> fdos = flagDataOverrideDAO.findExpiredForceFlags();
 

@@ -2,6 +2,7 @@ package com.picsauditing.actions.cron;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.*;
@@ -26,8 +27,7 @@ public class EmailRegistrationRequestsTask implements CronTask {
     @Autowired
     private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
     @Autowired
-    private EmailDuplicateContractors duplicateContractors;
-    // this.duplicateContractors = new EmailDuplicateContractors(contractorAccountDAO, emailQueueDAO);
+    private ContractorAccountDAO contractorAccountDAO;
 
     public String getDescription() {
         return "TODO";
@@ -37,12 +37,18 @@ public class EmailRegistrationRequestsTask implements CronTask {
         return null;
     }
 
-    public CronTaskResult run() throws Exception {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
-        emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
-        results.getLogger().append("Excluding " +
-                emailExclusionList.size() + " emails");
-        sendEmailContractorRegistrationRequest();
+
+        try {
+            emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
+            results.getLogger().append("Excluding " +
+                    emailExclusionList.size() + " emails");
+            sendEmailContractorRegistrationRequest();
+        } catch (Exception e) {
+            results.setSuccess(false);
+            results.getLogger().append(e.getMessage());
+        }
         return results;
     }
 
@@ -129,7 +135,8 @@ public class EmailRegistrationRequestsTask implements CronTask {
 
     private void runCRREmailBlast(List<? extends BaseTable> list, int templateID, String newNote) throws IOException,
             ParseException, EmailBuildErrorException {
-        Map<User, List<BaseTable>> operatorContractors = new HashMap<User, List<BaseTable>>();
+        Map<User, List<BaseTable>> operatorContractors = new HashMap<>();
+        EmailDuplicateContractors duplicateContractors = new EmailDuplicateContractors(contractorAccountDAO, emailQueueDAO);
 
         for (BaseTable requestedContractor : list) {
             String requestName = Strings.EMPTY_STRING;

@@ -22,14 +22,13 @@ public class AuditBuilderAddAuditRenewalsTask implements CronTask {
         return null;
     }
 
-    public CronTaskResult run() throws CronTaskException {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult();
         List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
         for (ContractorAccount contractor : contractors) {
             try {
-                // TODO Testing the cron DON'T COMMIT!!
-                // auditBuilder.buildAudits(contractor);
-                // contractorAuditDAO.save(contractor);
+                auditBuilder.buildAudits(contractor);
+                contractorAuditDAO.save(contractor);
                 results.getLogger().append(", " + contractor.getId());
             } catch (Exception e) {
                 results.getLogger().append("\nContractor ERROR id = " + contractor.getId() + " - " + e.getMessage());

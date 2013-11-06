@@ -7,6 +7,6 @@ public interface CronTask {
 
     List<String> getSteps();
 
-    CronTaskResult run() throws Throwable;
+    CronTaskResult run();
 }
 

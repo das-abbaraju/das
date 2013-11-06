@@ -37,7 +37,7 @@ public class AddLateFees implements CronTask {
         return null;
     }
 
-    public CronTaskResult run() throws CronTaskException {
+    public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
         if (invoicesMissingLateFees.size() == 0) {
