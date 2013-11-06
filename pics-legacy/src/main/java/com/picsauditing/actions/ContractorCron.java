@@ -1247,21 +1247,6 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		}
 		logger.trace("ContractorCron starting AssignAudit");
-		// See if the PQF is complete for manual audit auditor assignment
-		boolean pqfCompleteSafetyManualVerified = false;
-		// Save auditor for manual audit for HSE Competency Review
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (!audit.isExpired()) {
-				if (audit.getAuditType().isPicsPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
-					for (AuditData d : audit.getData()) {
-						if (d.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
-							pqfCompleteSafetyManualVerified = d.getDateVerified() != null;
-						}
-					}
-				}
-			}
-		}
-
 		// Note: audit.setAuditor() is the final arbitor of which auditor is
 		// assigned to do an audit. UserAssignment is merely the intermediate
 		// "rules" for pre-determining the assignments.
@@ -1279,8 +1264,7 @@ public class ContractorCron extends PicsActionSupport {
 						}
 						break;
 					case (AuditType.MANUAL_AUDIT):
-						if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
-								&& contractor.isFinanciallyReadyForAudits()) {
+						if (audit.getSlaDate() != null) {
 							ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
 							if (ua == null) {
 								List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
