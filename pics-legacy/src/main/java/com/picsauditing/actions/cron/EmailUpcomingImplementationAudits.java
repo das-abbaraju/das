@@ -17,7 +17,7 @@ public class EmailUpcomingImplementationAudits implements CronTask {
     private ContractorAuditDAO contractorAuditDAO;
 
     public String getDescription() {
-        return "TODO";
+        return "EmailUpcomingImplementationAudits";
     }
 
     public List<String> getSteps() {

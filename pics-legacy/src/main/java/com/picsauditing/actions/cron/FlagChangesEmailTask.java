@@ -36,8 +36,7 @@ public class FlagChangesEmailTask implements CronTask {
     public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         try {
-            List<BasicDynaBean> data = null;
-            data = getFlagChangeData();
+            List<BasicDynaBean> data = getFlagChangeData();
             if (CollectionUtils.isEmpty(data)) {
                 return results;
             }
@@ -54,8 +53,11 @@ public class FlagChangesEmailTask implements CronTask {
                 }
             }
         } catch (SQLException e) {
+            results.setSuccess(false);
         } catch (EmailBuildErrorException e) {
+            results.setSuccess(false);
         } catch (IOException e) {
+            results.setSuccess(false);
         }
         return results;
     }
