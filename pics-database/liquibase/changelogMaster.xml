@@ -43,4 +43,9 @@
     <include file="./liquibase/sshacter6_PICS-13255_EmployeeGUARDProjectTables.sql"/>
 	<include file="./liquibase/kchase7_PICS-13328_RemoveForceFlag.sql"/>
 	<include file="./liquibase/kchase8_PICS-12896_ClearBadAnswers.sql"/>
+
+    <!--    Release 6.65   -->
+    <include file="./liquibase/sshacter7_PICS-13246_InvoicePaymentArchiveTables.sql"/>
+    <include file="./liquibase/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql"/>
+
 </databaseChangeLog>
