@@ -33,7 +33,7 @@ public class MailCronService {
 	public static final String ERROR_INVALID_SUBSCRIPTION = "The subscription is invalid.";
 	public static final String ERROR_INVALID_SUBSCRIPTION_ID = "You must supply a valid subscription id.";
 	public static final String THE_EMAIL_QUEUE_IS_EMPTY = "The email queue is empty";
-	public static final int NUMBER_OF_EMAILS_TO_FIND = 1;
+	public static final int NUMBER_OF_EMAILS_TO_FIND = 5;
 	public static final String SUCCESSFULLY_SENT_EMAILS = "Successfully sent %s out of %s email(s).";
 	public static final int SUBSCRIPTIONS_TO_SEND = 15;
 
@@ -50,10 +50,7 @@ public class MailCronService {
 	@Autowired
 	private FeatureToggleCheckerGroovy featureToggleChecker;
 
-	public void processEmailSubscription(int subscriptionId, Permissions permissions) throws ValidationException {
-
-		initializeFeatureToggleChecker(permissions);
-
+	public void processEmailSubscription(int subscriptionId) throws ValidationException {
 		if (backProcsEmailSubscriptionsIsDisabled()) {
 
 			if (appPropertyService.emailSubscriptionsAreEnabled()) {
@@ -66,9 +63,7 @@ public class MailCronService {
 		}
 	}
 
-	public String processPendingEmails(Permissions permissions) {
-
-		initializeFeatureToggleChecker(permissions);
+	public String processPendingEmails() {
 		String statusMessage = "";
 
 		if (backProcsEmailQueueIsDisabled()) {
@@ -179,10 +174,6 @@ public class MailCronService {
 			logger.error("processEmailSendError(): Failed to send error-email with id: {}. {}",
 					new Object[]{email.getId(), e.getMessage()});
 		}
-	}
-
-	private void initializeFeatureToggleChecker(Permissions permissions) {
-		featureToggleChecker.setPermissions(permissions);
 	}
 
 	public EmailSubscription findEmailSubscription(int subscriptionId) {
