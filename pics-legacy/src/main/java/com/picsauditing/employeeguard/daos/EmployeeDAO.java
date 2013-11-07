@@ -104,15 +104,22 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 	}
 
 	public List<Employee> search(String searchTerm, int accountId) {
+		if (searchTerm == null) {
+			searchTerm = Strings.EMPTY_STRING;
+		}
+
 		TypedQuery<Employee> query = em.createQuery(
 				"SELECT DISTINCT e FROM Employee e " +
 						"WHERE e.accountId = :accountId " +
 						"AND (e.firstName LIKE :searchTerm " +
 						"OR e.lastName LIKE :searchTerm " +
 						"OR e.slug LIKE :searchTerm " +
-						"OR e.email LIKE :searchTerm)", Employee.class);
+						"OR e.email LIKE :searchTerm " +
+						"OR CONCAT(e.firstName, '%', e.lastName) LIKE :normalizedSearchTerm " +
+						"OR CONCAT(e.lastName, '%', e.firstName) LIKE :normalizedSearchTerm)", Employee.class);
 		query.setParameter("accountId", accountId);
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
+		query.setParameter("normalizedSearchTerm", "%" + searchTerm.trim().replaceAll("\\s+", "%") + "%");
 		return query.getResultList();
 	}
 
