@@ -10,15 +10,13 @@ public class ReportSuggestionsTask implements CronTask {
     Database database = new Database();
 
     public String getDescription() {
-        return "Connect each user with all their groups to eliminate the need to " +
-                "recursively loop through users to know who is in a group. " +
-                "Also, calculate suggestions for report favorites based on company, group, and usage.";
+        return "Setup Inherited Groups table and calculate suggestions for report favorites.";
     }
 
     public List<String> getSteps() {
         List<String> list = new ArrayList<>();
-        list.add("dw_calc_inherited_user_groups");
-        list.add("dw_calc_report_suggestions");
+        list.add("Run procedure dw_calc_inherited_user_groups()");
+        list.add("Run procedure dw_calc_report_suggestions()");
         return list;
     }
 

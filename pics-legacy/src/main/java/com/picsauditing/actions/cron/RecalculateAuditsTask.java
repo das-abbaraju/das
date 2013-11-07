@@ -3,11 +3,14 @@ package com.picsauditing.actions.cron;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class RecalculateAuditsTask implements CronTask {
     @Autowired
@@ -16,11 +19,16 @@ public class RecalculateAuditsTask implements CronTask {
     private AuditPercentCalculator auditPercentCalculator;
 
     public String getDescription() {
-        return "RecalculateAuditsTask";
+        return "Recalculate Audit Information";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> steps = new ArrayList<>();
+        List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
+        for (ContractorAudit cAudit : conList) {
+            steps.add("Will recalculate " + cAudit.getContractorAccount().getName() + "'s " + cAudit.getAuditType().getName() + " " + cAudit.getAuditFor());
+        }
+        return steps;
     }
 
     public CronTaskResult run() {

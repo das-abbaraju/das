@@ -30,7 +30,7 @@ public class EbixLoader implements CronTask {
     private final Logger logger = LoggerFactory.getLogger(EbixLoader.class);
 
     public String getDescription() {
-        return "AuditBuilder_addAuditRenewals";
+        return "Update Huntsman FTP";
     }
 
     public List<String> getSteps() {

@@ -20,7 +20,7 @@ public class ExpireFlagChangesTask implements CronTask {
         try {
             String query = getSelectStatement();
             List<BasicDynaBean> queryResult = database.selectReadOnly(query, false);
-            result.add(queryResult.get(0).get("total").toString());
+            result.add("Auto approving " + queryResult.get(0).get("total").toString() + "flag changes");
         } catch (Exception e) {
             result.add(e.getMessage());
         }

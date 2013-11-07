@@ -153,7 +153,6 @@
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>
     <bean id="AuditBuilderAddAuditRenewalsTask" class="com.picsauditing.actions.cron.AuditBuilderAddAuditRenewalsTask" scope="prototype"/>
-    <bean id="CheckRegistrationRequestsHoldDates" class="com.picsauditing.actions.cron.CheckRegistrationRequestsHoldDates" scope="prototype"/>
     <bean id="ClearForcedFlagsTask" class="com.picsauditing.actions.cron.ClearForcedFlagsTask" scope="prototype"/>
     <bean id="DeactivateNonRenewalAccounts" class="com.picsauditing.actions.cron.DeactivateNonRenewalAccounts" scope="prototype"/>
     <bean id="DeclineOldPendingAccounts" class="com.picsauditing.actions.cron.DeclineOldPendingAccounts" scope="prototype"/>

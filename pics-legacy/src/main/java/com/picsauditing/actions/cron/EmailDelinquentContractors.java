@@ -8,10 +8,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class EmailDelinquentContractors implements CronTask {
     @Autowired
@@ -20,11 +17,19 @@ public class EmailDelinquentContractors implements CronTask {
     EmailQueueDAO emailQueueDAO;
 
     public String getDescription() {
-        return "AuditBuilder_addAuditRenewals";
+        return "Email Blast: almost delinquent contractors";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> steps = new ArrayList<>();
+        List<Invoice> pendingAndDelinquentInvoices = contractorAccountDAO.findPendingDelinquentAndDelinquentInvoices();
+        if (!pendingAndDelinquentInvoices.isEmpty()) {
+            Map<ContractorAccount, Integer> pendingAndDelinquentAccts = splitPendingAndDeliquentInvoices(pendingAndDelinquentInvoices);
+            for (ContractorAccount contractorAccount : pendingAndDelinquentAccts.keySet()) {
+                steps.add("Will spam " + contractorAccount.getName() + " (" + contractorAccount.getId() + ")");
+            }
+        }
+        return steps;
     }
 
     public CronTaskResult run() {

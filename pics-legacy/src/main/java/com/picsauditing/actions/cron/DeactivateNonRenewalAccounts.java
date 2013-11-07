@@ -9,6 +9,7 @@ import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.util.IndexerEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeactivateNonRenewalAccounts implements CronTask {
@@ -23,12 +24,17 @@ public class DeactivateNonRenewalAccounts implements CronTask {
     AccountStatusChanges accountStatusChanges;
 
     public String getDescription() {
-        return "Do not change the payment expires when deactivating accounts. " +
-                "This is actually Canceling an account, not a deactivation.";
+        return "Deactivate non-renewing accounts when payment expires";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> steps = new ArrayList<>();
+        String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
+        List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
+        for (ContractorAccount contractorAccount : conAcctList) {
+            steps.add("Will deactivate " + contractorAccount.getName() + " (" + contractorAccount.getId() + ")");
+        }
+        return steps;
     }
 
     public CronTaskResult run() {

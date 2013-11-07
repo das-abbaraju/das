@@ -31,7 +31,6 @@ public class CronTaskService {
         Set<String> classes = new TreeSet<>();
         classes.add("AddLateFees");
         classes.add("AuditBuilderAddAuditRenewalsTask");
-        classes.add("CheckRegistrationRequestsHoldDates");
         classes.add("ClearForcedFlagsTask");
         classes.add("DeactivateNonRenewalAccounts");
         classes.add("DeclineOldPendingAccounts");

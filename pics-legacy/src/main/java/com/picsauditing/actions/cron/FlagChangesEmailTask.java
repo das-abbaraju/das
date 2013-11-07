@@ -26,11 +26,18 @@ public class FlagChangesEmailTask implements CronTask {
     EmailQueueDAO emailQueueDAO;
 
     public String getDescription() {
-        return "TODO";
+        return "Email Blast: Flag Changes";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> result = new ArrayList<>();
+        try {
+            List<BasicDynaBean> data = getFlagChangeData();
+            result.add("Sending email with current " + data.size() + " flag changes");
+        } catch (Exception e) {
+            result.add(e.getMessage());
+        }
+        return result;
     }
 
     public CronTaskResult run() {

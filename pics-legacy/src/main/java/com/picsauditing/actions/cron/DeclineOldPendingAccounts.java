@@ -7,6 +7,7 @@ import com.picsauditing.model.account.AccountStatusChanges;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeclineOldPendingAccounts implements CronTask {
@@ -17,11 +18,16 @@ public class DeclineOldPendingAccounts implements CronTask {
     AccountStatusChanges accountStatusChanges;
 
     public String getDescription() {
-        return "findPendingAccountsToMoveToDeclinedStatus and declineContractor";
+        return "Decline Contractors who have not paid in 90 days of quote";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> steps = new ArrayList<>();
+        List<ContractorAccount> deactivateList = contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus();
+        for (ContractorAccount contractorAccount : deactivateList) {
+            steps.add("Will decline " + contractorAccount.getName() + " (" + contractorAccount.getId() + ")");
+        }
+        return steps;
     }
 
     public CronTaskResult run() {
