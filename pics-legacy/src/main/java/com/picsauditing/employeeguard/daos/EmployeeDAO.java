@@ -104,7 +104,9 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 	}
 
 	public List<Employee> search(String searchTerm, int accountId) {
-
+		if (searchTerm == null) {
+			searchTerm = Strings.EMPTY_STRING;
+		}
 
 		TypedQuery<Employee> query = em.createQuery(
 				"SELECT DISTINCT e FROM Employee e " +
