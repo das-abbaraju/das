@@ -31,7 +31,6 @@ public class UserGroupManager {
 
     protected User initializeNewUserOrGroup(Account account) {
         User user = new User();
-	    saveNewAppUser(user);
         user.setAccount(account);
         user.setActive(true);
         return user;
@@ -63,6 +62,9 @@ public class UserGroupManager {
 
     protected User saveWithAuditColumnsAndRefresh(User user, Permissions permissions) throws Exception {
         if (user != null) {
+	        if (user.getAppUser().getId() == 0) {
+		        saveNewAppUser(user);
+	        }
             user.setAuditColumns(permissions);
             user = userDAO.save(user);
             userDAO.refresh(user);

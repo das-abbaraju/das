@@ -62,9 +62,12 @@ public class GroupManagerTest {
 
         when(group.getId()).thenReturn(TEST_USER_ID);
         when(group.getAccount()).thenReturn(account);
+	    when(group.getAppUser()).thenReturn(appUser);
         when(group.getName()).thenReturn(TEST_USER_NAME);
         when(group.getUsername()).thenReturn(TEST_USERNAME);
         when(account.getId()).thenReturn(TEST_ACCOUNT_ID);
+
+	    Whitebox.setInternalState(groupManager, "appUserService", appUserService);
     }
 
     @Test
@@ -126,7 +129,6 @@ public class GroupManagerTest {
 
     @Test
     public void testInitializeNewGroup() throws Exception {
-	    Whitebox.setInternalState(groupManager, "appUserService", appUserService);
 	    Whitebox.setInternalState(groupManager, "appUserDAO", appUserDAO);
 
 	    JSONObject json = new JSONObject();
