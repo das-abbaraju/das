@@ -39,6 +39,10 @@ public class AppPropertyDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+    /**
+     * Use AppPropertyService.getPropertyString(property, null)
+     */
+    @Deprecated
 	public String getProperty(String property) {
 		AppProperty p = find(property);
 		if (p == null)

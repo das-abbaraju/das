@@ -76,7 +76,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
         when(subscriptionDAO.find(subscriptionId)).thenReturn(emailSubscription);
         when(emailSubscription.getReport()).thenReturn(report);
         when(emailSubscription.getSubscription()).thenReturn(Subscription.AmberFlags);
-        when(emailQueueDAO.getPendingEmails(MailCronService.NUMBER_OF_EMAILS_TO_FIND)).thenReturn(emails);
+        when(emailQueueDAO.getPendingEmails(anyInt())).thenReturn(emails);
 
         Whitebox.setInternalState(mailCronService, "featureToggleChecker", featureToggleChecker);
         Whitebox.setInternalState(mailCronService, "appPropertyService", appPropertyService);
@@ -89,7 +89,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
     @Test
     public void testProcessEmailSubscription_whenTOGGLE_BPROC_SUBSCRIPTIONEMAILisFalseAndSubscriptionsAreEnabled_sendSubscription() throws Exception {
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
-        when(appPropertyService.emailSubscriptionsAreEnabled()).thenReturn(true);
+        when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
 
         mailCronService.processEmailSubscription(subscriptionId);
 
@@ -99,7 +99,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
     @Test
     public void testProcessEmailSubscription_whenTOGGLE_BPROC_SUBSCRIPTIONEMAILisTrueAndSubscriptionsAreEnabled_doNothing() throws Exception {
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(true);
-        when(appPropertyService.emailSubscriptionsAreEnabled()).thenReturn(true);
+        when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
 
         mailCronService.processEmailSubscription(subscriptionId);
 
@@ -109,7 +109,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
     @Test
     public void testProcessEmailSubscription_whenTOGGLE_BPROC_SUBSCRIPTIONEMAILisFalseAndSubscriptionsAreNotEnabled_doNothing() throws Exception {
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(true);
-        when(appPropertyService.emailSubscriptionsAreEnabled()).thenReturn(false);
+        when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
 
         mailCronService.processEmailSubscription(subscriptionId);
 
@@ -119,7 +119,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
     @Test
     public void testProcessEmailSubscription_whenIOException_setSubscriptionToBeReprocessedTomorrow() throws Exception {
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
-        when(appPropertyService.emailSubscriptionsAreEnabled()).thenReturn(true);
+        when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
         doThrow(new IOException()).when(builder).sendSubscription(emailSubscription);
 
         mailCronService.processEmailSubscription(subscriptionId);
@@ -184,7 +184,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
     @Test
     public void testProcessPendingEmails_whenTOGGLE_BPROC_EMAILQUEUEisFalseAndQueueIsEmpty_returnQueueEmptyMessage() throws Exception {
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
-        when(emailQueueDAO.getPendingEmails(MailCronService.NUMBER_OF_EMAILS_TO_FIND)).thenReturn(Collections.EMPTY_LIST);
+        when(emailQueueDAO.getPendingEmails(anyInt())).thenReturn(Collections.EMPTY_LIST);
 
         String statusMessage = mailCronService.processPendingEmails();
 
@@ -205,7 +205,18 @@ public class MailCronServiceTest extends PicsTranslationTest {
     public void testGetSubscriptionIdsToSendAsCommaDelimited() throws Exception {
         Integer[] ids = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
         List<Integer> subscriptionIds = Arrays.asList(ids);
-        when(subscriptionDAO.findSubscriptionsToSend(MailCronService.SUBSCRIPTIONS_TO_SEND)).thenReturn(subscriptionIds);
+        when(subscriptionDAO.findSubscriptionsToSend(anyString(), anyInt())).thenReturn(subscriptionIds);
+
+        String result = mailCronService.getSubscriptionIdsToSendAsCommaDelimited();
+
+        assertEquals("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15", result);
+    }
+
+    @Test
+    public void testGetSubscriptionIdsToSendAsCommaDelimited_WithAppProperty() throws Exception {
+        Integer[] ids = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        List<Integer> subscriptionIds = Arrays.asList(ids);
+        when(subscriptionDAO.findSubscriptionsToSend(anyString(), anyInt())).thenReturn(subscriptionIds);
 
         String result = mailCronService.getSubscriptionIdsToSendAsCommaDelimited();
 
@@ -214,7 +225,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
 
     @Test
     public void testGetSubscriptionIdsToSendAsCommaDelimited_emptyList() throws Exception {
-        when(subscriptionDAO.findSubscriptionsToSend(MailCronService.SUBSCRIPTIONS_TO_SEND)).thenReturn(Collections.EMPTY_LIST);
+        when(subscriptionDAO.findSubscriptionsToSend(anyString(), anyInt())).thenReturn(Collections.EMPTY_LIST);
 
         String result = mailCronService.getSubscriptionIdsToSendAsCommaDelimited();
 

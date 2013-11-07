@@ -1,7 +1,6 @@
 package com.picsauditing.service.mail;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -33,11 +32,13 @@ public class MailCronService {
 	public static final String ERROR_INVALID_SUBSCRIPTION = "The subscription is invalid.";
 	public static final String ERROR_INVALID_SUBSCRIPTION_ID = "You must supply a valid subscription id.";
 	public static final String THE_EMAIL_QUEUE_IS_EMPTY = "The email queue is empty";
-	public static final int NUMBER_OF_EMAILS_TO_FIND = 5;
+	public static final int NUMBER_OF_EMAILS_TO_FIND_DEFAULT = 5;
 	public static final String SUCCESSFULLY_SENT_EMAILS = "Successfully sent %s out of %s email(s).";
-	public static final int SUBSCRIPTIONS_TO_SEND = 15;
+	public static final int SUBSCRIPTIONS_TO_SEND_DEFAULT = 15;
+    static final String SUBSCRIPTION_ENABLE = "subscription.enable";
+    static final String EMAIL_QUEUE_SENDING_LIMIT_TOGGLE_NAME = "email_queue.sending_limit";
 
-	@Autowired
+    @Autowired
 	private AppPropertyService appPropertyService;
 	@Autowired
 	private SubscriptionBuilderFactory subscriptionFactory;
@@ -53,7 +54,7 @@ public class MailCronService {
 	public void processEmailSubscription(int subscriptionId) throws ValidationException {
 		if (backProcsEmailSubscriptionsIsDisabled()) {
 
-			if (appPropertyService.emailSubscriptionsAreEnabled()) {
+			if (appPropertyService.isEnabled(SUBSCRIPTION_ENABLE, true)) {
 				if (subscriptionId > 0) {
 					EmailSubscription emailSubscription = findEmailSubscription(subscriptionId);
 					validateEmailSubscription(emailSubscription);
@@ -68,7 +69,8 @@ public class MailCronService {
 
 		if (backProcsEmailQueueIsDisabled()) {
 
-			List<EmailQueue> pendingEmails = findTheHighestPriorityPendingEmails(NUMBER_OF_EMAILS_TO_FIND);
+            int emailsToFindLimit = appPropertyService.getPropertyInt(EMAIL_QUEUE_SENDING_LIMIT_TOGGLE_NAME, NUMBER_OF_EMAILS_TO_FIND_DEFAULT);
+			List<EmailQueue> pendingEmails = findTheHighestPriorityPendingEmails(emailsToFindLimit);
 			if (pendingEmails.size() == 0) {
 				statusMessage = THE_EMAIL_QUEUE_IS_EMPTY;
 				return statusMessage;
@@ -180,12 +182,15 @@ public class MailCronService {
 		return subscriptionDAO.find(subscriptionId);
 	}
 
-	public List<Integer> findSubscriptionIdsToSend() {
-		return subscriptionDAO.findSubscriptionsToSend(SUBSCRIPTIONS_TO_SEND);
+	private List<Integer> findSubscriptionIdsToSend() {
+        String runtimeWhere = appPropertyService.getPropertyString("subscription.whereClause", "");
+        int limit = appPropertyService.getPropertyInt("subscription.limit", SUBSCRIPTIONS_TO_SEND_DEFAULT);
+		return subscriptionDAO.findSubscriptionsToSend(runtimeWhere, limit);
 	}
 
 	public String getSubscriptionIdsToSendAsCommaDelimited() {
 		List<Integer> subscriptionIds = findSubscriptionIdsToSend();
+        // TODO look at the python script to see if it can accept "0" or "0,0" or only 15 zeros
 		return (subscriptionIds.isEmpty()) ? "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" : Strings.implode(subscriptionIds);
 	}
 }
