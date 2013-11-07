@@ -47,6 +47,18 @@ public class AuditTypesBuilderTest {
 		when(contractor.getOperatorAccounts()).thenReturn(contractorOperatorAccounts);
 	}
 
+    @Test
+    public void testRulePruningForDependentAuditTypes() throws Exception {
+        AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        auditTypeRule.setDependentAuditType(EntityFactory.makeAuditType(200));
+        auditTypeRule.setDependentAuditStatus(AuditStatus.Complete);
+
+        auditTypeRules.add(auditTypeRule);
+
+        Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+        assertEquals(0, auditTypeDetails.size());
+    }
+
 	@Test
 	public void testCalculate_whenWelcomeRuleIsPresentAndOperatorIsActive_addAuditTypeDetail() throws Exception {
 		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.WELCOME, 101, "Welcome Category 1");

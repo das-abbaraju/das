@@ -113,7 +113,8 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		Iterator<AuditTypeRule> iterator = rules.iterator();
 		while (iterator.hasNext()) {
 			AuditTypeRule rule = iterator.next();
-			if (!evaluateRule(rule, answers, tags)) {
+			if (!isValidRuleForDependentAuditStatus(rule) ||
+                    !evaluateRule(rule, answers, tags)) {
 				iterator.remove();
 			}
 		}
@@ -131,6 +132,26 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		}
 		return null;
 	}
+
+    protected boolean isValidRuleForDependentAuditStatus(AuditRule rule) {
+        AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
+        if (auditTypeRule.getDependentAuditType() != null && auditTypeRule.getDependentAuditStatus() != null) {
+            boolean found = false;
+            for (ContractorAudit audit : contractor.getAudits()) {
+                if (!audit.isExpired()
+                        && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())
+                        && (audit.hasCaoStatus(auditTypeRule.getDependentAuditStatus()) ||
+                        audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers,
 	                          Map<Integer, OperatorTag> opTags) {
