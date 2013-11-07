@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +31,19 @@ public class AddLateFees implements CronTask {
     BillingService billingService;
 
     public String getDescription() {
-        return "findDelinquentInvoicesMissingLateFees and add late fees";
+        return "Add late fee invoices to accounts with delinquent invoices";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> steps = new ArrayList<>();
+        List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
+        for (Invoice i : invoicesMissingLateFees) {
+            if (invoiceHasReactivation(i)) {
+                continue;
+            }
+            steps.add("Will Create late fee invoice for delinquent invoice #" + i.getId());
+        }
+        return steps;
     }
 
     public CronTaskResult run() {

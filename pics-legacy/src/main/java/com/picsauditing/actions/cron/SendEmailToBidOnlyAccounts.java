@@ -26,7 +26,7 @@ public class SendEmailToBidOnlyAccounts implements CronTask {
     public List<String> getSteps() {
         List<String> list = new ArrayList<>();
         for (ContractorAccount c : contractorAccountDAO.findBidOnlyContractors())
-            list.add(c.getId() + " : " + c.getName());
+            list.add("Will spam " + c.getName() + " (" + c.getId() + ")");
         return list;
     }
 

@@ -13,8 +13,8 @@ import java.util.TreeSet;
 
 public class CronTaskService {
     protected final Logger logger = LoggerFactory.getLogger(CronTaskService.class);
-    protected StringBuilder report = new StringBuilder();
     protected long startTime = 0L;
+    protected long endTime = 0L;
     private CronTask cronTask;
 
     public CronTaskService(CronTask cronTask) {
@@ -31,7 +31,6 @@ public class CronTaskService {
         Set<String> classes = new TreeSet<>();
         classes.add("AddLateFees");
         classes.add("AuditBuilderAddAuditRenewalsTask");
-        classes.add("CheckRegistrationRequestsHoldDates");
         classes.add("ClearForcedFlagsTask");
         classes.add("DeactivateNonRenewalAccounts");
         classes.add("DeclineOldPendingAccounts");
@@ -47,6 +46,7 @@ public class CronTaskService {
         classes.add("ReportSuggestionsTask");
         classes.add("RunConCronForOldAccountsWithBalances");
         classes.add("SendEmailToBidOnlyAccounts");
+        classes.add("TestTask");
         return classes;
     }
 
@@ -61,20 +61,16 @@ public class CronTaskService {
         }
     }
 
-    public StringBuilder getReport() {
-        return report;
-    }
-
     protected void startTask() {
         startTime = System.currentTimeMillis();
-        report.append("Starting " + cronTask.getDescription() + "\n\t");
     }
 
     private void endTask() {
-        report.append("SUCCESS...(");
-        report.append(new Long(System.currentTimeMillis() - startTime).toString());
-        report.append(" millis )");
-        report.append("\n\n");
+        endTime = System.currentTimeMillis();
+    }
+
+    public String getRunTime() {
+        return new Long(endTime - startTime).toString();
     }
 
     private CronTaskResult handleException(Throwable t) {
@@ -86,12 +82,6 @@ public class CronTaskService {
         result.getLogger().append(t.getMessage());
         result.getLogger().append("\n");
         result.getLogger().append(sw.toString());
-
-        report.append("\n\n\n");
-        report.append(t.getMessage());
-        report.append("\n");
-        report.append(sw.toString());
-        report.append("\n\n\n");
 
         return result;
     }

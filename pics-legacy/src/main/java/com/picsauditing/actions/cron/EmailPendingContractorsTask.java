@@ -29,18 +29,34 @@ public class EmailPendingContractorsTask implements CronTask {
     EmailDuplicateContractors duplicateContractors;
 
     public String getDescription() {
-        return "";
+        return "Email Blast: pending contractors";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> steps = new ArrayList<>();
+        emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
+        steps.add("Excluding " + emailExclusionList.size() + " emails");
+
+        String where = "a.country IN ('US','CA') AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
+        String whereReminder = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
+        String whereLastChance = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 WEEK)";
+        String whereFinal = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 1 MONTH)";
+
+        List<ContractorAccount> contractors = new ArrayList<>();
+        contractors.addAll(contractorAccountDAO.findPendingAccounts(whereReminder));
+        contractors.addAll(contractorAccountDAO.findPendingAccounts(whereLastChance));
+        contractors.addAll(contractorAccountDAO.findPendingAccounts(whereFinal));
+        for (ContractorAccount contractorAccount : contractors) {
+            steps.add("Will spam " + contractorAccount.getName() + " (" + contractorAccount.getId() + ")");
+        }
+
+        return steps;
     }
 
     public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         try {
             emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
-            results.getLogger().append("Excluding " + emailExclusionList.size() + " emails");
             sendEmailPendingAccounts();
         } catch (Exception e) {
             results.setSuccess(false);

@@ -30,7 +30,7 @@ public class EbixLoader implements CronTask {
     private final Logger logger = LoggerFactory.getLogger(EbixLoader.class);
 
     public String getDescription() {
-        return "AuditBuilder_addAuditRenewals";
+        return "Update Huntsman FTP";
     }
 
     public List<String> getSteps() {
@@ -38,7 +38,7 @@ public class EbixLoader implements CronTask {
     }
 
     public CronTaskResult run() {
-        CronTaskResult results = new CronTaskResult();
+        CronTaskResult results = new CronTaskResult(true, "");
         String server = appPropDao.find("huntsmansync.ftp.server").getValue();
         String username = appPropDao.find("huntsmansync.ftp.user").getValue();
         String password = appPropDao.find("huntsmansync.ftp.password").getValue();

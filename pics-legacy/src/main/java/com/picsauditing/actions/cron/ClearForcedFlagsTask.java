@@ -17,14 +17,18 @@ public class ClearForcedFlagsTask implements CronTask {
     private User system = new User(User.SYSTEM);
 
     public String getDescription() {
-        return "findDelinquentInvoicesMissingLateFees and add late fees";
+        return "Clear expired forced flags";
     }
 
     public List<String> getSteps() {
         List<String> steps = new ArrayList<>();
         List<FlagDataOverride> fdos = flagDataOverrideDAO.findExpiredForceFlags();
         for (FlagDataOverride fdo : fdos) {
-            steps.add(fdo.toString());
+            steps.add("Clear Forced " + fdo.getCriteria().getCategory() + " Flag for the relationship of " + fdo.getContractor().getName() + " and " + fdo.getOperator().getName());
+        }
+        List<ContractorOperator> overrides = contractorOperatorDAO.findExpiredForceFlags();
+        for (ContractorOperator override : overrides) {
+            steps.add("Clear Forced Overall Flag for the relationship of " + override.getContractorAccount().getName() + " and " + override.getOperatorAccount().getName());
         }
         return steps;
     }

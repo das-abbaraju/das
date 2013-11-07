@@ -153,13 +153,13 @@
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>
     <bean id="AuditBuilderAddAuditRenewalsTask" class="com.picsauditing.actions.cron.AuditBuilderAddAuditRenewalsTask" scope="prototype"/>
-    <bean id="CheckRegistrationRequestsHoldDates" class="com.picsauditing.actions.cron.CheckRegistrationRequestsHoldDates" scope="prototype"/>
     <bean id="ClearForcedFlagsTask" class="com.picsauditing.actions.cron.ClearForcedFlagsTask" scope="prototype"/>
     <bean id="DeactivateNonRenewalAccounts" class="com.picsauditing.actions.cron.DeactivateNonRenewalAccounts" scope="prototype"/>
     <bean id="DeclineOldPendingAccounts" class="com.picsauditing.actions.cron.DeclineOldPendingAccounts" scope="prototype"/>
     <bean id="EbixLoader" class="com.picsauditing.util.EbixLoader" scope="prototype"/>
     <bean id="EmailDelinquentContractors" class="com.picsauditing.actions.cron.EmailDelinquentContractors" scope="prototype"/>
     <bean id="EmailPendingContractorsTask" class="com.picsauditing.actions.cron.EmailPendingContractorsTask" scope="prototype"/>
+    <bean id="EmailDuplicateContractors" class="com.picsauditing.actions.cron.EmailDuplicateContractors" scope="prototype"/>
     <bean id="EmailRegistrationRequestsTask" class="com.picsauditing.actions.cron.EmailRegistrationRequestsTask" scope="prototype"/>
     <bean id="EmailUpcomingImplementationAudits" class="com.picsauditing.actions.cron.EmailUpcomingImplementationAudits" scope="prototype"/>
     <bean id="ExpireFlagChangesTask" class="com.picsauditing.actions.cron.ExpireFlagChangesTask" scope="prototype"/>
@@ -169,6 +169,7 @@
     <bean id="ReportSuggestionsTask" class="com.picsauditing.actions.cron.ReportSuggestionsTask" scope="prototype"/>
     <bean id="RunConCronForOldAccountsWithBalances" class="com.picsauditing.actions.cron.RunConCronForOldAccountsWithBalances" scope="prototype"/>
     <bean id="SendEmailToBidOnlyAccounts" class="com.picsauditing.actions.cron.SendEmailToBidOnlyAccounts" scope="prototype"/>
+    <bean id="TestTask" class="com.picsauditing.actions.cron.TestTask" scope="prototype"/>
 
     <!-- Validators -->
     <bean id="ContractorValidator" class="com.picsauditing.validator.ContractorValidator" scope="prototype"/>

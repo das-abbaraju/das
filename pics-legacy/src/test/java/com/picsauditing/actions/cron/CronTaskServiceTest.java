@@ -1,7 +1,6 @@
 package com.picsauditing.actions.cron;
 
 import static com.picsauditing.util.Assert.assertContains;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -45,8 +44,6 @@ public class CronTaskServiceTest {
         CronTaskResult run = service.run();
         assertTrue(run.wasSuccessful());
         assertEquals("test run was successful", run.getLog());
-        assertContains("Starting this is a test mock",service.getReport().toString());
-        assertContains("SUCCESS...(",service.getReport().toString());
     }
 
     @Test

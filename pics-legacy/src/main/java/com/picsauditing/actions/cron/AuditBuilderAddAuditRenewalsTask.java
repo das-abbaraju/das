@@ -3,8 +3,10 @@ package com.picsauditing.actions.cron;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Invoice;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AuditBuilderAddAuditRenewalsTask implements CronTask {
@@ -15,11 +17,16 @@ public class AuditBuilderAddAuditRenewalsTask implements CronTask {
     AuditBuilder auditBuilder;
 
     public String getDescription() {
-        return "AuditBuilder_addAuditRenewals";
+        return "Generate renewal audits to replace expiring audits";
     }
 
     public List<String> getSteps() {
-        return null;
+        List<String> steps = new ArrayList<>();
+        List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
+        for (ContractorAccount contractor : contractors) {
+            steps.add("Will Build new audits for contractor: " + contractor.getName() + " (" + contractor.getId() + ")");
+        }
+        return steps;
     }
 
     public CronTaskResult run() {
