@@ -76,10 +76,13 @@ public class UserManagerTest {
         PicsTestUtil.autowireDAOsFromDeclaredMocks(userManager, this);
 
         when(user.getAccount()).thenReturn(account);
+	    when(user.getAppUser()).thenReturn(appUser);
         when(user.getOwnedOpPerms()).thenReturn(ownedOpPerms);
         when(user.getOwnedPermissions()).thenReturn(ownedPermissions);
         when(group.isGroup()).thenReturn(true);
         when(account.getUsersByRole(any(OpPerms.class))).thenReturn(usersByRole);
+
+	    Whitebox.setInternalState(userManager, "appUserService", appUserService);
     }
 
     @Test
@@ -133,7 +136,6 @@ public class UserManagerTest {
 
     @Test
     public void testInitializeNewUser_SetsIsGroupToNo() throws Exception {
-	    Whitebox.setInternalState(userManager, "appUserService", appUserService);
 	    Whitebox.setInternalState(userManager, "appUserDAO", appUserDAO);
 
 	    JSONObject json = new JSONObject();
