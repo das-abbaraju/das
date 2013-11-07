@@ -159,6 +159,7 @@
     <bean id="EbixLoader" class="com.picsauditing.util.EbixLoader" scope="prototype"/>
     <bean id="EmailDelinquentContractors" class="com.picsauditing.actions.cron.EmailDelinquentContractors" scope="prototype"/>
     <bean id="EmailPendingContractorsTask" class="com.picsauditing.actions.cron.EmailPendingContractorsTask" scope="prototype"/>
+    <bean id="EmailDuplicateContractors" class="com.picsauditing.actions.cron.EmailDuplicateContractors" scope="prototype"/>
     <bean id="EmailRegistrationRequestsTask" class="com.picsauditing.actions.cron.EmailRegistrationRequestsTask" scope="prototype"/>
     <bean id="EmailUpcomingImplementationAudits" class="com.picsauditing.actions.cron.EmailUpcomingImplementationAudits" scope="prototype"/>
     <bean id="ExpireFlagChangesTask" class="com.picsauditing.actions.cron.ExpireFlagChangesTask" scope="prototype"/>

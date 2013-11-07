@@ -20,7 +20,7 @@ public class ExpireFlagChangesTask implements CronTask {
         try {
             String query = getSelectStatement();
             List<BasicDynaBean> queryResult = database.selectReadOnly(query, false);
-            result.add("Auto approving " + queryResult.get(0).get("total").toString() + "flag changes");
+            result.add("Auto approving " + queryResult.get(0).get("total").toString() + " flag changes");
         } catch (Exception e) {
             result.add(e.getMessage());
         }
@@ -47,8 +47,7 @@ public class ExpireFlagChangesTask implements CronTask {
         sql.addField("COUNT(*) total");
         sql.addJoin("JOIN accounts a ON co.conID = a.id");
         sql.addJoin("JOIN contractor_info c ON a.id = c.id");
-        sql.addWhere(getWhereClause());
-        return sql.toString();
+        return sql.toString() + getWhereClause();
     }
 
     private String getUpdateStatement() {
@@ -64,7 +63,7 @@ public class ExpireFlagChangesTask implements CronTask {
     }
 
     private String getWhereClause() {
-        String query = "WHERE flag != baselineFlag ";
+        String query = " WHERE flag != baselineFlag ";
         // Ignore Flag Changes that are two weeks old or longer
         query += "AND (flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY) ";
         // Automatically approve a. Audited - Unspecified Facility
