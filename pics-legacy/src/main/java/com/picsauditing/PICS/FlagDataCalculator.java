@@ -506,6 +506,10 @@ public class FlagDataCalculator {
     }
 
     private boolean auditIsApplicableForThisOperator(FlagCriteriaOperator opCriteria, FlagCriteria criteria, ContractorAccount con) {
+        if (!worksForOperator) {
+            return true;
+        }
+
         for (ContractorAudit ca : con.getAudits()) {
             if (criteria.getQuestion() != null && ca.getAuditType().equals(criteria.getQuestion().getAuditType()) && !ca.isExpired()) {
 	            for (ContractorAuditOperator cao : ca.getOperators()) {
