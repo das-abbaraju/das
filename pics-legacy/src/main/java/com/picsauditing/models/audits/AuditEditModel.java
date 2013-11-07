@@ -70,7 +70,7 @@ public class AuditEditModel {
                 }
             }
             // Contractor should be able to edit a category if it's not completely filled out, regardless of the cao status
-            if (foundAuditCatData != null && foundAuditCatData.getNumAnswered() - foundAuditCatData.getNumRequired() < 0) {
+            if (foundAuditCatData != null && foundAuditCatData.getRequiredCompleted() - foundAuditCatData.getNumRequired() < 0) {
                 result = true;
             } else {
                 result = false;
