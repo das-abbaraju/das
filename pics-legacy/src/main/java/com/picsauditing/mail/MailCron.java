@@ -24,7 +24,7 @@ public class MailCron extends PicsActionSupport {
     @Anonymous
     public String subscription() {
         try {
-            mailCronService.processEmailSubscription(subscriptionID, getPermissions());
+            mailCronService.processEmailSubscription(subscriptionID);
         } catch (ValidationException e) {
             addActionError(e.getMessage());
         }
@@ -33,7 +33,7 @@ public class MailCron extends PicsActionSupport {
 
     @Anonymous
     public String send() {
-        String statusMessage = mailCronService.processPendingEmails(permissions);
+        String statusMessage = mailCronService.processPendingEmails();
         addActionMessage(statusMessage);
         return ACTION_MESSAGES;
     }
