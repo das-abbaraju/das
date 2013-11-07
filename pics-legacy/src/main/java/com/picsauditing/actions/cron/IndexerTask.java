@@ -29,8 +29,6 @@ public class IndexerTask implements CronTask {
     public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult(true, "");
         Set<Class<? extends Indexable>> entries = indexer.getEntries();
-        results.getLogger().append("Found " +
-                entries.size() + " entries");
         indexer.runAll(entries);
         return results;
     }

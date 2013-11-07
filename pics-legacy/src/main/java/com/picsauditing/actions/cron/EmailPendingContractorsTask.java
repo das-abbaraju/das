@@ -57,7 +57,6 @@ public class EmailPendingContractorsTask implements CronTask {
         CronTaskResult results = new CronTaskResult(true, "");
         try {
             emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
-            results.getLogger().append("Excluding " + emailExclusionList.size() + " emails");
             sendEmailPendingAccounts();
         } catch (Exception e) {
             results.setSuccess(false);

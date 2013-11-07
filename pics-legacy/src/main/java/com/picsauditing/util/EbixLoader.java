@@ -38,7 +38,7 @@ public class EbixLoader implements CronTask {
     }
 
     public CronTaskResult run() {
-        CronTaskResult results = new CronTaskResult();
+        CronTaskResult results = new CronTaskResult(true, "");
         String server = appPropDao.find("huntsmansync.ftp.server").getValue();
         String username = appPropDao.find("huntsmansync.ftp.user").getValue();
         String password = appPropDao.find("huntsmansync.ftp.password").getValue();

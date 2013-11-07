@@ -80,8 +80,6 @@ public class EmailRegistrationRequestsTask implements CronTask {
 
         try {
             emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
-            results.getLogger().append("Excluding " +
-                    emailExclusionList.size() + " emails");
             sendEmailContractorRegistrationRequest();
         } catch (Exception e) {
             results.setSuccess(false);
