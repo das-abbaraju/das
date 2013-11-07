@@ -8,7 +8,8 @@ public enum FlagCriteriaCategory implements Translatable {
     InsuranceCriteria,
     Paperwork,
     Safety,
-    Statistics;
+    Statistics,
+    ClientReviews;
 
     public boolean isAMBest() {
         return this == InsuranceAMBClass || this == InsuranceAMBRating;
