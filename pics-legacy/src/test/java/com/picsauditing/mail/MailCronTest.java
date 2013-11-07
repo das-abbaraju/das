@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.when;
 import static junit.framework.Assert.*;
 
-public class MailCronTest extends PicsActionTest {
+public class MailCronTest {
     @Mock
     MailCronService service;
     private MailCron cron;
@@ -20,7 +20,6 @@ public class MailCronTest extends PicsActionTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         cron = new MailCron();
-        super.setUp(cron);
 
         cron.mailCronService = service;
     }
