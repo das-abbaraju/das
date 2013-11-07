@@ -44,7 +44,7 @@ class TranslatableStringTest extends FlatSpec with BeforeAndAfterAll with Mockit
 
   }
 
-  override def afterAll(configMap: Map[String, Any]) {
+  override protected def afterAll() {
     TranslationServiceFactory.registerTranslationService(null)
     TranslationServiceFactory.registerNonLoggingTranslationService(null)
   }
