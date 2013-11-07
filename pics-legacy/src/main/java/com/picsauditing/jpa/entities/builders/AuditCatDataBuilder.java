@@ -29,4 +29,9 @@ public class AuditCatDataBuilder {
         auditCatData.setCategory(category);
         return this;
     }
+
+    public AuditCatDataBuilder requiredCompleted(int requiredCompleted) {
+        auditCatData.setRequiredCompleted(requiredCompleted);
+        return this;
+    }
 }
