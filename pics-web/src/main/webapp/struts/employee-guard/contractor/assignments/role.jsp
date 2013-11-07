@@ -25,6 +25,8 @@
         <li>
             <a href="${contractor_project_assignments}">Project</a>
         </li>
+
+        <s:set var="selected_role" value="%{id}" />
         <s:iterator value="contractorProjectAssignmentMatrix.roles" var="contractor_project_role">
             <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="contractor_project_role_url">
                 <s:param name="projectId">
@@ -37,7 +39,7 @@
                     ${contractor_project_role.id}
                 </s:param>
             </s:url>
-            <li <s:if test="id == #contractor_project_role.id">class="active"</s:if>>
+            <li <s:if test="#selected_role == #contractor_project_role.id">class="active"</s:if>>
                 <a href="${contractor_project_role_url}">${contractor_project_role.name}</a>
             </li>
         </s:iterator>
