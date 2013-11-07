@@ -9,6 +9,7 @@ import java.util.List;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.actions.validation.AjaxValidator;
+import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.validator.RequestNewContractorValidator;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -67,6 +68,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	private UserSwitchDAO userSwitchDAO;
 	@Autowired
 	private RequestNewContractorValidator validator;
+	@Autowired
+	private UserManagementService userManagementService;
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
@@ -459,7 +462,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 		}
 
 		primaryContact.setPhoneIndex(Strings.stripPhoneNumber(primaryContact.getPhone()));
-		primaryContact = (User) dao.save(primaryContact);
+		primaryContact = userManagementService.saveWithAuditColumnsAndRefresh(primaryContact, permissions);
 
 		// Flag is required for contractorOperator
 		if (requestRelationship.getId() == 0) {
