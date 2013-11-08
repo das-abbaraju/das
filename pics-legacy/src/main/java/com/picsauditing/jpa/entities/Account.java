@@ -84,7 +84,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String fax;
 	protected String webUrl;
 	protected Trade mainTrade;
-	// private Naics naics;
+	private Naics naics;
 	private boolean naicsValid;
 	protected String type;
 	protected boolean qbSync;
@@ -376,20 +376,22 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.generalContractor = generalContractor;
 	}
 
-    /**
-     * North American Industry Classification System
-     * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
-     *
-     * @return
-     * NOTE: "fetch=FetchType.LAZY" is a workaround for a EntityNotFoundException issue with no FK in the db. (
-     * See: http://stackoverflow.com/questions/13539050/entitynotfoundexception-in-hibernate-many-to-one-mapping-however-data-exist
-     */
+	/**
+	 * North American Industry Classification System
+	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
+	 *
+	 * @return
+	 * NOTE: "fetch=FetchType.LAZY" is a workaround for a EntityNotFoundException issue with no FK in the db. (
+	 * See: http://stackoverflow.com/questions/13539050/entitynotfoundexception-in-hibernate-many-to-one-mapping-however-data-exist
+	 */
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "naics")
 	public Naics getNaics() {
-        System.out.println("Calling Naics for account " + id);
-        return new Naics();
+		return naics;
 	}
 
 	public void setNaics(Naics naics) {
+		this.naics = naics;
 	}
 
 	public boolean isNaicsValid() {
