@@ -25,7 +25,7 @@
 <body id="${uniquePageId}_page" class="${pageId}-page page" data-is-bootstrap="true" data-spy="scroll" data-offset-top="200" data-target="#side-navigation">
 
 <header>
-    <s:action name="Menu!menu" executeResult="true" />
+    <s:action name="Menu!bootstrap3Menu" executeResult="true" />
 </header>
 
 <div id="main" role="main" class="container">

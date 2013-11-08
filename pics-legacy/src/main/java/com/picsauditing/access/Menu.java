@@ -38,6 +38,11 @@ public class Menu extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	public String bootstrap3Menu() {
+		menu = buildMainMenu();
+		return "bootstrap3";
+	}
+
 	private MenuComponent buildMainMenu() {
 		loadPermissions();
 
