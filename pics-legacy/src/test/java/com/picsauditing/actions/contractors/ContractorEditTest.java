@@ -97,6 +97,33 @@ public class ContractorEditTest extends PicsActionTest {
 		when(translationService.getText(anyString(), any(Locale.class), any())).thenReturn("foo");
 	}
 
+    @Test
+    public void testSave_ChangeCsrAssignment() throws Exception {
+        Vector<String> errors = new Vector<String>();
+        when(permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)).thenReturn(true);
+        when(mockConValidator.validateContractor(mockContractor)).thenReturn(errors);
+        when(sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(mockContractor)).thenReturn(false);
+
+        // test non-privledged account
+        classUnderTest.save();
+        verify(mockContractor, times(0)).setDontReassign(anyBoolean());
+
+        // reset to auto assign
+        when(permissions.hasPermission(OpPerms.UserZipcodeAssignment)).thenReturn(true);
+        classUnderTest.setCsrId(0);
+        classUnderTest.save();
+        verify(mockContractor, times(1)).setDontReassign(false);
+
+        // manually set
+        User csr = new User();
+        csr.setId(200);
+        when(permissions.hasPermission(OpPerms.UserZipcodeAssignment)).thenReturn(true);
+        when(mockUserDao.find(anyInt())).thenReturn(csr);
+        classUnderTest.setCsrId(csr.getId());
+        classUnderTest.save();
+        verify(mockContractor, times(1)).setDontReassign(true);
+    }
+
 //    @Test
 //    public void testSaveISR() throws Exception {
 //        when(permissions.isContractor()).thenReturn(true);
@@ -412,6 +439,7 @@ public class ContractorEditTest extends PicsActionTest {
 		when(mockUserDao.find(anyInt())).thenReturn(otherInsideSales);
 		when(otherInsideSales.getId()).thenReturn(TESTING_CONTACT_ID);
 		when(permissions.isContractor()).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.UserZipcodeAssignment)).thenReturn(true);
 
 		classUnderTest.setInsideSalesId(TESTING_CONTACT_ID);
 		assertEquals(ActionSupport.SUCCESS, classUnderTest.save());
