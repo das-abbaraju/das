@@ -1184,6 +1184,22 @@ Permission: Permissions{permissions=[]}
 CountryEnglish
 CountryIsoCode
 
+Model: Emails
+Permission: Permissions{permissions=[]}
+----------------------------------------
+EmailBccAddresses
+EmailBody
+EmailCcAddresses
+EmailContractorAccountID
+EmailContractorAccountName
+EmailCreationDate
+EmailFromAddress
+EmailId
+EmailSentDate
+EmailStatus
+EmailSubject
+EmailToAddresses
+
 Model: EmployeeCompetencies
 Permission: Permissions{permissions=[]}
 ----------------------------------------

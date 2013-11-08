@@ -19,6 +19,7 @@ CountrySubdivision	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Ma
 Currency	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 Date	Date	String	Count,CountDistinct,Year,WeekDay,Hour,YearMonth,GroupConcat,Month,DaysFromNow,Max,Min,LowerCase,UpperCase
 DateTime	Date	String	Count,CountDistinct,Year,WeekDay,Hour,YearMonth,GroupConcat,Month,Date,DaysFromNow,Max,Min,LowerCase,UpperCase
+EmailStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 EmployeeStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 ExpirationDate	Date	String	Count,CountDistinct,Year,WeekDay,Hour,YearMonth,GroupConcat,Month,Date,DaysFromNow,Max,Min,LowerCase,UpperCase
 FeeClass	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
@@ -27,6 +28,7 @@ FlagCriteriaOptionCode	Multiselect	String	Count,CountDistinct,Length,GroupConcat
 Float	Number	Number	Count,CountDistinct,Average,Round,Sum,StdDev,Max,Min
 Integer	Number	Number	Count,CountDistinct,Average,Sum,StdDev,Max,Min
 InvoiceType	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
+ListType	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 LowMedHigh	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 MultiYearScope	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 NetworkLevel	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase

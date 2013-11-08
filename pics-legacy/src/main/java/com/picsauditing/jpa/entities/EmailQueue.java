@@ -22,6 +22,9 @@ import javax.persistence.Transient;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.builders.EmailQueueBuilder;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -59,6 +62,7 @@ public class EmailQueue implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "emailID")
+    @ReportField(importance = FieldImportance.Required)
 	public int getId() {
 		return id;
 	}
@@ -69,6 +73,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+    @ReportField(type = FieldType.EmailStatus, importance = FieldImportance.Average)
 	public EmailStatus getStatus() {
 		return status;
 	}
@@ -79,6 +84,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	@JsonProperty
 	@Column(length = 150)
+    @ReportField(importance = FieldImportance.Average)
 	public String getFromAddress() {
 		return fromAddress;
 	}
@@ -105,6 +111,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	@JsonProperty
 	@Column(nullable = false, length = 1000)
+    @ReportField(importance = FieldImportance.Required)
 	public String getToAddresses() {
 		return toAddresses;
 	}
@@ -122,6 +129,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	@JsonProperty
 	@Column(length = 1000)
+    @ReportField(importance = FieldImportance.Average)
 	public String getCcAddresses() {
 		return ccAddresses;
 	}
@@ -139,6 +147,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	@JsonProperty
 	@Column(length = 1000)
+    @ReportField(importance = FieldImportance.Low)
 	public String getBccAddresses() {
 		return bccAddresses;
 	}
@@ -156,6 +165,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	@JsonProperty
 	@Column(length = 150, nullable = false)
+    @ReportField(importance = FieldImportance.Required)
 	public String getSubject() {
 		return subject;
 	}
@@ -165,6 +175,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@JsonProperty
+    @ReportField(importance = FieldImportance.Average)
 	public String getBody() {
 		return body;
 	}
@@ -207,6 +218,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+    @ReportField(type = FieldType.DateTime, importance = FieldImportance.Required)
 	public Date getSentDate() {
 		return sentDate;
 	}
