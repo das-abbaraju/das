@@ -1,11 +1,11 @@
-package com.picsauditing.employeeguard.forms.employee;
+package com.picsauditing.employeeguard.viewmodel;
 
 import com.picsauditing.employeeguard.entities.SkillType;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
 import java.util.Date;
 
-public class SkillInfo {
+public class SkillInfo implements Comparable<SkillInfo> {
 
     private int id;
     private Date endDate;
@@ -70,4 +70,13 @@ public class SkillInfo {
 	public void setDoesNotExpire(boolean doesNotExpire) {
 		this.doesNotExpire = doesNotExpire;
 	}
+
+    @Override
+    public int compareTo(SkillInfo that) {
+        if (this.skillStatus == that.skillStatus) {
+            return this.name.compareToIgnoreCase(that.name);
+        }
+
+        return this.skillStatus.compareTo(that.skillStatus);
+    }
 }

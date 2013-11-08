@@ -64,4 +64,17 @@ public class EntityHelper {
 
         return ids;
     }
+
+    public static <E extends BaseEntity> Set<Integer> getUniqueIdsForEntities(List<E> entities) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return Collections.emptySet();
+        }
+
+        Set<Integer> ids = new HashSet<>();
+        for (E entity : entities) {
+            ids.add(entity.getId());
+        }
+
+        return ids;
+    }
 }

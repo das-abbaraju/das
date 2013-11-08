@@ -59,29 +59,36 @@ public class ProfileDocumentService {
 	}
 
 	public ProfileDocument update(String documentId, int profileId, ProfileDocument updatedProfileDocument,
-                                  int appUserId, File file, String filename, String directory) throws Exception {
+	                              int appUserId, File file, String filename, String directory) throws Exception {
 		ProfileDocument profileDocumentFromDatabase =
-                profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
+				profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
 		profileDocumentFromDatabase.setEndDate(updatedProfileDocument.getEndDate());
 		profileDocumentFromDatabase.setName(updatedProfileDocument.getName());
-        profileDocumentFromDatabase.setFileName(updatedProfileDocument.getFileName());
-        profileDocumentFromDatabase.setFileType(updatedProfileDocument.getFileType());
-        profileDocumentFromDatabase.setFileSize(updatedProfileDocument.getFileSize());
-        profileDocumentFromDatabase.setDocumentType(updatedProfileDocument.getDocumentType());
+		profileDocumentFromDatabase.setDocumentType(updatedProfileDocument.getDocumentType());
+
+		if (Strings.isNotEmpty(updatedProfileDocument.getFileName())) {
+			profileDocumentFromDatabase.setFileName(updatedProfileDocument.getFileName());
+			profileDocumentFromDatabase.setFileType(updatedProfileDocument.getFileType());
+			profileDocumentFromDatabase.setFileSize(updatedProfileDocument.getFileSize());
+		}
 
 		EntityHelper.setUpdateAuditFields(profileDocumentFromDatabase, appUserId, new Date());
 
-        profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
+		profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 
-        Profile profile = profileDocumentFromDatabase.getProfile();
+		if (Strings.isNotEmpty(updatedProfileDocument.getFileName())) {
+			Profile profile = profileDocumentFromDatabase.getProfile();
 
-        String extension = FileUtils.getExtension(filename).toLowerCase();
-        filename = PICSFileType.profile_certificate.filename(profile.getId()) + "-" + profileDocumentFromDatabase.getId();
-        FileUtils.moveFile(file, directory, "files/" + FileUtils.thousandize(profile.getId()), filename, extension, true);
+			String extension = FileUtils.getExtension(profileDocumentFromDatabase.getFileName()).toLowerCase();
+			filename = PICSFileType.profile_certificate.filename(profile.getId()) + "-" + profileDocumentFromDatabase.getId();
+			FileUtils.moveFile(file, directory, "files/" + FileUtils.thousandize(profile.getId()), filename, extension, true);
 
-        profileDocumentFromDatabase.setFileName(filename + "." + extension);
+			profileDocumentFromDatabase.setFileName(filename + "." + extension);
 
-		return profileDocumentDAO.save(profileDocumentFromDatabase);
+			return profileDocumentDAO.save(profileDocumentFromDatabase);
+		}
+
+		return profileDocumentFromDatabase;
 	}
 
 	public void delete(String documentId, int profileId, int appUserId) {

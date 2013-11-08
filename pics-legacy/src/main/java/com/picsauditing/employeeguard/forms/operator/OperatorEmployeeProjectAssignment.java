@@ -71,7 +71,7 @@ public class OperatorEmployeeProjectAssignment implements Comparable<OperatorEmp
 		this.assignedRoleIds = assignedRoleIds;
 	}
 
-	public boolean hasRoles() {
+	public boolean isHasRoles() {
 		return CollectionUtils.isNotEmpty(assignedRoleIds);
 	}
 

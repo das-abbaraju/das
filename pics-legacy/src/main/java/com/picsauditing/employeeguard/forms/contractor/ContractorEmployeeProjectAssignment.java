@@ -7,43 +7,53 @@ import java.util.List;
 
 public class ContractorEmployeeProjectAssignment implements Comparable<ContractorEmployeeProjectAssignment> {
 
-    private int employeeId;
-    private String name;
-    private String title;
-    private List<SkillStatus> skillStatuses;
+	private boolean assigned;
+	private int employeeId;
+	private String name;
+	private String title;
+	private List<SkillStatus> skillStatuses;
+	// May not be needed anymore
 	private List<Integer> assignedGroupIds;
 
-    public int getEmployeeId() {
-        return employeeId;
-    }
+	public boolean isAssigned() {
+		return assigned;
+	}
 
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
-    }
+	public void setAssigned(boolean assigned) {
+		this.assigned = assigned;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public int getEmployeeId() {
+		return employeeId;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public List<SkillStatus> getSkillStatuses() {
-        return skillStatuses;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setSkillStatuses(List<SkillStatus> skillStatuses) {
-        this.skillStatuses = skillStatuses;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public List<SkillStatus> getSkillStatuses() {
+		return skillStatuses;
+	}
+
+	public void setSkillStatuses(List<SkillStatus> skillStatuses) {
+		this.skillStatuses = skillStatuses;
+	}
 
 	public List<Integer> getAssignedGroupIds() {
 		return assignedGroupIds;

@@ -10,17 +10,27 @@ import java.util.Date;
 
 public class DocumentForm implements AddAnotherForm {
 
+	private int id;
     private String name;
     private File file;
 	private String fileFileName;
 	private String fileContentType;
+	private String validate_filename;
 	private int expireYear;
 	private int expireMonth;
 	private int expireDay;
     private boolean noExpiration;
     private boolean addAnother;
 
-    public String getName() {
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -50,6 +60,14 @@ public class DocumentForm implements AddAnotherForm {
 
 	public void setFileContentType(String fileContentType) {
 		this.fileContentType = fileContentType;
+	}
+
+	public String getValidate_filename() {
+		return validate_filename;
+	}
+
+	public void setValidate_filename(String validate_filename) {
+		this.validate_filename = validate_filename;
 	}
 
 	public int getExpireYear() {

@@ -6,7 +6,10 @@ import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProject
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ContractorEmployeeProjectAssignmentFactory {
 
@@ -42,7 +45,7 @@ public class ContractorEmployeeProjectAssignmentFactory {
 	}
 
 	private Map<Employee, List<AccountSkillEmployee>> buildEmployeeSkillsMap(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees) {
-		Map<Employee, List<AccountSkillEmployee>> employeeSkillMap = new HashMap<>();
+		Map<Employee, List<AccountSkillEmployee>> employeeSkillMap = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
 			employeeSkillMap.put(employee, new ArrayList<AccountSkillEmployee>());
@@ -102,5 +105,58 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		if (statusMap.containsKey(name)) {
 			statusMap.put(name, skillStatus);
 		}
+	}
+
+	public List<ContractorEmployeeProjectAssignment> buildListForRole(final List<Employee> employees, final List<AccountSkill> requiredSkills, final List<AccountSkillEmployee> accountSkillEmployees, final List<ProjectRoleEmployee> projectRoleEmployees) {
+		List<ContractorEmployeeProjectAssignment> assignments = new ArrayList<>();
+		Map<Employee, List<SkillStatus>> employeeSkillStatuses = getEmployeeSkillStatuses(employees, requiredSkills, accountSkillEmployees);
+
+		for (Employee employee : employees) {
+			ContractorEmployeeProjectAssignment assignment = new ContractorEmployeeProjectAssignment();
+			assignment.setAssigned(employeeIsAssignedToRole(projectRoleEmployees, employee));
+			assignment.setEmployeeId(employee.getId());
+			assignment.setName(employee.getName());
+			assignment.setTitle(employee.getPositionName());
+			assignment.setSkillStatuses(employeeSkillStatuses.get(employee));
+
+			assignments.add(assignment);
+		}
+
+		return assignments;
+	}
+
+	private Map<Employee, List<SkillStatus>> getEmployeeSkillStatuses(final List<Employee> employees, final List<AccountSkill> requiredSkills, final List<AccountSkillEmployee> accountSkillEmployees) {
+		Map<Employee, List<SkillStatus>> employeeSkillStatuses = new TreeMap<>();
+
+		for (Employee employee : employees) {
+			employeeSkillStatuses.put(employee, new ArrayList<SkillStatus>());
+
+			for (AccountSkill requiredSkill : requiredSkills) {
+				AccountSkillEmployee accountSkillEmployee = getAccountSkillEmployeeWithDefault(employee, requiredSkill, accountSkillEmployees);
+				employeeSkillStatuses.get(employee).add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
+			}
+		}
+
+		return employeeSkillStatuses;
+	}
+
+	private AccountSkillEmployee getAccountSkillEmployeeWithDefault(Employee employee, AccountSkill requiredSkill, List<AccountSkillEmployee> accountSkillEmployees) {
+		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+			if (accountSkillEmployee.getSkill().equals(requiredSkill) && accountSkillEmployee.getEmployee().equals(employee)) {
+				return accountSkillEmployee;
+			}
+		}
+
+		return new AccountSkillEmployee(requiredSkill, employee);
+	}
+
+	private boolean employeeIsAssignedToRole(final List<ProjectRoleEmployee> projectRoleEmployees, final Employee employee) {
+		for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
+			if (projectRoleEmployee.getEmployee().equals(employee)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

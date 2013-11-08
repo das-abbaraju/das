@@ -70,7 +70,7 @@
                     </s:iterator>
                 </tw:select>
             </div>
-            <div class="col-md-4 col-md-offset-3">
+<%--             <div class="col-md-4 col-md-offset-3">
                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label required-for-all">
                         <s:if test="operatorSkillForm.required">
@@ -83,7 +83,7 @@
                     </tw:label>
                 </div>
             </div>
-        </div>
+ --%>        </div>
 
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">

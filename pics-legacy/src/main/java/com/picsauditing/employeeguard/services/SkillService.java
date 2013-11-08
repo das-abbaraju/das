@@ -1,31 +1,39 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillGroup;
-import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.daos.SiteSkillDAO;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class SkillService {
 	@Autowired
 	private AccountGroupDAO accountGroupDAO;
 	@Autowired
+	private AccountService accountService;
+	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Autowired
+	private EmployeeService employeeService;
+	@Autowired
+	private EmployeeSkillAssigner employeeSkillAssigner;
+	@Autowired
+	private ProjectService projectService;
+	@Autowired
+	private SiteSkillDAO siteSkillDAO;
 
 	public AccountSkill getSkill(String id) {
 		return accountSkillDAO.find(NumberUtils.toInt(id));
@@ -35,8 +43,42 @@ public class SkillService {
 		return accountSkillDAO.findSkillByAccount(NumberUtils.toInt(id), accountId);
 	}
 
+	public List<AccountSkill> getSkills(List<Integer> skillIds) {
+		return accountSkillDAO.findByIds(skillIds);
+	}
+
 	public List<AccountSkill> getSkillsForAccount(int accountId) {
 		return accountSkillDAO.findByAccount(accountId);
+	}
+
+	public List<AccountSkill> getRequiredSkills(int accountId) {
+		List<SiteSkill> requiredByAccount = siteSkillDAO.findByAccountId(accountId);
+		return ExtractorUtil.extractList(requiredByAccount, SiteSkill.SKILL_EXTRACTOR);
+	}
+
+	public Map<AccountModel, List<AccountSkill>> getSiteRequiredSkills(int accountId) {
+		List<Integer> childOperators = accountService.getChildOperatorIds(accountId);
+		List<SiteSkill> requiredByAccounts = siteSkillDAO.findByAccountIds(childOperators);
+		Map<Integer, List<SiteSkill>> siteIdToSkill = extractSiteIdToSiteSkills(requiredByAccounts);
+
+		List<AccountModel> accounts = accountService.getAccountsByIds(siteIdToSkill.keySet());
+		Map<AccountModel, List<AccountSkill>> siteRequiredSkills = new TreeMap<>();
+
+		for (AccountModel account : accounts) {
+			List<SiteSkill> siteSkills = siteIdToSkill.get(account.getId());
+			siteRequiredSkills.put(account, ExtractorUtil.extractList(siteSkills, SiteSkill.SKILL_EXTRACTOR));
+		}
+
+		return siteRequiredSkills;
+	}
+
+	private Map<Integer, List<SiteSkill>> extractSiteIdToSiteSkills(List<SiteSkill> requiredByAccounts) {
+		return Utilities.convertToMapOfLists(requiredByAccounts, new Utilities.MapConvertable<Integer, SiteSkill>() {
+			@Override
+			public Integer getKey(SiteSkill entity) {
+				return entity.getSiteId();
+			}
+		});
 	}
 
 	public List<AccountSkill> getOptionalSkillsForAccount(int accountId) {
@@ -119,6 +161,31 @@ public class SkillService {
 		accountSkillInDatabase.getGroups().addAll(accountSkillGroups);
 	}
 
+	public void setRequiredSkillsForSite(List<AccountSkill> requiredSkills, String id, int appUserID) {
+		List<SiteSkill> newSiteSkills = new ArrayList<>();
+		int siteId = NumberUtils.toInt(id);
+		Date now = new Date();
+
+		for (AccountSkill requiredSkill : requiredSkills) {
+			SiteSkill siteSkill = new SiteSkill(siteId, requiredSkill);
+			newSiteSkills.add(siteSkill);
+			EntityHelper.setCreateAuditFields(siteSkill, appUserID, now);
+		}
+
+		List<SiteSkill> existingSiteSkills = siteSkillDAO.findByAccountId(siteId);
+		BaseEntityCallback<SiteSkill> skillCallback = new BaseEntityCallback<>(appUserID, now);
+		newSiteSkills = IntersectionAndComplementProcess.intersection(newSiteSkills, existingSiteSkills, SiteSkill.COMPARATOR, skillCallback);
+
+		siteSkillDAO.save(newSiteSkills);
+
+		List<Project> affectedProjects = projectService.getProjectsForAccount(siteId);
+		List<Employee> affectedEmployees = employeeService.getEmployeesByProjects(affectedProjects);
+
+		for (Employee employee : affectedEmployees) {
+			accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserID, now);
+		}
+	}
+
 	private List<AccountSkillGroup> getLinkedGroups(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
 		BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
 		List<AccountSkillGroup> accountSkillGroups = IntersectionAndComplementProcess.intersection(updatedSkill.getGroups(),
@@ -181,5 +248,53 @@ public class SkillService {
 		}
 
 		return accountSkillDAO.search(searchTerm, accountIds);
+	}
+
+	public Set<AccountSkill> findAllSkillsRequiredForEmployee(final Employee employee) {
+		Set<AccountSkill> allRequiredSkills = new TreeSet<>();
+		allRequiredSkills.addAll(findSkillsByEmployeeGroups(employee.getGroups()));
+
+		findAndAddSkillsByEmployeeProjects(employee, allRequiredSkills);
+		allRequiredSkills.addAll(findByEmployeeAccount(employee));
+
+		List<SiteSkill> associatedAccountSkills = getSiteSkills(employee);
+		allRequiredSkills.addAll(ExtractorUtil.extractList(associatedAccountSkills, SiteSkill.SKILL_EXTRACTOR));
+
+		return allRequiredSkills;
+	}
+
+	private List<SiteSkill> getSiteSkills(Employee employee) {
+		List<Project> projects = projectService.getProjectsForEmployee(employee);
+		List<Integer> siteIds = ExtractorUtil.extractList(projects, Project.ACCOUNT_ID_EXTRACTOR);
+
+		Set<Integer> associatedAccounts = new HashSet<>();
+		associatedAccounts.addAll(siteIds);
+
+		for (int siteId : siteIds) {
+			associatedAccounts.addAll(accountService.getTopmostCorporateAccountIds(siteId));
+		}
+
+		return siteSkillDAO.findByAccountIds(new ArrayList<>(associatedAccounts));
+	}
+
+	private List<AccountSkill> findSkillsByEmployeeGroups(List<AccountGroupEmployee> groupEmployees) {
+		return accountSkillDAO.findByGroups(ExtractorUtil.extractList(groupEmployees, AccountGroupEmployee.GROUP_EXTRACTOR));
+	}
+
+	private void findAndAddSkillsByEmployeeProjects(Employee employee, Set<AccountSkill> allRequiredSkills) {
+		List<Project> projects = projectService.getProjectsForEmployee(employee);
+		for (Project project : projects) {
+			allRequiredSkills.addAll(projectService.getRequiredSkills(project));
+		}
+
+		for (ProjectRoleEmployee projectRoleEmployee : employee.getRoles()) {
+			for (AccountSkillGroup accountSkillGroup : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
+				allRequiredSkills.add(accountSkillGroup.getSkill());
+			}
+		}
+	}
+
+	private List<AccountSkill> findByEmployeeAccount(Employee employee) {
+		return accountSkillDAO.findRequiredByAccount(employee.getAccountId());
 	}
 }

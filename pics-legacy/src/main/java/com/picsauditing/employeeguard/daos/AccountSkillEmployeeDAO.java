@@ -50,17 +50,6 @@ public class AccountSkillEmployeeDAO extends BaseEntityDAO<AccountSkillEmployee>
 		return Collections.emptyList();
 	}
 
-	public List<AccountSkillEmployee> findByEmployeesAndSkill(List<Employee> employees, AccountSkill skill) {
-		if (CollectionUtils.isNotEmpty(employees) && skill != null) {
-			TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee IN (:employees) AND ase.skill = :skill", AccountSkillEmployee.class);
-			query.setParameter("employees", employees);
-			query.setParameter("skill", skill);
-			return query.getResultList();
-		}
-
-		return Collections.emptyList();
-	}
-
 	public List<AccountSkillEmployee> findByEmployeeAndSkills(Employee employee, List<AccountSkill> skills) {
 		if (CollectionUtils.isNotEmpty(skills) && employee != null) {
 			TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee = :employee AND ase.skill IN (:skills)", AccountSkillEmployee.class);
@@ -73,9 +62,11 @@ public class AccountSkillEmployeeDAO extends BaseEntityDAO<AccountSkillEmployee>
 	}
 
 	public List<AccountSkillEmployee> findByAccountAndEmployee(Employee employee) {
-		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee = :employee " +
-				"AND ase.skill.deletedBy = 0 AND ase.skill.deletedDate = NULL", AccountSkillEmployee.class);
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
+				"WHERE ase.employee = :employee " +
+				"AND ase.skill.accountId = :accountId", AccountSkillEmployee.class);
 		query.setParameter("employee", employee);
+		query.setParameter("accountId", employee.getAccountId());
 
 		return query.getResultList();
 	}
@@ -136,4 +127,19 @@ public class AccountSkillEmployeeDAO extends BaseEntityDAO<AccountSkillEmployee>
 		query.setParameter("skills", accountSkills);
 		return query.getResultList();
 	}
+
+    public List<AccountSkillEmployee> findByProjectAndContractor(Project project, int accountId) {
+        String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
+                "JOIN ase.skill s " +
+                "JOIN s.groups asg " +
+                "JOIN asg.group g " +
+                "JOIN g.projects pr " +
+                "JOIN pr.employees pre " +
+                "JOIN pre.employee e " +
+                "WHERE pr.project = :project AND e.accountId = :accountId";
+        TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
+        query.setParameter("project", project);
+        query.setParameter("accountId", accountId);
+        return query.getResultList();
+    }
 }

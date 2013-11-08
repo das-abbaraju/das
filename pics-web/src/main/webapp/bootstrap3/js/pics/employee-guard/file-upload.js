@@ -31,8 +31,8 @@ PICS.define('employee-guard.FileUpload', {
         }
 
         function updateHiddenFilenameForValidation($element) {
-            var $validate_filename = $('#validate-filename');
-                filename = $element[0].files[0].name,
+            var $validate_filename = $('#validate-filename'),
+                filename = $element[0].files[0].name;
 
             $validate_filename.val(filename);
         }

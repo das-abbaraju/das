@@ -33,6 +33,8 @@ PICS.define('select2.Select2', {
             if (select2Default.length) {
                 $('.select2').select2();
             }
+
+            $('.select2').trigger('intialized.select2');
         }
 
         function overrideSelect2Icons() {

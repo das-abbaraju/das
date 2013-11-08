@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.forms.employee;
 
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.SkillInfo;
 
 import java.util.List;
 

@@ -4,14 +4,17 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectDAO;
 import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
 import com.picsauditing.employeeguard.services.factory.AccountServiceFactory;
+import com.picsauditing.employeeguard.services.factory.AccountSkillEmployeeServiceFactory;
 import com.picsauditing.jpa.entities.Account;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,9 +24,11 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,9 +40,12 @@ public class ProjectServiceTest extends PicsTranslationTest {
 	@Mock
 	private AccountSkillDAO accountSkillDAO;
 	@Mock
+	private EmployeeDAO employeeDAO;
+	@Mock
 	private ProjectDAO projectDAO;
 
 	private AccountService accountService;
+	private AccountSkillEmployeeService accountSkillEmployeeService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -45,10 +53,13 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 		projectService = new ProjectService();
 		accountService = AccountServiceFactory.getAccountService();
+		accountSkillEmployeeService = AccountSkillEmployeeServiceFactory.getAccountSkillEmployeeService();
 
 		Whitebox.setInternalState(projectService, "accountGroupDAO", accountGroupDAO);
 		Whitebox.setInternalState(projectService, "accountService", accountService);
 		Whitebox.setInternalState(projectService, "accountSkillDAO", accountSkillDAO);
+		Whitebox.setInternalState(projectService, "accountSkillEmployeeService", accountSkillEmployeeService);
+		Whitebox.setInternalState(projectService, "employeeDAO", employeeDAO);
 		Whitebox.setInternalState(projectService, "projectDAO", projectDAO);
 	}
 
@@ -76,6 +87,8 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 	@Test
 	public void testUpdate_NameSkills() throws Exception {
+		when(employeeDAO.findByProject(any(Project.class))).thenReturn(Collections.<Employee>emptyList());
+
 		int skillId = 1;
 
 		List<AccountSkill> skills = new ArrayList<>();

@@ -1,13 +1,16 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -29,6 +32,10 @@ public class GroupService {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private EmployeeDAO employeeDAO;
+	@Autowired
+	private ProjectService projectService;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
 	public AccountGroup getGroup(String id, int accountId) {
 		return accountGroupDAO.findGroupByAccount(NumberUtils.toInt(id), accountId);
@@ -40,6 +47,14 @@ public class GroupService {
 
 	public List<AccountGroup> getGroupsForAccounts(final List<Integer> accountIds) {
 		return accountGroupDAO.findByAccounts(accountIds);
+	}
+
+	public List<AccountGroup> getEmployeeGroups(final Employee employee) {
+		return accountGroupDAO.findGroupsForEmployee(employee);
+	}
+
+	public List<AccountGroup> getGroupAssignmentsForEmployee(final Employee employee) {
+		return accountGroupDAO.findEmployeeGroupAssignments(employee);
 	}
 
 	public AccountGroup save(AccountGroup accountGroup, int accountId, int appUserId) {
@@ -117,6 +132,43 @@ public class GroupService {
 		accountSkillEmployeeService.linkEmployeesToSkill(updatedAccountGroup, appUserId);
 
 		return accountGroupDAO.save(updatedAccountGroup);
+	}
+
+	public AccountGroup update(final RoleProjectsForm roleProjectsForm, AccountGroup role, final int accountId, final int appUserId) {
+		if (ArrayUtils.isEmpty(roleProjectsForm.getProjects())) {
+			return role;
+		}
+
+		List<Integer> projectIds = Utilities.primitiveArrayToList(roleProjectsForm.getProjects());
+		List<Project> projects = projectService.getProjects(projectIds, accountId);
+
+		List<ProjectRole> newProjectRoles = new ArrayList<>();
+		Date now = new Date();
+
+		for (Project project : projects) {
+			ProjectRole projectRole = new ProjectRole(project, role);
+			EntityHelper.setCreateAuditFields(projectRole, appUserId, now);
+
+			newProjectRoles.add(projectRole);
+		}
+
+		newProjectRoles = IntersectionAndComplementProcess.intersection(
+				newProjectRoles,
+				role.getProjects(),
+				ProjectRole.COMPARATOR,
+				new BaseEntityCallback<ProjectRole>(appUserId, now));
+
+		List<Employee> affectedEmployees = projectRoleEmployeeDAO.getEmployeesByRole(role);
+
+		role.setProjects(newProjectRoles);
+		role = accountGroupDAO.save(role);
+
+		accountSkillEmployeeService.linkEmployeesToSkill(role, appUserId);
+		for (Employee employee : affectedEmployees) {
+			accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
+		}
+
+		return role;
 	}
 
 	private void updateGroup(AccountGroup accountGroupInDatabase, AccountGroup updatedAccountGroup, int appUserId) {

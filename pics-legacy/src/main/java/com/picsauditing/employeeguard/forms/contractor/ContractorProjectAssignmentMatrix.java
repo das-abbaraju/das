@@ -7,18 +7,19 @@ import java.util.Map;
 
 public class ContractorProjectAssignmentMatrix {
 
-    private List<RoleInfo> roles;
+	private List<RoleInfo> roles;
 	private List<String> skillNames;
-    private List<ContractorEmployeeProjectAssignment> assignments;
+	private List<ContractorEmployeeProjectAssignment> assignments;
+	// May not be necessary anymore
 	private Map<Integer, List<Integer>> employeeRoles;
 
-    public List<RoleInfo> getRoles() {
-        return roles;
-    }
+	public List<RoleInfo> getRoles() {
+		return roles;
+	}
 
-    public void setRoles(List<RoleInfo> roles) {
-        this.roles = roles;
-    }
+	public void setRoles(List<RoleInfo> roles) {
+		this.roles = roles;
+	}
 
 	public List<String> getSkillNames() {
 		return skillNames;
@@ -29,12 +30,12 @@ public class ContractorProjectAssignmentMatrix {
 	}
 
 	public List<ContractorEmployeeProjectAssignment> getAssignments() {
-        return assignments;
-    }
+		return assignments;
+	}
 
-    public void setAssignments(List<ContractorEmployeeProjectAssignment> assignments) {
-        this.assignments = assignments;
-    }
+	public void setAssignments(List<ContractorEmployeeProjectAssignment> assignments) {
+		this.assignments = assignments;
+	}
 
 	public Map<Integer, List<Integer>> getEmployeeRoles() {
 		return employeeRoles;

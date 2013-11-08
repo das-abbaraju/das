@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -42,18 +43,20 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 
 	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+    @BatchSize(size = 5)
 	private List<AccountSkillGroup> skills = new ArrayList<>();
 
 	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+    @BatchSize(size = 5)
 	private List<AccountGroupEmployee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+    @BatchSize(size = 5)
 	private List<ProjectRole> projects = new ArrayList<>();
 
 	public AccountGroup() {
-
 	}
 
 	public AccountGroup(int id, int accountId) {
@@ -212,5 +215,10 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public String toString() {
+		return id + " " + name;
 	}
 }

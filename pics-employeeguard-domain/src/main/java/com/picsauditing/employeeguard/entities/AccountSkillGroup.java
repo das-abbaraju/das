@@ -1,5 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
+import com.picsauditing.employeeguard.util.Extractor;
+import com.picsauditing.util.Strings;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -43,28 +45,28 @@ public class AccountSkillGroup implements BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-    public static transient final Comparator<AccountSkillGroup> COMPARATOR = new Comparator<AccountSkillGroup>() {
-        @Override
-        public int compare(AccountSkillGroup o1, AccountSkillGroup o2) {
-            if (o1 == null && o2 == null) {
-                return 0;
-            }
+	public static transient final Comparator<AccountSkillGroup> COMPARATOR = new Comparator<AccountSkillGroup>() {
+		@Override
+		public int compare(AccountSkillGroup o1, AccountSkillGroup o2) {
+			if (o1 == null && o2 == null) {
+				return 0;
+			}
 
-            if (areEqual(o1, o2)) {
-                return 0;
-            }
+			if (areEqual(o1, o2)) {
+				return 0;
+			}
 
-            if (!o1.getSkill().equals(o2.getSkill())) {
-                return -1;
-            }
+			if (!o1.getSkill().equals(o2.getSkill())) {
+				return -1;
+			}
 
-            return 1;
-        }
+			return 1;
+		}
 
-        private boolean areEqual(AccountSkillGroup o1, AccountSkillGroup o2) {
-            return ((o1.getSkill().equals(o2.getSkill())) && (o1.getGroup().equals(o2.getGroup())));
-        }
-    };
+		private boolean areEqual(AccountSkillGroup o1, AccountSkillGroup o2) {
+			return ((o1.getSkill().equals(o2.getSkill())) && (o1.getGroup().equals(o2.getGroup())));
+		}
+	};
 
 	public AccountSkillGroup() {
 	}
@@ -166,4 +168,32 @@ public class AccountSkillGroup implements BaseEntity {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		String string = Strings.EMPTY_STRING;
+
+		if (skill != null) {
+			string += skill.toString();
+		}
+
+		if (group != null) {
+			string += " " + group.toString();
+		}
+
+		return string;
+	}
+
+	public static transient final Extractor<AccountSkillGroup, AccountSkill> SKILL_EXTRACTOR = new Extractor<AccountSkillGroup, AccountSkill>() {
+		@Override
+		public AccountSkill extract(AccountSkillGroup accountSkillGroup) {
+			return accountSkillGroup.getSkill();
+		}
+	};
+
+	public static transient final Extractor<AccountSkillGroup, AccountGroup> GROUP_EXTRACTOR = new Extractor<AccountSkillGroup, AccountGroup>() {
+		@Override
+		public AccountGroup extract(AccountSkillGroup accountSkillGroup) {
+			return accountSkillGroup.getGroup();
+		}
+	};
 }

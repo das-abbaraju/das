@@ -104,7 +104,7 @@
                             <ul class="employee-guard-list companies">
                                 <s:iterator value="groupInfoList" var="group">
                                     <li>
-                                        <a href="#"><span class="label label-default">${group.name}</span></a>
+                                        <span class="label label-default">${group.name}</span>
                                     </li>
                                 </s:iterator>
                             </ul>
@@ -112,45 +112,39 @@
                     </dl>
                 </s:iterator>
             </div>
-
-            <%--<div class="content">
-                <dl class="employee-guard-information">
-                    <dt class="col-md-3">
-                        PICS
-                    </dt>
-                    <dd class="col-md-9">
-                        <ul class="employee-guard-list companies">
-                            <li>
-                                <a href="#"><span class="label">Technology</span></a>
-                            </li>
-                            <li>
-                                <a href="#"><span class="label">UX</span></a>
-                            </li>
-                        </ul>
-                    </dd>
-                </dl>
-            </div>--%>
         </section>
 
         <section class="employee-guard-section" id="assignments">
             <h1><i class="icon-map-marker"></i> Current Assignments</h1>
 
             <div class="content">
-                <dl class="employee-guard-information">
-                    <dt class="col-md-3">
-                        PICS
-                    </dt>
-                    <dd class="col-md-9">
-                        <ul class="employee-guard-list companies">
-                            <li>
-                                <label class="label label-default">Technology</label>
-                            </li>
-                            <li>
-                                <label class="label label-default">PICS</label>
-                            </li>
-                        </ul>
-                    </dd>
-                </dl>
+                <s:if test="!employeeAssignments.isEmpty()">
+                    <dl class="employee-guard-information">
+                        <s:iterator var="employee_assignment" value="employeeAssignments">
+                            <dt class="col-md-3">${employee_assignment.siteName}</dt>
+                            <dd class="col-md-9">
+                                <s:if test="!#employee_assignment.projects.isEmpty()">
+                                    <ul class="employee-guard-list roles">
+                                        <s:iterator var="project" value="#employee_assignment.projects">
+                                            <s:url action="employee-group" var="contractor_role_show_url">
+                                                <s:param name="id">${project.id}</s:param>
+                                            </s:url>
+
+                                            <li>
+                                                <span class="label label-default">${project.name}</span>
+                                            </li>
+                                        </s:iterator>
+                                    </ul>
+                                </s:if>
+                            </dd>
+                        </s:iterator>
+                    </dl>
+                </s:if>
+                <s:else>
+                    <div class="col-md-9 col-md-offset-3 no-value">
+                        No current assignments
+                    </div>
+                </s:else>
             </div>
         </section>
     </div>

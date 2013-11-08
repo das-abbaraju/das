@@ -37,7 +37,7 @@
         </thead>
 
         <tbody>
-            <s:iterator value="skills" var="contractorSkill">
+            <s:iterator value="skillModels" var="contractorSkill">
                 <s:url action="skill" var="contractor_skill_show_url">
                     <s:param name="id">${contractorSkill.id}</s:param>
                 </s:url>
@@ -51,7 +51,7 @@
 
                 <tr>
 
-                        <td class="number number-of-employees">${contractorSkill.employees.size()}</td>
+                        <td class="number number-of-employees">${contractorSkill.numberOfEmployees}</td>
                         <td><a href="${contractor_skill_show_url}">${contractorSkill.name}</a></td>
                         <td>
                             <s:if test="#contractorSkill.ruleType.required">

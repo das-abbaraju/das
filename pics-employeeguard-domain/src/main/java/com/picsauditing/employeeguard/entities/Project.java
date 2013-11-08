@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
+import com.picsauditing.employeeguard.util.Extractor;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
@@ -14,6 +15,7 @@ import java.util.List;
 @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
 @SQLInsert(sql = "INSERT INTO project (accountId, createdBy, createdDate, deletedBy, deletedDate, endDate, location, name, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 public class Project implements BaseEntity, Comparable<Project> {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -215,4 +217,11 @@ public class Project implements BaseEntity, Comparable<Project> {
 
 		return 0;
 	}
+
+	public static final Extractor<Project, Integer> ACCOUNT_ID_EXTRACTOR = new Extractor<Project, Integer>() {
+		@Override
+		public Integer extract(Project project) {
+			return project.getAccountId();
+		}
+	};
 }

@@ -7,6 +7,7 @@ import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
+import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
@@ -34,6 +35,8 @@ public class SkillActionTest extends PicsActionTest {
 
 	@Mock
 	private UrlBuilder urlBuilder;
+    @Mock
+    private EmployeeService employeeService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -43,12 +46,14 @@ public class SkillActionTest extends PicsActionTest {
 		skillService = SkillServiceFactory.getSkillService();
 		super.setUp(skillAction);
 
+        Whitebox.setInternalState(skillAction, "employeeService", employeeService);
 		Whitebox.setInternalState(skillAction, "skillService", skillService);
 		Whitebox.setInternalState(skillAction, "groupService", GroupServiceFactory.getGroupService());
 		Whitebox.setInternalState(skillAction, "urlBuilder", urlBuilder);
 
 		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
+        when(employeeService.getNumberOfEmployeesForAccount(anyInt())).thenReturn(5l);
 	}
 
 	@Test

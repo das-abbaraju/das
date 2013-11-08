@@ -9,22 +9,30 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.services.calculator.ExpirationCalculator;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class AccountSkillEmployeeService {
+
+	@Autowired
+	private AccountSkillDAO accountSkillDAO;
 	@Autowired
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
-	private AccountSkillDAO accountSkillDAO;
-	@Autowired
 	private ProfileDocumentService profileDocumentService;
+	@Autowired
+	private SkillService skillService;
 
 	public List<AccountSkillEmployee> findByProfile(final Profile profile) {
 		return accountSkillEmployeeDAO.findByProfile(profile);
+	}
+
+	public List<AccountSkillEmployee> findByEmployeeAndSkills(final Employee employee, final List<AccountSkill> accountSkills) {
+		return accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, accountSkills);
 	}
 
 	public List<AccountSkillEmployee> findByEmployeesAndSkills(final List<Employee> employees, final List<AccountSkill> accountSkills) {
@@ -50,11 +58,64 @@ public class AccountSkillEmployeeService {
 		accountSkillEmployeeDAO.save(employeeSkills);
 	}
 
+	/**
+	 * This goes through all the employee's linked groups (through the contractor), job roles (through linked projects),
+	 * and operator connections (also through projects) and calculates which skills to add, retain, or delete
+	 *
+	 * @param employee
+	 * @param appUserId
+	 * @param timestamp
+	 */
 	public void linkEmployeeToSkills(final Employee employee, int appUserId, Date timestamp) {
 		List<AccountSkillEmployee> newAccountSkillEmployees = getNewAccountSkillEmployeesForEmployee(employee, appUserId, timestamp);
-		List<AccountSkillEmployee> existingAccountSkillEmployees = getExistingAccountSkillEmployees(employee);
+		accountSkillEmployeeDAO.save(newAccountSkillEmployees);
+	}
 
-		saveAccountSkillEmployees(newAccountSkillEmployees, existingAccountSkillEmployees, appUserId, timestamp);
+	public void addNewAccountSkillEmployees(final Employee employee, final List<AccountSkill> addedSkills, final int appUserId) {
+		Date now = new Date();
+
+		List<AccountSkillEmployee> newAccountSkillEmployees = createNewAccountSkillEmployeesForEmployee(addedSkills, now, employee);
+		List<AccountSkillEmployee> existingAccountSkillEmployees = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, addedSkills);
+		newAccountSkillEmployees = IntersectionAndComplementProcess.intersection(
+				newAccountSkillEmployees,
+				existingAccountSkillEmployees,
+				AccountSkillEmployee.COMPARATOR,
+				new BaseEntityCallback<AccountSkillEmployee>(appUserId, now));
+
+		accountSkillEmployeeDAO.save(newAccountSkillEmployees);
+	}
+
+	public void addNewAccountSkillEmployees(final List<Employee> employees, final List<AccountSkill> addedSkills, final int appUserId) {
+		for (Employee employee : employees) {
+			addNewAccountSkillEmployees(employee, addedSkills, appUserId);
+		}
+	}
+
+	public void deleteAccountSkillEmployees(final Employee employee, final List<AccountSkill> deletedSkills, final int appUserId) {
+		Set<AccountSkill> skillsRequiredForEmployee = skillService.findAllSkillsRequiredForEmployee(employee);
+		deletedSkills.removeAll(skillsRequiredForEmployee);
+
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, deletedSkills);
+		EntityHelper.softDelete(accountSkillEmployees, appUserId, new Date());
+		accountSkillEmployeeDAO.save(accountSkillEmployees);
+	}
+
+	public void deleteAccountSkillEmployees(final List<Employee> employees, final List<AccountSkill> deletedSkills, final int appUserId) {
+		for (Employee employee : employees) {
+			deleteAccountSkillEmployees(employee, deletedSkills, appUserId);
+		}
+	}
+
+	private List<AccountSkillEmployee> createNewAccountSkillEmployeesForEmployee(Collection<AccountSkill> skills, Date timestamp, Employee employee) {
+		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
+
+		for (AccountSkill skill : skills) {
+			AccountSkillEmployee skillEmployee = new AccountSkillEmployee(skill, employee);
+			skillEmployee.setStartDate(timestamp);
+			accountSkillEmployees.add(skillEmployee);
+		}
+
+		return accountSkillEmployees;
 	}
 
 	private void saveAccountSkillEmployees(List<AccountSkillEmployee> newAccountSkillEmployees,
@@ -66,22 +127,17 @@ public class AccountSkillEmployeeService {
 	}
 
 	private List<AccountSkillEmployee> getNewAccountSkillEmployeesForEmployee(final Employee employee, final int appUserId, Date timestamp) {
-		Set<AccountSkill> newSkills = new HashSet<>(accountSkillDAO.findByGroups(getGroups(employee.getGroups())));
-		newSkills.addAll(accountSkillDAO.findRequiredByAccount(employee.getAccountId()));
+		List<AccountSkill> skillsToKeep = new ArrayList<>(skillService.findAllSkillsRequiredForEmployee(employee));
+		List<AccountSkillEmployee> newAccountSkillEmployees = createNewAccountSkillEmployeesForEmployee(skillsToKeep, timestamp, employee);
+		List<AccountSkillEmployee> existingAccountSkillEmployees = employee.getSkills();
 
-		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
-		for (AccountSkill skill : newSkills) {
-			AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(skill, employee);
-			accountSkillEmployee.setStartDate(timestamp);
-			EntityHelper.setCreateAuditFields(accountSkillEmployee, appUserId, timestamp);
-			accountSkillEmployees.add(accountSkillEmployee);
-		}
+		newAccountSkillEmployees = IntersectionAndComplementProcess.intersection(
+				newAccountSkillEmployees,
+				existingAccountSkillEmployees,
+				AccountSkillEmployee.COMPARATOR,
+				new BaseEntityCallback<AccountSkillEmployee>(appUserId, timestamp));
 
-		return accountSkillEmployees;
-	}
-
-	private List<AccountSkillEmployee> getExistingAccountSkillEmployees(Employee employee) {
-		return accountSkillEmployeeDAO.findByAccountAndEmployee(employee);
+		return newAccountSkillEmployees;
 	}
 
 	private List<AccountGroup> getGroups(List<AccountGroupEmployee> accountGroupEmployees) {
@@ -172,6 +228,12 @@ public class AccountSkillEmployeeService {
 		accountSkillEmployeeDAO.save(accountSkillEmployee);
 	}
 
+	public void save(List<AccountSkillEmployee> accountSkillEmployees) {
+		if (CollectionUtils.isNotEmpty(accountSkillEmployees)) {
+			accountSkillEmployeeDAO.save(accountSkillEmployees);
+		}
+	}
+
 	public void update(AccountSkillEmployee accountSkillEmployee, final SkillDocumentForm skillDocumentForm) {
 		AccountSkill skill = accountSkillEmployee.getSkill();
 		SkillType skillType = skill.getSkillType();
@@ -203,4 +265,8 @@ public class AccountSkillEmployeeService {
 	public List<AccountSkillEmployee> getAccountSkillEmployeeForAccountAndSkills(final int accountId, final List<AccountSkill> accountSkills) {
 		return accountSkillEmployeeDAO.findByEmployeeAccountAndSkills(accountId, accountSkills);
 	}
+
+    public List<AccountSkillEmployee> getAccountSkillEmployeeForProjectAndContractor(Project project, int accountId) {
+        return accountSkillEmployeeDAO.findByProjectAndContractor(project, accountId);
+    }
 }

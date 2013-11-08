@@ -45,13 +45,17 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
 	private List<AccountGroupEmployee> groups = new ArrayList<>();
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
-    private List<AccountSkillEmployee> skills = new ArrayList<>();
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	private List<AccountSkillEmployee> skills = new ArrayList<>();
+
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	private List<ProjectRoleEmployee> roles = new ArrayList<>();
 
 	public Employee() {
 	}
@@ -216,15 +220,23 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		this.groups = groups;
 	}
 
-    public List<AccountSkillEmployee> getSkills() {
-        return skills;
-    }
+	public List<AccountSkillEmployee> getSkills() {
+		return skills;
+	}
 
-    public void setSkills(List<AccountSkillEmployee> skills) {
-        this.skills = skills;
-    }
+	public void setSkills(List<AccountSkillEmployee> skills) {
+		this.skills = skills;
+	}
 
-    @Transient
+	public List<ProjectRoleEmployee> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<ProjectRoleEmployee> roles) {
+		this.roles = roles;
+	}
+
+	@Transient
 	public String getName() {
 		return firstName + " " + getLastName();
 	}
@@ -261,5 +273,10 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		}
 
 		return getFirstName().compareToIgnoreCase(that.getFirstName());
+	}
+
+	@Override
+	public String toString() {
+		return id + " " + getName();
 	}
 }

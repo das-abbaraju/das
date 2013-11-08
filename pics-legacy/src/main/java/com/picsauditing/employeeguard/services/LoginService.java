@@ -22,6 +22,10 @@ public class LoginService {
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
 
 	public JSONObject loginViaRest(String username, String password) {
+		return loginViaRest(username, password, null);
+	}
+
+	public JSONObject loginViaRest(String username, String password, String hashCode) {
 		JSONObject json = new JSONObject();
 		AppUser appUser = appUserDAO.findByUserName(username);
 
@@ -29,7 +33,7 @@ public class LoginService {
 			json.put("status", "FAIL");
 		} else {
 			Client client = Client.create(new DefaultClientConfig());
-			String uri = authenticateByCredentialsLink(username, EncodedMessage.hash(password + appUser.getHashSalt()));
+			String uri = authenticateByCredentialsLink(username, EncodedMessage.hash(password + appUser.getHashSalt()), hashCode);
 			WebResource webResource = client.resource(UriBuilder.fromUri(uri).build());
 			ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
 			String jsonString = response.getEntity(String.class);
@@ -38,11 +42,12 @@ public class LoginService {
 		return json;
 	}
 
-	private String authenticateByCredentialsLink(String username, String password) {
+	private String authenticateByCredentialsLink(String username, String password, String hashCode) {
 		return requestHost() + "/AuthService!authenticateByCredentials.action" +
 				"?apiKey=" + key +
 				"&username=" + username +
-				"&password=" + password;
+				"&password=" + password +
+				(Strings.isNotEmpty(hashCode) ? "&hashCode=" + hashCode : "");
 	}
 
 	private String requestHost() {

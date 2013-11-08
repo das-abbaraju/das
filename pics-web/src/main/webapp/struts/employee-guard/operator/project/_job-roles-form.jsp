@@ -11,7 +11,7 @@
          class="form-horizontal" role="form">
     <fieldset>
         <div class="form-group">
-            <tw:label labelName="roles" class="col-md-3 control-label"><strong>Job Roles</strong></tw:label>
+            <tw:label labelName="roles" class="col-md-3 control-label">Job Roles</tw:label>
             <div class="col-md-4">
                 <s:set var="selected_roles" value="%{projectRolesForm.roles}"/>
                 <tw:select selectName="roles" multiple="true" class="form-control select2" autofocus="true" tabindex="1">
@@ -32,8 +32,8 @@
 
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="save" type="submit" class="btn btn-success">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="2">Save</tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="3">Cancel</tw:button>
             </div>
         </div>
     </fieldset>

@@ -31,6 +31,7 @@
         <!-- Dashboard -->
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.operator.DashboardAction">
             <result name="dashboard">/struts/employee-guard/operator/dashboard.jsp</result>
+            <result name="required-skills">/struts/employee-guard/operator/_required-skills-form.jsp</result>
         </action>
 
         <!-- Project -->
@@ -49,6 +50,7 @@
             <result name="show">/struts/employee-guard/operator/role/show.jsp</result>
             <result name="name-skills-form">/struts/employee-guard/operator/role/_name-skills-form.jsp</result>
             <result name="list">/struts/employee-guard/operator/role/list.jsp</result>
+	        <result name="role-project-form">/struts/employee-guard/operator/role/_projects-form.jsp</result>
         </action>
 
         <!-- Skill -->
@@ -60,11 +62,13 @@
             <result name="show">/struts/employee-guard/operator/skill/show.jsp</result>
         </action>
 
-        <action name="project/{projectId}/assignments/{assignmentId}/role/{id}" class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="role">
+        <action name="project/{projectId}/assignments/{assignmentId}/role/{id}"
+                class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="role">
             <result name="role">/struts/employee-guard/operator/assignments/role.jsp</result>
         </action>
 
-        <action name="project/{projectId}/assignments/{id}" class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="assignments">
+        <action name="project/{projectId}/assignments/{id}"
+                class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="assignments">
             <result name="project">/struts/employee-guard/operator/assignments/project.jsp</result>
         </action>
     </package>
