@@ -25,6 +25,8 @@
         <li>
             <a href="${operator_project_assignments}">Project</a>
         </li>
+
+        <s:set var="selected_role" value="%{id}" />
         <s:iterator value="operatorProjectAssignmentMatrix.roles" var="operator_project_role">
             <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="operator_project_role_url">
                 <s:param name="projectId">
@@ -37,7 +39,7 @@
                     ${operator_project_role.id}
                 </s:param>
             </s:url>
-            <li <s:if test="id == #operator_project_role.id">class="active"</s:if>>
+            <li <s:if test="#selected_role == #operator_project_role.id">class="active"</s:if>>
                 <a href="${operator_project_role_url}">${operator_project_role.name}</a>
             </li>
         </s:iterator>
@@ -63,33 +65,9 @@
                     <s:set var="employee_assigned" value="'assigned'" />
                 </s:if>
 
-                <s:url action="assignments" method="assign" var="assign_operator">
-                    <s:param name="id">
-                        ${project.id}
-                    </s:param>
-                    <s:param name="employeeId">
-                        ${operator_project_employee.employeeId}
-                    </s:param>
-                    <s:param name="roleId">
-                        ${id}
-                    </s:param>
-                </s:url>
-
-                <s:url action="assignments" method="unassign" var="unassign_operator">
-                    <s:param name="id">
-                        ${project.id}
-                    </s:param>
-                    <s:param name="employeeId">
-                        ${operator_project_employee.employeeId}
-                    </s:param>
-                    <s:param name="roleId">
-                        ${id}
-                    </s:param>
-                </s:url>
-
-                <tr class="assign-employee-container ${employee_assigned}" data-assign-url="${assign_operator}" data-unassign-url="${unassign_operator}">
+                <tr class="${employee_assigned}">
                     <td class="assign-employee">
-                        <a href="#"><i class="icon-map-marker icon-large"></i></a>
+                        <i class="icon-map-marker icon-large"></i>
                     </td>
                     <td>
                         ${operator_project_employee.employeeName}

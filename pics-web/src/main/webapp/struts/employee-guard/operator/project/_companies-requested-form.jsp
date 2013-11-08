@@ -7,7 +7,8 @@
     <s:param name="id">${id}</s:param>
 </s:url>
 
-<tw:form formName="operator_project_companies_edit" action="${operator_project_companies_edit_url}" method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
+<tw:form formName="operator_project_companies_edit" action="${operator_project_companies_edit_url}" method="post"
+         class="form-horizontal" autocomplete="off" role="form">
     <s:set var="selected_groups" value="employee.groups"/>
 
     <div class="form-group">

@@ -1,13 +1,19 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.SQLInsert;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
 
 @Entity
 @Table(name = "project_account")
+@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@SQLInsert(sql = "INSERT INTO project_account (accountID, createdBy, createdDate, deletedBy, deletedDate, projectID, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 public class ProjectCompany implements BaseEntity {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name = "accountID")
