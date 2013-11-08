@@ -9,7 +9,7 @@ import java.util.List;
 public interface TranslationDAO {
     List<BasicDynaBean> getTranslationsForI18nCache() throws SQLException;
 
-    void updateTranslationLastUsed(String key);
+    void updateTranslationLastUsed(String key, String locale, String pageName, String environment);
 
     List<ContextTranslation> findAllForJS();
 

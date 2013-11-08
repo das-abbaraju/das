@@ -19,6 +19,7 @@ import com.picsauditing.dao.TranslationDAO;
 import com.picsauditing.dao.jdbc.TranslationsDAO;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.struts2.ServletActionContext;
 import org.perf4j.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +37,11 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.TranslationUtil;
 
 public class I18nCache implements TranslationService, Serializable {
+    private static final String environment = System.getProperty("pics.env");
+    public static final String DEFAULT_PAGENAME = "UNKNOWN";
+    public static final String DEFAULT_REFERRER = "REFERRER_UNKNOWN";
 
-	private static final String TRANSLATION_MISSING = "Translation Missing";
+    private static final String TRANSLATION_MISSING = "Translation Missing";
 
 	private static final long serialVersionUID = -9105914451729814391L;
 
@@ -109,7 +113,7 @@ public class I18nCache implements TranslationService, Serializable {
     }
 
     public String getText(String key, String locale) {
-		updateCacheUsed(key);
+		updateCacheUsed(key, locale);
 
 		String value = cache.get(TranslationUtil.prepareKeyForCache(key), locale);
 
@@ -118,14 +122,14 @@ public class I18nCache implements TranslationService, Serializable {
 		return value;
 	}
 
-	private void updateCacheUsed(String key) {
+	private void updateCacheUsed(String key, String locale) {
 		Date lastUsed = cacheUsage.get(key);
 		Calendar yesterday = Calendar.getInstance();
 		yesterday.add(Calendar.DAY_OF_YEAR, -1);
 
 		if (lastUsed == null || lastUsed.before(yesterday.getTime())) {
 			cacheUsage.put(key, new Date());
-			appTranslationDAO.updateTranslationLastUsed(key);
+			appTranslationDAO.updateTranslationLastUsed(key, locale, pageName(), environment());
 		}
 	}
 
@@ -425,4 +429,26 @@ public class I18nCache implements TranslationService, Serializable {
 			}
 		}
 	}
+
+    private String environment() {
+        if (environment == null) {
+            return "UNKNOWN";
+        } else {
+            return environment;
+        }
+    }
+
+    private String pageName() {
+        try {
+            String pageName = ServletActionContext.getContext().getName();
+            if (Strings.isEmpty(pageName )) {
+                pageName = DEFAULT_PAGENAME;
+            }
+            return pageName;
+        } catch (Exception e) {
+            logger.warn("No ServletActionContext Request available");
+            return DEFAULT_PAGENAME;
+        }
+    }
+
 }
