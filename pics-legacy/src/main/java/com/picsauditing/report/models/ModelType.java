@@ -41,6 +41,7 @@ public enum ModelType {
     ReportFilters,
     ReportPermissions,
     ReportUsers,
+    Subscriptions,
     UserAssignments,
     UserGroups,
 	Users;

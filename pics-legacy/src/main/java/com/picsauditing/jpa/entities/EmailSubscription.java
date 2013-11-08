@@ -15,6 +15,9 @@ import javax.persistence.Transient;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
@@ -38,6 +41,7 @@ public class EmailSubscription extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
+    @ReportField(type = FieldType.Subscription, importance = FieldImportance.Required)
 	public Subscription getSubscription() {
 		return subscription;
 	}
@@ -47,6 +51,7 @@ public class EmailSubscription extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
+    @ReportField(type = FieldType.SubscriptionTimePeriod, importance = FieldImportance.Required)
 	public SubscriptionTimePeriod getTimePeriod() {
 		return timePeriod;
 	}
@@ -56,6 +61,7 @@ public class EmailSubscription extends BaseTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+    @ReportField(type = FieldType.Date, importance = FieldImportance.Required)
 	public Date getLastSent() {
 		return lastSent;
 	}

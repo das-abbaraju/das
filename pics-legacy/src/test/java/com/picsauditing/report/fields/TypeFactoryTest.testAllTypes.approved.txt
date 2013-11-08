@@ -42,6 +42,8 @@ OshaType	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,Lower
 PaymentMethod	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 RegistrationRequestAccountStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 String	String	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
+Subscription	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
+SubscriptionTimePeriod	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 SupplierDiversity	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 Trade	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 TransactionStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
