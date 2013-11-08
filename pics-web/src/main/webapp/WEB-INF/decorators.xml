@@ -28,6 +28,7 @@
         <pattern>/PrintIolRmpAudit.action</pattern>
         <pattern>/PreviewEmail.action</pattern>
         <pattern>/ManageReports!allFavoriteReportsAjax.action</pattern>
+        <pattern>/Cron!run.action</pattern>
     </decorator>
     <decorator name="layout" page="layout.jsp">
         <pattern>/About.action</pattern>
@@ -40,6 +41,7 @@
         <pattern>/NewYearMailer*.action</pattern>
         <pattern>/ReportTester*.action</pattern>
         <pattern>/InvoiceRefund.action</pattern>
+        <pattern>/Cron!*.action</pattern>
     </decorator>
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>

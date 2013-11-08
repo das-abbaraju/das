@@ -74,13 +74,6 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorRegistrationRequest> findLegacyActiveByDate(String whereClause) {
-		String sql = "SELECT * FROM contractor_registration_request c WHERE c.status = 'Active' "
-				+ "AND c.conID IS NULL AND " + whereClause;
-		Query query = em.createNativeQuery(sql, ContractorRegistrationRequest.class);
-		return query.getResultList();
-	}
-
 	public List<ContractorRegistrationRequest> findByNameAndRequestedById(String contractorName, int opID) {
 		Query query = em.createQuery("FROM ContractorRegistrationRequest c WHERE c.name = ? AND c.requestedBy.id = ? ");
 		query.setParameter(1, contractorName);
