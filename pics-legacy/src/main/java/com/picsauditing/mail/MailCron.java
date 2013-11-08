@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.service.mail.MailCronService;
@@ -7,10 +8,11 @@ import com.picsauditing.validator.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
-public class MailCron extends PicsActionSupport {
+public class MailCron extends ActionSupport {
 
     @Autowired
     MailCronService mailCronService;
+    private String output = null;
     private int subscriptionID = 0;
 
     @Anonymous
@@ -18,7 +20,7 @@ public class MailCron extends PicsActionSupport {
         // TODO Don't call this anymore to send mail or create email subscriptions, call subscription() and send() directly
         subscription();
         send();
-        return ACTION_MESSAGES;
+        return PicsActionSupport.ACTION_MESSAGES;
     }
 
     @Anonymous
@@ -28,20 +30,20 @@ public class MailCron extends PicsActionSupport {
         } catch (ValidationException e) {
             addActionError(e.getMessage());
         }
-        return ACTION_MESSAGES;
+        return PicsActionSupport.ACTION_MESSAGES;
     }
 
     @Anonymous
     public String send() {
         String statusMessage = mailCronService.processPendingEmails();
         addActionMessage(statusMessage);
-        return ACTION_MESSAGES;
+        return PicsActionSupport.ACTION_MESSAGES;
     }
 
     @Anonymous
     public String listAjax() {
         output = mailCronService.getSubscriptionIdsToSendAsCommaDelimited();
-        return PLAIN_TEXT;
+        return PicsActionSupport.PLAIN_TEXT;
     }
 
     public int getSubscriptionID() {
@@ -50,6 +52,10 @@ public class MailCron extends PicsActionSupport {
 
     public void setSubscriptionID(int subscriptionID) {
         this.subscriptionID = subscriptionID;
+    }
+
+    public String getOutput() {
+        return output;
     }
 
 }
