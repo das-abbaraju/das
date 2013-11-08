@@ -152,21 +152,24 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		assertEquals("2026-01-31", format.format(date));
 	}
 
-	@Ignore
+	@Test
 	public void testESignatureVerify() throws Exception {
-		AuditData auditData = EntityFactory.makeAuditData(null);
-		auditData.setComment(null);
+		AuditData auditData = EntityFactory.makeAuditData("John Smith / Supervisor");
+		auditData.setComment("123.123.123.123");
 		AuditData databaseData = EntityFactory.makeAuditData("John Smith / Supervisor");
 		databaseData.setId(auditData.getId());
+        databaseData.setComment("123.145.167.189");
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setQuestionType("ESignature");
 		auditData.setQuestion(question);
 		databaseData.setQuestion(question);
 
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "mode", "Verify");
-		Boolean result = Whitebox.invokeMethod(auditDataSave, "answerFormatValid", auditData, databaseData);
+        PicsTestUtil.forceSetPrivateField(auditDataSave, "verifyButton", true);
+		Boolean result = Whitebox.invokeMethod(auditDataSave, "processAndValidateBasedOnQuestionType", auditData, databaseData);
 		assertTrue(result);
 		assertTrue(auditData.getAnswer().equals("John Smith / Supervisor"));
+        assertTrue(auditData.getComment().equals("123.145.167.189"));
 	}
 
 	@Test
@@ -177,7 +180,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		question.setQuestionType("ESignature");
 		auditData.setQuestion(question);
 
-		Boolean result = Whitebox.invokeMethod(auditDataSave, "answerFormatValid", auditData, auditData);
+		Boolean result = Whitebox.invokeMethod(auditDataSave, "processAndValidateBasedOnQuestionType", auditData, auditData);
 		assertTrue(result);
 		assertTrue(auditData.getComment().equals(""));
 		assertTrue(auditData.getAnswer().equals(""));
@@ -502,11 +505,11 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		question.setQuestionType("Tagit");
 		AuditData data = EntityFactory.makeAuditData("[]", question);
 
-		Whitebox.invokeMethod(auditDataSave, "answerFormatValid", data, data);
+		Whitebox.invokeMethod(auditDataSave, "processAndValidateBasedOnQuestionType", data, data);
 		assertTrue("".equals(data.getAnswer()));
 
 		data.setAnswer("[test, 1, 2, 3]");
-		Whitebox.invokeMethod(auditDataSave, "answerFormatValid", data, data);
+		Whitebox.invokeMethod(auditDataSave, "processAndValidateBasedOnQuestionType", data, data);
 		assertTrue("[test, 1, 2, 3]".equals(data.getAnswer()));
 	}
 }
