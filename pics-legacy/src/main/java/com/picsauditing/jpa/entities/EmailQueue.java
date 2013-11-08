@@ -218,7 +218,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-    @ReportField(importance = FieldImportance.Required)
+    @ReportField(type = FieldType.DateTime, importance = FieldImportance.Required)
 	public Date getSentDate() {
 		return sentDate;
 	}
