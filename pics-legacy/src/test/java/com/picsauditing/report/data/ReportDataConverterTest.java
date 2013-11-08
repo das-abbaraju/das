@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -51,9 +53,12 @@ public class ReportDataConverterTest extends PicsTranslationTest {
 		JSONArray json = runJsonConverter(queryResults);
 
 		assertEquals(1, json.size());
-		String expected = "[{\"ContractorTrades\":\"1, 2, 3, 4, 5\",\"AccountCountry\":\"Canada\",\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 22:56\",\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"}]";
+		String expected = "\\[\\{\"ContractorTrades\":\"1, 2, 3, 4, 5\",\"AccountCountry\":\"Canada\",\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ \\d{2}:56\",\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
+        String jsonString = json.toString();
+        Pattern pattern = Pattern.compile(expected);
+        Matcher matcher = pattern.matcher(jsonString);
 
-        assertEquals(expected, json.toString());
+        assertTrue(matcher.matches());
 	}
 
 	@Test
@@ -82,10 +87,12 @@ public class ReportDataConverterTest extends PicsTranslationTest {
         JSONArray json = reportResults.toJson();
 
         assertEquals(1, json.size());
-        String expected = "[{\"ContractorTrades\":\"a, b, c, d, e\",\"AccountCountry\":\"Canada\",\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 22:56\",\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"}]";
+        String expected = "\\[\\{\"ContractorTrades\":\"a, b, c, d, e\",\"AccountCountry\":\"Canada\",\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ \\d{2}:56\",\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
         String jsonString = json.toString();
+        Pattern pattern = Pattern.compile(expected);
+        Matcher matcher = pattern.matcher(jsonString);
 
-        assertEquals(expected, jsonString);
+        assertTrue(matcher.matches());
     }
 
 	@Test
