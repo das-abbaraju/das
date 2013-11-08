@@ -60,12 +60,12 @@
             <result name="show">/struts/employee-guard/operator/skill/show.jsp</result>
         </action>
 
-        <action name="project/{projectId}/assignments/{id}" class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="assignments">
-            <result name="project">/struts/employee-guard/operator/assignments/project.jsp</result>
-        </action>
-
         <action name="project/{projectId}/assignments/{assignmentId}/role/{id}" class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="role">
             <result name="role">/struts/employee-guard/operator/assignments/role.jsp</result>
+        </action>
+
+        <action name="project/{projectId}/assignments/{id}" class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="assignments">
+            <result name="project">/struts/employee-guard/operator/assignments/project.jsp</result>
         </action>
     </package>
 
