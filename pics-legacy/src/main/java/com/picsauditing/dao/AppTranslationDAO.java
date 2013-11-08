@@ -45,7 +45,9 @@ public class AppTranslationDAO extends PicsDAO implements TranslationDAO {
 	}
 
 	@Override
-    public void updateTranslationLastUsed(String key) {
+    public void updateTranslationLastUsed(String key, String locale, String pageName, String environment) {
+        // we're sending locale, pageName and env for the interface, but this version will ignore those
+        // params. This is not a defect.
 		try {
 			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotesAndSlashes(key)
 					+ "'";

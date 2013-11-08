@@ -94,7 +94,7 @@ public class DBBean implements InitializingBean {
      * @return
      * @throws SQLException
      */
-    public static Connection getTranslationsConnection() throws SQLException {
+    public static DataSource getTranslationsDataSource() throws SQLException {
         DataSource dataSource = translationsDataSource;
         if (dataSource == null) {
             synchronized(DBBean.class) {
@@ -110,7 +110,11 @@ public class DBBean implements InitializingBean {
                 }
             }
         }
+        return translationsDataSource;
+    }
 
+    public static Connection getTranslationsConnection() throws SQLException {
+        DataSource dataSource = getTranslationsDataSource();
         return dataSource.getConnection();
     }
 
