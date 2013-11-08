@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.*;
 
+
+
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
 
@@ -188,20 +190,22 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			// contractor.setNeedsIndexing(true);
 
-			if (csrId == 0) {
-				contractor.setDontReassign(false);
-			} else {
-				contractor.setCurrentCsr(userDAO.find(csrId), permissions.getUserId());
-				contractor.setDontReassign(true);
-			}
+            if (permissions.hasPermission(OpPerms.UserZipcodeAssignment)) {
+                if (csrId == 0) {
+                    contractor.setDontReassign(false);
+                } else {
+                    contractor.setCurrentCsr(userDAO.find(csrId), permissions.getUserId());
+                    contractor.setDontReassign(true);
+                }
 
-			if (insideSalesId > 0) {
-				User newRep = userDAO.find(insideSalesId);
+                if (insideSalesId > 0) {
+                    User newRep = userDAO.find(insideSalesId);
 
-				if (newRep != null) {
-					contractor.setCurrentInsideSalesRepresentative(newRep, permissions.getUserId());
-				}
-			}
+                    if (newRep != null) {
+                        contractor.setCurrentInsideSalesRepresentative(newRep, permissions.getUserId());
+                    }
+                }
+            }
 
 			contractorAccountDao.save(contractor);
 
