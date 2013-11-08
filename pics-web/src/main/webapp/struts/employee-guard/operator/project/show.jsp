@@ -125,10 +125,8 @@
             </h1>
 
             <div class="content">
-                <dl class="employee-guard-information edit-display-values">
-                    <s:set name="operator_companies" value="projectSites"/>
-                    <s:include value="/struts/employee-guard/operator/project/_companies-list.jsp"/>
-                </dl>
+                <s:set name="operator_companies" value="projectSites"/>
+                <s:include value="/struts/employee-guard/operator/project/_companies-list.jsp"/>
             </div>
         </section>
     </div>
