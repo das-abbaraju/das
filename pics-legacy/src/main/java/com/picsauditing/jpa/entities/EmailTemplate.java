@@ -1,6 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 
 import javax.persistence.Column;
 import javax.persistence.*;
@@ -59,6 +62,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 			.unmodifiableSet(new HashSet<>(Arrays.asList(48, 51, 71, 85, 86)));
 
 	@Column(nullable = false)
+    @ReportField(type = FieldType.AccountID, importance = FieldImportance.Low)
 	public int getAccountID() {
 		return accountID;
 	}
@@ -68,6 +72,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	}
 
 	@Column(length = 150)
+    @ReportField(importance = FieldImportance.Low)
 	public String getSubject() {
 		return subject;
 	}
@@ -76,6 +81,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 		this.subject = subject;
 	}
 
+    @ReportField(importance = FieldImportance.Low)
 	public String getBody() {
 		return body;
 	}
@@ -120,6 +126,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
         return new TranslatableString(getI18nKey("translatedBody")).toTranslatedString(locale);
     }
 
+    @ReportField(importance = FieldImportance.Low)
     public String getRecipient() {
 		return recipient;
 	}
@@ -128,6 +135,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 		this.recipient = recipient;
 	}
 
+    @ReportField()
 	public String getTemplateName() {
 		return templateName;
 	}
@@ -138,6 +146,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	}
 
 	@Enumerated(EnumType.STRING)
+    @ReportField(type = FieldType.ListType)
 	public ListType getListType() {
 		return listType;
 	}
@@ -146,6 +155,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 		this.listType = listType;
 	}
 
+    @ReportField(type = FieldType.Boolean)
 	public boolean isAllowsVelocity() {
 		return allowsVelocity;
 	}
@@ -154,6 +164,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 		this.allowsVelocity = allowsVelocity;
 	}
 
+    @ReportField(type = FieldType.Boolean)
 	public boolean isHtml() {
 		return html;
 	}
@@ -162,6 +173,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 		this.html = html;
 	}
 
+    @ReportField(type = FieldType.Boolean)
 	public boolean isTranslated() {
 		return translated;
 	}
