@@ -35,7 +35,15 @@ public class EmailsModel extends AbstractModel {
 	public String getWhereClause(List<Filter> filters) {
 		super.getWhereClause(filters);
 
-		return permissionQueryBuilder.buildWhereClause();
+        String where = permissionQueryBuilder.buildWhereClause();
+
+        if (permissions.isOperatorCorporate())
+            where = " AND email.createdBy = " + permissions.getUserId();
+
+        if (!permissions.isPicsEmployee()) {
+            where += " AND 1 = 0";
+        }
+        return where;
 	}
 
 	@Override
