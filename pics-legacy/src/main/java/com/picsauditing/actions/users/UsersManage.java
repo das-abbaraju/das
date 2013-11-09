@@ -778,25 +778,23 @@ public class UsersManage extends PicsActionSupport {
 		this.shadowID = shadowID;
 	}
 
-	public List<BasicDynaBean> getUserList() throws SQLException {
-		if (userList == null) {
-			Database db = new Database();
-			SelectSQL sql = new SelectSQL("users u");
-			sql.addOrderBy("isGroup");
-			sql.addOrderBy("name");
-			sql.addWhere("accountID = " + account.getId());
-			sql.addWhere("username not like 'DELETE-%'");
-			if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
-				sql.addWhere("isGroup = '" + isGroup + "'");
-			}
+	public List<User> getUserList() throws SQLException {
+		String tmpActive = (isActive == null || isActive.equals("")) ? "Yes" : isActive;
+		String tmpGroup = (isGroup == null || isGroup.equals("")) ? "No" : isActive;
 
-			if ("Yes".equals(isActive) || "No".equals(isActive)) {
-				sql.addWhere("isActive = '" + isActive + "'");
-			}
+		List<User> users = userDAO.findByAccountID(account.getId(), tmpActive, tmpGroup);
 
-			userList = db.select(sql.toString(), false);
+		Iterator<User> it = users.iterator();
+		while (it.hasNext()) {
+			User u = it.next();
+			if (u.getUsername().startsWith("DELETE-")) {
+				it.remove();
+			}
 		}
-		return userList;
+
+		Collections.sort(users);
+
+		return users;
 	}
 
 	public List<OpPerms> getGrantablePermissions() {
