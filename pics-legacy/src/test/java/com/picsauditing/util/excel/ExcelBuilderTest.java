@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import junit.framework.Assert;
 
@@ -113,6 +114,9 @@ public class ExcelBuilderTest {
     @Test
     public void testExcelCellType_MonthAsString() {
         Column column = new Column();
+        Field field = new Field("A");
+        field.setType(FieldType.String);
+        column.setField(field);
         column.setSqlFunction(SqlFunction.Month);
 
         ExcelCellType cellType = ExcelCellType.convert(column);
