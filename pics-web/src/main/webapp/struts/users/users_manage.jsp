@@ -174,15 +174,15 @@
 							</tr>
 						</thead>
 
-						<s:iterator value="userList" status="stat">
+						<s:iterator value="userList" status="stat" var="user">
 							<tr>
 								<td class="right"><s:property value="#stat.count" />.</td>
 
-								<s:if test="get('isGroup') == 'Yes'">
+								<s:if test="%{#user.isGroup} == 'Yes'">
 									<td><s:text name="UsersManage.Group" /></td>
 									<td style="font-weight: bold"><a
-										href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
-											<s:property value="get('name')" />
+										href="?account=<s:property value="%{#user.account.id}"/>&user=<s:property value="%{#user.id}"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
+											<s:property value="%{#user.name}" />
 									</a></td>
 									<td><s:text name="global.NA" /></td>
 
@@ -190,12 +190,12 @@
 								<s:else>
 									<td><s:text name="UsersManage.User" /></td>
 									<td><a
-										href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
-										class="userActive<s:property value="get('isActive')" />">
-											<s:property value="get('name')" />
+										href="?account=<s:property value="%{#user.account.id}"/>&user=<s:property value="%{#user.id}"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+										class="userActive<s:property value="%{#user.isActive}" />">
+											<s:property value="%{#user.name}" />
 									</a></td>
-									<td><s:if test="get('lastLogin') != null">
-											<s:date name="get('lastLogin')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+									<td><s:if test="lastLogin != null">
+											<s:date name="%{#user.lastLogin}" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 										</s:if> <s:else>
 											<s:text name="UsersManage.never" />
 										</s:else></td>
