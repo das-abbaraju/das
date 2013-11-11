@@ -7,7 +7,7 @@ import com.picsauditing.util.SpringUtils;
 public class TranslationUsageLogCommand extends HystrixCommand<Boolean> {
     private static final String HYSTRIX_COMMAND_GROUP = "TranslationUsageLog";
     private static final int THREAD_TIMEOUT_MS = 2000;
-    private static final int THREAD_POOL_SIZE = 30;
+    private static final int THREAD_POOL_SIZE = 50;
 
     private TranslationLookupData usage;
 
