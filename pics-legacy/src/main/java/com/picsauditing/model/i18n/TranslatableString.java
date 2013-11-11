@@ -13,7 +13,7 @@ public final class TranslatableString {
 	}
 
 	public final String toTranslatedString() {
-        return TranslationServiceFactory.getNonLoggingTranslationService().getText(key, TranslationServiceFactory.getLocale());
+        return toTranslatedString(TranslationServiceFactory.getLocale());
 	}
 
 	public final String toTranslatedString(Locale locale) {

@@ -20,49 +20,29 @@ import java.util.*;
 
 public class TranslationServiceAdapter implements TranslationService {
 
-	private static TranslationService INSTANCE;
-    private final Logger logger = LoggerFactory.getLogger(TranslationServiceAdapter.class);
-
     public static final String DEFAULT_LANGUAGE = "en";
     public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
     public static final String DEFAULT_PAGENAME = "UNKNOWN";
     public static final String DEFAULT_REFERRER = "REFERRER_UNKNOWN";
-
-    private static final String CACHE_NAME = "i18n";
-    private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
     private static final String APP_PROPERTY_TRANSLATION_STRATEGY_NAME = "TranslationTransformStrategy";
     private static final String STRATEGY_RETURN_KEY = "ReturnKeyOnEmptyTranslation";
-    private static Cache cache;
-    private static Cache wildcardCache;
     private static final String environment = System.getProperty("pics.env");
     private static AppPropertyProvider appPropertyProvider;
+
     private static TranslationStrategy translationStrategy;
     private static TranslationKeyValidator translationKeyValidator = new TranslationKeyValidator();
     private static Date dateLastCleared;
-    private static TranslationUsageLogger translationUsageLogger;
+
+    private final Logger logger = LoggerFactory.getLogger(TranslationServiceAdapter.class);
 
     private TranslateRestClient translateRestClient;
+    private TranslationCache cache = new TranslationCache();
+    private TranslationWildcardCache wildcardCache = new TranslationWildcardCache();
+    private TranslationUsageLogger translationUsageLogger;
 
-    TranslationServiceAdapter() {
-        // CacheManager.create returns the existing singleton if it already exists
-        CacheManager manager = CacheManager.create();
-        cache = manager.getCache(CACHE_NAME);
-        wildcardCache = manager.getCache(WILDCARD_CACHE_NAME);
-    }
-
-	public static TranslationService getInstance(TranslationUsageLogger usageLogger) {
-        TranslationService service = INSTANCE;
-        if (service == null) {
-            synchronized (TranslationServiceAdapter.class) {
-                service = INSTANCE;
-                if (service == null) {
-                    translationUsageLogger = usageLogger;
-                    registerTranslationTransformStrategy();
-                    INSTANCE = new TranslationServiceAdapter();
-                }
-            }
-        }
-		return INSTANCE;
+	public TranslationServiceAdapter(TranslationUsageLogger usageLogger) {
+        translationUsageLogger = usageLogger;
+        registerTranslationTransformStrategy();
 	}
 
     protected static void registerTranslationTransformStrategy() {
@@ -97,12 +77,10 @@ public class TranslationServiceAdapter implements TranslationService {
     private TranslationWrapper doTranslation(String key, String requestedLocale) {
         TranslationWrapper translation;
         if (translationKeyValidator.validateKey(key)) {
-            Element element = cache.get(key);
-            if (element == null) {
+            translation = cache.get(key, requestedLocale);
+            if (translation == null) {
                 translation = translateRestClient().translationFromWebResource(key, requestedLocale);
-                cacheTranslationIfReturned(key, requestedLocale, translation);
-            } else {
-                translation = translationFromCacheOrWebResourceIfLocaleCacheMiss(key, requestedLocale, element);
+                cacheTranslationIfReturned(translation);
             }
         } else {
             logger.error("The key {} is invalid", key);
@@ -115,35 +93,13 @@ public class TranslationServiceAdapter implements TranslationService {
         return new TranslationWrapper.Builder().key(ERROR_STRING).translation(ERROR_STRING).build();
     }
 
-    private TranslationWrapper translationFromCacheOrWebResourceIfLocaleCacheMiss(String key, String requestedLocale, Element element) {
-        TranslationWrapper translation;
-        Table<String, String, String> requestedlocaleToTextToReturnedLocale = (Table<String, String, String>) element.getObjectValue();
-        if (!requestedlocaleToTextToReturnedLocale.containsRow(requestedLocale)) {
-            translation = cacheMiss(key, requestedLocale, requestedlocaleToTextToReturnedLocale);
-        } else {
-            translation = translationFrom(key, requestedLocale, requestedlocaleToTextToReturnedLocale);
-        }
-        return translation;
-    }
-
-    private TranslationWrapper cacheMiss(String key, String requestedLocale, Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
-        TranslationWrapper translation = translateRestClient().translationFromWebResource(key, requestedLocale);
-        if (translation != null) {
-            requestedlocaleToReturnedLocaleToText.put(requestedLocale, translation.getLocale(), translation.getTranslation());
-        }
-        return translation;
-    }
-
     private boolean translationReturned(TranslationWrapper translation) {
         return translation != null && !ERROR_STRING.equals(translation.getTranslation()) && !DEFAULT_PAGENAME.equals(pageName());
     }
 
-    private void cacheTranslationIfReturned(String key, String requestedLocale, TranslationWrapper translation) {
+    private void cacheTranslationIfReturned(TranslationWrapper translation) {
         if (translationReturned(translation)) {
-            Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
-            requestedlocaleToReturnedLocaleToText.put(requestedLocale, translation.getLocale(), translation.getTranslation());
-            Element element = new Element(key, requestedlocaleToReturnedLocaleToText);
-            cache.put(element);
+            cache.put(translation);
         }
     }
 
@@ -154,18 +110,6 @@ public class TranslationServiceAdapter implements TranslationService {
             logger.warn("No ServletActionContext Request available");
             return DEFAULT_REFERRER;
         }
-    }
-
-    private TranslationWrapper translationFrom(String key, String requestedLocale, Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
-        Map<String,String> returnedLocaleToText = requestedlocaleToReturnedLocaleToText.row(requestedLocale);
-        String returnedLocale = returnedLocaleToText.keySet().iterator().next();
-        String translation = returnedLocaleToText.get(returnedLocale);
-        return new TranslationWrapper.Builder()
-            .key(key)
-            .locale(returnedLocale)
-            .requestedLocale(requestedLocale)
-            .translation(translation)
-            .build();
     }
 
     private void logTranslationLookupIfReturned(String locale, TranslationWrapper translation) {
@@ -268,20 +212,13 @@ public class TranslationServiceAdapter implements TranslationService {
             getText(key, locale);
         }
 
-        Table<String, String, String> requestedlocaleToReturnedLocaleToText = cachedTranslationsForKey(key);
-        for (String locale : locales) {
-            cachedTranslations.putAll(requestedlocaleToReturnedLocaleToText.row(locale));
+        Table<String, String, String> requestedlocaleToReturnedLocaleToText = cache.get(key);
+        if (requestedlocaleToReturnedLocaleToText != null) {
+            for (String locale : locales) {
+                cachedTranslations.putAll(requestedlocaleToReturnedLocaleToText.row(locale));
+            }
         }
         return cachedTranslations;
-    }
-
-    private Table<String, String, String> cachedTranslationsForKey(String key) {
-        Element element = cache.get(key);
-        Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
-        if (element != null && element.getObjectValue() != null) {
-            requestedlocaleToReturnedLocaleToText =  (Table<String, String, String>) element.getObjectValue();
-        }
-        return requestedlocaleToReturnedLocaleToText;
     }
 
     @Override
@@ -360,54 +297,19 @@ public class TranslationServiceAdapter implements TranslationService {
     }
 
     private List<TranslationWrapper> wildCardTranslations(String key, String locale) {
-        List<TranslationWrapper> translations = translationsFromWildCardCache(key, locale);
+        List<TranslationWrapper> translations = wildcardCache.get(key, locale);
         if ((translations == null || translations.isEmpty())) {
             translations = translateRestClient().translationsFromWebResourceByWildcard(key, locale);
-            cacheWildcardTranslation(key, locale, translations);
+            wildcardCache.put(key, locale, translations);
         }
         return translations;
     }
 
-    private List<TranslationWrapper> translationsFromWildCardCache(String key, String locale) {
-        List<TranslationWrapper> translations = new ArrayList<>();
-        Element element = wildcardCache.get(key);
-        if (element != null) {
-            Table<String, String, String> localeToKeyToValue = (Table<String, String, String>)element.getObjectValue();
-            Map<String, String> keyToTranslation = Collections.unmodifiableMap(localeToKeyToValue.row(locale));
-            if (keyToTranslation != null) {
-                for (String msgKey : keyToTranslation.keySet()) {
-                    translations.add(new TranslationWrapper.Builder().key(msgKey).locale(locale).translation(keyToTranslation.get(msgKey)).build());
-                }
-            }
-        }
-        return translations;
-    }
-
-    private void cacheWildcardTranslation(String wildcardKey, String requestedLocale, List<TranslationWrapper> translations) {
-        Table<String, String, String> localeToKeyToValue;
-        Element element = wildcardCache.get(wildcardKey);
-        if (element != null) {
-            localeToKeyToValue = (Table<String, String, String>)element.getObjectValue();
-        } else {
-            localeToKeyToValue = TreeBasedTable.create();
-        }
-
-        if (translations == null || translations.isEmpty()) {
-            localeToKeyToValue.put(requestedLocale, "", "");
-        } else {
-            for (TranslationWrapper translation : translations) {
-                localeToKeyToValue.put(requestedLocale, translation.getKey(), translation.getTranslation());
-            }
-        }
-        wildcardCache.put(new Element(wildcardKey, localeToKeyToValue));
-    }
 
     @Override
 	public void clear() {
 		synchronized (this) {
-            INSTANCE = null;
-            cache.removeAll();
-            wildcardCache.removeAll();
+            cache.clear();
             dateLastCleared = new Date();
         }
 	}

@@ -28,7 +28,7 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            return TranslationServiceAdapter.getInstance(new TranslationKeyDoNothingLogger());
+            return new TranslationServiceAdapter(new TranslationKeyDoNothingLogger());
         }
 
         return I18nCache.getInstance();
@@ -40,7 +40,7 @@ public class TranslationServiceFactory {
 		}
 
 		if (useTranslationServiceAdapter()) {
-			return TranslationServiceAdapter.getInstance(new TranslationKeyAggregateUsageLogger());
+			return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger());
 		}
 
 		return I18nCache.getInstance();
