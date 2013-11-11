@@ -44,7 +44,6 @@ public enum ExcelCellType {
                 case DaysFromNow:
                 case Hour:
                 case Length:
-                case Month:
                 case Year:
                     return Integer;
                 case Date:
@@ -53,6 +52,7 @@ public enum ExcelCellType {
                 case LowerCase:
                 case UpperCase:
                 case WeekDay:
+                case Month:
                 case YearMonth:
                     return String;
             }
