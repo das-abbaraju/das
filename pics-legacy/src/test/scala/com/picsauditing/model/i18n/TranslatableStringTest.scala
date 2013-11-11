@@ -14,33 +14,33 @@ class TranslatableStringTest extends FlatSpec with BeforeAndAfterAll with Mockit
   val testKey = "Test.Key"
 
   "TranslatableString" should
-    "call the non logging translation service with the registered locale when no locale specified" in
+    "call the logging translation service with the registered locale when no locale specified" in
     new TestSetup {
       ThreadLocalLocale.INSTANCE.set(Locale.ENGLISH)
 
       translatableString.toTranslatedString()
 
-      verify(nonLoggingTranslationService).getText(testKey, Locale.ENGLISH)
+      verify(translationService).getText(testKey, Locale.ENGLISH)
 
       ThreadLocalLocale.INSTANCE.set(Locale.FRENCH)
 
       translatableString.toTranslatedString()
 
-      verify(nonLoggingTranslationService).getText(testKey, Locale.FRENCH)
+      verify(translationService).getText(testKey, Locale.FRENCH)
     }
 
-  it should "call non logging service with the specified locale" in new TestSetup {
+  it should "call logging service with the specified locale" in new TestSetup {
     translatableString.toTranslatedString(Locale.GERMAN)
 
-    verify(nonLoggingTranslationService).getText(testKey, Locale.GERMAN)
+    verify(translationService).getText(testKey, Locale.GERMAN)
   }
 
-  it should "never call the regular logging service" in new TestSetup {
+  it should "never call the non-logging service" in new TestSetup {
     ThreadLocalLocale.INSTANCE.set(Locale.ENGLISH)
     translatableString.toTranslatedString()
     translatableString.toTranslatedString(Locale.FRENCH)
 
-    verify(translationService, never).getText(anyString, any[Locale])
+    verify(nonLoggingTranslationService, never).getText(anyString, any[Locale])
 
   }
 

@@ -46,17 +46,28 @@ public abstract class TranslateRestApiSupport<R> extends HystrixCommand<R> {
         a very copious call, there's really no useful fallback at this time (though if we ever have a distributed cache to
         fall back on, that could be enough to change this)
      */
+    public TranslateRestApiSupport(String commandGroup, String commandKey) {
+        super(hystrixSetter(commandGroup, commandKey));
+    }
+
     public TranslateRestApiSupport(String commandGroup) {
-        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(commandGroup))
+        super(hystrixSetter(commandGroup, null));
+
+    }
+
+    private static Setter hystrixSetter(String commandGroup, String commandKey) {
+        Setter setter = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(commandGroup))
                 .andCommandPropertiesDefaults(
                         HystrixCommandProperties.Setter()
                                 .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE)
                                 .withExecutionIsolationSemaphoreMaxConcurrentRequests(1000)
-                )
-        );
-
+                );
+        // set the commandKey if we're specifying, otherwise just use the default (currently classname of the command)
+        if (commandKey != null) {
+            setter.andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
+        }
+        return setter;
     }
-
     ClientResponse makeServiceApiCall(String path) throws Exception {
         return webResource.path(path).accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
     }

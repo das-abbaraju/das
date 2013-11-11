@@ -14,6 +14,13 @@ public class TranslateRestClient {
     private SaveTranslationCommand saveTranslationCommand;
     private AllLocalesForKeyCommand allLocalesForKeyCommand;
     private UpdateTranslationUsageLogCommand updateTranslationUsageLogCommand;
+    private String translateCommandKey;
+
+    public TranslateRestClient() {}
+
+    public TranslateRestClient(String translateCommandKey) {
+        this.translateCommandKey = translateCommandKey;
+    }
 
     public TranslationWrapper translationFromWebResource(String key, String requestedLocale) {
         TranslateCommand command = translateCommand(key, requestedLocale);
@@ -24,7 +31,11 @@ public class TranslateRestClient {
         if (translateCommand != null) {
             return translateCommand;
         } else {
-            return new TranslateCommand(key, requestedLocale);
+            if (translateCommandKey == null) {
+                return new TranslateCommand(key, requestedLocale);
+            } else {
+                return new TranslateCommand(key, requestedLocale, translateCommandKey);
+            }
         }
     }
 
