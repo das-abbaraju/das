@@ -8,11 +8,18 @@ import org.slf4j.LoggerFactory;
 
 public class TranslateCommand extends TranslateRestApiSupport<TranslationWrapper> {
     private static final Logger logger = LoggerFactory.getLogger(TranslateCommand.class);
+    private static final String COMMAND_GROUP = "TranslateKey";
     private final String key;
     private final String requestedLocale;
 
     public TranslateCommand(String key, String requestedLocale) {
-        super("TranslateKey");
+        super(COMMAND_GROUP);
+        this.key = key;
+        this.requestedLocale = requestedLocale;
+    }
+
+    public TranslateCommand(String key, String requestedLocale, String commandKey) {
+        super(COMMAND_GROUP, commandKey);
         this.key = key;
         this.requestedLocale = requestedLocale;
     }
@@ -24,6 +31,7 @@ public class TranslateCommand extends TranslateRestApiSupport<TranslationWrapper
 
     @Override
     protected TranslationWrapper getFallback() {
+        logger.debug("Fallback was triggered");
         return failedResponseTranslation(key, requestedLocale, null);
     }
 
