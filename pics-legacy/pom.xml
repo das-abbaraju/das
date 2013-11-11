@@ -350,7 +350,7 @@
             <artifactId>struts2-json-plugin</artifactId>
             <version>${struts.version}</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
@@ -366,7 +366,7 @@
                     <groupId>jboss</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.hibernatespatial</groupId>
             <artifactId>hibernate-spatial-mysql</artifactId>
