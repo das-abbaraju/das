@@ -1,5 +1,7 @@
 package com.picsauditing.service.i18n;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.*;
@@ -7,7 +9,6 @@ import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.sun.jersey.api.client.Client;
-import net.sf.ehcache.Cache;
 import org.apache.struts2.StrutsStatics;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
@@ -16,8 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.core.task.TaskRejectedException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -37,8 +36,7 @@ public class TranslationServiceAdapterTest {
     private static final TranslationWrapper TEST_TRANSLALATION_OTHER = new TranslationWrapper.Builder().key(TEST_KEY).locale(TEST_LOCALE_OTHER.toString()).translation(TEST_TRANSLATION_VALUE).build();
 
     private TranslationServiceAdapter translationService;
-    private Cache cache;
-    private Cache wildcardCache;
+
     private ActionContext actionContext;
     private Map<String, Object> context;
     private Locale originalLocale = TranslationServiceFactory.getLocale();
@@ -53,32 +51,32 @@ public class TranslationServiceAdapterTest {
     protected HttpServletRequest request;
     @Mock
     private TranslationUsageLogger usageLogger;
+    @Mock
+    private TranslationCache cache;
+    @Mock
+    private TranslationWildcardCache wildcardCache;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         Whitebox.setInternalState(TranslationServiceAdapter.class, "appPropertyProvider", appPropertyProvider);
-        translationService = (TranslationServiceAdapter)TranslationServiceAdapter.getInstance(usageLogger);
+        translationService = new TranslationServiceAdapter(usageLogger);
         Whitebox.setInternalState(translationService, "translateRestClient", client);
+        Whitebox.setInternalState(translationService, "cache", cache);
+        Whitebox.setInternalState(translationService, "wildcardCache", wildcardCache);
         Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
-        cache = Whitebox.getInternalState(TranslationServiceAdapter.class, "cache");
-        wildcardCache = Whitebox.getInternalState(TranslationServiceAdapter.class, "wildcardCache");
-
 
         context = new HashMap<>();
         context.put(StrutsStatics.HTTP_REQUEST, request);
         context.put(ActionContext.ACTION_NAME, "TestPage");
         actionContext = new ActionContext(context);
         ActionContext.setContext(actionContext);
-
     }
 
     @After
     public void tearDown() throws Exception {
         Whitebox.setInternalState(translationService, "translateRestClient", (Client) null);
-        cache.removeAll();
-        wildcardCache.removeAll();
         translationService.clear();
         ThreadLocalLocale.INSTANCE.set(originalLocale);
     }
@@ -121,7 +119,9 @@ public class TranslationServiceAdapterTest {
 
     @Test
     public void testGetText_NotCachedResultsInOneServiceCallForMultipleCalls() throws Exception {
+        TranslationWrapper translation = testTranslation(TEST_TRANSLATION_VALUE);
         when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE.toString())).thenReturn(TEST_TRANSLALATION);
+        when(cache.get(TEST_KEY, TEST_LOCALE.toString())).thenReturn(null).thenReturn(translation);
 
         translationService.getText(TEST_KEY, TEST_LOCALE.toString());
         translationService.getText(TEST_KEY, TEST_LOCALE.toString());
@@ -146,46 +146,9 @@ public class TranslationServiceAdapterTest {
         verify(client).translationFromWebResource(TEST_KEY, TEST_LOCALE_OTHER.toString());
     }
 
-    @Test
-    public void testGetText_CachedKeyButLocaleCacheMissResultsInCaching() throws Exception {
-        cacheTestTranslation();
-
-        when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE_OTHER.toString())).thenReturn(TEST_TRANSLALATION_OTHER);
-
-        // the first will miss the cache and cache the result
-        translationService.getText(TEST_KEY, TEST_LOCALE_OTHER.toString());
-        // if the result is properly cached, this call will pull from cache
-        translationService.getText(TEST_KEY, TEST_LOCALE_OTHER.toString());
-
-        // resulting in only one service call
-        verify(client, times(1)).translationFromWebResource(TEST_KEY, TEST_LOCALE_OTHER.toString());
-    }
-
     private void cacheTestTranslation() throws Exception {
-        TranslationWrapper translation = new TranslationWrapper.Builder().translation(TEST_TRANSLATION_VALUE).locale(TEST_LOCALE.toString()).build();
-        Whitebox.invokeMethod(translationService, "cacheTranslationIfReturned", new Object[]{TEST_KEY, TEST_LOCALE.toString(), translation});
-    }
-
-    @Test
-    public void testWildCardCaching() throws Exception {
-        List<TranslationWrapper> translations = englishTranslations();
-
-        Whitebox.invokeMethod(translationService, "cacheWildcardTranslation", new Object[]{"Test.WildCard", "en", translations});
-
-        List<TranslationWrapper> cachedTranslations = Whitebox.invokeMethod(translationService, "translationsFromWildCardCache", "Test.WildCard", "en");
-        assertSame(translations, cachedTranslations);
-    }
-
-    @Test
-    public void testWildCardCaching_MixedLocales() throws Exception {
-        List<TranslationWrapper> enTranslations = englishTranslations();
-        List<TranslationWrapper> frTranslations = frenchTranslations();
-
-        Whitebox.invokeMethod(translationService, "cacheWildcardTranslation", new Object[]{"Test.WildCard", "en", enTranslations});
-        Whitebox.invokeMethod(translationService, "cacheWildcardTranslation", new Object[]{"Test.WildCard", "fr", frTranslations});
-
-        List<TranslationWrapper> cachedTranslations = Whitebox.invokeMethod(translationService, "translationsFromWildCardCache", "Test.WildCard", "en");
-        assertSame(enTranslations, cachedTranslations);
+        TranslationWrapper translation = testTranslation(TEST_TRANSLATION_VALUE);
+        when(cache.get(TEST_KEY, TEST_LOCALE.toString())).thenReturn(translation);
     }
 
     private List<TranslationWrapper> englishTranslations() {
@@ -204,25 +167,12 @@ public class TranslationServiceAdapterTest {
         return frTranslations;
     }
 
-    private void assertSame(List<TranslationWrapper> translations, List<TranslationWrapper> cachedTranslations) {
-        int found = 0;
-        for (TranslationWrapper translation : translations) {
-            for (TranslationWrapper cachedTranslation : cachedTranslations) {
-                if (translation.getKey() == cachedTranslation.getKey() &&
-                    translation.getTranslation() == cachedTranslation.getTranslation() &&
-                    translation.getLocale() == cachedTranslation.getLocale()) {
-                    found++;
-                }
-            }
-        }
-        assertTrue(found == translations.size());
-    }
-
     @Test
     public void testGetInstance_WithReturnKeyOnEmptyTranslationSetsRightStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn("ReturnKeyOnEmptyTranslation");
         translationService.clear();
-        TranslationServiceAdapter.getInstance(usageLogger);
+
+        new TranslationServiceAdapter(usageLogger);
 
         TranslationStrategy strategy = Whitebox.getInternalState(TranslationServiceAdapter.class, "translationStrategy");
 
@@ -233,7 +183,8 @@ public class TranslationServiceAdapterTest {
     public void testGetInstance_WithNoAppPropertyForStrategySetsRightStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn(null);
         translationService.clear();
-        TranslationServiceAdapter.getInstance(usageLogger);
+
+        new TranslationServiceAdapter(usageLogger);
 
         TranslationStrategy strategy = Whitebox.getInternalState(TranslationServiceAdapter.class, "translationStrategy");
 
@@ -244,7 +195,8 @@ public class TranslationServiceAdapterTest {
     public void testGetText_WhenKeyHasSpacesGetErrorBackWithReturnKeyStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn("ReturnKeyOnEmptyTranslation");
         translationService.clear();
-        TranslationServiceAdapter.getInstance(usageLogger);
+
+        new TranslationServiceAdapter(usageLogger);
 
         assertTrue("ERROR".equals(translationService.getText("This is a bad key", Locale.ENGLISH)));
     }
@@ -253,7 +205,8 @@ public class TranslationServiceAdapterTest {
     public void testGetText_WhenKeyHasSpacesGetBlankBackWithEmptyTranslationStrategy() throws Exception {
         when(appPropertyProvider.findAppProperty("TranslationTransformStrategy")).thenReturn(null);
         translationService.clear();
-        TranslationServiceAdapter.getInstance(usageLogger);
+
+        new TranslationServiceAdapter(usageLogger);
 
 
         assertTrue(Strings.isEmpty(translationService.getText("This is a bad key", Locale.ENGLISH)));
@@ -264,12 +217,7 @@ public class TranslationServiceAdapterTest {
         String value = "This is {0} and this is {1}";
         String expected = "This is One and this is Two";
         String[] args = new String[] {"One", "Two"};
-        TranslationWrapper translation =
-                new TranslationWrapper.Builder()
-                        .key(TEST_KEY)
-                        .locale(TEST_LOCALE.toString())
-                        .translation(value)
-                        .build();
+        TranslationWrapper translation = testTranslation(value);
 
         when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE.toString())).thenReturn(translation);
 
@@ -283,12 +231,7 @@ public class TranslationServiceAdapterTest {
         String value = "This is {0} and this is {1}";
         String expected = "This is One and this is Two";
         String[] args = new String[] {"One", "Two"};
-        TranslationWrapper translation =
-                new TranslationWrapper.Builder()
-                        .key(TEST_KEY)
-                        .locale(TEST_LOCALE.toString())
-                        .translation(value)
-                        .build();
+        TranslationWrapper translation = testTranslation(value);
 
         when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE.toString())).thenReturn(translation);
 
@@ -297,8 +240,16 @@ public class TranslationServiceAdapterTest {
         assertTrue(expected.equals(returned));
     }
 
+    private TranslationWrapper testTranslation(String value) {
+        return new TranslationWrapper.Builder()
+                .key(TEST_KEY)
+                .locale(TEST_LOCALE.toString())
+                .translation(value)
+                .build();
+    }
+
     @Test
-    public void testGetText_NothingInCacheCallsServiceForEachLocale() throws Exception {
+    public void testGetText__KeyOnly_NothingInCacheCallsServiceForEachLocale() throws Exception {
         List<String> allLocalesForKey = new ArrayList() {{ add("en"); add("fr"); add("de"); }};
         when(client.allLocalesForKey(TEST_KEY)).thenReturn(allLocalesForKey);
 
@@ -310,13 +261,17 @@ public class TranslationServiceAdapterTest {
     }
 
     @Test
-    public void testGetText_FirstCallCachesAllLocales() throws Exception {
+    public void testGetText_KeyOnly_FirstCallCachesAllLocales() throws Exception {
         List<String> allLocalesForKey = new ArrayList() {{ add("en"); add("fr"); add("de"); }};
         when(client.allLocalesForKey(TEST_KEY)).thenReturn(allLocalesForKey);
+        TranslationWrapper translation = testTranslation(TEST_TRANSLATION_VALUE);
         for (String locale : allLocalesForKey) {
             when(client.translationFromWebResource(TEST_KEY, locale)).thenReturn(
                     new TranslationWrapper.Builder().key(TEST_KEY).locale(locale).translation(locale+TEST_TRANSLATION_VALUE).build()
             );
+            when(cache.get(TEST_KEY, locale.toString()))
+                    .thenReturn(null)
+                    .thenReturn(translation);
         }
 
         translationService.getText(TEST_KEY);
@@ -327,14 +282,34 @@ public class TranslationServiceAdapterTest {
     }
 
     @Test
+    public void testGetText_KeyOnly_Happy() throws Exception {
+        List<String> allLocalesForKey = new ArrayList() {{ add("en"); add("fr"); add("de"); }};
+        when(client.allLocalesForKey(TEST_KEY)).thenReturn(allLocalesForKey);
+        TranslationWrapper translation = testTranslation(TEST_TRANSLATION_VALUE);
+        Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
+        for (String locale : allLocalesForKey) {
+            when(client.translationFromWebResource(TEST_KEY, locale)).thenReturn(
+                    new TranslationWrapper.Builder().key(TEST_KEY).locale(locale).translation(locale+TEST_TRANSLATION_VALUE).build()
+            );
+            when(cache.get(TEST_KEY, locale.toString()))
+                    .thenReturn(null)
+                    .thenReturn(translation);
+
+            requestedlocaleToReturnedLocaleToText.put(locale, locale, locale+TEST_TRANSLATION_VALUE);
+        }
+        when(cache.get(TEST_KEY)).thenReturn(requestedlocaleToReturnedLocaleToText);
+
+        Map<String, String> translations = translationService.getText(TEST_KEY);
+
+        for (String locale : allLocalesForKey) {
+            assertTrue(translations.containsValue(locale+TEST_TRANSLATION_VALUE));
+        }
+    }
+
+    @Test
     public void testGetText_NoArgs_ReturnsUnformatted() throws Exception {
         String value = "This is {0} and this is {1}";
-        TranslationWrapper translation =
-                new TranslationWrapper.Builder()
-                        .key(TEST_KEY)
-                        .locale(TEST_LOCALE.toString())
-                        .translation(value)
-                        .build();
+        TranslationWrapper translation = testTranslation(value);
 
         when(client.translationFromWebResource(TEST_KEY, TEST_LOCALE.toString())).thenReturn(translation);
 
@@ -373,7 +348,7 @@ public class TranslationServiceAdapterTest {
 
         translationService.saveTranslation(TEST_KEY, TEST_TRANSLATION_VALUE, requiredLanguages);
 
-        assertNull(cache.get(TEST_KEY));
+        verify(cache).remove(TEST_KEY);
     }
 
     @Test
@@ -384,7 +359,7 @@ public class TranslationServiceAdapterTest {
 
         translationService.saveTranslation(TEST_KEY, TEST_TRANSLATION_VALUE, requiredLanguages);
 
-        assertNotNull(cache.get(TEST_KEY));
+        verify(cache, never()).remove(TEST_KEY);
     }
 
     @Test
