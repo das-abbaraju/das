@@ -45,11 +45,10 @@ public class AutocompleteDAO {
 		StringBuilder sql = new StringBuilder(String.format(AUTO_COMPLETE_SEARCH, queryUsersGroups, queryAccounts));
 
 		if (permissions.isOperatorCorporate()) {
-			sql.append(" WHERE accountID IN (");
-			sql.append(permissions.getAccountId());
-            if (permissions.getOperatorChildren().size() > 0) {
-                sql.append(",").append(Strings.implode(permissions.getOperatorChildren()));
-            }
+			sql.append(" WHERE accountID IN (SELECT opID FROM facilities WHERE opID = ");
+			sql.append(permissions.getPrimaryCorporateAccountID());
+            sql.append(" OR corporateID = ");
+            sql.append(permissions.getPrimaryCorporateAccountID());
 			sql.append(") ");
 		}
 
