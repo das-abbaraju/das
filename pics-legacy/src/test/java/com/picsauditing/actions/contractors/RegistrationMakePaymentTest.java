@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Locale;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.audits.OpenAuditsMailer;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -126,4 +128,20 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 
 		assertTrue(Strings.isEmpty(url));
 	}
+
+    @Test
+    public void testCreditCardTypes_UKNoAmex() throws Exception {
+        Country uk = new Country();
+        uk.setIsoCode(Country.UK_ISO_CODE);
+        when(contractor.getCountry()).thenReturn(uk);
+        when(contractorAccountDao.find(1)).thenReturn(contractor);
+        when(contractorAccountDao.isContained(contractor)).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+        registrationMakePayment.setId(1);
+
+        List<String> creditcardTypes = registrationMakePayment.getCreditCardTypes();
+        String creditCards = Strings.implode(creditcardTypes);
+
+        Assert.assertNotContains("American Express", creditCards);
+    }
 }
