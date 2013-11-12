@@ -1216,8 +1216,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getMaxFileUploadSize() {
-		BigDecimal value = new BigDecimal(maxFileUploadBytes);
-		value = value.divide(new BigDecimal((1024 * 1024 * 1024))).setScale(2);
+        // set basically as a constant
+		BigDecimal value = new BigDecimal(500);
 		return value.toString();
 	}
 
