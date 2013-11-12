@@ -779,8 +779,8 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public List<User> getUserList() throws SQLException {
-		String tmpActive = (isActive == null || isActive.equals("")) ? "Yes" : isActive;
-		String tmpGroup = (isGroup == null || isGroup.equals("")) ? "No" : isActive;
+		String tmpActive = (isActive == null || isActive.equals("")) ? "All" : isActive;
+		String tmpGroup = (isGroup == null || isGroup.equals("")) ? "All" : isGroup;
 
 		List<User> users = userDAO.findByAccountID(account.getId(), tmpActive, tmpGroup);
 
