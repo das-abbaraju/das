@@ -39,11 +39,18 @@ public class TranslationServiceAdapter implements TranslationService {
     private TranslationCache cache = new TranslationCache();
     private TranslationWildcardCache wildcardCache = new TranslationWildcardCache();
     private TranslationUsageLogger translationUsageLogger;
+    private String translateCommandKey;
 
 	public TranslationServiceAdapter(TranslationUsageLogger usageLogger) {
         translationUsageLogger = usageLogger;
         registerTranslationTransformStrategy();
 	}
+
+    public TranslationServiceAdapter(TranslationUsageLogger usageLogger, String translateCommandKey) {
+        this.translateCommandKey = translateCommandKey;
+        translationUsageLogger = usageLogger;
+        registerTranslationTransformStrategy();
+    }
 
     protected static void registerTranslationTransformStrategy() {
         AppPropertyProvider appPropertyProvider = appPropertyProvider();
@@ -332,7 +339,11 @@ public class TranslationServiceAdapter implements TranslationService {
 
     private TranslateRestClient translateRestClient() {
         if (translateRestClient == null) {
-            translateRestClient = new TranslateRestClient();
+            if (translateCommandKey != null) {
+                translateRestClient = new TranslateRestClient(translateCommandKey);
+            } else {
+                translateRestClient = new TranslateRestClient();
+            }
         }
         return translateRestClient;
     }

@@ -1054,7 +1054,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public boolean isRemoved() {
-		return (status == AccountStatus.Deactivated || status == AccountStatus.Deleted);
+		return false;
 	}
 
 	@Transient

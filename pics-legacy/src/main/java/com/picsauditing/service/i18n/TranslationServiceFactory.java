@@ -46,7 +46,21 @@ public class TranslationServiceFactory {
 		return I18nCache.getInstance();
 	}
 
-	private static boolean useTranslationServiceAdapter() {
+    // if we have to parameterize the command group name for more than TranslateCommand, this will have to be a more
+    // sophisticated configuration object. For now, though, let's stay simple
+    public static TranslationService getTranslationService(String translateCommandKey) {
+        if (translationService != null) {
+            return translationService;
+        }
+
+        if (useTranslationServiceAdapter()) {
+            return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger(), translateCommandKey);
+        }
+
+        return I18nCache.getInstance();
+    }
+
+    private static boolean useTranslationServiceAdapter() {
 		return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
 	}
 
