@@ -402,7 +402,20 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		assertEquals(true, auditDataSave.getActionErrors().size() > 0);
 	}
 
-	// Test case to cover this issue: PICS-8585.
+    @Test
+    public void testExecute_EmptyStringNumberAnswer() throws Exception {
+        auditData.getQuestion().setQuestionType("Number");
+        auditData.setAnswer(""); // empty answers are always good
+
+        Boolean result = Whitebox.invokeMethod(auditDataSave, "processAndValidateNumeric", auditData, null, "Number");
+        assertTrue(result);
+
+        auditData.setAnswer(null); // null answers are always good
+        result = Whitebox.invokeMethod(auditDataSave, "processAndValidateNumeric", auditData, null, "Number");
+        assertTrue(result);
+    }
+
+    // Test case to cover this issue: PICS-8585.
 	@Test
 	public void testExecute_NewMoneyAnswer() throws Exception {
 		PicsTestUtil.setSpringUtilsBeans(new HashMap<String, Object>());
