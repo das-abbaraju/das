@@ -178,7 +178,7 @@
 							<tr>
 								<td class="right"><s:property value="#stat.count" />.</td>
 
-								<s:if test="%{#user.isGroup} == 'Yes'">
+								<s:if test="%{#user.isGroup.isTrue()}">
 									<td><s:text name="UsersManage.Group" /></td>
 									<td style="font-weight: bold"><a
 										href="?account=<s:property value="%{#user.account.id}"/>&user=<s:property value="%{#user.id}"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
