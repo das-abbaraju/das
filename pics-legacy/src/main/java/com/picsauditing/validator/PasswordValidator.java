@@ -37,7 +37,7 @@ public class PasswordValidator {
             errorMessages.addElement("PasswordValidator.error.PasswordMustContainNumbersAndCharacters");
         }
 
-        String encryptedNewPassword = EncodedMessage.hash(newPassword + user.getId());
+        String encryptedNewPassword = EncodedMessage.hash(newPassword + user.getAppUser().getHashSalt());
         if (encryptedNewPassword.equals(user.getPassword())) {
             errorMessages.addElement("PasswordValidator.error.PasswordCannotBeCurrentPassword");
         }
@@ -81,7 +81,7 @@ public class PasswordValidator {
     }
 
     private boolean passwordHistoryListContainsPassword(String newPassword, User user, PasswordSecurityLevel passwordSecurityLevel) {
-        String encryptedNewPassword = EncodedMessage.hash(newPassword + user.getId());
+        String encryptedNewPassword = EncodedMessage.hash(newPassword + user.getAppUser().getHashSalt());
 
         if (passwordSecurityLevel.enforceEntriesOfHistory()) {
 	        if (findRecentPasswordsByCount(user, passwordSecurityLevel.entriesOfHistoryToDisallow).contains(encryptedNewPassword)) {

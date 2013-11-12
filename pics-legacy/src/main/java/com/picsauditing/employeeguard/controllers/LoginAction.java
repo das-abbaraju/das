@@ -6,7 +6,6 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
-import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
@@ -20,7 +19,6 @@ import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.validator.Validator;
@@ -34,8 +32,6 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
-	private AppUserDAO appUserDAO;
-	@Autowired
 	private EmailHashService emailHashService;
 	@Autowired
 	private EmployeeService employeeService;
@@ -43,8 +39,8 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	private LoginService loginService;
 	@Autowired
 	private ProfileService profileService;
-    @Autowired
-    private LoginFormValidator loginFormValidator;
+	@Autowired
+	private LoginFormValidator loginFormValidator;
 
 	@FormBinding("employee_guard_login")
 	private LoginForm loginForm;
@@ -89,7 +85,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	@Anonymous
 	public String login() throws Exception {
-		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), EncodedMessage.hash(loginForm.getPassword()));
+		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), loginForm.getPassword());
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
 			throw new PageNotFoundException();
 		} else {
@@ -116,18 +112,18 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
     /* Validation */
 
-    @Override
-    public Validator getCustomValidator() {
-        return loginFormValidator;
-    }
+	@Override
+	public Validator getCustomValidator() {
+		return loginFormValidator;
+	}
 
-    @Override
-    public void validate() {
-        ValueStack valueStack = ActionContext.getContext().getValueStack();
-        DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
+	@Override
+	public void validate() {
+		ValueStack valueStack = ActionContext.getContext().getValueStack();
+		DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
 
-        loginFormValidator.validate(valueStack, validatorContext);
-    }
+		loginFormValidator.validate(valueStack, validatorContext);
+	}
 
 	/* getters + setters */
 

@@ -65,7 +65,6 @@ public class LoginActionTest extends PicsActionTest {
 		super.setUp(loginAction);
 
 		Whitebox.setInternalState(loginAction, "accountDAO", accountDAO);
-		Whitebox.setInternalState(loginAction, "appUserDAO", appUserDAO);
 		Whitebox.setInternalState(loginAction, "emailHashService", emailHashService);
 		Whitebox.setInternalState(loginAction, "employeeService", employeeService);
 		Whitebox.setInternalState(loginAction, "loginService", loginService);

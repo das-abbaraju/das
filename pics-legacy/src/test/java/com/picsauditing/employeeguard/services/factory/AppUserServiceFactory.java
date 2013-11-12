@@ -30,8 +30,8 @@ public class AppUserServiceFactory {
 		JSONObject success = (JSONObject) JSONValue.parse("{\"id\":1,\"status\":\"SUCCESS\",\"cookie\":\"" + sessionCookie.toString() + "\"}");
 		JSONObject fail = (JSONObject) JSONValue.parse("{\"status\":\"FAILURE\"}");
 
-		when(appUserService.createNewAppUser(USERNAME, EncodedMessage.hash(PASSWORD))).thenReturn(success);
-		when(appUserService.createNewAppUser(FAIL, EncodedMessage.hash(FAIL))).thenReturn(fail);
+		when(appUserService.createNewAppUser(USERNAME, PASSWORD)).thenReturn(success);
+		when(appUserService.createNewAppUser(FAIL, FAIL)).thenReturn(fail);
 		when(appUserService.isUserNameAvailable(VALID_USERNAME)).thenReturn(true);
 
 		return appUserService;

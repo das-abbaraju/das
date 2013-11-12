@@ -17,7 +17,6 @@ import com.picsauditing.employeeguard.services.LoginService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.validators.profile.ProfileFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
-import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.validator.Validator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
@@ -76,7 +75,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String insert() throws Exception {
-		JSONObject createAppUserResult = appUserService.createNewAppUser(profileForm.getEmail(), EncodedMessage.hash(profileForm.getPassword()));
+		JSONObject createAppUserResult = appUserService.createNewAppUser(profileForm.getEmail(), profileForm.getPassword());
 		if (!"SUCCESS".equals(createAppUserResult.get("status").toString())) {
 			return ERROR;
 		}
@@ -89,7 +88,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 		employeeService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
 		emailHashService.expire(emailHash);
 
-		JSONObject loginResult = loginService.loginViaRest(profileForm.getEmail(), EncodedMessage.hash(profileForm.getPassword()));
+		JSONObject loginResult = loginService.loginViaRest(profileForm.getEmail(), profileForm.getPassword());
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
 			throw new FailedLoginException();
 		} else {
@@ -98,10 +97,10 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 		}
 	}
 
-    @Override
-    public Validator getCustomValidator() {
-        return profileFormValidator;
-    }
+	@Override
+	public Validator getCustomValidator() {
+		return profileFormValidator;
+	}
 
 	@Override
 	public void validate() {
