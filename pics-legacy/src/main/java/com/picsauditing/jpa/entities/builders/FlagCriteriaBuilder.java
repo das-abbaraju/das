@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities.builders;
 
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
 
 public class FlagCriteriaBuilder {
 
@@ -23,6 +24,11 @@ public class FlagCriteriaBuilder {
 
     public FlagCriteriaBuilder insurance() {
         flag.setInsurance(true);
+        return this;
+    }
+
+    public FlagCriteriaBuilder optionCode(FlagCriteriaOptionCode flagCriteriaOptionCode) {
+        flag.setOptionCode(flagCriteriaOptionCode);
         return this;
     }
 }

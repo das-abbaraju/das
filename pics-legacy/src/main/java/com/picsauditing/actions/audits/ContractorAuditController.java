@@ -16,6 +16,8 @@ import java.util.TreeSet;
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.auditBuilder.AuditQuestionSuggestion;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.rbic.InsuranceCriteriaChecker;
+import com.picsauditing.rbic.InvalidAuditDataAnswer;
 import com.picsauditing.service.audit.AuditPeriodService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,6 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -394,6 +395,15 @@ public class ContractorAuditController extends AuditActionSupport {
 		return setUrlForRedirect("Audit.action?auditID=" + auditID);
 	}
 
+    public boolean meetsCriteria(AuditData contractorsLimit, InsuranceCriteriaContractorOperator insuranceCriteria) {
+        try {
+            return InsuranceCriteriaChecker.meetsCriteria(contractorsLimit, insuranceCriteria);
+        } catch(InvalidAuditDataAnswer e) {
+
+        }
+        return false;
+    }
+
 	public List<MenuComponent> getAuditMenu() {
 		List<MenuComponent> menu = super.getAuditMenu();
 
@@ -723,4 +733,5 @@ public class ContractorAuditController extends AuditActionSupport {
 	public SortedMap<Integer, List<InsuranceCriteriaContractorOperator>> getInsuranceCriteriaMap(AuditQuestion question) {
 		return InsuranceCriteriaDisplay.getInsuranceCriteriaMap(question, contractor);
 	}
+
 }
