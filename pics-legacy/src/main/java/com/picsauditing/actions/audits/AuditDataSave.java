@@ -755,7 +755,11 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	private boolean processAndValidateNumeric(AuditData auditData, AuditData databaseCopy, String questionType) {
-		AuditQuestion question = databaseCopy.getQuestion();
+        if (auditData.getAnswer() == null || auditData.getAnswer().equals("")) {
+            return true;
+        }
+
+        AuditQuestion question = databaseCopy.getQuestion();
 		String answer = auditData.getAnswer();
 
 		answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
