@@ -133,6 +133,7 @@ public class AddLateFees implements CronTask {
         Invoice lateFeeInvoice = new Invoice();
         lateFeeInvoice.setAccount(invoiceWhichIsLate.getAccount());
         lateFeeInvoice.getItems().add(lateFeeItem);
+        lateFeeInvoice.setCurrency(invoiceWhichIsLate.getAccount().getCurrency());
         lateFeeInvoice.updateTotalAmount();
         lateFeeInvoice.updateAmountApplied();
         lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
