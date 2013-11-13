@@ -44,7 +44,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 	}
 
 	@ApiRequired
-	private boolean isDuplicateUserName() {
+	public boolean isDuplicateUserName() {
 		return (appUserDAO.findListByUserName(username).size() >= 1);
 	}
 
