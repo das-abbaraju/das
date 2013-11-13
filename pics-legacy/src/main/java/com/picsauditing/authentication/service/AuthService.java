@@ -6,6 +6,7 @@ import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.util.Strings;
@@ -33,29 +34,37 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 	@ApiRequired
 	public String execute() {
 		json.put("status", "SUCCESS");
-//		json.put("method", "execute");
-//		json.put("username", appUserDAO.find(32722).getUsername());
 		return JSON;
 	}
 
 	@ApiRequired
 	public String checkUserName() {
-		json.put("status", (appUserDAO.findListByUserName(username).size() < 1) ? "Available" : "Taken");
+		json.put("status", isDuplicateUserName() ? "Taken" : "Available");
 		return JSON;
+	}
+
+	@ApiRequired
+	public boolean isDuplicateUserName() {
+		return (appUserDAO.findListByUserName(username).size() >= 1);
 	}
 
 	@ApiRequired
 	public String createNewAppUser() {
 		if (Strings.isEmpty(username) || password == null) {
 			json.put("status", "FAIL");
+		} else if (isDuplicateUserName()) {
+			json.put("status", "FAIL");
 		} else {
 			AppUser newAppUser = new AppUser();
 			newAppUser.setUsername(username);
-			newAppUser.setPassword(password);
+			newAppUser = appUserDAO.save(newAppUser);
 
-			appUserDAO.save(newAppUser);
-
-			newAppUser = appUserDAO.findByUserNameAndPassword(username, password);
+			if (!Strings.isEmpty(password)) {
+				String hashSalt = "" + newAppUser.getId();
+				newAppUser.setHashSalt(hashSalt);
+				newAppUser.setPassword(EncodedMessage.hash(password + hashSalt));
+				newAppUser = appUserDAO.save(newAppUser);
+			}
 
 			json.put("status", "SUCCESS");
 			json.put("id", newAppUser.getId());
@@ -64,7 +73,6 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		return JSON;
 	}
 
-	@ApiRequired
 	public String authenticateByCredentials() throws Exception {
 		//TODO - handle incorrect login attempt
 
@@ -97,12 +105,6 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		json.put("method", "Token");
 		return JSON;
 	}
-
-//	private void updateUserForSuccessfulLogin() {
-//		user.unlockLogin();
-//		user.setLastLogin(new Date());
-//		userDAO.save(user);
-//	}
 
 	private void verifyAppUserExists(String username) throws Exception {
 		if (appUserDAO.findListByUserName(username).size() == 0) {

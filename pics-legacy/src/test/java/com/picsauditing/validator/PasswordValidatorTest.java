@@ -231,7 +231,7 @@ public class PasswordValidatorTest  {
 	}
 
 	private String encryptPassword(String password) {
-		return EncodedMessage.hash(password + user.getId());
+		return EncodedMessage.hash(password + user.getAppUser().getHashSalt());
 	}
 
 	private Date getDateXMonthsAgo(int monthsAgo) {

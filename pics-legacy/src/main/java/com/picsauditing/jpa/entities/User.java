@@ -806,12 +806,12 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public boolean isEncryptedPasswordEqual(String query) {
-		return getPassword() != null && getPassword().endsWith(EncodedMessage.hash(query + this.getId()));
+		return getPassword() != null && getPassword().endsWith(EncodedMessage.hash(query + this.getAppUser().getHashSalt()));
 	}
 
 	@Transient
 	public void setEncryptedPassword(String unencryptedPassword) {
-		this.setPassword(EncodedMessage.hash(unencryptedPassword + this.getId()));
+		this.setPassword(EncodedMessage.hash(unencryptedPassword + this.getAppUser().getHashSalt()));
 	}
 
 	/**

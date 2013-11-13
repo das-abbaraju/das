@@ -339,7 +339,7 @@ public class LoginController extends PicsActionSupport {
 					logAndMessageError(getText("Login.PasswordIncorrect"));
 					return ERROR;
 				} else {
-					JSONObject result = egLoginService.loginViaRest(username, EncodedMessage.hash(password));
+					JSONObject result = egLoginService.loginViaRest(username, password);
 					permissions = permissionBuilder.login(appUser, profile);
 
 					if ("SUCCESS".equals(result.get("status").toString())) {

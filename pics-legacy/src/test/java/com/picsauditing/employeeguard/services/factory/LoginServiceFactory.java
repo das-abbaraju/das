@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.services.factory;
 
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.services.LoginService;
-import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.security.SessionCookie;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -29,8 +28,8 @@ public class LoginServiceFactory {
 		JSONObject success = (JSONObject) JSONValue.parse("{\"status\":\"SUCCESS\",\"cookie\":\"" + sessionCookie.toString() + "\"}");
 		JSONObject fail = (JSONObject) JSONValue.parse("{\"status\":\"FAILURE\"}");
 
-		when(loginService.loginViaRest(USERNAME, EncodedMessage.hash(PASSWORD))).thenReturn(success);
-		when(loginService.loginViaRest(FAIL, EncodedMessage.hash(FAIL))).thenReturn(fail);
+		when(loginService.loginViaRest(USERNAME, PASSWORD)).thenReturn(success);
+		when(loginService.loginViaRest(FAIL, FAIL)).thenReturn(fail);
 
 		return loginService;
 	}
