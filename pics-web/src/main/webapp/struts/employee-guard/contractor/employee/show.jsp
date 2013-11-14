@@ -83,7 +83,18 @@
                             <s:set var="skill_icon">icon-ok-sign</s:set>
                         </s:elseif>
 
-                        <a href="#" class="list-group-item ${skill_status}">
+                        <s:set var="skill_url" value="'#'" />
+                        <s:if test="permissions.accountId == #skill_info.accountId">
+                            <s:set var="skill_url">
+                                <s:url action="skill">
+                                    <s:param name="id">
+                                        ${skill_info.id}
+                                    </s:param>
+                                </s:url>
+                            </s:set>
+                        </s:if>
+
+                        <a href="${skill_url}" class="list-group-item ${skill_status}">
                             <i class="${skill_icon}"></i>${skill_info.name}
                         </a>
                     </s:iterator>

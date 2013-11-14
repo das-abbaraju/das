@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "profiledocument")
@@ -58,6 +59,10 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
+
+	@OneToMany(mappedBy = "profileDocument", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	private List<AccountSkillEmployee> employeeSkills;
 
 	public int getId() {
 		return id;
@@ -177,6 +182,14 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 
 	public void setDeletedDate(Date deletedDate) {
 		this.deletedDate = deletedDate;
+	}
+
+	public List<AccountSkillEmployee> getEmployeeSkills() {
+		return employeeSkills;
+	}
+
+	public void setEmployeeSkills(List<AccountSkillEmployee> employeeSkills) {
+		this.employeeSkills = employeeSkills;
 	}
 
 	@Transient

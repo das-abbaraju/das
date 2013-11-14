@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.DocumentType;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
@@ -72,8 +73,11 @@ public class ProfileDocumentService {
 			profileDocumentFromDatabase.setFileSize(updatedProfileDocument.getFileSize());
 		}
 
-		EntityHelper.setUpdateAuditFields(profileDocumentFromDatabase, appUserId, new Date());
+		for (AccountSkillEmployee accountSkillEmployee : profileDocumentFromDatabase.getEmployeeSkills()) {
+			accountSkillEmployee.setEndDate(profileDocumentFromDatabase.getEndDate());
+		}
 
+		EntityHelper.setUpdateAuditFields(profileDocumentFromDatabase, appUserId, new Date());
 		profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 
 		if (Strings.isNotEmpty(updatedProfileDocument.getFileName())) {
@@ -84,8 +88,7 @@ public class ProfileDocumentService {
 			FileUtils.moveFile(file, directory, "files/" + FileUtils.thousandize(profile.getId()), filename, extension, true);
 
 			profileDocumentFromDatabase.setFileName(filename + "." + extension);
-
-			return profileDocumentDAO.save(profileDocumentFromDatabase);
+			profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 		}
 
 		return profileDocumentFromDatabase;

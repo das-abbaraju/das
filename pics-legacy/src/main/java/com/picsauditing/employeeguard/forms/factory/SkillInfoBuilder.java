@@ -17,6 +17,7 @@ public class SkillInfoBuilder {
 	public SkillInfo build(AccountSkill accountSkill, SkillStatus skillStatus, Date endDate) {
 		SkillInfo skillInfo = new SkillInfo();
 		skillInfo.setId(accountSkill.getId());
+		skillInfo.setAccountId(accountSkill.getAccountId());
 		skillInfo.setEndDate(endDate);
 
 		Date endOfTime = DateBean.addDays(DateBean.getEndOfTime(), -1);
