@@ -33,8 +33,6 @@ public class ContractorProjectService {
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
-	private AccountSkillDAO accountSkillDAO;
-	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;
