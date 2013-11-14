@@ -66,6 +66,7 @@ ContractorRecommendedCSRID
 ContractorRecommendedCSRName
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorSupplierDiversityColumn
