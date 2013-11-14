@@ -100,4 +100,19 @@ public class ProjectDAO extends BaseEntityDAO<Project> {
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}
+
+	public Project findProjectByRoleAndAccount(int roleId, int accountId) {
+		TypedQuery<Project> query = em.createQuery("SELECT p FROM Project p " +
+				"JOIN p.roles pr " +
+				"JOIN pr.role r " +
+				"WHERE r.id = :roleId AND p.accountId = :accountId", Project.class);
+		query.setParameter("roleId", roleId);
+		query.setParameter("accountId", accountId);
+
+		try {
+			return query.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

@@ -140,10 +140,6 @@ public class GroupService {
 	}
 
 	public AccountGroup update(final RoleProjectsForm roleProjectsForm, AccountGroup role, final int accountId, final int appUserId) {
-		if (ArrayUtils.isEmpty(roleProjectsForm.getProjects())) {
-			return role;
-		}
-
 		List<Integer> projectIds = Utilities.primitiveArrayToList(roleProjectsForm.getProjects());
 		List<Project> projects = projectService.getProjects(projectIds, accountId);
 
