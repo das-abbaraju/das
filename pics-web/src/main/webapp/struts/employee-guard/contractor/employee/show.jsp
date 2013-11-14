@@ -83,7 +83,7 @@
                             <s:set var="skill_icon">icon-ok-sign</s:set>
                         </s:elseif>
 
-                        <a href="${employee_skill_url}" class="list-group-item ${skill_status}">
+                        <a href="#" class="list-group-item ${skill_status}">
                             <i class="${skill_icon}"></i>${skill_info.name}
                         </a>
                     </s:iterator>
