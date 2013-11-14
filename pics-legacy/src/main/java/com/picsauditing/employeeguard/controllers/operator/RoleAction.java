@@ -175,7 +175,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	}
 
 	private void loadProject() {
-		roleProject = projectService.getProject(id, permissions.getAccountId());
+		roleProject = projectService.getProjectByRoleAndAccount(id, permissions.getAccountId());
 	}
 
 	private void loadOperatorProjects() {

@@ -320,4 +320,8 @@ public class ProjectService {
 	public List<Project> getProjectsForEmployee(final Employee employee) {
 		return projectDAO.findByEmployee(employee);
 	}
+
+	public Project getProjectByRoleAndAccount(final String roleId, final int accountId) {
+		return projectDAO.findProjectByRoleAndAccount(NumberUtils.toInt(roleId), accountId);
+	}
 }

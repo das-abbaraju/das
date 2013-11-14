@@ -8,6 +8,7 @@ import java.util.Date;
 public class SkillInfo implements Comparable<SkillInfo> {
 
     private int id;
+	private int accountId;
     private Date endDate;
     private String name;
     private String description;
@@ -23,7 +24,15 @@ public class SkillInfo implements Comparable<SkillInfo> {
         this.id = id;
     }
 
-    public Date getEndDate() {
+	public int getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
+
+	public Date getEndDate() {
         return endDate;
     }
 
