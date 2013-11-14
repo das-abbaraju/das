@@ -2,27 +2,46 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProjectAssignment;
+import com.picsauditing.employeeguard.forms.contractor.ContractorProjectAssignmentMatrix;
+import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.forms.operator.RoleInfo;
+import com.picsauditing.employeeguard.util.Extractor;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.generic.IntersectionAndComplementProcess;
+import com.picsauditing.util.generic.GenericPredicate;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class ContractorProjectService {
+	private static final Logger LOG = LoggerFactory.getLogger(ContractorProjectService.class);
 
 	@Autowired
-	private ProjectCompanyDAO projectCompanyDAO;
-	@Autowired
-	private AccountGroupEmployeeDAO accountGroupEmployeeDAO;
+	private AccountService accountService;
 	@Autowired
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 	@Autowired
-	private AccountSkillGroupDAO accountSkillGroupDAO;
+	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
+	@Autowired
+	private EmployeeDAO employeeDAO;
+	@Autowired
+	private FormBuilderFactory formBuilderFactory;
+	@Autowired
+	private ProjectCompanyDAO projectCompanyDAO;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
 	public ProjectCompany getProject(String id, int accountId) {
 		return projectCompanyDAO.findProject(NumberUtils.toInt(id), accountId);
@@ -40,99 +59,120 @@ public class ContractorProjectService {
 		return projectCompanyDAO.search(searchTerm, accountId);
 	}
 
-	public void assignEmployeeToProjectRole(Employee employee, ProjectRole projectRole, int appUserId) {
+	public void assignEmployeeToProjectRole(final Employee employee, final ProjectRole projectRole, final int appUserId) {
 		Date now = new Date();
-		// the employee needs to have all the operator's skills for that project
-		List<AccountSkill> accountSkills = getSkillsForProjectGroup(projectRole);
-		List<AccountSkillEmployee> accountSkillEmployees = buildAccountSkillEmployees(employee, accountSkills);
 
-		accountSkillEmployees = IntersectionAndComplementProcess.intersection(accountSkillEmployees, employee.getSkills(),
-				AccountSkillEmployee.COMPARATOR, new BaseEntityCallback(appUserId, now));
-		accountSkillEmployeeDAO.save(accountSkillEmployees);
+		ProjectRoleEmployee projectRoleEmployee = new ProjectRoleEmployee(projectRole, employee);
+		EntityHelper.setCreateAuditFields(projectRoleEmployee, appUserId, now);
+		projectRoleEmployeeDAO.save(projectRoleEmployee);
 
-		AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, projectRole.getRole());
-		EntityHelper.setCreateAuditFields(accountGroupEmployee, appUserId, now);
-		accountGroupEmployeeDAO.save(accountGroupEmployee);
-	}
-
-	private List<AccountSkill> getSkillsForProjectGroup(ProjectRole projectRole) {
-		return accountSkillDAO.findByGroups(Arrays.asList(projectRole.getRole()));
-	}
-
-	private List<AccountSkillEmployee> buildAccountSkillEmployees(Employee employee, List<AccountSkill> skills) {
-		if (skills.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
-		for (AccountSkill accountSkill : skills) {
-			AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(accountSkill, employee);
-			accountSkillEmployee.setStartDate(new Date());
-			accountSkillEmployees.add(accountSkillEmployee);
-		}
-
-		return accountSkillEmployees;
+		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
 	}
 
 	public void unassignEmployeeFromProjectRole(Employee employee, ProjectRole projectRole, int appUserId) {
 		Date now = new Date();
 
-		List<AccountSkillEmployee> accountSkillEmployees = getListOfSkillsForThisProject(employee, projectRole);
-		EntityHelper.softDelete(accountSkillEmployees, appUserId, now);
-		accountSkillEmployeeDAO.save(accountSkillEmployees);
+		ProjectRoleEmployee projectRoleEmployee = projectRoleEmployeeDAO.findByEmployeeAndProjectRole(employee, projectRole);
+		EntityHelper.softDelete(projectRoleEmployee, appUserId, now);
+		projectRoleEmployeeDAO.save(projectRoleEmployee);
 
-		AccountGroupEmployee accountGroupEmployee = accountGroupEmployeeDAO.findByGroupAndEmployee(employee, projectRole.getRole());
-		EntityHelper.softDelete(accountGroupEmployee, appUserId, now);
-		accountGroupEmployeeDAO.save(accountGroupEmployee);
+		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
 	}
 
-	private List<AccountSkillEmployee> getListOfSkillsForThisProject(Employee employee, ProjectRole projectRole) {
-		List<AccountGroup> groups = accountGroupEmployeeDAO.findByAccountAndEmployee(projectRole.getProject().getAccountId(), employee.getId());
-		List<AccountSkillGroup> accountSkillGroups = accountSkillGroupDAO.findByGroups(groups);
-		Map<AccountSkill, List<AccountGroup>> skillToGroups = getSkillToGroupsMap(accountSkillGroups);
-		List<AccountSkill> deletableSkills = filterDeletableAccountSkills(skillToGroups, projectRole.getRole().getId());
+	public ContractorProjectAssignmentMatrix buildAssignmentMatrix(final Project project, final int accountId) {
+		List<AccountSkill> requiredSkills = getRequiredSkills(project);
 
-		return accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, deletableSkills);
+		ContractorProjectAssignmentMatrix matrix = new ContractorProjectAssignmentMatrix();
+		matrix.setRoles(buildRoleInfos(project));
+		matrix.setAssignments(buildAssignments(project, requiredSkills, accountId));
+		matrix.setSkillNames(buildSkillNames(requiredSkills));
+
+		return matrix;
 	}
 
-	private Map<AccountSkill, List<AccountGroup>> getSkillToGroupsMap(List<AccountSkillGroup> accountSkillGroups) {
-		Map<AccountSkill, List<AccountGroup>> skillToGroups = new HashMap<>();
+	private List<RoleInfo> buildRoleInfos(Project project) {
+		List<AccountGroup> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
+		return formBuilderFactory.getRoleInfoFactory().build(groups);
+	}
 
-		for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
-			AccountSkill skill = accountSkillGroup.getSkill();
-			AccountGroup group = accountSkillGroup.getGroup();
+	private List<ContractorEmployeeProjectAssignment> buildAssignments(final Project project, final List<AccountSkill> requiredSkills, final int accountId) {
+		List<Employee> employees = getAssignedEmployees(project, accountId);
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
 
-			if (!skillToGroups.containsKey(skill)) {
-				skillToGroups.put(skill, new ArrayList<AccountGroup>());
+		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory()
+				.buildList(employees, accountSkillEmployees, requiredSkills, Collections.<AccountGroup>emptyList());
+	}
+
+	private List<String> buildSkillNames(List<AccountSkill> requiredSkills) {
+		return ExtractorUtil.extractList(requiredSkills, new Extractor<AccountSkill, String>() {
+			@Override
+			public String extract(AccountSkill accountSkill) {
+				return accountSkill.getName();
 			}
-
-			skillToGroups.get(skill).add(group);
-		}
-
-		return skillToGroups;
+		});
 	}
 
-	private List<AccountSkill> filterDeletableAccountSkills(Map<AccountSkill, List<AccountGroup>> skillToGroups, int roleId) {
-		List<AccountSkill> deletable = new ArrayList<>();
+	private List<Employee> getAssignedEmployees(final Project project, final int accountId) {
+		List<Employee> employees = employeeDAO.findByProject(project);
 
-		for (Map.Entry<AccountSkill, List<AccountGroup>> entry : skillToGroups.entrySet()) {
-			if (entry.getValue().size() == 1 && entry.getValue().get(0).getId() == roleId) {
-				deletable.add(entry.getKey());
+		CollectionUtils.filter(employees, new GenericPredicate<Employee>() {
+			@Override
+			public boolean evaluateEntity(Employee employee) {
+				return employee.getAccountId() == accountId;
+			}
+		});
+
+		return employees;
+	}
+
+	private List<AccountSkill> getRequiredSkills(final Project project) {
+		int accountId = project.getAccountId();
+		// Find required skills by operator site and corporates
+		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(accountId);
+		accountIds.add(accountId);
+
+		List<AccountSkill> requiredSkills = new ArrayList<>();
+		requiredSkills.addAll(accountSkillDAO.findRequiredByAccounts(accountIds));
+		requiredSkills.addAll(ExtractorUtil.extractList(project.getSkills(), ProjectSkill.SKILL_EXTRACTOR));
+
+		return ListUtil.removeDuplicatesAndSort(requiredSkills);
+	}
+
+	public ContractorProjectAssignmentMatrix buildAssignmentMatrix(final Project project, final int roleId, final int accountId) {
+		ProjectRole projectRole = getProjectRole(project, roleId);
+
+		ContractorProjectAssignmentMatrix matrix = new ContractorProjectAssignmentMatrix();
+		List<AccountSkill> requiredSkills = getRequiredSkills(projectRole);
+
+		matrix.setRoles(buildRoleInfos(project));
+		matrix.setAssignments(buildAssignments(projectRole, requiredSkills, accountId));
+		matrix.setSkillNames(buildSkillNames(requiredSkills));
+
+		return matrix;
+	}
+
+	private ProjectRole getProjectRole(final Project project, final int roleId) throws IllegalArgumentException {
+		for (ProjectRole projectRole : project.getRoles()) {
+			if (projectRole.getRole().getId() == roleId) {
+				return projectRole;
 			}
 		}
 
-		return deletable;
+		LOG.error("Tried to find role {} in project {}", roleId, project.getId());
+		throw new IllegalArgumentException("Could not find role within project");
 	}
 
-	public Map<Integer, List<Integer>> sumEmployeeRolesForProject(final int accountId, final Project project) {
-		if (accountId == 0 || project == null) {
-			return Collections.emptyMap();
-		}
+	private List<ContractorEmployeeProjectAssignment> buildAssignments(final ProjectRole projectRole, final List<AccountSkill> requiredSkills, final int accountId) {
+		List<Employee> employees = employeeDAO.findByAccount(accountId);
+		Collections.sort(employees);
 
-		Map<Integer, List<Integer>> sumEmployeeRoles = new HashMap<>();
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByEmployeesAndProjectRole(employees, projectRole);
 
+		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory().buildListForRole(employees, requiredSkills, accountSkillEmployees, projectRoleEmployees);
+	}
 
-
-		return sumEmployeeRoles;
+	private List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {
+		return ExtractorUtil.extractList(projectRole.getRole().getSkills(), AccountSkillGroup.SKILL_EXTRACTOR);
 	}
 }

@@ -25,6 +25,17 @@
                 		validationQuery="SELECT 1"
                 		testOnBorrow="true"
                 		testOnReturn="false" url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1" />
+
+                    <!-- Translations Data Source -->
+                    <Resource name="jdbc/translations" auth="Container"
+                            driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
+                            maxActive="20" maxIdle="10" maxWait="10000" minIdle="5"
+                            removeAbandoned="true" removeAbandonedTimeout="200"
+                            type="javax.sql.DataSource"
+                            url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_translations"
+                            username="pics" password="8arTyRev"
+                            validationInterval="30000" validationQuery="SELECT 1"/>
+                    <!-- End Translations Data Source -->
 				</Context>
 			</Host>
 

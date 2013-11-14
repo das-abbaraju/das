@@ -95,12 +95,12 @@ public class OperatorSkillForm implements AddAnotherForm {
 
 	public AccountSkill buildAccountSkill() {
 		return new AccountSkillBuilder().name(name).description(description).skillType(skillType).required(required)
-				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).build();
+				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).doesNotExpire(doesNotExpire).build();
 	}
 
 	public AccountSkill buildAccountSkill(int id, int accountId) {
 		return new AccountSkillBuilder(id, accountId).name(name).description(description).skillType(skillType).required(required)
-				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).build();
+				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).doesNotExpire(doesNotExpire).build();
 	}
 
 	public static class Builder {

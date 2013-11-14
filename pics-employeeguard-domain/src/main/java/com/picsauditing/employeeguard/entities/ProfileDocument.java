@@ -181,6 +181,10 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 
 	@Transient
 	public boolean isDoesNotExpire() {
+        if (endDate == null) {
+            return false;
+        }
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(endDate);
 		return calendar.get(Calendar.YEAR) > 3000;
@@ -196,8 +200,6 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 		if (getProfile() != null ? !getProfile().equals(profileDocument.getProfile()) : profileDocument.getProfile() != null) return false;
 		if (getDocumentType() != null ? !(getDocumentType() == profileDocument.getDocumentType()) : profileDocument.getDocumentType() != null) return false;
 		if (getName() != null ? !getName().equals(profileDocument.getName()) : profileDocument.getName() != null) return false;
-//		if (getStartDate() != null ? !getStartDate().equals(profileDocument.getStartDate()) : profileDocument.getStartDate() != null) return false;
-//		if (getEndDate() != null ? !getEndDate().equals(profileDocument.getEndDate()) : profileDocument.getEndDate() != null) return false;
 
 		return true;
 	}
@@ -207,8 +209,6 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 		int result = 31 * (getProfile() != null ? getProfile().hashCode() : 0);
 		result = 31 * result + (getDocumentType() != null ? getDocumentType().hashCode() : 0);
 		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-//		result = 31 * result + (getStartDate() != null ? getStartDate().hashCode() : 0);
-//		result = 31 * result + (getEndDate() != null ? getEndDate().hashCode() : 0);
 		return result;
 	}
 

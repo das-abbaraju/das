@@ -38,8 +38,14 @@
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
     <s:param name="delete_url">${operator_project_delete_url}</s:param>
     <s:param name="modal_title">Delete Project</s:param>
-    <s:param
-            name="modal_message">Deleting will remove the project and its assigned job roles, assigned companies, and employee assignments.</s:param>
+    <s:param name="modal_message">Deleting will remove the project and its assigned job roles, assigned companies, and employee assignments.</s:param>
+</s:include>
+
+<%-- Remove Requested Companies Confirmation --%>
+<s:include value="/struts/employee-guard/_remove-requested-company-confirmation.jsp">
+    <s:param name="delete_url">#</s:param>
+    <s:param name="modal_title">Confirm Removing Requested Company</s:param>
+    <s:param name="modal_message">You are removing one or more requested companies. Removing a company also removes all of a company's employees assigned to the project.</s:param>
 </s:include>
 
 <div class="row">

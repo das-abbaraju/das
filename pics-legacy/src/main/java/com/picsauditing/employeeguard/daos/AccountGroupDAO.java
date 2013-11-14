@@ -1,13 +1,13 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.AccountGroup;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
-
 
 public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 
@@ -98,4 +98,20 @@ public class AccountGroupDAO extends BaseEntityDAO<AccountGroup> {
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}
+
+    public List<AccountGroup> findGroupsForEmployee(final Employee employee) {
+        TypedQuery<AccountGroup> query = em.createQuery("SELECT age.group FROM AccountGroupEmployee age " +
+                "WHERE age.employee = :employee AND age.group.accountId = :accountId", AccountGroup.class);
+        query.setParameter("employee", employee);
+        query.setParameter("accountId", employee.getAccountId());
+        return query.getResultList();
+    }
+
+    public List<AccountGroup> findEmployeeGroupAssignments(Employee employee) {
+        TypedQuery<AccountGroup> query = em.createQuery("SELECT age.group FROM AccountGroupEmployee age " +
+                "WHERE age.employee = :employee AND age.group.accountId <> :accountId", AccountGroup.class);
+        query.setParameter("employee", employee);
+        query.setParameter("accountId", employee.getAccountId());
+        return query.getResultList();
+    }
 }

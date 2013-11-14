@@ -11,9 +11,12 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.IntervalType;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
+import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.validators.skill.SkillFormValidator;
+import com.picsauditing.employeeguard.viewmodel.contractor.SkillModel;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.web.UrlBuilder;
@@ -30,6 +33,8 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	private static final long serialVersionUID = -3879403139978601779L;
 
 	/* Service + Validator */
+    @Autowired
+    private EmployeeService employeeService;
 	@Autowired
 	private GroupService groupService;
 	@Autowired
@@ -47,6 +52,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	private AccountSkill skill;
 	private List<AccountSkill> skills;
 	private List<AccountGroup> skillGroups;
+    private List<SkillModel> skillModels;
 
 	/* Other */
 	private UrlBuilder urlBuilder;
@@ -54,14 +60,18 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	/* Pages */
 
 	public String index() {
+        int accountId = permissions.getAccountId();
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();
-			skills = skillService.search(searchTerm, permissions.getAccountId());
+			skills = skillService.search(searchTerm, accountId);
 		} else {
-			skills = skillService.getSkillsForAccount(permissions.getAccountId());
+			skills = skillService.getSkillsForAccount(accountId);
 		}
 
-		Collections.sort(skills);
+        skillModels = ViewModeFactory.getSkillModelFactory().create(skills,
+                (int) employeeService.getNumberOfEmployeesForAccount(accountId));
+
+		Collections.sort(skillModels);
 
 		return LIST;
 	}
@@ -200,4 +210,8 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	public IntervalType[] getIntervalTypes() {
 		return IntervalType.getDisplayableOptions();
 	}
+
+    public List<SkillModel> getSkillModels() {
+        return skillModels;
+    }
 }

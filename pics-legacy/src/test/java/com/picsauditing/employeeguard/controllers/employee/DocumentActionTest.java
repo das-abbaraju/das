@@ -8,12 +8,15 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.forms.factory.ProfileDocumentInfoBuilder;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -31,6 +34,9 @@ public class DocumentActionTest extends PicsActionTest {
 	private ProfileService profileService;
 	private ProfileDocumentService profileDocumentService;
 
+    @Mock
+    private FormBuilderFactory formBuilderFactory;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -43,8 +49,11 @@ public class DocumentActionTest extends PicsActionTest {
 
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
 
+        Whitebox.setInternalState(documentAction, "formBuilderFactory", formBuilderFactory);
 		Whitebox.setInternalState(documentAction, "profileService", profileService);
 		Whitebox.setInternalState(documentAction, "profileDocumentService", profileDocumentService);
+
+        when(formBuilderFactory.getProfileDocumentInfoBuilder()).thenReturn(new ProfileDocumentInfoBuilder());
 	}
 
 	@Test

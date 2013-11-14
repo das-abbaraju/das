@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.SpringUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.springframework.util.CollectionUtils;
@@ -280,4 +281,76 @@ public class Utilities {
 
 		return result;
 	}
+
+    public interface MapConvertable<K, E> {
+        K getKey(E entity);
+    }
+
+    /**
+     * Takes any collection of objects and returns a map based on the Key retrieved from the MapConvertable<K, E>
+     * implementation.
+     *
+     * @param entities
+     * @param mapConverter
+     * @param <K> Object that represents the Key and must correctly implement the equals() and hashcode()
+     * @param <E> Object that is some element/entity within the collection
+     * @return
+     */
+    public static <K, E> Map<K, E> convertToMap(Collection<E> entities, MapConvertable<K, E>  mapConverter) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return Collections.emptyMap();
+        }
+
+        Map<K, E> map = new HashMap<>();
+        for (E entity : entities) {
+            map.put(mapConverter.getKey(entity), entity);
+        }
+
+        return map;
+    }
+
+    /**
+     * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
+     * from the implementation of MapConvertable<K, E>.
+     *
+     * @param entities
+     * @param mapConverter
+     * @param <K> Object that represents the Key and must correctly implement the equals() and hashcode()
+     * @param <E> Object that is some element/entity within the collection
+     * @return
+     */
+    public static <K, E> Map<K, List<E>> convertToMapOfLists(Collection<E> entities, MapConvertable<K, E>  mapConverter) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return Collections.emptyMap();
+        }
+
+        Map<K, List<E>> map = new HashMap<>();
+        for (E entity : entities) {
+            K key = mapConverter.getKey(entity);
+            if (!map.containsKey(key)) {
+                map.put(key, new ArrayList<E>());
+            }
+
+            map.get(key).add(entity);
+        }
+
+        return map;
+    }
+
+    public interface Identitifable<E, ID> {
+        ID getId(E element);
+    }
+
+    public static <E, ID> Set<ID> getIdsFromCollection(Collection<E> elements, Identitifable<E, ID> identitifable) {
+        if (CollectionUtils.isEmpty(elements)) {
+            return Collections.emptySet();
+        }
+
+        Set<ID> ids = new HashSet<>();
+        for (E element : elements) {
+            ids.add(identitifable.getId(element));
+        }
+
+        return ids;
+    }
 }

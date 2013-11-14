@@ -93,7 +93,44 @@
             </h1>
 
             <div class="content">
-
+                <ul class="employee-guard-list-rollup">
+                    <li class="expired">
+                        <div class="row">
+                            <div class="col-md-1 col-xs-1">
+                                <i class="icon-minus-sign-alt"></i>
+                            </div>
+                            <div class="col-md-9 col-xs-9">Expired or Incomplete</div>
+                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expired}</div>
+                        </div>
+                    </li>
+                    <li class="expiring">
+                        <div class="row">
+                            <div class="col-md-1 col-xs-1">
+                                <i class="icon-warning-sign"></i>
+                            </div>
+                            <div class="col-md-9 col-xs-9">Expiring</div>
+                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expiring}</div>
+                        </div>
+                    </li>
+                    <li class="pending">
+                        <div class="row">
+                            <div class="col-md-1 col-xs-1">
+                                <i class="icon-ok-circle"></i>
+                            </div>
+                            <div class="col-md-9 col-xs-9">Pending Approval</div>
+                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.pending}</div>
+                        </div>
+                    </li>
+                    <li class="complete">
+                        <div class="row">
+                            <div class="col-md-1 col-xs-1">
+                                <i class="icon-ok-sign"></i>
+                            </div>
+                            <div class="col-md-9 col-xs-9">Complete and Approved</div>
+                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.complete}</div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </section>
     </div>

@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
-import com.picsauditing.employeeguard.forms.employee.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.SkillInfo;
 
 import java.util.Date;
 

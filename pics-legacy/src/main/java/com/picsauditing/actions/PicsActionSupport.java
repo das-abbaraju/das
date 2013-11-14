@@ -679,24 +679,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * @return
 	 */
 	static protected String getFtpDir() {
-		String ftpDir = System.getProperty("pics.ftpDir");
-		if (ftpDir != null && ftpDir.length() > 0) {
-			return ftpDir;
-		}
-
-		try {
-			ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
-		} catch (Exception exception) {
-			// Most likely thrown during testing
-			Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
-			logger.error("Error getting ftp dir", exception);
-		}
-
-		if (ftpDir != null && ftpDir.length() > 0) {
-			return ftpDir;
-		}
-
-		return "C:/temp";
+		return FileUtils.getFtpDir();
 	}
 
 	public String getButton() {

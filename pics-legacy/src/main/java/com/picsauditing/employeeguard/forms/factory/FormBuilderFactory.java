@@ -22,6 +22,7 @@ public class FormBuilderFactory {
 	private final ContractorEmployeeProjectAssignmentFactory contractorEmployeeProjectAssignmentFactory = new ContractorEmployeeProjectAssignmentFactory();
 	private final OperatorEmployeeProjectAssignmentFactory operatorEmployeeProjectAssignmentFactory = new OperatorEmployeeProjectAssignmentFactory();
 	private final RoleInfoFactory roleInfoFactory = new RoleInfoFactory();
+	private final ProfileDocumentInfoBuilder profileDocumentInfoBuilder = new ProfileDocumentInfoBuilder();
 
 	public CompanySkillsFormBuilder getCompanySkillsFormBuilder() {
 		return companySkillsFormBuilder;
@@ -73,5 +74,9 @@ public class FormBuilderFactory {
 
 	public ProjectInfoFactory getProjectInfoFactory() {
 		return projectInfoFactory;
+	}
+
+	public ProfileDocumentInfoBuilder getProfileDocumentInfoBuilder() {
+		return profileDocumentInfoBuilder;
 	}
 }

@@ -5,6 +5,11 @@ import com.picsauditing.access.LoginService;
 import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.employeeguard.entities.EmailHash;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.security.SessionCookie;
@@ -23,11 +28,16 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 	private String ssoToken;
 	private String username;
 	private String password;
+	private String hashCode;
 
 	@Autowired
 	private LoginService loginService;
 	@Autowired
 	private AppUserDAO appUserDAO;
+	@Autowired
+	private EmailHashService emailHashService;
+	@Autowired
+	private EmployeeService employeeService;
 	@Autowired
 	private ProfileService profileService;
 
@@ -73,6 +83,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		return JSON;
 	}
 
+	@ApiRequired
 	public String authenticateByCredentials() throws Exception {
 		//TODO - handle incorrect login attempt
 
@@ -82,6 +93,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			//user = loginService.loginNormally(username, password);
 			verifyAppUserExists(username);
 			verifyPasswordIsCorrect(username, password);
+			verifyEmployeeGuardStatus();
 
 			//addClientSessionCookieToResponse();
 
@@ -137,6 +149,28 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		return sessionCookie.toString();
 	}
 
+	private void verifyEmployeeGuardStatus() throws Exception {
+		int appUserID = appUserDAO.findListByUserName(username).get(0).getId();
+
+		Profile profile = profileService.findByAppUserId(appUserID);
+		if (profile == null) {
+			EmailHash emailHash = emailHashService.findByHash(hashCode);
+
+			Employee employee = employeeService.findEmployee("" + emailHash.getEmployee().getId(), emailHash.getEmployee().getAccountId());
+
+			profile = new Profile();
+			profile.setEmail(username);
+			profile.setUserId(appUserID);
+			profile.setFirstName(employee.getFirstName());
+			profile.setLastName(employee.getLastName());
+
+			profile = profileService.create(profile);
+
+			employee.setProfile(profile);
+			employeeService.save(employee, employee.getAccountId(), appUserID);
+		}
+	}
+
 	public String getSsoToken() {
 		return ssoToken;
 	}
@@ -159,5 +193,13 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getHashCode() {
+		return hashCode;
+	}
+
+	public void setHashCode(String hashCode) {
+		this.hashCode = hashCode;
 	}
 }

@@ -164,6 +164,11 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 
 	public String insert() throws Exception {
 		Project project = projectForm.buildProject();
+
+		if (permissions.isOperator()) {
+			project.setAccountId(permissions.getAccountId());
+		}
+
 		projectService.save(project, permissions.getAccountId(), permissions.getAppUserID());
 
 		if (projectForm.isAddAnother()) {

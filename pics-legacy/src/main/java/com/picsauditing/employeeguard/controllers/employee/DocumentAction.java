@@ -8,6 +8,8 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.forms.employee.ProfileDocumentInfo;
+import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
@@ -35,6 +37,8 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
+	private FormBuilderFactory formBuilderFactory;
+	@Autowired
 	private ProfileDocumentService profileDocumentService;
 	@Autowired
 	private ProfileDocumentFormValidator profileDocumentFormValidator;
@@ -49,16 +53,18 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	private SearchForm searchForm;
 
 	private ProfileDocument document;
-	private List<ProfileDocument> documents;
+	private List<ProfileDocumentInfo> documents;
 
-	public String index() {
+	public String index() throws Exception {
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
 
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();
-			documents = profileDocumentService.search(searchTerm, profile.getId());
+			List<ProfileDocument> profileDocuments = profileDocumentService.search(searchTerm, profile.getId());
+			documents = formBuilderFactory.getProfileDocumentInfoBuilder().buildList(profileDocuments);
 		} else {
-			documents = profileDocumentService.getDocumentsForProfile(profile.getId());
+			List<ProfileDocument> profileDocuments = profileDocumentService.getDocumentsForProfile(profile.getId());
+			documents = formBuilderFactory.getProfileDocumentInfoBuilder().buildList(profileDocuments);
 		}
 
 		Collections.sort(documents);
@@ -188,7 +194,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 		return document;
 	}
 
-	public List<ProfileDocument> getDocuments() {
+	public List<ProfileDocumentInfo> getDocuments() {
 		return documents;
 	}
 

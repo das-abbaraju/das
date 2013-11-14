@@ -41,15 +41,18 @@
             <dl class="employee-guard-information edit-display-values">
                 <dt class="col-md-3">File</dt>
                 <dd class="col-md-9">${skillDocumentForm.proof}</dd>
-                <dt class="col-md-3">Expires</dt>
-                <dd class="col-md-9">
-                    <s:if test="skillDocumentForm.doesNotExpire">
-                        Never
-                    </s:if>
-                    <s:else>
-                        ${skillDocumentForm.skillInfo.endDate}
-                    </s:else>
-                </dd>
+
+                <s:if test="skillDocumentForm.proof != 'None'">
+                    <dt class="col-md-3">Expires</dt>
+                    <dd class="col-md-9">
+                        <s:if test="skillDocumentForm.doesNotExpire">
+                            Never
+                        </s:if>
+                        <s:else>
+                            ${skillDocumentForm.skillInfo.endDate}
+                        </s:else>
+                    </dd>
+                </s:if>
             </dl>
 
             <div class="col-md-9 col-md-offset-3">

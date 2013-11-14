@@ -48,9 +48,7 @@ td.number {
         text-align: center;
     }
 
-    tbody tr td.status {
-        text-align: center;
-
+    tbody tr td {
         &.complete,
         &.pending {
             background-color: $success_tint;

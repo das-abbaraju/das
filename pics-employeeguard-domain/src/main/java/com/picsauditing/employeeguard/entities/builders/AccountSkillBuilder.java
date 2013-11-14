@@ -15,6 +15,11 @@ public class AccountSkillBuilder {
 		accountSkill = new AccountSkill(id, accountId);
 	}
 
+    public AccountSkillBuilder id(int id) {
+        accountSkill.setId(id);
+        return this;
+    }
+
 	public AccountSkillBuilder name(String name) {
 		accountSkill.setName(name);
 		return this;

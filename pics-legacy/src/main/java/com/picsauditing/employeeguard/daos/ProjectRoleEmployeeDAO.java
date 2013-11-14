@@ -1,0 +1,65 @@
+package com.picsauditing.employeeguard.daos;
+
+import com.picsauditing.employeeguard.entities.AccountGroup;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
+import org.apache.commons.collections.CollectionUtils;
+
+import javax.persistence.TypedQuery;
+import java.util.Collections;
+import java.util.List;
+
+public class ProjectRoleEmployeeDAO extends BaseEntityDAO<ProjectRoleEmployee> {
+	public ProjectRoleEmployeeDAO() {
+		this.type = ProjectRoleEmployee.class;
+	}
+
+	public ProjectRoleEmployee findByEmployeeAndProjectRole(final Employee employee, final ProjectRole projectRole) {
+		if (employee == null || projectRole == null) {
+			return null;
+		}
+
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("FROM ProjectRoleEmployee pre " +
+				"WHERE pre.employee = :employee " +
+				"AND pre.projectRole = :projectRole", ProjectRoleEmployee.class);
+		query.setParameter("employee", employee);
+		query.setParameter("projectRole", projectRole);
+		return query.getSingleResult();
+	}
+
+	public List<ProjectRoleEmployee> findByEmployeesAndProjectRole(List<Employee> employees, ProjectRole projectRole) {
+		if (CollectionUtils.isEmpty(employees) || projectRole == null) {
+			return null;
+		}
+
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("FROM ProjectRoleEmployee pre " +
+				"WHERE pre.employee IN (:employees) " +
+				"AND pre.projectRole = :projectRole", ProjectRoleEmployee.class);
+		query.setParameter("employees", employees);
+		query.setParameter("projectRole", projectRole);
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByEmployees(final List<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("FROM ProjectRoleEmployee pre " +
+				"WHERE pre.employee IN (:employees)", ProjectRoleEmployee.class);
+		query.setParameter("employees", employees);
+		return query.getResultList();
+	}
+
+	public List<Employee> getEmployeesByRole(AccountGroup role) {
+		if (role == null) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<Employee> query = em.createQuery("SELECT pre.employee FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.role = :role", Employee.class);
+		query.setParameter("role", role);
+		return query.getResultList();
+	}
+}

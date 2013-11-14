@@ -1,11 +1,14 @@
 package com.picsauditing.employeeguard.entities;
 
+import com.picsauditing.employeeguard.util.Extractor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "project_account_group")
@@ -36,6 +39,16 @@ public class ProjectRole implements BaseEntity {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
+
+	@OneToMany(mappedBy = "projectRole")
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@BatchSize(size = 5)
+	private List<ProjectRoleEmployee> employees;
+
+	@OneToMany(mappedBy = "projectRole")
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@BatchSize(size = 5)
+	private List<ProjectSkillRole> skills;
 
 	public ProjectRole() {
 	}
@@ -131,6 +144,22 @@ public class ProjectRole implements BaseEntity {
 		this.deletedDate = deletedDate;
 	}
 
+	public List<ProjectRoleEmployee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<ProjectRoleEmployee> employees) {
+		this.employees = employees;
+	}
+
+	public List<ProjectSkillRole> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(List<ProjectSkillRole> skills) {
+		this.skills = skills;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -171,6 +200,13 @@ public class ProjectRole implements BaseEntity {
 
 		private boolean areEqual(ProjectRole o1, ProjectRole o2) {
 			return ((o1.getProject().equals(o2.getProject())) && o1.getRole().equals(o2.getRole()));
+		}
+	};
+
+	public static transient final Extractor<ProjectRole, AccountGroup> ROLE_EXTRACTOR = new Extractor<ProjectRole, AccountGroup>() {
+		@Override
+		public AccountGroup extract(ProjectRole projectRole) {
+			return projectRole.getRole();
 		}
 	};
 }

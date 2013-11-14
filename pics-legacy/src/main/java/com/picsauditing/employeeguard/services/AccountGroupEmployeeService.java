@@ -19,7 +19,7 @@ public class AccountGroupEmployeeService {
 		if (profile == null) {
 			return Collections.emptyMap();
 		}
-		
+
 		Map<Integer, List<AccountGroupEmployee>> map = new HashMap<>();
 
 		List<AccountGroupEmployee> accountGroupEmployees = findByProfile(profile);

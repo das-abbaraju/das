@@ -18,6 +18,7 @@
         </p>
 
         <tw:form formName="employee_guard_login" action="${employee_guard_account_login_url}" method="post" class="form-horizontal login-form js-validation" role="form">
+            <tw:input inputName="hashCode" type="hidden" value="${hashCode}" />
             <div class="form-group">
                 <tw:label labelName="locale" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></tw:label>
                 <div class="col-xs-11 col-md-11 locale-select">

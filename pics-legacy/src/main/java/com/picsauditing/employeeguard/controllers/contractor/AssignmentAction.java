@@ -1,36 +1,25 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProjectAssignment;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.ProjectRole;
 import com.picsauditing.employeeguard.forms.contractor.ContractorProjectAssignmentMatrix;
-import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.forms.operator.RoleInfo;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ContractorProjectService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProjectService;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class AssignmentAction extends PicsRestActionSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AssignmentAction.class);
 
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
-	@Autowired
 	private ContractorProjectService contractorProjectService;
 	@Autowired
 	private EmployeeService employeeService;
-	@Autowired
-	private FormBuilderFactory formBuilderFactory;
 	@Autowired
 	private ProjectService projectService;
 
@@ -38,116 +27,25 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	private Project project;
 
-	private int assignmentId;
 	private int employeeId;
 	private int projectId;
 	private int roleId;
-	private int siteId;
+	private int assignmentId;
 
 	public String project() {
-		project = projectService.getProject(String.valueOf(projectId), NumberUtils.toInt(id));
-		List<AccountGroup> jobRoles = extractRolesFromProject(project);
-		List<AccountSkill> accountSkills = extractSkillsFromProject(project, roleId);
-		List<Employee> employees = employeeService.getEmployeesForAccount(permissions.getAccountId());
-
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.getAccountSkillEmployeeForAccountAndSkills(permissions.getAccountId(), accountSkills);
-		List<RoleInfo> roleInfos = formBuilderFactory.getRoleInfoFactory().build(jobRoles);
-
-		List<ContractorEmployeeProjectAssignment> contractorEmployeeProjectAssignments =
-				formBuilderFactory.getContractorEmployeeProjectAssignmentFactory().buildList(employees, accountSkillEmployees, accountSkills, jobRoles);
-		Collections.sort(contractorEmployeeProjectAssignments);
-
-		buildAssignmentMatrix(accountSkills, roleInfos, contractorEmployeeProjectAssignments);
+		assignmentId = NumberUtils.toInt(id);
+		project = projectService.getProject(String.valueOf(projectId), assignmentId);
+		contractorProjectAssignmentMatrix = contractorProjectService.buildAssignmentMatrix(project, permissions.getAccountId());
 
 		return "project";
 	}
 
 	public String role() {
+		roleId = NumberUtils.toInt(id);
 		project = projectService.getProject(String.valueOf(projectId), assignmentId);
-		List<AccountGroup> jobRoles = extractRolesFromProject(project);
-		List<AccountSkill> accountSkills = extractSkillsFromProject(project, NumberUtils.toInt(id));
-		List<Employee> employees = employeeService.getEmployeesForAccount(permissions.getAccountId());
-
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.getAccountSkillEmployeeForAccountAndSkills(permissions.getAccountId(), accountSkills);
-		List<RoleInfo> roleInfos = formBuilderFactory.getRoleInfoFactory().build(jobRoles);
-
-		List<ContractorEmployeeProjectAssignment> contractorEmployeeProjectAssignments =
-				formBuilderFactory.getContractorEmployeeProjectAssignmentFactory().buildList(employees, accountSkillEmployees, accountSkills, jobRoles);
-		Collections.sort(contractorEmployeeProjectAssignments);
-
-		buildAssignmentMatrix(accountSkills, roleInfos, contractorEmployeeProjectAssignments);
+		contractorProjectAssignmentMatrix = contractorProjectService.buildAssignmentMatrix(project, roleId, permissions.getAccountId());
 
 		return "role";
-	}
-
-	private void buildAssignmentMatrix(List<AccountSkill> accountSkills, List<RoleInfo> roleInfos, List<ContractorEmployeeProjectAssignment> contractorEmployeeProjectAssignments) {
-		contractorProjectAssignmentMatrix = new ContractorProjectAssignmentMatrix();
-		contractorProjectAssignmentMatrix.setAssignments(contractorEmployeeProjectAssignments);
-		contractorProjectAssignmentMatrix.setRoles(roleInfos);
-		contractorProjectAssignmentMatrix.setSkillNames(extractNamesFromSkills(accountSkills));
-		contractorProjectAssignmentMatrix.setEmployeeRoles(contractorProjectService.sumEmployeeRolesForProject(permissions.getAccountId(), project));
-	}
-
-	private List<AccountGroup> extractRolesFromProject(final Project project) {
-		if (project == null) {
-			return Collections.emptyList();
-		}
-
-		List<AccountGroup> jobRoles = new ArrayList<>();
-		for (ProjectRole jobRole : project.getRoles()) {
-			jobRoles.add(jobRole.getRole());
-		}
-
-		Collections.sort(jobRoles);
-
-		return jobRoles;
-	}
-
-	private List<AccountSkill> extractSkillsFromProject(final Project project, final int roleId) {
-		if (project == null) {
-			return Collections.emptyList();
-		}
-
-		List<AccountSkill> accountSkills = new ArrayList<>();
-
-		if (roleId == 0) {
-			extractSkillsDirectlyOnProject(project, accountSkills);
-		} else {
-			extractSkillsFromProjectRoles(project, accountSkills, roleId);
-		}
-
-		Collections.sort(accountSkills);
-
-		return accountSkills;
-	}
-
-	private void extractSkillsDirectlyOnProject(final Project project, final List<AccountSkill> accountSkills) {
-		for (ProjectSkill projectSkill : project.getSkills()) {
-			accountSkills.add(projectSkill.getSkill());
-		}
-	}
-
-	private void extractSkillsFromProjectRoles(final Project project, final List<AccountSkill> accountSkills, final int roleId) {
-		for (ProjectRole jobRole : project.getRoles()) {
-			if (jobRole.getRole().getId() == roleId) {
-				for (AccountSkillGroup accountSkillGroup : jobRole.getRole().getSkills()) {
-					accountSkills.add(accountSkillGroup.getSkill());
-				}
-			}
-		}
-	}
-
-	private List<String> extractNamesFromSkills(final List<AccountSkill> accountSkills) {
-		if (CollectionUtils.isEmpty(accountSkills)) {
-			return Collections.emptyList();
-		}
-
-		List<String> skillNames = new ArrayList<>();
-		for (AccountSkill accountSkill : accountSkills) {
-			skillNames.add(accountSkill.getName());
-		}
-
-		return skillNames;
 	}
 
 	public String assign() {
@@ -171,7 +69,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 			contractorProjectService.unassignEmployeeFromProjectRole(employee, projectRole, permissions.getAppUserID());
 			json.put("status", "SUCCESS");
 		} catch (Exception exception) {
-			LOG.error("Error assigning employee {} to job role {} under project {}\n{}", new Object[]{employeeId, roleId, id, exception});
+			LOG.error("Error unassigning employee {} from job role {} under project {}\n{}", new Object[]{employeeId, roleId, id, exception});
 			json.put("status", "FAILURE");
 		}
 
@@ -194,14 +92,6 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	public void setAssignmentId(int assignmentId) {
 		this.assignmentId = assignmentId;
-	}
-
-	public int getSiteId() {
-		return siteId;
-	}
-
-	public void setSiteId(int siteId) {
-		this.siteId = siteId;
 	}
 
 	public int getProjectId() {

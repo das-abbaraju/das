@@ -28,13 +28,14 @@ public class OperatorEmployeeProjectAssignmentFactory {
 		Map<Employee, List<AccountGroup>> employeeJobRoles = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
-			for (AccountGroupEmployee accountGroupEmployee : employee.getGroups()) {
-				if (jobRoles.contains(accountGroupEmployee.getGroup())) {
+			for (ProjectRoleEmployee projectRoleEmployee : employee.getRoles()) {
+				AccountGroup role = projectRoleEmployee.getProjectRole().getRole();
+				if (jobRoles.contains(role)) {
 					if (!employeeJobRoles.containsKey(employee)) {
 						employeeJobRoles.put(employee, new ArrayList<AccountGroup>());
 					}
 
-					employeeJobRoles.get(employee).add(accountGroupEmployee.getGroup());
+					employeeJobRoles.get(employee).add(role);
 				}
 			}
 		}

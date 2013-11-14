@@ -1,20 +1,16 @@
 package com.picsauditing.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
+import com.picsauditing.actions.PicsActionSupport;
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FileUtils {
 	private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
@@ -422,5 +418,26 @@ public class FileUtils {
 			// do nothng
 		}
 		return script;
+	}
+
+	public static String getFtpDir() {
+		String ftpDir = System.getProperty("pics.ftpDir");
+		if (ftpDir != null && ftpDir.length() > 0) {
+			return ftpDir;
+		}
+
+		try {
+			ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		} catch (Exception exception) {
+			// Most likely thrown during testing
+			Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
+			logger.error("Error getting ftp dir", exception);
+		}
+
+		if (ftpDir != null && ftpDir.length() > 0) {
+			return ftpDir;
+		}
+
+		return "C:/temp";
 	}
 }

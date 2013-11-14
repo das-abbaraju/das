@@ -85,7 +85,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	@Anonymous
 	public String login() throws Exception {
-		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), loginForm.getPassword());
+		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), loginForm.getPassword(), loginForm.getHashCode());
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
 			throw new PageNotFoundException();
 		} else {
@@ -95,7 +95,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 			SessionCookie cookie = SessionSecurity.parseSessionCookie(cookieContent);
 
 			Profile profile = profileService.findByAppUserId(cookie.getAppUserID());
-			EmailHash emailHash = emailHashService.findByHash(hashCode);
+			EmailHash emailHash = emailHashService.findByHash(loginForm.getHashCode());
 			employeeService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
 			emailHashService.expire(emailHash);
 
