@@ -48,5 +48,6 @@
     <include file="./liquibase/sshacter7_PICS-13246_InvoicePaymentArchiveTables.sql"/>
     <include file="./liquibase/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql"/>
     <include file="./liquibase/sshacter9_PICS-13547_EmployeeGUARDProjectTables.sql"/>
+    <include file="./liquibase/sshacter10_PICS-12562_AccountsNAICtoNULL.sql"/>
 
 </databaseChangeLog>
