@@ -120,6 +120,7 @@ public class LoginActionTest extends PicsActionTest {
 		LoginForm loginForm = new LoginForm();
 		loginForm.setUsername(LoginServiceFactory.USERNAME);
 		loginForm.setPassword(LoginServiceFactory.PASSWORD);
+		loginForm.setHashCode(EmailHashServiceFactory.VALID_HASH);
 
 		String validHash = EmailHashServiceFactory.VALID_HASH;
 
@@ -141,6 +142,7 @@ public class LoginActionTest extends PicsActionTest {
 		LoginForm loginForm = new LoginForm();
 		loginForm.setUsername(LoginServiceFactory.FAIL);
 		loginForm.setPassword(LoginServiceFactory.FAIL);
+		loginForm.setHashCode(EmailHashServiceFactory.VALID_HASH);
 
 		loginAction.setLoginForm(loginForm);
 		loginAction.login();
