@@ -33,8 +33,6 @@ public class ContractorProjectService {
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
-	private AccountSkillDAO accountSkillDAO;
-	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;
@@ -42,6 +40,8 @@ public class ContractorProjectService {
 	private ProjectCompanyDAO projectCompanyDAO;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+	@Autowired
+	private SiteSkillDAO siteSkillDAO;
 
 	public ProjectCompany getProject(String id, int accountId) {
 		return projectCompanyDAO.findProject(NumberUtils.toInt(id), accountId);
@@ -132,7 +132,8 @@ public class ContractorProjectService {
 		accountIds.add(accountId);
 
 		List<AccountSkill> requiredSkills = new ArrayList<>();
-		requiredSkills.addAll(accountSkillDAO.findRequiredByAccounts(accountIds));
+		List<SiteSkill> siteSkills = siteSkillDAO.findByAccountIds(accountIds);
+		requiredSkills.addAll(ExtractorUtil.extractList(siteSkills, SiteSkill.SKILL_EXTRACTOR));
 		requiredSkills.addAll(ExtractorUtil.extractList(project.getSkills(), ProjectSkill.SKILL_EXTRACTOR));
 
 		return ListUtil.removeDuplicatesAndSort(requiredSkills);
