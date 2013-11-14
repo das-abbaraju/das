@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.ProjectRole;
-import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
+import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
@@ -60,6 +57,29 @@ public class ProjectRoleEmployeeDAO extends BaseEntityDAO<ProjectRoleEmployee> {
 		TypedQuery<Employee> query = em.createQuery("SELECT pre.employee FROM ProjectRoleEmployee pre " +
 				"WHERE pre.projectRole.role = :role", Employee.class);
 		query.setParameter("role", role);
+		return query.getResultList();
+	}
+
+	public List<Employee> findByProjectAndRoleId(final Project project, final int roleId) {
+		if (roleId == 0) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT pre.employee FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.role.id = :roleId AND pre.projectRole.project = :project", Employee.class);
+		query.setParameter("roleId", roleId);
+		query.setParameter("project", project);
+		return query.getResultList();
+	}
+
+	public List<Employee> findByProject(final Project project) {
+		if (project == null) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT pre.employee FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.project = :project", Employee.class);
+		query.setParameter("project", project);
 		return query.getResultList();
 	}
 }

@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.OperatorEmployeeProjectAssignment;
@@ -27,11 +28,20 @@ public class AssignmentService {
 	private FormBuilderFactory formBuilderFactory;
 	@Autowired
 	private ProjectService projectService;
+	@Autowired
+	private ProjectRoleService projectRoleService;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
 	public OperatorProjectAssignmentMatrix buildOperatorProjectAssignmentMatrix(final Project project, final int assignmentId, final int roleId) {
 		List<AccountModel> contractors = accountService.getContractors(assignmentId);
-		List<Integer> contractorIds = getContractorIds(contractors);
-		List<Employee> employees = employeeService.getEmployeesForAccounts(contractorIds);
+
+		List<Employee> employees;
+		if (roleId > 0) {
+			employees = projectRoleEmployeeDAO.findByProjectAndRoleId(project, roleId);
+		} else {
+			employees = projectRoleEmployeeDAO.findByProject(project);
+		}
 
 		List<AccountSkill> accountSkills = projectService.getRequiredSkills(project);
 		extractSkillsFromProjectRoles(project, accountSkills, roleId);
@@ -45,40 +55,40 @@ public class AssignmentService {
 		List<OperatorEmployeeProjectAssignment> operatorEmployeeProjectAssignments =
 				formBuilderFactory.getOperatorEmployeeProjectAssignmentFactory().buildList(employees, accountSkillEmployees, accountSkills, accountModels, jobRoles);
 		if (roleId == 0) {
-            filterDownToAssignment(operatorEmployeeProjectAssignments);
-        }
+			filterDownToAssignment(operatorEmployeeProjectAssignments);
+		}
 
-        Collections.sort(operatorEmployeeProjectAssignments);
+		Collections.sort(operatorEmployeeProjectAssignments);
 
 		return buildAssignmentMatrix(accountSkills, roleInfos, operatorEmployeeProjectAssignments);
 	}
 
-    private void filterDownToAssignment(List<OperatorEmployeeProjectAssignment> operatorEmployeeProjectAssignments) {
-        for (OperatorEmployeeProjectAssignment operatorEmployeeProjectAssignment : operatorEmployeeProjectAssignments) {
-            SkillStatus worstStatus = getWorstStatus(operatorEmployeeProjectAssignment.getSkillStatuses());
+	private void filterDownToAssignment(List<OperatorEmployeeProjectAssignment> operatorEmployeeProjectAssignments) {
+		for (OperatorEmployeeProjectAssignment operatorEmployeeProjectAssignment : operatorEmployeeProjectAssignments) {
+			SkillStatus worstStatus = getWorstStatus(operatorEmployeeProjectAssignment.getSkillStatuses());
 
-            if (worstStatus == null) {
-                operatorEmployeeProjectAssignment.setSkillStatuses(Collections.<SkillStatus>emptyList());
-            } else {
-                operatorEmployeeProjectAssignment.setSkillStatuses(Arrays.asList(worstStatus));
-            }
-        }
-    }
+			if (worstStatus == null) {
+				operatorEmployeeProjectAssignment.setSkillStatuses(Collections.<SkillStatus>emptyList());
+			} else {
+				operatorEmployeeProjectAssignment.setSkillStatuses(Arrays.asList(worstStatus));
+			}
+		}
+	}
 
-    private SkillStatus getWorstStatus(List<SkillStatus> skillStatuses) {
-        if (CollectionUtils.isEmpty(skillStatuses)) {
-            return null;
-        }
+	private SkillStatus getWorstStatus(List<SkillStatus> skillStatuses) {
+		if (CollectionUtils.isEmpty(skillStatuses)) {
+			return null;
+		}
 
-        SkillStatus worst = SkillStatus.Complete;
-        for (SkillStatus skillStatus : skillStatuses) {
-            if (skillStatus.compareTo(worst) < 0) {
-                worst = skillStatus;
-            }
-        }
+		SkillStatus worst = SkillStatus.Complete;
+		for (SkillStatus skillStatus : skillStatuses) {
+			if (skillStatus.compareTo(worst) < 0) {
+				worst = skillStatus;
+			}
+		}
 
-        return worst;
-    }
+		return worst;
+	}
 
 	private void extractSkillsFromProjectRoles(final Project project, final List<AccountSkill> accountSkills, final int roleId) {
 		for (ProjectRole jobRole : project.getRoles()) {
