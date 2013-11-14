@@ -9,6 +9,8 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 public class LoginServiceFactory {
@@ -29,7 +31,9 @@ public class LoginServiceFactory {
 		JSONObject fail = (JSONObject) JSONValue.parse("{\"status\":\"FAILURE\"}");
 
 		when(loginService.loginViaRest(USERNAME, PASSWORD)).thenReturn(success);
+		when(loginService.loginViaRest(eq(USERNAME), eq(PASSWORD), anyString())).thenReturn(success);
 		when(loginService.loginViaRest(FAIL, FAIL)).thenReturn(fail);
+		when(loginService.loginViaRest(eq(FAIL), eq(FAIL), anyString())).thenReturn(fail);
 
 		return loginService;
 	}
