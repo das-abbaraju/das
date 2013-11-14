@@ -2,6 +2,9 @@ package com.picsauditing.model.i18n;
 
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class TranslationWrapper {
 
 	private int keyID;
@@ -11,8 +14,10 @@ public class TranslationWrapper {
 	private String requestedLocale;
     private TranslationQualityRating qualityRating;
     private boolean retrievedByWildcard = false;
+    private boolean retrievedByCache = false;
 	private int createdBy;
 	private int updatedBy;
+    private Set<String> usedOnPages = new HashSet<>();
 
     public int getKeyID() {
         return keyID;
@@ -42,6 +47,10 @@ public class TranslationWrapper {
         return retrievedByWildcard;
     }
 
+    public boolean isRetrievedByCache() {
+        return retrievedByCache;
+    }
+
     public int getCreatedBy() {
 		return createdBy;
 	}
@@ -49,6 +58,10 @@ public class TranslationWrapper {
 	public int getUpdatedBy() {
 		return updatedBy;
 	}
+
+    public Set<String> getUsedOnPages() {
+        return usedOnPages;
+    }
 
 	public static class Builder {
         private int keyID;
@@ -58,8 +71,10 @@ public class TranslationWrapper {
         private String requestedLocale;
         private TranslationQualityRating qualityRating;
         private boolean retrievedByWildcard = false;
+        private boolean retrievedByCache = false;
 		private int createdBy;
 		private int updatedBy;
+        private Set<String> usedOnPages = new HashSet<>();
 
         public Builder() {
 
@@ -73,8 +88,10 @@ public class TranslationWrapper {
             requestedLocale = seed.getRequestedLocale();
             qualityRating = seed.getQualityRating();
             retrievedByWildcard = seed.isRetrievedByWildcard();
+            retrievedByCache = seed.isRetrievedByCache();
             createdBy = seed.getCreatedBy();
             updatedBy = seed.getUpdatedBy();
+            usedOnPages = seed.getUsedOnPages();
         }
 
         public Builder keyID(int keyID) {
@@ -112,6 +129,11 @@ public class TranslationWrapper {
             return this;
         }
 
+        public Builder retrievedByCache(boolean retrievedByCache) {
+            this.retrievedByCache = retrievedByCache;
+            return this;
+        }
+
         public Builder createdBy(int createdBy) {
 			this.createdBy = createdBy;
 			return this;
@@ -122,7 +144,12 @@ public class TranslationWrapper {
 			return this;
 		}
 
-		public TranslationWrapper build() {
+        public Builder usedOnPages(Set<String> usedOnPages) {
+            this.usedOnPages = usedOnPages;
+            return this;
+        }
+
+        public TranslationWrapper build() {
 			TranslationWrapper translationWrapper = new TranslationWrapper();
 			translationWrapper.keyID = keyID;
 			translationWrapper.key = key;
@@ -131,8 +158,10 @@ public class TranslationWrapper {
 			translationWrapper.requestedLocale = requestedLocale;
             translationWrapper.qualityRating = qualityRating;
             translationWrapper.retrievedByWildcard = retrievedByWildcard;
+            translationWrapper.retrievedByCache = retrievedByCache;
 			translationWrapper.createdBy = createdBy;
 			translationWrapper.updatedBy = updatedBy;
+			translationWrapper.usedOnPages = usedOnPages;
 			return translationWrapper;
 		}
 	}
