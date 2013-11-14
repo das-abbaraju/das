@@ -112,15 +112,6 @@ public class ExpirationCalculatorTest {
 		assertEquals(1, expirationCalendar.get(Calendar.DAY_OF_YEAR));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testCalculateExpirationDate_Training_Unsupported() throws Exception {
-		when(accountSkill.getSkillType()).thenReturn(SkillType.Training);
-		when(accountSkill.getIntervalType()).thenReturn(IntervalType.NO_EXPIRATION);
-		when(accountSkill.getIntervalPeriod()).thenReturn(INTERVAL_PERIOD);
-
-		ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
-	}
-
 	@Test
 	public void testCalculateExpirationDate_Certificate() throws Exception {
 		ProfileDocument profileDocument = mock(ProfileDocument.class);

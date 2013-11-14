@@ -96,16 +96,21 @@ public class GroupService {
 			}
 		}
 
+		Date timestamp = new Date();
 		List<AccountSkillGroup> accountSkillGroups = IntersectionAndComplementProcess.intersection(
 				newAccountSkillGroups,
 				accountGroupInDatabase.getSkills(),
 				AccountSkillGroup.COMPARATOR,
-				new BaseEntityCallback(appUserId, new Date()));
+				new BaseEntityCallback(appUserId, timestamp));
 
 		accountGroupInDatabase.setSkills(accountSkillGroups);
-		accountSkillEmployeeService.linkEmployeesToSkill(accountGroupInDatabase, appUserId);
+		accountGroupInDatabase = accountGroupDAO.save(accountGroupInDatabase);
 
-		return accountGroupDAO.save(accountGroupInDatabase);
+		for (AccountGroupEmployee accountGroupEmployee : accountGroupInDatabase.getEmployees()) {
+			accountSkillEmployeeService.linkEmployeeToSkills(accountGroupEmployee.getEmployee(), appUserId, timestamp);
+		}
+
+		return accountGroupInDatabase;
 	}
 
 	public AccountGroup update(GroupEmployeesForm groupEmployeesForm, String id, int accountId, int appUserId) {
