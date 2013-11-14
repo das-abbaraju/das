@@ -145,6 +145,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 
@@ -196,6 +197,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 FlagCriteriaContractorAnswer
@@ -269,6 +271,7 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorSuncorDrugAlcoholPolicyCaoID
 ContractorSuncorDrugAlcoholPolicyCaoStatus
@@ -374,6 +377,7 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
@@ -435,6 +439,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
@@ -511,6 +516,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 
@@ -583,6 +589,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
@@ -628,6 +635,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 FeeFeeClass
@@ -800,6 +808,7 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
@@ -875,6 +884,7 @@ ContractorOperatorWaitingOn
 ContractorOperatorWorkStatus
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
@@ -952,6 +962,7 @@ ContractorRequestedByTag
 ContractorRequestedByUserOther
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
@@ -1028,6 +1039,7 @@ ContractorRecommendedCSRID
 ContractorRecommendedCSRName
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorSupplierDiversity
 ContractorSupplierDiversityColumn
@@ -1068,6 +1080,7 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
@@ -1124,6 +1137,7 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorStatisticsRate
 ContractorStatisticsRateType
@@ -1158,6 +1172,7 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSingleTagOperatorTagOperatorID
 ContractorSingleTagOperatorTagOperatorName
 ContractorSingleTagOperatorTagTag
@@ -1307,6 +1322,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 InvoiceAmountApplied
@@ -1364,6 +1380,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
@@ -1555,6 +1572,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 PaymentAmountApplied
@@ -1673,6 +1691,7 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified

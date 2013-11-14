@@ -50,6 +50,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private Boolean service;
 	private Boolean transportation;
 	private Boolean psmApplies;
+    private boolean safetySensitive;
 	private LowMedHigh productRisk;
 	private LowMedHigh safetyRisk;
 	private LowMedHigh transportationRisk;
@@ -202,7 +203,16 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(importance = FieldImportance.Low, type = FieldType.LowMedHigh)
+    @ReportField(importance = FieldImportance.Low, type = FieldType.Boolean)
+    public boolean isSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(boolean safetySensitive) {
+        this.safetySensitive = safetySensitive;
+    }
+
+    @ReportField(importance = FieldImportance.Low, type = FieldType.LowMedHigh)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}

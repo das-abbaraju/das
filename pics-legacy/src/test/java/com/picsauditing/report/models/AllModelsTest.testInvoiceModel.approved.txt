@@ -35,6 +35,7 @@ ContractorMembershipDate
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk

@@ -33,6 +33,7 @@ ContractorMembershipDate
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 PaymentAmountApplied
