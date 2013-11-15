@@ -40,14 +40,15 @@
 	<include file="./liquibase/rbeaini2_PICS-13265_Populate_AppUser_Table_for_EmployeeGuard.sql"/>
 	<include file="./liquibase/rbeaini3_PICS-13428_Registration_Step_0_execution_error.sql"/>
     <include file="./liquibase/sshacter5_PICS-12402_EmployeeGUARDTables.sql"/>
-    <include file="./liquibase/sshacter6_PICS-13255_EmployeeGUARDProjectTables.sql"/>
 	<include file="./liquibase/kchase7_PICS-13328_RemoveForceFlag.sql"/>
 	<include file="./liquibase/kchase8_PICS-12896_ClearBadAnswers.sql"/>
+    <include file="./liquibase/sshacter6_PICS-13255_EmployeeGUARDProjectTables.sql"/>
+    <include file="./liquibase/sshacter9_PICS-13547_EmployeeGUARDProjectTables.sql"/>
+    <include file="./liquibase/uaung1_PICS-13398_AlterEmployeeGUARDTables.sql"/>
 
     <!--    Release 6.65   -->
     <include file="./liquibase/sshacter7_PICS-13246_InvoicePaymentArchiveTables.sql"/>
     <include file="./liquibase/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql"/>
-    <include file="./liquibase/sshacter9_PICS-13547_EmployeeGUARDProjectTables.sql"/>
     <include file="./liquibase/sshacter10_PICS-12562_AccountsNAICtoNULL.sql"/>
 
 </databaseChangeLog>
