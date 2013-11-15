@@ -34,6 +34,7 @@ public class TranslationServiceFactoryTest {
         MockitoAnnotations.initMocks(this);
 
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)).thenReturn(true);
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_LOG_TRANSLATION_USAGE)).thenReturn(false);
 
         Whitebox.setInternalState(TranslationServiceFactory.class, "featureToggleChecker", featureToggleChecker);
         Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", translationDAO);
@@ -84,6 +85,14 @@ public class TranslationServiceFactoryTest {
         TranslationService service = TranslationServiceFactory.getTranslationService(TEST_COMMAND_KEY);
         String commandKey = Whitebox.getInternalState(service, "translateCommandKey");
         assertTrue(TEST_COMMAND_KEY.equals(commandKey));
+    }
+
+    @Test
+    public void testGetTranslationService_DisableLogging() throws Exception {
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_LOG_TRANSLATION_USAGE)).thenReturn(true);
+        TranslationService service = TranslationServiceFactory.getTranslationService();
+        TranslationUsageLogger logger = Whitebox.getInternalState(service, "translationUsageLogger");
+        assertTrue(logger instanceof TranslationKeyDoNothingLogger);
     }
 
 }
