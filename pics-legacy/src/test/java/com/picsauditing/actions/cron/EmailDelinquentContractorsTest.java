@@ -9,19 +9,24 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.mail.EmailBuilder;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class EmailDelinquentContractorsTest {
+	@Rule
+	public org.junit.rules.ExpectedException exception = ExpectedException.none();
+
     @Mock
     private ContractorAccountDAO contractorAccountDAO;
     @Mock
@@ -101,5 +106,13 @@ public class EmailDelinquentContractorsTest {
         verify(emailQueueDAO).save(any(EmailQueue.class));
         verify(contractorAccountDAO).save(any(Note.class));
     }
+
+	@Test
+	public void testThrownException() {
+		when(contractorAccountDAO.findPendingDelinquentAndDelinquentInvoices()).thenThrow(new RuntimeException());
+		CronTaskResult results = cron.run();
+		assertFalse(results.wasSuccessful());
+		assertTrue(results.getLog().length() > 0);
+	}
 
 }

@@ -40,7 +40,11 @@ public class TranslationServiceFactory {
 		}
 
 		if (useTranslationServiceAdapter()) {
-			return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger());
+            if (logTranslationUsage()) {
+			    return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger());
+            } else {
+                return new TranslationServiceAdapter(new TranslationKeyDoNothingLogger());
+            }
 		}
 
 		return I18nCache.getInstance();
@@ -54,7 +58,11 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger(), translateCommandKey);
+            if (logTranslationUsage()) {
+                return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger(), translateCommandKey);
+            } else {
+                return new TranslationServiceAdapter(new TranslationKeyDoNothingLogger(), translateCommandKey);
+            }
         }
 
         return I18nCache.getInstance();
@@ -64,7 +72,12 @@ public class TranslationServiceFactory {
 		return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
 	}
 
-	public static void registerTranslationService(TranslationService translationService) {
+    private static boolean logTranslationUsage() {
+        // note that this is a negative toggle
+        return !featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_LOG_TRANSLATION_USAGE);
+    }
+
+    public static void registerTranslationService(TranslationService translationService) {
 		TranslationServiceFactory.translationService = translationService;
 	}
 

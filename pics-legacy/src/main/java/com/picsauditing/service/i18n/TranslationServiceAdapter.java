@@ -1,15 +1,11 @@
 package com.picsauditing.service.i18n;
 
 import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.model.general.AppPropertyProvider;
-import com.picsauditing.model.i18n.TranslationLookupData;
-import com.picsauditing.model.i18n.TranslationUsageLogger;
-import com.picsauditing.model.i18n.TranslationWrapper;
+import com.picsauditing.model.i18n.*;
 import com.picsauditing.model.i18n.translation.strategy.*;
 import com.picsauditing.util.Strings;
-import net.sf.ehcache.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
@@ -27,9 +23,9 @@ public class TranslationServiceAdapter implements TranslationService {
     private static final String APP_PROPERTY_TRANSLATION_STRATEGY_NAME = "TranslationTransformStrategy";
     private static final String STRATEGY_RETURN_KEY = "ReturnKeyOnEmptyTranslation";
     private static final String environment = System.getProperty("pics.env");
-    private static AppPropertyProvider appPropertyProvider;
 
-    private static TranslationStrategy translationStrategy;
+    private static AppPropertyProvider appPropertyProvider;
+    private static TranslationStrategy translationStrategy = translationTransformStrategy();
     private static TranslationKeyValidator translationKeyValidator = new TranslationKeyValidator();
     private static Date dateLastCleared;
 
@@ -43,22 +39,20 @@ public class TranslationServiceAdapter implements TranslationService {
 
 	public TranslationServiceAdapter(TranslationUsageLogger usageLogger) {
         translationUsageLogger = usageLogger;
-        registerTranslationTransformStrategy();
 	}
 
     public TranslationServiceAdapter(TranslationUsageLogger usageLogger, String translateCommandKey) {
         this.translateCommandKey = translateCommandKey;
         translationUsageLogger = usageLogger;
-        registerTranslationTransformStrategy();
     }
 
-    protected static void registerTranslationTransformStrategy() {
+    protected static TranslationStrategy translationTransformStrategy() {
         AppPropertyProvider appPropertyProvider = appPropertyProvider();
         String translationStrategyName = appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME);
         if (STRATEGY_RETURN_KEY.equalsIgnoreCase(translationStrategyName)) {
-            TranslationServiceAdapter.registerTranslationStrategy(new ReturnKeyTranslationStrategy());
+            return new ReturnKeyTranslationStrategy();
         } else {
-            TranslationServiceAdapter.registerTranslationStrategy(new EmptyTranslationStrategy());
+            return new EmptyTranslationStrategy();
         }
     }
 
@@ -70,7 +64,7 @@ public class TranslationServiceAdapter implements TranslationService {
 	@Override
 	public String getText(String key, String locale) {
         TranslationWrapper translation = getTextForKey(key, locale);
-        logTranslationLookupIfReturned(locale, translation);
+        logTranslationLookupIfAppropriate(translation);
         return (translation == null) ? DEFAULT_TRANSLATION : translation.getTranslation();
 	}
 
@@ -101,7 +95,9 @@ public class TranslationServiceAdapter implements TranslationService {
     }
 
     private boolean translationReturned(TranslationWrapper translation) {
-        return translation != null && !ERROR_STRING.equals(translation.getTranslation()) && !DEFAULT_PAGENAME.equals(pageName());
+        return translation != null &&
+               translationKeyValidator.validateKey(translation.getKey()) &&
+               !ERROR_STRING.equals(translation.getTranslation()) && !DEFAULT_PAGENAME.equals(pageName());
     }
 
     private void cacheTranslationIfReturned(TranslationWrapper translation) {
@@ -119,16 +115,42 @@ public class TranslationServiceAdapter implements TranslationService {
         }
     }
 
-    private void logTranslationLookupIfReturned(String locale, TranslationWrapper translation) {
-        if (translationUsageLogger != null && translationReturned(translation)) {
-            TranslationLookupData data = createPublishData(locale, translation);
+    private void logTranslationLookupIfAppropriate(TranslationWrapper translation) {
+        if (translationUsageLogger != null && translationReturned(translation) && translationNotLoggedForPage(translation)) {
+            TranslationLookupData data = createPublishData(translation);
             translationUsageLogger.logTranslationUsage(data);
+            savePageLoggedToCache(translation);
         }
     }
 
-    private TranslationLookupData createPublishData(String localeRequested, TranslationWrapper translation) {
+    private void savePageLoggedToCache(TranslationWrapper translation) {
+        translation.getUsedOnPages().add(pageName());
+        cache.put(translation);
+    }
+
+    private void logWildCardTranslationsLookupIfAppropriate(String wildcardKey, String requestedLocale, List<TranslationWrapper> translations) {
+        List<TranslationWrapper> translationsToSaveToCache = new ArrayList<>();
+        String pageName = pageName();
+        for(TranslationWrapper translation : translations) {
+            if (translationUsageLogger != null && translationReturned(translation) && translationNotLoggedForPage(translation)) {
+                TranslationLookupData data = createPublishData(translation);
+                translationUsageLogger.logTranslationUsage(data);
+                translation.getUsedOnPages().add(pageName);
+                translationsToSaveToCache.add(translation);
+            }
+        }
+        if (!translationsToSaveToCache.isEmpty()) {
+            wildcardCache.put(wildcardKey, requestedLocale, translationsToSaveToCache);
+        }
+    }
+
+    private boolean translationNotLoggedForPage(TranslationWrapper translation) {
+        return !translation.getUsedOnPages().contains(pageName());
+    }
+
+    private TranslationLookupData createPublishData(TranslationWrapper translation) {
         TranslationLookupData data = new TranslationLookupData();
-        data.setLocaleRequest(localeRequested);
+        data.setLocaleRequest(translation.getRequestedLocale());
         data.setLocaleResponse(translation.getLocale());
         data.setReferrer(referrer());
         data.setRequestDate(new Date());
@@ -219,10 +241,14 @@ public class TranslationServiceAdapter implements TranslationService {
             getText(key, locale);
         }
 
-        Table<String, String, String> requestedlocaleToReturnedLocaleToText = cache.get(key);
+        Table<String, String, TinyTranslation> requestedlocaleToReturnedLocaleToText = cache.get(key);
         if (requestedlocaleToReturnedLocaleToText != null) {
             for (String locale : locales) {
-                cachedTranslations.putAll(requestedlocaleToReturnedLocaleToText.row(locale));
+                Map<String, TinyTranslation> returnedLocalToTinyTranslation = requestedlocaleToReturnedLocaleToText.row(locale);
+                for (String returnedLocale : returnedLocalToTinyTranslation.keySet()) {
+                    TinyTranslation translation = returnedLocalToTinyTranslation.get(returnedLocale);
+                    cachedTranslations.put(returnedLocale, translation.text);
+                }
             }
         }
         return cachedTranslations;
@@ -298,8 +324,8 @@ public class TranslationServiceAdapter implements TranslationService {
         List<TranslationWrapper> translations = wildCardTranslations(key, locale);
         for (TranslationWrapper translation : translations) {
             translationsForJS.put(translation.getKey(), translation.getTranslation());
-            logTranslationLookupIfReturned(locale, translation);
         }
+        logWildCardTranslationsLookupIfAppropriate(key, locale, translations);
         return translationsForJS;
     }
 
@@ -307,7 +333,9 @@ public class TranslationServiceAdapter implements TranslationService {
         List<TranslationWrapper> translations = wildcardCache.get(key, locale);
         if ((translations == null || translations.isEmpty())) {
             translations = translateRestClient().translationsFromWebResourceByWildcard(key, locale);
-            wildcardCache.put(key, locale, translations);
+            if (translationKeyValidator.validateKey(key)) {
+                wildcardCache.put(key, locale, translations);
+            }
         }
         return translations;
     }
@@ -316,6 +344,7 @@ public class TranslationServiceAdapter implements TranslationService {
     @Override
 	public void clear() {
 		synchronized (this) {
+            translationStrategy = translationTransformStrategy();
             cache.clear();
             dateLastCleared = new Date();
         }
@@ -331,10 +360,6 @@ public class TranslationServiceAdapter implements TranslationService {
             appPropertyProvider = new JdbcAppPropertyProvider();
         }
         return appPropertyProvider;
-    }
-
-    public static void registerTranslationStrategy(TranslationStrategy strategy) {
-        translationStrategy = strategy;
     }
 
     private TranslateRestClient translateRestClient() {

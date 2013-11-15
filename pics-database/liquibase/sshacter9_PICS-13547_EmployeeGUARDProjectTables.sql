@@ -1,17 +1,6 @@
 --liquibase formatted SQL
 --changeset sshacter:9
 
---  Set up foreign key relationships
-ALTER TABLE	project_account_group
-ADD CONSTRAINT 	fk2_project_account_group
-FOREIGN KEY 	(groupID) REFERENCES account_group(id)
-;
-
-ALTER TABLE	project_account_skill
-ADD CONSTRAINT 	fk2_project_account_skill
-FOREIGN KEY 	(skillID) REFERENCES account_skill(id)
-;
-
 --  Create new tables
 CREATE TABLE IF NOT EXISTS	project_account_group_employee
 (
@@ -87,7 +76,7 @@ CREATE TABLE IF NOT EXISTS	site_account_skill
 
   PRIMARY KEY (id),
   UNIQUE KEY site_account_skill (siteID, skillID),
-  CONSTRAINT fk1_site_account_skill FOREIGN KEY (siteID) REFERENCES account_skill(accountID),
+  CONSTRAINT fk1_site_account_skill FOREIGN KEY (siteID) REFERENCES accountemployeeguard(accountID),
   CONSTRAINT fk2_site_account_skill FOREIGN KEY (skillID) REFERENCES account_skill(id)
 )
 ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci

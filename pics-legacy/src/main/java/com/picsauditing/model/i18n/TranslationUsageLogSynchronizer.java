@@ -39,7 +39,7 @@ public class TranslationUsageLogSynchronizer {
 
     private JdbcTemplate jdbcTemplate;
 
-    @Scheduled(fixedDelay = 180000)
+    @Scheduled(fixedDelay = 60000)
     public void executeCron() throws Exception {
         if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)) {
             List<TranslationUsage> usageToSynchronize = findAndLockKeyUsageToProcess();

@@ -2,6 +2,7 @@ package com.picsauditing.service.i18n;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.model.i18n.TinyTranslation;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import net.sf.ehcache.*;
 
@@ -21,11 +22,21 @@ public class TranslationWildcardCache {
         List<TranslationWrapper> translations = new ArrayList<>();
         Element element = wildcardCache.get(key);
         if (element != null) {
-            Table<String, String, String> localeToKeyToValue = (Table<String, String, String>)element.getObjectValue();
-            Map<String, String> keyToTranslation = Collections.unmodifiableMap(localeToKeyToValue.row(requestedLocale));
+            Table<String, String, TinyTranslation> localeToKeyToValue = (Table<String, String, TinyTranslation>)element.getObjectValue();
+            Map<String, TinyTranslation> keyToTranslation = Collections.unmodifiableMap(localeToKeyToValue.row(requestedLocale));
             if (keyToTranslation != null) {
                 for (String msgKey : keyToTranslation.keySet()) {
-                    translations.add(new TranslationWrapper.Builder().key(msgKey).locale(requestedLocale).translation(keyToTranslation.get(msgKey)).build());
+                    TinyTranslation translation = keyToTranslation.get(msgKey);
+                    Set<String> usedOnPages = new HashSet<>();
+                    usedOnPages.addAll(translation.usedOnPages);
+                    translations.add(new TranslationWrapper.Builder()
+                            .key(msgKey)
+                            .requestedLocale(requestedLocale)
+                            .locale(requestedLocale)
+                            .translation(translation.text)
+                            .usedOnPages(usedOnPages)
+                            .retrievedByCache(true)
+                            .build());
                 }
             }
         }
@@ -33,20 +44,20 @@ public class TranslationWildcardCache {
     }
 
     public void put(String wildcardKey, String requestedLocale, List<TranslationWrapper> translations) {
-        Table<String, String, String> localeToKeyToValue;
+        Table<String, String, TinyTranslation> localeToKeyToValue;
         Element element = wildcardCache.get(wildcardKey);
         if (element != null) {
-            localeToKeyToValue = (Table<String, String, String>)element.getObjectValue();
+            localeToKeyToValue = (Table<String, String, TinyTranslation>)element.getObjectValue();
         } else {
             localeToKeyToValue = TreeBasedTable.create();
         }
 
-        if (translations == null || translations.isEmpty()) {
-            // TODO: is this the right thing to do?
-            localeToKeyToValue.put(requestedLocale, "", "");
-        } else {
+        if (translations != null && !translations.isEmpty()) {
             for (TranslationWrapper translation : translations) {
-                localeToKeyToValue.put(requestedLocale, translation.getKey(), translation.getTranslation());
+                TinyTranslation tinyTranslation = new TinyTranslation();
+                tinyTranslation.text = translation.getTranslation();
+                tinyTranslation.addToUsedOnPages(translation.getUsedOnPages());
+                localeToKeyToValue.put(requestedLocale, translation.getKey(), tinyTranslation);
             }
         }
         wildcardCache.put(new Element(wildcardKey, localeToKeyToValue));

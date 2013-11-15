@@ -1,7 +1,10 @@
 --liquibase formatted sql
 
---changeset rbeaini:3
+--changeset rbeaini:4
 
+SET SQL_MODE='';
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
 TRUNCATE app_user;
 
 INSERT INTO  app_user ( `username` ,  `password` , `hashSalt` ) SELECT DISTINCT `username`,`password`,`id` FROM  users ;
