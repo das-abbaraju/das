@@ -34,11 +34,17 @@ public class EmailDelinquentContractors implements CronTask {
 
     public CronTaskResult run() {
         CronTaskResult results = new CronTaskResult();
-        List<Invoice> pendingAndDelinquentInvoices = contractorAccountDAO.findPendingDelinquentAndDelinquentInvoices();
-        if (!pendingAndDelinquentInvoices.isEmpty()) {
-            Map<ContractorAccount, Integer> pendingAndDelinquentAccts = splitPendingAndDeliquentInvoices(pendingAndDelinquentInvoices);
-            sendEmailsTo(pendingAndDelinquentAccts);
-        }
+		try {
+			List<Invoice> pendingAndDelinquentInvoices = contractorAccountDAO.findPendingDelinquentAndDelinquentInvoices();
+			if (!pendingAndDelinquentInvoices.isEmpty()) {
+				Map<ContractorAccount, Integer> pendingAndDelinquentAccts = splitPendingAndDeliquentInvoices(pendingAndDelinquentInvoices);
+				sendEmailsTo(pendingAndDelinquentAccts);
+			}
+			results.setSuccess(true);
+		} catch (Exception exception) {
+			results.setSuccess(false);
+			results.getLogger().append(exception.getMessage()).append(exception.getCause());
+		}
         return results;
     }
 
