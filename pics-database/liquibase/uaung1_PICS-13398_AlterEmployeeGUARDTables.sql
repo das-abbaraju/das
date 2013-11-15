@@ -3,5 +3,5 @@
 --changeset uaung:1
 
 INSERT INTO accountemployeeguard (`accountID`)
-VALUES (54578, 55653, 55654);
+VALUES (54578), (55653), (55654);
 
