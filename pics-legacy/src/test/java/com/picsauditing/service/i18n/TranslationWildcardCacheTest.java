@@ -57,26 +57,22 @@ public class TranslationWildcardCacheTest {
     }
 
     @Test
-    public void test_EmptyTranslationsReturnsBlankKeyAndValue() throws Exception {
+    public void test_EmptyTranslationsReturnsEmptyBack() throws Exception {
         List<TranslationWrapper> putTranslations = new ArrayList();
         translationCache.put(TEST_KEY_WILDCARD, TEST_LOCALE, putTranslations);
 
         List<TranslationWrapper> getTranslations = translationCache.get(TEST_KEY_WILDCARD, TEST_LOCALE);
 
-        assertTrue(getTranslations.size() == 1);
-        assertTrue("".equals(getTranslations.get(0).getKey()));
-        assertTrue("".equals(getTranslations.get(0).getTranslation()));
+        assertTrue(getTranslations.size() == 0);
     }
 
     @Test
-    public void test_NullTranslationsReturnsBlankKeyAndValue() throws Exception {
+    public void test_NullTranslationsReturnsEmptyList() throws Exception {
         translationCache.put(TEST_KEY_WILDCARD, TEST_LOCALE, null);
 
         List<TranslationWrapper> getTranslations = translationCache.get(TEST_KEY_WILDCARD, TEST_LOCALE);
 
-        assertTrue(getTranslations.size() == 1);
-        assertTrue("".equals(getTranslations.get(0).getKey()));
-        assertTrue("".equals(getTranslations.get(0).getTranslation()));
+        assertTrue(getTranslations.size() == 0);
     }
 
     @Test

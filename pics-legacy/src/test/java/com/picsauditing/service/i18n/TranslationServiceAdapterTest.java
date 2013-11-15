@@ -6,6 +6,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.*;
 import com.picsauditing.model.i18n.translation.strategy.*;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.sun.jersey.api.client.Client;
@@ -60,6 +61,8 @@ public class TranslationServiceAdapterTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        // this is going to throw. this is the price we currently have to pay for Database's static methods and
+        // the fact that I really want TranslationStrategy to be static.
         Whitebox.setInternalState(TranslationServiceAdapter.class, "appPropertyProvider", appPropertyProvider);
         translationService = new TranslationServiceAdapter(usageLogger);
         Whitebox.setInternalState(translationService, "translateRestClient", client);
@@ -286,7 +289,7 @@ public class TranslationServiceAdapterTest {
         List<String> allLocalesForKey = new ArrayList() {{ add("en"); add("fr"); add("de"); }};
         when(client.allLocalesForKey(TEST_KEY)).thenReturn(allLocalesForKey);
         TranslationWrapper translation = testTranslation(TEST_TRANSLATION_VALUE);
-        Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
+        Table<String, String, TinyTranslation> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
         for (String locale : allLocalesForKey) {
             when(client.translationFromWebResource(TEST_KEY, locale)).thenReturn(
                     new TranslationWrapper.Builder().key(TEST_KEY).locale(locale).translation(locale+TEST_TRANSLATION_VALUE).build()
@@ -295,7 +298,10 @@ public class TranslationServiceAdapterTest {
                     .thenReturn(null)
                     .thenReturn(translation);
 
-            requestedlocaleToReturnedLocaleToText.put(locale, locale, locale+TEST_TRANSLATION_VALUE);
+            TinyTranslation tinyTranslation = new TinyTranslation();
+            tinyTranslation.text = locale+TEST_TRANSLATION_VALUE;
+
+            requestedlocaleToReturnedLocaleToText.put(locale, locale, tinyTranslation);
         }
         when(cache.get(TEST_KEY)).thenReturn(requestedlocaleToReturnedLocaleToText);
 

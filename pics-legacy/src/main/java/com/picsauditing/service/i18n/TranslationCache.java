@@ -2,12 +2,17 @@ package com.picsauditing.service.i18n;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.model.i18n.TinyTranslation;
 import com.picsauditing.model.i18n.TranslationWrapper;
 import net.sf.ehcache.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import java.util.*;
 
 public class TranslationCache {
+    private Logger logger = LoggerFactory.getLogger(TranslationCache.class);
+
     private static final String CACHE_NAME = "i18n";
 
     private static Cache cache;
@@ -21,29 +26,41 @@ public class TranslationCache {
     public TranslationWrapper get(String key, String requestedLocale) {
         Element element = cache.get(key);
         if (element == null) {
+            logger.debug("Complete cache miss for {} in {}", key, requestedLocale);
             return null;
         } else {
-            Table<String, String, String> requestedlocaleToTextToReturnedLocale = get(key);
+            Table<String, String, TinyTranslation> requestedlocaleToTextToReturnedLocale = doGet(element);
             if (!requestedlocaleToTextToReturnedLocale.containsRow(requestedLocale)) {
+                logger.debug("Requested local cache miss for {} in {}", key, requestedLocale);
                 return null;
             } else {
+                logger.debug("Cache hit for {} in {}", key, requestedLocale);
                 return translationFrom(key, requestedLocale, requestedlocaleToTextToReturnedLocale);
             }
         }
     }
 
-    public Table<String, String, String> get(String key) {
+    public Table<String, String, TinyTranslation> get(String key) {
         Element element = cache.get(key);
-        Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
+        return doGet(element);
+    }
+
+    private Table<String, String, TinyTranslation> doGet(Element element) {
+        Table<String, String, TinyTranslation> requestedlocaleToReturnedLocaleToText;
         if (element != null && element.getObjectValue() != null) {
-            requestedlocaleToReturnedLocaleToText =  (Table<String, String, String>) element.getObjectValue();
+            requestedlocaleToReturnedLocaleToText =  (Table<String, String, TinyTranslation>) element.getObjectValue();
+        } else {
+            requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
         }
         return requestedlocaleToReturnedLocaleToText;
     }
 
     public void put(TranslationWrapper translation) {
-        Table<String, String, String> requestedlocaleToReturnedLocaleToText = TreeBasedTable.create();
-        requestedlocaleToReturnedLocaleToText.put(translation.getRequestedLocale(), translation.getLocale(), translation.getTranslation());
+        Table<String, String, TinyTranslation> requestedlocaleToReturnedLocaleToText = doGet(cache.get(translation.getKey()));
+        TinyTranslation tinyTranslation = new TinyTranslation();
+        tinyTranslation.text = translation.getTranslation();
+        tinyTranslation.addToUsedOnPages(translation.getUsedOnPages());
+        requestedlocaleToReturnedLocaleToText.put(translation.getRequestedLocale(), translation.getLocale(), tinyTranslation);
         Element element = new Element(translation.getKey(), requestedlocaleToReturnedLocaleToText);
         cache.put(element);
     }
@@ -58,16 +75,25 @@ public class TranslationCache {
         }
     }
 
-    private TranslationWrapper translationFrom(String key, String requestedLocale, Table<String, String, String> requestedlocaleToReturnedLocaleToText) {
-        Map<String,String> returnedLocaleToText = requestedlocaleToReturnedLocaleToText.row(requestedLocale);
-        String returnedLocale = returnedLocaleToText.keySet().iterator().next();
-        String translation = returnedLocaleToText.get(returnedLocale);
-        return new TranslationWrapper.Builder()
-                .key(key)
-                .locale(returnedLocale)
-                .requestedLocale(requestedLocale)
-                .translation(translation)
-                .build();
+    private TranslationWrapper translationFrom(String key, String requestedLocale, Table<String, String, TinyTranslation> requestedlocaleToReturnedLocaleToText) {
+        Map<String,TinyTranslation> returnedLocaleToText = requestedlocaleToReturnedLocaleToText.row(requestedLocale);
+        if (returnedLocaleToText != null && returnedLocaleToText.keySet() != null && returnedLocaleToText.keySet().iterator().hasNext()) {
+            String returnedLocale = returnedLocaleToText.keySet().iterator().next();
+            TinyTranslation translation = returnedLocaleToText.get(returnedLocale);
+            Set<String> usedOnPages = new HashSet<>();
+            usedOnPages.addAll(translation.usedOnPages);
+            return new TranslationWrapper.Builder()
+                    .key(key)
+                    .locale(returnedLocale)
+                    .requestedLocale(requestedLocale)
+                    .translation(translation.text)
+                    .usedOnPages(usedOnPages)
+                    .retrievedByCache(true)
+                    .build();
+        } else {
+            logger.error("there is no returnedLocale for {} in {}", key, requestedLocale);
+            return null;
+        }
     }
 
 }
