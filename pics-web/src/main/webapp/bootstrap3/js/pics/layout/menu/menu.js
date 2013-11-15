@@ -2,74 +2,79 @@
     PICS.define('layout.menu.Menu', {
         methods: (function () {
             var SEARCH_RESULTS_LIMIT = 10,
-                ENTER_KEY = 13;
+                ENTER_KEY = 13,
+
+                navbar_el = $('#primary_navigation'),
+                dropdown_toggle_el = navbar_el.find('.dropdown-toggle'),
+                search_query_el = navbar_el.find('.search-box'),
+                search_box_el = navbar_el.find('.search-box');
 
             function init() {
-                var navbar_element = $('#primary_navigation'),
-                    dropdown_toggle_element = navbar_element.find('.dropdown-toggle'),
-                    search_query_element = navbar_element.find('.search-box'),
-                    icon_search_el = navbar_element.find('.search-box');
+                configureDropdown();
+                configureUserSearch();
 
-                if (navbar_element.length > 0) {
-                    configureDropdown(dropdown_toggle_element);
-                }
-
-                configureUserSearch(search_query_element);
-
-                $(document).on('click', '.more-results-info a', redirectToMoreResults)
-                $(document).on('mouseover', '.more-results-info', onMoreResultsInfoMouseOver);
-
-                icon_search_el.on('focus', toggleSearchIconSelected);
-                icon_search_el.on('blur', toggleSearchIconSelected);
-
-                search_query_element.on('typeahead:selected', onSearchQuerySelected);
-                search_query_element.on('typeahead:suggestionsRendered', onSearchQueryRendered);
+                bindEvents();
             }
 
-            function onSearchQuerySelected(event, datum) {
-                var href = '/Search.action?button=getResult&searchID=' + datum.result_id + '&searchType=' + datum.search_type;
-
-                window.location.href = href;
+            function configureDropdown() {
+                dropdown_toggle_el.dropdown();
             }
 
-            function onSearchQueryRendered() {
-                $('.tt-suggestion:first').addClass('tt-is-under-cursor');
-            }
-
-            function onMoreResultsInfoMouseOver(event) {
-                removeSuggestionSelection();
-            }
-
-            function removeSuggestionSelection() {
-                $('.tt-suggestions .tt-is-under-cursor').removeClass('tt-is-under-cursor');
-            }
-
-            function toggleSearchIconSelected(event) {
-                var $icon_search = $('#primary_navigation .icon-search');
-
-                if ($icon_search.hasClass('selected')) {
-                    $icon_search.removeClass('selected');
-                } else {
-                    $icon_search.addClass('selected');
-                }
-            }
-
-            function configureDropdown(dropdown_toggle_element) {
-                dropdown_toggle_element.dropdown();
-            }
-
-            function configureUserSearch(search_query_element) {
-                search_query_element.typeahead([{
+            function configureUserSearch() {
+                search_query_el.typeahead([{
                     name: 'primary-search',
                     remote: {
                         // url: '/v7/js/pics/layout/menu/typeahead.json?q=%QUERY',
-                        url: '/SearchBox!json.action?q=%QUERY',
-                        filter: filterResponse
+                        url: '/SearchBox!json.action?q=%QUERY&',
+                        filter: filterResponse,
+                        cache: false
                 },
                 valueKey: 'result_name',
                 limit: SEARCH_RESULTS_LIMIT,
-                template: [
-                     '<a href="/Search.action?button=getResult&searchID={{result_id}}&searchType={{search_type}}" class="search-item">',
+                template: getResultItemTemplate(),
+                footer: getFooterTemplate(),
+                engine: Hogan
+                }]);
+            }
+
+            function bindEvents() {
+                search_query_el.on('typeahead:selected', onSearchQuerySelected);
+                search_query_el.on('typeahead:suggestionsRendered', onSearchQuerySuggestionsRendered);
+
+                search_box_el.on('focus', onSearchElFocus);
+                search_box_el.on('blur', onSearchElBlur);
+
+                $(document).on('mouseover', '.more-results-link', onMoreResultsLinkMouseOver);
+                $(document).on('click', '.more-results-link', onMoreResultsLinkClick);
+            }
+
+            function onSearchQuerySelected(event, datum) {
+                redirectToSelectionUrl(datum.result_id, datum.search_type);
+            }
+
+            function onSearchQuerySuggestionsRendered() {
+                addUnderCursorStateToFirstResult();
+            }
+
+            function onSearchElFocus() {
+                toggleSearchIconSelected();
+            }
+
+            function onSearchElBlur() {
+                toggleSearchIconSelected();
+            }
+
+            function onMoreResultsLinkClick() {
+                redirectToMoreResults();
+            }
+
+            function onMoreResultsLinkMouseOver() {
+                removeUnderCursorStateFromAllResults();
+            }
+
+            function getResultItemTemplate() {
+                return [
+                     '<a href="/Search.action?button=getResult&searchID={{result_id}}&searchType={{search_type}}" class="search-item account-{{account_status}}">',
                         '<p>',
                             '<span class="name"><strong>{{result_name}}</strong></span>',
                             '<span class="id"><strong>{{result_id}}</strong></span>',
@@ -79,53 +84,83 @@
                             '<span class="type">{{result_type}}</span>',
                         '</p>',
                     '</a>',
-                ].join(''),
-                footer: [
-                    '<div class="more-results-info">',
-                        '<a href="#">',
+                ].join('');
+            }
+
+            function getFooterTemplate() {
+                return [
+                    '<div class="footer">',
+                        '<a href="#" class="more-results-link">',
                             'More Results...',
                         '</a>',
                         '<p class="total-results">',
                         '</p>',
                     '</div>'
-                ].join(''),
-                engine: Hogan
-                }]);
+                ].join('');
             }
 
             function filterResponse(data) {
-                // This must be here in order to perform custom rendering
-                // of the footer before TT's rendering of the list completes
-                renderTotalResults(data.total_results);
-
-                if ($('.search-box').val().length == 1) {
-                    selectFirstResult();
+                // Insert empty datum to force rendering of dropdown,
+                // even when there are no results
+                if (data.total_results == 0) {
+                    data.results = [{}];
                 }
+
+                renderFooter(data);
 
                 return data.results;
             }
 
-            function selectFirstResult() {
-                $('.tt-suggestion:first').addClass('tt-is-under-cursor');
-            }
-
-            function renderTotalResults(total_results) {
-                var more_results_info_el = $('.more-reults-info'),
-                    total_results_el = more_results_info_el.find('.total-results'),
+            function renderFooter(data) {
+                var total_results = data.total_results,
+                    results = data.results,
                     search_results_count = Math.min(total_results, SEARCH_RESULTS_LIMIT);
+
+                if (total_results > results.length) {
+                    $('.more-results-link').show();
+                } else {
+                    $('.more-results-link').hide();
+                }
 
                 if (total_results > 0) {
                     $('.total-results').html('Showing ' + search_results_count + ' of ' + total_results);
-                    more_results_info_el.toggleClass('has-more-results', true);
+                    $('.tt-suggestions').show();
                 } else {
-                    more_results_info_el.toggleClass('has-more-results', false);
+                    $('.tt-suggestions').hide();
+                    $('.total-results').html('<span class="no-results-msg">No Results</span>');
                 }
             }
 
-            function redirectToMoreResults(event) {
-                var search_query_element = $(event.target).closest('.search-form').find('.search-box');
+            function redirectToSelectionUrl(result_id, search_type) {
+                var href = '/Search.action?button=getResult&searchID=' + result_id + '&searchType=' + search_type;
 
-                window.location.href = 'SearchBox.action?button=search&searchTerm=' + search_query_element.val();
+                window.location.href = href;
+            }
+
+            function addUnderCursorStateToFirstResult() {
+                var total_results = $('.tt-suggestions').children('.tt-suggestion').length;
+
+                if (total_results > 0) {
+                    $('.tt-suggestion:first').addClass('tt-is-under-cursor');
+                }
+            }
+
+            function toggleSearchIconSelected() {
+                var $icon_search = $('#primary_navigation .icon-search');
+
+                if ($icon_search.hasClass('selected')) {
+                    $icon_search.removeClass('selected');
+                } else {
+                    $icon_search.addClass('selected');
+                }
+            }
+
+            function removeUnderCursorStateFromAllResults() {
+                $('.tt-suggestions .tt-is-under-cursor').removeClass('tt-is-under-cursor');
+            }
+
+            function redirectToMoreResults(event) {
+                window.location.href = '/SearchBox.action?button=search&searchTerm=' + search_query_el.val();
             }
 
             return {

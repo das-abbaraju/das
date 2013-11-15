@@ -2,6 +2,9 @@
 <%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<%-- <s:set var="has_contractor_menu_class" value="%{showContractorStatusSubMenu() ? 'has-contractor-menu' : ''}" --%>
+<s:set var="has_contractor_menu_class">has-contractor-menu</s:set>
+
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -12,8 +15,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>PICS - <decorator:title default="PICS" /></title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <link rel="stylesheet" href="/bootstrap3/css/style.css?v=${version}">
@@ -28,8 +30,11 @@
     <s:action name="Menu!bootstrap3Menu" executeResult="true" />
 </header>
 
-<div id="main" role="main" class="container">
-    <decorator:body />
+<s:action name="Menu!mobileMenu" executeResult="true" />
+        <div id="main" role="main" class="container">
+            <decorator:body />
+        </div>
+    </div>
 </div>
 
 <footer>

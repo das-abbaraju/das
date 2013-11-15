@@ -273,6 +273,7 @@
 		<action name="Menu" class="com.picsauditing.access.Menu">
 			<result>/struts/layout/menu/_menu.jsp</result>
             <result name="bootstrap3">/struts/layout/menu/_bs3Menu.jsp</result>
+            <result name="mobile-menu">/struts/layout/menu/_mobile-menu.jsp</result>
 			<result name="contractor-menu">/struts/layout/menu/_contractor-menu.jsp</result>
 		</action>
 

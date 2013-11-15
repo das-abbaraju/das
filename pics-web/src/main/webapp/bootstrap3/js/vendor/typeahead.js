@@ -322,7 +322,9 @@
                 function done(resp) {
                     var data = that.filter ? that.filter(resp) : resp;
                     cb && cb(data);
-                    requestCache.set(url, resp);
+                    /* Had to comment this out to prevent Typeahead from maintaining an internal cache,
+                    which was causing the footer "no results" rendering to break */
+                    //requestCache.set(url, resp);
                 }
             },
             _sendRequest: function(url) {

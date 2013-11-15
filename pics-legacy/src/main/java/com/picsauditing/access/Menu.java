@@ -43,6 +43,11 @@ public class Menu extends PicsActionSupport {
 		return "bootstrap3";
 	}
 
+	public String mobileMenu() {
+		menu = buildMainMenu();
+		return "mobile-menu";
+	}
+
 	private MenuComponent buildMainMenu() {
 		loadPermissions();
 

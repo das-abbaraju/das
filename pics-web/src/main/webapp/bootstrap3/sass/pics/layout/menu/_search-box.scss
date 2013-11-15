@@ -1,5 +1,4 @@
 #primary_navigation {
-
     /* search form */
     .search-form {
         position: relative;
@@ -45,7 +44,7 @@
         }
     }
     /* END search form */
-    /* Twitter Typeahead */
+
     .twitter-typeahead {
         .tt-query,
         .tt-hint {
@@ -79,26 +78,56 @@
           background: $pics_cool_grey;
         }
 
+        .more-results-link {
+            font-weight: bold;
+        }
+
         .tt-is-under-cursor,
-        .tt-is-under-cursor:nth-child(even) {
+        .tt-is-under-cursor:nth-child(even),
+        .more-results-link:hover {
           background-color: $primary_med;
           @include background-image(linear-gradient(to bottom, $primary_light, $primary_med));
           color: #fff;
         }
 
-        .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a,
-        .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a {
-            color: #fff;
+        .tt-dropdown-menu .tt-dataset-primary-search a {
+            color: #454545;
+
+            &.account-deactivated,
+            &.account-inactive {
+                color: #aeaeae;
+            }
+
+            &.account-deactivated:hover,
+            &.account-inactive:hover {
+                color: #ccc;
+            }
+
+            &.account-demo {
+                font-style: italic;
+            }
+
+            &.account-deleted span {
+                text-decoration: line-through;
+            }
         }
 
-        .search-item {
+        .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a,
+        .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a,
+        .tt-dropdown-menu .tt-dataset-primary-search .more-results-link:hover {
+            color: #fff;
+
+            &.account-deactivated,
+            &.account-inactive {
+                color: #ccc;
+            }
+        }
+
+        a {
             line-height: 15px;
             overflow: hidden;
             padding: 5px 15px;
-
-            span:first-child {
-              margin-bottom: 5px;
-            }
+            display: block;
 
             .name,
             .location
@@ -119,40 +148,21 @@
             }
         }
 
-        .more-results {
-          display: none;
-        }
-
-        .more-results-info.has-more-results {
-          display: block;
-        }
-
         .tt-dropdown-menu .tt-dataset-primary-search {
-            width: 275px;
-            font-size: 13px;
+          width: 275px;
+          font-size: 13px;
+        }
 
-            a {
-              display: block;
-              color: #454545;
-            }
+        .total-results {
+          padding: 5px 15px;
+        }
 
-          .more-results-info {
-            a {
-              font-weight: bold;
-              padding: 5px 15px;
-            }
-
-            a:hover {
-              background-color: $primary_med;
-              @include background-image(linear-gradient(to bottom, $primary_light, $primary_med));
-              color: #fff;
-            }
-
-            p:last-child {
-              color: #999;
-              padding: 5px 15px;
-            }
-          }
+        .no-results-msg {
+          position: relative;
+          top: 5px;
+          padding-left: 20px;
+          color: #777;
         }
     }
+    /* Twitter Typeahead */
 }

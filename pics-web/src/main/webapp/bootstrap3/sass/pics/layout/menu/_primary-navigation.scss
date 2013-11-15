@@ -3,6 +3,7 @@
     @include background-image(linear-gradient(to bottom, #fff, #eaeaea));
     border-bottom: 2px solid $default_med;
     height: 50px;
+    z-index: 200;
 
     .navbar {
       background: none;
@@ -99,6 +100,80 @@
         margin-top: 9px;
     }
     /* END dropdown menu */
+
+    .nav li.dropdown.switch-to.open > .dropdown-toggle,
+    .nav li.dropdown.switch-to.active > .dropdown-toggle,
+    .nav li.dropdown.switch-to.open.active > .dropdown-toggle
+    {
+        background-color: #3f93c0 \9;
+        background-color: #3f93c0;
+        background-image: none;
+        outline: 0;
+        @include box-shadow(inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05));
+        color: #fff;
+    }
+
+    .nav .switch-to
+    {
+        > a.dropdown-toggle
+        {
+            color: #fff;
+            background-color: #3f93c0;
+            @include text-shadow(0 -1px 0 rgba(0, 0, 0, 0.25));
+            @include background-image(linear-gradient($pics_light_blue, #3f93c0));
+            background-repeat: repeat-x;
+            *background-color: #3f93c0;
+            border-color: #3f93c0 #3f93c0 #336699;
+            border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+            display: block;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73bbe8', endColorstr='#ff3f93c0', GradientType=0);
+            /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+            filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+            padding: 6px 15px 7px;
+        }
+
+        &.open a.dropdown-toggle {
+            padding-top: 6px;
+        }
+
+        > a:hover,
+        > a:focus
+        {
+            background-color: #3f93c0;
+            background-position: 0 -15px;
+            color: #fff;
+            text-decoration: none;
+            @include transition(background-position .1s linear);
+        }
+
+        > a:active
+        {
+            background-color: #3f93c0 \9;
+            background-color: #3f93c0;
+            background-image: none;
+            outline: 0;
+            @include box-shadow(inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05));
+        }
+
+        .account
+        {
+            display: inline-block;
+            display: inline \9;
+            line-height: 16px;
+            margin-right: 5px;
+            text-align: right;
+
+            span
+            {
+                font-size: 10px;
+            }
+        }
+
+        .icon-cog
+        {
+            vertical-align: 5px;
+        }
+    }
 }
 
 @media (max-width: 991px) {
