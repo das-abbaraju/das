@@ -95,11 +95,13 @@ public class SessionCookie {
 		try {
 			StringBuffer thisAsString = new StringBuffer()
 					.append(userID).append('|')
-					.append(appUserID).append('|')
 					.append(cookieCreationTime.getTime()).append('|');
 			if (embeddedData != null && embeddedData.size() > 0) {
 				thisAsString.append(mapper.writeValueAsString(embeddedData));
 			}
+
+			thisAsString.append('|').append(appUserID);
+
 			if (validationHash != null) {
 				thisAsString.append('|').append(validationHash);
 			}
