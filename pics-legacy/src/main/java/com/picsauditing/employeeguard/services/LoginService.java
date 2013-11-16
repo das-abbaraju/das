@@ -59,7 +59,7 @@ public class LoginService {
         uriBuilder.replaceQuery(query);
         uriBuilder.host(host);
         uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
-        uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
+        //uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
 
         try {
             Client client = Client.create(new DefaultClientConfig());
@@ -76,7 +76,9 @@ public class LoginService {
             LOG.debug("Error in LoginService for request{}", path + "?" + query, e);
         }
 
-        return new JSONObject().put("status", "FAIL").toString();
+	    JSONObject jsonObject = new JSONObject();
+	    jsonObject.put("status", "FAIL");
+	    return jsonObject.toString();
     }
 
     private String requestHost() {
