@@ -118,14 +118,8 @@ public class SessionSecurity {
 			return;
 		}
 
-		if (isHmacHash(cookieParts[3])) {
-			sessionCookie.setValidationHash(cookieParts[3]);
-		} else {
+		if (!isHmacHash(cookieParts[3])) {
 			sessionCookie.setAppUserID(Integer.parseInt(cookieParts[3]));
-
-			if (cookieParts.length > 4) {
-				sessionCookie.setValidationHash(cookieParts[4]);
-			}
 		}
 	}
 

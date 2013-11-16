@@ -76,7 +76,9 @@ public class LoginService {
             LOG.debug("Error in LoginService for request{}", path + "?" + query, e);
         }
 
-        return new JSONObject().put("status", "FAIL").toString();
+	    JSONObject jsonObject = new JSONObject();
+	    jsonObject.put("status", "FAIL");
+	    return jsonObject.toString();
     }
 
     private String requestHost() {
