@@ -93,7 +93,7 @@ public class SessionSecurityTest {
 		sessionCookie.setCookieCreationTime(now);
 
 		String hmac = EncodedMessage.hmacBase64(sessionCookie.toString(), secretKey);
-		String expectedCookieContent = "123|456|" + now.getTime() + "||" + hmac;
+		String expectedCookieContent = "123|" + now.getTime() + "||456|" + hmac;
 		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
 
 		assertThat(sessionCookie.toString(), is(equalTo(expectedCookieContent)));
@@ -101,7 +101,7 @@ public class SessionSecurityTest {
 
 	@Test
 	public void testCookieIsValid_CookieHashWasAltered() throws Exception {
-		String testCookieDataOriginal = "64036|12345|1348850723991|{}";
+		String testCookieDataOriginal = "64036|1348850723991|{}";
 
 		String hmac = EncodedMessage.hmacBase64(testCookieDataOriginal, secretKey);
 		String alteredHmac = "A8363" + hmac.substring(5);
@@ -112,7 +112,7 @@ public class SessionSecurityTest {
 
 	@Test
 	public void testCookieIsValid_CookieReencodedWithCounterfeitSecretKey() throws Exception {
-		String testCookieDataOriginal = "64036|12345|1348850723991|{}";
+		String testCookieDataOriginal = "64036|1348850723991|{}";
 
 		String hmac = EncodedMessage.hmacBase64(testCookieDataOriginal, counterfeitSecretKey);
 		String testCookieAltered = testCookieDataOriginal + '|' + hmac;
@@ -126,12 +126,90 @@ public class SessionSecurityTest {
 	// Then
 	@Test
 	public void testParseSessionCookie_Usecase() throws Exception {
-		String testCookie = "64036|12345|1348850723991|{ \"switchTo\" : 941 }|gQsT/YcdKDby8HOZ1uYQA10HbGI=";
+		String testCookie = "64036|1348850723991|{ \"switchTo\" : 941 }|gQsT/YcdKDby8HOZ1uYQA10HbGI=";
 
 		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
 
 		assertThat(64036, is(equalTo(sessionCookie.getUserID())));
 		assertThat(new Date(1348850723991L), is(equalTo(sessionCookie.getCookieCreationTime())));
 		assertThat(941, is(equalTo(sessionCookie.getData("switchTo"))));
+	}
+
+	@Test
+	public void testParseSessionCookie_UserTime() throws Exception {
+		String testCookie = "12345|1348850723991|";
+
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
+
+		assertThat(12345, is(equalTo(sessionCookie.getUserID())));
+		assertThat(new Date(1348850723991L), is(equalTo(sessionCookie.getCookieCreationTime())));
+		assertThat(0, is(equalTo(sessionCookie.getAppUserID())));
+	}
+
+	@Test
+	public void testParseSessionCookie_UserTimeData() throws Exception {
+		String testCookie = "12345|1348850723991|{ \"test\" : \"Hello world\" }";
+
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
+
+		assertThat(12345, is(equalTo(sessionCookie.getUserID())));
+		assertThat(new Date(1348850723991L), is(equalTo(sessionCookie.getCookieCreationTime())));
+
+		System.out.println(sessionCookie.getData("test"));
+
+		assertEquals("Hello world", sessionCookie.getData("test"));
+		assertThat(0, is(equalTo(sessionCookie.getAppUserID())));
+	}
+
+	@Test
+	public void testParseSessionCookie_UserTimeDataAppUserId() throws Exception {
+		String testCookie = "12345|1348850723991|{ \"test\" : \"Hello world\" }|6789";
+
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
+
+		assertThat(12345, is(equalTo(sessionCookie.getUserID())));
+		assertThat(new Date(1348850723991L), is(equalTo(sessionCookie.getCookieCreationTime())));
+		assertThat("Hello world", is(equalTo(sessionCookie.getData("test"))));
+		assertThat(6789, is(equalTo(sessionCookie.getAppUserID())));
+	}
+
+	@Test
+	public void testParseSessionCookie_UserTimeDataHmacHash() throws Exception {
+		String testCookie = "12345|1348850723991|{ \"test\" : \"Hello world\" }";
+		String hmac = "|" + EncodedMessage.hmacBase64(testCookie, secretKey);
+		testCookie += hmac;
+
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
+
+		assertThat(12345, is(equalTo(sessionCookie.getUserID())));
+		assertThat(new Date(1348850723991L), is(equalTo(sessionCookie.getCookieCreationTime())));
+		assertThat("Hello world", is(equalTo(sessionCookie.getData("test"))));
+		assertThat(0, is(equalTo(sessionCookie.getAppUserID())));
+	}
+
+	@Test
+	public void testParseSessionCookie_UserTimeDataAppUserIdHmac() throws Exception {
+		String testCookie = "12345|1348850723991|{ \"test\" : \"Hello world\" }|6789";
+		String hmac = "|" + EncodedMessage.hmacBase64(testCookie, secretKey);
+		testCookie += hmac;
+
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
+
+		assertThat(12345, is(equalTo(sessionCookie.getUserID())));
+		assertThat(new Date(1348850723991L), is(equalTo(sessionCookie.getCookieCreationTime())));
+		assertThat("Hello world", is(equalTo(sessionCookie.getData("test"))));
+		assertThat(6789, is(equalTo(sessionCookie.getAppUserID())));
+	}
+
+	@Test
+	public void testParseSessionCookie_NoEmbeddedData() throws Exception {
+		Date now = new Date();
+		String testCookie = "941|" + now.getTime() + "||123";
+
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(testCookie);
+		assertThat(941, is(equalTo(sessionCookie.getUserID())));
+		assertThat(now, is(equalTo(sessionCookie.getCookieCreationTime())));
+		assertTrue(sessionCookie.getEmbeddedData().isEmpty());
+		assertThat(123, is(equalTo(sessionCookie.getAppUserID())));
 	}
 }

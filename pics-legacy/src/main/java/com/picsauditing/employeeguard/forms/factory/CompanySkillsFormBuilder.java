@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.forms.factory;
 
-import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -26,8 +25,6 @@ public class CompanySkillsFormBuilder {
 
 	@Autowired
 	private AccountService accountService;
-	@Autowired
-	private AccountSkillDAO accountSkillDAO;
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired

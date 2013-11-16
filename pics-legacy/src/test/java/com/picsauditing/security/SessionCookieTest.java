@@ -27,7 +27,7 @@ public class SessionCookieTest {
 	public void testToString_Usecase() throws Exception {
 		Date now = new Date();
 		String embeddedData = "{\"switchTo\":1234}";
-		String expectedCookieValue = "941|123|" + now.getTime() + '|' + embeddedData;
+		String expectedCookieValue = "941|" + now.getTime() + '|' + embeddedData + "|123";
 		sessionCookie.setUserID(941);
 		sessionCookie.setAppUserID(123);
 		sessionCookie.setCookieCreationTime(now);
@@ -40,7 +40,7 @@ public class SessionCookieTest {
 	public void testToString_EmptyStringEmbeddedData() throws Exception {
 		Date now = new Date();
 		String embeddedData = "";
-		String expectedCookieValue = "941|123|" + now.getTime() + '|' + embeddedData;
+		String expectedCookieValue = "941|" + now.getTime() + '|' + embeddedData + "|123";
 		sessionCookie.setUserID(941);
 		sessionCookie.setAppUserID(123);
 		sessionCookie.setCookieCreationTime(now);
@@ -52,7 +52,7 @@ public class SessionCookieTest {
 	@Test
 	public void testToString_NoEmbeddedData() throws Exception {
 		Date now = new Date();
-		String expectedCookieValue = "941|123|" + now.getTime() + '|';
+		String expectedCookieValue = "941|" + now.getTime() + "||123";
 		sessionCookie.setUserID(941);
 		sessionCookie.setAppUserID(123);
 		sessionCookie.setCookieCreationTime(now);
