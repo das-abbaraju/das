@@ -59,7 +59,7 @@ public class LoginService {
         uriBuilder.replaceQuery(query);
         uriBuilder.host(host);
         uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
-        //uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
+        uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
 
         try {
             Client client = Client.create(new DefaultClientConfig());
