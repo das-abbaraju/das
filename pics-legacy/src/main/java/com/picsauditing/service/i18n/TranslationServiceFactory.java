@@ -1,11 +1,10 @@
 package com.picsauditing.service.i18n;
 
-import java.util.Locale;
+import java.util.*;
 
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
-import com.picsauditing.model.general.AppPropertyProvider;
+import com.picsauditing.i18n.service.TranslationServiceProperties;
 import com.picsauditing.model.i18n.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
@@ -13,7 +12,6 @@ import com.spun.util.ObjectUtils;
 import com.spun.util.persistence.Loader;
 
 public class TranslationServiceFactory {
-
 	private static Loader<Locale> localeProvider = ThreadLocalLocale.INSTANCE;
     private static FeatureToggle featureToggleChecker;
 
@@ -34,20 +32,30 @@ public class TranslationServiceFactory {
         return I18nCache.getInstance();
     }
 
-	public static TranslationService getTranslationService() {
-		if (translationService != null) {
-			return translationService;
-		}
+    public static TranslationService getTranslationService() {
+        if (translationService != null) {
+            return translationService;
+        }
 
-		if (useTranslationServiceAdapter()) {
+        if (useTranslationServiceAdapter()) {
             if (logTranslationUsage()) {
-			    return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger());
+                return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger());
             } else {
                 return new TranslationServiceAdapter(new TranslationKeyDoNothingLogger());
             }
-		}
+        }
 
-		return I18nCache.getInstance();
+        return I18nCache.getInstance();
+    }
+
+	public static com.picsauditing.i18n.service.TranslationServiceAdapter getTranslationService2() {
+        ActionUsageContext context = new ActionUsageContext();
+        TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder().context(context);
+
+        if (logTranslationUsage()) {
+            propertyBuilder.translationUsageLogger(new TranslationKeyAggregateUsageLogger());
+        }
+        return new com.picsauditing.i18n.service.TranslationServiceAdapter(propertyBuilder.build());
 	}
 
     // if we have to parameterize the command group name for more than TranslateCommand, this will have to be a more
