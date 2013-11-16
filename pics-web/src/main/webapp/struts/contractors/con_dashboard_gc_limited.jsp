@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 <h1>
@@ -69,15 +70,28 @@
 			</p>
 
 			<p>
-				<s:text name="global.SafetyRisk"/>:
-				<strong>
-					<s:if test="contractor.safetyRisk != null">
-						<s:text name="%{contractor.safetyRisk.i18nKey}"/>
-					</s:if>
-					<s:else>
-						<s:text name="ContractorAccount.safetyRisk.missing"/>
-					</s:else>
-				</strong>
+                <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+                    <s:text name="global.SafetySensitive"/>:
+                    <strong>
+                        <s:if test="contractor.safetySensitive">
+                            <s:text name="YesNo.Yes"/>
+                        </s:if>
+                        <s:else>
+                            <s:text name="YesNo.No"/>
+                        </s:else>
+                    </strong>
+                </pics:toggle>
+                <pics:toggleElse>
+                    <s:text name="global.SafetyRisk"/>:
+                    <strong>
+                        <s:if test="contractor.safetyRisk != null">
+                            <s:text name="%{contractor.safetyRisk.i18nKey}"/>
+                        </s:if>
+                        <s:else>
+                            <s:text name="ContractorAccount.safetyRisk.missing"/>
+                        </s:else>
+                    </strong>
+                </pics:toggleElse>
 			</p>
 
 			<s:if test="contractor.materialSupplier && contractor.productRisk != null">

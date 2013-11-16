@@ -355,7 +355,7 @@ public class ContractorAccount extends Account implements JSONable {
     }
 
     @Column(name = "safetyRisk", nullable = false)
-	@ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllContractors)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -365,7 +365,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(type = FieldType.Date)
+	@ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllContractors)
 	public Date getSafetyRiskVerified() {
 		return safetyRiskVerified;
 	}

@@ -558,6 +558,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
     }
 
     protected void filterOnRiskLevels() {
+        if (filterOn(getFilter().isSafetySensitive())) {
+            sql.addWhere("c.safetySensitive = " + getFilter().isSafetySensitive());
+            setFiltered(true);
+        }
         if (filterOn(getFilter().getRiskLevel())) {
             String list = Strings.implode(getFilter().getRiskLevel(), ",");
             sql.addWhere("c.safetyRisk IN (" + list + ")");
