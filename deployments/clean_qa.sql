@@ -1,4 +1,10 @@
-update users set password = SHA1(CONCAT('Wait7Lib',id)) WHERE accountID != 1100;
+UPDATE	app_user
+,	users
+SET app_user.password = SHA1(CONCAT('Wait7Lib', app_user.hashSalt))
+WHERE	1
+AND	users.accountID != 1100
+AND	app_user.username	= users.username
+;
 update contractor_info set taxID = '123456789';
 update users set email = 'tester@picsauditing.com' WHERE accountID != 1100 AND email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
