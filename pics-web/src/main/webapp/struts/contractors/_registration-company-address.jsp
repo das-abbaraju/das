@@ -14,7 +14,7 @@
 <li class="city">
 	<s:textfield name="contractor.city" />
 </li>
-<li class="countrySubdivision" style="${countrySubdivision_display}">
+<li class="countrySubdivision">
     <s:include value="/struts/contractors/_country_subdivision_select.jsp">
         <s:param name="country_iso_code">${country_iso_code}</s:param>
         <s:param name="subdivision_id">Registration_contractor_countrySubdivision</s:param>
@@ -23,6 +23,14 @@
         <s:param name="select_css">select2</s:param>
     </s:include>
 </li>
-<li class="zipcode" style="${zip_display}">
-	<s:textfield name="contractor.zip" />
-</li>
+
+<s:if test="#country_iso_code != 'AE'">
+    <li class="zipcode">
+        <s:if test="#country_iso_code == 'US'">
+            <s:textfield name="contractor.zip" />
+        </s:if>
+        <s:else>
+            <s:textfield name="contractor.zip" label="global.ZipPostalCode"/>
+        </s:else>
+    </li>
+</s:if>
