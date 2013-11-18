@@ -15,26 +15,11 @@
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
-<%-- toggle display flags for form display --%>
-<s:if test="contractor.country.isoCode == 'AE'">
-	<s:set var="zip_display" value="'display: none;'" />
-</s:if>
-<s:else>
-	<s:set var="zip_display" value="''" />
-</s:else>
-
 <s:if test="contractor.country.isoCode != ''">
 	<s:set var="country_iso_code" value="contractor.country.isoCode" />
 </s:if>
 <s:else>
 	<s:set var="country_iso_code" value="'US'" />
-</s:else>
-
-<s:if test="getCountrySubdivisionList(#country_iso_code).size == 0">
-	<s:set var="countrySubdivision_display" value="'display: none;'" />
-</s:if>
-<s:else>
-	<s:set var="countrySubdivision_display" value="''" />
 </s:else>
 
 <s:set name="chat_url" value="%{chatUrl}"></s:set>
