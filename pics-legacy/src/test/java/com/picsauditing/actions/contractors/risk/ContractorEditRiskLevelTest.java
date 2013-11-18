@@ -113,4 +113,11 @@ public class ContractorEditRiskLevelTest extends PicsTranslationTest {
         verify(contractorAccountDao).save(contractor);
     }
 
+    @Test
+    public void testBuildAndSendBillingSafetySensitiveDowngradeEmail() throws Exception {
+        Whitebox.invokeMethod(contractorEditRiskLevel, "buildAndSendBillingSafetySensitiveDowngradeEmail");
+
+        verify(emailSender).send(emailQueue);
+    }
+
 }

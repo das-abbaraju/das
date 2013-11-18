@@ -106,8 +106,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
                 flagClearCache();
                 needsPqfReset = true;
 
-                // TODO: if downgrade, need to send email to Billing. Need new email template.
-                // checkSafetyStatus(oldSafety, safetyRisk);
+                checkSafetyStatus(oldSafetySensitive, safetySensitive);
 
                 resetPqf();
                 billingService.syncBalance(contractor);
@@ -203,6 +202,11 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			buildAndSendBillingRiskDowngradeEmail(oldSafety, newSafety);
 	}
 
+    private void checkSafetyStatus(boolean oldSafety, boolean newSafety) {
+        if (oldSafety && !newSafety)
+            buildAndSendBillingSafetySensitiveDowngradeEmail();
+    }
+
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
 		emailBuilder.clear();
 		emailBuilder.setTemplate(EmailTemplate.RISK_LEVEL_DOWNGRADED_EMAIL_TEMPLATE);
@@ -223,6 +227,25 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 					e });
 		}
 	}
+
+    private void buildAndSendBillingSafetySensitiveDowngradeEmail() {
+        emailBuilder.clear();
+        emailBuilder.setTemplate(EmailTemplate.SAFETY_SENSITIVE_DOWNGRADED_EMAIL_TEMPLATE);
+        emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
+        emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
+        emailBuilder.addToken("contractor", contractor);
+
+        try {
+            emailQueue = emailBuilder.build();
+            emailQueue.setHighPriority();
+            emailQueue.setSubjectViewableById(Account.PicsID);
+            emailQueue.setBodyViewableById(Account.PicsID);
+            emailSender.send(emailQueue);
+        } catch (Exception e) {
+            logger.error("Cannot send email to  {} ({})\n{}", new Object[] { contractor.getName(), contractor.getId(),
+                    e });
+        }
+    }
 
 	private boolean isRiskChanged(LowMedHigh oldSafetyRisk, LowMedHigh newSafetyRisk) {
 		if ((newSafetyRisk.equals(LowMedHigh.Med) || newSafetyRisk.equals(LowMedHigh.High))
