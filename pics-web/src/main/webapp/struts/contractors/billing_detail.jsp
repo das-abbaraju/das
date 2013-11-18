@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -100,8 +101,19 @@
 
 						<s:if test="!contractor.materialSupplierOnly">
 							<li>
-								<label><s:text name="global.SafetyRisk" />:</label>
-								<s:text name="%{contractor.safetyRisk.i18nKey}" />
+                                <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+                                    <label><s:text name="global.SafetySensitive" />:</label>
+                                    <s:if test="contractor.safetySensitive">
+                                        <s:text name="YesNo.Yes"/>
+                                    </s:if>
+                                    <s:else>
+                                        <s:text name="YesNo.No"/>
+                                    </s:else>
+                                </pics:toggle>
+                                <pics:toggleElse>
+                                    <label><s:text name="global.SafetyRisk" />:</label>
+                                    <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                                </pics:toggleElse>
 							</li>
 						</s:if>
 

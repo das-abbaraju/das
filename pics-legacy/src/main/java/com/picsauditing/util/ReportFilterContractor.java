@@ -84,6 +84,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] conAuditorId;
 	protected Date policyChangedDate1;
 	protected Date policyChangedDate2;
+    protected Boolean safetySensitive;
 	protected int[] riskLevel;
 	protected int[] productRiskLevel;
 	protected String[] service;
@@ -517,7 +518,15 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.policyChangedDate2 = policyChangedDate2;
 	}
 
-	public int[] getRiskLevel() {
+    public Boolean isSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(Boolean safetySensitive) {
+        this.safetySensitive = safetySensitive;
+    }
+
+    public int[] getRiskLevel() {
 		return riskLevel;
 	}
 

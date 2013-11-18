@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <s:include value="../actionMessages.jsp" />
 
@@ -311,22 +312,42 @@
 
 		<s:if test="filter.showRiskLevel">
 			<div class="filterOption" id="risklevel">
-				<a href="#" class="filterBox">
-					<s:text name="global.SafetyRisk" />
-				</a>
-				=
+                <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+                    <a href="#" class="filterBox">
+                        <s:text name="global.SafetySensitive" />
+                    </a>
+                    =
+                    <span class="q_status">
+                        <s:text name="JS.Filters.status.All" />
+                    </span>
+                        <br />
+                    <span class="clearLink q_box select">
+                        <s:select
+                                list="#{true:getTextNullSafe('YesNo.Yes'), false:getTextNullSafe('YesNo.No')}"
+                                cssClass="forms" name="filter.safetySensitive" multiple="true" size="3" />
+                        <a href="#" class="clearLink">
+                            <s:text name="Filters.status.Clear" />
+                        </a>
+                    </span>
+                </pics:toggle>
+                <pics:toggleElse>
+                    <a href="#" class="filterBox">
+                        <s:text name="global.SafetyRisk" />
+                    </a>
+                    =
 				<span class="q_status">
 					<s:text name="JS.Filters.status.All" />
 				</span>
-				<br />
+                    <br />
 				<span class="clearLink q_box select">
 					<s:select
-						list="#{1:getTextNullSafe('LowMedHigh.Low'), 2:getTextNullSafe('LowMedHigh.Med'), 3:getTextNullSafe('LowMedHigh.High')}"
-						cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
+                            list="#{1:getTextNullSafe('LowMedHigh.Low'), 2:getTextNullSafe('LowMedHigh.Med'), 3:getTextNullSafe('LowMedHigh.High')}"
+                            cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
 					<a href="#" class="clearLink">
-						<s:text name="Filters.status.Clear" />
-					</a>
+                        <s:text name="Filters.status.Clear" />
+                    </a>
 				</span>
+                </pics:toggleElse>
 			</div>
 		</s:if>
 

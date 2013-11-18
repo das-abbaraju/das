@@ -144,7 +144,6 @@ ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -196,7 +195,6 @@ ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -269,8 +267,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorSuncorDrugAlcoholPolicyCaoID
@@ -375,8 +371,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -438,7 +432,6 @@ ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
@@ -515,7 +508,6 @@ ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -588,7 +580,6 @@ ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
@@ -634,7 +625,6 @@ ContractorFeeNewAmount
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -806,8 +796,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -883,7 +871,6 @@ ContractorOperatorTag
 ContractorOperatorWaitingOn
 ContractorOperatorWorkStatus
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
@@ -960,8 +947,6 @@ ContractorRequestedByRequestedByUserID
 ContractorRequestedByRequestedByUserName
 ContractorRequestedByTag
 ContractorRequestedByUserOther
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
@@ -1037,8 +1022,6 @@ ContractorProfessionalIndemnityPROILimitAnswer
 ContractorPublicProductLiabilityPPLLimitAnswer
 ContractorRecommendedCSRID
 ContractorRecommendedCSRName
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorSupplierDiversity
@@ -1078,8 +1061,6 @@ ContractorOperatorNetworkLevel
 ContractorOperatorTag
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -1135,8 +1116,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorStatisticsRate
@@ -1170,8 +1149,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSingleTagOperatorTagOperatorID
 ContractorSingleTagOperatorTagOperatorName
@@ -1321,7 +1298,6 @@ ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -1379,7 +1355,6 @@ ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
@@ -1571,7 +1546,6 @@ ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
-ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -1689,8 +1663,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
 ContractorProductRiskVerified
-ContractorSafetyRisk
-ContractorSafetyRiskVerified
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
