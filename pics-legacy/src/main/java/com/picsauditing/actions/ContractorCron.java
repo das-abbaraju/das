@@ -1264,7 +1264,7 @@ public class ContractorCron extends PicsActionSupport {
 						}
 						break;
 					case (AuditType.MANUAL_AUDIT):
-						if (audit.getSlaDate() != null) {
+						if (audit.getSlaDate() != null) { 
 							ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
 							if (ua == null) {
 								List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
