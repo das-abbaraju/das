@@ -1,4 +1,4 @@
-update users set password = SHA1(CONCAT('Wait7Lib',id));
+UPDATE app_user SET PASSWORD = SHA1(CONCAT('Wait7Lib',hashSalt));
 update contractor_info set taxID = '123456789';
 update users set email = 'tester@picsauditing.com' where email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
