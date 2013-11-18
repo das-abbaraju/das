@@ -4,15 +4,13 @@ import java.util.List;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.*;
 
 public class PermissionToViewContractor {
 
 	private int id;
 	private Permissions permissions = null;
+    private ContractorAccount contractor;
 
 	private List<ContractorOperator> operators;
 	private List<ContractorAudit> activeAudits;
@@ -53,6 +51,9 @@ public class PermissionToViewContractor {
 		}
 
 		if (permissions.isOperatorCorporate()) {
+            if (contractor.getStatus().isDeclinedDeletedDeactivated()) {
+                return false;
+            }
 			// If we want to look at their detail, like PQF data
 			// Then we have to add them first (generalContractors).
 			if (permissions.isCorporate()) {
@@ -83,7 +84,15 @@ public class PermissionToViewContractor {
 		return false;
 	}
 
-	public void setOperators(List<ContractorOperator> operators) {
+    public ContractorAccount getContractor() {
+        return contractor;
+    }
+
+    public void setContractor(ContractorAccount contractor) {
+        this.contractor = contractor;
+    }
+
+    public void setOperators(List<ContractorOperator> operators) {
 		this.operators = operators;
 	}
 
