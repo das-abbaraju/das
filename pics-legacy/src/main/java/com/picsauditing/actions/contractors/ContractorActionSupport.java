@@ -94,6 +94,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			permissionToViewContractor = new PermissionToViewContractor(id, permissions);
 			permissionToViewContractor.setActiveAudits(getActiveAudits());
 			permissionToViewContractor.setOperators(getOperators());
+            permissionToViewContractor.setContractor(contractor);
 		}
 
 		return permissionToViewContractor.check(limitedView);
