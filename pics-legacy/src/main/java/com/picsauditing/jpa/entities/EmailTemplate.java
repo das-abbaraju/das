@@ -35,6 +35,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
     public static final int DEACTIVATION_FOR_OPERATORS_EMAIL_TEMPLATE = 51;
     public static final int BRAIN_TREE_ERROR_EMAIL_TEMPLATE = 106;
     public static final int WELCOME_EMAIL_TEMPLATE = 2;
+    public static final int SAFETY_SENSITIVE_DOWNGRADED_EMAIL_TEMPLATE = 367;
     public static final int RISK_LEVEL_DOWNGRADED_EMAIL_TEMPLATE = 159;
     public static final int CREDIT_CARD_EXPIRATION_EMAIL_TEMPLATE = 59;
     public static final int REQUEST_FOR_CLIENT_SITE_ADDITION_EMAIL_TEMPLATE = 321;
