@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,14 @@ public class ContractorRequestsModel extends AbstractModel {
 
 	@Override
 	public String getWhereClause(List<Filter> filters) {
-        return "Account.status IN ('Requested','Declined','Pending','Active')";
+        super.getWhereClause(filters);
+        permissionQueryBuilder.setContractorOperatorAlias("ContractorRequestedBy");
+
+        String picsCorporateClause = "ContractorRequestedBy.opID NOT IN (4, 5, 6, 7, 8, 9, 10, 11)";
+        String whereClause = permissionQueryBuilder.buildWhereClause();
+        String statusClause = "Account.status IN ('Requested','Declined','Pending','Active')";
+        whereClause = StringUtils.replace(whereClause, "Account.status IN ('Active')", statusClause + " AND " + picsCorporateClause);
+        return whereClause;
 	}
 
 	@Override
