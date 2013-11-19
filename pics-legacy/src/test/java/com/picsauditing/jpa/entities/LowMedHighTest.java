@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.Map;
@@ -42,4 +44,55 @@ public class LowMedHighTest {
 	public void testParseLowMedHigh_NotParseable() {
 		assertNull(LowMedHigh.parseLowMedHigh("Other Value"));
 	}
+
+    @Test
+    public void testComparators() {
+        assertFalse(LowMedHigh.Low.isLessThan(LowMedHigh.Low));
+        assertTrue(LowMedHigh.Low.isLessThan(LowMedHigh.Med));
+        assertTrue(LowMedHigh.Low.isLessThan(LowMedHigh.High));
+
+        assertTrue(LowMedHigh.Low.isLessThanOrEqualTo(LowMedHigh.Low));
+        assertTrue(LowMedHigh.Low.isLessThan(LowMedHigh.Med));
+        assertTrue(LowMedHigh.Low.isLessThan(LowMedHigh.High));
+
+        assertFalse(LowMedHigh.Low.isGreaterThan(LowMedHigh.Low));
+        assertFalse(LowMedHigh.Low.isGreaterThan(LowMedHigh.Med));
+        assertFalse(LowMedHigh.Low.isGreaterThan(LowMedHigh.High));
+
+        assertTrue(LowMedHigh.Low.isGreaterThanOrEqualTo(LowMedHigh.Low));
+        assertFalse(LowMedHigh.Low.isGreaterThanOrEqualTo(LowMedHigh.Med));
+        assertFalse(LowMedHigh.Low.isGreaterThanOrEqualTo(LowMedHigh.High));
+
+        assertFalse(LowMedHigh.Med.isLessThan(LowMedHigh.Low));
+        assertFalse(LowMedHigh.Med.isLessThan(LowMedHigh.Med));
+        assertTrue(LowMedHigh.Med.isLessThan(LowMedHigh.High));
+
+        assertFalse(LowMedHigh.Med.isLessThanOrEqualTo(LowMedHigh.Low));
+        assertTrue(LowMedHigh.Med.isLessThanOrEqualTo(LowMedHigh.Med));
+        assertTrue(LowMedHigh.Med.isLessThanOrEqualTo(LowMedHigh.High));
+
+        assertTrue(LowMedHigh.Med.isGreaterThan(LowMedHigh.Low));
+        assertFalse(LowMedHigh.Med.isGreaterThan(LowMedHigh.Med));
+        assertFalse(LowMedHigh.Med.isGreaterThan(LowMedHigh.High));
+
+        assertTrue(LowMedHigh.Med.isGreaterThanOrEqualTo(LowMedHigh.Low));
+        assertTrue(LowMedHigh.Med.isGreaterThanOrEqualTo(LowMedHigh.Med));
+        assertFalse(LowMedHigh.Med.isGreaterThanOrEqualTo(LowMedHigh.High));
+
+        assertFalse(LowMedHigh.High.isLessThan(LowMedHigh.Low));
+        assertFalse(LowMedHigh.High.isLessThan(LowMedHigh.Med));
+        assertFalse(LowMedHigh.High.isLessThan(LowMedHigh.High));
+
+        assertFalse(LowMedHigh.High.isLessThanOrEqualTo(LowMedHigh.Low));
+        assertFalse(LowMedHigh.High.isLessThanOrEqualTo(LowMedHigh.Med));
+        assertTrue(LowMedHigh.High.isLessThanOrEqualTo(LowMedHigh.High));
+
+        assertTrue(LowMedHigh.High.isGreaterThan(LowMedHigh.Low));
+        assertTrue(LowMedHigh.High.isGreaterThan(LowMedHigh.Med));
+        assertFalse(LowMedHigh.High.isGreaterThan(LowMedHigh.High));
+
+        assertTrue(LowMedHigh.High.isGreaterThanOrEqualTo(LowMedHigh.Low));
+        assertTrue(LowMedHigh.High.isGreaterThanOrEqualTo(LowMedHigh.Med));
+        assertTrue(LowMedHigh.High.isGreaterThanOrEqualTo(LowMedHigh.High));
+    }
 }

@@ -8,9 +8,10 @@ public enum SafetyAssessment implements RiskAssessment {
 	CONDUCTED_FROM_OFFICE(12341, LowMedHigh.Low, LowMedHigh.Med), //
 	HAND_POWER_PNEUMATIC_TOOLS(12342, LowMedHigh.Med, LowMedHigh.Low), //
 	PERSONAL_PROTECTIVE_EQUIPMENT(12343, LowMedHigh.Med, LowMedHigh.Low), //
-	PERMIT_TO_WORK(12344, LowMedHigh.High, LowMedHigh.Med), //
-	MOBILE_EQUIPMENT(12345, LowMedHigh.High, LowMedHigh.Med), //
-	PERFORMS_HIGH_RISK(12346, LowMedHigh.High, LowMedHigh.Med), //
+	PERMIT_TO_WORK(12344, LowMedHigh.High, LowMedHigh.Low), //
+	MOBILE_EQUIPMENT(12345, LowMedHigh.High, LowMedHigh.Low), //
+	PERFORMS_HIGH_RISK(12346, LowMedHigh.High, LowMedHigh.Low), //
+    // TODO This question is now expired.  It needs to be removed.
 	LEVEL_OF_HAZARD_EXPOSURE(12347, true),
 	// Old questions
 	@Deprecated
