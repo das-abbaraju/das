@@ -116,7 +116,7 @@
                     results = data.results,
                     search_results_count = Math.min(total_results, SEARCH_RESULTS_LIMIT);
 
-                if (total_results > results.length) {
+                if (results.length < total_results) {
                     $('.more-results-link').show();
                 } else {
                     $('.more-results-link').hide();
