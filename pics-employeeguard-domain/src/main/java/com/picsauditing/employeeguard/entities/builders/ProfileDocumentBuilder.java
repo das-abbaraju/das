@@ -1,10 +1,12 @@
 package com.picsauditing.employeeguard.entities.builders;
 
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.DocumentType;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 
 import java.util.Date;
+import java.util.List;
 
 public class ProfileDocumentBuilder {
 
@@ -56,6 +58,11 @@ public class ProfileDocumentBuilder {
 
     public ProfileDocumentBuilder fileSize(int fileSize) {
         profileDocument.setFileSize(fileSize);
+        return this;
+    }
+
+    public ProfileDocumentBuilder employeeSkills(List<AccountSkillEmployee> employeeSkills) {
+        profileDocument.setEmployeeSkills(employeeSkills);
         return this;
     }
 
