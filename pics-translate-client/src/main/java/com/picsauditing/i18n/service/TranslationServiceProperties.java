@@ -1,5 +1,6 @@
 package com.picsauditing.i18n.service;
 
+import com.picsauditing.i18n.model.DefaultUsageContext;
 import com.picsauditing.i18n.model.UsageContext;
 import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
 import com.picsauditing.i18n.model.logging.TranslationUsageLogger;
@@ -13,6 +14,12 @@ public class TranslationServiceProperties {
     private String translationCommandKey;
     private TranslationKeyValidator translationKeyValidator;
     private UsageContext context;
+
+    public TranslationServiceProperties() {}
+
+    public TranslationServiceProperties(UsageContext context) {
+        context = context;
+    }
 
     public TranslationStrategy getTranslationStrategy() {
         return translationStrategy;
@@ -39,7 +46,7 @@ public class TranslationServiceProperties {
         private TranslationUsageLogger translationUsageLogger = new TranslationKeyDoNothingLogger();
         private String translationCommandKey;
         private TranslationKeyValidator translationKeyValidator = new TranslationKeyValidator();
-        private UsageContext context;
+        private UsageContext context = new DefaultUsageContext();
 
         public Builder() {
 

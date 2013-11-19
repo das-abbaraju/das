@@ -319,6 +319,7 @@ public class TranslationServiceAdapter implements TranslationService {
 	public void clear() {
 		synchronized (this) {
             cache.clear();
+            wildcardCache.clear();
             dateLastCleared = new Date();
         }
 	}
