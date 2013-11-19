@@ -75,6 +75,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
         else {
             sql.setType(SelectAccount.Type.Contractor);
             sql.addField("c.riskLevel");
+            sql.addField("c.safetySensitive");
             sql.addField("c.safetyRisk");
             sql.addField("c.productRisk");
             sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
