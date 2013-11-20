@@ -4,6 +4,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -29,6 +30,7 @@ ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate

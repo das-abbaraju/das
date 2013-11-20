@@ -18,8 +18,10 @@ AuditAuditFor
 AuditAuditLocation
 AuditAuditorConfirm
 AuditAuditorID
+AuditAuditorIsActive
 AuditAuditorName
 AuditClosingAuditorID
+AuditClosingAuditorIsActive
 AuditClosingAuditorName
 AuditContractorConfirm
 AuditCreationDate
@@ -29,6 +31,7 @@ AuditID
 AuditLwcrAnswer
 AuditOperatorAccountID
 AuditOperatorAccountName
+AuditOperatorAccountStatus
 AuditOperatorAuditSubStatus
 AuditOperatorID
 AuditOperatorPercentComplete
@@ -59,6 +62,7 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
 CustomerServiceUserID
+CustomerServiceUserIsActive
 CustomerServiceUserName
 EmrAnswer
 FatalitiesAnswer

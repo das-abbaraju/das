@@ -8,6 +8,8 @@ import com.picsauditing.dr.domain.fields.FilterType;
 import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.jpa.entities.*;
 
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.util.SpringUtils;
 
 import java.util.HashSet;
@@ -59,6 +61,8 @@ public enum FieldType {
 	PaymentMethod(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, PaymentMethod.class, EnumType.STRING),
     RegistrationRequestAccountStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, RegistrationRequestAccountStatus.class, EnumType.STRING),
 	String(FilterType.String, DisplayType.String, SqlFunctionProfile.String, null, null),
+    Subscription(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, Subscription.class, EnumType.STRING),
+    SubscriptionTimePeriod(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, SubscriptionTimePeriod.class, EnumType.STRING),
     SupplierDiversity(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, SupplierDiversity.class, null),
 	Trade(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null, null),
 	TransactionStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, TransactionStatus.class, EnumType.STRING),

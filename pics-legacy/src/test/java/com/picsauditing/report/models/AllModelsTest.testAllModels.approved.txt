@@ -20,6 +20,7 @@ AccountNoteNoteCategory
 AccountNoteStatus
 AccountNoteSummary
 AccountNoteUserID
+AccountNoteUserIsActive
 AccountNoteUserName
 AccountOffsiteServices
 AccountOnsiteServices
@@ -44,6 +45,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -77,7 +79,9 @@ AuditTypeClassType
 AuditTypeCreatedBy
 AuditTypeCreatedByAccountID
 AuditTypeCreatedByAccountName
+AuditTypeCreatedByAccountStatus
 AuditTypeCreatedByID
+AuditTypeCreatedByIsActive
 AuditTypeCreatedByName
 AuditTypeCreationDate
 AuditTypeDescription
@@ -87,6 +91,7 @@ AuditTypeMonthsToExpire
 AuditTypeName
 AuditTypeOperatorID
 AuditTypeOperatorName
+AuditTypeOperatorStatus
 AuditTypeRenewable
 AuditTypeScheduled
 AuditTypeScoreable
@@ -100,6 +105,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -122,8 +128,10 @@ AuditAuditFor
 AuditAuditLocation
 AuditAuditorConfirm
 AuditAuditorID
+AuditAuditorIsActive
 AuditAuditorName
 AuditClosingAuditorID
+AuditClosingAuditorIsActive
 AuditClosingAuditorName
 AuditContractorConfirm
 AuditCreationDate
@@ -212,16 +220,20 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
+AccountStatus
 AuditAuditFor
 AuditAuditorID
+AuditAuditorIsActive
 AuditAuditorName
 AuditClosingAuditorID
+AuditClosingAuditorIsActive
 AuditClosingAuditorName
 AuditEffectiveDate
 AuditExpiresDate
 AuditID
 AuditOperatorAccountID
 AuditOperatorAccountName
+AuditOperatorAccountStatus
 AuditOperatorID
 AuditOperatorStatus
 AuditScore
@@ -401,8 +413,10 @@ AuditAuditFor
 AuditAuditLocation
 AuditAuditorConfirm
 AuditAuditorID
+AuditAuditorIsActive
 AuditAuditorName
 AuditClosingAuditorID
+AuditClosingAuditorIsActive
 AuditClosingAuditorName
 AuditContractorConfirm
 AuditCreationDate
@@ -412,6 +426,7 @@ AuditID
 AuditLwcrAnswer
 AuditOperatorAccountID
 AuditOperatorAccountName
+AuditOperatorAccountStatus
 AuditOperatorAuditSubStatus
 AuditOperatorID
 AuditOperatorPercentComplete
@@ -440,6 +455,7 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
 CustomerServiceUserID
+CustomerServiceUserIsActive
 CustomerServiceUserName
 EmrAnswer
 FatalitiesAnswer
@@ -477,8 +493,10 @@ AuditAuditFor
 AuditAuditLocation
 AuditAuditorConfirm
 AuditAuditorID
+AuditAuditorIsActive
 AuditAuditorName
 AuditClosingAuditorID
+AuditClosingAuditorIsActive
 AuditClosingAuditorName
 AuditContractorConfirm
 AuditCreationDate
@@ -487,6 +505,7 @@ AuditExpiresDate
 AuditID
 AuditOperatorAccountID
 AuditOperatorAccountName
+AuditOperatorAccountStatus
 AuditOperatorID
 AuditOperatorStatus
 AuditOperatorWorkflowCreationDate
@@ -495,6 +514,7 @@ AuditOperatorWorkflowNotes
 AuditOperatorWorkflowPreviousStatus
 AuditOperatorWorkflowStatus
 AuditOperatorWorkflowUserID
+AuditOperatorWorkflowUserIsActive
 AuditOperatorWorkflowUserName
 AuditScheduledDate
 AuditScore
@@ -523,6 +543,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -535,6 +556,7 @@ AccountCreationDate
 AccountID
 AccountLegalName
 AccountManagerUserID
+AccountManagerUserIsActive
 AccountManagerUserName
 AccountMaterialSupplier
 AccountName
@@ -568,6 +590,7 @@ ContractorCorporationOperatorName
 ContractorCorporationOperatorOffsiteServices
 ContractorCorporationOperatorOnsiteServices
 ContractorCorporationOperatorSalesRepUserID
+ContractorCorporationOperatorSalesRepUserIsActive
 ContractorCorporationOperatorSalesRepUserName
 ContractorCorporationOperatorStatus
 ContractorCorporationOperatorTimezone
@@ -594,10 +617,12 @@ CustomerServiceRole
 CustomerServiceServiceLevel
 CustomerServiceStartDate
 CustomerServiceUserID
+CustomerServiceUserIsActive
 CustomerServiceUserName
 ForcedFlagPercent
 ReportingClientID
 ReportingClientName
+ReportingClientStatus
 
 Model: ContractorFees
 Permission: Permissions{permissions=[]}
@@ -670,6 +695,7 @@ ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
 ContractorOperatorOperatorTransportationServices
 CustomerServiceUserID
+CustomerServiceUserIsActive
 CustomerServiceUserName
 FlagCriteriaAllowCustomValue
 FlagCriteriaCategory
@@ -759,6 +785,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -815,6 +842,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -827,6 +855,7 @@ AccountCreationDate
 AccountID
 AccountLegalName
 AccountManagerUserID
+AccountManagerUserIsActive
 AccountManagerUserName
 AccountMaterialSupplier
 AccountName
@@ -864,6 +893,7 @@ ContractorOperatorOperatorName
 ContractorOperatorOperatorOffsiteServices
 ContractorOperatorOperatorOnsiteServices
 ContractorOperatorOperatorSalesRepUserID
+ContractorOperatorOperatorSalesRepUserIsActive
 ContractorOperatorOperatorSalesRepUserName
 ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
@@ -886,10 +916,12 @@ CustomerServiceRole
 CustomerServiceServiceLevel
 CustomerServiceStartDate
 CustomerServiceUserID
+CustomerServiceUserIsActive
 CustomerServiceUserName
 ForcedFlagPercent
 ReportingClientID
 ReportingClientName
+ReportingClientStatus
 
 Model: ContractorRequests
 Permission: Permissions{permissions=[]}
@@ -903,6 +935,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -934,9 +967,11 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorLastContactedByInsideSalesID
+ContractorLastContactedByInsideSalesIsActive
 ContractorLastContactedByInsideSalesName
 ContractorMembershipDate
 ContractorProductRisk
@@ -946,7 +981,9 @@ ContractorRequestedByFlagLastUpdated
 ContractorRequestedByNetworkLevel
 ContractorRequestedByOperatorID
 ContractorRequestedByOperatorName
+ContractorRequestedByOperatorStatus
 ContractorRequestedByRequestedByUserID
+ContractorRequestedByRequestedByUserIsActive
 ContractorRequestedByRequestedByUserName
 ContractorRequestedByTag
 ContractorRequestedByUserOther
@@ -971,6 +1008,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -1004,6 +1042,7 @@ ContractorAccountLevel
 ContractorAuditGUARD
 ContractorAutoLiabilityALCombinedSingleAnswer
 ContractorCustomerServiceUserID
+ContractorCustomerServiceUserIsActive
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
 ContractorDontReassign
@@ -1013,6 +1052,7 @@ ContractorExcessLiabilityEXEachOccurrenceAnswer
 ContractorGeneralLiabilityGLEachOccurrenceAnswer
 ContractorGeneralLiabilityGLGeneralAggregateAnswer
 ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
@@ -1025,6 +1065,7 @@ ContractorProductRiskVerified
 ContractorProfessionalIndemnityPROILimitAnswer
 ContractorPublicProductLiabilityPPLLimitAnswer
 ContractorRecommendedCSRID
+ContractorRecommendedCSRIsActive
 ContractorRecommendedCSRName
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
@@ -1053,6 +1094,7 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
+AccountStatus
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -1084,6 +1126,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -1160,6 +1203,7 @@ ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSingleTagOperatorTagOperatorID
 ContractorSingleTagOperatorTagOperatorName
+ContractorSingleTagOperatorTagOperatorStatus
 ContractorSingleTagOperatorTagTag
 ContractorSoleProprietor
 ContractorTransportationRisk
@@ -1172,6 +1216,7 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
+AccountStatus
 ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
@@ -1228,8 +1273,10 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
+AccountStatus
 ContractorOperatorOperatorID
 ContractorOperatorOperatorName
+ContractorOperatorOperatorStatus
 FlagArchiveCreationDate
 FlagArchiveFlagColor
 
@@ -1238,16 +1285,20 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountManagerUserID
+AccountManagerUserIsActive
 AccountManagerUserName
 AccountName
+AccountStatus
 ContractorFlagForceBegin
 ContractorFlagForceEnd
 ContractorFlagForceFlag
 ContractorFlagLabel
 ContractorOperatorForcedByUserID
+ContractorOperatorForcedByUserIsActive
 ContractorOperatorForcedByUserName
 ContractorOperatorOperatorID
 ContractorOperatorOperatorName
+ContractorOperatorOperatorStatus
 ContractorOperatorOperatorType
 ForcedFlagPercentPercent
 
@@ -1335,6 +1386,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -1359,6 +1411,7 @@ ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
@@ -1397,6 +1450,7 @@ AccountID
 AccountLastLoginLastLogin
 AccountLegalName
 AccountManagerUserID
+AccountManagerUserIsActive
 AccountManagerUserName
 AccountMaterialSupplier
 AccountName
@@ -1421,9 +1475,12 @@ OperatorRequiredTags
 OperatorSalesForceID
 ParentCorporationID
 ParentCorporationName
+ParentCorporationStatus
 ReportingClientID
 ReportingClientName
+ReportingClientStatus
 SalesRepUserID
+SalesRepUserIsActive
 SalesRepUserName
 
 Model: OperatorAccountUsers
@@ -1431,6 +1488,7 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
+AccountStatus
 AccountType
 AccountUserEndDate
 AccountUserOwnerPercent
@@ -1438,6 +1496,7 @@ AccountUserRole
 AccountUserServiceLevel
 AccountUserStartDate
 UserID
+UserIsActive
 UserName
 
 Model: OperatorUsers
@@ -1458,6 +1517,7 @@ AccountTimezone
 AccountTransportationServices
 AccountType
 GroupsID
+GroupsIsActive
 GroupsName
 OperatorAutoApproveInsurance
 OperatorCanSeeInsurance
@@ -1490,12 +1550,14 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
+AccountStatus
 CommissionUserEndDate
 CommissionUserOwnerPercent
 CommissionUserRole
 CommissionUserServiceLevel
 CommissionUserStartDate
 CommissionUserUserID
+CommissionUserUserIsActive
 CommissionUserUserName
 InvoiceAmountApplied
 InvoiceCreationDate
@@ -1512,6 +1574,8 @@ OperatorID
 OperatorName
 OperatorOperatorReportingID
 OperatorOperatorReportingName
+OperatorOperatorReportingStatus
+OperatorStatus
 PaymentAmountApplied
 PaymentCreationDate
 PaymentCurrency
@@ -1528,6 +1592,7 @@ AccountContactEmail
 AccountContactFax
 AccountContactFirstName
 AccountContactID
+AccountContactIsActive
 AccountContactLastName
 AccountContactLocale
 AccountContactName
@@ -1550,6 +1615,7 @@ ContractorAuditGUARD
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
@@ -1586,6 +1652,7 @@ ReportID
 ReportModelType
 ReportName
 ReportOwnerID
+ReportOwnerIsActive
 ReportOwnerName
 ReportPublic
 ReportUpdateDate
@@ -1643,8 +1710,37 @@ ReportUserLastViewedDate
 ReportUserPinnedIndex
 ReportUserSortOrder
 ReportUserUserID
+ReportUserUserIsActive
 ReportUserUserName
 ReportUserViewCount
+
+Model: Subscriptions
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SubscriptionLastSent
+SubscriptionReportCreationDate
+SubscriptionReportID
+SubscriptionReportModelType
+SubscriptionReportName
+SubscriptionReportUpdateDate
+SubscriptionSubscription
+SubscriptionTimePeriod
+SubscriptionUserAccountCity
+SubscriptionUserAccountCountry
+SubscriptionUserAccountCountrySubdivision
+SubscriptionUserAccountCreationDate
+SubscriptionUserAccountID
+SubscriptionUserAccountLegalName
+SubscriptionUserAccountMaterialSupplier
+SubscriptionUserAccountName
+SubscriptionUserAccountOffsiteServices
+SubscriptionUserAccountOnsiteServices
+SubscriptionUserAccountStatus
+SubscriptionUserAccountTimezone
+SubscriptionUserAccountTransportationServices
+SubscriptionUserID
+SubscriptionUserIsActive
+SubscriptionUserName
 
 Model: UserAssignments
 Permission: Permissions{permissions=[]}
@@ -1696,6 +1792,7 @@ UserAssignmentUserEmail
 UserAssignmentUserFax
 UserAssignmentUserFirstName
 UserAssignmentUserID
+UserAssignmentUserIsActive
 UserAssignmentUserLastName
 UserAssignmentUserLocale
 UserAssignmentUserName
@@ -1712,6 +1809,7 @@ AccountCreationDate
 AccountID
 AccountLegalName
 AccountManagerUserID
+AccountManagerUserIsActive
 AccountManagerUserName
 AccountMaterialSupplier
 AccountName
@@ -1723,6 +1821,7 @@ AccountTransportationServices
 AccountType
 ReportingClientID
 ReportingClientName
+ReportingClientStatus
 UserAssignmentCapacity
 UserCreationDate
 UserDepartment
@@ -1730,6 +1829,7 @@ UserEmail
 UserFax
 UserFirstName
 UserGroupGroupID
+UserGroupGroupIsActive
 UserGroupGroupName
 UserID
 UserIsActive
@@ -1753,6 +1853,7 @@ AccountCreationDate
 AccountID
 AccountLegalName
 AccountManagerUserID
+AccountManagerUserIsActive
 AccountManagerUserName
 AccountMaterialSupplier
 AccountName
@@ -1764,6 +1865,7 @@ AccountTransportationServices
 AccountType
 ReportingClientID
 ReportingClientName
+ReportingClientStatus
 UserAssignmentCapacity
 UserCreationDate
 UserDepartment
