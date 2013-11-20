@@ -1237,6 +1237,7 @@ EmailBody
 EmailCcAddresses
 EmailContractorAccountID
 EmailContractorAccountName
+EmailContractorAccountStatus
 EmailCreationDate
 EmailFromAddress
 EmailId
