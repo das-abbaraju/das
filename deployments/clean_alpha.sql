@@ -16,3 +16,6 @@ update app_properties set value = 'ccprocessorb' where property like '%brainTree
 
 /* Update the date loaded for this database */
 UPDATE app_properties SET value = NOW() WHERE property = 'PICS.db.dateLoaded';
+
+/* Ensure Translation toggle is always on */
+insert into app_properties (property, value) values ('Toggle.TranslationServiceAdapter', 'true') on duplicate key update value = 'true';
