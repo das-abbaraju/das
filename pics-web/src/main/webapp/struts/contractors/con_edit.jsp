@@ -253,6 +253,14 @@
                     <s:text name="YesNo.No"/>
                 </s:else>
             </li>
+            <pics:permission perm="AllContractors">
+                <s:if test="contractor.safetyRisk != null">
+                    <li>
+                        <label><s:text name="global.SafetyRisk"/>:</label>
+                        <s:text name="%{contractor.safetyRisk.i18nKey}"/>
+                    </li>
+                </s:if>
+            </pics:permission>
         </pics:toggle>
         <pics:toggleElse>
             <s:if test="contractor.safetyRisk != null">

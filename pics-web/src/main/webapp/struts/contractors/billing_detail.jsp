@@ -100,21 +100,29 @@
 						</li>
 
 						<s:if test="!contractor.materialSupplierOnly">
-							<li>
                                 <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
-                                    <label><s:text name="global.SafetySensitive" />:</label>
-                                    <s:if test="contractor.safetySensitive">
-                                        <s:text name="YesNo.Yes"/>
-                                    </s:if>
-                                    <s:else>
-                                        <s:text name="YesNo.No"/>
-                                    </s:else>
+                                    <li>
+                                        <label><s:text name="global.SafetySensitive" />:</label>
+                                        <s:if test="contractor.safetySensitive">
+                                            <s:text name="YesNo.Yes"/>
+                                        </s:if>
+                                        <s:else>
+                                            <s:text name="YesNo.No"/>
+                                        </s:else>
+                                    </li>
+                                    <li>
+                                        <pics:permission perm="AllContractors">
+                                            <label><s:text name="global.SafetyRisk" />:</label>
+                                            <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                                        </pics:permission>
+                                    </li>
                                 </pics:toggle>
                                 <pics:toggleElse>
-                                    <label><s:text name="global.SafetyRisk" />:</label>
-                                    <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                                    <li>
+                                        <label><s:text name="global.SafetyRisk" />:</label>
+                                        <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                                    </li>
                                 </pics:toggleElse>
-							</li>
 						</s:if>
 
 						<s:if test="contractor.materialSupplier && contractor.productRisk != null">

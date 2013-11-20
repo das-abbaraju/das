@@ -71,14 +71,22 @@
                 <s:else>
                     <s:text name="YesNo.No"/>
                 </s:else>
+                <br />
+                <pics:permission perm="AllContractors">
+                    <label>
+                        <s:text name="global.SafetyRisk" />:
+                    </label>
+                    <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                    <br />
+                </pics:permission>
             </pics:toggle>
             <pics:toggleElse>
                 <label>
                     <s:text name="global.SafetyRisk" />:
                 </label>
                 <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                <br />
             </pics:toggleElse>
-			<br />
 			<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 				<label>
 					<s:text name="global.ProductRisk" />:

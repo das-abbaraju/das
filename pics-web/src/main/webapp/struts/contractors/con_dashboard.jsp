@@ -299,8 +299,8 @@
 		<s:property value="commaSeparatedContractorTypes"/>
 	</p>
 
-	<p>
-        <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+    <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+        <p>
             <s:text name="global.SafetySensitive"/>:
             <strong>
                 <s:if test="contractor.safetySensitive">
@@ -310,8 +310,23 @@
                     <s:text name="YesNo.No"/>
                 </s:else>
             </strong>
-        </pics:toggle>
-        <pics:toggleElse>
+        </p>
+        <p>
+            <pics:permission perm="AllContractors">
+                <s:text name="global.SafetyRisk"/>:
+                <strong>
+                    <s:if test="contractor.safetyRisk != null">
+                        <s:text name="%{contractor.safetyRisk.i18nKey}"/>
+                    </s:if>
+                    <s:else>
+                        <s:text name="ContractorAccount.safetyRisk.missing"/>
+                    </s:else>
+                </strong>
+            </pics:permission>
+        </p>
+    </pics:toggle>
+    <pics:toggleElse>
+        <p>
             <s:text name="global.SafetyRisk"/>:
             <strong>
                 <s:if test="contractor.safetyRisk != null">
@@ -321,8 +336,8 @@
                     <s:text name="ContractorAccount.safetyRisk.missing"/>
                 </s:else>
             </strong>
-        </pics:toggleElse>
-	</p>
+        </p>
+    </pics:toggleElse>
 
 	<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 		<p>
