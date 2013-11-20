@@ -311,8 +311,8 @@
 		</s:if>
 
 		<s:if test="filter.showRiskLevel">
-			<div class="filterOption" id="risklevel">
-                <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+            <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+                <div class="filterOption" id="safetyrisk">
                     <a href="#" class="filterBox">
                         <s:text name="global.SafetySensitive" />
                     </a>
@@ -329,26 +329,48 @@
                             <s:text name="Filters.status.Clear" />
                         </a>
                     </span>
-                </pics:toggle>
-                <pics:toggleElse>
+                </div>
+                <div class="filterOption" id="risklevel">
+                    <pics:permission perm="AllContractors">
+                        <a href="#" class="filterBox">
+                            <s:text name="global.SafetyRisk" />
+                        </a>
+                        =
+                        <span class="q_status">
+                            <s:text name="JS.Filters.status.All" />
+                        </span>
+                                <br />
+                        <span class="clearLink q_box select">
+                            <s:select
+                                    list="#{1:getTextNullSafe('LowMedHigh.Low'), 2:getTextNullSafe('LowMedHigh.Med'), 3:getTextNullSafe('LowMedHigh.High')}"
+                                    cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
+                            <a href="#" class="clearLink">
+                                <s:text name="Filters.status.Clear" />
+                            </a>
+                        </span>
+                    </pics:permission>
+                </div>
+            </pics:toggle>
+            <pics:toggleElse>
+                <div class="filterOption" id="safetyrisk">
                     <a href="#" class="filterBox">
                         <s:text name="global.SafetyRisk" />
                     </a>
                     =
-				<span class="q_status">
-					<s:text name="JS.Filters.status.All" />
-				</span>
-                    <br />
-				<span class="clearLink q_box select">
-					<s:select
-                            list="#{1:getTextNullSafe('LowMedHigh.Low'), 2:getTextNullSafe('LowMedHigh.Med'), 3:getTextNullSafe('LowMedHigh.High')}"
-                            cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
-					<a href="#" class="clearLink">
-                        <s:text name="Filters.status.Clear" />
-                    </a>
-				</span>
-                </pics:toggleElse>
-			</div>
+                    <span class="q_status">
+                        <s:text name="JS.Filters.status.All" />
+                    </span>
+                        <br />
+                    <span class="clearLink q_box select">
+                        <s:select
+                                list="#{1:getTextNullSafe('LowMedHigh.Low'), 2:getTextNullSafe('LowMedHigh.Med'), 3:getTextNullSafe('LowMedHigh.High')}"
+                                cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
+                        <a href="#" class="clearLink">
+                            <s:text name="Filters.status.Clear" />
+                        </a>
+                    </span>
+                </div>
+            </pics:toggleElse>
 		</s:if>
 
 		<s:if test="filter.showProductRiskLevel">
