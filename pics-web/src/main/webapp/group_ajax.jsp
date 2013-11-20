@@ -2,7 +2,7 @@
 <%@page import="com.picsauditing.util.Strings"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="java.util.Locale"%>
-<%@page import="com.picsauditing.service.i18n.TranslationService"%>
+<%@page import="com.picsauditing.i18n.service.TranslationService"%>
 <%@page import="com.picsauditing.service.i18n.TranslationServiceFactory"%>
 <%@page import="com.picsauditing.validator.InputValidator"%>
 <%@ page language="java" import="com.picsauditing.dao.UserDAO"%>

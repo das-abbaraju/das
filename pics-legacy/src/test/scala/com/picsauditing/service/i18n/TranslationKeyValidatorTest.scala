@@ -4,6 +4,7 @@ import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 import org.scalatest.mock.MockitoSugar
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import com.picsauditing.i18n.service.validation.TranslationKeyValidator
 
 @RunWith(classOf[JUnitRunner])
 class TranslationKeyValidatorTest extends FlatSpec with BeforeAndAfterAll with MockitoSugar {

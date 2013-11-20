@@ -1,15 +1,16 @@
 package com.picsauditing.dao
 
 import scala.slick.driver.MySQLDriver.simple._
-import com.picsauditing.models.database.{TranslationUsages, TranslationUsage}
+import com.picsauditing.models.database.TranslationUsages
+import com.picsauditing.i18n.model.database.TranslationUsage
 import java.util.Date
 import Database.threadLocalSession
 import java.sql.SQLIntegrityConstraintViolationException
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import org.slf4j.{LoggerFactory, Logger}
-import com.picsauditing.model.i18n.TranslationLookupData
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
+import com.picsauditing.i18n.model.TranslationLookupData
 
 class TranslationUsageDAO extends PICSDataAccess {
   private val logger: Logger = LoggerFactory.getLogger(classOf[TranslationUsageDAO])

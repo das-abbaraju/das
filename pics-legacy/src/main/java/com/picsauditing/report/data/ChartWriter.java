@@ -1,8 +1,8 @@
 package com.picsauditing.report.data;
 
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.dr.domain.fields.DisplayType;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import org.json.simple.JSONArray;

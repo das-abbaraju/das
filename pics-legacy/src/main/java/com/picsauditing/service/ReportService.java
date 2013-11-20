@@ -15,10 +15,10 @@ import java.util.*;
 import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.data.*;
 import com.picsauditing.report.models.ReportModelFactory;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.TimeZoneUtil;

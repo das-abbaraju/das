@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

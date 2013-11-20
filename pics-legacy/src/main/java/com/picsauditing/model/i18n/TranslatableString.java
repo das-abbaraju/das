@@ -2,7 +2,7 @@ package com.picsauditing.model.i18n;
 
 import java.util.Locale;
 
-import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public final class TranslatableString {

@@ -3,9 +3,9 @@ package com.picsauditing.dao.jdbc;
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.dao.TranslationDAO;
 import com.picsauditing.dao.mapper.LegacyTranslationMapper;
+import com.picsauditing.i18n.model.TranslationWrapper;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.ContextTranslation;
-import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.QueryMapper;
 import com.picsauditing.util.DatabaseUtil;
@@ -13,13 +13,11 @@ import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.CollectionUtils;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 

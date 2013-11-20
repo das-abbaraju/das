@@ -2,12 +2,12 @@ package com.picsauditing.actions;
 
 import java.util.*;
 
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.toggle.FeatureToggle;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;

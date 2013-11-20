@@ -3,7 +3,7 @@ package com.picsauditing.actions;
 import java.sql.SQLException;
 import java.util.*;
 
-import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.toggle.FeatureToggle;
 import org.apache.commons.beanutils.BasicDynaBean;

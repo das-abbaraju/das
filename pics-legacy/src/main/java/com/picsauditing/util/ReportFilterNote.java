@@ -1,10 +1,10 @@
 package com.picsauditing.util;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 import java.util.Locale;

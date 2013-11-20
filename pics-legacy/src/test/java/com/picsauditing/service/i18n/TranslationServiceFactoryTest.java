@@ -2,6 +2,10 @@ package com.picsauditing.service.i18n;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.TranslationDAO;
+import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
+import com.picsauditing.i18n.model.logging.TranslationUsageLogger;
+import com.picsauditing.i18n.service.TranslationService;
+import com.picsauditing.i18n.service.TranslationServiceAdapter;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.*;
 import com.picsauditing.search.Database;
@@ -26,8 +30,6 @@ public class TranslationServiceFactoryTest {
     private I18nCache i18nCache;
     @Mock
     private TranslationDAO translationDAO;
-    @Mock
-    private AppPropertyProvider appPropertyProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -38,7 +40,6 @@ public class TranslationServiceFactoryTest {
 
         Whitebox.setInternalState(TranslationServiceFactory.class, "featureToggleChecker", featureToggleChecker);
         Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", translationDAO);
-        Whitebox.setInternalState(TranslationServiceAdapter.class, "appPropertyProvider", appPropertyProvider);
     }
 
     @BeforeClass
