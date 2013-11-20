@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.i18n.model.TranslationWrapper;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import com.picsauditing.dao.mapper.ContextTranslationMapper;
 import com.picsauditing.dao.mapper.LegacyTranslationMapper;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.ContextTranslation;
-import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.QueryMapper;
 import com.picsauditing.search.SelectSQL;

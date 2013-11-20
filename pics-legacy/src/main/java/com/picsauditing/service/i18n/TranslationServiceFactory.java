@@ -4,6 +4,9 @@ import java.util.*;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
+import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
+import com.picsauditing.i18n.service.TranslationService;
+import com.picsauditing.i18n.service.TranslationServiceAdapter;
 import com.picsauditing.i18n.service.TranslationServiceProperties;
 import com.picsauditing.model.i18n.*;
 import com.picsauditing.toggle.FeatureToggle;
@@ -14,6 +17,7 @@ import com.spun.util.persistence.Loader;
 public class TranslationServiceFactory {
 	private static Loader<Locale> localeProvider = ThreadLocalLocale.INSTANCE;
     private static FeatureToggle featureToggleChecker;
+    private static final String environment = System.getProperty("pics.env");
 
 	// for testing
 	private static TranslationService translationService;
@@ -26,7 +30,10 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            return new TranslationServiceAdapter(new TranslationKeyDoNothingLogger());
+            ActionUsageContext context = new ActionUsageContext();
+            TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder().context(context);
+            propertyBuilder.translationUsageLogger(new TranslationKeyDoNothingLogger());
+            return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
         return I18nCache.getInstance();
@@ -38,25 +45,12 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            if (logTranslationUsage()) {
-                return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger());
-            } else {
-                return new TranslationServiceAdapter(new TranslationKeyDoNothingLogger());
-            }
+            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties();
+            return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
         return I18nCache.getInstance();
     }
-
-	public static com.picsauditing.i18n.service.TranslationServiceAdapter getTranslationService2() {
-        ActionUsageContext context = new ActionUsageContext();
-        TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder().context(context);
-
-        if (logTranslationUsage()) {
-            propertyBuilder.translationUsageLogger(new TranslationKeyAggregateUsageLogger());
-        }
-        return new com.picsauditing.i18n.service.TranslationServiceAdapter(propertyBuilder.build());
-	}
 
     // if we have to parameterize the command group name for more than TranslateCommand, this will have to be a more
     // sophisticated configuration object. For now, though, let's stay simple
@@ -66,18 +60,28 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            if (logTranslationUsage()) {
-                return new TranslationServiceAdapter(new TranslationKeyAggregateUsageLogger(), translateCommandKey);
-            } else {
-                return new TranslationServiceAdapter(new TranslationKeyDoNothingLogger(), translateCommandKey);
-            }
+            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties();
+            propertyBuilder.translationCommandKey(translateCommandKey);
+            return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
         return I18nCache.getInstance();
     }
 
+    private static TranslationServiceProperties.Builder translationServiceProperties() {
+        ActionUsageContext context = new ActionUsageContext();
+        TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder().context(context);
+
+        if (logTranslationUsage()) {
+            propertyBuilder.translationUsageLogger(new TranslationKeyAggregateUsageLogger());
+        } else {
+            propertyBuilder.translationUsageLogger(new TranslationKeyDoNothingLogger());
+        }
+        return propertyBuilder;
+    }
+
     private static boolean useTranslationServiceAdapter() {
-		return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
+	    return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
 	}
 
     private static boolean logTranslationUsage() {
@@ -104,8 +108,17 @@ public class TranslationServiceFactory {
     private static FeatureToggle featureToggle() {
         if (featureToggleChecker == null) {
             featureToggleChecker = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
+            featureToggleChecker.addToggleVariable("env", environment());
         }
         return featureToggleChecker;
+    }
+
+    private static String environment() {
+        if (environment == null) {
+            return "UNKNOWN";
+        } else {
+            return environment;
+        }
     }
 
 }

@@ -11,12 +11,13 @@ import com.picsauditing.dao.{CreditMemoDAO, InvoiceDAO}
 import com.picsauditing.jpa.entities._
 import com.picsauditing.actions.PicsActionSupport
 import org.scalatest.mock.MockitoSugar
-import com.picsauditing.service.i18n.{TranslationServiceFactory, TranslationService}
+import com.picsauditing.service.i18n.{TranslationServiceFactory}
 import java.{math, util}
 import java.util.Date
 import org.junit.Ignore
 import com.opensymphony.xwork2.Action
 import com.picsauditing.util.SapAppPropertyUtil
+import com.picsauditing.i18n.service.TranslationService
 
 
 @RunWith(classOf[JUnitRunner])

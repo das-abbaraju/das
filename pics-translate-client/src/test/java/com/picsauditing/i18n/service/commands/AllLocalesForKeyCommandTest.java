@@ -16,6 +16,7 @@ public class AllLocalesForKeyCommandTest extends TranslationCommandsCommon {
 
     @Before
     public void setUp() throws Exception {
+        setUpCommon();
         allLocalesForKeyCommand = new AllLocalesForKeyCommand(TEST_KEY);
     }
 

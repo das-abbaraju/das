@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.i18n.service.TranslationService;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -22,7 +23,6 @@ import com.picsauditing.actions.report.ReportContractorAuditOperator;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 

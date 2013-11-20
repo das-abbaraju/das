@@ -6,15 +6,21 @@ import com.picsauditing.i18n.model.TinyTranslation;
 import com.picsauditing.i18n.model.TranslationWrapper;
 import net.sf.ehcache.*;
 
+import java.net.URL;
 import java.util.*;
 
 public class TranslationWildcardCache {
     private static final String WILDCARD_CACHE_NAME = "i18n-wildcards";
+    private static final String WILDCARD_CACHE_MANAGER_NAME = "TranslateCacheManager";
     private static Cache wildcardCache;
 
     static {
         // CacheManager.create returns the existing singleton if it already exists
-        CacheManager manager = CacheManager.create();
+        URL url = TranslationWildcardCache.class.getResource("/translate_client-ehcache.xml");
+        CacheManager manager = CacheManager.getCacheManager(WILDCARD_CACHE_MANAGER_NAME);
+        if (manager == null) {
+            manager = new CacheManager(url);
+        }
         wildcardCache = manager.getCache(WILDCARD_CACHE_NAME);
     }
 

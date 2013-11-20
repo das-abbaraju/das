@@ -2,25 +2,7 @@ package com.picsauditing.models.database
 
 import java.sql.Date
 import scala.slick.driver.MySQLDriver.simple._
-import scala.beans.BeanProperty
-
-case class TranslationUsage(
-        id: Option[Long],
-        @BeanProperty msgKey: String,
-        @BeanProperty msgLocale: String,
-        @BeanProperty pageName: String,
-        @BeanProperty environment: String,
-        firstUsed: Option[Date],
-        lastUsed: Option[Date],
-        synchronizedBatch: Option[String],
-        synchronizedDate: Option[Date]
-) {
-  def getId() = { id.getOrElse(null) }
-  def getFirstUsed() = { firstUsed.getOrElse(null) }
-  def getLastUsed() = { lastUsed.getOrElse(null) }
-  def getSynchronizedBatch() = { synchronizedBatch.getOrElse(null) }
-  def getSynchronizedDate() = { synchronizedDate.getOrElse(null) }
-}
+import com.picsauditing.i18n.model.database.TranslationUsage
 
 object TranslationUsages extends Table[TranslationUsage]("translation_usage") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)

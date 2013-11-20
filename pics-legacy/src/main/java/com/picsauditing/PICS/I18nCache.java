@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.picsauditing.dao.TranslationDAO;
 import com.picsauditing.dao.jdbc.TranslationsDAO;
+import com.picsauditing.i18n.service.TranslationService;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -29,7 +30,6 @@ import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.AppTranslationDAO;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
 import com.picsauditing.model.i18n.ContextTranslation;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;

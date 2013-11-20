@@ -1,6 +1,7 @@
 package com.picsauditing.i18n.service.commands;
 
 import com.picsauditing.i18n.model.TranslationWrapper;
+import com.picsauditing.i18n.util.Strings;
 import com.sun.jersey.api.client.ClientResponse;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;

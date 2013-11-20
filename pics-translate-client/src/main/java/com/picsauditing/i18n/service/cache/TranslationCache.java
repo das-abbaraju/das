@@ -8,18 +8,24 @@ import net.sf.ehcache.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.util.*;
 
 public class TranslationCache {
     private Logger logger = LoggerFactory.getLogger(TranslationCache.class);
 
     private static final String CACHE_NAME = "i18n";
+    private static final String CACHE_MANAGER_NAME = "TranslateCacheManager";
 
     private static Cache cache;
 
     static {
         // CacheManager.create returns the existing singleton if it already exists
-        CacheManager manager = CacheManager.create();
+        URL url = TranslationCache.class.getResource("/translate_client-ehcache.xml");
+        CacheManager manager = CacheManager.getCacheManager(CACHE_MANAGER_NAME);
+        if (manager == null) {
+            manager = new CacheManager(url);
+        }
         cache = manager.getCache(CACHE_NAME);
     }
 
@@ -56,13 +62,17 @@ public class TranslationCache {
     }
 
     public void put(TranslationWrapper translation) {
-        Table<String, String, TinyTranslation> requestedlocaleToReturnedLocaleToText = doGet(cache.get(translation.getKey()));
-        TinyTranslation tinyTranslation = new TinyTranslation();
-        tinyTranslation.text = translation.getTranslation();
-        tinyTranslation.addToUsedOnPages(translation.getUsedOnPages());
-        requestedlocaleToReturnedLocaleToText.put(translation.getRequestedLocale(), translation.getLocale(), tinyTranslation);
-        Element element = new Element(translation.getKey(), requestedlocaleToReturnedLocaleToText);
-        cache.put(element);
+        try {
+            Table<String, String, TinyTranslation> requestedlocaleToReturnedLocaleToText = doGet(cache.get(translation.getKey()));
+            TinyTranslation tinyTranslation = new TinyTranslation();
+            tinyTranslation.text = translation.getTranslation();
+            tinyTranslation.addToUsedOnPages(translation.getUsedOnPages());
+            requestedlocaleToReturnedLocaleToText.put(translation.getRequestedLocale(), translation.getLocale(), tinyTranslation);
+            Element element = new Element(translation.getKey(), requestedlocaleToReturnedLocaleToText);
+            cache.put(element);
+        } catch (Exception e) {
+            logger.error("Problem caching translation. Key {} in locale {}", translation.getKey(), translation.getLocale());
+        }
     }
 
     public void remove(String key) {

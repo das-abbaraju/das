@@ -30,7 +30,7 @@ public class TranslationActionSupport extends ActionSupport {
 	protected static final String i18nTracing = "i18nTracing";
 
 	private Set<String> usedKeys = null;
-	private TranslationService translationService = TranslationServiceFactory.getTranslationService2();
+	private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	public static Locale getLocaleStatic() {
 		try {

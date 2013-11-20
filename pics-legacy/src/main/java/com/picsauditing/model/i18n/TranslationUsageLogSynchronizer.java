@@ -3,7 +3,8 @@ package com.picsauditing.model.i18n;
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
-import com.picsauditing.service.i18n.TranslateRestClient;
+import com.picsauditing.i18n.model.database.TranslationUsage;
+import com.picsauditing.i18n.service.TranslateRestClient;
 import com.picsauditing.toggle.FeatureToggle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.scheduling.annotation.Scheduled;
-import com.picsauditing.models.database.TranslationUsage;
 import scala.Some;
 
 import javax.sql.DataSource;

@@ -82,6 +82,7 @@ public abstract class TranslateRestApiSupport<R> extends HystrixCommand<R> {
         return new TranslationWrapper.Builder()
                 .key(key)
                 .locale(locale)
+                .requestedLocale(locale)
                 .translation(TranslationService.ERROR_STRING)
                 .qualityRating(TranslationQualityRating.Bad)
                 .build();
