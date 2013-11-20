@@ -7,6 +7,8 @@
  * @date: 2013-02-06
  */
 
+@import 'defaults';
+
 @import 'compass/css3';
 @import 'blueprint/typography';
 
@@ -23,3 +25,5 @@
 /* Import form styles and overrides */
 @import 'override/form';
 @import 'override/override';
+
+@import '_secondary-navigation';
