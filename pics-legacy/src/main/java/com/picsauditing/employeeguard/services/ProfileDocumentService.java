@@ -98,19 +98,19 @@ public class ProfileDocumentService {
 		return profileDocumentFromDatabase;
 	}
 
-	public void delete(String documentId, int profileId, int appUserId) {
+	public void delete(final String documentId, final int profileId, final int appUserId) {
 		ProfileDocument document = profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
-        removeAccountSkillEmployeeLinkToDocument(document);
-        deleteProfileDocument(appUserId, document);
+        removeAccountSkillEmployeeLinkToDocument(document.getEmployeeSkills());
+        deleteProfileDocument(document, appUserId);
 	}
 
-    private void deleteProfileDocument(int appUserId, ProfileDocument document) {
+    private void deleteProfileDocument(ProfileDocument document, int appUserId) {
         EntityHelper.softDelete(document, appUserId, new Date());
         profileDocumentDAO.save(document);
     }
 
-    private void removeAccountSkillEmployeeLinkToDocument(ProfileDocument document) {
-        List<AccountSkillEmployee> accountSkillEmployees = removeForeignKeyToDocument(document.getEmployeeSkills());
+    private void removeAccountSkillEmployeeLinkToDocument(final List<AccountSkillEmployee> employeeSkills) {
+        List<AccountSkillEmployee> accountSkillEmployees = removeForeignKeyToDocument(employeeSkills);
         accountSkillEmployeeDAO.save(accountSkillEmployees);
     }
 
