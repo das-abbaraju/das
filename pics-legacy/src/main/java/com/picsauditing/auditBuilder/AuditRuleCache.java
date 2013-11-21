@@ -32,12 +32,35 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 		}
 	}
 
-	protected class SafetyRisks extends RuleCacheLevel<LowMedHigh, ProductRisks, R> {
+    protected class SafetySensitives extends RuleCacheLevel<Boolean, ProductRisks, R> {
+
+        public void add(R rule) {
+            ProductRisks map = data.get(rule.getSafetySensitive());
+            if (map == null) {
+                map = new ProductRisks();
+                data.put(rule.getSafetySensitive(), map);
+            }
+            map.add(rule);
+        }
+
+        @Override
+        public List<R> next(RuleFilter contractor) {
+            List<R> rules = new ArrayList<R>();
+            for (Boolean sensitive : contractor.safetySensitives) {
+                ProductRisks productRisks = data.get(sensitive);
+                if (productRisks != null)
+                    rules.addAll(productRisks.next(contractor));
+            }
+            return rules;
+        }
+    }
+
+    protected class SafetyRisks extends RuleCacheLevel<LowMedHigh, SafetySensitives, R> {
 
 		public void add(R rule) {
-			ProductRisks map = data.get(rule.getSafetyRisk());
+            SafetySensitives map = data.get(rule.getSafetyRisk());
 			if (map == null) {
-				map = new ProductRisks();
+				map = new SafetySensitives();
 				data.put(rule.getSafetyRisk(), map);
 			}
 			map.add(rule);
@@ -47,9 +70,9 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (LowMedHigh risk : contractor.safetyRisks) {
-				ProductRisks productRisks = data.get(risk);
-				if (productRisks != null)
-					rules.addAll(productRisks.next(contractor));
+                SafetySensitives sensitive = data.get(risk);
+				if (sensitive != null)
+					rules.addAll(sensitive.next(contractor));
 			}
 			return rules;
 		}

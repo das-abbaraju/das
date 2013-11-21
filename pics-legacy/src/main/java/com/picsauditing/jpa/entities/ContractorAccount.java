@@ -55,6 +55,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private int payingFacilities;
 	private User auditor;
 	private User recommendedCsr;
+    private boolean safetySensitive;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
 	private Date safetyRiskVerified;
 	private LowMedHigh productRisk = LowMedHigh.None;
@@ -343,8 +344,18 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 	}
 
-	@Column(name = "safetyRisk", nullable = false)
-	@ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average)
+    @Column(name = "safetySensitive", nullable = false)
+    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
+    public boolean isSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(boolean safetySensitive) {
+        this.safetySensitive = safetySensitive;
+    }
+
+    @Column(name = "safetyRisk", nullable = false)
+	@ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllContractors)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -354,7 +365,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(type = FieldType.Date)
+	@ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllContractors)
 	public Date getSafetyRiskVerified() {
 		return safetyRiskVerified;
 	}

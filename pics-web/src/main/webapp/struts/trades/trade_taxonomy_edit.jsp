@@ -140,6 +140,19 @@
 						inherited from parent
 					</s:if>
 				</li>
+                <li>
+                    <label>Safety Sensitive:</label>
+                    <s:radio
+                            name="trade.safetySensitiveI"
+                            list="@com.picsauditing.jpa.entities.YesNo@values()"
+                            theme="pics"
+                            cssClass="inline"
+                            />
+                    <br />
+                    <s:if test="trade.safetySensitive==null">
+                        inherited from parent
+                    </s:if>
+                </li>
 				<li>
 					<label>Safety Critical:</label>
 					<s:radio 

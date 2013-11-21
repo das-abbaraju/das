@@ -98,6 +98,14 @@ $(function() {
 		value="'High'"
 	/>
 </div>
+    <div class="filterOption">
+        <label>Safety Sensitivity</label>
+        <s:select
+                list="#{true:'Yes', false:'No', null:'N/A'}"
+                name="contractor.safetySensitive"
+                value="''"
+                />
+    </div>
 <div class="filterOption">
 	<label>Product Risk</label>
 	<s:select
