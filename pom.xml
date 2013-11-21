@@ -22,7 +22,6 @@
         <module>pics-legacy</module>
         <module>pics-web</module>
         <module>pics-employeeguard-domain</module>
-        <module>pics-translate-client</module>
     </modules>
 
     <repositories>
