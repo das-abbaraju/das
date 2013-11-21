@@ -54,8 +54,6 @@ public class FeatureToggleCheckerGroovyTest {
 	private AppPropertyDAO appPropertyDAO;
 	@Mock
 	private Permissions permissions;
-	@Mock
-	private Logger logger;
     @Mock
     private ActionContext actionContext;
 
@@ -71,7 +69,6 @@ public class FeatureToggleCheckerGroovyTest {
 
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "featureToggleProvider", featureToggleProvider);
 		Whitebox.setInternalState(featureToggleCheckerGroovy, "appPropertyDAO", appPropertyDAO);
-		Whitebox.setInternalState(featureToggleCheckerGroovy, "logger", logger);
 
         HashMap<String,Object> sessionContext = new HashMap<String, Object>();
         sessionContext.put("permissions",permissions);
@@ -143,7 +140,6 @@ public class FeatureToggleCheckerGroovyTest {
 		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn(null);
 
 		assertFalse(featureToggleCheckerGroovy.isFeatureEnabled(toggleName));
-		verify(logger).info(anyString(), eq(toggleName));
 	}
 
 	@Test
@@ -152,7 +148,6 @@ public class FeatureToggleCheckerGroovyTest {
 		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn(unparseableScript);
 
 		assertFalse(featureToggleCheckerGroovy.isFeatureEnabled(toggleName));
-		verify(logger).error(anyString(), eq(toggleName), anyString());
 	}
 
 	@Test
