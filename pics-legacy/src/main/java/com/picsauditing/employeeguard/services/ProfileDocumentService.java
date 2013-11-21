@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.DocumentType;
@@ -12,6 +13,7 @@ import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 public class ProfileDocumentService {
+    @Autowired
+    private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 	@Autowired
 	private ProfileDocumentDAO profileDocumentDAO;
 	@Autowired
@@ -94,13 +98,34 @@ public class ProfileDocumentService {
 		return profileDocumentFromDatabase;
 	}
 
-	public void delete(String documentId, int profileId, int appUserId) {
+	public void delete(final String documentId, final int profileId, final int appUserId) {
 		ProfileDocument document = profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
-
-		EntityHelper.softDelete(document, appUserId, new Date());
-
-		profileDocumentDAO.save(document);
+        removeAccountSkillEmployeeLinkToDocument(document.getEmployeeSkills());
+        deleteProfileDocument(document, appUserId);
 	}
+
+    private void deleteProfileDocument(ProfileDocument document, int appUserId) {
+        EntityHelper.softDelete(document, appUserId, new Date());
+        profileDocumentDAO.save(document);
+    }
+
+    private void removeAccountSkillEmployeeLinkToDocument(final List<AccountSkillEmployee> employeeSkills) {
+        List<AccountSkillEmployee> accountSkillEmployees = removeForeignKeyToDocument(employeeSkills);
+        accountSkillEmployeeDAO.save(accountSkillEmployees);
+    }
+
+    private List<AccountSkillEmployee> removeForeignKeyToDocument(List<AccountSkillEmployee> accountSkillEmployees) {
+        if (CollectionUtils.isEmpty(accountSkillEmployees)) {
+            return Collections.emptyList();
+        }
+
+        for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+            accountSkillEmployee.setProfileDocument(null);
+            accountSkillEmployee.setEndDate(null);
+        }
+
+        return accountSkillEmployees;
+    }
 
 	public List<ProfileDocument> search(String searchTerm, int profileId) {
 		if (Strings.isNotEmpty(searchTerm)) {

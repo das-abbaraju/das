@@ -73,7 +73,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-    @ReportField(type = FieldType.EmailStatus, importance = FieldImportance.Average)
+    @ReportField(type = FieldType.EmailStatus, i18nKeyPrefix = "EmailStatus", importance = FieldImportance.Average)
 	public EmailStatus getStatus() {
 		return status;
 	}

@@ -1,6 +1,7 @@
 package com.picsauditing.model.i18n;
 
-import com.picsauditing.service.i18n.TranslateRestClient;
+import com.picsauditing.i18n.model.TranslationLookupData;
+import com.picsauditing.i18n.service.TranslateRestClient;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

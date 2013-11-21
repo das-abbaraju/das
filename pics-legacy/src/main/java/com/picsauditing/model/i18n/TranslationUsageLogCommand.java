@@ -3,6 +3,7 @@ package com.picsauditing.model.i18n;
 import com.netflix.hystrix.*;
 import com.picsauditing.dao.TranslationUsageDAO;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.i18n.model.TranslationLookupData;
 
 public class TranslationUsageLogCommand extends HystrixCommand<Boolean> {
     private static final String HYSTRIX_COMMAND_GROUP = "TranslationUsageLog";

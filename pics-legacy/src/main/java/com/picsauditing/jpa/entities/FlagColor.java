@@ -6,7 +6,7 @@ import javax.persistence.Transient;
 
 import com.google.common.base.Strings;
 import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public enum FlagColor implements Translatable {

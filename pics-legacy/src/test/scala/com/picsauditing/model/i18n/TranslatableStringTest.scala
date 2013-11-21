@@ -2,12 +2,13 @@ package com.picsauditing.model.i18n
 
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 import org.scalatest.mock.MockitoSugar
-import com.picsauditing.service.i18n.{TranslationServiceFactory, TranslationService}
+import com.picsauditing.service.i18n.TranslationServiceFactory
 import java.util.Locale
 import org.mockito.Mockito._
 import org.mockito.Matchers._
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
+import com.picsauditing.i18n.service.TranslationService
 
 @RunWith(classOf[JUnitRunner])
 class TranslatableStringTest extends FlatSpec with BeforeAndAfterAll with MockitoSugar {

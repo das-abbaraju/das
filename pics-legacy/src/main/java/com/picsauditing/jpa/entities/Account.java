@@ -405,7 +405,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	@ReportField(type = FieldType.AccountStatus, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Average)
+	@ReportField(type = FieldType.AccountStatus, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Required)
 	public AccountStatus getStatus() {
 		return status;
 	}

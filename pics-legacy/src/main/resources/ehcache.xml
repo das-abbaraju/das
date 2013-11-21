@@ -21,6 +21,16 @@
 		memoryStoreEvictionPolicy="LFU">
 	</cache>
 
+	<!--
+        PICS-13051: Configure a dedicated region just for AuditQuestion. Initially, set
+        the cache size to 5000, which is about 25% of the total AuditQuestions in the db.
+        Use the same TTL, TTI, and eviction policy as the "daily" cache.
+    -->
+    <cache name="audit_question" maxElementsInMemory="5000" eternal="false"
+           timeToLiveSeconds="86400" timeToIdleSeconds="14400" overflowToDisk="false"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
 	<!--  
 		For compiled feature toggle groovy scripts
 	 -->	
@@ -28,16 +38,6 @@
 		timeToLiveSeconds="1800" timeToIdleSeconds="1800" overflowToDisk="false"
 		memoryStoreEvictionPolicy="LFU">
 	</cache>
-
-	<cache name="i18n" maxElementsInMemory="20000" eternal="false"
-		timeToLiveSeconds="3600" timeToIdleSeconds="1800" overflowToDisk="false"
-		memoryStoreEvictionPolicy="LRU">
-	</cache>
-
-    <cache name="i18n-wildcards" maxElementsInMemory="20000" eternal="false"
-           timeToLiveSeconds="3600" timeToIdleSeconds="1800" overflowToDisk="false"
-           memoryStoreEvictionPolicy="LRU">
-    </cache>
 
     <!--
         Configuring Query Cache

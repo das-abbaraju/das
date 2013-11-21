@@ -300,7 +300,7 @@
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationUsageLogSynchronizer"/>
-    <bean id="translateRestClient" class="com.picsauditing.service.i18n.TranslateRestClient"/>
+    <bean id="translateRestClient" class="com.picsauditing.i18n.service.TranslateRestClient"/>
     <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.TranslationUsageDAO" scope="prototype"/>
 
     <!--  JPA implementation -->

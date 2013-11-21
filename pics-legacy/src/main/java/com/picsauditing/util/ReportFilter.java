@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.picsauditing.i18n.service.TranslationService;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 @SuppressWarnings("serial")

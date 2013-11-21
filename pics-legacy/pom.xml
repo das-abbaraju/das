@@ -256,6 +256,12 @@
             <artifactId>pics-employeeguard-domain</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.picsauditing</groupId>
+            <artifactId>pics-translate-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- End of PICS Dependencies -->
 
         <dependency>

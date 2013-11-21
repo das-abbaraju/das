@@ -291,7 +291,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
 	@ReportField(type = FieldType.Boolean, sql = "CASE " + ReportOnClause.ToAlias
-			+ ".isActive WHEN 'Yes' THEN 1 ELSE 0 END")
+			+ ".isActive WHEN 'Yes' THEN 1 ELSE 0 END", importance = FieldImportance.Required)
 	public YesNo getIsActive() {
 		return isActive;
 	}

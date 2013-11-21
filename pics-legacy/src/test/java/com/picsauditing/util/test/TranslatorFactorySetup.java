@@ -1,7 +1,7 @@
 package com.picsauditing.util.test;
 
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.service.i18n.EchoTranslationService;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public class TranslatorFactorySetup {

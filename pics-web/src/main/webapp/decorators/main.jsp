@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
-<%@page import="com.picsauditing.service.i18n.TranslationService"%>
+<%@page import="com.picsauditing.i18n.service.TranslationService"%>
 <%@page import="com.picsauditing.service.i18n.TranslationServiceFactory"%>
 <%@ page import="com.picsauditing.PICS.MainPage" %>
 <%@ page import="com.picsauditing.access.*" %>

@@ -27,7 +27,6 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.model.i18n.TranslatableString;
-import com.picsauditing.model.i18n.translation.strategy.EmptyTranslationStrategy;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;

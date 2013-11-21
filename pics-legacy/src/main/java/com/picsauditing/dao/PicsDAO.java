@@ -8,13 +8,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.picsauditing.i18n.service.TranslationService;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
