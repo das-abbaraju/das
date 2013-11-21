@@ -16,13 +16,13 @@ import com.spun.util.persistence.Loader;
 
 public class TranslationServiceFactory {
 	private static Loader<Locale> localeProvider = ThreadLocalLocale.INSTANCE;
-    private static FeatureToggle featureToggleChecker;
     private static final String environment = System.getProperty("pics.env");
 
 	// for testing
 	private static TranslationService translationService;
-    // for testing
+    private static FeatureToggle featureToggleChecker;
 	private static TranslationService nonLoggingTranslationService;
+    // for testing ^
 
     public static TranslationService getNonLoggingTranslationService() {
         if (nonLoggingTranslationService != null) {
@@ -106,11 +106,15 @@ public class TranslationServiceFactory {
 	}
 
     private static FeatureToggle featureToggle() {
-        if (featureToggleChecker == null) {
-            featureToggleChecker = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
+        if (featureToggleChecker != null) {
+            return featureToggleChecker;
+        } else {
+            // we're creating a new one each time to get it to re-evaluate "permissions" since MDO changed that to hold
+            // the permissions object
+            FeatureToggleCheckerGroovy featureToggleChecker = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
             featureToggleChecker.addToggleVariable("env", environment());
+            return featureToggleChecker;
         }
-        return featureToggleChecker;
     }
 
     private static String environment() {
