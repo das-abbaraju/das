@@ -4,6 +4,9 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.TranslationDAO;
 import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
 import com.picsauditing.i18n.model.logging.TranslationUsageLogger;
+import com.picsauditing.i18n.model.strategies.EmptyTranslationStrategy;
+import com.picsauditing.i18n.model.strategies.ReturnKeyTranslationStrategy;
+import com.picsauditing.i18n.model.strategies.TranslationStrategy;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.i18n.service.TranslationServiceAdapter;
 import com.picsauditing.model.general.AppPropertyProvider;
@@ -23,6 +26,8 @@ import static org.mockito.Mockito.when;
 public class TranslationServiceFactoryTest {
     private static Locale localLocaleSave;
     private static final String TEST_COMMAND_KEY = "TestCommandKey";
+    private String STRATEGY_RETURN_KEY;
+    private String APP_PROPERTY_TRANSLATION_STRATEGY_NAME;
 
     @Mock
     private FeatureToggle featureToggleChecker;
@@ -30,6 +35,8 @@ public class TranslationServiceFactoryTest {
     private I18nCache i18nCache;
     @Mock
     private TranslationDAO translationDAO;
+    @Mock
+    private static AppPropertyProvider appPropertyProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -40,6 +47,10 @@ public class TranslationServiceFactoryTest {
 
         Whitebox.setInternalState(TranslationServiceFactory.class, "featureToggleChecker", featureToggleChecker);
         Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", translationDAO);
+        Whitebox.setInternalState(TranslationServiceFactory.class, "appPropertyProvider", appPropertyProvider);
+
+        STRATEGY_RETURN_KEY = Whitebox.getInternalState(TranslationServiceFactory.class, "STRATEGY_RETURN_KEY");
+        APP_PROPERTY_TRANSLATION_STRATEGY_NAME = Whitebox.getInternalState(TranslationServiceFactory.class, "APP_PROPERTY_TRANSLATION_STRATEGY_NAME");
     }
 
     @BeforeClass
@@ -51,6 +62,8 @@ public class TranslationServiceFactoryTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         ThreadLocalLocale.INSTANCE.set(localLocaleSave);
+        Whitebox.setInternalState(TranslationServiceFactory.class, "featureToggleChecker", (FeatureToggle)null);
+        Whitebox.setInternalState(TranslationServiceFactory.class, "appPropertyProvider", (AppPropertyProvider)null);
     }
 
     @Test
@@ -94,6 +107,33 @@ public class TranslationServiceFactoryTest {
         TranslationService service = TranslationServiceFactory.getTranslationService();
         TranslationUsageLogger logger = Whitebox.getInternalState(service, "translationUsageLogger");
         assertTrue(logger instanceof TranslationKeyDoNothingLogger);
+    }
+
+    @Test
+    public void testNoPropertyReturnsEmptyTranslationStrategy() throws Exception {
+        when(appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn(null);
+
+        TranslationStrategy strategy = Whitebox.invokeMethod(TranslationServiceFactory.class, "translationTransformStrategy");
+
+        assertTrue(strategy instanceof EmptyTranslationStrategy);
+    }
+
+    @Test
+    public void testNotEmptyKeyPropertyReturnsEmptyTranslationStrategy() throws Exception {
+        when(appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn("SomethingElse");
+
+        TranslationStrategy strategy = Whitebox.invokeMethod(TranslationServiceFactory.class, "translationTransformStrategy");
+
+        assertTrue(strategy instanceof EmptyTranslationStrategy);
+    }
+
+    @Test
+    public void testKeyOnEmptyTranslationPropertyReturnsReturnKeyTranslationStrategy() throws Exception {
+        when(appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn(STRATEGY_RETURN_KEY);
+
+        TranslationStrategy strategy = Whitebox.invokeMethod(TranslationServiceFactory.class, "translationTransformStrategy");
+
+        assertTrue(strategy instanceof ReturnKeyTranslationStrategy);
     }
 
 }
