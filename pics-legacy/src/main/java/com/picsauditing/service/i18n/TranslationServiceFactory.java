@@ -3,11 +3,16 @@ package com.picsauditing.service.i18n;
 import java.util.*;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
 import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
+import com.picsauditing.i18n.model.strategies.EmptyTranslationStrategy;
+import com.picsauditing.i18n.model.strategies.ReturnKeyTranslationStrategy;
+import com.picsauditing.i18n.model.strategies.TranslationStrategy;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.i18n.service.TranslationServiceAdapter;
 import com.picsauditing.i18n.service.TranslationServiceProperties;
+import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
@@ -17,6 +22,10 @@ import com.spun.util.persistence.Loader;
 public class TranslationServiceFactory {
 	private static Loader<Locale> localeProvider = ThreadLocalLocale.INSTANCE;
     private static final String environment = System.getProperty("pics.env");
+    private static final String APP_PROPERTY_TRANSLATION_STRATEGY_NAME = "TranslationTransformStrategy";
+    private static final String STRATEGY_RETURN_KEY = "ReturnKeyOnEmptyTranslation";
+
+    private static AppPropertyProvider appPropertyProvider;
 
 	// for testing
 	private static TranslationService translationService;
@@ -30,9 +39,7 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            ActionUsageContext context = new ActionUsageContext();
-            TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder().context(context);
-            propertyBuilder.translationUsageLogger(new TranslationKeyDoNothingLogger());
+            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties().translationUsageLogger(new TranslationKeyDoNothingLogger());
             return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
@@ -70,7 +77,9 @@ public class TranslationServiceFactory {
 
     private static TranslationServiceProperties.Builder translationServiceProperties() {
         ActionUsageContext context = new ActionUsageContext();
-        TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder().context(context);
+        TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder()
+                .context(context)
+                .translationStrategy(translationTransformStrategy());
 
         if (logTranslationUsage()) {
             propertyBuilder.translationUsageLogger(new TranslationKeyAggregateUsageLogger());
@@ -123,6 +132,23 @@ public class TranslationServiceFactory {
         } else {
             return environment;
         }
+    }
+
+    protected static TranslationStrategy translationTransformStrategy() {
+        AppPropertyProvider appPropertyProvider = appPropertyProvider();
+        String translationStrategyName = appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME);
+        if (STRATEGY_RETURN_KEY.equalsIgnoreCase(translationStrategyName)) {
+            return new ReturnKeyTranslationStrategy();
+        } else {
+            return new EmptyTranslationStrategy();
+        }
+    }
+
+    private static AppPropertyProvider appPropertyProvider() {
+        if (appPropertyProvider == null) {
+            appPropertyProvider = new JdbcAppPropertyProvider();
+        }
+        return appPropertyProvider;
     }
 
 }
