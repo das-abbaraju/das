@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,13 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
     @Autowired
     private EmailBuilder emailBuilder;
 
+    protected boolean safetySensitive;
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
 	protected LowMedHigh transportationRisk;
 	private EmailQueue emailQueue;
+
+
 
 	public ContractorEditRiskLevel() {
 		noteCategory = NoteCategory.RiskRanking;
@@ -75,84 +79,119 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		LowMedHigh oldSafety = contractor.getSafetyRisk();
 		LowMedHigh oldProduct = contractor.getProductRisk();
 		LowMedHigh oldTransportation = contractor.getTransportationRisk();
+        boolean oldSafetySensitive = contractor.isSafetySensitive();
 		boolean needsPqfReset = false;
 
-		if (contractor.getAccountLevel().isListOnly()) {
-			if (!isListOnlyEligibleForNewProductRisk(productRisk)) {
-				addActionError("You cannot change a List Only contractor's Product Risk to " + productRisk.toString()
-						+ ". Please change this contractor's Account Level to a Full Account "
-						+ "and then change the Product Risk.");
-				return SUCCESS;
-			}
-			if (!isListOnlyEligibleForNewSafetyRisk(safetyRisk)) {
-				addActionError("You cannot change a List Only contractor's Safety Risk to " + productRisk.toString()
-						+ ". Please change this contractor's Account Level to a Full Account "
-						+ "and then change the Safety Risk.");
-				return SUCCESS;
-			}
-		}
+        if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED)) {
+            if (contractor.getAccountLevel().isListOnly()) {
+                if (safetySensitive) {
+                    addActionError("You cannot change a List Only contractor to Safety Sensitive. " +
+                            "Please change this contractor's Account Level to a Full Account and then change the sensitivity.");
+                    return SUCCESS;
+                }
+            }
 
-		if (safetyRisk != null && !contractor.getSafetyRisk().equals(safetyRisk)) {
-			noteSummary.add("changed the safety risk level from " + oldSafety.toString() + " to "
-					+ safetyRisk.toString());
-			contractor.setSafetyRisk(safetyRisk);
-			contractor.setSafetyRiskVerified(new Date());
-			flagClearCache();
+            if (oldSafetySensitive != safetySensitive) {
+                String oldSensitivityNote = "Safety Sensitive";
+                String newSensitivityNote = "Safety Sensitive";
+                if (!oldSafetySensitive) {
+                    oldSensitivityNote = "Not " + oldSensitivityNote;
+                }
+                if (!safetySensitive) {
+                    newSensitivityNote = "Not " + newSensitivityNote;
+                }
+                noteSummary.add("changed from " + oldSensitivityNote + " to "
+                        + newSensitivityNote);
+                contractor.setSafetySensitive(safetySensitive);
+                flagClearCache();
+                needsPqfReset = true;
 
-			if (isRiskChanged(oldSafety, safetyRisk))
-				needsPqfReset = true;
+                checkSafetyStatus(oldSafetySensitive, safetySensitive);
 
-            checkSafetyStatus(oldSafety, safetyRisk);
-		}
+                resetPqf();
+                billingService.syncBalance(contractor);
+                contractorAccountDao.save(contractor);
+                addActionMessage("Successfully updated Safety Sensitivity");
+            }
+        }
+        else {
+            if (contractor.getAccountLevel().isListOnly()) {
+                if (!isListOnlyEligibleForNewProductRisk(productRisk)) {
+                    addActionError("You cannot change a List Only contractor's Product Risk to " + productRisk.toString()
+                            + ". Please change this contractor's Account Level to a Full Account "
+                            + "and then change the Product Risk.");
+                    return SUCCESS;
+                }
+                if (!isListOnlyEligibleForNewSafetyRisk(safetyRisk)) {
+                    addActionError("You cannot change a List Only contractor's Safety Risk to " + productRisk.toString()
+                            + ". Please change this contractor's Account Level to a Full Account "
+                            + "and then change the Safety Risk.");
+                    return SUCCESS;
+                }
+            }
 
-		if (productRisk != null && !contractor.getProductRisk().equals(productRisk)) {
-			noteSummary.add("changed the product risk level from " + oldProduct.toString() + " to "
-					+ productRisk.toString());
-			contractor.setProductRisk(productRisk);
-			contractor.setProductRiskVerified(new Date());
-			flagClearCache();
+            if (safetyRisk != null && !oldSafety.equals(safetyRisk)) {
+                noteSummary.add("changed the safety risk level from " + oldSafety.toString() + " to "
+                        + safetyRisk.toString());
+                contractor.setSafetyRisk(safetyRisk);
+                contractor.setSafetyRiskVerified(new Date());
+                flagClearCache();
 
-			if (isRiskChanged(oldProduct, productRisk))
-				needsPqfReset = true;
-		} else if (contractor.getProductRisk() == null && productRisk != null) {
-			// Add a product risk if it doesn't exist...?
-			noteSummary.add("set product risk level to " + productRisk.toString());
-			contractor.setProductRisk(productRisk);
-			flagClearCache();
-		}
+                if (isRiskChanged(oldSafety, safetyRisk))
+                    needsPqfReset = true;
 
-		if (transportationRisk != null && !contractor.getTransportationRisk().equals(transportationRisk)) {
-			noteSummary.add("changed the transportation risk level from " + oldTransportation.toString() + " to "
-					+ transportationRisk.toString());
-			contractor.setTransportationRisk(transportationRisk);
-			contractor.setTransportationRiskVerified(new Date());
-			flagClearCache();
-		} else if (contractor.getTransportationRisk() == null && transportationRisk != null) {
-			noteSummary.add("set transportation risk level to " + transportationRisk.toString());
-			contractor.setTransportationRisk(transportationRisk);
-			flagClearCache();
-		}
+                checkSafetyStatus(oldSafety, safetyRisk);
+            }
 
-		if (noteSummary.size() > 0) {
-			Note note = new Note();
-			note.setAccount(contractor);
-			note.setAuditColumns(permissions);
-			note.setSummary(userName + " " + Strings.implode(noteSummary, " and "));
-			note.setNoteCategory(NoteCategory.General);
-			note.setCanContractorView(false);
-			note.setViewableById(Account.EVERYONE);
-			noteDAO.save(note);
-		}
+            if (productRisk != null && !oldProduct.equals(productRisk)) {
+                noteSummary.add("changed the product risk level from " + oldProduct.toString() + " to "
+                        + productRisk.toString());
+                contractor.setProductRisk(productRisk);
+                contractor.setProductRiskVerified(new Date());
+                flagClearCache();
 
-		if (!safetyRisk.equals(oldSafety) || (productRisk != null && !productRisk.equals(oldProduct))
-				|| (transportationRisk != null && !transportationRisk.equals(oldTransportation))) {
-			if (needsPqfReset) {
-				resetPqf();
-			}
+                if (isRiskChanged(oldProduct, productRisk))
+                    needsPqfReset = true;
+            } else if (oldProduct == null && productRisk != null) {
+                // Add a product risk if it doesn't exist...?
+                noteSummary.add("set product risk level to " + productRisk.toString());
+                contractor.setProductRisk(productRisk);
+                flagClearCache();
+            }
 
-			billingService.syncBalance(contractor);
-			contractorAccountDao.save(contractor);
-			addActionMessage("Successfully updated Risk Level" + (noteSummary.size() > 1 ? "s" : ""));
+            if (transportationRisk != null && !oldTransportation.equals(transportationRisk)) {
+                noteSummary.add("changed the transportation risk level from " + oldTransportation.toString() + " to "
+                        + transportationRisk.toString());
+                contractor.setTransportationRisk(transportationRisk);
+                contractor.setTransportationRiskVerified(new Date());
+                flagClearCache();
+            } else if (oldTransportation == null && transportationRisk != null) {
+                noteSummary.add("set transportation risk level to " + transportationRisk.toString());
+                contractor.setTransportationRisk(transportationRisk);
+                flagClearCache();
+            }
+
+            if (!safetyRisk.equals(oldSafety) || (productRisk != null && !productRisk.equals(oldProduct))
+                    || (transportationRisk != null && !transportationRisk.equals(oldTransportation))) {
+                if (needsPqfReset) {
+                    resetPqf();
+                }
+
+                billingService.syncBalance(contractor);
+                contractorAccountDao.save(contractor);
+                addActionMessage("Successfully updated Risk Level" + (noteSummary.size() > 1 ? "s" : ""));
+            }
+        }
+
+        if (noteSummary.size() > 0) {
+            Note note = new Note();
+            note.setAccount(contractor);
+            note.setAuditColumns(permissions);
+            note.setSummary(userName + " " + Strings.implode(noteSummary, " and "));
+            note.setNoteCategory(NoteCategory.General);
+            note.setCanContractorView(false);
+            note.setViewableById(Account.EVERYONE);
+            noteDAO.save(note);
 		}
 
 		return SUCCESS;
@@ -162,6 +201,11 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		if (newSafety.ordinal() < oldSafety.ordinal())
 			buildAndSendBillingRiskDowngradeEmail(oldSafety, newSafety);
 	}
+
+    private void checkSafetyStatus(boolean oldSafety, boolean newSafety) {
+        if (oldSafety && !newSafety)
+            buildAndSendBillingSafetySensitiveDowngradeEmail();
+    }
 
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
 		emailBuilder.clear();
@@ -183,6 +227,25 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 					e });
 		}
 	}
+
+    private void buildAndSendBillingSafetySensitiveDowngradeEmail() {
+        emailBuilder.clear();
+        emailBuilder.setTemplate(EmailTemplate.SAFETY_SENSITIVE_DOWNGRADED_EMAIL_TEMPLATE);
+        emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
+        emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
+        emailBuilder.addToken("contractor", contractor);
+
+        try {
+            emailQueue = emailBuilder.build();
+            emailQueue.setHighPriority();
+            emailQueue.setSubjectViewableById(Account.PicsID);
+            emailQueue.setBodyViewableById(Account.PicsID);
+            emailSender.send(emailQueue);
+        } catch (Exception e) {
+            logger.error("Cannot send email to  {} ({})\n{}", new Object[] { contractor.getName(), contractor.getId(),
+                    e });
+        }
+    }
 
 	private boolean isRiskChanged(LowMedHigh oldSafetyRisk, LowMedHigh newSafetyRisk) {
 		if ((newSafetyRisk.equals(LowMedHigh.Med) || newSafetyRisk.equals(LowMedHigh.High))
@@ -213,7 +276,15 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		}
 	}
 
-	public LowMedHigh getSafetyRisk() {
+    public boolean isSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(boolean safetySensitive) {
+        this.safetySensitive = safetySensitive;
+    }
+
+    public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
 

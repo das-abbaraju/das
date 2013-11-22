@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Trade;
 
 public class RuleFilter {
+    public Set<Boolean> safetySensitives = new HashSet<Boolean>();
 	public Set<LowMedHigh> safetyRisks = new HashSet<LowMedHigh>();
 	public Set<LowMedHigh> productRisks = new HashSet<LowMedHigh>();
 	public Set<ContractorType> contractorType = new HashSet<ContractorType>();
@@ -25,6 +26,9 @@ public class RuleFilter {
 	public Set<AuditType> auditTypes = new HashSet<AuditType>();
 
 	public RuleFilter(ContractorAccount contractor) {
+        safetySensitives.add(null);
+        safetySensitives.add(contractor.isSafetySensitive());
+
 		safetyRisks.add(null);
 		safetyRisks.add(contractor.getSafetyRisk());
 

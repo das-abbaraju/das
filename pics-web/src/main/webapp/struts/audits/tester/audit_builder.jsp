@@ -28,6 +28,7 @@ function showRules() {
 </h1>
 <s:include value="../../actionMessages.jsp"></s:include>
 
+Safety Sensitive: <s:if test="contractor.safetySensitive">Yes</s:if><s:else>No</s:else><br />
 Safety Critical: <s:property value="contractor.safetyRisk" /><br />
 Product  Critical: <s:property value="contractor.productRisk" /><br />
 <h4>Contractor Type:</h4>

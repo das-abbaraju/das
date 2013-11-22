@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <head>
@@ -62,11 +63,30 @@
 				<s:property value="contractor.score" />
 				<br />
 			</pics:permission>
-			<label>
-				<s:text name="global.SafetyRisk" />:
-			</label>
-			<s:text name="%{contractor.safetyRisk.i18nKey}" />
-			<br />
+            <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+                <label><s:text name="global.SafetySensitive"/>:</label>
+                <s:if test="contractor.safetySensitive">
+                    <s:text name="YesNo.Yes"/>
+                </s:if>
+                <s:else>
+                    <s:text name="YesNo.No"/>
+                </s:else>
+                <br />
+                <pics:permission perm="AllContractors">
+                    <label>
+                        <s:text name="global.SafetyRisk" />:
+                    </label>
+                    <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                    <br />
+                </pics:permission>
+            </pics:toggle>
+            <pics:toggleElse>
+                <label>
+                    <s:text name="global.SafetyRisk" />:
+                </label>
+                <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                <br />
+            </pics:toggleElse>
 			<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 				<label>
 					<s:text name="global.ProductRisk" />:

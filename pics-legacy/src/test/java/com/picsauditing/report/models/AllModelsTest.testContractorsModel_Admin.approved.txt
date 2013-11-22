@@ -85,6 +85,7 @@ ContractorRegistrationRequestExpiresOn
 ContractorRenew
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
+ContractorSafetySensitive
 ContractorShowInDirectory
 ContractorSoleProprietor
 ContractorSupplierDiversity

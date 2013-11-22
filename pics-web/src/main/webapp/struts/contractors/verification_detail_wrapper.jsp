@@ -320,6 +320,15 @@
                         <strong><s:property value="contractor.auditor.name" /></strong>
                     </li>
                     <li>
+                        <label>Safety Sensitive:</label>
+                        <s:if test="contractor.safetySensitive">
+                            <strong><s:text name="YesNo.Yes"/></strong>
+                        </s:if>
+                        <s:else>
+                            <strong><s:text name="YesNo.No"/></strong>
+                        </s:else>
+                    </li>
+                    <li>
                         <label>Safety Assessment:</label>
                         <s:if test="contractor.safetyRisk != null">
                             <strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
