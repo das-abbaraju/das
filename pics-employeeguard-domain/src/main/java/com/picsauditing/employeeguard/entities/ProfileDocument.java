@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "profiledocument")
 @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@SQLInsert(sql = "INSERT INTO profiledocument (createdBy, createdDate, deletedBy, deletedDate, documentType, finishDate, fileName, fileSize, fileType, name, profileID, startDate, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> {
 	private static final long serialVersionUID = 7654576030939128656L;
 
