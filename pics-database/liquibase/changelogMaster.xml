@@ -60,5 +60,6 @@
     <include file="./liquibase/mdo11_PICS-13606_SS_trades_populate.sql"/>
     <include file="./liquibase/mdo12_PICS-13617_SS_trades_nullable.sql"/>
     <include file="./liquibase/dalvarado6_PICS-13611_Add_rules_for_SS.sql"/>
+    <include file="./liquibase/sshacter13_FixEmailSubscription.sql"/>
 
 </databaseChangeLog>
