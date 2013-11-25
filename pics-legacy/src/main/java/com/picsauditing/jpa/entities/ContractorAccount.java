@@ -554,7 +554,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return expires.getTime().after(new Date());
 	}
 
-	@OneToOne(mappedBy = "contractor")
+	@OneToOne(mappedBy = "contractor", fetch = FetchType.LAZY)
 	public Webcam getWebcam() {
 		return webcam;
 	}
