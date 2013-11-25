@@ -42,4 +42,19 @@ public class ContractorAccountBuilder {
         contractor.getInsuranceCriteriaContractorOperators().add(criteria);
         return this;
     }
+
+    public ContractorAccountBuilder transportationServices() {
+        contractor.setTransportationServices(true);
+        return this;
+    }
+
+    public ContractorAccountBuilder materialSupplier() {
+        contractor.setMaterialSupplier(true);
+        return this;
+    }
+
+    public ContractorAccountBuilder onSiteServices() {
+        contractor.setOnsiteServices(true);
+        return this;
+    }
 }

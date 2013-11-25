@@ -4,18 +4,69 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.toggle.FeatureToggle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ServiceRiskCalculator {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceRiskCalculator.class);
 
+    @Autowired
+    protected FeatureToggle featureToggleChecker;
+
 	public enum RiskCategory {
 		SAFETY, PRODUCT, TRANSPORTATION, SELF_SAFETY, SELF_PRODUCT;
 	}
+
+    public void calculateContractorsRiskLevels(ContractorAccount contractor, Map<Integer, AuditData> answerMap) {
+        Collection<AuditData> auditList = answerMap.values();
+        Map<RiskCategory, LowMedHigh> highestRisks = getHighestRiskLevelMap(auditList);
+
+        // Calculated assessments
+        LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);
+        LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
+        LowMedHigh transportation = highestRisks.get(RiskCategory.TRANSPORTATION);
+        // Self assessments
+        LowMedHigh safetySelfRating = highestRisks.get(RiskCategory.SELF_SAFETY);
+        LowMedHigh productSelfRating = highestRisks.get(RiskCategory.SELF_PRODUCT);
+
+        // Contractor's assessments are the same (or higher?) than what
+        // we've calculated
+        if (!contractor.isMaterialSupplierOnly()) {
+            if (safetySelfRating.isLessThan(safety)) {
+                contractor.setSafetyRisk(safety);
+            } else {
+                contractor.setSafetyRisk(safetySelfRating);
+            }
+        }
+
+        if (contractor.isMaterialSupplier()) {
+            if (productSelfRating.isLessThan(product)) {
+                contractor.setProductRisk(product);
+            } else {
+                contractor.setProductRisk(productSelfRating);
+            }
+        }
+
+        if (contractor.isTransportationServices()) {
+            // Safety risk also now includes transportation calculations
+            if (safety.isLessThan(transportation)) {
+                contractor.setSafetyRisk(transportation);
+            }
+
+            contractor.setTransportationRisk(transportation);
+        }
+        if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED)) {
+            if (safety.isGreaterThan(LowMedHigh.Low)) {
+                contractor.setSafetySensitive(true);
+            }
+        }
+    }
 
 	public LowMedHigh getRiskLevel(AuditData auditData) {
 		try {

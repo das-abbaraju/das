@@ -9,7 +9,13 @@ import com.picsauditing.util.Strings;
  * Contractor Risk Level
  */
 public enum LowMedHigh implements Translatable {
-	None, Low, Med, High;
+	None(0), Low(1), Med(2), High(3);
+
+    private int level;
+
+    LowMedHigh(int level) {
+        this.level = level;
+    }
 
 	static public Map<Integer, LowMedHigh> getMap() {
 		Map<Integer, LowMedHigh> map = new HashMap<Integer, LowMedHigh>();
@@ -40,6 +46,22 @@ public enum LowMedHigh implements Translatable {
 
 		return null;
 	}
+
+    public boolean isGreaterThan(LowMedHigh comparee) {
+        return this.level > comparee.level;
+    }
+
+    public boolean isGreaterThanOrEqualTo(LowMedHigh comparee) {
+        return this.level >= comparee.level;
+    }
+
+    public boolean isLessThan(LowMedHigh comparee) {
+        return this.level < comparee.level;
+    }
+
+    public boolean isLessThanOrEqualTo(LowMedHigh comparee) {
+        return this.level <= comparee.level;
+    }
 
 	@Override
 	public String getI18nKey() {
