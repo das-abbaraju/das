@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,12 +30,17 @@ public class ServiceRiskCalculatorTest {
 	private AuditData auditData;
 	@Mock
 	private AuditQuestion question;
+    @Mock
+    private FeatureToggle featureToggleChecker;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		serviceRiskCalculator = new ServiceRiskCalculator();
+
+        serviceRiskCalculator.featureToggleChecker = featureToggleChecker;
+        when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
 
 		when(auditData.getQuestion()).thenReturn(question);
 	}
@@ -223,6 +229,7 @@ public class ServiceRiskCalculatorTest {
         serviceRiskCalculator = spy(serviceRiskCalculator);
 
         Map<RiskCategory, LowMedHigh> highestRisk = new HashMap<>();
+        highestRisk.put(RiskCategory.SAFETY, LowMedHigh.None);
         highestRisk.put(RiskCategory.SELF_PRODUCT, LowMedHigh.Low);
         highestRisk.put(RiskCategory.PRODUCT, LowMedHigh.Low);
 
@@ -244,6 +251,7 @@ public class ServiceRiskCalculatorTest {
         serviceRiskCalculator = spy(serviceRiskCalculator);
 
         Map<RiskCategory, LowMedHigh> highestRisk = new HashMap<>();
+        highestRisk.put(RiskCategory.SAFETY, LowMedHigh.None);
         highestRisk.put(RiskCategory.SELF_PRODUCT, LowMedHigh.Med);
         highestRisk.put(RiskCategory.PRODUCT, LowMedHigh.Med);
 
@@ -310,7 +318,7 @@ public class ServiceRiskCalculatorTest {
 		assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
 
 		when(auditData.getAnswer()).thenReturn(NO);
-		assertEquals(LowMedHigh.Med, serviceRiskCalculator.getRiskLevel(auditData));
+		assertEquals(LowMedHigh.Low, serviceRiskCalculator.getRiskLevel(auditData));
 	}
 
 	// Do you use any mobile equipment to carry out your operations? i.e.
@@ -325,7 +333,7 @@ public class ServiceRiskCalculatorTest {
 		assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
 
 		when(auditData.getAnswer()).thenReturn(NO);
-		assertEquals(LowMedHigh.Med, serviceRiskCalculator.getRiskLevel(auditData));
+		assertEquals(LowMedHigh.Low, serviceRiskCalculator.getRiskLevel(auditData));
 	}
 
 	// Regardless of the client site you are registering for, does your company
@@ -343,7 +351,7 @@ public class ServiceRiskCalculatorTest {
 		assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
 
 		when(auditData.getAnswer()).thenReturn(NO);
-		assertEquals(LowMedHigh.Med, serviceRiskCalculator.getRiskLevel(auditData));
+		assertEquals(LowMedHigh.Low, serviceRiskCalculator.getRiskLevel(auditData));
 	}
 
 	// Can failures in your products result in a work stoppage or major business
