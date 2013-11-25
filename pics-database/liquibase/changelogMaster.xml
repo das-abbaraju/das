@@ -53,4 +53,7 @@
     <include file="./liquibase/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql"/>
     <include file="./liquibase/sshacter10_PICS-12562_AccountsNAICtoNULL.sql"/>
 
+	<!-- Release 6.67 --> 
+    <include file="./liquibase/dalvarado6_PICS-13611_Add_rules_for_SS.sql"/>
+
 </databaseChangeLog>
