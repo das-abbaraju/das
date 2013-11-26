@@ -12,15 +12,12 @@ import static org.mockito.Mockito.when;
 import static org.powermock.reflect.Whitebox.setInternalState;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 
 import com.picsauditing.PICS.BillingService;
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -70,6 +67,8 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	private EmailBuilder emailBuilder;
     @Mock
     private BillingService billingService;
+    @Mock
+    private ServiceRiskCalculator serviceRiskCalculator;
 
 	@AfterClass
 	public static void classTearDown() throws Exception {
@@ -87,6 +86,7 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 		when(contractorAccount.getAccountLevel()).thenReturn(AccountLevel.Full);
 		when(contractorAccount.getAudits()).thenReturn(generatePQFWithRiskAnswers());
 		when(contractorAccount.getId()).thenReturn(1);
+        PicsTestUtil.forceSetPrivateField(reportContractorRiskAssessment, "serviceRiskCalculator", serviceRiskCalculator);
 
 		setCustomPageVariables();
 		setExpectedBehaviors();
@@ -95,6 +95,10 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	@Test
 	public void testAcceptWithSafetyType() throws Exception {
 		when(contractorAccount.getSafetyRisk()).thenReturn(LowMedHigh.High);
+        Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> answerMap = new HashMap<>();
+        answerMap.put(ServiceRiskCalculator.RiskCategory.SAFETY, LowMedHigh.Low);
+        answerMap.put(ServiceRiskCalculator.RiskCategory.SELF_SAFETY, LowMedHigh.Low);
+        when(serviceRiskCalculator.getHighestRiskLevelMap(any(Collection.class))).thenReturn(answerMap);
 
 		assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.accept());
 
@@ -110,6 +114,10 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	@Test
 	public void testRejectWithSafetyType() throws Exception {
 		when(contractorAccount.getSafetyRisk()).thenReturn(LowMedHigh.High);
+        Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> answerMap = new HashMap<>();
+        answerMap.put(ServiceRiskCalculator.RiskCategory.SAFETY, LowMedHigh.Low);
+        answerMap.put(ServiceRiskCalculator.RiskCategory.SELF_SAFETY, LowMedHigh.Low);
+        when(serviceRiskCalculator.getHighestRiskLevelMap(any(Collection.class))).thenReturn(answerMap);
 
 		assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.reject());
 

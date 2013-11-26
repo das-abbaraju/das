@@ -72,8 +72,11 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		Script script = scriptFromCache(toggleName);
 		if (script == null) {
 			try {
-				script = createScript(scriptBodyFromProperty(toggleName));
-				cacheScript(toggleName, script);
+                String scriptBody = scriptBodyFromProperty(toggleName);
+                if (scriptBody != null) {
+                    script = createScript(scriptBody);
+                    cacheScript(toggleName, script);
+                }
 			} catch (FeatureToggleException e) {
 				logger.error("Error executing toggle {}: {}", toggleName, e.getMessage());
 				return null;
@@ -106,7 +109,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private String scriptBodyFromProperty(String toggleName) {
 		String featureToggleScript = featureToggleProvider.findFeatureToggle(toggleName);
 		if (featureToggleScript == null) {
-			logger.info("Feature Toggle {} not found", toggleName);
+			logger.debug("Feature Toggle {} not found", toggleName);
 		}
 		return featureToggleScript;
 	}
@@ -202,7 +205,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
             try {
                 permissions = (Permissions) getActionContext().getSession().get("permissions");
             } catch (Exception e) {
-                logger.warn("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
+                logger.debug("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
             }
         }
 

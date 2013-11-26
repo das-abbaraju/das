@@ -28,7 +28,7 @@ ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
 ContractorProductRisk
-ContractorSafetyRisk
+ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 FeeFeeClass

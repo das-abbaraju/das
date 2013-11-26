@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
-import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.util.Strings;
@@ -31,8 +30,11 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
     private BillingService billingService;
     @Autowired
     private FeeService feeService;
+    @Autowired
+    private ServiceRiskCalculator serviceRiskCalculator;
 
-	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
+
+    private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
 	private Map<Integer, AuditData> answerMap = new HashMap<>();
 	private Map<Integer, AuditData> ssipAnswerMap = new HashMap<>();
@@ -776,44 +778,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	}
 
 	private void calculateRiskLevels() {
-		Collection<AuditData> auditList = answerMap.values();
-		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevelMap(auditList);
-
-		// Calculated assessments
-		LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);
-		LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
-		LowMedHigh transportation = highestRisks.get(RiskCategory.TRANSPORTATION);
-		// Self assessments
-		LowMedHigh safetySelfRating = highestRisks.get(RiskCategory.SELF_SAFETY);
-		LowMedHigh productSelfRating = highestRisks.get(RiskCategory.SELF_PRODUCT);
-
-		// Contractor's assessments are the same (or higher?) than what
-		// we've calculated
-		if (!contractor.isMaterialSupplierOnly()) {
-			if (safetySelfRating.ordinal() < safety.ordinal()) {
-				contractor.setSafetyRisk(safety);
-			} else {
-				contractor.setSafetyRisk(safetySelfRating);
-			}
-		}
-
-		if (contractor.isMaterialSupplier()) {
-			if (productSelfRating.ordinal() < product.ordinal()) {
-				contractor.setProductRisk(product);
-			} else {
-				contractor.setProductRisk(productSelfRating);
-			}
-		}
-
-		if (contractor.isTransportationServices()) {
-			// Safety risk also now includes transportation calculations
-			if (safety.ordinal() < transportation.ordinal()) {
-				contractor.setSafetyRisk(transportation);
-			}
-
-			contractor.setTransportationRisk(transportation);
-		}
+        serviceRiskCalculator.calculateContractorsRiskLevels(contractor, answerMap);
 
 		contractor.setAuditColumns(permissions);
 		contractorAccountDao.save(contractor);

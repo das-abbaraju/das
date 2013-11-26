@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <include file="./liquibase/sshacter11_PICS-12140_TranslationImport.sql"/>
+    <include file="./liquibase/sshacter12_PICS-12140_TranslationTriggers.sql"/>
+	<!-- 
+    <include file="./liquibase/sshacter14_PICS-13671_vwMsg_Key_Locale.sql"/>
+    <include file="./liquibase/sshacter15_PICS-13671_FileAssetTables.sql"/>
+    <include file="./liquibase/sshacter16_PICS-13671_etlFileAssetItem.sql"/>
+	--> 
+</databaseChangeLog>

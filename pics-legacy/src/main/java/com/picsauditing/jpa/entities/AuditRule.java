@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 public class AuditRule extends BaseDecisionTreeRule {
 
 	protected AuditType auditType;
+    protected Boolean safetySensitive;
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
 	protected OperatorAccount operatorAccount;
@@ -53,7 +54,15 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return auditType.getName().toString();
 	}
 
-	@Enumerated(EnumType.STRING)
+    public Boolean getSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(Boolean safetySensitive) {
+        this.safetySensitive = safetySensitive;
+    }
+
+    @Enumerated(EnumType.STRING)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}

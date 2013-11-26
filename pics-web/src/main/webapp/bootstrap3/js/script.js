@@ -14511,6 +14511,8 @@ PICS.define('employee-guard.Assignment', {
                 request_url = $container.attr('data-assign-url'),
                 unassign_url = $container.attr('data-unassign-url');
 
+            event.preventDefault();
+
             if ($container.hasClass('assigned')) {
                 request_url = unassign_url;
             }
