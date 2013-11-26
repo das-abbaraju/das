@@ -1,7 +1,8 @@
-package com.picsauditing.actions.contractors;
+package com.picsauditing.menu.builder;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.MenuComponent;
+import com.picsauditing.actions.contractors.ContractorDocuments;
+import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -133,13 +134,10 @@ public class AuditMenuBuilder {
 								childMenu.setUrl(urlUtils().getActionUrl("Audit", "auditID", audit.getId()));
 
 								if (auditType.isPicsPqf()) {
-									addToStartOfServiceMenu(Service.DOCUGUARD, childMenu);
-
 									// PICS Admin is logged in, see trades menu
 									// Operator is logged in, see trades menu
 									// Contractor is logged in and does not use v7, see trades menu
 									// contractor is logged in and does use v7, do NOT see trades menu
-
 									if (tradesSubMenuVisible()) {
 										// Put Trades menu after 'PQF' menu entry
 										String contractorTradesUrl = urlUtils().getActionUrl("ContractorTrades", "id", contractor.getId());
@@ -149,8 +147,10 @@ public class AuditMenuBuilder {
 											tradeItem.setCssClass("done");
 										}
 
-										addToServiceMenu(Service.DOCUGUARD, tradeItem);
+										addToStartOfServiceMenu(Service.DOCUGUARD, tradeItem);
 									}
+
+									addToStartOfServiceMenu(Service.DOCUGUARD, childMenu);
 								} else {
 									addToServiceMenu(Service.DOCUGUARD, childMenu);
 								}

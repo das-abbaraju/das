@@ -1,8 +1,10 @@
-package com.picsauditing.access;
+package com.picsauditing.menu.builder;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.actions.contractors.AuditMenuBuilder;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import org.perf4j.StopWatch;

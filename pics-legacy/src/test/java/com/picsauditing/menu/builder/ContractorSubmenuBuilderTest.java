@@ -1,7 +1,10 @@
-package com.picsauditing.access;
+package com.picsauditing.menu.builder;
 
 import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.menu.MenuComponent;
+import com.picsauditing.menu.MenuWriter;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;

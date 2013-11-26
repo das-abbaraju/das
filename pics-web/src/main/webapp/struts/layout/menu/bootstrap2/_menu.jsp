@@ -55,6 +55,6 @@
     </div>
 </div>
 
-<%--     <s:if test="showContractorSubMenu"> --%>
-<s:include value="/struts/layout/menu/bootstrap2/_contractor-menu.jsp" />
-<%--    </s:if> --%>
+<s:if test="showContractorSubmenu">
+    <s:include value="/struts/layout/menu/bootstrap2/_contractor-menu.jsp" />
+</s:if>

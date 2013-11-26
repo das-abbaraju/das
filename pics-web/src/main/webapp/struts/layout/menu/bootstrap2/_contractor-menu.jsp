@@ -6,7 +6,7 @@
         <nav class="container">
             <div class="nav-collapse collapse primary-navigation-items">
                 <ul class="nav pull-left">
-                    <s:set var="menu_items" value="menu.children.subList(0, #last_menu_index)" />
+                    <s:set var="menu_items" value="getContractorMenu(contractor).children" />
                     <s:include value="/struts/layout/menu/bootstrap2/_contractor-menu-item.jsp" />
                 </ul>
             </div>

@@ -1,12 +1,12 @@
-package com.picsauditing.actions.contractors;
+package com.picsauditing.menu.contractor;
 
 import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.menu.MenuComponent;
+import com.picsauditing.menu.builder.AuditMenuBuilder;
 import com.picsauditing.util.URLUtils;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,7 +39,6 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
 
 		auditMenuBuilder = new AuditMenuBuilder(contractorAccount, permissions);
 

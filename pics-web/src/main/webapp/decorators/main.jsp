@@ -19,6 +19,9 @@
 <%@ page import="java.sql.Timestamp" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="com.picsauditing.menu.builder.MenuBuilder" %>
+<%@ page import="com.picsauditing.menu.MenuComponent" %>
+<%@ page import="com.picsauditing.menu.builder.PicsMenu" %>
 
 <%
 	TranslationService translationService = TranslationServiceFactory.getTranslationService();
