@@ -120,6 +120,31 @@
             <artifactId>org.jacoco.core</artifactId>
             <version>${jacoco.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.togglz</groupId>
+            <artifactId>togglz-core</artifactId>
+            <version>2.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.togglz</groupId>
+            <artifactId>togglz-servlet</artifactId>
+            <version>2.0.0.Final</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.togglz</groupId>-->
+            <!--<artifactId>togglz-spring</artifactId>-->
+            <!--<version>2.0.0.Final</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.togglz</groupId>
+            <artifactId>togglz-console</artifactId>
+            <version>2.0.0.Final</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.togglz</groupId>-->
+            <!--<artifactId>togglz-jsp</artifactId>-->
+            <!--<version>2.0.0.Final</version>-->
+        <!--</dependency>-->
     </dependencies>
 
 </project>

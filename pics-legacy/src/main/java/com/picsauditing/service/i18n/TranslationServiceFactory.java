@@ -6,6 +6,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
 import com.picsauditing.i18n.model.UsageContext;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
 import com.picsauditing.i18n.model.strategies.EmptyTranslationStrategy;
 import com.picsauditing.i18n.model.strategies.ReturnKeyTranslationStrategy;
@@ -40,7 +41,7 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            TranslationServiceProperties.Builder propertyBuilder = baseTranslationServiceProperties().translationUsageLogger(new TranslationKeyDoNothingLogger());
+            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties().translationUsageLogger(new TranslationKeyDoNothingLogger());
             return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
@@ -53,26 +54,30 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            TranslationServiceProperties.Builder propertyBuilder = baseTranslationServiceProperties();
+            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties();
             return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
         return I18nCache.getInstance();
     }
 
-    public static TranslationService getTranslationService(TranslationServiceProperties properties) {
+    // if we have to parameterize the command group name for more than TranslateCommand, this will have to be a more
+    // sophisticated configuration object. For now, though, let's stay simple
+    public static TranslationService getTranslationService(String translateCommandKey) {
         if (translationService != null) {
             return translationService;
         }
 
         if (useTranslationServiceAdapter()) {
-            return new TranslationServiceAdapter(properties);
+            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties();
+            propertyBuilder.translationCommandKey(translateCommandKey);
+            return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
         return I18nCache.getInstance();
     }
 
-    public static TranslationServiceProperties.Builder baseTranslationServiceProperties() {
+    private static TranslationServiceProperties.Builder translationServiceProperties() {
         ActionUsageContext context = new ActionUsageContext();
         TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder()
                 .context(context)
@@ -87,7 +92,12 @@ public class TranslationServiceFactory {
     }
 
     private static boolean useTranslationServiceAdapter() {
-	    return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
+	    // return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
+        try {
+            return Features.USE_TRANSLATION_SERVICE_ADAPTER.isActive();
+        } catch (Exception e) {
+            return true;
+        }
 	}
 
     private static boolean logTranslationUsage() {
@@ -118,6 +128,7 @@ public class TranslationServiceFactory {
             // we're creating a new one each time to get it to re-evaluate "permissions" since MDO changed that to hold
             // the permissions object
             FeatureToggleCheckerGroovy featureToggleChecker = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
+            featureToggleChecker.addToggleVariable("env", environment());
             return featureToggleChecker;
         }
     }
