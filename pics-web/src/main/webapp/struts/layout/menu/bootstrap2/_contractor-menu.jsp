@@ -9,6 +9,20 @@
                     <s:set var="menu_items" value="getContractorMenu(contractor).children" />
                     <s:include value="/struts/layout/menu/bootstrap2/_contractor-menu-item.jsp" />
                 </ul>
+                <ul class="nav pull-right">
+                    <li>
+                        <s:url action="ContractorView" var="contractor_view_link">
+                            <s:param name="id">
+                                ${contractor.id}
+                            </s:param>
+                        </s:url>
+                        <a href="${contractor_view_link}">
+                            <strong>
+                                ${contractor.name}
+                            </strong>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </nav>
     </div>

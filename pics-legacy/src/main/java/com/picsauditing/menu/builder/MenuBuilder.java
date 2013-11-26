@@ -1,6 +1,9 @@
 package com.picsauditing.menu.builder;
 
-import com.picsauditing.access.*;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserService;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -186,36 +189,39 @@ public final class MenuBuilder {
 	private static void addCompanyMenuLinksFor(int accountId, boolean showBillingMenu, MenuComponent companyMenu, Permissions permissions) {
 		URLUtils urlUtils = new URLUtils();
 
-		String contractorFacilities = urlUtils.getActionUrl("ContractorFacilities", "id", accountId);
 		String contractorTrades = urlUtils.getActionUrl("ContractorTrades", "id", accountId);
 		String contractorView = urlUtils.getActionUrl("ContractorView", "id", accountId);
 		String contractorNotes = urlUtils.getActionUrl("ContractorNotes", "id", accountId);
-		String contractorUsers = urlUtils.getActionUrl("UsersManage", "account", accountId);
-		String contractorEdit = urlUtils.getActionUrl("ContractorEdit", "id", accountId);
 
 		companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), contractorView, "contractor_dashboard");
 		companyMenu.addChild(getText("global.Notes"), contractorNotes, "contractor_notes");
-
-		if (permissions.isShowClientSitesLink()) {
-			companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
-		}
-
-		companyMenu.addChild(getText("global.Users"), contractorUsers, "users_manage");
 		companyMenu.addChild(getText("ContractorTrades.title"), contractorTrades, "contractor_trades");
 
-		if (permissions.isContractor()) {
-			companyMenu.addChild(getText("global.Resources"), "ContractorForms.action", "contractor_forms");
+		if (permissions.isContractor() || permissions.isPicsEmployee()) {
+			if (permissions.isShowClientSitesLink()) {
+				String contractorFacilities = urlUtils.getActionUrl("ContractorFacilities", "id", accountId);
+				companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
+			}
+
+			String contractorEdit = urlUtils.getActionUrl("ContractorEdit", "id", accountId);
+			String contractorUsers = urlUtils.getActionUrl("UsersManage", "account", accountId);
+
+			companyMenu.addChild(getText("global.Users"), contractorUsers, "users_manage");
+
+			if (permissions.isContractor()) {
+				companyMenu.addChild(getText("global.Resources"), "ContractorForms.action", "contractor_forms");
+			}
+
+			if (showBillingMenu) {
+				String billingDetail = urlUtils.getActionUrl("BillingDetail", "id", accountId);
+				String paymentOptions = urlUtils.getActionUrl("ContractorPaymentOptions", "id", accountId);
+
+				companyMenu.addChild(getText("BillingDetail.title"), billingDetail, "billing_detail");
+				companyMenu.addChild(getText("ContractorPaymentOptions.header"), paymentOptions, "payment_options");
+			}
+
+			companyMenu.addChild(getText("menu.CompanyProfile"), contractorEdit, "contractor_edit");
 		}
-
-		if (showBillingMenu) {
-			String billingDetail = urlUtils.getActionUrl("BillingDetail", "id", accountId);
-			String paymentOptions = urlUtils.getActionUrl("ContractorPaymentOptions", "id", accountId);
-
-			companyMenu.addChild(getText("BillingDetail.title"), billingDetail, "billing_detail");
-			companyMenu.addChild(getText("ContractorPaymentOptions.header"), paymentOptions, "payment_options");
-		}
-
-		companyMenu.addChild(getText("menu.CompanyProfile"), contractorEdit, "contractor_edit");
 	}
 
 	private static void addConfigureMenu(MenuComponent menubar, Permissions permissions) {

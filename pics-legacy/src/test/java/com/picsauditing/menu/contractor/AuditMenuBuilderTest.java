@@ -412,31 +412,6 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 				contractorHasCompetencyRequiringDocumentation);
 	}
 
-	@Test
-	public void testTradesSubMenuVisible_PICSAdminOrOperatorUser() throws Exception {
-		when(permissions.isContractor()).thenReturn(false);
-		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
-		assertTrue(tradeMenuVisible);
-	}
-
-	@Test
-	public void testTradesSubMenuVisible_ContractorUserWithoutV7Menus() throws Exception {
-		when(permissions.isContractor()).thenReturn(true);
-		when(permissions.isUsingVersion7Menus()).thenReturn(false);
-
-		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
-		assertTrue(tradeMenuVisible);
-	}
-
-	@Test
-	public void testTradesSubMenuVisible_ContractorUserHasV7Menus() throws Exception {
-		when(permissions.isContractor()).thenReturn(true);
-		when(permissions.isUsingVersion7Menus()).thenReturn(true);
-
-		boolean tradeMenuVisible = Whitebox.invokeMethod(auditMenuBuilder, "tradesSubMenuVisible");
-		assertFalse(tradeMenuVisible);
-	}
-
 	private List<ContractorAudit> audits() {
 		return audits(true);
 	}

@@ -134,20 +134,10 @@ public class AuditMenuBuilder {
 								childMenu.setUrl(urlUtils().getActionUrl("Audit", "auditID", audit.getId()));
 
 								if (auditType.isPicsPqf()) {
-									// PICS Admin is logged in, see trades menu
-									// Operator is logged in, see trades menu
-									// Contractor is logged in and does not use v7, see trades menu
-									// contractor is logged in and does use v7, do NOT see trades menu
-									if (tradesSubMenuVisible()) {
+									// New contractor submenu has Trades under the "Company" section
+									if (!permissions.isUsingVersion7Menus()) {
 										// Put Trades menu after 'PQF' menu entry
-										String contractorTradesUrl = urlUtils().getActionUrl("ContractorTrades", "id", contractor.getId());
-										MenuComponent tradeItem = new MenuComponent(getText("ContractorTrades.title"), contractorTradesUrl);
-										if (!contractor.isNeedsTradesUpdated() && permissions.isOperatorCorporate()) {
-											// Only operators need to see the checkmarks?
-											tradeItem.setCssClass("done");
-										}
-
-										addToStartOfServiceMenu(Service.DOCUGUARD, tradeItem);
+										addTradeMenuItem();
 									}
 
 									addToStartOfServiceMenu(Service.DOCUGUARD, childMenu);
@@ -173,21 +163,18 @@ public class AuditMenuBuilder {
 		}
 	}
 
-	private boolean auditVisibleToUserOnMenu(ContractorAudit audit) {
-		return !permissions.isContractor() || audit.getCurrentOperators().size() > 0;
-	}
-
-	/**
-	 * Contractors using the new V7 menu have their trades listed under Company
-	 *
-	 * @return
-	 */
-	private boolean tradesSubMenuVisible() {
-		if (permissions.isContractor() && permissions.getAccountId() == contractor.getId()) {
-			return !permissions.isUsingVersion7Menus();
+	private void addTradeMenuItem() {
+		String contractorTradesUrl = urlUtils().getActionUrl("ContractorTrades", "id", contractor.getId());
+		MenuComponent tradeItem = new MenuComponent(getText("ContractorTrades.title"), contractorTradesUrl);
+		if (!contractor.isNeedsTradesUpdated() && permissions.isOperatorCorporate()) {
+			tradeItem.setCssClass("done");
 		}
 
-		return true;
+		addToStartOfServiceMenu(Service.DOCUGUARD, tradeItem);
+	}
+
+	private boolean auditVisibleToUserOnMenu(ContractorAudit audit) {
+		return !permissions.isContractor() || audit.getCurrentOperators().size() > 0;
 	}
 
 	private void buildAnnualUpdatesSection() {
@@ -200,12 +187,7 @@ public class AuditMenuBuilder {
 					if (audit.getAuditType().isAnnualAddendum()) {
 						String linkText = getTextParameterized("ContractorActionSupport.Update", audit.getAuditFor());
 						if (auditVisibleToUserOnMenu(audit)) {
-							MenuComponent childMenu = createAuditMenuItem(audit);
-							childMenu.setName(linkText);
-
-							MenuComponent annualUpdate = createAuditMenuItem(audit);
-							annualUpdate.setName(getText("AuditType.11.name") + " " + audit.getAuditFor());
-							addToServiceMenu(Service.DOCUGUARD, annualUpdate);
+							addAnnualUpdate(audit, linkText);
 						}
 
 						iterator.remove();
@@ -215,6 +197,15 @@ public class AuditMenuBuilder {
 		} catch (Exception exception) {
 			LOG.error("Error building Annual Updates section in AuditMenuBuilder", exception);
 		}
+	}
+
+	private void addAnnualUpdate(ContractorAudit audit, String linkText) {
+		MenuComponent childMenu = createAuditMenuItem(audit);
+		childMenu.setName(linkText);
+
+		MenuComponent annualUpdate = createAuditMenuItem(audit);
+		annualUpdate.setName(getText("AuditType.11.name") + " " + audit.getAuditFor());
+		addToServiceMenu(Service.DOCUGUARD, annualUpdate);
 	}
 
 	private void buildInsureGUARDSection() {
@@ -234,16 +225,7 @@ public class AuditMenuBuilder {
 					if (auditUnderInsureGUARD && audit.getOperators().size() > 0) {
 						if (auditVisibleToUserOnMenu(audit)) {
 							MenuComponent childMenu = createAuditMenuItem(audit);
-
-							if (auditType.getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE) {
-								childMenu.setName(getText(auditType.getI18nKey("name")));
-							} else if (audit.getEffectiveDate() != null || auditType.isWCB()) {
-								String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-								childMenu.setName(getText(auditType.getI18nKey("name")) + " '" + year);
-							} else {
-								childMenu.setName(getText(auditType.getI18nKey("name")) + " " + getText("ContractorAudit.New"));
-							}
-
+							setInsureGUARDMenuItemName(audit, auditType, childMenu);
 							String linkUrl = urlUtils().getActionUrl("Audit", "auditID", audit.getId());
 							childMenu.setUrl(linkUrl);
 							addToServiceMenu(Service.INSUREGUARD, childMenu);
@@ -269,6 +251,17 @@ public class AuditMenuBuilder {
 			}
 		} catch (Exception exception) {
 			LOG.error("Error building InsureGUARD section in AuditMenuBuilder", exception);
+		}
+	}
+
+	private void setInsureGUARDMenuItemName(ContractorAudit audit, AuditType auditType, MenuComponent childMenu) {
+		if (auditType.getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE) {
+			childMenu.setName(getText(auditType.getI18nKey("name")));
+		} else if (audit.getEffectiveDate() != null || auditType.isWCB()) {
+			String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
+			childMenu.setName(getText(auditType.getI18nKey("name")) + " '" + year);
+		} else {
+			childMenu.setName(getText(auditType.getI18nKey("name")) + " " + getText("ContractorAudit.New"));
 		}
 	}
 
@@ -320,21 +313,24 @@ public class AuditMenuBuilder {
 					addToServiceMenu(Service.EMPLOYEEGUARD, createNewAudit);
 				}
 
-				if (permissions.isContractor()) {
-					AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
-					if (accountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
-						MenuComponent egV3 = new MenuComponent();
-						egV3.setUrl("/employee-guard/contractor/dashboard");
-						egV3.setTitle("Version 3");
-						egV3.setName("Version 3");
-						addToServiceMenu(Service.EMPLOYEEGUARD, egV3);
-					}
-				}
-
+				addV3EGMenuItemToEGEnabledContractor();
 				addToStartOfServiceMenu(Service.EMPLOYEEGUARD, summary);
 			}
 		} catch (Exception exception) {
 			LOG.error("Error building EmployeeGUARD section in AuditMenuBuilder", exception);
+		}
+	}
+
+	private void addV3EGMenuItemToEGEnabledContractor() {
+		if (permissions.isContractor()) {
+			AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
+			if (accountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
+				MenuComponent egV3 = new MenuComponent();
+				egV3.setUrl("/employee-guard/contractor/dashboard");
+				egV3.setTitle("Version 3");
+				egV3.setName("Version 3");
+				addToServiceMenu(Service.EMPLOYEEGUARD, egV3);
+			}
 		}
 	}
 
