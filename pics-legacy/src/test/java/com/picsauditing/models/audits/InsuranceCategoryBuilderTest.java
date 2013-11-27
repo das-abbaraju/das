@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.SlugService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,6 +25,8 @@ public class InsuranceCategoryBuilderTest extends PicsTranslationTest {
     private AuditTypeDAO typeDAO;
     @Mock
     private Database databaseForTesting;
+	@Mock
+	private SlugService slugService;
 
     @Before
     public void setup() {
