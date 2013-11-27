@@ -5,7 +5,7 @@
 DROP TRIGGER IF EXISTS invoice_archive_after_insert;
 --sql:
 --changeset sshacter:8b splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER invoice_archive_after_insert
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER invoice_archive_after_insert
 AFTER INSERT ON		invoice
 /*
 **	Name:		invoice_archive_after_insert
@@ -29,7 +29,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.createdBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.createdBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -154,7 +154,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_archive_after_update;
 --sql:
 --changeset sshacter:8d splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */	TRIGGER	invoice_archive_after_update
+CREATE DEFINER = 'pics_admin'@'%' 	TRIGGER	invoice_archive_after_update
 AFTER UPDATE ON 	invoice
 /*
 **	Name:		invoice_archive_after_update
@@ -178,7 +178,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -303,7 +303,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_archive_before_delete;
 --sql:
 --changeset sshacter:8f splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_archive_before_delete
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_archive_before_delete
 BEFORE DELETE ON	invoice
 /*
 **	Name:		invoice_archive_before_delete
@@ -327,7 +327,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = old.createdBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = old.createdBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -452,7 +452,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_item_archive_after_insert
 --sql:
 --changeset sshacter:8h splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_item_archive_after_insert
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_item_archive_after_insert
 AFTER INSERT ON		invoice_item
 /*
 **	Name:		invoice_item_archive_after_insert
@@ -473,7 +473,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.createdBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.createdBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -574,7 +574,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_item_archive_after_update
 --sql:
 --changeset sshacter:8j splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_item_archive_after_update
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_item_archive_after_update
 AFTER UPDATE ON		invoice_item
 /*
 **	Name:		invoice_item_archive_after_update
@@ -595,7 +595,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -696,7 +696,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_item_archive_before_delete
 --sql:
 --changeset sshacter:8l splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_item_archive_before_delete
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_item_archive_before_delete
 BEFORE DELETE ON		invoice_item
 /*
 **	Name:		invoice_item_archive_before_delete
@@ -717,7 +717,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = old.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = old.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -818,7 +818,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_commission_archive_after_insert
 --sql:
 --changeset sshacter:8n splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_commission_archive_after_insert
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_commission_archive_after_insert
 AFTER INSERT ON		invoice_commission
 /*
 **	Name:		invoice_commission_archive_after_insert
@@ -842,7 +842,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.createdBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.createdBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -931,7 +931,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_commission_archive_after_update
 --sql:
 --changeset sshacter:8p splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_commission_archive_after_update
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_commission_archive_after_update
 AFTER UPDATE ON		invoice_commission
 /*
 **	Name:		invoice_commission_archive_after_update
@@ -955,7 +955,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -1044,7 +1044,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_commission_archive_before_delete
 --sql:
 --changeset sshacter:8r splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_commission_archive_before_delete
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_commission_archive_before_delete
 BEFORE DELETE ON		invoice_commission
 /*
 **	Name:		invoice_commission_archive_before_delete
@@ -1068,7 +1068,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = old.accountUserID);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = old.accountUserID);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -1157,7 +1157,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_fee_archive_after_insert
 --sql:
 --changeset sshacter:8t splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_fee_archive_after_insert
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_fee_archive_after_insert
 AFTER INSERT ON		invoice_fee
 /*
 **	Name:		invoice_fee_archive_after_insert
@@ -1181,7 +1181,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.createdBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.createdBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -1282,7 +1282,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_fee_archive_after_update
 --sql:
 --changeset sshacter:8v splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_fee_archive_after_update
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_fee_archive_after_update
 AFTER UPDATE ON		invoice_fee
 /*
 **	Name:		invoice_fee_archive_after_update
@@ -1306,7 +1306,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -1407,7 +1407,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_fee_archive_before_delete
 --sql:
 --changeset sshacter:8x splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_fee_archive_before_delete
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_fee_archive_before_delete
 BEFORE DELETE ON		invoice_fee
 /*
 **	Name:		invoice_fee_archive_before_delete
@@ -1431,7 +1431,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = old.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = old.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -1532,7 +1532,7 @@ END ;
 DROP TRIGGER IF EXISTS	invoice_fee_country_archive_after_insert;
 --sql:
 --changeset sshacter:8z splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_fee_country_archive_after_insert
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_fee_country_archive_after_insert
 AFTER INSERT ON		invoice_fee_country
 /*
 **	Name:		invoice_fee_country_archive_after_insert
@@ -1556,7 +1556,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.createdBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.createdBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -1651,7 +1651,7 @@ END ;
 DROP TRIGGER IF EXISTS	invoice_fee_country_archive_after_update;
 --sql:
 --changeset sshacter:8bb splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_fee_country_archive_after_update
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_fee_country_archive_after_update
 AFTER UPDATE ON		invoice_fee_country
 /*
 **	Name:		invoice_fee_country_archive_after_update
@@ -1675,7 +1675,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF;
@@ -1770,7 +1770,7 @@ END ;
 DROP TRIGGER IF EXISTS invoice_fee_country_archive_before_delete
 --sql:
 --changeset sshacter:8dd splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_fee_country_archive_before_delete
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_fee_country_archive_before_delete
 BEFORE DELETE ON		invoice_fee_country
 /*
 **	Name:		invoice_fee_country_archive_before_delete
@@ -1794,7 +1794,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = old.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = old.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF
@@ -1890,7 +1890,7 @@ END ;
 DROP TRIGGER IF EXISTS	invoice_payment_archive_after_insert
 --sql:
 --changeset sshacter:8ff splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_payment_archive_after_insert
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_payment_archive_after_insert
 AFTER INSERT ON		invoice_payment
 /*
 **	Name:		invoice_payment_archive_after_insert
@@ -1914,7 +1914,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.createdBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.createdBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF
@@ -2006,7 +2006,7 @@ END ;
 DROP TRIGGER IF EXISTS	invoice_payment_archive_after_update;
 --sql:
 --changeset sshacter:8hh splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_payment_archive_after_update
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_payment_archive_after_update
 AFTER UPDATE ON		invoice_payment
 /*
 **	Name:		invoice_payment_archive_after_update
@@ -2030,7 +2030,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = new.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = new.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF
@@ -2122,7 +2122,7 @@ END ;
 DROP TRIGGER IF EXISTS	invoice_payment_archive_before_delete;
 --sql:
 --changeset sshacter:8jj splitStatements:false endDelimiter:|
-CREATE /* DEFINER = 'pics_admin'@'%' */ TRIGGER	invoice_payment_archive_before_delete
+CREATE DEFINER = 'pics_admin'@'%'  TRIGGER	invoice_payment_archive_before_delete
 BEFORE DELETE ON		invoice_payment
 /*
 **	Name:		invoice_payment_archive_before_delete
@@ -2146,7 +2146,7 @@ BEGIN
 	IF
 		LOCATE("pics", CURRENT_USER())	> 0
 	THEN
-		SET	@username	= (SELECT username FROM users WHERE id = old.updatedBy);
+		SET	@username	= (SELECT IFNULL(username,"Not found or NULL") FROM users WHERE id = old.updatedBy);
 	ELSE
 		SET	@username	= CURRENT_USER();
 	END IF
