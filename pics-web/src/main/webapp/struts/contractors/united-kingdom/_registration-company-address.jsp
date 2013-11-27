@@ -17,5 +17,5 @@
 </li>
 
 <li class="zipcode" style="${zip_display}">
-	<s:textfield name="contractor.zip" label="global.ZipPostalCode" />
+	<s:textfield name="contractor.zip" label="ContractorAccount.zip" />
 </li>

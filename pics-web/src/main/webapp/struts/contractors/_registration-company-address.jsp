@@ -27,10 +27,10 @@
 <s:if test="#country_iso_code != 'AE'">
     <li class="zipcode">
         <s:if test="#country_iso_code == 'US'">
-            <s:textfield name="contractor.zip" />
+            <s:textfield name="contractor.zip" label="global.ZipPostalCode" />
         </s:if>
         <s:else>
-            <s:textfield name="contractor.zip" label="global.ZipPostalCode"/>
+            <s:textfield name="contractor.zip" label="ContractorAccount.zip" />
         </s:else>
     </li>
 </s:if>
