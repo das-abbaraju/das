@@ -43,6 +43,9 @@
 				<td>
 					Product Risk
 				</td>
+                <td>
+                    Trade Safety
+                </td>
 				<td>
 					Type
 				</td>
@@ -106,6 +109,9 @@
 					<td>
 						<s:property value="get('productRisk')"/>
 					</td>
+                    <td>
+                        <s:property value="get('tradeSafetyRisk')"/>
+                    </td>
 					<td>
 						<s:property value="get('con_type')"/>
 					</td>
