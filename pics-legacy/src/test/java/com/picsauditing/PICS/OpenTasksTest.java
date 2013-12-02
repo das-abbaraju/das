@@ -260,33 +260,6 @@ public class OpenTasksTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testGetOpenTasks_RequiresTwoUsers_IsContractorAdmin() throws Exception {
-		when(permissions.hasPermission(OpPerms.ContractorAdmin)).thenReturn(true);
-
-		validateRequiresTwoUsers();
-	}
-
-	@Test
-	public void testGetOpenTasks_RequiresTwoUsers_UserIsAdmin() throws Exception {
-		when(account.isAdmin()).thenReturn(true);
-
-		validateRequiresTwoUsers();
-	}
-
-	private void validateRequiresTwoUsers() {
-		List<User> users = new ArrayList<User>();
-		users.add(user);
-		when(contractor.isAgreementInEffect()).thenReturn(true);
-		when(contractor.getUsers()).thenReturn(users);
-		when(contractor.getSoleProprietor()).thenReturn(false);
-		when(contractor.getCreationDate()).thenReturn(date179DaysAgo());
-
-		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-
-		assertThat(openTaskList, hasItem(RequiresTwoUsers));
-	}
-
-	@Test
 	public void testGetOpenTasks_BidOnlyUpgrade() throws Exception {
 		when(permissions.hasPermission(OpPerms.ContractorAdmin)).thenReturn(true);
 		when(contractor.isAgreementInEffect()).thenReturn(true);
