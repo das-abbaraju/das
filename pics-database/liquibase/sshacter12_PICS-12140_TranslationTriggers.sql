@@ -1,9 +1,10 @@
 --liquibase formatted sql
 
+--sql:
 --changeset sshacter:12a splitStatements:true endDelimiter:|
 DROP TRIGGER IF EXISTS	msg_key_archive_after_insert;
-
---changeset sshacter:12b splitStatements:true endDelimiter:|
+--sql:
+--changeset sshacter:12b splitStatements:false endDelimiter:|
 CREATE DEFINER = 'pics_admin'@'%' TRIGGER	msg_key_archive_after_insert
 AFTER INSERT ON		msg_key
 /*
@@ -117,8 +118,11 @@ BEGIN
 	--	-------------------------------------------------------------------------
 END ;
 
+--sql:
 --changeset sshacter:12c splitStatements:true endDelimiter:|
 DROP TRIGGER IF EXISTS	msg_key_archive_after_update;
+--sql:
+--changeset sshacter:12d splitStatements:false endDelimiter:|
 CREATE DEFINER = 'pics_admin'@'%' TRIGGER	msg_key_archive_after_update
 AFTER UPDATE ON		msg_key
 /*
@@ -139,6 +143,7 @@ BEGIN
 	SET	@ddlName	= "msg_key";
 	SET	@validStart	= DATE(IFNULL(old.creationDate,CURRENT_DATE));
 	SET	@validFinish	= DATE(IFNULL(new.updateDate,"9999-12-31"));
+	SET	@username	= CURRENT_USER();
 
 	IF
 		LOCATE("pics", @username)	> 0
@@ -231,10 +236,11 @@ BEGIN
 	--	-------------------------------------------------------------------------
 END ;
 
---changeset sshacter:12d splitStatements:true endDelimiter:|
-DROP TRIGGER IF EXISTS	msg_key_archive_before_delete;
-
+--sql:
 --changeset sshacter:12e splitStatements:true endDelimiter:|
+DROP TRIGGER IF EXISTS	msg_key_archive_before_delete;
+--sql:
+--changeset sshacter:12f splitStatements:false endDelimiter:|
 CREATE DEFINER = 'pics_admin'@'%' TRIGGER	msg_key_archive_before_delete
 BEFORE DELETE ON	msg_key
 /*
@@ -255,6 +261,7 @@ BEGIN
 	SET	@ddlName	= "msg_key";
 	SET	@validStart	= DATE(IFNULL(old.creationDate,CURRENT_DATE));
 	SET	@validFinish	= DATE(IFNULL(old.updateDate,"9999-12-31"));
+	SET	@username	= CURRENT_USER();
 
 	IF
 		LOCATE("pics", @username)	> 0
@@ -347,10 +354,11 @@ BEGIN
 	--	-------------------------------------------------------------------------
 END;
 
---changeset sshacter:12f splitStatements:true endDelimiter:|
-DROP TRIGGER IF EXISTS	msg_locale_archive_after_insert;
-
+--sql:
 --changeset sshacter:12g splitStatements:true endDelimiter:|
+DROP TRIGGER IF EXISTS	msg_locale_archive_after_insert;
+--sql:
+--changeset sshacter:12h splitStatements:false endDelimiter:|
 CREATE DEFINER = 'pics_admin'@'%' TRIGGER	msg_locale_archive_after_insert
 AFTER INSERT ON		msg_locale
 /*
@@ -371,6 +379,7 @@ BEGIN
 	SET	@ddlName	= "msg_locale";
 	SET	@validStart	= DATE(IFNULL(new.creationDate,CURRENT_DATE));
 	SET	@validFinish	= DATE(IFNULL(new.updateDate,"9999-12-31"));
+	SET	@username	= CURRENT_USER();
 
 	IF
 		LOCATE("pics", @username)	> 0
@@ -465,10 +474,11 @@ BEGIN
 	--	-------------------------------------------------------------------------
 END;
 
---changeset sshacter:12h splitStatements:true endDelimiter:|
-DROP TRIGGER IF EXISTS	msg_locale_archive_after_update;
-
+--sql:
 --changeset sshacter:12i splitStatements:true endDelimiter:|
+DROP TRIGGER IF EXISTS	msg_locale_archive_after_update;
+--sql:
+--changeset sshacter:12j splitStatements:false endDelimiter:|
 CREATE DEFINER = 'pics_admin'@'%' TRIGGER	msg_locale_archive_after_update
 AFTER UPDATE ON		msg_locale
 /*
@@ -489,6 +499,7 @@ BEGIN
 	SET	@ddlName	= "msg_locale";
 	SET	@validStart	= DATE(IFNULL(old.creationDate,CURRENT_DATE));
 	SET	@validFinish	= DATE(IFNULL(new.updateDate,"9999-12-31"));
+	SET	@username	= CURRENT_USER();
 
 	IF
 		LOCATE("pics", @username)	> 0
@@ -583,10 +594,11 @@ BEGIN
 	--	-------------------------------------------------------------------------
 END;
 
---changeset sshacter:12j splitStatements:true endDelimiter:|
-DROP TRIGGER IF EXISTS	msg_locale_archive_before_delete;
-
+--sql:
 --changeset sshacter:12k splitStatements:true endDelimiter:|
+DROP TRIGGER IF EXISTS	msg_locale_archive_before_delete;
+--sql:
+--changeset sshacter:12l splitStatements:false endDelimiter:|
 CREATE DEFINER = 'pics_admin'@'%' TRIGGER	msg_locale_archive_before_delete
 BEFORE DELETE ON	msg_locale
 /*
@@ -607,6 +619,7 @@ BEGIN
 	SET	@ddlName	= "msg_locale";
 	SET	@validStart	= DATE(IFNULL(old.creationDate,CURRENT_DATE));
 	SET	@validFinish	= DATE(IFNULL(old.updateDate,"9999-12-31"));
+	SET	@username	= CURRENT_USER();
 
 	IF
 		LOCATE("pics", @username)	> 0

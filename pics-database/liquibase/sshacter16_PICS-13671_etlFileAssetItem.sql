@@ -1,9 +1,10 @@
 --liquibase formatted sql
 
+--sql:
 --changeset sshacter:16a splitStatements:true endDelimiter:|
 DROP PROCEDURE IF EXISTS etlFileAssetItem;
-
---changeset sshacter:16b splitStatements:true endDelimiter:|
+--sql:
+--changeset sshacter:16b splitStatements:false endDelimiter:|
 CREATE DEFINER=`pics_admin`@`%` PROCEDURE etlFileAssetItem
 (
 	_fileAssetID	INT(11)

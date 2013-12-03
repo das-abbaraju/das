@@ -1,8 +1,9 @@
 --liquibase formatted sql
 
+--sql:
 --changeset sshacter:14a splitStatements:true endDelimiter:|
 DROP VIEW IF EXISTS vwMsg_Key_Locale;
-
+--sql:
 --changeset sshacter:14b splitStatements:true endDelimiter:|
 CREATE OR REPLACE DEFINER =`pics_admin`@`%` VIEW	vwMsg_Key_Locale
 (
