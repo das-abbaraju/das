@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.models.audits.InsuranceCategoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,14 +22,6 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.BaseHistory;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
@@ -130,6 +123,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					rule.defaultDates();
 					rule.calculatePriority();
 					rule.setAuditColumns(permissions);
+                    rule.setYearToCheck(PastAuditYear.Any);
 					adtDAO.save(rule);
 				}
 				auditTypeRuleCache.clear();
