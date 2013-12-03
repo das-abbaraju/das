@@ -6,7 +6,29 @@
  * @author: Joel Brownell
  * @date: 2013-02-06
  */
-/*
+/* line 42, ../sass/_defaults.scss */
+body {
+  color: #454545;
+}
+
+/* line 47, ../sass/_defaults.scss */
+figure {
+  margin: 0;
+}
+
+/* line 52, ../sass/_defaults.scss */
+a {
+  color: #226396;
+}
+
+/* line 58, ../sass/_defaults.scss */
+a:hover,
+a:focus {
+  color: #73bbe8;
+  text-decoration: none;
+}
+
+/*!
  * Bootstrap v2.2.2
  *
  * Copyright 2012 Twitter, Inc
@@ -476,7 +498,7 @@
   float: right;
 }
 
-/*
+/*!
  * Bootstrap v2.2.2
  *
  * Copyright 2012 Twitter, Inc
@@ -562,7 +584,7 @@
   clear: both;
 }
 
-/*
+/*!
  * Bootstrap v2.2.2
  *
  * Copyright 2012 Twitter, Inc
@@ -1264,7 +1286,7 @@
   background-color: #000000 \9;
 }
 
-/*
+/*!
  * Bootstrap v2.2.2
  *
  * Copyright 2012 Twitter, Inc
@@ -1776,7 +1798,7 @@
   cursor: default;
 }
 
-/*
+/*!
  * Bootstrap v2.2.2
  *
  * Copyright 2012 Twitter, Inc
@@ -2073,7 +2095,7 @@
   border-radius: 4px;
 }
 
-/*
+/*!
  * Bootstrap v2.2.2
  *
  * Copyright 2012 Twitter, Inc
@@ -2719,7 +2741,7 @@ input[type="color"],
   }
 }
 /* Import form styles and overrides */
-/*
+/*!
  * Bootstrap v2.2.2
  *
  * Copyright 2012 Twitter, Inc
@@ -3264,5 +3286,133 @@ body {
   /* line 31, ../sass/override/_override.scss */
   body {
     padding-top: 0;
+  }
+}
+/* line 1, ../sass/_secondary-navigation.scss */
+#secondary_navigation {
+  top: 50px;
+  background: #2c3f50;
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #34495e), color-stop(100%, #2c3f50));
+  background-image: -webkit-linear-gradient(to bottom, #34495e, #2c3f50);
+  background-image: -moz-linear-gradient(to bottom, #34495e, #2c3f50);
+  background-image: -o-linear-gradient(to bottom, #34495e, #2c3f50);
+  background-image: linear-gradient(to bottom, #34495e, #2c3f50);
+  border-bottom: 2px solid #1a1a1a;
+  height: 28px;
+  z-index: 100;
+  /* END dropdown menu */
+}
+/* line 9, ../sass/_secondary-navigation.scss */
+#secondary_navigation .navbar-inner {
+  background: none;
+  border: 0;
+  margin-bottom: 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0) 0 0 0;
+  -moz-box-shadow: rgba(0, 0, 0, 0) 0 0 0;
+  box-shadow: rgba(0, 0, 0, 0) 0 0 0;
+}
+/* line 17, ../sass/_secondary-navigation.scss */
+#secondary_navigation .nav > li > a {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  color: #f1f1f2;
+  text-shadow: none;
+}
+/* line 24, ../sass/_secondary-navigation.scss */
+#secondary_navigation .nav > li > a:hover {
+  color: #fff;
+}
+/* line 29, ../sass/_secondary-navigation.scss */
+#secondary_navigation .nav li.dropdown.open > .dropdown-toggle {
+  background: #2c3f50;
+  border-top: 2px solid #bcbcbc;
+  color: #fff;
+}
+/* line 36, ../sass/_secondary-navigation.scss */
+#secondary_navigation nav .dropdown-menu li a:link,
+#secondary_navigation nav .dropdown-menu li a:visited {
+  color: #454545;
+  text-decoration: none;
+}
+/* line 41, ../sass/_secondary-navigation.scss */
+#secondary_navigation nav .dropdown-menu li a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+/* line 46, ../sass/_secondary-navigation.scss */
+#secondary_navigation nav a:hover {
+  color: #73bbe8;
+  text-decoration: none;
+}
+/* line 51, ../sass/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu {
+  border: 0px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+}
+/* line 59, ../sass/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu li > a:hover,
+#secondary_navigation .dropdown-menu .active > a,
+#secondary_navigation .dropdown-menu .active > a:hover {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3498db), color-stop(100%, #2980b9));
+  background-image: -webkit-linear-gradient(#3498db, #2980b9);
+  background-image: -moz-linear-gradient(#3498db, #2980b9);
+  background-image: -o-linear-gradient(#3498db, #2980b9);
+  background-image: linear-gradient(#3498db, #2980b9);
+}
+/* line 63, ../sass/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu .divider {
+  background-color: #e6e6e6;
+  border-bottom: 1px solid #ffffff;
+  height: 2px;
+  margin: 9px 1px;
+  overflow: hidden;
+}
+/* line 71, ../sass/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu .nav-header {
+  color: #cccccc;
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 20px;
+  margin-top: 9px;
+  padding: 3px 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-transform: uppercase;
+}
+/* line 84, ../sass/_secondary-navigation.scss */
+#secondary_navigation .nav li + .nav-header {
+  margin-top: 9px;
+}
+/* line 92, ../sass/_secondary-navigation.scss */
+#secondary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
+#secondary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
+#secondary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
+  background-color: #3f93c0 \9;
+  background-color: #3f93c0;
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #fff;
+}
+
+@media (min-width: 992px) {
+  /* line 103, ../sass/_secondary-navigation.scss */
+  body.has-contractor-menu {
+    padding-top: 85px;
+  }
+  /* line 106, ../sass/_secondary-navigation.scss */
+  body.has-contractor-menu #primary_navigation {
+    border-bottom: none;
+    height: 50px;
   }
 }

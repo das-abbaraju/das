@@ -271,8 +271,9 @@
 		</action>
 
 		<action name="Menu" class="com.picsauditing.access.Menu">
-			<result>/struts/layout/menu/_menu.jsp</result>
-			<result name="contractor-menu">/struts/layout/menu/_contractor-menu.jsp</result>
+			<result>/struts/layout/menu/bootstrap2/_menu.jsp</result>
+            <result name="bootstrap3">/struts/layout/menu/bootstrap3/_menu.jsp</result>
+            <result name="mobile-menu">/struts/layout/menu/mobile/_mobile-menu.jsp</result>
 		</action>
 
 		<action name="Contact" class="com.picsauditing.access.Contact">

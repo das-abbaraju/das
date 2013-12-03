@@ -3,20 +3,22 @@
     background: #2c3f50;
     @include background-image(linear-gradient(to bottom, #34495e, #2c3f50));
     border-bottom: 2px solid #1a1a1a;
-    height: 30px;
+    height: 28px;
     z-index: 100;
 
-    .navbar {
+    .navbar-inner {
       background: none;
       border: 0;
       margin-bottom: 0;
+      @include box-shadow(rgba(0, 0, 0, 0) 0 0 0);
     }
 
-    .navbar-nav > li > {
+    .nav > li > {
         a {
-            padding-top: 5px;
-            padding-bottom: 5px;
+            padding-top: 4px;
+            padding-bottom: 4px;
             color: #f1f1f2;
+            text-shadow: none;
         }
 
         a:hover {
@@ -28,23 +30,20 @@
         background: #2c3f50;
         border-top: 2px solid #bcbcbc;
         color: #fff;
-        height: 30px;
     }
 
-/* TODO: Customize the styles below */;
-
-    .navbar .dropdown-menu li a:link,
-    .navbar .dropdown-menu li a:visited {
+    nav .dropdown-menu li a:link,
+    nav .dropdown-menu li a:visited {
         color: #454545;
         text-decoration: none;
     }
 
-    .navbar .dropdown-menu li a:hover {
+    nav .dropdown-menu li a:hover {
         color: #ffffff;
         text-decoration: none;
     }
 
-    .navbar a:hover {
+    nav a:hover {
         color: $pics_light_blue;
         text-decoration: none;
     }
@@ -53,7 +52,6 @@
         border: 0px;
         @include border-radius(5px);
         @include box-shadow(rgba(0, 0, 0, 0.2) 0 1px 6px);
-        top: 35px;
     }
 
     .dropdown-menu li > a:hover,
@@ -103,17 +101,11 @@
 
 @media (min-width: 992px) {
     body.has-contractor-menu {
-        padding-top: 80px;
+        padding-top: 85px;
 
         #primary_navigation {
             border-bottom: none;
             height: 50px;
         }
-    }
-}
-
-@media (max-width: 991px) {
-    #secondary_navigation {
-        display: none;
     }
 }
