@@ -180,6 +180,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			}
 		}
 
+        updateSafetySensitivity();
+
 		contractor.setTradesUpdated(new Date());
 		contractorAccountDao.save(contractor);
 
@@ -189,7 +191,19 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return "trade";
 	}
 
-	public String removeTradeAjax() {
+    private void updateSafetySensitivity() {
+        if (!contractor.isSafetySensitive()) {
+            for (ContractorTrade contractorTrade : contractor.getTrades()) {
+                if (contractorTrade.getTrade().isSafetySensitive()) {
+                    contractor.setSafetySensitive(true);
+
+                    return;
+                }
+            }
+        }
+    }
+
+    public String removeTradeAjax() {
 		contractor.getTrades().remove(trade);
 		tradeDAO.remove(trade);
 
