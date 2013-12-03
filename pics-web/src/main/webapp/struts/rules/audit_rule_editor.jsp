@@ -369,22 +369,44 @@
 									cssClass="inline"
 								/>
 							</li>
+                            <li>
+                                <label>Safety Sensitive</label>
+                                <div class="nobr">
+                                    <s:radio
+                                            name="rule.safetySensitive"
+                                            list="#{'':'Any',false:'Not Safety Sensitive',true:'Safety Sensitive'}"
+                                            theme="pics"
+                                            cssClass="inline"
+                                            />
+                                </div>
+                            </li>
 							<li>
 								<label>Safety Risk</label>
 								<div class="nobr">
 									<s:radio 
 										name="rule.safetyRisk" 
-										list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"
+										list="#{'':'Any','Low':'Low','Med':'Medium (Safety Sensitive)','High':'High (Safety Sensitive)'}"
 										theme="pics"
 										cssClass="inline"
 									/>
 								</div>
 							</li>
+                            <li>
+                                <label>Product Risk</label>
+                                <div class="nobr">
+                                    <s:radio
+                                            name="rule.productRisk"
+                                            list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"
+                                            theme="pics"
+                                            cssClass="inline"
+                                            />
+                                </div>
+                            </li>
 							<li>
-								<label>Product Risk</label>
+								<label>Trade Safety Risk</label>
 								<div class="nobr">
 									<s:radio 
-										name="rule.productRisk" 
+										name="rule.tradeSafetyRisk"
 										list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"
 										theme="pics"
 										cssClass="inline"

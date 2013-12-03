@@ -53,7 +53,11 @@ function deleteRule(element,ruleID) {
 				<s:if test="columnMap.get('contractorType')">
 					<th title="Onsite/Offsite/Supplier">Type</th>
 				</s:if>
-				
+
+                <s:if test="columnMap.get('safetySensitive')">
+                    <th title="Safety Sensiive">Sensitive</th>
+                </s:if>
+
 				<s:if test="columnMap.get('safetyRisk')">
 					<th title="Safety Critical">Safety</th>
 				</s:if>
@@ -69,8 +73,12 @@ function deleteRule(element,ruleID) {
 				<s:if test="columnMap.get('trade')">
 					<th><s:text name="Trade" /></th>
 				</s:if>
-				
-				<s:if test="columnMap.get('accountLevel')">
+
+                <s:if test="columnMap.get('tradeSafetyRisk')">
+                    <th>Trade Safety</th>
+                </s:if>
+
+                <s:if test="columnMap.get('accountLevel')">
 					<th title="Bid Only, List Only, or Full Account">List</th>
 				</s:if>
 				
@@ -174,7 +182,13 @@ function deleteRule(element,ruleID) {
 							<s:property value="contractorTypeLabel"/>
 						</td>
 					</s:if>
-					
+
+                    <s:if test="columnMap.get('safetySensitive')">
+                        <td>
+                            <s:property value="safetySensitiveLabel"/>
+                        </td>
+                    </s:if>
+
 					<s:if test="columnMap.get('safetyRisk')">
 						<td>
 							<s:property value="safetyRiskLabel"/>
@@ -198,7 +212,13 @@ function deleteRule(element,ruleID) {
 							<s:property value="tradeLabel" />
 						</td>
 					</s:if>
-					
+
+                    <s:if test="columnMap.get('tradeSafetyRisk')">
+                        <td>
+                            <s:property value="tradeSafetyRiskLabel"/>
+                        </td>
+                    </s:if>
+
 					<s:if test="columnMap.get('bidOnly')">
 						<td>
 							<s:property value="acceptsBidsLabel"/>
