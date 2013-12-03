@@ -63,4 +63,6 @@
 	<!-- Release 6.67 --> 
     <include file="./liquibase/sshacter13_FixEmailSubscription.sql"/>
 
+	<!-- Rlease 6.68 --> 
+    <include file="./liquibase/pschlesinger9_PICS-13683_CorrectDueDates.sql"/>
 </databaseChangeLog>
