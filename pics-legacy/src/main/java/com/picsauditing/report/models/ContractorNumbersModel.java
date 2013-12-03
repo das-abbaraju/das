@@ -10,6 +10,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorNumberTable;
 import com.picsauditing.report.tables.ContractorTable;
+import com.picsauditing.report.tables.OperatorTable;
 
 
 public class ContractorNumbersModel extends AbstractModel {
@@ -20,6 +21,9 @@ public class ContractorNumbersModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec contractorNumber = new ModelSpec(null, "OperatorContractorNumber");
+
+        ModelSpec operator = contractorNumber.join(ContractorNumberTable.Operator);
+        operator.join(OperatorTable.Account);
 
 		ModelSpec contractor = contractorNumber.join(ContractorNumberTable.Contractor);
 		contractor.alias = "Contractor";
