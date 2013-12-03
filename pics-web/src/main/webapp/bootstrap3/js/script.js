@@ -11094,12 +11094,13 @@ the specific language governing permissions and limitations under the Apache Lic
             }).html([
                 "<a href='javascript:void(0)' onclick='return false;' class='select2-choice' tabindex='-1'>",
                 "   <span class='select2-chosen'>&nbsp;</span><abbr class='select2-search-choice-close'></abbr>",
-                "   <span class='select2-arrow'><b></b></span>",
+                "   <span class='select2-arrow'><i class='icon-caret-down'></i></span>",
                 "</a>",
                 "<input class='select2-focusser select2-offscreen' type='text'/>",
                 "<div class='select2-drop select2-display-none'>",
                 "   <div class='select2-search'>",
                 "       <input type='text' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' class='select2-input'/>",
+                "       <i class='icon-search'></i>",
                 "   </div>",
                 "   <ul class='select2-results'>",
                 "   </ul>",
@@ -12092,7 +12093,9 @@ the specific language governing permissions and limitations under the Apache Lic
                 enabledItem = $(
                     "<li class='select2-search-choice'>" +
                     "    <div></div>" +
-                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'></a>" +
+                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'>" +
+                    "       <i class='icon-remove'></i>" +
+                    "    </a>" +
                     "</li>"),
                 disabledItem = $(
                     "<li class='select2-search-choice select2-locked'>" +
@@ -15667,20 +15670,6 @@ PICS.define('select2.Select2', {
     methods: (function () {
         function init() {
             createSelect2Element();
-            overrideSelect2Icons();
-            $('body').on('change', '.select2', addTagCloseIcon);
-        }
-
-        function addTagCloseIcon(event) {
-            var $element = $(event.target),
-                $select2_container = $element.siblings('.select2'),
-                $select2_close = $select2_container.find('.select2-search-choice-close');
-
-            $select2_close.each(function() {
-                if ($(this).find('i').length <= 0) {
-                    $(this).append('<i class="icon-remove"></i>');
-                }
-            });
         }
 
         function createSelect2Element() {
@@ -15689,21 +15678,17 @@ PICS.define('select2.Select2', {
 
             if (select2Min.length) {
                 select2Min.select2({
-                    minimumResultsForSearch: -1
+                    minimumResultsForSearch: -1,
+                    width: 'resolve'
+                });
+            }
+            if (select2Default.length) {
+                $('.select2').select2({
+                    width: 'resolve'
                 });
             }
 
-            if (select2Default.length) {
-                $('.select2').select2();
-            }
-
             $('.select2').trigger('intialized.select2');
-        }
-
-        function overrideSelect2Icons() {
-            $('.select2-arrow b').remove();
-            $('.select2-arrow').append('<i class="icon-caret-down"></i>');
-            $('.select2-search-choice-close').append('<i class="icon-remove"></i>');
         }
 
         return {
