@@ -18,6 +18,7 @@ public class RuleFilter {
     public Set<Boolean> safetySensitives = new HashSet<Boolean>();
 	public Set<LowMedHigh> safetyRisks = new HashSet<LowMedHigh>();
 	public Set<LowMedHigh> productRisks = new HashSet<LowMedHigh>();
+    public Set<LowMedHigh> tradeSafetyRisks = new HashSet<LowMedHigh>();
 	public Set<ContractorType> contractorType = new HashSet<ContractorType>();
 	public Set<Boolean> soleProprietors = new HashSet<Boolean>();
 	public Set<AccountLevel> accountLevels = new HashSet<AccountLevel>();
@@ -45,8 +46,10 @@ public class RuleFilter {
 		accountLevels.add(contractor.getAccountLevel());
 
 		trades.add(null);
+        tradeSafetyRisks.add(null);
 		for (ContractorTrade ct : contractor.getTrades()) {
 			trades.add(ct.getTrade());
+            tradeSafetyRisks.add(ct.getTrade().getSafetyRiskI());
 		}
 
 		operators.add(null);

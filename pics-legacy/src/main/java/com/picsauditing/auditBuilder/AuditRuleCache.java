@@ -78,12 +78,12 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 		}
 	}
 
-	protected class ProductRisks extends RuleCacheLevel<LowMedHigh, AccountLevels, R> {
+	protected class ProductRisks extends RuleCacheLevel<LowMedHigh, TradeSafetyRisks, R> {
 
 		public void add(R rule) {
-			AccountLevels map = data.get(rule.getProductRisk());
+			TradeSafetyRisks map = data.get(rule.getProductRisk());
 			if (map == null) {
-				map = new AccountLevels();
+				map = new TradeSafetyRisks();
 				data.put(rule.getProductRisk(), map);
 			}
 			map.add(rule);
@@ -93,16 +93,38 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (LowMedHigh risk : contractor.productRisks) {
-				AccountLevels accountLevels = data.get(risk);
-				if (accountLevels != null)
-					rules.addAll(accountLevels.next(contractor));
+				TradeSafetyRisks TradeSafetyRisks = data.get(risk);
+				if (TradeSafetyRisks != null)
+					rules.addAll(TradeSafetyRisks.next(contractor));
 			}
 			return rules;
 		}
-
 	}
 
-	protected class AccountLevels extends RuleCacheLevel<AccountLevel, ContractorTypes, R> {
+    protected class TradeSafetyRisks extends RuleCacheLevel<LowMedHigh, AccountLevels, R> {
+
+        public void add(R rule) {
+            AccountLevels map = data.get(rule.getTradeSafetyRisk());
+            if (map == null) {
+                map = new AccountLevels();
+                data.put(rule.getTradeSafetyRisk(), map);
+            }
+            map.add(rule);
+        }
+
+        @Override
+        public List<R> next(RuleFilter contractor) {
+            List<R> rules = new ArrayList<R>();
+            for (LowMedHigh risk : contractor.tradeSafetyRisks) {
+                AccountLevels accountLevels = data.get(risk);
+                if (accountLevels != null)
+                    rules.addAll(accountLevels.next(contractor));
+            }
+            return rules;
+        }
+    }
+
+    protected class AccountLevels extends RuleCacheLevel<AccountLevel, ContractorTypes, R> {
 
 		public void add(R rule) {
 			ContractorTypes map = data.get(rule.getAccountLevel());

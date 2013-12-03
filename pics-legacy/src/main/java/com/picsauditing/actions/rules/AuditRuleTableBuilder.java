@@ -67,8 +67,10 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("contractorType", true);
 		if (rule.getOperatorAccount() != null)
 			columnMap.put("operatorAccount", true);
-		if (rule.getSafetyRisk() != null)
-			columnMap.put("safetyRisk", true);
+		if (rule.getSafetySensitive() != null)
+			columnMap.put("safetySensitive", true);
+        if (rule.getSafetyRisk() != null)
+            columnMap.put("safetyRisk", true);
 		if (rule.getProductRisk() != null)
 			columnMap.put("productRisk", true);
 		if (rule.getTag() != null)
@@ -79,6 +81,8 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("question", true);
 		if (rule.getTrade() != null)
 			columnMap.put("trade", true);
+        if (rule.getTradeSafetyRisk() != null)
+            columnMap.put("tradeSafetyRisk", true);
 		if (rule.getSoleProprietor() != null)
 			columnMap.put("soleProprietor", true);
 		if (isCanEditRule(rule))

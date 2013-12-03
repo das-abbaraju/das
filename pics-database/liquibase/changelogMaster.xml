@@ -53,13 +53,16 @@
     <include file="./liquibase/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql"/>
     <include file="./liquibase/sshacter10_PICS-12562_AccountsNAICtoNULL.sql"/>
 
-	<!-- Release 6.67 --> 
     <include file="./liquibase/kchase10_PICS-13610_SSForAuditRules.sql"/>
     <include file="./liquibase/mdo9_PICS-13604_SS.sql"/>
     <include file="./liquibase/mdo10_PICS-13606_SS_populate.sql"/>
     <include file="./liquibase/mdo11_PICS-13606_SS_trades_populate.sql"/>
     <include file="./liquibase/mdo12_PICS-13617_SS_trades_nullable.sql"/>
     <include file="./liquibase/dalvarado6_PICS-13611_Add_rules_for_SS.sql"/>
+
+	<!-- Release 6.67 --> 
     <include file="./liquibase/sshacter13_FixEmailSubscription.sql"/>
 
+	<!-- Rlease 6.68 --> 
+    <include file="./liquibase/pschlesinger9_PICS-13683_CorrectDueDates.sql"/>
 </databaseChangeLog>

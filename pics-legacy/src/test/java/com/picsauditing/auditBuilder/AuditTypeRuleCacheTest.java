@@ -54,6 +54,55 @@ public class AuditTypeRuleCacheTest extends PicsTest {
     }
 
     @Test
+    public void testGetRules_tradeSafetyRisk() throws Exception {
+        List<AuditTypeRule> results;
+
+        AuditTypeRule rule = new AuditTypeRule();
+        rule.setAuditType(EntityFactory.makeAuditType());
+        rules.add(rule);
+
+        when(contractor.isSafetySensitive()).thenReturn(false);
+        when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.None);
+        when(contractor.getProductRisk()).thenReturn(LowMedHigh.None);
+        when(contractor.getSoleProprietor()).thenReturn(false);
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+
+        addTradeByTradeSafetyRisk(LowMedHigh.High);
+
+        // no match
+        rule.setTradeSafetyRisk(LowMedHigh.Med);
+        ruleCache.clear();
+        ruleCache.initialize();
+        results = ruleCache.getRules(contractor);
+        assertEquals(0, results.size());
+
+        // match
+        rule.setTradeSafetyRisk(LowMedHigh.High);
+        ruleCache.clear();
+        ruleCache.initialize();
+        results = ruleCache.getRules(contractor);
+        assertEquals(1, results.size());
+
+        // wild card
+        rule.setTradeSafetyRisk(null);
+        ruleCache.clear();
+        ruleCache.initialize();
+        results = ruleCache.getRules(contractor);
+        assertEquals(1, results.size());
+    }
+
+    private void addTradeByTradeSafetyRisk(LowMedHigh risk) {
+        Trade trade = new Trade();
+        trade.setSafetyRisk(risk);
+
+        ContractorTrade ct = new ContractorTrade();
+        ct.setContractor(contractor);
+        ct.setTrade(trade);
+
+        trades.add(ct);
+    }
+
+    @Test
     public void testGetRules_NoRules() throws Exception {
         List<AuditTypeRule> results;
 
@@ -188,15 +237,18 @@ public class AuditTypeRuleCacheTest extends PicsTest {
         AuditTypeRule sensitiveRule = new AuditTypeRule();
         AuditTypeRule product1Rule = new AuditTypeRule();
         AuditTypeRule product2Rule = new AuditTypeRule();
+        AuditTypeRule tradeSafetyRule = new AuditTypeRule();
 
         safetyRule.setAuditType(EntityFactory.makeAuditType());
-        safetyRule.setAuditType(EntityFactory.makeAuditType());
-        safetyRule.setAuditType(EntityFactory.makeAuditType());
-        safetyRule.setAuditType(EntityFactory.makeAuditType());
+        sensitiveRule.setAuditType(EntityFactory.makeAuditType());
+        product1Rule.setAuditType(EntityFactory.makeAuditType());
+        product2Rule.setAuditType(EntityFactory.makeAuditType());
+        tradeSafetyRule.setAuditType(EntityFactory.makeAuditType());
         rules.add(safetyRule);
         rules.add(sensitiveRule);
         rules.add(product1Rule);
         rules.add(product2Rule);
+        rules.add(tradeSafetyRule);
 
         safetyRule.setSafetyRisk(LowMedHigh.Med);
 
@@ -211,6 +263,12 @@ public class AuditTypeRuleCacheTest extends PicsTest {
         product2Rule.setSafetySensitive(null);
         product2Rule.setProductRisk(LowMedHigh.Med);
 
+        tradeSafetyRule.setSafetyRisk(null);
+        tradeSafetyRule.setSafetySensitive(null);
+        tradeSafetyRule.setProductRisk(null);
+        tradeSafetyRule.setTradeSafetyRisk(LowMedHigh.Med);
+
+        addTradeByTradeSafetyRisk(LowMedHigh.High);
         when(contractor.isSafetySensitive()).thenReturn(false);
         when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractor.getProductRisk()).thenReturn(LowMedHigh.High);
@@ -246,6 +304,16 @@ public class AuditTypeRuleCacheTest extends PicsTest {
         ruleCache.initialize();
         results = ruleCache.getRules(contractor);
         assertEquals(2, results.size());
+
+        // match trade safety
+        addTradeByTradeSafetyRisk(LowMedHigh.Med);
+        when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.High);
+        when(contractor.isSafetySensitive()).thenReturn(false);
+        when(contractor.getProductRisk()).thenReturn(LowMedHigh.High);
+        ruleCache.clear();
+        ruleCache.initialize();
+        results = ruleCache.getRules(contractor);
+        assertEquals(1, results.size());
     }
 
     @Test
@@ -255,15 +323,14 @@ public class AuditTypeRuleCacheTest extends PicsTest {
         AuditTypeRule rule = new AuditTypeRule();
 
         rule.setAuditType(EntityFactory.makeAuditType());
-        rule.setAuditType(EntityFactory.makeAuditType());
-        rule.setAuditType(EntityFactory.makeAuditType());
-        rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
         rule.setSafetyRisk(LowMedHigh.Med);
         rule.setSafetySensitive(true);
         rule.setProductRisk(LowMedHigh.Med);
+        rule.setTradeSafetyRisk(LowMedHigh.Med);
 
+        addTradeByTradeSafetyRisk(LowMedHigh.High);
         when(contractor.isSafetySensitive()).thenReturn(false);
         when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractor.getProductRisk()).thenReturn(LowMedHigh.High);
@@ -290,8 +357,15 @@ public class AuditTypeRuleCacheTest extends PicsTest {
         results = ruleCache.getRules(contractor);
         assertEquals(0, results.size());
 
-        // everything matches
+        // product matches
         when(contractor.getProductRisk()).thenReturn(LowMedHigh.Med);
+        ruleCache.clear();
+        ruleCache.initialize();
+        results = ruleCache.getRules(contractor);
+        assertEquals(0, results.size());
+
+        // everything matches
+        addTradeByTradeSafetyRisk(LowMedHigh.Med);
         ruleCache.clear();
         ruleCache.initialize();
         results = ruleCache.getRules(contractor);
