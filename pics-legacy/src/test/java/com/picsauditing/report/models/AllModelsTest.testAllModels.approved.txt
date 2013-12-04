@@ -673,6 +673,8 @@ AccountOnsiteServices
 AccountStatus
 AccountTimezone
 AccountTransportationServices
+ContractorFlagBaselineFlag
+ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
 ContractorFlagNetworkLevel
@@ -735,6 +737,8 @@ AccountOnsiteServices
 AccountStatus
 AccountTimezone
 AccountTransportationServices
+ContractorFlagBaselineFlag
+ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
 ContractorFlagNetworkLevel

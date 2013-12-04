@@ -18,7 +18,7 @@ public class ContractorOperatorTable extends AbstractTable {
 		addFields(ContractorOperator.class);
 
         Field creationDate = addCreationDate();
-        creationDate.setImportance(FieldImportance.Low);
+        creationDate.setImportance(FieldImportance.Average);
 
 		String networkLevelDatabaseColumn = "";
 		{
