@@ -17,7 +17,7 @@ public class AddressHolder {
                 + " " + city
                 + " " + stateOrProvince
                 + " " + zipOrPostalCode
-                + " " + resultStatus;
+                + " " + country;
     }
 
     public void setAddressLine1(String addressLine1) {

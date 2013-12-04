@@ -2,14 +2,10 @@ package com.picsauditing.service.addressverifier;
 
 import com.strikeiron.www.Address;
 import com.strikeiron.www.GlobalAddressVerifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.rpc.ServiceException;
 
 public class StrikeIronAddressVerificationService extends AddressVerificationService {
-    private static final Logger logger = LoggerFactory.getLogger(StrikeIronAddressVerificationService.class);
-    public static final String ERROR_MESSAGE = "Error verifying address: {}";
 
     private GlobalAddressVerifier globalAddressVerifier;
 
@@ -33,14 +29,10 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
                     address.getCountry(),
                     address.getZipOrPostalCode());
         } catch (ServiceException e) {
-            logger.error(ERROR_MESSAGE, address.toString());
-            logger.error(e.getMessage());
-            throw new AddressVerificationException(e.getMessage());
+            throw new AddressVerificationException(e.getMessage(), e, address);
         }
         if (verified.getStatusNbr() >= 500) {
-            logger.error(ERROR_MESSAGE, address.toString());
-            logger.error(verified.getStatusDescription());
-            throw new AddressVerificationException(verified.getStatusDescription());
+            throw new AddressVerificationException(verified.getStatusDescription(), address);
         }
 
         correctedAddress.setAddressLine1(verified.getStreetAddressLines());
