@@ -25,3 +25,5 @@
             <a href="#mobile_menu_navigation"><i class="icon-reorder"></i></a>
             <a href="#mobile_menu_search" class="right"><i class="icon-search"></i></a>
         </div>
+    </div>
+</div>

@@ -17,6 +17,7 @@ module.exports = function(grunt) {
         files: [
             'js/strict-mode.js',
             'js/vendor/jquery/jquery-1.9.1.min.js',
+            //Why was this commented out???
 //            'js/vendor/jquery/jquery-ui-1.10.3.custom.js',
             'js/vendor/jquery/jquery-ui.js',
             'js/vendor/bootstrap/bootstrap.js',
@@ -35,8 +36,7 @@ module.exports = function(grunt) {
             'js/vendor/moment.js',
             'js/plugins.js',
             'js/core.js',
-            'js/pics/**/*.js',
-            'js/main.js'
+            'js/pics/**/*.js'
         ]
     },
 

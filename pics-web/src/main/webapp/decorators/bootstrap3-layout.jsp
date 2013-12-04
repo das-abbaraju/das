@@ -26,21 +26,20 @@
 <%--<body id="${actionName}_${methodName}_page" class="${actionName}-page page">--%>
 <body id="${uniquePageId}_page" class="${pageId}-page page ${has_contractor_menu_class}" data-spy="scroll" data-offset-top="200" data-target="#side-navigation">
 
-<header>
-    <s:action name="Menu!bootstrap3Menu" executeResult="true" />
-</header>
+<div id="main" role="main">
+    <header>
+        <s:action name="Menu!bootstrap3Menu" executeResult="true" />
+        <s:action name="Menu!mobileMenu" executeResult="true" />
+    </header>
 
-<s:action name="Menu!mobileMenu" executeResult="true" />
-        <div id="main" role="main" class="container">
-            <decorator:body />
-        </div>
+    <div class="container">
+        <decorator:body />
     </div>
+
+    <footer>
+        <s:include value="/struts/layout/_environment.jsp" />
+    </footer>
 </div>
-
-<footer>
-    <s:include value="/struts/layout/_environment.jsp" />
-</footer>
-
 <%-- include javascript translations --%>
 <s:action name="TranslateJS2" executeResult="true" />
 
