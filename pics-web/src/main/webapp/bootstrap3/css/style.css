@@ -9280,7 +9280,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
   font-size: 1px;
   text-decoration: none;
   cursor: pointer;
-  background: url('vendor/select2/select2.png') right top no-repeat;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') right top no-repeat;
   border: 0;
   outline: 0;
 }
@@ -9375,7 +9375,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
   display: block;
   width: 100%;
   height: 100%;
-  background: url('vendor/select2/select2.png') no-repeat 0 1px;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 0 1px;
 }
 
 .select2-search {
@@ -9398,11 +9398,11 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
   margin: 0;
   font-family: sans-serif;
   font-size: 1em;
-  background: #ffffff url('vendor/select2/select2.png') no-repeat 100% -22px;
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+  background: #ffffff url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
   border: 1px solid #aaa;
   border-radius: 0;
   outline: 0;
@@ -9415,11 +9415,11 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 }
 
 .select2-search input.select2-active {
-  background: #ffffff url('vendor/select2/select2-spinner.gif') no-repeat 100%;
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+  background: #ffffff url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%;
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
 }
 
 .select2-container-active .select2-choice,
@@ -9580,7 +9580,7 @@ disabled look for disabled choices in the results dropdown
 }
 
 .select2-more-results.select2-active {
-  background: #f4f4f4 url('vendor/select2/select2-spinner.gif') no-repeat 100%;
+  background: #f4f4f4 url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%;
 }
 
 .select2-more-results {
@@ -9665,7 +9665,7 @@ disabled look for disabled choices in the results dropdown
 }
 
 .select2-container-multi .select2-choices .select2-search-field input.select2-active {
-  background: #ffffff url('vendor/select2/select2-spinner.gif') no-repeat 100% !important;
+  background: #ffffff url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100% !important;
 }
 
 .select2-default {
@@ -9713,7 +9713,7 @@ disabled look for disabled choices in the results dropdown
   width: 12px;
   height: 13px;
   font-size: 1px;
-  background: url('vendor/select2/select2.png') right top no-repeat;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') right top no-repeat;
   outline: none;
 }
 
@@ -9792,7 +9792,7 @@ disabled look for disabled choices in the results dropdown
   .select2-search-choice-close,
   .select2-container .select2-choice abbr,
   .select2-container .select2-choice .select2-arrow b {
-    background-image: url('vendor/select2/select2x2.png') !important;
+    background-image: url('/bootstrap3/css/vendor/select2/select2x2.png') !important;
     background-repeat: no-repeat !important;
     background-size: 60px 40px !important;
   }
@@ -9887,6 +9887,70 @@ disabled look for disabled choices in the results dropdown
 .control-group.success .select2-container .select2-choice div {
   background: #DFF0D8 !important;
   border-left: 1px solid #468847 !important;
+}
+
+/* This file is for any select2 overrides for both v6 and v7 pages.
+   Please put any v7 only styles inside _select2-overrides.scss until this file is no longer needed.
+*/
+
+.select2-container {
+  font-size: 13px;
+}
+
+.select2-drop {
+  z-index: 11000;
+}
+
+.select2-results li {
+  line-height: 16px;
+}
+
+.select2-results {
+  font-size: 13px;
+}
+
+/*Multi Select*/
+
+.select2-container-multi .select2-choices .select2-search-choice {
+  padding: 3px 20px 3px 5px;
+  border-radius: 0;
+}
+
+.select2-container .select2-choices {
+  font-size: 12px;
+  line-height: 12px;
+}
+
+/*Styles for font awesome icons*/
+
+.select2-container .select2-choice .select2-arrow {
+  top: 0;
+  background: none !important;
+  border: 0;
+  border-radius: 0;
+}
+
+.select2-container-multi .select2-search-choice-close {
+  top: 3px;
+  left: auto;
+  background: none !important;
+}
+
+.select2-search .select2-input {
+  padding-right: 5px;
+  padding-left: 25px;
+  background: none !important;
+}
+
+.select2-search .icon-search {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  color: #CCC;
+}
+
+.select2-drop-above .select2-search .icon-search {
+  top: 9px;
 }
 
 .com {
@@ -10833,7 +10897,11 @@ body {
   color: #808285;
 }
 
-/* line 1, ../sass/pics/plugins/_select2-overrides.scss */
+/* This is for any select2 overrides that need sass vars or functions for "v7" pages only.
+   Please put any "global" overrides for select2 in select2-override.css until that file is no longer needed.
+*/
+
+/* line 4, ../sass/pics/plugins/_select2-overrides.scss */
 
 .form-control.select2-container {
   color: #454545;
@@ -10841,20 +10909,30 @@ body {
 
 /*Single Select*/
 
-/* line 6, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 9, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-results .select2-highlighted {
   background: -webkit-linear-gradient(#3498db, #2980b9);
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
 }
 
-/* line 11, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 14, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-drop-active {
   border-color: #73bbe8;
 }
 
-/* line 16, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 18, ../sass/pics/plugins/_select2-overrides.scss */
+
+.select2-container-active {
+  border-color: #73bbe8;
+  outline: 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
+     -moz-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
+          box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
+}
+
+/* line 25, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container.form-control.select2-dropdown-open {
   border-color: #73bbe8;
@@ -10864,69 +10942,44 @@ body {
           box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
 
-/* line 22, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 31, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container .select2-choice {
   height: 34px;
-  padding: 6px 12px;
+  padding: 8px 18px 8px 12px;
+  font-size: 14px;
   line-height: inherit;
   color: #454545;
   background: none;
 }
 
-/* line 29, ../sass/pics/plugins/_select2-overrides.scss */
-
-.select2-container .select2-choice b {
-  display: none;
-}
-
-/* line 33, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 39, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container .select2-choice .select2-arrow {
   top: 7px;
   color: #999999;
-  background: none;
-  border: 0;
 }
 
 /*Multi Select*/
 
-/* line 44, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 48, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice {
-  padding: 3px 20px 3px 5px;
-  background: none;
   background-color: #e6e6e6;
   border: 1px solid #cccccc;
-  border-radius: 0;
 }
 
-/* line 51, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 52, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice a {
   font-size: 12px;
   color: #999999;
 }
 
-/* line 55, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 56, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice a:hover {
   color: #c0392b;
-}
-
-/* line 62, ../sass/pics/plugins/_select2-overrides.scss */
-
-.select2-container-multi .select2-search-choice-close {
-  top: 3px;
-  left: auto;
-  background: none;
-}
-
-/* line 69, ../sass/pics/plugins/_select2-overrides.scss */
-
-.select2-container .select2-choices {
-  font-size: 12px;
-  line-height: 12px;
 }
 
 /* line 5, ../sass/pics/employee-guard/mixins/_employee-guard-delete-confirmation.scss */
@@ -11002,7 +11055,7 @@ body {
   }
 }
 
-/* line 3, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 2, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 
 .employee-guard-list {
   padding-left: 0;
@@ -11011,13 +11064,55 @@ body {
   list-style: none;
 }
 
-/* line 10, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 8, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 
 .employee-guard-list li {
   display: inline-block;
   padding-top: 5px;
   padding-right: 5px;
   padding-bottom: 5px;
+}
+
+/* line 16, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+
+.employee-guard-list-rollup {
+  padding-left: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  list-style: none;
+}
+
+/* line 22, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+
+.employee-guard-list-rollup li {
+  padding: 5px 0;
+  line-height: 20px;
+}
+
+/* line 26, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+
+.employee-guard-list-rollup li.expired {
+  color: #e74c3c;
+}
+
+/* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+
+.employee-guard-list-rollup li.expiring {
+  color: #f4b400;
+}
+
+/* line 35, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+
+.employee-guard-list-rollup li.complete,
+.employee-guard-list-rollup li.pending {
+  color: #33b679;
+}
+
+/* line 39, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+
+.employee-guard-list-rollup li .assigned-count {
+  font-size: 20px;
+  font-weight: bold;
 }
 
 /* line 3, ../sass/pics/employee-guard/mixins/_employee-guard-pagination.scss */
@@ -11434,19 +11529,25 @@ body {
   cursor: pointer;
 }
 
-/* line 8, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 6, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+
+#employee_assignment.view-only tr {
+  cursor: auto;
+}
+
+/* line 12, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tr.assigned .assign-employee {
   background-color: #fbcb43;
 }
 
-/* line 11, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 15, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tr.assigned .assign-employee a {
   color: #ec8c00;
 }
 
-/* line 17, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 21, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tr.assigned .complete,
 #employee_assignment tr.assigned .pending {
@@ -11454,64 +11555,72 @@ body {
   background-color: #d6f0e4;
 }
 
-/* line 22, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 26, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tr.assigned .expiring {
   color: #f4b400;
   background-color: #fef5d9;
 }
 
-/* line 27, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 31, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tr.assigned .expired {
   color: #e74c3c;
   background-color: #fadbd8;
 }
 
-/* line 33, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 37, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:nth-child(odd) td {
   background-color: #f1f1f2;
 }
 
-/* line 37, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 41, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:nth-child(even) td {
   background: none;
 }
 
-/* line 41, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 45, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:hover td {
   background-color: #ebf5fe;
 }
 
-/* line 45, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 49, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:hover td.complete,
 #employee_assignment tbody > tr:hover td.pending {
   color: #33b679;
 }
 
-/* line 49, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 53, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:hover td.expiring {
   color: #f4b400;
 }
 
-/* line 53, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 57, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:hover td.expired {
   color: #e74c3c;
 }
 
-/* line 57, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 61, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:hover td.assign-employee a {
   color: #ec8c00;
 }
 
-/* line 64, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 70, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+
+#employee_assignment tbody > tr td.complete,
+#employee_assignment tbody > tr td.pending,
+#employee_assignment tbody > tr td.expiring #employee_assignment tbody > tr td.expired {
+  text-align: center;
+}
+
+/* line 77, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment td.status,
 #employee_assignment td.assign-employee {
@@ -11519,17 +11628,26 @@ body {
   text-align: center;
 }
 
-/* line 68, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 81, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment td.status a,
 #employee_assignment td.assign-employee a {
   color: #b3b3b3;
 }
 
-/* line 73, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 86, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment td a {
   display: inline;
+}
+
+/* line 96, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+
+#employee_project.table-status .complete,
+#employee_project.table-status .pending,
+#employee_project.table-status .expiring,
+#employee_project.table-status .expired {
+  text-align: center;
 }
 
 /* line 2, ../sass/pics/employee-guard/mixins/_employee-image.scss */
@@ -12846,6 +12964,12 @@ ul.skill-nav a {
   color: #454545;
 }
 
+/* line 1, ../sass/pics/employee-guard/general/_no-value-text.scss */
+
+.no-value {
+  color: #999999;
+}
+
 /* line 1, ../sass/pics/employee-guard/general/_side-navigation.scss */
 
 #side-navigation {
@@ -12968,30 +13092,24 @@ td.number {
   text-align: center;
 }
 
-/* line 51, ../sass/pics/employee-guard/general/_table.scss */
+/* line 53, ../sass/pics/employee-guard/general/_table.scss */
 
-.table-status tbody tr td.status {
-  text-align: center;
-}
-
-/* line 55, ../sass/pics/employee-guard/general/_table.scss */
-
-.table-status tbody tr td.status.complete,
-.table-status tbody tr td.status.pending {
+.table-status tbody tr td.complete,
+.table-status tbody tr td.pending {
   color: #33b679;
   background-color: #d6f0e4;
 }
 
-/* line 60, ../sass/pics/employee-guard/general/_table.scss */
+/* line 58, ../sass/pics/employee-guard/general/_table.scss */
 
-.table-status tbody tr td.status.expiring {
+.table-status tbody tr td.expiring {
   color: #f4b400;
   background-color: #fef5d9;
 }
 
-/* line 65, ../sass/pics/employee-guard/general/_table.scss */
+/* line 63, ../sass/pics/employee-guard/general/_table.scss */
 
-.table-status tbody tr td.status.expired {
+.table-status tbody tr td.expired {
   color: #e74c3c;
   background-color: #fadbd8;
 }
@@ -13007,6 +13125,19 @@ td.number {
 .well-required-for ul {
   padding-left: 0;
   list-style-type: none;
+}
+
+/* line 2, ../sass/pics/employee-guard/operator/role/_role.scss */
+
+.operator-role-projects dt {
+  margin-bottom: 0;
+  text-align: left;
+}
+
+/* line 7, ../sass/pics/employee-guard/operator/role/_role.scss */
+
+.operator-role-projects dd {
+  margin-bottom: 10px;
 }
 
 /* line 1, ../sass/pics/employee-guard/navigation/_left-navigation.scss */

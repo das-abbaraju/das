@@ -1,5 +1,7 @@
 package com.picsauditing.service.i18n;
 
+import com.picsauditing.i18n.service.TranslationService;
+
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;

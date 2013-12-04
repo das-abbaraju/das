@@ -20,10 +20,8 @@ public class ProfileDAO extends BaseEntityDAO<Profile> {
 		try {
 			return (Profile) query.getSingleResult();
 		} catch (Exception exception) {
-			LOG.error("Error finding profile by app_user. App User ID tried was: {}", appUserId);
+			return null;
 		}
-
-		return null;
 	}
 
 }

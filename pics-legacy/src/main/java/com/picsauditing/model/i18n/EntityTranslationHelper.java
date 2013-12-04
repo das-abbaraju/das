@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.i18n.service.TranslationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -19,7 +20,6 @@ import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.jpa.entities.WorkflowState;
 import com.picsauditing.jpa.entities.WorkflowStep;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 

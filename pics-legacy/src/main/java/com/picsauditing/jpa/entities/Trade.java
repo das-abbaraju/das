@@ -5,15 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
 import javax.persistence.EntityResult;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.SecondaryTable;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -22,7 +19,6 @@ import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
 import com.picsauditing.model.i18n.TranslatableString;
-import com.picsauditing.model.i18n.translation.strategy.EmptyTranslationStrategy;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -50,6 +46,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private Boolean service;
 	private Boolean transportation;
 	private Boolean psmApplies;
+    private Boolean safetySensitive;
 	private LowMedHigh productRisk;
 	private LowMedHigh safetyRisk;
 	private LowMedHigh transportationRisk;
@@ -202,7 +199,16 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		}
 	}
 
-	@ReportField(importance = FieldImportance.Low, type = FieldType.LowMedHigh)
+    @ReportField(importance = FieldImportance.Low, type = FieldType.Boolean)
+    public Boolean isSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(Boolean safetySensitive) {
+        this.safetySensitive = safetySensitive;
+    }
+
+    @ReportField(importance = FieldImportance.Low, type = FieldType.LowMedHigh)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
@@ -238,6 +244,28 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	public void setSafetyRisk(LowMedHigh safetyRisk) {
 		this.safetyRisk = safetyRisk;
+	}
+
+    @Transient
+    public YesNo getSafetySensitiveI() {
+        if (safetySensitive == null) {
+            if (Objects.equal(parent, TOP)) {
+                return YesNo.No;
+            } else {
+                return parent.getSafetySensitiveI();
+            }
+        }
+        if (safetySensitive)
+            return YesNo.Yes;
+        return YesNo.No;
+    }
+
+    public void setSafetySensitiveI(YesNo safetySensitive) {
+        if (!Objects.equal(parent, TOP) && safetySensitive == parent.getSafetySensitiveI()) {
+            this.safetySensitive = null;
+        } else {
+            this.safetySensitive = (safetySensitive == YesNo.Yes);
+        }
 	}
 
 	@Transient

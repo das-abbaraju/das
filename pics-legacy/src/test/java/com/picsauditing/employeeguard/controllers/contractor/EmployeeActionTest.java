@@ -4,10 +4,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.database.domain.Identifiable;
-import com.picsauditing.employeeguard.entities.EmailHash;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
@@ -19,6 +16,7 @@ import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
 import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PhotoUtilFactory;
 import com.picsauditing.jpa.entities.Account;
@@ -28,6 +26,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -49,6 +50,10 @@ public class EmployeeActionTest extends PicsActionTest {
 	private EmailService emailService;
 	@Mock
 	private UrlBuilder urlBuilder;
+    @Mock
+    private ProjectRoleService projectRoleService;
+    @Mock
+    private AccountService accountService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -67,7 +72,10 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
+        when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
+        when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
 
+        Whitebox.setInternalState(employeeAction, "accountService", accountService);
 		Whitebox.setInternalState(employeeAction, "emailService", emailService);
 		Whitebox.setInternalState(employeeAction, "emailHashService", emailHashService);
 		Whitebox.setInternalState(employeeAction, "employeeService", employeeService);
@@ -75,6 +83,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		Whitebox.setInternalState(employeeAction, "groupService", groupService);
 		Whitebox.setInternalState(employeeAction, "photoUtil", photoUtil);
 		Whitebox.setInternalState(employeeAction, "profileDocumentService", profileDocumentService);
+        Whitebox.setInternalState(employeeAction, "projectRoleService", projectRoleService);
 		Whitebox.setInternalState(employeeAction, "urlBuilder", urlBuilder);
 	}
 

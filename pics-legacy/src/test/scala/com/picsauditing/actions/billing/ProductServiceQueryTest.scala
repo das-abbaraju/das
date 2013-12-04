@@ -12,9 +12,10 @@ import com.opensymphony.xwork2.Action._
 import org.scalatest.matchers.ShouldMatchers._
 import scala.collection.JavaConversions._
 import com.picsauditing.actions.PicsActionSupport
-import com.picsauditing.service.i18n.{TranslationServiceFactory, TranslationService}
+import com.picsauditing.service.i18n.TranslationServiceFactory
 import java.math.BigDecimal
 import com.picsauditing.jpa.entities.FeeClass._
+import com.picsauditing.i18n.service.TranslationService
 
 @RunWith(classOf[JUnitRunner])
 class ProductServiceQueryTest extends FlatSpec with MockitoSugar with BeforeAndAfter {

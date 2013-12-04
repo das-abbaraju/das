@@ -20,7 +20,7 @@ PICS.define('employee-guard.employee.skill.EditController', {
         }
 
         function modifyEditURL(url, newID) {
-            var currentID = url.substr(url.lastIndexOf('/') + 1);
+            var currentID = url.substr(url.lastIndexOf('/') + 1),
                 newUrl = url.replace(currentID, newID);
 
             return newUrl;

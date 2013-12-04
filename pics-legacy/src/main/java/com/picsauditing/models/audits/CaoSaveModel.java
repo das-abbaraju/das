@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import com.picsauditing.dao.BaseTableDAO;
 import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
 import com.picsauditing.jpa.entities.*;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 

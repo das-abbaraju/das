@@ -13,14 +13,14 @@
         <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label">Site</tw:label>
             <div class="col-md-4">
-                <tw:input inputName="site" class="form-control disabled" disabled="true" value="${projectNameSkillsForm.site}" />
+                <tw:input inputName="site" class="form-control disabled" disabled="true" value="${projectNameSkillsForm.site}" tabindex="1" />
             </div>
         </div>
 
         <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-4">
-                <tw:input inputName="name" class="form-control" type="text" value="${projectNameSkillsForm.name}"/>
+                <tw:input inputName="name" class="form-control" type="text" value="${projectNameSkillsForm.name}" tabindex="2" autofocus="true" />
             </div>
         </div>
 
@@ -28,7 +28,7 @@
             <tw:label labelName="location" class="col-md-3 control-label">Location</tw:label>
             <div class="col-md-4">
                 <tw:input inputName="location" class="form-control" type="text"
-                          value="${projectNameSkillsForm.location}"/>
+                          value="${projectNameSkillsForm.location}" tabindex="3"/>
             </div>
         </div>
 
@@ -40,21 +40,21 @@
                         <div class="col-md-4 col-sm-4 col-xs-6">
                             <tw:input inputName="startYear" type="text" placeholder="YYYY" maxlength="4"
                                       class="form-control year"
-                                      value="${projectNameSkillsForm.startYear > 0 ? projectNameSkillsForm.startYear : ''}"/>
+                                      value="${projectNameSkillsForm.startYear > 0 ? projectNameSkillsForm.startYear : ''}" tabindex="4"/>
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3">
                             <tw:input inputName="startMonth" type="text" placeholder="MM" maxlength="2"
                                       class="form-control month"
-                                      value="${projectNameSkillsForm.startMonth > 0 ? projectNameSkillsForm.startMonth : ''}"/>
+                                      value="${projectNameSkillsForm.startMonth > 0 ? projectNameSkillsForm.startMonth : ''}" tabindex="5"/>
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3">
                             <tw:input inputName="startDay" type="text" placeholder="DD" maxlength="2"
                                       class="form-control day"
-                                      value="${projectNameSkillsForm.startDay > 0 ? projectNameSkillsForm.startDay : ''}"/>
+                                      value="${projectNameSkillsForm.startDay > 0 ? projectNameSkillsForm.startDay : ''}" tabindex="6"/>
                         </div>
                         <div class="col-md-1 col-sm-1 col-xs-12">
                             <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd"><i
-                                    class="icon-calendar"></i></a>
+                                    class="icon-calendar" tabindex="7"></i></a>
                         </div>
                     </div>
                 </fieldset>
@@ -69,21 +69,21 @@
                         <div class="col-md-4 col-sm-4 col-xs-6">
                             <tw:input inputName="endYear" type="text" placeholder="YYYY" maxlength="4"
                                       class="form-control year"
-                                      value="${projectNameSkillsForm.endYear > 0 ? projectNameSkillsForm.endYear : ''}"/>
+                                      value="${projectNameSkillsForm.endYear > 0 ? projectNameSkillsForm.endYear : ''}" tabindex="8"/>
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3">
                             <tw:input inputName="endMonth" type="text" placeholder="MM" maxlength="2"
                                       class="form-control month"
-                                      value="${projectNameSkillsForm.endMonth > 0 ? projectNameSkillsForm.endMonth : ''}"/>
+                                      value="${projectNameSkillsForm.endMonth > 0 ? projectNameSkillsForm.endMonth : ''}" tabindex="9"/>
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3">
                             <tw:input inputName="endDay" type="text" placeholder="DD" maxlength="2"
                                       class="form-control day"
-                                      value="${projectNameSkillsForm.endDay > 0 ? projectNameSkillsForm.endDay : ''}"/>
+                                      value="${projectNameSkillsForm.endDay > 0 ? projectNameSkillsForm.endDay : ''}" tabindex="10"/>
                         </div>
                         <div class="col-md-1 col-sm-1 col-xs-12">
                             <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd"><i
-                                    class="icon-calendar"></i></a>
+                                    class="icon-calendar" tabindex="11"></i></a>
                         </div>
                     </div>
                 </fieldset>
@@ -94,7 +94,7 @@
             <tw:label labelName="skills" class="col-md-3 control-label">Project Skills</tw:label>
             <div class="col-md-4">
                 <s:set var="selected_skills" value="%{projectNameSkillsForm.skills}"/>
-                <tw:select selectName="skills" multiple="true" class="form-control select2" tabindex="2">
+                <tw:select selectName="skills" multiple="true" class="form-control select2" tabindex="12">
                     <s:iterator value="projectSkills" var="operator_role">
                         <s:set var="is_selected" value="false"/>
                         <s:iterator value="#selected_skills" var="selected_skill">
@@ -111,8 +111,8 @@
 
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="save" type="submit" class="btn btn-success">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="13">Save</tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="14">Cancel</tw:button>
             </div>
         </div>
     </fieldset>

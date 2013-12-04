@@ -2,22 +2,24 @@ package com.picsauditing.model.i18n;
 
 import java.util.Locale;
 
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public final class TranslatableString {
-
+    private static final String COMMAND_KEY = "TranslatableString";
 	private String key;
+    private TranslationService translationService;
 
 	public TranslatableString(String key) {
 		this.key = key;
 	}
 
 	public final String toTranslatedString() {
-        return TranslationServiceFactory.getNonLoggingTranslationService().getText(key, TranslationServiceFactory.getLocale());
+        return toTranslatedString(TranslationServiceFactory.getLocale());
 	}
 
 	public final String toTranslatedString(Locale locale) {
-        return TranslationServiceFactory.getNonLoggingTranslationService().getText(key, locale);
+        return translationService().getText(key, locale);
 	}
 
 	@Override
@@ -25,4 +27,10 @@ public final class TranslatableString {
 		return toTranslatedString();
 	}
 
+    private TranslationService translationService() {
+        if (translationService == null) {
+            translationService = TranslationServiceFactory.getTranslationService(COMMAND_KEY);
+        }
+        return translationService;
+    }
 }

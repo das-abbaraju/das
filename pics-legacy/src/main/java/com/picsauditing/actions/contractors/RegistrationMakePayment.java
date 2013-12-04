@@ -618,7 +618,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 		types.add("Visa");
 		types.add("Mastercard");
 		types.add("Discover Card");
-		types.add("American Express");
+        if (!contractor.getCountry().isUK())
+		    types.add("American Express");
 
 		return types;
 	}

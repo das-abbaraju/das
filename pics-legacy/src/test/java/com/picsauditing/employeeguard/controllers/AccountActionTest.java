@@ -114,8 +114,6 @@ public class AccountActionTest extends PicsActionTest {
 	@Test
 	public void testInsert() throws Exception {
 		String username = AppUserServiceFactory.USERNAME;
-		String hashedPassword = EncodedMessage.hash(AppUserServiceFactory.PASSWORD);
-
 		ProfileForm profileForm = new ProfileForm();
 		profileForm.setEmail(username);
 		profileForm.setPassword(AppUserServiceFactory.PASSWORD);
@@ -127,12 +125,12 @@ public class AccountActionTest extends PicsActionTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, accountAction.insert());
 		assertEquals("/employee-guard/employee/dashboard", accountAction.getUrl());
-		verify(appUserService).createNewAppUser(username, hashedPassword);
+		verify(appUserService).createNewAppUser(username, AppUserServiceFactory.PASSWORD);
 		verify(profileService).create(any(Profile.class));
 		verify(emailHashService).findByHash(EmailHashServiceFactory.VALID_HASH);
 		verify(employeeService).linkEmployeeToProfile(any(SoftDeletedEmployee.class), any(Profile.class));
 		verify(emailHashService).expire(any(EmailHash.class));
-		verify(loginService).loginViaRest(username, hashedPassword);
+		verify(loginService).loginViaRest(username, AppUserServiceFactory.PASSWORD);
 		verify(response).addCookie(any(Cookie.class));
 	}
 

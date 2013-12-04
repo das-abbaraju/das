@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
+import com.picsauditing.employeeguard.util.Extractor;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -43,28 +44,28 @@ public class AccountGroupEmployee implements BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-    public static transient final Comparator<AccountGroupEmployee> COMPARATOR = new Comparator<AccountGroupEmployee>() {
-        @Override
-        public int compare(AccountGroupEmployee o1, AccountGroupEmployee o2) {
-            if (o1 == null && o2 == null) {
-                return 0;
-            }
+	public static transient final Comparator<AccountGroupEmployee> COMPARATOR = new Comparator<AccountGroupEmployee>() {
+		@Override
+		public int compare(AccountGroupEmployee o1, AccountGroupEmployee o2) {
+			if (o1 == null && o2 == null) {
+				return 0;
+			}
 
-            if (areEqual(o1, o2)) {
-                return 0;
-            }
+			if (areEqual(o1, o2)) {
+				return 0;
+			}
 
-            if (!o1.getGroup().equals(o2.getGroup())) {
-                return -1;
-            }
+			if (!o1.getGroup().equals(o2.getGroup())) {
+				return -1;
+			}
 
-            return 1;
-        }
+			return 1;
+		}
 
-        private boolean areEqual(AccountGroupEmployee o1, AccountGroupEmployee o2) {
-            return ((o1.getGroup().equals(o2.getGroup())) && (o1.getEmployee().equals(o2.getEmployee())));
-        }
-    };
+		private boolean areEqual(AccountGroupEmployee o1, AccountGroupEmployee o2) {
+			return ((o1.getGroup().equals(o2.getGroup())) && (o1.getEmployee().equals(o2.getEmployee())));
+		}
+	};
 
 	public AccountGroupEmployee() {
 	}
@@ -166,7 +167,8 @@ public class AccountGroupEmployee implements BaseEntity {
 		AccountGroupEmployee that = (AccountGroupEmployee) o;
 
 		if (getGroup() != null ? !getGroup().equals(that.getGroup()) : that.getGroup() != null) return false;
-		if (getEmployee() != null ? !getEmployee().equals(that.getEmployee()) : that.getEmployee() != null) return false;
+		if (getEmployee() != null ? !getEmployee().equals(that.getEmployee()) : that.getEmployee() != null)
+			return false;
 
 		return true;
 	}
@@ -177,4 +179,11 @@ public class AccountGroupEmployee implements BaseEntity {
 		result = 31 * result + (getEmployee() != null ? getEmployee().hashCode() : 0);
 		return result;
 	}
+
+	public static transient final Extractor<AccountGroupEmployee, AccountGroup> GROUP_EXTRACTOR = new Extractor<AccountGroupEmployee, AccountGroup>() {
+		@Override
+		public AccountGroup extract(AccountGroupEmployee accountGroupEmployee) {
+			return accountGroupEmployee.getGroup();
+		}
+	};
 }

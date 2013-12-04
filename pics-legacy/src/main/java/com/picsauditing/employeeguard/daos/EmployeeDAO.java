@@ -1,12 +1,9 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.daos.querymapper.EmployeeQueryMapper;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.search.Database;
+import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -36,6 +33,13 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 		query.setParameter("accountId", accountId);
 		return query.getResultList();
 	}
+
+    public long findEmployeeCount(int accountId) {
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(e) FROM Employee e WHERE e.accountId = :accountId",
+                Long.class);
+        query.setParameter("accountId", accountId);
+        return query.getSingleResult();
+    }
 
 	public List<Employee> findByAccounts(final List<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
@@ -92,37 +96,61 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 		return Collections.emptyList();
 	}
 
-	public List<Employee> findEmployeesByGroups(Set<Integer> groupIds) {
-		if (CollectionUtils.isNotEmpty(groupIds)) {
-			String sql2 = "SELECT DISTINCT e FROM AccountGroupEmployee age INNER JOIN age.employee e WHERE age.group.id IN (:groupIds)";
-			TypedQuery query = em.createQuery(sql2, Employee.class);
-			query.setParameter("groupIds", groupIds);
-			return query.getResultList();
+	public List<Employee> findEmployeesByGroups(final Set<Integer> groupIds) {
+		if (CollectionUtils.isEmpty(groupIds)) {
+			return Collections.emptyList();
 		}
 
-		return Collections.emptyList();
+		String sql2 = "SELECT DISTINCT e FROM AccountGroupEmployee age INNER JOIN age.employee e WHERE age.group.id IN (:groupIds)";
+		TypedQuery query = em.createQuery(sql2, Employee.class);
+		query.setParameter("groupIds", groupIds);
+		return query.getResultList();
+	}
+
+	public List<Employee> findByProject(final Project project) {
+		if (project == null) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT pre.employee FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.project = :project", Employee.class);
+		query.setParameter("project", project);
+		return query.getResultList();
 	}
 
 	public List<Employee> search(String searchTerm, int accountId) {
+		if (searchTerm == null) {
+			searchTerm = Strings.EMPTY_STRING;
+		}
+
 		TypedQuery<Employee> query = em.createQuery(
 				"SELECT DISTINCT e FROM Employee e " +
 						"WHERE e.accountId = :accountId " +
 						"AND (e.firstName LIKE :searchTerm " +
 						"OR e.lastName LIKE :searchTerm " +
 						"OR e.slug LIKE :searchTerm " +
-						"OR e.email LIKE :searchTerm)", Employee.class);
+						"OR e.email LIKE :searchTerm " +
+						"OR CONCAT(e.firstName, '%', e.lastName) LIKE :normalizedSearchTerm " +
+						"OR CONCAT(e.lastName, '%', e.firstName) LIKE :normalizedSearchTerm)", Employee.class);
 		query.setParameter("accountId", accountId);
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
+		query.setParameter("normalizedSearchTerm", "%" + searchTerm.trim().replaceAll("\\s+", "%") + "%");
 		return query.getResultList();
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public void save(List<Employee> employees) throws Exception {
-		Database.executeBatch(INSERT_EMPLOYEE_QUERY, employees, new EmployeeQueryMapper());
 	}
 
 	public void delete(int id, int accountId) {
 		Employee employee = findEmployeeByAccount(id, accountId);
 		super.delete(employee);
+	}
+
+	public List<Employee> findByProjects(final List<Project> projects) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT pre.employee FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.project IN (:projects)", Employee.class);
+		query.setParameter("projects", projects);
+		return query.getResultList();
 	}
 }

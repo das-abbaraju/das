@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -11,14 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.jpa.entities.*;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
@@ -29,6 +34,8 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.util.PermissionToViewContractor;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 public class RegistrationServiceEvaluationTest extends PicsTest {
 	RegistrationServiceEvaluation serviceEvaluation;
@@ -47,6 +54,8 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
     protected AuditTypeRuleCache auditTypeRuleCache;
     @Mock
     protected OperatorAccount operator;
+    @Mock
+    protected ServiceRiskCalculator serviceRiskCalculator;
 
 
     private ContractorAccount contractor;
@@ -73,6 +82,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractorAccountDao", contractorAccountDao);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissionToViewContractor", permissionToViewContractor);
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "auditTypeRuleCache", auditTypeRuleCache);
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "serviceRiskCalculator", serviceRiskCalculator);
 	}
 
     @Test
@@ -116,6 +126,15 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "answerMap", answerMap);
+
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ContractorAccount contractor = (ContractorAccount) args[0];
+                contractor.setProductRisk(LowMedHigh.High);
+                return "called with arguments: " + args;
+            }
+        }).when(serviceRiskCalculator).calculateContractorsRiskLevels(contractor, answerMap);
 
 		Whitebox.invokeMethod(serviceEvaluation, "calculateRiskLevels");
 		assertEquals("High", contractor.getProductRisk().toString());

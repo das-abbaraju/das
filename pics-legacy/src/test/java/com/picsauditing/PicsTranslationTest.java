@@ -1,10 +1,9 @@
 package com.picsauditing;
 
+import com.picsauditing.i18n.service.TranslationService;
 import org.junit.*;
 import org.mockito.Mockito;
-import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public abstract class PicsTranslationTest {

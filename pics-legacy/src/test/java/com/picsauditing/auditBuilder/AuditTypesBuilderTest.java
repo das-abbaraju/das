@@ -47,6 +47,18 @@ public class AuditTypesBuilderTest {
 		when(contractor.getOperatorAccounts()).thenReturn(contractorOperatorAccounts);
 	}
 
+    @Test
+    public void testRulePruningForDependentAuditTypes() throws Exception {
+        AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        auditTypeRule.setDependentAuditType(EntityFactory.makeAuditType(200));
+        auditTypeRule.setDependentAuditStatus(AuditStatus.Complete);
+
+        auditTypeRules.add(auditTypeRule);
+
+        Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+        assertEquals(0, auditTypeDetails.size());
+    }
+
 	@Test
 	public void testCalculate_whenWelcomeRuleIsPresentAndOperatorIsActive_addAuditTypeDetail() throws Exception {
 		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.WELCOME, 101, "Welcome Category 1");
@@ -87,7 +99,45 @@ public class AuditTypesBuilderTest {
 		assertEquals(auditTypeDetail.rule, auditTypeRule);
 	}
 
-	@Test
+    @Test
+    public void testCalculate_whenRuleIndicatesYearToCheck_andMatchingAnswerExists_dependentOnVisibleQuestions() throws Exception {
+        AuditQuestion visibleQuestion = createAuditQuestion(20);
+        AuditQuestion question = createAuditQuestion(10);
+        question.setVisibleQuestion(visibleQuestion);
+        question.setVisibleAnswer("Yes");
+
+        AuditData visibleAnswer = new AuditData();
+        visibleAnswer.setAnswer("Yes");
+        AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+        setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.ThreeYearsAgo);
+        auditTypeRules.add(auditTypeRule);
+
+        String[][] answerForAuditYearArray = {
+                new String[]{"1", currentYearMinus(4)},
+                new String[]{"3", currentYearMinus(2)},
+                new String[]{"2", currentYearMinus(3)},
+                new String[]{"4", currentYearMinus(1)},
+                new String[]{"5", currentYearMinus(0)}
+        };
+
+        List<AuditData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
+        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, question)).thenReturn(answers);
+        when(auditDataDAO.findAnswerToQuestion(0, 20)).thenReturn(visibleAnswer);
+
+        Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+
+        assertEquals(1, auditTypeDetails.size());
+        AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
+        assertEquals(auditTypeDetail.rule, auditTypeRule);
+
+        // make it invisible
+        visibleAnswer.setAnswer("No");
+        auditTypeDetails = auditTypesBuilder.calculate();
+        assertEquals(0, auditTypeDetails.size());
+
+    }
+
+    @Test
 	public void testChooseAnswerToEvaluate_whenRuleDoesNotApplyToASpecificYear_ChooseTheFirstAnswer() throws Exception {
 		AuditQuestion question = createAuditQuestion(10);
 		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");

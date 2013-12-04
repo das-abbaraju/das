@@ -57,6 +57,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.picsauditing</groupId>
+            <artifactId>pics-translate-client</artifactId>
+            <version>1.01</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>

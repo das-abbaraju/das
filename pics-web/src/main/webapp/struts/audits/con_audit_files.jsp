@@ -245,8 +245,9 @@
 											<br/>
 											<div class="verified-answer">
 												<img src="images/okCheck.gif" />
-												<s:text name="Audit.message.ClosedOn">
+												<s:text name="Audit.message.ClosedOnDateByAuditor">
 													<s:param><s:date name="#data.dateVerified" /></s:param>
+                                                    <s:param><s:property value="#data.auditor.name"/></s:param>
 												</s:text>
 											</div>
 										</s:if>

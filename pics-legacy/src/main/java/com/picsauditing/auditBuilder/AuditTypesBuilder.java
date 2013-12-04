@@ -3,6 +3,8 @@ package com.picsauditing.auditBuilder;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -113,7 +115,8 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		Iterator<AuditTypeRule> iterator = rules.iterator();
 		while (iterator.hasNext()) {
 			AuditTypeRule rule = iterator.next();
-			if (!evaluateRule(rule, answers, tags)) {
+			if (!isValidRuleForDependentAuditStatus(rule) ||
+                    !evaluateRule(rule, answers, tags)) {
 				iterator.remove();
 			}
 		}
@@ -131,6 +134,26 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		}
 		return null;
 	}
+
+    protected boolean isValidRuleForDependentAuditStatus(AuditRule rule) {
+        AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
+        if (auditTypeRule.getDependentAuditType() != null && auditTypeRule.getDependentAuditStatus() != null) {
+            boolean found = false;
+            for (ContractorAudit audit : contractor.getAudits()) {
+                if (!audit.isExpired()
+                        && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())
+                        && (audit.hasCaoStatus(auditTypeRule.getDependentAuditStatus()) ||
+                        audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers,
 	                          Map<Integer, OperatorTag> opTags) {
@@ -164,6 +187,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 			AuditQuestion auditQuestion = rule.getQuestion();
 			if (auditQuestion != null) {
 				List<AuditData> answers = findAnswersByContractorAndQuestion(contractor, auditQuestion);
+                filterNonVisibleAnswers(answers);
 				questionAnswers.put(auditQuestion.getId(), answers);
 			}
 		}
@@ -171,7 +195,20 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		return questionAnswers;
 	}
 
-	private List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
+    private void filterNonVisibleAnswers(List<AuditData> answers) {
+        Iterator<AuditData> iterator = answers.iterator();
+        while (iterator.hasNext()) {
+            AuditData data = iterator.next();
+            if (data.getQuestion().getVisibleQuestion() != null && data.getQuestion().getVisibleAnswer() != null) {
+                AuditData visibleQuestionAnswer = auditDataDAO.findAnswerToQuestion(data.getAudit().getId(), data.getQuestion().getVisibleQuestion().getId());
+                if (visibleQuestionAnswer != null && !StringUtils.equals(visibleQuestionAnswer.getAnswer(), data.getQuestion().getVisibleAnswer())) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    private List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
 		if (auditDataDAO == null) {
 			auditDataDAO = SpringUtils.getBean("AuditDataDAO");
 		}

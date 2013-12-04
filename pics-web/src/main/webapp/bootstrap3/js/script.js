@@ -11094,12 +11094,13 @@ the specific language governing permissions and limitations under the Apache Lic
             }).html([
                 "<a href='javascript:void(0)' onclick='return false;' class='select2-choice' tabindex='-1'>",
                 "   <span class='select2-chosen'>&nbsp;</span><abbr class='select2-search-choice-close'></abbr>",
-                "   <span class='select2-arrow'><b></b></span>",
+                "   <span class='select2-arrow'><i class='icon-caret-down'></i></span>",
                 "</a>",
                 "<input class='select2-focusser select2-offscreen' type='text'/>",
                 "<div class='select2-drop select2-display-none'>",
                 "   <div class='select2-search'>",
                 "       <input type='text' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' class='select2-input'/>",
+                "       <i class='icon-search'></i>",
                 "   </div>",
                 "   <ul class='select2-results'>",
                 "   </ul>",
@@ -12092,7 +12093,9 @@ the specific language governing permissions and limitations under the Apache Lic
                 enabledItem = $(
                     "<li class='select2-search-choice'>" +
                     "    <div></div>" +
-                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'></a>" +
+                    "    <a href='#' onclick='return false;' class='select2-search-choice-close' tabindex='-1'>" +
+                    "       <i class='icon-remove'></i>" +
+                    "    </a>" +
                     "</li>"),
                 disabledItem = $(
                     "<li class='select2-search-choice select2-locked'>" +
@@ -14511,6 +14514,8 @@ PICS.define('employee-guard.Assignment', {
                 request_url = $container.attr('data-assign-url'),
                 unassign_url = $container.attr('data-unassign-url');
 
+            event.preventDefault();
+
             if ($container.hasClass('assigned')) {
                 request_url = unassign_url;
             }
@@ -14663,20 +14668,51 @@ PICS.define('employee-guard.employee.photo.PhotoController', {
         };
     }())
 });
-PICS.define('employee-guard.employee.profile.ProfileController', {
+PICS.define('employee-guard.employee.certificate.CertificateController', {
     methods: (function () {
         function init() {
-            if ($('#employee_guard_employee_profile_edit_page').length > 0) {
+        	var $certificate_page = $('.employee_guard_employee_skills_certificate-page');
 
+            if ($certificate_page.length > 0) {
+				$certificate_page.on('click', '.checkbox .no-expiration', toggleExpirationFields)
             }
         }
+
+	    function toggleExpirationFields(event) {
+	    	var $element = $(event.target),
+	    		selected = $element.is(':checked');
+
+	    	if (selected) {
+				disableExpiration();
+	    	} else {
+	    		enableExpiration();
+	    	}
+	    }
+
+	    function disableExpiration() {
+	    	$('.expiration-date').attr('disabled', 'disabled');
+	    }
+
+	    function enableExpiration() {
+			$('.expiration-date').removeAttr('disabled');
+	    }
+
+        return {
+            init: init
+        };
+
+	}())
+});
+
+PICS.define('employee-guard.employee.skill.CreateController', {
+    methods: (function () {
+        function init() {}
 
         return {
             init: init
         };
     }())
 });
-
 PICS.define('employee-guard.employee.skill.EditController', {
     methods: (function () {
         function init() {
@@ -14699,7 +14735,7 @@ PICS.define('employee-guard.employee.skill.EditController', {
         }
 
         function modifyEditURL(url, newID) {
-            var currentID = url.substr(url.lastIndexOf('/') + 1);
+            var currentID = url.substr(url.lastIndexOf('/') + 1),
                 newUrl = url.replace(currentID, newID);
 
             return newUrl;
@@ -14749,8 +14785,8 @@ PICS.define('employee-guard.FileUpload', {
         }
 
         function updateHiddenFilenameForValidation($element) {
-            var $validate_filename = $('#validate-filename');
-                filename = $element[0].files[0].name,
+            var $validate_filename = $('#validate-filename'),
+                filename = $element[0].files[0].name;
 
             $validate_filename.val(filename);
         }
@@ -14939,214 +14975,83 @@ PICS.define('employee-guard.LeftNavigation', {
     }())
 });
 
-(function ($) {
-    PICS.define('employee-guard.operator.project.CreateController', {
-        methods: {
-            init: function () {
-                if ($('#employee_guard_operator_project_create_page').length > 0) {
-                    $start_date_picker = $('.start-date .date-picker');
-                    $end_date_picker = $('.end-date .date-picker'); 
-                    
-                    $start_date_picker.datepicker({
-                        todayBtn: "linked"
-                    });
-                    
-                    $start_date_picker.on('changeDate', $.proxy(this.changeStartDate, this));
+PICS.define('employee-guard.Operator.Project', {
+    methods: (function () {
 
-                    $('#operator_project_create_start_year, #operator_project_create_start_month, #operator_project_create_start_day').on('blur', $.proxy(this.blurStartDate, this));
-                    
-                    $end_date_picker.datepicker({
-                        todayBtn: "linked"
-                    });
-                    
-                    $end_date_picker.on('changeDate', $.proxy(this.changeEndDate, this));
-                    
-                    $('#operator_project_create_end_year, #operator_project_create_end_month, #operator_project_create_end_day').on('blur', $.proxy(this.blurEndDate, this));
-                }
-            },
-            
-            blurEndDate: function (event) {
-                var $element = $(event.currentTarget),
-                    $datepicker = $element.siblings('.date-picker:first'),
-                    $year = $('#operator_project_create_end_year'),
-                    $month = $('#operator_project_create_end_month'),
-                    $day = $('#operator_project_create_end_day'),
-                    year = $year.val(),
-                    month = $month.val(),
-                    day = $day.val();
-                
-                if (year && month && day) {
-                    var date = moment([year, month, day].join('-')).format('YYYY-MM-DD');
-                    
-                    $datepicker.data('date', date);
-                    $datepicker.data('datepicker').update();
-                    
-                    this.updateEndDate($datepicker.data('datepicker').getFormattedDate());
-                }
-            },
-            
-            blurStartDate: function (event) {
-                var $element = $(event.currentTarget),
-                    $datepicker = $element.siblings('.date-picker:first'),
-                    $year = $('#operator_project_create_start_year'),
-                    $month = $('#operator_project_create_start_month'),
-                    $day = $('#operator_project_create_start_day'),
-                    year = $year.val(),
-                    month = $month.val(),
-                    day = $day.val();
-                
-                if (year && month && day) {
-                    var date = moment([year, month, day].join('-')).format('YYYY-MM-DD');
-                    
-                    $datepicker.data('date', date);
-                    $datepicker.data('datepicker').update();
-                    
-                    this.updateStartDate($datepicker.data('datepicker').getFormattedDate());
-                }
-            },
-            
-            changeEndDate: function (event) {
-                var $element = $(event.currentTarget), 
-                    date = $element.data('date');
-                
-                this.updateEndDate(date);
-            },
-            
-            changeStartDate: function (event) {
-                var $element = $(event.currentTarget), 
-                    date = $element.data('date');
-                
-                this.updateStartDate(date);
-            },
-            
-            updateEndDate: function (date) {
-                var date_split = date.split('-'),
-                    $year = $('#operator_project_create_end_year'),
-                    $month = $('#operator_project_create_end_month'),
-                    $day = $('#operator_project_create_end_day');
-                
-                $year.val(date_split[0]);
-                $month.val(date_split[1]);
-                $day.val(date_split[2]);
-            },
-            
-            updateStartDate: function (date) {
-                var date_split = date.split('-'),
-                    $year = $('#operator_project_create_start_year'),
-                    $month = $('#operator_project_create_start_month'),
-                    $day = $('#operator_project_create_start_day');
-                
-                $year.val(date_split[0]);
-                $month.val(date_split[1]);
-                $day.val(date_split[2]);
+        var initialCompanies = [];
+
+        function init() {
+            var $body = $('body');
+
+            //TODO Find out why this fires twice when "on" is used
+            $body.one('intialized.select2', '.companies-requested.select2', saveInitialCompanies);
+
+            $body.on('click', '.save-requested-comapanies', submitRequestedCompaniesForm);
+
+            $body.on('click', '#removeRequestedCompaniesModal .cancel', onModalCancelClick);
+
+            $body.on('click', '#removeRequestedCompaniesModal .remove', onModalRemoveClick);
+
+        }
+
+        //TODO: Replace click trigger for a better solution
+        function onModalCancelClick(event) {
+            var $select2 = $('.companies-requested.select2'),
+                $form = $select2.closest('form'),
+                $cancel = $form.find('.cancel');
+
+            $('#removeRequestedCompaniesModal').modal('hide');
+            $cancel.click();
+        }
+
+        //TODO: Replace click trigger for a better solution
+        function onModalRemoveClick() {
+            var $select2 = $('.companies-requested.select2'),
+                $form = $select2.closest('form'),
+                $save = $form.find('.btn-success');
+
+                initialCompanies = [];
+
+            $save.click();
+        }
+
+        function saveInitialCompanies(event) {
+            var $element = $(event.target),
+                companies = $element.select2('val');
+
+            initialCompanies = companies;
+        }
+
+        function submitRequestedCompaniesForm(event) {
+            if (checkForDeletedCompanies()) {
+                event.preventDefault();
+                displayRemoveCompanyModal();
             }
         }
-    });
-}(jQuery));
-(function ($) {
-    PICS.define('employee-guard.operator.project.EditController', {
-        methods: {
-            init: function () {
-                if ($('#employee_guard_operator_project_edit_page').length > 0) {
-                    $start_date_picker = $('.start-date .date-picker');
-                    $end_date_picker = $('.end-date .date-picker'); 
-                    
-                    $start_date_picker.datepicker({
-                        todayBtn: "linked"
-                    });
-                    
-                    $start_date_picker.on('changeDate', $.proxy(this.changeStartDate, this));
 
-                    $('#operator_project_edit_start_year, #operator_project_edit_start_month, #operator_project_edit_start_day').on('blur', $.proxy(this.blurStartDate, this));
-                    
-                    $end_date_picker.datepicker({
-                        todayBtn: "linked"
-                    });
-                    
-                    $end_date_picker.on('changeDate', $.proxy(this.changeEndDate, this));
-                    
-                    $('#operator_project_edit_end_year, #operator_project_edit_end_month, #operator_project_edit_end_day').on('blur', $.proxy(this.blurEndDate, this));
+        function checkForDeletedCompanies() {
+            var $element = $('.companies-requested.select2'),
+                current_companies = $element.select2('val'),
+                deletedCompany = false;
+
+            for (var x = 0; x < initialCompanies.length; x++) {
+                if ($.inArray(initialCompanies[x], current_companies) == -1) {
+                    deletedCompany = true;
                 }
-            },
-            
-            blurEndDate: function (event) {
-                var $element = $(event.currentTarget),
-                    $datepicker = $element.siblings('.date-picker:first'),
-                    $year = $('#operator_project_edit_end_year'),
-                    $month = $('#operator_project_edit_end_month'),
-                    $day = $('#operator_project_edit_end_day'),
-                    year = $year.val(),
-                    month = $month.val(),
-                    day = $day.val();
-                
-                if (year && month && day) {
-                    var date = moment([year, month, day].join('-')).format('YYYY-MM-DD');
-                    
-                    $datepicker.data('date', date);
-                    $datepicker.data('datepicker').update();
-                    
-                    this.updateEndDate($datepicker.data('datepicker').getFormattedDate());
-                }
-            },
-            
-            blurStartDate: function (event) {
-                var $element = $(event.currentTarget),
-                    $datepicker = $element.siblings('.date-picker:first'),
-                    $year = $('#operator_project_edit_start_year'),
-                    $month = $('#operator_project_edit_start_month'),
-                    $day = $('#operator_project_edit_start_day'),
-                    year = $year.val(),
-                    month = $month.val(),
-                    day = $day.val();
-                
-                if (year && month && day) {
-                    var date = moment([year, month, day].join('-')).format('YYYY-MM-DD');
-                    
-                    $datepicker.data('date', date);
-                    $datepicker.data('datepicker').update();
-                    
-                    this.updateStartDate($datepicker.data('datepicker').getFormattedDate());
-                }
-            },
-            
-            changeEndDate: function (event) {
-                var $element = $(event.currentTarget), 
-                    date = $element.data('date');
-                
-                this.updateEndDate(date);
-            },
-            
-            changeStartDate: function (event) {
-                var $element = $(event.currentTarget), 
-                    date = $element.data('date');
-                
-                this.updateStartDate(date);
-            },
-            
-            updateEndDate: function (date) {
-                var date_split = date.split('-'),
-                    $year = $('#operator_project_edit_end_year'),
-                    $month = $('#operator_project_edit_end_month'),
-                    $day = $('#operator_project_edit_end_day');
-                
-                $year.val(date_split[0]);
-                $month.val(date_split[1]);
-                $day.val(date_split[2]);
-            },
-            
-            updateStartDate: function (date) {
-                var date_split = date.split('-'),
-                    $year = $('#operator_project_edit_start_year'),
-                    $month = $('#operator_project_edit_start_month'),
-                    $day = $('#operator_project_edit_start_day');
-                
-                $year.val(date_split[0]);
-                $month.val(date_split[1]);
-                $day.val(date_split[2]);
             }
+
+            return deletedCompany;
         }
-    });
-}(jQuery));
+
+        function displayRemoveCompanyModal() {
+            $('#removeRequestedCompaniesModal').modal('show');
+        }
+
+        return {
+            init: init
+        };
+    }())
+});
 PICS.define('employee-guard.SkillTypeToggle', {
     methods: (function () {
         function init() {
@@ -15765,20 +15670,6 @@ PICS.define('select2.Select2', {
     methods: (function () {
         function init() {
             createSelect2Element();
-            overrideSelect2Icons();
-            $('body').on('change', '.select2', addTagCloseIcon);
-        }
-
-        function addTagCloseIcon(event) {
-            var $element = $(event.target),
-                $select2_container = $element.siblings('.select2'),
-                $select2_close = $select2_container.find('.select2-search-choice-close');
-
-            $select2_close.each(function() {
-                if ($(this).find('i').length <= 0) {
-                    $(this).append('<i class="icon-remove"></i>');
-                }
-            });
         }
 
         function createSelect2Element() {
@@ -15787,19 +15678,17 @@ PICS.define('select2.Select2', {
 
             if (select2Min.length) {
                 select2Min.select2({
-                    minimumResultsForSearch: -1
+                    minimumResultsForSearch: -1,
+                    width: 'resolve'
+                });
+            }
+            if (select2Default.length) {
+                $('.select2').select2({
+                    width: 'resolve'
                 });
             }
 
-            if (select2Default.length) {
-                $('.select2').select2();
-            }
-        }
-
-        function overrideSelect2Icons() {
-            $('.select2-arrow b').remove();
-            $('.select2-arrow').append('<i class="icon-caret-down"></i>');
-            $('.select2-search-choice-close').append('<i class="icon-remove"></i>');
+            $('.select2').trigger('intialized.select2');
         }
 
         return {

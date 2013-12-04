@@ -217,7 +217,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
 		}
 
-		saveNewAppUser(user);
+		saveNewAppUser();
 
 		userDAO.save(user);
 
@@ -248,7 +248,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}
 
-	private void saveNewAppUser(User user) {
+	private void saveNewAppUser() {
 		String username = user.getUsername();
 		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
 		if (appUserResponse != null && "SUCCESS".equals(appUserResponse.get("status").toString())) {

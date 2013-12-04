@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Locale;
 
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;

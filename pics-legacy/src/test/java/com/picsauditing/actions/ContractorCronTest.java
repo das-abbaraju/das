@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.util.*;
 
 import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.Publisher;
 import org.junit.Before;
@@ -57,6 +58,8 @@ public class ContractorCronTest extends PicsActionTest {
     private FlagDataCalculator flagDataCalculator;
     @Mock
     private Publisher flagChangePublisher;
+    @Mock
+    private UserAssignmentDAO userAssignmentDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,7 +72,43 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "dao", dao);
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
 		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
+        Whitebox.setInternalState(contractorCron, "userAssignmentDAO", userAssignmentDAO);
 	}
+
+    @Test
+    public void testRunAssignAudit_ManualAudit() throws Exception {
+        ContractorCronStep[] steps = new ContractorCronStep[1];
+        steps[0] = ContractorCronStep.AssignAudit;
+        Whitebox.setInternalState(contractorCron, "steps", steps);
+
+        List<ContractorAudit> audits = new ArrayList<>();
+        when(contractor.getAudits()).thenReturn(audits);
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+        User closingAuditor = EntityFactory.makeUser();
+        audit.setClosingAuditor(closingAuditor);
+
+        User auditor = EntityFactory.makeUser();
+        User origAuditor = EntityFactory.makeUser();
+        UserAssignment ua = new UserAssignment();
+        ua.setUser(auditor);
+        when(userAssignmentDAO.findByContractor(contractor, audit.getAuditType())).thenReturn(ua);
+
+        // bi sla
+        Whitebox.invokeMethod(contractorCron, "runAssignAudit", contractor);
+        assertNull(audit.getAuditor());
+
+        // sla exists, assign auditor
+        audit.setSlaDate(new Date());
+        Whitebox.invokeMethod(contractorCron, "runAssignAudit", contractor);
+        assertNotNull(audit.getAuditor());
+        assertTrue(audit.getAuditor() == auditor);
+
+        // don't re-assign auditor
+        audit.setAuditor(origAuditor);
+        Whitebox.invokeMethod(contractorCron, "runAssignAudit", contractor);
+        assertNotNull(audit.getAuditor());
+        assertTrue(audit.getAuditor() == origAuditor);
+    }
 
     @Test
     public void testNoInsuranceCriteriaInFlagDifferences() throws Exception {

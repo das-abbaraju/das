@@ -9931,14 +9931,16 @@ a.x-tab-close-btn:hover {
   -moz-box-shadow: #333333 0px 0px 3px !important;
   box-shadow: #333333 0px 0px 3px !important; }
 
-/* line 1, ../sass/my-ext-theme/widget/_tooltip.scss */
-.x-tip {
+/* line 2, ../sass/my-ext-theme/widget/_tooltip.scss */
+.x-tip,
+.x-form-invalid-tip {
   background: #333;
   border: 1px solid #999;
   padding: 5px 10px !important; }
 
-/* line 8, ../sass/my-ext-theme/widget/_tooltip.scss */
-.x-tip-body {
+/* line 10, ../sass/my-ext-theme/widget/_tooltip.scss */
+.x-tip-body,
+.x-form-invalid-tip-body {
   border: 1px solid #333;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -9946,6 +9948,21 @@ a.x-tab-close-btn:hover {
   -o-border-radius: 2px;
   border-radius: 2px;
   color: #fff; }
+
+/* line 16, ../sass/my-ext-theme/widget/_tooltip.scss */
+.x-form-invalid-tip {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px; }
+
+/* line 21, ../sass/my-ext-theme/widget/_tooltip.scss */
+.x-form-invalid-tip-body {
+  background-image: none; }
 
 /* line 2, ../sass/my-ext-theme/widget/_triggerfield.scss */
 .x-form-trigger {

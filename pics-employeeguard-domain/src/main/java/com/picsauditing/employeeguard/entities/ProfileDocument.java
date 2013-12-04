@@ -1,16 +1,19 @@
 package com.picsauditing.employeeguard.entities;
 
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "profiledocument")
 @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@SQLInsert(sql = "INSERT INTO profiledocument (createdBy, createdDate, deletedBy, deletedDate, documentType, finishDate, fileName, fileSize, fileType, name, profileID, startDate, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> {
 	private static final long serialVersionUID = 7654576030939128656L;
 
@@ -58,6 +61,10 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
+
+	@OneToMany(mappedBy = "profileDocument", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	private List<AccountSkillEmployee> employeeSkills;
 
 	public int getId() {
 		return id;
@@ -179,8 +186,20 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 		this.deletedDate = deletedDate;
 	}
 
+	public List<AccountSkillEmployee> getEmployeeSkills() {
+		return employeeSkills;
+	}
+
+	public void setEmployeeSkills(List<AccountSkillEmployee> employeeSkills) {
+		this.employeeSkills = employeeSkills;
+	}
+
 	@Transient
 	public boolean isDoesNotExpire() {
+        if (endDate == null) {
+            return false;
+        }
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(endDate);
 		return calendar.get(Calendar.YEAR) > 3000;
@@ -196,8 +215,6 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 		if (getProfile() != null ? !getProfile().equals(profileDocument.getProfile()) : profileDocument.getProfile() != null) return false;
 		if (getDocumentType() != null ? !(getDocumentType() == profileDocument.getDocumentType()) : profileDocument.getDocumentType() != null) return false;
 		if (getName() != null ? !getName().equals(profileDocument.getName()) : profileDocument.getName() != null) return false;
-//		if (getStartDate() != null ? !getStartDate().equals(profileDocument.getStartDate()) : profileDocument.getStartDate() != null) return false;
-//		if (getEndDate() != null ? !getEndDate().equals(profileDocument.getEndDate()) : profileDocument.getEndDate() != null) return false;
 
 		return true;
 	}
@@ -207,8 +224,6 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 		int result = 31 * (getProfile() != null ? getProfile().hashCode() : 0);
 		result = 31 * result + (getDocumentType() != null ? getDocumentType().hashCode() : 0);
 		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-//		result = 31 * result + (getStartDate() != null ? getStartDate().hashCode() : 0);
-//		result = 31 * result + (getEndDate() != null ? getEndDate().hashCode() : 0);
 		return result;
 	}
 

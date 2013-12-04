@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -99,10 +100,29 @@
 						</li>
 
 						<s:if test="!contractor.materialSupplierOnly">
-							<li>
-								<label><s:text name="global.SafetyRisk" />:</label>
-								<s:text name="%{contractor.safetyRisk.i18nKey}" />
-							</li>
+                                <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
+                                    <li>
+                                        <label><s:text name="global.SafetySensitive" />:</label>
+                                        <s:if test="contractor.safetySensitive">
+                                            <s:text name="YesNo.Yes"/>
+                                        </s:if>
+                                        <s:else>
+                                            <s:text name="YesNo.No"/>
+                                        </s:else>
+                                    </li>
+                                    <li>
+                                        <pics:permission perm="AllContractors">
+                                            <label><s:text name="global.SafetyRisk" />:</label>
+                                            <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                                        </pics:permission>
+                                    </li>
+                                </pics:toggle>
+                                <pics:toggleElse>
+                                    <li>
+                                        <label><s:text name="global.SafetyRisk" />:</label>
+                                        <s:text name="%{contractor.safetyRisk.i18nKey}" />
+                                    </li>
+                                </pics:toggleElse>
 						</s:if>
 
 						<s:if test="contractor.materialSupplier && contractor.productRisk != null">

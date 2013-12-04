@@ -161,20 +161,19 @@ public class OpenTasks extends TranslationActionSupport {
 			openTasks
 					.add(getTextParameterized(locale, "ContractorWidget.message.UpdatedAgreement", contractor.getId()));
 		}
-		if (permissions.hasPermission(OpPerms.ContractorAdmin) || user.getAccount().isAdmin()) {
-			if (contractor.getUsers().size() == 1 && !contractor.getSoleProprietor()
-					&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
-				openTasks.add(getText(locale, "ContractorWidget.message.RequiresTwoUsers"));
-			}
 
-			if (contractor.getAccountLevel().isBidOnly()) {
-				openTasks.add(getTextParameterized(locale, "ContractorWidget.message.BidOnlyUpdgrade",
-						contractor.getPaymentExpires(), contractor.getId()));
-			}
+		if (isBidOnlyUpgrade()) {
+			openTasks.add(getTextParameterized(locale, "ContractorWidget.message.BidOnlyUpdgrade",
+					contractor.getPaymentExpires(), contractor.getId()));
 		}
 	}
 
-	private boolean mustApproveUpdatedAgreement() {
+    private boolean isBidOnlyUpgrade() {
+        return (permissions.hasPermission(OpPerms.ContractorAdmin) || user.getAccount().isAdmin())
+                && contractor.getAccountLevel().isBidOnly();
+    }
+
+    private boolean mustApproveUpdatedAgreement() {
 		return !contractor.isAgreementInEffect()
 				&& (permissions.hasPermission(OpPerms.ContractorBilling)
 				|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions

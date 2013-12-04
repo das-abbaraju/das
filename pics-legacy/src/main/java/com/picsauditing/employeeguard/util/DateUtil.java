@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.util;
 
+import com.picsauditing.employeeguard.entities.IntervalType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,5 +52,33 @@ public class DateUtil {
 		dayBeforeEndOfTime.add(Calendar.DAY_OF_YEAR, -1);
 
 		return date.after(dayBeforeEndOfTime.getTime());
+	}
+
+	public static boolean isAboutToExpire(final Date documentExpirationDate, final int intervalPeriod, final IntervalType intervalType) {
+		Calendar documentExpiration = Calendar.getInstance();
+		documentExpiration.setTime(documentExpirationDate);
+
+		switch (intervalType) {
+			case DAY:
+				documentExpiration.add(Calendar.DAY_OF_YEAR, -intervalPeriod);
+				break;
+			case WEEK:
+				documentExpiration.add(Calendar.WEEK_OF_YEAR, -intervalPeriod);
+				break;
+			case MONTH:
+				documentExpiration.add(Calendar.MONTH, -intervalPeriod);
+				break;
+			case YEAR:
+				documentExpiration.add(Calendar.YEAR, -intervalPeriod);
+				break;
+			case NO_EXPIRATION:
+				return false;
+			case NOT_APPLICABLE:
+				return false;
+			default:
+				throw new IllegalArgumentException();
+		}
+
+		return new Date().after(documentExpiration.getTime());
 	}
 }

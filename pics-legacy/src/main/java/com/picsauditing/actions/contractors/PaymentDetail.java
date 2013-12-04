@@ -245,7 +245,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					if (txn.getId() == txnID) {
 						PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
 								amountApplyMap.get(txnID));
-						emailReceiptToContractor(collected, txn);
+						paymentDAO.save(paymentApplied);
+                        emailReceiptToContractor(collected, txn);
 
 
 						notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.SAVE));

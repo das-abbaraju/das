@@ -1,17 +1,45 @@
 @mixin employee-guard-list {
-	.employee-guard-list
-	{
-		list-style: none;
-		margin-bottom: 0;
-		margin-left: 0;
-		padding-left: 0px;
+    .employee-guard-list {
+        list-style: none;
+        margin-bottom: 0;
+        margin-left: 0;
+        padding-left: 0px;
 
-		li
-		{
-			display: inline-block;
-			padding-right: 5px;
-			padding-bottom: 5px;
-			padding-top: 5px;
-		}
-	}
+        li {
+            display: inline-block;
+            padding-right: 5px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+        }
+    }
+
+    .employee-guard-list-rollup {
+        list-style: none;
+        margin-bottom: 0;
+        margin-left: 0;
+        padding-left: 0px;
+
+        li {
+            line-height: 20px;
+            padding: 5px 0px;
+
+            &.expired {
+                color: $danger_light;
+            }
+
+            &.expiring {
+                color: $warning_med;
+            }
+
+            &.complete,
+            &.pending {
+                color: $success_light;
+            }
+
+            .assigned-count {
+                font-size: 20px;
+                font-weight: bold;
+            }
+        }
+    }
 }

@@ -178,7 +178,7 @@ function caoDetailsClueTips(caoID){
 	<s:iterator value="data" status="stat">
 		<s:set name="coID" value="get('coID')"></s:set>
 		<s:set name="caoID" value="get('caoID')"></s:set>
-		<tr id="row<s:property value="#gcID"/>">
+		<tr id="row<s:property value="#coID"/>">
 			<td class="nobr"><a title="<s:property value="get(\'name\')" escape="true" /> (Last Updated: <s:date name="get('flagLastUpdated')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />)"
 					rel="ContractorFlagAjax.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>" class="contractorQuick"
 					href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">
@@ -187,7 +187,7 @@ function caoDetailsClueTips(caoID){
 				<img src="images/icon_<s:property value="get('flag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" /></a></td>
 			<td>
 				<span class="nobr">
-					<a href="<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>,'<s:property value="get('coIDs')"/>'); return false;">Approve <s:property value="get('flag')"/></a>
+					<a href="<s:property value="#coID"/>" onclick="approve(<s:property value="#coID"/>,'<s:property value="get('coIDs')"/>'); return false;">Approve <s:property value="get('flag')"/></a>
 				</span>
 			</td>
 			<td id="detail_<s:property value="get('coID')"/>">
@@ -196,7 +196,7 @@ function caoDetailsClueTips(caoID){
 						<s:property value="get('flagDetail')" escape="false"/>,
 						<s:property value="get('baselineFlagDetail')" escape="false"/>,
 						'<s:property value="@org.apache.commons.lang3.StringEscapeUtils@escapeEcmaScript(get('name'))"/> Documents',
-						'<s:property value="#gcID"/>',
+						'<s:property value="#coID"/>',
 						'<s:property value="get('id')"/>',
 						'<s:property value="get('opId')"/>'
 					);
@@ -216,7 +216,7 @@ function caoDetailsClueTips(caoID){
 				</a>
 				<script type="text/javascript">
 					addDetailsClueTips(
-						'<s:property value="#gcID"/>'
+						'<s:property value="#coID"/>'
 					);
 				</script>
 			</td>

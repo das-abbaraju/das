@@ -7,9 +7,9 @@ import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
@@ -54,8 +54,16 @@ public class EmployeeService {
 		return employeeDAO.findByAccount(accountId);
 	}
 
+    public long getNumberOfEmployeesForAccount(final int accountId) {
+        return employeeDAO.findEmployeeCount(accountId);
+    }
+
 	public List<Employee> getEmployeesForAccounts(final List<Integer> accountIds) {
 		return employeeDAO.findByAccounts(accountIds);
+	}
+
+	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
+		return employeeDAO.findByProjects(projects);
 	}
 
 	public Employee save(Employee employee, final int accountId, final int appUserId) throws Exception {
@@ -196,29 +204,33 @@ public class EmployeeService {
 		return employeeDAO.save(employeeToUpdate);
 	}
 
-	public Employee updateEmployment(EmployeeEmploymentForm employeeEmploymentForm, String employeeId, int accountId, int appUserId) {
+	public Employee updateEmployment(EmployeeEmploymentForm employeeEmploymentForm, final String employeeId, final int accountId, final int appUserId) {
 		Employee employeeInDatabase = findEmployee(employeeId, accountId);
-
 		Date timestamp = new Date();
-		Employee updatedEmployee = buildEmployeeFromForm(employeeEmploymentForm, employeeId, accountId, appUserId);
-		accountSkillEmployeeService.linkEmployeeToSkills(updatedEmployee, appUserId, timestamp);
-		BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
-		List<AccountGroupEmployee> accountGroupEmployees = IntersectionAndComplementProcess.intersection(new ArrayList<>(updatedEmployee.getGroups()),
-				employeeInDatabase.getGroups(), AccountGroupEmployee.COMPARATOR, callback);
-		updatedEmployee.setGroups(accountGroupEmployees);
-		updatedEmployee.setSkills(employeeInDatabase.getSkills());
+		Employee updatedEmployee = buildEmployeeFromForm(employeeEmploymentForm, employeeInDatabase, accountId);
+
+		List<AccountGroupEmployee> accountGroupEmployees = IntersectionAndComplementProcess.intersection(
+				updatedEmployee.getGroups(),
+				employeeInDatabase.getGroups(),
+				AccountGroupEmployee.COMPARATOR,
+				new BaseEntityCallback(appUserId, new Date()));
+		employeeInDatabase.setGroups(accountGroupEmployees);
 
 		if (Strings.isEmpty(updatedEmployee.getSlug())) {
-			String hash = Strings.hashUrlSafe(updatedEmployee.getAccountId() + updatedEmployee.getEmail());
-			updatedEmployee.setSlug("EID-" + hash.substring(0, 8).toUpperCase());
+			String hash = Strings.hashUrlSafe(employeeInDatabase.getAccountId() + employeeInDatabase.getEmail());
+			employeeInDatabase.setSlug("EID-" + hash.substring(0, 8).toUpperCase());
+		} else {
+			employeeInDatabase.setSlug(updatedEmployee.getSlug());
 		}
 
-		EntityHelper.setUpdateAuditFields(updatedEmployee, appUserId, timestamp);
+		employeeInDatabase.setPositionName(updatedEmployee.getPositionName());
 
-		Employee employee = employeeDAO.save(updatedEmployee);
-		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, timestamp);
+		EntityHelper.setUpdateAuditFields(employeeInDatabase, appUserId, timestamp);
+		employeeInDatabase = employeeDAO.save(employeeInDatabase);
 
-		return employee;
+		accountSkillEmployeeService.linkEmployeeToSkills(employeeInDatabase, appUserId, timestamp);
+
+		return employeeInDatabase;
 	}
 
 	public Employee updatePhoto(PhotoForm photoForm, String directory, String id, int accountId) throws Exception {
@@ -235,40 +247,19 @@ public class EmployeeService {
 		return findEmployee(id, accountId);
 	}
 
-	private Employee buildEmployeeFromForm(EmployeeEmploymentForm employeeEmploymentForm, String employeeId, int accountId, int appUserId) {
-		Employee employee = new Employee(findEmployee(employeeId, accountId));
+	private Employee buildEmployeeFromForm(EmployeeEmploymentForm employeeEmploymentForm, Employee employeeFromDatabase, int accountId) {
+		Employee employee = new Employee();
 		employee.setSlug(employeeEmploymentForm.getEmployeeId());
 		employee.setPositionName(employeeEmploymentForm.getTitle());
-		employee.setUpdatedBy(appUserId);
-		employee.setUpdatedDate(new Date());
-
-		employee.getGroups().clear();
 
 		if (ArrayUtils.isNotEmpty(employeeEmploymentForm.getGroups())) {
 			List<AccountGroup> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, Arrays.asList(employeeEmploymentForm.getGroups()));
 			for (AccountGroup accountGroup : groups) {
-				employee.getGroups().add(new AccountGroupEmployee(employee, accountGroup));
+				employee.getGroups().add(new AccountGroupEmployee(employeeFromDatabase, accountGroup));
 			}
 		}
 
 		return employee;
-	}
-
-	private void updateEmployee(final Employee employeeInDatabase, final Employee updatedEmployee, final int appUserId) {
-		employeeInDatabase.setFirstName(updatedEmployee.getFirstName());
-		employeeInDatabase.setLastName(updatedEmployee.getLastName());
-		employeeInDatabase.setEmail(updatedEmployee.getEmail());
-		employeeInDatabase.setPhone(updatedEmployee.getPhone());
-		employeeInDatabase.setPositionName(updatedEmployee.getPositionName());
-		employeeInDatabase.setSlug(updatedEmployee.getSlug());
-
-		updateAccountGroupEmployees(employeeInDatabase, updatedEmployee, appUserId);
-	}
-
-	private void updateAccountGroupEmployees(final Employee employeeInDatabase, final Employee updatedEmployee, final int appUserId) {
-		List<AccountGroupEmployee> accountGroupEmployees = getLinkedGroups(employeeInDatabase, updatedEmployee, appUserId);
-		employeeInDatabase.getGroups().clear();
-		employeeInDatabase.getGroups().addAll(accountGroupEmployees);
 	}
 
 	private List<AccountGroupEmployee> getLinkedGroups(final Employee employeeInDatabase, final Employee updatedEmployee, final int appUserId) {

@@ -3,8 +3,8 @@ package com.picsauditing.employeeguard.entities;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.*;
 import javax.persistence.CascadeType;
+import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.ArrayList;
@@ -68,13 +68,13 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
-    @BatchSize(size = 5)
+	@BatchSize(size = 5)
 	private List<AccountSkillGroup> groups = new ArrayList<>();
 
-    @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
-    @BatchSize(size = 10)
-    private List<AccountSkillEmployee> employees = new ArrayList<>();
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@BatchSize(size = 10)
+	private List<AccountSkillEmployee> employees = new ArrayList<>();
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
@@ -210,13 +210,13 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		this.groups = groups;
 	}
 
-    public List<AccountSkillEmployee> getEmployees() {
-        return employees;
-    }
+	public List<AccountSkillEmployee> getEmployees() {
+		return employees;
+	}
 
-    public void setEmployees(List<AccountSkillEmployee> employees) {
-        this.employees = employees;
-    }
+	public void setEmployees(List<AccountSkillEmployee> employees) {
+		this.employees = employees;
+	}
 
 	public List<ProjectSkill> getProjects() {
 		return projects;
@@ -261,5 +261,10 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public String toString() {
+		return id + " " + name;
 	}
 }

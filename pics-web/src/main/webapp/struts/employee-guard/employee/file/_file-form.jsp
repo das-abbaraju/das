@@ -8,6 +8,7 @@
 </s:url>
 
 <tw:form formName="employee_file_edit" action="${employee_file_edit_url}" method="post" class="form-horizontal js-validation" enctype="multipart/form-data">
+    <tw:input type="hidden" inputName="id" value="${document.id}" />
     <fieldset>
         <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>

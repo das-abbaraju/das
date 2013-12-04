@@ -3,9 +3,9 @@ package com.picsauditing.dao.jdbc;
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.dao.TranslationDAO;
 import com.picsauditing.dao.mapper.LegacyTranslationMapper;
+import com.picsauditing.i18n.model.TranslationWrapper;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.ContextTranslation;
-import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.QueryMapper;
 import com.picsauditing.util.DatabaseUtil;
@@ -14,20 +14,31 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TranslationsDAO implements TranslationDAO {
     private static final Logger logger = LoggerFactory.getLogger(TranslationsDAO.class);
 
     private static final String I18N_CACHE_QUERY = "SELECT k.msgKey, l.locale, l.msgValue, l.lastUsed FROM msg_key k join msg_locale l on l.keyID = k.id";
-    private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM msg_key WHERE msgKey IN (%s)";
+
     private static final String SELECT_KEYIDS_BY_KEY = "SELECT id FROM msg_key WHERE msgKey IN (%s)";
+
+    private static final String SELECT_KEYID_LOCALEID_BY_KEY_LOCALE = "SELECT k.id AS keyID, l.id AS localeID FROM msg_key k JOIN msg_locale l on l.keyID = k.id WHERE k.msgKey = :key AND l.locale = :locale";
+
+    private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM msg_key WHERE msgKey IN (%s)";
+
     private static final String REMOVE_TRANSLATIONS_FROM_LOCALE_BY_KEYID = "DELETE FROM msg_locale WHERE keyID IN (%s)";
-    private static final String UPDATE_LAST_USED_DATE = "UPDATE msg_key SET lastUsed = NOW() WHERE msgKey = '%s'";
+
+    private static final String INSERT_LAST_USED =
+            "INSERT INTO translation_usage (keyID, localeID, pageName, environment, firstUsed, lastUsed, synchronizedBatch) " +
+            "VALUES (:keyID, :localeID, :pageName, :environment, now(), now(), 'DIRECT INSERT') " +
+            "ON DUPLICATE KEY UPDATE lastUsed = NOW(), synchronizedBatch = 'DIRECT INSERT', synchronizedDate = null";
+
     private static final String SAVE_TRANSLATION_KEY = "INSERT INTO msg_key (msgKey, createdBy, updatedBy, creationDate, updateDate, lastUsed) "
             + "VALUES ('%s', %s, %s, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE updateDate = NOW(), updatedBy = %s";
     private static final String SAVE_TRANSLATION_LOCALE = "INSERT INTO msg_locale (keyID, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, firstUsed, lastUsed) "
@@ -37,6 +48,8 @@ public class TranslationsDAO implements TranslationDAO {
 
 
     private static Database database = new Database();
+    // for test injection
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<BasicDynaBean> getTranslationsForI18nCache() throws SQLException {
@@ -50,16 +63,33 @@ public class TranslationsDAO implements TranslationDAO {
     }
 
     @Override
-    public void updateTranslationLastUsed(String key) {
-        Connection connection = null;
+    public void updateTranslationLastUsed(String key, String locale, String pageName, String environment) {
         try {
-            connection = DBBean.getTranslationsConnection();
-            database.execute(connection, String.format(UPDATE_LAST_USED_DATE, Strings.escapeQuotesAndSlashes(key)));
+            NamedParameterJdbcTemplate jdbcTemplate = namedParameterJdbcTemplate();
+            MapSqlParameterSource paramSource = new MapSqlParameterSource();
+            paramSource.addValue("key", key);
+            paramSource.addValue("locale", locale);
+            Map ids = jdbcTemplate.queryForMap(SELECT_KEYID_LOCALEID_BY_KEY_LOCALE, paramSource);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("keyID", ids.get("keyID"));
+            params.put("localeID", ids.get("localeID"));
+            params.put("pageName", pageName);
+            params.put("environment", environment);
+
+            jdbcTemplate.update(INSERT_LAST_USED, params);
         } catch (Exception e) {
-            logger.error("Error updating the last used by date for key {}: {}", key, e);
+            logger.error("Error updating the last used by date for key {} in locale {}: {}", new Object[] {key, locale, e});
             throw new RuntimeException("Failed to reset lastUsed on msg_key because: " + e.getMessage());
-        } finally {
-            DatabaseUtil.closeConnection(connection);
+        }
+    }
+
+    // for test injection
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate() throws SQLException {
+        if (namedParameterJdbcTemplate == null) {
+            return new NamedParameterJdbcTemplate(DBBean.getTranslationsDataSource());
+        } else {
+            return namedParameterJdbcTemplate;
         }
     }
 

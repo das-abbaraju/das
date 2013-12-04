@@ -18,9 +18,9 @@
 			<th>
 				<s:text name="EmailQueueList.header.To" />
 			</th>
-		<s:if test="permissions.isAdmin() || permissions.isContractor()">
-			<th><s:text name="EmailQueueList.header.Preview" /></th>
-		</s:if>
+			<th>
+                <s:text name="EmailQueueList.header.Preview" />
+            </th>
 		</tr>
 	</thead>
 	<tbody>
@@ -48,12 +48,12 @@
 				<td>
 					<s:property value="toAddresses" />
 				</td>
-				<s:if test="permissions.isAdmin() || permissions.isContractor()">
-					<td class="center">
-						<a href="EmailQueueList!previewAjax.action?id=<s:property value="id"/>"
-							class="fancybox iframe preview" title="<s:property value="subject"/>"></a>
-					</td>
-				</s:if>
+                <td class="center">
+                    <s:if test="canPreviewEmail(id)" >
+                        <a href="EmailQueueList!previewAjax.action?id=<s:property value="id"/>"
+                           class="fancybox iframe preview" title="<s:property value="subject"/>"></a>
+                    </s:if>
+                </td>
 			</tr>
 		</s:iterator>
 	</tbody>

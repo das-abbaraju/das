@@ -1,8 +1,8 @@
 package com.picsauditing.report.data;
 
+import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.dr.domain.fields.DisplayType;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +12,6 @@ import java.util.Locale;
 public class HtmlWriter {
     // private static final Logger logger = LoggerFactory.getLogger(HtmlWriter.class);
 
-    // private static I18nCache i18nCache = I18nCache.getInstance();
     private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
     private Locale locale;

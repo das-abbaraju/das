@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
+import com.picsauditing.employeeguard.util.Extractor;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -171,6 +172,13 @@ public class ProjectSkill implements BaseEntity {
 
 		private boolean areEqual(ProjectSkill o1, ProjectSkill o2) {
 			return (o1.getProject().equals(o2.getProject())) && o1.getSkill().equals(o2.getSkill());
+		}
+	};
+
+	public static transient final Extractor<ProjectSkill, AccountSkill> SKILL_EXTRACTOR = new Extractor<ProjectSkill, AccountSkill>() {
+		@Override
+		public AccountSkill extract(ProjectSkill projectSkill) {
+			return projectSkill.getSkill();
 		}
 	};
 }

@@ -885,14 +885,14 @@
                     "path": "app/view/report/header/"
                 },
                 {
-                    "clsName": "PICS.store.report.base.Store",
-                    "name": "Store.js",
-                    "path": "app/store/report/base/"
-                },
-                {
                     "clsName": "PICS.ux.window.Window",
                     "name": "Window.js",
                     "path": "app/ux/window/"
+                },
+                {
+                    "clsName": "PICS.store.report.base.Store",
+                    "name": "Store.js",
+                    "path": "app/store/report/base/"
                 },
                 {
                     "clsName": "PICS.view.report.settings.ReportInfoSetting",
@@ -923,6 +923,11 @@
                     "clsName": "PICS.view.report.header.Header",
                     "name": "Header.js",
                     "path": "app/view/report/header/"
+                },
+                {
+                    "clsName": "PICS.view.report.alert.Confirm",
+                    "name": "Confirm.js",
+                    "path": "app/view/report/alert/"
                 },
                 {
                     "clsName": "Ext.layout.container.Anchor",

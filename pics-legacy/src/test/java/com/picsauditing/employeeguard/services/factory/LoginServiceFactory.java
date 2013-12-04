@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.services.factory;
 
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.services.LoginService;
-import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.security.SessionCookie;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -10,6 +9,8 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 public class LoginServiceFactory {
@@ -29,8 +30,10 @@ public class LoginServiceFactory {
 		JSONObject success = (JSONObject) JSONValue.parse("{\"status\":\"SUCCESS\",\"cookie\":\"" + sessionCookie.toString() + "\"}");
 		JSONObject fail = (JSONObject) JSONValue.parse("{\"status\":\"FAILURE\"}");
 
-		when(loginService.loginViaRest(USERNAME, EncodedMessage.hash(PASSWORD))).thenReturn(success);
-		when(loginService.loginViaRest(FAIL, EncodedMessage.hash(FAIL))).thenReturn(fail);
+		when(loginService.loginViaRest(USERNAME, PASSWORD)).thenReturn(success);
+		when(loginService.loginViaRest(eq(USERNAME), eq(PASSWORD), anyString())).thenReturn(success);
+		when(loginService.loginViaRest(FAIL, FAIL)).thenReturn(fail);
+		when(loginService.loginViaRest(eq(FAIL), eq(FAIL), anyString())).thenReturn(fail);
 
 		return loginService;
 	}

@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.picsauditing.model.user.UserManagementService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -79,6 +80,8 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 	private User user;
 	@Mock
 	private URLUtils urlUtil;
+	@Mock
+	private UserManagementService userManagementService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -95,11 +98,13 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		when(query.getResultList()).thenReturn(Collections.emptyList());
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 		when(urlUtil.getActionUrl(anyString(), any(HashMap.class))).thenReturn("URL");
+		when(userManagementService.saveWithAuditColumnsAndRefresh(any(User.class), any(Permissions.class))).thenReturn(user);
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractorAccount, "featureToggle", featureToggle);
 		Whitebox.setInternalState(requestNewContractorAccount, "permissions", permissions);
 		Whitebox.setInternalState(requestNewContractorAccount, "urlUtil", urlUtil);
+		Whitebox.setInternalState(requestNewContractorAccount, "userManagementService", userManagementService);
 	}
 
 	@Test
@@ -256,7 +261,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		verify(contractor).setLastContactedByInsideSales(anyInt());
 		verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
 		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
-		verify(entityManager, times(5)).persist(any(BaseTable.class));
+		verify(entityManager, times(4)).persist(any(BaseTable.class));
 		verify(entityManager, never()).merge(any(BaseTable.class));
 	}
 
@@ -284,7 +289,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		setPermissionsAsOperator();
 		when(contractor.getPrimaryContact()).thenReturn(user);
 		when(entityManager.find(eq(User.class), anyInt())).thenReturn(user);
-		when(entityManager.merge(any(BaseTable.class))).thenReturn(contractor, user, contractor);
+		when(entityManager.merge(any(BaseTable.class))).thenReturn(contractor, contractor, contractor);
 		when(permissions.getUserId()).thenReturn(1);
 		when(query.getResultList()).thenReturn(requests);
 		when(request.getRequestedBy()).thenReturn(otherOperator);
@@ -298,7 +303,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
 		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
 		// Contractor, user and request already exist
-		verify(entityManager, times(3)).merge(any(BaseTable.class));
+		verify(entityManager, times(2)).merge(any(BaseTable.class));
 		// New contractorOperator, note and email
 		verify(entityManager, times(2)).persist(any(BaseTable.class));
 	}

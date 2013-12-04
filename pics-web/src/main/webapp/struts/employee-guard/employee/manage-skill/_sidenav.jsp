@@ -10,9 +10,11 @@
             </li>
             <li class="nav-divider"></li>
             <s:iterator var="company_skill_info" value="companySkillInfoList" status="loopvar">
-                <li>
-                    <a href="#" data-filter="section${loopvar.count}">${company_skill_info.accountModel.name}</a>
-                </li>
+                <s:if test="#company_skill_info.hasSkills">
+                    <li>
+                        <a href="#" data-filter="section${loopvar.count}">${company_skill_info.name}</a>
+                    </li>
+                </s:if>
             </s:iterator>
         </ul>
     </nav>

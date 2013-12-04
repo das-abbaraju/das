@@ -6,17 +6,16 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.GroupService;
-import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
+import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.Extractor;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.validators.group.RoleFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
@@ -24,8 +23,7 @@ import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 
@@ -41,6 +39,8 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	@Autowired
 	private SkillService skillService;
 	@Autowired
+	private ProjectService projectService;
+	@Autowired
 	private RoleFormValidator roleFormValidator;
 
 	/* Forms */
@@ -50,14 +50,19 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	private GroupNameSkillsForm roleNameSkillsForm;
 	@FormBinding("operator_role_edit_employees")
 	private GroupEmployeesForm roleEmployeesForm;
+	@FormBinding("operator_role_project_edit")
+	private RoleProjectsForm roleProjectsForm;
 	@FormBinding("operator_role_search")
 	private SearchForm searchForm;
 
 	/* Models */
 	private AccountGroup role;
+	private Project roleProject;
+	private List<Project> operatorProjects;
 	private List<AccountGroup> roles;
 	private List<AccountSkill> roleSkills;
 	private List<Employee> roleEmployees;
+	private Map<AccountModel, List<ProjectRole>> siteProjects;
 
 	/* Pages */
 	public String index() {
@@ -77,6 +82,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 
 	public String show() throws PageNotFoundException {
 		loadRole();
+		loadSiteProjects();
 
 		return SHOW;
 	}
@@ -104,6 +110,15 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 		return "employees-form";
 	}
 
+	@SkipValidation
+	public String editRoleCurrentProjectsSection() {
+		loadRole();
+		loadProject();
+		loadOperatorProjects();
+
+		return "role-project-form";
+	}
+
 	/* Other Methods */
 
 	public String insert() throws Exception {
@@ -118,10 +133,14 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	}
 
 	public String update() throws Exception {
+		loadRole();
+
 		if (roleNameSkillsForm != null) {
 			role = roleService.update(roleNameSkillsForm, id, permissions.getAccountId(), permissions.getUserId());
-		} else {
+		} else if (roleEmployeesForm != null) {
 			role = roleService.update(roleEmployeesForm, id, permissions.getAccountId(), permissions.getUserId());
+		} else {
+			role = roleService.update(roleProjectsForm, role, permissions.getAccountId(), permissions.getAppUserID());
 		}
 
 		return setUrlForRedirect("/employee-guard/operator/role/" + role.getId());
@@ -155,6 +174,36 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 		roleEmployees = employeeService.getEmployeesForAccount(permissions.getAccountId());
 	}
 
+	private void loadProject() {
+		roleProject = projectService.getProjectByRoleAndAccount(id, permissions.getAccountId());
+	}
+
+	private void loadOperatorProjects() {
+		operatorProjects = projectService.getProjectsForAccount(permissions.getAccountId());
+	}
+
+	private void loadSiteProjects() {
+		List<Integer> accountIds = ExtractorUtil.extractList(role.getProjects(), new Extractor<ProjectRole, Integer>() {
+			@Override
+			public Integer extract(ProjectRole projectRole) {
+				return projectRole.getProject().getAccountId();
+			}
+		});
+
+		Map<Integer, AccountModel> accounts = accountService.getIdToAccountModelMap(accountIds);
+		siteProjects = new TreeMap<>();
+		for (ProjectRole projectRole : role.getProjects()) {
+			int accountId = projectRole.getProject().getAccountId();
+			AccountModel account = accounts.get(accountId);
+
+			if (!siteProjects.containsKey(account)) {
+				siteProjects.put(account, new ArrayList<ProjectRole>());
+			}
+
+			siteProjects.get(account).add(projectRole);
+		}
+	}
+
 	/* validation */
 
 	@Override
@@ -172,44 +221,40 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 
 	/* getters and setters */
 
-	public SearchForm getSearchForm() {
-		return searchForm;
-	}
-
-	public void setSearchForm(SearchForm searchForm) {
-		this.searchForm = searchForm;
-	}
-
 	public AccountGroup getRole() {
 		return role;
-	}
-
-	public void setRole(AccountGroup role) {
-		this.role = role;
 	}
 
 	public List<AccountGroup> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<AccountGroup> roles) {
-		this.roles = roles;
+	public Project getRoleProject() {
+		return roleProject;
 	}
 
 	public List<AccountSkill> getRoleSkills() {
 		return roleSkills;
 	}
 
-	public void setRoleSkills(List<AccountSkill> roleSkills) {
-		this.roleSkills = roleSkills;
-	}
-
 	public List<Employee> getRoleEmployees() {
 		return roleEmployees;
 	}
 
-	public void setRoleEmployees(List<Employee> roleEmployees) {
-		this.roleEmployees = roleEmployees;
+	public List<Project> getOperatorProjects() {
+		return operatorProjects;
+	}
+
+	public Map<AccountModel, List<ProjectRole>> getSiteProjects() {
+		return siteProjects;
+	}
+
+	public SearchForm getSearchForm() {
+		return searchForm;
+	}
+
+	public void setSearchForm(SearchForm searchForm) {
+		this.searchForm = searchForm;
 	}
 
 	public OperatorJobRoleForm getRoleForm() {
@@ -234,5 +279,13 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 
 	public void setRoleEmployeesForm(GroupEmployeesForm roleEmployeesForm) {
 		this.roleEmployeesForm = roleEmployeesForm;
+	}
+
+	public RoleProjectsForm getRoleProjectsForm() {
+		return roleProjectsForm;
+	}
+
+	public void setRoleProjectsForm(RoleProjectsForm roleProjectsForm) {
+		this.roleProjectsForm = roleProjectsForm;
 	}
 }

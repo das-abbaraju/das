@@ -43,6 +43,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	private EmailBuilder emailBuilder;
     @Autowired
     private BillingService billingService;
+    @Autowired
+    private ServiceRiskCalculator serviceRiskCalculator;
 
 	protected int conID;
 	protected String auditorNotes;
@@ -52,7 +54,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	Map<RiskCategory, LowMedHigh> highestRisks = null;
 
-	public ReportContractorRiskAssessment() {
+
+    public ReportContractorRiskAssessment() {
 		this.orderByDefault = "a.creationDate DESC, a.name";
 	}
 
@@ -204,7 +207,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	private Map<RiskCategory, LowMedHigh> getHighestRiskLevels() {
 		if (highestRisks == null) {
-			ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
 
 			for (ContractorAudit contractorAudit : con.getAudits()) {
 				if (contractorAudit.getAuditType().isPicsPqf()) {

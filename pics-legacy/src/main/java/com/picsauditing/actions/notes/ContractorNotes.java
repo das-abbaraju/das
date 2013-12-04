@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -133,7 +134,39 @@ public class ContractorNotes extends ContractorActionSupport {
 		return filterString;
 	}
 
-	public String getReturnType() {
+    public boolean canPreviewEmail(int emailId) {
+        if(permissions.isAdmin() || permissions.isContractor()) {
+            return true;
+        }
+
+        EmailQueue email = findEmailById(emailId);
+        if (email == null)
+            return false;
+
+        if (email.getBodyViewableBy() != null) {
+            if (Account.EVERYONE == email.getBodyViewableBy().getId())
+                return true;
+            if (Account.PRIVATE == email.getBodyViewableBy().getId() && permissions.getUserId() == email.getCreatedBy().getId()) {
+                return true;
+            }
+            for (int accountId:permissions.getVisibleAccounts()) {
+                if (accountId == email.getBodyViewableBy().getId())
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private EmailQueue findEmailById(int emailId) {
+        for (EmailQueue email:emailList) {
+            if (email.getId() == emailId)
+                return email;
+        }
+        return null;
+    }
+
+    public String getReturnType() {
 		return returnType;
 	}
 

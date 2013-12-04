@@ -75,6 +75,10 @@
 			<s:text name="%{optionValue}" />, 
 		</s:iterator>
 	</s:elseif>
+    <s:elseif test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number' || #q.questionType == 'Percent'">
+        <s:property value="#a.answer" />
+        <s:include value="_insurance_criteria.jsp" />
+    </s:elseif>
 	<s:else>
 		<s:if test="#q.questionType == 'MultipleChoice' && #q.option != null && !isStringsEmpty(#a.answer)">
 			<s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />

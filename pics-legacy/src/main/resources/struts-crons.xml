@@ -4,7 +4,10 @@
 <struts>
 	<package name="com.picsauditing.crons" extends="com.picsauditing">
 		<action name="Cron" class="com.picsauditing.actions.Cron">
-			<result>/struts/blank.jsp</result>
+            <result name="success" type="redirectAction">Cron!list</result>
+			<result name="list">/struts/cron/cron-list.jsp</result>
+			<result name="view">/struts/cron/cron-view.jsp</result>
+			<result name="run">/struts/blank.jsp</result>
 		</action>
 
 		<action name="ContractorCron" class="com.picsauditing.actions.ContractorCron">

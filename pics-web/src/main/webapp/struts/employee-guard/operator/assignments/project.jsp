@@ -3,11 +3,11 @@
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
 <%-- Url --%>
-<s:url action="assignments" var="operator_project_assignments">
-    <s:param name="id">
+<s:url action="project/{projectId}/assignments/{id}" var="operator_project_assignments">
+    <s:param name="projectId">
         ${project.id}
     </s:param>
-    <s:param name="siteId">
+    <s:param name="id">
         ${project.accountId}
     </s:param>
 </s:url>
@@ -47,22 +47,18 @@
         <table id="employee_project" class="table table-striped table-condensed table-hover table-status">
             <thead>
             <tr>
+                <th>Company</th>
                 <th>Employee</th>
-                <th>Title</th>
-                <s:iterator value="operatorProjectAssignmentMatrix.skillNames" var="skill_name">
-                    <th class="status-title">${skill_name}</th>
-                </s:iterator>
+                <th>Status</th>
             </tr>
             </thead>
 
             <tbody>
             <s:iterator value="operatorProjectAssignmentMatrix.assignments" var="operator_project_employee">
-                <s:if test="#operator_project_employee.hasRoles()">
-                    <tr class="assign-employee-container">
-                        <td>
-                            ${operator_project_employee.employeeName}
-                        </td>
-                        <td>${operator_project_employee.title}</td>
+                <s:if test="#operator_project_employee.hasRoles">
+                    <tr>
+                        <td>${operator_project_employee.companyName}</td>
+                        <td>${operator_project_employee.employeeName}</td>
                         <s:iterator value="#operator_project_employee.skillStatuses" var="employee_skill_status">
                             <s:set var="skill_icon">icon-ok-sign</s:set>
                             <s:if test="#employee_skill_status.expired" >

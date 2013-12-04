@@ -1,7 +1,9 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.DocumentType;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
@@ -11,6 +13,7 @@ import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 public class ProfileDocumentService {
+    @Autowired
+    private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 	@Autowired
 	private ProfileDocumentDAO profileDocumentDAO;
 	@Autowired
@@ -59,38 +64,68 @@ public class ProfileDocumentService {
 	}
 
 	public ProfileDocument update(String documentId, int profileId, ProfileDocument updatedProfileDocument,
-                                  int appUserId, File file, String filename, String directory) throws Exception {
+	                              int appUserId, File file, String filename, String directory) throws Exception {
 		ProfileDocument profileDocumentFromDatabase =
-                profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
+				profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
 		profileDocumentFromDatabase.setEndDate(updatedProfileDocument.getEndDate());
 		profileDocumentFromDatabase.setName(updatedProfileDocument.getName());
-        profileDocumentFromDatabase.setFileName(updatedProfileDocument.getFileName());
-        profileDocumentFromDatabase.setFileType(updatedProfileDocument.getFileType());
-        profileDocumentFromDatabase.setFileSize(updatedProfileDocument.getFileSize());
-        profileDocumentFromDatabase.setDocumentType(updatedProfileDocument.getDocumentType());
+		profileDocumentFromDatabase.setDocumentType(updatedProfileDocument.getDocumentType());
+
+		if (Strings.isNotEmpty(updatedProfileDocument.getFileName())) {
+			profileDocumentFromDatabase.setFileName(updatedProfileDocument.getFileName());
+			profileDocumentFromDatabase.setFileType(updatedProfileDocument.getFileType());
+			profileDocumentFromDatabase.setFileSize(updatedProfileDocument.getFileSize());
+		}
+
+		for (AccountSkillEmployee accountSkillEmployee : profileDocumentFromDatabase.getEmployeeSkills()) {
+			accountSkillEmployee.setEndDate(profileDocumentFromDatabase.getEndDate());
+		}
 
 		EntityHelper.setUpdateAuditFields(profileDocumentFromDatabase, appUserId, new Date());
+		profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 
-        profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
+		if (Strings.isNotEmpty(updatedProfileDocument.getFileName())) {
+			Profile profile = profileDocumentFromDatabase.getProfile();
 
-        Profile profile = profileDocumentFromDatabase.getProfile();
+			String extension = FileUtils.getExtension(profileDocumentFromDatabase.getFileName()).toLowerCase();
+			filename = PICSFileType.profile_certificate.filename(profile.getId()) + "-" + profileDocumentFromDatabase.getId();
+			FileUtils.moveFile(file, directory, "files/" + FileUtils.thousandize(profile.getId()), filename, extension, true);
 
-        String extension = FileUtils.getExtension(filename).toLowerCase();
-        filename = PICSFileType.profile_certificate.filename(profile.getId()) + "-" + profileDocumentFromDatabase.getId();
-        FileUtils.moveFile(file, directory, "files/" + FileUtils.thousandize(profile.getId()), filename, extension, true);
+			profileDocumentFromDatabase.setFileName(filename + "." + extension);
+			profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
+		}
 
-        profileDocumentFromDatabase.setFileName(filename + "." + extension);
-
-		return profileDocumentDAO.save(profileDocumentFromDatabase);
+		return profileDocumentFromDatabase;
 	}
 
-	public void delete(String documentId, int profileId, int appUserId) {
+	public void delete(final String documentId, final int profileId, final int appUserId) {
 		ProfileDocument document = profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profileId);
-
-		EntityHelper.softDelete(document, appUserId, new Date());
-
-		profileDocumentDAO.save(document);
+        removeAccountSkillEmployeeLinkToDocument(document.getEmployeeSkills());
+        deleteProfileDocument(document, appUserId);
 	}
+
+    private void deleteProfileDocument(ProfileDocument document, int appUserId) {
+        EntityHelper.softDelete(document, appUserId, new Date());
+        profileDocumentDAO.save(document);
+    }
+
+    private void removeAccountSkillEmployeeLinkToDocument(final List<AccountSkillEmployee> employeeSkills) {
+        List<AccountSkillEmployee> accountSkillEmployees = removeForeignKeyToDocument(employeeSkills);
+        accountSkillEmployeeDAO.save(accountSkillEmployees);
+    }
+
+    private List<AccountSkillEmployee> removeForeignKeyToDocument(List<AccountSkillEmployee> accountSkillEmployees) {
+        if (CollectionUtils.isEmpty(accountSkillEmployees)) {
+            return Collections.emptyList();
+        }
+
+        for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+            accountSkillEmployee.setProfileDocument(null);
+            accountSkillEmployee.setEndDate(null);
+        }
+
+        return accountSkillEmployees;
+    }
 
 	public List<ProfileDocument> search(String searchTerm, int profileId) {
 		if (Strings.isNotEmpty(searchTerm)) {

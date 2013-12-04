@@ -127,6 +127,12 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
+	public List<AccountSkill> findRequiredByAccounts(final List<Integer> accountIds) {
+		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId IN (:accountIds) AND s.ruleType = 'Required'", AccountSkill.class);
+		query.setParameter("accountIds", accountIds);
+		return query.getResultList();
+	}
+
 	public List<AccountSkill> search(final String searchTerm, final List<Integer> accountIds) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId IN (:accountIds) " +
 				"AND (s.name LIKE :searchTerm " +

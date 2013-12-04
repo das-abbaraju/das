@@ -3,6 +3,10 @@
         cursor: pointer;
     }
 
+    &.view-only tr {
+        cursor: auto;
+    }
+
     /*Assigned Employee Styles*/
     tr.assigned {
         .assign-employee {
@@ -59,6 +63,15 @@
         }
     }
 
+    tbody > tr td {
+        &.complete,
+        &.pending,
+        &.expiring
+        &.expired {
+            text-align: center;
+        }
+    }
+
     td {
         &.status,
         &.assign-employee {
@@ -73,5 +86,14 @@
         a {
             display: inline;
         }
+    }
+}
+
+#employee_project.table-status {
+    .complete,
+    .pending,
+    .expiring,
+    .expired {
+        text-align: center;
     }
 }

@@ -562,7 +562,14 @@ public class InputValidatorTest {
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
-	@Test
+    @Test
+    public void testValidatePostCodeForUK_SpecialCasesForCrownDependenciesWithWhiteSpaceMultiCase() {
+        String result = inputValidator.validateUkPostcode(" Im1  1Jb ", false, true);
+
+        assertEquals(InputValidator.NO_ERROR, result);
+    }
+
+    @Test
 	public void testValidatePostCodeForUK_Error() {
 		String result = inputValidator.validateUkPostcode("123", false, true);
 

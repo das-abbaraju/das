@@ -4,7 +4,6 @@ import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.contractors.AuditMenuBuilder;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;

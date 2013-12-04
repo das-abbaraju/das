@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
@@ -14,10 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * This is a stand-in for a "remote" service call
@@ -52,6 +50,16 @@ public class AccountService {
 		// We don't have a need to modify accounts, so we'll map these corporate accounts to AccountModels
 		return mapAccountsToAccountModels(employeeGUARDCorporates);
 	}
+
+    public Map<Integer, AccountModel> getIdToAccountModelMap(final Collection<Integer> accountIds) {
+        return Utilities.convertToMap(getAccountsByIds(accountIds), new Utilities.MapConvertable<Integer, AccountModel>() {
+
+            @Override
+            public Integer getKey(AccountModel accountModel) {
+                return accountModel.getId();
+            }
+        });
+    }
 
 	public List<Integer> getTopmostCorporateAccountIds(final int accountId) {
 		if (accountId <= 0) {

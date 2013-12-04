@@ -58,13 +58,6 @@ public class InsuranceCriteriaContractorOperator extends BaseTable {
         this.insuranceLimit = insuranceLimit;
     }
 
-    public boolean meetsCriteria(AuditData contractorsLimit) {
-        return meetsCriteria(Integer.parseInt(contractorsLimit.getAnswer().replace(",", "")));
-    }
-   public boolean meetsCriteria(int contractorsLimit) {
-        return contractorsLimit >= this.getInsuranceLimit();
-    }
-
     public static InsuranceCriteriaContractorOperatorBuilder builder() {
         return new InsuranceCriteriaContractorOperatorBuilder();
     }

@@ -1,0 +1,52 @@
+Running Cron Job on Server: null
+
+Address: null
+
+Cron Job initiated by: null
+
+Starting Cron Job at: TIME_WAS_HERE
+
+
+Skipping Cron.Task.AuditBuilder_addAuditRenewals
+
+Skipping Cron.Task.EBIX_huntsmansync
+
+Skipping Cron.Task.RecalculateAuditCategories
+
+Skipping Cron.Task.Indexer
+
+Skipping Cron.Task.EmailPendingContractors
+
+Skipping Cron.Task.EmailRegistrationRequests
+
+Skipping Cron.Task.EmailUpcomingImplementationAudits
+
+Skipping Cron.Task.AddLateFees
+
+Starting Bump Dead Accounts that still have balances...
+	SUCCESS...(0 millis )
+
+Skipping Cron.Task.DeactivateNonRenewalAccounts
+
+Skipping Cron.Task.EmailDelinquentContractors
+
+Starting Sending No Action Email to Bid Only Accounts ...
+	SUCCESS...(0 millis )
+
+Skipping Cron.Task.ClearForcedFlags
+
+Skipping Cron.Task.ExpireFlagChanges
+
+Skipping Cron.Task.ReportSuggestions
+
+Skipping Cron.Task.FlagChangesEmail
+
+Starting Checking Registration Requests Hold Dates...
+	SUCCESS...(0 millis )
+
+Skipping Cron.Task.MovePendingAccountsToDeclined
+
+
+
+
+Completed Cron Job at: TIME_WAS_HERE

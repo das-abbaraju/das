@@ -864,4 +864,12 @@ public class DateBean {
         Days, Months
     }
 
+    public static Date buildDate(int day, int month, int year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, day);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+        return calendar.getTime();
+    }
+
 }

@@ -243,12 +243,33 @@
             </s:else>
         </li>
 
-        <s:if test="contractor.safetyRisk != null">
+        <pics:toggle name="<%= FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED %>">
             <li>
-                <label><s:text name="global.SafetyRisk"/>:</label>
-                <s:text name="%{contractor.safetyRisk.i18nKey}"/>
+                <label><s:text name="global.SafetySensitive"/>:</label>
+                <s:if test="contractor.safetySensitive">
+                    <s:text name="YesNo.Yes"/>
+                </s:if>
+                <s:else>
+                    <s:text name="YesNo.No"/>
+                </s:else>
             </li>
-        </s:if>
+            <pics:permission perm="AllContractors">
+                <s:if test="contractor.safetyRisk != null">
+                    <li>
+                        <label><s:text name="global.SafetyRisk"/>:</label>
+                        <s:text name="%{contractor.safetyRisk.i18nKey}"/>
+                    </li>
+                </s:if>
+            </pics:permission>
+        </pics:toggle>
+        <pics:toggleElse>
+            <s:if test="contractor.safetyRisk != null">
+                <li>
+                    <label><s:text name="global.SafetyRisk"/>:</label>
+                    <s:text name="%{contractor.safetyRisk.i18nKey}"/>
+                </li>
+            </s:if>
+        </pics:toggleElse>
 
         <s:if test="contractor.materialSupplier && contractor.productRisk != null">
             <li>

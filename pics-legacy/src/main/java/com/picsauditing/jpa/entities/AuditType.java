@@ -43,6 +43,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public static final int DA = 6;
 	public static final int WELCOME = 9;
 	public static final int ANNUALADDENDUM = 11;
+    public static final int EXCESS_LIABILITY = 16;
 
 	// AKA Competency Review
 	public static final int INTEGRITYMANAGEMENT = 17;

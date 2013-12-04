@@ -352,7 +352,7 @@ public class InputValidator {
 		}
 
 		if (validationTypes.contains(ValidationType.UKPostcodeScrub)) {
-			str = DataScrubber.cleanUKPostcode(str);
+			str = DataScrubber.cleanUKPostcode(str).toUpperCase();
 		}
 
 		if (validationTypes.contains(ValidationType.MinLengthCheck) && str.length() < MIN_STRING_LENGTH_2) {

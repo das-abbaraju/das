@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.util;
 
 import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.employeeguard.entities.IntervalType;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
@@ -63,5 +64,28 @@ public class DateUtilTest extends PicsTranslationTest {
 	@Test
 	public void testDoesNotExpireNullDate() throws Exception {
 		assertFalse(DateUtil.doesNotExpire(null));
+	}
+
+	@Test
+	public void testIsAboutToExpire_WillNotExpireSoon() throws Exception {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, 1);
+
+		assertFalse(DateUtil.isAboutToExpire(calendar.getTime(), 1, IntervalType.MONTH));
+	}
+
+	@Test
+	public void testIsAboutToExpire_WillExpireSoon() throws Exception {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_YEAR, 3);
+
+		assertTrue(DateUtil.isAboutToExpire(calendar.getTime(), 1, IntervalType.MONTH));
+	}
+
+	@Test
+	public void testIsAboutToExpire_NotApplicableOrNoExpiration() throws Exception {
+		Date documentExpirationDate = new Date();
+		assertFalse(DateUtil.isAboutToExpire(documentExpirationDate, 1, IntervalType.NO_EXPIRATION));
+		assertFalse(DateUtil.isAboutToExpire(documentExpirationDate, 1, IntervalType.NOT_APPLICABLE));
 	}
 }

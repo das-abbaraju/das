@@ -109,6 +109,9 @@ public class ContractorAccountTest {
 		contractorUnderTest.setFees(fees);
 	}
 
+
+
+
     @Test
     public void testGetCurrentCsr_ReturnsCurrentCsr() throws Exception {
         User currentCsr = mock(User.class);

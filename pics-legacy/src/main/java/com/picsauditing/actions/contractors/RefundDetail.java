@@ -16,7 +16,6 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;

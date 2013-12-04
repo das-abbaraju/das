@@ -3,17 +3,24 @@ package com.picsauditing.employeeguard.controllers.employee;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.ProjectRole;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
 import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.ProjectRoleService;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
+import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -23,10 +30,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class EmployeeAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final long serialVersionUID = -490476912556033616L;
 
+    @Autowired
+    private AccountService accountService;
 	@Autowired
 	private ProfileService profileService;
 	@Autowired
@@ -37,6 +49,8 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
     private PhotoUtil photoUtil;
     @Autowired
     private ProfileEditFormValidator profileEditFormValidator;
+    @Autowired
+    private ProjectRoleService projectRoleService;
 
     @FormBinding("employee_profile_edit")
     private EmployeeProfileEditForm personalInfo;
@@ -46,9 +60,11 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	private InputStream inputStream;
 	private Profile profile;
+    private List<EmployeeAssignmentModel> employeeAssignments;
 
     public String show() {
 		profile = profileService.findById(id);
+        loadProfileAssignments(profile);
 
         employeeProfileForm = formBuilderFactory.getEmployeeProfileFormBuilder().build(profile);
 
@@ -113,6 +129,21 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		return "settings";
 	}
 
+    private void loadProfileAssignments(Profile profile) {
+        List<ProjectRole> projectRoles = projectRoleService.getRolesForProfile(profile);
+        Set<Integer> accountIds = Utilities.getIdsFromCollection(projectRoles, new Utilities.Identitifable<ProjectRole, Integer>() {
+
+            @Override
+            public Integer getId(ProjectRole projectRole) {
+                return projectRole.getProject().getAccountId();
+            }
+        });
+
+        Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
+
+        employeeAssignments = ViewModeFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
+    }
+
     /* Validation */
 
     @Override
@@ -156,5 +187,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
     public EmployeeProfileForm getEmployeeProfileForm() {
         return employeeProfileForm;
+    }
+
+    public List<EmployeeAssignmentModel> getEmployeeAssignments() {
+        return employeeAssignments;
     }
 }

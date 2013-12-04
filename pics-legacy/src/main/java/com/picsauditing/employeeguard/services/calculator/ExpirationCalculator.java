@@ -29,6 +29,8 @@ public class ExpirationCalculator {
 				return DateBean.addMonths(now, intervalPeriod * 12);
 			case NOT_APPLICABLE:
 				return DateBean.getEndOfTime();
+			case NO_EXPIRATION:
+				return DateBean.getEndOfTime();
 			default:
 				throw new IllegalArgumentException();
 		}

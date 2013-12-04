@@ -21,8 +21,10 @@ import org.hibernate.annotations.Type;
 public class AuditRule extends BaseDecisionTreeRule {
 
 	protected AuditType auditType;
+    protected Boolean safetySensitive;
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
+    protected LowMedHigh tradeSafetyRisk;
 	protected OperatorAccount operatorAccount;
 	protected ContractorType contractorType;
 	protected OperatorTag tag;
@@ -53,7 +55,15 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return auditType.getName().toString();
 	}
 
-	@Enumerated(EnumType.STRING)
+    public Boolean getSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(Boolean safetySensitive) {
+        this.safetySensitive = safetySensitive;
+    }
+
+    @Enumerated(EnumType.STRING)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -62,7 +72,14 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.safetyRisk = safetyRisk;
 	}
 
-	@Transient
+    @Transient
+    public String getSafetySensitiveLabel() {
+        if (safetySensitive == null)
+            return "*";
+        return safetySensitive.toString();
+    }
+
+    @Transient
 	public String getSafetyRiskLabel() {
 		if (safetyRisk == null)
 			return "*";
@@ -85,7 +102,23 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return productRisk.toString();
 	}
 
-	@ManyToOne
+    @Enumerated(EnumType.STRING)
+    public LowMedHigh getTradeSafetyRisk() {
+        return tradeSafetyRisk;
+    }
+
+    public void setTradeSafetyRisk(LowMedHigh tradeSafetyRisk) {
+        this.tradeSafetyRisk = tradeSafetyRisk;
+    }
+
+    @Transient
+    public String getTradeSafetyRiskLabel() {
+        if (tradeSafetyRisk == null)
+            return "*";
+        return tradeSafetyRisk.toString();
+    }
+
+    @ManyToOne
 	@JoinColumn(name = "opID")
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
@@ -508,10 +541,14 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 		sb.append(include ? "Include" : "Exclude");
 
+        if (safetySensitive != null)
+            identifiers.add("Contractor is [" + safetySensitive + " in safety sensitivity]");
 		if (safetyRisk != null)
 			identifiers.add("Contractor is [" + safetyRisk + " in safety risk]");
 		if (productRisk != null)
 			identifiers.add("Contractor is [" + productRisk + " in product risk]");
+        if (tradeSafetyRisk != null)
+            identifiers.add("Contractor is [" + tradeSafetyRisk + " in trade safety risk]");
 		if (operatorAccount != null)
 			identifiers.add("Operator is [" + operatorAccount.getName() + "]");
 		if (contractorType != null)

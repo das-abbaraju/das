@@ -69,7 +69,7 @@ public class SessionSecurity {
 			// if either hash is null/empty then it is not valid
 			// else if they match, the data or hash was not altered
 			return (!(Strings.isEmpty(cookieValidHash) || Strings.isEmpty(checkHash))
-			&& cookieValidHash.equals(checkHash));
+					&& cookieValidHash.equals(checkHash));
 		} catch (Exception e) {
 			logger.error("There was a problem with checking the cookie. Removing bad cookie and returning false: {}",
 					e.getMessage());
@@ -90,16 +90,41 @@ public class SessionSecurity {
 		try {
 			String[] cookieParts = picsSessionCooke.split("\\|");
 			Integer userID = Integer.parseInt(cookieParts[0]);
-			Integer appUserID = Integer.parseInt(cookieParts[1]);
-			Date cookieCreationTime = new Date(Long.parseLong(cookieParts[2]));
+			Date cookieCreationTime = new Date(Long.parseLong(cookieParts[1]));
 			sessionCookie.setUserID(userID);
-			sessionCookie.setAppUserID(appUserID);
 			sessionCookie.setCookieCreationTime(cookieCreationTime);
-			sessionCookie.setEmbeddedData(cookieParts[3]);
+			setEmbeddedData(sessionCookie, cookieParts);
+			setHashAndAppUserId(sessionCookie, cookieParts);
 		} catch (Exception e) {
 			logger.error("unable to create SessionCookie object from session cookie passed: {}", e.getMessage());
 		}
 		return sessionCookie;
+	}
+
+	private static void setEmbeddedData(SessionCookie sessionCookie, String[] cookieParts) {
+		if (cookieParts.length > 2) {
+			sessionCookie.setEmbeddedData(cookieParts[2]);
+		}
+	}
+
+	/**
+	 * Backwards compatibility for users switching between beta and live with the addition of Single Sign On appUserID
+	 *
+	 * @param sessionCookie
+	 * @param cookieParts
+	 */
+	private static void setHashAndAppUserId(SessionCookie sessionCookie, String[] cookieParts) {
+		if (cookieParts.length <= 3) {
+			return;
+		}
+
+		if (!isHmacHash(cookieParts[3])) {
+			sessionCookie.setAppUserID(Integer.parseInt(cookieParts[3]));
+		}
+	}
+
+	private static boolean isHmacHash(String cookiePart) {
+		return cookiePart.length() > 10;
 	}
 
 	public static boolean switchToUserIsSet(HttpServletRequest request) {

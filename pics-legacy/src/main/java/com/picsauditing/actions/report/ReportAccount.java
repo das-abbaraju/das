@@ -75,6 +75,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
         else {
             sql.setType(SelectAccount.Type.Contractor);
             sql.addField("c.riskLevel");
+            sql.addField("c.safetySensitive");
             sql.addField("c.safetyRisk");
             sql.addField("c.productRisk");
             sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
@@ -558,6 +559,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
     }
 
     protected void filterOnRiskLevels() {
+        if (filterOn(getFilter().isSafetySensitive())) {
+            sql.addWhere("c.safetySensitive = " + getFilter().isSafetySensitive());
+            setFiltered(true);
+        }
         if (filterOn(getFilter().getRiskLevel())) {
             String list = Strings.implode(getFilter().getRiskLevel(), ",");
             sql.addWhere("c.safetyRisk IN (" + list + ")");

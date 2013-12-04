@@ -12,7 +12,6 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
-import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -339,7 +338,7 @@ public class LoginController extends PicsActionSupport {
 					logAndMessageError(getText("Login.PasswordIncorrect"));
 					return ERROR;
 				} else {
-					JSONObject result = egLoginService.loginViaRest(username, EncodedMessage.hash(password));
+					JSONObject result = egLoginService.loginViaRest(username, password);
 					permissions = permissionBuilder.login(appUser, profile);
 
 					if ("SUCCESS".equals(result.get("status").toString())) {

@@ -24,6 +24,7 @@ public enum ModelType {
     ContractorTags,
     ContractorTrades,
     Countries,
+    Emails,
     EmployeeCompetencies,
     FlagArchive,
     ForcedFlags,
@@ -41,6 +42,7 @@ public enum ModelType {
     ReportFilters,
     ReportPermissions,
     ReportUsers,
+    Subscriptions,
     UserAssignments,
     UserGroups,
 	Users;

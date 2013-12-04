@@ -4,15 +4,26 @@ import com.picsauditing.PICS.MainPage;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.security.CookieSupport;
+import com.picsauditing.security.SessionCookie;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 import com.picsauditing.util.system.PicsEnvironment;
 import org.json.simple.JSONObject;
-import org.junit.*;
-import org.mockito.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import javax.servlet.http.Cookie;
@@ -607,4 +618,14 @@ public class PicsActionSupportTest extends PicsActionTest {
 
         assertTrue("74.205.45.70".equals(targetIp));
     }
+
+	@Test(expected = NullPointerException.class)
+	public void testSessionCookieCreationTimeSetToNullThrowsNullPointer() throws Exception {
+		SessionCookie sessionCookie = new SessionCookie();
+		sessionCookie.setUserID(123);
+		sessionCookie.setAppUserID(456);
+		sessionCookie.setCookieCreationTime(null);
+
+		Whitebox.invokeMethod(picsActionSupport, "calculateTimeRemaining", sessionCookie, permissions);
+	}
 }

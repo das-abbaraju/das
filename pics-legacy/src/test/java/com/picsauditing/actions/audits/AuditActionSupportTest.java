@@ -206,64 +206,25 @@ public class AuditActionSupportTest extends PicsTest {
 
     @Test
     public void testIsCanEditCategory_PqfSpecific_CategoryIncomplete_CompleteAndPendingCaos() throws Exception {
-        ContractorAudit audit = EntityFactory.makeContractorAudit(111, contractor);
-        audit.getAuditType().setClassType(AuditTypeClass.PQF);
-        audit.getAuditType().setCanContractorEdit(true);
-        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
-        when(permissions.isContractor()).thenReturn(true);
-
-        ContractorAuditOperator cao1 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-        ContractorAuditOperator cao2 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-        audit.getOperators().add(cao1);
-        audit.getOperators().add(cao2);
-
-        AuditCategory category = EntityFactory.makeAuditCategory(100);
-        category.setAuditType(audit.getAuditType());
-        audit.getAuditType().getCategories().add(category);
-
-        AuditCatData auditCatData = AuditCatData.builder()
-                .category(category)
-                .numberAnswered(4)
-                .numberRequired(5)
-                .build();
-        audit.setCategories(Arrays.asList(new AuditCatData[]{auditCatData}));
-
-        cao1.setStatus(AuditStatus.Complete);
-        cao2.setStatus(AuditStatus.Pending);
+        AuditCategory category = buildPqfSpecificCategory(4, 5, AuditStatus.Complete, AuditStatus.Pending);
         assertTrue(test.isCanEditCategory(category));
     }
 
     @Test
          public void testIsCanEditCategory_PqfSpecific_CategoryComplete_CompleteAndPendingCaos() throws Exception {
-        ContractorAudit audit = EntityFactory.makeContractorAudit(111, contractor);
-        audit.getAuditType().setClassType(AuditTypeClass.PQF);
-        audit.getAuditType().setCanContractorEdit(true);
-        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
-        when(permissions.isContractor()).thenReturn(true);
+        AuditCategory category = buildPqfSpecificCategory(5, 5, AuditStatus.Complete, AuditStatus.Pending);
 
-        ContractorAuditOperator cao1 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-        ContractorAuditOperator cao2 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-        audit.getOperators().add(cao1);
-        audit.getOperators().add(cao2);
-
-        AuditCategory category = EntityFactory.makeAuditCategory(100);
-        category.setAuditType(audit.getAuditType());
-        audit.getAuditType().getCategories().add(category);
-
-        AuditCatData auditCatData = AuditCatData.builder()
-                .category(category)
-                .numberAnswered(5)
-                .numberRequired(5)
-                .build();
-        audit.setCategories(Arrays.asList(new AuditCatData[]{auditCatData}));
-
-        cao1.setStatus(AuditStatus.Complete);
-        cao2.setStatus(AuditStatus.Pending);
         assertFalse(test.isCanEditCategory(category));
     }
 
     @Test
     public void testIsCanEditCategory_PqfSpecific_CategoryCompleted_PendingCaos() throws Exception {
+        AuditCategory category = buildPqfSpecificCategory(5, 5, AuditStatus.Pending, AuditStatus.Pending);
+
+        assertTrue(test.isCanEditCategory(category));
+    }
+
+    private AuditCategory buildPqfSpecificCategory(int requiredCompleted, int numberRequired, AuditStatus firstCaoStatus, AuditStatus secondCaoStatus) {
         ContractorAudit audit = EntityFactory.makeContractorAudit(111, contractor);
         audit.getAuditType().setClassType(AuditTypeClass.PQF);
         audit.getAuditType().setCanContractorEdit(true);
@@ -281,17 +242,17 @@ public class AuditActionSupportTest extends PicsTest {
 
         AuditCatData auditCatData = AuditCatData.builder()
                 .category(category)
-                .numberAnswered(5)
-                .numberRequired(5)
+                .requiredCompleted(requiredCompleted)
+                .numberRequired(numberRequired)
                 .build();
         audit.setCategories(Arrays.asList(new AuditCatData[]{auditCatData}));
 
-        cao1.setStatus(AuditStatus.Pending);
-        cao2.setStatus(AuditStatus.Pending);
-        assertTrue(test.isCanEditCategory(category));
+        cao1.setStatus(firstCaoStatus);
+        cao2.setStatus(secondCaoStatus);
+        return category;
     }
 
-	@SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")
 	@Test
 	public void testAuditSetExpiresDate_WCB() throws Exception {
 		ContractorAudit audit = createWCB();

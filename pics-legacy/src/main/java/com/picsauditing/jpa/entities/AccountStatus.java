@@ -45,6 +45,10 @@ public enum AccountStatus implements Translatable, PermissionAware {
         return this == Deactivated;
     }
 
+    public boolean isDeclinedDeletedDeactivated() {
+        return this == Deleted || this == Deactivated || this == Declined;
+    }
+
     @Deprecated
     // TODO find any usages within JSPs and rename them
     public boolean isPendingDeactivated() {

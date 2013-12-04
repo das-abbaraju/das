@@ -38,7 +38,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_question")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_question")
 public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comparable<AuditQuestion> {
 
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;

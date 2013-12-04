@@ -18,6 +18,7 @@
 <s:url action="employee" method="editAssignmentSection" var="contractor_employee_assignments_url">
     <s:param name="id">${id}</s:param>
 </s:url>
+<s:url action="employee-group" var="contractor_role_url" />
 
 
 <%-- Page title --%>
@@ -82,7 +83,18 @@
                             <s:set var="skill_icon">icon-ok-sign</s:set>
                         </s:elseif>
 
-                        <a href="${employee_skill_url}" class="list-group-item ${skill_status}">
+                        <s:set var="skill_url" value="'#'" />
+                        <s:if test="permissions.accountId == #skill_info.accountId">
+                            <s:set var="skill_url">
+                                <s:url action="skill">
+                                    <s:param name="id">
+                                        ${skill_info.id}
+                                    </s:param>
+                                </s:url>
+                            </s:set>
+                        </s:if>
+
+                        <a href="${skill_url}" class="list-group-item ${skill_status}">
                             <i class="${skill_icon}"></i>${skill_info.name}
                         </a>
                     </s:iterator>
@@ -139,7 +151,9 @@
                     <dd class="col-md-9">${employee.positionName}</dd>
                     <%-- <dt class="col-md-3">Classification</dt>
                     <dd>${employee.positionType.displayName}</dd> --%>
-                    <dt class="col-md-3">Employee Groups</dt>
+                    <dt class="col-md-3">
+                        <a href="${contractor_role_url}">Employee Groups</a>
+                    </dt>
                     <dd class="col-md-9">
                         <s:set var="contractor_groups" value="employee.groups"/>
                         <s:include value="/struts/employee-guard/contractor/group/_list.jsp"/>
@@ -148,21 +162,47 @@
             </div>
         </section>
 
-        <section class="employee-guard-section edit-container" data-url="${contractor_employee_assignments_url}">
+        <section class="employee-guard-section" data-url="${contractor_employee_assignments_url}">
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
                         <i class="icon-map-marker icon-large"></i>
                         Current Assignments
                     </div>
-                    <div class="col-md-3 col-xs-3 edit">
-                        <i class="icon-edit icon-large edit-toggle"></i>
-                    </div>
                 </div>
             </h1>
 
             <div class="content">
-                <dl class="employee-guard-information edit-display-values"></dl>
+                <s:if test="!employeeAssignments.isEmpty()">
+                    <dl class="employee-guard-information">
+                        <s:iterator var="employee_assignment" value="employeeAssignments">
+                            <dt class="col-md-3">${employee_assignment.siteName}</dt>
+                            <dd class="col-md-9">
+                                <s:if test="!#employee_assignment.projects.isEmpty()">
+                                    <ul class="employee-guard-list roles">
+                                        <s:iterator var="project" value="#employee_assignment.projects">
+                                            <s:url action="project/{projectId}/assignments/{id}" var="contractor_project_assignment_url">
+                                                <s:param name="projectId">${project.id}</s:param>
+                                                <s:param name="id">${employee_assignment.siteId}</s:param>
+                                            </s:url>
+
+                                            <li>
+                                                <a href="${contractor_project_assignment_url}">
+                                                    <span class="label label-pics">${project.name}</span>
+                                                </a>
+                                            </li>
+                                        </s:iterator>
+                                    </ul>
+                                </s:if>
+                            </dd>
+                        </s:iterator>
+                    </dl>
+                </s:if>
+                <s:else>
+                    <div class="col-md-9 col-md-offset-3 no-value">
+                        No current assignments
+                    </div>
+                </s:else>
             </div>
         </section>
     </div>

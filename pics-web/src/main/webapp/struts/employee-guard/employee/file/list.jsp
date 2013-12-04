@@ -30,7 +30,7 @@
 </tw:form>
 
 <div class="table-responsive">
-    <table class="table table-striped table-condensed table-hover">
+    <table class="table table-striped table-condensed table-hover table-status">
         <thead>
         <tr>
             <th>Name</th>
@@ -48,13 +48,13 @@
                 <td>
                     <a href="${employee_file_show_url}">${document.name}</a>
                 </td>
-                <td>${document.startDate}</td>
-                <td>
+                <td>${document.added}</td>
+                <td class="${document.status.displayValue}">
                     <s:if test="#document.doesNotExpire">
                         Never
                     </s:if>
                     <s:else>
-                        ${document.endDate}
+                        ${document.expires}
                     </s:else>
                 </td>
             </tr>

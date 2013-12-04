@@ -19,7 +19,7 @@
                 <div class="form-group">
                     <tw:label labelName="name" class="col-md-3 control-label"><strong>Site</strong></tw:label>
                     <div class="col-md-4">
-                        <tw:select selectName="siteId" class="form-control select2">
+                        <tw:select selectName="siteId" class="form-control select2" autofocus="true">
                             <s:iterator value="projectSites" var="project_site">
                                 <tw:option value="${project_site.id}">${project_site.name}</tw:option>
                             </s:iterator>
@@ -27,9 +27,6 @@
                     </div>
                 </div>
             </s:if>
-            <s:else>
-                <input type="hidden" name="siteId" value="${permissions.accountId}"/>
-            </s:else>
 
             <div class="form-group">
                 <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>

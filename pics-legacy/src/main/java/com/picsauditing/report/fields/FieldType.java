@@ -8,6 +8,8 @@ import com.picsauditing.dr.domain.fields.FilterType;
 import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.jpa.entities.*;
 
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.util.SpringUtils;
 
 import java.util.HashSet;
@@ -34,6 +36,7 @@ public enum FieldType {
 	Currency(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, Currency.class, EnumType.STRING),
 	Date(FilterType.Date, DisplayType.String, SqlFunctionProfile.Date, null, null),
 	DateTime(FilterType.Date, DisplayType.String, SqlFunctionProfile.Date, null, null),
+    EmailStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, EmailStatus.class, EnumType.STRING),
     EmployeeStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, UserStatus.class, EnumType.STRING),
     ExpirationDate(FilterType.Date, DisplayType.String, SqlFunctionProfile.Date, null, null),
 	FeeClass(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, FeeClass.class, EnumType.STRING),
@@ -42,6 +45,7 @@ public enum FieldType {
 	Float(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
 	Integer(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
     InvoiceType(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, InvoiceType.class, EnumType.STRING),
+    ListType(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, ListType.class, EnumType.STRING),
 	LowMedHigh(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, LowMedHigh.class, EnumType.ORDINAL),
 	MultiYearScope(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, MultiYearScope.class, EnumType.STRING),
 	NetworkLevel(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, NetworkLevel.class, EnumType.ORDINAL),
@@ -57,6 +61,8 @@ public enum FieldType {
 	PaymentMethod(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, PaymentMethod.class, EnumType.STRING),
     RegistrationRequestAccountStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, RegistrationRequestAccountStatus.class, EnumType.STRING),
 	String(FilterType.String, DisplayType.String, SqlFunctionProfile.String, null, null),
+    Subscription(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, Subscription.class, EnumType.STRING),
+    SubscriptionTimePeriod(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, SubscriptionTimePeriod.class, EnumType.STRING),
     SupplierDiversity(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, SupplierDiversity.class, null),
 	Trade(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null, null),
 	TransactionStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, TransactionStatus.class, EnumType.STRING),

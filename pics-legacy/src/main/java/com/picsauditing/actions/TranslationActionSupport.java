@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.picsauditing.i18n.service.TranslationService;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,7 +18,6 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.model.i18n.ObjectPropertyKeyBuilder;
-import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.TranslationUtil;
 

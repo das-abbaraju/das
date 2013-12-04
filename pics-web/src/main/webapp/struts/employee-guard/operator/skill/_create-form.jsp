@@ -58,11 +58,11 @@
                     </s:iterator>
                 </tw:select>
 
-                <div class="checkbox">
+<%--                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label">
                         <tw:input inputName="required" class="required" type="checkbox" data-toggle="form-input" data-target=".operator-skill-employee-groups" value="true" tabindex="8"/> Required for all employees
                     </tw:label>
-                </div>
+                </div> --%>
             </div>
         </div>
 
