@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities.builders;
 
 import com.picsauditing.jpa.entities.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class OperatorAccountBuilder {
@@ -75,6 +76,19 @@ public class OperatorAccountBuilder {
 
     public OperatorAccountBuilder name(String name) {
         operator.setName(name);
+        return this;
+    }
+
+    public OperatorAccountBuilder parentAccount(OperatorAccount parentAccount) {
+        if (operator.getCorporateFacilities() == null) {
+            operator.setCorporateFacilities(new ArrayList<Facility>());
+        }
+        Facility facility = Facility.builder()
+                .operator(operator)
+                .corporate(parentAccount)
+                .build();
+       operator.getCorporateFacilities().add(facility);
+
         return this;
     }
 }
