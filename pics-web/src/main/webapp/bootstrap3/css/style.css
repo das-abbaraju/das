@@ -9280,7 +9280,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
   font-size: 1px;
   text-decoration: none;
   cursor: pointer;
-  background: url('vendor/select2/select2.png') right top no-repeat;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') right top no-repeat;
   border: 0;
   outline: 0;
 }
@@ -9375,7 +9375,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
   display: block;
   width: 100%;
   height: 100%;
-  background: url('vendor/select2/select2.png') no-repeat 0 1px;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 0 1px;
 }
 
 .select2-search {
@@ -9398,11 +9398,11 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
   margin: 0;
   font-family: sans-serif;
   font-size: 1em;
-  background: #ffffff url('vendor/select2/select2.png') no-repeat 100% -22px;
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+  background: #ffffff url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
   border: 1px solid #aaa;
   border-radius: 0;
   outline: 0;
@@ -9415,11 +9415,11 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 }
 
 .select2-search input.select2-active {
-  background: #ffffff url('vendor/select2/select2-spinner.gif') no-repeat 100%;
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
-  background: url('vendor/select2/select2-spinner.gif') no-repeat 100%, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+  background: #ffffff url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%;
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #ffffff), color-stop(0.99, #eeeeee));
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #ffffff 85%, #eeeeee 99%);
+  background: url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
 }
 
 .select2-container-active .select2-choice,
@@ -9580,7 +9580,7 @@ disabled look for disabled choices in the results dropdown
 }
 
 .select2-more-results.select2-active {
-  background: #f4f4f4 url('vendor/select2/select2-spinner.gif') no-repeat 100%;
+  background: #f4f4f4 url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100%;
 }
 
 .select2-more-results {
@@ -9665,7 +9665,7 @@ disabled look for disabled choices in the results dropdown
 }
 
 .select2-container-multi .select2-choices .select2-search-field input.select2-active {
-  background: #ffffff url('vendor/select2/select2-spinner.gif') no-repeat 100% !important;
+  background: #ffffff url('/bootstrap3/css/vendor/select2/select2-spinner.gif') no-repeat 100% !important;
 }
 
 .select2-default {
@@ -9713,7 +9713,7 @@ disabled look for disabled choices in the results dropdown
   width: 12px;
   height: 13px;
   font-size: 1px;
-  background: url('vendor/select2/select2.png') right top no-repeat;
+  background: url('/bootstrap3/css/vendor/select2/select2.png') right top no-repeat;
   outline: none;
 }
 
@@ -9792,7 +9792,7 @@ disabled look for disabled choices in the results dropdown
   .select2-search-choice-close,
   .select2-container .select2-choice abbr,
   .select2-container .select2-choice .select2-arrow b {
-    background-image: url('vendor/select2/select2x2.png') !important;
+    background-image: url('/bootstrap3/css/vendor/select2/select2x2.png') !important;
     background-repeat: no-repeat !important;
     background-size: 60px 40px !important;
   }
@@ -9889,6 +9889,10 @@ disabled look for disabled choices in the results dropdown
   border-left: 1px solid #468847 !important;
 }
 
+/* This file is for any select2 overrides for both v6 and v7 pages.
+   Please put any v7 only styles inside _select2-overrides.scss until this file is no longer needed.
+*/
+
 .select2-container {
   font-size: 13px;
 }
@@ -9909,15 +9913,44 @@ disabled look for disabled choices in the results dropdown
 
 .select2-container-multi .select2-choices .select2-search-choice {
   padding: 3px 20px 3px 5px;
-}
-
-.select2-container-multi .select2-search-choice-close {
-  left: auto;
+  border-radius: 0;
 }
 
 .select2-container .select2-choices {
   font-size: 12px;
   line-height: 12px;
+}
+
+/*Styles for font awesome icons*/
+
+.select2-container .select2-choice .select2-arrow {
+  top: 0;
+  background: none !important;
+  border: 0;
+  border-radius: 0;
+}
+
+.select2-container-multi .select2-search-choice-close {
+  top: 3px;
+  left: auto;
+  background: none !important;
+}
+
+.select2-search .select2-input {
+  padding-right: 5px;
+  padding-left: 25px;
+  background: none !important;
+}
+
+.select2-search .icon-search {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  color: #CCC;
+}
+
+.select2-drop-above .select2-search .icon-search {
+  top: 9px;
 }
 
 .com {
@@ -10864,7 +10897,11 @@ body {
   color: #808285;
 }
 
-/* line 1, ../sass/pics/plugins/_select2-overrides.scss */
+/* This is for any select2 overrides that need sass vars or functions for "v7" pages only.
+   Please put any "global" overrides for select2 in select2-override.css until that file is no longer needed.
+*/
+
+/* line 4, ../sass/pics/plugins/_select2-overrides.scss */
 
 .form-control.select2-container {
   color: #454545;
@@ -10872,20 +10909,20 @@ body {
 
 /*Single Select*/
 
-/* line 6, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 9, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-results .select2-highlighted {
   background: -webkit-linear-gradient(#3498db, #2980b9);
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
 }
 
-/* line 11, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 14, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-drop-active {
   border-color: #73bbe8;
 }
 
-/* line 15, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 18, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-active {
   border-color: #73bbe8;
@@ -10895,7 +10932,7 @@ body {
           box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
 
-/* line 22, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 25, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container.form-control.select2-dropdown-open {
   border-color: #73bbe8;
@@ -10905,7 +10942,7 @@ body {
           box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
 
-/* line 28, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 31, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container .select2-choice {
   height: 34px;
@@ -10916,59 +10953,33 @@ body {
   background: none;
 }
 
-/* line 36, ../sass/pics/plugins/_select2-overrides.scss */
-
-.select2-container .select2-choice b {
-  display: none;
-}
-
-/* line 40, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 39, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container .select2-choice .select2-arrow {
   top: 7px;
   color: #999999;
-  background: none;
-  border: 0;
 }
 
 /*Multi Select*/
 
-/* line 51, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 48, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice {
-  padding: 3px 20px 3px 5px;
-  background: none;
   background-color: #e6e6e6;
   border: 1px solid #cccccc;
-  border-radius: 0;
 }
 
-/* line 58, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 52, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice a {
   font-size: 12px;
   color: #999999;
 }
 
-/* line 62, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 56, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice a:hover {
   color: #c0392b;
-}
-
-/* line 69, ../sass/pics/plugins/_select2-overrides.scss */
-
-.select2-container-multi .select2-search-choice-close {
-  top: 3px;
-  left: auto;
-  background: none;
-}
-
-/* line 76, ../sass/pics/plugins/_select2-overrides.scss */
-
-.select2-container .select2-choices {
-  font-size: 12px;
-  line-height: 12px;
 }
 
 /* line 5, ../sass/pics/employee-guard/mixins/_employee-guard-delete-confirmation.scss */

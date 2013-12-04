@@ -698,24 +698,27 @@ body {
   margin: 0px;
 }
 
-/* line 1, ../sass/pics/plugins/_select2-overrides.scss */
+/* This is for any select2 overrides that need sass vars or functions for "v7" pages only.
+   Please put any "global" overrides for select2 in select2-override.css until that file is no longer needed.
+*/
+/* line 4, ../sass/pics/plugins/_select2-overrides.scss */
 .form-control.select2-container {
   color: #454545;
 }
 
 /*Single Select*/
-/* line 6, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 9, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-results .select2-highlighted {
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
   background: -webkit-linear-gradient(#3498db, #2980b9);
 }
 
-/* line 11, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 14, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-drop-active {
   border-color: #73bbe8;
 }
 
-/* line 15, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 18, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-container-active {
   border-color: #73bbe8;
   outline: 0;
@@ -724,7 +727,7 @@ body {
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
 
-/* line 22, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 25, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-container.form-control.select2-dropdown-open {
   border-color: #73bbe8;
   outline: 0;
@@ -732,7 +735,7 @@ body {
   -moz-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
-/* line 28, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 31, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-container .select2-choice {
   background: none;
   color: #454545;
@@ -741,48 +744,26 @@ body {
   padding: 8px 18px 8px 12px;
   height: 34px;
 }
-/* line 36, ../sass/pics/plugins/_select2-overrides.scss */
-.select2-container .select2-choice b {
-  display: none;
-}
-/* line 40, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 39, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-container .select2-choice .select2-arrow {
   color: #999999;
-  background: none;
-  border: 0px;
   top: 7px;
 }
 
 /*Multi Select*/
-/* line 51, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 48, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice {
-  padding: 3px 20px 3px 5px;
-  background: none;
   background-color: #e6e6e6;
   border: 1px solid #cccccc;
-  border-radius: 0px;
 }
-/* line 58, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 52, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a {
   color: #999999;
   font-size: 12px;
 }
-/* line 62, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 56, ../sass/pics/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a:hover {
   color: #c0392b;
-}
-
-/* line 69, ../sass/pics/plugins/_select2-overrides.scss */
-.select2-container-multi .select2-search-choice-close {
-  background: none;
-  left: auto;
-  top: 3px;
-}
-
-/* line 76, ../sass/pics/plugins/_select2-overrides.scss */
-.select2-container .select2-choices {
-  font-size: 12px;
-  line-height: 12px;
 }
 
 /* line 5, ../sass/pics/employee-guard/mixins/_employee-guard-delete-confirmation.scss */
