@@ -183,7 +183,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			RichTextString richText = cell.getRichStringCellValue();
 			if (richText != null) {
 				String cellValue = richText.getString();
-				if (!Strings.isEmpty(cellValue) && cellValue.contains("Company Name")) {
+				if (!Strings.isEmpty(cellValue) && cellValue.contains("Account Name")) {
 					return true;
 				}
 			}
@@ -220,9 +220,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		prependToRequestNotes(getString(row, RegistrationRequestColumn.Notes), request);
 		// Other objects
 //        request.setDeadline((Date) getValue(row, RegistrationRequestColumn.Deadline));
-//		request.setRequestedBy((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
-//        String requestedBy =  getString(row, RegistrationRequestColumn.RequestedByUser);
-//		request.setRequestedByUser((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
+		request.setRequestedBy((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
+		request.setRequestedByUser((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
 
 		if (subdivision != null && !subdivision.contains("-")) {
 			if (request.getCountry() != null) {
@@ -238,13 +237,13 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		return request;
 	}
 
-	private void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {
+	public void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {
 		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther())) {
 			crr.setRequestedByUserOther(null);
 		}
 
 		if (Strings.isEmpty(crr.getContact()) || crr.getCountrySubdivision() == null || crr.getCountry() == null
-				|| crr.getRequestedBy() == null || Strings.isEmpty(crr.getReasonForRegistration())) {
+				|| crr.getRequestedBy() == null || Strings.isEmpty(crr.getReasonForRegistration()) || Strings.isEmpty(crr.getAddress())) {
 			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
 		}
 
