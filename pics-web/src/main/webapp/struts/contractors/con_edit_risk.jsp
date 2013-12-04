@@ -37,7 +37,6 @@
                                     />
                         </li>
                     </pics:toggle>
-                    <pics:toggleElse>
                         <li>
                             <label>Safety Risk:</label>
                             <s:radio
@@ -68,7 +67,6 @@
                                     cssClass="inline"
                                     />
                         </li>
-                    </pics:toggleElse>
 				</ol>
 			</fieldset>
 			
