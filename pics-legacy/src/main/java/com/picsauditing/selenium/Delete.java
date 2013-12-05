@@ -7,34 +7,54 @@ import java.util.List;
 import com.picsauditing.search.Database;
 
 class Delete {
-	String table = "";
-	List<String> joins = new ArrayList<String>();
+    String table = "";
+    List<String> joins = new ArrayList<String>();
+    public boolean disableForeignKeyCheck = false;
 
-	public Delete(String table) {
-		this.table = table;
-	}
+    private static final String DISABLE_FOREIGN_KEY_CHECK = "SET FOREIGN_KEY_CHECKS=0";
+    private static final String ENABLE_FOREIGN_KEY_CHECK = "SET FOREIGN_KEY_CHECKS=1";
 
-	public Delete addJoin(String join) {
-		joins.add(join);
-		return this;
-	}
+    public Delete(String table) {
+        this.table = table;
+    }
 
-	public String toString() {
-		String sql = "DELETE t FROM " + table + " t ";
+    public Delete addJoin(String join) {
+        joins.add(join);
+        return this;
+    }
 
-		for (String join : joins) {
-			sql += "\n" + join;
-		}
+    public String toString() {
+        String sql = "DELETE t FROM " + table + " t ";
 
-		return sql;
-	}
+        for (String join : joins) {
+            sql += "\n" + join;
+        }
 
-	public void delete(Database db) throws SQLException {
-		db.executeUpdate(toString());
-	}
+        return sql;
+    }
+
+    public void delete(Database db) throws SQLException {
+        if (disableForeignKeyCheck) {
+            db.execute(DISABLE_FOREIGN_KEY_CHECK);
+        }
+
+        db.executeUpdate(toString());
+
+        if (disableForeignKeyCheck) {
+            db.execute(ENABLE_FOREIGN_KEY_CHECK);
+        }
+    }
 
     public void deleteSingleTable(Database db) throws SQLException {
+        if (disableForeignKeyCheck) {
+            db.execute(DISABLE_FOREIGN_KEY_CHECK);
+        }
+
         db.executeUpdate(toSingleTableString());
+
+        if (disableForeignKeyCheck) {
+            db.execute(ENABLE_FOREIGN_KEY_CHECK);
+        }
     }
 
     private String toSingleTableString() {
