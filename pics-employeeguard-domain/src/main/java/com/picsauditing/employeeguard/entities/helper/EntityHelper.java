@@ -37,18 +37,17 @@ public class EntityHelper {
         }
     }
 
-    public static <E extends BaseEntity> void softDelete(E entity, int deletedBy, Date deletedDate) {
+    public static <E extends BaseEntity> void softDelete(E entity, int deletedBy) {
         entity.setDeletedBy(deletedBy);
-        entity.setDeletedDate(deletedDate);
     }
 
-    public static <E extends BaseEntity> void softDelete(Collection<E> entities, int deletedBy, Date deletedDate) {
+    public static <E extends BaseEntity> void softDelete(Collection<E> entities, int deletedBy) {
         if (CollectionUtils.isEmpty(entities)) {
             return;
         }
 
         for (BaseEntity entity : entities) {
-            softDelete(entity, deletedBy, deletedDate);
+            softDelete(entity, deletedBy);
         }
     }
 

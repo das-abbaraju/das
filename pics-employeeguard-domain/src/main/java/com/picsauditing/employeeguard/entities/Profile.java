@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
 import com.picsauditing.database.domain.Identifiable;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -10,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "profile")
-@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@Where(clause = "deletedDate IS NULL")
+@SQLDelete(sql = "UPDATE profile SET deletedDate = NOW() WHERE id = ?")
 public class Profile implements BaseEntity, Identifiable {
 
     private static final long serialVersionUID = -757907997992359311L;
@@ -52,11 +54,11 @@ public class Profile implements BaseEntity, Identifiable {
     private Date deletedDate;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+    @Where(clause = "deletedDate IS NULL")
     private List<Employee> employees = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+    @Where(clause = "deletedDate IS NULL")
     private List<ProfileDocument> documents = new ArrayList<>();
 
     public int getId() {

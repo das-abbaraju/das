@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.entities;
 
 import com.picsauditing.employeeguard.util.Extractor;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -12,8 +13,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "project")
-@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO project (accountId, createdBy, createdDate, deletedBy, deletedDate, endDate, location, name, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLDelete(sql = "UPDATE project SET deletedDate = NOW() WHERE id = ?")
 public class Project implements BaseEntity, Comparable<Project> {
 
 	@Id
@@ -27,17 +29,17 @@ public class Project implements BaseEntity, Comparable<Project> {
 	private Date endDate;
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectSkill> skills = new ArrayList<>();
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectRole> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectCompany> companies = new ArrayList<>();
 

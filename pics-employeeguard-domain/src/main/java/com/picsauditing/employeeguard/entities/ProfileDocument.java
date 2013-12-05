@@ -1,19 +1,21 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.SQLInsert;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "profiledocument")
-@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO profiledocument (createdBy, createdDate, deletedBy, deletedDate, documentType, finishDate, fileName, fileSize, fileType, name, profileID, startDate, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLDelete(sql = "UPDATE profiledocument SET deletedDate = NOW() WHERE id = ?")
 public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> {
 	private static final long serialVersionUID = 7654576030939128656L;
 
@@ -63,7 +65,7 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "profileDocument", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	private List<AccountSkillEmployee> employeeSkills;
 
 	public int getId() {

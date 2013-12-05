@@ -18,7 +18,6 @@ import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,13 +51,7 @@ public class ProfileDocumentServiceTest {
 
         profileDocumentService.delete(Integer.toString(DOCUMENT_ID), PROFILE_ID, APP_USER_ID);
 
-        verifyDeletedProfileDocument(profileDocument);
-    }
-
-    private void verifyDeletedProfileDocument(ProfileDocument profileDocument) {
-        assertEquals(3, profileDocument.getDeletedBy());
-        assertNotNull(profileDocument.getDeletedDate());
-        verify(profileDocumentDAO).save(profileDocument);
+        verify(profileDocumentDAO).delete(profileDocument);
     }
 
     @Test
@@ -86,7 +79,7 @@ public class ProfileDocumentServiceTest {
     }
 
     private void verifyDeletedProfileDocumentAndAccountSkillEmployees(ProfileDocument profileDocument) {
-        verifyDeletedProfileDocument(profileDocument);
+        verify(profileDocumentDAO).delete(profileDocument);
 
         for (AccountSkillEmployee accountSkillEmployee : profileDocument.getEmployeeSkills()) {
             assertNull(accountSkillEmployee.getProfileDocument());

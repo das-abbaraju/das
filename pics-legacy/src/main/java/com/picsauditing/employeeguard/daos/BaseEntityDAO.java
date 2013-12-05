@@ -61,4 +61,13 @@ public abstract class BaseEntityDAO<E extends BaseEntity> {
 
 		em.flush();
 	}
+
+    @Transactional(propagation = Propagation.NESTED)
+    public void delete(List<E> entities) {
+        for (E entity : entities) {
+            em.remove(entity);
+        }
+
+        em.flush();
+    }
 }

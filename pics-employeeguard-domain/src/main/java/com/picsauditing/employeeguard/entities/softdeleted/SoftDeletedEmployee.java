@@ -44,11 +44,11 @@ public class SoftDeletedEmployee implements BaseEntity, Comparable<SoftDeletedEm
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	private List<AccountGroupEmployee> groups = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	private List<AccountSkillEmployee> skills = new ArrayList<>();
 
 	public int getId() {

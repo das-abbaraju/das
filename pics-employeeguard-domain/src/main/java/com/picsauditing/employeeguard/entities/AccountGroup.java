@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -11,8 +12,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "account_group")
-@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLDelete(sql = "UPDATE account_group SET deletedDate = NOW() WHERE id = ?")
 public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 
 	private static final long serialVersionUID = 7074027976165804080L;
@@ -41,18 +43,18 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Where(clause = "deletedDate IS NULL")
     @BatchSize(size = 5)
 	private List<AccountSkillGroup> skills = new ArrayList<>();
 
 	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
     @BatchSize(size = 5)
 	private List<AccountGroupEmployee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Where(clause = "deletedDate IS NULL")
     @BatchSize(size = 5)
 	private List<ProjectRole> projects = new ArrayList<>();
 

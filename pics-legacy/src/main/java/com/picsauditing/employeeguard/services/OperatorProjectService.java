@@ -74,15 +74,13 @@ public class OperatorProjectService {
 	}
 
 	public void unassignEmployeeFromProjectRole(Employee employee, ProjectRole projectRole, int appUserId) {
-		Date now = new Date();
-
 		List<AccountSkillEmployee> accountSkillEmployees = getListOfSkillsForThisProject(employee, projectRole);
-		EntityHelper.softDelete(accountSkillEmployees, appUserId, now);
-		accountSkillEmployeeDAO.save(accountSkillEmployees);
+		EntityHelper.softDelete(accountSkillEmployees, appUserId);
+		accountSkillEmployeeDAO.delete(accountSkillEmployees);
 
 		AccountGroupEmployee accountGroupEmployee = accountGroupEmployeeDAO.findByGroupAndEmployee(employee, projectRole.getRole());
-		EntityHelper.softDelete(accountGroupEmployee, appUserId, now);
-		accountGroupEmployeeDAO.save(accountGroupEmployee);
+		EntityHelper.softDelete(accountGroupEmployee, appUserId);
+		accountGroupEmployeeDAO.delete(accountGroupEmployee);
 	}
 
 	private List<AccountSkillEmployee> getListOfSkillsForThisProject(Employee employee, ProjectRole projectRole) {
