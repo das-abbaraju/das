@@ -9,20 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.TradeDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -194,7 +186,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
     private void updateSafetySensitivity() {
         if (!contractor.isSafetySensitive()) {
             for (ContractorTrade contractorTrade : contractor.getTrades()) {
-                if (contractorTrade.getTrade().isSafetySensitive()) {
+                Trade trade = contractorTrade.getTrade();
+                if (trade != null && trade.getSafetySensitiveI() == YesNo.Yes) {
                     contractor.setSafetySensitive(true);
 
                     return;
