@@ -23,6 +23,7 @@ import com.picsauditing.util.Strings;
 
 public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private final Logger logger = LoggerFactory.getLogger(FeatureToggleCheckerGroovy.class);
+    private static final String environment = System.getProperty("pics.env");
 
 	private String cacheName = "feature_toggle";
 	private String scriptBaseClass = "com.picsauditing.toggle.FeatureToggleExpressions";
@@ -131,6 +132,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		Binding binding = new Binding();
 		binding.setVariable("appPropertyDAO", appPropertyDAO);
 		binding.setVariable("permissions", getPermissions());
+		binding.setVariable("env", environment);
 		for (String key : dynamicToggleVariables.keySet()) {
 			binding.setVariable(key, dynamicToggleVariables.get(key));
 		}
