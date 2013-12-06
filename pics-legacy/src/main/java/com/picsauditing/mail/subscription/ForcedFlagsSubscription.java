@@ -13,6 +13,8 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
 public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
+    public static final int PICS_ADMIN_ID = 1100;
+
 	@Override
 	public Map<String, Object> process(EmailSubscription subscription) {
 		Map<String, Object> tokens = new HashMap<String, Object>();
@@ -56,6 +58,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			sql.addField("u.id as forcedById");
 			sql.addField("u.name AS forcedBy");
 			sql.addField("fa.name AS forcedByAccount");
+            sql.addField("fa.id AS forcedByAccountId");
 			sql.addField("co.workStatus");
 
 			report.setLimit(100);
@@ -66,7 +69,8 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			List<DynaBean> forcedFlags = new ArrayList<DynaBean>();
 
 			for (DynaBean bean : data) {
-				forcedFlags.add(bean);
+                if (((Integer) bean.get("forcedByAccountId")).intValue() != PICS_ADMIN_ID)
+				    forcedFlags.add(bean);
 			}
 
 			if (forcedFlags.size() > 0) {
