@@ -11683,6 +11683,8 @@ html.mm-zoom-panels .mm-panel.mm-opened.mm-subopened {
           transform: scale(0.7, 0.7);
 }
 
+/*Put overrides in a scss file and use sass functions and default colors where possible*/
+
 /* borders */
 
 .mm-list > li:not(.mm-subtitle):not(.mm-label):not(.mm-noresults)::after {
@@ -12872,7 +12874,32 @@ body {
   }
 }
 
-/* line 1, ../sass/pics/layout/menu/_mobile-menu.scss */
+/*Should pull from default colors where possible and use sass functions
+All styles should be contained inside specific container element
+Add display block to anchor tags to make it easier to click on link
+Add styles for all of the special results like demo account, deactivated aka
+            color: #454545;
+
+            &.account-deactivated,
+            &.account-inactive {
+                color: #aeaeae;
+            }
+
+            &.account-deactivated:hover,
+            &.account-inactive:hover {
+                color: #ccc;
+            }
+
+            &.account-demo {
+                font-style: italic;
+            }
+
+            &.account-deleted span {
+                text-decoration: line-through;
+            }
+*/
+
+/* line 26, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-ismenu .mm-label span {
   padding: 0;
@@ -12884,28 +12911,28 @@ body {
   background: #333;
 }
 
-/* line 11, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 36, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-menu a {
   color: #999999;
   text-decoration: none;
 }
 
-/* line 16, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 41, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 [href="#mobile_menu_search"] {
   display: block;
   float: right;
 }
 
-/* line 22, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 47, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 #mobile_menu_navigation.loading,
 #mobile_menu_search.loading {
   visibility: hidden;
 }
 
-/* line 26, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 51, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .header {
   padding: 10px 15px;
@@ -12922,13 +12949,13 @@ body {
   border-bottom: 2px solid #cccccc;
 }
 
-/* line 43, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 68, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-menu div.mm-search {
   background: #333;
 }
 
-/* line 47, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 72, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-menu div.mm-search input {
   line-height: 23px;
@@ -12936,13 +12963,13 @@ body {
   background: #fff;
 }
 
-/* line 54, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 79, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 #mobile_menu_search ul.mm-list {
   padding-top: 50px;
 }
 
-/* line 58, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 83, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 #mobile_menu_search .total-results {
   padding: 10px 0;
@@ -12951,9 +12978,9 @@ body {
 
 @media (min-width: 992px) {
   {
-    /* line 67, ../sass/pics/layout/menu/_mobile-menu.scss */
+    /* line 92, ../sass/pics/layout/menu/_mobile-menu.scss */
   
-    /* line 71, ../sass/pics/layout/menu/_mobile-menu.scss */
+    /* line 96, ../sass/pics/layout/menu/_mobile-menu.scss */
   
   }
   #mobile_menu .header,
@@ -12969,7 +12996,7 @@ body {
 
 @media (max-width: 991px) {
   {
-    /* line 78, ../sass/pics/layout/menu/_mobile-menu.scss */
+    /* line 103, ../sass/pics/layout/menu/_mobile-menu.scss */
   
   }
   body {
@@ -12977,31 +13004,36 @@ body {
   }
 }
 
-/* line 2, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/*Might be cleanerif mobile scss files vs main nav scss in separate folders
+    Always pull colors from defaults where possible */
+
+/* line 5, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search ul {
+  /*UL is already block by default.  Is this an override?*/
+
   display: block;
 }
 
-/* line 6, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/* line 10, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search li {
   padding: 5px 0;
 }
 
-/* line 10, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/* line 14, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search li:first-child {
   padding-top: 0;
 }
 
-/* line 14, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/* line 18, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search li.selected {
   background-color: #252525;
 }
 
-/* line 18, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/* line 22, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search li.no-results-message {
   padding-top: 20px;
@@ -13009,7 +13041,7 @@ body {
   text-align: center;
 }
 
-/* line 24, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/* line 28, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search a {
   font-size: 14px;
@@ -13019,17 +13051,17 @@ body {
   white-space: normal;
 }
 
-/* line 32, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/* line 36, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search h1 {
   margin: 0;
   margin-bottom: 10px;
   font-size: 14px;
   line-height: 1;
-  color: #ccc;
+  color: #cccccc;
 }
 
-/* line 40, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
+/* line 44, ../sass/pics/layout/menu/_mobile-search-result-item.scss */
 
 #mobile_menu_search p {
   margin: 0;

@@ -1,5 +1,9 @@
+/*Might be cleanerif mobile scss files vs main nav scss in separate folders
+    Always pull colors from defaults where possible */
+
 #mobile_menu_search {
     ul {
+        /*UL is already block by default.  Is this an override?*/
         display: block;
     }
 
@@ -30,17 +34,17 @@
     }
 
     h1 {
-        color: #ccc;
+        color: $default_med;
         line-height: 1;
         margin: 0;
         margin-bottom: 10px;
-        font-size: 14px
+        font-size: 14px;
     }
 
     p {
         line-height: 1;
-        color: #808285;
+        color: $pics_warm_grey;
         margin: 0;
-        font-size: 14px
+        font-size: 14px;
     }
 }

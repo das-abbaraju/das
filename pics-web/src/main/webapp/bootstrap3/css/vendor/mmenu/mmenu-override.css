@@ -1,4 +1,4 @@
-
+/*Put overrides in a scss file and use sass functions and default colors where possible*/
 /* borders */
 .mm-list > li:not(.mm-subtitle):not(.mm-label):not(.mm-noresults)::after {
   border-bottom-width: none;

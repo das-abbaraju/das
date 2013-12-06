@@ -6,24 +6,30 @@
 
 <s:include value="/struts/layout/menu/mobile/_mobile-search-result-item.tpl" />
 
+
+<%-- No user menu on mobile? --%>
 <!-- don't add width, padding, border, or margin to wrapper div -->
 <div id="mobile_menu">
+    <div id="page">
+        <div class="header">
+            <a href="#mobile_menu_navigation"><i class="icon-reorder"></i></a>
+            <a href="#mobile_menu_search" class="right"><i class="icon-search"></i></a>
+        </div>
+    </div>
+
+
+    <%-- Should be a nav tag. --%>
     <div id="mobile_menu_navigation" class="loading">
         <ul>
             <s:set var="menu_items" value="menu.children.subList(0, #last_menu_index)" />
             <s:include value="/struts/layout/menu/mobile/_mobile-menu-item.jsp" />
         </ul>
     </div>
+    <%-- Should be a nav tag --%>
     <div id="mobile_menu_search" class="loading">
         <ul>
             <li>
             </li>
         </ul>
-    </div>
-    <div id="page">
-        <div class="header">
-            <a href="#mobile_menu_navigation"><i class="icon-reorder"></i></a>
-            <a href="#mobile_menu_search" class="right"><i class="icon-search"></i></a>
-        </div>
     </div>
 </div>

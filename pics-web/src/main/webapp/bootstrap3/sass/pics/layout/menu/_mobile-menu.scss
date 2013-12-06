@@ -1,3 +1,9 @@
+/*Should pull from default colors where possible and use sass functions
+All styles should be contained inside specific container element
+Add display block to anchor tags to make it easier to click on link
+Add styles for all of the special results like demo account, deactivated, deleted as used in _user-search-list.scss
+*/
+
 .mm-ismenu .mm-label span {
     background: #333;
     font-size: 11px;
