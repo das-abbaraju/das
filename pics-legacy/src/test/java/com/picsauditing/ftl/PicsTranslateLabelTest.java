@@ -1,5 +1,6 @@
 package com.picsauditing.ftl;
 
+import com.picsauditing.util.Strings;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import org.approvaltests.Approvals;
@@ -29,11 +30,14 @@ public class PicsTranslateLabelTest {
             // case the root is most likely to be the project root.
             File cwd = new File(".");
             String templatePath;
-            if (cwd.getAbsolutePath().endsWith("pics-legacy/.")) {
+            if (cwd.getAbsolutePath().endsWith("pics-legacy" + Strings.FILE_SEPARATOR + ".")) {
                 templatePath = "src/main/resources/template/pics";
             } else {
                 templatePath = "pics-legacy/src/main/resources/template/pics";
             }
+
+            System.out.println(new File(templatePath).getAbsolutePath());
+
             cfg.setDirectoryForTemplateLoading(new File(templatePath));
             cfg.setObjectWrapper(new DefaultObjectWrapper());
             cfg.setDefaultEncoding("UTF-8");
