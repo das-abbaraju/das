@@ -48,11 +48,11 @@ public class ForcedFlagsSubscriptionTest extends PicsTest {
     }
 
     @Test
-    public void testProcess_NoPicsAdminForcedFlags() throws Exception {
+    public void testProcess_FilterForcedFlags() throws Exception {
         BasicDynaBean bean;
 
         bean = mock(BasicDynaBean.class);
-        when(bean.get("forcedByAccountId")).thenReturn(ForcedFlagsSubscription.PICS_ADMIN_ID);
+        when(bean.get("forcedByAccountId")).thenReturn(37951);
         data.add(bean);
 
         bean = mock(BasicDynaBean.class);

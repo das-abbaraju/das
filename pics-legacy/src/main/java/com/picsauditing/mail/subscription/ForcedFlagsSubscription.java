@@ -13,8 +13,6 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
 public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
-    public static final int PICS_ADMIN_ID = 1100;
-
 	@Override
 	public Map<String, Object> process(EmailSubscription subscription) {
 		Map<String, Object> tokens = new HashMap<String, Object>();
@@ -69,7 +67,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			List<DynaBean> forcedFlags = new ArrayList<DynaBean>();
 
 			for (DynaBean bean : data) {
-                if (((Integer) bean.get("forcedByAccountId")).intValue() != PICS_ADMIN_ID)
+                if (((Integer) bean.get("forcedByAccountId")).intValue() != 37951) // Michael Do's ID, remove for 2014
 				    forcedFlags.add(bean);
 			}
 
