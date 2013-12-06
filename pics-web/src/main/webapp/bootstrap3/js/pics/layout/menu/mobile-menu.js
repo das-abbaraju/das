@@ -48,7 +48,9 @@
             function configureNavigation($navigation_el) {
                 $navigation_el.mmenu({
                     dragOpen: {
-                        open: false,
+                        open: true,
+                        maxStartPos: $(window).width(),
+                        pageNode: $('#mobile_menu .header')
                     }
                 });
             }
@@ -57,13 +59,14 @@
             function configureSearch(search_el) {
                 $search_el.mmenu({
                     dragOpen: {
-                        open: false
+                        open: true,
+                        maxStartPos: $(window).width(),
+                        pageNode: $('#mobile_menu .header')
                     },
                     position: 'right',
                     searchfield:{
                         add: true,
-                        search: false,
-                        maxStartPos: $(window).width()
+                        search: false
                     }
                 });
             }

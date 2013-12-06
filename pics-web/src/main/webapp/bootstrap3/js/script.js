@@ -26653,13 +26653,13 @@ else {
 						{
 							case 'right':
 							case 'bottom':
-								if ( e[ drag.page ] >= glbl.$wndw[ _dimension ]() - opts.maxStartPos )
+								if ( e.originalEvent[ drag.page ] >= glbl.$wndw[ _dimension ]() - opts.maxStartPos )
 								{
 									_stage = 1;
 								}
 								break;
 							default:
-								if ( e[ drag.page ] <= opts.maxStartPos )
+								if ( e.originalEvent[ drag.page ] <= opts.maxStartPos )
 								{
 									_stage = 1;
 								}
@@ -29595,7 +29595,9 @@ PICS.define('employee-guard.Tooltip', {
             function configureNavigation($navigation_el) {
                 $navigation_el.mmenu({
                     dragOpen: {
-                        open: false,
+                        open: true,
+                        maxStartPos: $(window).width(),
+                        pageNode: $('#mobile_menu .header')
                     }
                 });
             }
@@ -29604,13 +29606,14 @@ PICS.define('employee-guard.Tooltip', {
             function configureSearch(search_el) {
                 $search_el.mmenu({
                     dragOpen: {
-                        open: false
+                        open: true,
+                        maxStartPos: $(window).width(),
+                        pageNode: $('#mobile_menu .header')
                     },
                     position: 'right',
                     searchfield:{
                         add: true,
-                        search: false,
-                        maxStartPos: $(window).width()
+                        search: false
                     }
                 });
             }

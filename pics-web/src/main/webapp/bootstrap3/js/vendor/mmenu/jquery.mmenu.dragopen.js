@@ -141,13 +141,13 @@
 						{
 							case 'right':
 							case 'bottom':
-								if ( e[ drag.page ] >= glbl.$wndw[ _dimension ]() - opts.maxStartPos )
+								if ( e.originalEvent[ drag.page ] >= glbl.$wndw[ _dimension ]() - opts.maxStartPos )
 								{
 									_stage = 1;
 								}
 								break;
 							default:
-								if ( e[ drag.page ] <= opts.maxStartPos )
+								if ( e.originalEvent[ drag.page ] <= opts.maxStartPos )
 								{
 									_stage = 1;
 								}
