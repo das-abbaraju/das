@@ -637,6 +637,11 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public List<Integer> getOperatorHeirarchy() {
+        return getOperatorHeirarchy(true);
+    }
+
+	@Transient
+	public List<Integer> getOperatorHeirarchy(boolean includePicsConsortium) {
 		List<Integer> list = new ArrayList<Integer>();
 		// Add myself
 		list.add(this.id);
@@ -645,7 +650,9 @@ public class OperatorAccount extends Account {
 		for (Facility facility : getCorporateFacilities()) {
 			if (!facility.getCorporate().equals(topAccount)) {
 				// Add parent's that aren't my primary parent
-				list.add(facility.getCorporate().getId());
+                if (includePicsConsortium || !facility.getCorporate().inPicsConsortium) {
+				    list.add(facility.getCorporate().getId());
+                }
 			}
 		}
 		if (!topAccount.equals(this)) {

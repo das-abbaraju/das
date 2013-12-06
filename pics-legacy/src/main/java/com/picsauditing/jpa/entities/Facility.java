@@ -5,6 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.picsauditing.jpa.entities.builders.FacilityBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -45,4 +46,8 @@ public class Facility extends BaseTable {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+    public static FacilityBuilder builder() {
+        return new FacilityBuilder();
+    }
 }

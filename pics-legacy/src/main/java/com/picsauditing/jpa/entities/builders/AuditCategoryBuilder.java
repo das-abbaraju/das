@@ -18,4 +18,9 @@ public class AuditCategoryBuilder {
         auditCategory.setName(name);
         return this;
     }
+
+    public AuditCategoryBuilder id(int id) {
+        auditCategory.setId(id);
+        return this;
+    }
 }
