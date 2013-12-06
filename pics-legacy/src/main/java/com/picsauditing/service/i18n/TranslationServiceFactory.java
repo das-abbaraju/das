@@ -121,7 +121,6 @@ public class TranslationServiceFactory {
             // we're creating a new one each time to get it to re-evaluate "permissions" since MDO changed that to hold
             // the permissions object
             FeatureToggleCheckerGroovy featureToggleChecker = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
-            featureToggleChecker.addToggleVariable("env", environment());
             return featureToggleChecker;
         }
     }

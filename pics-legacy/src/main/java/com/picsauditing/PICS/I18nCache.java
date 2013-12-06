@@ -383,7 +383,6 @@ public class I18nCache implements TranslationService, Serializable {
     private FeatureToggle featureToggle() {
 		if (featureToggle == null) {
 			featureToggle = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
-            featureToggle.addToggleVariable("env", environment());
 		}
 		return featureToggle;
 	}
