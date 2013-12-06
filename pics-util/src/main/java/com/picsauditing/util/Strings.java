@@ -16,6 +16,7 @@ public class Strings {
 	public static final String EMPTY_STRING = "";
 	public static final String SINGLE_SPACE = " ";
 	public static final String NEW_LINE = System.getProperty("line.separator");
+    public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	private static final int NO_STRING_ESCAPE_STRATEGY = 0;
 	private static final int STRING_ESCAPE_STRATEGY = 1;
@@ -217,7 +218,7 @@ public class Strings {
 	 * 11883 returns 11883<br />
 	 * 11883.4 returns 11883<br />
 	 * Foobar returns 0
-	 * 
+	 *
 	 * @param query
 	 * @return
 	 */
@@ -298,15 +299,15 @@ public class Strings {
 
 		/*
 		 * Old code for reference
-		 * 
+		 *
 		 * String expression = "[A-Z0-9]+"; Pattern pattern =
 		 * Pattern.compile(expression, Pattern.CANON_EQ); Matcher matcher =
 		 * pattern.matcher(name);
-		 * 
+		 *
 		 * StringBuffer buf = new StringBuffer(); boolean found = false; while
 		 * ((found = matcher.find())) { System.out.println(matcher.group());
 		 * buf.append(matcher.group()); }
-		 * 
+		 *
 		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return
 		 * buf.toString();
 		 */
@@ -463,7 +464,7 @@ public class Strings {
 
 	/**
 	 * Is countries contained in the expression
-	 * 
+	 *
 	 * @param expression
 	 *            like !|CA|FR|
 	 * @param countries
