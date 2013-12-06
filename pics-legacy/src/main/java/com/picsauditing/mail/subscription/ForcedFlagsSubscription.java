@@ -56,6 +56,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			sql.addField("u.id as forcedById");
 			sql.addField("u.name AS forcedBy");
 			sql.addField("fa.name AS forcedByAccount");
+            sql.addField("fa.id AS forcedByAccountId");
 			sql.addField("co.workStatus");
 
 			report.setLimit(100);
@@ -66,7 +67,8 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			List<DynaBean> forcedFlags = new ArrayList<DynaBean>();
 
 			for (DynaBean bean : data) {
-				forcedFlags.add(bean);
+                if (((Integer) bean.get("forcedByAccountId")).intValue() != 37951) // Michael Do's ID, remove for 2014
+				    forcedFlags.add(bean);
 			}
 
 			if (forcedFlags.size() > 0) {
