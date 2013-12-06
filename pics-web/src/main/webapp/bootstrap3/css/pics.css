@@ -418,8 +418,8 @@ body {
 }
 /* line 26, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-brand {
-  background: url(../../../v7/img/logo/logo-icon.png) no-repeat;
-  background: rgba(0, 0, 0, 0) url(../../../v7/img/logo/logo-icon.svg) no-repeat;
+  background: url(/v7/img/logo/logo-icon.png) no-repeat;
+  background: rgba(0, 0, 0, 0) url(/v7/img/logo/logo-icon.svg) no-repeat;
   display: block;
   height: 32px;
   margin: 8px 10px 9px 0;
@@ -494,15 +494,13 @@ body {
   line-height: 20px;
   margin-top: 9px;
   padding: 3px 20px;
-  padding-left: 20px;
-  padding-right: 20px;
   text-transform: uppercase;
 }
-/* line 99, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 97, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li + .nav-header {
   margin-top: 9px;
 }
-/* line 107, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 105, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -515,7 +513,7 @@ body {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   color: #fff;
 }
-/* line 119, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 117, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a.dropdown-toggle {
   color: #fff;
   background-color: #3f93c0;
@@ -525,34 +523,39 @@ body {
   background-image: -moz-linear-gradient(#73bbe8, #3f93c0);
   background-image: -o-linear-gradient(#73bbe8, #3f93c0);
   background-image: linear-gradient(#73bbe8, #3f93c0);
+  /*Do we need repeat since just a color?*/
   background-repeat: repeat-x;
+  /*Is this needed?*/
   *background-color: #3f93c0;
+  /*Either border color is fine, but both are not necessary*/
   border-color: #3f93c0 #3f93c0 #336699;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   display: block;
+  /* Use sass functions for gradients */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73bbe8', endColorstr='#ff3f93c0', GradientType=0);
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   padding: 6px 15px 7px;
 }
-/* line 135, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 138, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to.open a.dropdown-toggle {
   padding-top: 6px;
 }
-/* line 141, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 144, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:hover,
 #primary_navigation .nav .switch-to > a:focus {
   background-color: #3f93c0;
   background-position: 0 -15px;
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
   -webkit-transition: background-position 0.1s linear;
   -moz-transition: background-position 0.1s linear;
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-/* line 150, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 153, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:active {
+  /*Avoid using css hacks*/
   background-color: #3f93c0 \9;
   background-color: #3f93c0;
   background-image: none;
@@ -561,30 +564,32 @@ body {
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 159, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 163, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account {
+  /*Avoid using css hacks*/
   display: inline-block;
   display: inline \9;
   line-height: 16px;
   margin-right: 5px;
   text-align: right;
 }
-/* line 167, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 172, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account span {
   font-size: 10px;
 }
-/* line 173, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 178, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .icon-cog {
   vertical-align: 5px;
 }
 
 @media (max-width: 991px) {
-  /* line 180, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 185, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation {
     display: none;
   }
 }
-/* line 1, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/*Were all colors used approved by Matt?*/
+/* line 3, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation {
   top: 50px;
   background: #2c3f50;
@@ -599,46 +604,46 @@ body {
   /* TODO: Customize the styles below */
   /* END dropdown menu */
 }
-/* line 9, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 11, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .navbar {
   background: none;
   border: 0;
   margin-bottom: 0;
 }
-/* line 16, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 18, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .navbar-nav > li > a {
   padding-top: 5px;
   padding-bottom: 5px;
   color: #f1f1f2;
 }
-/* line 22, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 24, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .navbar-nav > li > a:hover {
-  color: #fff;
+  color: #ffffff;
 }
-/* line 27, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 29, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .nav li.dropdown.open > .dropdown-toggle {
   background: #2c3f50;
   border-top: 2px solid #bcbcbc;
-  color: #fff;
+  color: #ffffff;
   height: 30px;
 }
-/* line 37, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 39, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .navbar .dropdown-menu li a:link,
 #secondary_navigation .navbar .dropdown-menu li a:visited {
   color: #454545;
   text-decoration: none;
 }
-/* line 42, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 44, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .navbar .dropdown-menu li a:hover {
   color: #ffffff;
   text-decoration: none;
 }
-/* line 47, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 49, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .navbar a:hover {
   color: #73bbe8;
   text-decoration: none;
 }
-/* line 52, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 54, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu {
   border: 0px;
   -webkit-border-radius: 5px;
@@ -651,7 +656,7 @@ body {
   box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
   top: 35px;
 }
-/* line 61, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 63, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu li > a:hover,
 #secondary_navigation .dropdown-menu .active > a,
 #secondary_navigation .dropdown-menu .active > a:hover {
@@ -661,7 +666,7 @@ body {
   background-image: -o-linear-gradient(#3498db, #2980b9);
   background-image: linear-gradient(#3498db, #2980b9);
 }
-/* line 65, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 67, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu .divider {
   background-color: #e6e6e6;
   border-bottom: 1px solid #ffffff;
@@ -669,7 +674,7 @@ body {
   margin: 9px 1px;
   overflow: hidden;
 }
-/* line 73, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 75, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu .nav-header {
   color: #cccccc;
   display: block;
@@ -678,8 +683,6 @@ body {
   line-height: 20px;
   margin-top: 9px;
   padding: 3px 20px;
-  padding-left: 20px;
-  padding-right: 20px;
   text-transform: uppercase;
 }
 /* line 86, ../sass/pics/layout/menu/_secondary-navigation.scss */
@@ -697,7 +700,7 @@ body {
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  color: #fff;
+  color: #ffffff;
 }
 
 @media (min-width: 992px) {
@@ -717,71 +720,73 @@ body {
     display: none;
   }
 }
-/* line 2, ../sass/pics/layout/menu/_user-search-list.scss */
+/*Are we still using this file at all?  Didn't see it anywhere in the markup */
+/* line 4, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox {
   width: 275px;
+  /*TODO find a way NOT to do this*/
 }
-/* line 8, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 10, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li a {
   font-size: 13px;
   white-space: normal;
 }
-/* line 14, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 16, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .name {
   float: left;
   font-weight: bold;
   width: 175px;
 }
-/* line 21, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 23, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .id {
   float: right;
   font-weight: bold;
 }
-/* line 27, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 29, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .location {
   float: left;
   width: 175px;
 }
-/* line 33, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 35, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .type {
   float: right;
   font-style: italic;
 }
-/* line 41, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 43, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-deactivated a,
 #user_searchbox .account-inactive a {
   color: #aeaeae;
 }
-/* line 47, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 49, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-deactivated a:hover,
 #user_searchbox .account-inactive a:hover {
   color: #cccccc;
 }
-/* line 53, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 55, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-demo {
   font-style: italic;
 }
-/* line 63, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 65, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-deleted .name,
 #user_searchbox .account-deleted .id,
 #user_searchbox .account-deleted .location,
 #user_searchbox .account-deleted .type {
   text-decoration: line-through;
 }
-/* line 70, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 72, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .no-results,
 #user_searchbox .total-results {
   padding: 5px 20px;
 }
-/* line 77, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 79, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .more-results a {
   font-weight: bold;
 }
-/* line 83, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 85, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .total-results {
   background-color: #ffffff;
 }
-/* line 87, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 89, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .total-results p {
   color: #999999;
   font-size: 13px;
@@ -789,7 +794,7 @@ body {
 }
 
 @media (max-width: 979px) {
-  /* line 97, ../sass/pics/layout/menu/_user-search-list.scss */
+  /* line 99, ../sass/pics/layout/menu/_user-search-list.scss */
   #user_searchbox {
     background-color: #ffffff;
     padding: 5px 0;
@@ -806,7 +811,7 @@ body {
     margin-top: 10px;
     width: 100%;
   }
-  /* line 108, ../sass/pics/layout/menu/_user-search-list.scss */
+  /* line 110, ../sass/pics/layout/menu/_user-search-list.scss */
   #user_searchbox .active a {
     color: #ffffff;
   }
@@ -814,28 +819,9 @@ body {
 /*Should pull from default colors where possible and use sass functions
 All styles should be contained inside specific container element
 Add display block to anchor tags to make it easier to click on link
-Add styles for all of the special results like demo account, deactivated aka
-            color: #454545;
-
-            &.account-deactivated,
-            &.account-inactive {
-                color: #aeaeae;
-            }
-
-            &.account-deactivated:hover,
-            &.account-inactive:hover {
-                color: #ccc;
-            }
-
-            &.account-demo {
-                font-style: italic;
-            }
-
-            &.account-deleted span {
-                text-decoration: line-through;
-            }
+Add styles for all of the special results like demo account, deactivated, deleted as used in _user-search-list.scss
 */
-/* line 26, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 7, ../sass/pics/layout/menu/_mobile-menu.scss */
 .mm-ismenu .mm-label span {
   background: #333;
   font-size: 11px;
@@ -846,25 +832,25 @@ Add styles for all of the special results like demo account, deactivated aka
   padding: 0;
 }
 
-/* line 36, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 17, ../sass/pics/layout/menu/_mobile-menu.scss */
 .mm-menu a {
   text-decoration: none;
   color: #999999;
 }
 
-/* line 41, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 22, ../sass/pics/layout/menu/_mobile-menu.scss */
 [href="#mobile_menu_search"] {
   float: right;
   display: block;
 }
 
-/* line 47, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 28, ../sass/pics/layout/menu/_mobile-menu.scss */
 #mobile_menu_navigation.loading,
 #mobile_menu_search.loading {
   visibility: hidden;
 }
 
-/* line 51, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 32, ../sass/pics/layout/menu/_mobile-menu.scss */
 .header {
   padding: 10px 15px;
   color: #ffffff;
@@ -882,44 +868,44 @@ Add styles for all of the special results like demo account, deactivated aka
       filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);*/
 }
 
-/* line 68, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 49, ../sass/pics/layout/menu/_mobile-menu.scss */
 .mm-menu div.mm-search {
   background: #333;
 }
 
-/* line 72, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 53, ../sass/pics/layout/menu/_mobile-menu.scss */
 .mm-menu div.mm-search input {
   background: #fff;
   color: #454545;
   line-height: 23px;
 }
 
-/* line 79, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 60, ../sass/pics/layout/menu/_mobile-menu.scss */
 #mobile_menu_search ul.mm-list {
   padding-top: 50px;
 }
-/* line 83, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 64, ../sass/pics/layout/menu/_mobile-menu.scss */
 #mobile_menu_search .total-results {
   margin-left: 20px;
   padding: 10px 0;
 }
 
 @media (min-width: 992px) {
-  /* line 92, ../sass/pics/layout/menu/_mobile-menu.scss */
+  /* line 73, ../sass/pics/layout/menu/_mobile-menu.scss */
   #mobile_menu .header,
   #mobile_menu_navigation,
   #mobile_menu_search {
     display: none;
   }
 
-  /* line 96, ../sass/pics/layout/menu/_mobile-menu.scss */
+  /* line 77, ../sass/pics/layout/menu/_mobile-menu.scss */
   html.mm-opened .mm-page {
     box-shadow: none;
     position: static;
   }
 }
 @media (max-width: 991px) {
-  /* line 103, ../sass/pics/layout/menu/_mobile-menu.scss */
+  /* line 84, ../sass/pics/layout/menu/_mobile-menu.scss */
   body {
     padding-top: 0;
   }

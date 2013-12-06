@@ -24,8 +24,8 @@
 
     /* logo */
     .navbar-brand {
-        background: url(../../../v7/img/logo/logo-icon.png) no-repeat;
-        background: rgba(0, 0, 0, 0) url(../../../v7/img/logo/logo-icon.svg) no-repeat;
+        background: url(/v7/img/logo/logo-icon.png) no-repeat;
+        background: rgba(0, 0, 0, 0) url(/v7/img/logo/logo-icon.svg) no-repeat;
         display: block;
         height: 32px;
         margin: 8px 10px 9px 0;
@@ -91,8 +91,6 @@
         line-height: 20px;
         margin-top: 9px;
         padding: 3px 20px;
-        padding-left: 20px;
-        padding-right: 20px;
         text-transform: uppercase;
     }
 
@@ -121,11 +119,16 @@
             background-color: #3f93c0;
             @include text-shadow(0 -1px 0 rgba(0, 0, 0, 0.25));
             @include background-image(linear-gradient($pics_light_blue, #3f93c0));
+            /*Do we need repeat since just a color?*/
             background-repeat: repeat-x;
+            /*Is this needed?*/
             *background-color: #3f93c0;
+
+            /*Either border color is fine, but both are not necessary*/
             border-color: #3f93c0 #3f93c0 #336699;
             border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
             display: block;
+            /* Use sass functions for gradients */
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73bbe8', endColorstr='#ff3f93c0', GradientType=0);
             /* Darken IE7 buttons by default so they stand out more given they won't have borders */
             filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
@@ -141,13 +144,14 @@
         {
             background-color: #3f93c0;
             background-position: 0 -15px;
-            color: #fff;
+            color: #ffffff;
             text-decoration: none;
             @include transition(background-position .1s linear);
         }
 
         > a:active
         {
+            /*Avoid using css hacks*/
             background-color: #3f93c0 \9;
             background-color: #3f93c0;
             background-image: none;
@@ -157,6 +161,7 @@
 
         .account
         {
+            /*Avoid using css hacks*/
             display: inline-block;
             display: inline \9;
             line-height: 16px;

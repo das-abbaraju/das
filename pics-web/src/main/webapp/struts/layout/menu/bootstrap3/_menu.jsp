@@ -6,7 +6,7 @@
 
 <s:url action="Search" var="search_url" />
 
-<div id="primary_navigation" class= "bootstrap-menu navbar-fixed-top">
+<div id="primary_navigation" class= "navbar-fixed-top">
   <div class="container">
     <nav class="navbar navbar-default" role="navigation">
       <div class="navbar-header">

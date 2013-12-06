@@ -12380,8 +12380,8 @@ body {
   height: 32px;
   padding: 0;
   margin: 8px 10px 9px 0;
-  background: url(../../../v7/img/logo/logo-icon.png) no-repeat;
-  background: rgba(0, 0, 0, 0) url(../../../v7/img/logo/logo-icon.svg) no-repeat;
+  background: url(/v7/img/logo/logo-icon.png) no-repeat;
+  background: rgba(0, 0, 0, 0) url(/v7/img/logo/logo-icon.svg) no-repeat;
 }
 
 /* line 37, ../sass/pics/layout/menu/_primary-navigation.scss */
@@ -12465,8 +12465,6 @@ body {
 #primary_navigation .dropdown-menu .nav-header {
   display: block;
   padding: 3px 20px;
-  padding-right: 20px;
-  padding-left: 20px;
   margin-top: 9px;
   font-size: 11px;
   font-weight: bold;
@@ -12475,13 +12473,13 @@ body {
   text-transform: uppercase;
 }
 
-/* line 99, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 97, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav li + .nav-header {
   margin-top: 9px;
 }
 
-/* line 107, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 105, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
@@ -12496,7 +12494,7 @@ body {
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* line 119, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 117, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav .switch-to > a.dropdown-toggle {
   display: block;
@@ -12517,17 +12515,17 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
-/* line 135, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 138, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav .switch-to.open a.dropdown-toggle {
   padding-top: 6px;
 }
 
-/* line 141, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 144, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav .switch-to > a:hover,
 #primary_navigation .nav .switch-to > a:focus {
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
   background-color: #3f93c0;
   background-position: 0 -15px;
@@ -12537,9 +12535,11 @@ body {
           transition: background-position 0.1s linear;
 }
 
-/* line 150, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 153, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav .switch-to > a:active {
+  /*Avoid using css hacks*/
+
   background-color: #3f93c0 \9;
   background-color: #3f93c0;
   background-image: none;
@@ -12549,7 +12549,7 @@ body {
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* line 159, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 163, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav .switch-to .account {
   display: inline-block;
@@ -12559,13 +12559,13 @@ body {
   text-align: right;
 }
 
-/* line 167, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 172, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav .switch-to .account span {
   font-size: 10px;
 }
 
-/* line 173, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 178, ../sass/pics/layout/menu/_primary-navigation.scss */
 
 #primary_navigation .nav .switch-to .icon-cog {
   vertical-align: 5px;
@@ -12573,7 +12573,7 @@ body {
 
 @media (max-width: 991px) {
   {
-    /* line 180, ../sass/pics/layout/menu/_primary-navigation.scss */
+    /* line 185, ../sass/pics/layout/menu/_primary-navigation.scss */
   
   }
   #primary_navigation {
@@ -12581,7 +12581,9 @@ body {
   }
 }
 
-/* line 1, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/*Were all colors used approved by Matt?*/
+
+/* line 3, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation {
   top: 50px;
@@ -12596,7 +12598,7 @@ body {
   border-bottom: 2px solid #1a1a1a;
 }
 
-/* line 9, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 11, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .navbar {
   margin-bottom: 0;
@@ -12604,7 +12606,7 @@ body {
   border: 0;
 }
 
-/* line 16, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 18, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .navbar-nav > li > a {
   padding-top: 5px;
@@ -12612,22 +12614,22 @@ body {
   color: #f1f1f2;
 }
 
-/* line 22, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 24, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .navbar-nav > li > a:hover {
-  color: #fff;
+  color: #ffffff;
 }
 
-/* line 27, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 29, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .nav li.dropdown.open > .dropdown-toggle {
   height: 30px;
-  color: #fff;
+  color: #ffffff;
   background: #2c3f50;
   border-top: 2px solid #bcbcbc;
 }
 
-/* line 37, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 39, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .navbar .dropdown-menu li a:link,
 #secondary_navigation .navbar .dropdown-menu li a:visited {
@@ -12635,21 +12637,21 @@ body {
   text-decoration: none;
 }
 
-/* line 42, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 44, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .navbar .dropdown-menu li a:hover {
   color: #ffffff;
   text-decoration: none;
 }
 
-/* line 47, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 49, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .navbar a:hover {
   color: #73bbe8;
   text-decoration: none;
 }
 
-/* line 52, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 54, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .dropdown-menu {
   top: 35px;
@@ -12664,7 +12666,7 @@ body {
           box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
 }
 
-/* line 61, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 63, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .dropdown-menu li > a:hover,
 #secondary_navigation .dropdown-menu .active > a,
@@ -12676,7 +12678,7 @@ body {
   background-image: linear-gradient(#3498db, #2980b9);
 }
 
-/* line 65, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 67, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .dropdown-menu .divider {
   height: 2px;
@@ -12686,13 +12688,11 @@ body {
   border-bottom: 1px solid #ffffff;
 }
 
-/* line 73, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 75, ../sass/pics/layout/menu/_secondary-navigation.scss */
 
 #secondary_navigation .dropdown-menu .nav-header {
   display: block;
   padding: 3px 20px;
-  padding-right: 20px;
-  padding-left: 20px;
   margin-top: 9px;
   font-size: 11px;
   font-weight: bold;
@@ -12712,7 +12712,7 @@ body {
 #secondary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #secondary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #secondary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
-  color: #fff;
+  color: #ffffff;
   background-color: #3f93c0 \9;
   background-color: #3f93c0;
   background-image: none;
@@ -12748,20 +12748,24 @@ body {
   }
 }
 
-/* line 2, ../sass/pics/layout/menu/_user-search-list.scss */
+/*Are we still using this file at all?  Didn't see it anywhere in the markup */
+
+/* line 4, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox {
   width: 275px;
+  /*TODO find a way NOT to do this*/
+
 }
 
-/* line 8, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 10, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox li a {
   font-size: 13px;
   white-space: normal;
 }
 
-/* line 14, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 16, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox li .name {
   float: left;
@@ -12769,48 +12773,48 @@ body {
   font-weight: bold;
 }
 
-/* line 21, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 23, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox li .id {
   float: right;
   font-weight: bold;
 }
 
-/* line 27, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 29, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox li .location {
   float: left;
   width: 175px;
 }
 
-/* line 33, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 35, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox li .type {
   float: right;
   font-style: italic;
 }
 
-/* line 41, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 43, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .account-deactivated a,
 #user_searchbox .account-inactive a {
   color: #aeaeae;
 }
 
-/* line 47, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 49, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .account-deactivated a:hover,
 #user_searchbox .account-inactive a:hover {
   color: #cccccc;
 }
 
-/* line 53, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 55, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .account-demo {
   font-style: italic;
 }
 
-/* line 63, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 65, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .account-deleted .name,
 #user_searchbox .account-deleted .id,
@@ -12819,26 +12823,26 @@ body {
   text-decoration: line-through;
 }
 
-/* line 70, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 72, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .no-results,
 #user_searchbox .total-results {
   padding: 5px 20px;
 }
 
-/* line 77, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 79, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .more-results a {
   font-weight: bold;
 }
 
-/* line 83, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 85, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .total-results {
   background-color: #ffffff;
 }
 
-/* line 87, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 89, ../sass/pics/layout/menu/_user-search-list.scss */
 
 #user_searchbox .total-results p {
   margin: 0;
@@ -12848,9 +12852,9 @@ body {
 
 @media (max-width: 979px) {
   {
-    /* line 97, ../sass/pics/layout/menu/_user-search-list.scss */
+    /* line 99, ../sass/pics/layout/menu/_user-search-list.scss */
   
-    /* line 108, ../sass/pics/layout/menu/_user-search-list.scss */
+    /* line 110, ../sass/pics/layout/menu/_user-search-list.scss */
   
   }
   #user_searchbox {
@@ -12877,29 +12881,10 @@ body {
 /*Should pull from default colors where possible and use sass functions
 All styles should be contained inside specific container element
 Add display block to anchor tags to make it easier to click on link
-Add styles for all of the special results like demo account, deactivated aka
-            color: #454545;
-
-            &.account-deactivated,
-            &.account-inactive {
-                color: #aeaeae;
-            }
-
-            &.account-deactivated:hover,
-            &.account-inactive:hover {
-                color: #ccc;
-            }
-
-            &.account-demo {
-                font-style: italic;
-            }
-
-            &.account-deleted span {
-                text-decoration: line-through;
-            }
+Add styles for all of the special results like demo account, deactivated, deleted as used in _user-search-list.scss
 */
 
-/* line 26, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 7, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-ismenu .mm-label span {
   padding: 0;
@@ -12911,28 +12896,28 @@ Add styles for all of the special results like demo account, deactivated aka
   background: #333;
 }
 
-/* line 36, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 17, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-menu a {
   color: #999999;
   text-decoration: none;
 }
 
-/* line 41, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 22, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 [href="#mobile_menu_search"] {
   display: block;
   float: right;
 }
 
-/* line 47, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 28, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 #mobile_menu_navigation.loading,
 #mobile_menu_search.loading {
   visibility: hidden;
 }
 
-/* line 51, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 32, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .header {
   padding: 10px 15px;
@@ -12949,13 +12934,13 @@ Add styles for all of the special results like demo account, deactivated aka
   border-bottom: 2px solid #cccccc;
 }
 
-/* line 68, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 49, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-menu div.mm-search {
   background: #333;
 }
 
-/* line 72, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 53, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 .mm-menu div.mm-search input {
   line-height: 23px;
@@ -12963,13 +12948,13 @@ Add styles for all of the special results like demo account, deactivated aka
   background: #fff;
 }
 
-/* line 79, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 60, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 #mobile_menu_search ul.mm-list {
   padding-top: 50px;
 }
 
-/* line 83, ../sass/pics/layout/menu/_mobile-menu.scss */
+/* line 64, ../sass/pics/layout/menu/_mobile-menu.scss */
 
 #mobile_menu_search .total-results {
   padding: 10px 0;
@@ -12978,9 +12963,9 @@ Add styles for all of the special results like demo account, deactivated aka
 
 @media (min-width: 992px) {
   {
-    /* line 92, ../sass/pics/layout/menu/_mobile-menu.scss */
+    /* line 73, ../sass/pics/layout/menu/_mobile-menu.scss */
   
-    /* line 96, ../sass/pics/layout/menu/_mobile-menu.scss */
+    /* line 77, ../sass/pics/layout/menu/_mobile-menu.scss */
   
   }
   #mobile_menu .header,
@@ -12996,7 +12981,7 @@ Add styles for all of the special results like demo account, deactivated aka
 
 @media (max-width: 991px) {
   {
-    /* line 103, ../sass/pics/layout/menu/_mobile-menu.scss */
+    /* line 84, ../sass/pics/layout/menu/_mobile-menu.scss */
   
   }
   body {
