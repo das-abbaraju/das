@@ -64,24 +64,7 @@ public class TranslationsDAO implements TranslationDAO {
 
     @Override
     public void updateTranslationLastUsed(String key, String locale, String pageName, String environment) {
-        try {
-            NamedParameterJdbcTemplate jdbcTemplate = namedParameterJdbcTemplate();
-            MapSqlParameterSource paramSource = new MapSqlParameterSource();
-            paramSource.addValue("key", key);
-            paramSource.addValue("locale", locale);
-            Map ids = jdbcTemplate.queryForMap(SELECT_KEYID_LOCALEID_BY_KEY_LOCALE, paramSource);
-
-            Map<String, Object> params = new HashMap<>();
-            params.put("keyID", ids.get("keyID"));
-            params.put("localeID", ids.get("localeID"));
-            params.put("pageName", pageName);
-            params.put("environment", environment);
-
-            jdbcTemplate.update(INSERT_LAST_USED, params);
-        } catch (Exception e) {
-            logger.error("Error updating the last used by date for key {} in locale {}: {}", new Object[] {key, locale, e});
-            throw new RuntimeException("Failed to reset lastUsed on msg_key because: " + e.getMessage());
-        }
+        // Removed: PICS-13918
     }
 
     // for test injection
