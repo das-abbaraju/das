@@ -1,3 +1,5 @@
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+<%@ page import="com.picsauditing.service.i18n.TranslateUI" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
@@ -106,30 +108,44 @@
 <s:if test="permissions.admin">
 	<s:checkbox name="templateTranslated" id="templateTranslated" cssClass="dirtyOn" />
 	<label for="templateTranslated">Template Has Translations</label> <br />
-	<label>
-		<s:text name="ManageAuditType.RequiredLanguages" />:
-	</label>
-	<s:optiontransferselect
-		name="requiredLanguagesName"
-		list="availableLocales"
-		listKey="language"
-		listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
-		doubleName="templateLanguages"
-		doubleList="selectedLocales"
-		doubleListKey="language"
-		doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
-		leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"
-		rightTitle="%{getText('ManageAuditType.SelectedLanguages')}"
-		addToLeftLabel="%{getText('button.Remove')}"
-		addToRightLabel="%{getText('button.Add')}"
-		allowAddAllToLeft="false"
-		allowAddAllToRight="false"
-		allowSelectAll="false"
-		allowUpDownOnLeft="false"
-		allowUpDownOnRight="false"
-		buttonCssClass="arrow"
-		theme="pics"
-	>
-		<s:param name="sort" value="'false'" />
-	</s:optiontransferselect>
+    <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER%>">
+        <a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>EmailTemplate.<s:property value="templateID" />.translatedSubject" target="_BLANK">Translate Subject</a>
+        <a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>EmailTemplate.<s:property value="templateID" />.translatedBody" target="_BLANK">Translate Body</a>
+    </pics:toggle>
+    <pics:toggleElse>
+        <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE%>">
+            <a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>EmailTemplate.<s:property value="templateID" />.translatedSubject" target="_BLANK">Translate Subject</a>
+            <a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>EmailTemplate.<s:property value="templateID" />.translatedBody" target="_BLANK">Translate Body</a>
+        </pics:toggle>
+        <pics:toggleElse>
+
+            <label>
+                <s:text name="ManageAuditType.RequiredLanguages" />:
+            </label>
+            <s:optiontransferselect
+                name="requiredLanguagesName"
+                list="availableLocales"
+                listKey="language"
+                listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+                doubleName="templateLanguages"
+                doubleList="selectedLocales"
+                doubleListKey="language"
+                doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+                leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"
+                rightTitle="%{getText('ManageAuditType.SelectedLanguages')}"
+                addToLeftLabel="%{getText('button.Remove')}"
+                addToRightLabel="%{getText('button.Add')}"
+                allowAddAllToLeft="false"
+                allowAddAllToRight="false"
+                allowSelectAll="false"
+                allowUpDownOnLeft="false"
+                allowUpDownOnRight="false"
+                buttonCssClass="arrow"
+                theme="pics"
+            >
+    		<s:param name="sort" value="'false'" />
+	        </s:optiontransferselect>
+        </pics:toggleElse>
+    </pics:toggleElse>
+
 </s:if>

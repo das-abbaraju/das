@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+<%@ page import="com.picsauditing.service.i18n.TranslateUI" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
@@ -26,9 +28,23 @@
 					<td><s:property value="#state.name.toString()" /></td>
                     <td class="center"><s:checkbox name="contractorCanEdit" value="#state.contractorCanEdit" /></td>
                     <td class="center"><s:checkbox name="operatorCanEdit" value="#state.operatorCanEdit" /></td>
-					<td><a class="edit translate" href="ManageTranslations.action?button=Search&amp;key=WorkflowState.<s:property value='#state.id' />." target="_BLANK">
-                            Manage Translations
+                    <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER%>">
+                        <td><a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>WorkflowState.<s:property value='id' />.name" target="_BLANK">
+                            <%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%>
                         </a></td>
+                    </pics:toggle>
+                    <pics:toggleElse>
+                        <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE%>">
+                            <td><a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>WorkflowState.<s:property value='id' />.name" target="_BLANK">
+                                <%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%>
+                            </a></td>
+                        </pics:toggle>
+                        <pics:toggleElse>
+                        <td><a class="edit translate" href="ManageTranslations.action?button=Search&amp;key=WorkflowState.<s:property value='#state.id' />." target="_BLANK">
+                                Manage Translations
+                            </a></td>
+                        </pics:toggleElse>
+                    </pics:toggleElse>
                     <td><a href="javascript:;" class="save editStatus"></a></td>
 					<td><a href="javascript:;" class="remove deleteStatus"></a></td>
 				</tr>
@@ -45,7 +61,7 @@
 			<th>New Status</th>
 			<th>Email Template</th>
 			<th>Note Required</th>
-			<th>Action</th>
+            <th>Action</th>
 			<th>Save</th>
 			<th>Delete</th>
 	</thead>
@@ -85,9 +101,23 @@
 					</s:if>
 				</td>
 				<td class="center"><s:checkbox name="noteRequired" /></td>
-				<td><a class="edit translate" href="ManageTranslations.action?button=Search&amp;key=WorkflowStep.<s:property value='id' />." target="_BLANK">
+                <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER%>">
+                    <td><a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>WorkflowStep.<s:property value='id' />.name" target="_BLANK">
+                        <%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%>
+                    </a></td>
+                </pics:toggle>
+                <pics:toggleElse>
+                    <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE%>">
+                        <td><a class="edit translate" href="<%=TranslateUI.SHOW_TRANSLATION_URL%>WorkflowStep.<s:property value='id' />.name" target="_BLANK">
+                            <%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%>
+                        </a></td>
+                </pics:toggle>
+                    <pics:toggleElse>
+                        <td><a class="edit translate" href="ManageTranslations.action?button=Search&amp;key=WorkflowStep.<s:property value='id' />." target="_BLANK">
                             Manage Translations
                         </a></td>
+                    </pics:toggleElse>
+                </pics:toggleElse>
 				<td><a href="javascript:;" class="save editStep"></a></td>
 				<td><a href="javascript:;" class="remove deleteStep"></a></td>
 			</tr>

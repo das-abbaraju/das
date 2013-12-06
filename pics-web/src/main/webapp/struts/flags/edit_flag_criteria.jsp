@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
+<%@ page import="com.picsauditing.service.i18n.TranslateUI" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -42,7 +44,21 @@
     </s:if>
     
     <s:include value="../config_environment.jsp" />
-    
+    <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER%>">
+        <div class="alert">
+            This system is currently set to use the new translations service. Changing translations from ManageTranslations will not have an
+            effect while this is active. Please use <a href="https://translate.picsorganizer.com/" target="_blank"><%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%></a>
+        </div>
+    </pics:toggle>
+    <pics:toggleElse>
+        <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE%>">
+            <div class="alert">
+                This system is currently set to use the new translations datasource. Changing translations from ManageTranslations will
+                not have an effect while this is active. Please use <a href="https://translate.picsorganizer.com/" target="_blank"><%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%></a>
+            </div>
+        </pics:toggle>
+    </pics:toggleElse>
+
     <a href="ManageFlagCriteria.action">&lt;&lt; Back to List</a>
     
     <s:form id="itemform" method="post" cssClass="form">
