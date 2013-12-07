@@ -67,17 +67,17 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<AccountSkillGroup> groups = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<AccountSkillEmployee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<ProjectSkill> projects = new ArrayList<>();

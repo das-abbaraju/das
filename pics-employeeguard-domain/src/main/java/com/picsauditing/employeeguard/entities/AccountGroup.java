@@ -43,19 +43,19 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-    @BatchSize(size = 5)
+	@BatchSize(size = 5)
 	private List<AccountSkillGroup> skills = new ArrayList<>();
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-    @BatchSize(size = 5)
+	@BatchSize(size = 5)
 	private List<AccountGroupEmployee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-    @BatchSize(size = 5)
+	@BatchSize(size = 5)
 	private List<ProjectRole> projects = new ArrayList<>();
 
 	public AccountGroup() {
