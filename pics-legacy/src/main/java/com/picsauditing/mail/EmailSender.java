@@ -76,6 +76,12 @@ public class EmailSender {
 	private boolean isEmailAddressValid(String toAddresses) {
 		boolean emailAddressValid = true;
 		InputValidator inputValidator = new InputValidator();
+
+		if (toAddresses == null) {
+			logger.error("toAddresses is null.");
+			return false;
+		}
+
 		for (String emailAddress : toAddresses.split(",")) {
 			String returnCode = inputValidator.validateEmail(emailAddress, false);
 			if (!returnCode.equals(InputValidator.NO_ERROR)) {

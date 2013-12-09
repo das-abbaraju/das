@@ -261,6 +261,21 @@ public class EmailSenderTest {
         verify(emailQueueDAO).save(email);
     }
 
+    @Test
+    public void testSendNow_InvalidToEmailAddress_nullEmail() throws MessagingException {
+        email = EmailQueue.builder()
+                .toAddress(null)
+                .fromAddress("pics@example.com")
+                .emailTemplate(emailTemplate)
+                .build();
+
+        emailSenderSpring.sendNow(email);
+
+        assertEquals(EmailStatus.Error, email.getStatus());
+        assertNotNull(email.getSentDate());
+        verify(emailQueueDAO).save(email);
+    }
+
     private int notValidDeactivatedEmailId() {
 		int i = 1;
 		while(EmailTemplate.VALID_DEACTIVATED_EMAILS().contains(i)) {
