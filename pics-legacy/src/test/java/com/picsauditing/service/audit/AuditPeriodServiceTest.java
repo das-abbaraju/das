@@ -1,8 +1,8 @@
 package com.picsauditing.service.audit;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypePeriod;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
 import com.picsauditing.service.audit.AuditPeriodService;
 import org.junit.Before;
@@ -12,9 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
 
 public class AuditPeriodServiceTest extends PicsTest {
     private AuditPeriodService test;
@@ -24,6 +26,47 @@ public class AuditPeriodServiceTest extends PicsTest {
         super.setUp();
 
         test = new AuditPeriodService();
+    }
+
+    @Test
+    public void testShouldCreateAudit() {
+        AuditType yearlyAuditType = EntityFactory.makeAuditType();
+        AuditType quarterlyAuditType = EntityFactory.makeAuditType();
+        AuditType monthlyAuditType = EntityFactory.makeAuditType();
+
+        yearlyAuditType.setPeriod(AuditTypePeriod.Yearly);
+        quarterlyAuditType.setPeriod(AuditTypePeriod.Quarterly);
+        quarterlyAuditType.setParent(yearlyAuditType);
+        monthlyAuditType.setPeriod(AuditTypePeriod.Monthly);
+        monthlyAuditType.setParent(quarterlyAuditType);
+
+        List<ContractorAudit> audits = new ArrayList<>();
+
+        // no child audit type
+        assertTrue(test.shouldCreateAudit(audits, yearlyAuditType, "2013", null));
+
+        // has child type but no children
+        assertFalse(test.shouldCreateAudit(audits, yearlyAuditType, "2013", quarterlyAuditType));
+
+        // has child audit type but no valid children
+        audits.add(createAudit(quarterlyAuditType, "2013:1", AuditStatus.NotApplicable));
+        assertFalse(test.shouldCreateAudit(audits, yearlyAuditType, "2013", quarterlyAuditType));
+
+        // has child audit type and a valid child
+        audits.add(createAudit(quarterlyAuditType, "2013:2", AuditStatus.Complete));
+        assertTrue(test.shouldCreateAudit(audits, yearlyAuditType, "2013", quarterlyAuditType));
+    }
+
+    private ContractorAudit createAudit(AuditType auditType, String auditFor, AuditStatus status) {
+        ContractorAudit audit = new ContractorAudit();
+        audit.setAuditType(auditType);
+        audit.setAuditFor(auditFor);
+
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setStatus(status);
+        audit.getOperators().add(cao);
+
+        return audit;
     }
 
     @Test
