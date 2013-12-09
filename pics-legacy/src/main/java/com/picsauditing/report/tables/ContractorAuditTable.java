@@ -1,9 +1,6 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmrStatistics;
-import com.picsauditing.jpa.entities.OshaStatistics;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 
@@ -33,8 +30,10 @@ public class ContractorAuditTable extends AbstractTable {
 
     public static final String Fatalities = "Fatalities";
     public static final String Emr = "Emr";
-    public static final String Lwcr = "Lwcr";
-    public static final String Trir = "Trir";
+    public static final String UsLwcr = "UsLwcr";
+    public static final String UsTrir = "UsTrir";
+    public static final String CaLwcr = "CaLwcr";
+    public static final String CaTrir = "CaTrir";
     public static final String Air = "Air";
     public static final String Afr = "Afr";
 
@@ -178,10 +177,10 @@ public class ContractorAuditTable extends AbstractTable {
             addOptionalKey(new ReportForeignKey(Emr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + EmrStatistics.QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR)));
 
-            addOptionalKey(new ReportForeignKey(Lwcr, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(UsLwcr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR)));
 
-            addOptionalKey(new ReportForeignKey(Trir, new AuditDataTable(),
+            addOptionalKey(new ReportForeignKey(UsTrir, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));
 
             addOptionalKey(new ReportForeignKey(Air, new AuditDataTable(),
@@ -189,6 +188,12 @@ public class ContractorAuditTable extends AbstractTable {
 
             addOptionalKey(new ReportForeignKey(Afr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 9060")));
+
+            addOptionalKey(new ReportForeignKey(CaTrir, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + CohsStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));
+
+            addOptionalKey(new ReportForeignKey(CaLwcr, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + CohsStatistics.QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR)));
         }
 
         // SUNCOR
