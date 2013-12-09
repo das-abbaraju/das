@@ -65,4 +65,6 @@
 
 	<!-- Rlease 6.68 --> 
     <include file="./liquibase/pschlesinger9_PICS-13683_CorrectDueDates.sql"/>
+    <include file="./liquibase/kchase11_PICS-13652_TradeRiskRank.sql"/>
+    <include file="./liquibase/kchase12_PICS-13079_EmailNotViewable.sql"/>
 </databaseChangeLog>
