@@ -315,8 +315,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 */
 
 	public boolean isShowHeader() {
-		if (permissions.isContractor())
-			return !permissions.isUsingVersion7Menus();
+        if (permissions.isContractor())
+            return true;
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
 		if (permissions.isOperator())
