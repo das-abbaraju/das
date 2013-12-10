@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -10,8 +11,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "account_employee")
-@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "insert into account_employee (accountId, createdBy, createdDate, deletedBy, deletedDate, email, emailToken, firstName, lastName, phone, positionName, profileID, slug, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLDelete(sql = "UPDATE account_employee SET deletedDate = NOW() WHERE id = ?")
 public class Employee implements BaseEntity, Comparable<Employee> {
 
 	private static final long serialVersionUID = 2426185581097186606L;
@@ -46,15 +48,15 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	private List<AccountGroupEmployee> groups = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	private List<AccountSkillEmployee> skills = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@Where(clause = "deletedDate IS NULL")
 	private List<ProjectRoleEmployee> roles = new ArrayList<>();
 
 	public Employee() {

@@ -1,10 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillGroup;
@@ -15,10 +10,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class SkillServiceTest {
 
@@ -84,8 +82,7 @@ public class SkillServiceTest {
         skillService.delete(Integer.toString(DELETE_SKILL_ID), ACCOUNT_ID, APP_USER_ID);
 
         assertEquals(APP_USER_ID, accountSkill.getDeletedBy());
-        assertNotNull(accountSkill.getDeletedDate());
-        verify(accountSkillDAO).save(accountSkill);
+        verify(accountSkillDAO).delete(accountSkill);
     }
 
     @Test

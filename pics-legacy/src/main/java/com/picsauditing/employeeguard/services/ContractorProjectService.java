@@ -73,9 +73,10 @@ public class ContractorProjectService {
 		Date now = new Date();
 
 		ProjectRoleEmployee projectRoleEmployee = projectRoleEmployeeDAO.findByEmployeeAndProjectRole(employee, projectRole);
-		EntityHelper.softDelete(projectRoleEmployee, appUserId, now);
-		projectRoleEmployeeDAO.save(projectRoleEmployee);
+        EntityHelper.softDelete(projectRoleEmployee, appUserId);
+		projectRoleEmployeeDAO.delete(projectRoleEmployee);
 
+        // FIXME
 		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
 	}
 

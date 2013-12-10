@@ -185,13 +185,8 @@ public class GroupService {
 
 	public void delete(String id, int accountId, int appUserId) {
 		AccountGroup accountGroup = getGroup(id, accountId);
-
-		Date deletedDate = new Date();
-		EntityHelper.softDelete(accountGroup, appUserId, deletedDate);
-		EntityHelper.softDelete(accountGroup.getEmployees(), appUserId, deletedDate);
-		EntityHelper.softDelete(accountGroup.getSkills(), appUserId, deletedDate);
-
-		accountGroupDAO.save(accountGroup);
+        EntityHelper.softDelete(accountGroup, appUserId);
+		accountGroupDAO.delete(accountGroup);
 	}
 
 	public List<AccountGroup> search(final String searchTerm, final int accountId) {

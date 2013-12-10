@@ -96,8 +96,8 @@ public class AccountSkillEmployeeService {
 		deletedSkills.removeAll(skillsRequiredForEmployee);
 
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, deletedSkills);
-		EntityHelper.softDelete(accountSkillEmployees, appUserId, new Date());
-		accountSkillEmployeeDAO.save(accountSkillEmployees);
+        EntityHelper.softDelete(accountSkillEmployees, appUserId);
+		accountSkillEmployeeDAO.delete(accountSkillEmployees);
 	}
 
 	public void deleteAccountSkillEmployees(final List<Employee> employees, final List<AccountSkill> deletedSkills, final int appUserId) {
