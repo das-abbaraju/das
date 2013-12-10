@@ -21367,8 +21367,8 @@ PICS.define('country.Country', {
         // Remove leading or trailing spaces or hyphens
         slug = slug.replace(/^[-\s]|[-\s]$/g,'')
 
-        // Replace 1 or more hyphens with a single hyphen (results from above operation)
-        slug = slug.replace(/-+/g, '-')
+        // Replace 1 or more hyphens with a single hyphen (sometimes results from above operations)
+        slug = slug.replace(/-{2,}/g, '-')
 
         if (isValidUri(slug)) {
             return slug;
@@ -23622,10 +23622,10 @@ PICS.define('select2.Select2', {
 PICS.define('widgets.Mibew', {
     methods: {
         init: function () {
-            $chat_links = $('.chat-link');
+            var $chat_links = $('.chat-link, #live_chat');
 
             if ($chat_links.length) {
-                $chat_links.on('click', this.openMibew);
+                $('body').on('click', '.chat-link, #live_chat', this.openMibew);
             }
         },
 

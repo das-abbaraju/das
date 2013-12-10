@@ -5,17 +5,13 @@
 
         input[type="text"] {
             background-color: #FFFFFF !important; /* override twitter typeahead style */
-            border: 1px solid transparent;
             border-radius: 17px;
-            @include box-shadow(0 -1px 0 $default_med);
             padding: 4px 14px 4px 32px;
-            width: 150px;
 
             &:focus {
                 border: 1px solid $pics_light_blue;
                 @include box-shadow(rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px);
                 outline: 0;
-                outline: thin dotted \9;  /*Avoid using css hacks*/
             }
         }
 
@@ -36,7 +32,7 @@
             color: $default_med;
             left: 24px;
             position: absolute;
-            top: 7px;
+            top: 5px;
         }
 
         .icon-search.selected {
@@ -44,125 +40,4 @@
         }
     }
     /* END search form */
-/*Maybe move this out into twitter typeahead overrides?*/
-    .twitter-typeahead {
-        .tt-query,
-        .tt-hint {
-            margin-bottom: 0;
-        }
-
-        .tt-hint {
-            display: none;
-        }
-
-        .tt-dropdown-menu {
-          min-width: 160px;
-          margin-top: 2px;
-          padding: 5px 0;
-          background-color: #fff;
-          @include border-radius(5px);
-          @include box-shadow(rgba(0,0,0,.2) 0 1px 6px);
-          @include background-clip(padding-box);
-        }
-
-        .tt-suggestion {
-          display: block;
-          padding: 0;
-        }
-
-        .tt-suggestion p {
-          margin: 0;
-        }
-
-        .tt-suggestion:nth-child(even) {
-          background: $pics_cool_grey;
-        }
-
-        .more-results-link {
-            font-weight: bold;
-        }
-
-        .tt-is-under-cursor,
-        .tt-is-under-cursor:nth-child(even),
-        .more-results-link:hover {
-          background-color: $primary_med;
-          @include background-image(linear-gradient(to bottom, $primary_light, $primary_med));
-          color: #fff;
-        }
-
-        .tt-dropdown-menu .tt-dataset-primary-search a {
-            color: #454545;
-
-            &.account-deactivated,
-            &.account-inactive {
-                color: #aeaeae;
-            }
-
-            &.account-deactivated:hover,
-            &.account-inactive:hover {
-                color: $default_med;
-            }
-
-            &.account-demo {
-                font-style: italic;
-            }
-
-            &.account-deleted span {
-                text-decoration: line-through;
-            }
-        }
-
-        .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a,
-        .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a,
-        .tt-dropdown-menu .tt-dataset-primary-search .more-results-link:hover {
-            color: #fff;
-
-            &.account-deactivated,
-            &.account-inactive {
-                color: $default_med;
-            }
-        }
-
-        a {
-            line-height: 15px;
-            overflow: hidden;
-            padding: 5px 15px;
-            display: block;
-
-            .name,
-            .location
-            {
-                float: left;
-                width: 175px;
-            }
-
-            .id
-            {
-                float: right;
-            }
-
-            .type
-            {
-                float: right;
-                font-style: italic;
-            }
-        }
-
-        .tt-dropdown-menu .tt-dataset-primary-search {
-          width: 275px;
-          font-size: 13px;
-        }
-
-        .total-results {
-          padding: 5px 15px;
-        }
-
-        .no-results-msg {
-          position: relative;
-          top: 5px;
-          padding-left: 20px;
-          color: #777;
-        }
-    }
-    /* Twitter Typeahead */
 }

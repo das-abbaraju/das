@@ -1,14 +1,34 @@
-/*Might be cleanerif mobile scss files vs main nav scss in separate folders
-    Always pull colors from defaults where possible */
-
 #mobile_menu_search {
-    ul {
-        /*UL is already block by default.  Is this an override?*/
-        display: block;
-    }
-
     li {
         padding: 5px 0;
+
+        .account-deactivated,
+        .account-inactive {
+            .name,
+            .id,
+            .location,
+            .type {
+                color: $pics_warm_grey;
+            }
+        }
+
+        .account-demo {
+            .name,
+            .id,
+            .location,
+            .type {
+                font-style: italic;
+            }
+        }
+
+        .account-deleted {
+            .name,
+            .id,
+            .location,
+            .type {
+                text-decoration: line-through;
+            }
+        }
     }
 
     li:first-child {

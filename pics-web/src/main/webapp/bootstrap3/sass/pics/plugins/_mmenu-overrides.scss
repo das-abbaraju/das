@@ -1,4 +1,8 @@
-/*Put overrides in a scss file and use sass functions and default colors where possible*/
+.mm-menu i {
+    font-family: FontAwesome;
+    margin-right: 6px;
+}
+
 /* borders */
 .mm-list > li:not(.mm-subtitle):not(.mm-label):not(.mm-noresults)::after {
   border-bottom-width: none;
@@ -22,12 +26,12 @@
 .mm-ismenu li,
 .mm-ismenu li > a,
 .mm-ismenu li > span {
-    color: #ccc;
+    color: $default_med;
     text-decoration: none;
 }
 
 .mm-ismenu li > span > a {
-    color: #ccc;
+    color: $default_med;
 }
 
 /* subopen/close */
@@ -35,9 +39,9 @@
     text-indent: 0;
     padding-top: 10px;
     margin-top: 0;
-    background: #333;
+    background: #333333;
     border-bottom: 2px solid #252525;
-    color: #ccc;
+    color: $default_med;
 }
 
 /* arrows styles using pngs */

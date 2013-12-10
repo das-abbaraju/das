@@ -1,13 +1,31 @@
-/*Should pull from default colors where possible and use sass functions
-All styles should be contained inside specific container element
-Add display block to anchor tags to make it easier to click on link
-Add styles for all of the special results like demo account, deactivated, deleted as used in _user-search-list.scss
-*/
+#mobile_menu {
+    .header {
+        padding: 10px 15px;
+        color: #ffffff;
+        background-color: $pics_cool_grey;
+
+        @include background-image(image-url('/v7/img/logo/logo-icon.png'), linear-gradient(to bottom, #ffffff, $pics_cool_grey));
+        background-repeat: no-repeat;
+        background-position: center center;
+        border-bottom: 2px solid $default_med;
+    }
+}
+
+#mobile_menu_search {
+    ul.mm-list {
+        padding-top: 50px;
+    }
+
+    .total-results {
+        margin-left: 20px;
+        padding: 10px 0;
+    }
+}
 
 .mm-ismenu .mm-label span {
-    background: #333;
+    background: #333333;
     font-size: 11px;
-    color: #999;
+    color: #999999;
     text-transform: uppercase;
     text-indent: 20px;
     line-height: 30px;
@@ -17,6 +35,7 @@ Add styles for all of the special results like demo account, deactivated, delete
 .mm-menu a {
     text-decoration: none;
     color: #999999;
+    display: block;
 }
 
 [href="#mobile_menu_search"] {
@@ -29,42 +48,15 @@ Add styles for all of the special results like demo account, deactivated, delete
     visibility: hidden;
 }
 
-.header {
-    padding: 10px 15px;
-    color: #ffffff;
-    background-color: #f1f1f2;
-    background-image: url('../../../v7/img/logo/logo-icon.png');
-    background-image: url('../../../v7/img/logo/logo-icon.png'), -moz-linear-gradient(top, #ffffff, #f1f1f2);
-    background-image: url('../../../v7/img/logo/logo-icon.png'), -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f1f1f2));
-    background-image: url('../../../v7/img/logo/logo-icon.png'), -webkit-linear-gradient(top, #ffffff, #f1f1f2);
-    background-image: url('../../../v7/img/logo/logo-icon.png'), -o-linear-gradient(top, #ffffff, #f1f1f2);
-    background-image: url('../../../v7/img/logo/logo-icon.png'), linear-gradient(to bottom, #ffffff, #f1f1f2);
-    background-repeat: no-repeat;
-    background-position: center center;
-    border-bottom: 2px solid #cccccc;
-/*  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);*/
-}
 
 .mm-menu div.mm-search {
-    background: #333;
+    background: #333333;
 }
 
 .mm-menu div.mm-search input {
-    background: #fff;
+    background: #ffffff;
     color: #454545;
     line-height: 23px;
-}
-
-#mobile_menu_search {
-    ul.mm-list {
-        padding-top: 50px;
-    }
-
-    .total-results {
-        margin-left: 20px;
-        padding: 10px 0;
-    }
 }
 
 @media(min-width: 992px) {

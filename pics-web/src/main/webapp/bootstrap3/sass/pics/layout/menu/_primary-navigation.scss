@@ -1,6 +1,6 @@
 #primary_navigation {
     background: #eaeaea;
-    @include background-image(linear-gradient(to bottom, #fff, #eaeaea));
+    @include background-image(linear-gradient(to bottom, #ffffff, #eaeaea));
     border-bottom: 2px solid $default_med;
     height: 50px;
     z-index: 200;
@@ -9,6 +9,10 @@
       background: none;
       border: 0;
       margin-bottom: 0;
+
+        .navbar-form {
+            margin-top: 10px;
+        }
     }
 
     /* main links */
@@ -66,7 +70,7 @@
         border: 0px;
         @include border-radius(5px);
         @include box-shadow(rgba(0, 0, 0, 0.2) 0 1px 6px);
-        top: 55px;
+        top: 52px;
     }
 
     .dropdown-menu li > a:hover,
@@ -119,12 +123,7 @@
             background-color: #3f93c0;
             @include text-shadow(0 -1px 0 rgba(0, 0, 0, 0.25));
             @include background-image(linear-gradient($pics_light_blue, #3f93c0));
-            /*Do we need repeat since just a color?*/
             background-repeat: repeat-x;
-            /*Is this needed?*/
-            *background-color: #3f93c0;
-
-            /*Either border color is fine, but both are not necessary*/
             border-color: #3f93c0 #3f93c0 #336699;
             border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
             display: block;
@@ -151,8 +150,6 @@
 
         > a:active
         {
-            /*Avoid using css hacks*/
-            background-color: #3f93c0 \9;
             background-color: #3f93c0;
             background-image: none;
             outline: 0;
