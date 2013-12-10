@@ -116,11 +116,13 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				question.setLanguages(category.getLanguages());
 			}
 
-			if (question.hasMissingChildRequiredLanguages()) {
-				addActionError("Changes to required languages must always have at least one language left. "
-						+ "Make sure your question has at least one language.");
-				return false;
-			}
+            if (!usingNewTranslationFeature()) {
+                if (question.hasMissingChildRequiredLanguages()) {
+                    addActionError("Changes to required languages must always have at least one language left. "
+                            + "Make sure your question has at least one language.");
+                    return false;
+                }
+            }
 
 			if (requiredQuestionID == null || requiredQuestionID == 0) {
 				question.setRequiredQuestion(null);

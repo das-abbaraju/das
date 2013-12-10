@@ -81,11 +81,13 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 				}
 			}
 
-			if (category.hasMissingChildRequiredLanguages()) {
-				addActionError("Changes to required languages must always have at least one language left. "
-						+ "Check your hierarchy to make sure that each category and question has at least one language.");
-				return false;
-			}
+            if (!usingNewTranslationFeature()) {
+                if (category.hasMissingChildRequiredLanguages()) {
+                    addActionError("Changes to required languages must always have at least one language left. "
+                            + "Check your hierarchy to make sure that each category and question has at least one language.");
+                    return false;
+                }
+            }
 
 			if (categoryParent != null) {
 				category.setParent(categoryParent);
