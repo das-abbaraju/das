@@ -75,6 +75,12 @@ public class AuditPeriodServiceTest extends PicsTest {
         AuditType parent = new AuditType();
         parent.setPeriod(AuditTypePeriod.Quarterly);
 
+        answer = test.getParentAuditFor(parent, null);
+        assertEquals(null, answer);
+
+        answer = test.getParentAuditFor(parent, "");
+        assertEquals(null, answer);
+
         answer = test.getParentAuditFor(parent, "2012-01");
         assertEquals("2012:1", answer);
 
@@ -123,6 +129,12 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetChildPeriodAuditFors() {
         List<String> answers = null;
+
+        answers = test.getChildPeriodAuditFors(null);
+        assertTrue(answers.size() == 0);
+
+        answers = test.getChildPeriodAuditFors("");
+        assertTrue(answers.size() == 0);
 
         answers = test.getChildPeriodAuditFors("2010");
         assertEquals(4, answers.size());
