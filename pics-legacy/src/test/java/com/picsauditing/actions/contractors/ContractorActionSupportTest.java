@@ -202,9 +202,6 @@ public class ContractorActionSupportTest extends PicsTest {
 	public void testIsShowHeader_Contractor() throws Exception {
 		when(permissions.isContractor()).thenReturn(true);
 		assertTrue(contractorActionSupport.isShowHeader());
-
-		when(permissions.isUsingVersion7Menus()).thenReturn(true);
-		assertFalse(contractorActionSupport.isShowHeader());
 	}
 
 	private void testMenu(AuditMenuBuilder.Service service, String translationKey, String displayText) throws Exception {
