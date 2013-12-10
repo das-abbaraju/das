@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
 import org.junit.AfterClass;
@@ -61,6 +62,8 @@ public class AuditBuilderTest extends PicsTest {
 	ContractorAuditDAO auditDao;
 	@Mock
 	private AuditDecisionTableDAO auditDecisionTableDAO;
+    @Mock
+    AuditTypeDAO auditTypeDao;
 
 	ContractorAccount contractor;
 	OperatorAccount operator;
@@ -85,6 +88,7 @@ public class AuditBuilderTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", catRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", auditPercentCalculator);
         PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPeriodService", auditPeriodService);
+        PicsTestUtil.forceSetPrivateField(auditBuilder, "auditTypeDao", auditTypeDao);
 
 		Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);

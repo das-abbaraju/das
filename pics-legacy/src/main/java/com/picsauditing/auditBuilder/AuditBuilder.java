@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.*;
 import com.picsauditing.service.audit.AuditPeriodService;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -20,10 +21,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
-import com.picsauditing.dao.AuditCategoryMatrixDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -60,6 +57,8 @@ public class AuditBuilder {
 	private AuditPercentCalculator auditPercentCalculator;
     @Autowired
     AuditPeriodService auditPeriodService;
+    @Autowired
+    private AuditTypeDAO auditTypeDao;
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
 
@@ -197,8 +196,13 @@ public class AuditBuilder {
 
     private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
         List<String> auditFors = auditPeriodService.getAuditForByDate(auditType, today);
+        List<AuditType> children = auditTypeDao.findWhere("t.parent.id = " + auditType.getId());
+        AuditType childAuditType = null;
+        if (children.size() > 0) {
+            childAuditType = children.get(0);
+        }
         for (String auditFor:auditFors) {
-            if (auditPeriodService.findAudit(contractor.getAudits(), auditType, auditFor) == null) {
+            if (auditPeriodService.shouldCreateAudit(contractor.getAudits(), auditType, auditFor, childAuditType)) {
                 ContractorAudit audit = new ContractorAudit();
                 audit.setContractorAccount(contractor);
                 audit.setAuditType(auditType);
