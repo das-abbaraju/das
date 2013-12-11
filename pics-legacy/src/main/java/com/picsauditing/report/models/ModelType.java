@@ -31,6 +31,7 @@ public enum ModelType {
     ForcedFlagPercents,
     InvoiceFeeCountries,
     InvoiceItems,
+    InvoicePaymentLog,
     Invoices,
     Operators,
     OperatorAccountUsers,

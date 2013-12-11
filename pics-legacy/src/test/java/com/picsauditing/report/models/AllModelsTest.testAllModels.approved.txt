@@ -1379,6 +1379,35 @@ InvoiceTax
 InvoiceTaxlessTotalAmount
 InvoiceTotalAmount
 
+Model: InvoicePaymentLog
+Permission: Permissions{permissions=[]}
+----------------------------------------
+LogInvoicePaymentAmount
+LogInvoicePaymentCreationDate
+LogInvoicePaymentInvoiceAccountCity
+LogInvoicePaymentInvoiceAccountCountry
+LogInvoicePaymentInvoiceAccountCountrySubdivision
+LogInvoicePaymentInvoiceAccountCreationDate
+LogInvoicePaymentInvoiceAccountID
+LogInvoicePaymentInvoiceAccountLegalName
+LogInvoicePaymentInvoiceAccountMaterialSupplier
+LogInvoicePaymentInvoiceAccountName
+LogInvoicePaymentInvoiceAccountOffsiteServices
+LogInvoicePaymentInvoiceAccountOnsiteServices
+LogInvoicePaymentInvoiceAccountStatus
+LogInvoicePaymentInvoiceAccountTimezone
+LogInvoicePaymentInvoiceAccountTransportationServices
+LogInvoicePaymentInvoiceCreationDate
+LogInvoicePaymentInvoiceID
+LogInvoicePaymentInvoiceInvoiceType
+LogInvoicePaymentInvoiceTax
+LogInvoicePaymentInvoiceTaxlessTotalAmount
+LogInvoicePaymentPaymentCreationDate
+LogInvoicePaymentPaymentID
+LogInvoicePaymentUpdateDate
+LogLogDate
+LogLoggedAction
+
 Model: Invoices
 Permission: Permissions{permissions=[]}
 ----------------------------------------
