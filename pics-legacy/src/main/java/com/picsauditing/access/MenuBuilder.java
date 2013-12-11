@@ -445,7 +445,14 @@ public final class MenuBuilder {
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
 		MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
 
-		// CONTRACTORS
+        if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
+            legacyMenu.addChild(getText("GeneralContractorList.title"), "GeneralContractorsList.action",
+                    "GeneralContractorsList");
+            legacyMenu.addChild(getText("SubcontractorFlagMatrix.title"), "SubcontractorFlagMatrix.action",
+                    "SubcontractorFlagMatrix");
+        }
+
+        // CONTRACTORS
 		FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
 		if (featureToggleChecker != null
 				&& featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
