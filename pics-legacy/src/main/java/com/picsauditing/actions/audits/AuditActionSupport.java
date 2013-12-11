@@ -409,9 +409,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean displayMultiStatusDropDown() {
-		return (actionStatus.size() > 0 && CollectionUtils.isNotEmpty(contractor.getTrades()) && !permissions
-				.hasGroup(10));
-	}
+        return (actionStatus.size() > 0 && CollectionUtils.isNotEmpty(contractor.getTrades()) &&
+                permissions.hasGroup(User.GROUP_CSR));
+    }
 
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
 		if (cao != null && step != null) {
@@ -750,6 +750,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isSystemEdit() {
+//        if (permissions.hasPermission(OpPerms.CaoEdit)) {
+//            return true;
+//        }
 		return systemEdit;
 	}
 

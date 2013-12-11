@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.jpa.entities.*;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
@@ -68,6 +69,36 @@ public class AuditActionSupportTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(test, "auditEditModel", new AuditEditModel());
 
 	}
+
+    @Test
+    public void testDisplayMultiStatusDropDown() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        // no audit status
+        assertFalse(test.displayMultiStatusDropDown());
+
+        actionStatus.put(AuditStatus.Complete, 1);
+
+        // no trade
+        assertFalse(test.displayMultiStatusDropDown());
+
+        ContractorTrade contractorTrade = new ContractorTrade();
+        Trade trade = new Trade();
+        trade.setName("Test Trade");
+        contractorTrade.setTrade(trade);
+
+        contractor.getTrades().add(contractorTrade);
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(false);
+
+        // not in CSR group
+        assertFalse(test.displayMultiStatusDropDown());
+
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(true);
+        // adust status, trades, in group
+        assertTrue(test.displayMultiStatusDropDown());
+    }
 
 	@Test
 	public void testCalculateRefreshAudit() throws Exception {
