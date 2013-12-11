@@ -534,4 +534,12 @@ public class BillingServiceTest extends PicsTranslationTest {
         assertTrue(BillingService.hasCreditMemosForFullAmount(invoice));
     }
 
+    @Test
+    public void testConvertBillingStatusToInvoiceType_ActivationItem() throws Exception {
+        when(invoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", invoice, BillingStatus.Renewal);
+
+        assertEquals(InvoiceType.Activation, invoiceType);
+    }
 }
