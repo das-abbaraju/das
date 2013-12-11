@@ -64,8 +64,6 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 	protected WorkFlowDAO wfDAO;
 	@Autowired
 	protected TranslationKeysGenerator translationKeysGenerator;
-    @Autowired
-    private FeatureToggle featureToggle;
 
 	List<? extends AuditRule> relatedRules;
 	List<Workflow> workFlowList = null;
@@ -235,7 +233,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 	}
 
     public boolean isShowPeriodicAudit() {
-        return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_PERIODIC_AUDIT);
+        return featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_PERIODIC_AUDIT);
     }
 
 	public boolean save() {
@@ -318,11 +316,13 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
                 addActionError("You must set custom date month to be 1-12");
                 return false;
             }
-			if (auditType.hasMissingChildRequiredLanguages()) {
-				addActionError("Changes to required languages must always have at least one language left. "
-						+ "Check your hierarchy to make sure that each type, category and question has at least one language.");
-				return false;
-			}
+            if (!usingNewTranslationFeature()) {
+                if (auditType.hasMissingChildRequiredLanguages()) {
+                    addActionError("Changes to required languages must always have at least one language left. "
+                            + "Check your hierarchy to make sure that each type, category and question has at least one language.");
+                    return false;
+                }
+            }
 
 			auditType.setAuditColumns(permissions);
 

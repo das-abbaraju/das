@@ -33,8 +33,7 @@ public class EmailTemplateSave extends PicsActionSupport {
 
 	public String execute() throws NoRightsException {
 		// TODO Need to replace this. I think changes made from the front end
-		// get saved when the object is pulled from
-		// memory.
+		// get saved when the object is pulled from memory.
 		if (template.getId() > 0 && !permissions.hasPermission(OpPerms.AllOperators)
 				&& template.getAccountID() != permissions.getAccountId()) {
 			addActionError(getText("EmailTemplateSave.MissingPermission"));
@@ -47,8 +46,9 @@ public class EmailTemplateSave extends PicsActionSupport {
 
 	@RequiredPermission(value = OpPerms.EmailTemplates, type = OpType.Edit)
 	public String save() {
-		if (Strings.isEmpty(template.getTemplateName()))
+		if (Strings.isEmpty(template.getTemplateName())) {
 			addActionError(getText("EmailTemplateSave.EnterTemplateName"));
+        }
 
 		boolean subjectMissing = false;
 		boolean bodyMissing = false;
@@ -66,7 +66,7 @@ public class EmailTemplateSave extends PicsActionSupport {
 		}
 
 		List<String> defaultLocales = Arrays.asList(RequiredLanguagesSupport.DEFAULT_LOCALES);
-		List<String> validLanguages = new ArrayList<String>();
+		List<String> validLanguages = new ArrayList<>();
 
 		for (String language : template.getLanguages()) {
 			if (defaultLocales.contains(language)) {
@@ -89,9 +89,11 @@ public class EmailTemplateSave extends PicsActionSupport {
 		if (bodyMissing)
 			addActionError(getText("EmailTemplateSave.EnterBody"));
 
-		if (template.hasMissingChildRequiredLanguages())
-			addActionError("Changes to required languages must always have at least one language left. "
-					+ "Make sure your email template has at least one language.");
+        if (!usingNewTranslationFeature()) {
+            if (template.hasMissingChildRequiredLanguages())
+                addActionError("Changes to required languages must always have at least one language left. "
+                        + "Make sure your email template has at least one language.");
+        }
 
 		if (hasActionErrors()) { // change
 			emailTemplateDAO.clear(); // don't save

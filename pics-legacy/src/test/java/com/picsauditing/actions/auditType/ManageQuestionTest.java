@@ -2,9 +2,8 @@ package com.picsauditing.actions.auditType;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.never;
@@ -14,25 +13,27 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SlugService;
-import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.importpqf.ImportStopAt;
 
-public class ManageQuestionTest extends PicsTranslationTest {
+public class ManageQuestionTest extends PicsActionTest {
+    private static final String QUESTION_NAME = "Test Question Name";
+    private static final String QUESTION_TYPE_NOT_MULTIPLE_CHOICE = "Not MultipleChoice";
 
 	private ManageQuestion manageQuestion;
 	private List<AuditCategory> ancestors;
+    private List<String> auditQuestionLanguages = new ArrayList<>();
 
     @Mock
     private SlugService slugService;
@@ -48,22 +49,34 @@ public class ManageQuestionTest extends PicsTranslationTest {
 	private AuditCategory category;
 	@Mock
 	private AuditCategory ancestorCategory;
+    @Mock
+    private FeatureToggle featureToggleChecker;
+    @Mock
+    private AuditType auditType;
+    @Mock
+    private AuditOptionGroup auditOptionGroup;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-
 		manageQuestion = new ManageQuestion();
+        super.setUp(manageQuestion);
 
         Whitebox.setInternalState(manageQuestion,"slugService",slugService);
+        Whitebox.setInternalState(manageQuestion,"featureToggleChecker",featureToggleChecker);
+        Whitebox.setInternalState(manageQuestion,"auditType",auditType);
+        Whitebox.setInternalState(manageQuestion, "question", auditQuestion);
 
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(manageQuestion, this);
 		when(auditQuestion.getCategory()).thenReturn(category);
-		ancestors = new ArrayList<AuditCategory>();
+		ancestors = new ArrayList<>();
 		ancestors.add(ancestorCategory);
 		when(category.getAncestors()).thenReturn(ancestors);
 		when(auditQuestion.getId()).thenReturn(1);
+		when(auditQuestion.getName()).thenReturn(QUESTION_NAME);
+
+        auditQuestionLanguages.add("en");
 	}
 
 	@Test
@@ -200,5 +213,55 @@ public class ManageQuestionTest extends PicsTranslationTest {
         String response = manageQuestion.generateSlug();
         assertEquals("json",response);
         assertEquals("{\"slug\":\"manual-audit\"}",manageQuestion.getJson().toString());
+    }
+
+    @Test
+    public void testSave_InputValidation_MissingChildRequiredLanguages_TranslationServiceOn() throws Exception {
+        setupInputValidationMocks();
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)).thenReturn(true);
+
+        manageQuestion.save();
+
+        assertFalse(manageQuestion.hasActionErrors());
+    }
+
+    @Test
+    public void testSave_InputValidation_MissingChildRequiredLanguages_TranslationServiceOff() throws Exception {
+        setupInputValidationMocks();
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)).thenReturn(false);
+        when(auditQuestion.hasMissingChildRequiredLanguages()).thenReturn(Boolean.TRUE);
+
+        manageQuestion.save();
+
+        assertEmitsRequiredLanguageError(manageQuestion);
+    }
+
+    @Test
+    public void testSave_InputValidation_MissingChildRequiredLanguages_TranslationDataSourceOn() throws Exception {
+        setupInputValidationMocks();
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE)).thenReturn(true);
+
+        manageQuestion.save();
+
+        assertFalse(manageQuestion.hasActionErrors());
+    }
+
+    @Test
+    public void testSave_InputValidation_MissingChildRequiredLanguages_TranslationDataSourceOff() throws Exception {
+        setupInputValidationMocks();
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE)).thenReturn(false);
+        when(auditQuestion.hasMissingChildRequiredLanguages()).thenReturn(Boolean.TRUE);
+
+        manageQuestion.save();
+
+        assertEmitsRequiredLanguageError(manageQuestion);
+    }
+
+    private void setupInputValidationMocks() throws Exception {
+        when(auditQuestion.getQuestionType()).thenReturn(QUESTION_TYPE_NOT_MULTIPLE_CHOICE);
+        when(auditQuestion.getOption()).thenReturn(auditOptionGroup);
+        when(auditQuestion.getLanguages()).thenReturn(auditQuestionLanguages);
+        when(auditQuestion.getNumber()).thenReturn(123);
+        when(auditQuestionDAO.save(auditQuestion)).thenReturn(auditQuestion);
     }
 }
