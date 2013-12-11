@@ -2,6 +2,21 @@
 {
     z-index: 9999;
 
+  .dropdown-menu > li > a:hover,
+  .dropdown-menu > li > a:focus,
+  .dropdown-submenu:hover > a,
+  .dropdown-submenu:focus > a {
+    color: #454545;
+     text-decoration: none;
+     background-color: $default_light;
+     @include background-image(none);
+  }
+
+    .dropdown-menu > li > a:hover {
+        @include background-image(linear-gradient($primary_light, $primary_med));
+        color: #ffffff;
+    }
+
     .navbar-inner
     {
         background: #eaeaea;
