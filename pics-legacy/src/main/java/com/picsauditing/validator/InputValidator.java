@@ -51,7 +51,7 @@ public class InputValidator {
 	public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
 	public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
 	public static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
-	public static final String INVALID_VAT_ID_KEY = "JS.Validation.InvalidVAT";
+	public static final String INVALID_TAX_ID_KEY = "JS.Validation.InvalidTaxID";
 	public static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
 	public static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
 	public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";

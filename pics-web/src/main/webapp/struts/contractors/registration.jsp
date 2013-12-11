@@ -181,7 +181,7 @@
 					</div>
 					<%-- End hack --%>
 
-					<li id="vat_id">
+					<li id="tax_id">
 						<s:textfield name="contractor.vatId" />
 					</li>
 		        </ul>

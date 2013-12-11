@@ -3,9 +3,10 @@ package com.picsauditing.validator;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Country;
 
-public class VATValidator {
+public class VATValidator extends TaxIdValidator {
 
     private final static String GREECE = "GR";
+    private static final String LABEL = "VAT";
     // for test injection
     private VATWebValidator webValidator;
 
@@ -30,6 +31,11 @@ public class VATValidator {
         return finalCode;
     }
 
+    @Override
+    public String getLabel() {
+        return LABEL;
+    }
+
     private String vatPrefixFor(Country country) {
         if (country.getIsoCode().equalsIgnoreCase(GREECE)) {
 			return "EL";
@@ -38,14 +44,6 @@ public class VATValidator {
 		} else {
 			return "EU";
 		}
-    }
-
-    public boolean shouldValidate(Country registrationCountry) {
-        if (registrationCountry != null && registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
-            return true;
-        }
-
-        return false;
     }
 
     // PICS-11482

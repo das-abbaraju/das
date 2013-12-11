@@ -1152,7 +1152,7 @@
 			</result>
 		</action>
 
-		<action name="VATCountryAJAX" class="com.picsauditing.actions.VATCountryJSON">
+		<action name="TaxIdCountryAJAX" class="com.picsauditing.actions.TaxIdCountryJSON">
 			<result>/struts/blank.jsp</result>
 		</action>
 
