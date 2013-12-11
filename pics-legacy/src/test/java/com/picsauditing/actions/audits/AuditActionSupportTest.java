@@ -71,18 +71,12 @@ public class AuditActionSupportTest extends PicsTest {
 	}
 
     @Test
-    public void testDisplayMultiStatusDropDown() {
+    public void testDisplayMultiStatusDropDown_Invalid_NotCSRGroup() {
         ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
         PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
         PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
 
-        // no audit status
-        assertFalse(test.displayMultiStatusDropDown());
-
         actionStatus.put(AuditStatus.Complete, 1);
-
-        // no trade
-        assertFalse(test.displayMultiStatusDropDown());
 
         ContractorTrade contractorTrade = new ContractorTrade();
         Trade trade = new Trade();
@@ -94,13 +88,58 @@ public class AuditActionSupportTest extends PicsTest {
 
         // not in CSR group
         assertFalse(test.displayMultiStatusDropDown());
+    }
+
+    @Test
+    public void testDisplayMultiStatusDropDown_Invalid_NoAuditStatus() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        ContractorTrade contractorTrade = new ContractorTrade();
+        Trade trade = new Trade();
+        trade.setName("Test Trade");
+        contractorTrade.setTrade(trade);
+
+        contractor.getTrades().add(contractorTrade);
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(true);
+
+        assertFalse(test.displayMultiStatusDropDown());
+    }
+
+    @Test
+    public void testDisplayMultiStatusDropDown_Invalid_NoTrades() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        actionStatus.put(AuditStatus.Complete, 1);
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(true);
+
+        assertFalse(test.displayMultiStatusDropDown());
+    }
+
+    @Test
+    public void testDisplayMultiStatusDropDown_Valid() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        actionStatus.put(AuditStatus.Complete, 1);
+
+        ContractorTrade contractorTrade = new ContractorTrade();
+        Trade trade = new Trade();
+        trade.setName("Test Trade");
+        contractorTrade.setTrade(trade);
+
+        contractor.getTrades().add(contractorTrade);
 
         when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(true);
-        // adust status, trades, in group
+
         assertTrue(test.displayMultiStatusDropDown());
     }
 
-	@Test
+    @Test
 	public void testCalculateRefreshAudit() throws Exception {
 		PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
 		when(conAudit.getAuditType()).thenReturn(auditType);
