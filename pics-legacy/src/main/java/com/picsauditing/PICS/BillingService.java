@@ -217,11 +217,17 @@ public class BillingService {
 		invoice.setCommissionableAmount(invoiceCommissionable);
 		invoice.setAuditColumns(auditUser);
 
-		invoice.setInvoiceType(convertBillingStatusToInvoiceType(billingStatus));
+		invoice.setInvoiceType(convertBillingStatusToInvoiceType(invoice, billingStatus));
 		return invoice;
 	}
 
-	private InvoiceType convertBillingStatusToInvoiceType(BillingStatus billingStatus) {
+	private InvoiceType convertBillingStatusToInvoiceType(Invoice invoice, BillingStatus billingStatus) {
+        Set<FeeClass> invoiceFeeClasses = getInvoiceFeeClasses(invoice);
+
+        if (invoiceFeeClasses.contains(FeeClass.Activation)) {
+            return InvoiceType.Activation;
+        }
+
         switch (billingStatus) {
             case Upgrade:
                 return InvoiceType.Upgrade;
@@ -234,6 +240,14 @@ public class BillingService {
             default:
                 return InvoiceType.OtherFees;
         }
+    }
+
+    private static Set<FeeClass> getInvoiceFeeClasses(Invoice invoice) {
+        Set<FeeClass> feeClasses = new HashSet<>();
+        for (InvoiceItem item : invoice.getItems()) {
+            feeClasses.add(item.getInvoiceFee().getFeeClass());
+        }
+        return feeClasses;
     }
 
 	public BigDecimal calculateInvoiceTotal(List<InvoiceItem> invoiceItems) {
