@@ -618,7 +618,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		types.add("Visa");
 		types.add("Mastercard");
 		types.add("Discover Card");
-        if (!contractor.getCountry().isUK())
+        if (contractor.getCountry().getCurrency().isUSD() || contractor.getCountry().getCurrency().isCAD())
 		    types.add("American Express");
 
 		return types;

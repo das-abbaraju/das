@@ -132,7 +132,25 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
     @Test
     public void testCreditCardTypes_UKNoAmex() throws Exception {
         Country uk = new Country();
+        uk.setCurrency(Currency.GBP);
         uk.setIsoCode(Country.UK_ISO_CODE);
+        when(contractor.getCountry()).thenReturn(uk);
+        when(contractorAccountDao.find(1)).thenReturn(contractor);
+        when(contractorAccountDao.isContained(contractor)).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+        registrationMakePayment.setId(1);
+
+        List<String> creditcardTypes = registrationMakePayment.getCreditCardTypes();
+        String creditCards = Strings.implode(creditcardTypes);
+
+        Assert.assertNotContains("American Express", creditCards);
+    }
+
+    @Test
+    public void testCreditCardTypes_ZANoAmex() throws Exception {
+        Country uk = new Country();
+        uk.setCurrency(Currency.ZAR);
+        uk.setIsoCode(Country.SOUTH_AFRICA_ISO_CODE);
         when(contractor.getCountry()).thenReturn(uk);
         when(contractorAccountDao.find(1)).thenReturn(contractor);
         when(contractorAccountDao.isContained(contractor)).thenReturn(true);
