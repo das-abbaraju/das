@@ -46,7 +46,7 @@ public class FeeService {
         boolean foundPaymentExpires = false;
 
         for (Invoice invoice : contractor.getSortedInvoices()) {
-            if (!invoice.getStatus().isVoid()) {
+            if (!invoice.getStatus().isVoid() && !BillingService.hasCreditMemosForFullAmount(invoice)) {
                 for (InvoiceItem invoiceItem : invoice.getItems()) {
                     InvoiceFee invoiceFee = invoiceItem.getInvoiceFee();
                     FeeClass feeClass = invoiceFee.getFeeClass();

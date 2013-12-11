@@ -79,6 +79,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private InvoiceItem previousInvoiceItem;
 	@Mock
 	private InvoiceItemDAO invoiceItemDAO;
+    @Mock
+    private CreditMemoAppliedToInvoice creditMemoAppliedToInvoice;
+    @Mock
+    private CreditMemoAppliedToInvoice creditMemoAppliedToInvoice2;
 
 	@Before
 	public void setUp() {
@@ -492,4 +496,42 @@ public class BillingServiceTest extends PicsTranslationTest {
 		invoiceFee.setFeeClass(feeClass);
 		return item;
 	}
+
+    @Test
+    public void testHasCreditMemosForFullAmount_NoCreditMemos() throws Exception {
+        assertFalse(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
+    @Test
+    public void testHasCreditMemosForFullAmount_PartialCreditMemo() throws Exception {
+        List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
+        creditMemos.add(creditMemoAppliedToInvoice);
+        when(invoice.getCreditMemos()).thenReturn(creditMemos);
+        when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
+        when(creditMemoAppliedToInvoice.getAmount()).thenReturn(BigDecimal.ONE);
+        assertFalse(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
+    @Test
+    public void testHasCreditMemosForFullAmount_FullCreditMemo() throws Exception {
+        List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
+        creditMemos.add(creditMemoAppliedToInvoice);
+        when(invoice.getCreditMemos()).thenReturn(creditMemos);
+        when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
+        when(creditMemoAppliedToInvoice.getAmount()).thenReturn(BigDecimal.TEN);
+        assertTrue(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
+    @Test
+    public void testHasCreditMemosForFullAmount_MultipleCreditMemo() throws Exception {
+        List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
+        creditMemos.add(creditMemoAppliedToInvoice);
+        creditMemos.add(creditMemoAppliedToInvoice2);
+        when(invoice.getCreditMemos()).thenReturn(creditMemos);
+        when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
+        when(creditMemoAppliedToInvoice.getAmount()).thenReturn(BigDecimal.ONE);
+        when(creditMemoAppliedToInvoice2.getAmount()).thenReturn(new BigDecimal(9));
+        assertTrue(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
 }

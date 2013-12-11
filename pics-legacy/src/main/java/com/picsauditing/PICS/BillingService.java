@@ -699,4 +699,17 @@ public class BillingService {
   		}
 		return null;
 	}
+
+    public static boolean hasCreditMemosForFullAmount(Invoice invoice) {
+        BigDecimal creditMemoAmount = BigDecimal.ZERO;
+        for (CreditMemoAppliedToInvoice creditMemoAppliedToInvoice : invoice.getCreditMemos()) {
+            creditMemoAmount = creditMemoAmount.add(creditMemoAppliedToInvoice.getAmount());
+            if (creditMemoAmount.doubleValue() >= invoice.getTotalAmount().doubleValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
