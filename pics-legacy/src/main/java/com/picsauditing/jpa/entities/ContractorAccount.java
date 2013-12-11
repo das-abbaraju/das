@@ -18,6 +18,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.validator.InputValidator;
+import com.picsauditing.validator.TaxIdValidator;
+import com.picsauditing.validator.TaxIdValidatorFactory;
 import com.picsauditing.validator.VATValidator;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
@@ -74,6 +76,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Boolean competitorMembership;
 	private boolean showInDirectory = true;
 	private AccountLevel accountLevel = AccountLevel.Full;
+    // TODO Tech Debt: PICS-13969
 	private String vatId;
 
 	private Date paymentExpires;
@@ -1810,15 +1813,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isValidVAT(String vat) {
-		Country registrationCountry = getCountryDao().findbyISO(getCountry().getIsoCode());
-
-		if (getVatValidator().shouldValidate(registrationCountry)) {
-			try {
-				getVatValidator().validated(registrationCountry, vat);
-			} catch (Exception e) {
-				return false;
-			}
-		}
+        TaxIdValidator taxIdValidator = new TaxIdValidatorFactory().buildTaxIdValidator(country);
+        if (taxIdValidator != null) {
+            try {
+                taxIdValidator.validated(country, vat);
+            } catch (Exception e) {
+                return false;
+            }
+        }
 
 		if (StringUtils.isNotEmpty(vat)) {
 			return getInputValidator().containsOnlySafeCharacters(vat);

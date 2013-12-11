@@ -10,7 +10,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,10 +33,10 @@ public class RegistrationValidator implements Validator {
 	private InputValidator inputValidator;
 	@Autowired
 	private PasswordValidator passwordValidator;
-	@Autowired
-	private VATValidator vatValidator;
+    @Autowired
+    private TaxIdValidatorFactory taxIdValidatorFactory;
 
-	private Map<String, String> errors = new HashMap<String, String>();
+	private Map<String, String> errors = new HashMap<>();
 
 	@Override
 	public void validate(ValueStack valueStack, ValidatorContext validatorContext) {
@@ -67,21 +66,19 @@ public class RegistrationValidator implements Validator {
 
 	private Map<String, String> validate2(User user, String language, String dialect, ContractorAccount contractor,
 			String countrySubdivision, LanguageModel languageModel, String confirmPassword) {
-		errors = new HashMap<String, String>();
+		errors = new HashMap<>();
 
 		user = (user == null) ? new User() : user;
 
-		errors.putAll(validateContractor(language, dialect, contractor, countrySubdivision, languageModel,
-				inputValidator, vatValidator));
+		errors.putAll(validateContractor(language, dialect, contractor, countrySubdivision, languageModel));
 		validateUser(user, confirmPassword);
 
 		return errors;
 	}
 
-	public static Map<String, String> validateContractor(String language, String dialect, ContractorAccount contractor,
-			String countrySubdivision, LanguageModel languageModel, InputValidator inputValidator,
-			VATValidator vatValidator) {
-		Map<String, String> errors = new HashMap<String, String>();
+	public Map<String, String> validateContractor(String language, String dialect, ContractorAccount contractor,
+			String countrySubdivision, LanguageModel languageModel) {
+		Map<String, String> errors = new HashMap<>();
 		contractor = (contractor == null) ? new ContractorAccount() : contractor;
 		String errorMessageKey = inputValidator.validateCompanyName(contractor.getName());
 		errors.put("contractor.name", errorMessageKey);
@@ -129,8 +126,9 @@ public class RegistrationValidator implements Validator {
 			errors.put("contractor.zip", errorMessageKey);
 		}
 
-		if (!isValidVAT(contractor.getVatId(), contractor.getCountry(), vatValidator, inputValidator)) {
-			errors.put("contractor.vatId", InputValidator.INVALID_VAT_ID_KEY);
+        TaxIdValidator taxIdValidator = taxIdValidatorFactory.buildTaxIdValidator(contractor.getCountry());
+        if (!isTaxIdValid(contractor.getVatId(), contractor.getCountry(), inputValidator, taxIdValidator)) {
+			errors.put("contractor.vatId", InputValidator.INVALID_TAX_ID_KEY + "::" + taxIdValidator.getLabel());
 		}
 
 		removeEmptyValues(errors);
@@ -187,19 +185,19 @@ public class RegistrationValidator implements Validator {
 		}
 	}
 
-	private static boolean isValidVAT(String vat, Country country, VATValidator vatValidator,
-			InputValidator inputValidator) {
-		if (vatValidator.shouldValidate(country)) {
-			try {
-				vatValidator.validated(country, vat);
-			} catch (Exception e) {
-				return false;
-			}
-		}
+	private static boolean isTaxIdValid(String vat, Country country,
+                                        InputValidator inputValidator, TaxIdValidator taxIdValidator) {
+        if (taxIdValidator != null) {
+            try {
+                taxIdValidator.validated(country, vat);
+            } catch (Exception e) {
+                return false;
+            }
+        }
 
-		if (StringUtils.isNotEmpty(vat)) {
-			return inputValidator.containsOnlySafeCharacters(vat);
-		}
+        if (StringUtils.isNotEmpty(vat)) {
+            return inputValidator.containsOnlySafeCharacters(vat);
+        }
 
 		return true;
 	}

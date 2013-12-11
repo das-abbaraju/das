@@ -288,9 +288,9 @@
                 $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
                 $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
 
-	            company_information.on('change', '#Registration_contractor_country_isoCode', this.checkVatRequired);
+	            company_information.on('change', '#Registration_contractor_country_isoCode', this.checkTaxIdRequired);
 
-                // Show or hide the vat id field based on the Country default value.
+                // Show or hide the tax id field based on the Country default value.
                 company_information.find('#Registration_contractor_country_isoCode').trigger('change');
 
                 if ($('.Registration-page').length) {
@@ -361,22 +361,23 @@
                 });
             },
 
-            checkVatRequired: function (event) {
+            checkTaxIdRequired: function (event) {
                 var iso_code = $('#Registration_contractor_country_isoCode').val();
 
                 PICS.ajax({
-                    url: 'VATCountryAJAX.action',
+                    url: 'TaxIdCountryAJAX.action',
                     data: {
                         iso_code: iso_code
                     },
                     dataType: 'json',
                     success: function (data, textStatus, XMLHttpRequest) {
-                        var vat_element = $('#vat_id');
+                        var tax_id_element = $('#tax_id');
 
-                        if (data.vat_required) {
-                            vat_element.slideDown(400);
+                        if (data.tax_id_required) {
+                            tax_id_element.slideDown(400);
+
                         } else {
-                            vat_element.slideUp(400);
+                            tax_id_element.slideUp(400);
                         }
                     }
                 });
