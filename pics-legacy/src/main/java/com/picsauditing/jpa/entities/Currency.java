@@ -13,6 +13,7 @@ public enum Currency {
     NOK("NOK", "kr"),       //Norwegian Krone       (symbol placed after amounts)
     DKK("DKK", "kr"),       //Danish Krone          (symbol placed after amounts)
     AUD("AUD", "$"),        //Australian Dollar     (symbol placed after amounts)
+    NZD("NZD", "$"),        //New Zealand Dollar     (symbol placed after amounts)
     TRY("TRY", "TL"),       //Turkish Lira          (symbol placed after amounts)
     CHF("CHF", "Fr");       //Swiss Franc           (symbol placed after amounts)
 
