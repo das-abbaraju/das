@@ -5,6 +5,7 @@ import java.util.*;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
+import com.picsauditing.i18n.model.UsageContext;
 import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
 import com.picsauditing.i18n.model.strategies.EmptyTranslationStrategy;
 import com.picsauditing.i18n.model.strategies.ReturnKeyTranslationStrategy;
@@ -39,7 +40,7 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties().translationUsageLogger(new TranslationKeyDoNothingLogger());
+            TranslationServiceProperties.Builder propertyBuilder = baseTranslationServiceProperties().translationUsageLogger(new TranslationKeyDoNothingLogger());
             return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
@@ -52,30 +53,26 @@ public class TranslationServiceFactory {
         }
 
         if (useTranslationServiceAdapter()) {
-            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties();
+            TranslationServiceProperties.Builder propertyBuilder = baseTranslationServiceProperties();
             return new TranslationServiceAdapter(propertyBuilder.build());
         }
 
         return I18nCache.getInstance();
     }
 
-    // if we have to parameterize the command group name for more than TranslateCommand, this will have to be a more
-    // sophisticated configuration object. For now, though, let's stay simple
-    public static TranslationService getTranslationService(String translateCommandKey) {
+    public static TranslationService getTranslationService(TranslationServiceProperties properties) {
         if (translationService != null) {
             return translationService;
         }
 
         if (useTranslationServiceAdapter()) {
-            TranslationServiceProperties.Builder propertyBuilder = translationServiceProperties();
-            propertyBuilder.translationCommandKey(translateCommandKey);
-            return new TranslationServiceAdapter(propertyBuilder.build());
+            return new TranslationServiceAdapter(properties);
         }
 
         return I18nCache.getInstance();
     }
 
-    private static TranslationServiceProperties.Builder translationServiceProperties() {
+    public static TranslationServiceProperties.Builder baseTranslationServiceProperties() {
         ActionUsageContext context = new ActionUsageContext();
         TranslationServiceProperties.Builder propertyBuilder = new TranslationServiceProperties.Builder()
                 .context(context)

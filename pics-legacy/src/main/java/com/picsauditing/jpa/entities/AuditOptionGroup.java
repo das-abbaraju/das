@@ -11,6 +11,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 import com.picsauditing.util.Strings;
 
 @Entity
@@ -138,4 +139,8 @@ public class AuditOptionGroup extends BaseTableRequiringLanguages {
 	public boolean hasMissingChildRequiredLanguages() {
 		return getLanguages().isEmpty();
 	}
+
+    protected ExplicitUsageContext context() {
+        return null;
+    }
 }

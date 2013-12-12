@@ -4,6 +4,7 @@ import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 
 import javax.persistence.Column;
 import javax.persistence.*;
@@ -207,4 +208,9 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	public boolean hasMissingChildRequiredLanguages() {
 		return getLanguages().isEmpty();
 	}
+
+    protected ExplicitUsageContext context() {
+        return null;
+    }
+
 }

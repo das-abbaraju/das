@@ -1,27 +1,23 @@
 package com.picsauditing.service.i18n;
 
-import com.picsauditing.i18n.model.UsageContext;
-import com.picsauditing.model.i18n.ThreadLocalLocale;
 import com.picsauditing.util.Strings;
-import com.spun.util.persistence.Loader;
 import org.apache.struts2.ServletActionContext;
 
-import java.util.Locale;
-
-public class ActionUsageContext implements UsageContext {
-    private static final String environment = System.getProperty("pics.env");
-    private static Loader<Locale> localeProvider = ThreadLocalLocale.INSTANCE;
+public class ActionUsageContext extends PicsUsageContext {
     public static final String DEFAULT_PAGENAME = "UNKNOWN";
-    public static final String DEFAULT_ENVIRONMENT = "UNKNOWN";
-    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final String PAGE_NAME_PARAMETER_KEY = "pageName";
+    public static final String PAGE_ORDER_PARAMETER_KEY = "pageOrder";
 
-    public String environment() {
-        return (environment == null) ? DEFAULT_ENVIRONMENT : environment;
-    }
-
+    @Override
     public String pageName() {
         try {
-            String pageName = ServletActionContext.getContext().getName();
+            String pageName = pageNameFromContextParameterOverride();
+            if (Strings.isEmpty(pageName)) {
+                pageName = pageNameFromParameterOverride();
+            }
+            if (Strings.isEmpty(pageName)) {
+                pageName = pageNameFromActionContext();
+            }
             if (Strings.isEmpty(pageName)) {
                 pageName = DEFAULT_PAGENAME;
             }
@@ -31,11 +27,33 @@ public class ActionUsageContext implements UsageContext {
         }
     }
 
-    public Locale locale() {
+    private String pageNameFromActionContext() {
+        return ServletActionContext.getContext().getName();
+    }
+
+    private String pageNameFromParameterOverride() {
         try {
-            return localeProvider.load();
+            return ServletActionContext.getRequest().getParameter(PAGE_NAME_PARAMETER_KEY);
         } catch (Exception e) {
-            return DEFAULT_LOCALE;
+            return null;
         }
     }
+
+    private String pageNameFromContextParameterOverride() {
+        try {
+            return ServletActionContext.getContext().getParameters().get(PAGE_NAME_PARAMETER_KEY).toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String pageOrder() {
+        try {
+            return ServletActionContext.getRequest().getParameter(PAGE_ORDER_PARAMETER_KEY);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

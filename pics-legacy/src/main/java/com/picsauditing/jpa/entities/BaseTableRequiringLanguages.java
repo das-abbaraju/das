@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 import com.picsauditing.util.i18n.RequiredLanguageTransformer;
 
 import javax.persistence.MappedSuperclass;
@@ -56,4 +58,13 @@ public abstract class BaseTableRequiringLanguages extends BaseTable implements J
 	public void addAndRemoveRequiredLanguages(List<String> add, List<String> remove) {
 		transformer.updateRequiredLanguages(this, add, remove);
 	}
+
+    protected String translatedString(String key) {
+        return new TranslatableString(
+                getI18nKey(key),
+                context())
+                .toTranslatedString();
+    }
+
+    protected abstract ExplicitUsageContext context();
 }

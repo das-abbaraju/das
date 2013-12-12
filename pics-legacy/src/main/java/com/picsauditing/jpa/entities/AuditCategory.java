@@ -20,13 +20,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.jpa.entities.builders.AuditCategoryBuilder;
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
@@ -155,7 +155,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		}
 
         String key = getI18nKey("name");
-		String value = new TranslatableString(key).toTranslatedString();
+		String value = translatedString("name");
         if (key.equals(value)) {
             return Strings.EMPTY_STRING;
         } else {
@@ -271,8 +271,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		if (helpText != null) {
 			return helpText;
 		}
-
-		return new TranslatableString(getI18nKey("helpText")).toTranslatedString();
+        return translatedString("helpText");
 	}
 
 	public void setHelpText(String helpText) {
@@ -522,4 +521,10 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
     public static AuditCategoryBuilder builder() {
         return new AuditCategoryBuilder();
     }
+
+    protected ExplicitUsageContext context() {
+        String padded = Strings.zeroPadDelimitedString(getFullNumber(), "\\.", ".", 3);
+        return new ExplicitUsageContext(getAuditType().getSlug(), padded);
+    }
+
 }
