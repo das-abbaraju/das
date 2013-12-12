@@ -140,7 +140,12 @@ public class ExcelBuilder {
 
 		switch (column.getCellType()) {
 		case Date:
-			cell.setCellValue((Date) dataValue);
+            try {
+                cell.setCellValue((Date) dataValue);
+            }
+            catch(ClassCastException cce) {
+                cell.setCellValue(new HSSFRichTextString(dataValue.toString()));
+            }
 			break;
 		case Double:
 		case Integer:
