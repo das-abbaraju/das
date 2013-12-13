@@ -39,7 +39,7 @@ public class ContractorValidator {
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDao;
 	@Autowired
-	protected VATValidator vatValidator;
+	protected TaxIdValidatorFactory taxIdValidatorFactory;
 
 	private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
@@ -60,7 +60,7 @@ public class ContractorValidator {
 	}
 
 	public Vector<String> validateContractor(ContractorAccount contractor) {
-		Vector<String> errorMessages = new Vector<String>();
+		Vector<String> errorMessages = new Vector<>();
 		if (contractor.getType() == null) {
 			errorMessages.addElement(getText("ContractorValidator.error.NoAccountType"));
 			return errorMessages;
@@ -103,18 +103,21 @@ public class ContractorValidator {
 		}
 
 		if (!Strings.isEmpty(contractor.getVatId())) {
-			try {
-				vatValidator.validated(contractor.getCountry(), contractor.getVatId());
-			} catch (Exception e) {
-				errorMessages.addElement(getText("ContractorValidator.error.InvalidVAT"));
-			}
+            TaxIdValidator taxIdValidator = taxIdValidatorFactory.buildTaxIdValidator(contractor.getCountry());
+            if (taxIdValidator != null) {
+                try {
+                    taxIdValidator.validated(contractor.getCountry(), contractor.getVatId());
+                } catch (Exception e) {
+                    errorMessages.addElement(getText("ContractorValidator.error.InvalidVAT"));
+                }
+            }
 		}
 
 		return errorMessages;
 	}
 
 	public Vector<String> validateUser(String password1, String password2, User user) {
-		Vector<String> errorMessages = new Vector<String>();
+		Vector<String> errorMessages = new Vector<>();
 
 		// Username
 		String username = user.getUsername().trim();
@@ -159,7 +162,7 @@ public class ContractorValidator {
 	}
 
 	public Vector<String> verifyTaxID(ContractorAccount contractorAccount) {
-		Vector<String> errorMessages = new Vector<String>();
+		Vector<String> errorMessages = new Vector<>();
 
 		String taxId = contractorAccount.getTaxId();
 		String country = contractorAccount.getCountry().getIsoCode();
@@ -204,7 +207,7 @@ public class ContractorValidator {
 			return;
 		}
 
-		List<String> uniqueCodes = new ArrayList<String>();
+		List<String> uniqueCodes = new ArrayList<>();
 		CountrySubdivision countrySubdivision = contractor.getCountrySubdivision();
 
 		if (countrySubdivision == null) {
