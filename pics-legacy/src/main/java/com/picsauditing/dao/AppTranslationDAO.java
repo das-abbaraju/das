@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.i18n.model.TranslationQualityRating;
 import com.picsauditing.i18n.model.TranslationWrapper;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
@@ -26,8 +27,8 @@ public class AppTranslationDAO extends PicsDAO implements TranslationDAO {
 
 	private static final String I18N_CACHE_QUERY = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 	private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM app_translation WHERE msgKey IN (%s)";
-	private static final String SAVE_TRANSLATIONS = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed) "
-			+ "VALUES (?, ?, ?, ?, ?, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE msgValue = ?, updateDate = NOW(), updatedBy = ?";
+	private static final String SAVE_TRANSLATIONS = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed, qualityRating) "
+			+ "VALUES (?, ?, ?, ?, ?, NOW(), NOW(), DATE(NOW()), ?) ON DUPLICATE KEY UPDATE msgValue = ?, updateDate = NOW(), updatedBy = ?, qualityRating = ?";
 
 	private static Database database = new Database();
 
@@ -118,7 +119,7 @@ public class AppTranslationDAO extends PicsDAO implements TranslationDAO {
 
 		List<TranslationWrapper> translations = new ArrayList<>();
 		for (String language : requiredLanguages) {
-			translations.add(new TranslationWrapper.Builder().key(key).translation(translation).locale(language)
+			translations.add(new TranslationWrapper.Builder().key(key).translation(translation).qualityRating(TranslationQualityRating.Good).locale(language)
 					.createdBy(User.SYSTEM).updatedBy(User.SYSTEM).build());
 		}
 
@@ -136,8 +137,10 @@ public class AppTranslationDAO extends PicsDAO implements TranslationDAO {
 				preparedStatement.setString(3, translationWrapper.getTranslation());
 				preparedStatement.setInt(4, translationWrapper.getCreatedBy());
 				preparedStatement.setInt(5, translationWrapper.getUpdatedBy());
-				preparedStatement.setString(6, translationWrapper.getTranslation());
-				preparedStatement.setInt(7, translationWrapper.getUpdatedBy());
+                preparedStatement.setInt(6, translationWrapper.getQualityRating().ordinal());
+				preparedStatement.setString(7, translationWrapper.getTranslation());
+				preparedStatement.setInt(8, translationWrapper.getUpdatedBy());
+                preparedStatement.setInt(9, translationWrapper.getQualityRating().ordinal());
 			}
 		};
 	}
