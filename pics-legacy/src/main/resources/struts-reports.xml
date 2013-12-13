@@ -88,11 +88,6 @@
 			<result>struts/reports/report_activity_watch.jsp</result>
 		</action>
 
-		<action name="ReportContractorTradeConflict"
-			class="com.picsauditing.actions.report.ReportContractorTradeConflict">
-			<result>struts/reports/contractor_trade_conflicts.jsp</result>
-		</action>
-
 		<!-- User List -->
 		<action name="UserList" class="com.picsauditing.actions.report.ReportUser">
 			<param name="filter.ajax">true</param>
