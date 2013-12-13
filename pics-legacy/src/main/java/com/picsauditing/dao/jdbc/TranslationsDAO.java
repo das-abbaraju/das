@@ -3,6 +3,7 @@ package com.picsauditing.dao.jdbc;
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.dao.TranslationDAO;
 import com.picsauditing.dao.mapper.LegacyTranslationMapper;
+import com.picsauditing.i18n.model.TranslationQualityRating;
 import com.picsauditing.i18n.model.TranslationWrapper;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.ContextTranslation;
@@ -41,8 +42,8 @@ public class TranslationsDAO implements TranslationDAO {
 
     private static final String SAVE_TRANSLATION_KEY = "INSERT INTO msg_key (msgKey, createdBy, updatedBy, creationDate, updateDate, lastUsed) "
             + "VALUES ('%s', %s, %s, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE updateDate = NOW(), updatedBy = %s";
-    private static final String SAVE_TRANSLATION_LOCALE = "INSERT INTO msg_locale (keyID, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, firstUsed, lastUsed) "
-            + "VALUES (?, ?, ?, ?, ?, NOW(), NOW(), DATE(NOW()), DATE(NOW())) ON DUPLICATE KEY UPDATE msgValue = ?, updateDate = NOW(), updatedBy = ?";
+    private static final String SAVE_TRANSLATION_LOCALE = "INSERT INTO msg_locale (keyID, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, firstUsed, lastUsed, qualityRating) "
+            + "VALUES (?, ?, ?, ?, ?, NOW(), NOW(), DATE(NOW()), DATE(NOW()), ?) ON DUPLICATE KEY UPDATE msgValue = ?, updateDate = NOW(), updatedBy = ?, qualityRating = ?";
     private static final String SELECT_ALL_JS_TRANSLATIONS = "select mk.msgKey as msgKey, ml.locale as locale, ml.msgValue as msgValue, mk.lastUsed as lastUsed " +
             "from msg_key mk join msg_locale ml on ml.keyID = mk.id where mk.js = 1";
 
@@ -129,7 +130,7 @@ public class TranslationsDAO implements TranslationDAO {
 
             List<TranslationWrapper> translations = new ArrayList<>();
             for (String language : requiredLanguages) {
-                translations.add(new TranslationWrapper.Builder().keyID(new Long(id).intValue()).key(key).translation(translation).locale(language)
+                translations.add(new TranslationWrapper.Builder().keyID(new Long(id).intValue()).key(key).translation(translation).qualityRating(TranslationQualityRating.Good).locale(language)
                         .createdBy(User.SYSTEM).updatedBy(User.SYSTEM).build());
             }
 
@@ -150,8 +151,10 @@ public class TranslationsDAO implements TranslationDAO {
                 preparedStatement.setString(3, translationWrapper.getTranslation());
                 preparedStatement.setInt(4, translationWrapper.getCreatedBy());
                 preparedStatement.setInt(5, translationWrapper.getUpdatedBy());
-                preparedStatement.setString(6, translationWrapper.getTranslation());
-                preparedStatement.setInt(7, translationWrapper.getUpdatedBy());
+                preparedStatement.setInt(6, translationWrapper.getQualityRating().ordinal());
+                preparedStatement.setString(7, translationWrapper.getTranslation());
+                preparedStatement.setInt(8, translationWrapper.getUpdatedBy());
+                preparedStatement.setInt(9, translationWrapper.getQualityRating().ordinal());
             }
         };
     }
