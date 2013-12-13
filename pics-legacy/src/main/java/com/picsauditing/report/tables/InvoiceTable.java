@@ -19,7 +19,7 @@ public class InvoiceTable extends AbstractTable {
         addPrimaryKey();
         addCreationDate();
 
-        Field tax = new Field("Tax", "IFNULL((SELECT ii.amount FROM invoice_item ii JOIN invoice_fee fee ON ii.feeID = fee.id AND fee.feeClass IN (" +
+        Field tax = new Field("Tax", "IFNULL((SELECT SUM(ii.amount) FROM invoice_item ii JOIN invoice_fee fee ON ii.feeID = fee.id AND fee.feeClass IN (" +
                 Strings.implodeForDB(TaxService.TAX_FEE_CLASSES) +
                 ") WHERE ii.invoiceID = " + ReportOnClause.ToAlias + ".id),0)", FieldType.Float);
         tax.setImportance(FieldImportance.Required);
@@ -27,7 +27,7 @@ public class InvoiceTable extends AbstractTable {
 
         Field taxlessTotalAmount = new Field("TaxlessTotalAmount", "(" +
                 ReportOnClause.ToAlias +
-                ".totalAmount - IFNULL((SELECT ii.amount FROM invoice_item ii JOIN invoice_fee fee ON ii.feeID = fee.id AND fee.feeClass IN (" +
+                ".totalAmount - IFNULL((SELECT SUM(ii.amount) FROM invoice_item ii JOIN invoice_fee fee ON ii.feeID = fee.id AND fee.feeClass IN (" +
                 Strings.implodeForDB(TaxService.TAX_FEE_CLASSES) +
                 ") WHERE ii.invoiceID = " +
                 ReportOnClause.ToAlias +
