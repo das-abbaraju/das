@@ -13,6 +13,8 @@ object TranslationUsages extends Table[TranslationUsage]("translation_usage") {
 
   def pageName = column[String]("pageName")
 
+  def pageOrder = column[String]("pageOrder")
+
   def environment = column[String]("environment")
 
   def firstUsed = column[Date]("firstUsed", O.DBType("Date"))
@@ -23,6 +25,6 @@ object TranslationUsages extends Table[TranslationUsage]("translation_usage") {
 
   def synchronizedDate = column[Date]("synchronizedDate", O.DBType("Date"))
 
-  def * = id.? ~ msgKey ~ msgLocale ~ pageName ~ environment ~ firstUsed.? ~ lastUsed.? ~ synchronizedBatch.? ~ synchronizedDate.? <>
+  def * = id.? ~ msgKey ~ msgLocale ~ pageName ~ pageOrder.? ~ environment ~ firstUsed.? ~ lastUsed.? ~ synchronizedBatch.? ~ synchronizedDate.? <>
     (TranslationUsage, TranslationUsage.unapply _)
 }

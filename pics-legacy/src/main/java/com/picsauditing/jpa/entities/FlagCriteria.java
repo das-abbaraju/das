@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -333,4 +334,9 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	public static FlagCriteriaBuilder builder() {
 		return new FlagCriteriaBuilder();
 	}
+
+    protected ExplicitUsageContext context() {
+        return null;
+    }
+
 }

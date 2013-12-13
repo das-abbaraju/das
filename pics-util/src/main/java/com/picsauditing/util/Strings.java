@@ -620,4 +620,21 @@ public class Strings {
 
 		return s1.compareToIgnoreCase(s2);
 	}
+
+    public static String zeroPadDelimitedString(String toZeroPad, String delimiterRegex, String delimitPartsWith, int pad) {
+        String[] parts = toZeroPad.split(delimiterRegex);
+        StringBuffer result = new StringBuffer();
+        boolean isFirst = true;
+        for (String part : parts) {
+            while (part.length() < pad) {
+                part = "0" + part;
+            }
+            if (!isFirst) {
+                result.append(delimitPartsWith);
+            }
+            result.append(part);
+            isFirst = false;
+        }
+        return result.toString();
+    }
 }

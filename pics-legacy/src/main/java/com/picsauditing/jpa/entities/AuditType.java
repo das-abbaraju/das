@@ -18,6 +18,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
@@ -25,7 +26,6 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
-import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -141,7 +141,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         if (name != null) {
             return name;
         }
-		return new TranslatableString(getI18nKey("name")).toTranslatedString();
+        return translatedString("name");
 	}
 
 	public void setName(String name) {
@@ -593,4 +593,9 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
         result = 31 * result + (getSlug() != null ? getSlug().hashCode() : 0);
         return result;
     }
+
+    protected ExplicitUsageContext context() {
+        return new ExplicitUsageContext(slug, null);
+    }
+
 }

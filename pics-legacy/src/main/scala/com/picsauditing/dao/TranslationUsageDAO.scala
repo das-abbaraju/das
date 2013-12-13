@@ -15,7 +15,7 @@ import com.picsauditing.i18n.model.TranslationLookupData
 class TranslationUsageDAO extends PICSDataAccess {
   private val logger: Logger = LoggerFactory.getLogger(classOf[TranslationUsageDAO])
 
-  def usageEtlSProc(msgKey: String, msgLocale: String, pageName: String, environment: String) = sqlu"{ call etlTranslationUsage($msgKey, $msgLocale, $pageName, $environment) }".first
+  def usageEtlSProc(msgKey: String, msgLocale: String, pageName: String, pageOrder: String,  environment: String) = sqlu"{ call etlTranslationUsage($msgKey, $msgLocale, $pageName, $pageOrder, $environment) }".first
 
   private val findIdByKeyLocalePageEnv = for {
     (msgKey, msgLocale, pageName, environment)  <- Parameters[(String, String, String, String)]
@@ -36,7 +36,7 @@ class TranslationUsageDAO extends PICSDataAccess {
   def doLogKeyUsageBySProc(keyUsage: TranslationLookupData) = {
     db withSession {
       try {
-        usageEtlSProc(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getEnvironment)
+        usageEtlSProc(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getPageOrder, keyUsage.getEnvironment)
       } catch {
         case e: MySQLIntegrityConstraintViolationException => {
           // we are going to do nothing because this is a race condition inside the sproc we're calling.
@@ -74,6 +74,7 @@ class TranslationUsageDAO extends PICSDataAccess {
           keyUsage.getMsgKey,
           keyUsage.getLocaleResponse,
           keyUsage.getPageName,
+          Some(keyUsage.getPageOrder),
           keyUsage.getEnvironment,
           Some(new Date()),
           Some(new Date()),

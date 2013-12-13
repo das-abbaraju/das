@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,9 +12,12 @@ import org.junit.Test;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.util.test.TranslatorFactorySetup;
 
+import static junit.framework.Assert.assertTrue;
+
 public class AuditCategoryTest {
 
-	private List<AuditCategory> list = new ArrayList<AuditCategory>();
+    private static final String TEST_SLUG = "TestSlug";
+    private List<AuditCategory> list = new ArrayList<AuditCategory>();
 
 	private AuditType auditType = EntityFactory.makeAuditType();
 
@@ -54,4 +58,25 @@ public class AuditCategoryTest {
 		cat.setParent(parent);
 		return cat;
 	}
+
+    @Test
+    public void testContext_ReturnsExplicitUsageContextWithAuditTypeSlugAsPageName() throws Exception {
+        auditType.setSlug(TEST_SLUG);
+        AuditCategory cat = buildCategory(1);
+
+        ExplicitUsageContext result = cat.context();
+
+        assertTrue(TEST_SLUG.equals(result.pageName()));
+    }
+
+    @Test
+    public void testContext_ReturnsExplicitUsageContextWithPaddedFullNumberAsPageOrder() throws Exception {
+        auditType.setSlug(TEST_SLUG);
+        AuditCategory cat = buildCategory(1);
+
+        ExplicitUsageContext result = cat.context();
+
+        assertTrue("001".equals(result.pageOrder()));
+    }
+
 }
