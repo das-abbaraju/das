@@ -74,7 +74,7 @@ $(function() {
 			message: 'Loading...'
 		});
 
-		loadResults(data);
+		loadResults(data, '', 'true');
 	});
 
 	<s:if test="canEditCao && !systemEdit">
