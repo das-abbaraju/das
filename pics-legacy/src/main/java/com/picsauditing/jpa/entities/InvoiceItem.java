@@ -10,6 +10,7 @@ import java.util.Date;
 public class InvoiceItem extends TransactionItem {
 
 	private Invoice invoice;
+    protected BigDecimal originalAmount = BigDecimal.ZERO;
 	private Date paymentExpires;
 	private boolean returned = false;
 	private String qbRefundID;
@@ -40,7 +41,13 @@ public class InvoiceItem extends TransactionItem {
 		this.invoice = invoice;
 	}
 
+    public BigDecimal getOriginalAmount() {
+        return originalAmount;
+    }
 
+    public void setOriginalAmount(BigDecimal originalAmount) {
+        this.originalAmount = originalAmount;
+    }
 
 	/**
 	 * If the fee is for a contractor membership, the date the membership is
