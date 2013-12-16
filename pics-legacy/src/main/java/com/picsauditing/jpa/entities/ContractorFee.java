@@ -24,6 +24,8 @@ public class ContractorFee extends BaseTable {
 	private BigDecimal currentAmount = BigDecimal.ZERO;
 	private InvoiceFee newLevel;
 	private BigDecimal newAmount = BigDecimal.ZERO;
+    private int currentFacilityCount;
+    private int newFacilityCount;
 
 	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false)
@@ -45,6 +47,22 @@ public class ContractorFee extends BaseTable {
 	public void setFeeClass(FeeClass feeClass) {
 		this.feeClass = feeClass;
 	}
+
+    private int getCurrentFacilityCount() {
+        return currentFacilityCount;
+    }
+
+    private int getNewFacilityCount() {
+        return newFacilityCount;
+    }
+
+    private void setCurrentFacilityCount(int currentFacilityCount) {
+        this.currentFacilityCount = currentFacilityCount;
+    }
+
+    private void setNewFacilityCount(int newFacilityCount) {
+        this.newFacilityCount = newFacilityCount;
+    }
 
 	@ManyToOne
 	@JoinColumn(name = "currentLevel", nullable = false)
