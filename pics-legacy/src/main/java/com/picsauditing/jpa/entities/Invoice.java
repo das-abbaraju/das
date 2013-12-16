@@ -22,6 +22,7 @@ public class Invoice extends Transaction {
 
 	private Date dueDate;
 	private String poNumber;
+    private int payingFacilities;
 	private String notes;
 	private Date paidDate; // MAX(Payment.creationDate)
 	private Map<FeeClass, BigDecimal> commissionEligibleFeeMap;
@@ -100,6 +101,14 @@ public class Invoice extends Transaction {
 
 	public void setPoNumber(String poNumber) {
 		this.poNumber = poNumber;
+	}
+
+    public int getPayingFacilities() {
+        return payingFacilities;
+    }
+
+    public void setPayingFacilities(int payingFacilities) {
+        this.payingFacilities = payingFacilities;
 	}
 
 	@ReportField(type = FieldType.String)
