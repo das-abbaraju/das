@@ -139,20 +139,6 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testCheckUniqueCode_ExpiresMonth() throws Exception {
-		Date date;
-		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
-
-		auditData.setAnswer("2025-01-31");
-
-		setupCheckUniqueCode("exipireMonths12");
-		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
-		assertNotNull(audit.getExpiresDate());
-		date = audit.getExpiresDate();
-		assertEquals("2026-01-31", format.format(date));
-	}
-
-	@Test
 	public void testESignatureVerify() throws Exception {
 		AuditData auditData = EntityFactory.makeAuditData("John Smith / Supervisor");
 		auditData.setComment("123.123.123.123");
@@ -185,70 +171,6 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		assertTrue(auditData.getComment().equals(""));
 		assertTrue(auditData.getAnswer().equals(""));
 
-	}
-
-    @Test
-    public void testCheckUniqueCode_PolicyExpirationDate() throws Exception {
-        Date date;
-        SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
-
-        auditData.setAnswer("2025-01-31");
-
-        setupCheckUniqueCode("policyExpirationDate");
-        Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
-        assertNotNull(audit.getExpiresDate());
-        date = audit.getExpiresDate();
-        assertEquals("2025-02-01", format.format(date));
-    }
-
-	@Test
-	public void testCheckUniqueCode_PolicyEffectiveDate() throws Exception {
-		Date date;
-		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
-
-		auditData.setAnswer("2025-01-31");
-
-		setupCheckUniqueCode("policyEffectiveDate");
-		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
-		assertNotNull(audit.getEffectiveDate());
-		date = audit.getEffectiveDate();
-		assertEquals("2025-01-31", format.format(date));
-	}
-
-	@Test
-	public void testUniqueCode_ExpirationDate() throws Exception {
-		Date date;
-		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
-
-		auditData.setAnswer("2005-01-31");
-
-		setupCheckUniqueCode("expirationDate");
-		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
-		assertNotNull(audit.getExpiresDate());
-		date = audit.getExpiresDate();
-		assertEquals("2005-01-31", format.format(date));
-
-	}
-
-	@Test
-	public void testUniqueCode_EffectiveDate() throws Exception {
-		Date date;
-		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
-
-		Calendar effectiveDate = Calendar.getInstance();
-		effectiveDate.add(Calendar.YEAR, 10);
-		auditData.setAnswer(format.format(effectiveDate.getTime()));
-
-		setupCheckUniqueCode("effectiveDate");
-		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
-		assertNull(audit.getEffectiveDate());
-	}
-
-	private void setupCheckUniqueCode(String code) {
-		audit.setCreationDate(new Date());
-		audit.setExpiresDate(null);
-		audit.setEffectiveDate(null);
-		auditData.getQuestion().setUniqueCode(code);
 	}
 
 	@Test
