@@ -7,7 +7,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
-import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -25,10 +24,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1199,5 +1196,17 @@ public class UsersManage extends PicsActionSupport {
 
 		addActionMessage("Successfully removed country");
 		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+	}
+
+	public ContractorAccount getContractor() {
+		if (account != null && account.isContractor()) {
+			return (ContractorAccount) account;
+		}
+
+		return null;
+	}
+
+	public boolean isShowContractorSubmenu() {
+		return account != null && account.isContractor();
 	}
 }

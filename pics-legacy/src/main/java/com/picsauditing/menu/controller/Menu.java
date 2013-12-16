@@ -1,15 +1,17 @@
 package com.picsauditing.menu.controller;
 
-import com.picsauditing.menu.builder.ContractorSubmenuBuilder;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.menu.builder.MenuBuilder;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.menu.MenuWriter;
+import com.picsauditing.menu.builder.ContractorSubmenuBuilder;
+import com.picsauditing.menu.builder.MenuBuilder;
 import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.util.generic.GenericPredicate;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -102,7 +104,86 @@ public class Menu extends PicsActionSupport {
 		return menu;
 	}
 
-	public MenuComponent getContractorMenu(final ContractorAccount contractor) throws RecordNotFoundException {
+	public boolean isShowContractorSubmenu() {
+		loadPermissions();
+
+		if (account == null || !account.isContractor()) {
+			return false;
+		}
+
+		contractor = (ContractorAccount) account;
+
+		if (permissions.isContractor() || !permissions.isUsingVersion7Menus() || !visibleToOperator()) {
+			return false;
+		}
+
+		if (permissions.isOnlyAuditor()) {
+			return auditorCanViewAnAudit();
+		}
+
+		return true;
+	}
+
+	private boolean auditorCanViewAnAudit() {
+		for (ContractorAudit audit : getActiveAudits()) {
+			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId()) {
+				for (ContractorAuditOperator cao : audit.getOperators()) {
+					if (cao.getStatus().before(AuditStatus.Complete)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private List<ContractorAudit> getActiveAudits() {
+		List<ContractorAudit> activeAudits = new ArrayList<>(contractor.getAudits());
+
+		CollectionUtils.filter(activeAudits, new GenericPredicate<ContractorAudit>() {
+			@Override
+			public boolean evaluate(Object object) {
+				return super.evaluate(object);    //To change body of overridden methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public boolean evaluateEntity(ContractorAudit audit) {
+				return audit.isVisibleTo(permissions) && !audit.isExpired();
+			}
+		});
+
+		return activeAudits;
+	}
+
+	private boolean visibleToOperator() {
+		if (!permissions.hasPermission(OpPerms.ContractorDetails)) {
+			return false;
+		}
+
+		if (permissions.isOperatorCorporate()) {
+			return !contractorIsVisibleToOperator();
+		}
+
+		return true;
+	}
+
+	private boolean contractorIsVisibleToOperator() {
+		for (ContractorOperator contractorOperator : contractor.getOperators()) {
+			int operatorId = contractorOperator.getOperatorAccount().getId();
+
+			if (permissions.isOperator() && permissions.getAccountId() == operatorId) {
+				return true;
+			}
+
+			if (permissions.isCorporate() && permissions.getOperatorChildren().contains(operatorId)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public MenuComponent getContractorMenu() throws RecordNotFoundException {
 		MenuComponent menu = contractorSubmenuBuilder.buildMenubar(contractor, permissions, false);
 		MenuComponent companyMenu = MenuBuilder.getCompanyMenuFor(contractor, permissions);
 
