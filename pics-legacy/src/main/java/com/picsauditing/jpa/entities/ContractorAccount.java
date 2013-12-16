@@ -1247,7 +1247,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
-		if ((status == AccountStatus.Requested || pendingOrActive()) && getAccountLevel().isFull() && newMember()) {
+        if (pendingRequestedOrActive() && getAccountLevel().isFull() && newMember()) {
 			return BillingStatus.Activation;
 		}
 
@@ -1313,7 +1313,11 @@ public class ContractorAccount extends Account implements JSONable {
 
 	}
 
-	private boolean pendingOrActive() {
+    private boolean pendingRequestedOrActive() {
+        return status.isPending() || status.isActive() || status.isRequested();
+    }
+
+    private boolean pendingOrActive() {
 		return status.isPending() || status.isActive();
 	}
 
