@@ -156,16 +156,6 @@ public class OperatorAccount extends Account {
 		this.isUserManualUploaded = isUserManualUploaded;
 	}
 
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
-	@Enumerated(EnumType.STRING)
-	public YesNo getApprovesRelationships() {
-		return approvesRelationships;
-	}
-
-	public void setApprovesRelationships(YesNo approvesRelationships) {
-		this.approvesRelationships = approvesRelationships;
-	}
-
 	@Column(name = "verifiedByPics", nullable = false)
 	@Enumerated(EnumType.ORDINAL)
 	public boolean isVerifiedByPics() {
@@ -774,7 +764,7 @@ public class OperatorAccount extends Account {
 	public boolean areAllContractorRelationshipsUniform() {
 		ApprovalStatus workStatus = null;
 		for (ContractorOperator contractorOperator : contractorOperators) {
-			if (!contractorOperator.getOperatorAccount().getApprovesRelationships().isTrue()) {
+			if (contractorOperator.getOperatorAccount().isAutoApproveRelationships()) {
 				continue;
 			}
 			if (workStatus == null) {

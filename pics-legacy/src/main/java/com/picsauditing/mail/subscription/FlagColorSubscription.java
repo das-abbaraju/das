@@ -56,7 +56,7 @@ public class FlagColorSubscription extends SqlSubscriptionBuilder {
 			sql.addJoin("JOIN operators o ON co.opID = o.id");
 			sql.addJoin("JOIN accounts oa ON o.id = oa.id");
 			if (flagColor != FlagColor.Green || o.isOperator())
-				sql.addWhere("(co.workStatus = 'Y' OR o.approvesRelationships = 'No')");
+				sql.addWhere("(co.workStatus = 'Y' OR oa.autoApproveRelationships = 1)");
 			sql.addWhere("a.status = 'Active'");
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");

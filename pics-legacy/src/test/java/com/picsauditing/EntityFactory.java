@@ -39,7 +39,6 @@ public class EntityFactory {
 		operator.setId(counter++);
 		operator.setStatus(AccountStatus.Active);
 		operator.setName("Operator Unit Test");
-		operator.setApprovesRelationships(YesNo.No);
 		operator.setCanSeeInsurance(YesNo.Yes);
 		operator.setInheritFlagCriteria(operator);
 		operator.setVisibleAuditTypes(new HashSet<Integer>());
