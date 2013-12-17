@@ -96,7 +96,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(EmailTemplate.REMINDER_EMAIL_TEMPLATE);
 		emailBuilder.setPermissions(permissions);
-		emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
 		emailBuilder.setConAudit(conAudit);
 		EmailQueue email = emailBuilder.build();
