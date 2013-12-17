@@ -24,10 +24,11 @@ public class InvoiceItem extends TransactionItem {
 		amount = fee.getAmount();
 	}
 
-	public InvoiceItem(InvoiceFee fee, BigDecimal amount, Date paymentExpires) {
+	public InvoiceItem(InvoiceFee fee, BigDecimal amount, BigDecimal originalAmount, Date paymentExpires) {
 		super();
 		invoiceFee = fee;
 		this.amount = amount;
+        this.originalAmount = originalAmount;
 		this.paymentExpires = fee.getFeeClass().isPaymentExpiresNeeded() ? paymentExpires : null;
 	}
 

@@ -137,7 +137,7 @@ public class TaxService {
     private void updateInvoiceTax(Transaction transaction, InvoiceFee taxInvoiceFee, TransactionItem taxItem, BigDecimal taxAmount) {
         if (taxItem == null) {
             if (transaction instanceof Invoice) {
-                taxItem = new InvoiceItem(taxInvoiceFee, taxAmount, null);
+                taxItem = new InvoiceItem(taxInvoiceFee, taxAmount, taxAmount, null);
             }
             else if (transaction instanceof InvoiceCreditMemo) {
                 taxItem = new ReturnItem();

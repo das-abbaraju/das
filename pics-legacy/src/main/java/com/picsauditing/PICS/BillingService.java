@@ -216,8 +216,9 @@ public class BillingService {
 		invoice.setTotalAmount(invoiceTotal);
 		invoice.setCommissionableAmount(invoiceCommissionable);
 		invoice.setAuditColumns(auditUser);
-
 		invoice.setInvoiceType(convertBillingStatusToInvoiceType(invoice, billingStatus));
+        invoice.setPayingFacilities(contractor.getPayingFacilities());
+
 		return invoice;
 	}
 
@@ -374,6 +375,7 @@ public class BillingService {
 			InvoiceItem invoiceItem = new InvoiceItem();
 			invoiceItem.setInvoiceFee(upgrade.getNewLevel());
 			invoiceItem.setAmount(upgradeAmount);
+            invoiceItem.setOriginalAmount(upgrade.getNewAmount());
 			invoiceItem.setDescription(description);
 			items.add(invoiceItem);
 		}
@@ -427,7 +429,7 @@ public class BillingService {
             BigDecimal newAmount = contractorFee.getNewAmount();
 
             if (!newLevel.isFree() && (feeClass.isMembership() || (!billingStatus.isRenewal() && !billingStatus.isRenewalOverdue()))) {
-				InvoiceItem newItem = new InvoiceItem(newLevel, newAmount, feeClass.isPaymentExpiresNeeded() ? paymentExpires : null);
+				InvoiceItem newItem = new InvoiceItem(newLevel, newAmount, newAmount, feeClass.isPaymentExpiresNeeded() ? paymentExpires : null);
 				items.add(newItem);
 			}
 		}
@@ -511,7 +513,7 @@ public class BillingService {
 		BigDecimal adjustedFeeAmount = FeeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee);
 
 		// Activate effective today
-		return new InvoiceItem(invoiceFee, adjustedFeeAmount, new Date());
+		return new InvoiceItem(invoiceFee, adjustedFeeAmount, adjustedFeeAmount, new Date());
 	}
 
 	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {

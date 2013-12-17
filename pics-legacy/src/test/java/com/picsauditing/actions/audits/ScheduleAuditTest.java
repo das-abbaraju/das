@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +26,7 @@ import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -292,4 +294,65 @@ public class ScheduleAuditTest extends PicsActionTest {
 		when(contractor.getCountry()).thenReturn(country);
 		when(billingService.saveInvoice((Invoice) any())).thenReturn(invoice);
 	}
+
+    @Test
+    public void testCreateInvoice_withPayingFacilitiesAndOriginalAmount() throws Exception {
+        MockItemDAO mockItemDAO = new MockItemDAO();
+        MockBillingService mockBillingService = new MockBillingService();
+        Whitebox.setInternalState(scheduleAudit, "itemDAO", mockItemDAO);
+        Whitebox.setInternalState(scheduleAudit, "billingService", mockBillingService);
+        Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
+        when(contractor.getCountry()).thenReturn(country);
+        when(contractor.getPayingFacilities()).thenReturn(20);
+        when(expedite.getAmount()).thenReturn(BigDecimal.TEN);
+        when(conAudit.getAuditType()).thenReturn(auditType);
+
+        Whitebox.invokeMethod(scheduleAudit, "createInvoice", expedite, "");
+        InvoiceItem item = mockItemDAO.getItem();
+
+        assertEquals(BigDecimal.TEN, item.getOriginalAmount());
+        assertEquals(20, item.getInvoice().getPayingFacilities());
+    }
+
+    class MockItemDAO extends InvoiceItemDAO {
+        private InvoiceItem item;
+
+        @Override
+        public InvoiceItem save(InvoiceItem item) {
+            this.item = item;
+
+            return item;
+        }
+
+        InvoiceItem getItem() {
+            return item;
+        }
+
+        void setItem(InvoiceItem item) {
+            this.item = item;
+        }
+    }
+
+    class MockBillingService extends BillingService {
+        private Invoice invoice;
+
+        @Override
+        public Invoice saveInvoice(Invoice invoice) {
+            this.invoice = invoice;
+
+            return invoice;
+        }
+
+        @Override
+        public void syncBalance(ContractorAccount contractorAccount) {
+        }
+
+        Invoice getInvoice() {
+            return invoice;
+        }
+
+        void setInvoice(Invoice invoice) {
+            this.invoice = invoice;
+        }
+    }
 }
