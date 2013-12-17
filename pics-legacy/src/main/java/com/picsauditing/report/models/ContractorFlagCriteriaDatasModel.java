@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
+import com.picsauditing.util.Strings;
 
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,8 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 	@Override
 	public String getWhereClause(List<Filter> filters) {
 		super.getWhereClause(filters);
-		permissionQueryBuilder.setContractorOperatorAlias("ContractorFlag");
+        String CONTRACTOR_OPERATOR = "ContractorFlag";
+        permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
 
 		Filter accountStatusFilter = getValidAccountStatusFilter(filters);
 
@@ -93,7 +95,13 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 			}
 		}
 
-		return permissionQueryBuilder.buildWhereClause();
+        String whereClause = permissionQueryBuilder.buildWhereClause();
+
+        if (permissions.isCorporate()) {
+            return whereClause + " AND " + CONTRACTOR_OPERATOR + ".opID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
+        }
+
+        return whereClause;
 	}
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {
