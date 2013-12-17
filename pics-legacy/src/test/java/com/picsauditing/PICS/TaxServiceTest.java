@@ -34,6 +34,8 @@ public class TaxServiceTest {
     private InvoiceCreditMemo creditMemo;
 	@Mock
 	private Invoice invoice;
+    @Mock
+    private InvoiceFee fee;
 	@Mock
 	private Account account;
 	@Mock
@@ -582,5 +584,15 @@ public class TaxServiceTest {
 
         FeeClass USA = taxService.getTaxFeeClass(new Country(Country.US_ISO_CODE));
         assertNull(USA);
+    }
+
+    @Test
+    public void testUpdateInvoiceTax() throws Exception {
+        Invoice stubInvoice = new Invoice();
+        stubInvoice.setAccount(account);
+        when(fee.getFeeClass()).thenReturn(FeeClass.VAT);
+        Whitebox.invokeMethod(taxService, "updateInvoiceTax", stubInvoice, fee, null, BigDecimal.TEN);
+        assertEquals(BigDecimal.TEN, stubInvoice.getTaxItem().getAmount());
+        assertEquals(stubInvoice.getTaxItem().getOriginalAmount(), stubInvoice.getTaxItem().getAmount());
     }
 }

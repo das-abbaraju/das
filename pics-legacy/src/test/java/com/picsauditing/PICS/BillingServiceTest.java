@@ -5,6 +5,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.SapAppPropertyUtil;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -53,6 +55,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private ContractorFee bidOnlyFee;
 	@Mock
 	private ContractorFee listOnlyFee;
+    @Mock
+    private ContractorFee contractorFee;
 	@Mock
 	private InvoiceFee bidOnlyInvoiceFee;
 	@Mock
@@ -110,6 +114,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		invoiceItems = new ArrayList<InvoiceItem>();
 		invoiceItems.add(invoiceItem);
 		when(invoiceItem.getAmount()).thenReturn(new BigDecimal(199.00));
+        when(invoiceItem.getOriginalAmount()).thenReturn(new BigDecimal(199.00));
 		when(invoiceItem.getInvoiceFee()).thenReturn(invoiceFee);
 	}
 
@@ -541,5 +546,90 @@ public class BillingServiceTest extends PicsTranslationTest {
         InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", invoice, BillingStatus.Renewal);
 
         assertEquals(InvoiceType.Activation, invoiceType);
+    }
+
+    @Test
+    public void testGenerateInvoice() throws Exception {
+        when(contractor.getPayingFacilities()).thenReturn(20);
+        Invoice invoice1 = Whitebox.invokeMethod(billingService, "generateInvoice", contractor, invoiceItems, user, BillingStatus.Renewal, BigDecimal.TEN, BigDecimal.TEN);
+
+        assertEquals(20, invoice1.getPayingFacilities());
+    }
+
+    @Test
+    public void testCreateLineItem() throws Exception {
+        when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+        InvoiceItem item = Whitebox.invokeMethod(billingService, "createLineItem", contractor, FeeClass.Activation, 20);
+
+        assertEquals(item.getAmount(), item.getOriginalAmount());
+    }
+
+    @Test
+    public void testAddYearlyItems() throws Exception {
+        invoiceItems = new ArrayList<>();
+        when(contractor.getFees()).thenReturn(fees);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.AuditGUARD);
+
+        fees.remove(FeeClass.ListOnly);
+        fees.remove(FeeClass.BidOnly);
+        ContractorFee dg = new ContractorFee();
+        dg.setNewLevel(invoiceFee);
+        dg.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.DocuGUARD, dg);
+        ContractorFee ig = new ContractorFee();
+        ig.setNewLevel(invoiceFee);
+        ig.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.InsureGUARD, ig);
+        ContractorFee ag = new ContractorFee();
+        ag.setNewLevel(invoiceFee);
+        ag.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.AuditGUARD, ag);
+        ContractorFee eg = new ContractorFee();
+        eg.setNewLevel(invoiceFee);
+        eg.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.EmployeeGUARD, eg);
+
+        Whitebox.invokeMethod(billingService, "addYearlyItems", invoiceItems, contractor, new Date(), BillingStatus.Renewal);
+
+        assertEquals(4, invoiceItems.size());
+        for (InvoiceItem item : invoiceItems) {
+            assertEquals(BigDecimal.TEN, item.getAmount());
+            assertEquals(item.getAmount(), item.getOriginalAmount());
+        }
+    }
+
+    @Test
+    public void testAddProratedUpgradeItems() throws Exception {
+        invoiceItems = new ArrayList<>();
+        List<ContractorFee> upgrades = new ArrayList<>();
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -6);
+        when(contractor.getLastUpgradeDate()).thenReturn(cal.getTime());
+        cal.add(Calendar.MONTH, 6);
+        when(contractor.getPaymentExpires()).thenReturn(cal.getTime());
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(contractor.getCountry()).thenReturn(country);
+        when(country.getCurrency()).thenReturn(Currency.USD);
+
+        ContractorFee dg = new ContractorFee();
+        dg.setNewLevel(invoiceFee);
+        dg.setNewAmount(BigDecimal.TEN);
+        dg.setFeeClass(FeeClass.DocuGUARD);
+        upgrades.add(dg);
+        ContractorFee ig = new ContractorFee();
+        ig.setNewLevel(invoiceFee);
+        ig.setNewAmount(BigDecimal.TEN);
+        ig.setFeeClass(FeeClass.InsureGUARD);
+        upgrades.add(ig);
+
+        Whitebox.invokeMethod(billingService, "addProratedUpgradeItems", contractor, invoiceItems, upgrades, user);
+
+        assertEquals(2, invoiceItems.size());
+        for (InvoiceItem item : invoiceItems) {
+            assertEquals(new BigDecimal(5), item.getAmount());
+            assertEquals(BigDecimal.TEN, item.getOriginalAmount());
+        }
     }
 }
