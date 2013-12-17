@@ -23,6 +23,10 @@
            }
 
             function initAuditWorkflowChange(audit_parameters, noteText, audit_reload) {
+                var AuditController = PICS.getClass('audit.AuditController');
+
+                AuditController.setAuditParameters(audit_parameters);
+
             	getAuditNoteTemplate(audit_parameters, noteText, audit_reload);
             }
 
@@ -40,7 +44,7 @@
 						if (isNoteRequired(data)) {
 							showNote(data);
 						} else {
-							saveCaoTable();
+							saveCaoTable(audit_parameters, audit_reload);
 						}
 					},
 					error: function (jqXHR, textStatus, errorThrown ) {
@@ -66,7 +70,7 @@
 
             function saveCaoTable (audit_parameters, audit_reload) {
 				var AuditController = PICS.getClass('audit.AuditController'),
-					audit_parameters = AuditController.getAuditParameters(),
+					audit_parameters = audit_parameters || AuditController.getAuditParameters(),
 					$caoTable = $('#caoTable');
 
 				$.blockUI({message: 'Saving Status, please wait...'});
@@ -87,7 +91,7 @@
 
 	                    $.unblockUI();
 
-	                    if (AuditController.auditNeedsReload()) {
+	                    if (audit_reload) {
 	                        AuditController.refreshAudit();
 	                    }
 	                }
