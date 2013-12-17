@@ -576,7 +576,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.getItems().add(item);
 
         invoice = billingService.saveInvoice(invoice);
-        itemDAO.save(item);
 
 		contractor.getInvoices().add(invoice);
 		billingService.syncBalance(contractor);
