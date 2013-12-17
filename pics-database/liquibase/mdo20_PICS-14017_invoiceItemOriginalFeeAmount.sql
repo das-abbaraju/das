@@ -3,7 +3,7 @@
 --changeset mdo:20
 --preConditions onFail MARK_RAN
 --onUpdateSQL IGNORE
-ALTER TABLE `pics_alpha1`.`invoice_item`
+ALTER TABLE `invoice_item`
   ADD COLUMN `originalAmount` DECIMAL(9,2) DEFAULT 0.00  NOT NULL AFTER `amount`;
 
 update accounts a
