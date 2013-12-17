@@ -70,4 +70,7 @@
 
 	<!-- 7.0.0 -->
     <include file="./liquibase/lkam3_PICS-12981_Brazil_CNPJ.sql"/>
+
+	<!-- 7.0.1 -->
+    <include file="./liquibase/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql"/>
 </databaseChangeLog>
