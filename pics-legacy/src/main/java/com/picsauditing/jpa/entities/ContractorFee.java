@@ -48,19 +48,19 @@ public class ContractorFee extends BaseTable {
 		this.feeClass = feeClass;
 	}
 
-    private int getCurrentFacilityCount() {
+    public int getCurrentFacilityCount() {
         return currentFacilityCount;
     }
 
-    private int getNewFacilityCount() {
+    public int getNewFacilityCount() {
         return newFacilityCount;
     }
 
-    private void setCurrentFacilityCount(int currentFacilityCount) {
+    public void setCurrentFacilityCount(int currentFacilityCount) {
         this.currentFacilityCount = currentFacilityCount;
     }
 
-    private void setNewFacilityCount(int newFacilityCount) {
+    public void setNewFacilityCount(int newFacilityCount) {
         this.newFacilityCount = newFacilityCount;
     }
 
