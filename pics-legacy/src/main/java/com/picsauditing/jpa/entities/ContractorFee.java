@@ -48,19 +48,19 @@ public class ContractorFee extends BaseTable {
 		this.feeClass = feeClass;
 	}
 
-    private int getCurrentFacilityCount() {
+    public int getCurrentFacilityCount() {
         return currentFacilityCount;
     }
 
-    private int getNewFacilityCount() {
+    public int getNewFacilityCount() {
         return newFacilityCount;
     }
 
-    private void setCurrentFacilityCount(int currentFacilityCount) {
+    public void setCurrentFacilityCount(int currentFacilityCount) {
         this.currentFacilityCount = currentFacilityCount;
     }
 
-    private void setNewFacilityCount(int newFacilityCount) {
+    public void setNewFacilityCount(int newFacilityCount) {
         this.newFacilityCount = newFacilityCount;
     }
 
@@ -112,7 +112,9 @@ public class ContractorFee extends BaseTable {
 	 */
 	@Transient
 	public boolean isUpgrade() {
-		return this.getNewAmount().compareTo(this.getCurrentAmount()) > 0;
+        boolean increasedPrice = newAmount.compareTo(currentAmount) > 0;
+        boolean increasedPayingFacilities = newFacilityCount > currentFacilityCount;
+        return increasedPrice && increasedPayingFacilities;
 	}
 
 	@Transient
@@ -121,11 +123,11 @@ public class ContractorFee extends BaseTable {
 			throw new RuntimeException("FeeClass mismatch for upgrade comparison. Expected " + getFeeClass()
 					+ " but was passed " + newFeeLevel.getFeeClass());
 
-		return getCurrentLevel().getMaxFacilities() < newFeeLevel.getMinFacilities();
+		return currentLevel.getMaxFacilities() < newFeeLevel.getMinFacilities();
 	}
 
 	@Transient
 	public boolean isHasChanged() {
-		return !this.getNewLevel().equals(this.getCurrentLevel());
+		return !newLevel.equals(currentLevel);
 	}
 }
