@@ -6,16 +6,19 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.SelectAccount;
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,11 +31,17 @@ public class ReportContractorApprovalTest extends PicsActionTest {
     @Mock
     private OperatorAccountDAO operatorAccountDAO;
 
+    protected ContractorOperatorService contractorOperatorService;
+
     @Before
     public void setupTest() throws Exception {
         reportContractorApproval = new ReportContractorApproval();
         MockitoAnnotations.initMocks(this);
+        contractorOperatorService = new ContractorOperatorService();
+
         Whitebox.setInternalState(reportContractorApproval, "contractorOperatorDAO", contractorOperatorDAO);
+        Whitebox.setInternalState(reportContractorApproval, "contractorOperatorService", contractorOperatorService);
+        Whitebox.setInternalState(contractorOperatorService, "contractorOperatorDAO", contractorOperatorDAO);
         Whitebox.setInternalState(reportContractorApproval, "operatorAccountDAO", operatorAccountDAO);
         super.setUp(reportContractorApproval);
     }
@@ -88,6 +97,8 @@ public class ReportContractorApprovalTest extends PicsActionTest {
 
         contractor.getOperators().add(parentOperatorContractor);
 
+
+        when(contractorOperatorDAO.find(contractor.getId(), parentOperator.getId())).thenReturn(parentOperatorContractor);
         reportContractorApproval.approveContractor(contractor, childOperator.getId(), ApprovalStatus.Y);
 
         assertEquals(ApprovalStatus.Y, childOperatorContractor.getWorkStatus());

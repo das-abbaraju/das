@@ -13,6 +13,7 @@ import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.user.ContractorDashboardApprovalMessage;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.service.contractor.ContractorEmailService;
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.NoteFactory;
@@ -64,6 +65,8 @@ public class ContractorDashboard extends ContractorActionSupport {
     private ContractorDashboardApprovalMessage contractorDashboardApprovalMessage;
     @Autowired
     private ContractorEmailService contractorEmailService;
+    @Autowired
+    protected ContractorOperatorService contractorOperatorService;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -186,7 +189,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					if (cOperator.getOperatorAccount().getId() == permissions
 							.getAccountId()) {
 						cOperator.setWorkStatus(ApprovalStatus.Y);
-						cOperator.cascadeWorkStatusToParent();
+                        contractorOperatorService.cascadeWorkStatusToParent(cOperator);
 						cOperator.setAuditColumns(permissions);
 						contractorOperatorDAO.save(cOperator);
 						break;
