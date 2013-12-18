@@ -267,7 +267,12 @@
                     </s:else>
                     <s:if test="%{@com.picsauditing.util.Strings@isNotEmpty(contractor.vatId)}">
                         <br>
-                        <s:text name="FeeClass.VAT"/>
+                        <s:if test="%{contractor.country.brazil}">
+                            <s:text name="FeeClass.CNPJ"/>
+                        </s:if>
+                        <s:else>
+                            <s:text name="FeeClass.VAT"/>
+                        </s:else>
                         <s:property value="contractor.vatId"/>
                     </s:if>
                 </td>
