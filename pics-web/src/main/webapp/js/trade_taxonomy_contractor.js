@@ -18,15 +18,18 @@ PICS.define('contractor.TradeTaxonomyController', {
             var $form = $(event.currentTarget),
                 $button = $form.find('#addButton');
 
-            if ($button.data('affects-safety-sensitive-status') &&
-                !$form.data('is-confirmed')) {
+            // This form has multiple submit buttons.
+            // We want to hijack the handler always and only when it was submitted using the add button.
+            if ($form.data('clicked-button-id') == 'addButton') {
                 event.preventDefault();
 
-                PICS.modal(getModalConfig());
-            } else if ($form.data('clicked-button-id') == 'addButton') {
-                event.preventDefault();
+                if ($button.data('affects-safety-sensitive-status') &&
+                    !$form.data('is-confirmed')) {
 
-                requestAddTrade();
+                    PICS.modal(getModalConfig());
+                } else {
+                    requestAddTrade();
+                }
             }
         }
 
