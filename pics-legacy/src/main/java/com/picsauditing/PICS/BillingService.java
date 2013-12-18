@@ -157,20 +157,27 @@ public class BillingService {
                 LowMedHigh.Med, false, Account.PicsID);
 	}
 
-	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) throws Exception {
+    public Invoice createInvoice(ContractorAccount contractor, User user) throws Exception {
+        return createInvoice(contractor, billingStatus(contractor), user);
+    }
+
+    public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) throws Exception {
 		Invoice invoice = null;
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
-		// disallow zero dollar invoices (preserving existing behavior in a
-		// refactor)
+		// disallow zero dollar invoices (preserving existing behavior in a refactor)
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
-			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM), billingStatus);
+			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM));
 			taxService.applyTax(invoice);
 		}
 		return invoice;
 	}
 
-	public Invoice createInvoiceWithItems(ContractorAccount contractor, List<InvoiceItem> invoiceItems, User auditUser, BillingStatus billingStatus) {
+	public Invoice createInvoiceWithItems(ContractorAccount contractor, List<InvoiceItem> invoiceItems, User auditUser) {
+        return createInvoiceWithItems(contractor, billingStatus(contractor), invoiceItems, auditUser);
+    }
+
+	public Invoice createInvoiceWithItems(ContractorAccount contractor, BillingStatus billingStatus, List<InvoiceItem> invoiceItems, User auditUser) {
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
         BigDecimal invoiceCommissionable = calculateInvoiceCommissionable(invoiceItems);
 
@@ -270,8 +277,8 @@ public class BillingService {
         return invoiceCommissionable;
 	}
 
-	private static void calculateAndSetDueDateOn(Invoice invoice, ContractorAccount contractor) {
-		BillingStatus billingStatus = contractor.getBillingStatus();
+	private void calculateAndSetDueDateOn(Invoice invoice, ContractorAccount contractor) {
+		BillingStatus billingStatus = billingStatus(contractor);
 		invoice.setDueDate(calculateInvoiceDueDate(contractor, billingStatus, new Date(), invoice.getDueDate()));
 	}
 
@@ -306,8 +313,12 @@ public class BillingService {
 		}
 	}
 
+	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, User user) {
+        return createInvoiceItems(contractor, billingStatus(contractor), user);
+    }
+
 	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, BillingStatus billingStatus, User user) {
-		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
+		List<InvoiceItem> items = new ArrayList<>();
 
 		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current")) {
 			return items;
@@ -728,4 +739,87 @@ public class BillingService {
         return false;
     }
 
+    /**
+     * The following are states of Billing Status: Membership Canceled
+     * Contractor is not active and membership is not set to renew:<br />
+     * <br>
+     * <b>Current</b> means the contractor doesn't owe anything right now<br>
+     * <b>Activation</b> means the contractor is not active and has never been
+     * active<br>
+     * <b>Reactivation</b> means the contractor was active, but is no longer
+     * active anymore<br>
+     * <b>Upgrade</b> The number of facilities a contractor is at has increased.<br>
+     * <b>Do not renew</b> means the contractor has asked not to renew their
+     * account<br>
+     * <b>Membership Canceled</b> means the contractor closed their account and
+     * doesn't want to renew<br>
+     * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration
+     * Date is past.<br>
+     * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
+     * in the next 30 Days<br>
+     * <b>Not Calculated</b> New Membership level is null<br>
+     * <b>Past Due</b> Inovice is open and not paid by due date
+     *
+     * @return A String of the current Billing Status
+     */
+    public BillingStatus billingStatus(ContractorAccount contractor) {
+        // If contractor is Free, Deleted, or Demo, give a pass on billing
+        if (!contractor.isMustPayB() || contractor.getPayingFacilities() == 0 ||
+                contractor.getStatus().isDemo() || contractor.getStatus().isDeleted()) {
+            return BillingStatus.Current;
+        }
+
+        int daysUntilRenewal = (contractor.getPaymentExpires() == null) ? 0 : DateBean.getDateDifference(contractor.getPaymentExpires());
+
+        if (contractor.pendingOrActive() && contractor.getAccountLevel().isFull() && contractor.newMember()) {
+            return BillingStatus.Activation;
+        }
+
+        if (contractor.getStatus().isDeactivated() || daysUntilRenewal < -90) {
+            // this contractor is not active or their membership expired more
+            // than 90 days ago
+            if (!contractor.isRenew()) {
+                return BillingStatus.Cancelled;
+            } else {
+                return BillingStatus.Reactivation;
+            }
+        }
+
+        // if any non-bid or list membership level differs, amount is an upgrade
+        boolean upgrade = false;
+        boolean currentListOrBidOnly = false;
+        for (FeeClass feeClass : contractor.getFees().keySet()) {
+            if (!upgrade && !contractor.getFees().isEmpty() && contractor.getFees().get(feeClass).isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
+                    && !feeClass.equals(FeeClass.ListOnly)) {
+                upgrade = true;
+            }
+            if (!contractor.getFees().isEmpty() && (contractor.getFees().get(feeClass).getCurrentLevel().isBidonly()
+                    || contractor.getFees().get(feeClass).getCurrentLevel().isListonly())
+                    && !contractor.getFees().get(feeClass).getCurrentLevel().isFree()) {
+                currentListOrBidOnly = true;
+            }
+        }
+
+        if (upgrade) {
+            if (currentListOrBidOnly) {
+                return BillingStatus.Renewal;
+            } else {
+                return BillingStatus.Upgrade;
+            }
+        }
+
+        if (daysUntilRenewal < 0) {
+            return BillingStatus.RenewalOverdue;
+        }
+
+        if (daysUntilRenewal < 45) {
+            return BillingStatus.Renewal;
+        }
+
+        if (contractor.hasPastDueInvoice()) {
+            return BillingStatus.PastDue;
+        }
+
+        return BillingStatus.Current;
+    }
 }

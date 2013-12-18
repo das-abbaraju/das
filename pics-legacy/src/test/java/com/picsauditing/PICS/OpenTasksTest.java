@@ -92,8 +92,11 @@ public class OpenTasksTest extends PicsActionTest {
 	private FeatureToggle featureToggleChecker;
 	@Mock
 	private LanguageModel languageModel;
+    @Mock
+    private BillingService billingService;
 
-	private static final int ANTEA_SPECIFIC_AUDIT = 181;
+
+    private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
 	private ArrayList<String> openTaskList;
 	private Set<UserAccess> userPermissions;
@@ -119,6 +122,7 @@ public class OpenTasksTest extends PicsActionTest {
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
 		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
 		Whitebox.setInternalState(openTasks, "featureToggleChecker", featureToggleChecker);
+		Whitebox.setInternalState(openTasks, "billingService", billingService);
 		when(contractor.getLocale()).thenReturn(Locale.ENGLISH);
 
 		injectedLanguageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
@@ -167,7 +171,7 @@ public class OpenTasksTest extends PicsActionTest {
 		when(contractor.getBalance()).thenReturn(BigDecimal.ZERO);
 		when(contractor.getAudits()).thenReturn(contractorAudits);
 		when(contractor.getInvoices()).thenReturn(invoices);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Current);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Current);
 	}
 
 	private void setUpMockInvoice() {
@@ -369,19 +373,19 @@ public class OpenTasksTest extends PicsActionTest {
 	public void testGetOpenTasks_NoBillingTasksBecauseNoPerm() throws Exception {
 		openTasks.getOpenTasks(contractor, user);
 
-		verify(contractor, never()).getBillingStatus();
+		verify(billingService, never()).billingStatus(contractor);
 	}
 
 	@Test
 	public void testGetOpenTasks_GenerateInvoiceBillingTasksBecauseBillingStatusIsUpgrade() throws Exception {
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Upgrade);
 
 		verifyGenerateInvoice();
 	}
 
 	@Test
 	public void testGetOpenTasks_GenerateInvoiceBillingTasksBecauseBillingStatusIsRenewal() throws Exception {
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Renewal);
 
 		verifyGenerateInvoice();
 	}
@@ -398,7 +402,7 @@ public class OpenTasksTest extends PicsActionTest {
 	@Test
 	public void testGetOpenTasks_OpenInvoiceReminderBillingTasksBecauseOutstandingBalanceAndUnpaidInvoice()
 			throws Exception {
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Renewal);
 		when(permissions.hasPermission(OpPerms.ContractorBilling)).thenReturn(true);
 		when(contractor.getBalance()).thenReturn(OUTSTANDING_BALANCE);
 		when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);

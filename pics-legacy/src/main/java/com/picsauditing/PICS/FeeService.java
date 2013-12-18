@@ -17,6 +17,8 @@ public class FeeService {
     private InvoiceFeeDAO feeDAO;
     @Autowired
     protected static AuditTypeRuleCache ruleCache;
+    @Autowired
+    private BillingService billingService;
 
     public AuditTypeRuleCache getRuleCache() {
         if (ruleCache == null) {
@@ -40,7 +42,7 @@ public class FeeService {
 
         int payingFacilities = contractor.getPayingFacilities();
 
-        BillingStatus currentBillingStatus = contractor.getBillingStatus();
+        BillingStatus currentBillingStatus = billingService.billingStatus(contractor);
         boolean foundMembership = false;
         boolean foundMembershipDate = false;
         boolean foundPaymentExpires = false;
@@ -88,7 +90,7 @@ public class FeeService {
     }
 
     public void calculateUpgradeDate(ContractorAccount contractor, BillingStatus currentBillingStatus) {
-        BillingStatus newBillingStatus = contractor.getBillingStatus();
+        BillingStatus newBillingStatus = billingService.billingStatus(contractor);
         if (currentBillingStatus != newBillingStatus) {
             if (currentBillingStatus != BillingStatus.Upgrade && newBillingStatus == BillingStatus.Upgrade) {
                 contractor.setLastUpgradeDate(new Date());
@@ -200,7 +202,7 @@ public class FeeService {
             return;
         }
 
-        BillingStatus currentBillingStatus = contractor.getBillingStatus();
+        BillingStatus currentBillingStatus = billingService.billingStatus(contractor);
         boolean hasEmployeeAudits = false;
         boolean hasHseCompetency = false;
         boolean requiresOQ = false;

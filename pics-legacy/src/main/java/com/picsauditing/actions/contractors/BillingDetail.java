@@ -56,8 +56,7 @@ public class BillingDetail extends ContractorActionSupport {
 		this.findContractor();
         feeService.calculateContractorInvoiceFees(contractor);
 
-		invoiceItems = billingService.createInvoiceItems(contractor, contractor.getBillingStatus(),
-				billingNoteModel.findUserForPaymentNote(permissions));
+		invoiceItems = billingService.createInvoiceItems(contractor, billingNoteModel.findUserForPaymentNote(permissions));
 		invoiceTotal = billingService.calculateInvoiceTotal(invoiceItems);
 
 		if (CREATE_BUTTON.equalsIgnoreCase(button)) {
@@ -66,8 +65,7 @@ public class BillingDetail extends ContractorActionSupport {
 				return SUCCESS;
 			}
 
-			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems,
-					new User(permissions.getUserId()), contractor.getBillingStatus());
+			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()));
 			billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			invoice = billingService.saveInvoice(invoice);
 
@@ -99,7 +97,7 @@ public class BillingDetail extends ContractorActionSupport {
 		}
 
 		// Automatically deactivating account based on expired membership
-		BillingStatus status = contractor.getBillingStatus();
+		BillingStatus status = billingService.billingStatus(contractor);
 		if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 				&& (status.isRenewalOverdue() || status.isReactivation())) {
 			if (contractor.getAccountLevel().isBidOnly()) {
@@ -114,6 +112,10 @@ public class BillingDetail extends ContractorActionSupport {
 		this.subHeading = getText("BillingDetail.title");
 		return SUCCESS;
 	}
+
+    public BillingStatus getBillingStatus() {
+        return billingService.billingStatus(contractor);
+    }
 
 	public OperatorAccount getRequestedBy() {
 		if (contractor.getRequestedBy() != null) {
