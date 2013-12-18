@@ -13,6 +13,7 @@
     <bean id="AccountSkillDAO" class="com.picsauditing.employeeguard.daos.AccountSkillDAO"/>
     <bean id="AccountSkillEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO"/>
     <bean id="AccountSkillGroupDAO" class="com.picsauditing.employeeguard.daos.AccountSkillGroupDAO"/>
+    <bean id="DuplicateEntityChecker" class="com.picsauditing.employeeguard.daos.DuplicateEntityChecker"/>
     <bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
     <bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
     <bean id="ProfileDocumentDAO" class="com.picsauditing.employeeguard.daos.ProfileDocumentDAO"/>
@@ -20,6 +21,7 @@
     <bean id="ProjectDAO" class="com.picsauditing.employeeguard.daos.ProjectDAO"/>
     <bean id="ProjectRoleDAO" class="com.picsauditing.employeeguard.daos.ProjectRoleDAO"/>
     <bean id="ProjectRoleEmployeeDAO" class="com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO"/>
+    <bean id="ProjectSkillDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillDAO"/>
     <bean id="ProjectSkillRoleDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillRoleDAO"/>
     <bean id="SiteSkillDAO" class="com.picsauditing.employeeguard.daos.SiteSkillDAO"/>
     <bean id="SoftDeletedEmployeeDAO" class="com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO"/>
@@ -36,14 +38,19 @@
     <bean id="EGBillingService" class="com.picsauditing.employeeguard.services.external.BillingService"/>
     <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
     <bean id="EmailService" class="com.picsauditing.employeeguard.services.EmailService"/>
+    <bean id="EmployeeGuardServiceEnabler"
+          class="com.picsauditing.employeeguard.services.EmployeeGuardServiceDisabler"/>
     <bean id="EmployeeLoginService" class="com.picsauditing.employeeguard.services.LoginService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
+    <bean id="ProductSubscriptionService"
+          class="com.picsauditing.employeeguard.services.external.ProductSubscriptionServiceImpl"/>
     <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>
     <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
     <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>
     <bean id="ProjectService" class="com.picsauditing.employeeguard.services.ProjectService"/>
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
+    <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
 
     <!-- Service Helpers -->
     <bean id="EmployeeSkillAssigner" class="com.picsauditing.employeeguard.services.EmployeeSkillAssigner"/>
@@ -87,6 +94,7 @@
     <bean id="PhotoUtil" class="com.picsauditing.employeeguard.util.PhotoUtil" scope="prototype"/>
 
     <!-- Converters -->
-    <bean id="RequiredSiteSkillFormConverter" class="com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter" />
+    <bean id="RequiredSiteSkillFormConverter"
+          class="com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter"/>
 
 </beans>

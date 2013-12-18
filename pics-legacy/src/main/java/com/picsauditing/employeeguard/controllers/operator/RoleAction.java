@@ -56,10 +56,10 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	private SearchForm searchForm;
 
 	/* Models */
-	private AccountGroup role;
+	private Group role;
 	private Project roleProject;
 	private List<Project> operatorProjects;
-	private List<AccountGroup> roles;
+	private List<Group> roles;
 	private List<AccountSkill> roleSkills;
 	private List<Employee> roleEmployees;
 	private Map<AccountModel, List<ProjectRole>> siteProjects;
@@ -160,7 +160,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	private void loadRole() {
 		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
 
-		AccountGroup roleById = roleService.getGroup(id);
+		Group roleById = roleService.getGroup(id);
 		if (accountIds.contains(roleById.getAccountId())) {
 			role = roleById;
 		}
@@ -221,11 +221,11 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 
 	/* getters and setters */
 
-	public AccountGroup getRole() {
+	public Group getRole() {
 		return role;
 	}
 
-	public List<AccountGroup> getRoles() {
+	public List<Group> getRoles() {
 		return roles;
 	}
 

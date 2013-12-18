@@ -13,6 +13,7 @@
         <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label">Site</tw:label>
             <div class="col-md-4">
+                <input name="operator_project_name_skills_edit.siteId" value="${projectNameSkillsForm.siteId}" type="hidden" />
                 <tw:input inputName="site" class="form-control disabled" disabled="true" value="${projectNameSkillsForm.site}" tabindex="1" />
             </div>
         </div>

@@ -7,7 +7,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class ProjectRoleEmployeeDAO extends BaseEntityDAO<ProjectRoleEmployee> {
+public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmployee> {
 	public ProjectRoleEmployeeDAO() {
 		this.type = ProjectRoleEmployee.class;
 	}
@@ -49,7 +49,7 @@ public class ProjectRoleEmployeeDAO extends BaseEntityDAO<ProjectRoleEmployee> {
 		return query.getResultList();
 	}
 
-	public List<Employee> getEmployeesByRole(AccountGroup role) {
+	public List<Employee> getEmployeesByRole(Group role) {
 		if (role == null) {
 			return Collections.emptyList();
 		}

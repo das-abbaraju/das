@@ -1,10 +1,13 @@
 package com.picsauditing.employeeguard.forms.operator;
 
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
+import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
+import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 
-public class OperatorSkillForm implements AddAnotherForm {
+public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider {
 
 	private String name;
 	private String description;
@@ -103,7 +106,18 @@ public class OperatorSkillForm implements AddAnotherForm {
 				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).doesNotExpire(doesNotExpire).build();
 	}
 
-	public static class Builder {
+    @Override
+    public UniqueIndexable getUniqueIndexable() {
+        return new AccountSkill.AccountSkillUniqueIndex(SessionInfoProviderFactory.getSessionInfoProvider().getId(),
+                SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), skillType, name);
+    }
+
+    @Override
+    public Class<?> getType() {
+        return AccountSkill.class;
+    }
+
+    public static class Builder {
 
 		private AccountSkill accountSkill;
 

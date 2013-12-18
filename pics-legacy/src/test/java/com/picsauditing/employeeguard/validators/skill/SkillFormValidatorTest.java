@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.validators.skill;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
+import com.picsauditing.employeeguard.daos.DuplicateEntityChecker;
 import com.picsauditing.employeeguard.entities.SkillType;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
 import com.picsauditing.employeeguard.validators.factory.struts.ValidatorContextFactory;
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +25,8 @@ public class SkillFormValidatorTest {
     private SkillFormValidator skillFormValidator;
 
     @Mock
+    private DuplicateEntityChecker duplicateEntityChecker;
+    @Mock
     HttpServletRequest request;
 
     @Before
@@ -30,6 +34,8 @@ public class SkillFormValidatorTest {
         MockitoAnnotations.initMocks(this);
 
         skillFormValidator = new SkillFormValidator();
+
+        Whitebox.setInternalState(skillFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
     }
 
     @Test

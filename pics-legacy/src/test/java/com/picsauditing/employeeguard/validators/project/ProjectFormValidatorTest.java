@@ -3,11 +3,13 @@ package com.picsauditing.employeeguard.validators.project;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.employeeguard.daos.DuplicateEntityChecker;
 import com.picsauditing.employeeguard.forms.operator.ProjectForm;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -16,9 +18,11 @@ import static org.mockito.Mockito.*;
 public class ProjectFormValidatorTest extends PicsActionTest {
 	private ProjectFormValidator projectFormValidator;
 
-	@Mock
+    @Mock
+    private DuplicateEntityChecker duplicateEntityChecker;
+    @Mock
 	private ValueStack valueStack;
-	@Mock
+    @Mock
 	private ValidatorContext validatorContext;
 
 	@Before
@@ -28,6 +32,8 @@ public class ProjectFormValidatorTest extends PicsActionTest {
 		projectFormValidator = new ProjectFormValidator();
 
 		super.setupMocks();
+
+        Whitebox.setInternalState(projectFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
 
 		when(request.getMethod()).thenReturn("POST");
 	}

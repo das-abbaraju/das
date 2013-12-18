@@ -3,15 +3,16 @@ package com.picsauditing.employeeguard.validators.group;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.validators.AbstractValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
-public class GroupFormValidator extends AbstractValidator<GroupNameSkillsForm> {
+public class GroupFormValidator extends AbstractBasicAndDuplicateValidator<GroupNameSkillsForm> {
 
 	public static final String GROUP_FORM = "groupForm";
 	public static final String GROUP_NAME_SKILLS_FORM = "groupNameSkillsForm";
 
 	@Override
-	public void performValidation(GroupNameSkillsForm groupForm) {
+	public void doFormValidation(GroupNameSkillsForm groupForm) {
 		if (!GroupValidationUtil.valid(groupForm.getName(), GroupValidationUtil.Field.NAME)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_FORM, "name"), "Name is missing");
 			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_NAME_SKILLS_FORM, "name"), "Name is missing");
@@ -27,4 +28,9 @@ public class GroupFormValidator extends AbstractValidator<GroupNameSkillsForm> {
 
 		return (GroupForm) valueStack.findValue(GROUP_FORM, GroupForm.class);
 	}
+
+    @Override
+    protected String getDuplicateErrorMessage() {
+        return "Name";
+    }
 }

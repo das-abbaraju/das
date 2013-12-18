@@ -1,6 +1,8 @@
 package com.picsauditing.employeeguard.forms.operator;
 
-public abstract class ProjectNameLocationForm {
+import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
+
+public abstract class ProjectNameLocationForm implements DuplicateInfoProvider {
 	protected String name;
 	protected String location;
 

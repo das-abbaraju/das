@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class ProjectCompanyDAO extends BaseEntityDAO<ProjectCompany> {
+public class ProjectCompanyDAO extends AbstractBaseEntityDAO<ProjectCompany> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectCompanyDAO.class);
 

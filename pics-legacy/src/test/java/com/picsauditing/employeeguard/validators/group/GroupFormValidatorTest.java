@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.validators.group;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
+import com.picsauditing.employeeguard.daos.DuplicateEntityChecker;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.validators.factory.struts.ValidatorContextFactory;
 import com.picsauditing.employeeguard.validators.factory.struts.ValueStackFactory;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,11 +25,15 @@ public class GroupFormValidatorTest {
 
     @Mock
     HttpServletRequest request;
+    @Mock
+    private DuplicateEntityChecker duplicateEntityChecker;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         groupFormValidator = new GroupFormValidator();
+
+        Whitebox.setInternalState(groupFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
     }
 
     @Test

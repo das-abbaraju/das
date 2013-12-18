@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.services.calculator.DocumentStatus;
 import java.util.Date;
 
 public class ProfileDocumentInfo implements Comparable<ProfileDocumentInfo> {
+
 	private int id;
 	private String name;
 	private Date added;

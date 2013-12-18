@@ -1,6 +1,11 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
-public class GroupNameSkillsForm {
+import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
+import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
+import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
+
+public class GroupNameSkillsForm implements DuplicateInfoProvider {
 	protected String name;
 
 	protected int[] skills;
@@ -20,4 +25,15 @@ public class GroupNameSkillsForm {
 	public void setSkills(int[] skills) {
 		this.skills = skills;
 	}
+
+    @Override
+    public UniqueIndexable getUniqueIndexable() {
+        return new Group.GroupUniqueKey(SessionInfoProviderFactory.getSessionInfoProvider().getId(),
+                SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), name);
+    }
+
+    @Override
+    public Class<?> getType() {
+        return Group.class;
+    }
 }

@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.forms.employee;
 import java.io.File;
 
 public class ProfilePhotoForm {
+
 	private File photo;
 	private String photoFileName;
 	private String photoContentType;

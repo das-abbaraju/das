@@ -4,7 +4,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.database.domain.Identifiable;
-import com.picsauditing.employeeguard.entities.AccountGroup;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
@@ -129,7 +129,7 @@ public class GroupActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, groupAction.insert());
 		assertEquals(url, groupAction.getUrl());
 
-		verify(groupService).save(any(AccountGroup.class), eq(Account.PicsID), anyInt());
+		verify(groupService).save(any(Group.class), eq(Account.PicsID), anyInt());
 	}
 
 	@Test
@@ -141,7 +141,7 @@ public class GroupActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, groupAction.insert());
 		assertEquals("/employee-guard/contractor/employee-group/create", groupAction.getUrl());
 
-		verify(groupService).save(any(AccountGroup.class), eq(Account.PicsID), anyInt());
+		verify(groupService).save(any(Group.class), eq(Account.PicsID), anyInt());
 	}
 
 	@Test

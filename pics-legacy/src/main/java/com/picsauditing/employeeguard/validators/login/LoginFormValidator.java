@@ -2,10 +2,10 @@ package com.picsauditing.employeeguard.validators.login;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.LoginForm;
-import com.picsauditing.employeeguard.validators.AbstractValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 import com.picsauditing.util.Strings;
 
-public class LoginFormValidator extends AbstractValidator<LoginForm> {
+public class LoginFormValidator extends AbstractBasicValidator<LoginForm> {
 
     public static final String LOGIN_FORM = "loginForm";
 
@@ -14,7 +14,7 @@ public class LoginFormValidator extends AbstractValidator<LoginForm> {
     }
 
     @Override
-    protected void performValidation(LoginForm loginForm) {
+    protected void doFormValidation(LoginForm loginForm) {
         if (Strings.isEmpty(loginForm.getUsername())) {
             addFieldErrorIfMessage(fieldKeyBuilder(LOGIN_FORM, "username"), "Username must be provided.");
         }

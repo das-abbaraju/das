@@ -10,68 +10,68 @@ import java.util.List;
 
 public class ContractorDetailProjectFormBuilder {
 
-    public ContractorDetailProjectForm build(ProjectCompany projectCompany, AccountModel accountModel) {
-        Project project = projectCompany.getProject();
+	public ContractorDetailProjectForm build(ProjectCompany projectCompany, AccountModel accountModel) {
+		Project project = projectCompany.getProject();
 
-        ContractorDetailProjectForm projectDetailForm = new ContractorDetailProjectForm();
-        projectDetailForm = addProjectInformation(accountModel, project, projectDetailForm);
-        projectDetailForm.setJobRoles(buildJobRoles(project));
-        projectDetailForm.setSkills(buildSkills(project));
+		ContractorDetailProjectForm projectDetailForm = new ContractorDetailProjectForm();
+		projectDetailForm = addProjectInformation(accountModel, project, projectDetailForm);
+		projectDetailForm.setJobRoles(buildJobRoles(project));
+		projectDetailForm.setSkills(buildSkills(project));
 
-        return projectDetailForm;
-    }
+		return projectDetailForm;
+	}
 
-    private ContractorDetailProjectForm addProjectInformation(AccountModel accountModel, Project project, ContractorDetailProjectForm projectDetailForm) {
-	    projectDetailForm.setSiteId(accountModel.getId());
-	    projectDetailForm.setSiteName(accountModel.getName());
-	    projectDetailForm.setProjectId(project.getId());
-        projectDetailForm.setProjectName(project.getName());
-        projectDetailForm.setLocation(project.getLocation());
-        projectDetailForm.setStartDate(project.getStartDate());
-        projectDetailForm.setEndDate(project.getEndDate());
+	private ContractorDetailProjectForm addProjectInformation(AccountModel accountModel, Project project, ContractorDetailProjectForm projectDetailForm) {
+		projectDetailForm.setSiteId(accountModel.getId());
+		projectDetailForm.setSiteName(accountModel.getName());
+		projectDetailForm.setProjectId(project.getId());
+		projectDetailForm.setProjectName(project.getName());
+		projectDetailForm.setLocation(project.getLocation());
+		projectDetailForm.setStartDate(project.getStartDate());
+		projectDetailForm.setEndDate(project.getEndDate());
 
-        return projectDetailForm;
-    }
+		return projectDetailForm;
+	}
 
-    public List<JobRoleInfo> buildJobRoles(Project project) {
-        List<JobRoleInfo> jobRoleInfoList = new ArrayList<>();
-        for (ProjectRole projectRole : project.getRoles()) {
-           jobRoleInfoList.add(buildJobRoleInfo(projectRole));
-        }
+	public List<JobRoleInfo> buildJobRoles(Project project) {
+		List<JobRoleInfo> jobRoleInfoList = new ArrayList<>();
+		for (ProjectRole projectRole : project.getRoles()) {
+			jobRoleInfoList.add(buildJobRoleInfo(projectRole));
+		}
 
-        return jobRoleInfoList;
-    }
+		return jobRoleInfoList;
+	}
 
-    private JobRoleInfo buildJobRoleInfo(ProjectRole projectRole) {
-        JobRoleInfo jobRoleInfo = new JobRoleInfo();
-        jobRoleInfo = addRoleInfoFromGroup(projectRole, jobRoleInfo);
-        jobRoleInfo.setSkills(buildSkills(projectRole));
+	private JobRoleInfo buildJobRoleInfo(ProjectRole projectRole) {
+		JobRoleInfo jobRoleInfo = new JobRoleInfo();
+		jobRoleInfo = addRoleInfoFromGroup(projectRole, jobRoleInfo);
+		jobRoleInfo.setSkills(buildSkills(projectRole));
 
-        return jobRoleInfo;
-    }
+		return jobRoleInfo;
+	}
 
-    private List<AccountSkill> buildSkills(ProjectRole projectRole) {
-        List<AccountSkill> skills = new ArrayList<>();
-        for (AccountSkillGroup accountSkillGroup : projectRole.getRole().getSkills()) {
-            skills.add(accountSkillGroup.getSkill());
-        }
+	private List<AccountSkill> buildSkills(ProjectRole projectRole) {
+		List<AccountSkill> skills = new ArrayList<>();
+		for (AccountSkillGroup accountSkillGroup : projectRole.getRole().getSkills()) {
+			skills.add(accountSkillGroup.getSkill());
+		}
 
-        return skills;
-    }
+		return skills;
+	}
 
-    private JobRoleInfo addRoleInfoFromGroup(ProjectRole projectRole, JobRoleInfo jobRoleInfo) {
-        AccountGroup group = projectRole.getRole();
-        jobRoleInfo.setId(group.getId());
-        jobRoleInfo.setName(group.getName());
-        return jobRoleInfo;
-    }
+	private JobRoleInfo addRoleInfoFromGroup(ProjectRole projectRole, JobRoleInfo jobRoleInfo) {
+		Group group = projectRole.getRole();
+		jobRoleInfo.setId(group.getId());
+		jobRoleInfo.setName(group.getName());
+		return jobRoleInfo;
+	}
 
-    private List<AccountSkill> buildSkills(Project project) {
-        List<AccountSkill> skills = new ArrayList<>();
-        for (ProjectSkill projectSkill : project.getSkills()) {
-            skills.add(projectSkill.getSkill());
-        }
+	private List<AccountSkill> buildSkills(Project project) {
+		List<AccountSkill> skills = new ArrayList<>();
+		for (ProjectSkill projectSkill : project.getSkills()) {
+			skills.add(projectSkill.getSkill());
+		}
 
-        return skills;
-    }
+		return skills;
+	}
 }

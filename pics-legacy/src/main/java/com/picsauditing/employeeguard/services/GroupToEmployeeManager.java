@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
+import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 
@@ -10,20 +10,20 @@ import java.util.List;
 
 public class GroupToEmployeeManager {
 
-	public void updateAccountGroupEmployees(final AccountGroup accountGroupInDatabase, final AccountGroup updatedEmployee, final int appUserId) {
-		List<AccountGroupEmployee> accountGroupEmployee = getLinkedEmployees(accountGroupInDatabase, updatedEmployee, appUserId);
-		accountGroupInDatabase.getEmployees().clear();
-		accountGroupInDatabase.getEmployees().addAll(accountGroupEmployee);
+	public void updateAccountGroupEmployees(final Group groupInDatabase, final Group updatedEmployee, final int appUserId) {
+		List<GroupEmployee> groupEmployee = getLinkedEmployees(groupInDatabase, updatedEmployee, appUserId);
+		groupInDatabase.getEmployees().clear();
+		groupInDatabase.getEmployees().addAll(groupEmployee);
 	}
 
-	private List<AccountGroupEmployee> getLinkedEmployees(final AccountGroup accountGroupInDatabase, final AccountGroup updatedEmployee, final int appUserId) {
-        BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
-		List<AccountGroupEmployee> accountGroupEmployees = IntersectionAndComplementProcess.intersection(updatedEmployee.getEmployees(),
-				accountGroupInDatabase.getEmployees(), AccountGroupEmployee.COMPARATOR, callback);
+	private List<GroupEmployee> getLinkedEmployees(final Group groupInDatabase, final Group updatedEmployee, final int appUserId) {
+		BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
+		List<GroupEmployee> groupEmployees = IntersectionAndComplementProcess.intersection(updatedEmployee.getEmployees(),
+				groupInDatabase.getEmployees(), GroupEmployee.COMPARATOR, callback);
 
-		accountGroupEmployees.addAll(callback.getRemovedEntities());
+		groupEmployees.addAll(callback.getRemovedEntities());
 
-		return accountGroupEmployees;
+		return groupEmployees;
 	}
 
 }

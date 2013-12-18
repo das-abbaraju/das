@@ -6,8 +6,8 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.IntervalType;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
@@ -48,7 +48,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	/* Models */
 	private AccountSkill skill;
 	private List<AccountSkill> skills;
-	private List<AccountGroup> roles;
+	private List<Group> roles;
 
 	/* Pages */
 	public String index() {
@@ -179,7 +179,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		return skills;
 	}
 
-	public List<AccountGroup> getRoles() {
+	public List<Group> getRoles() {
 		return roles;
 	}
 

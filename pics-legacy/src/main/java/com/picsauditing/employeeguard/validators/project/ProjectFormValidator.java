@@ -4,16 +4,17 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.operator.ProjectForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameLocationForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
-import com.picsauditing.employeeguard.validators.AbstractValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
-public class ProjectFormValidator extends AbstractValidator<ProjectNameLocationForm> {
+public class ProjectFormValidator extends AbstractBasicAndDuplicateValidator<ProjectNameLocationForm> {
 	public static final String PROJECT_FORM = "projectForm";
 	public static final String PROJECT_NAME_SKILLS_FORM = "projectNameSkillsForm";
 
 	private String formName = PROJECT_FORM;
 
 	@Override
-	public void performValidation(final ProjectNameLocationForm projectNameLocationForm) {
+	public void doFormValidation(final ProjectNameLocationForm projectNameLocationForm) {
 		if (!ProjectValidationUtil.valid(projectNameLocationForm, ProjectValidationUtil.ProjectField.NAME)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(formName, "name"), "Project name is missing");
 		}
@@ -28,4 +29,9 @@ public class ProjectFormValidator extends AbstractValidator<ProjectNameLocationF
 
 		return (ProjectForm) valueStack.findValue(PROJECT_FORM, ProjectForm.class);
 	}
+
+    @Override
+    protected String getDuplicateErrorMessage() {
+        return "Name";
+    }
 }

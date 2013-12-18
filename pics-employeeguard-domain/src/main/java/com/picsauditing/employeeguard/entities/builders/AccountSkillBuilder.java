@@ -15,10 +15,10 @@ public class AccountSkillBuilder {
 		accountSkill = new AccountSkill(id, accountId);
 	}
 
-    public AccountSkillBuilder id(int id) {
-        accountSkill.setId(id);
-        return this;
-    }
+	public AccountSkillBuilder id(int id) {
+		accountSkill.setId(id);
+		return this;
+	}
 
 	public AccountSkillBuilder name(String name) {
 		accountSkill.setName(name);
@@ -63,7 +63,7 @@ public class AccountSkillBuilder {
 			accountSkill.getGroups().clear();
 
 			for (String group : groups) {
-				AccountGroup accountGroup = new AccountGroup();
+				Group accountGroup = new Group();
 				accountGroup.setName(group);
 				accountGroup.setAccountId(accountSkill.getAccountId());
 				AccountSkillGroup accountSkillGroup = new AccountSkillGroup(accountGroup, accountSkill);
