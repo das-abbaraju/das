@@ -39,6 +39,8 @@
     <bean id="EmployeeLoginService" class="com.picsauditing.employeeguard.services.LoginService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
+    <bean id="ProductSubscriptionService"
+          class="com.picsauditing.employeeguard.services.ProductSubscriptionServiceImpl"/>
     <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>
     <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
     <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>
@@ -87,6 +89,7 @@
     <bean id="PhotoUtil" class="com.picsauditing.employeeguard.util.PhotoUtil" scope="prototype"/>
 
     <!-- Converters -->
-    <bean id="RequiredSiteSkillFormConverter" class="com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter" />
+    <bean id="RequiredSiteSkillFormConverter"
+          class="com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter"/>
 
 </beans>
