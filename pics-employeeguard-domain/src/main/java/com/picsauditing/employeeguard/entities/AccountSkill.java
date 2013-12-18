@@ -82,6 +82,11 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	@BatchSize(size = 10)
 	private List<ProjectSkill> projects = new ArrayList<>();
 
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 10)
+	private List<SiteSkill> sites = new ArrayList<>();
+
 	public AccountSkill() {
 	}
 
@@ -225,6 +230,14 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 
 	public void setProjects(List<ProjectSkill> projects) {
 		this.projects = projects;
+	}
+
+	public List<SiteSkill> getSites() {
+		return sites;
+	}
+
+	public void setSites(List<SiteSkill> sites) {
+		this.sites = sites;
 	}
 
 	@Override

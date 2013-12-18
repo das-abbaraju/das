@@ -1,6 +1,7 @@
-package com.picsauditing.employeeguard.services;
+package com.picsauditing.employeeguard.services.external;
 
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
+import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -12,7 +13,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
 
 	@Override
-	public boolean hasEmployeeGUARD(Account account) {
+	public boolean hasEmployeeGUARD(final Account account) {
 		if (account.isContractor()) {
 			return contractorHasEmployeeGUARD((ContractorAccount) account);
 		}
@@ -40,5 +41,16 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		}
 
 		return false;
+	}
+
+	@Override
+	public void addEmployeeGUARD(final int accountId) {
+		accountEmployeeGuardDAO.save(new AccountEmployeeGuard(accountId));
+	}
+
+	@Override
+	public void removeEmployeeGUARD(final int accountId) {
+		AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
+		accountEmployeeGuardDAO.remove(accountEmployeeGuard);
 	}
 }
