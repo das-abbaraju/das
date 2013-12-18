@@ -1,9 +1,9 @@
 PICS.define('contractor.TradeTaxonomyController', {
     methods: (function () {
         function init() {
-            $('#trade-view').on('click', 'input[type="submit"]', onSubmitButtonClick);
-
-            $('#trade-view').on('submit', '#trade-form', onTradeFormSubmit);
+            $('#trade-view')
+                .on('click', 'input[type="submit"]', onSubmitButtonClick)
+                .on('submit', '#trade-form', onTradeFormSubmit);
 
             $('body').on('click', '.safety-sensitive-confirm-modal .confirm', onSafetySensitiveModalConfirmClick);
         }
