@@ -4,6 +4,6 @@
 
 ALTER TABLE contractor_fee
 
-  ADD COLUMN currentFacilityCount int(11)
-, ADD COLUMN newFacilityCount int(11)
+  ADD COLUMN currentFacilityCount int(11) default 0 not null
+, ADD COLUMN newFacilityCount int(11) default 0 not null
 ;
