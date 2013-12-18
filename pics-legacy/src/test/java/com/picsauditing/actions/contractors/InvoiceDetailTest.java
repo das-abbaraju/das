@@ -107,7 +107,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 		when(contractor.getCountry()).thenReturn(country);
 		when(invoice.getTotalAmount()).thenReturn(BigDecimal.valueOf(199.00));
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Reactivation);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
         when(country.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);

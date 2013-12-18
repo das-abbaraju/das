@@ -84,7 +84,10 @@ public class FeeServiceTest extends PicsTranslationTest {
     OperatorAccount mockOA1;
     @Mock
     OperatorAccount mockOA2;
-    Set<OperatorAccount> OAMocksSet = new HashSet<OperatorAccount>();
+    @Mock
+    private BillingService billingService;
+
+    Set<OperatorAccount> OAMocksSet = new HashSet<>();
 
     @Before
 	public void setUp() {
@@ -100,6 +103,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         feeService = new FeeService();
         FeeService.ruleCache = ruleCache;
         Whitebox.setInternalState(feeService, "feeDAO", feeDAO);
+        Whitebox.setInternalState(feeService, "billingService", billingService);
 
         setUpContractor();
 
@@ -1304,21 +1308,21 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void calculateUpgradeDate_setUpgradeDate() {
-        when(contractorAccount.getBillingStatus()).thenReturn(BillingStatus.Current);
+        when(billingService.billingStatus(contractorAccount)).thenReturn(BillingStatus.Current);
         feeService.calculateUpgradeDate(contractorAccount, BillingStatus.Upgrade);
         verify(contractorAccount, times(1)).setLastUpgradeDate(null);
     }
 
     @Test
     public void calculateUpgradeDate_saveUpgradeDate() {
-        when(contractorAccount.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
+        when(billingService.billingStatus(contractorAccount)).thenReturn(BillingStatus.Upgrade);
         feeService.calculateUpgradeDate(contractorAccount, BillingStatus.Upgrade);
         verify(contractorAccount, never()).setLastUpgradeDate(any(Date.class));
     }
 
     @Test
     public void calculateUpgradeDate_clearUpgradeDate() {
-        when(contractorAccount.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
+        when(billingService.billingStatus(contractorAccount)).thenReturn(BillingStatus.Upgrade);
         feeService.calculateUpgradeDate(contractorAccount, BillingStatus.Current);
         verify(contractorAccount, times(1)).setLastUpgradeDate(any(Date.class));
     }

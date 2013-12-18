@@ -365,7 +365,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         // Automatically deactivating account based on expired
         // membership
-        BillingStatus status = contractor.getBillingStatus();
+        BillingStatus status = billingService.billingStatus(contractor);
         if (!contractor.getStatus().equals(AccountStatus.Deactivated)
                 && (status.isRenewalOverdue() || status.isReactivation())) {
             if (contractor.getAccountLevel().isBidOnly()) {

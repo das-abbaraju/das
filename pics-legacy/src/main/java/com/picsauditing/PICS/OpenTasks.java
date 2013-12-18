@@ -26,6 +26,8 @@ public class OpenTasks extends TranslationActionSupport {
 	protected OperatorTagDAO operatorTagDao;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
+    @Autowired
+    private BillingService billingService;
 
 	private static final int VOPAK_OPERATOR_QUALIFICATION = 640;
 
@@ -218,7 +220,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 	private void gatherTasksAboutBillingAndPaymentsEmail(Locale locale) {
 		if (permissions.hasPermission(OpPerms.ContractorBilling) || user.getAccount().isAdmin()) {
-			BillingStatus billingStatus = contractor.getBillingStatus();
+			BillingStatus billingStatus = billingService.billingStatus(contractor);
 			if (billingStatus.isUpgrade() || (billingStatus.isRenewal() && contractor.getAccountLevel().isBidOnly())) {
 				openTasks.add(getTextParameterized(locale,
 						"ContractorWidget.message.GenerateInvoice" + ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""),

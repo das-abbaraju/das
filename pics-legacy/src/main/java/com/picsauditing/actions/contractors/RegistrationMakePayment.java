@@ -708,7 +708,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 		if (invoice == null) {
             // TODO: refactor this method to get the billing status within
-			invoice = billingService.createInvoice(contractor, contractor.getBillingStatus(), getUser());
+			invoice = billingService.createInvoice(contractor, getUser());
 			billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			contractor.getInvoices().add(invoice);
 			billingService.saveInvoice(invoice);
