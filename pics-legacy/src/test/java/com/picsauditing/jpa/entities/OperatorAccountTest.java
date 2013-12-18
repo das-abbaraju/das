@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -136,4 +137,78 @@ public class OperatorAccountTest {
 		assertTrue("Operator has competency requiring documentation",
 				classUnderTest.hasCompetencyRequiringDocumentation());
 	}
+
+    @Test
+    public void testAreAllContractorRelationshipsUniform() {
+        classUnderTest.setAutoApproveRelationships(false);
+
+        ContractorOperator approvedContractor = ContractorOperator.builder()
+                .operator(classUnderTest)
+                .workStatus(ApprovalStatus.Y)
+                .build();
+
+        classUnderTest.setContractorOperators(Arrays.asList(new ContractorOperator[]{approvedContractor}));
+
+        assertTrue(classUnderTest.areAllContractorRelationshipsUniform());
+    }
+
+    @Test
+    public void testAreAllContractorRelationshipsUniform_TwoContractors_SameWorkStatuses() {
+        classUnderTest.setAutoApproveRelationships(false);
+
+        ContractorOperator rejectedContractorOne = ContractorOperator.builder()
+                .operator(classUnderTest)
+                .workStatus(ApprovalStatus.N)
+                .build();
+
+        ContractorOperator rejectedContractorTwo = ContractorOperator.builder()
+                .operator(classUnderTest)
+                .workStatus(ApprovalStatus.N)
+                .build();
+
+        classUnderTest.setContractorOperators(Arrays.asList(new ContractorOperator[]{rejectedContractorOne,
+                rejectedContractorTwo}));
+
+        assertTrue(classUnderTest.areAllContractorRelationshipsUniform());
+    }
+
+    @Test
+    public void testAreAllContractorRelationshipsUniform_TwoContractors_DifferentWorkStatuses() {
+        classUnderTest.setAutoApproveRelationships(false);
+
+        ContractorOperator approvedContractor = ContractorOperator.builder()
+                .operator(classUnderTest)
+                .workStatus(ApprovalStatus.Y)
+                .build();
+
+        ContractorOperator rejectedContractor = ContractorOperator.builder()
+                .operator(classUnderTest)
+                .workStatus(ApprovalStatus.N)
+                .build();
+
+        classUnderTest.setContractorOperators(Arrays.asList(new ContractorOperator[]{approvedContractor,
+                rejectedContractor}));
+
+        assertFalse(classUnderTest.areAllContractorRelationshipsUniform());
+    }
+
+    @Test
+    public void testAreAllContractorRelationshipsUniform_TwoContractors_DifferentWorkStatuses_OperatorManuallyApproves() {
+        classUnderTest.setAutoApproveRelationships(true);
+
+        ContractorOperator approvedContractor = ContractorOperator.builder()
+                .operator(classUnderTest)
+                .workStatus(ApprovalStatus.Y)
+                .build();
+
+        ContractorOperator rejectedContractor = ContractorOperator.builder()
+                .operator(classUnderTest)
+                .workStatus(ApprovalStatus.N)
+                .build();
+
+        classUnderTest.setContractorOperators(Arrays.asList(new ContractorOperator[]{approvedContractor,
+                rejectedContractor}));
+
+        assertTrue(classUnderTest.areAllContractorRelationshipsUniform());
+    }
 }

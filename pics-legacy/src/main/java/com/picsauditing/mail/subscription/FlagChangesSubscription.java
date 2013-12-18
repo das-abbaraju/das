@@ -21,13 +21,13 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 
 	@Override
 	public Map<String, Object> process(EmailSubscription subscription) {
-		Map<String, Object> tokens = new HashMap<String, Object>();
+		Map<String, Object> tokens = new HashMap<>();
 
 		try {
 			OperatorAccount o = (OperatorAccount) subscription.getUser().getAccount();
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-			Set<Integer> operators = new HashSet<Integer>();
+			Set<Integer> operators = new HashSet<>();
 			if (!o.isCorporate())
 				operators.add(o.getId());
 			// Adding child facilities and switch tos
@@ -46,7 +46,7 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			sql.addJoin("JOIN flag_archive f2 ON co.conID = f2.conID AND co.opID = f2.opID AND co.flag <> f2.flag");
 
 			sql.addWhere("f2.creationDate = '" + df.format(subscription.getTimePeriod().getNearestComparisonDate()) + "'");
-			sql.addWhere("(co.workStatus = 'Y' OR o.approvesRelationships = 'No')");
+			sql.addWhere("(co.workStatus = 'Y' OR oa.autoApproveRelationships = 1)");
 			sql.addWhere("a.status = 'Active'");
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");
@@ -66,8 +66,8 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 
 			data = report.getPage(false);
 
-			List<DynaBean> upgrades = new ArrayList<DynaBean>();
-			List<DynaBean> downgrades = new ArrayList<DynaBean>();
+			List<DynaBean> upgrades = new ArrayList<>();
+			List<DynaBean> downgrades = new ArrayList<>();
 
 			for (DynaBean bean : data) {
 				FlagColor flag = FlagColor.valueOf((String) bean.get("flag"));
@@ -89,6 +89,6 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			e.printStackTrace();
 		}
 
-		return tokens;
+  		return tokens;
 	}
 }
