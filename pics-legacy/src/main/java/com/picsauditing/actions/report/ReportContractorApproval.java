@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.util.List;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -26,6 +27,8 @@ public class ReportContractorApproval extends ReportAccount {
 	protected OperatorAccountDAO operatorAccountDAO;
 	@Autowired
 	protected ContractorOperatorDAO contractorOperatorDAO;
+    @Autowired
+    protected ContractorOperatorService contractorOperatorService;
 
 	protected List<Integer> conids = null;
 	protected String operatorNotes = "";
@@ -135,7 +138,7 @@ public class ReportContractorApproval extends ReportAccount {
                 if (cOperator.getWorkStatus() != workStatus) {
 				    if (operator.isOperator()) {
                         cOperator.setWorkStatus(workStatus);
-                        cOperator.cascadeWorkStatusToParent();
+                        contractorOperatorService.cascadeWorkStatusToParent(cOperator);
                     } else {
                         cOperator.setForcedWorkStatus(workStatus);
                    }

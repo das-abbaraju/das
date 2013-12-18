@@ -420,20 +420,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.reasonForRegistration = reasonForRegistration;
 	}
 
-	public void cascadeWorkStatusToParent() {
-		if (operatorAccount.getParent() != null) {
-			ContractorOperator contractorCorporate = contractorAccount.getContractorOperatorForOperator(operatorAccount.getParent());
-			if (contractorCorporate != null) {
-				if (contractorCorporate.getWorkStatus().isForced() || workStatus == contractorCorporate.getWorkStatus())
-					return;
-
-				else if (workStatus.ordinal() > contractorCorporate.getWorkStatus().ordinal() || contractorCorporate.getOperatorAccount().areAllContractorRelationshipsUniform()) {
-					contractorCorporate.setWorkStatus(workStatus);
-				}
-			}
-		}
-	}
-
 	@Transient
 	public void setDefaultWorkStatus() {
 		if (operatorAccount.getParent() != null) {
