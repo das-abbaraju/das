@@ -167,7 +167,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					d.setQuestion(q);
 					d.setAudit(auditDao.find(auditID));
 
-					if (d.getAudit().getExpiresDate() == null) {
+                    if (d.getAudit().getExpiresDate() == null && certificate.getExpirationDate() == null) {
 						Calendar cal = Calendar.getInstance();
 						cal.add(Calendar.MONTH, 6);
 						certificate.setExpirationDate(cal.getTime());
