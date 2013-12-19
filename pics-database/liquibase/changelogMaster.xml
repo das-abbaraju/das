@@ -79,9 +79,8 @@
 
 	<!-- 7.0.2 -->
 	<include file="./liquibase/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql"/>
+	<include file="./liquibase/mdo18_PICS-13701_updateAllContractorAddedSubscriptions.sql"/>
 	<include file="./liquibase/mdo19_PICS-14016_invoicePayingFacilities.sql"/>
 	<include file="./liquibase/mdo20_PICS-14017_invoiceItemOriginalFeeAmount.sql"/>
-	<include file="./liquibase/mdo18_PICS-13701_updateAllContractorAddedSubscriptions.sql"/>
 	<include file="./liquibase/mdo22_PICS-14038_reactivationFeeOverrides.sql"/>
-	<include file="./"/>
 </databaseChangeLog>
