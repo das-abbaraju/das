@@ -125,9 +125,4 @@ public class ContractorFee extends BaseTable {
 
 		return currentLevel.getMaxFacilities() < newFeeLevel.getMinFacilities();
 	}
-
-	@Transient
-	public boolean isHasChanged() {
-		return !newLevel.equals(currentLevel);
-	}
 }

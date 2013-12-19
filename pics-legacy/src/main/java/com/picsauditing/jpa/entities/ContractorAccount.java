@@ -1114,17 +1114,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean isHasMembershipChanged() {
-		for (FeeClass feeClass : this.getFees().keySet()) {
-			if (this.getFees().get(feeClass).isHasChanged()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	@Transient
 	public boolean isHasUpgrade() {
 		for (FeeClass feeClass : this.getFees().keySet()) {
 			if (this.getFees().get(feeClass).isUpgrade()) {
