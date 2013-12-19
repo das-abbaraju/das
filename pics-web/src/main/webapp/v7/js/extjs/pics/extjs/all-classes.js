@@ -96338,6 +96338,8 @@ Ext.define('PICS.view.report.data-table.DataTable', {
 Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
+    renderTo: Ext.get('viewport'),
+
     requires: [
         'Ext.layout.container.Border',
         'Ext.resizer.Splitter',
@@ -96349,9 +96351,6 @@ Ext.define('PICS.view.report.Viewport', {
     ],
 
     items: [{
-    	xtype: 'layoutheader',
-        region: 'north'
-    }, {
         region: 'center',
 
         border: 0,
@@ -96368,6 +96367,7 @@ Ext.define('PICS.view.report.Viewport', {
         }],
         layout: 'border'
     }],
+
     layout: 'border'
 });
 Ext.define('PICS.ux.grid.column.Column', {
@@ -96820,7 +96820,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
         mode: 'SIMPLE'
-    }),
+    })
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     extend: 'PICS.ux.window.Window',
