@@ -21367,8 +21367,8 @@ PICS.define('country.Country', {
         // Remove leading or trailing spaces or hyphens
         slug = slug.replace(/^[-\s]|[-\s]$/g,'')
 
-        // Replace 1 or more hyphens with a single hyphen (results from above operation)
-        slug = slug.replace(/-+/g, '-')
+        // Replace 1 or more hyphens with a single hyphen (sometimes results from above operations)
+        slug = slug.replace(/-{2,}/g, '-')
 
         if (isValidUri(slug)) {
             return slug;
@@ -23769,7 +23769,7 @@ PICS.define('widgets.Mibew', {
                         }
 
                         // define modal element
-                        var modal = $('<div id="' + config.modal_id + '" class="' + config.modal_class + '" style="display: none;">');
+                        var modal = $('<div id="' + config.modal_id + '" class="modal ' + config.modal_class + '" style="display: none;">');
 
                         var modal_header = $('<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h3></h3></div>');
                         var modal_body = $('<div class="modal-body">');
