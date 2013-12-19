@@ -566,6 +566,15 @@ public class BillingServiceTest extends PicsTranslationTest {
     }
 
     @Test
+    public void testConvertBillingStatusToInvoiceType_ReactivationItem() throws Exception {
+        when(invoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Reactivation);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", invoice, BillingStatus.Renewal);
+
+        assertEquals(InvoiceType.Activation, invoiceType);
+    }
+
+    @Test
     public void testgetUpgradedFees() throws Exception {
         setupCreateInvoiceWithItemsTestsCommon();
         fees.put(FeeClass.AuditGUARD, upgradeFee);
