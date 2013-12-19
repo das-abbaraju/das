@@ -418,8 +418,8 @@ public class BillingService {
 		for (FeeClass feeClass : contractor.getFees().keySet()) {
 			ContractorFee fee = contractor.getFees().get(feeClass);
 
-			if (fee.isHasChanged() && !fee.getNewLevel().isFree()
-					&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().isListonly())) {
+            InvoiceFee newLevel = fee.getNewLevel();
+            if (fee.isUpgrade() && !newLevel.isFree() && (!newLevel.isBidonly() || !newLevel.isListonly())) {
 				upgrades.add(fee);
 			}
 		}
@@ -788,14 +788,16 @@ public class BillingService {
         // if any non-bid or list membership level differs, amount is an upgrade
         boolean upgrade = false;
         boolean currentListOrBidOnly = false;
-        for (FeeClass feeClass : contractor.getFees().keySet()) {
-            if (!upgrade && !contractor.getFees().isEmpty() && contractor.getFees().get(feeClass).isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
+        Map<FeeClass, ContractorFee> fees = contractor.getFees();
+        for (FeeClass feeClass : fees.keySet()) {
+            ContractorFee contractorFee = fees.get(feeClass);
+            if (!upgrade && contractorFee.isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
                     && !feeClass.equals(FeeClass.ListOnly)) {
                 upgrade = true;
             }
-            if (!contractor.getFees().isEmpty() && (contractor.getFees().get(feeClass).getCurrentLevel().isBidonly()
-                    || contractor.getFees().get(feeClass).getCurrentLevel().isListonly())
-                    && !contractor.getFees().get(feeClass).getCurrentLevel().isFree()) {
+
+            InvoiceFee currentLevel = contractorFee.getCurrentLevel();
+            if ((currentLevel.isBidonly() || currentLevel.isListonly()) && !currentLevel.isFree()) {
                 currentListOrBidOnly = true;
             }
         }

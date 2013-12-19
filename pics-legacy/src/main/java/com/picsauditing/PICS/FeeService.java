@@ -48,12 +48,13 @@ public class FeeService {
         int payingFacilities = 0;
 
         for (Invoice invoice : contractor.getSortedInvoices()) {
-            if (foundMembership) {
+            if (foundMembershipDate) {
                 break;
             }
 
             if (!foundPayingFacilities) {
                 payingFacilities = invoice.getPayingFacilities();
+                foundPayingFacilities = true;
             }
 
             if (!invoice.getStatus().isVoid() && !BillingService.hasCreditMemosForFullAmount(invoice) && invoice.getInvoiceType().isMembershipType()) {

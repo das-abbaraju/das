@@ -566,6 +566,24 @@ public class BillingServiceTest extends PicsTranslationTest {
     }
 
     @Test
+    public void testgetUpgradedFees() throws Exception {
+        setupCreateInvoiceWithItemsTestsCommon();
+        fees.put(FeeClass.AuditGUARD, upgradeFee);
+        fees.put(FeeClass.DocuGUARD, new ContractorFee());
+
+        when(upgradeFee.getNewLevel()).thenReturn(upgradeinvoiceFee);
+        when(upgradeFee.isUpgrade()).thenReturn(true);
+        when(upgradeFee.getFeeClass()).thenReturn(FeeClass.AuditGUARD);
+        when(upgradeinvoiceFee.isFree()).thenReturn(false);
+
+        List<ContractorFee> upgrades = Whitebox.invokeMethod(billingService, "getUpgradedFees", contractor);
+
+        assertEquals(1,upgrades.size());
+        ContractorFee upgradedAG = upgrades.get(0);
+        assertEquals(FeeClass.AuditGUARD, upgradedAG.getFeeClass());
+    }
+
+    @Test
     public void testGetBillingStatus_IsUpgrade() throws Exception {
         upgradeTrueTestsCommon();
 
