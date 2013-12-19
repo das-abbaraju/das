@@ -9,7 +9,7 @@ PICS.define('contractor.TradeTaxonomyController', {
         }
 
         function onSubmitButtonClick(event) {
-            $form = $(event.target).closest('form');
+            var $form = $(event.target).closest('form');
 
             $form.data('clicked-button-id', this.id);
         }
@@ -23,9 +23,7 @@ PICS.define('contractor.TradeTaxonomyController', {
             if ($form.data('clicked-button-id') == 'addButton') {
                 event.preventDefault();
 
-                if ($button.data('affects-safety-sensitive-status') &&
-                    !$form.data('is-confirmed')) {
-
+                if ($button.data('affects-safety-sensitive-status')) {
                     PICS.modal(getModalConfig());
                 } else {
                     requestAddTrade();
@@ -34,10 +32,7 @@ PICS.define('contractor.TradeTaxonomyController', {
         }
 
         function onSafetySensitiveModalConfirmClick(event) {
-            var $trade_form = $('#trade-form'),
-                $modal = $('.safety-sensitive-confirm-modal');
-
-            $trade_form.data('is-confirmed', true);
+            var $modal = $(event.target).closest('.modal');
 
             requestAddTrade();
 
@@ -52,9 +47,9 @@ PICS.define('contractor.TradeTaxonomyController', {
                 title: 'Safety Sensitive Trade',
                 content: getModalContent(),
                 buttons: [{
-                    html: '<button href="#" class="btn primary confirm">Confirm</button>'
+                    html: '<button class="btn primary confirm">Confirm</button>'
                 }, {
-                    html: '<a href="javascript:;" class="btn" data-dismiss="modal">cancel</a>'
+                    html: '<button class="btn" data-dismiss="modal">Cancel</button>'
                 }]
             };
         }
