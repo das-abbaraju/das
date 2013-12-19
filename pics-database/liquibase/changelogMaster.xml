@@ -76,4 +76,7 @@
     <include file="./liquibase/mdo14_PICS-13660_Update_incorrect_currencies_on_late_fees.sql"/>
     <include file="./liquibase/mdo15_PICS-13692_correct_erroneous_invoice_type.sql"/>
     <include file="./liquibase/mdo17_PICS-13584_Bulk_approval_suncor_policies.sql"/>
+
+	<!-- 7.0.2 -->
+	<include file="./liquibase/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql"/>
 </databaseChangeLog>
