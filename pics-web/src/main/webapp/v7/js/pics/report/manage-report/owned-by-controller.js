@@ -15,58 +15,58 @@ PICS.define('report.manage-report.OwnedByController', {
                     .on('click', '#manage_report_filter a', this.filterList);
             }
         },
-        
+
         cancelChanges: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report');
-            
+
             this.resetReport($report);
-            
+
             event.preventDefault();
         },
-        
+
         confirmDeleteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
                 report_id = $element.data('report-id');
-            
+
             PICS.ajax({
                 url: 'ManageReports!deleteReport.action',
                 data: {
-                    reportId: report_id,
+                    reportId: report_id
                 }
             });
 
             $report.slideUp(400, function () {
                 $(this).remove();
             });
-            
+
             event.preventDefault();
         },
-        
+
         deleteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
                 $report_options = $report.find('.report-options'),
                 $report_icons = $report.find('.icons'),
                 report_id = $element.data('report-id');
-            
+
             $report.addClass('delete');
-            
+
             $report_options.hide();
-            
+
             $report_icons.hide();
-                    
+
             $report.append($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="btn cancel">' + PICS.text('ManageReports.ownedBy.confirmDelete.cancel') + '</button>',
                     '<button class="btn btn-danger delete" data-report-id="' + report_id + '">' + PICS.text('ManageReports.ownedBy.confirmDelete.delete') + '</button>',
                 '</div>'
             ].join('')));
-            
+
             event.preventDefault();
         },
-        
+
         favoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
@@ -76,7 +76,7 @@ PICS.define('report.manage-report.OwnedByController', {
                 $favorite_action = $report_options.find('.favorite, .unfavorite'),
                 $body = $('body'),
                 report_id = $element.data('report-id');
-            
+
             $body.trigger('report-favorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
@@ -86,23 +86,23 @@ PICS.define('report.manage-report.OwnedByController', {
                     $favorite_action.text('Unfavorite');
                 }
             });
-            
+
             event.preventDefault();
         },
-        
+
         filterList: function (event) {
             var $filter = $(event.currentTarget);
-            
+
             $('body').trigger('report-filter', {
                 filter: $filter,
                 success: function (data, textStatus, jqXHR) {
                     $('#owned_by_reports_container').html(data);
                 }
             });
-            
+
             event.preventDefault();
         },
-        
+
         privateReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
@@ -110,7 +110,7 @@ PICS.define('report.manage-report.OwnedByController', {
                 $public_icon = $report.find('.icon-search'),
                 $public_action = $report_options.find('.private, .public'),
                 report_id = $element.data('report-id');
-            
+
             PICS.ajax({
                 url: 'ManageReports!unpublicize.action',
                 data: {
@@ -122,10 +122,10 @@ PICS.define('report.manage-report.OwnedByController', {
                     $public_action.text('Show in Search');
                 }
             });
-            
+
             event.preventDefault();
         },
-        
+
         publicReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
@@ -133,7 +133,7 @@ PICS.define('report.manage-report.OwnedByController', {
                 $icons = $report.find('.icons'),
                 $public_action = $report_options.find('.private, .public'),
                 report_id = $element.data('report-id');
-            
+
             PICS.ajax({
                 url: 'ManageReports!publicize.action',
                 data: {
@@ -145,10 +145,10 @@ PICS.define('report.manage-report.OwnedByController', {
                     $public_action.text('Hide from Search');
                 }
             });
-            
+
             event.preventDefault();
         },
-        
+
         refreshOwnedBy: function () {
             PICS.ajax({
                 url: 'ManageReports!ownedBy.action',
@@ -157,21 +157,21 @@ PICS.define('report.manage-report.OwnedByController', {
                 }
             });
         },
-        
+
         resetReport: function ($report) {
             var $confirm_options = $report.find('.confirm-options'),
                 $report_options = $report.find('.report-options'),
                 $report_icons = $report.find('.icons');
-            
+
             $report.removeClass('delete');
-            
+
             $confirm_options.remove();
-            
+
             $report_options.show();
-            
+
             $report_icons.show();
         },
-        
+
         unfavoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
@@ -181,7 +181,7 @@ PICS.define('report.manage-report.OwnedByController', {
                 $favorite_action = $report_options.find('.favorite, .unfavorite'),
                 $body = $('body'),
                 report_id = $element.data('report-id');
-            
+
             $body.trigger('report-unfavorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
@@ -191,7 +191,7 @@ PICS.define('report.manage-report.OwnedByController', {
                     $favorite_action.text('Favorite');
                 }
             });
-            
+
             event.preventDefault();
         }
     }
