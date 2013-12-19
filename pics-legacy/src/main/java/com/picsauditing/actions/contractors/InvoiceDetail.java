@@ -669,7 +669,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		return editEnabled;
 	}
 
-	public SapAppPropertyUtil getSapAppPropertyUtil() {
+
+    public String getTaxIdLabel() {
+        if (contractor.getCountry().isBrazil()) {
+            return getText(contractor.getLocale(), "FeeClass.CNPJ");
+        }
+
+        return getText(contractor.getLocale(),"FeeClass.VAT");
+    }
+
+    public SapAppPropertyUtil getSapAppPropertyUtil() {
 		return sapAppPropertyUtil;
 	}
 

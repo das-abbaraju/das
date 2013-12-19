@@ -267,7 +267,7 @@
                     </s:else>
                     <s:if test="%{@com.picsauditing.util.Strings@isNotEmpty(contractor.vatId)}">
                         <br>
-                        <s:text name="FeeClass.VAT"/>
+                        <s:property value="taxIdLabel"/>
                         <s:property value="contractor.vatId"/>
                     </s:if>
                 </td>
