@@ -6,29 +6,16 @@ import com.strikeiron.www.GlobalAddressVerifier;
 import javax.xml.rpc.ServiceException;
 
 public class StrikeIronAddressVerificationService extends AddressVerificationService {
-
     private GlobalAddressVerifier globalAddressVerifier;
-
-    public StrikeIronAddressVerificationService() {
-        globalAddressVerifier = new GlobalAddressVerifier();
-    }
-
-    public StrikeIronAddressVerificationService(GlobalAddressVerifier globalAddressVerifier) {
-        this.globalAddressVerifier = globalAddressVerifier;
-    }
 
     public AddressHolder verify(AddressHolder address) throws AddressVerificationException {
         Address verified = null;
         AddressHolder correctedAddress = new AddressHolder();
 
         try {
-            verified = globalAddressVerifier.verifyAddress(
-                    address.getAddressLine1() + " " + address.getAddressLine2(),
-                    address.getCity(),
-                    address.getStateOrProvince(),
-                    address.getCountry(),
-                    address.getZipOrPostalCode());
-        } catch (ServiceException e) {
+            globalAddressVerifier = getGlobalAddressVerifier(address);
+            verified = globalAddressVerifier.execute();
+        } catch (Exception e) {
             throw new AddressVerificationException(e.getMessage(), e, address);
         }
         if (verified.getStatusNbr() >= 500) {
@@ -48,6 +35,20 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
         return correctedAddress;
     }
 
+    private GlobalAddressVerifier getGlobalAddressVerifier(AddressHolder address) {
+        if (globalAddressVerifier == null) {
+            return new GlobalAddressVerifier(
+                    address.getAddressLine1() + " " + address.getAddressLine2(),
+                    address.getCity(),
+                    address.getStateOrProvince(),
+                    address.getCountry(),
+                    address.getZipOrPostalCode());
+        }
+        else {
+            return globalAddressVerifier;
+        }
+    }
+
     protected static ResultStatus parseResultCode(int resultCode) {
         if (resultCode >= 200 && resultCode <= 299) {
             return ResultStatus.SUCCESS;
@@ -59,4 +60,6 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
 
         return ResultStatus.INTERNAL_ERROR;
     }
+
+
 }
