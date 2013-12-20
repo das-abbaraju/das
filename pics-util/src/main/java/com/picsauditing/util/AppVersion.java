@@ -24,6 +24,12 @@ public class AppVersion {
         this.minor = NumberUtils.toInt(minor, 0);
     }
 
+    public AppVersion(String major, String minor, String patch) {
+        this.major = NumberUtils.toInt(major, 0);
+        this.minor = NumberUtils.toInt(minor, 0);
+        this.patch = NumberUtils.toInt(patch, 0);
+    }
+
     public AppVersion(int major, int minor, int patch) {
         this.major = major;
         this.minor = minor;
@@ -53,14 +59,21 @@ public class AppVersion {
     }
 
     public boolean greaterThan(AppVersion other) {
-        if (this.major != other.major)
+        if (this.major != other.major) {
             return this.major > other.major;
-
-        return this.minor > other.minor;
+        } else if (this.minor != other.minor) {
+            return this.minor > other.minor;
+        } else {
+            return this.patch > other.patch;
+        }
     }
 
     public boolean greaterThan(int maj, int min) {
         return greaterThan(new AppVersion(maj, min));
+    }
+
+    public boolean greaterThan(int maj, int min, int patch) {
+        return greaterThan(new AppVersion(maj, min, patch));
     }
 
     public boolean greaterThanOrEqualTo(int maj, int min) {
@@ -72,6 +85,6 @@ public class AppVersion {
 
     public boolean equals(Object obj) {
         AppVersion other = (AppVersion) obj;
-        return this.major == other.major && this.minor == other.minor;
+        return this.major == other.major && this.minor == other.minor && this.patch == other.patch;
     }
 }

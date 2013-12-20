@@ -94,7 +94,7 @@ public abstract class FeatureToggleExpressions extends Script {
 		return true;
 	}
 
-	public float versionOf(String featureModuleOrApp) throws FeatureToggleException {
+	public AppVersion versionOf(String featureModuleOrApp) throws FeatureToggleException {
 		if ("PICSORG".equalsIgnoreCase(featureModuleOrApp)) {
 			return versionOfPicsOrg();
 		} else if ("BPROC".equalsIgnoreCase(featureModuleOrApp)) {
@@ -104,20 +104,20 @@ public abstract class FeatureToggleExpressions extends Script {
 		}
 	}
 
-	public float versionOfBackProcs() throws FeatureToggleException {
+	public AppVersion versionOfBackProcs() throws FeatureToggleException {
 		Binding binding = getBinding();
 		AppPropertyDAO appPropertyDAO = (AppPropertyDAO) binding.getVariable("appPropertyDAO");
 		String version = appPropertyDAO.getProperty("VERSION.BPROC");
 		try {
-			return Float.parseFloat(version);
+			return new AppVersion(version);
 		} catch (Exception e) {
 			throw new FeatureToggleException(e.getMessage());
 		}
 	}
 
-	public float versionOfPicsOrg() throws FeatureToggleException {
+	public AppVersion versionOfPicsOrg() throws FeatureToggleException {
 		try {
-			return Float.parseFloat(AppVersion.current.getVersion());
+			return AppVersion.current;
 		} catch (Exception e) {
 			throw new FeatureToggleException(e.getMessage());
 		}
@@ -149,4 +149,13 @@ public abstract class FeatureToggleExpressions extends Script {
 		}
 		return permissions().has(opPerms);
 	}
+
+    public AppVersion appVersion(int major, int minor) throws FeatureToggleException {
+        return new AppVersion(major, minor);
+    }
+
+    public AppVersion appVersion(int major, int minor, int patch) throws FeatureToggleException {
+        return new AppVersion(major, minor, patch);
+    }
+
 }
