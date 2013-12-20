@@ -232,7 +232,7 @@ public class BillingService {
 	private InvoiceType convertBillingStatusToInvoiceType(Invoice invoice, BillingStatus billingStatus) {
         Set<FeeClass> invoiceFeeClasses = getInvoiceFeeClasses(invoice);
 
-        if (invoiceFeeClasses.contains(FeeClass.Activation)) {
+        if (invoiceFeeClasses.contains(FeeClass.Activation) || invoiceFeeClasses.contains(FeeClass.Reactivation)) {
             return InvoiceType.Activation;
         }
 
