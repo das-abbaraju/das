@@ -227,14 +227,14 @@ public class FeatureToggleCheckerGroovyTest {
 
 	@Test
 	public void testGroovyScript_VersionOfPicsOrg() throws Exception {
-		String scriptBody = "versionOf('PICSORG') > 4.2";
+		String scriptBody = "versionOf('PICSORG').greaterThan(appVersion(4,2))";
 		trueScript(scriptBody);
 	}
 
 	@Test
 	public void testGroovyScript_VersionOfBackProcs() throws Exception {
 		when(appPropertyDAO.getProperty("VERSION.BPROC")).thenReturn("1.0");
-		String scriptBody = "versionOf('BPROC') > 0.9";
+        String scriptBody = "versionOf('BPROC').greaterThan(appVersion(0, 9))";
 		trueScript(scriptBody);
 	}
 
