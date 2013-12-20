@@ -865,4 +865,17 @@ public class BillingServiceTest extends PicsTranslationTest {
             assertEquals(BigDecimal.TEN, item.getOriginalAmount());
         }
     }
+
+    public void testBillingStatus_HasActivationFee() throws Exception {
+        ContractorAccount account = new ContractorAccount();
+        account.setMustPay("Yes");
+        account.setPayingFacilities(1);
+        account.setInvoices(invoices);
+        account.setStatus(AccountStatus.Requested);
+        account.setAccountLevel(AccountLevel.Full);
+
+        BillingStatus status = billingService.billingStatus(account);
+
+        assertEquals(BillingStatus.Activation, status);
+    }
 }

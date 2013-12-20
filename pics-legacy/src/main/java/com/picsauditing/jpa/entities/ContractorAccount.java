@@ -1218,7 +1218,11 @@ public class ContractorAccount extends Account implements JSONable {
 
 	}
 
-	public boolean pendingOrActive() {
+    public boolean pendingRequestedOrActive() {
+        return status.isPending() || status.isActive() || status.isRequested();
+    }
+
+    public boolean pendingOrActive() {
 		return status.isPending() || status.isActive();
 	}
 

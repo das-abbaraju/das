@@ -771,7 +771,7 @@ public class BillingService {
 
         int daysUntilRenewal = (contractor.getPaymentExpires() == null) ? 0 : DateBean.getDateDifference(contractor.getPaymentExpires());
 
-        if (contractor.pendingOrActive() && contractor.getAccountLevel().isFull() && contractor.newMember()) {
+        if (contractor.pendingRequestedOrActive() && contractor.getAccountLevel().isFull() && contractor.newMember()) {
             return BillingStatus.Activation;
         }
 
