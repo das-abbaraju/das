@@ -462,6 +462,21 @@
                 }
             },
 
+            updateCountryFields: function () {
+                var $country = $('.country select'),
+                    selected_country = $country.val() || '';
+
+                this.updateAddressFields(selected_country);
+
+                this.updatePhoneNumber(selected_country);
+
+                this.updateTimezonesByCountry(selected_country);
+
+                this.updateZipcode(selected_country);
+
+                this.updateTaxIdLabel(selected_country);
+            },
+
             // HACK to pull custom address fields for the UK
             updateAddressFields: function (selected_country) {
                 var that = this;
@@ -476,22 +491,7 @@
                         $('#company_address_fields').html(data);
                         that.renderSubdivision();
                     }
-            });
-            },
-
-            updateCountryFields: function () {
-                var $country = $('.country select'),
-                    selected_country = $country.val() || '';
-
-                this.updateAddressFields(selected_country);
-
-                this.updatePhoneNumber(selected_country);
-
-                this.updateTimezonesByCountry(selected_country);
-
-                this.updateZipcode(selected_country);
-
-                this.updateTaxIdLabel(selected_country);
+                });
             },
 
             updatePhoneNumber: function (selected_country) {
