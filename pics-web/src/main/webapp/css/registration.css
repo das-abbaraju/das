@@ -222,9 +222,13 @@ footer .footer-menu a {
 	overflow: hidden;
 }
 
-.registration-form #vat_id
+.registration-form #tax_id
 {
 	display: none;
+}
+
+.registration-form #tax_id.required {
+	display: block;
 }
 
 .registration-form .errors {

@@ -398,7 +398,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		if (contractor.getStatus().isRequested()) {
 			contractor.setStatus(AccountStatus.Pending);
 		}
-		
+
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
         contractor.setPaymentExpires(new Date());
@@ -431,7 +431,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			newConFee.setFeeClass(feeClass);
 			contractor.getFees().put(feeClass, newConFee);
 		}
-		
+
 		scrubContractorData(contractor);
 	}
 
