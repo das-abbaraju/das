@@ -97,9 +97,4 @@
     <include file="./liquibase/sshacter37_PICS13868_InvoicePaymentUpdateTrigger.sql"/>
     <include file="./liquibase/sshacter38_PICS13868_InvoicePaymentDeleteTrigger.sql"/>
 
-	<!-- 7.0.2 -->
-	<include file="./liquibase/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql"/>
-	<include file="./liquibase/mdo18_PICS-13701_updateAllContractorAddedSubscriptions.sql"/>
-	<include file="./liquibase/mdo22_PICS-14038_reactivationFeeOverrides.sql"/>
-
 </databaseChangeLog>
