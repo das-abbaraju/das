@@ -299,8 +299,7 @@
 
                     $country_select.on('change', $.proxy(this.updateCountryFields, this));
 
-                    // Show or hide the tax id field based on the Country default value.
-                    $country_select.trigger('change');
+                    this.updateCountryFields();
 
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
                     $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
@@ -477,7 +476,7 @@
                         $('#company_address_fields').html(data);
                         that.renderSubdivision();
                     }
-                });
+            });
             },
 
             updateCountryFields: function () {
