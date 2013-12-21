@@ -4,7 +4,7 @@
 <%-- Url --%>
 <s:url action="Reference" method="dynamicReport" var="dr_walkthrough_url" />
 
-<s:set var="new_to_dynamic_reports" value="true" />
+<s:set var="new_to_dynamic_reports" value="false" />
 
 <s:if test="#new_to_dynamic_reports">
     <div class="row">
