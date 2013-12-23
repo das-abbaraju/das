@@ -30,9 +30,9 @@ public class TaxIdCountryJSON extends PicsActionSupport {
         Country country = dao.findbyISO(iso);
 
         if (country.isBrazil()) {
-            return getText(locale, "FeeClass.CNPJ");
-        } else if (country.isEuropeanUnion()) {
-            return getText(locale, "FeeClass.VAT");
+            return getText("FeeClass.CNPJ");
+        } else if (country.isEuropeanUnion() && !country.isUK()) {
+            return getText("FeeClass.VAT");
         } else {
             return "";
         }
