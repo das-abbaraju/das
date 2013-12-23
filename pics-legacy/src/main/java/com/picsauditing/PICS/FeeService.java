@@ -247,10 +247,12 @@ public class FeeService {
         if (billingStatus.isUpgrade()) {
             ContractorTag ssBlockTag = getSSBlockContractorTag(contractor);
 
-            contractor.getOperatorTags().remove(ssBlockTag);
-            feeDAO.remove(ssBlockTag);
-            billingService.syncBalance(contractor);
-            calculateContractorInvoiceFees(contractor);
+            if (ssBlockTag != null) {
+                contractor.getOperatorTags().remove(ssBlockTag);
+                feeDAO.remove(ssBlockTag);
+                billingService.syncBalance(contractor);
+                calculateContractorInvoiceFees(contractor);
+            }
         }
     }
 
