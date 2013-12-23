@@ -45,6 +45,7 @@
     </decorator>
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>
+        <pattern>/ManageReports!getStarted.action</pattern>
     </decorator>
     <decorator name="bootstrap3-simple-layout" page="bootstrap3-simple-layout.jsp">
         <pattern>/employee-guard/welcome*</pattern>

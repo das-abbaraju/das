@@ -76,11 +76,30 @@
     <include file="./liquibase/mdo15_PICS-13692_correct_erroneous_invoice_type.sql"/>
     <include file="./liquibase/mdo17_PICS-13584_Bulk_approval_suncor_policies.sql"/>
     <include file="./liquibase/mdo23_PICS-13692_updateReactivationAndDeclinedAccounts.sql"/>
+	<include file="./liquibase/mdo19_PICS-14016_invoicePayingFacilities.sql"/>
+	<include file="./liquibase/mdo20_PICS-14017_invoiceItemOriginalFeeAmount.sql"/>
+	<include file="./liquibase/sshacter21_PICS13868_InvoiceInsertTrigger.sql"/>
+	<include file="./liquibase/sshacter22_PICS13868_InvoiceUpdateTrigger.sql"/>
+ 	<include file="./liquibase/sshacter23_PICS13868_InvoiceDeleteTrigger.sql"/>
+	<include file="./liquibase/sshacter24_PICS13868_InvoiceCommissionInsertTrigger.sql"/>
+    <include file="./liquibase/sshacter25_PICS13868_InvoiceCommissionUpdateTrigger.sql"/>
+    <include file="./liquibase/sshacter26_PICS13868_InvoiceCommissionDeleteTrigger.sql"/>
+    <include file="./liquibase/sshacter27_PICS13868_InvoiceFeeInsertTrigger.sql"/>
+    <include file="./liquibase/sshacter28_PICS13868_InvoiceFeeUpdateTrigger.sql"/>
+    <include file="./liquibase/sshacter29_PICS13868_InvoiceFeeDeleteTrigger.sql"/>
+    <include file="./liquibase/sshacter30_PICS13868_InvoiceFeeCountryInsertTrigger.sql"/>
+    <include file="./liquibase/sshacter31_PICS13868_InvoiceFeeCountryUpdateTrigger.sql"/>
+    <include file="./liquibase/sshacter32_PICS13868_InvoiceFeeCountryDeleteTrigger.sql"/>
+    <include file="./liquibase/sshacter33_PICS13868_InvoiceItemInsertTrigger.sql"/>
+    <include file="./liquibase/sshacter34_PICS13868_InvoiceItemUpdateTrigger.sql"/>
+    <include file="./liquibase/sshacter35_PICS13868_InvoiceItemDeleteTrigger.sql"/>
+    <include file="./liquibase/sshacter36_PICS13868_InvoicePaymentInsertTrigger.sql"/>
+    <include file="./liquibase/sshacter37_PICS13868_InvoicePaymentUpdateTrigger.sql"/>
+    <include file="./liquibase/sshacter38_PICS13868_InvoicePaymentDeleteTrigger.sql"/>
 
 	<!-- 7.0.2 -->
 	<include file="./liquibase/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql"/>
 	<include file="./liquibase/mdo18_PICS-13701_updateAllContractorAddedSubscriptions.sql"/>
-	<include file="./liquibase/mdo19_PICS-14016_invoicePayingFacilities.sql"/>
-	<include file="./liquibase/mdo20_PICS-14017_invoiceItemOriginalFeeAmount.sql"/>
 	<include file="./liquibase/mdo22_PICS-14038_reactivationFeeOverrides.sql"/>
+
 </databaseChangeLog>

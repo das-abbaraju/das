@@ -772,7 +772,7 @@ public class BillingServiceTest extends PicsTranslationTest {
         // must have at least one paying facility or it'll be current
         when(contractor.getPayingFacilities()).thenReturn(1);
         when(contractor.getStatus()).thenReturn(AccountStatus.Active);
-        when(contractor.pendingOrActive()).thenReturn(true);
+        when(contractor.pendingRequestedOrActive()).thenReturn(true);
         when(contractor.isRenew()).thenReturn(true);
         when(contractor.isMustPayB()).thenReturn(true);
         when(contractor.getFees()).thenReturn(fees);

@@ -24,6 +24,7 @@
 		</action>
 
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">
+			<result name="getStarted">/struts/report/manage-report/get-started.jsp</result>
 			<result name="favorites">/struts/report/manage-report/favorites.jsp</result>
 			<result name="ownedBy">/struts/report/manage-report/owned-by.jsp</result>
 			<result name="sharedWith">/struts/report/manage-report/shared-with.jsp</result>
