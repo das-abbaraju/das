@@ -935,4 +935,74 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
 		assertEquals(expected,actual);
 	}
+
+	@Test
+	public void testCalculateInvoiceItemRevRecFinishDateFor_UpgradeInvoice_PaymentExpiresIsSixtyDaysOut() throws Exception {
+		Date testInvoiceCreationDate = new Date();
+		Date paymentExpires = DateBean.addDays(testInvoiceCreationDate,60);
+		Date expected = paymentExpires;
+		InvoiceType invoiceType = InvoiceType.Upgrade;
+		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
+		assertEquals(expected,actual);
+	}
+
+	@Test
+	public void testCalculateInvoiceItemRevRecFinishDateFor_UpgradeInvoice_PaymentExpiresIsTwoHundredDaysOut() throws Exception {
+		Date testInvoiceCreationDate = new Date();
+		Date paymentExpires = DateBean.addDays(testInvoiceCreationDate,200);
+		Date expected = paymentExpires;
+		InvoiceType invoiceType = InvoiceType.Upgrade;
+		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
+		assertEquals(expected,actual);
+	}
+
+	@Test
+	public void testCalculateInvoiceItemRevRecFinishDateFor_UpgradeInvoice_PaymentExpiresIsMoreThanAYearOut() throws Exception {
+		Date testInvoiceCreationDate = new Date();
+		Date paymentExpires = DateBean.addDays(testInvoiceCreationDate,380);
+		Date expected = paymentExpires;
+		InvoiceType invoiceType = InvoiceType.Upgrade;
+		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
+		assertEquals(expected,actual);
+	}
+
+	@Test
+	public void testCalculateInvoiceItemRevRecFinishDateFor_OtherFeesInvoice_PaymentExpiresIsSixtyDaysOut() throws Exception {
+		Date testInvoiceCreationDate = new Date();
+		Date paymentExpires = DateBean.addDays(testInvoiceCreationDate,60);
+		Date expected = paymentExpires;
+		InvoiceType invoiceType = InvoiceType.OtherFees;
+		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
+		assertEquals(expected,actual);
+	}
+
+	@Test
+	public void testCalculateInvoiceItemRevRecFinishDateFor_OtherFeesInvoice_PaymentExpiresIsTwoHundredDaysOut() throws Exception {
+		Date testInvoiceCreationDate = new Date();
+		Date paymentExpires = DateBean.addDays(testInvoiceCreationDate,200);
+		Date expected = paymentExpires;
+		InvoiceType invoiceType = InvoiceType.OtherFees;
+		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
+		assertEquals(expected,actual);
+	}
+
+	@Test
+	public void testCalculateInvoiceItemRevRecFinishDateFor_OtherFeesInvoice_PaymentExpiresIsMoreThanAYearOut() throws Exception {
+		Date testInvoiceCreationDate = new Date();
+		Date paymentExpires = DateBean.addDays(testInvoiceCreationDate,380);
+		Date expected = paymentExpires;
+		InvoiceType invoiceType = InvoiceType.OtherFees;
+		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
+		assertEquals(expected,actual);
+	}
+
+	@Test
+	public void testCalculateInvoiceItemRevRecFinishDateFor_LateFeeInvoice_PaymentExpiresIs275DaysOut() throws Exception {
+		Date testInvoiceCreationDate = new Date();
+		Date paymentExpires = DateBean.addDays(testInvoiceCreationDate,275);
+		Date expected = paymentExpires;
+		InvoiceType invoiceType = InvoiceType.LateFee;
+		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
+		assertEquals(expected,actual);
+	}
 }

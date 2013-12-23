@@ -656,7 +656,6 @@ public class BillingService {
 	}
 
 	public Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
-		Date contractorPaymentExpires = contractor.getPaymentExpires();
 		switch (invoice.getInvoiceType()) {
 			case Activation:
 				return calculateActivationRevRecFinishDate(invoice, contractor);
@@ -671,11 +670,7 @@ public class BillingService {
 		Date oneYearLater;
 		oneYearLater = null;
 		if (contractorPaymentExpiresIsNullOrLessThanAYearFromNow(contractor)) {
-			if (contractor.getPaymentExpires() == null) {
-				oneYearLater = DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
-			} else {
-				oneYearLater = DateBean.addYears(contractor.getPaymentExpires(),1);
-			}
+			oneYearLater = DateBean.addYears(contractor.getPaymentExpires(),1);
 		} else {
 			oneYearLater = contractor.getPaymentExpires();
 		}
@@ -729,13 +724,14 @@ public class BillingService {
 	private Date calculateInvoiceItemRevRecStartDateFor(Invoice invoice) {
 		switch (invoice.getInvoiceType()) {
 			case Activation:
+				if (invoice.getDueDate() == null) {
+					return invoice.getCreationDate();
+				} else {
+					return invoice.getDueDate();
+				}
 			case Renewal:
 				if (invoice.getDueDate() == null) {
-					if (invoice.getInvoiceType() == InvoiceType.Renewal) {
-						return DateBean.addMonths(invoice.getCreationDate(), 1);
-					} else {
-						return invoice.getCreationDate();
-					}
+					return DateBean.addMonths(invoice.getCreationDate(), 1);
 				} else {
 					return invoice.getDueDate();
 				}
