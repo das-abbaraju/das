@@ -656,21 +656,44 @@ public class BillingService {
 	}
 
 	private Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
+		Date contractorPaymentExpires = contractor.getPaymentExpires();
 		switch (invoice.getInvoiceType()) {
 			case Activation:
-				Date oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
-				return oneYearLater;
+				return calculateActivationRevRecFinishDate(invoice, contractor);
 			case Renewal:
-				Date oneYearOneMonthLater = DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
-				return oneYearOneMonthLater;
+				return calculateRenewalRevRecFinishDate(invoice, contractor);
 			default:
-				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
-				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
-				if (previousInvoice == null || previousEndDate == null) {
-					throw new Exception(generateExceptionStringForInabilityToCalculateRevRec(contractor,invoice,previousInvoice));
-				}
-				return previousEndDate;
+				return contractor.getPaymentExpires();
 		}
+	}
+
+	private Date calculateRenewalRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater;
+		oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrCurrentYear(contractor)) {
+			if (contractor.getPaymentExpires() == null) {
+				oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
+			} else {
+				oneYearLater = DateBean.addYears(contractor.getPaymentExpires(),1);
+			}
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
+
+	private Date calculateActivationRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrCurrentYear(contractor)) {
+			oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
+
+	private boolean contractorPaymentExpiresIsNullOrCurrentYear(ContractorAccount contractor) {
+		return contractor.getPaymentExpires() == null || contractor.getPaymentExpires().getYear() == new Date().getYear();
 	}
 
 	private String generateExceptionStringForInabilityToCalculateRevRec(ContractorAccount contractor, Invoice invoice, Invoice previousInvoice) {
