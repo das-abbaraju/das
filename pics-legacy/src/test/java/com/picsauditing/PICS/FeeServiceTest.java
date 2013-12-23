@@ -75,6 +75,10 @@ public class FeeServiceTest extends PicsTranslationTest {
     private AuditType auditType;
     @Mock
     private ContractorAudit contractorAudit;
+    @Mock
+    private ContractorTag contractorTag;
+    @Mock
+    private OperatorTag operatorTag;
 
     @Mock
     private OperatorAccount mockOperatorWithDiscount;
@@ -109,6 +113,8 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         setUpContractor();
 
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Upgrade);
+
 		assert (OAMocksSet.isEmpty());
 	}
 
@@ -116,6 +122,10 @@ public class FeeServiceTest extends PicsTranslationTest {
         contractor = new ContractorAccount();
         contractor.setOperators(operatorList);
         contractor.setCountry(country);
+        ArrayList<ContractorTag> tags = new ArrayList<ContractorTag>();
+        tags.add(contractorTag);
+        contractor.setOperatorTags(tags);
+        when(contractorTag.getTag()).thenReturn(operatorTag);
     }
 
 	@After
@@ -1413,4 +1423,19 @@ public class FeeServiceTest extends PicsTranslationTest {
         feeService.calculateUpgradeDate(contractorAccount, BillingStatus.Current);
         verify(contractorAccount, times(1)).setLastUpgradeDate(any(Date.class));
     }
+
+
+    @Test
+    public void testDropBlockSSManualAuditTagIfUpgrading_NoTag() throws Exception {
+        when(operatorTag.isBlockSSManualAudit()).thenReturn(false);
+        Whitebox.invokeMethod(feeService, "dropBlockSSManualAuditTagIfUpgrading", contractor, BillingStatus.Upgrade);
+    }
+
+    @Test
+    public void testDropBlockSSManualAuditTagIfUpgrading_Tagged() throws Exception {
+        when(operatorTag.isBlockSSManualAudit()).thenReturn(true);
+
+        Whitebox.invokeMethod(feeService, "dropBlockSSManualAuditTagIfUpgrading", contractor, BillingStatus.Upgrade);
+    }
+
 }
