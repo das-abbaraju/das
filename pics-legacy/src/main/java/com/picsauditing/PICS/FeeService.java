@@ -106,6 +106,9 @@ public class FeeService {
 
     public void calculateUpgradeDate(ContractorAccount contractor, BillingStatus currentBillingStatus) {
         BillingStatus newBillingStatus = billingService.billingStatus(contractor);
+
+        dropBlockSSManualAuditTagIfUpgrading(contractor, newBillingStatus);
+
         if (currentBillingStatus != newBillingStatus) {
             if (currentBillingStatus != BillingStatus.Upgrade && newBillingStatus == BillingStatus.Upgrade) {
                 contractor.setLastUpgradeDate(new Date());
@@ -237,6 +240,27 @@ public class FeeService {
         buildFeeNewLevels(contractor, payingFacilities, feeClasses, operatorsRequiringInsureGUARD);
 
         calculateUpgradeDate(contractor, currentBillingStatus);
+    }
+
+    // TODO: THIS IS TO BE REMOVED BEFORE 2015
+    private void dropBlockSSManualAuditTagIfUpgrading(ContractorAccount contractor, BillingStatus billingStatus) {
+        if (billingStatus.isUpgrade()) {
+            ContractorTag ssBlockTag = getSSBlockContractorTag(contractor);
+
+            contractor.getOperatorTags().remove(ssBlockTag);
+            feeDAO.remove(ssBlockTag);
+            billingService.syncBalance(contractor);
+            calculateContractorInvoiceFees(contractor);
+        }
+    }
+
+    private ContractorTag getSSBlockContractorTag(ContractorAccount contractor) {
+        for (ContractorTag tag : contractor.getOperatorTags()) {
+            if (tag.getTag().isBlockSSManualAudit()) {
+                return tag;
+            }
+        }
+        return null;
     }
 
     private void buildFeeNewLevels(ContractorAccount contractor, int payingFacilities, Set<FeeClass> feeClasses, Set<OperatorAccount> operatorsRequiringInsureGUARD) {
