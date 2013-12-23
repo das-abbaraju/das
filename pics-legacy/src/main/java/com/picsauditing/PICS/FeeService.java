@@ -245,16 +245,22 @@ public class FeeService {
     // TODO: THIS IS TO BE REMOVED BEFORE 2015
     private void dropBlockSSManualAuditTagIfUpgrading(ContractorAccount contractor, BillingStatus billingStatus) {
         if (billingStatus.isUpgrade()) {
-            for (ContractorTag tag : contractor.getOperatorTags()) {
-                if (tag.getTag().isBlockSSManualAudit()) {
-                    contractor.getOperatorTags().remove(tag);
-                    feeDAO.remove(tag);
-                    billingService.syncBalance(contractor);
-                    calculateContractorInvoiceFees(contractor);
-                    break;
-                }
+            ContractorTag ssBlockTag = getSSBlockContractorTag(contractor);
+
+            contractor.getOperatorTags().remove(ssBlockTag);
+            feeDAO.remove(ssBlockTag);
+            billingService.syncBalance(contractor);
+            calculateContractorInvoiceFees(contractor);
+        }
+    }
+
+    private ContractorTag getSSBlockContractorTag(ContractorAccount contractor) {
+        for (ContractorTag tag : contractor.getOperatorTags()) {
+            if (tag.getTag().isBlockSSManualAudit()) {
+                return tag;
             }
         }
+        return null;
     }
 
     private void buildFeeNewLevels(ContractorAccount contractor, int payingFacilities, Set<FeeClass> feeClasses, Set<OperatorAccount> operatorsRequiringInsureGUARD) {
