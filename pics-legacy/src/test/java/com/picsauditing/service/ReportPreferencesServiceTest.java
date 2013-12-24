@@ -344,12 +344,12 @@ public class ReportPreferencesServiceTest {
         List<ReportUser> favorites = reportPreferencesService.addUserTypeFavorites(USER_ID,UserType.SafetyHealthAndEnvironmental);
 
         assertEquals(6, favorites.size());
-        assertEquals(7, favorites.get(0).getReport().getId());
-        assertEquals(105, favorites.get(1).getReport().getId());
-        assertEquals(619, favorites.get(2).getReport().getId());
-        assertEquals(435, favorites.get(3).getReport().getId());
-        assertEquals(433, favorites.get(4).getReport().getId());
-        assertEquals(100, favorites.get(5).getReport().getId());
+        assertEquals(100, favorites.get(0).getReport().getId());
+        assertEquals(433, favorites.get(1).getReport().getId());
+        assertEquals(435, favorites.get(2).getReport().getId());
+        assertEquals(619, favorites.get(3).getReport().getId());
+        assertEquals(105, favorites.get(4).getReport().getId());
+        assertEquals(7, favorites.get(5).getReport().getId());
     }
 
 }
