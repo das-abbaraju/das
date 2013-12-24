@@ -7,6 +7,7 @@ import java.util.*;
 import javax.persistence.NoResultException;
 
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserType;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,4 +269,81 @@ public class ReportPreferencesService {
 		reportUserDao.save(reportPreferences);
 	}
 
+    public List<ReportUser> addUserTypeFavorites(int userId, UserType userType) {
+        List<ReportUser> newFavorites = new ArrayList<>();
+        Integer[] reports = getReportIdFromUserType(userType);
+        for(int reportId : reports) {
+            ReportUser reportUser = loadOrCreateReportUser(userId, reportId);
+            favoriteReport(reportUser);
+
+            newFavorites.add(reportUser);
+        }
+
+        return newFavorites;
+    }
+
+    private Integer[] getReportIdFromUserType(UserType userType) {
+        List<Integer> reportIds = new ArrayList<>();
+        // Contractor List
+
+        reportIds.add(100);
+
+        switch (userType) {
+            case SafetyHealthAndEnvironmental:
+                reportIds.add(433);
+                reportIds.add(435);
+                reportIds.add(619);
+                reportIds.add(105);
+                reportIds.add(7);
+                break;
+            case ProcurementContracts:
+//                reportIds.add(Search for New);
+                reportIds.add(1093);
+                reportIds.add(490);
+                reportIds.add(7);
+                reportIds.add(105);
+                reportIds.add(150);
+                break;
+            case Operations:
+//                reportIds.add(Search for New);
+                reportIds.add(7);
+                reportIds.add(433);
+                reportIds.add(1393);
+                reportIds.add(490);
+                reportIds.add(110);
+                break;
+            case Maintenance:
+//                reportIds.add(Search for New);
+                reportIds.add(1393);
+                reportIds.add(915);
+                reportIds.add(7);
+                break;
+            case Engineering:
+                reportIds.add(490);
+                reportIds.add(7);
+                reportIds.add(105);
+                reportIds.add(150);
+                break;
+            case TechnicalServices:
+//                reportIds.add(Search for New);
+                reportIds.add(490);
+                reportIds.add(7);
+                reportIds.add(105);
+                reportIds.add(150);
+                break;
+            case Risk:
+                reportIds.add(433);
+                reportIds.add(435);
+                reportIds.add(619);
+                reportIds.add(105);
+                reportIds.add(7);
+                break;
+            case Security:
+                reportIds.add(1393);
+                reportIds.add(110);
+                break;
+        }
+
+        return reportIds.toArray(new Integer[reportIds.size()]);
+    }
 }

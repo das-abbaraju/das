@@ -21,24 +21,24 @@
 </div>
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-		<tw:form formName="recommend_favorites" action="${recommend_favorites_url}" method="post" class="form-horizontal" role="form">
+		<form name="recommend_favorites" action="${recommend_favorites_url}" class="form-horizontal" role="form">
 
 			<div class="form-group">
-				<tw:label labelName="user_type" class="col-md-3 control-label">I am a(n)</tw:label>
+				<label class="col-md-3 control-label">I am a(n)</label>
 	            <div class="col-md-6">
-	                <tw:select selectName="types" class="form-control select2Min">
-	                	<tw:option>Select User Type</tw:option>
+	                <select name="userType" class="form-control select2Min">
+	                	<option>Select User Type</option>
 	                	<s:iterator value="userTypes" var="user_type">
-	                		<tw:option value="${user_type.name}">${user_type.name}</tw:option>
+	                		<option value="${user_type}">${user_type.name}</option>
                 		</s:iterator>
-	                </tw:select>
+	                </select>
 	            </div>
 			</div>
 			<div class="form-group">
 		        <div class="col-md-6 col-md-offset-3 form-actions">
-		            <tw:button buttonName="goToFavorites" type="submit" class="btn btn-primary">Go To Favorites</tw:button>
+		            <button name="goToFavorites" type="submit" class="btn btn-primary">Go To Favorites</button>
 		        </div>
 		    </div>
-		</tw:form>
+		</form>
 	</div>
 </div>

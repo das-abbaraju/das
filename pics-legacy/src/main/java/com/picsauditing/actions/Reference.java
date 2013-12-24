@@ -18,8 +18,6 @@ public class Reference extends PicsActionSupport {
 	@Autowired
 	private FeatureToggle featureToggle;
 
-    protected String from;
-
 	public String navigationMenu() throws Exception {
 		loadPermissions(false);
 
@@ -42,24 +40,12 @@ public class Reference extends PicsActionSupport {
 	public String reportsManager() throws Exception {
 		loadPermissions(false);
 
-        if (from == null) {
-            Map<String,Object> parameters = ActionContext.getContext().getParameters();
-
-            if (parameters != null && !parameters.isEmpty()) {
-                from = ((String[]) parameters.get("from"))[0];
-            }
+        if (isFirstTimeReportsManagerUser()) {
+            setReportsManagerTutorialDate();
         }
 
-        boolean isFromReportsMenu = from != null && from.equals("ReportsMenu");
-
-        if ((!isFirstTimeReportsManagerUser() || permissions.getSwitchedToUserName() != null) && isFromReportsMenu) {
-            setUrlForRedirect("ManageReports!search.action");
-            return REDIRECT;
-        } else {
-			setReportsManagerTutorialDate();
-            return "manage-reports";
-		}
-	}
+        return "manage-reports";
+    }
 
 	/**
 	 * Determines whether or not the user logged in is a first-time Dynamic
@@ -99,12 +85,4 @@ public class Reference extends PicsActionSupport {
 
 		userDAO.save(user);
 	}
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
 }
