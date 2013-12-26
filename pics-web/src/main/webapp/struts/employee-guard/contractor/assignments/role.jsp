@@ -125,7 +125,7 @@
                                 <s:set var="skill_status_class">success</s:set>
                             </s:else>
 
-                            <td class="${skill_status_class} status text-center">
+                            <td class="${skill_status_class} text-center">
                                 <i class="${skill_icon} icon-large"></i>
                             </td>
                         </s:iterator>

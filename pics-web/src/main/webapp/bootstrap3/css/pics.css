@@ -848,18 +848,18 @@ body {
   padding: 5px 0px;
 }
 /* line 26, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
-.employee-guard-list-rollup li.expired {
+.employee-guard-list-rollup li.danger {
   color: #e74c3c;
 }
 /* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
-.employee-guard-list-rollup li.expiring {
+.employee-guard-list-rollup li.warning {
   color: #f4b400;
 }
-/* line 35, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
-.employee-guard-list-rollup li.complete, .employee-guard-list-rollup li.pending {
+/* line 34, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+.employee-guard-list-rollup li.success {
   color: #33b679;
 }
-/* line 39, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 38, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 .employee-guard-list-rollup li .assigned-count {
   font-size: 20px;
   font-weight: bold;
@@ -1035,54 +1035,51 @@ body {
 .skill-list .list-group-item i {
   margin-right: 10px;
 }
-/* line 25, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .complete,
-.skill-list .pending {
+/* line 24, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .success {
   background-color: #33b679;
 }
-/* line 28, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .complete:hover,
-.skill-list .pending:hover {
+/* line 27, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .success:hover {
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
-/* line 32, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .complete:active,
-.skill-list .pending:active {
+/* line 31, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .success:active {
   background-image: none;
   background-color: #0f9d58;
 }
-/* line 38, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .expiring {
+/* line 37, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .warning {
   background-color: #f4b400;
 }
-/* line 41, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .expiring:hover {
+/* line 40, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .warning:hover {
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
-/* line 45, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .expiring:active {
+/* line 44, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .warning:active {
   background-image: none;
   background-color: #ec8c00;
 }
-/* line 51, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .expired {
+/* line 50, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .danger {
   background-color: #e74c3c;
 }
-/* line 54, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .expired:hover {
+/* line 53, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .danger:hover {
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
-/* line 58, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.skill-list .expired:active {
+/* line 57, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.skill-list .danger:active {
   background-image: none;
   background-color: #c0392b;
 }
 
-/* line 66, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 65, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 .employee_guard_employee_skill-page .update {
   margin-top: 20px;
 }
-/* line 70, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 69, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
 }
@@ -1175,71 +1172,83 @@ body {
 #employee_assignment tr {
   cursor: pointer;
 }
-/* line 6, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 4, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr .success {
+  color: #b3b3b3;
+}
+/* line 8, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr .warning {
+  color: #b3b3b3;
+}
+/* line 12, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment tr .danger {
+  color: #b3b3b3;
+}
+/* line 17, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment.view-only tr {
   cursor: auto;
 }
-/* line 12, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 23, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tr.assigned .assign-employee {
   background-color: #fbcb43;
 }
-/* line 15, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 26, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tr.assigned .assign-employee a {
   color: #ec8c00;
 }
-/* line 20, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 31, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tr.assigned .success {
   background-color: #d6f0e4;
   color: #33b679;
 }
-/* line 25, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 36, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tr.assigned .warning {
   background-color: #fef5d9;
   color: #f4b400;
 }
-/* line 30, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 41, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tr.assigned .danger {
   background-color: #fadbd8;
   color: #e74c3c;
 }
-/* line 36, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 47, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tbody > tr:nth-child(odd) td {
   background-color: #f1f1f2;
 }
-/* line 40, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 51, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tbody > tr:nth-child(even) td {
   background: none;
 }
-/* line 44, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 55, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tbody > tr:hover td {
   background-color: #ebf5fe;
 }
-/* line 47, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 58, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tbody > tr:hover td.success {
   color: #33b679;
 }
-/* line 51, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 62, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tbody > tr:hover td.warning {
   color: #f4b400;
 }
-/* line 55, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 66, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tbody > tr:hover td.danger {
   color: #e74c3c;
 }
-/* line 59, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 70, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment tbody > tr:hover td.assign-employee a {
   color: #ec8c00;
 }
-/* line 66, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment td.status, #employee_assignment td.assign-employee {
+/* line 76, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment td.assign-employee {
   color: #b3b3b3;
   text-align: center;
 }
-/* line 70, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment td.status a, #employee_assignment td.assign-employee a {
+/* line 80, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+#employee_assignment td.assign-employee a {
   color: #b3b3b3;
 }
-/* line 75, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 85, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 #employee_assignment td a {
   display: inline;
 }
@@ -1323,53 +1332,50 @@ body {
 .employee_guard_contractor_employee-page .skill-list .list-group-item i {
   margin-right: 10px;
 }
-/* line 25, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .complete,
-.employee_guard_contractor_employee-page .skill-list .pending {
+/* line 24, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .success {
   background-color: #33b679;
 }
-/* line 28, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .complete:hover,
-.employee_guard_contractor_employee-page .skill-list .pending:hover {
+/* line 27, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .success:hover {
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
-/* line 32, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .complete:active,
-.employee_guard_contractor_employee-page .skill-list .pending:active {
+/* line 31, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .success:active {
   background-image: none;
   background-color: #0f9d58;
 }
-/* line 38, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .expiring {
+/* line 37, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .warning {
   background-color: #f4b400;
 }
-/* line 41, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .expiring:hover {
+/* line 40, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .warning:hover {
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
-/* line 45, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .expiring:active {
+/* line 44, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .warning:active {
   background-image: none;
   background-color: #ec8c00;
 }
-/* line 51, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .expired {
+/* line 50, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .danger {
   background-color: #e74c3c;
 }
-/* line 54, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .expired:hover {
+/* line 53, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .danger:hover {
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
-/* line 58, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_contractor_employee-page .skill-list .expired:active {
+/* line 57, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_contractor_employee-page .skill-list .danger:active {
   background-image: none;
   background-color: #c0392b;
 }
-/* line 66, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 65, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 .employee_guard_contractor_employee-page .employee_guard_employee_skill-page .update {
   margin-top: 20px;
 }
-/* line 70, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 69, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 .employee_guard_contractor_employee-page .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
 }
@@ -1537,53 +1543,50 @@ body {
 #employee_guard_employee_skills_list_page .skill-list .list-group-item i {
   margin-right: 10px;
 }
-/* line 25, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .complete,
-#employee_guard_employee_skills_list_page .skill-list .pending {
+/* line 24, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .success {
   background-color: #33b679;
 }
-/* line 28, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .complete:hover,
-#employee_guard_employee_skills_list_page .skill-list .pending:hover {
+/* line 27, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .success:hover {
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
-/* line 32, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .complete:active,
-#employee_guard_employee_skills_list_page .skill-list .pending:active {
+/* line 31, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .success:active {
   background-image: none;
   background-color: #0f9d58;
 }
-/* line 38, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .expiring {
+/* line 37, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .warning {
   background-color: #f4b400;
 }
-/* line 41, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .expiring:hover {
+/* line 40, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .warning:hover {
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
-/* line 45, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .expiring:active {
+/* line 44, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .warning:active {
   background-image: none;
   background-color: #ec8c00;
 }
-/* line 51, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .expired {
+/* line 50, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .danger {
   background-color: #e74c3c;
 }
-/* line 54, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .expired:hover {
+/* line 53, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .danger:hover {
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
-/* line 58, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-#employee_guard_employee_skills_list_page .skill-list .expired:active {
+/* line 57, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+#employee_guard_employee_skills_list_page .skill-list .danger:active {
   background-image: none;
   background-color: #c0392b;
 }
-/* line 66, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 65, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 #employee_guard_employee_skills_list_page .employee_guard_employee_skill-page .update {
   margin-top: 20px;
 }
-/* line 70, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 69, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 #employee_guard_employee_skills_list_page .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
 }
@@ -1667,53 +1670,50 @@ body {
 .employee_guard_employee_profile-page .skill-list .list-group-item i {
   margin-right: 10px;
 }
-/* line 25, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .complete,
-.employee_guard_employee_profile-page .skill-list .pending {
+/* line 24, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .success {
   background-color: #33b679;
 }
-/* line 28, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .complete:hover,
-.employee_guard_employee_profile-page .skill-list .pending:hover {
+/* line 27, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .success:hover {
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
-/* line 32, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .complete:active,
-.employee_guard_employee_profile-page .skill-list .pending:active {
+/* line 31, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .success:active {
   background-image: none;
   background-color: #0f9d58;
 }
-/* line 38, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .expiring {
+/* line 37, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .warning {
   background-color: #f4b400;
 }
-/* line 41, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .expiring:hover {
+/* line 40, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .warning:hover {
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
-/* line 45, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .expiring:active {
+/* line 44, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .warning:active {
   background-image: none;
   background-color: #ec8c00;
 }
-/* line 51, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .expired {
+/* line 50, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .danger {
   background-color: #e74c3c;
 }
-/* line 54, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .expired:hover {
+/* line 53, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .danger:hover {
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
-/* line 58, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
-.employee_guard_employee_profile-page .skill-list .expired:active {
+/* line 57, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+.employee_guard_employee_profile-page .skill-list .danger:active {
   background-image: none;
   background-color: #c0392b;
 }
-/* line 66, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 65, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 .employee_guard_employee_profile-page .employee_guard_employee_skill-page .update {
   margin-top: 20px;
 }
-/* line 70, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
+/* line 69, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 .employee_guard_employee_profile-page .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
 }

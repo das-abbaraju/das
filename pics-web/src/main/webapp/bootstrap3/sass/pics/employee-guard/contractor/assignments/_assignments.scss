@@ -1,6 +1,17 @@
 #employee_assignment {
     tr {
         cursor: pointer;
+        .success {
+            color: $default_dark;
+        }
+
+        .warning {
+            color: $default_dark;
+        }
+
+        .danger {
+            color: $default_dark;
+        }
     }
 
     &.view-only tr {
@@ -62,7 +73,6 @@
     }
 
     td {
-        &.status,
         &.assign-employee {
             color: $default_dark;
             text-align: center;
