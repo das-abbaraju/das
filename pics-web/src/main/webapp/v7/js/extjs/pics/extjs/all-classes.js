@@ -87515,10 +87515,10 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         height: 26,
         text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
     }],
-    
+
     initComponent: function () {
         this.addEvents('changepage');
-        
+
         this.callParent(arguments);
     },
 
@@ -87526,17 +87526,6 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         var me = this;
 
         return [{
-            cls: 'paging-icon',
-            height: 22,
-            itemId: 'refresh',
-            overCls: 'paging-icon-over',
-            overflowText: me.refreshText,
-            pressedCls: 'paging-icon-pressed',
-            scale: 'large',
-            scope: me,
-            text: '<i class="icon-refresh icon-large"></i>',
-            tooltip: me.refreshText
-        },{
             xtype: 'tbseparator',
             height: 28
         }, {
@@ -87625,7 +87614,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
             height: 28
         }];
     },
-    
+
     // override Ext.toolbar.Paging.onPagingKeyDown to throw custom event
     onPagingKeyDown : function(field, e) {
         var me = this,
@@ -87642,7 +87631,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
                 if(me.fireEvent('beforechange', me, pageNum) !== false){
                     // prevent store from manually loading
                     // me.store.loadPage(pageNum);
-                    
+
                     me.fireEvent('changepage', me, pageNum);
                 }
             }
@@ -96352,7 +96341,7 @@ Ext.define('PICS.view.report.Viewport', {
 
     items: [{
         region: 'center',
-
+        margin: '50 0 0 0',
         border: 0,
         id: 'content',
         items: [{

@@ -11,10 +11,10 @@
     <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
         <s:if test="permissions.userId > 0">
-            <a class="navbar-brand" href="/"></a>
+            <a class="navbar-brand" href="/">Dashboard</a>
         </s:if>
         <s:else>
-            <a class="navbar-brand" href="/employee-guard/employee/dashboard"></a>
+            <a class="navbar-brand" href="/employee-guard/employee/dashboard">Dashboard</a>
         </s:else>
         </div>
         <ul class="nav navbar-nav">
@@ -38,5 +38,5 @@
 </div>
 
 <%--     <s:if test="showContractorSubMenu"> --%>
-<s:include value="/struts/layout/menu/bootstrap3/_contractor-menu.jsp" />
+<%--<s:include value="/struts/layout/menu/bootstrap3/_contractor-menu.jsp" />--%>
 <%--    </s:if> --%>
