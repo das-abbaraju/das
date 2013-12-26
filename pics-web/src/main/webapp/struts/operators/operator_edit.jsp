@@ -542,6 +542,17 @@
                 Check this box to automatically approve Completed policies when they have a recommended status of Approve.
             </pics:fieldhelp>
         </li>
+
+        <li>
+            <label>EmployeeGUARD&trade;:</label>
+            <s:radio
+                    list="#{'Yes':'Yes','No':'No'}"
+                    name="operator.hasEGV3"
+                    theme="pics"
+                    cssClass="inline"
+                    />
+        </li>
+
         <li>
             <label>EmployeeGUARD&trade; Uses Operator Qualification (OQ):</label>
             <s:checkbox name="operator.requiresOQ"/>
@@ -680,7 +691,7 @@
                     </td>
                     <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
                     	<td onclick="$('#show_<s:property value="id"/>').show();">
-                    		<s:property value="serviceLevel" /> 
+                    		<s:property value="serviceLevel" />
                     	</td>
                     </pics:toggle>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
