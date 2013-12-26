@@ -24,7 +24,7 @@ public enum Subscription implements Translatable {
 	},
 	ContractorAdded {
 		public void initialize() {
-			setTemplateID(107);
+			setTemplateID(350);
 			setRequiredForOperator(true);
 		}
 	},

@@ -1,5 +1,6 @@
 package com.picsauditing.mail.subscription;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,59 +12,39 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.service.mail.MailCronService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ContractorAddedSubscription extends SubscriptionBuilder {
+    @Autowired
+    DynamicReportsSubscription dynamicReports;
 
 	@Override
-	public Map<String, Object> process(EmailSubscription subscription) {
-		Map<String, Object> tokens = new HashMap<String, Object>();
+	public Map<String, Object> process(EmailSubscription subscription) throws IOException {
+        EmailSubscription emailSubscription = new EmailSubscription();
+        int reportID;
+        switch (subscription.getTimePeriod()) {
+            case Daily:
+                reportID = 1416;
+                break;
+            case Weekly:
+                reportID = 1586;
+                break;
+            case Monthly:
+                reportID = 1587;
+                break;
+            default: {
+                reportID = 1416;
+            }
+        }
 
-		Set<OperatorAccount> children = new HashSet<OperatorAccount>();
-		OperatorAccount operator = (OperatorAccount) subscription.getUser().getAccount();
+        emailSubscription.setUser(subscription.getUser());
+        emailSubscription.setReport(reportDAO.findById(reportID));
+        emailSubscription.setSubscription(Subscription.DynamicReports);
 
-		if (!operator.isCorporate()) // adding self if not corporate
-			children.add(operator);
-		else
-			children.addAll(operator.getOperatorChildren());
+        return dynamicReports.process(emailSubscription);
+    }
 
-		Map<OperatorAccount, Map<ContractorAccount, ContractorOperator>> operators = new TreeMap<OperatorAccount, Map<ContractorAccount, ContractorOperator>>(
-				getOperatorComparator());
-
-		// Looking through children to find contractors that were added in
-		// time period.
-		for (OperatorAccount child : children) {
-			for (ContractorOperator co : child.getContractorOperators()) {
-				// If added after necessary time period
-				if (co.getContractorAccount().getStatus().isActive()
-						&& co.getCreationDate().after(subscription.getTimePeriod().getComparisonDate())) {
-					if (operators.get(child) == null) {
-						TreeMap<ContractorAccount, ContractorOperator> contractorAccountContractorOperatorTreeMap = new TreeMap<>(getContractorComparator());
-						operators.put(child, contractorAccountContractorOperatorTreeMap);
-					}
-					operators.get(child).put(co.getContractorAccount(), co);
-				}
-			}
-		}
-
-		if (operators.size() > 0)
-			tokens.put("operators", operators);
-
-		return tokens;
-	}
-
-	private Comparator<OperatorAccount> getOperatorComparator() {
-		return new Comparator<OperatorAccount>() {
-			public int compare(OperatorAccount o1, OperatorAccount o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		};
-	}
-
-	private Comparator<ContractorAccount> getContractorComparator() {
-		return new Comparator<ContractorAccount>() {
-			public int compare(ContractorAccount c1, ContractorAccount c2) {
-				return c1.getName().compareToIgnoreCase(c2.getName());
-			}
-		};
-	}
 }

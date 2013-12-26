@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuildErrorException;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ public abstract class SubscriptionBuilder {
 	private FeatureToggle featureToggleChecker;
 	@Autowired
 	private EmailTemplateDAO emailTemplateDAO;
+    @Autowired
+    protected ReportDAO reportDAO;
 
     final static Logger logger = LoggerFactory.getLogger(SubscriptionBuilder.class);
 
