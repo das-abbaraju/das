@@ -12,7 +12,6 @@ and ca.auditTypeID=380
 and ca.expiresDate > NOW()
 and bad.expiresDate is null;
 
-
 -- move out expiration of good audits
 update
 contractor_audit as ca
