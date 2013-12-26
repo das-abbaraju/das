@@ -262,10 +262,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 					if (cAudit.getAuditType().isPicsPqf()) {
 						for (ContractorAuditOperator cao : cAudit.getOperators()) {
 							if (cao.getStatus().after(AuditStatus.Pending)) {
-								ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, permissions);
-                                if (caow != null) {
-                                    caow.setNotes("Resetting PQF because off client addition.");
-                                }
+								cao.changeStatus(AuditStatus.Pending, permissions);
 								auditDataDAO.save(cao);
 							}
 						}
