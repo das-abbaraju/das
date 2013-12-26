@@ -87,8 +87,8 @@
 	<link rel="stylesheet" type="text/css" href="css/employee-guard/employee-guard.css?v=${version}"/>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}"/>
 	<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2-override.css?v=${version}"/>
+	<link rel="stylesheet" type="text/css" href="bootstrap3/css/vendor/select2/select2.css?v=${version}" />
+	<link rel="stylesheet" type="text/css" href="bootstrap3/css/vendor/select2/select2-override.css?v=${version}"/>
 	<link rel="stylesheet" type="text/css" href="css/timezone.css?v=${version}"/>
 	<%-- DO NOT ADD MORE STYLESHEETS TO THIS PAGE, WILL BREAK IE7 --%>
 

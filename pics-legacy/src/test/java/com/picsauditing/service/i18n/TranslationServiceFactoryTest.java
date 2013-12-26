@@ -7,8 +7,7 @@ import com.picsauditing.i18n.model.logging.TranslationUsageLogger;
 import com.picsauditing.i18n.model.strategies.EmptyTranslationStrategy;
 import com.picsauditing.i18n.model.strategies.ReturnKeyTranslationStrategy;
 import com.picsauditing.i18n.model.strategies.TranslationStrategy;
-import com.picsauditing.i18n.service.TranslationService;
-import com.picsauditing.i18n.service.TranslationServiceAdapter;
+import com.picsauditing.i18n.service.*;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.*;
 import com.picsauditing.search.Database;
@@ -96,7 +95,10 @@ public class TranslationServiceFactoryTest {
 
     @Test
     public void testGetTranslationService_ForSpecificCommandKey() throws Exception {
-        TranslationService service = TranslationServiceFactory.getTranslationService(TEST_COMMAND_KEY);
+        TranslationServiceProperties.Builder propertyBuilder = TranslationServiceFactory.baseTranslationServiceProperties();
+        propertyBuilder.translationCommandKey(TEST_COMMAND_KEY);
+
+        TranslationService service = TranslationServiceFactory.getTranslationService(propertyBuilder.build());
         String commandKey = Whitebox.getInternalState(service, "translateCommandKey");
         assertTrue(TEST_COMMAND_KEY.equals(commandKey));
     }

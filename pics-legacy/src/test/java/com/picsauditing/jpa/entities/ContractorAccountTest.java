@@ -51,10 +51,15 @@ public class ContractorAccountTest {
 	private Country country;
 	@Mock
 	private ContractorFee listOnlyFee;
-	@Mock
+    @Mock
+    private ContractorFee upgradeFee;
+    @Mock
 	private InvoiceFee bidOnlyInvoiceFee;
 	@Mock
 	private InvoiceFee listOnlyinvoiceFee;
+    @Mock
+    private InvoiceFee upgradeinvoiceFee;
+
 	@Mock
 	private CountryDAO countryDAO;
 
@@ -82,9 +87,10 @@ public class ContractorAccountTest {
 
 		contractor = EntityFactory.makeContractor();
 		contractorUnderTest = new ContractorAccount();
-		testOperators = new ArrayList<ContractorOperator>();
+		testOperators = new ArrayList<>();
         accountUsers = new ArrayList<>();
 
+        when(upgradeFee.isUpgrade()).thenReturn(true);
         contractorUnderTest.setAccountUsers(accountUsers);
 		Whitebox.setInternalState(contractorUnderTest, "countryDAO", countryDAO);
 		Whitebox.setInternalState(contractorUnderTest, "inputValidator", new InputValidator());
@@ -97,20 +103,20 @@ public class ContractorAccountTest {
 	}
 
 	private void setupFees(boolean bidOnly, boolean listOnly) {
-		fees = new HashMap<FeeClass, ContractorFee>();
 		// all contractors have bid only and list only fees, they may just be
 		// hidden and $0
+        fees = new HashMap<>();
+        contractorUnderTest.setFees(fees);
+
 		fees.put(FeeClass.BidOnly, bidOnlyFee);
 		fees.put(FeeClass.ListOnly, listOnlyFee);
 		when(bidOnlyFee.getCurrentLevel()).thenReturn(bidOnlyInvoiceFee);
 		when(listOnlyFee.getCurrentLevel()).thenReturn(listOnlyinvoiceFee);
+		when(upgradeFee.getCurrentLevel()).thenReturn(upgradeinvoiceFee);
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(bidOnly);
+		when(bidOnlyInvoiceFee.isBidonly()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(listOnly);
-		contractorUnderTest.setFees(fees);
 	}
-
-
-
 
     @Test
     public void testGetCurrentCsr_ReturnsCurrentCsr() throws Exception {
@@ -183,165 +189,6 @@ public class ContractorAccountTest {
         when(oldCsr.getRole()).thenReturn(UserAccountRole.PICSCustomerServiceRep);
         return oldCsr;
     }
-
-    @Test
-	public void testGetBillingStatus_PastDueInvoicesIsPastDue() throws Exception {
-		List<Invoice> invoices = new ArrayList<Invoice>();
-		Invoice invoice = mock(Invoice.class);
-		when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);
-		when(invoice.getDueDate()).thenReturn(DateBean.addDays(new Date(), -10));
-		invoices.add(invoice);
-		contractorUnderTest.setInvoices(invoices);
-
-		setupFees(true, true);
-		contractorUnderTest.setPaymentExpires(DateBean.addDays(new Date(), 46));
-
-		// must have at least one paying facility or it'll be current
-		contractorUnderTest.setPayingFacilities(1);
-
-		contractorUnderTest.setStatus(AccountStatus.Active);
-		contractorUnderTest.setRenew(true);
-		contractorUnderTest.setAccountLevel(AccountLevel.Full);
-		contractorUnderTest.setMembershipDate(DateBean.addDays(new Date(), -380));
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isPastDue());
-	}
-
-	@Test
-	public void testGetBillingStatus_90DaysPastRenewalDateAndRenewFalseIsCancelled() throws Exception {
-		contractorUnderTest.setRenew(false);
-		setupFees(true, true);
-
-		BillingStatus billingStatus = commonCancelledRenewed90DaysPastPaymentExpires();
-
-		assertTrue(billingStatus.isCancelled());
-	}
-
-	@Test
-	public void testGetBillingStatus_90DaysPastRenewalDateAndRenewTrueIsReactivation() throws Exception {
-		contractorUnderTest.setRenew(true);
-		setupFees(true, true);
-
-		BillingStatus billingStatus = commonCancelledRenewed90DaysPastPaymentExpires();
-
-		assertTrue(billingStatus.isReactivation());
-	}
-
-	private BillingStatus commonCancelledRenewed90DaysPastPaymentExpires() {
-		contractorUnderTest.setPaymentExpires(DateBean.addDays(new Date(), -91));
-		// must have at least one paying facility or it'll be current
-		contractorUnderTest.setPayingFacilities(1);
-		contractorUnderTest.setStatus(AccountStatus.Active);
-		contractorUnderTest.setAccountLevel(AccountLevel.Full);
-		contractorUnderTest.setMembershipDate(DateBean.addDays(new Date(), -380));
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-		return billingStatus;
-	}
-
-	@Test
-	public void testGetBillingStatus_DeactivatedRenewIsReactivation() throws Exception {
-		// must have at least one paying facility or it'll be current
-		contractorUnderTest.setPayingFacilities(1);
-
-		contractorUnderTest.setStatus(AccountStatus.Deactivated);
-		contractorUnderTest.setRenew(true);
-		contractorUnderTest.setAccountLevel(AccountLevel.Full);
-		contractorUnderTest.setMembershipDate(DateBean.addDays(new Date(), -380));
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isReactivation());
-	}
-
-	@Test
-	public void testGetBillingStatus_DeactivatedNonRenewIsCancelled() throws Exception {
-		// must have at least one paying facility or it'll be current
-		contractorUnderTest.setPayingFacilities(1);
-
-		contractorUnderTest.setStatus(AccountStatus.Deactivated);
-		contractorUnderTest.setRenew(false);
-		contractorUnderTest.setAccountLevel(AccountLevel.Full);
-		contractorUnderTest.setMembershipDate(DateBean.addDays(new Date(), -380));
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isCancelled());
-	}
-
-	@Test
-	public void testGetBillingStatus_ActiveFullNoMembershipDateIsActivation() throws Exception {
-		// must have at least one paying facility or it'll be current
-		contractorUnderTest.setPayingFacilities(1);
-
-		contractorUnderTest.setStatus(AccountStatus.Active);
-		contractorUnderTest.setAccountLevel(AccountLevel.Full);
-		contractorUnderTest.setMembershipDate(null);
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isActivation());
-	}
-
-	@Test
-	public void testGetBillingStatus_PendingFullNoMembershipDateIsActivation() throws Exception {
-		// must have at least one paying facility or it'll be current
-		contractorUnderTest.setPayingFacilities(1);
-
-		contractorUnderTest.setStatus(AccountStatus.Pending);
-		contractorUnderTest.setAccountLevel(AccountLevel.Full);
-		contractorUnderTest.setMembershipDate(null);
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isActivation());
-	}
-
-	@Test
-	public void testGetBillingStatus_NoMustPayIsCurrent() throws Exception {
-		contractorUnderTest.setMustPay("No");
-		contractorUnderTest.setPayingFacilities(1);
-		contractorUnderTest.setStatus(AccountStatus.Active);
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isCurrent());
-	}
-
-	@Test
-	public void testGetBillingStatus_NoPayingFacilitiesIsCurrent() throws Exception {
-		contractorUnderTest.setMustPay("No");
-		contractorUnderTest.setPayingFacilities(0);
-		contractorUnderTest.setStatus(AccountStatus.Active);
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isCurrent());
-	}
-
-	@Test
-	public void testGetBillingStatus_DemoAccountIsCurrent() throws Exception {
-		contractorUnderTest.setMustPay("Yes");
-		contractorUnderTest.setPayingFacilities(1);
-		contractorUnderTest.setStatus(AccountStatus.Demo);
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isCurrent());
-	}
-
-	@Test
-	public void testGetBillingStatus_DeletedAccountIsCurrent() throws Exception {
-		contractorUnderTest.setMustPay("Yes");
-		contractorUnderTest.setPayingFacilities(1);
-		contractorUnderTest.setStatus(AccountStatus.Deleted);
-
-		BillingStatus billingStatus = contractorUnderTest.getBillingStatus();
-
-		assertTrue(billingStatus.isCurrent());
-	}
 
 	@Test
 	public void testCreditCard_expiresToday() {

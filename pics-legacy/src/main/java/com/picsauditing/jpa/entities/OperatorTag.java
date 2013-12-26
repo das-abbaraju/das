@@ -23,6 +23,7 @@ import org.json.simple.JSONObject;
 @Table(name = "operator_tag")
 public class OperatorTag extends BaseTable {
 	public static final int SHELL_COMPETENCY_REVIEW = 142;
+    public static final int BLOCK_SS_MANUAL_AUDIT = 1647;
 
 	private OperatorAccount operator;
 	private String tag;
@@ -152,5 +153,10 @@ public class OperatorTag extends BaseTable {
 
 	public void setOperatorFlagCriteria(List<FlagCriteriaOperator> operatorFlagCriteria) {
 		this.operatorFlagCriteria = operatorFlagCriteria;
+	}
+
+    @Transient
+    public boolean isBlockSSManualAudit() {
+        return this.id == BLOCK_SS_MANUAL_AUDIT;
 	}
 }

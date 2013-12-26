@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.entities;
 
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -13,8 +14,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "account_skill_group")
-@Where(clause = "deletedBy = 0 AND deletedDate IS NULL")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_skill_group (createdBy, createdDate, deletedBy, deletedDate, groupID, skillID, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLDelete(sql = "UPDATE account_skill_group SET deletedDate = NOW() WHERE id = ?")
 public class AccountSkillGroup implements BaseEntity {
 
 	private static final long serialVersionUID = -7630640628273395059L;

@@ -22,6 +22,7 @@
         <module>pics-legacy</module>
         <module>pics-web</module>
         <module>pics-employeeguard-domain</module>
+        <module>service-strikeiron-global</module>
     </modules>
 
     <repositories>

@@ -90,10 +90,12 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			// addActionError("Audit Type must be set.");
 			// }
 
-			if (criteria.hasMissingChildRequiredLanguages()) {
-				addActionError("Changes to required languages must always have at least one language left. "
-						+ "Make sure your flag criteria has at least one language.");
-			}
+            if (!usingNewTranslationFeature()) {
+                if (criteria.hasMissingChildRequiredLanguages()) {
+                    addActionError("Changes to required languages must always have at least one language left. "
+                            + "Make sure your flag criteria has at least one language.");
+                }
+            }
 
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria)) {

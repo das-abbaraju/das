@@ -20,6 +20,8 @@ AuditAuditorConfirm
 AuditAuditorID
 AuditAuditorIsActive
 AuditAuditorName
+AuditCaLwcrAnswer
+AuditCaTrirAnswer
 AuditClosingAuditorID
 AuditClosingAuditorIsActive
 AuditClosingAuditorName
@@ -28,7 +30,6 @@ AuditCreationDate
 AuditEffectiveDate
 AuditExpiresDate
 AuditID
-AuditLwcrAnswer
 AuditOperatorAccountID
 AuditOperatorAccountName
 AuditOperatorAccountStatus
@@ -46,6 +47,8 @@ AuditTypeID
 AuditTypeMonthsToExpire
 AuditTypeName
 AuditTypeRenewable
+AuditUsLwcrAnswer
+AuditUsTrirAnswer
 ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
@@ -78,4 +81,3 @@ PreviousAuditScore
 PreviousAuditTypeName
 SafetyManualAnswer
 SafetyManualComment
-TrirAnswer

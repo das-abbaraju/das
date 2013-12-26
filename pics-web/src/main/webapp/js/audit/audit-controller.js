@@ -32,14 +32,6 @@
                 });
             },
 
-            auditNeedsReload: function (needs_reload) {
-                if (needs_reload) {
-                    this.audit_needs_reload = needs_reload;
-                } else {
-                    return this.audit_needs_reload || $.error('Reload has not be defined.');
-                }
-            },
-
             getAuditParameters: function () {
                 return this.audit_parameters || $.error('No audit parameters have been defined.');
             },
@@ -50,7 +42,8 @@
 
             refreshCaoTable: function (event) {
                 var $element = $(event.target),
-                    that = this;
+                    that = this,
+                    audit_needs_reload = $element.attr('data-attr-audit-reload');
 
                 this.setAuditParameters({
                     auditID: $('#auditID').val(),
@@ -58,14 +51,12 @@
                     status: $element.find('.bStatus').val()
                 });
 
-                this.auditNeedsReload($element.attr('data-attr-audit-reload'));
-
                 $('#caoTable').block({
                     message: 'Loading...'
                 });
 
                 //call loadResults defined in conHeader.jsp
-                loadResults(this.getAuditParameters(), '', this.auditNeedsReload());
+                loadResults(this.getAuditParameters(), '', audit_needs_reload);
             },
 
             refreshAudit: function () {

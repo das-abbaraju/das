@@ -5,6 +5,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.SapAppPropertyUtil;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -53,6 +55,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private ContractorFee bidOnlyFee;
 	@Mock
 	private ContractorFee listOnlyFee;
+    @Mock
+    private ContractorFee contractorFee;
 	@Mock
 	private InvoiceFee bidOnlyInvoiceFee;
 	@Mock
@@ -79,6 +83,14 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private InvoiceItem previousInvoiceItem;
 	@Mock
 	private InvoiceItemDAO invoiceItemDAO;
+    @Mock
+    private CreditMemoAppliedToInvoice creditMemoAppliedToInvoice;
+    @Mock
+    private CreditMemoAppliedToInvoice creditMemoAppliedToInvoice2;
+    @Mock
+    private ContractorFee upgradeFee;
+    @Mock
+    private InvoiceFee upgradeinvoiceFee;
 
 	@Before
 	public void setUp() {
@@ -94,7 +106,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		assert (OAMocksSet.isEmpty());
 
 		setupInvoiceAndItems();
-		setupStandardFees();
+		setupStandardFees(true, true);
 		calculateInvoiceTotal();
 		when(contractor.getCountry()).thenReturn(country);
         when(country.getBusinessUnit()).thenReturn(businessUnit);
@@ -102,23 +114,25 @@ public class BillingServiceTest extends PicsTranslationTest {
 	}
 
 	private void setupInvoiceAndItems() {
-		invoices = new ArrayList<Invoice>();
-		invoiceItems = new ArrayList<InvoiceItem>();
+		invoices = new ArrayList<>();
+		invoiceItems = new ArrayList<>();
 		invoiceItems.add(invoiceItem);
 		when(invoiceItem.getAmount()).thenReturn(new BigDecimal(199.00));
+        when(invoiceItem.getOriginalAmount()).thenReturn(new BigDecimal(199.00));
 		when(invoiceItem.getInvoiceFee()).thenReturn(invoiceFee);
 	}
 
-	private void setupStandardFees() {
-		fees = new HashMap<FeeClass, ContractorFee>();
+	private void setupStandardFees(boolean bidOnlyIsFree, boolean listOnlyIsFree) {
+		fees = new HashMap<>();
 		// all contractors have bid only and list only fees, they may just be
 		// hidden and $0
 		fees.put(FeeClass.BidOnly, bidOnlyFee);
 		fees.put(FeeClass.ListOnly, listOnlyFee);
 		when(bidOnlyFee.getCurrentLevel()).thenReturn(bidOnlyInvoiceFee);
 		when(listOnlyFee.getCurrentLevel()).thenReturn(listOnlyinvoiceFee);
-		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
-		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
+        when(bidOnlyInvoiceFee.isBidonly()).thenReturn(true);
+        when(bidOnlyInvoiceFee.isFree()).thenReturn(bidOnlyIsFree);
+		when(listOnlyinvoiceFee.isFree()).thenReturn(listOnlyIsFree);
 	}
 
 	private void setupCreateInvoiceWithItemsTestsCommon() {
@@ -127,7 +141,6 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(contractor.getFees()).thenReturn(fees);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
 		when(contractor.getInvoices()).thenReturn(invoices);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
 
 		when(invoiceFee.isMembership()).thenReturn(true);
@@ -163,7 +176,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
 
-		billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		billingService.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		verify(contractor).setRenew(true);
 	}
@@ -174,7 +187,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(false);
 
-		billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		billingService.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		verify(contractor).setRenew(true);
 	}
@@ -182,8 +195,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_Activation_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Activation).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -191,9 +206,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_Reactivation_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Reactivation).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -201,9 +217,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_Upgrade_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Upgrade).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -211,9 +228,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_Renewal_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Renewal).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -221,9 +239,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_RenewalOverdue_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.RenewalOverdue);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.RenewalOverdue).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -231,9 +250,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_Current_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Current);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Current).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 30)));
 	}
@@ -241,11 +261,12 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_PICS_8597_RenewalBidOnly_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Renewal).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -253,11 +274,12 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_PICS_8597_RenewalListOnly_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(false);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Renewal).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), contractor.getPaymentExpires()));
 	}
@@ -265,11 +287,12 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_PICS_8597_ActivationListOnly_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(false);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Activation).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -277,11 +300,12 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Test
 	public void testCreateInvoiceWithItems_PICS_8597_ActivationBidOnly_InvoiceDueDateSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Activation).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertTrue(DateBean.isSameDate(invoice.getDueDate(), DateBean.addDays(new Date(), 7)));
 	}
@@ -290,8 +314,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	public void testCreateInvoiceWithItems_InvoicePropertiesAreSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
 		doCallRealMethod().when(invoiceModel).getSortedClientSiteList(any(ContractorAccount.class));
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Activation).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertThat("Test Operator", is(equalTo(invoice.getNotes())));
 		assertThat(contractor, is(equalTo(invoice.getAccount())));
@@ -305,8 +331,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 	public void testCreateInvoiceWithItems_MembershipTrueResultsInInvoiceNotesBeingSet() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
 		doCallRealMethod().when(invoiceModel).getSortedClientSiteList(any(ContractorAccount.class));
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Activation).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user, contractor.getBillingStatus());
+		Invoice invoice = spy.createInvoiceWithItems(contractor, invoiceItems, user);
 
 		assertThat("Test Operator", is(equalTo(invoice.getNotes())));
 	}
@@ -316,11 +344,10 @@ public class BillingServiceTest extends PicsTranslationTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		// this will skip an activation fee
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
-		// currently this will result in zero invoice items which will be a zero
-		// dollar invoice
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Current);
+        BillingService spy = spy(billingService);
+        doReturn(BillingStatus.Current).when(spy).billingStatus(contractor);
 
-		Invoice invoice = billingService.createInvoice(contractor, contractor.getBillingStatus(), user);
+		Invoice invoice = spy.createInvoice(contractor, user);
 
 		assertTrue(invoice == null);
 	}
@@ -358,7 +385,6 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(contractor.getCountry()).thenReturn(country);
 		when(contractor.getFees()).thenReturn(contractorFees);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 
 		when(auditDataDAO.findContractorAuditAnswers(anyInt(), anyInt(), anyInt())).thenReturn(null);
 		preparePriorHistoryForContractor();
@@ -492,4 +518,364 @@ public class BillingServiceTest extends PicsTranslationTest {
 		invoiceFee.setFeeClass(feeClass);
 		return item;
 	}
+
+    @Test
+    public void testHasCreditMemosForFullAmount_NoCreditMemos() throws Exception {
+        assertFalse(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
+    @Test
+    public void testHasCreditMemosForFullAmount_PartialCreditMemo() throws Exception {
+        List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
+        creditMemos.add(creditMemoAppliedToInvoice);
+        when(invoice.getCreditMemos()).thenReturn(creditMemos);
+        when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
+        when(creditMemoAppliedToInvoice.getAmount()).thenReturn(BigDecimal.ONE);
+        assertFalse(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
+    @Test
+    public void testHasCreditMemosForFullAmount_FullCreditMemo() throws Exception {
+        List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
+        creditMemos.add(creditMemoAppliedToInvoice);
+        when(invoice.getCreditMemos()).thenReturn(creditMemos);
+        when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
+        when(creditMemoAppliedToInvoice.getAmount()).thenReturn(BigDecimal.TEN);
+        assertTrue(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
+    @Test
+    public void testHasCreditMemosForFullAmount_MultipleCreditMemo() throws Exception {
+        List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
+        creditMemos.add(creditMemoAppliedToInvoice);
+        creditMemos.add(creditMemoAppliedToInvoice2);
+        when(invoice.getCreditMemos()).thenReturn(creditMemos);
+        when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
+        when(creditMemoAppliedToInvoice.getAmount()).thenReturn(BigDecimal.ONE);
+        when(creditMemoAppliedToInvoice2.getAmount()).thenReturn(new BigDecimal(9));
+        assertTrue(BillingService.hasCreditMemosForFullAmount(invoice));
+    }
+
+    @Test
+    public void testConvertBillingStatusToInvoiceType_ActivationItem() throws Exception {
+        when(invoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", invoice, BillingStatus.Renewal);
+
+        assertEquals(InvoiceType.Activation, invoiceType);
+    }
+
+    @Test
+    public void testConvertBillingStatusToInvoiceType_ReactivationItem() throws Exception {
+        when(invoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Reactivation);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", invoice, BillingStatus.Renewal);
+
+        assertEquals(InvoiceType.Activation, invoiceType);
+    }
+
+    @Test
+    public void testgetUpgradedFees() throws Exception {
+        setupCreateInvoiceWithItemsTestsCommon();
+        fees.put(FeeClass.AuditGUARD, upgradeFee);
+        fees.put(FeeClass.DocuGUARD, new ContractorFee());
+
+        when(upgradeFee.getNewLevel()).thenReturn(upgradeinvoiceFee);
+        when(upgradeFee.isUpgrade()).thenReturn(true);
+        when(upgradeFee.getFeeClass()).thenReturn(FeeClass.AuditGUARD);
+        when(upgradeinvoiceFee.isFree()).thenReturn(false);
+
+        List<ContractorFee> upgrades = Whitebox.invokeMethod(billingService, "getUpgradedFees", contractor);
+
+        assertEquals(1,upgrades.size());
+        ContractorFee upgradedAG = upgrades.get(0);
+        assertEquals(FeeClass.AuditGUARD, upgradedAG.getFeeClass());
+    }
+
+    @Test
+    public void testGetBillingStatus_IsUpgrade() throws Exception {
+        upgradeTrueTestsCommon();
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isUpgrade());
+    }
+
+    @Test
+    public void testGetBillingStatus_HasUpgradeFeeClassButIsBidOnly() throws Exception {
+        upgradeTrueTestsCommon();
+
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
+        when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isRenewal());
+    }
+
+    private void upgradeTrueTestsCommon() {
+        billingStatusCommon(46);
+
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);
+        when(invoice.getDueDate()).thenReturn(DateBean.addDays(new Date(), -10));
+
+        when(upgradeFee.isUpgrade()).thenReturn(true);
+        fees.put(FeeClass.EmployeeGUARD, upgradeFee);
+    }
+
+    @Test
+    public void testGetBillingStatus_NoPastDueInvoices_RenewalOverdue() throws Exception {
+        billingStatusCommon(-10);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isRenewalOverdue());
+    }
+
+    @Test
+    public void testGetBillingStatus_NoPastDueInvoices_Renewal() throws Exception {
+        billingStatusCommon(10);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isRenewal());
+    }
+
+    @Test
+    public void testGetBillingStatus_NoPastDueInvoices_CurrentOver45DaysOut() throws Exception {
+        billingStatusCommon(46);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isCurrent());
+    }
+
+    @Test
+    public void testGetBillingStatus_PastDueInvoicesIsPastDue() throws Exception {
+        billingStatusCommon(46);
+        when(contractor.hasPastDueInvoice()).thenReturn(true);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isPastDue());
+    }
+
+    @Test
+    public void testGetBillingStatus_90DaysPastRenewalDateAndRenewFalseIsCancelled() throws Exception {
+        billingStatusCommon(-91);
+        when(contractor.isRenew()).thenReturn(false);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isCancelled());
+    }
+
+    @Test
+    public void testGetBillingStatus_90DaysPastRenewalDateAndRenewTrueIsReactivation() throws Exception {
+        billingStatusCommon(-91);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isReactivation());
+    }
+
+    @Test
+    public void testGetBillingStatus_DeactivatedRenewIsReactivation() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
+        when(contractor.pendingOrActive()).thenReturn(false);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isReactivation());
+    }
+
+    @Test
+    public void testGetBillingStatus_DeactivatedNonRenewIsCancelled() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
+        when(contractor.pendingOrActive()).thenReturn(false);
+        when(contractor.isRenew()).thenReturn(false);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isCancelled());
+    }
+
+    @Test
+    public void testGetBillingStatus_ActiveFullNewMemberIsActivation() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.newMember()).thenReturn(true);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isActivation());
+    }
+
+    @Test
+    public void testGetBillingStatus_PendingFullNewMemberIsActivation() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.newMember()).thenReturn(true);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isActivation());
+    }
+
+    @Test
+    public void testGetBillingStatus_NoMustPayIsCurrent() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.isMustPayB()).thenReturn(false);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isCurrent());
+    }
+
+    @Test
+    public void testGetBillingStatus_NoPayingFacilitiesIsCurrent() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.getPayingFacilities()).thenReturn(0);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isCurrent());
+    }
+
+    @Test
+    public void testGetBillingStatus_DemoAccountIsCurrent() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Demo);
+        when(contractor.pendingOrActive()).thenReturn(false);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isCurrent());
+    }
+
+    @Test
+    public void testGetBillingStatus_DeletedAccountIsCurrent() throws Exception {
+        billingStatusCommon(30);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Deleted);
+
+        BillingStatus billingStatus = billingService.billingStatus(contractor);
+
+        assertTrue(billingStatus.isCurrent());
+    }
+
+    private void billingStatusCommon(int paymentExpiresDays) {
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Paid);
+        when(invoice.getDueDate()).thenReturn(DateBean.addDays(new Date(), -10));
+
+        when(contractor.getPaymentExpires()).thenReturn(DateBean.addDays(new Date(), paymentExpiresDays));
+        // must have at least one paying facility or it'll be current
+        when(contractor.getPayingFacilities()).thenReturn(1);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+        when(contractor.pendingRequestedOrActive()).thenReturn(true);
+        when(contractor.isRenew()).thenReturn(true);
+        when(contractor.isMustPayB()).thenReturn(true);
+        when(contractor.getFees()).thenReturn(fees);
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+
+        when(upgradeFee.getCurrentLevel()).thenReturn(upgradeinvoiceFee);
+    }
+
+    @Test
+    public void testGenerateInvoice() throws Exception {
+        when(contractor.getPayingFacilities()).thenReturn(20);
+        Invoice invoice1 = Whitebox.invokeMethod(billingService, "generateInvoice", contractor, invoiceItems, user, BillingStatus.Renewal, BigDecimal.TEN, BigDecimal.TEN);
+
+        assertEquals(20, invoice1.getPayingFacilities());
+    }
+
+    @Test
+    public void testCreateLineItem() throws Exception {
+        when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+        InvoiceItem item = Whitebox.invokeMethod(billingService, "createLineItem", contractor, FeeClass.Activation, 20);
+
+        assertEquals(item.getAmount(), item.getOriginalAmount());
+    }
+
+    @Test
+    public void testAddYearlyItems() throws Exception {
+        invoiceItems = new ArrayList<>();
+        when(contractor.getFees()).thenReturn(fees);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.AuditGUARD);
+
+        fees.remove(FeeClass.ListOnly);
+        fees.remove(FeeClass.BidOnly);
+        ContractorFee dg = new ContractorFee();
+        dg.setNewLevel(invoiceFee);
+        dg.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.DocuGUARD, dg);
+        ContractorFee ig = new ContractorFee();
+        ig.setNewLevel(invoiceFee);
+        ig.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.InsureGUARD, ig);
+        ContractorFee ag = new ContractorFee();
+        ag.setNewLevel(invoiceFee);
+        ag.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.AuditGUARD, ag);
+        ContractorFee eg = new ContractorFee();
+        eg.setNewLevel(invoiceFee);
+        eg.setNewAmount(BigDecimal.TEN);
+        fees.put(FeeClass.EmployeeGUARD, eg);
+
+        Whitebox.invokeMethod(billingService, "addYearlyItems", invoiceItems, contractor, new Date(), BillingStatus.Renewal);
+
+        assertEquals(4, invoiceItems.size());
+        for (InvoiceItem item : invoiceItems) {
+            assertEquals(BigDecimal.TEN, item.getAmount());
+            assertEquals(item.getAmount(), item.getOriginalAmount());
+        }
+    }
+
+    @Test
+    public void testAddProratedUpgradeItems() throws Exception {
+        invoiceItems = new ArrayList<>();
+        List<ContractorFee> upgrades = new ArrayList<>();
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -6);
+        when(contractor.getLastUpgradeDate()).thenReturn(cal.getTime());
+        cal.add(Calendar.MONTH, 6);
+        when(contractor.getPaymentExpires()).thenReturn(cal.getTime());
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(contractor.getCountry()).thenReturn(country);
+        when(country.getCurrency()).thenReturn(Currency.USD);
+
+        ContractorFee dg = new ContractorFee();
+        dg.setNewLevel(invoiceFee);
+        dg.setNewAmount(BigDecimal.TEN);
+        dg.setFeeClass(FeeClass.DocuGUARD);
+        upgrades.add(dg);
+        ContractorFee ig = new ContractorFee();
+        ig.setNewLevel(invoiceFee);
+        ig.setNewAmount(BigDecimal.TEN);
+        ig.setFeeClass(FeeClass.InsureGUARD);
+        upgrades.add(ig);
+
+        Whitebox.invokeMethod(billingService, "addProratedUpgradeItems", contractor, invoiceItems, upgrades, user);
+
+        assertEquals(2, invoiceItems.size());
+        for (InvoiceItem item : invoiceItems) {
+            assertEquals(new BigDecimal(5), item.getAmount());
+            assertEquals(BigDecimal.TEN, item.getOriginalAmount());
+        }
+    }
+
+    public void testBillingStatus_HasActivationFee() throws Exception {
+        ContractorAccount account = new ContractorAccount();
+        account.setMustPay("Yes");
+        account.setPayingFacilities(1);
+        account.setInvoices(invoices);
+        account.setStatus(AccountStatus.Requested);
+        account.setAccountLevel(AccountLevel.Full);
+
+        BillingStatus status = billingService.billingStatus(account);
+
+        assertEquals(BillingStatus.Activation, status);
+    }
 }

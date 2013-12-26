@@ -71,7 +71,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
-                click: this.confirmEdit
+                click: this.onEditSettingEditButtonClick
             },
 
             'reportsettingsmodal reportcopysetting button[action=copy]':  {
@@ -122,6 +122,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             opensettingsmodal: this.openSettingsModal,
             scope: this
         });
+    },
+
+    onEditSettingEditButtonClick: function (cmp) {
+        this.confirmEdit();
     },
 
     addHideReportInfoEvent: function (cmp, eOpts) {
@@ -238,9 +242,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
 
     confirmEdit: function () {
-        var confirm_box = Ext.create('PICS.view.report.alert.Confirm');
+        var edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm(),
+            edit_setting_form_values = edit_setting_form.getValues(),
+            new_report_name = edit_setting_form_values.name,
+            report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            old_report_name = report.get('name'),
+            confirm_box;
 
-        confirm_box.show();
+        if (new_report_name != old_report_name) {
+            confirm_box = Ext.create('PICS.view.report.alert.Confirm');
+            confirm_box.show();
+        }
     },
 
     editReport: function (cmp, e, eOpts) {

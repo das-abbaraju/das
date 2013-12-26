@@ -120,4 +120,22 @@ public class ContractorEditRiskLevelTest extends PicsTranslationTest {
         verify(emailSender).send(emailQueue);
     }
 
+    @Test
+    public void testSave_MultipleChanges() throws Exception {
+        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+        when(userDAO.find(0)).thenReturn(new User("John Doe"));
+        when(contractor.isSafetySensitive()).thenReturn(false);
+        when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SAFETY_SENSITIVE_ENABLED)).thenReturn(true);
+        contractorEditRiskLevel.setPermissions(permissions);
+        contractorEditRiskLevel.setSafetySensitive(true);
+        contractorEditRiskLevel.setSafetyRisk(LowMedHigh.High);
+
+        contractorEditRiskLevel.save();
+
+        verify(contractorAccountDao).save(contractor);
+        verify(contractor).setSafetySensitive(true);
+        verify(contractor).setSafetyRisk(LowMedHigh.High);
+    }
 }

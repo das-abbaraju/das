@@ -301,13 +301,8 @@ public class EmployeeService {
 
 	public void delete(final String id, final int accountId, final int appUserId) {
 		Employee employee = findEmployee(id, accountId);
-
-		Date deletedDate = new Date();
-		EntityHelper.softDelete(employee, appUserId, deletedDate);
-		EntityHelper.softDelete(employee.getGroups(), appUserId, deletedDate);
-		EntityHelper.softDelete(employee.getSkills(), appUserId, deletedDate);
-
-		employeeDAO.save(employee);
+        EntityHelper.softDelete(employee, appUserId);
+		employeeDAO.delete(employee);
 	}
 
 	public void hardDelete(final String id, final int accountId) {

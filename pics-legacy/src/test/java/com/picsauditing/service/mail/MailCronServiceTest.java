@@ -10,17 +10,13 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.mail.subscription.ContractorAddedSubscription;
-import com.picsauditing.mail.subscription.DynamicReportsSubscription;
-import com.picsauditing.mail.subscription.SubscriptionBuilder;
-import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
+import com.picsauditing.mail.subscription.*;
 import com.picsauditing.service.AppPropertyService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.VelocityAdaptorTest;
-import com.picsauditing.validator.ValidationException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,6 +40,8 @@ public class MailCronServiceTest extends PicsTranslationTest {
     private int subscriptionId = 123;
     private List<EmailQueue> emails;
     private EmailQueue email;
+	private User user;
+
     @Mock
     private FeatureToggleCheckerGroovy featureToggleChecker;
     @Mock
@@ -72,10 +70,15 @@ public class MailCronServiceTest extends PicsTranslationTest {
         email = new EmailQueue();
         emails.add(email);
 
+	    user = new User();
+	    user.setEmail("foo@example.com");
+
         when(subscriptionFactory.getBuilder((Subscription) any())).thenReturn(builder);
         when(subscriptionDAO.find(subscriptionId)).thenReturn(emailSubscription);
         when(emailSubscription.getReport()).thenReturn(report);
         when(emailSubscription.getSubscription()).thenReturn(Subscription.AmberFlags);
+        when(emailSubscription.getUser()).thenReturn(user);
+
         when(emailQueueDAO.getPendingEmails(anyInt())).thenReturn(emails);
 
         Whitebox.setInternalState(mailCronService, "featureToggleChecker", featureToggleChecker);
@@ -128,26 +131,50 @@ public class MailCronServiceTest extends PicsTranslationTest {
         verify(subscriptionDAO).save(emailSubscription);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = SubscriptionValidationException.class)
     public void testValidateEmailSubscription_nullEmailSubscriptionShouldThrowValidationError() throws Exception {
         EmailSubscription invalidEmailSubscription = null;
 
-        mailCronService.validateEmailSubscription(invalidEmailSubscription);
+        mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = SubscriptionValidationException.class)
     public void testValidateEmailSubscription_emailSubscriptionWithNullSubscriptionShouldThrowValidationError() throws Exception {
         EmailSubscription invalidEmailSubscription = createEmailSubscription(null, new Report());
 
-        mailCronService.validateEmailSubscription(invalidEmailSubscription);
+        mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = SubscriptionValidationException.class)
     public void testValidateEmailSubscription_emailSubscriptionForDynamicReportsWithNullReportShouldThrowValidationError() throws Exception {
         EmailSubscription invalidEmailSubscription = createEmailSubscription(Subscription.DynamicReports, null);
 
-        mailCronService.validateEmailSubscription(invalidEmailSubscription);
+        mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
     }
+
+	@Test(expected = SubscriptionValidationException.class)
+	public void testValidateEmailSubscription_emailSubscriptionWithNullUserShouldThrowValidationError() throws Exception {
+		EmailSubscription invalidEmailSubscription = createEmailSubscription(Subscription.AmberFlags, null);
+		invalidEmailSubscription.setUser(null);
+
+		mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
+	}
+
+	@Test(expected = SubscriptionValidationException.class)
+	public void testValidateEmailSubscription_emailSubscriptionWithNullUserEmailShouldThrowValidationError() throws Exception {
+		EmailSubscription invalidEmailSubscription = createEmailSubscription(Subscription.AmberFlags, null);
+		invalidEmailSubscription.getUser().setEmail(null);
+
+		mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
+	}
+
+	@Test(expected = SubscriptionValidationException.class)
+	public void testValidateEmailSubscription_emailSubscriptionWithBlankUserEmailShouldThrowValidationError() throws Exception {
+		EmailSubscription invalidEmailSubscription = createEmailSubscription(Subscription.AmberFlags, null);
+		invalidEmailSubscription.getUser().setEmail("");
+
+		mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
+	}
 
     @Test
     public void testFindEmailSubscription() throws Exception {
@@ -315,7 +342,10 @@ public class MailCronServiceTest extends PicsTranslationTest {
     }
 
     private EmailSubscription createEmailSubscription(Subscription subscription, Report report) {
-        EmailSubscription emailSubscription = new EmailSubscription();
+	    User user = new User();
+	    user.setEmail("foo@example.com");
+	    EmailSubscription emailSubscription = new EmailSubscription();
+	    emailSubscription.setUser(user);
         emailSubscription.setSubscription(subscription);
         emailSubscription.setReport(report);
         return emailSubscription;

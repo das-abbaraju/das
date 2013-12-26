@@ -37,6 +37,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 				filter.setStatus(new AccountStatus[] { AccountStatus.Active }); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Contractor);
+                filter.setShowLocation(true);
 				filter.setShowInvoiceDueDate(true);
 				filter.setShowInsuranceLimits(true);
 				this.filter = filter;

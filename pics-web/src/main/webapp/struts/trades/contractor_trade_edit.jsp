@@ -6,18 +6,17 @@
 	<a href="ContractorTrades!tradeAjax.action?contractor=${contractor.id}&trade=${trade.id}&mode=View" class="trade view"><s:text name="global.View" /></a>
 </s:if>
 
-<s:form id="trade-form" onsubmit="$('#addButton').attr('disabled', true); return true;">
-
+<s:form id="trade-form">
 	<s:hidden name="contractor"/>
 	<s:hidden name="trade"/>
 	<s:hidden name="trade.trade"/>
-	
+
 	<s:if test="trade.id > 0 && trade.activityPercent == 0">
 		<div class="alert-message">
 			<s:text name="ContractorTrade.activityPercent.missing"/>
 		</div>
 	</s:if>
-	
+
 	<%-- Trade Activity Percentages --%>
 	<div id="activityPercent">
 		<s:if test="permissions.operatorCorporate">
@@ -35,7 +34,7 @@
 			</s:text>
 		</s:else>
 	</div>
-	
+
 	<%-- Trade Options --%>
 	<div id="tradeOptions" class="clearfix">
 		<s:if test="trade.trade.productI">
@@ -61,7 +60,7 @@
 				</s:else>
 			</div>
 		</s:if>
-		
+
 		<s:if test="trade.trade.serviceI">
 			<div>
 				<s:if test="permissions.operatorCorporate">
@@ -86,7 +85,7 @@
 			</div>
 		</s:if>
 	</div>
-	
+
 	<s:if test="!permissions.operatorCorporate">
 		<s:if test="trade.id == 0">
 			<div>
@@ -96,7 +95,7 @@
 						<s:text name="ContractorTrade.onsiteServices" />
 						<br />
 					</s:if>
-					
+
 					<s:if test="!offsite">
 						<s:checkbox name="conTypes" fieldValue="Offsite" value="%{contractor.offsiteServices}" cssClass="service" />
 						<s:text name="ContractorTrade.offsiteServices" />
@@ -109,7 +108,7 @@
 				</s:elseif>
 			</div>
 		</s:if>
-	
+
 		<s:if test="affectedTrades.size > 0">
 			<div class="alert-message">
 				<s:text name="ContractorTrades.affectedTrades">
@@ -127,10 +126,24 @@
 				</s:text>
 			</div>
 		</s:if>
-	
+
 		<div>
 			<s:if test="trade.id == 0">
-				<s:submit method="saveTradeAjax" value="%{getText('button.Add')}" cssClass="save btn success" id="addButton" onclick="$('#next_button').show()" />
+				<s:if test="trade.trade.safetySensitiveI.toString().equals('Yes') && !contractor.safetySensitive">
+					<s:set var="affects_safety_sensitive_status">true</s:set>
+				</s:if>
+				<s:else>
+					<s:set var="affects_safety_sensitive_status">false</s:set>
+				</s:else>
+
+				<s:submit
+					method="saveTradeAjax"
+					value="%{getText('button.Add')}"
+					cssClass="btn success"
+					id="addButton"
+					onclick="$('#next_button').show()"
+					data-affects-safety-sensitive-status="%{#affects_safety_sensitive_status}"
+				/>
 			</s:if>
 			<s:else>
 				<s:submit method="saveTradeAjax" value="%{getText('button.Save')}" cssClass="save btn success" />
@@ -138,5 +151,4 @@
 			</s:else>
 		</div>
 	</s:if>
-
 </s:form>

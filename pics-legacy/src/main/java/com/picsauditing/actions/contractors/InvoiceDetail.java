@@ -122,23 +122,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         if (userViewIsDenied()) throw new NoRightsException(getText("InvoiceDetail.error.CantViewInvoice"));
 
-		if (isTransactionIsInvoice()) {
-			invoice.updateAmountApplied();
-		}
-
 		if (button != null) {
             return processedCommand();
-		} else {
-			if (isTransactionIsInvoice()) {
-				updateTotals();
-				billingService.saveInvoice(invoice);
-				feeService.calculateContractorInvoiceFees(contractor);
-				billingService.syncBalance(contractor);
-				contractor.setAuditColumns(permissions);
-				contractorAccountDao.save(contractor);
-			}
-            return SUCCESS;
         }
+
+        return SUCCESS;
 	}
 
     private String processedCommand() throws Exception {
@@ -365,7 +353,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         // Automatically deactivating account based on expired
         // membership
-        BillingStatus status = contractor.getBillingStatus();
+        BillingStatus status = billingService.billingStatus(contractor);
         if (!contractor.getStatus().equals(AccountStatus.Deactivated)
                 && (status.isRenewalOverdue() || status.isReactivation())) {
             if (contractor.getAccountLevel().isBidOnly()) {
@@ -485,7 +473,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private boolean userViewIsDenied() throws NoRightsException {
         return (!permissions.hasPermission(OpPerms.AllContractors) && permissions.getAccountId() != transaction.getAccount().getId());
     }
-
 
     private void updateTotals() {
 		if (isTransactionIsCreditMemo()) return;
@@ -682,7 +669,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		return editEnabled;
 	}
 
-	public SapAppPropertyUtil getSapAppPropertyUtil() {
+
+    public String getTaxIdLabel() {
+        if (contractor.getCountry().isBrazil()) {
+            return getText(contractor.getLocale(), "FeeClass.CNPJ");
+        }
+
+        return getText(contractor.getLocale(),"FeeClass.VAT");
+    }
+
+    public SapAppPropertyUtil getSapAppPropertyUtil() {
 		return sapAppPropertyUtil;
 	}
 

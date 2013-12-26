@@ -1152,7 +1152,7 @@
 			</result>
 		</action>
 
-		<action name="VATCountryAJAX" class="com.picsauditing.actions.VATCountryJSON">
+		<action name="TaxIdCountryAJAX" class="com.picsauditing.actions.TaxIdCountryJSON">
 			<result>/struts/blank.jsp</result>
 		</action>
 
@@ -1319,6 +1319,10 @@
         <action name="HelpCenter" class="com.picsauditing.actions.HelpCenter">
             <result>/struts/blank.jsp</result>
         </action>
+        <action name="AddressVerificationTest" class="com.picsauditing.actions.AddressVerificationTest">
+            <result>/struts/address-verification-test.jsp</result>
+        </action>
+
 	</package>
 
 	<!-- Reports & API -->

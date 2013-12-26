@@ -96,7 +96,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(EmailTemplate.REMINDER_EMAIL_TEMPLATE);
 		emailBuilder.setPermissions(permissions);
-		emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
 		emailBuilder.setConAudit(conAudit);
 		EmailQueue email = emailBuilder.build();
@@ -409,9 +409,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean displayMultiStatusDropDown() {
-		return (actionStatus.size() > 0 && CollectionUtils.isNotEmpty(contractor.getTrades()) && !permissions
-				.hasGroup(10));
-	}
+        if (!permissions.hasGroup(User.GROUP_CSR))
+            return false;
+        if (CollectionUtils.isEmpty(contractor.getTrades()))
+            return false;
+        return (actionStatus.size() > 0);
+    }
 
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
 		if (cao != null && step != null) {
@@ -750,6 +753,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isSystemEdit() {
+//        if (permissions.hasPermission(OpPerms.CaoEdit)) {
+//            return true;
+//        }
 		return systemEdit;
 	}
 

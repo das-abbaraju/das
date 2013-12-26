@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.AuditCategoryRuleBuilder;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -133,4 +135,7 @@ public class AuditCategoryRule extends AuditRule {
 		return out;
 	}
 
+    public static AuditCategoryRuleBuilder builder() {
+        return new AuditCategoryRuleBuilder();
+    }
 }

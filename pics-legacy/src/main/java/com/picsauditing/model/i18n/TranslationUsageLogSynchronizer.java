@@ -79,6 +79,7 @@ public class TranslationUsageLogSynchronizer {
                 rs.getString("msgKey"),
                 rs.getString("msgLocale"),
                 rs.getString("pageName"),
+                new Some(rs.getString("pageOrder")),
                 rs.getString("environment"),
                 new Some(rs.getDate("firstUsed")),
                 new Some(rs.getDate("lastUsed")),

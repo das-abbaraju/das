@@ -68,10 +68,10 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         ModelSpec fatalities = conAudit.join(ContractorAuditTable.Fatalities);
         fatalities.alias = "Fatalities";
 
-        ModelSpec trir = conAudit.join(ContractorAuditTable.Trir);
-        trir.alias = "Trir";
-
-        conAudit.join(ContractorAuditTable.Lwcr);
+        conAudit.join(ContractorAuditTable.UsTrir);
+        conAudit.join(ContractorAuditTable.UsLwcr);
+        conAudit.join(ContractorAuditTable.CaTrir);
+        conAudit.join(ContractorAuditTable.CaLwcr);
         conAudit.join(ContractorAuditTable.Afr);
         conAudit.join(ContractorAuditTable.Air);
 
@@ -116,16 +116,28 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         accountName.setUrl("ContractorView.action?id={AccountID}");
 
         Field fatalities = fields.get("FatalitiesAnswer".toUpperCase());
+        fatalities.setDatabaseColumnName("REPLACE(" + fatalities.getDatabaseColumnName() + ",'Audit.missingParameter','')");
         fatalities.setType(FieldType.Number);
-        Field trir = fields.get("TrirAnswer".toUpperCase());
-        trir.setType(FieldType.Number);
+        Field usTrir = fields.get("AuditUsTrirAnswer".toUpperCase());
+        usTrir.setDatabaseColumnName("REPLACE(" + usTrir.getDatabaseColumnName() + ",'Audit.missingParameter','')");
+        usTrir.setType(FieldType.Number);
         Field emr = fields.get("EmrAnswer".toUpperCase());
+        emr.setDatabaseColumnName("REPLACE(" + emr.getDatabaseColumnName() + ",'Audit.missingParameter','')");
         emr.setType(FieldType.Number);
-        Field lwcr = fields.get("AuditLwcrAnswer".toUpperCase());
-        lwcr.setType(FieldType.Number);
+        Field usLwcr = fields.get("AuditUsLwcrAnswer".toUpperCase());
+        usLwcr.setDatabaseColumnName("REPLACE(" + usLwcr.getDatabaseColumnName() + ",'Audit.missingParameter','')");
+        usLwcr.setType(FieldType.Number);
+        Field caTrir = fields.get("AuditCaTrirAnswer".toUpperCase());
+        caTrir.setDatabaseColumnName("REPLACE(" + caTrir.getDatabaseColumnName() + ",'Audit.missingParameter','')");
+        caTrir.setType(FieldType.Number);
+        Field caLwcr = fields.get("AuditCaLwcrAnswer".toUpperCase());
+        caLwcr.setDatabaseColumnName("REPLACE(" + caLwcr.getDatabaseColumnName() + ",'Audit.missingParameter','')");
+        caLwcr.setType(FieldType.Number);
         Field air = fields.get("AuditAirAnswer".toUpperCase());
+        air.setDatabaseColumnName("REPLACE(" + air.getDatabaseColumnName() + ",'Audit.missingParameter','')");
         air.setType(FieldType.Number);
         Field afr = fields.get("AuditAfrAnswer".toUpperCase());
+        afr.setDatabaseColumnName("REPLACE(" + afr.getDatabaseColumnName() + ",'Audit.missingParameter','')");
         afr.setType(FieldType.Number);
 
         Field contractorsRequiringAnnualUpdateEmail = new Field(

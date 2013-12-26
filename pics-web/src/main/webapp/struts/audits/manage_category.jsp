@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+<%@ page import="com.picsauditing.service.i18n.TranslateUI" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -63,9 +65,22 @@
 	</head>
 	<body>
 		<s:include value="manage_audit_type_breadcrumbs.jsp" />
-		
-		<s:include value="../config_environment.jsp" />
-		
+        <s:include value="../config_environment.jsp" />
+        <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER%>">
+            <div class="alert">
+                This system is currently set to use the new translations service. Changing translations from ManageTranslations will not have an
+                effect while this is active. Please use <a href="https://translate.picsorganizer.com/" target="_blank"><%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%></a>
+            </div>
+        </pics:toggle>
+        <pics:toggleElse>
+            <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE%>">
+                <div class="alert">
+                    This system is currently set to use the new translations datasource. Changing translations from ManageTranslations will
+                    not have an effect while this is active. Please use <a href="https://translate.picsorganizer.com/" target="_blank"><%=TranslateUI.SHOW_TRANSLATION_URL_LINK_TEXT%></a>
+                </div>
+            </pics:toggle>
+        </pics:toggleElse>
+
 		<a class="preview" href="AuditCatPreview.action?categoryID=<s:property value="category.id" />&button=PreviewCategory">Preview Category</a>
 		
 		<s:form id="save">
@@ -111,18 +126,24 @@
                             <s:param name="include_locale_static">true</s:param>
                         </s:include>
 					</li>
-					<li>
-						<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditCategory.<s:property value="category.id"/>." target="_BLANK">
-							Manage Translations
-						</a>
-					</li>
-                    <li>                    
-                        <a
-                            class="edit translate" 
-							href="ManageCategory!findTranslations.action?id=<s:property value="category.id"/>">
-                            Translation Portal
-                        </a>
-                    </li>					
+                    <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER%>"/>
+                    <pics:toggleElse>
+                        <pics:toggle name="<%=FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE%>"/>
+                        <pics:toggleElse>
+                            <li>
+                                <a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditCategory.<s:property value="category.id"/>." target="_BLANK">
+                                    Manage Translations
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    class="edit translate"
+                                    href="ManageCategory!findTranslations.action?id=<s:property value="category.id"/>">
+                                    Translation Portal
+                                </a>
+                            </li>
+                        </pics:toggleElse>
+                    </pics:toggleElse>
 					<li>
 						<label>Unique Code:</label>
 						<s:textfield name="category.uniqueCode" />

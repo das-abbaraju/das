@@ -6,6 +6,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+
+import com.picsauditing.util.AppVersion;
 import groovy.lang.Binding;
 
 import java.util.*;
@@ -253,11 +255,14 @@ public class FeatureToggleExpressionsTest {
 		featureToggleExpressions.versionOf("BAD_ROBOT");
 	}
 
-	@Test(expected = FeatureToggleException.class)
-	public void testVersionOfBackProcs_NonNumericVersionThrowsException() throws Exception {
+    @Test
+	public void testVersionOfBackProcs_NonNumericVersionReturnsZeroZero() throws Exception {
 		when(appPropertyDAO.getProperty("VERSION.BPROC")).thenReturn("NAN");
 
-		featureToggleExpressions.versionOfBackProcs();
+		AppVersion version = featureToggleExpressions.versionOfBackProcs();
+
+        assertTrue(version.getMajor() == 0);
+        assertTrue(version.getMinor() == 0);
 	}
 
 	@Test

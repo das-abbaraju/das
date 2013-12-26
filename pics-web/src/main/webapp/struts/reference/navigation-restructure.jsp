@@ -1,33 +1,34 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<title>Navigation Restructure</title>
+<title>
+    Navigation Restructure
+</title>
+
 <div id="main" class="container">
     <header>
-         <h1>
+        <h1>
             Navigation Restructure
         </h1>
-         <h2>
+        <h2>
             PICS Organizer 7.0
         </h2>
     </header>
 
     <div class="content summary">
         <div class="row">
-            <div class="col-md-6 image-container">
-                <img src="/v7/img/reference/navigation-restructure/restructure.jpg" class="img-responsive">
+            <div class="span6 image-container">
+                <img src="/v7/img/reference/navigation-restructure/restructure.jpg" />
             </div>
-            <div class="col-md-6">
+
+            <div class="span6">
                 <section class="overview">
                     <h1>We've moved some menu items</h1>
                     <p>
-                        Our new menu is cleaner and more intuitive. Below you will find a list
-                        of menu items and their new locations. We've also changed some of our menu
-                        item names. Updated names are displayed to the right.
+                        Our new menu is cleaner and more intuitive. Below you will find a list of menu items and their new locations. We've also changed some of our menu item names. Updated names are displayed to the right.
                     </p>
                     <p>
-                        If you have any questions, please click on the Support menu option and
-                        we'll be happy to help.
+                        If you have any questions, please click on the Support menu option and we'll be happy to help.
                     </p>
                 </section>
             </div>
@@ -35,60 +36,42 @@
     </div>
     <div class="content menu-locations last">
         <div class="row">
-            <div class="col-md-4 side-bar">
-                <ul class="nav ">
-                    <li class="active"><a href="#about">About</a>
-                    </li>
-                    <li><a href="#account_summary">Account Summary</a>
-                    </li>
-                    <li><a href="#annual_update">Annual Update</a>
-                    </li>
-                    <li><a href="#billing">Billing</a>
-                    </li>
-                    <li><a href="#client_sites">Client Sites</a>
-                    </li>
-                    <li><a href="#company">Company</a>
-                    </li>
-                    <li><a href="#contractors">Contractors</a>
-                    </li>
-                    <li><a href="#edit">Edit</a>
-                    </li>
-                    <li><a href="#employee_guard">EmployeeGUARD</a>
-                    </li>
-                    <li><a href="#help_center">Help Center</a>
-                    </li>
-                    <li><a href="#hse_competencies">HSE Competencies</a>
-                    </li>
-                    <li><a href="#insure_guard">InsureGUARD</a>
-                    </li>
-                    <li><a href="#live_chat">Live Chat</a>
-                    </li>
-                    <li><a href="#management">Management</a>
-                    </li>
-                    <li><a href="#operator_qualification">Operator Qualification</a>
-                    </li>
-                    <li><a href="#pqf">PQF</a>
-                    </li>
-                    <li><a href="#reports">Reports</a>
-                    </li>
-                    <li><a href="#resources">Resources</a>
-                    </li>
+            <div class="span4 side-bar">
+                <ul class="nav nav-list">
+                    <li class="active"><a href="#about">About</a></li>
+                    <li><a href="#account_summary">Account Summary</a></li>
+                    <li><a href="#annual_update">Annual Update</a></li>
+                    <li><a href="#billing">Billing</a></li>
+                    <li><a href="#client_sites">Client Sites</a></li>
+                    <li><a href="#company">Company</a></li>
+                    <li><a href="#contractors">Contractors</a></li>
+                    <li><a href="#edit">Edit</a></li>
+                    <li><a href="#employee_guard">EmployeeGUARD</a></li>
+                    <li><a href="#help_center">Help Center</a></li>
+                    <li><a href="#hse_competencies">HSE Competencies</a></li>
+                    <li><a href="#insure_guard">InsureGUARD</a></li>
+                    <li><a href="#live_chat">Live Chat</a></li>
+                    <li><a href="#management">Management</a></li>
+                    <li><a href="#operator_qualification">Operator Qualification</a></li>
+                    <li><a href="#pqf">PQF</a></li>
+                    <li><a href="#reports">Reports</a></li>
+                    <li><a href="#resources">Resources</a></li>
                 </ul>
             </div>
-            <div class="col-md-8">
+            <div class="span8">
                 <section id="about">
-                     <h3>About</h3>
+                    <h3>About</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>About</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Support (About PICS Organizer)</li>
@@ -96,12 +79,13 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="account_summary">
-                     <h3>Account Summary</h3>
+                    <h3>Account Summary</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Account Summary</li>
@@ -114,8 +98,8 @@
                                 <li>Payment Options</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Company (Dashboard)</li>
@@ -130,20 +114,21 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="annual_update">
-                     <h3>Annual Update</h3>
+                    <h3>Annual Update</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Document Index</li>
                                 <li>Annual Update</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>DocuGUARD (Summary)</li>
@@ -152,20 +137,21 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="billing">
-                     <h3>Billing</h3>
+                    <h3>Billing</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Billing Details</li>
                                 <li>Payment Options</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Company</li>
@@ -174,20 +160,21 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="client_sites">
-                     <h3>Client Sites</h3>
+                    <h3>Client Sites</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Client Sites</li>
                                 <li>Subcontractor Client Sites</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Company</li>
@@ -196,20 +183,21 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="company">
-                     <h3>Company</h3>
+                    <h3>Company</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Client Sites</li>
                                 <li>Activity Log</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Company</li>
@@ -218,12 +206,13 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="contractors">
-                     <h3>Contractors</h3>
+                    <h3>Contractors</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Bid Only Accounts</li>
@@ -239,31 +228,32 @@
                                 <li>Watch List Manager</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Reports</li>
                                 <li>Reports</li>
                                 <li>Manage</li>
                                 <li>Manage</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Manage</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Manage (Watch List)</li>
                             </ul>
                         </div>
                     </div>
                 </section>
+
                 <section id="edit">
-                     <h3>Edit</h3>
+                    <h3>Edit</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Company Account</li>
@@ -272,8 +262,8 @@
                                 <li>Users</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Company (Company Profile)</li>
@@ -284,12 +274,13 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="employee_guard">
-                     <h3>EmployeeGUARD</h3>
+                    <h3>EmployeeGUARD</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>EmployeeGUARD Dashboard</li>
@@ -297,8 +288,8 @@
                                 <li>Manage Job Roles</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>EmployeeGUARD (Summary)</li>
@@ -308,19 +299,20 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="help_center">
-                     <h3>Help Center</h3>
+                    <h3>Help Center</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Help Center</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Support</li>
@@ -328,12 +320,13 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="hse_competencies">
-                     <h3>HSE Competencies</h3>
+                    <h3>HSE Competencies</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Define Competencies</li>
@@ -344,34 +337,35 @@
                                 <li>Employee Turnover</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>EmployeeGUARD (Competencies)</li>
                                 <li>EmployeeGUARD (Job Roles)</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                             </ul>
                         </div>
                     </div>
                 </section>
+
                 <section id="insure_guard">
-                     <h3>InsureGUARD</h3>
+                    <h3>InsureGUARD</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>InsureGUARD Dashboard</li>
                                 <li>Manage Certificates</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>InsureGUARD (Summary)</li>
@@ -380,19 +374,20 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="live_chat">
-                     <h3>Live Chat</h3>
+                    <h3>Live Chat</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Live Chat</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Support</li>
@@ -400,12 +395,13 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="management">
-                     <h3>Management</h3>
+                    <h3>Management</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Approve Contractors</li>
@@ -421,18 +417,18 @@
                                 <li>Manage User Accounts</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Manage &gt; Email</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Manage > Email</li>
                                 <li>Manage (Client Sites)</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Manage</li>
                                 <li>"Your Name" (Profile)</li>
                                 <li>Manage (Client Accounts)</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Manage</li>
                                 <li>Company</li>
                                 <li>Company (Users)</li>
@@ -440,12 +436,13 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="operator_qualification">
-                     <h3>Operator Qualification</h3>
+                    <h3>Operator Qualification</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Job Tasks</li>
@@ -456,33 +453,34 @@
                                 <li>OQ by Employee</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                             </ul>
                         </div>
                     </div>
                 </section>
+
                 <section id="pqf">
-                     <h3>PQF</h3>
+                    <h3>PQF</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Document Index</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>DocuGUARD (Summary)</li>
@@ -490,12 +488,13 @@
                         </div>
                     </div>
                 </section>
+
                 <section id="reports">
-                     <h3>Reports</h3>
+                    <h3>Reports</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Employee List</li>
@@ -519,46 +518,47 @@
                                 <li>User Search</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Reports</li>
                                 <li>Reports</li>
                                 <li>Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Reports</li>
                                 <li>Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
-                                <li>Reports &gt; Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>Reports > Legacy Reports</li>
                                 <li>Reports</li>
                             </ul>
                         </div>
                     </div>
                 </section>
+
                 <section id="resources">
-                     <h3>Resources</h3>
+                    <h3>Resources</h3>
 
                     <div class="row">
-                        <div class="col-md-4">
-                             <h4>Version 6</h4>
+                        <div class="span4">
+                            <h4>Version 6</h4>
 
                             <ul class="unstyled">
                                 <li>Resources</li>
                             </ul>
                         </div>
-                        <div class="col-md-4">
-                             <h4>Version 7 Location (New Name)</h4>
+                        <div class="span4">
+                            <h4>Version 7 Location (New Name)</h4>
 
                             <ul class="unstyled">
                                 <li>Company</li>

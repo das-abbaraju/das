@@ -577,10 +577,6 @@ public class PicsMenu {
 				&& !Strings.isEmpty(operatorAccountDAO.find(permissions.getAccountId()).getRequiredTags())) {
 			addChildAction(subMenu, "ReportUntaggedContractors");
 		}
-		if (permissions.hasPermission(OpPerms.ManageTrades) && permissions.isAdmin()) {
-			subMenu.addChild("Contractor Trade Conflicts", "ReportContractorTradeConflict.action",
-					"ContractorTradeConflicts");
-		}
 
 		if (permissions.seesAllContractors()) {
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action", "MultiLogin");

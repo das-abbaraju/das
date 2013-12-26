@@ -13,8 +13,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "account_skill")
-@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_skill (accountID, createdBy, createdDate, deletedBy, deletedDate, description, intervalPeriod, intervalType, name, ruleType, skillType, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLDelete(sql = "UPDATE account_skill SET deletedDate = NOW() WHERE id = ?")
 public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 
 	private static final long serialVersionUID = -3528270237051318527L;
@@ -66,18 +67,18 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<AccountSkillGroup> groups = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<AccountSkillEmployee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<ProjectSkill> projects = new ArrayList<>();
 

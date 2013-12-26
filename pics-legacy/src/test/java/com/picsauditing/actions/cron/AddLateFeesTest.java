@@ -66,11 +66,12 @@ public class AddLateFeesTest {
         InvoiceItem lateFeeInvoiceItem = cron.createLateFeeInvoiceItem(mockInvoice, lateFee);
         assertEquals(FeeClass.LateFee, lateFeeInvoiceItem.getInvoiceFee().getFeeClass());
         assertEquals(lateFee, lateFeeInvoiceItem.getAmount());
+        assertEquals(lateFee, lateFeeInvoiceItem.getOriginalAmount());
     }
 
     @Test
     public void testGenerateLateFeeInvoice() {
-        when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, 0)).thenReturn(mockInvoiceFee);
+        when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, 20)).thenReturn(mockInvoiceFee);
         when(mockInvoiceFee.getFeeClass()).thenReturn(FeeClass.LateFee);
         when(mockInvoice.getAccount()).thenReturn(mockContractorAccount);
         Date invoiceDueDate = new Date();
@@ -78,6 +79,7 @@ public class AddLateFeesTest {
         BigDecimal invoiceFeeAmount = new BigDecimal(100);
         Currency contractorCurrency = Currency.CAD;
         when(mockContractorAccount.getCurrency()).thenReturn(contractorCurrency);
+        when(mockContractorAccount.getPayingFacilities()).thenReturn(20);
         when(mockInvoice.getTotalAmount()).thenReturn(invoiceFeeAmount);
         BigDecimal lateFee = cron.calculateLateFeeFor(mockInvoice);
         InvoiceItem lateFeeInvoiceItem = cron.createLateFeeInvoiceItem(mockInvoice, lateFee);
@@ -88,6 +90,7 @@ public class AddLateFeesTest {
         assertEquals(lateFee, lateInvoice.getTotalAmount());
         assertEquals(contractorCurrency,lateInvoice.getCurrency());
         assertEquals(InvoiceType.LateFee, lateInvoice.getInvoiceType());
+        assertEquals(20, lateInvoice.getPayingFacilities());
         assertEquals(FeeClass.LateFee, lateInvoice.getItems().get(0).getInvoiceFee().getFeeClass());
         assertEquals(invoiceDueDate.getDay(), lateInvoice.getDueDate().getDay());
         assertEquals(invoiceDueDate.getMonth(), lateInvoice.getDueDate().getMonth());

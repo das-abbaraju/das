@@ -195,7 +195,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 				ContractorResetter.resetContractor(contractor, contractorState);
 
                 feeService.calculateContractorInvoiceFees(contractor);
-				List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, contractor.getBillingStatus(), invoice.getCreatedBy());
+				List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, invoice.getCreatedBy());
 
 				clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));
 			}

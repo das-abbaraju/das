@@ -1,8 +1,10 @@
 package com.picsauditing.service.audit;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,6 +12,25 @@ import java.util.Date;
 import java.util.List;
 
 public class AuditPeriodService {
+    public boolean shouldCreateAudit(List<ContractorAudit> audits, AuditType auditType, String auditFor, AuditType childAuditType) {
+        if (findAudit(audits, auditType, auditFor) != null)
+            return false; // already there
+
+        if (childAuditType == null)
+            return true; // no child audit type
+
+        // check for at least one valid child
+        List<String> childAuditFors = getChildPeriodAuditFors(auditFor);
+        for (String childAuditFor: childAuditFors) {
+            for (ContractorAudit audit : audits) {
+                if (childAuditType.equals(audit.getAuditType()) && childAuditFor.equals(audit.getAuditFor()) && audit.hasCaoStatusBefore(AuditStatus.NotApplicable)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public ContractorAudit findAudit(List<ContractorAudit> audits, AuditType auditType, String auditFor) {
         for (ContractorAudit audit:audits) {
             if (audit.getAuditType().equals(auditType)) {
@@ -23,6 +44,9 @@ public class AuditPeriodService {
     }
 
     public String getParentAuditFor(AuditType parentAuditType, String childAuditFor) {
+        if (childAuditFor == null)
+            return null;
+
         boolean isMonthly = childAuditFor.indexOf("-") >= 0;
         boolean isQuarterly = childAuditFor.indexOf(":") >= 0;
         int quarter = 0;
@@ -38,6 +62,9 @@ public class AuditPeriodService {
                 tokens = childAuditFor.split(":");
                 quarter = Integer.parseInt(tokens[1]);
             }
+            if (tokens.length <= 0)
+                return null;
+
             year = Integer.parseInt(tokens[0]);
         } catch (Exception e) {
         }
@@ -60,6 +87,12 @@ public class AuditPeriodService {
 
     public List<String> getChildPeriodAuditFors(String parentAuditFor) {
         List<String> auditFors = new ArrayList<>();
+
+        if (parentAuditFor == null)
+            return auditFors;
+
+        if ("".equals(parentAuditFor))
+            return auditFors;
 
         boolean isMonthly = parentAuditFor.indexOf("-") >= 0;
         boolean isQuarterly = parentAuditFor.indexOf(":") >= 0;

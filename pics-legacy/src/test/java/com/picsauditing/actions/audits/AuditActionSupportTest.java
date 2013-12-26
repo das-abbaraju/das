@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.jpa.entities.*;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
@@ -69,7 +70,76 @@ public class AuditActionSupportTest extends PicsTest {
 
 	}
 
-	@Test
+    @Test
+    public void testDisplayMultiStatusDropDown_Invalid_NotCSRGroup() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        actionStatus.put(AuditStatus.Complete, 1);
+
+        ContractorTrade contractorTrade = new ContractorTrade();
+        Trade trade = new Trade();
+        trade.setName("Test Trade");
+        contractorTrade.setTrade(trade);
+
+        contractor.getTrades().add(contractorTrade);
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(false);
+
+        // not in CSR group
+        assertFalse(test.displayMultiStatusDropDown());
+    }
+
+    @Test
+    public void testDisplayMultiStatusDropDown_Invalid_NoAuditStatus() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        ContractorTrade contractorTrade = new ContractorTrade();
+        Trade trade = new Trade();
+        trade.setName("Test Trade");
+        contractorTrade.setTrade(trade);
+
+        contractor.getTrades().add(contractorTrade);
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(true);
+
+        assertFalse(test.displayMultiStatusDropDown());
+    }
+
+    @Test
+    public void testDisplayMultiStatusDropDown_Invalid_NoTrades() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        actionStatus.put(AuditStatus.Complete, 1);
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(true);
+
+        assertFalse(test.displayMultiStatusDropDown());
+    }
+
+    @Test
+    public void testDisplayMultiStatusDropDown_Valid() {
+        ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+        PicsTestUtil.forceSetPrivateField(test, "actionStatus", actionStatus);
+        PicsTestUtil.forceSetPrivateField(test, "contractor", contractor);
+
+        actionStatus.put(AuditStatus.Complete, 1);
+
+        ContractorTrade contractorTrade = new ContractorTrade();
+        Trade trade = new Trade();
+        trade.setName("Test Trade");
+        contractorTrade.setTrade(trade);
+
+        contractor.getTrades().add(contractorTrade);
+
+        when(permissions.hasGroup(User.GROUP_CSR)).thenReturn(true);
+
+        assertTrue(test.displayMultiStatusDropDown());
+    }
+
+    @Test
 	public void testCalculateRefreshAudit() throws Exception {
 		PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
 		when(conAudit.getAuditType()).thenReturn(auditType);

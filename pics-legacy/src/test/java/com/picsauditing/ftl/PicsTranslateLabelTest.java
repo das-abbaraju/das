@@ -1,5 +1,6 @@
 package com.picsauditing.ftl;
 
+import com.picsauditing.util.Strings;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import org.approvaltests.Approvals;
@@ -24,16 +25,21 @@ public class PicsTranslateLabelTest {
     static {
         try {
             cfg = new Configuration();
+
+            File cwd = new File(".");
+            String templatePath = "src" + Strings.FILE_SEPARATOR
+                    + "main" + Strings.FILE_SEPARATOR
+                    + "resources" + Strings.FILE_SEPARATOR
+                    + "template" + Strings.FILE_SEPARATOR
+                    + "pics";
+
             // to run from Intellij, we're going to do some trickery. If it is maven, the absolute path will be the
             // module. If it isn't the module, we'll assume you're running from your IDE the traditioinal way, in which
             // case the root is most likely to be the project root.
-            File cwd = new File(".");
-            String templatePath;
-            if (cwd.getAbsolutePath().endsWith("pics-legacy/.")) {
-                templatePath = "src/main/resources/template/pics";
-            } else {
-                templatePath = "pics-legacy/src/main/resources/template/pics";
+            if (!cwd.getAbsolutePath().endsWith("pics-legacy" + Strings.FILE_SEPARATOR + ".")) {
+                templatePath = "pics-legacy" + Strings.FILE_SEPARATOR + templatePath;
             }
+
             cfg.setDirectoryForTemplateLoading(new File(templatePath));
             cfg.setObjectWrapper(new DefaultObjectWrapper());
             cfg.setDefaultEncoding("UTF-8");

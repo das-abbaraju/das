@@ -1,14 +1,15 @@
+/* This file is for any select2 overrides for both v6 and v7 pages.
+   Please put any v7 only styles inside _select2-overrides.scss until this file is no longer needed.
+*/
 .select2-container {
     font-size: 13px;
 }
 
-.select2-drop
-{
+.select2-drop {
     z-index: 11000;
 }
 
-.select2-results li
-{
+.select2-results li {
     line-height: 16px;
 }
 
@@ -16,20 +17,44 @@
     font-size: 13px;
 }
 
-
 /*Multi Select*/
-.select2-container-multi .select2-choices .select2-search-choice
-{
+.select2-container-multi .select2-choices .select2-search-choice {
+    border-radius: 0px;
     padding: 3px 20px 3px 5px;
 }
 
-.select2-container-multi .select2-search-choice-close
-{
-    left: auto;
-}
-
-.select2-container .select2-choices
-{
+.select2-container .select2-choices {
     font-size: 12px;
     line-height: 12px;
+}
+
+/*Styles for font awesome icons*/
+.select2-container .select2-choice .select2-arrow {
+    background: none !important;
+    border: 0px;
+    border-radius: 0px;
+    top: 0;
+}
+
+.select2-container-multi .select2-search-choice-close {
+    background: none !important;
+    left: auto;
+    top: 3px;
+}
+
+.select2-search .select2-input {
+    background: none !important;
+    padding-left: 25px;
+    padding-right: 5px;
+}
+
+.select2-search .icon-search {
+    color: #CCC;
+    left: 10px;
+    position: absolute;
+    top: 5px;
+}
+
+.select2-drop-above .select2-search .icon-search {
+    top: 9px;
 }

@@ -106,6 +106,7 @@ public class AddLateFees implements CronTask {
                 ((ContractorAccount) invoiceWhichIsLate.getAccount()).getPayingFacilities());
         InvoiceItem lateFeeItem = new InvoiceItem(fee);
         lateFeeItem.setAmount(lateFee);
+        lateFeeItem.setOriginalAmount(lateFee);
         lateFeeItem.setAuditColumns(new User(User.SYSTEM));
         lateFeeItem.setDescription("Assessed "
                 + new SimpleDateFormat(PicsDateFormat.American).format(new Date())
@@ -131,12 +132,14 @@ public class AddLateFees implements CronTask {
 
     public Invoice generateLateFeeInvoice(Invoice invoiceWhichIsLate, InvoiceItem lateFeeItem) {
         Invoice lateFeeInvoice = new Invoice();
-        lateFeeInvoice.setAccount(invoiceWhichIsLate.getAccount());
+        ContractorAccount contractorAccount = (ContractorAccount)invoiceWhichIsLate.getAccount();
+        lateFeeInvoice.setAccount(contractorAccount);
         lateFeeInvoice.getItems().add(lateFeeItem);
-        lateFeeInvoice.setCurrency(invoiceWhichIsLate.getAccount().getCurrency());
+        lateFeeInvoice.setCurrency(contractorAccount.getCurrency());
         lateFeeInvoice.updateTotalAmount();
         lateFeeInvoice.updateAmountApplied();
         lateFeeInvoice.setInvoiceType(InvoiceType.LateFee);
+        lateFeeInvoice.setPayingFacilities(contractorAccount.getPayingFacilities());
         lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
         lateFeeInvoice.setDueDate(lateFeeInvoice.getCreationDate());
         return lateFeeInvoice;

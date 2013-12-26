@@ -251,7 +251,7 @@
 						</li>
 						<li>
 							<label><s:text name="BillingDetail.Invoicing.BillingStatus" />:</label>
-							<s:text name="%{contractor.billingStatus.i18nKey}" />
+							<s:text name="%{billingStatus.i18nKey}" />
 						</li>
 						<li>
 							<label><s:text name="BillingDetail.Invoicing.MustPay" />:</label>
@@ -353,7 +353,7 @@
 							</ol>
 						</s:form>
 
-						<s:if test="contractor.billingStatus.current && !contractor.status.activeDemo">
+						<s:if test="billingStatus.current && !contractor.status.activeDemo">
 							<s:form>
 								<s:hidden name="id" />
 								<div>

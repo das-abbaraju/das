@@ -2,6 +2,7 @@ package com.picsauditing.dao.jdbc;
 
 import com.picsauditing.PICS.DBBean;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -53,6 +54,7 @@ public class TranslationsDAOTest {
     }
 
     @Test
+    @Ignore
     public void testUpdateTranslationLastUsed_() throws Exception {
         when(namedParameterJdbcTemplate.queryForMap(anyString(), any(MapSqlParameterSource.class))).thenReturn(ids);
 

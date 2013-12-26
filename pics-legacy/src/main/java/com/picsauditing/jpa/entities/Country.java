@@ -34,6 +34,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public static final String CHINA_ISO_CODE = "CN";
     public static final String AUSTRALIA_ISO_CODE = "AU";
     public static final String SOUTH_AFRICA_ISO_CODE = "ZA";
+    public static final String BRAZIL_ISO_CODE = "BR";
 
     public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays
 			.asList(US_ISO_CODE, CANADA_ISO_CODE, AUSTRALIA_ISO_CODE)));
@@ -61,15 +62,15 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	// The 17 Countries in the EuroZone (that have adopted the Euro)
 	private static final Set<String> EUROZONE = Collections
-			.unmodifiableSet(new HashSet<String>(Arrays.asList("AT", "BE", "CY", "DE", "EE", "ES", "FI",
+			.unmodifiableSet(new HashSet<>(Arrays.asList("AT", "BE", "CY", "DE", "EE", "ES", "FI",
 					FRANCE_ISO_CODE, "GR", "IE", "IT", "LU", "MT", "NL", "PT", "SI", "SK")));
 
 	// The 10 additional countries that are in the European Union, but not in
 	// the EuroZone (i.e. that have not yet adopted the Euro, or never will)
-	private static final Set<String> EUROPEAN_UNION_ALSO = Collections.unmodifiableSet(new HashSet<String>(Arrays
+	private static final Set<String> EUROPEAN_UNION_ALSO = Collections.unmodifiableSet(new HashSet<>(Arrays
 			.asList("BG", "CZ", "DK", UK_ISO_CODE, "GI", "HU", "LT", "LV", "PL", "RO", "SE")));
 
-	protected String isoCode;
+    protected String isoCode;
     protected User createdBy;
     protected User updatedBy;
     protected Date creationDate;
@@ -505,6 +506,11 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
     @Transient
     public boolean isAustralia() {
         return AUSTRALIA_ISO_CODE.equals(isoCode);
+    }
+
+    @Transient
+    public boolean isBrazil() {
+        return BRAZIL_ISO_CODE.equals(isoCode);
     }
 
 

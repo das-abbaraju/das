@@ -149,6 +149,7 @@
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
+    <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
 
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>
@@ -175,9 +176,9 @@
     <bean id="ContractorValidator" class="com.picsauditing.validator.ContractorValidator" scope="prototype"/>
     <bean id="InputValidator" class="com.picsauditing.validator.InputValidator" scope="prototype"/>
     <bean id="PasswordValidator" class="com.picsauditing.validator.PasswordValidator" scope="prototype"/>
-    <bean id="VATValidator" class="com.picsauditing.validator.VATValidator" scope="prototype"/>
 	<bean id="RegistrationValidator" class="com.picsauditing.validator.RegistrationValidator" scope="prototype"/>
 	<bean id="RequestNewContractorValidator" class="com.picsauditing.validator.RequestNewContractorValidator" scope="prototype"/>
+    <bean id="TaxIdValidatorFactory" class="com.picsauditing.validator.TaxIdValidatorFactory" />
 
     <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
           scope="prototype"/>

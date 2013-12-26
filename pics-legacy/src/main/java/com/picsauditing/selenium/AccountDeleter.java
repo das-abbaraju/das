@@ -7,80 +7,86 @@ import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
 public class AccountDeleter extends Deleter {
-	public void execute() throws SQLException {
-		if (null == IDs || IDs.isEmpty()) return;
-		
-		Database db = new Database();
+    public void execute() throws SQLException {
+        if (null == IDs || IDs.isEmpty()) return;
 
-		{
-			Delete t = new Delete("contractor_audit_operator_permission");
-			t.addJoin("JOIN contractor_audit_operator cao ON cao.id = t.caoID");
-			t.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID");
-			t.addJoin("WHERE ca.conID IN (" + IDs + ")");
-			t.delete(db);
-			t.table = "contractor_audit_operator_workflow";
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("audit_cat_data");
-			t.addJoin("JOIN contractor_audit ca ON ca.id = t.auditID");
-			t.addJoin("WHERE ca.conID IN (" + IDs + ")");
-			t.delete(db);
-			t.table = "contractor_audit_operator";
-			t.delete(db);
-			t.table = "pqfdata";
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("contractor_audit");
-			t.addJoin("WHERE conID IN (" + IDs + ") ORDER BY id DESC");
-			t.deleteSingleTable(db);
+        Database db = new Database();
 
-			t = new Delete("contractor_fee");
+        {
+            Delete t = new Delete("contractor_audit_operator_permission");
+            t.addJoin("JOIN contractor_audit_operator cao ON cao.id = t.caoID");
+            t.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID");
+            t.addJoin("WHERE ca.conID IN (" + IDs + ")");
+            t.delete(db);
+            t.table = "contractor_audit_operator_workflow";
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("audit_cat_data");
+            t.addJoin("JOIN contractor_audit ca ON ca.id = t.auditID");
+            t.addJoin("WHERE ca.conID IN (" + IDs + ")");
+            t.delete(db);
+            t.table = "contractor_audit_operator";
+            t.delete(db);
+            t.table = "pqfdata";
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("contractor_audit");
+            t.addJoin("WHERE conID IN (" + IDs + ") ORDER BY id DESC");
+            t.deleteSingleTable(db);
+
+            t = new Delete("contractor_fee");
             t.addJoin("WHERE t.conID IN (" + IDs + ")");
             t.delete(db);
-			t.table = "email_queue";
-			t.delete(db);
-			t.table = "contractor_trade";
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("contractor_operator");
-			t.addJoin("WHERE t.opID IN (" + IDs + ") OR t.conID IN (" + IDs + ")");
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("facilities");
-			t.addJoin("WHERE t.corporateID IN (" + IDs + ") OR t.opID IN (" + IDs + ")");
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("invoice_item");
-			t.addJoin("JOIN invoice i ON i.id = t.invoiceID");
-			t.addJoin("WHERE i.accountID IN (" + IDs + ")");
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("invoice");
-			t.addJoin("WHERE t.accountID IN (" + IDs + ")");
-			t.delete(db);
-			t.table = "users";
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("app_index");
-			t.addJoin("WHERE t.foreignKey IN (" + IDs + ")");
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("accounts");
-			t.addJoin("WHERE t.id IN (" + IDs + ")");
-			t.delete(db);
-			// Looks like these might cascade delete
-			t.table = "operators";
-			t.delete(db);
-			t.table = "contractor_info";
-			t.delete(db);
-		}
-	}
+            t.table = "email_queue";
+            t.delete(db);
+            t.table = "contractor_trade";
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("contractor_operator");
+            t.addJoin("WHERE t.opID IN (" + IDs + ") OR t.conID IN (" + IDs + ")");
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("facilities");
+            t.addJoin("WHERE t.corporateID IN (" + IDs + ") OR t.opID IN (" + IDs + ")");
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("invoice_item");
+            t.addJoin("JOIN invoice i ON i.id = t.invoiceID");
+            t.addJoin("WHERE i.accountID IN (" + IDs + ")");
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("invoice");
+            t.addJoin("WHERE t.accountID IN (" + IDs + ")");
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("app_index");
+            t.addJoin("WHERE t.foreignKey IN (" + IDs + ")");
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("users");
+            t.disableForeignKeyCheck = true;
+            t.addJoin("WHERE t.accountID IN (" + IDs + ")");
+            t.delete(db);
+        }
+        {
+            Delete t = new Delete("accounts");
+            t.disableForeignKeyCheck = true;
+            t.addJoin("WHERE t.id IN (" + IDs + ")");
+            t.delete(db);
+            // Looks like these might cascade delete
+            t.disableForeignKeyCheck = false;
+            t.table = "operators";
+            t.delete(db);
+            t.table = "contractor_info";
+            t.delete(db);
+        }
+    }
 }

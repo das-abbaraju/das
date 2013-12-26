@@ -11,8 +11,11 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import junit.framework.Assert;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
@@ -26,13 +29,30 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ModelType;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ExcelBuilderTest {
+    @Mock
+    private ExcelColumn excelColumn;
+
+    @Mock
+    private HSSFCell cell;
+
 	private List<Column> columns;
 	private Map<String, Field> availableFields;
 	private ReportResults reportResults;
 
 	private ExcelBuilder builder = new ExcelBuilder();
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
 	@Test
 	public void testBuild() throws Exception {
@@ -122,5 +142,20 @@ public class ExcelBuilderTest {
         ExcelCellType cellType = ExcelCellType.convert(column);
 
         Assert.assertEquals(ExcelCellType.String, cellType);
+    }
+
+
+    @Test
+    public void testSetCellType_StringAsDateType() {
+        String hello = "Hello";
+        when(excelColumn.getCellType()).thenReturn(ExcelCellType.Date);
+
+        try {
+            Whitebox.invokeMethod(builder, "setCellValue", hello,excelColumn,cell);
+            verify(cell).setCellValue(new HSSFRichTextString(hello));
+        }
+        catch (Exception e) {
+            verify(cell).setCellValue(new HSSFRichTextString(hello));
+        }
     }
 }

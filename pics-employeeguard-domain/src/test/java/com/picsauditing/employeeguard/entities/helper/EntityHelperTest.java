@@ -70,9 +70,8 @@ public class EntityHelperTest {
     public void testSetDeleteAuditFields() {
         Employee employee = new Employee();
 
-        EntityHelper.softDelete(employee, USER_ID, NOW);
+        EntityHelper.softDelete(employee, USER_ID);
 
-        assertEquals(NOW, employee.getDeletedDate());
         assertEquals(USER_ID, employee.getDeletedBy());
     }
 
@@ -80,14 +79,13 @@ public class EntityHelperTest {
     public void testSetDeleteAuditFields_ListOfEntities() {
         List<Employee> employees = getEmployees();
 
-        EntityHelper.softDelete(employees, USER_ID, NOW);
+        EntityHelper.softDelete(employees, USER_ID);
 
         verifyEmployeeListDeleteAuditFields(employees);
     }
 
     private void verifyEmployeeListDeleteAuditFields(List<Employee> employees) {
         for (Employee employee : employees) {
-            assertEquals(NOW, employee.getDeletedDate());
             assertEquals(USER_ID, employee.getDeletedBy());
         }
     }

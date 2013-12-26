@@ -107,7 +107,7 @@ public class BillingDetailTest extends PicsActionTest {
 		setupBillingDetail();
 		setupInvoiceItems();
 		setupStandardFees();
-		invoices = new ArrayList<Invoice>();
+		invoices = new ArrayList<>();
 		stubMockBehaviors();
 		setupInvoiceServiceToReturnArgumentOnSave();
 		setupCaptors();
@@ -123,7 +123,7 @@ public class BillingDetailTest extends PicsActionTest {
 		when(contractorAccountDao.find(any(int.class))).thenReturn(contractor);
 		when(permissionToViewContractor.check(any(boolean.class))).thenReturn(true);
 		when(item.getAmount()).thenReturn(new BigDecimal(199.00));
-        when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Activation);
 		when(contractor.getId()).thenReturn(123);
 		when(contractor.getCountry()).thenReturn(country);
 		when(contractor.getFees()).thenReturn(fees);
@@ -134,8 +134,9 @@ public class BillingDetailTest extends PicsActionTest {
 	}
 
 	private void setupInvoiceItems() {
-		invoiceItems = new ArrayList<InvoiceItem>();
+		invoiceItems = new ArrayList<>();
 		invoiceItems.add(item);
+        when(billingService.createInvoiceItems(contractor, user)).thenReturn(invoiceItems);
 	}
 
 	private void setupCountry() {
@@ -196,35 +197,31 @@ public class BillingDetailTest extends PicsActionTest {
 
 	private void setupForCreate() {
 		billingDetail.setButton("Create");
-		when(invoiceFee.isMembership()).thenReturn(true);
-		when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
-		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
-		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()), contractor.getBillingStatus()))
-				.thenReturn(invoice);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Activation);
+        commonExecuteSetup();
 	}
 
 	private void setupForViewPage() {
 		billingDetail.setButton(Strings.EMPTY_STRING);
-		when(invoiceFee.isMembership()).thenReturn(true);
-		when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
-		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Reactivation);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
-		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()), contractor.getBillingStatus()))
-				.thenReturn(invoice);
+        commonExecuteSetup();
 	}
 
 	private void setupForActivation() {
 		billingDetail.setButton("Activate");
-		when(invoiceFee.isMembership()).thenReturn(true);
-		when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
-		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Activation);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()), contractor.getBillingStatus()))
-				.thenReturn(invoice);
+        commonExecuteSetup();
 	}
+
+    private void commonExecuteSetup() {
+        when(invoiceFee.isMembership()).thenReturn(true);
+        when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
+        when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
+        when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))
+                .thenReturn(invoice);
+    }
 
 	@Test
 	public void testExecute_Create_HappyPath_NewInvoiceIsAddedToContractorInvoices() throws Exception {
@@ -288,7 +285,7 @@ public class BillingDetailTest extends PicsActionTest {
 
 		String actionResult = billingDetail.execute();
 
-		verify(billingService).createInvoiceWithItems(eq(contractor), eq(invoiceItems), any(User.class), any(BillingStatus.class));
+		verify(billingService).createInvoiceWithItems(eq(contractor), eq(invoiceItems), any(User.class));
 		assertEquals(PicsActionSupport.BLANK, actionResult);
 	}
 

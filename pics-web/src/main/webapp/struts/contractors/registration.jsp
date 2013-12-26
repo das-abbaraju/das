@@ -181,10 +181,10 @@
 					</div>
 					<%-- End hack --%>
 
-					<li id="vat_id">
-						<s:textfield name="contractor.vatId" />
+					<li id="tax_id" class="${tax_id_class}">
+						<s:textfield label="taxIdLabel" name="contractor.vatId" />
 					</li>
-		        </ul>
+ 		        </ul>
 			</section>
 		</div>
 		<div class="contact-information">

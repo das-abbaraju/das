@@ -354,4 +354,35 @@ public class StringsTest {
     public void testExplodeCommaDelimitedStringOfIds_Decimal() {
         List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1, 5,3.14");
     }
+
+    @Test
+    public void testzeroPadDelimitedString_TwoPartsThreePadPeriodDelimited() {
+        String toZeroPad = "1.2";
+        String expected = "001.002";
+
+        String result = Strings.zeroPadDelimitedString(toZeroPad, "\\.", ".", 3);
+
+        assertTrue(result.equals(expected));
+    }
+
+    @Test
+    public void testzeroPadDelimitedString_ThreePartsThreePadPeriodDelimited() {
+        String toZeroPad = "1.2.65";
+        String expected = "001.002.065";
+
+        String result = Strings.zeroPadDelimitedString(toZeroPad, "\\.", ".", 3);
+
+        assertTrue(result.equals(expected));
+    }
+
+    @Test
+    public void testzeroPadDelimitedString_FourPartsThreePadColonDelimited() {
+        String toZeroPad = "1:2:65:987";
+        String expected = "001:002:065:987";
+
+        String result = Strings.zeroPadDelimitedString(toZeroPad, ":", ":", 3);
+
+        assertTrue(result.equals(expected));
+    }
+
 }

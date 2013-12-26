@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.service.i18n.ExplicitUsageContext;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
@@ -99,17 +100,11 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private String questionType;
 	private AuditOptionGroup option;
 	private String okAnswer;
-
 	private String columnHeader;
-
 	private String uniqueCode;
-
 	private String title;
 	private String requirement;
-
 	private String helpPage;
-
-	// private TranslatableString helpText;
 	private String helpText;
 
 	private String criteria;
@@ -128,8 +123,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	protected List<AuditOptionValue> options;
 	private List<AuditCategoryRule> auditCategoryRules;
 	private List<AuditTypeRule> auditTypeRules;
-	private List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
-	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<AuditQuestionFunctionWatcher>();
+	private List<AuditQuestionFunction> functions = new ArrayList<>();
+	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<>();
 
 	private List<AuditTransformOption> transformOptions;
 
@@ -189,11 +184,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		if (name != null) {
 			return name;
 		}
-
-		return new TranslatableString(getI18nKey("name")).toTranslatedString();
+        return translatedString("name");
 	}
 
-	public void setName(String name) {
+    public void setName(String name) {
 		this.name = name;
 	}
 
@@ -304,8 +298,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		if (columnHeader != null) {
 			return columnHeader;
 		}
-
-		return new TranslatableString(getI18nKey("columnHeader")).toTranslatedString();
+        return translatedString("columnHeader");
 	}
 
 	public void setColumnHeader(String columnHeader) {
@@ -326,8 +319,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		if (title != null) {
 			return title;
 		}
-
-		return new TranslatableString(getI18nKey("title")).toTranslatedString();
+        return translatedString("title");
 	}
 
 	public void setTitle(String title) {
@@ -376,8 +368,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		if (helpText != null) {
 			return helpText;
 		}
-
-		return new TranslatableString(getI18nKey("helpText")).toTranslatedString();
+        return translatedString("helpText");
 	}
 
 	public void setHelpText(String helpText) {
@@ -389,8 +380,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		if (requirement != null) {
 			return requirement;
 		}
-
-		return new TranslatableString(getI18nKey("requirement")).toTranslatedString();
+        return translatedString("requirement");
 	}
 
 	public void setRequirement(String requirement) {
@@ -869,6 +859,19 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
         int result = 31 * getId();
         result = 31 * result + (getSlug() != null ? getSlug().hashCode() : 0);
         return result;
+    }
+
+    private String translatedString(String key) {
+        return new TranslatableString(
+                getI18nKey(key),
+                context())
+                .toTranslatedString();
+    }
+
+    protected ExplicitUsageContext context() {
+        String auditTypeSlug = category.getAuditType().getSlug();
+        String padded = Strings.zeroPadDelimitedString(category.getFullNumber() + "." + number, "\\.", ".", 3);
+        return new ExplicitUsageContext(auditTypeSlug, padded);
     }
 
 }

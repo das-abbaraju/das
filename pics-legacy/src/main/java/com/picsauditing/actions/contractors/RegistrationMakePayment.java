@@ -618,7 +618,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		types.add("Visa");
 		types.add("Mastercard");
 		types.add("Discover Card");
-        if (!contractor.getCountry().isUK())
+        if (contractor.getCountry().getCurrency().isUSD() || contractor.getCountry().getCurrency().isCAD())
 		    types.add("American Express");
 
 		return types;
@@ -708,7 +708,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 		if (invoice == null) {
             // TODO: refactor this method to get the billing status within
-			invoice = billingService.createInvoice(contractor, contractor.getBillingStatus(), getUser());
+			invoice = billingService.createInvoice(contractor, getUser());
 			billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			contractor.getInvoices().add(invoice);
 			billingService.saveInvoice(invoice);
@@ -720,7 +720,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		}
 
 		Invoice newInvoice = billingService.createInvoice(contractor, BillingStatus.Activation, getUser());
-		if (contractor.isHasMembershipChanged()
+		if (contractor.isHasUpgrade()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
 			billingService.addRevRecInfoIfAppropriateToItems(newInvoice);

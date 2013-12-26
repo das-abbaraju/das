@@ -166,7 +166,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.FlagColor)
+	@ReportField(type = FieldType.FlagColor, importance = FieldImportance.Average)
 	public FlagColor getBaselineFlag() {
 		return baselineFlag;
 	}

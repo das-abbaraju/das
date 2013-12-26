@@ -1386,4 +1386,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return (Permissions) ActionContext.getContext().getSession()
 				.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 	}
+
+    public boolean usingNewTranslationFeature() {
+        return featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER) || featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE);
+    }
+
 }

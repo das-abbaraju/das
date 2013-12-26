@@ -18,6 +18,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.validator.InputValidator;
+import com.picsauditing.validator.TaxIdValidator;
+import com.picsauditing.validator.TaxIdValidatorFactory;
 import com.picsauditing.validator.VATValidator;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
@@ -74,6 +76,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Boolean competitorMembership;
 	private boolean showInDirectory = true;
 	private AccountLevel accountLevel = AccountLevel.Full;
+    // TODO Tech Debt: PICS-13969
 	private String vatId;
 
 	private Date paymentExpires;
@@ -1111,17 +1114,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean isHasMembershipChanged() {
-		for (FeeClass feeClass : this.getFees().keySet()) {
-			if (this.getFees().get(feeClass).isHasChanged()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	@Transient
 	public boolean isHasUpgrade() {
 		for (FeeClass feeClass : this.getFees().keySet()) {
 			if (this.getFees().get(feeClass).isUpgrade()) {
@@ -1212,91 +1204,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.flagDataOverrides = flagDataOverrides;
 	}
 
-	/**
-	 * The following are states of Billing Status: Membership Canceled
-	 * Contractor is not active and membership is not set to renew:<br />
-	 * <br>
-	 * <b>Current</b> means the contractor doesn't owe anything right now<br>
-	 * <b>Activation</b> means the contractor is not active and has never been
-	 * active<br>
-	 * <b>Reactivation</b> means the contractor was active, but is no longer
-	 * active anymore<br>
-	 * <b>Upgrade</b> The number of facilities a contractor is at has increased.<br>
-	 * <b>Do not renew</b> means the contractor has asked not to renew their
-	 * account<br>
-	 * <b>Membership Canceled</b> means the contractor closed their account and
-	 * doesn't want to renew<br>
-	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration
-	 * Date is past.<br>
-	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
-	 * in the next 30 Days<br>
-	 * <b>Not Calculated</b> New Membership level is null<br>
-	 * <b>Past Due</b> Inovice is open and not paid by due date
-	 *
-	 * @return A String of the current Billing Status
-	 */
-	@Transient
-	public BillingStatus getBillingStatus() {
-		// If contractor is Free, Deleted, or Demo, give a pass on billing
-		if (!isMustPayB() || this.getPayingFacilities() == 0 || status.isDemo() || status.isDeleted()) {
-			return BillingStatus.Current;
-		}
-
-		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
-
-		if (pendingOrActive() && getAccountLevel().isFull() && newMember()) {
-			return BillingStatus.Activation;
-		}
-
-		if (status.isDeactivated() || daysUntilRenewal < -90) {
-			// this contractor is not active or their membership expired more
-			// than 90 days ago
-			if (!renew) {
-				return BillingStatus.Cancelled;
-			} else {
-				return BillingStatus.Reactivation;
-			}
-		}
-
-		// if any non-bid or list membership level differs, amount is an upgrade
-		boolean upgrade = false;
-		boolean currentListOrBidOnly = false;
-		for (FeeClass feeClass : getFees().keySet()) {
-			if (!upgrade && !getFees().isEmpty() && getFees().get(feeClass).isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
-					&& !feeClass.equals(FeeClass.ListOnly)) {
-				upgrade = true;
-			}
-			if (!getFees().isEmpty() && (getFees().get(feeClass).getCurrentLevel().isBidonly() || getFees().get(feeClass)
-					.getCurrentLevel().isListonly())
-					&& !getFees().get(feeClass).getCurrentLevel().isFree()) {
-				currentListOrBidOnly = true;
-			}
-		}
-
-		if (upgrade) {
-			if (currentListOrBidOnly) {
-				return BillingStatus.Renewal;
-			} else {
-				return BillingStatus.Upgrade;
-			}
-		}
-
-		if (daysUntilRenewal < 0) {
-			return BillingStatus.RenewalOverdue;
-		}
-
-		if (daysUntilRenewal < 45) {
-			return BillingStatus.Renewal;
-		}
-
-		if (hasPastDueInvoice()) {
-			return BillingStatus.PastDue;
-		}
-
-		return BillingStatus.Current;
-	}
-
-	private boolean newMember() {
+	public boolean newMember() {
 		return (membershipDate == null || upgradingFromBidOnlyOrListOnlyAccountToFull());
 	}
 
@@ -1310,7 +1218,11 @@ public class ContractorAccount extends Account implements JSONable {
 
 	}
 
-	private boolean pendingOrActive() {
+    public boolean pendingRequestedOrActive() {
+        return status.isPending() || status.isActive() || status.isRequested();
+    }
+
+    public boolean pendingOrActive() {
 		return status.isPending() || status.isActive();
 	}
 
@@ -1810,15 +1722,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isValidVAT(String vat) {
-		Country registrationCountry = getCountryDao().findbyISO(getCountry().getIsoCode());
-
-		if (getVatValidator().shouldValidate(registrationCountry)) {
-			try {
-				getVatValidator().validated(registrationCountry, vat);
-			} catch (Exception e) {
-				return false;
-			}
-		}
+        TaxIdValidator taxIdValidator = new TaxIdValidatorFactory().buildTaxIdValidator(country);
+        if (taxIdValidator != null) {
+            try {
+                taxIdValidator.validated(country, vat);
+            } catch (Exception e) {
+                return false;
+            }
+        }
 
 		if (StringUtils.isNotEmpty(vat)) {
 			return getInputValidator().containsOnlySafeCharacters(vat);

@@ -1,0 +1,1 @@
+contractor.vatId : JS.Validation.InvalidTaxID::CNPJ 

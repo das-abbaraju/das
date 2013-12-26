@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
@@ -10,8 +11,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "account_skill_employee")
-@Where(clause = "deletedDate IS NULL AND deletedBy = 0")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_skill_employee (createdBy, createdDate, deletedBy, deletedDate, employeeID, finishDate, documentID, skillID, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLDelete(sql = "UPDATE account_skill_employee SET deletedDate = NOW() WHERE id = ?")
 public class AccountSkillEmployee implements BaseEntity {
 
 	private static final long serialVersionUID = 2117121655234863607L;

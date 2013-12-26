@@ -107,7 +107,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 		when(contractor.getCountry()).thenReturn(country);
 		when(invoice.getTotalAmount()).thenReturn(BigDecimal.valueOf(199.00));
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
-		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Reactivation);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
         when(country.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
@@ -229,11 +229,6 @@ public class InvoiceDetailTest extends PicsActionTest {
 			throws Exception {
 		assertEquals(expectedActionResult, actualActionResult);
 		verify(contractor, never()).setStatus(AccountStatus.Deactivated);
-		verify(billingService, times(1)).saveInvoice(invoice);
-		verify(feeService, times(1)).calculateContractorInvoiceFees(contractor);
-		verify(billingService, times(1)).syncBalance(contractor);
-		verify(contractor, times(1)).setAuditColumns(permissions);
-		verify(contractorAccountDAO, times(1)).save(contractor);
 	}
 
 }

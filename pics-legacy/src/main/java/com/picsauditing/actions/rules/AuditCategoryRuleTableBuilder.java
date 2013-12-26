@@ -52,9 +52,9 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 		} else if ("moreGranular".equals(button)) {
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditCategoryRule(id), date);
 		} else if ("debugCategory".equals(button) && id > 0) {
-			rules = new ArrayList<AuditCategoryRule>();
+			rules = new ArrayList<>();
 			comparisonRule.setAuditCategory(auditCategoryDAO.find(comparisonRule.getAuditCategory().getId()));
-			ContractorAudit conAudit = (ContractorAudit) auditCategoryDAO.find(ContractorAudit.class, id);
+			ContractorAudit conAudit = auditCategoryDAO.find(ContractorAudit.class, id);
 			List<AuditCategoryRule> allRules = ruleCache.getRules(conAudit.getContractorAccount(),
 					conAudit.getAuditType());
 			for (AuditCategoryRule rule : allRules) {
@@ -66,7 +66,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			if (tags.size() > 0)
 				rules = ruleDAO.findCategoryRulesByTags(tags);
 		} else if (comparisonRule != null) {
-			Set<String> whereClauses = new LinkedHashSet<String>();
+			Set<String> whereClauses = new LinkedHashSet<>();
 			whereClauses.add("(t.effectiveDate < NOW() AND t.expirationDate > NOW())");
 			if (!comparisonRule.isInclude()) {
 				whereClauses.add("t.include = 0");
@@ -84,14 +84,13 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 				}
 			}
 			if (comparisonRule.getOperatorAccount() != null) {
-				if (!comparisonRule.isInclude()) {
-					// If we're only looking for exclude rules, then we probably
-					// only want rules specific to this operator
-					whereClauses.add("t.operatorAccount.id = " + comparisonRule.getOperatorAccount().getId());
+                OperatorAccount operator = operatorDAO.find(comparisonRule.getOperatorAccount().getId());
+				if (comparisonRule.getAuditCategory() != null) {
+                    whereClauses.add("(t.operatorAccount IS NULL OR t.operatorAccount.id IN ("
+                            + Strings.implode(operator.getOperatorHeirarchy(true)) + "))");
 				} else {
-					OperatorAccount operator = operatorDAO.find(comparisonRule.getOperatorAccount().getId());
-					whereClauses.add("(t.operatorAccount IS NULL OR t.operatorAccount.id IN ("
-							+ Strings.implode(operator.getOperatorHeirarchy()) + "))");
+					whereClauses.add("t.operatorAccount.id IN ("
+							+ Strings.implode(operator.getOperatorHeirarchy(false)) + ")");
 				}
 			}
 			if (comparisonRule.getTag() != null) {
@@ -113,7 +112,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 				whereClauses.add(sb.toString());
 			}
 
-			rules = (List<AuditCategoryRule>) ruleDAO.findWhere(AuditCategoryRule.class,
+			rules = ruleDAO.findWhere(AuditCategoryRule.class,
 					Strings.implode(whereClauses, " AND "), 0);
 			Collections.sort(rules);
 			Collections.reverse(rules);
