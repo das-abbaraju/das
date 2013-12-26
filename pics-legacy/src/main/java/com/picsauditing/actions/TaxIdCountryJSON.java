@@ -6,6 +6,8 @@ import com.picsauditing.jpa.entities.Country;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Locale;
+
 public class TaxIdCountryJSON extends PicsActionSupport {
 
     @Autowired
@@ -29,10 +31,11 @@ public class TaxIdCountryJSON extends PicsActionSupport {
     private String getTaxIdLabel(String iso, String locale) {
         Country country = dao.findbyISO(iso);
 
+
         if (country.isBrazil()) {
-            return getText("FeeClass.CNPJ");
+            return getText(new Locale(locale), "FeeClass.CNPJ");
         } else if (country.isEuropeanUnion() && !country.isUK()) {
-            return getText("FeeClass.VAT");
+            return getText(new Locale(locale), "FeeClass.VAT");
         } else {
             return "";
         }

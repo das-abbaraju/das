@@ -17,7 +17,8 @@ import com.picsauditing.jpa.entities.Country;
 import java.util.Locale;
 
 public class TaxIdCountryJSONTest extends PicsActionTest {
-	private TaxIdCountryJSON taxIdCountryJSON;
+    public static final String BR_ISO = "BR";
+    private TaxIdCountryJSON taxIdCountryJSON;
 
     @Mock
     private CountryDAO mockDao;
@@ -33,6 +34,13 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
     private static final String TRUE_CNPJ_JSON = "{\"label\":\"CNPJ\",\"tax_id_required\":true}";
     private static final String FALSE_JSON = "{\"label\":\"\",\"tax_id_required\":false}";
     private static final String RESPONSE = "json";
+    private static final String REQUEST_PARAMETER_LOCALE = "locale";
+    private static final String TESTING_LOCALE_STRING = "en-us";
+    public static final Locale TESTING_LOCALE = new Locale(TESTING_LOCALE_STRING);
+    private static final String CNPJ_TRANSLATION_KEY = "FeeClass.CNPJ";
+    private static final String VAT_TRANSLATION_KEY = "FeeClass.VAT";
+    private static final String CNPJ_TRANSLATION_VALUE = "CNPJ";
+    private static final String VAT_TRANSLATION_VALUE = "VAT";
 
     @Before
 	public void setup() throws Exception {
@@ -41,15 +49,17 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
 		super.setUp(taxIdCountryJSON);
 		Whitebox.setInternalState(taxIdCountryJSON, "dao", mockDao);
 
-        when(translationService.hasKey("FeeClass.CNPJ", Locale.ENGLISH)).thenReturn(true);
-        when(translationService.getText("FeeClass.CNPJ", Locale.ENGLISH, null)).thenReturn("CNPJ");
-        when(translationService.hasKey("FeeClass.VAT", Locale.ENGLISH)).thenReturn(true);
-        when(translationService.getText("FeeClass.VAT", Locale.ENGLISH, null)).thenReturn("VAT");
+        when(translationService.hasKey(CNPJ_TRANSLATION_KEY, TESTING_LOCALE)).thenReturn(true);
+        when(translationService.getText(CNPJ_TRANSLATION_KEY, TESTING_LOCALE, null)).thenReturn(CNPJ_TRANSLATION_VALUE);
+        when(translationService.hasKey(VAT_TRANSLATION_KEY, TESTING_LOCALE)).thenReturn(true);
+        when(translationService.getText(VAT_TRANSLATION_KEY, TESTING_LOCALE, null)).thenReturn(VAT_TRANSLATION_VALUE);
+        when(request.getParameter(REQUEST_PARAMETER_LOCALE)).thenReturn(TESTING_LOCALE_STRING);
     }
 
     @Test
     public void testExecute_true() {
 		when(request.getParameter(REQUEST_PARAMETER)).thenReturn(TESTING_ISO);
+        when(request.getParameter(REQUEST_PARAMETER_LOCALE)).thenReturn(TESTING_LOCALE_STRING);
         when(mockDao.findbyISO(TESTING_ISO)).thenReturn(mockCountry);
         when(mockCountry.isEuropeanUnion()).thenReturn(true);
         when(mockCountry.isUK()).thenReturn(false);
@@ -79,8 +89,8 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
 
     @Test
     public void testExecute_BR() {
-        when(request.getParameter(REQUEST_PARAMETER)).thenReturn("BR");
-        when(mockDao.findbyISO("BR")).thenReturn(mockCountry);
+        when(request.getParameter(REQUEST_PARAMETER)).thenReturn(BR_ISO);
+        when(mockDao.findbyISO(BR_ISO)).thenReturn(mockCountry);
         when(mockCountry.isEuropeanUnion()).thenReturn(false);
         when(mockCountry.isBrazil()).thenReturn(true);
         when(mockCountry.isUK()).thenReturn(false);
