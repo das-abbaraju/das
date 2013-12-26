@@ -17,7 +17,7 @@ and bad.expiresDate is null;
 update
 contractor_audit as ca
 join accounts a on a.id = ca.conID
-set ca.expiresDate = STR_TO_DATE('2014-04-01 23:59:59', '%Y-%m-%d %H:%i:%s')
+set ca.expiresDate =  STR_TO_DATE('2014-04-01 23:59:59', '%Y-%m-%d %H:%i:%s')
 where a.status= 'Active'
 and ca.auditTypeID=380
 and ca.expiresDate > NOW();
