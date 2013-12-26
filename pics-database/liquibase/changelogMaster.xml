@@ -100,5 +100,6 @@
 	<include file="./liquibase/sshacter36_PICS13868_InvoicePaymentInsertTrigger.sql"/>
 	<include file="./liquibase/sshacter37_PICS13868_InvoicePaymentUpdateTrigger.sql"/>
 	<include file="./liquibase/sshacter38_PICS13868_InvoicePaymentDeleteTrigger.sql"/>
+	<include file="./liquibase/kchase15_PICS-14060_TeackCoal.sql"/>
 
 </databaseChangeLog>
