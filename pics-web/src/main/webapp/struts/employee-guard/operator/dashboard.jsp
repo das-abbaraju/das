@@ -22,7 +22,7 @@
 <div class="row">
     <ul class="nav nav-pills nav-stacked col-md-3">
         <li>
-            <a href="${operator_project_url}"><i class="icon-sitemap"></i>Projects</a>
+            <a href="${operator_project_url}"><i class="icon-sitemap"></i>Assignments and Projects</a>
         </li>
         <li>
             <a href="${operator_skill_url}"><i class="icon-certificate"></i>Skills</a>

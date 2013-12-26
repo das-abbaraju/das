@@ -29,7 +29,7 @@
             <a href="${contractor_skill_url}"><i class="icon-certificate"></i>Skills</a>
         </li>
         <li>
-            <a href="${contractor_project_url}"><i class="icon-sitemap"></i>Projects</a>
+            <a href="${contractor_project_url}"><i class="icon-sitemap"></i>Assignments and Projects</a>
         </li>
         <%-- <li>
             <a href="#"><i class="icon-ok"></i>Quick Manage</a>
