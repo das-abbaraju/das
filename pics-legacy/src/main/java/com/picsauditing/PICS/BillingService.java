@@ -655,22 +655,40 @@ public class BillingService {
 		}
 	}
 
-	private Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
+	public Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
 		switch (invoice.getInvoiceType()) {
 			case Activation:
-				Date oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
-				return oneYearLater;
+				return calculateActivationRevRecFinishDate(invoice, contractor);
 			case Renewal:
-				Date oneYearOneMonthLater = DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
-				return oneYearOneMonthLater;
+				return calculateRenewalRevRecFinishDate(invoice, contractor);
 			default:
-				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
-				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
-				if (previousInvoice == null || previousEndDate == null) {
-					throw new Exception(generateExceptionStringForInabilityToCalculateRevRec(contractor,invoice,previousInvoice));
-				}
-				return previousEndDate;
+				return contractor.getPaymentExpires();
 		}
+	}
+
+	private Date calculateRenewalRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater;
+		oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrLessThanAYearFromNow(contractor)) {
+			oneYearLater = DateBean.addYears(contractor.getPaymentExpires(),1);
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
+
+	private Date calculateActivationRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrLessThanAYearFromNow(contractor)) {
+			oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
+
+	private boolean contractorPaymentExpiresIsNullOrLessThanAYearFromNow(ContractorAccount contractor) {
+		return contractor.getPaymentExpires() == null || contractor.getPaymentExpires().before(DateBean.subtractDays(DateBean.addYears(new Date(),1),1));
 	}
 
 	private String generateExceptionStringForInabilityToCalculateRevRec(ContractorAccount contractor, Invoice invoice, Invoice previousInvoice) {
@@ -704,27 +722,22 @@ public class BillingService {
 	}
 
 	private Date calculateInvoiceItemRevRecStartDateFor(Invoice invoice) {
-		if (invoice.getInvoiceType() == InvoiceType.Renewal) {
-			return DateBean.addMonths(invoice.getCreationDate(), 1);
-		} else {
-			return invoice.getCreationDate();
+		switch (invoice.getInvoiceType()) {
+			case Activation:
+				if (invoice.getDueDate() == null) {
+					return invoice.getCreationDate();
+				} else {
+					return invoice.getDueDate();
+				}
+			case Renewal:
+				if (invoice.getDueDate() == null) {
+					return DateBean.addMonths(invoice.getCreationDate(), 1);
+				} else {
+					return invoice.getDueDate();
+				}
+			default:
+				return invoice.getCreationDate();
 		}
-	}
-
-	public Invoice findLastActivationOrRenewalInvoiceFor(ContractorAccount contractor) {
-		for (Invoice invoice : contractor.getSortedInvoices()) {
-			if (invoice.getStatus() == TransactionStatus.Void) {
-				continue;
-			}
-			switch (invoice.getInvoiceType()) {
-			  case Activation:
-			  case Renewal:
-				  return invoice;
-			  default:
-				  continue;
-			}
-  		}
-		return null;
 	}
 
     public static boolean hasCreditMemosForFullAmount(Invoice invoice) {
