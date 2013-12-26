@@ -15118,6 +15118,18 @@ PICS.define('employee-guard.Tooltip', {
 
 
 
+PICS.define('sample.Test', {
+    methods: (function () {
+
+        function helloWorld() {
+            return "Hello world!";
+        }
+
+        return {
+            helloWorld: helloWorld
+        };
+    }())
+});
 (function ($) {
     PICS.define('layout.menu.Menu', {
         methods: {

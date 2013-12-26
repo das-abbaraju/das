@@ -34,6 +34,13 @@ module.exports = function(grunt) {
         ]
     },
 
+    jasmine: {
+      src: 'js/script.js',
+      options: {
+        specs: 'js/specs/*spec.js'
+      }
+    },
+
     qunit: {
 
     },
@@ -149,11 +156,13 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('../../node_modules/grunt-contrib-jshint');
+  grunt.loadNpmTasks('../../node_modules/grunt-contrib-jasmine');
   grunt.loadNpmTasks('../../node_modules/grunt-contrib-watch');
   grunt.loadNpmTasks('../../node_modules/grunt-contrib-concat');
   grunt.loadNpmTasks('../../node_modules/grunt-contrib-uglify');
   grunt.loadNpmTasks('../../node_modules/grunt-compass');
   grunt.loadNpmTasks('../../node_modules/grunt-recess');
+
 
   // grunt
   grunt.registerTask('default', 'Description...', function () {
@@ -169,6 +178,8 @@ module.exports = function(grunt) {
       } else {
           grunt.task.run('concat', 'compass:debug', 'recess:debug');
       }
+
+      grunt.task.run('jasmine');
   });
 
   // grunt build-js:prod
