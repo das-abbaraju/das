@@ -66,7 +66,10 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 					if (cAudit.getAuditType().isPicsPqf()) {
 						for (ContractorAuditOperator cao : cAudit.getOperators()) {
 							if (cao.getStatus().after(AuditStatus.Pending)) {
-								cao.changeStatus(AuditStatus.Pending, permissions);
+                                ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, permissions);
+                                if (caow != null) {
+                                    caow.setNotes("Resetting PQF because off client addition.");
+                                }
 								auditDataDAO.save(cao);
 							}
 						}

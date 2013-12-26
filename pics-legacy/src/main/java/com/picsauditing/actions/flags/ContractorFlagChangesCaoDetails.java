@@ -1,5 +1,6 @@
 package com.picsauditing.actions.flags;
 
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -27,8 +28,12 @@ public class ContractorFlagChangesCaoDetails extends ContractorActionSupport {
 	public String rollback() {
 		newCao = caoDao.find(id);
 		oldCao = caoDao.find(previousID);
-		newCao.changeStatus(oldCao.getStatus(), permissions);
+		ContractorAuditOperatorWorkflow caow = newCao.changeStatus(oldCao.getStatus(), permissions);
 		caoDao.save(newCao);
+        if (caow != null) {
+            caow.setNotes("Previous cao status reloaded");
+            dao.save(caow);
+        }
 
 		addActionMessage("Previous cao status reloaded");
 

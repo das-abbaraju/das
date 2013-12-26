@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.Iterator;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -14,18 +15,6 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
@@ -93,7 +82,10 @@ public class ReportBiddingContractors extends ReportAccount {
 			if (cAudit.getAuditType().isPicsPqf()) {
 				for (ContractorAuditOperator cao : cAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Pending)) {
-						cao.changeStatus(AuditStatus.Pending, permissions);
+                        ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, permissions);
+                        if (caow != null) {
+                            caow.setNotes("Resetting PQF because off client addition.");
+                        }
 						contractorAuditOperatorDAO.save(cao);
 					}
 				}
