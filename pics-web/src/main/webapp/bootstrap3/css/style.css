@@ -10028,25 +10028,25 @@ ol.linenums li {
  * @date: 2012-07-09
  */
 
-/* line 42, ../sass/pics/_defaults.scss */
+/* line 54, ../sass/pics/_defaults.scss */
 
 body {
   color: #454545;
 }
 
-/* line 47, ../sass/pics/_defaults.scss */
+/* line 58, ../sass/pics/_defaults.scss */
 
 figure {
   margin: 0;
 }
 
-/* line 52, ../sass/pics/_defaults.scss */
+/* line 62, ../sass/pics/_defaults.scss */
 
 a {
   color: #226396;
 }
 
-/* line 58, ../sass/pics/_defaults.scss */
+/* line 67, ../sass/pics/_defaults.scss */
 
 a:hover,
 a:focus {
@@ -11547,80 +11547,70 @@ body {
   color: #ec8c00;
 }
 
-/* line 21, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 20, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr.assigned .complete,
-#employee_assignment tr.assigned .pending {
+#employee_assignment tr.assigned .success {
   color: #33b679;
   background-color: #d6f0e4;
 }
 
-/* line 26, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 25, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr.assigned .expiring {
+#employee_assignment tr.assigned .warning {
   color: #f4b400;
   background-color: #fef5d9;
 }
 
-/* line 31, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 30, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr.assigned .expired {
+#employee_assignment tr.assigned .danger {
   color: #e74c3c;
   background-color: #fadbd8;
 }
 
-/* line 37, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 36, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:nth-child(odd) td {
   background-color: #f1f1f2;
 }
 
-/* line 41, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 40, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:nth-child(even) td {
   background: none;
 }
 
-/* line 45, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 44, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:hover td {
   background-color: #ebf5fe;
 }
 
-/* line 49, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 47, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tbody > tr:hover td.complete,
-#employee_assignment tbody > tr:hover td.pending {
+#employee_assignment tbody > tr:hover td.success {
   color: #33b679;
 }
 
-/* line 53, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 51, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tbody > tr:hover td.expiring {
+#employee_assignment tbody > tr:hover td.warning {
   color: #f4b400;
 }
 
-/* line 57, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 55, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tbody > tr:hover td.expired {
+#employee_assignment tbody > tr:hover td.danger {
   color: #e74c3c;
 }
 
-/* line 61, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 59, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment tbody > tr:hover td.assign-employee a {
   color: #ec8c00;
 }
 
-/* line 70, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr td.complete,
-#employee_assignment tbody > tr td.pending,
-#employee_assignment tbody > tr td.expiring #employee_assignment tbody > tr td.expired {
-  text-align: center;
-}
-
-/* line 77, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 66, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment td.status,
 #employee_assignment td.assign-employee {
@@ -11628,26 +11618,17 @@ body {
   text-align: center;
 }
 
-/* line 81, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 70, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment td.status a,
 #employee_assignment td.assign-employee a {
   color: #b3b3b3;
 }
 
-/* line 86, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 75, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
 #employee_assignment td a {
   display: inline;
-}
-
-/* line 96, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_project.table-status .complete,
-#employee_project.table-status .pending,
-#employee_project.table-status .expiring,
-#employee_project.table-status .expired {
-  text-align: center;
 }
 
 /* line 2, ../sass/pics/employee-guard/mixins/_employee-image.scss */
@@ -11823,27 +11804,6 @@ body {
 
 .employee_guard_contractor_employee-page .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
-}
-
-/* line 5, ../sass/pics/employee-guard/contractor/employee/_list.scss */
-
-#employee_guard_contractor_employee_index_page .incomplete-skills,
-#employee_guard_contractor_employee_index_page .expire-skills {
-  text-align: center;
-}
-
-/* line 10, ../sass/pics/employee-guard/contractor/employee/_list.scss */
-
-#employee_guard_contractor_employee_index_page .expire {
-  color: #e67e1c;
-  background-color: #fef2ca;
-}
-
-/* line 16, ../sass/pics/employee-guard/contractor/employee/_list.scss */
-
-#employee_guard_contractor_employee_index_page .incomplete {
-  color: #ac030c;
-  background-color: #ffc6c9;
 }
 
 /* line 1, ../sass/pics/employee-guard/contractor/employee/_import-export.scss */
@@ -13031,87 +12991,134 @@ ul.skill-nav a {
   border: 0;
 }
 
-/* line 8, ../sass/pics/employee-guard/general/_table.scss */
+/* line 7, ../sass/pics/employee-guard/general/_table.scss */
 
-tr th.icon {
-  text-align: center;
+.table thead > tr > th.success {
+  background-color: #454545;
 }
 
-/* line 12, ../sass/pics/employee-guard/general/_table.scss */
+/* line 10, ../sass/pics/employee-guard/general/_table.scss */
 
-th.incomplete-skills i {
-  color: #e74c3c;
+.table thead > tr > th.success i {
+  color: #33b679;
 }
 
-/* line 16, ../sass/pics/employee-guard/general/_table.scss */
+/* line 15, ../sass/pics/employee-guard/general/_table.scss */
 
-th.expire-skills i {
+.table thead > tr > th.warning {
+  background-color: #454545;
+}
+
+/* line 18, ../sass/pics/employee-guard/general/_table.scss */
+
+.table thead > tr > th.warning i {
   color: #fbcb43;
 }
 
-/* line 20, ../sass/pics/employee-guard/general/_table.scss */
+/* line 23, ../sass/pics/employee-guard/general/_table.scss */
+
+.table thead > tr > th.danger {
+  background-color: #454545;
+}
+
+/* line 26, ../sass/pics/employee-guard/general/_table.scss */
+
+.table thead > tr > th.danger i {
+  color: #e74c3c;
+}
+
+/* line 32, ../sass/pics/employee-guard/general/_table.scss */
 
 .table tbody > tr > td {
   vertical-align: middle;
   border: 0;
 }
 
-/* line 25, ../sass/pics/employee-guard/general/_table.scss */
+/* line 36, ../sass/pics/employee-guard/general/_table.scss */
 
-td.number {
-  text-align: right;
+.table tbody > tr > td.success {
+  color: #33b679;
+  background-color: #d6f0e4;
 }
 
-/* line 29, ../sass/pics/employee-guard/general/_table.scss */
+/* line 41, ../sass/pics/employee-guard/general/_table.scss */
+
+.table tbody > tr > td.warning {
+  color: #f4b400;
+  background-color: #fef5d9;
+}
+
+/* line 46, ../sass/pics/employee-guard/general/_table.scss */
+
+.table tbody > tr > td.danger {
+  color: #e74c3c;
+  background-color: #fadbd8;
+}
+
+/* line 52, ../sass/pics/employee-guard/general/_table.scss */
 
 .table-striped > tbody > tr:nth-child(odd) td {
   background-color: #f1f1f2;
 }
 
-/* line 33, ../sass/pics/employee-guard/general/_table.scss */
+/* line 55, ../sass/pics/employee-guard/general/_table.scss */
+
+.table-striped > tbody > tr:nth-child(odd) td.success {
+  color: #33b679;
+  background-color: #d6f0e4;
+}
+
+/* line 60, ../sass/pics/employee-guard/general/_table.scss */
+
+.table-striped > tbody > tr:nth-child(odd) td.warning {
+  color: #f4b400;
+  background-color: #fef5d9;
+}
+
+/* line 65, ../sass/pics/employee-guard/general/_table.scss */
+
+.table-striped > tbody > tr:nth-child(odd) td.danger {
+  color: #e74c3c;
+  background-color: #fadbd8;
+}
+
+/* line 71, ../sass/pics/employee-guard/general/_table.scss */
+
+.table-striped > tbody > tr:nth-child(even) td {
+  background-color: none;
+}
+
+/* line 74, ../sass/pics/employee-guard/general/_table.scss */
+
+.table-striped > tbody > tr:nth-child(even) td.success {
+  color: #33b679;
+  background-color: #d6f0e4;
+}
+
+/* line 79, ../sass/pics/employee-guard/general/_table.scss */
+
+.table-striped > tbody > tr:nth-child(even) td.warning {
+  color: #f4b400;
+  background-color: #fef5d9;
+}
+
+/* line 84, ../sass/pics/employee-guard/general/_table.scss */
+
+.table-striped > tbody > tr:nth-child(even) td.danger {
+  color: #e74c3c;
+  background-color: #fadbd8;
+}
+
+/* line 90, ../sass/pics/employee-guard/general/_table.scss */
 
 .table-hover tbody tr:hover td {
   background-color: #d6eaf8;
 }
 
-/* line 37, ../sass/pics/employee-guard/general/_table.scss */
+/* line 94, ../sass/pics/employee-guard/general/_table.scss */
 
 .table td a {
   display: block;
-}
-
-/* For tables with status colors and icons */
-
-/*.table-hover tbody tr:hover td.expired {
-    background-color: $danger_tint;
-}*/
-
-/* line 47, ../sass/pics/employee-guard/general/_table.scss */
-
-.table-status th.status-title {
-  text-align: center;
-}
-
-/* line 53, ../sass/pics/employee-guard/general/_table.scss */
-
-.table-status tbody tr td.complete,
-.table-status tbody tr td.pending {
-  color: #33b679;
-  background-color: #d6f0e4;
-}
-
-/* line 58, ../sass/pics/employee-guard/general/_table.scss */
-
-.table-status tbody tr td.expiring {
-  color: #f4b400;
-  background-color: #fef5d9;
-}
-
-/* line 63, ../sass/pics/employee-guard/general/_table.scss */
-
-.table-status tbody tr td.expired {
-  color: #e74c3c;
-  background-color: #fadbd8;
 }
 
 /* line 1, ../sass/pics/employee-guard/general/_well.scss */

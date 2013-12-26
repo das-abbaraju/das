@@ -34,57 +34,56 @@
 <div class="table-responsive">
     <table class="table table-striped table-condensed table-hover">
         <thead>
-        <tr>
-            <th class="icon incomplete-skills"><i class="icon-minus-sign-alt icon-large" data-toggle="tooltip"
-                                                  data-placement="top" title=""
-                                                  data-original-title="Expired or Incomplete"></i></th>
-            <th class="icon expire-skills"><i class="icon-warning-sign icon-large" data-toggle="tooltip"
-                                              data-placement="top" title="" data-original-title="Expiring"></i></th>
-            <th class="employee">Employee</th>
-            <th class="title">Title</th>
-            <th class="groups">Employee Groups</th>
-        </tr>
+            <tr>
+                <th class="danger text-center">
+                    <i class="icon-minus-sign-alt icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expired or Incomplete"></i>
+                </th>
+                <th class="warning text-center">
+                    <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expiring"></i>
+                </th>
+                <th class="employee">Employee</th>
+                <th class="title">Title</th>
+                <th class="groups">Employee Groups</th>
+            </tr>
         </thead>
         <tbody>
-        <s:iterator value="employees" var="employee">
-            <s:url action="employee" var="contractor_employee_show_url">
-                <s:param name="id">${employee.id}</s:param>
-            </s:url>
+            <s:iterator value="employees" var="employee">
+                <s:url action="employee" var="contractor_employee_show_url">
+                    <s:param name="id">${employee.id}</s:param>
+                </s:url>
 
-            <%-- TODO: Please clean this up --%>
-            <s:set var="incomplete_status">${employeeSkillStatuses.get(employee, 'expired')}</s:set>
-            <s:set var="incomplete_class"></s:set>
-            <s:set var="expiring_status">${employeeSkillStatuses.get(employee, 'expiring')}</s:set>
-            <s:set var="expiring_class"></s:set>
+                <%-- TODO: Please clean this up --%>
+                <s:set var="incomplete_status">${employeeSkillStatuses.get(employee, 'expired')}</s:set>
+                <s:set var="expiring_status">${employeeSkillStatuses.get(employee, 'expiring')}</s:set>
 
-            <s:if test="#incomplete_status > 0">
-                <s:set var="incomplete_class">incomplete</s:set>
-            </s:if>
-            <s:if test="#expiring_status > 0">
-                <s:set var="expiring_class">expire</s:set>
-            </s:if>
+                <s:if test="#incomplete_status > 0">
+                    <s:set var="incomplete_class">danger</s:set>
+                </s:if>
+                <s:if test="#expiring_status > 0">
+                    <s:set var="expiring_class">warning</s:set>
+                </s:if>
 
-            <tr>
-                <td class="incomplete-skills ${incomplete_class}">
-                    <s:if test="#incomplete_status > 0">
-                        ${incomplete_status}
-                    </s:if>
-                </td>
-                <td class="expire-skills ${expiring_class}">
-                    <s:if test="#expiring_status > 0">
-                        ${expiring_status}
-                    </s:if>
-                </td>
-                <td>
-                    <a href="${contractor_employee_show_url}">${employee.firstName} ${employee.lastName}</a>
-                </td>
-                <td>${employee.positionName}</td>
-                <td>
-                    <s:set var="contractor_groups" value="#employee.groups"/>
-                    <s:include value="/struts/employee-guard/contractor/group/_list.jsp"/>
-                </td>
-            </tr>
-        </s:iterator>
+                <tr>
+                    <td class="${incomplete_class} text-center">
+                        <s:if test="#incomplete_status > 0">
+                            ${incomplete_status}
+                        </s:if>
+                    </td>
+                    <td class="${expiring_class} text-center">
+                        <s:if test="#expiring_status > 0">
+                            ${expiring_status}
+                        </s:if>
+                    </td>
+                    <td>
+                        <a href="${contractor_employee_show_url}">${employee.firstName} ${employee.lastName}</a>
+                    </td>
+                    <td>${employee.positionName}</td>
+                    <td>
+                        <s:set var="contractor_groups" value="#employee.groups"/>
+                        <s:include value="/struts/employee-guard/contractor/group/_list.jsp"/>
+                    </td>
+                </tr>
+            </s:iterator>
         </tbody>
     </table>
 </div>

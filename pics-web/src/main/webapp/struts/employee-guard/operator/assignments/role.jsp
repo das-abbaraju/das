@@ -45,13 +45,13 @@
     </ul>
 
     <div class="table-responsive col-md-9">
-        <table id="employee_assignment" class="table table-striped table-condensed table-hover table-status view-only">
+        <table id="employee_assignment" class="table table-striped table-condensed table-hover view-only">
             <thead>
                 <tr>
                     <th>Company</th>
                     <th>Employee</th>
                     <s:iterator value="operatorProjectAssignmentMatrix.skillNames" var="skill_name">
-                        <th class="status-title">${skill_name}</th>
+                        <th class="text-center">${skill_name}</th>
                     </s:iterator>
                 </tr>
             </thead>
