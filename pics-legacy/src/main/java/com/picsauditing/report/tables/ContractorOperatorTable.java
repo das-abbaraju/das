@@ -73,6 +73,22 @@ public class ContractorOperatorTable extends AbstractTable {
                 " AND fdo.opID = " + ReportOnClause.ToAlias + ".opID " +
                 " AND fdo.forceEnd IS NOT NULL))", FieldType.Boolean);
         addField(contractorFlagOverride);
+
+        Field hasSAPNumber = new Field("HasSAPNumber", "EXISTS(SELECT * FROM contractor_operator_number con WHERE " + ReportOnClause.ToAlias +
+                ".conID = con.conID AND con.opID IN (SELECT f.opID FROM facilities f WHERE f.corporateID = " +
+                ReportOnClause.ToAlias + ".opID UNION SELECT " + ReportOnClause.ToAlias + ".opID) AND con.type = 'SAP')", FieldType.Boolean);
+        hasSAPNumber.setImportance(FieldImportance.Required);
+        addField(hasSAPNumber);
+        Field hasVendorNumber = new Field("HasVendorNumber", "EXISTS(SELECT * FROM contractor_operator_number con WHERE " + ReportOnClause.ToAlias +
+                ".conID = con.conID AND con.opID IN (SELECT f.opID FROM facilities f WHERE f.corporateID = " +
+                ReportOnClause.ToAlias + ".opID UNION SELECT " + ReportOnClause.ToAlias + ".opID) AND con.type = 'Vendor')", FieldType.Boolean);
+        hasVendorNumber.setImportance(FieldImportance.Required);
+        addField(hasVendorNumber);
+        Field hasOracleNumber = new Field("HasOracleNumber", "EXISTS(SELECT * FROM contractor_operator_number con WHERE " + ReportOnClause.ToAlias +
+                ".conID = con.conID AND con.opID IN (SELECT f.opID FROM facilities f WHERE f.corporateID = " +
+                ReportOnClause.ToAlias + ".opID UNION SELECT " + ReportOnClause.ToAlias + ".opID) AND con.type = 'Oracle')", FieldType.Boolean);
+        hasOracleNumber.setImportance(FieldImportance.Required);
+        addField(hasOracleNumber);
 	}
 
 	public void addJoins() {
