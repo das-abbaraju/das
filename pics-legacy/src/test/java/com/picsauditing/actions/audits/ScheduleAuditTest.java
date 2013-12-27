@@ -228,11 +228,6 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
 		verify(billingService).saveInvoice((Invoice) any());
-		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
-		verify(itemDAO).save(captor.capture());
-		InvoiceItem itemSaved = captor.getValue();
-		InvoiceFee fee = itemSaved.getInvoiceFee();
-		assertThat(rescheduling, is(equalTo(fee)));
 		verify(dao).save((Note) any());
 		verify(response).sendRedirect(anyString());
 	}
@@ -259,11 +254,6 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
 		verify(billingService).saveInvoice((Invoice) any());
-		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
-		verify(itemDAO).save(captor.capture());
-		InvoiceItem itemSaved = captor.getValue();
-		InvoiceFee fee = itemSaved.getInvoiceFee();
-		assertThat(expedite, is(equalTo(fee)));
 		verify(dao).save((Note) any());
 		verify(response).sendRedirect(anyString());
 	}
