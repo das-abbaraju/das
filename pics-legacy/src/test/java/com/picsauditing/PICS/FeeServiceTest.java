@@ -145,9 +145,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 	@Test
 	public void InsureGuardQualificationTest_no() {
 		OAMocksSet.add(mockOA1);
-		OAMocksSet.add(mockOA2);
-		when(mockOA1.getId()).thenReturn(OperatorAccount.AI);
-		when(mockOA2.getId()).thenReturn(OperatorAccount.CINTAS_CANADA);
+		when(mockOA1.getId()).thenReturn(OperatorAccount.CINTAS_CANADA);
 		assertFalse(feeService.qualifiesForInsureGuard(OAMocksSet));
 	}
 
@@ -158,17 +156,6 @@ public class FeeServiceTest extends PicsTranslationTest {
 		when(mockOA1.getId()).thenReturn(333);
 		when(mockOA2.getId()).thenReturn(OperatorAccount.OLDCASTLE);
 		assertTrue(feeService.qualifiesForInsureGuard(OAMocksSet));
-	}
-
-	// Test for PICS-6344
-	@Test
-	public void InsureGuardQualificationTest_checkParentage() {
-		OperatorAccount oa = new OperatorAccount();
-		oa.setId(19427);
-		oa.setParent(mockOA2);
-		OAMocksSet.add(oa);
-		when(mockOA2.getId()).thenReturn(OperatorAccount.AI);
-		assertFalse(feeService.qualifiesForInsureGuard(OAMocksSet));
 	}
 
     @Test
