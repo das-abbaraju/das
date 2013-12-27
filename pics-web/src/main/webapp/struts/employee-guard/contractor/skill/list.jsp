@@ -30,7 +30,7 @@
     <table class="table table-striped table-condensed table-hover">
         <thead>
             <tr>
-                <th class="icon number-of-employees"><i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Employees"></i></th>
+                <th class="text-center"><i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Employees"></i></th>
                 <th>Skill</th>
                 <th>Employee Groups</th>
             </tr>
@@ -51,7 +51,7 @@
 
                 <tr>
 
-                        <td class="number number-of-employees">${contractorSkill.numberOfEmployees}</td>
+                        <td class="text-right">${contractorSkill.numberOfEmployees}</td>
                         <td><a href="${contractor_skill_show_url}">${contractorSkill.name}</a></td>
                         <td>
                             <s:if test="#contractorSkill.ruleType.required">

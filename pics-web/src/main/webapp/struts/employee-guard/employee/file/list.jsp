@@ -30,35 +30,44 @@
 </tw:form>
 
 <div class="table-responsive">
-    <table class="table table-striped table-condensed table-hover table-status">
+    <table class="table table-striped table-condensed table-hover">
         <thead>
-        <tr>
-            <th>Name</th>
-            <th>Added</th>
-            <th>Expires</th>
-        </tr>
+            <tr>
+                <th>Name</th>
+                <th>Added</th>
+                <th>Expires</th>
+            </tr>
         </thead>
         <tbody>
-        <s:iterator value="documents" var="document">
-            <s:url action="file" var="employee_file_show_url">
-                <s:param name="id">${document.id}</s:param>
-            </s:url>
+            <s:iterator value="documents" var="document">
+                <s:url action="file" var="employee_file_show_url">
+                    <s:param name="id">${document.id}</s:param>
+                </s:url>
 
-            <tr>
-                <td>
-                    <a href="${employee_file_show_url}">${document.name}</a>
-                </td>
-                <td>${document.added}</td>
-                <td class="${document.status.displayValue}">
-                    <s:if test="#document.doesNotExpire">
-                        Never
-                    </s:if>
-                    <s:else>
-                        ${document.expires}
-                    </s:else>
-                </td>
-            </tr>
-        </s:iterator>
+                <s:if test="#document.status.displayValue == 'expired'">
+                    <s:set var="document_status_class">danger</s:set>
+                </s:if>
+                <s:elseif test="#document.status.displayValue == 'expiring'">
+                    <s:set var="document_status_class">warning</s:set>
+                </s:elseif>
+                <s:else>
+                    <s:set var="document_status_class">success</s:set>
+                </s:else>
+
+                <s:if test="#document.doesNotExpire">
+                    <s:set var="document_expires">Never</s:set>
+                </s:if>
+                <s:else>
+                    <s:set var="document_expires">${document.expires}</s:set>
+                </s:else>
+                <tr>
+                    <td>
+                        <a href="${employee_file_show_url}">${document.name}</a>
+                    </td>
+                    <td>${document.added}</td>
+                    <td class="${document_status_class}">${document_expires}</td>
+                </tr>
+            </s:iterator>
         </tbody>
     </table>
 </div>

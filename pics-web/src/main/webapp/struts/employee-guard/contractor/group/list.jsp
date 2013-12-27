@@ -31,7 +31,7 @@
     <table class="table table-striped table-condensed table-hover">
         <thead>
         <tr>
-            <th class="icon number-of-employees">
+            <th class="text-center">
                 <i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Employees"></i>
             </th>
             <th>Employee Group</th>
@@ -45,7 +45,7 @@
             </s:url>
 
             <tr>
-                <td class="number number-of-employees">${contractor_group.employees == null ? 0 : contractor_group.employees.size()}</td>
+                <td class="text-right">${contractor_group.employees == null ? 0 : contractor_group.employees.size()}</td>
                 <td>
                     <a href="${contractor_group_show_url}">${contractor_group.name}</a>
                 </td>

@@ -21,8 +21,7 @@
 			margin-right: 10px;
 		}
 
-		.complete,
-		.pending {
+		.success {
 			background-color: $success_light;
 
 			&:hover {
@@ -35,7 +34,7 @@
 			}
 		}
 
-		.expiring {
+		.warning {
 			background-color: $warning_med;
 
 			&:hover {
@@ -48,7 +47,7 @@
 			}
 		}
 
-		.expired {
+		.danger {
 			background-color: $danger_light;
 
 			&:hover {

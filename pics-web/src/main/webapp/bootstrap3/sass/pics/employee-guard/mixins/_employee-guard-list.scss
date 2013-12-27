@@ -23,16 +23,15 @@
             line-height: 20px;
             padding: 5px 0px;
 
-            &.expired {
+            &.danger {
                 color: $danger_light;
             }
 
-            &.expiring {
+            &.warning {
                 color: $warning_med;
             }
 
-            &.complete,
-            &.pending {
+            &.success {
                 color: $success_light;
             }
 
