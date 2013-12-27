@@ -52,12 +52,12 @@ public class FeeService {
                 break;
             }
 
-            if (!foundPayingFacilities) {
-                payingFacilities = invoice.getPayingFacilities();
-                foundPayingFacilities = true;
-            }
-
             if (!invoice.getStatus().isVoid() && !BillingService.hasCreditMemosForFullAmount(invoice) && invoice.getInvoiceType().isMembershipType()) {
+                if (!foundPayingFacilities) {
+                    payingFacilities = invoice.getPayingFacilities();
+                    foundPayingFacilities = true;
+                }
+
                 for (InvoiceItem invoiceItem : invoice.getItems()) {
                     InvoiceFee invoiceFee = invoiceItem.getInvoiceFee();
                     FeeClass feeClass = invoiceFee.getFeeClass();
