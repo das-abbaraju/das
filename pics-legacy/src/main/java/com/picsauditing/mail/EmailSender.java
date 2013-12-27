@@ -1,45 +1,22 @@
 package com.picsauditing.mail;
 
-import java.util.Date;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-
-import com.opensymphony.xwork2.validator.validators.EmailValidator;
+import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailStatus;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.messaging.Publisher;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.Strings;
+import javax.mail.MessagingException;
+import java.util.Date;
 
 public class EmailSender {
 	private final Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
 	@Autowired
 	private EmailQueueDAO emailQueueDAO;
-	@Autowired
-	private FeatureToggle featureToggleChecker;
-
-	// this is @Autowired at the setter because we need @Qualifier which does
-	// NOT work
-	// on the variable declaration; only on the method (I think this is a Spring
-	// bug)
-	private Publisher emailQueuePublisher;
-
-	@Autowired
-	@Qualifier("EmailQueuePublisher")
-	public void setEmailQueuePublisher(Publisher emailQueuePublisher) {
-		this.emailQueuePublisher = emailQueuePublisher;
-	}
 
 	/**
 	 * 
@@ -157,33 +134,6 @@ public class EmailSender {
 	public void send(EmailQueue email) {
 		if (!checkDeactivated(email) && isEmailAddressValid(email.getToAddresses())) {
 			emailQueueDAO.save(email);
-			publishEnterpriseMessageIfEmailShouldBeSent(email);
-		}
-	}
-
-	public void publishSubscription(EmailQueue email) {
-		emailQueuePublisher.publish(email, "email-subscription");
-	}
-
-	public void publish(EmailQueue email) {
-		publishEnterpriseMessageIfEmailShouldBeSent(email);
-	}
-
-	private void publishEnterpriseMessageIfEmailShouldBeSent(EmailQueue email) {
-		if (contractorIsDeactivated(email) && !emailTemplateIsValidForDeactivatedContractors(email)) {
-			// this will write to the database NOW, as opposed to on actual
-			// sending of the email we're
-			// only going to do this if the feature is enabled. We'll log now
-			// and not publish for sending
-			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)) {
-				logEmailAsSendError(email);
-			}
-		} else {
-			if (email.getPriority() >= EmailQueue.HIGH_PRIORITY) {
-				emailQueuePublisher.publish(email, "email-queue-priority");
-			} else {
-				emailQueuePublisher.publish(email, "email-queue-normal");
-			}
 		}
 	}
 

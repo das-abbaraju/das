@@ -90,38 +90,7 @@ public class MailCronServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void testProcessEmailSubscription_whenTOGGLE_BPROC_SUBSCRIPTIONEMAILisFalseAndSubscriptionsAreEnabled_sendSubscription() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
-        when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
-
-        mailCronService.processEmailSubscription(subscriptionId);
-
-        verify(builder).sendSubscription(emailSubscription);
-    }
-
-    @Test
-    public void testProcessEmailSubscription_whenTOGGLE_BPROC_SUBSCRIPTIONEMAILisTrueAndSubscriptionsAreEnabled_doNothing() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(true);
-        when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
-
-        mailCronService.processEmailSubscription(subscriptionId);
-
-        verify(builder, never()).sendSubscription(emailSubscription);
-    }
-
-    @Test
-    public void testProcessEmailSubscription_whenTOGGLE_BPROC_SUBSCRIPTIONEMAILisFalseAndSubscriptionsAreNotEnabled_doNothing() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(true);
-        when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
-
-        mailCronService.processEmailSubscription(subscriptionId);
-
-        verify(builder, never()).sendSubscription(emailSubscription);
-    }
-
-    @Test
     public void testProcessEmailSubscription_whenIOException_setSubscriptionToBeReprocessedTomorrow() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
         when(appPropertyService.isEnabled(MailCronService.SUBSCRIPTION_ENABLE, true)).thenReturn(true);
         doThrow(new IOException()).when(builder).sendSubscription(emailSubscription);
 
@@ -182,50 +151,6 @@ public class MailCronServiceTest extends PicsTranslationTest {
         mailCronService.findEmailSubscription(subscriptionId);
 
         verify(subscriptionDAO).find(subscriptionId);
-    }
-
-    @Test
-    public void testProcessPendingEmails_whenTOGGLE_BPROC_EMAILQUEUEisFalse_sendEmail() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
-
-        String statusMessage = mailCronService.processPendingEmails();
-
-        verify(emailSender).sendNow(email);
-        assertTrue(statusMessage.equals(String.format(MailCronService.SUCCESSFULLY_SENT_EMAILS, 1, 1)));
-    }
-
-    @Test
-    public void testProcessPendingEmails_whenSendErrorOccurs_processEmailForSendError() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
-        doThrow(MessagingException.class).when(emailSender).sendNow(email);
-
-        String statusMessage = mailCronService.processPendingEmails();
-
-        verify(emailSender).sendNow(email);
-        assertEquals(EmailStatus.Error, email.getStatus());
-        assertEquals(EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS, email.getToAddresses());
-        verify(emailSender).send(email);
-        assertTrue(statusMessage.equals(String.format(MailCronService.SUCCESSFULLY_SENT_EMAILS, 0, 1)));
-    }
-
-    @Test
-    public void testProcessPendingEmails_whenTOGGLE_BPROC_EMAILQUEUEisFalseAndQueueIsEmpty_returnQueueEmptyMessage() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
-        when(emailQueueDAO.getPendingEmails(anyInt())).thenReturn(Collections.EMPTY_LIST);
-
-        String statusMessage = mailCronService.processPendingEmails();
-
-        verify(emailSender, never()).sendNow(email);
-        assertTrue(statusMessage.equals(MailCronService.THE_EMAIL_QUEUE_IS_EMPTY));
-    }
-
-    @Test
-    public void testProcessPendingEmails_whenTOGGLE_BPROC_EMAILQUEUEisTrue_doNothing() throws Exception {
-        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(true);
-
-        mailCronService.processPendingEmails();
-
-        verify(emailSender, never()).sendNow(email);
     }
 
     @Test

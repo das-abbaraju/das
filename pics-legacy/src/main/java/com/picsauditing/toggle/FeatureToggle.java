@@ -10,8 +10,6 @@ public interface FeatureToggle {
 	String TOGGLE_SWITCHUSERSERVER = "Toggle.SwitchUserServer_v2";
 	String TOGGLE_AUDITREJECTION = "Toggle.AuditRejection_v2";
 	String TOGGLE_BASFDYNAMICREPORTSPREVIEW = "Toggle.BASFDynamicReportsPreview";
-	String TOGGLE_BPROC_SUBSCRIPTIONEMAIL = "Toggle.BackgroundProcesses.SubscriptionEmail";
-	String TOGGLE_BPROC_EMAILQUEUE = "Toggle.BackgroundProcesses.EmailQueue";
 	String TOGGLE_BPROC = "Toggle.BackgroundProcesses";
 	String TOGGLE_CONTRACTOR_CAMPAIGN = "Toggle.ContractorCampaign";
 	String TOGGLE_INVOICE_COMMISSION = "Toggle.InvoiceCommission";

@@ -52,51 +52,40 @@ public class MailCronService {
 	private FeatureToggleCheckerGroovy featureToggleChecker;
 
 	public void processEmailSubscription(int subscriptionId) throws SubscriptionValidationException {
-		if (backProcsEmailSubscriptionsIsDisabled()) {
-
-			if (appPropertyService.isEnabled(SUBSCRIPTION_ENABLE, true)) {
-				if (subscriptionId > 0) {
-					EmailSubscription emailSubscription = findEmailSubscription(subscriptionId);
-					validateEmailSubscription(emailSubscription, subscriptionId);
-					sendEmailSubscription(emailSubscription);
-				}
-			}
-		}
+        if (appPropertyService.isEnabled(SUBSCRIPTION_ENABLE, true)) {
+            if (subscriptionId > 0) {
+                EmailSubscription emailSubscription = findEmailSubscription(subscriptionId);
+                validateEmailSubscription(emailSubscription, subscriptionId);
+                sendEmailSubscription(emailSubscription);
+            }
+        }
 	}
 
 	public String processPendingEmails() {
 		String statusMessage = "";
 
-		if (backProcsEmailQueueIsDisabled()) {
+        int emailsToFindLimit = appPropertyService.getPropertyInt(EMAIL_QUEUE_SENDING_LIMIT_TOGGLE_NAME, NUMBER_OF_EMAILS_TO_FIND_DEFAULT);
+        List<EmailQueue> pendingEmails = findTheHighestPriorityPendingEmails(emailsToFindLimit);
+        if (pendingEmails.size() == 0) {
+            statusMessage = THE_EMAIL_QUEUE_IS_EMPTY;
+            return statusMessage;
+        }
 
-            int emailsToFindLimit = appPropertyService.getPropertyInt(EMAIL_QUEUE_SENDING_LIMIT_TOGGLE_NAME, NUMBER_OF_EMAILS_TO_FIND_DEFAULT);
-			List<EmailQueue> pendingEmails = findTheHighestPriorityPendingEmails(emailsToFindLimit);
-			if (pendingEmails.size() == 0) {
-				statusMessage = THE_EMAIL_QUEUE_IS_EMPTY;
-				return statusMessage;
-			}
+        int successfulCount = 0;
+        for (EmailQueue email : pendingEmails) {
+            try {
+                emailSender.sendNow(email);
+                successfulCount += 1;
 
-			int successfulCount = 0;
-			for (EmailQueue email : pendingEmails) {
-				try {
-					emailSender.sendNow(email);
-					successfulCount += 1;
-
-				} catch (MessagingException e) {
-					logger.error("processPendingEmails(): Failed to send email with id: {}. {}",
-							new Object[]{email.getId(), e.getMessage()});
-					processEmailForSendError(email);
-				}
-			}
-			statusMessage = String.format(SUCCESSFULLY_SENT_EMAILS, successfulCount, pendingEmails.size());
-
-		}
+            } catch (MessagingException e) {
+                logger.error("processPendingEmails(): Failed to send email with id: {}. {}",
+                        new Object[]{email.getId(), e.getMessage()});
+                processEmailForSendError(email);
+            }
+        }
+        statusMessage = String.format(SUCCESSFULLY_SENT_EMAILS, successfulCount, pendingEmails.size());
 
 		return statusMessage;
-	}
-
-	private boolean backProcsEmailSubscriptionsIsDisabled() {
-		return !featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL);
 	}
 
 	protected void validateEmailSubscription(EmailSubscription emailSubscription, int subscriptionId) throws SubscriptionValidationException {
@@ -164,10 +153,6 @@ public class MailCronService {
 		} catch (SubscriptionException e) {
 			logger.error("sendEmailSubscription(): Failed to send a subscription", e);
 		}
-	}
-
-	private boolean backProcsEmailQueueIsDisabled() {
-		return !featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE);
 	}
 
 	private List<EmailQueue> findTheHighestPriorityPendingEmails(int limit) {
