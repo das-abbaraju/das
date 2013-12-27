@@ -606,13 +606,11 @@
         </table>
     </td>
 </tr>
-<s:if test="transaction.currency.EUR|| transaction.currency.GBP">
-    <tr>
-        <td>
-            Company registered Number: 07660778 – VAT Number: GB126 9246 04
-        </td>
-    </tr>
-</s:if>
+<tr>
+    <td>
+        <s:property value="picsTaxId"/>
+    </td>
+</tr>
 </table>
 </s:form>
 </div>
