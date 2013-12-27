@@ -38,24 +38,6 @@
         </bindings>
     </fanout-exchange>
 
-	<queue id="email-queue-priority" name="email-queue-priority" />
-	<queue id="email-queue-normal" name="email-queue-normal" />
-	<queue id="email-subscription" name="email-subscription" />
-	<direct-exchange name="email-queue-exchange">
-	  <bindings>
-	    <binding queue="email-queue-priority" key="email-queue-priority"/>
-	    <binding queue="email-queue-normal" key="email-queue-normal"/>
-	    <binding queue="email-subscription" key="email-subscription"/>
-	  </bindings>
-	</direct-exchange>
-
-	<queue id="subscription" name="subscription" />
-	<direct-exchange name="subscription-exchange">
-	  <bindings>
-	    <binding queue="subscription" key="subscription"/>
-	  </bindings>
-	</direct-exchange>
-	
 	<queue id="csr-assignments" name="csr-assignments" />
     <direct-exchange name="csr-assignments-exchange" xmlns="http://www.springframework.org/schema/rabbit">
         <bindings>
@@ -98,23 +80,11 @@
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.FlagChanges" />
 	</beans:bean>
 
-	<template message-converter="messageConverter" id="EmailQueueTemplate" connection-factory="connectionFactory" exchange="email-queue-exchange"/>
-	<beans:bean id="EmailQueuePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
-		<beans:property name="amqpTemplate" ref="EmailQueueTemplate" />
-		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
-		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.EmailQueue" />
-	</beans:bean>
-
     <template message-converter="messageConverter" id="CsrAssignmentSingleTemplate" connection-factory="connectionFactory" exchange="csr-assignments-single-exchange" queue="csr-assignments-single"/>
 
     <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
         <beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
     </beans:bean>
-
-	<template message-converter="messageConverter" id="EmailSubscriptionTemplate" connection-factory="connectionFactory" exchange="subscription-exchange" queue="subscription" routing-key="subscription"/>
-	<beans:bean id="EmailSubscriptionPoller" class="com.picsauditing.messaging.subscription.EmailSubscriptionPoller">
-		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.SubscriptionEmail" />
-	</beans:bean>
 
 	<template message-converter="messageConverter" id="EmailRequestTemplate" connection-factory="connectionFactory" exchange="email-requests-exchange" queue="email-requests"/>
 	<beans:bean id="EmailRequestPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">

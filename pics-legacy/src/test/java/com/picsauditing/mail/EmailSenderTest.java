@@ -37,9 +37,7 @@ public class EmailSenderTest {
 	@Mock private EmailQueueDAO emailQueueDAO;
 	@Mock private EmailTemplate emailTemplate;
 	@Mock private ContractorAccount contractorAccount;
-	@Mock private Publisher emailQueuePublisher;
-	@Mock private FeatureToggle featureToggleChecker;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -47,92 +45,6 @@ public class EmailSenderTest {
 		emailSenderSpring = new EmailSender();
 		
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(emailSenderSpring, this);
-		Whitebox.setInternalState(emailSenderSpring, "featureToggleChecker", featureToggleChecker);
-		Whitebox.setInternalState(emailSenderSpring, "emailQueuePublisher", emailQueuePublisher);
-	}
-	@Test
-	public void testPublishEnterpriseMessageIfEmailShouldBeSent_NormalPriorityEmail() throws Exception {
-		when(email.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Active);
-		when(email.getPriority()).thenReturn((EmailQueue.HIGH_PRIORITY-10));
-
-		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
-
-		verify(emailQueuePublisher).publish(email, "email-queue-normal");
-	}
-	
-	@Test
-	public void testPublishEnterpriseMessageIfEmailShouldBeSent_HighPriorityEmail() throws Exception {
-		when(email.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Active);
-		when(email.getPriority()).thenReturn((EmailQueue.HIGH_PRIORITY+10));
-
-		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
-
-		verify(emailQueuePublisher).publish(email, "email-queue-priority");
-	}
-
-	@Test
-	public void testPublishEnterpriseMessageIfEmailShouldBeSent_ContractorActiveShouldPublishMessage() throws Exception {
-		when(email.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Active);
-
-		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
-
-		verify(emailQueuePublisher).publish(eq(email), anyString());
-	}
-
-	@Test
-	public void testPublishEnterpriseMessageIfEmailShouldBeSent_ContractorNotActiveButValidDeactivatedTemplateShouldPublishMessage() throws Exception {
-		when(email.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Deactivated);
-		when(email.getEmailTemplate()).thenReturn(emailTemplate);
-		when(emailTemplate.getId()).thenReturn(EmailTemplate.VALID_DEACTIVATED_EMAILS().iterator().next());
-
-		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
-
-		verify(emailQueuePublisher).publish(eq(email), anyString());
-	}
-
-	@Test
-	public void testPublishEnterpriseMessageIfEmailShouldBeSent_ContractorNotActiveNotValidDeactivatedFeatureEnabledTemplateShouldNotPublishMessage() throws Exception {
-		when(email.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Deactivated);
-		when(email.getEmailTemplate()).thenReturn(emailTemplate);
-		when(emailTemplate.getId()).thenReturn(notValidDeactivatedEmailId());
-		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(true);
-
-		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
-
-		verify(emailQueuePublisher, never()).publish(eq(email), anyString());
-	}
-
-	@Test
-	public void testPublishEnterpriseMessageIfEmailShouldBeSent_ContractorNotActiveNotValidDeactivatedFeatureDisabledTemplateShouldNotPublishMessage() throws Exception {
-		when(email.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Deactivated);
-		when(email.getEmailTemplate()).thenReturn(emailTemplate);
-		when(emailTemplate.getId()).thenReturn(notValidDeactivatedEmailId());
-		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
-
-		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
-
-		verify(emailQueuePublisher, never()).publish(eq(email), anyString());
-	}
-	
-	@Test
-	public void testPublishEnterpriseMessageIfEmailShouldBeSent_ContractorNotActiveNotValidEnabledFeatureDisabledTemplateShouldLogError() throws Exception {
-		when(email.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Deactivated);
-		when(email.getEmailTemplate()).thenReturn(emailTemplate);
-		when(emailTemplate.getId()).thenReturn(notValidDeactivatedEmailId());
-		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(true);
-
-		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
-
-		verify(email).setStatus(EmailStatus.Error);
-		verify(email).setSentDate((Date)any());
-		verify(emailQueueDAO).save(email);
 	}
 
     @Test
