@@ -67,7 +67,7 @@ public class FeeService {
                             HashMap<InvoiceFee, BigDecimal> feeClassMap = new HashMap<>();
                             BigDecimal amount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 
-                            if (!invoiceItem.getAmount().equals(amount)) {
+                            if (!invoiceItem.getAmount().equals(amount) || invoiceItem.getInvoiceFee().getFeeClass() != FeeClass.EmployeeGUARD) {
                                 amount = invoiceItem.getOriginalAmount();
                             }
 
