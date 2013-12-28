@@ -167,10 +167,10 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
     }
 
     private String getLastYear() {
-        return "2013";
+        return String.valueOf(org.joda.time.DateTime.now().minusYears(1).getYear());
     }
 
     private String getThisYear() {
-        return "2014";
+        return String.valueOf(org.joda.time.DateTime.now().getYear());
     }
 }
