@@ -21,22 +21,26 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
     @Autowired
     DynamicReportsSubscription dynamicReports;
 
-	@Override
+    private static final int REPORT_ID_DAILY = 1416;
+    private static final int REPORT_ID_WEEKLY = 1586;
+    private static final int REPORT_ID_MONTHLY = 1587;
+
+    @Override
 	public Map<String, Object> process(EmailSubscription subscription) throws IOException {
         EmailSubscription emailSubscription = new EmailSubscription();
         int reportID;
         switch (subscription.getTimePeriod()) {
             case Daily:
-                reportID = 1416;
+                reportID = REPORT_ID_DAILY;
                 break;
             case Weekly:
-                reportID = 1586;
+                reportID = REPORT_ID_WEEKLY;
                 break;
             case Monthly:
-                reportID = 1587;
+                reportID = REPORT_ID_MONTHLY;
                 break;
             default: {
-                reportID = 1416;
+                reportID = REPORT_ID_DAILY;
             }
         }
 
