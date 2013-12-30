@@ -319,10 +319,7 @@ public class FeeService {
 
     private boolean IGisExemptedFor(Set<OperatorAccount> operators) {
         for (OperatorAccount operator : operators) {
-            if (operator.getId() == OperatorAccount.AI || operator.getId() == OperatorAccount.CINTAS_CANADA)
-                continue;
-
-            if (operator.isDescendantOf(OperatorAccount.AI))
+            if (operator.getId() == OperatorAccount.CINTAS_CANADA)
                 continue;
 
             return false;
