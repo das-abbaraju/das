@@ -102,5 +102,6 @@
 	<include file="./liquibase/sshacter38_PICS13868_InvoicePaymentDeleteTrigger.sql"/>
 	<include file="./liquibase/kchase15_PICS-14060_TeackCoal.sql"/>
 	<include file="./liquibase/mdo21_PICS-13952_Remove_payment.sql"/>
+	<include file="./liquibase/pschlesinger12_PICS-13113_AddAdditionalGeneralLedgerAcctsForSap.sql"/>
 
 </databaseChangeLog>
