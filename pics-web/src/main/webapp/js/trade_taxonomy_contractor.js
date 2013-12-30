@@ -6,6 +6,14 @@ PICS.define('contractor.TradeTaxonomyController', {
                 .on('submit', '#trade-form', onTradeFormSubmit);
 
             $('body').on('click', '.safety-sensitive-confirm-modal .confirm', onSafetySensitiveModalConfirmClick);
+
+            $('body').on('click', '.modal .dismiss', onModalCancelClick)
+        }
+
+        function onModalCancelClick(event) {
+            var $modal = $(event.target).closest('.modal');
+
+            $modal.modal('hide');
         }
 
         function onSubmitButtonClick(event) {
@@ -49,7 +57,7 @@ PICS.define('contractor.TradeTaxonomyController', {
                 buttons: [{
                     html: '<button class="btn primary confirm">Confirm</button>'
                 }, {
-                    html: '<button class="btn" data-dismiss="modal">Cancel</button>'
+                    html: '<button class="btn dismiss" data-dismiss="modal">Cancel</button>'
                 }]
             };
         }
