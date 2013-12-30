@@ -1869,17 +1869,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Override
 	@Transient
 	public String getViewLink() {
-		if (status.isRequested()) {
-			String link = "RequestNewContractorAccount.action?contractor=" + this.id;
-
-			if (getOperators().size() == 1) {
-				link += "&requestRelationship=" + getOperators().get(0).getId();
-			}
-
-			return link;
-		} else {
-			return ("ContractorView.action?id=" + this.id);
-		}
+        return ("ContractorView.action?id=" + this.id);
 	}
 
 	public InsuranceCriteriaContractorOperator getInsuranceCriteriaContractorOperators(int flagCriteriaId, int opId) {
