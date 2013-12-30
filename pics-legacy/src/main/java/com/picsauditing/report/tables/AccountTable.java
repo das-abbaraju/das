@@ -66,7 +66,7 @@ public class AccountTable extends AbstractTable {
         addOptionalKey(lastLogin);
 
         addRequiredKey(new ReportForeignKey(Note, new NoteTable(), new ReportOnClause("id", "accountID")));
-        addRequiredKey(new ReportForeignKey(ContractorRenewalPredictor, new ContractorRenewalPredictionView(), new ReportOnClause("id", "conID")));
+        addOptionalKey(new ReportForeignKey(ContractorRenewalPredictor, new ContractorRenewalPredictionView(), new ReportOnClause("id", "conID")));
 
     }
 }
