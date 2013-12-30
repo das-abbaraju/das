@@ -20,6 +20,8 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,9 +29,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 
 
@@ -45,6 +44,8 @@ public class PermissionsTest {
 	private LanguageModel languageModel;
 	@Mock
 	private User user;
+    @Mock
+    private CountrySubdivision countrySubdivision;
 
 	@Before
 	public void setUp() throws Exception {
@@ -61,6 +62,27 @@ public class PermissionsTest {
 		when(country.getIsoCode()).thenReturn(LanguageModel.ENGLISH.getCountry());
 		when(user.getAccount()).thenReturn(account);
 	}
+
+    @Test
+    public void testPopulateCountrySubdivision_NullIsBlankString() throws Exception {
+        Whitebox.invokeMethod(permissions, "populateCountrySubdivision", user);
+
+        String countrySubdivision = permissions.getCountrySubdivision();
+
+        assertTrue(Strings.isEmpty(countrySubdivision));
+    }
+
+    @Test
+    public void testPopulateCountrySubdivision_SetsFromAccount() throws Exception {
+        when(account.getCountrySubdivision()).thenReturn(countrySubdivision);
+        when(countrySubdivision.getIsoCode()).thenReturn("TEST-ISO");
+
+        Whitebox.invokeMethod(permissions, "populateCountrySubdivision", user);
+
+        String countrySubdivision = permissions.getCountrySubdivision();
+
+        assertTrue("TEST-ISO".equals(countrySubdivision));
+    }
 
     @Test
     public void testSerializePermissionsObject() throws Exception {
