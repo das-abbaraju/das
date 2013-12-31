@@ -1,89 +1,56 @@
-#employee_assignment {
+.table-assignment {
+    $assign_column_background_color: #fbcb43;
+    $assigned_column_icon_color: #ec8c00;
+
     tr {
         cursor: pointer;
-        .success {
-            color: $default_dark;
+
+        &.view-only {
+            cursor: auto;
         }
 
-        .warning {
-            color: $default_dark;
-        }
+        &:hover {
+            .icon-minus-sign-alt {
+                color: $danger_light;
+            }
 
-        .danger {
-            color: $default_dark;
-        }
-    }
+            .icon-warning-sign {
+                color: $warning_light;
+            }
 
-    &.view-only tr {
-        cursor: auto;
-    }
+            .icon-ok-circle {
+                color: $success_light;
+            }
 
-    /*Assigned Employee Styles*/
-    tr.assigned {
-        .assign-employee {
-            background-color: $warning_light;
+            .icon-ok-sign {
+                color: $success_light;
+            }
 
-            a {
-                color: $warning_dark;
+            .assign-employee {
+                i {
+                    color: $assigned_column_icon_color;
+                }
             }
         }
 
-        .success {
-            background-color: $success_tint;
-            color: $success_light;
-        }
+        &.assigned {
+            .assign-employee {
+                background-color: $assign_column_background_color;
 
-        .warning {
-            background-color: $warning_tint;
-            color: $warning_med;
-        }
-
-        .danger {
-            background-color: $danger_tint;
-            color: $danger_light;
-        }
-    }
-
-    tbody > tr:nth-child(odd) td {
-        background-color: $pics_cool_grey;
-    }
-
-    tbody > tr:nth-child(even) td {
-        background: none;
-    }
-
-    tbody > tr:hover td {
-        background-color: $info-tint;
-
-        &.success {
-            color: $success_light;
-        }
-
-        &.warning {
-            color: $warning_med;
-        }
-
-        &.danger {
-            color: $danger_light;
-        }
-
-        &.assign-employee a {
-            color: $warning_dark;
-        }
-    }
-
-    td {
-        &.assign-employee {
-            color: $default_dark;
-            text-align: center;
-
-            a {
-                color: $default_dark;
+                i {
+                    color: $assigned_column_icon_color;
+                }
             }
         }
 
-        a {
+        td a {
             display: inline;
         }
+    }
+}
+
+.nav-assignment {
+    .site-status {
+        margin-bottom: 20px;
     }
 }

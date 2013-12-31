@@ -1,11 +1,11 @@
 .table thead > tr > th {
-    background-color: #454545;
+    background-color: $default_steel;
     border: 0;
     color: $pics_cool_grey;
     font-weight: normal;
 
     &.success {
-        background-color: #454545;
+        background-color: $default_steel;
 
         i {
             color: $success_light;
@@ -13,7 +13,7 @@
     }
 
     &.warning {
-        background-color: #454545;
+        background-color: $default_steel;
 
         i {
             color: $warning_light;
@@ -21,7 +21,7 @@
     }
 
     &.danger {
-        background-color: #454545;
+        background-color: $default_steel;
 
         i {
             color: $danger_light;
@@ -29,61 +29,45 @@
     }
 }
 
-.table tbody > tr > td {
+.table-striped > tbody > tr:nth-child(odd) td {
+    background-color: $pics_cool_grey;
+}
+
+.table tbody > tr > td,
+.table-striped > tbody > tr:nth-child(odd) td,
+.table-striped > tbody > tr:nth-child(even) td {
     border: 0;
     vertical-align: middle;
 
+    i {
+        color: $default_dark;
+    }
+
     &.success {
         background-color: $success_tint;
         color: $success_light;
+
+        i {
+            color: $success_light;
+        }
     }
 
     &.warning {
         background-color: $warning_tint;
         color: $warning_med;
+
+        i {
+            color: $warning_med;
+        }
     }
 
     &.danger {
         background-color: $danger_tint;
         color: $danger_light;
-    }
-}
 
-.table-striped > tbody > tr:nth-child(odd) td {
-    background-color: $pics_cool_grey;
-
-    &.success {
-        background-color: $success_tint;
-        color: $success_light;
-    }
-
-    &.warning {
-        background-color: $warning_tint;
-        color: $warning_med;
-    }
-
-    &.danger {
-        background-color: $danger_tint;
-        color: $danger_light;
-    }
-}
-
-.table-striped > tbody > tr:nth-child(even) td {
-    background-color: none;
-
-    &.success {
-        background-color: $success_tint;
-        color: $success_light;
-    }
-
-    &.warning {
-        background-color: $warning_tint;
-        color: $warning_med;
-    }
-
-    &.danger {
-        background-color: $danger_tint;
-        color: $danger_light;
+        i {
+            color: $danger_light;
+        }
     }
 }
 

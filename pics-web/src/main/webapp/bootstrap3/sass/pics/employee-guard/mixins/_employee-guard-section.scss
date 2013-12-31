@@ -33,10 +33,29 @@
 		.content {
 			padding: 20px 30px;
 		}
+
+        &.info-toolbar {
+            button {
+                display:inline-block;
+                margin-right: 0px;
+                margin-left: 5px;
+            }
+
+            ul {
+                margin-bottom: 0px;
+
+                li {
+                    &.success,
+                    &.warning,
+                    &.danger {
+                        background-color: transparent;
+                    }
+                }
+            }
+        }
 	}
 
-	.employee-guard-section:first-child > h1
-	{
+	.employee-guard-section:first-child > h1 {
 		margin-top: 0;
 	}
 
