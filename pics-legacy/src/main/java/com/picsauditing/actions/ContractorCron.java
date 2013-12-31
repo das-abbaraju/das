@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import com.picsauditing.PICS.*;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.actions.cron.AuditCategoryJobException;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.*;
@@ -27,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -113,7 +113,7 @@ public class ContractorCron extends PicsActionSupport {
 				return setUrlForRedirect(redirectUrl);
 			}
 		} catch (Exception e) {
-			String exceptionResult = handleException(e);
+			String exceptionResult = handleException(e, contractor);
 			if (Strings.isEmpty(exceptionResult)) {
 				throw e;
 			}
@@ -126,18 +126,18 @@ public class ContractorCron extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private String handleException(Exception exception) {
-		try {
-			logger.trace("ContractorCron failed for conID {} because: {}", conID, exception.getMessage());
-			if (Strings.isNotEmpty(redirectUrl)) {
-				exceptionService.sendExceptionEmail(permissions, exception,
-						"Error in Contractor Cron calculating account id #" + conID);
-				return setUrlForRedirect(redirectUrl);
-			}
-		} catch (Exception e) {
-			logger.error("An error occurred while sending exception email for ContractorCron. ConID = {}", conID, e);
-		}
+	private String handleException(Exception exception, ContractorAccount contractor) {
+		logger.error("ContractorCron failed for conID {}. Reason: {}", conID, exception.getMessage());
+		setRecalculationToTomorrow(contractor);
 
+		if (Strings.isNotEmpty(redirectUrl)) {
+			try {
+				exceptionService.sendExceptionEmail(permissions, exception, "Error in Contractor Cron calculating account id #" + conID);
+				return setUrlForRedirect(redirectUrl);  // todo: Investigate. Why do we return the redirectUrl only if the email succeeds?
+			} catch (Exception e) {
+				logger.error("An error occurred while sending exception email for ContractorCron. ConID = {}", conID, e);
+			}
+		}
 		return Strings.EMPTY_STRING;
 	}
 
@@ -151,7 +151,6 @@ public class ContractorCron extends PicsActionSupport {
 
 	@Transactional
 	protected void run(ContractorAccount contractor, int opID) throws Exception {
-		try {
 			runBilling(contractor);
 			runAuditBuilder(contractor);
 			runAuditCategory(contractor);
@@ -210,12 +209,6 @@ public class ContractorCron extends PicsActionSupport {
 			}
 
 			runPolicies(contractor);
-
-		} catch (Exception continueUpTheStack) {
-			setRecalculationToTomorrow(contractor);
-
-			throw continueUpTheStack;
-		}
 	}
 
     private void runRulesBasedInsuranceCriteria(ContractorAccount contractor) {
@@ -330,9 +323,8 @@ public class ContractorCron extends PicsActionSupport {
 			contractor.setNeedsRecalculation(0);
 			contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
 			contractorDAO.save(contractor);
-		} catch (Exception notMuchWeCanDoButLogIt) {
-			logger.error("Error setting recalculation for tomorrow on contractor.");
-			logger.error(notMuchWeCanDoButLogIt.getMessage());
+		} catch (Exception e) {
+			logger.error("Error setting recalculation for tomorrow on contractor: " + e.getMessage());
 		}
 	}
 
@@ -579,22 +571,28 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private void runAuditCategory(ContractorAccount contractor) {
+	private void runAuditCategory(ContractorAccount contractor) throws AuditCategoryJobException {
 		if (!runStep(ContractorCronStep.AuditCategory)) {
 			return;
 		}
 
 		logger.trace("ContractorCron starting AuditCategory");
 		for (ContractorAudit cAudit : contractor.getAudits()) {
-			final Date lastRecalculation = cAudit.getLastRecalculation();
-			if (lastRecalculation == null || DateBean.getDateDifference(lastRecalculation) < -14) {
-				auditPercentCalculator.percentCalculateComplete(cAudit, true);
-				cAudit.setLastRecalculation(new Date());
-				cAudit.setAuditColumns();
-				conAuditDAO.save(cAudit);
+			try {
+				final Date lastRecalculation = cAudit.getLastRecalculation();
+				if (lastRecalculation == null || DateBean.getDateDifference(lastRecalculation) < -14) {
+					auditPercentCalculator.percentCalculateComplete(cAudit, true);
+					cAudit.setLastRecalculation(new Date());
+					cAudit.setAuditColumns();
+					conAuditDAO.save(cAudit);
+				}
+			} catch (Exception e) {
+				throw new AuditCategoryJobException("Failed to run audit category for contractorAccount id: " + contractor.getId()
+						+ " and audit id: " + cAudit.getId(), e);
 			}
 		}
 	}
+
 
 	private void runTradeETL(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.TradeETL)) {
