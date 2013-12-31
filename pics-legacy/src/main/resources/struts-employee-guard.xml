@@ -64,12 +64,12 @@
 
         <action name="project/{projectId}/assignments/{assignmentId}/role/{id}"
                 class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="role">
-            <result name="role">/struts/employee-guard/operator/assignments/role.jsp</result>
+            <result name="role">/struts/employee-guard/operator/assignments/project/role.jsp</result>
         </action>
 
         <action name="project/{projectId}/assignments/{id}"
                 class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="assignments">
-            <result name="project">/struts/employee-guard/operator/assignments/project.jsp</result>
+            <result name="project">/struts/employee-guard/operator/assignments/project/project.jsp</result>
         </action>
     </package>
 
@@ -164,25 +164,25 @@
         <action name="project/{projectId}/assignments/{assignmentId}/role/{roleId}/employee/{id}/assign"
                 class="com.picsauditing.employeeguard.controllers.contractor.AssignmentAction"
                 method="assign">
-            <result name="role">/struts/employee-guard/contractor/assignments/role.jsp</result>
+            <result name="role">/struts/employee-guard/contractor/assignments/project/role.jsp</result>
         </action>
 
         <action name="project/{projectId}/assignments/{assignmentId}/role/{roleId}/employee/{id}/unassign"
                 class="com.picsauditing.employeeguard.controllers.contractor.AssignmentAction"
                 method="unassign">
-            <result name="role">/struts/employee-guard/contractor/assignments/role.jsp</result>
+            <result name="role">/struts/employee-guard/contractor/assignments/project/role.jsp</result>
         </action>
 
         <action name="project/{projectId}/assignments/{assignmentId}/role/{id}"
                 class="com.picsauditing.employeeguard.controllers.contractor.AssignmentAction"
                 method="role">
-            <result name="role">/struts/employee-guard/contractor/assignments/role.jsp</result>
+            <result name="role">/struts/employee-guard/contractor/assignments/project/role.jsp</result>
         </action>
 
         <action name="project/{projectId}/assignments/{id}"
                 class="com.picsauditing.employeeguard.controllers.contractor.AssignmentAction"
                 method="project">
-            <result name="project">/struts/employee-guard/contractor/assignments/project.jsp</result>
+            <result name="project">/struts/employee-guard/contractor/assignments/project/project.jsp</result>
         </action>
     </package>
 
