@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<%-- Url --%>
-<s:url action="Reference" method="dynamicReport" var="dr_walkthrough_url" />
-
 <s:set var="new_to_dynamic_reports" value="false" />
 
 <s:if test="#new_to_dynamic_reports">
@@ -12,11 +9,11 @@
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
 
-                <h4>We've Added Popular (userType) Reports To Your Favorites</h4>
+                <h4><s:text name="ManageReports.favorites.newToDR.header" /></h4>
 
-                <p>Customize this list by searching for new reports and clicking the star to favorite or unfavorite  a report.</p>
+                <p><s:text name="ManageReports.favorites.newToDR.instructions" /></p>
 
-                <p>Take a look at our <strong><a href="${dr_walkthrough_url}" target="_blank">quick walkthrough</a></strong> of Dynamic Reports.</p>
+                <p><s:text name="ManageReports.favorites.newToDR.reference" /></p>
             </div>
         </div>
     </div>
