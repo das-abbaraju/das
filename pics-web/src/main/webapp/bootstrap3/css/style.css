@@ -10054,6 +10054,27 @@ a:focus {
   text-decoration: none;
 }
 
+/* line 72, ../sass/pics/_defaults.scss */
+
+.success {
+  color: #33b679;
+  background-color: #d6f0e4;
+}
+
+/* line 77, ../sass/pics/_defaults.scss */
+
+.warning {
+  color: #f4b400;
+  background-color: #fef5d9;
+}
+
+/* line 82, ../sass/pics/_defaults.scss */
+
+.danger {
+  color: #e74c3c;
+  background-color: #fadbd8;
+}
+
 /* line 2, ../sass/pics/layout/_layout.scss */
 
 body {
@@ -11093,21 +11114,24 @@ body {
 
 .employee-guard-list-rollup li.danger {
   color: #e74c3c;
+  background-color: transparent;
 }
 
-/* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 31, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 
 .employee-guard-list-rollup li.warning {
   color: #f4b400;
+  background-color: transparent;
 }
 
-/* line 34, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 36, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 
 .employee-guard-list-rollup li.success {
   color: #33b679;
+  background-color: transparent;
 }
 
-/* line 38, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 41, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 
 .employee-guard-list-rollup li .assigned-count {
   font-size: 20px;
@@ -11171,7 +11195,29 @@ body {
   padding: 20px 30px;
 }
 
-/* line 39, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 38, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+
+.employee-guard-section.info-toolbar button {
+  display: inline-block;
+  margin-right: 0;
+  margin-left: 5px;
+}
+
+/* line 44, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+
+.employee-guard-section.info-toolbar ul {
+  margin-bottom: 0;
+}
+
+/* line 50, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+
+.employee-guard-section.info-toolbar ul li.success,
+.employee-guard-section.info-toolbar ul li.warning,
+.employee-guard-section.info-toolbar ul li.danger {
+  background-color: transparent;
+}
+
+/* line 58, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 
 .employee-guard-section:first-child > h1 {
   margin-top: 0;
@@ -11179,7 +11225,7 @@ body {
 
 @media (max-width: 767px) {
   {
-    /* line 45, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+    /* line 64, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
   
   }
   .employee-guard-section .content {
@@ -11512,135 +11558,70 @@ body {
   }
 }
 
-/* line 1, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 5, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment {
-  /*Assigned Employee Styles*/
-
-}
-
-/* line 2, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tr {
+.table-assignment tr {
   cursor: pointer;
-}
-
-/* line 4, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tr .success {
-  color: #b3b3b3;
 }
 
 /* line 8, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr .warning {
-  color: #b3b3b3;
+.table-assignment tr.view-only {
+  cursor: auto;
 }
 
-/* line 12, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 13, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr .danger {
-  color: #b3b3b3;
+.table-assignment tr:hover .icon-minus-sign-alt {
+  color: #e74c3c;
 }
 
 /* line 17, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment.view-only tr {
-  cursor: auto;
+.table-assignment tr:hover .icon-warning-sign {
+  color: #fbcb43;
 }
 
-/* line 23, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 21, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr.assigned .assign-employee {
+.table-assignment tr:hover .icon-ok-circle {
+  color: #33b679;
+}
+
+/* line 25, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+
+.table-assignment tr:hover .icon-ok-sign {
+  color: #33b679;
+}
+
+/* line 30, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+
+.table-assignment tr:hover .assign-employee i {
+  color: #ec8c00;
+}
+
+/* line 37, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+
+.table-assignment tr.assigned .assign-employee {
   background-color: #fbcb43;
 }
 
-/* line 26, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 40, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr.assigned .assign-employee a {
+.table-assignment tr.assigned .assign-employee i {
   color: #ec8c00;
 }
 
-/* line 31, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 46, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
 
-#employee_assignment tr.assigned .success {
-  color: #33b679;
-  background-color: #d6f0e4;
-}
-
-/* line 36, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tr.assigned .warning {
-  color: #f4b400;
-  background-color: #fef5d9;
-}
-
-/* line 41, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tr.assigned .danger {
-  color: #e74c3c;
-  background-color: #fadbd8;
-}
-
-/* line 47, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr:nth-child(odd) td {
-  background-color: #f1f1f2;
-}
-
-/* line 51, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr:nth-child(even) td {
-  background: none;
-}
-
-/* line 55, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr:hover td {
-  background-color: #ebf5fe;
-}
-
-/* line 58, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr:hover td.success {
-  color: #33b679;
-}
-
-/* line 62, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr:hover td.warning {
-  color: #f4b400;
-}
-
-/* line 66, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr:hover td.danger {
-  color: #e74c3c;
-}
-
-/* line 70, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment tbody > tr:hover td.assign-employee a {
-  color: #ec8c00;
-}
-
-/* line 76, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment td.assign-employee {
-  color: #b3b3b3;
-  text-align: center;
-}
-
-/* line 80, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment td.assign-employee a {
-  color: #b3b3b3;
-}
-
-/* line 85, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-
-#employee_assignment td a {
+.table-assignment tr td a {
   display: inline;
+}
+
+/* line 53, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+
+.nav-assignment .site-status {
+  margin-bottom: 20px;
 }
 
 /* line 2, ../sass/pics/employee-guard/mixins/_employee-image.scss */
@@ -12849,26 +12830,40 @@ body.modal-open,
   margin-right: 0;
 }
 
-/* line 1, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 2, ../sass/pics/employee-guard/general/_navigation.scss */
+
+.nav-pills li .badge {
+  line-height: 18px;
+  background-color: #3498db;
+}
+
+/* line 8, ../sass/pics/employee-guard/general/_navigation.scss */
+
+.nav-pills li.active .badge {
+  color: #FFFFFF;
+  background-color: transparent;
+}
+
+/* line 15, ../sass/pics/employee-guard/general/_navigation.scss */
 
 .nav-pills a {
   font-size: 18px;
   color: #3498db;
 }
 
-/* line 6, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 19, ../sass/pics/employee-guard/general/_navigation.scss */
 
-.nav-pills li a:hover {
+.nav-pills a:hover {
   background-color: #f1f1f2;
 }
 
-/* line 10, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 24, ../sass/pics/employee-guard/general/_navigation.scss */
 
 .nav-pills i {
   margin-right: 6px;
 }
 
-/* line 14, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 28, ../sass/pics/employee-guard/general/_navigation.scss */
 
 .nav .nav-header {
   display: block;
@@ -12879,7 +12874,7 @@ body.modal-open,
   color: #cccccc;
 }
 
-/* line 23, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 37, ../sass/pics/employee-guard/general/_navigation.scss */
 
 .nav .nav-divider {
   margin: 0;
@@ -12887,7 +12882,7 @@ body.modal-open,
 
 /* Skill Navigation */
 
-/* line 28, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 42, ../sass/pics/employee-guard/general/_navigation.scss */
 
 ul.skill-nav {
   padding: 10px 0;
@@ -12899,20 +12894,20 @@ ul.skill-nav {
           border-radius: 5px;
 }
 
-/* line 33, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 47, ../sass/pics/employee-guard/general/_navigation.scss */
 
 ul.skill-nav .skill-nav {
   padding: 0;
 }
 
-/* line 37, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 51, ../sass/pics/employee-guard/general/_navigation.scss */
 
 ul.skill-nav a:hover {
   color: #454545;
   background-color: #e6e6e6;
 }
 
-/* line 42, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 56, ../sass/pics/employee-guard/general/_navigation.scss */
 
 ul.skill-nav a.active {
   font-weight: bold;
@@ -12920,7 +12915,7 @@ ul.skill-nav a.active {
   border-right: 2px inset #3498db;
 }
 
-/* line 48, ../sass/pics/employee-guard/general/_navigation.scss */
+/* line 62, ../sass/pics/employee-guard/general/_navigation.scss */
 
 ul.skill-nav a {
   padding: 2px 0 3px 40px;
@@ -13032,93 +13027,85 @@ ul.skill-nav a {
 
 /* line 32, ../sass/pics/employee-guard/general/_table.scss */
 
-.table tbody > tr > td {
-  vertical-align: middle;
-  border: 0;
-}
-
-/* line 36, ../sass/pics/employee-guard/general/_table.scss */
-
-.table tbody > tr > td.success {
-  color: #33b679;
-  background-color: #d6f0e4;
-}
-
-/* line 41, ../sass/pics/employee-guard/general/_table.scss */
-
-.table tbody > tr > td.warning {
-  color: #f4b400;
-  background-color: #fef5d9;
-}
-
-/* line 46, ../sass/pics/employee-guard/general/_table.scss */
-
-.table tbody > tr > td.danger {
-  color: #e74c3c;
-  background-color: #fadbd8;
-}
-
-/* line 52, ../sass/pics/employee-guard/general/_table.scss */
-
 .table-striped > tbody > tr:nth-child(odd) td {
   background-color: #f1f1f2;
 }
 
-/* line 55, ../sass/pics/employee-guard/general/_table.scss */
+/* line 38, ../sass/pics/employee-guard/general/_table.scss */
 
-.table-striped > tbody > tr:nth-child(odd) td.success {
-  color: #33b679;
-  background-color: #d6f0e4;
-}
-
-/* line 60, ../sass/pics/employee-guard/general/_table.scss */
-
-.table-striped > tbody > tr:nth-child(odd) td.warning {
-  color: #f4b400;
-  background-color: #fef5d9;
-}
-
-/* line 65, ../sass/pics/employee-guard/general/_table.scss */
-
-.table-striped > tbody > tr:nth-child(odd) td.danger {
-  color: #e74c3c;
-  background-color: #fadbd8;
-}
-
-/* line 71, ../sass/pics/employee-guard/general/_table.scss */
-
+.table tbody > tr > td,
+.table-striped > tbody > tr:nth-child(odd) td,
 .table-striped > tbody > tr:nth-child(even) td {
-  background-color: none;
+  vertical-align: middle;
+  border: 0;
 }
 
-/* line 74, ../sass/pics/employee-guard/general/_table.scss */
+/* line 42, ../sass/pics/employee-guard/general/_table.scss */
 
+.table tbody > tr > td i,
+.table-striped > tbody > tr:nth-child(odd) td i,
+.table-striped > tbody > tr:nth-child(even) td i {
+  color: #b3b3b3;
+}
+
+/* line 46, ../sass/pics/employee-guard/general/_table.scss */
+
+.table tbody > tr > td.success,
+.table-striped > tbody > tr:nth-child(odd) td.success,
 .table-striped > tbody > tr:nth-child(even) td.success {
   color: #33b679;
   background-color: #d6f0e4;
 }
 
-/* line 79, ../sass/pics/employee-guard/general/_table.scss */
+/* line 50, ../sass/pics/employee-guard/general/_table.scss */
 
+.table tbody > tr > td.success i,
+.table-striped > tbody > tr:nth-child(odd) td.success i,
+.table-striped > tbody > tr:nth-child(even) td.success i {
+  color: #33b679;
+}
+
+/* line 55, ../sass/pics/employee-guard/general/_table.scss */
+
+.table tbody > tr > td.warning,
+.table-striped > tbody > tr:nth-child(odd) td.warning,
 .table-striped > tbody > tr:nth-child(even) td.warning {
   color: #f4b400;
   background-color: #fef5d9;
 }
 
-/* line 84, ../sass/pics/employee-guard/general/_table.scss */
+/* line 59, ../sass/pics/employee-guard/general/_table.scss */
 
+.table tbody > tr > td.warning i,
+.table-striped > tbody > tr:nth-child(odd) td.warning i,
+.table-striped > tbody > tr:nth-child(even) td.warning i {
+  color: #f4b400;
+}
+
+/* line 64, ../sass/pics/employee-guard/general/_table.scss */
+
+.table tbody > tr > td.danger,
+.table-striped > tbody > tr:nth-child(odd) td.danger,
 .table-striped > tbody > tr:nth-child(even) td.danger {
   color: #e74c3c;
   background-color: #fadbd8;
 }
 
-/* line 90, ../sass/pics/employee-guard/general/_table.scss */
+/* line 68, ../sass/pics/employee-guard/general/_table.scss */
+
+.table tbody > tr > td.danger i,
+.table-striped > tbody > tr:nth-child(odd) td.danger i,
+.table-striped > tbody > tr:nth-child(even) td.danger i {
+  color: #e74c3c;
+}
+
+/* line 74, ../sass/pics/employee-guard/general/_table.scss */
 
 .table-hover tbody tr:hover td {
   background-color: #d6eaf8;
 }
 
-/* line 94, ../sass/pics/employee-guard/general/_table.scss */
+/* line 78, ../sass/pics/employee-guard/general/_table.scss */
 
 .table td a {
   display: block;

@@ -52,7 +52,7 @@ $danger_dark: #800a06;
 
 // default tag overrides
 body {
-    color: #454545;
+    color: $default_steel;
 }
 
 figure {
@@ -67,4 +67,19 @@ a:hover,
 a:focus {
     color: $pics_light_blue;
     text-decoration: none;
+}
+
+.success {
+    background-color: $success_tint;
+    color: $success_light;
+}
+
+.warning {
+    background-color: $warning_tint;
+    color: $warning_med;
+}
+
+.danger {
+    background-color: $danger_tint;
+    color: $danger_light;
 }
