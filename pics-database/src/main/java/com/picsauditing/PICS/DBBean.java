@@ -118,7 +118,7 @@ public class DBBean implements InitializingBean {
         return dataSource.getConnection();
     }
 
-    private static DataSource getJdbcPics() throws NamingException {
+    public static DataSource getJdbcPics() throws NamingException {
 		if (dataSource == null) {
 			return getServiceLocator().getDataSource(PICS_JDBC_RESOURCE_NAME);
 		}

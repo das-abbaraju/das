@@ -11,6 +11,19 @@ $default_light:#e6e6e6;
 $default_med: #cccccc;
 $default_dark: #b3b3b3;
 
+//new default colors
+$default_platinum: #f1f1f2;
+$default_mercury: #e6e6e6;
+$default_silver: #cccccc;
+$default_pewter: #b3b3b3;
+$default_aluminum: #999999;
+$default_nickel: #808285;
+$default_tin: #666666;
+$default_steel: #454545;
+$default_iron: #333333;
+$default_tungsten: #252525;
+$default_lead: #1a1a1a;
+
 $primary_tint: #d6eaf8;
 $primary_light: #3498db;
 $primary_med: #2980b9;
@@ -38,24 +51,20 @@ $danger_dark: #800a06;
 
 
 // default tag overrides
-body
-{
+body {
     color: #454545;
 }
 
-figure
-{
+figure {
 	margin: 0;
 }
 
-a
-{
+a {
     color: $pics_link_blue;
 }
 
 a:hover,
-a:focus
-{
+a:focus {
     color: $pics_light_blue;
     text-decoration: none;
 }

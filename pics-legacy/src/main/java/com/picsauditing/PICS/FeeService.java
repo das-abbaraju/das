@@ -38,36 +38,51 @@ public class FeeService {
     }};
 
     public void syncMembershipFees(ContractorAccount contractor) {
-        Map<FeeClass, InvoiceFee> foundFeeClasses = new HashMap<FeeClass, InvoiceFee>();
-
-        int payingFacilities = contractor.getPayingFacilities();
+        Map<FeeClass, Map<InvoiceFee, BigDecimal>> foundFeeClasses = new HashMap<>();
 
         BillingStatus currentBillingStatus = billingService.billingStatus(contractor);
         boolean foundMembership = false;
         boolean foundMembershipDate = false;
         boolean foundPaymentExpires = false;
+        boolean foundPayingFacilities = false;
+        int payingFacilities = 0;
 
         for (Invoice invoice : contractor.getSortedInvoices()) {
-            if (!invoice.getStatus().isVoid() && !BillingService.hasCreditMemosForFullAmount(invoice)) {
+            if (foundMembershipDate) {
+                break;
+            }
+
+            if (!invoice.getStatus().isVoid() && !BillingService.hasCreditMemosForFullAmount(invoice) && invoice.getInvoiceType().isMembershipType()) {
+                if (!foundPayingFacilities) {
+                    payingFacilities = invoice.getPayingFacilities();
+                    foundPayingFacilities = true;
+                }
+
                 for (InvoiceItem invoiceItem : invoice.getItems()) {
                     InvoiceFee invoiceFee = invoiceItem.getInvoiceFee();
                     FeeClass feeClass = invoiceFee.getFeeClass();
 
-                    if (!foundMembership && invoiceFee.isMembership()) {
-                        payingFacilities = identifyMembership(foundFeeClasses, payingFacilities, invoiceFee, feeClass);
+                    if (!foundMembership && invoiceFee.isMembership() || feeClass == FeeClass.ImportFee) {
+                        if (foundFeeClasses.get(invoiceItem.getInvoiceFee().getFeeClass()) == null) {
+                            HashMap<InvoiceFee, BigDecimal> feeClassMap = new HashMap<>();
+                            BigDecimal amount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+
+                            if (!invoiceItem.getAmount().equals(amount) || invoiceItem.getInvoiceFee().getFeeClass() != FeeClass.EmployeeGUARD) {
+                                amount = invoiceItem.getOriginalAmount();
+                            }
+
+                            feeClassMap.put(invoiceItem.getInvoiceFee(), amount);
+                            foundFeeClasses.put(invoiceItem.getInvoiceFee().getFeeClass(), feeClassMap);
+                        }
 
                         if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
                             contractor.setPaymentExpires(invoiceItem.getPaymentExpires());
                             foundPaymentExpires = true;
                         }
                     }
-                    if (!foundMembershipDate && (invoiceFee.isActivation() || invoiceFee.isReactivation()))
-                        foundMembershipDate = setMembershipDate(contractor, foundMembershipDate, invoice);
 
-                    // Checking for ImportPQF fee and potentially others
-                    if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.ImportFee) && contractor.getFees().containsKey(FeeClass.ImportFee)) {
-                        foundFeeClasses.put(FeeClass.ImportFee, null);
-                        payingFacilities = 1;
+                    if (!foundMembershipDate && (invoiceFee.isActivation() || invoiceFee.isReactivation())) {
+                        foundMembershipDate = setMembershipDate(contractor, invoice);
                     }
                 }
 
@@ -91,6 +106,9 @@ public class FeeService {
 
     public void calculateUpgradeDate(ContractorAccount contractor, BillingStatus currentBillingStatus) {
         BillingStatus newBillingStatus = billingService.billingStatus(contractor);
+
+        dropBlockSSManualAuditTagIfUpgrading(contractor, newBillingStatus);
+
         if (currentBillingStatus != newBillingStatus) {
             if (currentBillingStatus != BillingStatus.Upgrade && newBillingStatus == BillingStatus.Upgrade) {
                 contractor.setLastUpgradeDate(new Date());
@@ -101,66 +119,24 @@ public class FeeService {
         }
     }
 
-    private int identifyMembership(Map<FeeClass, InvoiceFee> foundFeeClasses, int payingFacilities, InvoiceFee invoiceFee, FeeClass feeClass) {
-        if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.ListOnly))
-            foundFeeClasses.put(FeeClass.ListOnly, null);
-        else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.BidOnly))
-            foundFeeClasses.put(FeeClass.BidOnly, null);
-        else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.DocuGUARD)) {
-
-            if (invoiceFee.isLegacyMembership()) {
-                foundFeeClasses.put(FeeClass.DocuGUARD, null);
-                foundFeeClasses.put(FeeClass.InsureGUARD, null);
-            } else {
-                foundFeeClasses.put(FeeClass.DocuGUARD, invoiceFee);
-            }
-        } else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.AuditGUARD)) {
-
-            if (invoiceFee.isLegacyMembership()) {
-                foundFeeClasses.put(FeeClass.AuditGUARD, null);
-                foundFeeClasses.put(FeeClass.DocuGUARD, null);
-                foundFeeClasses.put(FeeClass.InsureGUARD, null);
-
-                switch(invoiceFee.getId()) {
-                    case 5: payingFacilities = 1; break;
-                    case 105: payingFacilities = 1; break;
-                    case 6: payingFacilities = 2; break;
-                    case 7: payingFacilities = 5; break;
-                    case 8: payingFacilities = 9; break;
-                    case 9: payingFacilities = 13; break;
-                    case 10: payingFacilities = 20; break;
-                    case 11: payingFacilities = 50; break;
-                }
-            }
-            else {
-                foundFeeClasses.put(FeeClass.AuditGUARD, invoiceFee);
-            }
-        } else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.InsureGUARD))
-            foundFeeClasses.put(FeeClass.InsureGUARD, invoiceFee);
-        else if (hasFeeClass(foundFeeClasses, feeClass, FeeClass.EmployeeGUARD))
-            foundFeeClasses.put(FeeClass.EmployeeGUARD, invoiceFee);
-        return payingFacilities;
-    }
-
-    private void buildFeeCurrentLevels(ContractorAccount contractor, Map<FeeClass, InvoiceFee> foundFeeClasses, int payingFacilities) {
+    private void buildFeeCurrentLevels(ContractorAccount contractor, Map<FeeClass, Map<InvoiceFee, BigDecimal>> foundFeeClasses, int payingFacilities) {
         for (FeeClass feeClass : CONTRACTOR_FEE_CLASSES) {
-            if (feeClass == FeeClass.ImportFee && !contractor.getFees().containsKey(FeeClass.ImportFee))
+            if (feeClass == FeeClass.ImportFee && !foundFeeClasses.containsKey(FeeClass.ImportFee))
                 continue;
 
             if (foundFeeClasses.containsKey(feeClass)) {
-                InvoiceFee fee = foundFeeClasses.get(feeClass);
-                if (fee == null) {
-                    fee = feeDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities);
-                }
+                Map<InvoiceFee,BigDecimal> feeLevel = foundFeeClasses.get(feeClass);
+                InvoiceFee invoiceFee = feeLevel.keySet().iterator().next();
 
-                setFee(contractor, fee, FeeService.getAdjustedFeeAmountIfNecessary(contractor, fee), true);
+                setFee(contractor, invoiceFee, feeLevel.get(invoiceFee), payingFacilities, true);
             }
             else
                 clearFee(contractor, feeClass, true);
         }
     }
 
-    private boolean setMembershipDate(ContractorAccount contractor, boolean foundMembershipDate, Invoice invoice) {
+    private boolean setMembershipDate(ContractorAccount contractor, Invoice invoice) {
+        boolean foundMembershipDate = false;
         if (invoice.getPayments().size() > 0) {
             PaymentApplied payment = getLatestPayment(invoice);
 
@@ -180,10 +156,6 @@ public class FeeService {
         });
 
         return sortedPaymentList.get(0);
-    }
-
-    private boolean hasFeeClass(Map<FeeClass, InvoiceFee> foundFeeClasses, FeeClass feeClass, FeeClass targetFeeClass) {
-        return feeClass.equals(targetFeeClass) && !foundFeeClasses.containsKey(targetFeeClass);
     }
 
     public void calculateContractorInvoiceFees(ContractorAccount contractor) {
@@ -265,12 +237,35 @@ public class FeeService {
             }
         }
 
-        buildFeeNewLevels(contractor, payingFacilities, hasEmployeeAudits, hasHseCompetency, requiresOQ, feeClasses, operatorsRequiringInsureGUARD);
+        buildFeeNewLevels(contractor, payingFacilities, feeClasses, operatorsRequiringInsureGUARD);
 
         calculateUpgradeDate(contractor, currentBillingStatus);
     }
 
-    private void buildFeeNewLevels(ContractorAccount contractor, int payingFacilities, boolean hasEmployeeAudits, boolean hasHseCompetency, boolean requiresOQ, Set<FeeClass> feeClasses, Set<OperatorAccount> operatorsRequiringInsureGUARD) {
+    // TODO: THIS IS TO BE REMOVED BEFORE 2015
+    private void dropBlockSSManualAuditTagIfUpgrading(ContractorAccount contractor, BillingStatus billingStatus) {
+        if (billingStatus.isUpgrade()) {
+            ContractorTag ssBlockTag = getSSBlockContractorTag(contractor);
+
+            if (ssBlockTag != null) {
+                contractor.getOperatorTags().remove(ssBlockTag);
+                feeDAO.remove(ssBlockTag);
+                billingService.syncBalance(contractor);
+                calculateContractorInvoiceFees(contractor);
+            }
+        }
+    }
+
+    private ContractorTag getSSBlockContractorTag(ContractorAccount contractor) {
+        for (ContractorTag tag : contractor.getOperatorTags()) {
+            if (tag.getTag().isBlockSSManualAudit()) {
+                return tag;
+            }
+        }
+        return null;
+    }
+
+    private void buildFeeNewLevels(ContractorAccount contractor, int payingFacilities, Set<FeeClass> feeClasses, Set<OperatorAccount> operatorsRequiringInsureGUARD) {
         for (FeeClass feeClass : CONTRACTOR_FEE_CLASSES) {
             if (feeClass == FeeClass.ImportFee && feeClasses.contains(feeClass)) {
                 InvoiceFee newLevel = feeDAO.find(InvoiceFee.IMPORTFEE);
@@ -278,13 +273,13 @@ public class FeeService {
                 if (!contractor.getFees().containsKey(feeClass)) {
                     InvoiceFee currentLevel = feeDAO.find(InvoiceFee.IMPORTFEEZEROLEVEL);
 
-                    ContractorFee importConFee = buildContractorFee(contractor, currentLevel, FeeService.getAdjustedFeeAmountIfNecessary(contractor,currentLevel));
+                    ContractorFee importConFee = buildContractorFee(contractor, currentLevel, FeeService.getAdjustedFeeAmountIfNecessary(contractor,currentLevel), payingFacilities);
                     feeDAO.save(importConFee);
 
                     contractor.getFees().put(feeClass, importConFee);
                 }
 
-                setFee(contractor, newLevel, FeeService.getAdjustedFeeAmountIfNecessary(contractor, newLevel), false);
+                setFee(contractor, newLevel, FeeService.getAdjustedFeeAmountIfNecessary(contractor, newLevel), payingFacilities, false);
 
             }
             else if (feeClasses.contains(feeClass) && feeClass != FeeClass.ImportFee) {
@@ -292,7 +287,7 @@ public class FeeService {
                 BigDecimal newAmount = FeeService.getAdjustedFeeAmountIfNecessary(contractor, newLevel);
 
                 if (!feeClass.isExcludedFor(contractor, newLevel, operatorsRequiringInsureGUARD))
-                    setFee(contractor, newLevel, newAmount, false);
+                    setFee(contractor, newLevel, newAmount, payingFacilities, false);
                 else
                     clearFee(contractor, feeClass, false);
             } else
@@ -324,10 +319,7 @@ public class FeeService {
 
     private boolean IGisExemptedFor(Set<OperatorAccount> operators) {
         for (OperatorAccount operator : operators) {
-            if (operator.getId() == OperatorAccount.AI || operator.getId() == OperatorAccount.CINTAS_CANADA)
-                continue;
-
-            if (operator.isDescendantOf(OperatorAccount.AI))
+            if (operator.getId() == OperatorAccount.CINTAS_CANADA)
                 continue;
 
             return false;
@@ -335,20 +327,22 @@ public class FeeService {
         return true;
     }
 
-    private void setFee(ContractorAccount contractor, InvoiceFee fee, BigDecimal amount, boolean isCurrent) {
+    private void setFee(ContractorAccount contractor, InvoiceFee fee, BigDecimal amount, int payingFacilities, boolean isCurrent) {
         Map<FeeClass, ContractorFee> contractorFees = contractor.getFees();
         if (isMissingFee(contractorFees, fee))
-            setNewContractorFeeOnContractor(contractor, fee, amount);
+            setNewContractorFeeOnContractor(contractor, fee, amount, payingFacilities);
         else {
             ContractorFee contractorFee = contractorFees.get(fee.getFeeClass());
 
             if (isCurrent) {
                 contractorFee.setCurrentLevel(fee);
                 contractorFee.setCurrentAmount(amount);
+                contractorFee.setCurrentFacilityCount(payingFacilities);
             }
             else {
                 contractorFee.setNewLevel(fee);
                 contractorFee.setNewAmount(amount);
+                contractorFee.setNewFacilityCount(payingFacilities);
             }
         }
     }
@@ -357,7 +351,7 @@ public class FeeService {
         BigDecimal amount = BigDecimal.ZERO;
 
         InvoiceFee invoiceFee = feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
-        setFee(contractor, invoiceFee, amount, isCurrent);
+        setFee(contractor, invoiceFee, amount, 0, isCurrent);
     }
 
     public boolean isMissingFee(Map<FeeClass, ContractorFee> contractorFees, InvoiceFee invoiceFee) {
@@ -369,12 +363,12 @@ public class FeeService {
         return MapUtils.isEmpty(contractorFees) || !contractorFees.containsKey(fee);
     }
 
-    public void setNewContractorFeeOnContractor(ContractorAccount contractor, InvoiceFee invoiceFee, BigDecimal amount) {
+    public void setNewContractorFeeOnContractor(ContractorAccount contractor, InvoiceFee invoiceFee, BigDecimal amount, int payingFacilities) {
         if (invoiceFee == null || invoiceFee.getFeeClass() == null) {
             return;
         }
 
-        ContractorFee contractorFee = buildContractorFee(contractor, invoiceFee, amount);
+        ContractorFee contractorFee = buildContractorFee(contractor, invoiceFee, amount, payingFacilities);
 
         Map<FeeClass, ContractorFee> contractorFees = contractor.getFees();
         if (contractorFees == null) {
@@ -385,7 +379,7 @@ public class FeeService {
         contractorFees.put(invoiceFee.getFeeClass(), contractorFee);
     }
 
-    private ContractorFee buildContractorFee(ContractorAccount contractor, InvoiceFee invoiceFee, BigDecimal amount) {
+    private ContractorFee buildContractorFee(ContractorAccount contractor, InvoiceFee invoiceFee, BigDecimal amount, int payingFacilities) {
         ContractorFee contractorFee = new ContractorFee();
         contractorFee.setAuditColumns(contractor.getUpdatedBy());
         contractorFee.setContractor(contractor);
@@ -394,6 +388,8 @@ public class FeeService {
         contractorFee.setNewLevel(invoiceFee);
         contractorFee.setCurrentAmount(amount);
         contractorFee.setNewAmount(amount);
+        contractorFee.setCurrentFacilityCount(payingFacilities);
+        contractorFee.setNewFacilityCount(payingFacilities);
         return contractorFee;
     }
 

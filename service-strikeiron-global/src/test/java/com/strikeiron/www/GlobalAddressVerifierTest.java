@@ -32,11 +32,15 @@ public class GlobalAddressVerifierTest {
     @Before
     public void setup() throws ServiceException, RemoteException {
         MockitoAnnotations.initMocks(this);
-        globalAddressVerifier = new GlobalAddressVerifier(locator);
+
+        globalAddressVerifier = new GlobalAddressVerifier("17701 Cowan", "Irvine", "CA", "US", "92614");
+        globalAddressVerifier.setLocator(locator);
+
         when(locator.getGlobalAddressVerificationSoap()).thenReturn(siService);
     }
     @Test
     public void testVerifyAddress() throws ServiceException, RemoteException {
+
         doAnswer(new Answer() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
@@ -64,7 +68,7 @@ public class GlobalAddressVerifierTest {
         }).when(siService).advancedVerify(anyString(), anyString(), anyString(), any(Address.class), eq(true), eq(true), eq(true),
                 eq(CountryOfOriginType.COO_USA), eq(CountryType.ISO_2), eq(LineSeparatorType.LST_NO_SEPARATOR), eq(ParsedInputType.ONLY_FOR_P),
                 eq(PreferredLanguageType.PFL_LANG_EN), eq(CapitalizationType.MIXED_CASE), any(SIWsOutputOfListingHolder.class), any(SISubscriptionInfoHolder.class));
-        Address address = globalAddressVerifier.verifyAddress("17701 Cowan", "Irvine", "CA", "US", "92614");
+        Address address = globalAddressVerifier.execute();
         assertEquals("17701 Cowan", address.getStreetAddressLines());
         assertEquals("Irvine", address.getLocality());
         assertEquals("CA", address.getProvince());
@@ -79,8 +83,8 @@ public class GlobalAddressVerifierTest {
         doThrow(ServiceException.class).when(siService).advancedVerify(anyString(), anyString(), anyString(), any(Address.class), eq(true), eq(true), eq(true),
                 eq(CountryOfOriginType.COO_USA), eq(CountryType.ISO_2), eq(LineSeparatorType.LST_NO_SEPARATOR), eq(ParsedInputType.ONLY_FOR_P),
                 eq(PreferredLanguageType.PFL_LANG_EN), eq(CapitalizationType.MIXED_CASE), any(SIWsOutputOfListingHolder.class), any(SISubscriptionInfoHolder.class));
-        Address address = globalAddressVerifier.verifyAddress("17701 Cowan", "Irvine", "CA", "US", "92614");
+        Address address = globalAddressVerifier.execute();
         assertEquals(500, address.getStatusNbr());
-        assertEquals("StrikeIron Service is down", address.getStatusDescription());
+        assertEquals("StrikeIron service may be down", address.getStatusDescription());
     }
 }

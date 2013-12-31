@@ -22,7 +22,7 @@
     <script src="/bootstrap3/js/vendor/modernizr-2.6.1.min.js?v=${version}"></script>
 </head>
 <%--<body id="${actionName}_${methodName}_page" class="${actionName}-page page">--%>
-<body id="${uniquePageId}_page" class="${pageId}-page page" data-spy="scroll" data-offset-top="200" data-target="#side-navigation">
+<body id="${uniquePageId}_page" class="${pageId}-page page" data-is-bootstrap="true" data-spy="scroll" data-offset-top="200" data-target="#side-navigation">
 
 <div id="main" role="main" class="container">
     <decorator:body />

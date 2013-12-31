@@ -64,23 +64,25 @@
             <div class="content">
                 <div class="list-group skill-list">
                     <s:iterator var="skill_info" value="skillInfoList">
-                        <s:set var="skill_status">${skill_info.skillStatus.displayValue}</s:set>
                         <s:url action="skill" var="employee_skill_url">
                             <s:param name="id">${skill_info.id}</s:param>
                         </s:url>
 
-                        <s:set var="skill_icon">icon-ok-sign</s:set>
                         <s:if test="#skill_info.skillStatus.expired">
                             <s:set var="skill_icon">icon-minus-sign-alt</s:set>
+                            <s:set var="skill_status_class">danger</s:set>
                         </s:if>
                         <s:elseif test="#skill_info.skillStatus.expiring">
                             <s:set var="skill_icon">icon-warning-sign</s:set>
+                            <s:set var="skill_status_class">warning</s:set>
                         </s:elseif>
                         <s:elseif test="#skill_info.skillStatus.pending">
                             <s:set var="skill_icon">icon-ok-circle</s:set>
+                            <s:set var="skill_status_class">success</s:set>
                         </s:elseif>
                         <s:elseif test="#skill_info.skillStatus.complete">
                             <s:set var="skill_icon">icon-ok-sign</s:set>
+                            <s:set var="skill_status_class">success</s:set>
                         </s:elseif>
 
                         <s:set var="skill_url" value="'#'" />
@@ -94,7 +96,7 @@
                             </s:set>
                         </s:if>
 
-                        <a href="${skill_url}" class="list-group-item ${skill_status}">
+                        <a href="${skill_url}" class="list-group-item ${skill_status_class}">
                             <i class="${skill_icon}"></i>${skill_info.name}
                         </a>
                     </s:iterator>

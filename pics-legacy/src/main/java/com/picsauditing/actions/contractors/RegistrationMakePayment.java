@@ -720,7 +720,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		}
 
 		Invoice newInvoice = billingService.createInvoice(contractor, BillingStatus.Activation, getUser());
-		if (contractor.isHasMembershipChanged()
+		if (contractor.isHasUpgrade()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
 			billingService.addRevRecInfoIfAppropriateToItems(newInvoice);

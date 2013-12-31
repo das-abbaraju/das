@@ -30,13 +30,11 @@ public class OperatorAccount extends Account {
 	public static final int CEDA_USA = 29230;
 	public static final int CINTAS = 17144;
 	public static final int CINTAS_CANADA = 17302;
-	public static final int CINTAS_NORTHAMERICA = 17146;
 	public static final int OLDCASTLE = 20481;
 	public static final int PicsConsortium = 4;
 	public static final int PICSPSM = 8;
 	public static final int SUNCOR = 10566;
 	public static final int SALES = 23325;
-	public static final int SUNOCO = 27406;
 	public static final int TESORO = 1436;
 	public static final int VALSPAR_GARLAND = 23335;
 

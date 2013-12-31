@@ -192,7 +192,7 @@
 
 #trade-view-single.current h3
 {
-	color: #A84D10; 
+	color: #A84D10;
 }
 
 #trade-view-single .buttons {
@@ -211,7 +211,7 @@
 .trade-information
 {
 	clear: both;
-	position: relative;	
+	position: relative;
 }
 
 .trade-information p
@@ -250,7 +250,7 @@
 
 #trade-form select
 {
-	
+
 }
 
 #trade-form #activityPercent,
@@ -282,7 +282,7 @@
 
 #trade-view-single #trade_children.trade-section a
 {
-	font-weight: normal;	
+	font-weight: normal;
 }
 
 
@@ -327,7 +327,7 @@
 }
 
 #suggest .filter {
-	
+
 }
 
 .searchType-list #search-tree {
@@ -416,17 +416,20 @@ h3.new {
 .trade-preview img
 {
 	float: left;
-	margin: 0px 10px 10px 0px;	
+	margin: 0px 10px 10px 0px;
 }
 
 .trade-preview .trade-section
 {
 	font-size: 14px;
 	margin-bottom: 10px;
-} 
+}
 
 .trade-preview #activityPercent
 {
 	clear: both;
 }
 
+.safety-sensitive-confirm-modal em {
+	font-style: italic;
+}

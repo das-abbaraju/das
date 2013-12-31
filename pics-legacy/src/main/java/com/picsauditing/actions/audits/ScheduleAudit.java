@@ -567,7 +567,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
         invoice.setInvoiceType(InvoiceType.OtherFees);
         invoice.setPayingFacilities(contractor.getPayingFacilities());
 		AccountingSystemSynchronization.setToSynchronize(invoice);
-		invoice = billingService.saveInvoice(invoice);
 
 		InvoiceItem item = new InvoiceItem();
 		item.setAmount(FeeService.getRegionalAmountOverride(contractor, fee));
@@ -575,9 +574,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		item.setInvoice(invoice);
 		item.setInvoiceFee(fee);
 		item.setAuditColumns(permissions);
-		item = itemDAO.save(item);
 
 		invoice.getItems().add(item);
+
+        invoice = billingService.saveInvoice(invoice);
+
 		contractor.getInvoices().add(invoice);
 		billingService.syncBalance(contractor);
 		contractorAccountDao.save(contractor);

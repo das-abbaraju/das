@@ -94,7 +94,7 @@
 
             <div class="content">
                 <ul class="employee-guard-list-rollup">
-                    <li class="expired">
+                    <li class="danger">
                         <div class="row">
                             <div class="col-md-1 col-xs-1">
                                 <i class="icon-minus-sign-alt"></i>
@@ -103,7 +103,7 @@
                             <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expired}</div>
                         </div>
                     </li>
-                    <li class="expiring">
+                    <li class="warning">
                         <div class="row">
                             <div class="col-md-1 col-xs-1">
                                 <i class="icon-warning-sign"></i>
@@ -112,7 +112,7 @@
                             <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expiring}</div>
                         </div>
                     </li>
-                    <li class="pending">
+                    <li class="success">
                         <div class="row">
                             <div class="col-md-1 col-xs-1">
                                 <i class="icon-ok-circle"></i>
@@ -121,7 +121,7 @@
                             <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.pending}</div>
                         </div>
                     </li>
-                    <li class="complete">
+                    <li class="success">
                         <div class="row">
                             <div class="col-md-1 col-xs-1">
                                 <i class="icon-ok-sign"></i>

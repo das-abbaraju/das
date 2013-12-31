@@ -1,6 +1,17 @@
 #employee_assignment {
     tr {
         cursor: pointer;
+        .success {
+            color: $default_dark;
+        }
+
+        .warning {
+            color: $default_dark;
+        }
+
+        .danger {
+            color: $default_dark;
+        }
     }
 
     &.view-only tr {
@@ -17,18 +28,17 @@
             }
         }
 
-        .complete,
-        .pending {
+        .success {
             background-color: $success_tint;
             color: $success_light;
         }
 
-        .expiring {
+        .warning {
             background-color: $warning_tint;
             color: $warning_med;
         }
 
-        .expired {
+        .danger {
             background-color: $danger_tint;
             color: $danger_light;
         }
@@ -45,16 +55,15 @@
     tbody > tr:hover td {
         background-color: $info-tint;
 
-        &.complete,
-        &.pending {
+        &.success {
             color: $success_light;
         }
 
-        &.expiring {
+        &.warning {
             color: $warning_med;
         }
 
-        &.expired {
+        &.danger {
             color: $danger_light;
         }
 
@@ -63,17 +72,7 @@
         }
     }
 
-    tbody > tr td {
-        &.complete,
-        &.pending,
-        &.expiring
-        &.expired {
-            text-align: center;
-        }
-    }
-
     td {
-        &.status,
         &.assign-employee {
             color: $default_dark;
             text-align: center;
@@ -86,14 +85,5 @@
         a {
             display: inline;
         }
-    }
-}
-
-#employee_project.table-status {
-    .complete,
-    .pending,
-    .expiring,
-    .expired {
-        text-align: center;
     }
 }

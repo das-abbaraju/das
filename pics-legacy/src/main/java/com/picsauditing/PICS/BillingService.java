@@ -232,7 +232,7 @@ public class BillingService {
 	private InvoiceType convertBillingStatusToInvoiceType(Invoice invoice, BillingStatus billingStatus) {
         Set<FeeClass> invoiceFeeClasses = getInvoiceFeeClasses(invoice);
 
-        if (invoiceFeeClasses.contains(FeeClass.Activation)) {
+        if (invoiceFeeClasses.contains(FeeClass.Activation) || invoiceFeeClasses.contains(FeeClass.Reactivation)) {
             return InvoiceType.Activation;
         }
 
@@ -418,8 +418,8 @@ public class BillingService {
 		for (FeeClass feeClass : contractor.getFees().keySet()) {
 			ContractorFee fee = contractor.getFees().get(feeClass);
 
-			if (fee.isHasChanged() && !fee.getNewLevel().isFree()
-					&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().isListonly())) {
+            InvoiceFee newLevel = fee.getNewLevel();
+            if (fee.isUpgrade() && !newLevel.isFree() && (!newLevel.isBidonly() || !newLevel.isListonly())) {
 				upgrades.add(fee);
 			}
 		}
@@ -655,22 +655,40 @@ public class BillingService {
 		}
 	}
 
-	private Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
+	public Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
 		switch (invoice.getInvoiceType()) {
 			case Activation:
-				Date oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
-				return oneYearLater;
+				return calculateActivationRevRecFinishDate(invoice, contractor);
 			case Renewal:
-				Date oneYearOneMonthLater = DateBean.addMonths(DateBean.addYears(invoice.getCreationDate(), 1),1);
-				return oneYearOneMonthLater;
+				return calculateRenewalRevRecFinishDate(invoice, contractor);
 			default:
-				Invoice previousInvoice = findLastActivationOrRenewalInvoiceFor(contractor);
-				Date previousEndDate = getInvoiceItemEndDateFrom(previousInvoice);
-				if (previousInvoice == null || previousEndDate == null) {
-					throw new Exception(generateExceptionStringForInabilityToCalculateRevRec(contractor,invoice,previousInvoice));
-				}
-				return previousEndDate;
+				return contractor.getPaymentExpires();
 		}
+	}
+
+	private Date calculateRenewalRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater;
+		oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrLessThanAYearFromNow(contractor)) {
+			oneYearLater = DateBean.addYears(contractor.getPaymentExpires(),1);
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
+
+	private Date calculateActivationRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrLessThanAYearFromNow(contractor)) {
+			oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
+
+	private boolean contractorPaymentExpiresIsNullOrLessThanAYearFromNow(ContractorAccount contractor) {
+		return contractor.getPaymentExpires() == null || contractor.getPaymentExpires().before(DateBean.subtractDays(DateBean.addYears(new Date(),1),1));
 	}
 
 	private String generateExceptionStringForInabilityToCalculateRevRec(ContractorAccount contractor, Invoice invoice, Invoice previousInvoice) {
@@ -704,27 +722,22 @@ public class BillingService {
 	}
 
 	private Date calculateInvoiceItemRevRecStartDateFor(Invoice invoice) {
-		if (invoice.getInvoiceType() == InvoiceType.Renewal) {
-			return DateBean.addMonths(invoice.getCreationDate(), 1);
-		} else {
-			return invoice.getCreationDate();
+		switch (invoice.getInvoiceType()) {
+			case Activation:
+				if (invoice.getDueDate() == null) {
+					return invoice.getCreationDate();
+				} else {
+					return invoice.getDueDate();
+				}
+			case Renewal:
+				if (invoice.getDueDate() == null) {
+					return DateBean.addMonths(invoice.getCreationDate(), 1);
+				} else {
+					return invoice.getDueDate();
+				}
+			default:
+				return invoice.getCreationDate();
 		}
-	}
-
-	public Invoice findLastActivationOrRenewalInvoiceFor(ContractorAccount contractor) {
-		for (Invoice invoice : contractor.getSortedInvoices()) {
-			if (invoice.getStatus() == TransactionStatus.Void) {
-				continue;
-			}
-			switch (invoice.getInvoiceType()) {
-			  case Activation:
-			  case Renewal:
-				  return invoice;
-			  default:
-				  continue;
-			}
-  		}
-		return null;
 	}
 
     public static boolean hasCreditMemosForFullAmount(Invoice invoice) {
@@ -771,7 +784,7 @@ public class BillingService {
 
         int daysUntilRenewal = (contractor.getPaymentExpires() == null) ? 0 : DateBean.getDateDifference(contractor.getPaymentExpires());
 
-        if (contractor.pendingOrActive() && contractor.getAccountLevel().isFull() && contractor.newMember()) {
+        if (contractor.pendingRequestedOrActive() && contractor.getAccountLevel().isFull() && contractor.newMember()) {
             return BillingStatus.Activation;
         }
 
@@ -788,14 +801,16 @@ public class BillingService {
         // if any non-bid or list membership level differs, amount is an upgrade
         boolean upgrade = false;
         boolean currentListOrBidOnly = false;
-        for (FeeClass feeClass : contractor.getFees().keySet()) {
-            if (!upgrade && !contractor.getFees().isEmpty() && contractor.getFees().get(feeClass).isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
+        Map<FeeClass, ContractorFee> fees = contractor.getFees();
+        for (FeeClass feeClass : fees.keySet()) {
+            ContractorFee contractorFee = fees.get(feeClass);
+            if (!upgrade && contractorFee.isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
                     && !feeClass.equals(FeeClass.ListOnly)) {
                 upgrade = true;
             }
-            if (!contractor.getFees().isEmpty() && (contractor.getFees().get(feeClass).getCurrentLevel().isBidonly()
-                    || contractor.getFees().get(feeClass).getCurrentLevel().isListonly())
-                    && !contractor.getFees().get(feeClass).getCurrentLevel().isFree()) {
+
+            InvoiceFee currentLevel = contractorFee.getCurrentLevel();
+            if ((currentLevel.isBidonly() || currentLevel.isListonly()) && !currentLevel.isFree()) {
                 currentListOrBidOnly = true;
             }
         }

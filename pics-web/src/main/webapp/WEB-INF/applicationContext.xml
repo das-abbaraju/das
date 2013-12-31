@@ -136,8 +136,6 @@
     <bean id="ContractorWatchlistHelper" class="com.picsauditing.PICS.ContractorWatchlistHelper" scope="prototype"/>
     <bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
     <bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
-    <bean id="EmailSubscriptionHandler" class="com.picsauditing.messaging.subscription.EmailSubscriptionHandler"
-          scope="prototype"/>
     <bean id="EmployeeImport" class="com.picsauditing.service.fileimport.EmployeeImport"/>
     <bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
@@ -149,7 +147,7 @@
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
-    <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" />
+    <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
 
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>

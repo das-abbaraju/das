@@ -43,12 +43,7 @@ public abstract class SubscriptionBuilder {
 	    }
 
         if (queue != null) {
-            if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)) {
-                sender.publishSubscription(queue);
-            } else {
                 sender.sendNow(queue);
-            }
-
         } else {
             logger.error("SubscriptionBuilder.buildEmail returned null: " +
                     subscription.getSubscription().toString() +

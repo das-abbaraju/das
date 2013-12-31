@@ -288,11 +288,6 @@
                 $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
                 $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
 
-	            company_information.on('change', '#Registration_contractor_country_isoCode', this.checkTaxIdRequired);
-
-                // Show or hide the tax id field based on the Country default value.
-                company_information.find('#Registration_contractor_country_isoCode').trigger('change');
-
                 if ($('.Registration-page').length) {
                     $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
 
@@ -303,6 +298,8 @@
                     this.bindSelect2EventstoPopover();
 
                     $country_select.on('change', $.proxy(this.updateCountryFields, this));
+
+                    this.updateCountryFields();
 
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
                     $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
@@ -358,28 +355,6 @@
 
                 select.on('select2-close', function (event) {
                     label.popover('hide');
-                });
-            },
-
-            checkTaxIdRequired: function (event) {
-                var iso_code = $('#Registration_contractor_country_isoCode').val();
-
-                PICS.ajax({
-                    url: 'TaxIdCountryAJAX.action',
-                    data: {
-                        iso_code: iso_code
-                    },
-                    dataType: 'json',
-                    success: function (data, textStatus, XMLHttpRequest) {
-                        var tax_id_element = $('#tax_id');
-
-                        if (data.tax_id_required) {
-                            tax_id_element.slideDown(400);
-
-                        } else {
-                            tax_id_element.slideUp(400);
-                        }
-                    }
                 });
             },
 
@@ -487,6 +462,21 @@
                 }
             },
 
+            updateCountryFields: function () {
+                var $country = $('.country select'),
+                    selected_country = $country.val() || '';
+
+                this.updateAddressFields(selected_country);
+
+                this.updatePhoneNumber(selected_country);
+
+                this.updateTimezonesByCountry(selected_country);
+
+                this.updateZipcode(selected_country);
+
+                this.updateTaxIdLabel(selected_country);
+            },
+
             // HACK to pull custom address fields for the UK
             updateAddressFields: function (selected_country) {
                 var that = this;
@@ -502,19 +492,6 @@
                         that.renderSubdivision();
                     }
                 });
-            },
-
-            updateCountryFields: function () {
-                var $country = $('.country select'),
-                    selected_country = $country.val() || '';
-
-                this.updateAddressFields(selected_country);
-
-                this.updatePhoneNumber(selected_country);
-
-                this.updateTimezonesByCountry(selected_country);
-
-                this.updateZipcode(selected_country);
             },
 
             updatePhoneNumber: function (selected_country) {
@@ -547,6 +524,33 @@
                 var Country = PICS.getClass('country.Country');
 
                 Country.modifyZipcodeDisplay(selected_country);
+            },
+
+            updateTaxIdLabel: function (selected_country) {
+                PICS.ajax({
+                    url: 'TaxIdCountryAJAX.action',
+                    dataType: 'json',
+                    data: {
+                        iso_code: selected_country,
+                        locale: REGISTRATION.language_dropdown.getRequestLocale()
+                    },
+                    success: function (data) {
+                        var tax_id_required = data.tax_id_required,
+                            label_text = data.label,
+                            tax_id_item_el =$('#tax_id'),
+                            tax_id_label_el;
+
+                        if (tax_id_required) {
+                            tax_id_label_el = tax_id_item_el.find('label');
+
+                            tax_id_label_el.text(label_text);
+
+                            tax_id_item_el.slideDown(400);
+                        } else {
+                            tax_id_item_el.slideUp(400);
+                        }
+                    }
+                });
             }
 	    }
 	});

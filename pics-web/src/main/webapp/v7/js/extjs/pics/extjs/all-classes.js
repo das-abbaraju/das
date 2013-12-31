@@ -96877,7 +96877,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
 
     selModel: Ext.create('Ext.selection.CheckboxModel', {
         mode: 'SIMPLE'
-    }),
+    })
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     extend: 'PICS.ux.window.Window',

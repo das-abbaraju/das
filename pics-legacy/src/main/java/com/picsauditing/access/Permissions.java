@@ -56,6 +56,7 @@ public class Permissions implements Serializable {
 	private TimeZone timezone = null;
 	private Locale locale;
 	private String country;
+	private String countrySubdivision;
 
 	private int adminID;
 	private boolean approvesRelationships = false;
@@ -101,6 +102,7 @@ public class Permissions implements Serializable {
         accountType = "";
         showClientSitesLink = true;
         country = "";
+        countrySubdivision = "";
         accountStatus = AccountStatus.Pending;
         approvesRelationships = false;
         requiresOQ = false;
@@ -174,9 +176,19 @@ public class Permissions implements Serializable {
             country = "";
         }
 
+        populateCountrySubdivision(user);
+
         setTimeZone(user);
         setAccountPerms(user);
         return this;
+    }
+
+    private void populateCountrySubdivision(User user) {
+        if (user.getAccount().getCountrySubdivision() != null) {
+            countrySubdivision = user.getAccount().getCountrySubdivision().getIsoCode();
+        } else {
+            countrySubdivision = "";
+        }
     }
 
     public void setTimeZone(User user) {
@@ -680,6 +692,10 @@ public class Permissions implements Serializable {
 	 */
 	public String getCountry() {
 		return country;
+	}
+
+	public String getCountrySubdivision() {
+		return countrySubdivision;
 	}
 
 	public boolean isRequiresCompetencyReview() {

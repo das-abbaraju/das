@@ -1,33 +1,90 @@
-.table thead > tr > th  {
+.table thead > tr > th {
     background-color: #454545;
-    border: 0px;
+    border: 0;
     color: $pics_cool_grey;
     font-weight: normal;
-}
 
-tr th.icon {
-    text-align: center;
-}
+    &.success {
+        background-color: #454545;
 
-th.incomplete-skills i {
-    color: $danger_light;
-}
+        i {
+            color: $success_light;
+        }
+    }
 
-th.expire-skills i {
-    color: $warning_light;
+    &.warning {
+        background-color: #454545;
+
+        i {
+            color: $warning_light;
+        }
+    }
+
+    &.danger {
+        background-color: #454545;
+
+        i {
+            color: $danger_light;
+        }
+    }
 }
 
 .table tbody > tr > td {
-    border: 0px;
+    border: 0;
     vertical-align: middle;
-}
 
-td.number {
-    text-align: right;
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
 }
 
 .table-striped > tbody > tr:nth-child(odd) td {
     background-color: $pics_cool_grey;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
+}
+
+.table-striped > tbody > tr:nth-child(even) td {
+    background-color: none;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
 }
 
 .table-hover tbody tr:hover td {
@@ -36,33 +93,4 @@ td.number {
 
 .table td a {
     display: block;
-}
-
-/* For tables with status colors and icons */
-/*.table-hover tbody tr:hover td.expired {
-    background-color: $danger_tint;
-}*/
-
-.table-status {
-    th.status-title {
-        text-align: center;
-    }
-
-    tbody tr td {
-        &.complete,
-        &.pending {
-            background-color: $success_tint;
-            color: $success_light;
-        }
-
-        &.expiring {
-            background-color: $warning_tint;
-            color: $warning_med;
-        }
-
-        &.expired {
-            background-color: $danger_tint;
-            color: $danger_light;
-        }
-    }
 }

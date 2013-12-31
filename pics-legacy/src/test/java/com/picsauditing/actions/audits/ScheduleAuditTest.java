@@ -12,7 +12,6 @@ import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.SapAppPropertyUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -228,11 +227,6 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
 		verify(billingService).saveInvoice((Invoice) any());
-		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
-		verify(itemDAO).save(captor.capture());
-		InvoiceItem itemSaved = captor.getValue();
-		InvoiceFee fee = itemSaved.getInvoiceFee();
-		assertThat(rescheduling, is(equalTo(fee)));
 		verify(dao).save((Note) any());
 		verify(response).sendRedirect(anyString());
 	}
@@ -259,11 +253,6 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
 		verify(billingService).saveInvoice((Invoice) any());
-		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
-		verify(itemDAO).save(captor.capture());
-		InvoiceItem itemSaved = captor.getValue();
-		InvoiceFee fee = itemSaved.getInvoiceFee();
-		assertThat(expedite, is(equalTo(fee)));
 		verify(dao).save((Note) any());
 		verify(response).sendRedirect(anyString());
 	}
@@ -296,11 +285,9 @@ public class ScheduleAuditTest extends PicsActionTest {
 	}
 
     @Test
-    public void testCreateInvoice_withPayingFacilitiesAndOriginalAmount() throws Exception {
-        MockItemDAO mockItemDAO = new MockItemDAO();
-        MockBillingService mockBillingService = new MockBillingService();
-        Whitebox.setInternalState(scheduleAudit, "itemDAO", mockItemDAO);
-        Whitebox.setInternalState(scheduleAudit, "billingService", mockBillingService);
+    public void testCreateInvoice_withPayingFacilitiesAndOriginalAmount_itemAddedToItemsOnInvoiceForCascade() throws Exception {
+        FakeBillingService fakeBillingService = new FakeBillingService();
+        Whitebox.setInternalState(scheduleAudit, "billingService", fakeBillingService);
         Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
         when(contractor.getCountry()).thenReturn(country);
         when(contractor.getPayingFacilities()).thenReturn(20);
@@ -308,13 +295,14 @@ public class ScheduleAuditTest extends PicsActionTest {
         when(conAudit.getAuditType()).thenReturn(auditType);
 
         Whitebox.invokeMethod(scheduleAudit, "createInvoice", expedite, "");
-        InvoiceItem item = mockItemDAO.getItem();
+        Invoice invoice = fakeBillingService.getInvoice();
+        InvoiceItem item = invoice.getItems().get(0);
 
         assertEquals(BigDecimal.TEN, item.getOriginalAmount());
         assertEquals(20, item.getInvoice().getPayingFacilities());
     }
 
-    class MockItemDAO extends InvoiceItemDAO {
+    class FakeItemDAO extends InvoiceItemDAO {
         private InvoiceItem item;
 
         @Override
@@ -333,7 +321,7 @@ public class ScheduleAuditTest extends PicsActionTest {
         }
     }
 
-    class MockBillingService extends BillingService {
+    class FakeBillingService extends BillingService {
         private Invoice invoice;
 
         @Override

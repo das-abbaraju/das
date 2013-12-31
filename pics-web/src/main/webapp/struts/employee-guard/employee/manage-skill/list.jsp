@@ -29,7 +29,7 @@
                                             <s:url action="skill" var="employee_expired_skill_url">
                                                 <s:param name="id">${expired_skill.id}</s:param>
                                             </s:url>
-                                            <a href="${employee_expired_skill_url}" class="list-group-item expired">
+                                            <a href="${employee_expired_skill_url}" class="list-group-item danger">
                                                 <i class="icon-minus-sign-alt"></i>${expired_skill.name}
                                             </a>
                                         </s:iterator>
@@ -42,7 +42,7 @@
                                             <s:url action="skill" var="employee_expiring_skill_url">
                                                 <s:param name="id">${expiring_skill.id}</s:param>
                                             </s:url>
-                                            <a href="${employee_expiring_skill_url}" class="list-group-item expiring">
+                                            <a href="${employee_expiring_skill_url}" class="list-group-item warning">
                                                 <i class="icon-warning-sign"></i>${expiring_skill.name}
                                             </a>
                                         </s:iterator>
@@ -55,7 +55,7 @@
                                             <s:url action="skill" var="employee_completed_skill_url">
                                                 <s:param name="id">${completed_skill.id}</s:param>
                                             </s:url>
-                                            <a href="${employee_completed_skill_url}" class="list-group-item complete">
+                                            <a href="${employee_completed_skill_url}" class="list-group-item success">
                                                 <i class="icon-ok-sign"></i>${completed_skill.name}
                                             </a>
                                         </s:iterator>
@@ -65,12 +65,8 @@
                                             <%--<s:url action="skills/manage-skill" var="employee_manage_skill_url">
                                                 <s:param name="id">1</s:param>
                                             </s:url>
-
-                                            <a href="#" class="list-group-item complete">
-                                                <i class="icon-ok-sign"></i>PICS Orientation
-                                            </a>
-                                            <a href="#" class="list-group-item pending">
-                                                <i class="icon-ok-circle"></i>Harassment Training
+                                            <a href="${employee_pending_skill_url}" class="list-group-item success">
+                                                <i class="icon-ok-circle"></i>${pending_skill.name}
                                             </a>--%>
 
                                     </div>

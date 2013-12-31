@@ -1114,17 +1114,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean isHasMembershipChanged() {
-		for (FeeClass feeClass : this.getFees().keySet()) {
-			if (this.getFees().get(feeClass).isHasChanged()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	@Transient
 	public boolean isHasUpgrade() {
 		for (FeeClass feeClass : this.getFees().keySet()) {
 			if (this.getFees().get(feeClass).isUpgrade()) {
@@ -1229,7 +1218,11 @@ public class ContractorAccount extends Account implements JSONable {
 
 	}
 
-	public boolean pendingOrActive() {
+    public boolean pendingRequestedOrActive() {
+        return status.isPending() || status.isActive() || status.isRequested();
+    }
+
+    public boolean pendingOrActive() {
 		return status.isPending() || status.isActive();
 	}
 
@@ -1876,17 +1869,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Override
 	@Transient
 	public String getViewLink() {
-		if (status.isRequested()) {
-			String link = "RequestNewContractorAccount.action?contractor=" + this.id;
-
-			if (getOperators().size() == 1) {
-				link += "&requestRelationship=" + getOperators().get(0).getId();
-			}
-
-			return link;
-		} else {
-			return ("ContractorView.action?id=" + this.id);
-		}
+        return ("ContractorView.action?id=" + this.id);
 	}
 
 	public InsuranceCriteriaContractorOperator getInsuranceCriteriaContractorOperators(int flagCriteriaId, int opId) {
