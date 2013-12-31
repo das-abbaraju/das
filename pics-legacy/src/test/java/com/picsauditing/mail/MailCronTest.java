@@ -1,17 +1,23 @@
 package com.picsauditing.mail;
 
-import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.mail.subscription.SubscriptionValidationException;
 import com.picsauditing.service.mail.MailCronService;
+import org.hibernate.JDBCException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.sql.SQLException;
+
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static junit.framework.Assert.*;
 
 public class MailCronTest {
+    public static final String EXCEPTION_MESSAGE = "The MySQL server is running with the --read-only option so it cannot execute this statement";
     @Mock
     MailCronService service;
     private MailCron cron;
@@ -43,11 +49,27 @@ public class MailCronTest {
     }
 
     @Test
+    public void testSubscription_Exception() throws SubscriptionValidationException {
+        doThrow(new RuntimeException(EXCEPTION_MESSAGE)).when(service).processEmailSubscription(anyInt());
+
+        cron.subscription();
+        assertEquals(EXCEPTION_MESSAGE, cron.getActionErrors().toArray()[0]);
+    }
+
+    @Test
     public void testSend() throws Exception {
         String result = cron.send();
 
         assertEquals(1, cron.getActionMessages().size());
         assertEquals(PicsActionSupport.ACTION_MESSAGES, result);
+    }
+
+    @Test
+    public void testSend_Exception() throws SubscriptionValidationException {
+        doThrow(new RuntimeException(EXCEPTION_MESSAGE)).when(service).processPendingEmails();
+
+        cron.send();
+        assertEquals(EXCEPTION_MESSAGE, cron.getActionErrors().toArray()[0]);
     }
 
 }
