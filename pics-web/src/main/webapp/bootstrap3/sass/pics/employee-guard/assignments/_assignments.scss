@@ -2,12 +2,13 @@
     $assign_column_background_color: #fbcb43;
     $assigned_column_icon_color: #ec8c00;
 
+    &.view-only tr {
+        cursor: auto;
+    }
+
     tr {
         cursor: pointer;
 
-        &.view-only {
-            cursor: auto;
-        }
 
         &:hover {
             .icon-minus-sign-alt {

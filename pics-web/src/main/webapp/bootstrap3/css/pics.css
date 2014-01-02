@@ -1199,48 +1199,48 @@ body {
     padding-top: 0px;
   }
 }
-/* line 5, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 5, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment.view-only tr {
+  cursor: auto;
+}
+/* line 9, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr {
   cursor: pointer;
 }
-/* line 8, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-.table-assignment tr.view-only {
-  cursor: auto;
-}
-/* line 13, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 14, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr:hover .icon-minus-sign-alt {
   color: #e74c3c;
 }
-/* line 17, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 18, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr:hover .icon-warning-sign {
   color: #fbcb43;
 }
-/* line 21, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 22, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr:hover .icon-ok-circle {
   color: #33b679;
 }
-/* line 25, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 26, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr:hover .icon-ok-sign {
   color: #33b679;
 }
-/* line 30, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 31, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr:hover .assign-employee i {
   color: #ec8c00;
 }
-/* line 37, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 38, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr.assigned .assign-employee {
   background-color: #fbcb43;
 }
-/* line 40, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 41, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr.assigned .assign-employee i {
   color: #ec8c00;
 }
-/* line 46, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 47, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr td a {
   display: inline;
 }
 
-/* line 53, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
+/* line 54, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .nav-assignment .site-status {
   margin-bottom: 20px;
 }
