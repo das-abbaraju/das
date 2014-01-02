@@ -45,7 +45,12 @@ import com.picsauditing.util.YearList;
 public class OshaDisplayTest extends PicsTranslationTest {
 	private OshaDisplay oshaDisplay;
 
-	@Autowired
+    private int thisYear = org.joda.time.DateTime.now().getYear();
+    private int lastYear = org.joda.time.DateTime.now().minusYears(1).getYear();
+    private int twoYearsAgo = org.joda.time.DateTime.now().minusYears(2).getYear();
+    private int threeYearsAgo = org.joda.time.DateTime.now().minusYears(3).getYear();
+
+    @Autowired
 	private NaicsDAO springNaicsDao;
 
 	@Mock
@@ -92,9 +97,9 @@ public class OshaDisplayTest extends PicsTranslationTest {
     @Test
     public void testIndustryAverageDisplay() throws Exception {
         YearList yearList = new YearList();
-        yearList.add(2011);
-        yearList.add(2012);
-        yearList.add(2013);
+        yearList.add(twoYearsAgo);
+        yearList.add(lastYear);
+        yearList.add(thisYear);
 
         when(oshaOrganizer.getOutOfScopeYear(any(OshaType.class))).thenReturn(null);
         when(oshaOrganizer.mostRecentThreeYears(any(OshaType.class))).thenReturn(yearList);
@@ -182,9 +187,9 @@ public class OshaDisplayTest extends PicsTranslationTest {
 		when(springNaicsDao.getIndustryAverage(eq(true), (Naics) any())).thenReturn(0.2f);
 		when(springNaicsDao.getIndustryAverage(eq(false), (Naics) any())).thenReturn(1.2f);
 
-		when(yearList.getYearForScope(MultiYearScope.LastYearOnly)).thenReturn(2011);
-		when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(2010);
-		when(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo)).thenReturn(2009);
+		when(yearList.getYearForScope(MultiYearScope.LastYearOnly)).thenReturn(lastYear);
+		when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(twoYearsAgo);
+		when(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo)).thenReturn(threeYearsAgo);
 
 		when(oshaOrganizer.getOutOfScopeYear(OshaType.OSHA)).thenReturn(null);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.LastYearOnly, OshaRateType.TrirNaics)).thenReturn(0.4);
@@ -255,11 +260,11 @@ public class OshaDisplayTest extends PicsTranslationTest {
 
 		when(springNaicsDao.getDartIndustryAverage((Naics) any())).thenReturn(1.3f);
 
-		when(yearList.getYearForScope(MultiYearScope.LastYearOnly)).thenReturn(2011);
-		when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(2010);
-		when(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo)).thenReturn(2009);
+        when(yearList.getYearForScope(MultiYearScope.LastYearOnly)).thenReturn(lastYear);
+        when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(twoYearsAgo);
+        when(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo)).thenReturn(threeYearsAgo);
 
-		when(oshaOrganizer.getOutOfScopeYear(OshaType.OSHA)).thenReturn(null);
+        when(oshaOrganizer.getOutOfScopeYear(OshaType.OSHA)).thenReturn(null);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.LastYearOnly, OshaRateType.DartNaics)).thenReturn(0.4);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.TwoYearsAgo, OshaRateType.DartNaics)).thenReturn(0.3);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearsAgo, OshaRateType.DartNaics))
