@@ -28,6 +28,16 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
     @Override
 	public Map<String, Object> process(EmailSubscription subscription) throws IOException {
         EmailSubscription emailSubscription = new EmailSubscription();
+        int reportID = getReportID(subscription);
+
+        emailSubscription.setUser(subscription.getUser());
+        emailSubscription.setReport(reportDAO.findById(reportID));
+        emailSubscription.setSubscription(Subscription.DynamicReports);
+
+        return dynamicReports.process(emailSubscription);
+    }
+
+    private int getReportID(EmailSubscription subscription) {
         int reportID;
         switch (subscription.getTimePeriod()) {
             case Daily:
@@ -43,12 +53,7 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
                 reportID = REPORT_ID_DAILY;
             }
         }
-
-        emailSubscription.setUser(subscription.getUser());
-        emailSubscription.setReport(reportDAO.findById(reportID));
-        emailSubscription.setSubscription(Subscription.DynamicReports);
-
-        return dynamicReports.process(emailSubscription);
+        return reportID;
     }
 
 }
