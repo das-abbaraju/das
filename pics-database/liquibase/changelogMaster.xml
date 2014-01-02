@@ -60,10 +60,10 @@
     <include file="./liquibase/mdo12_PICS-13617_SS_trades_nullable.sql"/>
     <include file="./liquibase/dalvarado6_PICS-13611_Add_rules_for_SS.sql"/>
 
-	<!-- Release 6.67 --> 
+	<!-- Release 6.67 -->
     <include file="./liquibase/sshacter13_FixEmailSubscription.sql"/>
 
-	<!-- Rlease 6.68 --> 
+	<!-- Rlease 6.68 -->
     <include file="./liquibase/pschlesinger9_PICS-13683_CorrectDueDates.sql"/>
     <include file="./liquibase/kchase11_PICS-13652_TradeRiskRank.sql"/>
     <include file="./liquibase/kchase12_PICS-13079_EmailNotViewable.sql"/>
@@ -115,5 +115,6 @@
 	<!-- 7.1.1 --> 
 	<include file="./liquibase/mdo28_PICS-14143_UpdateBaseReportsToPublic.sql"/>
     <include file="./liquibase/sshacter40_PICS-13646_DiscrepenciesReportView.sql"/>
+    <include file="./liquibase/uaung2_PICS-14166_AddDiscriminatorColumn.sql"/>
 
 </databaseChangeLog>
