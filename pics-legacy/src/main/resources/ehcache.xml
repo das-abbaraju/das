@@ -31,9 +31,18 @@
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
-	<!--  
-		For compiled feature toggle groovy scripts
-	 -->	
+    <!--
+    PICS-14155: Configure a dedicated region just for App Properties pulled via JDBC (cached
+    as strings)
+    -->
+    <cache name="app_properties" maxElementsInMemory="200" eternal="false"
+           timeToLiveSeconds="86400" timeToIdleSeconds="14400" overflowToDisk="false"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!--
+        For compiled feature toggle groovy scripts
+     -->
 	<cache name="feature_toggle" maxElementsInMemory="1000" eternal="false"
 		timeToLiveSeconds="1800" timeToIdleSeconds="1800" overflowToDisk="false"
 		memoryStoreEvictionPolicy="LFU">
