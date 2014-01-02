@@ -46,7 +46,7 @@ public class AddLateFees implements CronTask {
         return steps;
     }
 
-    public CronTaskResult run() {
+    public CronTaskResult run() throws Exception {
         CronTaskResult results = new CronTaskResult(true, "");
         List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
         if (invoicesMissingLateFees.size() == 0) {
@@ -74,7 +74,7 @@ public class AddLateFees implements CronTask {
         return false;
     }
 
-    private Invoice addLateFeeToDelinquentInvoice(Invoice invoiceWhichIsLate) {
+    private Invoice addLateFeeToDelinquentInvoice(Invoice invoiceWhichIsLate) throws Exception {
         // Calculate Late Fee
         BigDecimal lateFee = calculateLateFeeFor(invoiceWhichIsLate);
 
@@ -121,10 +121,10 @@ public class AddLateFees implements CronTask {
         }
     }
 
-    private Invoice saveLateFeeInvoiceAndRelated(Invoice invoiceWhichIsLate, InvoiceItem lateFeeItem, Invoice lateFeeInvoice) {
-        lateFeeInvoice = (Invoice) invoiceDAO.save(lateFeeInvoice);
+    private Invoice saveLateFeeInvoiceAndRelated(Invoice invoiceWhichIsLate, InvoiceItem lateFeeItem, Invoice lateFeeInvoice) throws Exception {
+        lateFeeInvoice = billingService.saveInvoice(lateFeeInvoice);
         lateFeeItem.setInvoice(lateFeeInvoice);
-        lateFeeItem = (InvoiceItem) invoiceItemDAO.save(lateFeeItem);
+        invoiceItemDAO.save(lateFeeItem);
         invoiceWhichIsLate.setLateFeeInvoice(lateFeeInvoice);
         Invoice savedInvoice = invoiceDAO.save(invoiceWhichIsLate);
         return savedInvoice;
