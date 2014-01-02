@@ -50,7 +50,7 @@
     </ul>
 
     <div class="table-responsive col-md-9">
-        <table id="employee_project" class="table table-striped table-condensed table-hover">
+        <table class="table table-striped table-condensed table-hover">
             <thead>
                 <tr>
                     <th>Employee</th>
