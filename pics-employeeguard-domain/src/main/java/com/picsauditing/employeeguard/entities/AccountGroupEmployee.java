@@ -27,7 +27,7 @@ public class AccountGroupEmployee implements BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "groupID", nullable = false)
-	private AccountGroup group;
+	private Group group;
 
 	@ManyToOne
 	@JoinColumn(name = "employeeID", nullable = false)
@@ -72,9 +72,9 @@ public class AccountGroupEmployee implements BaseEntity {
 	public AccountGroupEmployee() {
 	}
 
-	public AccountGroupEmployee(Employee employee, AccountGroup accountGroup) {
+	public AccountGroupEmployee(Employee employee, Group group) {
 		this.employee = employee;
-		this.group = accountGroup;
+		this.group = group;
 	}
 
 	public AccountGroupEmployee(AccountGroupEmployee accountGroupEmployee) {
@@ -97,11 +97,11 @@ public class AccountGroupEmployee implements BaseEntity {
 		this.id = id;
 	}
 
-	public AccountGroup getGroup() {
+	public Group getGroup() {
 		return group;
 	}
 
-	public void setGroup(AccountGroup group) {
+	public void setGroup(Group group) {
 		this.group = group;
 	}
 
@@ -182,9 +182,9 @@ public class AccountGroupEmployee implements BaseEntity {
 		return result;
 	}
 
-	public static transient final Extractor<AccountGroupEmployee, AccountGroup> GROUP_EXTRACTOR = new Extractor<AccountGroupEmployee, AccountGroup>() {
+	public static transient final Extractor<AccountGroupEmployee, Group> GROUP_EXTRACTOR = new Extractor<AccountGroupEmployee, Group>() {
 		@Override
-		public AccountGroup extract(AccountGroupEmployee accountGroupEmployee) {
+		public Group extract(AccountGroupEmployee accountGroupEmployee) {
 			return accountGroupEmployee.getGroup();
 		}
 	};

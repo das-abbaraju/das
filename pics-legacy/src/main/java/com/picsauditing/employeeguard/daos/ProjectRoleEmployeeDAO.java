@@ -49,7 +49,7 @@ public class ProjectRoleEmployeeDAO extends BaseEntityDAO<ProjectRoleEmployee> {
 		return query.getResultList();
 	}
 
-	public List<Employee> getEmployeesByRole(AccountGroup role) {
+	public List<Employee> getEmployeesByRole(Group role) {
 		if (role == null) {
 			return Collections.emptyList();
 		}

@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.SiteSkill;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class SiteSkillDAO extends BaseEntityDAO<SiteSkill> {
 		return query.getResultList();
 	}
 
-	public List<SiteSkill> findByAccountIds(final List<Integer> siteIds) {
+	public List<SiteSkill> findByAccountIds(final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyList();
 		}

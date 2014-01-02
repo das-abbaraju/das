@@ -84,23 +84,23 @@ public class OperatorProjectService {
 	}
 
 	private List<AccountSkillEmployee> getListOfSkillsForThisProject(Employee employee, ProjectRole projectRole) {
-		List<AccountGroup> groups = accountGroupEmployeeDAO.findByAccountAndEmployee(projectRole.getProject().getAccountId(), employee.getId());
+		List<Group> groups = accountGroupEmployeeDAO.findByAccountAndEmployee(projectRole.getProject().getAccountId(), employee.getId());
 		List<AccountSkillGroup> accountSkillGroups = accountSkillGroupDAO.findByGroups(groups);
-		Map<AccountSkill, List<AccountGroup>> skillToGroups = getSkillToGroupsMap(accountSkillGroups);
+		Map<AccountSkill, List<Group>> skillToGroups = getSkillToGroupsMap(accountSkillGroups);
 		List<AccountSkill> deletableSkills = filterDeletableAccountSkills(skillToGroups, projectRole.getRole().getId());
 
 		return accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, deletableSkills);
 	}
 
-	private Map<AccountSkill, List<AccountGroup>> getSkillToGroupsMap(List<AccountSkillGroup> accountSkillGroups) {
-		Map<AccountSkill, List<AccountGroup>> skillToGroups = new HashMap<>();
+	private Map<AccountSkill, List<Group>> getSkillToGroupsMap(List<AccountSkillGroup> accountSkillGroups) {
+		Map<AccountSkill, List<Group>> skillToGroups = new HashMap<>();
 
 		for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
 			AccountSkill skill = accountSkillGroup.getSkill();
-			AccountGroup group = accountSkillGroup.getGroup();
+			Group group = accountSkillGroup.getGroup();
 
 			if (!skillToGroups.containsKey(skill)) {
-				skillToGroups.put(skill, new ArrayList<AccountGroup>());
+				skillToGroups.put(skill, new ArrayList<Group>());
 			}
 
 			skillToGroups.get(skill).add(group);
@@ -109,10 +109,10 @@ public class OperatorProjectService {
 		return skillToGroups;
 	}
 
-	private List<AccountSkill> filterDeletableAccountSkills(Map<AccountSkill, List<AccountGroup>> skillToGroups, int roleId) {
+	private List<AccountSkill> filterDeletableAccountSkills(Map<AccountSkill, List<Group>> skillToGroups, int roleId) {
 		List<AccountSkill> deletable = new ArrayList<>();
 
-		for (Map.Entry<AccountSkill, List<AccountGroup>> entry : skillToGroups.entrySet()) {
+		for (Map.Entry<AccountSkill, List<Group>> entry : skillToGroups.entrySet()) {
 			if (entry.getValue().size() == 1 && entry.getValue().get(0).getId() == roleId) {
 				deletable.add(entry.getKey());
 			}
@@ -127,7 +127,6 @@ public class OperatorProjectService {
 		}
 
 		Map<Integer, List<Integer>> sumEmployeeRoles = new HashMap<>();
-
 
 
 		return sumEmployeeRoles;

@@ -73,10 +73,10 @@ public class ContractorProjectService {
 		Date now = new Date();
 
 		ProjectRoleEmployee projectRoleEmployee = projectRoleEmployeeDAO.findByEmployeeAndProjectRole(employee, projectRole);
-        EntityHelper.softDelete(projectRoleEmployee, appUserId);
+		EntityHelper.softDelete(projectRoleEmployee, appUserId);
 		projectRoleEmployeeDAO.delete(projectRoleEmployee);
 
-        // FIXME
+		// FIXME
 		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
 	}
 
@@ -92,7 +92,7 @@ public class ContractorProjectService {
 	}
 
 	private List<RoleInfo> buildRoleInfos(Project project) {
-		List<AccountGroup> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
+		List<Group> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
 		return formBuilderFactory.getRoleInfoFactory().build(groups);
 	}
 
@@ -101,7 +101,7 @@ public class ContractorProjectService {
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
 
 		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory()
-				.buildList(employees, accountSkillEmployees, requiredSkills, Collections.<AccountGroup>emptyList());
+				.buildList(employees, accountSkillEmployees, requiredSkills, Collections.<Group>emptyList());
 	}
 
 	private List<String> buildSkillNames(List<AccountSkill> requiredSkills) {

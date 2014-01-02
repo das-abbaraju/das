@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Profile;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -97,7 +97,7 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
-	public List<AccountSkill> findByGroups(List<AccountGroup> groups) {
+	public List<AccountSkill> findByGroups(List<Group> groups) {
 		if (CollectionUtils.isEmpty(groups)) {
 			return Collections.emptyList();
 		}

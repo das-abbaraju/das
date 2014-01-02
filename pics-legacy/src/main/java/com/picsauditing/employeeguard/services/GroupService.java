@@ -37,109 +37,109 @@ public class GroupService {
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
-	public AccountGroup getGroup(String id, int accountId) {
+	public Group getGroup(String id, int accountId) {
 		return accountGroupDAO.findGroupByAccount(NumberUtils.toInt(id), accountId);
 	}
 
-	public List<AccountGroup> getGroupsForAccount(int accountId) {
+	public List<Group> getGroupsForAccount(int accountId) {
 		return accountGroupDAO.findByAccount(accountId);
 	}
 
-	public List<AccountGroup> getGroupsForAccounts(final List<Integer> accountIds) {
+	public List<Group> getGroupsForAccounts(final List<Integer> accountIds) {
 		return accountGroupDAO.findByAccounts(accountIds);
 	}
 
-	public List<AccountGroup> getEmployeeGroups(final Employee employee) {
+	public List<Group> getEmployeeGroups(final Employee employee) {
 		return accountGroupDAO.findGroupsForEmployee(employee);
 	}
 
-	public List<AccountGroup> getGroupAssignmentsForEmployee(final Employee employee) {
+	public List<Group> getGroupAssignmentsForEmployee(final Employee employee) {
 		return accountGroupDAO.findEmployeeGroupAssignments(employee);
 	}
 
-	public AccountGroup save(AccountGroup accountGroup, int accountId, int appUserId) {
-		accountGroup.setAccountId(accountId);
+	public Group save(Group group, int accountId, int appUserId) {
+		group.setAccountId(accountId);
 
 		Date createdDate = new Date();
-		EntityHelper.setCreateAuditFields(accountGroup, appUserId, createdDate);
-		EntityHelper.setCreateAuditFields(accountGroup.getSkills(), appUserId, createdDate);
-		EntityHelper.setCreateAuditFields(accountGroup.getEmployees(), appUserId, createdDate);
+		EntityHelper.setCreateAuditFields(group, appUserId, createdDate);
+		EntityHelper.setCreateAuditFields(group.getSkills(), appUserId, createdDate);
+		EntityHelper.setCreateAuditFields(group.getEmployees(), appUserId, createdDate);
 
-		accountGroup = accountGroupDAO.save(accountGroup);
-		accountSkillEmployeeService.linkEmployeesToSkill(accountGroup, appUserId);
-		return accountGroup;
+		group = accountGroupDAO.save(group);
+		accountSkillEmployeeService.linkEmployeesToSkill(group, appUserId);
+		return group;
 	}
 
-	public AccountGroup update(AccountGroup accountGroup, String id, int accountId, int appUserId) {
-		AccountGroup accountGroupToUpdate = getGroup(id, accountId);
-		updateGroup(accountGroupToUpdate, accountGroup, appUserId);
+	public Group update(Group group, String id, int accountId, int appUserId) {
+		Group groupToUpdate = getGroup(id, accountId);
+		updateGroup(groupToUpdate, group, appUserId);
 
-		accountGroup.setUpdatedBy(appUserId);
-		accountGroup.setUpdatedDate(new Date());
+		group.setUpdatedBy(appUserId);
+		group.setUpdatedDate(new Date());
 
-		accountSkillEmployeeService.linkEmployeesToSkill(accountGroup, appUserId);
+		accountSkillEmployeeService.linkEmployeesToSkill(group, appUserId);
 
-		return accountGroupDAO.save(accountGroupToUpdate);
+		return accountGroupDAO.save(groupToUpdate);
 	}
 
-	public AccountGroup update(GroupNameSkillsForm groupNameSkillsForm, String id, int accountId, int appUserId) {
-		AccountGroup accountGroupInDatabase = getGroup(id, accountId);
-		accountGroupInDatabase.setName(groupNameSkillsForm.getName());
-		accountGroupInDatabase = accountGroupDAO.save(accountGroupInDatabase);
+	public Group update(GroupNameSkillsForm groupNameSkillsForm, String id, int accountId, int appUserId) {
+		Group groupInDatabase = getGroup(id, accountId);
+		groupInDatabase.setName(groupNameSkillsForm.getName());
+		groupInDatabase = accountGroupDAO.save(groupInDatabase);
 
 		List<AccountSkillGroup> newAccountSkillGroups = new ArrayList<>();
 
 		if (ArrayUtils.isNotEmpty(groupNameSkillsForm.getSkills())) {
 			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupNameSkillsForm.getSkills())));
 			for (AccountSkill accountSkill : skills) {
-				newAccountSkillGroups.add(new AccountSkillGroup(accountGroupInDatabase, accountSkill));
+				newAccountSkillGroups.add(new AccountSkillGroup(groupInDatabase, accountSkill));
 			}
 		}
 
 		Date timestamp = new Date();
 		List<AccountSkillGroup> accountSkillGroups = IntersectionAndComplementProcess.intersection(
 				newAccountSkillGroups,
-				accountGroupInDatabase.getSkills(),
+				groupInDatabase.getSkills(),
 				AccountSkillGroup.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-		accountGroupInDatabase.setSkills(accountSkillGroups);
-		accountGroupInDatabase = accountGroupDAO.save(accountGroupInDatabase);
+		groupInDatabase.setSkills(accountSkillGroups);
+		groupInDatabase = accountGroupDAO.save(groupInDatabase);
 
-		for (AccountGroupEmployee accountGroupEmployee : accountGroupInDatabase.getEmployees()) {
+		for (AccountGroupEmployee accountGroupEmployee : groupInDatabase.getEmployees()) {
 			accountSkillEmployeeService.linkEmployeeToSkills(accountGroupEmployee.getEmployee(), appUserId, timestamp);
 		}
 
-		return accountGroupInDatabase;
+		return groupInDatabase;
 	}
 
-	public AccountGroup update(GroupEmployeesForm groupEmployeesForm, String id, int accountId, int appUserId) {
-		AccountGroup accountGroupInDatabase = getGroup(id, accountId);
+	public Group update(GroupEmployeesForm groupEmployeesForm, String id, int accountId, int appUserId) {
+		Group groupInDatabase = getGroup(id, accountId);
 
-		AccountGroup updatedAccountGroup = new AccountGroup(accountGroupInDatabase);
+		Group updatedGroup = new Group(groupInDatabase);
 
 		if (groupEmployeesForm != null && ArrayUtils.isNotEmpty(groupEmployeesForm.getEmployees())) {
 			List<Employee> employees = employeeDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupEmployeesForm.getEmployees())));
 			for (Employee employee : employees) {
-				updatedAccountGroup.getEmployees().add(new AccountGroupEmployee(employee, updatedAccountGroup));
+				updatedGroup.getEmployees().add(new AccountGroupEmployee(employee, updatedGroup));
 			}
 		}
 
 		List<AccountGroupEmployee> accountGroupEmployees = IntersectionAndComplementProcess.intersection(
-				updatedAccountGroup.getEmployees(),
-				accountGroupInDatabase.getEmployees(),
+				updatedGroup.getEmployees(),
+				groupInDatabase.getEmployees(),
 				AccountGroupEmployee.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
 
-		updatedAccountGroup.setEmployees(accountGroupEmployees);
-		updatedAccountGroup.setSkills(accountGroupInDatabase.getSkills());
+		updatedGroup.setEmployees(accountGroupEmployees);
+		updatedGroup.setSkills(groupInDatabase.getSkills());
 
-		accountSkillEmployeeService.linkEmployeesToSkill(updatedAccountGroup, appUserId);
+		accountSkillEmployeeService.linkEmployeesToSkill(updatedGroup, appUserId);
 
-		return accountGroupDAO.save(updatedAccountGroup);
+		return accountGroupDAO.save(updatedGroup);
 	}
 
-	public AccountGroup update(final RoleProjectsForm roleProjectsForm, AccountGroup role, final int accountId, final int appUserId) {
+	public Group update(final RoleProjectsForm roleProjectsForm, Group role, final int accountId, final int appUserId) {
 		List<Integer> projectIds = Utilities.primitiveArrayToList(roleProjectsForm.getProjects());
 		List<Project> projects = projectService.getProjects(projectIds, accountId);
 
@@ -172,24 +172,24 @@ public class GroupService {
 		return role;
 	}
 
-	private void updateGroup(AccountGroup accountGroupInDatabase, AccountGroup updatedAccountGroup, int appUserId) {
-		accountGroupInDatabase.setName(updatedAccountGroup.getName());
-		accountGroupInDatabase.setDescription(updatedAccountGroup.getDescription());
+	private void updateGroup(Group groupInDatabase, Group updatedGroup, int appUserId) {
+		groupInDatabase.setName(updatedGroup.getName());
+		groupInDatabase.setDescription(updatedGroup.getDescription());
 
 		GroupToSkillManager groupToSkillManager = new GroupToSkillManager();
 		GroupToEmployeeManager groupToEmployeeManager = new GroupToEmployeeManager();
 
-		groupToSkillManager.updateAccountSkillGroups(accountGroupInDatabase, updatedAccountGroup, appUserId);
-		groupToEmployeeManager.updateAccountGroupEmployees(accountGroupInDatabase, updatedAccountGroup, appUserId);
+		groupToSkillManager.updateAccountSkillGroups(groupInDatabase, updatedGroup, appUserId);
+		groupToEmployeeManager.updateAccountGroupEmployees(groupInDatabase, updatedGroup, appUserId);
 	}
 
 	public void delete(String id, int accountId, int appUserId) {
-		AccountGroup accountGroup = getGroup(id, accountId);
-        EntityHelper.softDelete(accountGroup, appUserId);
-		accountGroupDAO.delete(accountGroup);
+		Group group = getGroup(id, accountId);
+		EntityHelper.softDelete(group, appUserId);
+		accountGroupDAO.delete(group);
 	}
 
-	public List<AccountGroup> search(final String searchTerm, final int accountId) {
+	public List<Group> search(final String searchTerm, final int accountId) {
 		if (Strings.isEmpty(searchTerm) || accountId == 0) {
 			return Collections.emptyList();
 		}
@@ -197,7 +197,7 @@ public class GroupService {
 		return accountGroupDAO.search(searchTerm, accountId);
 	}
 
-	public List<AccountGroup> search(final String searchTerm, final List<Integer> accountIds) {
+	public List<Group> search(final String searchTerm, final List<Integer> accountIds) {
 		if (Strings.isEmpty(searchTerm) || CollectionUtils.isEmpty(accountIds)) {
 			return Collections.emptyList();
 		}
@@ -205,18 +205,18 @@ public class GroupService {
 		return accountGroupDAO.search(searchTerm, accountIds);
 	}
 
-	public Map<Integer, List<AccountGroup>> getMapOfAccountToGroupListByProfile(final Profile profile) {
+	public Map<Integer, List<Group>> getMapOfAccountToGroupListByProfile(final Profile profile) {
 		if (profile == null) {
 			return Collections.emptyMap();
 		}
 
 		List<AccountGroupEmployee> accountGroupEmployees = accountGroupEmployeeService.findByProfile(profile);
-		Map<Integer, List<AccountGroup>> map = new HashMap<>();
+		Map<Integer, List<Group>> map = new HashMap<>();
 
 		for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
 			int accountId = accountGroupEmployee.getEmployee().getAccountId();
 			if (map.get(accountId) == null) {
-				map.put(accountId, new ArrayList<AccountGroup>());
+				map.put(accountId, new ArrayList<Group>());
 			}
 
 			map.get(accountId).add(accountGroupEmployee.getGroup());
@@ -225,7 +225,7 @@ public class GroupService {
 		return map;
 	}
 
-	public AccountGroup getGroup(final String id) {
+	public Group getGroup(final String id) {
 		return accountGroupDAO.find(NumberUtils.toInt(id));
 	}
 }

@@ -6,7 +6,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.SpringUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.springframework.util.CollectionUtils;
@@ -46,7 +45,7 @@ public class Utilities {
 	 * maxLength. It truncates the text to the given length, before escaping it.
 	 * This means that we can safely truncate the text without worrying about
 	 * truncating in the middle of an escape sequence.
-	 *
+	 * <p/>
 	 * Additionally, if the text is truncated, then "..." is appended in place
 	 * of the truncted text.
 	 */
@@ -165,7 +164,7 @@ public class Utilities {
 	 * bottle neck when used on larger collections.
 	 */
 	public static <E> boolean collectionsAreEqual(Collection<E> collection1, Collection<E> collection2,
-			Comparator<E> comparator) {
+	                                              Comparator<E> comparator) {
 		if (CollectionUtils.isEmpty(collection1) || CollectionUtils.isEmpty(collection2)) {
 			return false;
 		}
@@ -196,7 +195,7 @@ public class Utilities {
 	 * bottle neck when used on larger collections.
 	 */
 	public static <E extends Comparable<E>> boolean collectionsAreEqual(Collection<E> collection1,
-			Collection<E> collection2) {
+	                                                                    Collection<E> collection2) {
 		Comparator<E> comparableComparator = new Comparator<E>() {
 
 			@Override
@@ -222,25 +221,25 @@ public class Utilities {
 		return ids;
 	}
 
-    public static <K, V> boolean mapsAreEqual(Map<K, V> map1, Map<K, V> map2) {
-        if (map1 == map2) {
-            return true;
-        } else if ((map1 == null && map2 != null) || (map1 != null && map2 == null)) {
-            return false;
-        } else if (map1.size() != map2.size()) {
-            return false;
-        }
+	public static <K, V> boolean mapsAreEqual(Map<K, V> map1, Map<K, V> map2) {
+		if (map1 == map2) {
+			return true;
+		} else if ((map1 == null && map2 != null) || (map1 != null && map2 == null)) {
+			return false;
+		} else if (map1.size() != map2.size()) {
+			return false;
+		}
 
-        for (K key : map1.keySet()) {
-            if (!map2.containsKey(key)) {
-                return false;
-            } else if (!map1.get(key).equals(map2.get(key))) {
-                return false;
-            }
-        }
+		for (K key : map1.keySet()) {
+			if (!map2.containsKey(key)) {
+				return false;
+			} else if (!map1.get(key).equals(map2.get(key))) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
 	// from
 	// http://stackoverflow.com/questions/2768054/how-to-get-the-first-non-null-value-in-java
@@ -282,75 +281,110 @@ public class Utilities {
 		return result;
 	}
 
-    public interface MapConvertable<K, E> {
-        K getKey(E entity);
-    }
+	public interface MapConvertable<K, E> {
+		K getKey(E entity);
+	}
 
-    /**
-     * Takes any collection of objects and returns a map based on the Key retrieved from the MapConvertable<K, E>
-     * implementation.
-     *
-     * @param entities
-     * @param mapConverter
-     * @param <K> Object that represents the Key and must correctly implement the equals() and hashcode()
-     * @param <E> Object that is some element/entity within the collection
-     * @return
-     */
-    public static <K, E> Map<K, E> convertToMap(Collection<E> entities, MapConvertable<K, E>  mapConverter) {
-        if (CollectionUtils.isEmpty(entities)) {
-            return Collections.emptyMap();
-        }
+	/**
+	 * Takes any collection of objects and returns a map based on the Key retrieved from the MapConvertable<K, E>
+	 * implementation.
+	 *
+	 * @param entities
+	 * @param mapConverter
+	 * @param <K>          Object that represents the Key and must correctly implement the equals() and hashcode()
+	 * @param <E>          Object that is some element/entity within the collection
+	 * @return
+	 */
+	public static <K, E> Map<K, E> convertToMap(Collection<E> entities, MapConvertable<K, E> mapConverter) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyMap();
+		}
 
-        Map<K, E> map = new HashMap<>();
-        for (E entity : entities) {
-            map.put(mapConverter.getKey(entity), entity);
-        }
+		Map<K, E> map = new HashMap<>();
+		for (E entity : entities) {
+			map.put(mapConverter.getKey(entity), entity);
+		}
 
-        return map;
-    }
+		return map;
+	}
 
-    /**
-     * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
-     * from the implementation of MapConvertable<K, E>.
-     *
-     * @param entities
-     * @param mapConverter
-     * @param <K> Object that represents the Key and must correctly implement the equals() and hashcode()
-     * @param <E> Object that is some element/entity within the collection
-     * @return
-     */
-    public static <K, E> Map<K, List<E>> convertToMapOfLists(Collection<E> entities, MapConvertable<K, E>  mapConverter) {
-        if (CollectionUtils.isEmpty(entities)) {
-            return Collections.emptyMap();
-        }
+	/**
+	 * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
+	 * from the implementation of MapConvertable<K, E>.
+	 *
+	 * @param entities
+	 * @param mapConverter
+	 * @param <K>          Object that represents the Key and must correctly implement the equals() and hashcode()
+	 * @param <E>          Object that is some element/entity within the collection
+	 * @return
+	 */
+	public static <K, E> Map<K, List<E>> convertToMapOfLists(Collection<E> entities, MapConvertable<K, E> mapConverter) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyMap();
+		}
 
-        Map<K, List<E>> map = new HashMap<>();
-        for (E entity : entities) {
-            K key = mapConverter.getKey(entity);
-            if (!map.containsKey(key)) {
-                map.put(key, new ArrayList<E>());
-            }
+		Map<K, List<E>> map = new HashMap<>();
+		for (E entity : entities) {
+			K key = mapConverter.getKey(entity);
+			if (!map.containsKey(key)) {
+				map.put(key, new ArrayList<E>());
+			}
 
-            map.get(key).add(entity);
-        }
+			map.get(key).add(entity);
+		}
 
-        return map;
-    }
+		return map;
+	}
 
-    public interface Identitifable<E, ID> {
-        ID getId(E element);
-    }
+	public interface Identitifable<E, ID> {
+		ID getId(E element);
+	}
 
-    public static <E, ID> Set<ID> getIdsFromCollection(Collection<E> elements, Identitifable<E, ID> identitifable) {
-        if (CollectionUtils.isEmpty(elements)) {
-            return Collections.emptySet();
-        }
+	public static <E, ID> Set<ID> getIdsFromCollection(Collection<E> elements, Identitifable<E, ID> identitifable) {
+		if (CollectionUtils.isEmpty(elements)) {
+			return Collections.emptySet();
+		}
 
-        Set<ID> ids = new HashSet<>();
-        for (E element : elements) {
-            ids.add(identitifable.getId(element));
-        }
+		Set<ID> ids = new HashSet<>();
+		for (E element : elements) {
+			ids.add(identitifable.getId(element));
+		}
 
-        return ids;
-    }
+		return ids;
+	}
+
+	public interface EntityKeyValueConvertable<E, K, V> {
+		K getKey(E entity);
+
+		V getValue(E entity);
+	}
+
+	/**
+	 * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
+	 * from the implementation of MapConvertable<K, E>.
+	 *
+	 * @param entities
+	 * @param entityKeyValueConvertable
+	 * @param <K>                       Object that represents the Key and must correctly implement the equals() and hashcode()
+	 * @param <E>                       Object that is some element/entity within the collection
+	 * @return
+	 */
+	public static <E, K, V> Map<K, Set<V>> convertToMapOfSets(final Collection<E> entities,
+	                                                          final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, Set<V>> map = new HashMap<>();
+		for (E entity : entities) {
+			K key = entityKeyValueConvertable.getKey(entity);
+			if (!map.containsKey(key)) {
+				map.put(key, new HashSet<V>());
+			}
+
+			map.get(key).add(entityKeyValueConvertable.getValue(entity));
+		}
+
+		return map;
+	}
 }

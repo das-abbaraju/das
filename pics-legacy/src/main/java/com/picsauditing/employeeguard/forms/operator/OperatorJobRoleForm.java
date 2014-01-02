@@ -4,9 +4,9 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -46,11 +46,11 @@ public class OperatorJobRoleForm extends GroupNameSkillsForm implements AddAnoth
 		this.addAnother = addAnother;
 	}
 
-	public AccountGroup buildAccountGroup() {
+	public Group buildAccountGroup() {
 		return new AccountGroupBuilder().name(name).description(description).skills(skills).employees(employees).build();
 	}
 
-	public AccountGroup buildAccountGroup(int id, int accountId) {
+	public Group buildAccountGroup(int id, int accountId) {
 		AccountSkillDAO accountSkillDAO = SpringUtils.getBean("AccountSkillDAO");
 		EmployeeDAO employeeDAO = SpringUtils.getBean("EmployeeDAO");
 
@@ -62,33 +62,33 @@ public class OperatorJobRoleForm extends GroupNameSkillsForm implements AddAnoth
 
 	public static class Builder {
 
-		private AccountGroup accountGroup;
+		private Group group;
 
-		public Builder accountGroup(AccountGroup accountGroup) {
-			this.accountGroup = accountGroup;
+		public Builder accountGroup(Group group) {
+			this.group = group;
 			return this;
 		}
 
 		public OperatorJobRoleForm build() {
 			OperatorJobRoleForm form = new OperatorJobRoleForm();
-			form.setName(accountGroup.getName());
-			form.setDescription(accountGroup.getDescription());
+			form.setName(group.getName());
+			form.setDescription(group.getDescription());
 
 			int counter = 0;
-			if (!CollectionUtils.isEmpty(accountGroup.getSkills())) {
-				int[] skills = new int[accountGroup.getSkills().size()];
+			if (!CollectionUtils.isEmpty(group.getSkills())) {
+				int[] skills = new int[group.getSkills().size()];
 
-				for (AccountSkillGroup accountSkillGroup : accountGroup.getSkills()) {
+				for (AccountSkillGroup accountSkillGroup : group.getSkills()) {
 					skills[counter++] = accountSkillGroup.getSkill().getId();
 				}
 
 				form.setSkills(skills);
 			}
 
-			if (!CollectionUtils.isEmpty(accountGroup.getEmployees())) {
-				int[] employees = new int[accountGroup.getEmployees().size()];
+			if (!CollectionUtils.isEmpty(group.getEmployees())) {
+				int[] employees = new int[group.getEmployees().size()];
 				counter = 0;
-				for (AccountGroupEmployee accountGroupEmployee : accountGroup.getEmployees()) {
+				for (AccountGroupEmployee accountGroupEmployee : group.getEmployees()) {
 					employees[counter++] = accountGroupEmployee.getEmployee().getId();
 				}
 

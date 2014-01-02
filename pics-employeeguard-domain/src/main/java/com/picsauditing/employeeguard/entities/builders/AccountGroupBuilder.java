@@ -7,36 +7,36 @@ import java.util.List;
 
 public class AccountGroupBuilder {
 
-	private AccountGroup accountGroup;
+	private Group group;
 
 	public AccountGroupBuilder() {
-		accountGroup = new AccountGroup();
+		group = new Group();
 	}
 
 	public AccountGroupBuilder(int id, int accountId) {
-		accountGroup = new AccountGroup(id, accountId);
+		group = new Group(id, accountId);
 	}
 
 	public AccountGroupBuilder name(String name) {
-		accountGroup.setName(name);
+		group.setName(name);
 		return this;
 	}
 
 	public AccountGroupBuilder description(String description) {
-		accountGroup.setDescription(description);
+		group.setDescription(description);
 		return this;
 	}
 
 	public AccountGroupBuilder skills(int[] skills) {
 		if (!ArrayUtils.isEmpty(skills)) {
-			accountGroup.getSkills().clear();
+			group.getSkills().clear();
 
 			for (int skill : skills) {
 				AccountSkill accountSkill = new AccountSkill();
 				accountSkill.setId(skill);
 
-				AccountSkillGroup accountSkillGroup = new AccountSkillGroup(accountGroup, accountSkill);
-				accountGroup.getSkills().add(accountSkillGroup);
+				AccountSkillGroup accountSkillGroup = new AccountSkillGroup(group, accountSkill);
+				group.getSkills().add(accountSkillGroup);
 			}
 		}
 
@@ -45,14 +45,14 @@ public class AccountGroupBuilder {
 
 	public AccountGroupBuilder employees(int[] employees) {
 		if (!ArrayUtils.isEmpty(employees)) {
-			accountGroup.getEmployees().clear();
+			group.getEmployees().clear();
 
 			for (int employeeId : employees) {
 				Employee employee = new Employee();
 				employee.setId(employeeId);
 
-				AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, accountGroup);
-				accountGroup.getEmployees().add(accountGroupEmployee);
+				AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, group);
+				group.getEmployees().add(accountGroupEmployee);
 			}
 		}
 
@@ -60,28 +60,28 @@ public class AccountGroupBuilder {
 	}
 
 	public AccountGroupBuilder skills(List<AccountSkill> skills) {
-		accountGroup.getSkills().clear();
+		group.getSkills().clear();
 
 		for (AccountSkill accountSkill : skills) {
-			AccountSkillGroup accountSkillGroup = new AccountSkillGroup(accountGroup, accountSkill);
-			accountGroup.getSkills().add(accountSkillGroup);
+			AccountSkillGroup accountSkillGroup = new AccountSkillGroup(group, accountSkill);
+			group.getSkills().add(accountSkillGroup);
 		}
 
 		return this;
 	}
 
 	public AccountGroupBuilder employees(List<Employee> employees) {
-		accountGroup.getEmployees().clear();
+		group.getEmployees().clear();
 
 		for (Employee employee : employees) {
-			AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, accountGroup);
-			accountGroup.getEmployees().add(accountGroupEmployee);
+			AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, group);
+			group.getEmployees().add(accountGroupEmployee);
 		}
 
 		return this;
 	}
 
-	public AccountGroup build() {
-		return accountGroup;
+	public Group build() {
+		return group;
 	}
 }

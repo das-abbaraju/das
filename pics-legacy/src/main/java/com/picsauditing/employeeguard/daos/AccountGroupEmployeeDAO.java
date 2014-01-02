@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Profile;
 
 import javax.persistence.TypedQuery;
@@ -11,9 +11,9 @@ import java.util.List;
 
 public class AccountGroupEmployeeDAO extends BaseEntityDAO<AccountGroupEmployee> {
 
-    public AccountGroupEmployeeDAO() {
-        this.type = AccountGroupEmployee.class;
-    }
+	public AccountGroupEmployeeDAO() {
+		this.type = AccountGroupEmployee.class;
+	}
 
 	public List<AccountGroupEmployee> findByProfile(final Profile profile) {
 		if (profile == null) {
@@ -25,18 +25,18 @@ public class AccountGroupEmployeeDAO extends BaseEntityDAO<AccountGroupEmployee>
 		return query.getResultList();
 	}
 
-	public List<AccountGroup> findByAccountAndEmployee(final int accountId, final int employeeId) {
+	public List<Group> findByAccountAndEmployee(final int accountId, final int employeeId) {
 		if (accountId == 0 || employeeId == 0) {
 			return Collections.emptyList();
 		}
 
-		TypedQuery<AccountGroup> query = em.createQuery("SELECT age.group FROM AccountGroupEmployee age WHERE age.group.accountId = :accountId AND age.employee.id = :employeeId", AccountGroup.class);
+		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM AccountGroupEmployee age WHERE age.group.accountId = :accountId AND age.employee.id = :employeeId", Group.class);
 		query.setParameter("accountId", accountId);
 		query.setParameter("employeeId", employeeId);
 		return query.getResultList();
 	}
 
-	public AccountGroupEmployee findByGroupAndEmployee(final Employee employee, final AccountGroup group) {
+	public AccountGroupEmployee findByGroupAndEmployee(final Employee employee, final Group group) {
 		if (employee == null || group == null) {
 			return null;
 		}

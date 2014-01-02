@@ -20,6 +20,7 @@
     <bean id="ProjectDAO" class="com.picsauditing.employeeguard.daos.ProjectDAO"/>
     <bean id="ProjectRoleDAO" class="com.picsauditing.employeeguard.daos.ProjectRoleDAO"/>
     <bean id="ProjectRoleEmployeeDAO" class="com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO"/>
+    <bean id="ProjectSkillDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillDAO"/>
     <bean id="ProjectSkillRoleDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillRoleDAO"/>
     <bean id="SiteSkillDAO" class="com.picsauditing.employeeguard.daos.SiteSkillDAO"/>
     <bean id="SoftDeletedEmployeeDAO" class="com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO"/>
@@ -48,6 +49,7 @@
     <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>
     <bean id="ProjectService" class="com.picsauditing.employeeguard.services.ProjectService"/>
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
+    <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
 
     <!-- Service Helpers -->
     <bean id="EmployeeSkillAssigner" class="com.picsauditing.employeeguard.services.EmployeeSkillAssigner"/>

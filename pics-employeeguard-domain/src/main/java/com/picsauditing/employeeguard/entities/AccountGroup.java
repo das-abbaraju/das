@@ -1,8 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -12,12 +10,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "account_group")
-@Where(clause = "deletedDate IS NULL")
-@SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE account_group SET deletedDate = NOW() WHERE id = ?")
-public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
-
-	private static final long serialVersionUID = 7074027976165804080L;
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+public abstract class AccountGroup implements BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,17 +61,17 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 		this.accountId = accountId;
 	}
 
-	public AccountGroup(AccountGroup accountGroup) {
-		this.id = accountGroup.id;
-		this.accountId = accountGroup.accountId;
-		this.name = accountGroup.name;
-		this.description = accountGroup.description;
-		this.createdBy = accountGroup.createdBy;
-		this.createdDate = accountGroup.createdDate;
-		this.updatedBy = accountGroup.updatedBy;
-		this.updatedDate = accountGroup.updatedDate;
-		this.deletedBy = accountGroup.deletedBy;
-		this.deletedDate = accountGroup.deletedDate;
+	public AccountGroup(AccountGroup group) {
+		this.id = group.id;
+		this.accountId = group.accountId;
+		this.name = group.name;
+		this.description = group.description;
+		this.createdBy = group.createdBy;
+		this.createdDate = group.createdDate;
+		this.updatedBy = group.updatedBy;
+		this.updatedDate = group.updatedDate;
+		this.deletedBy = group.deletedBy;
+		this.deletedDate = group.deletedDate;
 	}
 
 	public int getId() {
@@ -183,41 +178,9 @@ public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
 		this.projects = projects;
 	}
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+	public abstract boolean equals(final Object o);
 
-		AccountGroup that = (AccountGroup) o;
-
-		if (getAccountId() != that.getAccountId()) return false;
-		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
-//		if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null) return false;
-
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		int result = 31 * getAccountId();
-		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-//		result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-		return result;
-	}
-
-	@Override
-	public int compareTo(final AccountGroup that) {
-		if (this == that) {
-			return 0;
-		}
-
-		int comparison = this.getName().compareToIgnoreCase(that.getName());
-		if (comparison != 0) {
-			return comparison;
-		}
-
-		return 0;
-	}
+	public abstract int hashCode();
 
 	@Override
 	public String toString() {

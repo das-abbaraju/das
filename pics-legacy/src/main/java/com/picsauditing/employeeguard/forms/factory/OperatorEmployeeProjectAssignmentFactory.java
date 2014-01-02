@@ -10,11 +10,11 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import java.util.*;
 
 public class OperatorEmployeeProjectAssignmentFactory {
-	public List<OperatorEmployeeProjectAssignment> buildList(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, Map<Integer, AccountModel> accountModels, List<AccountGroup> jobRoles) {
+	public List<OperatorEmployeeProjectAssignment> buildList(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, Map<Integer, AccountModel> accountModels, List<Group> jobRoles) {
 		Map<Employee, List<AccountSkillEmployee>> employeeMap = buildEmployeeSkillsMap(accountEmployees, accountSkillEmployees);
 
 		List<OperatorEmployeeProjectAssignment> employeeAssignmentInformation = new ArrayList<>();
-		Map<Employee, List<AccountGroup>> employeeJobRoles = buildEmployeeJobRoles(accountEmployees, jobRoles);
+		Map<Employee, List<Group>> employeeJobRoles = buildEmployeeJobRoles(accountEmployees, jobRoles);
 		for (Map.Entry<Employee, List<AccountSkillEmployee>> employeeMapEntry : employeeMap.entrySet()) {
 			OperatorEmployeeProjectAssignment operatorEmployeeProjectAssignment = build(employeeMapEntry.getKey(), employeeMapEntry.getValue(), accountSkills, accountModels);
 			operatorEmployeeProjectAssignment.setAssignedRoleIds(EntityHelper.getIdsForEntities(employeeJobRoles.get(employeeMapEntry.getKey())));
@@ -24,15 +24,15 @@ public class OperatorEmployeeProjectAssignmentFactory {
 		return employeeAssignmentInformation;
 	}
 
-	private Map<Employee, List<AccountGroup>> buildEmployeeJobRoles(List<Employee> accountEmployees, List<AccountGroup> jobRoles) {
-		Map<Employee, List<AccountGroup>> employeeJobRoles = new TreeMap<>();
+	private Map<Employee, List<Group>> buildEmployeeJobRoles(List<Employee> accountEmployees, List<Group> jobRoles) {
+		Map<Employee, List<Group>> employeeJobRoles = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
 			for (ProjectRoleEmployee projectRoleEmployee : employee.getRoles()) {
-				AccountGroup role = projectRoleEmployee.getProjectRole().getRole();
+				Group role = projectRoleEmployee.getProjectRole().getRole();
 				if (jobRoles.contains(role)) {
 					if (!employeeJobRoles.containsKey(employee)) {
-						employeeJobRoles.put(employee, new ArrayList<AccountGroup>());
+						employeeJobRoles.put(employee, new ArrayList<Group>());
 					}
 
 					employeeJobRoles.get(employee).add(role);

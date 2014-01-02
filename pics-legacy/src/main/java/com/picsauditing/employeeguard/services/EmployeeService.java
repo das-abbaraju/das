@@ -54,9 +54,9 @@ public class EmployeeService {
 		return employeeDAO.findByAccount(accountId);
 	}
 
-    public long getNumberOfEmployeesForAccount(final int accountId) {
-        return employeeDAO.findEmployeeCount(accountId);
-    }
+	public long getNumberOfEmployeesForAccount(final int accountId) {
+		return employeeDAO.findEmployeeCount(accountId);
+	}
 
 	public List<Employee> getEmployeesForAccounts(final List<Integer> accountIds) {
 		return employeeDAO.findByAccounts(accountIds);
@@ -95,8 +95,8 @@ public class EmployeeService {
 			groupNames.add(accountGroupEmployee.getGroup().getName());
 		}
 
-		List<AccountGroup> persistedGroups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, groupNames);
-		for (AccountGroup persistedGroup : persistedGroups) {
+		List<Group> persistedGroups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, groupNames);
+		for (Group persistedGroup : persistedGroups) {
 			for (AccountGroupEmployee accountGroupEmployee : employee.getGroups()) {
 				if (persistedGroup.getName().equals(accountGroupEmployee.getGroup().getName())) {
 					accountGroupEmployee.setGroup(persistedGroup);
@@ -253,9 +253,9 @@ public class EmployeeService {
 		employee.setPositionName(employeeEmploymentForm.getTitle());
 
 		if (ArrayUtils.isNotEmpty(employeeEmploymentForm.getGroups())) {
-			List<AccountGroup> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, Arrays.asList(employeeEmploymentForm.getGroups()));
-			for (AccountGroup accountGroup : groups) {
-				employee.getGroups().add(new AccountGroupEmployee(employeeFromDatabase, accountGroup));
+			List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, Arrays.asList(employeeEmploymentForm.getGroups()));
+			for (Group group : groups) {
+				employee.getGroups().add(new AccountGroupEmployee(employeeFromDatabase, group));
 			}
 		}
 
@@ -270,13 +270,13 @@ public class EmployeeService {
 		List<String> groupNames = getGroupNames(accountGroupEmployees);
 
 		if (CollectionUtils.isNotEmpty(groupNames)) {
-			List<AccountGroup> accountGroups = accountGroupDAO.findGroupByAccountIdAndNames(updatedEmployee.getAccountId(), groupNames);
+			List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(updatedEmployee.getAccountId(), groupNames);
 
 			for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
-				AccountGroup group = accountGroupEmployee.getGroup();
-				int index = accountGroups.indexOf(group);
+				Group group = accountGroupEmployee.getGroup();
+				int index = groups.indexOf(group);
 				if (index >= 0) {
-					accountGroupEmployee.setGroup(accountGroups.get(index));
+					accountGroupEmployee.setGroup(groups.get(index));
 				}
 			}
 		}
@@ -301,7 +301,7 @@ public class EmployeeService {
 
 	public void delete(final String id, final int accountId, final int appUserId) {
 		Employee employee = findEmployee(id, accountId);
-        EntityHelper.softDelete(employee, appUserId);
+		EntityHelper.softDelete(employee, appUserId);
 		employeeDAO.delete(employee);
 	}
 

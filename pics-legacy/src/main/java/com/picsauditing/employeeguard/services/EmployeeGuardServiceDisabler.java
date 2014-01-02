@@ -4,9 +4,9 @@ import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectDAO;
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +30,7 @@ public class EmployeeGuardServiceDisabler {
 		List<AccountSkill> skills = skillDAO.findByAccount(accountId);
 		skillDAO.delete(skills);
 
-		List<AccountGroup> groups = groupDAO.findByAccount(accountId);
+		List<Group> groups = groupDAO.findByAccount(accountId);
 		groupDAO.delete(groups);
 
 		List<Project> projects = projectDAO.findByAccount(accountId);

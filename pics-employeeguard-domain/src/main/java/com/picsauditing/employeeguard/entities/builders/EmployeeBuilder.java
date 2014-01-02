@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.entities.builders;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class EmployeeBuilder {
@@ -12,11 +12,11 @@ public class EmployeeBuilder {
 	public EmployeeBuilder() {
 		employee = new Employee();
 	}
-	
+
 	public EmployeeBuilder(int id, int accountId) {
 		employee = new Employee(id, accountId);
 	}
-	
+
 	public EmployeeBuilder id(int id) {
 		employee.setId(id);
 		return this;
@@ -26,7 +26,7 @@ public class EmployeeBuilder {
 		employee.setAccountId(accountId);
 		return this;
 	}
-	
+
 	public EmployeeBuilder firstName(String firstName) {
 		employee.setFirstName(firstName);
 		return this;
@@ -61,15 +61,15 @@ public class EmployeeBuilder {
 		if (ArrayUtils.isEmpty(groups)) {
 			return this;
 		}
-		
+
 		employee.getGroups().clear();
 
 		for (String groupName : groups) {
-			AccountGroup accountGroup = new AccountGroup();
-			accountGroup.setAccountId(employee.getAccountId());
-			accountGroup.setName(groupName);
-			
-			AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, accountGroup);
+			Group group = new Group();
+			group.setAccountId(employee.getAccountId());
+			group.setName(groupName);
+
+			AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, group);
 			employee.getGroups().add(accountGroupEmployee);
 		}
 

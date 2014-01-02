@@ -56,12 +56,12 @@ class EmployeeSkillAssigner {
 	}
 
 	private List<AccountSkill> skillsAssociatedWithEmployeeGroups(Employee employee) {
-		List<AccountGroup> accountGroups = ExtractorUtil.extractList(employee.getGroups(), AccountGroupEmployee.GROUP_EXTRACTOR);
-		return accountSkillDAO.findByGroups(accountGroups);
+		List<Group> groups = ExtractorUtil.extractList(employee.getGroups(), AccountGroupEmployee.GROUP_EXTRACTOR);
+		return accountSkillDAO.findByGroups(groups);
 	}
 
 	private Set<AccountSkill> skillsAssociatedWithProjects(List<Project> projects) {
-		Set<AccountSkill > accountSkills = new HashSet<>();
+		Set<AccountSkill> accountSkills = new HashSet<>();
 
 		for (Project project : projects) {
 			accountSkills.addAll(ExtractorUtil.extractList(project.getSkills(), ProjectSkill.SKILL_EXTRACTOR));

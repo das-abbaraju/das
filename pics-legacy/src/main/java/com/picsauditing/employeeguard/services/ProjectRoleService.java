@@ -10,8 +10,8 @@ import java.util.List;
 
 public class ProjectRoleService {
 
-    @Autowired
-    private ProjectRoleDAO projectRoleDAO;
+	@Autowired
+	private ProjectRoleDAO projectRoleDAO;
 	@Autowired
 	private ProjectService projectService;
 
@@ -33,19 +33,19 @@ public class ProjectRoleService {
 		return ListUtil.removeDuplicatesAndSort(accountSkills);
 	}
 
-    public List<ProjectRole> getRolesForEmployee(Employee employee) {
-        return projectRoleDAO.findByEmployee(employee);
-    }
+	public List<ProjectRole> getRolesForEmployee(Employee employee) {
+		return projectRoleDAO.findByEmployee(employee);
+	}
 
-    public List<ProjectRole> getRolesForProfile(Profile profile) {
-        return projectRoleDAO.findByProfile(profile);
-    }
+	public List<ProjectRole> getRolesForProfile(Profile profile) {
+		return projectRoleDAO.findByProfile(profile);
+	}
 
-	public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, AccountGroup role) {
+	public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, Group role) {
 		return projectRoleDAO.findByProjectsAndRole(projectIds, role);
 	}
 
-    public List<ProjectRoleEmployee> getProjectRolesForContractor(Project project, int accountId) {
-        return projectRoleDAO.findByProjectAndContractor(project, accountId);
-    }
+	public List<ProjectRoleEmployee> getProjectRolesForContractor(Project project, int accountId) {
+		return projectRoleDAO.findByProjectAndContractor(project, accountId);
+	}
 }

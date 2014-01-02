@@ -96,7 +96,7 @@ public class AccountSkillEmployeeService {
 		deletedSkills.removeAll(skillsRequiredForEmployee);
 
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, deletedSkills);
-        EntityHelper.softDelete(accountSkillEmployees, appUserId);
+		EntityHelper.softDelete(accountSkillEmployees, appUserId);
 		accountSkillEmployeeDAO.delete(accountSkillEmployees);
 	}
 
@@ -140,8 +140,8 @@ public class AccountSkillEmployeeService {
 		return newAccountSkillEmployees;
 	}
 
-	private List<AccountGroup> getGroups(List<AccountGroupEmployee> accountGroupEmployees) {
-		List<AccountGroup> groups = new ArrayList<>();
+	private List<Group> getGroups(List<AccountGroupEmployee> accountGroupEmployees) {
+		List<Group> groups = new ArrayList<>();
 		for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
 			groups.add(accountGroupEmployee.getGroup());
 		}
@@ -149,7 +149,7 @@ public class AccountSkillEmployeeService {
 		return groups;
 	}
 
-	public void linkEmployeesToSkill(final AccountGroup group, final int userId) {
+	public void linkEmployeesToSkill(final Group group, final int userId) {
 		List<AccountSkillEmployee> newAccountSkillEmployees = getNewAccountSkillEmployees(group);
 		List<AccountSkillEmployee> existingAccountSkillEmployees = getExistingAccountSkillEmployees(group);
 		List<AccountSkillEmployee> employeeSkills = IntersectionAndComplementProcess.intersection(newAccountSkillEmployees,
@@ -192,7 +192,7 @@ public class AccountSkillEmployeeService {
 		return accountSkillEmployeeDAO.findBySkill(skill);
 	}
 
-	private List<AccountSkillEmployee> getNewAccountSkillEmployees(final AccountGroup group) {
+	private List<AccountSkillEmployee> getNewAccountSkillEmployees(final Group group) {
 		List<AccountSkillGroup> skills = group.getSkills();
 		List<AccountGroupEmployee> employees = group.getEmployees();
 
@@ -211,7 +211,7 @@ public class AccountSkillEmployeeService {
 		return skillEmployees;
 	}
 
-	private List<AccountSkillEmployee> getExistingAccountSkillEmployees(final AccountGroup group) {
+	private List<AccountSkillEmployee> getExistingAccountSkillEmployees(final Group group) {
 		List<AccountSkill> skills = new ArrayList<>();
 		for (AccountSkillGroup skillGroup : group.getSkills()) {
 			skills.add(skillGroup.getSkill());
@@ -266,7 +266,7 @@ public class AccountSkillEmployeeService {
 		return accountSkillEmployeeDAO.findByEmployeeAccountAndSkills(accountId, accountSkills);
 	}
 
-    public List<AccountSkillEmployee> getAccountSkillEmployeeForProjectAndContractor(Project project, int accountId) {
-        return accountSkillEmployeeDAO.findByProjectAndContractor(project, accountId);
-    }
+	public List<AccountSkillEmployee> getAccountSkillEmployeeForProjectAndContractor(Project project, int accountId) {
+		return accountSkillEmployeeDAO.findByProjectAndContractor(project, accountId);
+	}
 }

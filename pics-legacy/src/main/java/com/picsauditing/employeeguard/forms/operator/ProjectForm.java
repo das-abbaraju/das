@@ -119,7 +119,7 @@ public class ProjectForm extends ProjectNameLocationForm implements AddAnotherFo
 
 		if (ArrayUtils.isNotEmpty(roles)) {
 			for (String roleName : roles) {
-				AccountGroup group = new AccountGroup();
+				Group group = new Group();
 				group.setName(roleName);
 
 				ProjectRole projectRole = new ProjectRole(project, group);
