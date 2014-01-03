@@ -34,7 +34,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_category")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public class AuditCategory extends BaseTableRequiringLanguages implements Comparable<AuditCategory> {
 
 	public static final int COMPANY_INFORMATION = 2;

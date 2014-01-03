@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import com.picsauditing.jpa.entities.QuestionFunction.FunctionInput;
 import com.picsauditing.util.AnswerMap;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Entity used to determine either the Answer (Calculation), Visibility and whether or not a {@link AuditQuestion} is
@@ -26,6 +28,7 @@ import com.picsauditing.util.AnswerMap;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_question_function")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public final class AuditQuestionFunction extends BaseTable {
 
 	private AuditQuestion question;

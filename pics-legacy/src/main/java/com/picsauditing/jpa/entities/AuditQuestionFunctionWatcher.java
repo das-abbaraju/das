@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,6 +18,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_question_function_watcher")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public final class AuditQuestionFunctionWatcher extends BaseTable {
 
 	private AuditQuestionFunction function;

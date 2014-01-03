@@ -25,8 +25,12 @@
         PICS-13051: Configure a dedicated region just for AuditQuestion. Initially, set
         the cache size to 5000, which is about 25% of the total AuditQuestions in the db.
         Use the same TTL, TTI, and eviction policy as the "daily" cache.
+
+        PICS-13051: Increased the size to 15000.  Added AuditCategory, AuditQuestionFunction,
+        and AuditQuestionFunctionWatcher to the cache region.  Renamed to region to be more
+        general.
     -->
-    <cache name="audit_question" maxElementsInMemory="5000" eternal="false"
+    <cache name="audit_cache" maxElementsInMemory="15000" eternal="false"
            timeToLiveSeconds="86400" timeToIdleSeconds="14400" overflowToDisk="false"
            memoryStoreEvictionPolicy="LFU">
     </cache>
