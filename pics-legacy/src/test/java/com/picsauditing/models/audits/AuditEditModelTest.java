@@ -195,6 +195,28 @@ public class AuditEditModelTest  extends PicsTest {
     }
 
     @Test
+    public void testIsCanEditAudit_Contractor_ByAuditType_PqfResubmitedCao() {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
+
+        ContractorAuditOperator pendingCao = ContractorAuditOperator.builder()
+                .audit(audit)
+                .status(AuditStatus.Resubmit)
+                .visible()
+                .build();
+
+        audit.setOperators(Arrays.asList(new ContractorAuditOperator[]{pendingCao}));
+
+        audit.getAuditType().setClassType(AuditTypeClass.PQF);
+        audit.getAuditType().setCanContractorEdit(true);
+
+        User group = new User();
+        group.setIsGroup(YesNo.Yes);
+
+        when(permissions.isContractor()).thenReturn(true);
+        assertTrue(test.isCanEditAudit(audit, permissions));
+    }
+
+    @Test
     public void testIsCanEditAudit_Contractor_ByAuditType_PqfPendingAndCompleteCao() {
         ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
 
