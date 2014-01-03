@@ -223,7 +223,7 @@
 				</s:iterator>
 			</s:if>
 			
-			<s:if test="oshasUS.size > 0 || emrs.size > 0">
+			<s:if test="emrs.size > 0">
 				<tr>
 					<td></td>
 					<s:iterator value="annualUpdates">
