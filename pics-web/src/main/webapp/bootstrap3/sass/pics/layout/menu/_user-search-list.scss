@@ -9,26 +9,26 @@
             font-size: 13px;
             white-space: normal;
         }
-        
+
         .name
         {
             float: left;
             font-weight: bold;
             width: 175px;
         }
-        
+
         .id
         {
             float: right;
             font-weight: bold;
         }
-        
+
         .location
         {
             float: left;
             width: 175px;
         }
-        
+
         .type
         {
             float: right;
@@ -45,7 +45,7 @@
     .account-deactivated a:hover,
     .account-inactive a:hover
     {
-       color: #cccccc;
+       color: $default_silver;
     }
 
 
@@ -85,7 +85,7 @@
 
         p
         {
-            color: #999;
+            color: $default_aluminum;
             font-size: 13px;
             margin: 0;
         }
@@ -97,13 +97,13 @@
     {
         background-color: #fff;
         padding: 5px 0;
-        border: 1px solid #ccc;
+        border: 1px solid $default_silver;
         border: 1px solid rgba(0, 0, 0, 0.2);
         @include border-radius(6px);
         @include box-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
         margin-top: 10px;
         width: 100%;
-        
+
         .active a
         {
             color: #fff;

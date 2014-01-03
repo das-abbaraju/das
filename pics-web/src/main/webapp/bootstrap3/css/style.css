@@ -10028,25 +10028,25 @@ ol.linenums li {
  * @date: 2012-07-09
  */
 
-/* line 54, ../sass/pics/_defaults.scss */
+/* line 48, ../sass/pics/_defaults.scss */
 
 body {
   color: #454545;
 }
 
-/* line 58, ../sass/pics/_defaults.scss */
+/* line 52, ../sass/pics/_defaults.scss */
 
 figure {
   margin: 0;
 }
 
-/* line 62, ../sass/pics/_defaults.scss */
+/* line 56, ../sass/pics/_defaults.scss */
 
 a {
   color: #226396;
 }
 
-/* line 67, ../sass/pics/_defaults.scss */
+/* line 61, ../sass/pics/_defaults.scss */
 
 a:hover,
 a:focus {
@@ -10054,21 +10054,21 @@ a:focus {
   text-decoration: none;
 }
 
-/* line 72, ../sass/pics/_defaults.scss */
+/* line 66, ../sass/pics/_defaults.scss */
 
 .success {
   color: #33b679;
   background-color: #d6f0e4;
 }
 
-/* line 77, ../sass/pics/_defaults.scss */
+/* line 71, ../sass/pics/_defaults.scss */
 
 .warning {
   color: #f4b400;
   background-color: #fef5d9;
 }
 
-/* line 82, ../sass/pics/_defaults.scss */
+/* line 76, ../sass/pics/_defaults.scss */
 
 .danger {
   color: #e74c3c;
@@ -10124,7 +10124,7 @@ body {
   padding: 0 10px;
   line-height: 26px;
   color: #f1f1f2;
-  background: #333;
+  background: #333333;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
   background-image: -webkit-linear-gradient(#252525, #333333);
   background-image: -moz-linear-gradient(#252525, #333333);
@@ -10138,7 +10138,7 @@ body {
 #environment a {
   float: right;
   padding: 0 10px;
-  color: #ccc;
+  color: #cccccc;
   text-decoration: none;
 }
 
@@ -10318,7 +10318,7 @@ body {
   position: absolute;
   top: 16px;
   left: 24px;
-  color: #ccc;
+  color: #cccccc;
 }
 
 /* line 88, ../sass/pics/layout/menu/_primary-navigation.scss */
@@ -10668,7 +10668,7 @@ body {
 #user_searchbox .total-results p {
   margin: 0;
   font-size: 13px;
-  color: #999;
+  color: #999999;
 }
 
 @media (max-width: 979px) {
@@ -10683,7 +10683,7 @@ body {
     padding: 5px 0;
     margin-top: 10px;
     background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     border: 1px solid rgba(0, 0, 0, 0.2);
     -webkit-border-radius: 6px;
        -moz-border-radius: 6px;
@@ -10713,7 +10713,7 @@ body {
   padding-bottom: 0;
   line-height: 29px;
   color: #f1f1f2;
-  background: #333;
+  background: #333333;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
   background-image: -webkit-linear-gradient(#252525, #333333);
   background-image: -moz-linear-gradient(#252525, #333333);
@@ -10739,7 +10739,7 @@ body {
 
 #secondary_navigation .nav > li > a {
   padding: 4px 15px 5px;
-  color: #ccc;
+  color: #cccccc;
   text-shadow: none;
   border: 0;
 }
@@ -10891,7 +10891,7 @@ body {
   margin-left: 10px;
 }
 
-/* line 4, ../sass/pics/layout/_page-header.scss */
+/* line 2, ../sass/pics/layout/_page-header.scss */
 
 .page-header.pics {
   padding: 0;
@@ -10899,7 +10899,7 @@ body {
   border: 0;
 }
 
-/* line 10, ../sass/pics/layout/_page-header.scss */
+/* line 7, ../sass/pics/layout/_page-header.scss */
 
 .page-header.pics .title {
   margin-bottom: 0;
@@ -10908,7 +10908,7 @@ body {
   color: #73bbe8;
 }
 
-/* line 18, ../sass/pics/layout/_page-header.scss */
+/* line 14, ../sass/pics/layout/_page-header.scss */
 
 .page-header.pics .subtitle {
   margin: 0;
@@ -11048,7 +11048,7 @@ body {
     margin: 0 0 5px 0;
     clear: left;
     font-weight: normal;
-    color: #999;
+    color: #999999;
     text-align: right;
   }
   .employee-guard-information dd {
@@ -11058,11 +11058,11 @@ body {
 
 @media (max-width: 991px) {
   {
-    /* line 25, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+    /* line 23, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  
+    /* line 27, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   
     /* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
-  
-    /* line 34, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   
   }
   .employee-guard-information dt {
@@ -11802,7 +11802,7 @@ body {
   margin-top: 15px;
 }
 
-/* line 13, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 10, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .contains,
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .complete,
@@ -11823,7 +11823,7 @@ body {
   text-align: center;
 }
 
-/* line 18, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 14, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .contains,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .contains,
@@ -11833,7 +11833,7 @@ body {
   background-color: #c3e0f9;
 }
 
-/* line 24, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 19, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .complete,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .complete,
@@ -11843,7 +11843,7 @@ body {
   background-color: #acf5ac;
 }
 
-/* line 30, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 24, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .expire,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .expire,
@@ -11853,7 +11853,7 @@ body {
   background-color: #fcf3cc;
 }
 
-/* line 36, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 29, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .incomplete,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .incomplete,
@@ -12679,7 +12679,7 @@ label {
   position: absolute;
   top: 15px;
   left: 15px;
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 /* line 37, ../sass/pics/employee-guard/general/_form.scss */
@@ -12922,9 +12922,9 @@ ul.skill-nav a {
   color: #454545;
 }
 
-/* line 1, ../sass/pics/employee-guard/general/_no-value-text.scss */
+/* line 1, ../sass/pics/employee-guard/general/_empty-message-text.scss */
 
-.no-value {
+.empty-message-text {
   color: #999999;
 }
 
@@ -12968,7 +12968,7 @@ ul.skill-nav a {
   font-size: 90%;
 }
 
-/* line 31, ../sass/pics/employee-guard/general/_side-navigation.scss */
+/* line 29, ../sass/pics/employee-guard/general/_side-navigation.scss */
 
 #side-navigation .nav > .active > ul {
   display: block;

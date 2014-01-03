@@ -26,7 +26,7 @@
 }
 
 .nav .nav-header {
-    color: $default_med;
+    color: $default_silver;
     display: block;
     font-size: 12px;
     font-weight: bold;
@@ -40,7 +40,7 @@
 
 /* Skill Navigation */
 ul.skill-nav {
-    background-color: $default_tint;
+    background-color: $default_platinum;
     @include border-radius(5px);
     padding: 10px 0px;
 
@@ -49,7 +49,7 @@ ul.skill-nav {
     }
 
     & a:hover {
-        background-color: $default_light;
+        background-color: $default_mercury;
         color: $default_steel;
     }
 

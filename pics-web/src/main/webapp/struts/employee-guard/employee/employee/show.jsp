@@ -141,7 +141,7 @@
                     </dl>
                 </s:if>
                 <s:else>
-                    <div class="col-md-9 col-md-offset-3 no-value">
+                    <div class="col-md-9 col-md-offset-3 empty-message-text">
                         No current assignments
                     </div>
                 </s:else>
