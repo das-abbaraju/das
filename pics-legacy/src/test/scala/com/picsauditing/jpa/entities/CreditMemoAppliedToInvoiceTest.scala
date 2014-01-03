@@ -15,8 +15,10 @@ class CreditMemoAppliedToInvoiceTest extends FlatSpec with ShouldMatchers {
   val NEGATIVE_SIX= BigDecimal valueOf 6 setScale 2 negate
   val NINE = BigDecimal valueOf 9 setScale 2
   val FIFTEEN = BigDecimal valueOf 15 setScale 2
+  val TEST_CURRENCY = Currency.CAD
 
   val invoice = new Invoice
+  invoice.setCurrency(TEST_CURRENCY)
   val creditMemoApplied = CreditMemoAppliedToInvoice from invoice
   val creditMemo = creditMemoApplied.getCreditMemo
   val invoiceFee = new InvoiceFee
@@ -48,6 +50,7 @@ class CreditMemoAppliedToInvoiceTest extends FlatSpec with ShouldMatchers {
 
   it should "update the values for the relevant credit memo when updateAmountApplied is called." in {
     creditMemoApplied.getCreditMemo.getTotalAmount should equal(POSITIVE_SIX)
+    creditMemoApplied.getCreditMemo.getCurrency should equal(TEST_CURRENCY)
     creditMemoApplied.getCreditMemo.getAmountApplied should equal(POSITIVE_SIX)
     creditMemoApplied.getCreditMemo.getBalance should equal(POSITIVE_SIX)
   }
