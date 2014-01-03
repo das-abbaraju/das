@@ -13124,6 +13124,46 @@ ul.skill-nav a {
   list-style-type: none;
 }
 
+/* line 1, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+
+.operator-site-assignments {
+  margin-bottom: 30px;
+}
+
+/* line 4, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+
+.operator-site-assignments .row {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* line 9, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+
+.operator-site-assignments .row i {
+  margin-right: 10px;
+}
+
+/* line 14, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+
+.operator-site-assignments .icon-building {
+  color: #999999;
+}
+
+/* line 18, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+
+.operator-site-assignments .icon-user {
+  color: #73bbe8;
+}
+
+/* line 24, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+
+.operator-site-assignments .success,
+.operator-site-assignments .warning,
+.operator-site-assignments .danger {
+  background: transparent;
+}
+
 /* line 2, ../sass/pics/employee-guard/operator/role/_role.scss */
 
 .operator-role-projects dt {
