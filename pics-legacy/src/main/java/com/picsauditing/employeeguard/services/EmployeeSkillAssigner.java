@@ -56,7 +56,7 @@ class EmployeeSkillAssigner {
 	}
 
 	private List<AccountSkill> skillsAssociatedWithEmployeeGroups(Employee employee) {
-		List<Group> groups = ExtractorUtil.extractList(employee.getGroups(), AccountGroupEmployee.GROUP_EXTRACTOR);
+		List<Group> groups = ExtractorUtil.extractList(employee.getGroups(), GroupEmployee.GROUP_EXTRACTOR);
 		return accountSkillDAO.findByGroups(groups);
 	}
 

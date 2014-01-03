@@ -6,7 +6,6 @@ import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.SkillUsageLocator;
 import com.picsauditing.employeeguard.services.SkillUsages;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.EmployeeSiteAssignmentModelFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		}
 
 		EmployeeSiteAssignmentModelFactory employeeSiteAssignmentModelFactory = new EmployeeSiteAssignmentModelFactory();
-		List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels = employeeSiteAssignmentModelFactory.create();
+//		List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels = employeeSiteAssignmentModelFactory.create();
 
 		return "list";
 	}

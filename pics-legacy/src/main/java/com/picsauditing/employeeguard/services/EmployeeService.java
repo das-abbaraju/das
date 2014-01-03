@@ -91,15 +91,15 @@ public class EmployeeService {
 
 	private void setPersistedEntitiesOnJoinTables(Employee employee, int accountId) {
 		List<String> groupNames = new ArrayList<>();
-		for (AccountGroupEmployee accountGroupEmployee : employee.getGroups()) {
-			groupNames.add(accountGroupEmployee.getGroup().getName());
+		for (GroupEmployee groupEmployee : employee.getGroups()) {
+			groupNames.add(groupEmployee.getGroup().getName());
 		}
 
 		List<Group> persistedGroups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, groupNames);
 		for (Group persistedGroup : persistedGroups) {
-			for (AccountGroupEmployee accountGroupEmployee : employee.getGroups()) {
-				if (persistedGroup.getName().equals(accountGroupEmployee.getGroup().getName())) {
-					accountGroupEmployee.setGroup(persistedGroup);
+			for (GroupEmployee groupEmployee : employee.getGroups()) {
+				if (persistedGroup.getName().equals(groupEmployee.getGroup().getName())) {
+					groupEmployee.setGroup(persistedGroup);
 				}
 			}
 		}
@@ -209,12 +209,12 @@ public class EmployeeService {
 		Date timestamp = new Date();
 		Employee updatedEmployee = buildEmployeeFromForm(employeeEmploymentForm, employeeInDatabase, accountId);
 
-		List<AccountGroupEmployee> accountGroupEmployees = IntersectionAndComplementProcess.intersection(
+		List<GroupEmployee> groupEmployees = IntersectionAndComplementProcess.intersection(
 				updatedEmployee.getGroups(),
 				employeeInDatabase.getGroups(),
-				AccountGroupEmployee.COMPARATOR,
+				GroupEmployee.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
-		employeeInDatabase.setGroups(accountGroupEmployees);
+		employeeInDatabase.setGroups(groupEmployees);
 
 		if (Strings.isEmpty(updatedEmployee.getSlug())) {
 			String hash = Strings.hashUrlSafe(employeeInDatabase.getAccountId() + employeeInDatabase.getEmail());
@@ -255,45 +255,45 @@ public class EmployeeService {
 		if (ArrayUtils.isNotEmpty(employeeEmploymentForm.getGroups())) {
 			List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, Arrays.asList(employeeEmploymentForm.getGroups()));
 			for (Group group : groups) {
-				employee.getGroups().add(new AccountGroupEmployee(employeeFromDatabase, group));
+				employee.getGroups().add(new GroupEmployee(employeeFromDatabase, group));
 			}
 		}
 
 		return employee;
 	}
 
-	private List<AccountGroupEmployee> getLinkedGroups(final Employee employeeInDatabase, final Employee updatedEmployee, final int appUserId) {
-		BaseEntityCallback callback = new BaseEntityCallback<AccountGroupEmployee>(appUserId, new Date());
-		List<AccountGroupEmployee> accountGroupEmployees = IntersectionAndComplementProcess.intersection(updatedEmployee.getGroups(),
-				employeeInDatabase.getGroups(), AccountGroupEmployee.COMPARATOR, callback);
+	private List<GroupEmployee> getLinkedGroups(final Employee employeeInDatabase, final Employee updatedEmployee, final int appUserId) {
+		BaseEntityCallback callback = new BaseEntityCallback<GroupEmployee>(appUserId, new Date());
+		List<GroupEmployee> groupEmployees = IntersectionAndComplementProcess.intersection(updatedEmployee.getGroups(),
+				employeeInDatabase.getGroups(), GroupEmployee.COMPARATOR, callback);
 
-		List<String> groupNames = getGroupNames(accountGroupEmployees);
+		List<String> groupNames = getGroupNames(groupEmployees);
 
 		if (CollectionUtils.isNotEmpty(groupNames)) {
 			List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(updatedEmployee.getAccountId(), groupNames);
 
-			for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
-				Group group = accountGroupEmployee.getGroup();
+			for (GroupEmployee groupEmployee : groupEmployees) {
+				Group group = groupEmployee.getGroup();
 				int index = groups.indexOf(group);
 				if (index >= 0) {
-					accountGroupEmployee.setGroup(groups.get(index));
+					groupEmployee.setGroup(groups.get(index));
 				}
 			}
 		}
 
-		accountGroupEmployees.addAll(callback.getRemovedEntities());
+		groupEmployees.addAll(callback.getRemovedEntities());
 
-		return accountGroupEmployees;
+		return groupEmployees;
 	}
 
-	private List<String> getGroupNames(List<AccountGroupEmployee> accountGroupEmployees) {
-		if (CollectionUtils.isEmpty(accountGroupEmployees)) {
+	private List<String> getGroupNames(List<GroupEmployee> groupEmployees) {
+		if (CollectionUtils.isEmpty(groupEmployees)) {
 			return Collections.emptyList();
 		}
 
 		List<String> groupNames = new ArrayList<>();
-		for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
-			groupNames.add(accountGroupEmployee.getGroup().getName());
+		for (GroupEmployee groupEmployee : groupEmployees) {
+			groupNames.add(groupEmployee.getGroup().getName());
 		}
 
 		return groupNames;

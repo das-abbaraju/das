@@ -280,8 +280,8 @@ public class SkillService {
 		return siteSkillDAO.findByAccountIds(new ArrayList<>(associatedAccounts));
 	}
 
-	private List<AccountSkill> findSkillsByEmployeeGroups(List<AccountGroupEmployee> groupEmployees) {
-		return accountSkillDAO.findByGroups(ExtractorUtil.extractList(groupEmployees, AccountGroupEmployee.GROUP_EXTRACTOR));
+	private List<AccountSkill> findSkillsByEmployeeGroups(List<GroupEmployee> groupEmployees) {
+		return accountSkillDAO.findByGroups(ExtractorUtil.extractList(groupEmployees, GroupEmployee.GROUP_EXTRACTOR));
 	}
 
 	private void findAndAddSkillsByEmployeeProjects(Employee employee, Set<AccountSkill> allRequiredSkills) {
@@ -399,4 +399,7 @@ public class SkillService {
 		});
 	}
 
+	public Map<AccountSkill, Set<SiteAssignment>> getSkillsForSiteAssignments(final Employee employee) {
+		return null;
+	}
 }

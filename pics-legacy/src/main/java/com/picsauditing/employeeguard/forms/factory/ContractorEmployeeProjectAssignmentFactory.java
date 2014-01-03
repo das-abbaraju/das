@@ -30,13 +30,13 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		Map<Employee, List<Group>> employeeJobRoles = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
-			for (AccountGroupEmployee accountGroupEmployee : employee.getGroups()) {
-				if (jobRoles.contains(accountGroupEmployee.getGroup())) {
+			for (GroupEmployee groupEmployee : employee.getGroups()) {
+				if (jobRoles.contains(groupEmployee.getGroup())) {
 					if (!employeeJobRoles.containsKey(employee)) {
 						employeeJobRoles.put(employee, new ArrayList<Group>());
 					}
 
-					employeeJobRoles.get(employee).add(accountGroupEmployee.getGroup());
+					employeeJobRoles.get(employee).add(groupEmployee.getGroup());
 				}
 			}
 		}

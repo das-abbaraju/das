@@ -5,12 +5,14 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "account_group")
 @DiscriminatorValue("Group")
 @Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, type, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, 'Group', ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
@@ -19,10 +21,49 @@ public class Group extends AccountGroup implements Comparable<Group> {
 
 	private static final long serialVersionUID = 7074027976165804080L;
 
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 5)
+	protected List<GroupEmployee> employees = new ArrayList<>();
+
 	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectRole> projects = new ArrayList<>();
+
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 5)
+	protected List<AccountSkillGroup> skills = new ArrayList<>();
+
+	public Group() {
+	}
+
+	public Group(int id, int accountId) {
+		this.id = id;
+		this.accountId = accountId;
+	}
+
+	public Group(Group group) {
+		super.id = group.id;
+		super.accountId = group.accountId;
+		super.name = group.name;
+		super.description = group.description;
+		super.createdBy = group.createdBy;
+		super.createdDate = group.createdDate;
+		super.updatedBy = group.updatedBy;
+		super.updatedDate = group.updatedDate;
+		super.deletedBy = group.deletedBy;
+		super.deletedDate = group.deletedDate;
+	}
+
+	public List<GroupEmployee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<GroupEmployee> groupEmployees) {
+		this.employees = groupEmployees;
+	}
 
 	public List<ProjectRole> getProjects() {
 		return projects;
@@ -30,6 +71,14 @@ public class Group extends AccountGroup implements Comparable<Group> {
 
 	public void setProjects(List<ProjectRole> projects) {
 		this.projects = projects;
+	}
+
+	public List<AccountSkillGroup> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(List<AccountSkillGroup> skills) {
+		this.skills = skills;
 	}
 
 	@Override

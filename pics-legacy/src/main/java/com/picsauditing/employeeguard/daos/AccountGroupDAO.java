@@ -100,7 +100,7 @@ public class AccountGroupDAO extends BaseEntityDAO<Group> {
 	}
 
 	public List<Group> findGroupsForEmployee(final Employee employee) {
-		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM AccountGroupEmployee age " +
+		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM GroupEmployee age " +
 				"WHERE age.employee = :employee AND age.group.accountId = :accountId", Group.class);
 		query.setParameter("employee", employee);
 		query.setParameter("accountId", employee.getAccountId());
@@ -108,7 +108,7 @@ public class AccountGroupDAO extends BaseEntityDAO<Group> {
 	}
 
 	public List<Group> findEmployeeGroupAssignments(Employee employee) {
-		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM AccountGroupEmployee age " +
+		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM GroupEmployee age " +
 				"WHERE age.employee = :employee AND age.group.accountId <> :accountId", Group.class);
 		query.setParameter("employee", employee);
 		query.setParameter("accountId", employee.getAccountId());

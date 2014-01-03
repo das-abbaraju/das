@@ -40,8 +40,8 @@ public class AccountGroupBuilderTest {
 
 	private void verifyEmployees(Group group) {
 		int index = 0;
-		for (AccountGroupEmployee accountGroupEmployee : group.getEmployees()) {
-			assertEquals(EMPLOYEE_LIST.get(index), accountGroupEmployee.getEmployee());
+		for (GroupEmployee groupEmployee : group.getEmployees()) {
+			assertEquals(EMPLOYEE_LIST.get(index), groupEmployee.getEmployee());
 			index++;
 		}
 	}

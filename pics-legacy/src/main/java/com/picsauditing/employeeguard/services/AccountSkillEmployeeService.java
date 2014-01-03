@@ -140,10 +140,10 @@ public class AccountSkillEmployeeService {
 		return newAccountSkillEmployees;
 	}
 
-	private List<Group> getGroups(List<AccountGroupEmployee> accountGroupEmployees) {
+	private List<Group> getGroups(List<GroupEmployee> groupEmployees) {
 		List<Group> groups = new ArrayList<>();
-		for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
-			groups.add(accountGroupEmployee.getGroup());
+		for (GroupEmployee groupEmployee : groupEmployees) {
+			groups.add(groupEmployee.getGroup());
 		}
 
 		return groups;
@@ -194,13 +194,13 @@ public class AccountSkillEmployeeService {
 
 	private List<AccountSkillEmployee> getNewAccountSkillEmployees(final Group group) {
 		List<AccountSkillGroup> skills = group.getSkills();
-		List<AccountGroupEmployee> employees = group.getEmployees();
+		List<GroupEmployee> employees = group.getEmployees();
 
 		List<AccountSkillEmployee> skillEmployees = new ArrayList<>();
 
 		Date now = new Date();
 		for (AccountSkillGroup skillGroup : skills) {
-			for (AccountGroupEmployee groupEmployee : employees) {
+			for (GroupEmployee groupEmployee : employees) {
 				AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(skillGroup.getSkill(), groupEmployee.getEmployee());
 				accountSkillEmployee.setStartDate(now);
 

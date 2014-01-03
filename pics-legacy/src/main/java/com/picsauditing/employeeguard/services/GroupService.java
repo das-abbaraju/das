@@ -106,8 +106,8 @@ public class GroupService {
 		groupInDatabase.setSkills(accountSkillGroups);
 		groupInDatabase = accountGroupDAO.save(groupInDatabase);
 
-		for (AccountGroupEmployee accountGroupEmployee : groupInDatabase.getEmployees()) {
-			accountSkillEmployeeService.linkEmployeeToSkills(accountGroupEmployee.getEmployee(), appUserId, timestamp);
+		for (GroupEmployee groupEmployee : groupInDatabase.getEmployees()) {
+			accountSkillEmployeeService.linkEmployeeToSkills(groupEmployee.getEmployee(), appUserId, timestamp);
 		}
 
 		return groupInDatabase;
@@ -121,17 +121,17 @@ public class GroupService {
 		if (groupEmployeesForm != null && ArrayUtils.isNotEmpty(groupEmployeesForm.getEmployees())) {
 			List<Employee> employees = employeeDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupEmployeesForm.getEmployees())));
 			for (Employee employee : employees) {
-				updatedGroup.getEmployees().add(new AccountGroupEmployee(employee, updatedGroup));
+				updatedGroup.getEmployees().add(new GroupEmployee(employee, updatedGroup));
 			}
 		}
 
-		List<AccountGroupEmployee> accountGroupEmployees = IntersectionAndComplementProcess.intersection(
+		List<GroupEmployee> groupEmployees = IntersectionAndComplementProcess.intersection(
 				updatedGroup.getEmployees(),
 				groupInDatabase.getEmployees(),
-				AccountGroupEmployee.COMPARATOR,
+				GroupEmployee.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
 
-		updatedGroup.setEmployees(accountGroupEmployees);
+		updatedGroup.setEmployees(groupEmployees);
 		updatedGroup.setSkills(groupInDatabase.getSkills());
 
 		accountSkillEmployeeService.linkEmployeesToSkill(updatedGroup, appUserId);
@@ -210,16 +210,16 @@ public class GroupService {
 			return Collections.emptyMap();
 		}
 
-		List<AccountGroupEmployee> accountGroupEmployees = accountGroupEmployeeService.findByProfile(profile);
+		List<GroupEmployee> groupEmployees = accountGroupEmployeeService.findByProfile(profile);
 		Map<Integer, List<Group>> map = new HashMap<>();
 
-		for (AccountGroupEmployee accountGroupEmployee : accountGroupEmployees) {
-			int accountId = accountGroupEmployee.getEmployee().getAccountId();
+		for (GroupEmployee groupEmployee : groupEmployees) {
+			int accountId = groupEmployee.getEmployee().getAccountId();
 			if (map.get(accountId) == null) {
 				map.put(accountId, new ArrayList<Group>());
 			}
 
-			map.get(accountId).add(accountGroupEmployee.getGroup());
+			map.get(accountId).add(groupEmployee.getGroup());
 		}
 
 		return map;

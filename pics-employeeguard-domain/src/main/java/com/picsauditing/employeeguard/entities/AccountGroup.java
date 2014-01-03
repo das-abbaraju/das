@@ -1,12 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "account_group")
@@ -16,63 +11,27 @@ public abstract class AccountGroup implements BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	protected int id;
 
 	@Column(name = "accountID", nullable = false)
-	private int accountId;
+	protected int accountId;
 
-	private String name;
+	protected String name;
 
-	private String description;
+	protected String description;
 
-	private int createdBy;
-	private int updatedBy;
-	private int deletedBy;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdDate;
+	protected int createdBy;
+	protected int updatedBy;
+	protected int deletedBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedDate;
+	protected Date createdDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date deletedDate;
+	protected Date updatedDate;
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
-	@BatchSize(size = 5)
-	private List<AccountSkillGroup> skills = new ArrayList<>();
-
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
-	@BatchSize(size = 5)
-	private List<AccountGroupEmployee> employees = new ArrayList<>();
-
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
-	@BatchSize(size = 5)
-	private List<ProjectRole> projects = new ArrayList<>();
-
-	public AccountGroup() {
-	}
-
-	public AccountGroup(int id, int accountId) {
-		this.id = id;
-		this.accountId = accountId;
-	}
-
-	public AccountGroup(AccountGroup group) {
-		this.id = group.id;
-		this.accountId = group.accountId;
-		this.name = group.name;
-		this.description = group.description;
-		this.createdBy = group.createdBy;
-		this.createdDate = group.createdDate;
-		this.updatedBy = group.updatedBy;
-		this.updatedDate = group.updatedDate;
-		this.deletedBy = group.deletedBy;
-		this.deletedDate = group.deletedDate;
-	}
+	@Temporal(TemporalType.TIMESTAMP)
+	protected Date deletedDate;
 
 	public int getId() {
 		return id;
@@ -152,30 +111,6 @@ public abstract class AccountGroup implements BaseEntity {
 
 	public void setDeletedDate(Date deletedDate) {
 		this.deletedDate = deletedDate;
-	}
-
-	public List<AccountSkillGroup> getSkills() {
-		return skills;
-	}
-
-	public void setSkills(List<AccountSkillGroup> skills) {
-		this.skills = skills;
-	}
-
-	public List<AccountGroupEmployee> getEmployees() {
-		return employees;
-	}
-
-	public void setEmployees(List<AccountGroupEmployee> accountGroupEmployees) {
-		this.employees = accountGroupEmployees;
-	}
-
-	public List<ProjectRole> getProjects() {
-		return projects;
-	}
-
-	public void setProjects(List<ProjectRole> projects) {
-		this.projects = projects;
 	}
 
 	public abstract boolean equals(final Object o);

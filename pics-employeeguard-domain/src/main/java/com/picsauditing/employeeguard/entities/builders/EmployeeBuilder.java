@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.entities.builders;
 
-import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.GroupEmployee;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class EmployeeBuilder {
@@ -69,8 +69,8 @@ public class EmployeeBuilder {
 			group.setAccountId(employee.getAccountId());
 			group.setName(groupName);
 
-			AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, group);
-			employee.getGroups().add(accountGroupEmployee);
+			GroupEmployee groupEmployee = new GroupEmployee(employee, group);
+			employee.getGroups().add(groupEmployee);
 		}
 
 		return this;

@@ -34,12 +34,12 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 		return query.getResultList();
 	}
 
-    public long findEmployeeCount(int accountId) {
-        TypedQuery<Long> query = em.createQuery("SELECT COUNT(e) FROM Employee e WHERE e.accountId = :accountId",
-                Long.class);
-        query.setParameter("accountId", accountId);
-        return query.getSingleResult();
-    }
+	public long findEmployeeCount(int accountId) {
+		TypedQuery<Long> query = em.createQuery("SELECT COUNT(e) FROM Employee e WHERE e.accountId = :accountId",
+				Long.class);
+		query.setParameter("accountId", accountId);
+		return query.getSingleResult();
+	}
 
 	public List<Employee> findByAccounts(final List<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
@@ -101,7 +101,7 @@ public class EmployeeDAO extends BaseEntityDAO<Employee> {
 			return Collections.emptyList();
 		}
 
-		String sql2 = "SELECT DISTINCT e FROM AccountGroupEmployee age INNER JOIN age.employee e WHERE age.group.id IN (:groupIds)";
+		String sql2 = "SELECT DISTINCT e FROM GroupEmployee age INNER JOIN age.employee e WHERE age.group.id IN (:groupIds)";
 		TypedQuery query = em.createQuery(sql2, Employee.class);
 		query.setParameter("groupIds", groupIds);
 		return query.getResultList();

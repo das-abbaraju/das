@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
-import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
@@ -158,8 +158,8 @@ public class EmployeeForm implements AddAnotherForm, PersonalInformationForm, Ph
 
 			String[] groups = new String[employee.getGroups().size()];
 			int index = 0;
-			for (AccountGroupEmployee accountGroupEmployee : employee.getGroups()) {
-				Group group = accountGroupEmployee.getGroup();
+			for (GroupEmployee groupEmployee : employee.getGroups()) {
+				Group group = groupEmployee.getGroup();
 				groups[index++] = group.getName();
 			}
 

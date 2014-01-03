@@ -49,9 +49,9 @@ public class OperatorProjectService {
 				AccountSkillEmployee.COMPARATOR, new BaseEntityCallback(appUserId, now));
 		accountSkillEmployeeDAO.save(accountSkillEmployees);
 
-		AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, projectRole.getRole());
-		EntityHelper.setCreateAuditFields(accountGroupEmployee, appUserId, now);
-		accountGroupEmployeeDAO.save(accountGroupEmployee);
+		GroupEmployee groupEmployee = new GroupEmployee(employee, projectRole.getRole());
+		EntityHelper.setCreateAuditFields(groupEmployee, appUserId, now);
+		accountGroupEmployeeDAO.save(groupEmployee);
 	}
 
 	private List<AccountSkill> getSkillsForProjectGroup(ProjectRole projectRole) {
@@ -78,9 +78,9 @@ public class OperatorProjectService {
 		EntityHelper.softDelete(accountSkillEmployees, appUserId);
 		accountSkillEmployeeDAO.delete(accountSkillEmployees);
 
-		AccountGroupEmployee accountGroupEmployee = accountGroupEmployeeDAO.findByGroupAndEmployee(employee, projectRole.getRole());
-		EntityHelper.softDelete(accountGroupEmployee, appUserId);
-		accountGroupEmployeeDAO.delete(accountGroupEmployee);
+		GroupEmployee groupEmployee = accountGroupEmployeeDAO.findByGroupAndEmployee(employee, projectRole.getRole());
+		EntityHelper.softDelete(groupEmployee, appUserId);
+		accountGroupEmployeeDAO.delete(groupEmployee);
 	}
 
 	private List<AccountSkillEmployee> getListOfSkillsForThisProject(Employee employee, ProjectRole projectRole) {

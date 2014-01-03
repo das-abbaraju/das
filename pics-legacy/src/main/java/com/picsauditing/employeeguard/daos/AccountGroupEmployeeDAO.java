@@ -1,26 +1,26 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.AccountGroupEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.Profile;
 
 import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountGroupEmployeeDAO extends BaseEntityDAO<AccountGroupEmployee> {
+public class AccountGroupEmployeeDAO extends BaseEntityDAO<GroupEmployee> {
 
 	public AccountGroupEmployeeDAO() {
-		this.type = AccountGroupEmployee.class;
+		this.type = GroupEmployee.class;
 	}
 
-	public List<AccountGroupEmployee> findByProfile(final Profile profile) {
+	public List<GroupEmployee> findByProfile(final Profile profile) {
 		if (profile == null) {
 			return Collections.emptyList();
 		}
 
-		TypedQuery<AccountGroupEmployee> query = em.createQuery("FROM AccountGroupEmployee age WHERE age.employee.profile = :profile", AccountGroupEmployee.class);
+		TypedQuery<GroupEmployee> query = em.createQuery("FROM GroupEmployee age WHERE age.employee.profile = :profile", GroupEmployee.class);
 		query.setParameter("profile", profile);
 		return query.getResultList();
 	}
@@ -30,18 +30,18 @@ public class AccountGroupEmployeeDAO extends BaseEntityDAO<AccountGroupEmployee>
 			return Collections.emptyList();
 		}
 
-		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM AccountGroupEmployee age WHERE age.group.accountId = :accountId AND age.employee.id = :employeeId", Group.class);
+		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM GroupEmployee age WHERE age.group.accountId = :accountId AND age.employee.id = :employeeId", Group.class);
 		query.setParameter("accountId", accountId);
 		query.setParameter("employeeId", employeeId);
 		return query.getResultList();
 	}
 
-	public AccountGroupEmployee findByGroupAndEmployee(final Employee employee, final Group group) {
+	public GroupEmployee findByGroupAndEmployee(final Employee employee, final Group group) {
 		if (employee == null || group == null) {
 			return null;
 		}
 
-		TypedQuery<AccountGroupEmployee> query = em.createQuery("FROM AccountGroupEmployee age WHERE age.employee = :employee AND age.group = :group", AccountGroupEmployee.class);
+		TypedQuery<GroupEmployee> query = em.createQuery("FROM GroupEmployee age WHERE age.employee = :employee AND age.group = :group", GroupEmployee.class);
 		query.setParameter("employee", employee);
 		query.setParameter("group", group);
 		return query.getSingleResult();

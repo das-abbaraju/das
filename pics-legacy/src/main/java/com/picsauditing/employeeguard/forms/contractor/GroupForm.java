@@ -87,8 +87,8 @@ public class GroupForm extends GroupNameSkillsForm implements AddAnotherForm {
 			if (!CollectionUtils.isEmpty(group.getEmployees())) {
 				int[] employees = new int[group.getEmployees().size()];
 				counter = 0;
-				for (AccountGroupEmployee accountGroupEmployee : group.getEmployees()) {
-					employees[counter++] = accountGroupEmployee.getEmployee().getId();
+				for (GroupEmployee groupEmployee : group.getEmployees()) {
+					employees[counter++] = groupEmployee.getEmployee().getId();
 				}
 
 				form.setEmployees(employees);

@@ -51,8 +51,8 @@ public class AccountGroupBuilder {
 				Employee employee = new Employee();
 				employee.setId(employeeId);
 
-				AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, group);
-				group.getEmployees().add(accountGroupEmployee);
+				GroupEmployee groupEmployee = new GroupEmployee(employee, group);
+				group.getEmployees().add(groupEmployee);
 			}
 		}
 
@@ -74,8 +74,8 @@ public class AccountGroupBuilder {
 		group.getEmployees().clear();
 
 		for (Employee employee : employees) {
-			AccountGroupEmployee accountGroupEmployee = new AccountGroupEmployee(employee, group);
-			group.getEmployees().add(accountGroupEmployee);
+			GroupEmployee groupEmployee = new GroupEmployee(employee, group);
+			group.getEmployees().add(groupEmployee);
 		}
 
 		return this;

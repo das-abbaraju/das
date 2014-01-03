@@ -84,9 +84,9 @@ public class SkillUsageLocator {
 		Map<Employee, Map<AccountSkill, Set<Group>>> employeesContractorGroupSkills = new TreeMap<>();
 
 		for (Employee employee : employees) {
-			List<Group> groups = ExtractorUtil.extractList(employee.getGroups(), new Extractor<AccountGroupEmployee, Group>() {
+			List<Group> groups = ExtractorUtil.extractList(employee.getGroups(), new Extractor<GroupEmployee, Group>() {
 				@Override
-				public Group extract(AccountGroupEmployee accountGroupEmployee) {
+				public Group extract(GroupEmployee accountGroupEmployee) {
 					return accountGroupEmployee.getGroup();
 				}
 			});
@@ -164,7 +164,7 @@ public class SkillUsageLocator {
 		return skillService.getSiteSkillsForProjects(projects);
 	}
 
-	private Map<AccountSkill, Set<SiteAssignment>> getSiteAssignmentSkills(final int siteId) {
-
+	private Map<AccountSkill, Set<SiteAssignment>> getSiteAssignmentSkills(final Employee employee) {
+		return skillService.getSkillsForSiteAssignments(employee);
 	}
 }
