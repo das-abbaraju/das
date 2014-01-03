@@ -528,7 +528,7 @@ public class BillingService {
 	}
 
 	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
-		if (contractor.getStatus().isPendingRequestedOrDeactivated() && invoice.getStatus().isPaid()) {
+		if (contractor.getStatus().isPendingRequestedDeclinedOrDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isReactivation()
 						|| item.getInvoiceFee().isBidonly() || item.getInvoiceFee().isListonly()) {
