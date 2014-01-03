@@ -56,7 +56,7 @@ public class AuditEditModel {
         boolean result;
         boolean atLeastOneCaoAfterSubmitted = false;
         for (ContractorAuditOperator cao: conAudit.getOperatorsVisible()) {
-            if (cao.getStatus().after(AuditStatus.Submitted)) {
+            if (cao.getStatus().after(AuditStatus.Resubmitted)) {
                 atLeastOneCaoAfterSubmitted = true;
                 break;
             }

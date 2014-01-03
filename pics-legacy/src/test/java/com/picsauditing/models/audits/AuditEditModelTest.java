@@ -55,7 +55,7 @@ public class AuditEditModelTest  extends PicsTest {
     @Test
     public void testIsCanEditCategory_PqfCategory() {
         ContractorAudit audit = createAuditWithSingleCao(AuditType.PQF);
-        audit.getOperators().get(0).changeStatus(AuditStatus.Submitted, null);
+        audit.getOperators().get(0).changeStatus(AuditStatus.Resubmitted, null);
         audit.getAuditType().setClassType(AuditTypeClass.PQF);
         AuditCategory category = EntityFactory.addCategories(audit.getAuditType(), 100, "Test");
         category.setAuditType(audit.getAuditType());
