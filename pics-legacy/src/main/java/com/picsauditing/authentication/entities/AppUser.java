@@ -1,9 +1,15 @@
 package com.picsauditing.authentication.entities;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name="app_user")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AppUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
