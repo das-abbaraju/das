@@ -2,9 +2,11 @@ package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
@@ -113,5 +115,24 @@ public class AccountGroupDAO extends BaseEntityDAO<Group> {
 		query.setParameter("employee", employee);
 		query.setParameter("accountId", employee.getAccountId());
 		return query.getResultList();
+	}
+
+	/**
+	 * Job Roles are corporate created groups
+	 * <p/>
+	 * Contractor employees would not be assigned to these job roles unless they were assigned directly under site assignments
+	 * <p/>
+	 * Find by filtering out all groups created by the employee's account?
+	 *
+	 * @param employee
+	 * @return
+	 */
+	public List<Role> findJobRolesForEmployee(final Employee employee) {
+		Query query = em.createNativeQuery("SELECT g.* FROM account_group_employee age " +
+				"JOIN account_group g ON g.id = age.groupID " +
+				"WHERE age.employeeID = :employeeID AND g.type = 'Role'", Role.class);
+		query.setParameter("employeeID", employee.getId());
+
+		return (List<Role>) query.getResultList();
 	}
 }

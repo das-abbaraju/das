@@ -3,8 +3,8 @@ package com.picsauditing.employeeguard.controllers.contractor;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.services.EmployeeService;
+import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.services.SkillUsageLocator;
-import com.picsauditing.employeeguard.services.SkillUsages;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.EmployeeSiteAssignmentModelFactory;
@@ -34,9 +34,9 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		// Look up overall employee skill status excluding project skills
 
 		Map<Employee, SkillStatus> rollupStatuses = new TreeMap<>();
-		List<SkillUsages> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
+		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
 
-		for (SkillUsages skillUsage : skillUsages) {
+		for (SkillUsage skillUsage : skillUsages) {
 			// Calculate for account group skills, project role skills, site skills, corporate skills
 
 		}

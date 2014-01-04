@@ -53,6 +53,10 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
+	private List<SiteAssignmentEmployee> siteAssignments = new ArrayList<>();
+
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
 	private List<AccountSkillEmployee> skills = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
@@ -220,6 +224,14 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	public void setGroups(List<GroupEmployee> groups) {
 		this.groups = groups;
+	}
+
+	public List<SiteAssignmentEmployee> getSiteAssignments() {
+		return siteAssignments;
+	}
+
+	public void setSiteAssignments(List<SiteAssignmentEmployee> siteAssignments) {
+		this.siteAssignments = siteAssignments;
 	}
 
 	public List<AccountSkillEmployee> getSkills() {

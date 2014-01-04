@@ -399,7 +399,7 @@ public class SkillService {
 		});
 	}
 
-	public Map<AccountSkill, Set<SiteAssignment>> getSkillsForSiteAssignments(final Employee employee) {
-		return null;
+	public Map<AccountSkill, Set<Integer>> getSiteAssignmentSkills(final Employee employee) {
+		List<Group> directlyAssignedJobRoles = accountGroupDAO.findJobRolesForEmployee(employee);
 	}
 }

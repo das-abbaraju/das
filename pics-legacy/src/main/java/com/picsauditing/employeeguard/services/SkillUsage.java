@@ -1,6 +1,9 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.Project;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.Collections;
@@ -12,7 +15,7 @@ import java.util.Set;
  * Immutable Object that contains all the information about an Employee's skills and their relationship
  * to different areas of EmployeeGUARD
  */
-public class SkillUsages {
+public class SkillUsage {
 
 	private final Employee employee;
 	private final Map<AccountSkill, Set<Project>> projectRequiredSkills;
@@ -20,9 +23,9 @@ public class SkillUsages {
 	private final Map<AccountSkill, Set<Group>> projectJobRoleSkills;
 	private final Map<AccountSkill, Set<Integer>> corporateRequiredSkills;
 	private final Map<AccountSkill, Set<Integer>> siteRequiredSkills;
-	private final Map<AccountSkill, Set<SiteAssignment>> siteAssignmentSkills;
+	private final Map<AccountSkill, Set<Integer>> siteAssignmentSkills;
 
-	public SkillUsages(final Builder builder) {
+	public SkillUsage(final Builder builder) {
 		this.employee = builder.employee;
 
 		this.projectRequiredSkills = builder.projectRequiredSkills == null
@@ -64,7 +67,7 @@ public class SkillUsages {
 		return siteRequiredSkills;
 	}
 
-	public Map<AccountSkill, Set<SiteAssignment>> getSiteAssignmentSkills() {
+	public Map<AccountSkill, Set<Integer>> getSiteAssignmentSkills() {
 		return siteAssignmentSkills;
 	}
 
@@ -107,7 +110,7 @@ public class SkillUsages {
 		private Map<AccountSkill, Set<Group>> projectJobRoleSkills;
 		private Map<AccountSkill, Set<Integer>> corporateRequiredSkills;
 		private Map<AccountSkill, Set<Integer>> siteRequiredSkills;
-		private Map<AccountSkill, Set<SiteAssignment>> siteAssignmentSkills;
+		private Map<AccountSkill, Set<Integer>> siteAssignmentSkills;
 
 		public Builder employee(final Employee employee) {
 			this.employee = employee;
@@ -139,13 +142,13 @@ public class SkillUsages {
 			return this;
 		}
 
-		public Builder siteAssignmentSkills(final Map<AccountSkill, Set<SiteAssignment>> siteAssignmentSkills) {
+		public Builder siteAssignmentSkills(final Map<AccountSkill, Set<Integer>> siteAssignmentSkills) {
 			this.siteAssignmentSkills = siteAssignmentSkills;
 			return this;
 		}
 
-		public SkillUsages build() {
-			return new SkillUsages(this);
+		public SkillUsage build() {
+			return new SkillUsage(this);
 		}
 	}
 }
