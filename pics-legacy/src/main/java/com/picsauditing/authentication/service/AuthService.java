@@ -60,7 +60,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 
 	@ApiRequired
 	public String createNewAppUser() {
-		if (Strings.isEmpty(username) || password == null) {
+		if (Strings.isEmpty(username) || Strings.isEmpty(password)) {
 			json.put("status", "FAIL");
 		} else if (isDuplicateUserName()) {
 			json.put("status", "FAIL");
@@ -69,12 +69,10 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			newAppUser.setUsername(username);
 			newAppUser = appUserDAO.save(newAppUser);
 
-			if (!Strings.isEmpty(password)) {
-				String hashSalt = "" + newAppUser.getId();
-				newAppUser.setHashSalt(hashSalt);
-				newAppUser.setPassword(EncodedMessage.hash(password + hashSalt));
-				newAppUser = appUserDAO.save(newAppUser);
-			}
+			String hashSalt = "" + newAppUser.getId();
+			newAppUser.setHashSalt(hashSalt);
+			newAppUser.setPassword(EncodedMessage.hash(password + hashSalt));
+			newAppUser = appUserDAO.save(newAppUser);
 
 			json.put("status", "SUCCESS");
 			json.put("id", newAppUser.getId());
