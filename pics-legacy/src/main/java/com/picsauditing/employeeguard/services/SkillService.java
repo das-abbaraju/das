@@ -400,6 +400,8 @@ public class SkillService {
 	}
 
 	public Map<AccountSkill, Set<Integer>> getSiteAssignmentSkills(final Employee employee) {
-		List<Group> directlyAssignedJobRoles = accountGroupDAO.findJobRolesForEmployee(employee);
+		// List<Group> directlyAssignedJobRoles = accountGroupDAO.findJobRolesForEmployee(employee);
+
+		return Collections.emptyMap();
 	}
 }
