@@ -8,16 +8,15 @@ import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
-import com.picsauditing.mail.EmailBuildErrorException;
-import com.picsauditing.util.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.*;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
-
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -37,7 +36,7 @@ import java.util.*;
 public class Registration extends RegistrationAction implements AjaxValidator {
 
 	public static final String DEMO_CONTRACTOR_NAME_MARKER = "^^^";
-    private User user;
+	private User user;
 	private String username;
 	private String confirmPassword;
 	private String registrationKey;
@@ -185,18 +184,19 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	public String getCompanyAddressFields() {
 		if (isUKContractor()) {
 			return "GBAddressFields";
-		} if (isAUContractor()) {
-            return "AUAddressFields";
-        }else {
+		}
+		if (isAUContractor()) {
+			return "AUAddressFields";
+		} else {
 			return "defaultAddressFields";
 		}
 	}
 
-    private boolean isAUContractor() {
-        return contractor != null && contractor.getCountry() != null && contractor.getCountry().isAustralia();
-    }
+	private boolean isAUContractor() {
+		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isAustralia();
+	}
 
-    private boolean isUKContractor() {
+	private boolean isUKContractor() {
 		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isUK();
 	}
 
@@ -218,11 +218,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		}
 
 		saveNewAppUser();
-
-		userDAO.save(user);
-
-		// requires id for user to exist to seed the password properly
-		user.setEncryptedPassword(user.getPassword());
 		userDAO.save(user);
 		userDAO.refresh(user);
 
@@ -250,7 +245,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 	private void saveNewAppUser() {
 		String username = user.getUsername();
-		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
+		JSONObject appUserResponse = appUserService.createNewAppUser(username, user.getPassword());
 		if (appUserResponse != null && "SUCCESS".equals(appUserResponse.get("status").toString())) {
 			int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
 			AppUser appUser = appUserDAO.findByAppUserID(appUserID);
@@ -401,15 +396,15 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
-        contractor.setPaymentExpires(new Date());
+		contractor.setPaymentExpires(new Date());
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
 		contractor.setNameIndex();
-        if (!contractor.isDemo()) {
-            contractor.setQbSync(true);
+		if (!contractor.isDemo()) {
+			contractor.setQbSync(true);
 			if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(contractor)) {
 				contractor.setSapSync(true);
 			}
-        }
+		}
 
 		contractor.setNaics(new Naics());
 		contractor.getNaics().setCode("0");
@@ -570,20 +565,20 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		registrationValidator.validate(ActionContext.getContext().getValueStack(), new DelegatingValidatorContext(this));
 	}
 
-    public Map<String, String> getTimezones() {
-        Map<String, String> timezones = new LinkedHashMap<String, String>();
-        timezones.putAll(TimeZoneUtil.timeZones());
+	public Map<String, String> getTimezones() {
+		Map<String, String> timezones = new LinkedHashMap<String, String>();
+		timezones.putAll(TimeZoneUtil.timeZones());
 
-        for (String key : timezones.keySet()) {
-            String value = timezones.get(key);
-            timezones.put(key, getText(value));
-        }
+		for (String key : timezones.keySet()) {
+			String value = timezones.get(key);
+			timezones.put(key, getText(value));
+		}
 
-        return timezones;
-    }
+		return timezones;
+	}
 
-    @Override
-    public List<CountrySubdivision> getCountrySubdivisionList() {
+	@Override
+	public List<CountrySubdivision> getCountrySubdivisionList() {
 		if (contractor == null || contractor.getCountry() == null) {
 			return getCountrySubdivisionList(Country.US_ISO_CODE);
 		}
@@ -591,8 +586,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		return getCountrySubdivisionList(contractor.getCountry().getIsoCode());
 	}
 
-    public String getCountrySubdivisionLabelFor() {
-    	if (contractor == null || contractor.getCountry() == null) {
+	public String getCountrySubdivisionLabelFor() {
+		if (contractor == null || contractor.getCountry() == null) {
 			return getCountrySubdivisionLabelFor(Country.US_ISO_CODE);
 		}
 
