@@ -66,6 +66,60 @@ public class CaoSaveTest extends PicsTest {
 	}
 
     @Test
+    public void testSave_PolicyUpdateFlagUpdateFlag() throws Exception {
+        OperatorAccount operatorOne = OperatorAccount.builder().id(31).build();
+        OperatorAccount operatorTwo = OperatorAccount.builder().id(32).build();
+        contractor  = ContractorAccount.builder()
+                .id(21)
+                .operator(operatorOne)
+                .operator(operatorTwo)
+                .build();
+        ContractorAuditOperator caoOne = ContractorAuditOperator.builder()
+                .id(1)
+                .operator(operatorOne)
+                .status(AuditStatus.Submitted)
+                .percentComplete(100)
+                .percentVerified(100)
+                .build();
+        audit = ContractorAudit.builder()
+                .id(11)
+                .contractor(contractor)
+                .auditType(createPolicyAuditType())
+                .cao(caoOne)
+                .category(AuditCatData.builder()
+                        .numberRequired(5)
+                        .numberAnswered(5)
+                        .numberVerified(5)
+                        .build()
+                )
+                .build();
+
+        caoOne.setAudit(audit);
+
+        when(auditDao.find(audit.getId())).thenReturn(audit);
+        when(permissions.isContractor()).thenReturn(true);
+        when(permissions.getAccountId()).thenReturn(contractor.getId());
+        when(contractorAccountDao.findOperators(contractor, permissions,
+                " AND operatorAccount.type IN ('Operator')")).thenReturn(contractor.getOperators());
+        when(contractorAccountDao.isContained(contractor)).thenReturn(true);
+
+
+        Whitebox.setInternalState(caoSave, "auditDao", auditDao);
+        Whitebox.setInternalState(caoSave, "contractorAccountDao", contractorAccountDao);
+
+
+        caoSave.setCaoID(1);
+        caoSave.setAuditID(audit.getId());
+        caoSave.setContractor(contractor);
+        caoSave.setPermissions(permissions);
+        caoSave.setId(contractor.getId());
+        caoSave.setStatus(AuditStatus.Complete);
+        caoSave.save();
+
+        assertEquals(AuditStatus.Complete, caoOne.getStatus());
+    }
+
+    @Test
     public void save_PqfCaoAutoAdvancing() throws IOException, NoRightsException, RecordNotFoundException, EmailException {
         OperatorAccount operatorOne = OperatorAccount.builder().id(31).build();
         OperatorAccount operatorTwo = OperatorAccount.builder().id(32).build();
@@ -127,6 +181,68 @@ public class CaoSaveTest extends PicsTest {
 
         assertEquals(AuditStatus.Complete, caoOne.getStatus());
         assertEquals(AuditStatus.Complete, caoTwo.getStatus());
+    }
+
+    private AuditType createPolicyAuditType() {
+        return AuditType.builder()
+                .id(100)
+                .contractorCanView()
+                .contractorCanEdit()
+                .name("Test Policy")
+                .classType((AuditTypeClass.Policy))
+                .workflow(Workflow.builder()
+                        .step(WorkflowStep.builder()
+                                .oldStatus(null)
+                                .newStatus(AuditStatus.Pending)
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Pending)
+                                .newStatus(AuditStatus.Submitted)
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Submitted)
+                                .newStatus(AuditStatus.Incomplete)
+                                .noteRequired()
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Submitted)
+                                .newStatus(AuditStatus.Complete)
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Incomplete)
+                                .newStatus(AuditStatus.Submitted)
+                                .noteRequired()
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Resubmitted)
+                                .newStatus(AuditStatus.Complete)
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Resubmitted)
+                                .newStatus(AuditStatus.Resubmit)
+                                .noteRequired()
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Resubmit)
+                                .newStatus(AuditStatus.Resubmitted)
+                                .build()
+                        )
+                        .step(WorkflowStep.builder()
+                                .oldStatus(AuditStatus.Pending)
+                                .newStatus(AuditStatus.NotApplicable)
+                                .noteRequired()
+                                .build()
+                        )
+                        .build()
+                )
+                .build();
     }
 
     private AuditType createPqfAuditType() {
