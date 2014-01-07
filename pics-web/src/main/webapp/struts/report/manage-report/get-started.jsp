@@ -13,9 +13,9 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
 		<div class="alert alert-info clearfix">
-			<h4>Welcome to Dynamic Reports!</h4>
+			<h4><s:text name="ManageReports.getStarted.welcome.header" /></h4>
 
-			<p>Please make a selection below and we'll put together a list of recommended favorite reports for you.</p>
+			<p><s:text name="ManageReports.getStarted.welcome.instructions" /></p>
 		</div>
 	</div>
 </div>
@@ -24,19 +24,19 @@
 		<form name="recommend_favorites" action="${recommend_favorites_url}" class="form-horizontal" role="form">
 
 			<div class="form-group">
-				<label class="col-md-3 control-label">I am a(n)</label>
+				<label class="col-md-3 control-label"><s:text name="ManageReports.getStarted.userTypeLabel" /></label>
 	            <div class="col-md-6">
-	                <select name="userType" class="form-control select2Min">
-	                	<option>Select User Type</option>
+	                <select id="user_type" name="userType" class="form-control select2Min">
+	                	<option value=""><s:text name="ManageReports.getStarted.userTypePlaceholder" /></option>
 	                	<s:iterator value="userTypes" var="user_type">
-	                		<option value="${user_type}">${user_type.name}</option>
+	                		<option value="${user_type}">${user_type.name}</option>`
                 		</s:iterator>
 	                </select>
 	            </div>
 			</div>
 			<div class="form-group">
 		        <div class="col-md-6 col-md-offset-3 form-actions">
-		            <button name="goToFavorites" type="submit" class="btn btn-primary">Go To Favorites</button>
+		            <button id="go_to_favorites" name="goToFavorites" type="submit" class="btn btn-primary" disabled="disabled"><s:text name="ManageReports.getStarted.buttonLabel" /></button>
 		        </div>
 		    </div>
 		</form>
