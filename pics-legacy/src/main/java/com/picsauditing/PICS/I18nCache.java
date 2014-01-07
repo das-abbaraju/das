@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.picsauditing.dao.TranslationDAO;
 import com.picsauditing.dao.jdbc.TranslationsDAO;
 import com.picsauditing.i18n.service.TranslationService;
+import com.picsauditing.model.i18n.LanguageModel;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -277,7 +278,7 @@ public class I18nCache implements TranslationService, Serializable {
 	}
 
 	private String getTranslationFallback(String key, String translatedValue, String locale) {
-		if (isValidTranslation(translatedValue)) {
+		if (isValidTranslation(translatedValue, locale)) {
 			return translatedValue;
 		}
 
@@ -301,7 +302,7 @@ public class I18nCache implements TranslationService, Serializable {
 			// translation
 			String englishValue = cache.get(TranslationUtil.prepareKeyForCache(key), DEFAULT_LANGUAGE);
 
-			if (isValidTranslation(englishValue)) {
+			if (isValidTranslation(englishValue, locale)) {
 				fallbackTranslation = englishValue;
 			} else {
 				// logger.error("Translation key '{}' has no english translation.",
@@ -316,12 +317,12 @@ public class I18nCache implements TranslationService, Serializable {
 		return LAST_CLEARED;
 	}
 
-	private boolean isValidTranslation(String translation) {
+	private boolean isValidTranslation(String translation, String locale) {
 		if (translation == null) {
 			return false;
 		}
 
-		if (DEFAULT_TRANSLATION.equals(translation) && !isEmptyStringValidTranslation()) {
+		if (DEFAULT_TRANSLATION.equals(translation) && !isEmptyStringValidTranslation(locale)) {
 			return false;
 		}
 
@@ -334,8 +335,8 @@ public class I18nCache implements TranslationService, Serializable {
 		return true;
 	}
 
-	private boolean isEmptyStringValidTranslation() {
-		return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION);
+	private boolean isEmptyStringValidTranslation(String locale) {
+		return LanguageModel.ENGLISH.getLanguage().equals(locale) && featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION);
 	}
 
     public List<Map<String, String>> getTranslationsForJS(String actionName, String methodName, Set<String> locales) {
