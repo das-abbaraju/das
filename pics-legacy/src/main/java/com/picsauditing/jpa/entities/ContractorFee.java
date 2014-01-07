@@ -48,10 +48,12 @@ public class ContractorFee extends BaseTable {
 		this.feeClass = feeClass;
 	}
 
+    @ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
     public int getCurrentFacilityCount() {
         return currentFacilityCount;
     }
 
+    @ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
     public int getNewFacilityCount() {
         return newFacilityCount;
     }
