@@ -107,4 +107,8 @@
 	<include file="./liquibase/pschlesinger13_UpdatingCADValues.sql"/>
 	-->
 
+	<!-- 7.1.1 -->
+	<include file="./liquibase/gmeurer3_etlTranslationUsage.sql"/>
+
+
 </databaseChangeLog>
