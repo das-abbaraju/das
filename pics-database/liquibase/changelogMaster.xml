@@ -109,5 +109,7 @@
 	<include file="./liquibase/pschlesinger13_UpdatingCADValues.sql"/>
 	-->
 
+    <!-- 7.1.0 --> 
+	<include file="./liquibase/pschlesinger10_PICS-14106_ChangeNameOfEmeaBusinessUnit.sql"/>
 
 </databaseChangeLog>
