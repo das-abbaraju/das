@@ -13,32 +13,32 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
 		<div class="alert alert-info clearfix">
-			<h4>Welcome to Dynamic Reports!</h4>
+			<h4><s:text name="ManageReports.getStarted.welcome.header" /></h4>
 
-			<p>Please make a selection below and we'll put together a list of recommended favorite reports for you.</p>
+			<p><s:text name="ManageReports.getStarted.welcome.instructions" /></p>
 		</div>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-		<tw:form formName="recommend_favorites" action="${recommend_favorites_url}" method="post" class="form-horizontal" role="form">
+		<form name="recommend_favorites" action="${recommend_favorites_url}" class="form-horizontal" role="form">
 
 			<div class="form-group">
-				<tw:label labelName="user_type" class="col-md-3 control-label">I am a(n)</tw:label>
+				<label class="col-md-3 control-label"><s:text name="ManageReports.getStarted.userTypeLabel" /></label>
 	            <div class="col-md-6">
-	                <tw:select selectName="types" class="form-control select2Min">
-	                	<tw:option>Select User Type</tw:option>
+	                <select id="user_type" name="userType" class="form-control select2Min">
+	                	<option value=""><s:text name="ManageReports.getStarted.userTypePlaceholder" /></option>
 	                	<s:iterator value="userTypes" var="user_type">
-	                		<tw:option value="${user_type.name}">${user_type.name}</tw:option>
+	                		<option value="${user_type}">${user_type.name}</option>`
                 		</s:iterator>
-	                </tw:select>
+	                </select>
 	            </div>
 			</div>
 			<div class="form-group">
 		        <div class="col-md-6 col-md-offset-3 form-actions">
-		            <tw:button buttonName="goToFavorites" type="submit" class="btn btn-primary">Go To Favorites</tw:button>
+		            <button id="go_to_favorites" name="goToFavorites" type="submit" class="btn btn-primary" disabled="disabled"><s:text name="ManageReports.getStarted.buttonLabel" /></button>
 		        </div>
 		    </div>
-		</tw:form>
+		</form>
 	</div>
 </div>

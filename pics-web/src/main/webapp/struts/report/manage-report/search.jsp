@@ -14,18 +14,8 @@
 
 <s:include value="/struts/report/manage-report/_menu.jsp" />
 
-<s:if test="userFavoritesCount == 0">
-	<div class="row">
-		<section id="search_reports_instructions" class="offset3 span6">
-			<h1><s:text name="ManageReports.search.instructions.header" /></h1>
-			<p><s:text name="ManageReports.search.instructions.primaryInstructions" /></p>
-			<p><s:text name="ManageReports.search.instructions.secondaryInstructions" /></p>
-		</section>
-	</div>
-</s:if>
-<s:else>
-    <h4 class="report-subtitle"><s:text name="ManageReports.search.pageSubheader.subheader" /></h4>
-</s:else>
+<h4 class="report-subtitle"><s:text name="ManageReports.search.pageSubheader.subheader" /></h4>
+
 <div id="report_search" class="row">
     <div class="offset4 span4">
         <form id="report_search_form" class="form-inline" action="${manage_report_search_url}">

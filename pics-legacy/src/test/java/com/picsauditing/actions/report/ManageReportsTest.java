@@ -8,10 +8,8 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.service.ManageReportsService;
-import com.picsauditing.service.ReportFavoriteInfoConverter;
-import com.picsauditing.service.ReportPreferencesService;
-import com.picsauditing.service.ReportService;
+import com.picsauditing.jpa.entities.UserType;
+import com.picsauditing.service.*;
 import com.picsauditing.strutsutil.AjaxUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,10 +126,35 @@ public class ManageReportsTest extends PicsTranslationTest {
 		assertNotNull(Whitebox.getInternalState(manageReports, "reportFavoriteList"));
 	}
 
-	@Test
+    @Test
+    public void testFavoritesList_UserTypePopulatedList() {
+        when(permissions.getUserId()).thenReturn(USER_ID);
+        Whitebox.setInternalState(manageReports, "userType", UserType.Engineering);
+        Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
+
+        when(reportPreferencesService.buildFavorites(USER_ID)).thenReturn(null);
+        List<ReportUser> favorites = new ArrayList<>();
+        favorites.add(new ReportUser());
+        when(reportPreferencesService.addUserTypeFavorites(USER_ID, UserType.Engineering)).thenReturn(favorites);
+
+        List<ReportFavoriteInfo> favoriteInfos = new ArrayList<>();
+        favoriteInfos.add(new ReportFavoriteInfo());
+        when(reportFavoriteInfoConverter.convert(favorites)).thenReturn(favoriteInfos);
+
+        manageReports.favorites();
+
+        List<ReportFavoriteInfo> favoritesList = Whitebox.getInternalState(manageReports, "reportFavoriteList");
+        assertNotNull(favoritesList);
+        assertEquals(1, favoritesList.size());
+    }
+
+    @Test
 	public void testSearchList_AjaxReturnsExpectedResult() {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-		reportUsers.add(new ReportUser());
+        ReportUser reportUser = new ReportUser();
+        reportUser.setUser(new User(USER_ID));
+        reportUser.setReport(new Report());
+        reportUsers.add(reportUser);
 		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
 		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER_VALUE);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
