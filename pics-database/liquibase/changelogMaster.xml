@@ -112,4 +112,7 @@
     <!-- 7.1.0 --> 
 	<include file="./liquibase/pschlesinger10_PICS-14106_ChangeNameOfEmeaBusinessUnit.sql"/>
 
+	<!-- 7.1.1 --> 
+	<include file="./liquibase/mdo28_PICS-14143_UpdateBaseReportsToPublic.sql"/>
+
 </databaseChangeLog>
