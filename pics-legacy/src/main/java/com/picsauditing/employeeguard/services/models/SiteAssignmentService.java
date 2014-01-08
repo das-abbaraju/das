@@ -18,7 +18,7 @@ public class SiteAssignmentService {
 
 	}
 
-	public void findBy
+//	public void findBy
 
 	public List<Role> getRolesForAssignment(final SiteAssignment siteAssignment) {
 		return Collections.emptyList();
