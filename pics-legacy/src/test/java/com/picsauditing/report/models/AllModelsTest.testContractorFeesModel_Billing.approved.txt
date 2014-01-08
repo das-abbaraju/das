@@ -21,8 +21,10 @@ ContractorCcOnFile
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorFeeCurrentAmount
+ContractorFeeCurrentFacilityCount
 ContractorFeeFeeClass
 ContractorFeeNewAmount
+ContractorFeeNewFacilityCount
 ContractorInsureGUARD
 ContractorLastUpgradeDate
 ContractorMembershipDate
