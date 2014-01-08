@@ -168,7 +168,7 @@ public class CertificateDAO extends PicsDAO {
 		sql.addJoin("JOIN audit_category ac ON acr.catID = ac.id");
 		sql.addJoin("JOIN audit_question aq ON acr.catID = aq.categoryID");
 		sql.addJoin("JOIN pqfdata pd ON pd.questionID = aq.id");
-		sql.addWhere("pd.answer IN( " + Strings.implode(certificateIds) + ") AND aq.questionType = 'FileCertificate'");
+		sql.addWhere("pd.answer IN( " + Strings.implodeForDB(certificateIds) + ") AND aq.questionType = 'FileCertificate'");
 
 		try {
 			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
