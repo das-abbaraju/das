@@ -105,6 +105,14 @@ public class TranslationServiceFactory {
         return !featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_LOG_TRANSLATION_USAGE);
     }
 
+    public static void registerAppPropertyProvider(AppPropertyProvider appPropertyProvider) {
+        TranslationServiceFactory.appPropertyProvider = appPropertyProvider;
+    }
+
+    public static void registerFeatureToggleChecker(FeatureToggle featureToggleChecker) {
+        TranslationServiceFactory.featureToggleChecker = featureToggleChecker;
+    }
+
     public static void registerTranslationService(TranslationService translationService) {
         TranslationServiceFactory.translationService = translationService;
     }

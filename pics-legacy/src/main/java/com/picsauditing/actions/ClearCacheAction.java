@@ -3,6 +3,7 @@ package com.picsauditing.actions;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.picsauditing.model.i18n.TranslatableString;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
@@ -57,6 +58,9 @@ public class ClearCacheAction extends PicsActionSupport {
 
 		// Clear the translations from the cache
 		TranslationServiceFactory.getTranslationService().clear();
+
+        // Clear the static TranslationService from TranslatableString
+        TranslatableString.clearTranslationService();
 
 		// Clear the config environment settings
 		PicsActionSupport.CONFIG = null;
