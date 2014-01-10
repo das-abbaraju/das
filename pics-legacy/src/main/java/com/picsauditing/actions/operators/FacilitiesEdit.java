@@ -14,6 +14,7 @@ import java.util.TreeSet;
 import javax.naming.NoPermissionException;
 
 import com.picsauditing.model.operators.FacilitiesEditStatus;
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
     protected CountrySubdivisionDAO countrySubdivisionDAO;
     @Autowired
     private AccountStatusChanges accountStatusChanges;
+    @Autowired
+    protected ContractorOperatorService contractorOperatorService;
 
     private String createType;
     private List<Integer> facilities;
@@ -365,7 +368,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
         for (ContractorOperator co : operator.getContractorOperators()) {
             if (co.getWorkStatus().isPending() || co.getWorkStatus().isNo()) {
                 co.setWorkStatus(ApprovalStatus.Y);
-                co.cascadeWorkStatusToParent();
+                contractorOperatorService.cascadeWorkStatusToParent(co);
             }
         }
     }
