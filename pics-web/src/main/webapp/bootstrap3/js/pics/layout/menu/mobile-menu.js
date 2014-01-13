@@ -32,31 +32,34 @@
             }
 
             function configureMobileMenu() {
-                configureNavigation($navigation_el);
-                configureSearch($search_el);
+                configureNavigation();
+                configureSearch();
 
                 $navigation_el.removeClass('loading');
                 $search_el.removeClass('loading');
             }
 
-            function configureNavigation($navigation_el) {
+            function configureNavigation() {
                 $navigation_el.mmenu({
                     dragOpen: {
-                        open: false,
+                        open: true,
+                        maxStartPos: $(window).width(),
+                        pageNode: $('#mobile_menu .header')
                     }
                 });
             }
 
-            function configureSearch(search_el) {
+            function configureSearch() {
                 $search_el.mmenu({
                     dragOpen: {
-                        open: false
+                        open: true,
+                        maxStartPos: $(window).width(),
+                        pageNode: $('#mobile_menu .header')
                     },
                     position: 'right',
                     searchfield:{
                         add: true,
-                        search: false,
-                        maxStartPos: $(window).width()
+                        search: false
                     }
                 });
             }
@@ -94,10 +97,6 @@
                     $li = $link.closest('li');
 
                 $li.addClass('selected');
-
-                window.location.href = $link.attr('href');
-
-                event.preventDefault();
             }
 
             function onWindowResize(event) {
@@ -119,8 +118,8 @@
             }
 
             function animateMenuColorsForLevel(menu_level) {
-                var $menu_element = $('.mm-ismenu'),
-                    $menu_highlight = $('.mm-menu a.mm-subclose'),
+                var $menu_element = $('#mobile_menu_navigation'),
+                    $menu_highlight = $menu_element.find('a.mm-subclose'),
                     colors = MENU_LEVEL_TO_COLORS;
 
                 $menu_highlight.animate({
@@ -136,11 +135,12 @@
             function requestSearchResults(query, success_callback) {
                 var success_callback = success_callback || function () {};
 
-                $.ajax({
+                PICS.ajax({
                     url: '/SearchBox!json.action',
                     data: {
                         q: query
                     },
+                    dataType: 'json',
                     success: function (data) {
                         success_callback(data, query);
                     }
@@ -149,7 +149,7 @@
 
             function showSearchResults(data, query) {
                 if (data.total_results > 0) {
-                    showResultsList(data);
+                    showResultsList(data, query);
                 } else {
                     showNoResultsMsg();
                 }
@@ -161,8 +161,10 @@
                 $results_container.html(result_items_html);
 
                 if (data.total_results > data.results.length) {
-                    showMoreResultsMsg(data, query);
+                    showMoreResultsLink(query);
                 }
+
+                showMoreResultsMsg(data);
             }
 
             function getResultItemsHtml(data) {
@@ -172,18 +174,32 @@
                 return tpl_compiled.render(data);
             }
 
-            function showMoreResultsMsg(data, query) {
-                var more_results_html = getMoreResultsHtml({
-                    query: query,
+            function showMoreResultsLink(query) {
+                var more_results_link_html = getMoreResultsLinkHtml({
                     more_results_link_text: 'More Results\u2026', // PICS.text('Menu.menu.MobileSearch.moreResultsLink'),
+                    query: query
+                });
+
+                $results_container.append(more_results_link_html);
+            }
+
+            function showMoreResultsMsg(data) {
+                var more_results_html = getMoreResultsMsgHtml({
                     total_results_message: 'Showing ' + data.results.length + ' of ' + data.total_results // PICS.text('Menu.menu.MobileSearch.moreResultsTotalLabel', results_len, data.total_results)
                 });
 
                 $results_container.append(more_results_html);
             }
 
-            function getMoreResultsHtml(data) {
-                var tpl = $('#mobile_search_more_results').html(),
+            function getMoreResultsLinkHtml(data) {
+                var tpl = $('#mobile_search_more_results_link').html(),
+                    tpl_compiled = Hogan.compile(tpl);
+
+                return tpl_compiled.render(data);
+            }
+
+            function getMoreResultsMsgHtml(data) {
+                var tpl = $('#mobile_search_more_results_msg').html(),
                     tpl_compiled = Hogan.compile(tpl);
 
                 return tpl_compiled.render(data);

@@ -38,10 +38,10 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         height: 26,
         text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
     }],
-    
+
     initComponent: function () {
         this.addEvents('changepage');
-        
+
         this.callParent(arguments);
     },
 
@@ -148,7 +148,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
             height: 28
         }];
     },
-    
+
     // override Ext.toolbar.Paging.onPagingKeyDown to throw custom event
     onPagingKeyDown : function(field, e) {
         var me = this,
@@ -165,7 +165,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
                 if(me.fireEvent('beforechange', me, pageNum) !== false){
                     // prevent store from manually loading
                     // me.store.loadPage(pageNum);
-                    
+
                     me.fireEvent('changepage', me, pageNum);
                 }
             }

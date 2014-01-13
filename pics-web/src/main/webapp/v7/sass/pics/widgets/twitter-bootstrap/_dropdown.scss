@@ -2,21 +2,21 @@
 {
     text-align: left;
     z-index: 9999;
-    
+
     li > a
     {
         color: #454545;
     }
-    
+
     li > a:hover,
     .active > a,
     .active > a:hover
     {
-        background-color: #a84d10;
-        @include background-image(linear-gradient(#c66603, #a84d10));
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c66603', endColorstr='#a84d10', GradientType=0);
+        background-color: $primary_med;
+        @include background-image(linear-gradient($primary_light, $primary_med));
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$primary_light", endColorstr="$primary_med", GradientType=0);
     }
-    
+
     .nav-header
     {
         color: #999;
