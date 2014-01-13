@@ -513,7 +513,7 @@ public class CaoSave extends AuditActionSupport {
 			flagCalculator = new FlagDataCalculator(contractorFlagCriteria);
 		}
 
-        InsurancePolicySuggestionCalculator.calculateSuggestionForPolicy(contractor, flagCalculator, conAudit);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForPolicy(cao.getAudit().getContractorAccount(), flagCalculator, conAudit);
 	}
 
 	public int getCaoID() {

@@ -79,4 +79,9 @@ public class AuditTypeBuilder {
         type.setWorkFlow(workflow);
         return this;
     }
+
+    public AuditTypeBuilder classType(AuditTypeClass classType) {
+        type.setClassType(classType);
+        return this;
+    }
 }
