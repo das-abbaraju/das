@@ -7,9 +7,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class ContractorSubmenuDisplay {
 	public static boolean isShowContractorSubmenu() {
-		Permissions permissions = permissions = (Permissions) ActionContext.getContext().getSession()
-				.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
-
+		Permissions permissions = (Permissions) ActionContext.getContext().getSession().get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 		if (permissions == null) {
 			permissions = new Permissions();
 		}
@@ -23,7 +21,6 @@ public class ContractorSubmenuDisplay {
 		}
 
 		Object action = ActionContext.getContext().getActionInvocation().getAction();
-
 		if (action instanceof ContractorActionSupport) {
 			ContractorActionSupport contractorActionSupport = (ContractorActionSupport) action;
 			ContractorAccount contractor = contractorActionSupport.getContractor();
