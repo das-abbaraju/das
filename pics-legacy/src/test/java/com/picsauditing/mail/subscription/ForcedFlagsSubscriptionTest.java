@@ -52,11 +52,11 @@ public class ForcedFlagsSubscriptionTest extends PicsTest {
         BasicDynaBean bean;
 
         bean = mock(BasicDynaBean.class);
-        when(bean.get("forcedByAccountId")).thenReturn(37951);
+        when(bean.get("forcedBy")).thenReturn("Michael Do");
         data.add(bean);
 
         bean = mock(BasicDynaBean.class);
-        when(bean.get("forcedByAccountId")).thenReturn(1);
+        when(bean.get("forcedBy")).thenReturn("John Do");
         data.add(bean);
 
         Map<String, Object> tokens = builder.process(subscription);
