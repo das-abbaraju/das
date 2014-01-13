@@ -9,6 +9,8 @@ import org.mockito.Matchers._
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 import com.picsauditing.i18n.service.TranslationService
+import com.picsauditing.toggle.FeatureToggle
+import com.picsauditing.model.general.AppPropertyProvider
 
 @RunWith(classOf[JUnitRunner])
 class TranslatableStringTest extends FlatSpec with BeforeAndAfterAll with MockitoSugar {
@@ -53,8 +55,14 @@ class TranslatableStringTest extends FlatSpec with BeforeAndAfterAll with Mockit
   trait TestSetup {
     val translationService = mock[TranslationService]
     val nonLoggingTranslationService = mock[TranslationService]
+    val featureToggleChecker = mock[FeatureToggle]
+    val appPropertyProvider = mock[AppPropertyProvider]
+    TranslationServiceFactory.registerAppPropertyProvider(appPropertyProvider)
+    TranslationServiceFactory.registerFeatureToggleChecker(featureToggleChecker)
     TranslationServiceFactory.registerTranslationService(translationService)
     TranslationServiceFactory.registerNonLoggingTranslationService(nonLoggingTranslationService)
+
+    TranslatableString.clearTranslationService()
 
     val translatableString = new TranslatableString(testKey)
   }
