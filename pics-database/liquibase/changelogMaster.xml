@@ -114,5 +114,6 @@
 
 	<!-- 7.1.1 --> 
 	<include file="./liquibase/mdo28_PICS-14143_UpdateBaseReportsToPublic.sql"/>
+    <include file="./liquibase/sshacter40_PICS-13646_DiscrepenciesReportView.sql"/>
 
 </databaseChangeLog>
