@@ -3,11 +3,10 @@
 <%@page import="com.picsauditing.PICS.MainPage" %>
 <%@page import="com.picsauditing.access.OpPerms" %>
 <%@ page import="com.picsauditing.access.Permissions" %>
-<%@page import="com.picsauditing.i18n.service.TranslationService"%>
-<%@page import="com.picsauditing.service.i18n.TranslationServiceFactory"%>
-<%@ page import="com.picsauditing.PICS.MainPage" %>
-<%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@page import="com.picsauditing.actions.contractors.ContractorSubmenuDisplay" %>
 <%@ page import="com.picsauditing.dao.UserDAO" %>
+<%@ page import="com.picsauditing.i18n.service.TranslationService" %>
 <%@ page import="com.picsauditing.jpa.entities.User" %>
 <%@ page import="com.picsauditing.menu.MenuComponent" %>
 <%@ page import="com.picsauditing.menu.builder.MenuBuilder" %>
@@ -64,7 +63,13 @@
 
 <s:set var="version"><%= version %>
 </s:set>
-<s:set var="has_contractor_menu_class">has-contractor-menu</s:set>
+<s:set var="has_contractor_menu"><%= ContractorSubmenuDisplay.isShowContractorSubmenu() %>
+</s:set>
+<s:set var="has_contractor_menu_class" value="%{has_contractor_menu ? 'has-contractor-menu' : ''}"/>
+
+<s:if test="@com.picsauditing.actions.contractors.ContractorSubmenuDisplay@isShowContractorSubmenu()">
+    <s:set var="has_contractor_menu_class">has-contractor-menu</s:set>
+</s:if>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -83,19 +88,20 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}"/>
     <link rel="stylesheet" type="text/css" href="css/print.css?v=${version}"/>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css?v=${version}"/>
-	<!--[if !IE 6]><!-->
-	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=${version}"/>
-	<!--<![endif]-->
-	<link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" href="css/employee-guard/employee-guard.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" href="bootstrap3/css/vendor/select2/select2.css?v=${version}" />
-	<link rel="stylesheet" type="text/css" href="bootstrap3/css/vendor/select2/select2-override.css?v=${version}"/>
-	<link rel="stylesheet" type="text/css" href="css/timezone.css?v=${version}"/>
-	<%-- DO NOT ADD MORE STYLESHEETS TO THIS PAGE, WILL BREAK IE7 --%>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=${version}"/>
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="js/jquery/autocomplete/jquery.autocomplete.css?v=${version}"/>
+    <!--[if !IE 6]><!-->
+    <link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=${version}"/>
+    <!--<![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}"/>
+    <link rel="stylesheet" type="text/css" href="css/employee-guard/employee-guard.css?v=${version}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap3/css/vendor/select2/select2.css?v=${version}"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap3/css/vendor/select2/select2-override.css?v=${version}"/>
+    <link rel="stylesheet" type="text/css" href="css/timezone.css?v=${version}"/>
+    <%-- DO NOT ADD MORE STYLESHEETS TO THIS PAGE, WILL BREAK IE7 --%>
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap/css/font-awesome.min.css?v=${version}"/>
     <!--[if lt IE 8]>
