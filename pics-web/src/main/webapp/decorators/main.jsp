@@ -4,7 +4,6 @@
 <%@page import="com.picsauditing.access.OpPerms" %>
 <%@ page import="com.picsauditing.access.Permissions" %>
 <%@page import="com.picsauditing.actions.TranslationActionSupport" %>
-<%@page import="com.picsauditing.actions.contractors.ContractorSubmenuDisplay" %>
 <%@ page import="com.picsauditing.dao.UserDAO" %>
 <%@ page import="com.picsauditing.i18n.service.TranslationService" %>
 <%@ page import="com.picsauditing.jpa.entities.User" %>
@@ -61,8 +60,10 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
-<s:set var="version"><%= version %></s:set>
-<s:set var="has_contractor_menu_class">has-contractor-menu</s:set>
+<s:set var="version"><%= version %>
+</s:set>
+<s:set var="has_contractor_menu">${PICS_MenuContext_ContractorSubmenu}</s:set>
+<s:set var="has_contractor_menu_class" value="%{#has_contractor_menu == 'true' ? 'has-contractor-menu' : ''}"/>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -147,7 +148,8 @@
     <![endif]-->
 </head>
 <body onload="<decorator:getProperty property="body.onload" />"
-      onunload="<decorator:getProperty property="body.onunload" />" class="${has_contractor_menu_class} <%if (debugMode) {%>debugging<%}%>">
+      onunload="<decorator:getProperty property="body.onunload" />"
+      class="${has_contractor_menu_class} <%if (debugMode) {%>debugging<%}%>">
 <jsp:include page="/struts/layout/_environment.jsp"/>
 
 <%

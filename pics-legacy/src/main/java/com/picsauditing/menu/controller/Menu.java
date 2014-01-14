@@ -1,5 +1,6 @@
 package com.picsauditing.menu.controller;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.report.ManageReports;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
@@ -73,7 +75,11 @@ public class Menu extends PicsActionSupport {
 	}
 
 	public String contractorSubmenu() throws RecordNotFoundException {
-		menu = buildContractorSubmenu(true);
+		contractor = findContractor();
+
+		if (contractor != null) {
+			menu = buildContractorSubmenu(false);
+		}
 
 		return "contractor-menu";
 	}
@@ -88,8 +94,12 @@ public class Menu extends PicsActionSupport {
 	private MenuComponent buildContractorSubmenu(boolean includeSupportMenu) throws RecordNotFoundException {
 		loadPermissions();
 
-		return contractorSubmenuBuilder.buildMenubar(contractor, permissions,
-				includeSupportMenu);
+		MenuComponent contractorSubmenu = contractorSubmenuBuilder.buildMenubar(contractor, permissions, includeSupportMenu);
+		MenuComponent contractorCompanyMenu = MenuBuilder.getCompanyMenuFor(contractor, permissions);
+
+		contractorSubmenu.getChildren().add(0, contractorCompanyMenu);
+
+		return contractorSubmenu;
 	}
 
 	public ContractorAccount getContractor() {
@@ -107,12 +117,6 @@ public class Menu extends PicsActionSupport {
 	public boolean isShowContractorSubmenu() {
 		loadPermissions();
 
-		if (account == null || !account.isContractor()) {
-			return false;
-		}
-
-		contractor = (ContractorAccount) account;
-
 		if (permissions.isContractor() || !permissions.isUsingVersion7Menus() || !visibleToOperator()) {
 			return false;
 		}
@@ -121,7 +125,28 @@ public class Menu extends PicsActionSupport {
 			return auditorCanViewAnAudit();
 		}
 
+		contractor = findContractor();
+		if (contractor == null) {
+			return false;
+		}
+
 		return true;
+	}
+
+	private ContractorAccount findContractor() {
+		if (contractor != null && contractor.getId() > 0) {
+			return contractor;
+		}
+
+		if (account != null && account.isContractor()) {
+			return (ContractorAccount) account;
+		}
+
+		return null;
+	}
+
+	private Map<String, Object> valueStackContext() {
+		return ActionContext.getContext().getValueStack().getContext();
 	}
 
 	private boolean auditorCanViewAnAudit() {

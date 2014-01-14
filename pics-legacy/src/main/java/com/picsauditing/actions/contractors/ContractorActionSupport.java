@@ -99,7 +99,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			permissionToViewContractor = new PermissionToViewContractor(id, permissions);
 			permissionToViewContractor.setActiveAudits(getActiveAudits());
 			permissionToViewContractor.setOperators(getOperators());
-            permissionToViewContractor.setContractor(contractor);
+			permissionToViewContractor.setContractor(contractor);
 		}
 
 		return permissionToViewContractor.check(limitedView);
@@ -322,8 +322,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public boolean isShowHeader() {
-        if (permissions.isContractor())
-            return true;
+		if (permissions.isContractor())
+			return true;
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
 		if (permissions.isOperator())
@@ -354,10 +354,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (!permissions.isUsingVersion7Menus()) {
-			return false;
-		}
-
-		if (contractor == null || (account != null && !account.getType().equals("Contractor"))) {
 			return false;
 		}
 
