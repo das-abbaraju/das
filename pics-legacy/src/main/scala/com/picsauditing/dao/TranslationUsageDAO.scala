@@ -11,6 +11,7 @@ import Q.interpolation
 import org.slf4j.{LoggerFactory, Logger}
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import com.picsauditing.i18n.model.TranslationLookupData
+import scala.collection.JavaConversions._
 
 class TranslationUsageDAO extends PICSDataAccess {
   private val logger: Logger = LoggerFactory.getLogger(classOf[TranslationUsageDAO])
@@ -25,6 +26,15 @@ class TranslationUsageDAO extends PICSDataAccess {
         t.pageName === pageName &&
         t.environment === environment
   } yield t.id
+
+  def translationsUsedSince(date: Date) = db withSession {
+    val query = for {
+        t <- TranslationUsages if t.lastUsed > new java.sql.Date(date.getTime)
+      } yield t
+    // println(query.selectStatement)
+    val results: java.util.List[TranslationUsage] = query.list
+    results
+  }
 
   def logKeyUsage(keyUsage: TranslationLookupData) = {
     // I'm leaving in the regular slick db stuff as an example or in case we decide to go back to it should the sproc
