@@ -16,6 +16,11 @@
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
+    <listener>
+        <listener-class>
+            com.picsauditing.servlet.listener.TranslationServiceCacheWarmer
+        </listener-class>
+    </listener>
     <filter>
         <filter-name>pageLogger</filter-name>
         <filter-class>

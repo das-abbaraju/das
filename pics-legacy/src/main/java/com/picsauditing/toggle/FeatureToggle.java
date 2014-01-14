@@ -37,6 +37,7 @@ public interface FeatureToggle {
 	String TOGGLE_SAFETY_SENSITIVE_ENABLED = "Toggle.SafetySensitive.Enabled";
     String SAP_BIZ_UNITS_ENABLED = "SAP.BusinessUnits.Enabled";
     String SAP_BIZ_UNITS_SET_SYNC_TRUE_ENABLED = "SAP.BusinessUnits.SetSyncTrue.Enabled";
+    String TOGGLE_DISABLE_TRANSLATION_SERVICE_CACHE_WARMING = "Toggle.DisableTranslationServiceCacheWarming";
 
 	boolean isFeatureEnabled(String toggleName);
 

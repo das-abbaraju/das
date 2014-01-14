@@ -17,6 +17,14 @@
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>
 
+    <bean id="AsyncTaskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10"/>
+        <property name="maxPoolSize" value="100"/>
+        <property name="queueCapacity" value="0"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="false"/>
+    </bean>
+
     <bean id="SpringUtils" class="com.picsauditing.util.SpringUtils"/>
     <bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
 
