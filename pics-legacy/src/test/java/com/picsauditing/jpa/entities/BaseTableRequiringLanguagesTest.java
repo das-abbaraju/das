@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.ThreadLocalLocale;
+import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.service.i18n.ExplicitUsageContext;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.toggle.FeatureToggle;
@@ -37,6 +38,8 @@ public class BaseTableRequiringLanguagesTest extends PicsTranslationTest {
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)).thenReturn(true);
         Whitebox.setInternalState(TranslationServiceFactory.class, "featureToggleChecker", featureToggleChecker);
         Whitebox.setInternalState(TranslationServiceFactory.class, "appPropertyProvider", appPropertyProvider);
+
+        TranslatableString.clearTranslationService();
     }
 
     @Test

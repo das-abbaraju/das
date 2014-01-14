@@ -1,4 +1,4 @@
-package com.picsauditing.models.database
+package com.picsauditing.model.database
 
 import java.sql.Date
 import scala.slick.driver.MySQLDriver.simple._

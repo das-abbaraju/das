@@ -1,7 +1,6 @@
 package com.picsauditing.servlet.listener;
 
 import com.picsauditing.dao.TranslationUsageDAO;
-import com.picsauditing.i18n.model.database.TranslationUsage;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
@@ -15,7 +14,6 @@ import javax.servlet.ServletContextEvent;
 
 import java.util.*;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class TranslationServiceCacheWarmerTest {
@@ -23,7 +21,8 @@ public class TranslationServiceCacheWarmerTest {
     private static String TEST_LOCALE = "TestLocale";
 
     private TranslationServiceCacheWarmer translationServiceCacheWarmer;
-    private List<TranslationUsage> translationUsages;
+    private Set<String> usageLocales;
+    private Map<String, Set<String>> usages;
 
     @Mock
     private TranslationService translationService;
@@ -34,8 +33,6 @@ public class TranslationServiceCacheWarmerTest {
     @Mock
     private TranslationUsageDAO usageDAO;
     @Mock
-    private TranslationUsage translationUsage;
-    @Mock
     private SchedulingTaskExecutor taskExecutor;
 
     @Before
@@ -44,8 +41,10 @@ public class TranslationServiceCacheWarmerTest {
 
         translationServiceCacheWarmer = new TranslationServiceCacheWarmer();
 
-        translationUsages = new ArrayList<>();
-        translationUsages.add(translationUsage);
+        usageLocales = new HashSet<>();
+        usageLocales.add(TEST_LOCALE);
+        usages = new HashMap<>();
+        usages.put(TEST_KEY, usageLocales);
 
         Whitebox.setInternalState(translationServiceCacheWarmer, "translationService", translationService);
         Whitebox.setInternalState(translationServiceCacheWarmer, "featureToggleChecker", featureToggleChecker);
@@ -54,9 +53,7 @@ public class TranslationServiceCacheWarmerTest {
 
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)).thenReturn(true);
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_TRANSLATION_SERVICE_CACHE_WARMING)).thenReturn(false);
-        when(usageDAO.translationsUsedSince(any(Date.class))).thenReturn(translationUsages);
-        when(translationUsage.getMsgKey()).thenReturn(TEST_KEY);
-        when(translationUsage.getMsgLocale()).thenReturn(TEST_LOCALE);
+        when(usageDAO.translationsUsedSince(any(Date.class))).thenReturn(usages);
     }
 
     @Test
@@ -86,7 +83,11 @@ public class TranslationServiceCacheWarmerTest {
 
     @Test
     public void testContextInitialized_TranslationServiceToggleOn_En_US_Also_Called_For_En_Log() throws Exception {
-        when(translationUsage.getMsgLocale()).thenReturn(TranslationServiceCacheWarmer.ENGLISH_LOCALE);
+        usageLocales = new HashSet<>();
+        usageLocales.add(TranslationServiceCacheWarmer.ENGLISH_LOCALE);
+        usages = new HashMap<>();
+        usages.put(TEST_KEY, usageLocales);
+        when(usageDAO.translationsUsedSince(any(Date.class))).thenReturn(usages);
 
         translationServiceCacheWarmer.run();
 
