@@ -52,17 +52,17 @@ public class ContractorDetailProjectFormBuilder {
 
 	private List<AccountSkill> buildSkills(ProjectRole projectRole) {
 		List<AccountSkill> skills = new ArrayList<>();
-		for (AccountSkillGroup accountSkillGroup : projectRole.getRole().getSkills()) {
-			skills.add(accountSkillGroup.getSkill());
+		for (AccountSkillRole accountSkillRole : projectRole.getRole().getSkills()) {
+			skills.add(accountSkillRole.getSkill());
 		}
 
 		return skills;
 	}
 
 	private JobRoleInfo addRoleInfoFromGroup(ProjectRole projectRole, JobRoleInfo jobRoleInfo) {
-		Group group = projectRole.getRole();
-		jobRoleInfo.setId(group.getId());
-		jobRoleInfo.setName(group.getName());
+		Role role = projectRole.getRole();
+		jobRoleInfo.setId(role.getId());
+		jobRoleInfo.setName(role.getName());
 		return jobRoleInfo;
 	}
 

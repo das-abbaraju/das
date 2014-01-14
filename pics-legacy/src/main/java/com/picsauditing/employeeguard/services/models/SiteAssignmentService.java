@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.services.models;
 
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.entities.SiteAssignment;
+import com.picsauditing.employeeguard.entities.RoleEmployee;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,17 +14,15 @@ public class SiteAssignmentService {
 
 	}
 
-	public void remove(final SiteAssignment siteAssignment) {
+	public void remove(final RoleEmployee siteAssignment) {
 
 	}
 
-//	public void findBy
-
-	public List<Role> getRolesForAssignment(final SiteAssignment siteAssignment) {
+	public List<Role> getRolesForAssignment(final RoleEmployee roleEmployee) {
 		return Collections.emptyList();
 	}
 
-	public Map<SiteAssignment, Role> getRolesForAssignments(final List<SiteAssignment> siteAssignments) {
+	public Map<RoleEmployee, Role> getRolesForAssignments(final List<RoleEmployee> siteAssignments) {
 		return Collections.emptyMap();
 	}
 }

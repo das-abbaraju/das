@@ -24,8 +24,8 @@ public class ProjectRoleService {
 	public List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {
 		List<AccountSkill> accountSkills = new ArrayList<>();
 
-		for (AccountSkillGroup accountSkillGroup : projectRole.getRole().getSkills()) {
-			accountSkills.add(accountSkillGroup.getSkill());
+		for (AccountSkillRole accountSkillRole : projectRole.getRole().getSkills()) {
+			accountSkills.add(accountSkillRole.getSkill());
 		}
 
 		accountSkills.addAll(projectService.getRequiredSkills(projectRole.getProject()));

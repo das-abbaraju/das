@@ -29,7 +29,12 @@ public class Role extends AccountGroup implements Comparable<Role> {
 	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
-	protected List<AccountSkillRole> skills = new ArrayList<>();
+	private List<AccountSkillRole> skills = new ArrayList<>();
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @Where(clause = "deletedDate IS NULL")
+    @BatchSize(size = 5)
+    private List<RoleEmployee> employees;
 
 	public Role() {
 	}
@@ -68,7 +73,15 @@ public class Role extends AccountGroup implements Comparable<Role> {
 		this.skills = skills;
 	}
 
-	@Override
+    public List<RoleEmployee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<RoleEmployee> employees) {
+        this.employees = employees;
+    }
+
+    @Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

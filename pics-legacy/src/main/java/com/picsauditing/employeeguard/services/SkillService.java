@@ -291,8 +291,8 @@ public class SkillService {
 		}
 
 		for (ProjectRoleEmployee projectRoleEmployee : employee.getRoles()) {
-			for (AccountSkillGroup accountSkillGroup : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
-				allRequiredSkills.add(accountSkillGroup.getSkill());
+			for (AccountSkillRole accountSkillRole : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
+				allRequiredSkills.add(accountSkillRole.getSkill());
 			}
 		}
 	}
@@ -301,9 +301,9 @@ public class SkillService {
 		return accountSkillDAO.findRequiredByAccount(employee.getAccountId());
 	}
 
-	public Map<AccountSkill, Set<Group>> getProjectRoleSkillsMap(final Employee employee) {
+	public Map<AccountSkill, Set<Role>> getProjectRoleSkillsMap(final Employee employee) {
 		List<ProjectSkillRole> projectSkillRoles = projectSkillRoleDAO.findByEmployee(employee);
-		return Utilities.convertToMapOfSets(projectSkillRoles, new Utilities.EntityKeyValueConvertable<ProjectSkillRole, AccountSkill, Group>() {
+		return Utilities.convertToMapOfSets(projectSkillRoles, new Utilities.EntityKeyValueConvertable<ProjectSkillRole, AccountSkill, Role>() {
 
 			@Override
 			public AccountSkill getKey(ProjectSkillRole entity) {
@@ -311,7 +311,7 @@ public class SkillService {
 			}
 
 			@Override
-			public Group getValue(ProjectSkillRole entity) {
+			public Role getValue(ProjectSkillRole entity) {
 				return entity.getProjectRole().getRole();
 			}
 		});

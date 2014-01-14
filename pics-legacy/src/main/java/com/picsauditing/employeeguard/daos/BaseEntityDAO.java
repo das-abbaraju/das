@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.BaseEntity;
 import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.entities.Role;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 

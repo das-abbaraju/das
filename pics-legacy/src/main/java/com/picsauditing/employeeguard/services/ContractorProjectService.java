@@ -92,7 +92,7 @@ public class ContractorProjectService {
 	}
 
 	private List<RoleInfo> buildRoleInfos(Project project) {
-		List<Group> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
+		List<Role> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
 		return formBuilderFactory.getRoleInfoFactory().build(groups);
 	}
 
@@ -175,6 +175,6 @@ public class ContractorProjectService {
 	}
 
 	private List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {
-		return ExtractorUtil.extractList(projectRole.getRole().getSkills(), AccountSkillGroup.SKILL_EXTRACTOR);
+		return ExtractorUtil.extractList(projectRole.getRole().getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
 	}
 }
