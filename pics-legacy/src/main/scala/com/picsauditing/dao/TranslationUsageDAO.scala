@@ -31,7 +31,6 @@ class TranslationUsageDAO extends PICSDataAccess {
     val query = for {
         t <- TranslationUsages if t.lastUsed > new java.sql.Date(date.getTime)
       } yield t
-    // println(query.selectStatement)
     val results: java.util.List[TranslationUsage] = query.list
     results
   }
