@@ -60,8 +60,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
-<s:set var="version"><%= version %>
-</s:set>
+<s:set var="version"><%= version %></s:set>
 <s:set var="has_contractor_menu">${PICS_MenuContext_ContractorSubmenu}</s:set>
 <s:set var="has_contractor_menu_class" value="%{#has_contractor_menu == 'true' ? 'has-contractor-menu' : ''}"/>
 
