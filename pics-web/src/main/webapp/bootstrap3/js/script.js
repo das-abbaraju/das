@@ -7593,393 +7593,6 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
   })
 
 }(window.jQuery);
-/* ========================================================================
- * Bootstrap: tooltip.js v3.0.0
- * http://twbs.github.com/bootstrap/javascript.html#tooltip
- * Inspired by the original jQuery.tipsy by Jason Frame
- * ========================================================================
- * Copyright 2012 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ======================================================================== */
-
-
-+function ($) { "use strict";
-
-  // TOOLTIP PUBLIC CLASS DEFINITION
-  // ===============================
-
-  var Tooltip = function (element, options) {
-    this.type       =
-    this.options    =
-    this.enabled    =
-    this.timeout    =
-    this.hoverState =
-    this.$element   = null
-
-    this.init('tooltip', element, options)
-  }
-
-  Tooltip.DEFAULTS = {
-    animation: true
-  , placement: 'top'
-  , selector: false
-  , template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-  , trigger: 'hover focus'
-  , title: ''
-  , delay: 0
-  , html: false
-  , container: false
-  }
-
-  Tooltip.prototype.init = function (type, element, options) {
-    this.enabled  = true
-    this.type     = type
-    this.$element = $(element)
-    this.options  = this.getOptions(options)
-
-    var triggers = this.options.trigger.split(' ')
-
-    for (var i = triggers.length; i--;) {
-      var trigger = triggers[i]
-
-      if (trigger == 'click') {
-        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
-      } else if (trigger != 'manual') {
-        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focus'
-        var eventOut = trigger == 'hover' ? 'mouseleave' : 'blur'
-
-        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
-        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
-      }
-    }
-
-    this.options.selector ?
-      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
-      this.fixTitle()
-  }
-
-  Tooltip.prototype.getDefaults = function () {
-    return Tooltip.DEFAULTS
-  }
-
-  Tooltip.prototype.getOptions = function (options) {
-    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
-
-    if (options.delay && typeof options.delay == 'number') {
-      options.delay = {
-        show: options.delay
-      , hide: options.delay
-      }
-    }
-
-    return options
-  }
-
-  Tooltip.prototype.getDelegateOptions = function () {
-    var options  = {}
-    var defaults = this.getDefaults()
-
-    this._options && $.each(this._options, function (key, value) {
-      if (defaults[key] != value) options[key] = value
-    })
-
-    return options
-  }
-
-  Tooltip.prototype.enter = function (obj) {
-    var self = obj instanceof this.constructor ?
-      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
-
-    clearTimeout(self.timeout)
-
-    self.hoverState = 'in'
-
-    if (!self.options.delay || !self.options.delay.show) return self.show()
-
-    self.timeout = setTimeout(function () {
-      if (self.hoverState == 'in') self.show()
-    }, self.options.delay.show)
-  }
-
-  Tooltip.prototype.leave = function (obj) {
-    var self = obj instanceof this.constructor ?
-      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
-
-    clearTimeout(self.timeout)
-
-    self.hoverState = 'out'
-
-    if (!self.options.delay || !self.options.delay.hide) return self.hide()
-
-    self.timeout = setTimeout(function () {
-      if (self.hoverState == 'out') self.hide()
-    }, self.options.delay.hide)
-  }
-
-  Tooltip.prototype.show = function () {
-    var e = $.Event('show.bs.'+ this.type)
-
-    if (this.hasContent() && this.enabled) {
-      this.$element.trigger(e)
-
-      if (e.isDefaultPrevented()) return
-
-      var $tip = this.tip()
-
-      this.setContent()
-
-      if (this.options.animation) $tip.addClass('fade')
-
-      var placement = typeof this.options.placement == 'function' ?
-        this.options.placement.call(this, $tip[0], this.$element[0]) :
-        this.options.placement
-
-      var autoToken = /\s?auto?\s?/i
-      var autoPlace = autoToken.test(placement)
-      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
-
-      $tip
-        .detach()
-        .css({ top: 0, left: 0, display: 'block' })
-        .addClass(placement)
-
-      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
-
-      var pos          = this.getPosition()
-      var actualWidth  = $tip[0].offsetWidth
-      var actualHeight = $tip[0].offsetHeight
-
-      if (autoPlace) {
-        var $parent = this.$element.parent()
-
-        var orgPlacement = placement
-        var docScroll    = document.documentElement.scrollTop || document.body.scrollTop
-        var parentWidth  = this.options.container == 'body' ? window.innerWidth  : $parent.outerWidth()
-        var parentHeight = this.options.container == 'body' ? window.innerHeight : $parent.outerHeight()
-        var parentLeft   = this.options.container == 'body' ? 0 : $parent.offset().left
-
-        placement = placement == 'bottom' && pos.top   + pos.height  + actualHeight - docScroll > parentHeight  ? 'top'    :
-                    placement == 'top'    && pos.top   - docScroll   - actualHeight < 0                         ? 'bottom' :
-                    placement == 'right'  && pos.right + actualWidth > parentWidth                              ? 'left'   :
-                    placement == 'left'   && pos.left  - actualWidth < parentLeft                               ? 'right'  :
-                    placement
-
-        $tip
-          .removeClass(orgPlacement)
-          .addClass(placement)
-      }
-
-      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
-
-      this.applyPlacement(calculatedOffset, placement)
-      this.$element.trigger('shown.bs.' + this.type)
-    }
-  }
-
-  Tooltip.prototype.applyPlacement = function(offset, placement) {
-    var replace
-    var $tip   = this.tip()
-    var width  = $tip[0].offsetWidth
-    var height = $tip[0].offsetHeight
-
-    // manually read margins because getBoundingClientRect includes difference
-    var marginTop = parseInt($tip.css('margin-top'), 10)
-    var marginLeft = parseInt($tip.css('margin-left'), 10)
-
-    // we must check for NaN for ie 8/9
-    if (isNaN(marginTop))  marginTop  = 0
-    if (isNaN(marginLeft)) marginLeft = 0
-
-    offset.top  = offset.top  + marginTop
-    offset.left = offset.left + marginLeft
-
-    $tip
-      .offset(offset)
-      .addClass('in')
-
-    // check to see if placing tip in new offset caused the tip to resize itself
-    var actualWidth  = $tip[0].offsetWidth
-    var actualHeight = $tip[0].offsetHeight
-
-    if (placement == 'top' && actualHeight != height) {
-      replace = true
-      offset.top = offset.top + height - actualHeight
-    }
-
-    if (/bottom|top/.test(placement)) {
-      var delta = 0
-
-      if (offset.left < 0) {
-        delta       = offset.left * -2
-        offset.left = 0
-
-        $tip.offset(offset)
-
-        actualWidth  = $tip[0].offsetWidth
-        actualHeight = $tip[0].offsetHeight
-      }
-
-      this.replaceArrow(delta - width + actualWidth, actualWidth, 'left')
-    } else {
-      this.replaceArrow(actualHeight - height, actualHeight, 'top')
-    }
-
-    if (replace) $tip.offset(offset)
-  }
-
-  Tooltip.prototype.replaceArrow = function(delta, dimension, position) {
-    this.arrow().css(position, delta ? (50 * (1 - delta / dimension) + "%") : '')
-  }
-
-  Tooltip.prototype.setContent = function () {
-    var $tip  = this.tip()
-    var title = this.getTitle()
-
-    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
-    $tip.removeClass('fade in top bottom left right')
-  }
-
-  Tooltip.prototype.hide = function () {
-    var that = this
-    var $tip = this.tip()
-    var e    = $.Event('hide.bs.' + this.type)
-
-    function complete() {
-      if (that.hoverState != 'in') $tip.detach()
-    }
-
-    this.$element.trigger(e)
-
-    if (e.isDefaultPrevented()) return
-
-    $tip.removeClass('in')
-
-    $.support.transition && this.$tip.hasClass('fade') ?
-      $tip
-        .one($.support.transition.end, complete)
-        .emulateTransitionEnd(150) :
-      complete()
-
-    this.$element.trigger('hidden.bs.' + this.type)
-
-    return this
-  }
-
-  Tooltip.prototype.fixTitle = function () {
-    var $e = this.$element
-    if ($e.attr('title') || typeof($e.attr('data-original-title')) != 'string') {
-      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
-    }
-  }
-
-  Tooltip.prototype.hasContent = function () {
-    return this.getTitle()
-  }
-
-  Tooltip.prototype.getPosition = function () {
-    var el = this.$element[0]
-    return $.extend({}, (typeof el.getBoundingClientRect == 'function') ? el.getBoundingClientRect() : {
-      width: el.offsetWidth
-    , height: el.offsetHeight
-    }, this.$element.offset())
-  }
-
-  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
-    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2  } :
-           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2  } :
-           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
-        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   }
-  }
-
-  Tooltip.prototype.getTitle = function () {
-    var title
-    var $e = this.$element
-    var o  = this.options
-
-    title = $e.attr('data-original-title')
-      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
-
-    return title
-  }
-
-  Tooltip.prototype.tip = function () {
-    return this.$tip = this.$tip || $(this.options.template)
-  }
-
-  Tooltip.prototype.arrow = function () {
-    return this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow')
-  }
-
-  Tooltip.prototype.validate = function () {
-    if (!this.$element[0].parentNode) {
-      this.hide()
-      this.$element = null
-      this.options  = null
-    }
-  }
-
-  Tooltip.prototype.enable = function () {
-    this.enabled = true
-  }
-
-  Tooltip.prototype.disable = function () {
-    this.enabled = false
-  }
-
-  Tooltip.prototype.toggleEnabled = function () {
-    this.enabled = !this.enabled
-  }
-
-  Tooltip.prototype.toggle = function (e) {
-    var self = e ? $(e.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type) : this
-    self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
-  }
-
-  Tooltip.prototype.destroy = function () {
-    this.hide().$element.off('.' + this.type).removeData('bs.' + this.type)
-  }
-
-
-  // TOOLTIP PLUGIN DEFINITION
-  // =========================
-
-  var old = $.fn.tooltip
-
-  $.fn.tooltip = function (option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.tooltip')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  $.fn.tooltip.Constructor = Tooltip
-
-
-  // TOOLTIP NO CONFLICT
-  // ===================
-
-  $.fn.tooltip.noConflict = function () {
-    $.fn.tooltip = old
-    return this
-  }
-
-}(window.jQuery);
-
 /* =========================================================
  * bootstrap-datepicker.js
  * http://www.eyecon.ro/bootstrap-datepicker
@@ -8996,292 +8609,6 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
 	$.fn.datepicker.DPGlobal = DPGlobal;
 
 }( window.jQuery );
-
-/* ========================================================================
- * Bootstrap: affix.js v3.0.0
- * http://twbs.github.com/bootstrap/javascript.html#affix
- * ========================================================================
- * Copyright 2012 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ======================================================================== */
-
-
-+function ($) { "use strict";
-
-  // AFFIX CLASS DEFINITION
-  // ======================
-
-  var Affix = function (element, options) {
-    this.options = $.extend({}, Affix.DEFAULTS, options)
-    this.$window = $(window)
-      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
-      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
-
-    this.$element = $(element)
-    this.affixed  =
-    this.unpin    = null
-
-    this.checkPosition()
-  }
-
-  Affix.RESET = 'affix affix-top affix-bottom'
-
-  Affix.DEFAULTS = {
-    offset: 0
-  }
-
-  Affix.prototype.checkPositionWithEventLoop = function () {
-    setTimeout($.proxy(this.checkPosition, this), 1)
-  }
-
-  Affix.prototype.checkPosition = function () {
-    if (!this.$element.is(':visible')) return
-
-    var scrollHeight = $(document).height()
-    var scrollTop    = this.$window.scrollTop()
-    var position     = this.$element.offset()
-    var offset       = this.options.offset
-    var offsetTop    = offset.top
-    var offsetBottom = offset.bottom
-
-    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
-    if (typeof offsetTop == 'function')    offsetTop    = offset.top()
-    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom()
-
-    var affix = this.unpin   != null && (scrollTop + this.unpin <= position.top) ? false :
-                offsetBottom != null && (position.top + this.$element.height() >= scrollHeight - offsetBottom) ? 'bottom' :
-                offsetTop    != null && (scrollTop <= offsetTop) ? 'top' : false
-
-    if (this.affixed === affix) return
-    if (this.unpin) this.$element.css('top', '')
-
-    this.affixed = affix
-    this.unpin   = affix == 'bottom' ? position.top - scrollTop : null
-
-    this.$element.removeClass(Affix.RESET).addClass('affix' + (affix ? '-' + affix : ''))
-
-    if (affix == 'bottom') {
-      this.$element.offset({ top: document.body.offsetHeight - offsetBottom - this.$element.height() })
-    }
-  }
-
-
-  // AFFIX PLUGIN DEFINITION
-  // =======================
-
-  var old = $.fn.affix
-
-  $.fn.affix = function (option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.affix')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  $.fn.affix.Constructor = Affix
-
-
-  // AFFIX NO CONFLICT
-  // =================
-
-  $.fn.affix.noConflict = function () {
-    $.fn.affix = old
-    return this
-  }
-
-
-  // AFFIX DATA-API
-  // ==============
-
-  $(window).on('load', function () {
-    $('[data-spy="affix"]').each(function () {
-      var $spy = $(this)
-      var data = $spy.data()
-
-      data.offset = data.offset || {}
-
-      if (data.offsetBottom) data.offset.bottom = data.offsetBottom
-      if (data.offsetTop)    data.offset.top    = data.offsetTop
-
-      $spy.affix(data)
-    })
-  })
-
-}(window.jQuery);
-
-/* ========================================================================
- * Bootstrap: scrollspy.js v3.0.0
- * http://twbs.github.com/bootstrap/javascript.html#scrollspy
- * ========================================================================
- * Copyright 2012 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ======================================================================== */
-
-
-+function ($) { "use strict";
-
-  // SCROLLSPY CLASS DEFINITION
-  // ==========================
-
-  function ScrollSpy(element, options) {
-    var href
-    var process  = $.proxy(this.process, this)
-
-    this.$element       = $(element).is('body') ? $(window) : $(element)
-    this.$body          = $('body')
-    this.$scrollElement = this.$element.on('scroll.bs.scroll-spy.data-api', process)
-    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
-    this.selector       = (this.options.target
-      || ((href = $(element).attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
-      || '') + ' .nav li > a'
-    this.offsets        = $([])
-    this.targets        = $([])
-    this.activeTarget   = null
-
-    this.refresh()
-    this.process()
-  }
-
-  ScrollSpy.DEFAULTS = {
-    offset: 10
-  }
-
-  ScrollSpy.prototype.refresh = function () {
-    var offsetMethod = this.$element[0] == window ? 'offset' : 'position'
-
-    this.offsets = $([])
-    this.targets = $([])
-
-    var self     = this
-    var $targets = this.$body
-      .find(this.selector)
-      .map(function () {
-        var $el   = $(this)
-        var href  = $el.data('target') || $el.attr('href')
-        var $href = /^#\w/.test(href) && $(href)
-
-        return ($href
-          && $href.length
-          && [[ $href[offsetMethod]().top + (!$.isWindow(self.$scrollElement.get(0)) && self.$scrollElement.scrollTop()), href ]]) || null
-      })
-      .sort(function (a, b) { return a[0] - b[0] })
-      .each(function () {
-        self.offsets.push(this[0])
-        self.targets.push(this[1])
-      })
-  }
-
-  ScrollSpy.prototype.process = function () {
-    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
-    var scrollHeight = this.$scrollElement[0].scrollHeight || this.$body[0].scrollHeight
-    var maxScroll    = scrollHeight - this.$scrollElement.height()
-    var offsets      = this.offsets
-    var targets      = this.targets
-    var activeTarget = this.activeTarget
-    var i
-
-    if (scrollTop >= maxScroll) {
-      return activeTarget != (i = targets.last()[0]) && this.activate(i)
-    }
-
-    for (i = offsets.length; i--;) {
-      activeTarget != targets[i]
-        && scrollTop >= offsets[i]
-        && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
-        && this.activate( targets[i] )
-    }
-  }
-
-  ScrollSpy.prototype.activate = function (target) {
-    this.activeTarget = target
-
-    $(this.selector)
-      .parents('.active')
-      .removeClass('active')
-
-    var selector = this.selector
-      + '[data-target="' + target + '"],'
-      + this.selector + '[href="' + target + '"]'
-
-    var active = $(selector)
-      .parents('li')
-      .addClass('active')
-
-    if (active.parent('.dropdown-menu').length)  {
-      active = active
-        .closest('li.dropdown')
-        .addClass('active')
-    }
-
-    active.trigger('activate')
-  }
-
-
-  // SCROLLSPY PLUGIN DEFINITION
-  // ===========================
-
-  var old = $.fn.scrollspy
-
-  $.fn.scrollspy = function (option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.scrollspy')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  $.fn.scrollspy.Constructor = ScrollSpy
-
-
-  // SCROLLSPY NO CONFLICT
-  // =====================
-
-  $.fn.scrollspy.noConflict = function () {
-    $.fn.scrollspy = old
-    return this
-  }
-
-
-  // SCROLLSPY DATA-API
-  // ==================
-
-  $(window).on('load', function () {
-    $('[data-spy="scroll"]').each(function () {
-      var $spy = $(this)
-      $spy.scrollspy($spy.data())
-    })
-  })
-
-}(window.jQuery);
 
 /*
 Copyright 2012 Igor Vaynberg
@@ -12542,35 +11869,6 @@ the specific language governing permissions and limitations under the Apache Lic
 
 }(jQuery));
 
-var q=null;window.PR_SHOULD_USE_CONTINUATION=!0;
-(function(){function L(a){function m(a){var f=a.charCodeAt(0);if(f!==92)return f;var b=a.charAt(1);return(f=r[b])?f:"0"<=b&&b<="7"?parseInt(a.substring(1),8):b==="u"||b==="x"?parseInt(a.substring(2),16):a.charCodeAt(1)}function e(a){if(a<32)return(a<16?"\\x0":"\\x")+a.toString(16);a=String.fromCharCode(a);if(a==="\\"||a==="-"||a==="["||a==="]")a="\\"+a;return a}function h(a){for(var f=a.substring(1,a.length-1).match(/\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\[0-3][0-7]{0,2}|\\[0-7]{1,2}|\\[\S\s]|[^\\]/g),a=
-[],b=[],o=f[0]==="^",c=o?1:0,i=f.length;c<i;++c){var j=f[c];if(/\\[bdsw]/i.test(j))a.push(j);else{var j=m(j),d;c+2<i&&"-"===f[c+1]?(d=m(f[c+2]),c+=2):d=j;b.push([j,d]);d<65||j>122||(d<65||j>90||b.push([Math.max(65,j)|32,Math.min(d,90)|32]),d<97||j>122||b.push([Math.max(97,j)&-33,Math.min(d,122)&-33]))}}b.sort(function(a,f){return a[0]-f[0]||f[1]-a[1]});f=[];j=[NaN,NaN];for(c=0;c<b.length;++c)i=b[c],i[0]<=j[1]+1?j[1]=Math.max(j[1],i[1]):f.push(j=i);b=["["];o&&b.push("^");b.push.apply(b,a);for(c=0;c<
-f.length;++c)i=f[c],b.push(e(i[0])),i[1]>i[0]&&(i[1]+1>i[0]&&b.push("-"),b.push(e(i[1])));b.push("]");return b.join("")}function y(a){for(var f=a.source.match(/\[(?:[^\\\]]|\\[\S\s])*]|\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\\d+|\\[^\dux]|\(\?[!:=]|[()^]|[^()[\\^]+/g),b=f.length,d=[],c=0,i=0;c<b;++c){var j=f[c];j==="("?++i:"\\"===j.charAt(0)&&(j=+j.substring(1))&&j<=i&&(d[j]=-1)}for(c=1;c<d.length;++c)-1===d[c]&&(d[c]=++t);for(i=c=0;c<b;++c)j=f[c],j==="("?(++i,d[i]===void 0&&(f[c]="(?:")):"\\"===j.charAt(0)&&
-(j=+j.substring(1))&&j<=i&&(f[c]="\\"+d[i]);for(i=c=0;c<b;++c)"^"===f[c]&&"^"!==f[c+1]&&(f[c]="");if(a.ignoreCase&&s)for(c=0;c<b;++c)j=f[c],a=j.charAt(0),j.length>=2&&a==="["?f[c]=h(j):a!=="\\"&&(f[c]=j.replace(/[A-Za-z]/g,function(a){a=a.charCodeAt(0);return"["+String.fromCharCode(a&-33,a|32)+"]"}));return f.join("")}for(var t=0,s=!1,l=!1,p=0,d=a.length;p<d;++p){var g=a[p];if(g.ignoreCase)l=!0;else if(/[a-z]/i.test(g.source.replace(/\\u[\da-f]{4}|\\x[\da-f]{2}|\\[^UXux]/gi,""))){s=!0;l=!1;break}}for(var r=
-{b:8,t:9,n:10,v:11,f:12,r:13},n=[],p=0,d=a.length;p<d;++p){g=a[p];if(g.global||g.multiline)throw Error(""+g);n.push("(?:"+y(g)+")")}return RegExp(n.join("|"),l?"gi":"g")}function M(a){function m(a){switch(a.nodeType){case 1:if(e.test(a.className))break;for(var g=a.firstChild;g;g=g.nextSibling)m(g);g=a.nodeName;if("BR"===g||"LI"===g)h[s]="\n",t[s<<1]=y++,t[s++<<1|1]=a;break;case 3:case 4:g=a.nodeValue,g.length&&(g=p?g.replace(/\r\n?/g,"\n"):g.replace(/[\t\n\r ]+/g," "),h[s]=g,t[s<<1]=y,y+=g.length,
-t[s++<<1|1]=a)}}var e=/(?:^|\s)nocode(?:\s|$)/,h=[],y=0,t=[],s=0,l;a.currentStyle?l=a.currentStyle.whiteSpace:window.getComputedStyle&&(l=document.defaultView.getComputedStyle(a,q).getPropertyValue("white-space"));var p=l&&"pre"===l.substring(0,3);m(a);return{a:h.join("").replace(/\n$/,""),c:t}}function B(a,m,e,h){m&&(a={a:m,d:a},e(a),h.push.apply(h,a.e))}function x(a,m){function e(a){for(var l=a.d,p=[l,"pln"],d=0,g=a.a.match(y)||[],r={},n=0,z=g.length;n<z;++n){var f=g[n],b=r[f],o=void 0,c;if(typeof b===
-"string")c=!1;else{var i=h[f.charAt(0)];if(i)o=f.match(i[1]),b=i[0];else{for(c=0;c<t;++c)if(i=m[c],o=f.match(i[1])){b=i[0];break}o||(b="pln")}if((c=b.length>=5&&"lang-"===b.substring(0,5))&&!(o&&typeof o[1]==="string"))c=!1,b="src";c||(r[f]=b)}i=d;d+=f.length;if(c){c=o[1];var j=f.indexOf(c),k=j+c.length;o[2]&&(k=f.length-o[2].length,j=k-c.length);b=b.substring(5);B(l+i,f.substring(0,j),e,p);B(l+i+j,c,C(b,c),p);B(l+i+k,f.substring(k),e,p)}else p.push(l+i,b)}a.e=p}var h={},y;(function(){for(var e=a.concat(m),
-l=[],p={},d=0,g=e.length;d<g;++d){var r=e[d],n=r[3];if(n)for(var k=n.length;--k>=0;)h[n.charAt(k)]=r;r=r[1];n=""+r;p.hasOwnProperty(n)||(l.push(r),p[n]=q)}l.push(/[\S\s]/);y=L(l)})();var t=m.length;return e}function u(a){var m=[],e=[];a.tripleQuotedStrings?m.push(["str",/^(?:'''(?:[^'\\]|\\[\S\s]|''?(?=[^']))*(?:'''|$)|"""(?:[^"\\]|\\[\S\s]|""?(?=[^"]))*(?:"""|$)|'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$))/,q,"'\""]):a.multiLineStrings?m.push(["str",/^(?:'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$)|`(?:[^\\`]|\\[\S\s])*(?:`|$))/,
-q,"'\"`"]):m.push(["str",/^(?:'(?:[^\n\r'\\]|\\.)*(?:'|$)|"(?:[^\n\r"\\]|\\.)*(?:"|$))/,q,"\"'"]);a.verbatimStrings&&e.push(["str",/^@"(?:[^"]|"")*(?:"|$)/,q]);var h=a.hashComments;h&&(a.cStyleComments?(h>1?m.push(["com",/^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)/,q,"#"]):m.push(["com",/^#(?:(?:define|elif|else|endif|error|ifdef|include|ifndef|line|pragma|undef|warning)\b|[^\n\r]*)/,q,"#"]),e.push(["str",/^<(?:(?:(?:\.\.\/)*|\/?)(?:[\w-]+(?:\/[\w-]+)+)?[\w-]+\.h|[a-z]\w*)>/,q])):m.push(["com",/^#[^\n\r]*/,
-q,"#"]));a.cStyleComments&&(e.push(["com",/^\/\/[^\n\r]*/,q]),e.push(["com",/^\/\*[\S\s]*?(?:\*\/|$)/,q]));a.regexLiterals&&e.push(["lang-regex",/^(?:^^\.?|[!+-]|!=|!==|#|%|%=|&|&&|&&=|&=|\(|\*|\*=|\+=|,|-=|->|\/|\/=|:|::|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|[?@[^]|\^=|\^\^|\^\^=|{|\||\|=|\|\||\|\|=|~|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\s*(\/(?=[^*/])(?:[^/[\\]|\\[\S\s]|\[(?:[^\\\]]|\\[\S\s])*(?:]|$))+\/)/]);(h=a.types)&&e.push(["typ",h]);a=(""+a.keywords).replace(/^ | $/g,
-"");a.length&&e.push(["kwd",RegExp("^(?:"+a.replace(/[\s,]+/g,"|")+")\\b"),q]);m.push(["pln",/^\s+/,q," \r\n\t\xa0"]);e.push(["lit",/^@[$_a-z][\w$@]*/i,q],["typ",/^(?:[@_]?[A-Z]+[a-z][\w$@]*|\w+_t\b)/,q],["pln",/^[$_a-z][\w$@]*/i,q],["lit",/^(?:0x[\da-f]+|(?:\d(?:_\d+)*\d*(?:\.\d*)?|\.\d\+)(?:e[+-]?\d+)?)[a-z]*/i,q,"0123456789"],["pln",/^\\[\S\s]?/,q],["pun",/^.[^\s\w"-$'./@\\`]*/,q]);return x(m,e)}function D(a,m){function e(a){switch(a.nodeType){case 1:if(k.test(a.className))break;if("BR"===a.nodeName)h(a),
-a.parentNode&&a.parentNode.removeChild(a);else for(a=a.firstChild;a;a=a.nextSibling)e(a);break;case 3:case 4:if(p){var b=a.nodeValue,d=b.match(t);if(d){var c=b.substring(0,d.index);a.nodeValue=c;(b=b.substring(d.index+d[0].length))&&a.parentNode.insertBefore(s.createTextNode(b),a.nextSibling);h(a);c||a.parentNode.removeChild(a)}}}}function h(a){function b(a,d){var e=d?a.cloneNode(!1):a,f=a.parentNode;if(f){var f=b(f,1),g=a.nextSibling;f.appendChild(e);for(var h=g;h;h=g)g=h.nextSibling,f.appendChild(h)}return e}
-for(;!a.nextSibling;)if(a=a.parentNode,!a)return;for(var a=b(a.nextSibling,0),e;(e=a.parentNode)&&e.nodeType===1;)a=e;d.push(a)}var k=/(?:^|\s)nocode(?:\s|$)/,t=/\r\n?|\n/,s=a.ownerDocument,l;a.currentStyle?l=a.currentStyle.whiteSpace:window.getComputedStyle&&(l=s.defaultView.getComputedStyle(a,q).getPropertyValue("white-space"));var p=l&&"pre"===l.substring(0,3);for(l=s.createElement("LI");a.firstChild;)l.appendChild(a.firstChild);for(var d=[l],g=0;g<d.length;++g)e(d[g]);m===(m|0)&&d[0].setAttribute("value",
-m);var r=s.createElement("OL");r.className="linenums";for(var n=Math.max(0,m-1|0)||0,g=0,z=d.length;g<z;++g)l=d[g],l.className="L"+(g+n)%10,l.firstChild||l.appendChild(s.createTextNode("\xa0")),r.appendChild(l);a.appendChild(r)}function k(a,m){for(var e=m.length;--e>=0;){var h=m[e];A.hasOwnProperty(h)?window.console&&console.warn("cannot override language handler %s",h):A[h]=a}}function C(a,m){if(!a||!A.hasOwnProperty(a))a=/^\s*</.test(m)?"default-markup":"default-code";return A[a]}function E(a){var m=
-a.g;try{var e=M(a.h),h=e.a;a.a=h;a.c=e.c;a.d=0;C(m,h)(a);var k=/\bMSIE\b/.test(navigator.userAgent),m=/\n/g,t=a.a,s=t.length,e=0,l=a.c,p=l.length,h=0,d=a.e,g=d.length,a=0;d[g]=s;var r,n;for(n=r=0;n<g;)d[n]!==d[n+2]?(d[r++]=d[n++],d[r++]=d[n++]):n+=2;g=r;for(n=r=0;n<g;){for(var z=d[n],f=d[n+1],b=n+2;b+2<=g&&d[b+1]===f;)b+=2;d[r++]=z;d[r++]=f;n=b}for(d.length=r;h<p;){var o=l[h+2]||s,c=d[a+2]||s,b=Math.min(o,c),i=l[h+1],j;if(i.nodeType!==1&&(j=t.substring(e,b))){k&&(j=j.replace(m,"\r"));i.nodeValue=
-j;var u=i.ownerDocument,v=u.createElement("SPAN");v.className=d[a+1];var x=i.parentNode;x.replaceChild(v,i);v.appendChild(i);e<o&&(l[h+1]=i=u.createTextNode(t.substring(b,o)),x.insertBefore(i,v.nextSibling))}e=b;e>=o&&(h+=2);e>=c&&(a+=2)}}catch(w){"console"in window&&console.log(w&&w.stack?w.stack:w)}}var v=["break,continue,do,else,for,if,return,while"],w=[[v,"auto,case,char,const,default,double,enum,extern,float,goto,int,long,register,short,signed,sizeof,static,struct,switch,typedef,union,unsigned,void,volatile"],
-"catch,class,delete,false,import,new,operator,private,protected,public,this,throw,true,try,typeof"],F=[w,"alignof,align_union,asm,axiom,bool,concept,concept_map,const_cast,constexpr,decltype,dynamic_cast,explicit,export,friend,inline,late_check,mutable,namespace,nullptr,reinterpret_cast,static_assert,static_cast,template,typeid,typename,using,virtual,where"],G=[w,"abstract,boolean,byte,extends,final,finally,implements,import,instanceof,null,native,package,strictfp,super,synchronized,throws,transient"],
-H=[G,"as,base,by,checked,decimal,delegate,descending,dynamic,event,fixed,foreach,from,group,implicit,in,interface,internal,into,is,lock,object,out,override,orderby,params,partial,readonly,ref,sbyte,sealed,stackalloc,string,select,uint,ulong,unchecked,unsafe,ushort,var"],w=[w,"debugger,eval,export,function,get,null,set,undefined,var,with,Infinity,NaN"],I=[v,"and,as,assert,class,def,del,elif,except,exec,finally,from,global,import,in,is,lambda,nonlocal,not,or,pass,print,raise,try,with,yield,False,True,None"],
-J=[v,"alias,and,begin,case,class,def,defined,elsif,end,ensure,false,in,module,next,nil,not,or,redo,rescue,retry,self,super,then,true,undef,unless,until,when,yield,BEGIN,END"],v=[v,"case,done,elif,esac,eval,fi,function,in,local,set,then,until"],K=/^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float)\d*)/,N=/\S/,O=u({keywords:[F,H,w,"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END"+
-I,J,v],hashComments:!0,cStyleComments:!0,multiLineStrings:!0,regexLiterals:!0}),A={};k(O,["default-code"]);k(x([],[["pln",/^[^<?]+/],["dec",/^<!\w[^>]*(?:>|$)/],["com",/^<\!--[\S\s]*?(?:--\>|$)/],["lang-",/^<\?([\S\s]+?)(?:\?>|$)/],["lang-",/^<%([\S\s]+?)(?:%>|$)/],["pun",/^(?:<[%?]|[%?]>)/],["lang-",/^<xmp\b[^>]*>([\S\s]+?)<\/xmp\b[^>]*>/i],["lang-js",/^<script\b[^>]*>([\S\s]*?)(<\/script\b[^>]*>)/i],["lang-css",/^<style\b[^>]*>([\S\s]*?)(<\/style\b[^>]*>)/i],["lang-in.tag",/^(<\/?[a-z][^<>]*>)/i]]),
-["default-markup","htm","html","mxml","xhtml","xml","xsl"]);k(x([["pln",/^\s+/,q," \t\r\n"],["atv",/^(?:"[^"]*"?|'[^']*'?)/,q,"\"'"]],[["tag",/^^<\/?[a-z](?:[\w-.:]*\w)?|\/?>$/i],["atn",/^(?!style[\s=]|on)[a-z](?:[\w:-]*\w)?/i],["lang-uq.val",/^=\s*([^\s"'>]*(?:[^\s"'/>]|\/(?=\s)))/],["pun",/^[/<->]+/],["lang-js",/^on\w+\s*=\s*"([^"]+)"/i],["lang-js",/^on\w+\s*=\s*'([^']+)'/i],["lang-js",/^on\w+\s*=\s*([^\s"'>]+)/i],["lang-css",/^style\s*=\s*"([^"]+)"/i],["lang-css",/^style\s*=\s*'([^']+)'/i],["lang-css",
-/^style\s*=\s*([^\s"'>]+)/i]]),["in.tag"]);k(x([],[["atv",/^[\S\s]+/]]),["uq.val"]);k(u({keywords:F,hashComments:!0,cStyleComments:!0,types:K}),["c","cc","cpp","cxx","cyc","m"]);k(u({keywords:"null,true,false"}),["json"]);k(u({keywords:H,hashComments:!0,cStyleComments:!0,verbatimStrings:!0,types:K}),["cs"]);k(u({keywords:G,cStyleComments:!0}),["java"]);k(u({keywords:v,hashComments:!0,multiLineStrings:!0}),["bsh","csh","sh"]);k(u({keywords:I,hashComments:!0,multiLineStrings:!0,tripleQuotedStrings:!0}),
-["cv","py"]);k(u({keywords:"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END",hashComments:!0,multiLineStrings:!0,regexLiterals:!0}),["perl","pl","pm"]);k(u({keywords:J,hashComments:!0,multiLineStrings:!0,regexLiterals:!0}),["rb"]);k(u({keywords:w,cStyleComments:!0,regexLiterals:!0}),["js"]);k(u({keywords:"all,and,by,catch,class,else,extends,false,finally,for,if,in,is,isnt,loop,new,no,not,null,of,off,on,or,return,super,then,true,try,unless,until,when,while,yes",
-hashComments:3,cStyleComments:!0,multilineStrings:!0,tripleQuotedStrings:!0,regexLiterals:!0}),["coffee"]);k(x([],[["str",/^[\S\s]+/]]),["regex"]);window.prettyPrintOne=function(a,m,e){var h=document.createElement("PRE");h.innerHTML=a;e&&D(h,e);E({g:m,i:e,h:h});return h.innerHTML};window.prettyPrint=function(a){function m(){for(var e=window.PR_SHOULD_USE_CONTINUATION?l.now()+250:Infinity;p<h.length&&l.now()<e;p++){var n=h[p],k=n.className;if(k.indexOf("prettyprint")>=0){var k=k.match(g),f,b;if(b=
-!k){b=n;for(var o=void 0,c=b.firstChild;c;c=c.nextSibling)var i=c.nodeType,o=i===1?o?b:c:i===3?N.test(c.nodeValue)?b:o:o;b=(f=o===b?void 0:o)&&"CODE"===f.tagName}b&&(k=f.className.match(g));k&&(k=k[1]);b=!1;for(o=n.parentNode;o;o=o.parentNode)if((o.tagName==="pre"||o.tagName==="code"||o.tagName==="xmp")&&o.className&&o.className.indexOf("prettyprint")>=0){b=!0;break}b||((b=(b=n.className.match(/\blinenums\b(?::(\d+))?/))?b[1]&&b[1].length?+b[1]:!0:!1)&&D(n,b),d={g:k,h:n,i:b},E(d))}}p<h.length?setTimeout(m,
-250):a&&a()}for(var e=[document.getElementsByTagName("pre"),document.getElementsByTagName("code"),document.getElementsByTagName("xmp")],h=[],k=0;k<e.length;++k)for(var t=0,s=e[k].length;t<s;++t)h.push(e[k][t]);var e=q,l=Date;l.now||(l={now:function(){return+new Date}});var p=0,d,g=/\blang(?:uage)?-([\w.]+)(?!\S)/;m()};window.PR={createSimpleLexer:x,registerLangHandler:k,sourceDecorator:u,PR_ATTRIB_NAME:"atn",PR_ATTRIB_VALUE:"atv",PR_COMMENT:"com",PR_DECLARATION:"dec",PR_KEYWORD:"kwd",PR_LITERAL:"lit",
-PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING:"str",PR_TAG:"tag",PR_TYPE:"typ"}})();
-
 // moment.js
 // version : 2.0.0
 // author : Tim Wood
@@ -13971,6 +13269,893 @@ PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING
         });
     }
 }).call(this);
+var hljs = new function () {
+        function l(o) {
+            return o.replace(/&/gm, "&amp;").replace(/</gm, "&lt;").replace(/>/gm, "&gt;")
+        }
+
+        function b(p) {
+            for (var o = p.firstChild; o; o = o.nextSibling) {
+                if (o.nodeName.toUpperCase() == "CODE") {
+                    return o
+                }
+                if (!(o.nodeType == 3 && o.nodeValue.match(/\s+/))) {
+                    break
+                }
+            }
+        }
+
+        function h(p, o) {
+            return Array.prototype.map.call(p.childNodes, function (q) {
+                if (q.nodeType == 3) {
+                    return o ? q.nodeValue.replace(/\n/g, "") : q.nodeValue
+                }
+                if (q.nodeName.toUpperCase() == "BR") {
+                    return "\n"
+                }
+                return h(q, o)
+            }).join("")
+        }
+
+        function a(q) {
+            var p = (q.className + " " + (q.parentNode ? q.parentNode.className : "")).split(/\s+/);
+            p = p.map(function (r) {
+                return r.replace(/^language-/, "")
+            });
+            for (var o = 0; o < p.length; o++) {
+                if (e[p[o]] || p[o] == "no-highlight") {
+                    return p[o]
+                }
+            }
+        }
+
+        function c(q) {
+            var o = [];
+            (function p(r, s) {
+                for (var t = r.firstChild; t; t = t.nextSibling) {
+                    if (t.nodeType == 3) {
+                        s += t.nodeValue.length
+                    } else {
+                        if (t.nodeName.toUpperCase() == "BR") {
+                            s += 1
+                        } else {
+                            if (t.nodeType == 1) {
+                                o.push({
+                                    event: "start",
+                                    offset: s,
+                                    node: t
+                                });
+                                s = p(t, s);
+                                o.push({
+                                    event: "stop",
+                                    offset: s,
+                                    node: t
+                                })
+                            }
+                        }
+                    }
+                }
+                return s
+            })(q, 0);
+            return o
+        }
+
+        function j(p, r, v) {
+            var q = 0;
+            var y = "";
+            var s = [];
+
+            function u() {
+                if (!p.length || !r.length) {
+                    return p.length ? p : r
+                }
+                if (p[0].offset != r[0].offset) {
+                    return (p[0].offset < r[0].offset) ? p : r
+                }
+                return r[0].event == "start" ? p : r
+            }
+
+            function t(A) {
+                function z(B) {
+                    return " " + B.nodeName + '="' + l(B.value) + '"'
+                }
+                y += "<" + A.nodeName.toLowerCase() + Array.prototype.map.call(A.attributes, z).join("") + ">"
+            }
+
+            function x(z) {
+                y += "</" + z.nodeName.toLowerCase() + ">"
+            }
+
+            function o(z) {
+                (z.event == "start" ? t : x)(z.node)
+            }
+            while (p.length || r.length) {
+                var w = u();
+                y += l(v.substr(q, w[0].offset - q));
+                q = w[0].offset;
+                if (w == p) {
+                    s.reverse().forEach(x);
+                    do {
+                        o(w.splice(0, 1)[0]);
+                        w = u()
+                    } while (w == p && w.length && w[0].offset == q);
+                    s.reverse().forEach(t)
+                } else {
+                    if (w[0].event == "start") {
+                        s.push(w[0].node)
+                    } else {
+                        s.pop()
+                    }
+                    o(w.splice(0, 1)[0])
+                }
+            }
+            return y + l(v.substr(q))
+        }
+
+        function f(r) {
+            function o(s) {
+                return (s && s.source) || s
+            }
+
+            function p(t, s) {
+                return RegExp(o(t), "m" + (r.cI ? "i" : "") + (s ? "g" : ""))
+            }
+
+            function q(z, x) {
+                function A(B, t) {
+                    if (r.cI) {
+                        t = t.toLowerCase()
+                    }
+                    t.split(" ").forEach(function (C) {
+                        var D = C.split("|");
+                        s[D[0]] = [B, D[1] ? Number(D[1]) : 1];
+                        u.push(D[0])
+                    })
+                }
+
+                if (z.compiled) {
+                    return
+                }
+                z.compiled = true;
+                var u = [];
+                if (z.k) {
+                    var s = {};
+
+                    z.lR = p(z.l || "\\b" + hljs.IR + "\\b(?!\\.)", true);
+                    if (typeof z.k == "string") {
+                        A("keyword", z.k)
+                    } else {
+                        for (var y in z.k) {
+                            if (!z.k.hasOwnProperty(y)) {
+                                continue
+                            }
+                            A(y, z.k[y])
+                        }
+                    }
+                    z.k = s
+                }
+                if (x) {
+                    if (z.bWK) {
+                        z.b = "\\b(" + u.join("|") + ")\\b(?!\\.)\\s*"
+                    }
+                    z.bR = p(z.b ? z.b : "\\B|\\b");
+                    if (!z.e && !z.eW) {
+                        z.e = "\\B|\\b"
+                    }
+                    if (z.e) {
+                        z.eR = p(z.e)
+                    }
+                    z.tE = o(z.e) || "";
+                    if (z.eW && x.tE) {
+                        z.tE += (z.e ? "|" : "") + x.tE
+                    }
+                }
+                if (z.i) {
+                    z.iR = p(z.i)
+                }
+                if (z.r === undefined) {
+                    z.r = 1
+                }
+                if (!z.c) {
+                    z.c = []
+                }
+                for (var w = 0; w < z.c.length; w++) {
+                    if (z.c[w] == "self") {
+                        z.c[w] = z
+                    }
+                    q(z.c[w], z)
+                }
+                if (z.starts) {
+                    q(z.starts, x)
+                }
+                var v = [];
+                for (var w = 0; w < z.c.length; w++) {
+                    v.push(o(z.c[w].b))
+                }
+                if (z.tE) {
+                    v.push(o(z.tE))
+                }
+                if (z.i) {
+                    v.push(o(z.i))
+                }
+                z.t = v.length ? p(v.join("|"), true) : {
+                    exec: function (t) {
+                        return null
+                    }
+                }
+            }
+            q(r)
+        }
+
+        function d(E, G, C, M) {
+            function o(r, P) {
+                for (var O = 0; O < P.c.length; O++) {
+                    var N = P.c[O].bR.exec(r);
+                    if (N && N.index == 0) {
+                        return P.c[O]
+                    }
+                }
+            }
+
+            function s(N, r) {
+                if (N.e && N.eR.test(r)) {
+                    return N
+                }
+                if (N.eW) {
+                    return s(N.parent, r)
+                }
+            }
+
+            function t(r, N) {
+                return !C && N.i && N.iR.test(r)
+            }
+
+            function y(O, r) {
+                var N = H.cI ? r[0].toLowerCase() : r[0];
+                return O.k.hasOwnProperty(N) && O.k[N]
+            }
+
+            function I() {
+                var N = l(w);
+                if (!B.k) {
+                    return N
+                }
+                var r = "";
+                var Q = 0;
+                B.lR.lastIndex = 0;
+                var O = B.lR.exec(N);
+                while (O) {
+                    r += N.substr(Q, O.index - Q);
+                    var P = y(B, O);
+                    if (P) {
+                        v += P[1];
+                        r += '<span class="' + P[0] + '">' + O[0] + "</span>"
+                    } else {
+                        r += O[0]
+                    }
+                    Q = B.lR.lastIndex;
+                    O = B.lR.exec(N)
+                }
+                return r + N.substr(Q)
+            }
+
+            function z() {
+                if (B.sL && !e[B.sL]) {
+                    return l(w)
+                }
+                var N = B.subLanguageMode == "continuous" ? B.top : undefined;
+                var r = B.sL ? d(B.sL, w, true, N) : g(w);
+                if (B.r > 0) {
+                    v += r.keyword_count;
+                    A += r.r
+                }
+                B.top = r.top;
+                return '<span class="' + r.language + '">' + r.value + "</span>"
+            }
+
+            function L() {
+                return B.sL !== undefined ? z() : I()
+            }
+
+            function K(O, r) {
+                var N = O.cN ? '<span class="' + O.cN + '">' : "";
+                if (O.rB) {
+                    x += N;
+                    w = ""
+                } else {
+                    if (O.eB) {
+                        x += l(r) + N;
+                        w = ""
+                    } else {
+                        x += N;
+                        w = r
+                    }
+                }
+                B = Object.create(O, {
+                    parent: {
+                        value: B
+                    }
+                })
+            }
+
+            function D(N, r) {
+                w += N;
+                if (r === undefined) {
+                    x += L();
+                    return 0
+                }
+                var P = o(r, B);
+                if (P) {
+                    x += L();
+                    K(P, r);
+                    return P.rB ? 0 : r.length
+                }
+                var Q = s(B, r);
+                if (Q) {
+                    var O = B;
+                    if (!(O.rE || O.eE)) {
+                        w += r
+                    }
+                    x += L();
+                    do {
+                        if (B.cN) {
+                            x += "</span>"
+                        }
+                        A += B.r;
+                        B = B.parent
+                    } while (B != Q.parent);
+                    if (O.eE) {
+                        x += l(r)
+                    }
+                    w = "";
+                    if (Q.starts) {
+                        K(Q.starts, "")
+                    }
+                    return O.rE ? 0 : r.length
+                }
+                if (t(r, B)) {
+                    throw new Error('Illegal lexem "' + r + '" for mode "' + (B.cN || "<unnamed>") + '"')
+                }
+                w += r;
+                return r.length || 1
+            }
+            var H = e[E];
+            if (!H) {
+                throw new Error('Unknown language: "' + E + '"')
+            }
+            f(H);
+            var B = M || H;
+            var x = "";
+            for (var F = B; F != H; F = F.parent) {
+                if (F.cN) {
+                    x = '<span class="' + F.cN + '">' + x
+                }
+            }
+            var w = "";
+            var A = 0;
+            var v = 0;
+            try {
+                var u, q, p = 0;
+                while (true) {
+                    B.t.lastIndex = p;
+                    u = B.t.exec(G);
+                    if (!u) {
+                        break
+                    }
+                    q = D(G.substr(p, u.index - p), u[0]);
+                    p = u.index + q
+                }
+                D(G.substr(p));
+                for (var F = B; F.parent; F = F.parent) {
+                    if (F.cN) {
+                        x += "</span>"
+                    }
+                }
+                return {
+                    r: A,
+                    keyword_count: v,
+                    value: x,
+                    language: E,
+                    top: B
+                }
+            } catch (J) {
+                if (J.message.indexOf("Illegal") != -1) {
+                    return {
+                        r: 0,
+                        keyword_count: 0,
+                        value: l(G)
+                    }
+                } else {
+                    throw J
+                }
+            }
+        }
+
+        function g(s) {
+            var o = {
+                keyword_count: 0,
+                r: 0,
+                value: l(s)
+            };
+            var q = o;
+            for (var p in e) {
+                if (!e.hasOwnProperty(p)) {
+                    continue
+                }
+                var r = d(p, s, false);
+                r.language = p;
+                if (r.keyword_count + r.r > q.keyword_count + q.r) {
+                    q = r
+                }
+                if (r.keyword_count + r.r > o.keyword_count + o.r) {
+                    q = o;
+                    o = r
+                }
+            }
+            if (q.language) {
+                o.second_best = q
+            }
+            return o
+        }
+
+        function i(q, p, o) {
+            if (p) {
+                q = q.replace(/^((<[^>]+>|\t)+)/gm, function (r, v, u, t) {
+                    return v.replace(/\t/g, p)
+                })
+            }
+            if (o) {
+                q = q.replace(/\n/g, "<br>")
+            }
+            return q
+        }
+
+        function m(r, u, p) {
+            var v = h(r, p);
+            var t = a(r);
+            if (t == "no-highlight") {
+                return
+            }
+            var w = t ? d(t, v, true) : g(v);
+            t = w.language;
+            var o = c(r);
+            if (o.length) {
+                var q = document.createElementNS("http://www.w3.org/1999/xhtml", "pre");
+                q.innerHTML = w.value;
+                w.value = j(o, c(q), v)
+            }
+            w.value = i(w.value, u, p);
+            var s = r.className;
+            if (!s.match("(\\s|^)(language-)?" + t + "(\\s|$)")) {
+                s = s ? (s + " " + t) : t
+            }
+            r.innerHTML = w.value;
+            r.className = s;
+            r.result = {
+                language: t,
+                kw: w.keyword_count,
+                re: w.r
+            };
+            if (w.second_best) {
+                r.second_best = {
+                    language: w.second_best.language,
+                    kw: w.second_best.keyword_count,
+                    re: w.second_best.r
+                }
+            }
+        }
+
+        function n() {
+            if (n.called) {
+                return
+            }
+            n.called = true;
+            Array.prototype.map.call(document.getElementsByTagNameNS("http://www.w3.org/1999/xhtml", "pre"), b).filter(Boolean).forEach(function (o) {
+                m(o, hljs.tabReplace)
+            })
+        }
+
+        function k() {
+            window.addEventListener("DOMContentLoaded", n, false);
+            window.addEventListener("load", n, false)
+        }
+        var e = {};
+        this.LANGUAGES = e;
+        this.highlight = d;
+        this.highlightAuto = g;
+        this.fixMarkup = i;
+        this.highlightBlock = m;
+        this.initHighlighting = n;
+        this.initHighlightingOnLoad = k;
+        this.IR = "[a-zA-Z][a-zA-Z0-9_]*";
+        this.UIR = "[a-zA-Z_][a-zA-Z0-9_]*";
+        this.NR = "\\b\\d+(\\.\\d+)?";
+        this.CNR = "(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";
+        this.BNR = "\\b(0b[01]+)";
+        this.RSR = "!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";
+        this.BE = {
+            b: "\\\\[\\s\\S]",
+            r: 0
+        };
+        this.ASM = {
+            cN: "string",
+            b: "'",
+            e: "'",
+            i: "\\n",
+            c: [this.BE],
+            r: 0
+        };
+        this.QSM = {
+            cN: "string",
+            b: '"',
+            e: '"',
+            i: "\\n",
+            c: [this.BE],
+            r: 0
+        };
+        this.CLCM = {
+            cN: "comment",
+            b: "//",
+            e: "$"
+        };
+        this.CBLCLM = {
+            cN: "comment",
+            b: "/\\*",
+            e: "\\*/"
+        };
+        this.HCM = {
+            cN: "comment",
+            b: "#",
+            e: "$"
+        };
+        this.NM = {
+            cN: "number",
+            b: this.NR,
+            r: 0
+        };
+        this.CNM = {
+            cN: "number",
+            b: this.CNR,
+            r: 0
+        };
+        this.BNM = {
+            cN: "number",
+            b: this.BNR,
+            r: 0
+        };
+        this.REGEXP_MODE = {
+            cN: "regexp",
+            b: /\//,
+            e: /\/[gim]*/,
+            i: /\n/,
+            c: [this.BE, {
+                b: /\[/,
+                e: /\]/,
+                r: 0,
+                c: [this.BE]
+            }]
+        };
+        this.inherit = function (q, r) {
+            var o = {};
+            for (var p in q) {
+                o[p] = q[p]
+            }
+            if (r) {
+                for (var p in r) {
+                    o[p] = r[p]
+                }
+            }
+            return o
+        }
+    }();
+hljs.LANGUAGES.javascript = function (a) {
+    return {
+        k: {
+            keyword: "in if for while finally var new function do return void else break catch instanceof with throw case default try this switch continue typeof delete let yield const",
+            literal: "true false null undefined NaN Infinity"
+        },
+        c: [a.ASM, a.QSM, a.CLCM, a.CBLCLM, a.CNM, {
+            b: "(" + a.RSR + "|\\b(case|return|throw)\\b)\\s*",
+            k: "return throw case",
+            c: [a.CLCM, a.CBLCLM, a.REGEXP_MODE, {
+                b: /</,
+                e: />;/,
+                sL: "xml"
+            }],
+            r: 0
+        }, {
+            cN: "function",
+            bWK: true,
+            e: /{/,
+            k: "function",
+            c: [{
+                cN: "title",
+                b: /[A-Za-z$_][0-9A-Za-z$_]*/
+            }, {
+                cN: "params",
+                b: /\(/,
+                e: /\)/,
+                c: [a.CLCM, a.CBLCLM],
+                i: /["'\(]/
+            }],
+            i: /\[|%/
+        }]
+    }
+}(hljs);
+hljs.LANGUAGES.css = function (a) {
+    var b = "[a-zA-Z-][a-zA-Z0-9_-]*";
+    var c = {
+        cN: "function",
+        b: b + "\\(",
+        e: "\\)",
+        c: ["self", a.NM, a.ASM, a.QSM]
+    };
+    return {
+        cI: true,
+        i: "[=/|']",
+        c: [a.CBLCLM, {
+            cN: "id",
+            b: "\\#[A-Za-z0-9_-]+"
+        }, {
+            cN: "class",
+            b: "\\.[A-Za-z0-9_-]+",
+            r: 0
+        }, {
+            cN: "attr_selector",
+            b: "\\[",
+            e: "\\]",
+            i: "$"
+        }, {
+            cN: "pseudo",
+            b: ":(:)?[a-zA-Z0-9\\_\\-\\+\\(\\)\\\"\\']+"
+        }, {
+            cN: "at_rule",
+            b: "@(font-face|page)",
+            l: "[a-z-]+",
+            k: "font-face page"
+        }, {
+            cN: "at_rule",
+            b: "@",
+            e: "[{;]",
+            c: [{
+                cN: "keyword",
+                b: /\S+/
+            }, {
+                b: /\s/,
+                eW: true,
+                eE: true,
+                r: 0,
+                c: [c, a.ASM, a.QSM, a.NM]
+            }]
+        }, {
+            cN: "tag",
+            b: b,
+            r: 0
+        }, {
+            cN: "rules",
+            b: "{",
+            e: "}",
+            i: "[^\\s]",
+            r: 0,
+            c: [a.CBLCLM, {
+                cN: "rule",
+                b: "[^\\s]",
+                rB: true,
+                e: ";",
+                eW: true,
+                c: [{
+                    cN: "attribute",
+                    b: "[A-Z\\_\\.\\-]+",
+                    e: ":",
+                    eE: true,
+                    i: "[^\\s]",
+                    starts: {
+                        cN: "value",
+                        eW: true,
+                        eE: true,
+                        c: [c, a.NM, a.QSM, a.ASM, a.CBLCLM, {
+                            cN: "hexcolor",
+                            b: "#[0-9A-Fa-f]+"
+                        }, {
+                            cN: "important",
+                            b: "!important"
+                        }]
+                    }
+                }]
+            }]
+        }]
+    }
+}(hljs);
+hljs.LANGUAGES.xml = function (a) {
+    var c = "[A-Za-z0-9\\._:-]+";
+    var b = {
+        eW: true,
+        r: 0,
+        c: [{
+            cN: "attribute",
+            b: c,
+            r: 0
+        }, {
+            b: '="',
+            rB: true,
+            e: '"',
+            c: [{
+                cN: "value",
+                b: '"',
+                eW: true
+            }]
+        }, {
+            b: "='",
+            rB: true,
+            e: "'",
+            c: [{
+                cN: "value",
+                b: "'",
+                eW: true
+            }]
+        }, {
+            b: "=",
+            c: [{
+                cN: "value",
+                b: "[^\\s/>]+"
+            }]
+        }]
+    };
+    return {
+        cI: true,
+        c: [{
+            cN: "pi",
+            b: "<\\?",
+            e: "\\?>",
+            r: 10
+        }, {
+            cN: "doctype",
+            b: "<!DOCTYPE",
+            e: ">",
+            r: 10,
+            c: [{
+                b: "\\[",
+                e: "\\]"
+            }]
+        }, {
+            cN: "comment",
+            b: "<!--",
+            e: "-->",
+            r: 10
+        }, {
+            cN: "cdata",
+            b: "<\\!\\[CDATA\\[",
+            e: "\\]\\]>",
+            r: 10
+        }, {
+            cN: "tag",
+            b: "<style(?=\\s|>|$)",
+            e: ">",
+            k: {
+                title: "style"
+            },
+            c: [b],
+            starts: {
+                e: "</style>",
+                rE: true,
+                sL: "css"
+            }
+        }, {
+            cN: "tag",
+            b: "<script(?=\\s|>|$)",
+            e: ">",
+            k: {
+                title: "script"
+            },
+            c: [b],
+            starts: {
+                e: "<\/script>",
+                rE: true,
+                sL: "javascript"
+            }
+        }, {
+            b: "<%",
+            e: "%>",
+            sL: "vbscript"
+        }, {
+            cN: "tag",
+            b: "</?",
+            e: "/?>",
+            r: 0,
+            c: [{
+                    cN: "title",
+                    b: "[^ /><]+"
+                },
+                b
+            ]
+        }]
+    }
+}(hljs);
+hljs.LANGUAGES.http = function (a) {
+    return {
+        i: "\\S",
+        c: [{
+            cN: "status",
+            b: "^HTTP/[0-9\\.]+",
+            e: "$",
+            c: [{
+                cN: "number",
+                b: "\\b\\d{3}\\b"
+            }]
+        }, {
+            cN: "request",
+            b: "^[A-Z]+ (.*?) HTTP/[0-9\\.]+$",
+            rB: true,
+            e: "$",
+            c: [{
+                cN: "string",
+                b: " ",
+                e: " ",
+                eB: true,
+                eE: true
+            }]
+        }, {
+            cN: "attribute",
+            b: "^\\w",
+            e: ": ",
+            eE: true,
+            i: "\\n|\\s|=",
+            starts: {
+                cN: "string",
+                e: "$"
+            }
+        }, {
+            b: "\\n\\n",
+            starts: {
+                sL: "",
+                eW: true
+            }
+        }]
+    }
+}(hljs);
+hljs.LANGUAGES.json = function (a) {
+    var e = {
+        literal: "true false null"
+    };
+    var d = [a.QSM, a.CNM];
+    var c = {
+        cN: "value",
+        e: ",",
+        eW: true,
+        eE: true,
+        c: d,
+        k: e
+    };
+    var b = {
+        b: "{",
+        e: "}",
+        c: [{
+            cN: "attribute",
+            b: '\\s*"',
+            e: '"\\s*:\\s*',
+            eB: true,
+            eE: true,
+            c: [a.BE],
+            i: "\\n",
+            starts: c
+        }],
+        i: "\\S"
+    };
+    var f = {
+        b: "\\[",
+        e: "\\]",
+        c: [a.inherit(c, {
+            cN: null
+        })],
+        i: "\\S"
+    };
+    d.splice(d.length, 0, b, f);
+    return {
+        c: d,
+        k: e,
+        i: "\\S"
+    }
+}(hljs);
 // Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
     (function() {
@@ -14906,7 +15091,7 @@ PICS.define('employee-guard.LeftNavigation', {
         function init() {
             applyAffixToNavigation();
 
-            $('#side-navigation a').on('click', setActiveProject);
+            //$('#side-navigation a').on('click', setActiveProject);
         }
 
         function applyAffixToNavigation() {
@@ -15118,6 +15303,85 @@ PICS.define('employee-guard.Tooltip', {
 
 
 
+(function ($) {
+    PICS.define('frontend-guide.FrontendDevelopmentGuideController', {
+        methods: (function () {
+            var $toggle_markup_button, $html_collapsibles;
+
+            function init() {
+                if ($('.FrontendDevelopmentGuide-page').length > 0) {
+                    initClassVars();
+                    configurePlugins();
+                    bindEvents();
+                }
+            }
+
+            function initClassVars() {
+                $toggle_markup_button = $('.show-markup');
+                $html_collapsibles = $('.html-collapsible');
+            }
+
+            function configurePlugins() {
+                hljs.initHighlighting();
+            }
+
+            function bindEvents() {
+                $('.show-markup').on('click', onToggleMarkupButtonClick);
+
+                $html_collapsibles.on('show.bs.collapse', onHtmlCollapsibleShow);
+                $html_collapsibles.on('hide.bs.collapse', onHtmlCollapsibleHide);
+            }
+
+            function onToggleMarkupButtonClick() {
+                toggleHtmlCollapsibles();
+            }
+
+            function onHtmlCollapsibleShow(event) {
+                var $html_collapsible = $(event.target);
+
+                $html_collapsible.closest('.panel').addClass('open');
+            }
+
+            function onHtmlCollapsibleHide(event) {
+                var $html_collapsible = $(event.target);
+
+                $html_collapsible.closest('.panel').removeClass('open');
+            }
+
+            function toggleHtmlCollapsibles() {
+                $toggle_markup_button.toggleClass('active');
+
+                if ($toggle_markup_button.hasClass('active')) {
+                    toggleCollapsiblesActive();
+                } else {
+                    toggleCollapsiblesInactive();
+                }
+            }
+
+            function toggleCollapsiblesActive() {
+                    $html_collapsibles
+                        .removeClass('collapse')
+                        .addClass('in')
+                        // Override Bootstrap inline style
+                        .css('height', 'auto')
+                        .closest('.panel').addClass('open');
+            }
+
+            function toggleCollapsiblesInactive() {
+                    $html_collapsibles
+                        .removeClass('in')
+                        .addClass('collapse')
+                        // Override Bootstrap inline style
+                        .css('height', 0)
+                        .closest('.panel').removeClass('open');
+            }
+
+            return {
+                init: init
+            };
+        }())
+    });
+}(jQuery));
 PICS.define('sample.Test', {
     methods: (function () {
 
@@ -15755,6 +16019,308 @@ PICS.define('select2.Select2', {
         };
     }())
 });
+/**
+ * Chart: Abstract base class for all chart types.
+ *
+ * Implements Google Charts: https://developers.google.com/chart/interactive/docs/reference
+ * See ChartsDemo.action for implementation examples.
+ *
+ * @author: Jason Roos
+ * @date: 7-1-2013
+ * @version: 1
+ */
+(function ($) {
+    PICS.define('widget.chart.Chart', {
+        methods: (function () {
+            function init() {
+                this.$all_containers = getAllContainers();
+            }
+
+            function getAllContainers() {
+                return $('[data-widget-type=GoogleChart]');
+            }
+
+            function loadCharts() {
+                var child = this,
+                    widget_selector = getWidgetSelectorFromStyleType(child.style_type),
+                    $custom_containers = this.$all_containers.filter(widget_selector);
+
+                $custom_containers.each(function (key, value) {
+                    var chart_container = this;
+
+                    loadChart.call(child, chart_container);
+                });
+            }
+
+            function isSingleSeries(data_table) {
+                return data_table.getNumberOfColumns() <= 2;
+            }
+
+            function getWidgetSelectorFromStyleType(style_type) {
+                return '[data-style-type=' + style_type + ']';
+            }
+
+            function getChartByType (chart_type, chart_container) {
+                switch (chart_type) {
+                    case 'Pie':
+                        return new google.visualization.PieChart(chart_container);
+                    case 'Bar':
+                        return new google.visualization.BarChart(chart_container);
+                    case 'Column':
+                        return new google.visualization.ColumnChart(chart_container);
+                    case 'Line':
+                        return new google.visualization.LineChart(chart_container);
+                    case 'Area':
+                        return new google.visualization.AreaChart(chart_container);
+                    default:
+                        $.error('Invalid chart type: ' + chart_type);
+                }
+            }
+
+            function getDefaultChartOptions() {
+                return {
+                    height: 400,
+                    colors: [
+                        '#3498db',
+                        '#e74c3c',
+                        '#2ecc71',
+                        '#f39c12',
+                        '#9b59b6',
+                        '#f1c40f',
+                        '#2980b9',
+                        '#c0392b',
+                        '#27ae60',
+                        '#d35400',
+                        '#8e44ad',
+                        '#e67e22'
+                    ]
+                };
+            }
+
+            function getUniversalChartOptions(data_table) {
+                var options = {
+                    vAxis: {
+                        title: data_table.getTableProperty('v_axis_title')
+                    },
+                    hAxis: {
+                        title: data_table.getTableProperty('h_axis_title')
+                    }
+                };
+
+                // Single-series charts with their vertical and horizontal axes labeled do not need a legend.
+                if (options.vAxis.title && options.hAxis.title && isSingleSeries(data_table)) {
+                    options.legend = {
+                        position: 'none'
+                    };
+                }
+
+                return options;
+            }
+
+            function getAllOptions(child, data_table) {
+                var parent = child.getParent(),
+                    custom_options_from_parent = (typeof parent.getChartOptions == 'function') ? parent.getChartOptions(data_table) : {},
+                    custom_options_from_child = (typeof child.getChartOptions == 'function') ? child.getChartOptions(data_table) : {},
+                    all_options = $.extend({}, custom_options_from_parent, custom_options_from_child),
+                    all_options = $.extend({}, getUniversalChartOptions(data_table), all_options),
+                    all_options = $.extend({}, getDefaultChartOptions(), all_options);
+
+                return all_options;
+            }
+
+            function loadChart(chart_container) {
+                var child = this,
+                    $chart_container = $(chart_container),
+                    url = $chart_container.data('url'),
+                    chart_type = $chart_container.data('chart-type');
+
+                PICS.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data, textStatus, jqXHR) {
+                        var config = data,
+                            google_data = config.data,
+                            chart = getChartByType(chart_type, chart_container),
+                            data_table = new google.visualization.DataTable(google_data),
+                            options = getAllOptions(child, data_table);
+
+                        google.visualization.events.addListener(chart, 'select', function () { redirect(chart, data_table); } );
+                        chart.draw(data_table, options);
+                    }
+                });
+            }
+
+            function redirect(chart, data_table) {
+                var selection = chart.getSelection()[0],
+                    url;
+
+                // We use typeof here because row and column can equal zero.
+                if (typeof selection.row != 'undefined' && typeof selection.column != 'undefined') {
+                    url = data_table.getProperty(selection.row, selection.column, 'url');
+                } else if (typeof selection.row != 'undefined') {
+                    url = data_table.getRowProperty(selection.row, 'url');
+                } else if (typeof selection.column != 'undefined') {
+                    url = data_table.getColumnProperty(selection.column, 'url');
+                }
+
+                if (url) {
+                    window.location = url;
+                }
+            }
+
+            return {
+                init: init,
+                loadCharts: loadCharts,
+                isSingleSeries: isSingleSeries
+            };
+        }())
+    });
+}(jQuery));
+(function ($) {
+    PICS.define('widget.chart.BasicChart', {
+        extend: 'widget.chart.Chart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'Basic';
+
+                this.loadCharts();
+            },
+
+            getStyleType: function () {
+                return this.style_type;
+            }
+        }
+    });
+}(jQuery));
+(function ($) {
+    PICS.define('widget.chart.StackedColumnChart', {
+        extend: 'widget.chart.Chart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'StackedColumn';
+
+                this.loadCharts();
+            },
+
+            getStyleType: function () {
+                return this.style_type;
+            },
+
+            getChartOptions: function (data_table) {
+                var options = {};
+
+                options.isStacked = true;
+
+                return options;
+            }
+        }
+    });
+}(jQuery));
+(function ($) {
+    PICS.define('widget.chart.CustomColorChart', {
+        extend: 'widget.chart.Chart',
+
+        methods: {
+            getColors: function (data_table, type_color_associations) {
+                if (this.isSingleSeries(data_table)) {
+                    return this.getColorsForSingleSeriesChart(data_table, type_color_associations);
+                } else {
+                    return this.getColorsForMultiSeriesChart(data_table, type_color_associations);
+                }
+            },
+
+            getColorsForSingleSeriesChart: function (data_table, color_associations) {
+                var row_index = 0,
+                    num_rows = data_table.getNumberOfRows(),
+                    colors = [],
+                    style_type, color;
+
+                for (; row_index < num_rows; row_index += 1) {
+                    style_type = data_table.getRowProperty(row_index, 'style_type'),
+                    color = color_associations[style_type] || $.error('Invalid row style type: ' + style_type);
+
+                    colors.push(color);
+                }
+
+                return colors;
+            },
+
+            getColorsForMultiSeriesChart: function (data_table, color_associations) {
+                var column_index = 1,
+                    num_columns = data_table.getNumberOfColumns(),
+                    colors = [],
+                    style_type, color;
+
+                for (; column_index < num_columns; column_index += 1) {
+                    style_type = data_table.getColumnProperty(column_index, 'style_type'),
+                    color = color_associations[style_type] || $.error('Invalid column style type: ' + style_type);
+
+                    colors.push(color);
+                }
+
+                return colors;
+            }
+        }
+    })
+}(jQuery));
+(function ($) {
+    PICS.define('widget.chart.custom-color-chart.FlagsChart', {
+        extend: 'widget.chart.CustomColorChart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'Flags';
+                this.type_color_associations = {
+                    'red-flag': '#ac030c',
+                    'amber-flag': '#e67e1c',
+                    'green-flag': '#229322'
+                };
+
+                this.loadCharts();
+            },
+
+            getStyleType: function () {
+                return this.style_type;
+            },
+
+            getTypeColorAssociations: function () {
+                return this.type_color_associations;
+            },
+
+            getChartOptions: function (data_table) {
+                var options = {};
+
+                options.colors = this.getColors(data_table, this.getTypeColorAssociations());
+
+                return options;
+            }
+        }
+    });
+}(jQuery));
+(function ($) {
+    PICS.define('widget.chart.custom-color-chart.flags-chart.StackedFlagsChart', {
+        extend: 'widget.chart.custom-color-chart.FlagsChart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'StackedFlags';
+
+                this.loadCharts();
+            },
+
+            getChartOptions: function (data_table) {
+                var options = {};
+
+                options.isStacked = true;
+
+                return options;
+            }
+        }
+    });
+}(jQuery));
 /**
  * Modal
  *
