@@ -21,7 +21,7 @@ import java.util.*;
 
 public class TranslationServiceCacheWarmer implements ServletContextListener, Runnable {
     private static final Logger logger = LoggerFactory.getLogger(TranslationServiceCacheWarmer.class);
-    private static Date WARM_CACHE_WITH_VALUES_USED_SINCE = new DateTime().minusDays(2).toDate();
+    private static Date CACHE_WARMER_DATE = new DateTime().minusDays(2).toDate();
 
     public static final String ENGLISH_LOCALE = "en";
     public static final String ENGLISH_US_LOCALE = "en_US";
@@ -46,7 +46,7 @@ public class TranslationServiceCacheWarmer implements ServletContextListener, Ru
     }
 
     public void run() {
-        Map<String, Set<String>> usages = translationUsageDAO().translationsUsedSince(WARM_CACHE_WITH_VALUES_USED_SINCE);
+        Map<String, Set<String>> usages = translationUsageDAO().translationsUsedSince(CACHE_WARMER_DATE);
         logger.info("Warming {} msgKeys", usages.size());
         TranslationService service = nonLoggingTranslationService();
         for (String key : usages.keySet()) {
