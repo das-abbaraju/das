@@ -47,7 +47,7 @@ public class AssignmentService {
 		extractSkillsFromProjectRoles(project, accountSkills, roleId);
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.findByEmployeesAndSkills(employees, accountSkills);
 
-		List<Group> jobRoles = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
+		List<Role> jobRoles = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
 		jobRoles = ListUtil.removeDuplicatesAndSort(jobRoles);
 		List<RoleInfo> roleInfos = formBuilderFactory.getRoleInfoFactory().build(jobRoles);
 
@@ -93,8 +93,8 @@ public class AssignmentService {
 	private void extractSkillsFromProjectRoles(final Project project, final List<AccountSkill> accountSkills, final int roleId) {
 		for (ProjectRole jobRole : project.getRoles()) {
 			if (jobRole.getRole().getId() == roleId) {
-				for (AccountSkillGroup accountSkillGroup : jobRole.getRole().getSkills()) {
-					accountSkills.add(accountSkillGroup.getSkill());
+				for (AccountSkillRole accountSkillRole : jobRole.getRole().getSkills()) {
+					accountSkills.add(accountSkillRole.getSkill());
 				}
 			}
 		}

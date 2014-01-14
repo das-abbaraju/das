@@ -158,6 +158,15 @@ public class AccountSkillEmployeeService {
 		accountSkillEmployeeDAO.save(employeeSkills);
 	}
 
+    public void linkEmployeesToSkill(final Role role, final int userId) {
+        List<AccountSkillEmployee> newAccountSkillEmployees = getNewAccountSkillEmployees(role);
+        List<AccountSkillEmployee> existingAccountSkillEmployees = getExistingAccountSkillEmployees(role);
+        List<AccountSkillEmployee> employeeSkills = IntersectionAndComplementProcess.intersection(newAccountSkillEmployees,
+                existingAccountSkillEmployees, AccountSkillEmployee.COMPARATOR, new BaseEntityCallback(userId, new Date()));
+
+        accountSkillEmployeeDAO.save(employeeSkills);
+    }
+
 	private List<AccountSkillEmployee> getNewAccountSkillEmployees(final AccountSkill skill) {
 		List<Employee> employees;
 		Date now = new Date();
@@ -211,6 +220,25 @@ public class AccountSkillEmployeeService {
 		return skillEmployees;
 	}
 
+    private List<AccountSkillEmployee> getNewAccountSkillEmployees(final Role role) {
+        List<AccountSkillRole> skills = role.getSkills();
+        List<RoleEmployee> employees = role.getEmployees();
+
+        List<AccountSkillEmployee> skillEmployees = new ArrayList<>();
+
+        Date now = new Date();
+        for (AccountSkillRole skillRole : skills) {
+            for (RoleEmployee groupEmployee : employees) {
+                AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(skillRole.getSkill(), groupEmployee.getEmployee());
+                accountSkillEmployee.setStartDate(now);
+
+                skillEmployees.add(accountSkillEmployee);
+            }
+        }
+
+        return skillEmployees;
+    }
+
 	private List<AccountSkillEmployee> getExistingAccountSkillEmployees(final Group group) {
 		List<AccountSkill> skills = new ArrayList<>();
 		for (AccountSkillGroup skillGroup : group.getSkills()) {
@@ -219,6 +247,15 @@ public class AccountSkillEmployeeService {
 
 		return accountSkillEmployeeDAO.findBySkills(skills);
 	}
+
+    private List<AccountSkillEmployee> getExistingAccountSkillEmployees(final Role role) {
+        List<AccountSkill> skills = new ArrayList<>();
+        for (AccountSkillRole skillRole : role.getSkills()) {
+            skills.add(skillRole.getSkill());
+        }
+
+        return accountSkillEmployeeDAO.findBySkills(skills);
+    }
 
 	public List<AccountSkillEmployee> getSkillsForAccountAndEmployee(Employee employee) {
 		return accountSkillEmployeeDAO.findByAccountAndEmployee(employee);

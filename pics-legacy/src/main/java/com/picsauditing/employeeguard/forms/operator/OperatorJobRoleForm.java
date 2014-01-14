@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
+import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.util.SpringUtils;
@@ -46,8 +47,8 @@ public class OperatorJobRoleForm extends GroupNameSkillsForm implements AddAnoth
 		this.addAnother = addAnother;
 	}
 
-	public Group buildAccountGroup() {
-		return new AccountGroupBuilder().name(name).description(description).skills(skills).employees(employees).build();
+	public Role buildAccountGroup() {
+		return new RoleBuilder().name(name).description(description).skills(skills).employees(employees).build();
 	}
 
 	public Group buildAccountGroup(int id, int accountId) {

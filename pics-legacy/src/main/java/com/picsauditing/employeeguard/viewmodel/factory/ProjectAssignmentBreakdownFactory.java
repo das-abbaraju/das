@@ -74,8 +74,8 @@ public class ProjectAssignmentBreakdownFactory {
 
     private Set<AccountSkill> getAccountSkillsFromProjectRoleEmployee(ProjectRoleEmployee projectRoleEmployee) {
         Set<AccountSkill> accountSkills = new HashSet<>();
-        for (AccountSkillGroup accountSkillGroup : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
-            accountSkills.add(accountSkillGroup.getSkill());
+        for (AccountSkillRole accountSkillRole : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
+            accountSkills.add(accountSkillRole.getSkill());
         }
 
         return accountSkills;
