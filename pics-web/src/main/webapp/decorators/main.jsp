@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
-<%@page import="com.picsauditing.PICS.MainPage" %>
-<%@page import="com.picsauditing.access.OpPerms" %>
+<%@ page import="com.picsauditing.PICS.MainPage" %>
+<%@ page import="com.picsauditing.access.OpPerms" %>
 <%@ page import="com.picsauditing.access.Permissions" %>
-<%@page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ page import="com.picsauditing.dao.UserDAO" %>
 <%@ page import="com.picsauditing.i18n.service.TranslationService" %>
 <%@ page import="com.picsauditing.jpa.entities.User" %>
@@ -55,7 +55,7 @@
         homePageUrl = PicsMenu.getHomePage(menu, permissions);
     }
 
-    LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
+    LanguageModel languageModel = SpringUtils.getBean("LanguageModel");
 %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
