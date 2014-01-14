@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EmployeeDAO extends BaseEntityDAO<Employee> {
+public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 
 	public static final int EMPLOYEE_BATCH_SIZE = 100;
 

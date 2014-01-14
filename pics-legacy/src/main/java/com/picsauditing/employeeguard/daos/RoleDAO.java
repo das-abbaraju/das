@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
@@ -9,7 +8,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class RoleDAO extends BaseEntityDAO<Role> {
+public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 
     public RoleDAO() {
         this.type = Role.class;

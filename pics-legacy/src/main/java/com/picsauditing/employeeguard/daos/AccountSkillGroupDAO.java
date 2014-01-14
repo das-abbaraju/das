@@ -8,7 +8,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountSkillGroupDAO extends BaseEntityDAO<AccountSkillGroup> {
+public class AccountSkillGroupDAO extends AbstractBaseEntityDAO<AccountSkillGroup> {
 	public AccountSkillGroupDAO() {
 		this.type = AccountSkillGroup.class;
 	}
