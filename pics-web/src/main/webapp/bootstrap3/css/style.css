@@ -9901,10 +9901,6 @@ disabled look for disabled choices in the results dropdown
   z-index: 11000;
 }
 
-.select2-results li {
-  line-height: 16px;
-}
-
 .select2-results {
   font-size: 13px;
 }
