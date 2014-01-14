@@ -13,6 +13,7 @@
     <bean id="AccountSkillDAO" class="com.picsauditing.employeeguard.daos.AccountSkillDAO"/>
     <bean id="AccountSkillEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO"/>
     <bean id="AccountSkillGroupDAO" class="com.picsauditing.employeeguard.daos.AccountSkillGroupDAO"/>
+    <bean id="AccountSkillRoleDAO" class="com.picsauditing.employeeguard.daos.AccountSkillRoleDAO"/>
     <bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
     <bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
     <bean id="ProfileDocumentDAO" class="com.picsauditing.employeeguard.daos.ProfileDocumentDAO"/>

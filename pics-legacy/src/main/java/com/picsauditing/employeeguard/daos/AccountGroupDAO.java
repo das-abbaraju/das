@@ -11,7 +11,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountGroupDAO extends BaseEntityDAO<Group> {
+public class AccountGroupDAO extends AbstractBaseEntityDAO<Group> {
 
 	public AccountGroupDAO() {
 		this.type = Group.class;

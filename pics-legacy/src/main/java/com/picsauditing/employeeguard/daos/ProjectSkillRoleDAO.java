@@ -7,7 +7,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class ProjectSkillRoleDAO extends BaseEntityDAO<ProjectSkillRole> {
+public class ProjectSkillRoleDAO extends AbstractBaseEntityDAO<ProjectSkillRole> {
 	public ProjectSkillRoleDAO() {
 		this.type = ProjectSkillRole.class;
 	}
