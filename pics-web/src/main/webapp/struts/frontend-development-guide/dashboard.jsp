@@ -1,17 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<style>
-    span.title {
-        color: #ffffff !important;
-        font-weight: normal !important;
-    }
-
-    span.value {
-        color: #ffffff !important;
-    }
-</style>
-
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Style Guide</s:param>
     <s:param name="subtitle">PICS Styles and Conventions</s:param>
