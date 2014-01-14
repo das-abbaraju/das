@@ -1,7 +1,7 @@
 package com.picsauditing.dao
 
 import scala.slick.driver.MySQLDriver.simple._
-import com.picsauditing.models.database.TranslationUsages
+import com.picsauditing.model.database.TranslationUsages
 import com.picsauditing.i18n.model.database.TranslationUsage
 import java.util.Date
 import Database.threadLocalSession
@@ -27,10 +27,9 @@ class TranslationUsageDAO extends PICSDataAccess {
         t.environment === environment
   } yield t.id
 
-  def translationsUsedSince(date: Date): java.util.List[TranslationUsage] = db withSession {
-    (for {
-        t <- TranslationUsages if t.lastUsed > new java.sql.Date(date.getTime)
-      } yield t).list
+  def translationsUsedSince(date: Date): java.util.Map[String, java.util.Set[String]] = db withSession {
+    (for { t <- TranslationUsages if t.lastUsed > new java.sql.Date(date.getTime) } yield t)
+      .list.groupBy(_.getMsgKey) map { case (k, v) => k -> setAsJavaSet(v.map(_.getMsgLocale).toSet)}
   }
 
   def logKeyUsage(keyUsage: TranslationLookupData) = {
