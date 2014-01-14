@@ -83,6 +83,7 @@ public class AllModelsTest {
     @Test
     public void testContractorsModel_Admin() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
+        EntityFactory.addUserPermission(permissions, OpPerms.RiskRank);
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         permissions.setAccountType("Admin");
         model = new ContractorsModel(permissions);
