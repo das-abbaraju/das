@@ -3,13 +3,13 @@ package com.picsauditing.servlet.listener;
 import com.picsauditing.dao.TranslationUsageDAO;
 import com.picsauditing.i18n.model.database.TranslationUsage;
 import com.picsauditing.i18n.service.TranslationService;
-import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.scheduling.SchedulingTaskExecutor;
 
 import javax.servlet.ServletContextEvent;
 
@@ -30,13 +30,13 @@ public class TranslationServiceCacheWarmerTest {
     @Mock
     private FeatureToggle featureToggleChecker;
     @Mock
-    private AppPropertyProvider appPropertyProvider;
-    @Mock
     private ServletContextEvent arg0;
     @Mock
     private TranslationUsageDAO usageDAO;
     @Mock
     private TranslationUsage translationUsage;
+    @Mock
+    private SchedulingTaskExecutor taskExecutor;
 
     @Before
     public void setUp() throws Exception {
@@ -47,12 +47,13 @@ public class TranslationServiceCacheWarmerTest {
         translationUsages = new ArrayList<>();
         translationUsages.add(translationUsage);
 
-        Whitebox.setInternalState(TranslationServiceCacheWarmer.class, "appPropertyProvider", appPropertyProvider);
         Whitebox.setInternalState(translationServiceCacheWarmer, "translationService", translationService);
         Whitebox.setInternalState(translationServiceCacheWarmer, "featureToggleChecker", featureToggleChecker);
+        Whitebox.setInternalState(translationServiceCacheWarmer, "taskExecutor", taskExecutor);
         Whitebox.setInternalState(TranslationServiceCacheWarmer.class, "usageDAO", usageDAO);
 
         when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)).thenReturn(true);
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_TRANSLATION_SERVICE_CACHE_WARMING)).thenReturn(false);
         when(usageDAO.translationsUsedSince(any(Date.class))).thenReturn(translationUsages);
         when(translationUsage.getMsgKey()).thenReturn(TEST_KEY);
         when(translationUsage.getMsgLocale()).thenReturn(TEST_LOCALE);
@@ -64,30 +65,30 @@ public class TranslationServiceCacheWarmerTest {
 
         translationServiceCacheWarmer.contextInitialized(arg0);
 
-        verify(translationService, never()).getText(anyString(), anyString());
+        verify(taskExecutor, never()).execute(any(Runnable.class));
     }
 
     @Test
     public void testContextInitialized_TranslationServiceToggleOn_ServiceCalled() throws Exception {
         translationServiceCacheWarmer.contextInitialized(arg0);
 
-        verify(translationService, atLeastOnce()).getText(anyString(), anyString());
+        verify(taskExecutor).execute(any(Runnable.class));
     }
 
     @Test
     public void testContextInitialized_TranslationServiceToggleOnButCacheWarmingDisabled_ServiceNeverCalled() throws Exception {
-        when(appPropertyProvider.findAppProperty(TranslationServiceCacheWarmer.DISABLE_CACHE_WARMING)).thenReturn("NotEmpty");
+        when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_TRANSLATION_SERVICE_CACHE_WARMING)).thenReturn(true);
 
         translationServiceCacheWarmer.contextInitialized(arg0);
 
-        verify(translationService, never()).getText(anyString(), anyString());
+        verify(taskExecutor, never()).execute(any(Runnable.class));
     }
 
     @Test
     public void testContextInitialized_TranslationServiceToggleOn_En_US_Also_Called_For_En_Log() throws Exception {
         when(translationUsage.getMsgLocale()).thenReturn(TranslationServiceCacheWarmer.ENGLISH_LOCALE);
 
-        translationServiceCacheWarmer.contextInitialized(arg0);
+        translationServiceCacheWarmer.run();
 
         verify(translationService).getText(TEST_KEY, TranslationServiceCacheWarmer.ENGLISH_LOCALE);
         verify(translationService).getText(TEST_KEY, TranslationServiceCacheWarmer.ENGLISH_US_LOCALE);

@@ -27,12 +27,10 @@ class TranslationUsageDAO extends PICSDataAccess {
         t.environment === environment
   } yield t.id
 
-  def translationsUsedSince(date: Date) = db withSession {
-    val query = for {
+  def translationsUsedSince(date: Date): java.util.List[TranslationUsage] = db withSession {
+    (for {
         t <- TranslationUsages if t.lastUsed > new java.sql.Date(date.getTime)
-      } yield t
-    val results: java.util.List[TranslationUsage] = query.list
-    results
+      } yield t).list
   }
 
   def logKeyUsage(keyUsage: TranslationLookupData) = {

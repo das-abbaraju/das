@@ -1,36 +1,36 @@
 package com.picsauditing.servlet.listener;
 
 import com.picsauditing.dao.TranslationUsageDAO;
-import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
 import com.picsauditing.i18n.model.database.TranslationUsage;
 import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.i18n.service.TranslationServiceProperties;
-import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.service.i18n.ExplicitUsageContext;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.SchedulingTaskExecutor;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.Date;
 import java.util.List;
 
-public class TranslationServiceCacheWarmer implements ServletContextListener {
-    public static final String DISABLE_CACHE_WARMING = "DisableTranslationServiceCacheWarming";
+public class TranslationServiceCacheWarmer implements ServletContextListener, Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(TranslationServiceCacheWarmer.class);
+    private static Date WARM_CACHE_WITH_VALUES_USED_SINCE = new DateTime().minusDays(2).toDate();
+
     public static final String ENGLISH_LOCALE = "en";
     public static final String ENGLISH_US_LOCALE = "en_US";
 
-    private static Date WARM_CACHE_WITH_VALUES_USED_SINCE = new DateTime().minusDays(2).toDate();
-    private static AppPropertyProvider appPropertyProvider;
-
     // for test injection
     private TranslationService translationService;
+    private SchedulingTaskExecutor taskExecutor;
     private static TranslationUsageDAO usageDAO;
     private FeatureToggle featureToggleChecker;
 
@@ -41,24 +41,32 @@ public class TranslationServiceCacheWarmer implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
-        if (featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER) && cacheWarmingIsNotDisabled()) {
-            List<TranslationUsage> usages = translationUsageDAO().translationsUsedSince(WARM_CACHE_WITH_VALUES_USED_SINCE);
-            for(TranslationUsage usage : usages) {
-                TranslationService service = nonLoggingTranslationServiceSpecificToPageName(usage);
-                String locale = usage.getMsgLocale();
-                service.getText(usage.getMsgKey(), locale);
-                // since we log returned locales and not requested locales, but we cache requested locales and not
-                // returned locales, and most of our locales requested for en_US will actually be defined in "en", let's always
-                // warm keys for en_US as well
-                if (ENGLISH_LOCALE.equals(locale)) {
-                    service.getText(usage.getMsgKey(), ENGLISH_US_LOCALE);
-                }
-            }
+        if (shouldWarmCache()) {
+            logger.info("Executing async task to warm cache");
+            taskExecutor().execute(this);
         }
     }
 
-    private boolean cacheWarmingIsNotDisabled() {
-        return Strings.isEmpty(appPropertyProvider().findAppProperty(DISABLE_CACHE_WARMING));
+    public void run() {
+        List<TranslationUsage> usages = translationUsageDAO().translationsUsedSince(WARM_CACHE_WITH_VALUES_USED_SINCE);
+        logger.info("Warming {} msgKeys", usages.size());
+        for(TranslationUsage usage : usages) {
+            TranslationService service = nonLoggingTranslationServiceSpecificToPageName(usage);
+            String locale = usage.getMsgLocale();
+            service.getText(usage.getMsgKey(), locale);
+            // since we log returned locales and not requested locales, but we cache requested locales and not
+            // returned locales, and most of our locales requested for en_US will actually be defined in "en", let's always
+            // warm keys for en_US as well
+            if (ENGLISH_LOCALE.equals(locale)) {
+                service.getText(usage.getMsgKey(), ENGLISH_US_LOCALE);
+            }
+        }
+        logger.info("Finished warming cache");
+    }
+
+    private boolean shouldWarmCache() {
+        return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER) &&
+               !featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_DISABLE_TRANSLATION_SERVICE_CACHE_WARMING);
     }
 
     private TranslationService nonLoggingTranslationServiceSpecificToPageName(TranslationUsage usage) {
@@ -90,10 +98,11 @@ public class TranslationServiceCacheWarmer implements ServletContextListener {
         return usageDAO;
     }
 
-    private static AppPropertyProvider appPropertyProvider() {
-        if (appPropertyProvider == null) {
-            appPropertyProvider = new JdbcAppPropertyProvider();
+    private SchedulingTaskExecutor taskExecutor() {
+        if (taskExecutor == null) {
+            taskExecutor = SpringUtils.getBean("AsyncTaskExecutor");
         }
-        return appPropertyProvider;
+        return taskExecutor;
     }
+
 }
