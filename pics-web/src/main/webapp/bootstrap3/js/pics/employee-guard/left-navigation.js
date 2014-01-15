@@ -3,7 +3,7 @@ PICS.define('employee-guard.LeftNavigation', {
         function init() {
             applyAffixToNavigation();
 
-            //$('#side-navigation a').on('click', setActiveProject);
+            $('#side-navigation a').on('click', setActiveProject);
         }
 
         function applyAffixToNavigation() {

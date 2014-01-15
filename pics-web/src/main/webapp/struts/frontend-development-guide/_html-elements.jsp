@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<section id="html_elements" class="employee-guard-section" id="colors">
+<section id="html_elements" class="employee-guard-section">
     <h1 class="heading">
         <div class="row">
             <div class="col-md-9 col-xs-9">

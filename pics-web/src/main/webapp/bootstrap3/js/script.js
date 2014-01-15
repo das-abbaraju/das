@@ -14204,7 +14204,7 @@ PICS.define('employee-guard.LeftNavigation', {
         function init() {
             applyAffixToNavigation();
 
-            //$('#side-navigation a').on('click', setActiveProject);
+            $('#side-navigation a').on('click', setActiveProject);
         }
 
         function applyAffixToNavigation() {
@@ -14424,6 +14424,7 @@ PICS.define('employee-guard.Tooltip', {
             function init() {
                 if ($('.FrontendDevelopmentGuide-page').length > 0) {
                     initClassVars();
+                    initPlugins();
                     bindEvents();
                 }
             }
@@ -14431,6 +14432,13 @@ PICS.define('employee-guard.Tooltip', {
             function initClassVars() {
                 $toggle_markup_button = $('.show-markup');
                 $html_collapsibles = $('.html-collapsible');
+            }
+
+            function initPlugins() {
+                $('body').scrollspy({
+                    target: '.sidenav',
+                    offset: 200
+                });
             }
 
             function bindEvents() {

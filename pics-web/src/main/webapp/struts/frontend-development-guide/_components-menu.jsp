@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <div class="bs-sidebar">
-    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
+    <nav class="sidenav navbar bs-sidenav" role="navigation">
         <ul class="nav side-navigation" role="menu">
             <li class="active">
                 <a href="page_layout_page_heading">Page Layout</a>

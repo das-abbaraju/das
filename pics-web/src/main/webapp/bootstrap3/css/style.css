@@ -13728,14 +13728,18 @@ ul.skill-nav a {
   background-color: #e74c3c;
 }
 
-/* line 1, ../sass/pics/components/_side-navigation.scss */
+/* line 2, ../sass/pics/components/_side-navigation.scss */
 
+.sidenav,
 #side-navigation {
   background-color: #f1f1f2;
 }
 
-/* line 6, ../sass/pics/components/_side-navigation.scss */
+/* line 7, ../sass/pics/components/_side-navigation.scss */
 
+.sidenav .nav > .active > a,
+.sidenav .nav > .active:hover > a,
+.sidenav .nav > .active:focus > a,
 #side-navigation .nav > .active > a,
 #side-navigation .nav > .active:hover > a,
 #side-navigation .nav > .active:focus > a {
@@ -13745,22 +13749,25 @@ ul.skill-nav a {
   border-right: 1px solid #3498db;
 }
 
-/* line 12, ../sass/pics/components/_side-navigation.scss */
+/* line 13, ../sass/pics/components/_side-navigation.scss */
 
+.sidenav .nav > li > a,
 #side-navigation .nav > li > a {
   display: block;
   padding: 5px 20px;
   color: #454545;
 }
 
-/* line 18, ../sass/pics/components/_side-navigation.scss */
+/* line 19, ../sass/pics/components/_side-navigation.scss */
 
+.sidenav .nav .nav,
 #side-navigation .nav .nav {
   display: none;
 }
 
-/* line 21, ../sass/pics/components/_side-navigation.scss */
+/* line 22, ../sass/pics/components/_side-navigation.scss */
 
+.sidenav .nav .nav li a,
 #side-navigation .nav .nav li a {
   padding-top: 3px;
   padding-bottom: 3px;
@@ -13768,8 +13775,9 @@ ul.skill-nav a {
   font-size: 90%;
 }
 
-/* line 31, ../sass/pics/components/_side-navigation.scss */
+/* line 32, ../sass/pics/components/_side-navigation.scss */
 
+.sidenav .nav > .active > ul,
 #side-navigation .nav > .active > ul {
   display: block;
 }

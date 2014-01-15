@@ -6,6 +6,7 @@
             function init() {
                 if ($('.FrontendDevelopmentGuide-page').length > 0) {
                     initClassVars();
+                    initPlugins();
                     bindEvents();
                 }
             }
@@ -13,6 +14,13 @@
             function initClassVars() {
                 $toggle_markup_button = $('.show-markup');
                 $html_collapsibles = $('.html-collapsible');
+            }
+
+            function initPlugins() {
+                $('body').scrollspy({
+                    target: '.sidenav',
+                    offset: 200
+                });
             }
 
             function bindEvents() {
