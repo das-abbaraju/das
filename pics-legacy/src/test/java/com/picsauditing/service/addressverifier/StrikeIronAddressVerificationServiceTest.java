@@ -1,6 +1,7 @@
 package com.picsauditing.service.addressverifier;
 
 
+import com.picsauditing.toggle.FeatureToggle;
 import com.strikeiron.www.Address;
 import com.strikeiron.www.GlobalAddressVerifier;
 import org.junit.Before;
@@ -20,12 +21,16 @@ public class StrikeIronAddressVerificationServiceTest {
     private StrikeIronAddressVerificationService strikeIronAddressVerificationService;
     @Mock
     private GlobalAddressVerifier globalAddressVerifier;
+    @Mock
+    private FeatureToggle featureToggle;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         strikeIronAddressVerificationService = new StrikeIronAddressVerificationService();
         Whitebox.setInternalState(strikeIronAddressVerificationService, "globalAddressVerifier", globalAddressVerifier);
+        Whitebox.setInternalState(strikeIronAddressVerificationService, "featureToggle", featureToggle);
+        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_STRIKE_IRON)).thenReturn(true);
     }
 
     @Test
@@ -52,6 +57,26 @@ public class StrikeIronAddressVerificationServiceTest {
         assertEquals("US", correctedAddress.getCountry());
         assertEquals(ResultStatus.SUCCESS, correctedAddress.getResultStatus());
         assertEquals("Data corrected by web service", correctedAddress.getStatusDescription());
+    }
+
+    @Test
+    public void testVerify_UsAddress_FeatureDisabled() throws AddressVerificationException, ServiceException {
+        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_STRIKE_IRON)).thenReturn(false);
+        AddressHolder picsIrvine = createIrvineAddress();
+
+        Address verified = new Address();
+        verified.setStreetAddressLines("17701 Cowan Ste 140");
+        verified.setLocality("Irvine");
+        verified.setProvince("CA");
+        verified.setPostalCode("92614");
+        verified.setCountry("US");
+
+        when(globalAddressVerifier.execute()).thenReturn(verified);
+
+        AddressHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
+
+        assertEquals(ResultStatus.SUCCESS, correctedAddress.getResultStatus());
+        assertEquals(StrikeIronAddressVerificationService.FEATURE_DISABLED_MESSAGE, correctedAddress.getStatusDescription());
     }
 
     @Test(expected = AddressVerificationException.class)

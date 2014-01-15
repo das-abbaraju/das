@@ -1,16 +1,26 @@
 package com.picsauditing.service.addressverifier;
 
+import com.picsauditing.toggle.FeatureToggle;
 import com.strikeiron.www.Address;
 import com.strikeiron.www.GlobalAddressVerifier;
-
-import javax.xml.rpc.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class StrikeIronAddressVerificationService extends AddressVerificationService {
+    public static final String FEATURE_DISABLED_MESSAGE = "StrikeIron verification feature is disabled.";
+    @Autowired
+    private FeatureToggle featureToggle;
+
     private GlobalAddressVerifier globalAddressVerifier;
 
     public AddressHolder verify(AddressHolder address) throws AddressVerificationException {
         Address verified = null;
         AddressHolder correctedAddress = new AddressHolder();
+
+        if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_STRIKE_IRON)) {
+            address.setResultStatus(ResultStatus.SUCCESS);
+            address.setStatusDescription(FEATURE_DISABLED_MESSAGE);
+            return address;
+        }
 
         try {
             globalAddressVerifier = getGlobalAddressVerifier(address);
@@ -43,8 +53,7 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
                     address.getStateOrProvince(),
                     address.getCountry(),
                     address.getZipOrPostalCode());
-        }
-        else {
+        } else {
             return globalAddressVerifier;
         }
     }
