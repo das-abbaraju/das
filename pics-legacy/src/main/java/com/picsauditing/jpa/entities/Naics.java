@@ -24,6 +24,9 @@ public class Naics implements java.io.Serializable {
 	}
 
 	public void setCode(String code) {
+		if (code != null) {
+			code = code.trim();
+		}
 		this.code = code;
 	}
 
