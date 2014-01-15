@@ -23,7 +23,6 @@ module.exports = function(grunt) {
             'js/vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
             'js/vendor/select2/select2.js',
             'js/vendor/moment.js',
-            'js/vendor/highlight/highlight.pack.js',
             'js/plugins.js',
             'js/core.js',
             'js/pics/**/*.js',

@@ -6,7 +6,6 @@
             function init() {
                 if ($('.FrontendDevelopmentGuide-page').length > 0) {
                     initClassVars();
-                    configurePlugins();
                     bindEvents();
                 }
             }
@@ -14,10 +13,6 @@
             function initClassVars() {
                 $toggle_markup_button = $('.show-markup');
                 $html_collapsibles = $('.html-collapsible');
-            }
-
-            function configurePlugins() {
-                hljs.initHighlighting();
             }
 
             function bindEvents() {
