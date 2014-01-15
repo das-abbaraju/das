@@ -103,7 +103,7 @@ public class RefundDetailTest extends PicsActionTest {
         when(contractorAccount.getBalance()).thenReturn(BigDecimal.TEN.negate());
         when(invoiceCreditMemo.getCreditLeft()).thenReturn(BigDecimal.TEN);
         refundDetail.saveAndBrainTreeSubmit();
-        verify(paymentService).processRefund(invoiceCreditMemo.getId()+"", BigDecimal.TEN.setScale(2,BigDecimal.ROUND_UP));
+        verify(paymentService).processRefund("12345", BigDecimal.TEN.setScale(2,BigDecimal.ROUND_UP));
         verify(invoiceDAO).save((RefundAppliedToCreditMemo)any());
     }
 
