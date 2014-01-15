@@ -1,0 +1,259 @@
+#primary_navigation {
+	-webkit-transform: translateZ(0); /* Forces continual painting to fix Chrome bug */
+}
+
+.FrontendDevelopmentGuide-page {
+	.bs-sidebar.affix {
+		-webkit-transform: translateZ(0);
+	}
+
+	section {
+		padding-top: 68px;
+
+		.heading {
+			margin-top: 0;
+		}
+	}
+
+	.example {
+		margin-bottom: 15px;
+
+		/* Maybe move to style-guide/modals.scss */
+		.modal {
+		    position: static;
+		}
+	}
+
+	.implementations {
+		.panel {
+			border: 0;
+			cursor: pointer;
+			@include box-shadow(none);
+		}
+
+		.panel-default > .panel-heading {
+			background: none;
+			border: 0;
+			color: $pics_link_blue;
+			padding: 0;
+
+			a:hover {
+				color: #ffffff;
+			}
+		}
+
+		.panel-title {
+			font-size: 14px;
+			font-weight: bold;
+
+			> a {
+				display: block;
+				padding: 10px 15px;
+			}
+
+			> a:hover {
+				color: $pics_link_blue;
+			}
+		}
+
+		.panel-group .panel-heading + .panel-collapse .panel-body {
+			background: #454545;
+			border: 0;
+			@include border-radius(0 0 3px 3px);
+
+			pre {
+			    background: #454545;
+			    padding: 9px;
+			    border: 0;
+			    margin: 0;
+
+			    code {
+				    background: #454545;
+				    color: #ffffff;
+					font-family: Helvetica, Arial, sans-serif;
+				    font-size: 14px;
+				    padding: 0;
+			    }
+			}
+		}
+
+		.panel.open .panel-heading,
+		.panel-default > .panel-heading:hover {
+			background-color: $pics_warm_grey;
+			color: #ffffff;
+		}
+	}
+
+	.swatch {
+		font-size: 12px;
+		padding-top: 0;
+
+		dl {
+			text-align: center;
+			margin-bottom: 12px;
+		}
+
+		.col-md-1 {
+			padding-left: 1px;
+			padding-right: 1px;
+		}
+
+		.default-platinum {
+			background: $default_platinum;
+			color: #808285;
+		}
+
+		.default-mercury {
+			background: $default_mercury;
+			color: #666666;
+		}
+
+		.default-silver {
+			background: $default_silver;
+			color: #454545;
+		}
+
+		.default-pewter {
+			background: $default_pewter;
+			color: #333333;
+		}
+
+		.default-aluminum {
+			background: $default_aluminum;
+			color: #f1f1f2;
+		}
+
+		.default-nickel {
+			background: $default_nickel;
+			color: #e6e6e6;
+		}
+
+		.default-tin {
+			background: $default_tin;
+			color: #cccccc;
+		}
+
+		.default-steel {
+			background: $default_steel;
+			color: #b3b3b3;
+		}
+
+		.default-iron {
+			background: $default_iron;
+			color: #999999;
+		}
+
+		.default-tungsten {
+			background: $default_tungsten;
+			color: #808285;
+		}
+
+		.default-lead {
+			background: $default_lead;
+			color: #666666;
+		}
+
+		.primary-tint {
+			background: $primary_tint;
+			color: #2980b9;
+		}
+
+		.primary-light {
+			background: $primary_light;
+			color: #ffffff;
+		}
+
+		.primary-med {
+			background: $primary_med;
+			color: #ffffff;
+		}
+
+		.primary-dark {
+			background: $primary_dark;
+			color: #ffffff;
+		}
+
+		.info-tint {
+			background: $info_tint;
+			color: #4496d8;
+		}
+
+		.info-light {
+			background: $info_light;
+			color: #ffffff;
+		}
+
+		.info-med {
+			background: $info_med;
+			color: #ffffff;
+		}
+
+		.info-dark {
+			background: $info_dark;
+			color: #ffffff;
+		}
+
+		.success-tint {
+			background: $success_tint;
+			color: #0f9d58;
+		}
+
+		.success-light {
+			background: $success_light;
+			color: #ffffff;
+		}
+
+		.success-med {
+			background: $success_med;
+			color: #ffffff;
+		}
+
+		.success-dark {
+			background: $success_dark;
+			color: #ffffff;
+		}
+
+		.warning-tint {
+			background: $warning_tint;
+			color: #ec8c00;
+		}
+
+		.warning-light {
+			background: $warning_light;
+			color: #ffffff;
+		}
+
+		.warning-med {
+			background: $warning_med;
+			color: #ffffff;
+		}
+
+		.warning-dark {
+			background: $warning_dark;
+			color: #ffffff;
+		}
+
+		.danger-tint {
+			background: $danger_tint;
+			color: #c0392b;
+		}
+
+		.danger-light {
+			background: $danger_light;
+			color: #ffffff;
+		}
+
+		.danger-med {
+			background: $danger_med;
+			color: #ffffff;
+		}
+
+		.danger-dark {
+			background: $danger_dark;
+			color: #ffffff;
+		}
+	}
+/*	footer {
+		height: 500px;
+	}*/
+}

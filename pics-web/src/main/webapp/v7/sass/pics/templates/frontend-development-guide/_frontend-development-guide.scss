@@ -1,35 +1,40 @@
 .FrontendDevelopmentGuide-page
 {
-	.side-bar > .nav-list
-	{
-		width: 220px;
+
+	.panel-default > .panel-heading {
+		background-color: $pics_warm_grey;
 	}
-	
-	.side-bar > .nav-list.affix
-	{
-		top: 75px;
+
+	pre {
+	    padding: 9px;
+	    border: 0;
+	    border-radius: 4px;
 	}
-	
-	section
-	{
-		margin-bottom: 60px;
-		
-		h2
-		{
-			margin: 20px 0;
-		}
+
+	pre code {
+	    background: none;
+	    padding: 0;
+	}
+
+	.component {
+	    border-bottom: 1px solid #000;
+	    margin-top: 50px;
+	}
+
+	pre {
+	    margin-top: 5px;
+	}
+
+	.modal {
+	    position: static;
+	}
+
+	img {
+	    height: 140px;
+	    width: 140px;
+	}
+
+	footer {
+	    height: 300px;
 	}
 }
-
-@media (min-width: 1200px) {
-	.FrontendDevelopmentGuide-page
-	{
-		.span3 > .nav-list
-		{
-			width: 270px;
-		}
-	}
-}
-
-@import 'page-layout/page-layout';
-@import 'style-guide/style-guide';

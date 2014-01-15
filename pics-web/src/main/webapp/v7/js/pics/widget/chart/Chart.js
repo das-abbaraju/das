@@ -21,9 +21,8 @@
 
             function loadCharts() {
                 var child = this,
-                    widget_selector = getWidgetSelectorFromStyleType(child.style_type);
-
-                $custom_containers = this.$all_containers.filter(widget_selector);
+                    widget_selector = getWidgetSelectorFromStyleType(child.style_type),
+                    $custom_containers = this.$all_containers.filter(widget_selector);
 
                 $custom_containers.each(function (key, value) {
                     var chart_container = this;

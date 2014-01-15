@@ -33,7 +33,6 @@
     <decorator name="layout" page="layout.jsp">
         <pattern>/About.action</pattern>
         <pattern>/CreateReport*.action</pattern>
-        <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ManageAppProperty*.action</pattern>
         <pattern>/ManageRecommendedCSRAssignment.action</pattern>
         <pattern>/CronDashboard.action</pattern>
@@ -46,6 +45,7 @@
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>
         <pattern>/ManageReports!getStarted.action</pattern>
+        <pattern>/FrontendDevelopmentGuide*.action</pattern>
     </decorator>
     <decorator name="bootstrap3-simple-layout" page="bootstrap3-simple-layout.jsp">
         <pattern>/employee-guard/welcome*</pattern>

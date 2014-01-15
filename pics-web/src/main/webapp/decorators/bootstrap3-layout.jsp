@@ -39,6 +39,8 @@
 <%-- include javascript translations --%>
 <s:action name="TranslateJS2" executeResult="true" />
 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>google.load('visualization', '1.0', {'packages':['corechart']});</script>
 <script src="/bootstrap3/js/script.js?v=${version}"></script>
 
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
