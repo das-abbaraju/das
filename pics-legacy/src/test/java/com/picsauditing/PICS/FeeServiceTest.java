@@ -260,7 +260,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceItem2.getPaymentExpires()).thenReturn(new Date());
 
         contractor.setFees(contractorFees);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,100)).thenReturn(invoiceFee2);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,50)).thenReturn(invoiceFee2);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee2.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -297,7 +297,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
         contractor.setFees(contractorFees);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 100)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 50)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -350,8 +350,8 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee2.isMembership()).thenReturn(true);
         when(invoiceItem2.getPaymentExpires()).thenReturn(new Date());
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 100)).thenReturn(invoiceFee1);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 100)).thenReturn(invoiceFee2);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 50)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 50)).thenReturn(invoiceFee2);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
         when(invoiceFee2.getAmount()).thenReturn(new BigDecimal(20));
@@ -472,7 +472,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 100)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 50)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -515,7 +515,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD,100)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD,50)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -556,7 +556,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceItem1.getInvoiceFee()).thenReturn(invoiceFee1);
         when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.ImportFee);
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee,1)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee,50)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
