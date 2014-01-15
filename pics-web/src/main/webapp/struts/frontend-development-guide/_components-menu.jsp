@@ -5,7 +5,7 @@
     <nav class="sidenav navbar bs-sidenav" role="navigation">
         <ul class="nav side-navigation" role="menu">
             <li class="active">
-                <a href="page_layout_page_heading">Page Layout</a>
+                <a href="#page_layout_page_header">Page Layout</a>
                 <ul class="nav">
                     <li>
                         <a href="#page_layout_page_header">Page Header</a>
