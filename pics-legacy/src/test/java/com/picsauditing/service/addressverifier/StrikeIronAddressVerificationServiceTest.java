@@ -1,13 +1,17 @@
 package com.picsauditing.service.addressverifier;
 
 
+import com.picsauditing.featuretoggle.Features;
+import com.picsauditing.toggle.FeatureToggle;
 import com.strikeiron.www.Address;
 import com.strikeiron.www.GlobalAddressVerifier;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
+import org.togglz.junit.TogglzRule;
 
 import javax.xml.rpc.ServiceException;
 
@@ -20,6 +24,9 @@ public class StrikeIronAddressVerificationServiceTest {
     private StrikeIronAddressVerificationService strikeIronAddressVerificationService;
     @Mock
     private GlobalAddressVerifier globalAddressVerifier;
+
+    @Rule
+    public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
 
     @Before
     public void setup() {
@@ -52,6 +59,26 @@ public class StrikeIronAddressVerificationServiceTest {
         assertEquals("US", correctedAddress.getCountry());
         assertEquals(ResultStatus.SUCCESS, correctedAddress.getResultStatus());
         assertEquals("Data corrected by web service", correctedAddress.getStatusDescription());
+    }
+
+    @Test
+    public void testVerify_UsAddress_FeatureDisabled() throws AddressVerificationException, ServiceException {
+        togglzRule.disable(Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE);
+        AddressHolder picsIrvine = createIrvineAddress();
+
+        Address verified = new Address();
+        verified.setStreetAddressLines("17701 Cowan Ste 140");
+        verified.setLocality("Irvine");
+        verified.setProvince("CA");
+        verified.setPostalCode("92614");
+        verified.setCountry("US");
+
+        when(globalAddressVerifier.execute()).thenReturn(verified);
+
+        AddressHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
+
+        assertEquals(ResultStatus.SUCCESS, correctedAddress.getResultStatus());
+        assertEquals(StrikeIronAddressVerificationService.FEATURE_DISABLED_MESSAGE, correctedAddress.getStatusDescription());
     }
 
     @Test(expected = AddressVerificationException.class)
