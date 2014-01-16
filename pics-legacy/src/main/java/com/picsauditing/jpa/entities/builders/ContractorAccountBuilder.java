@@ -62,4 +62,9 @@ public class ContractorAccountBuilder {
         contractor.setOnsiteServices(true);
         return this;
     }
+
+    public ContractorAccountBuilder primaryContact(User user) {
+        contractor.setPrimaryContact(user);
+        return this;
+    }
 }

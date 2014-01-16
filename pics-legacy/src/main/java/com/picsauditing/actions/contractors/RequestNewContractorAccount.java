@@ -48,7 +48,11 @@ import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class RequestNewContractorAccount extends ContractorActionSupport implements AjaxValidator {
-	@Autowired
+    public static final String DUPLICATE_CONTRACTOR_NAME = "See duplicate account #";
+    public static final String DUPLICATE_CONTRACTOR_FIELD_NAME = "duplicateContractor";
+    public static final String DUPLICATE_ID_MISSING_ERROR_MESSAGE = "RequestNewContractor.error.DuplicatedContractorId";
+    public static final String SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE = "RequestNewContractor.error.SameDuplicatedContractorId";
+    @Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
@@ -167,9 +171,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String resolveDuplicate() {
 		if (duplicateContractor == null) {
-			addFieldError("duplicateContractor", getText("RequestNewContractor.error.DuplicatedContractorId"));
+			addFieldError(DUPLICATE_CONTRACTOR_FIELD_NAME, getText(DUPLICATE_ID_MISSING_ERROR_MESSAGE));
 			return INPUT;
 		}
+        if (duplicateContractor.getId() == contractor.getId()) {
+            addFieldError(DUPLICATE_CONTRACTOR_FIELD_NAME, getText(SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE));
+            return INPUT;
+        }
 
 		ContractorAccount oldContractor = requestRelationship.getContractorAccount();
 
@@ -179,7 +187,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 		dao.save(requestRelationship);
 
 		oldContractor.setReason(REASON_REQUEST_DECLINED);
-		oldContractor.setName("See duplicate account #" + duplicateContractor.getId());
+		oldContractor.setName(DUPLICATE_CONTRACTOR_NAME + duplicateContractor.getId());
 		oldContractor.setStatus(AccountStatus.Deleted);
 		dao.save(oldContractor);
 
