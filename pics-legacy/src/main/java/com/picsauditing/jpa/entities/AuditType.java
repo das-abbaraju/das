@@ -39,6 +39,10 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public static final int PQF = 1;
 	public static final int MANUAL_AUDIT = 2;
 	public static final int IMPLEMENTATION_AUDIT = 3;
+	public static final int VCA_AUDIT = 466;
+	public static final int ANTI_BRIBERY_CORRUPTION_AUDIT = 609;
+	public static final int ENVIRONMENT_AUDIT = 613;
+	public static final int LABOR_EMPLOYMENT_AUDIT = 608;
 	public static final int FIELD = 5;
 	public static final int DA = 6;
 	public static final int WELCOME = 9;
@@ -414,6 +418,16 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public boolean isWCB() {
 		return CANADIAN_PROVINCES.contains(id);
 	}
+
+    @Transient
+    public boolean isAlwaysBilledForAuditGUARD() {
+        return id == MANUAL_AUDIT || id == IMPLEMENTATION_AUDIT || id == SSIP || id == VCA_AUDIT || id == ANTI_BRIBERY_CORRUPTION_AUDIT || id == ENVIRONMENT_AUDIT || id == LABOR_EMPLOYMENT_AUDIT;
+    }
+
+    @Transient
+    public boolean isCor() {
+        return (id == COR);
+    }
 
     @Transient
     public boolean isCorIec() {

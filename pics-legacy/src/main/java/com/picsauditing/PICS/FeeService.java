@@ -20,10 +20,9 @@ public class FeeService {
     @Autowired
     private InvoiceFeeDAO feeDAO;
     @Autowired
-    protected static AuditTypeRuleCache ruleCache;
-    @Autowired
     private BillingService billingService;
 
+    protected static AuditTypeRuleCache ruleCache;
     private boolean hasEmployeeGuardAccount = false;
 
     public AuditTypeRuleCache getRuleCache() {
@@ -185,6 +184,7 @@ public class FeeService {
         boolean hasHseCompetency = false;
         boolean requiresOQ = false;
         boolean isLinkedToSuncor = false;
+        boolean isLinkedToImperialOil = false;
         Set<FeeClass> feeClasses = new HashSet<FeeClass>();
         List<Integer> possibleEGAccounts = new ArrayList<>();
         possibleEGAccounts.add(contractor.getId());
@@ -195,6 +195,9 @@ public class FeeService {
 
             if (!isLinkedToSuncor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
                 isLinkedToSuncor = true;
+
+            if (!isLinkedToImperialOil && co.getOperatorAccount().isDescendantOf(OperatorAccount.IMPERIAL_OIL))
+                isLinkedToImperialOil = true;
 
             possibleEGAccounts.add(co.getOperatorAccount().getId());
         }
@@ -221,7 +224,7 @@ public class FeeService {
             if (auditType == null)
                 continue;
 
-            if (auditType.isDesktop() || auditType.isImplementation() || auditType.isSsip() || (auditType.isCorIec() && isLinkedToSuncor))
+            if (hasAuditGUARD(auditType, isLinkedToSuncor, isLinkedToImperialOil))
                 feeClasses.add(FeeClass.AuditGUARD);
 
             if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
@@ -251,6 +254,12 @@ public class FeeService {
         buildFeeNewLevels(contractor, payingFacilities, feeClasses, operatorsRequiringInsureGUARD);
 
         calculateUpgradeDate(contractor, currentBillingStatus);
+    }
+
+    private boolean hasAuditGUARD(AuditType auditType, boolean linkedToSuncor, boolean linkedToImperialOil) {
+        return auditType.isAlwaysBilledForAuditGUARD() ||
+                (auditType.isCorIec() && linkedToSuncor) ||
+                (auditType.isCor() && linkedToImperialOil);
     }
 
     // TODO: THIS IS TO BE REMOVED BEFORE 2015
