@@ -7,20 +7,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -512,6 +501,63 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		requestNewContractorAccount.setContactNote("Test");
 		assertFalse(requestNewContractorAccount.isContactNoteMissing());
 	}
+
+    @Test
+    public void testResolveDuplicate() {
+        int requestRelationshipId = 1;
+        int duplicateContractorId = 2;
+        ContractorAccount oldContractor = ContractorAccount.builder().id(requestRelationshipId).build();
+        ContractorOperator requestRelationship = ContractorOperator.builder()
+                .contractor(oldContractor)
+                .build();
+        ContractorAccount duplicateContractor = ContractorAccount.builder()
+                .primaryContact(User.builder().build())
+                .id(duplicateContractorId)
+                .build();
+        requestNewContractorAccount.setRequestRelationship(requestRelationship);
+        requestNewContractorAccount.setDuplicateContractor(duplicateContractor);
+
+        assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.resolveDuplicate());
+        assertEquals(duplicateContractorId, requestNewContractorAccount.getContractor().getId());
+        assertEquals(duplicateContractor, requestNewContractorAccount.getRequestRelationship().getContractorAccount());
+        assertEquals(duplicateContractor.getPrimaryContact(), requestNewContractorAccount.getPrimaryContact());
+        assertEquals(RequestNewContractorAccount.REASON_REQUEST_DECLINED, oldContractor.getReason());
+        assertEquals(RequestNewContractorAccount.DUPLICATE_CONTRACTOR_NAME + duplicateContractor.getId(), oldContractor.getName());
+        assertEquals(AccountStatus.Deleted, oldContractor.getStatus());
+    }
+
+    @Test
+    public void testResolveDuplicate_NullDuplicateContractor() {
+        when(translationService.getText(eq(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE),
+                any(Locale.class), anyObject())).thenReturn(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE);
+        when(translationService.hasKey(eq(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE),
+                any(Locale.class))).thenReturn(true);
+
+        assertEquals(PicsActionSupport.INPUT, requestNewContractorAccount.resolveDuplicate());
+        assertEquals(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE,
+                requestNewContractorAccount.getFieldErrors().get(RequestNewContractorAccount.DUPLICATE_CONTRACTOR_FIELD_NAME).get(0));
+    }
+
+    @Test
+    public void testResolveDuplicate_SameDuplicatedContractorId() {
+        when(translationService.getText(eq(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE),
+                any(Locale.class), anyObject())).thenReturn(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE);
+        when(translationService.hasKey(eq(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE),
+                any(Locale.class))).thenReturn(true);
+
+        int contractorId = 1;
+        ContractorAccount oldContractorAccount = ContractorAccount.builder().id(contractorId).build();
+        ContractorAccount duplicateContractor = ContractorAccount.builder()
+                .primaryContact(User.builder().build())
+                .id(contractorId)
+                .build();
+        requestNewContractorAccount.setContractor(oldContractorAccount);
+        requestNewContractorAccount.setDuplicateContractor(duplicateContractor);
+
+        assertEquals(PicsActionSupport.INPUT, requestNewContractorAccount.resolveDuplicate());
+        assertEquals(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE,
+                requestNewContractorAccount.getFieldErrors().get(RequestNewContractorAccount.DUPLICATE_CONTRACTOR_FIELD_NAME).get(0));
+    }
 
 	private void setPermissionsAsOperator() {
 		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
