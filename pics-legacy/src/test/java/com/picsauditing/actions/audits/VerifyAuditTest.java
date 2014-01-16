@@ -35,6 +35,8 @@ public class VerifyAuditTest extends PicsTranslationTest {
     private AuditDataService auditDataService;
     @Mock
     private OshaAudit oshaAudit;
+    @Mock
+    private SafetyStatistics safetyStat;
 
     @Before
 	public void setUp() throws Exception {
@@ -157,19 +159,46 @@ public class VerifyAuditTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testShowOsha_Osha() {
+	public void testShowOsha_Osha_Yes() {
 		ContractorAccount con = EntityFactory.makeContractor();
 
 		ContractorAudit annual = EntityFactory.makeAnnualUpdate(11, con, "2010");
 		PicsTestUtil.forceSetPrivateField(verifyAudit, "conAudit", annual);
+        when(oshaAudit.getSafetyStatistics(OshaType.OSHA)).thenReturn(safetyStat);
 
-		assertTrue(verifyAudit.showOsha(OshaType.OSHA));
-        AuditData oshaKept = EntityFactory.makeAuditData("Yes", 2064);
-		annual.getData().add(oshaKept);
-		assertTrue(verifyAudit.showOsha(OshaType.OSHA));
-		;
+        assertTrue(verifyAudit.showOsha(OshaType.OSHA));
 	}
 
+    @Test
+    public void testShowOsha_Osha_No() {
+        ContractorAccount con = EntityFactory.makeContractor();
+
+        ContractorAudit annual = EntityFactory.makeAnnualUpdate(11, con, "2010");
+        PicsTestUtil.forceSetPrivateField(verifyAudit, "conAudit", annual);
+
+        assertFalse(verifyAudit.showOsha(OshaType.OSHA));
+    }
+
+    @Test
+    public void testShowOsha_UK_HSE_Yes() {
+        ContractorAccount con = EntityFactory.makeContractor();
+
+        ContractorAudit annual = EntityFactory.makeAnnualUpdate(11, con, "2010");
+        PicsTestUtil.forceSetPrivateField(verifyAudit, "conAudit", annual);
+        when(oshaAudit.getSafetyStatistics(OshaType.UK_HSE)).thenReturn(safetyStat);
+
+        assertTrue(verifyAudit.showOsha(OshaType.UK_HSE));
+    }
+
+    @Test
+    public void testShowOsha_UK_HSE_No() {
+        ContractorAccount con = EntityFactory.makeContractor();
+
+        ContractorAudit annual = EntityFactory.makeAnnualUpdate(11, con, "2010");
+        PicsTestUtil.forceSetPrivateField(verifyAudit, "conAudit", annual);
+
+        assertFalse(verifyAudit.showOsha(OshaType.UK_HSE));
+    }
     @Test
     public void testShowOsha_Cohs() {
         ContractorAccount con = EntityFactory.makeContractor();

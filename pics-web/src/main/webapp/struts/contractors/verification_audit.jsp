@@ -298,7 +298,7 @@
 							<label>Links:</label>
 							<a href="http://www.osha.gov/dep/fatcat/dep_fatcat.html" target="_BLANK">OSHA Fatalities</a>
 						</li>
-                        <s:if test="oshaFileVisible">
+                        <s:if test="isOshaFileVisible('OSHA')">
 						<li>
 							<label>File:</label>
 							<s:if test="osha.getFileUploadId('OSHA') > 0">
@@ -353,15 +353,17 @@
 							<label>Comment:</label>
 							<s:select onchange="return setOSHAComment(%{osha.id});" id="comment_%{osha.id}" list="oshaProblems" name="osha.getComment('UK_HSE')" />
 						</li>
+                        <s:if test="isOshaFileVisible('UK_HSE')">
 						<li>
 							<label>File:</label>
 							<s:if test="osha.getFileUploadId('UK_HSE') > 0">
 							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8873)">View File</a>
 							<a href="Audit.action?auditID=<s:property value="osha.id" />&catID=2092&mode=Edit" target="_BLANK">Change File</a>
 							</s:if>
-						</li>		
+						</li>
+                        </s:if>
 						
-						<s:iterator value="osha.getQuestionsToVerify('UK_HSE')" id="auditData">
+						<s:iterator value="getVisibleOshaQuestions('UK_HSE')" id="auditData">
 							<li>
 								<label><s:property value="#auditData.question.name" escape="false"/></label>
                                 <input type="text" name="oshaQuestion_${auditData.question.id}" value="${auditData.answer}" class="oshanum" />

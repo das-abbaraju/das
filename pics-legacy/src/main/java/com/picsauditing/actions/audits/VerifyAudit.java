@@ -149,22 +149,27 @@ public class VerifyAudit extends AuditActionSupport {
 		if (conAudit == null || !conAudit.getAuditType().isAnnualAddendum())
 			return false;
 		if (OshaType.OSHA.equals(oshaType)) {
-			return true;
+            if (getOsha() != null && getOsha().getSafetyStatistics(OshaType.OSHA) != null)
+			    return true;
+            else
+                return false;
 		}
 		if (OshaType.COHS.equals(oshaType)) {
 			return conAudit.isDataExpectedAnswer(
 					AuditQuestion.COHS_KEPT_ID, "Yes");
 		}
 		if (OshaType.UK_HSE.equals(oshaType)) {
-			return conAudit.isDataExpectedAnswer(
-					AuditQuestion.UK_HSE_KEPT_ID, "Yes");
+            if (getOsha() != null && getOsha().getSafetyStatistics(OshaType.UK_HSE) != null)
+                return true;
+            else
+                return false;
 		}
 		
 		return true;
 	}
 
-    public boolean isOshaFileVisible() {
-        String answer = oshaAudit.getSpecificRate(OshaType.OSHA, OshaRateType.FileUpload);
+    public boolean isOshaFileVisible(OshaType oshaType) {
+        String answer = oshaAudit.getSpecificRate(oshaType, OshaRateType.FileUpload);
         return (answer != null && !Strings.EMPTY_STRING.equals(answer));
     }
 
