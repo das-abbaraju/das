@@ -10,6 +10,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.model.user.UserManagementService;
+import com.picsauditing.service.RequestNewContractorService;
 import com.picsauditing.validator.RequestNewContractorValidator;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -70,6 +71,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	private RequestNewContractorValidator validator;
 	@Autowired
 	private UserManagementService userManagementService;
+    @Autowired
+    private RequestNewContractorService requestNewContractorService;
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
@@ -392,7 +395,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
-		saveRequiredFieldsAndSaveEntities();
+        requestNewContractorService.setPermissions(permissions);
+        contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
+        primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
+        requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
 
 		if (contactType == RequestContactType.DECLINED) {
 			contractor.setStatus(AccountStatus.Declined);

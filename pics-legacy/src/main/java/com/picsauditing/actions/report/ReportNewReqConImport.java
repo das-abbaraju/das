@@ -8,6 +8,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.ContractorAppIndexSearch;
 import com.picsauditing.search.Database;
+import com.picsauditing.service.RequestNewContractorService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
@@ -25,8 +26,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class ReportNewReqConImport extends PicsActionSupport {
 	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
-	@Autowired
-	private ContractorRegistrationRequestDAO crrDAO;
+
 	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
@@ -39,6 +39,12 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	private RegistrationRequestEmailHelper emailHelper;
 	@Autowired
 	private UserDAO userDAO;
+    @Autowired
+    private ContractorAccountDAO contractorAccountDAO;
+    @Autowired
+    private RequestNewContractorService requestNewContractorService;
+    @Autowired
+    private OperatorTagDAO operatorTagDAO;
 
 	private boolean forceUpload = false;
 	private File file;
@@ -47,6 +53,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	private String fileName = null;
 	private Workbook workbook;
 	private ContractorAppIndexSearch contractorAppIndexSearch;
+    private String notes = null;
 
 	public String save() throws Exception {
 		Database database = new Database();
@@ -115,7 +122,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	}
 
 	private void importData(File file) throws Exception {
-		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
+        requestNewContractorService.setPermissions(permissions);
+        int count = 0;
 
 		try {
 			if (workbook == null) {
@@ -134,17 +142,43 @@ public class ReportNewReqConImport extends PicsActionSupport {
 						continue;
 					}
 
-					ContractorRegistrationRequest request = createdRegistrationRequest(row);
-					checkRequestForErrors(row.getRowNum(), request);
+                    ContractorAccount contractor = createContractor(row);
+                    User primaryContact = createPrimaryContact(row);
+                    ContractorOperator requestRelationship = createRelationship(row);
+                    List<OperatorTag> operatorTags = findOperatorTags(getString(row, RegistrationRequestColumn.Tags));
+                    notes = getString(row, RegistrationRequestColumn.Notes);
 
-					int matches = findGap(request);
-					request.setMatchCount(matches);
+                    checkContractorForErrors(row.getRowNum(), contractor);
+                    checkPrimaryContactForErrors(row.getRowNum(), primaryContact);
+                    checkRelationshipForErrors(row.getRowNum(), requestRelationship);
 
-					if (matches == 0 || forceUpload) {
-						requests.add(request);
+					if (getActionErrors().size() == 0 || forceUpload) {
+                        contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
+                        primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
+                        requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
+                        requestNewContractorService.addTagsToContractor(contractor, operatorTags);
+
+                        if (requestRelationship.getRequestedBy().getId() != OperatorAccount.SALES) {
+                            Date now = new Date();
+
+                            contractor.contactByEmail();
+                            contractor.setLastContactedByInsideSalesDate(now);
+                            contractor.setLastContactedByAutomatedEmailDate(now);
+                            if (requestRelationship.getRequestedBy() != null) {
+                                contractor.setLastContactedByInsideSales(requestRelationship.getRequestedBy());
+                            } else {
+                                contractor.setLastContactedByInsideSales(permissions.getUserId());
+                            }
+                            prependToRequestNotes("Sent initial contact email.");
+                            emailHelper.sendInitialEmail(contractor, primaryContact, requestRelationship, getFtpDir());
+                        }
+
+                        addNote(contractor, requestRelationship);
+                        contractorAccountDAO.save(contractor);
+                        count++;
 					} else {
-						addActionMessage(getTextParameterized("ReportNewReqConImport.DuplicatesFound", matches,
-								row.getRowNum() + 1, request.getName()));
+						addActionMessage(getTextParameterized("ReportNewReqConImport.DuplicatesFound", 1,
+								row.getRowNum() + 1, contractor.getName()));
 					}
 				}
 			}
@@ -153,31 +187,46 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			addActionError(getText("ReportNewReqConImport.CheckFormat"));
 		}
 
-		if (getActionErrors().size() == 0) {
-			String notes = "Sent initial contact email.";
-			for (ContractorRegistrationRequest crr : requests) {
-				crrDAO.save(crr);
-
-				if (crr.getRequestedBy().getId() != OperatorAccount.SALES) {
-					crr.contactByEmail();
-					prependToRequestNotes(notes, crr);
-					emailHelper.sendInitialEmail(crr, getFtpDir());
-
-					crrDAO.save(crr);
-				}
-			}
-
+		if (getActionErrors().size() == 0 && count > 0) {
 			if (permissions.isOperatorCorporate()
 					&& featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
 				DataConversionRequestAccount justInTimeConversion = new DataConversionRequestAccount(dao, permissions);
 				justInTimeConversion.upgrade();
 			}
 
-			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", requests.size()));
-		}
+			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", count));
+		} else if (getActionErrors().size() == 0) {
+            addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", count));
+        }
 	}
 
-	private boolean skipHeaderRow(Row row) {
+    private List<OperatorTag> findOperatorTags(String tagIdsString) {
+        List<OperatorTag> list = new ArrayList<>();
+        if (tagIdsString != null) {
+            String idsToSesarch = Strings.implodeForDB(tagIdsString.split(" ,"), ",");
+            list = operatorTagDAO.findWhere(OperatorTag.class, "id in (" + tagIdsString + ")");
+        }
+        return list;
+    }
+
+    private void addNote(ContractorAccount contractor, ContractorOperator requestRelationship) {
+        OperatorAccount clientSiteAccount = requestRelationship.getOperatorAccount();
+        int clientSiteId = (clientSiteAccount != null) ? clientSiteAccount.getId() : 1;
+
+        Note note = new Note();
+        note.setAccount(contractor);
+        note.setAuditColumns(permissions);
+        note.setSummary(notes);
+        note.setPriority(LowMedHigh.Low);
+        note.setNoteCategory(NoteCategory.Registration);
+        note.setViewableById(clientSiteId);
+        note.setCanContractorView(true);
+        note.setStatus(NoteStatus.Closed);
+        noteDao.save(note);
+    }
+
+
+    private boolean skipHeaderRow(Row row) {
 		Cell cell = row.getCell(0);
 		if (cell != null) {
 			RichTextString richText = cell.getRichStringCellValue();
@@ -192,108 +241,124 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		return false;
 	}
 
-	private void prependToRequestNotes(String note, ContractorRegistrationRequest request) {
-		if (request != null && note != null) {
-			String stamp = String.format("%s - %s - %s", maskDateFormat(new Date()), permissions.getName(), note);
-			request.setNotes(stamp + (request.getNotes() != null ? "\n\n" + request.getNotes() : ""));
+	private void prependToRequestNotes(String message) {
+		if (message != null) {
+			String stamp = String.format("%s - %s - %s", maskDateFormat(new Date()), permissions.getName(), message);
+            notes = (notes == null)? stamp: stamp + "\n\n" + notes;
 		}
 	}
 
-	private ContractorRegistrationRequest createdRegistrationRequest(Row row) {
-		ContractorRegistrationRequest request = new ContractorRegistrationRequest();
-		// Strings
-		request.setName(getString(row, RegistrationRequestColumn.Name));
-		request.setContact(getString(row, RegistrationRequestColumn.Contact));
-		request.setPhone(getString(row, RegistrationRequestColumn.Phone));
-		request.setEmail(getString(row, RegistrationRequestColumn.Email));
-		request.setTaxID(getString(row, RegistrationRequestColumn.TaxID));
-		request.setAddress(getString(row, RegistrationRequestColumn.Address));
-		request.setCity(getString(row, RegistrationRequestColumn.City));
-        // Country Subdivision
+    private ContractorAccount createContractor(Row row) {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setName(getString(row, RegistrationRequestColumn.Name));
+        contractor.setTaxId(getString(row, RegistrationRequestColumn.TaxID));
+        contractor.setAddress(getString(row, RegistrationRequestColumn.Address));
+        contractor.setCity(getString(row, RegistrationRequestColumn.City));
+        contractor.setZip(getString(row, RegistrationRequestColumn.Zip));
+        contractor.setCountry((Country) getValue(row, RegistrationRequestColumn.Country));
+        contractor.setStatus(AccountStatus.Requested);
+
         String subdivision = getString(row, RegistrationRequestColumn.CountrySubdivision);
-		request.setZip(getString(row, RegistrationRequestColumn.Zip));
-        request.setCountry((Country) getValue(row, RegistrationRequestColumn.Country));
-		request.setRequestedByUserOther(getString(row, RegistrationRequestColumn.RequestedByOther));
-		request.setOperatorTags(getString(row, RegistrationRequestColumn.Tags));
-		request.setReasonForRegistration(getString(row, RegistrationRequestColumn.ReasonForRegistration));
-		// Notes
-		prependToRequestNotes(getString(row, RegistrationRequestColumn.Notes), request);
-		// Other objects
-//        request.setDeadline((Date) getValue(row, RegistrationRequestColumn.Deadline));
-		request.setRequestedBy((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
-		request.setRequestedByUser((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
+        if (subdivision != null && !subdivision.contains("-")) {
+            if (contractor.getCountry() != null) {
+                subdivision = contractor.getCountry().getIsoCode() + "-" + subdivision;
+            }
 
-		if (subdivision != null && !subdivision.contains("-")) {
-			if (request.getCountry() != null) {
-				subdivision = request.getCountry().getIsoCode() + "-" + subdivision;
-			}
+            contractor.setCountrySubdivision(countrySubdivisionDAO.find(subdivision));
+        }
 
-			request.setCountrySubdivision(countrySubdivisionDAO.find(subdivision));
-		}
-		// Defaults
-		request.setAuditColumns(permissions);
-		request.setStatus(ContractorRegistrationRequestStatus.Active);
+        return contractor;
+    }
 
-		return request;
-	}
+    private User createPrimaryContact(Row row) {
+        User primaryContact = new User();
+        primaryContact.setFirstName(getString(row, RegistrationRequestColumn.ContactFirstName));
+        primaryContact.setLastName(getString(row, RegistrationRequestColumn.ContactLastName));
+        primaryContact.setPhone(getString(row, RegistrationRequestColumn.Phone));
+        primaryContact.setEmail(getString(row, RegistrationRequestColumn.Email));
 
-	public void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {
-		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther())) {
-			crr.setRequestedByUserOther(null);
-		}
+        return primaryContact;
+    }
 
-		if (Strings.isEmpty(crr.getContact()) || crr.getCountrySubdivision() == null || crr.getCountry() == null
-				|| crr.getRequestedBy() == null || Strings.isEmpty(crr.getReasonForRegistration()) || Strings.isEmpty(crr.getAddress())) {
-			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
-		}
+    private ContractorOperator createRelationship(Row row) {
+        ContractorOperator relationship = new ContractorOperator();
+        relationship.setRequestedByOther(getString(row, RegistrationRequestColumn.RequestedByOther));
+        relationship.setRequestedBy((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
+        relationship.setOperatorAccount((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
+        relationship.setReasonForRegistration(getString(row, RegistrationRequestColumn.ReasonForRegistration));
+        relationship.setDeadline((Date) getValue(row, RegistrationRequestColumn.Deadline));
 
-		if (Strings.isEmpty(crr.getEmail()) || Strings.isEmpty(crr.getPhone())) {
-			addActionError(getTextParameterized("ReportNewReqConImport.ContactInformationRequired", (j + 1)));
-		}
+        return relationship;
+    }
 
-		if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null) {
-			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequestedByUser", (j + 1)));
-		}
+    public void checkContractorForErrors(int j, ContractorAccount contractor) {
+        if (contractor.getCountrySubdivision() == null || contractor.getCountry() == null
+                || Strings.isEmpty(contractor.getAddress())) {
+            addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
+        }
+    }
 
-		if (crr.getDeadline() == null) {
-			crr.setDeadline(DateBean.addMonths(new Date(), 2));
-		}
+    public void checkPrimaryContactForErrors(int j, User primary) {
+        if (Strings.isEmpty(primary.getLastName()) || Strings.isEmpty(primary.getFirstName())) {
+            addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
+        }
 
-		if (crr.getContact().length() > 30) {
-			String oldContact = crr.getContact();
-			crr.setContact(crr.getContact().substring(0, 30));
-			prependToRequestNotes("Contact name truncated from " + oldContact, crr);
-		}
+        if (Strings.isEmpty(primary.getEmail()) || Strings.isEmpty(primary.getPhone())) {
+            addActionError(getTextParameterized("ReportNewReqConImport.ContactInformationRequired", (j + 1)));
+        }
 
-		if (crr.getPhone().length() > 20) {
-			String oldPhone = crr.getPhone();
-			crr.setPhone(crr.getPhone().substring(0, 20));
-			prependToRequestNotes("Phone number truncated from " + oldPhone, crr);
-		}
-	}
+        if (primary.getLastName().length() > 50) {
+            prependToRequestNotes("Contact last name truncated from " + primary.getLastName());
+            primary.setLastName(primary.getLastName().substring(0, 50));
+        }
 
-	private int findGap(ContractorRegistrationRequest newContractor) {
+        if (primary.getFirstName().length() > 50) {
+            prependToRequestNotes("Contact first name truncated from " + primary.getFirstName());
+            primary.setFirstName(primary.getFirstName().substring(0, 50));
+        }
+
+        if (primary.getPhone().length() > 20) {
+            String oldPhone = primary.getPhone();
+            prependToRequestNotes("Phone number truncated from " + primary.getPhone());
+            primary.setPhone(primary.getPhone().substring(0, 20));
+        }
+    }
+
+    public void checkRelationshipForErrors(int j, ContractorOperator conOp) {
+        if (conOp.getOperatorAccount() == null || conOp.getRequestedBy() == null || Strings.isEmpty(conOp.getReasonForRegistration())) {
+            addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
+        }
+
+        if (Strings.isEmpty(conOp.getRequestedByOther()) && conOp.getRequestedBy() == null) {
+            addActionError(getTextParameterized("ReportNewReqConImport.MissingRequestedByUser", (j + 1)));
+        }
+
+        if (conOp.getRequestedBy() != null && !Strings.isEmpty(conOp.getRequestedByOther())) {
+            conOp.setRequestedByOther(null);
+        }
+        if (conOp.getDeadline() == null) {
+            conOp.setDeadline(DateBean.addMonths(new Date(), 2));
+        }
+    }
+
+	private int findGap(ContractorAccount contractor, User contact) {
 		Set<ContractorAppIndexSearch.SearchResult> results = new HashSet<ContractorAppIndexSearch.SearchResult>();
 
 		try {
-			if (!Strings.isEmpty(newContractor.getName())) {
-				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getName(), ContractorAppIndexSearch.INDEX_TYPE_CONTRACTOR));
+			if (!Strings.isEmpty(contractor.getName())) {
+				results.addAll(contractorAppIndexSearch.searchOn(contractor.getName(), ContractorAppIndexSearch.INDEX_TYPE_CONTRACTOR));
 			}
 
-			if (!Strings.isEmpty(newContractor.getAddress())) {
-				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getAddress(), ContractorAppIndexSearch.INDEX_TYPE_CONTRACTOR));
+			if (!Strings.isEmpty(contractor.getAddress())) {
+				results.addAll(contractorAppIndexSearch.searchOn(contractor.getAddress(), ContractorAppIndexSearch.INDEX_TYPE_CONTRACTOR));
 			}
 
-			if (!Strings.isEmpty(newContractor.getPhone())) {
-				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getPhone(), ContractorAppIndexSearch.INDEX_TYPE_USER));
+			if (!Strings.isEmpty(contact.getPhone())) {
+				results.addAll(contractorAppIndexSearch.searchOn(contact.getPhone(), ContractorAppIndexSearch.INDEX_TYPE_USER));
 			}
 
-			if (!Strings.isEmpty(newContractor.getEmail())) {
-				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getEmail(), ContractorAppIndexSearch.INDEX_TYPE_USER));
-			}
-
-			if (!Strings.isEmpty(newContractor.getContact())) {
-				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getContact(), ContractorAppIndexSearch.INDEX_TYPE_USER));
+			if (!Strings.isEmpty(contact.getEmail())) {
+				results.addAll(contractorAppIndexSearch.searchOn(contact.getEmail(), ContractorAppIndexSearch.INDEX_TYPE_USER));
 			}
 		} catch (SQLException sqlException) {
 			logger.error("Error searching for matching contractors", sqlException);
@@ -351,6 +416,6 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	}
 
 	protected enum RegistrationRequestColumn {
-		Name, Contact, Phone, Email, TaxID, Address, City, CountrySubdivision, Zip, Country, RequestedBy, Tags, RequestedByUser, RequestedByOther, Deadline, ReasonForRegistration, Notes
+		Name, ContactFirstName, ContactLastName, Phone, Email, TaxID, Address, City, CountrySubdivision, Zip, Country, RequestedBy, Tags, RequestedByUser, RequestedByOther, Deadline, ReasonForRegistration, Notes
 	}
 }
