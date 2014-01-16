@@ -1,14 +1,17 @@
 package com.picsauditing.service.addressverifier;
 
 
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.toggle.FeatureToggle;
 import com.strikeiron.www.Address;
 import com.strikeiron.www.GlobalAddressVerifier;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
+import org.togglz.junit.TogglzRule;
 
 import javax.xml.rpc.ServiceException;
 
@@ -21,16 +24,15 @@ public class StrikeIronAddressVerificationServiceTest {
     private StrikeIronAddressVerificationService strikeIronAddressVerificationService;
     @Mock
     private GlobalAddressVerifier globalAddressVerifier;
-    @Mock
-    private FeatureToggle featureToggle;
+
+    @Rule
+    public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         strikeIronAddressVerificationService = new StrikeIronAddressVerificationService();
         Whitebox.setInternalState(strikeIronAddressVerificationService, "globalAddressVerifier", globalAddressVerifier);
-        Whitebox.setInternalState(strikeIronAddressVerificationService, "featureToggle", featureToggle);
-        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_STRIKE_IRON)).thenReturn(true);
     }
 
     @Test
@@ -61,7 +63,7 @@ public class StrikeIronAddressVerificationServiceTest {
 
     @Test
     public void testVerify_UsAddress_FeatureDisabled() throws AddressVerificationException, ServiceException {
-        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_STRIKE_IRON)).thenReturn(false);
+        togglzRule.disable(Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE);
         AddressHolder picsIrvine = createIrvineAddress();
 
         Address verified = new Address();

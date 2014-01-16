@@ -1,14 +1,11 @@
 package com.picsauditing.service.addressverifier;
 
-import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.featuretoggle.Features;
 import com.strikeiron.www.Address;
 import com.strikeiron.www.GlobalAddressVerifier;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class StrikeIronAddressVerificationService extends AddressVerificationService {
     public static final String FEATURE_DISABLED_MESSAGE = "StrikeIron verification feature is disabled.";
-    @Autowired
-    private FeatureToggle featureToggle;
 
     private GlobalAddressVerifier globalAddressVerifier;
 
@@ -16,33 +13,42 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
         Address verified = null;
         AddressHolder correctedAddress = new AddressHolder();
 
-        if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_STRIKE_IRON)) {
+        if (featureEnabled()) {
+            try {
+                globalAddressVerifier = getGlobalAddressVerifier(address);
+                verified = globalAddressVerifier.execute();
+            } catch (Exception e) {
+                throw new AddressVerificationException(e.getMessage(), e, address);
+            }
+            if (verified.getStatusNbr() >= 500) {
+                throw new AddressVerificationException(verified.getStatusDescription(), address);
+            }
+
+            correctedAddress.setAddressLine1(verified.getStreetAddressLines());
+            correctedAddress.setCity(verified.getLocality());
+            correctedAddress.setStateOrProvince(verified.getProvince());
+            correctedAddress.setZipOrPostalCode(verified.getPostalCode());
+            correctedAddress.setCountry(verified.getCountry());
+
+            correctedAddress.setResultStatus(parseResultCode(verified.getStatusNbr()));
+            correctedAddress.setStatusDescription(verified.getStatusDescription());
+            correctedAddress.setConfidencePercent(verified.getConfidencePercentage());
+        }
+        else {
             address.setResultStatus(ResultStatus.SUCCESS);
             address.setStatusDescription(FEATURE_DISABLED_MESSAGE);
             return address;
         }
 
-        try {
-            globalAddressVerifier = getGlobalAddressVerifier(address);
-            verified = globalAddressVerifier.execute();
-        } catch (Exception e) {
-            throw new AddressVerificationException(e.getMessage(), e, address);
-        }
-        if (verified.getStatusNbr() >= 500) {
-            throw new AddressVerificationException(verified.getStatusDescription(), address);
-        }
-
-        correctedAddress.setAddressLine1(verified.getStreetAddressLines());
-        correctedAddress.setCity(verified.getLocality());
-        correctedAddress.setStateOrProvince(verified.getProvince());
-        correctedAddress.setZipOrPostalCode(verified.getPostalCode());
-        correctedAddress.setCountry(verified.getCountry());
-
-        correctedAddress.setResultStatus(parseResultCode(verified.getStatusNbr()));
-        correctedAddress.setStatusDescription(verified.getStatusDescription());
-        correctedAddress.setConfidencePercent(verified.getConfidencePercentage());
-
         return correctedAddress;
+    }
+
+    private boolean featureEnabled() {
+        try {
+            return Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive();
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     private GlobalAddressVerifier getGlobalAddressVerifier(AddressHolder address) {
