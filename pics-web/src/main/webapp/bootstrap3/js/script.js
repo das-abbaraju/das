@@ -14419,7 +14419,9 @@ PICS.define('employee-guard.Tooltip', {
 (function ($) {
     PICS.define('frontend-guide.FrontendDevelopmentGuideController', {
         methods: (function () {
-            var $toggle_markup_button, $html_collapsibles;
+            var primary_nav_height = $('#primary_navigation').height(), // TODO: sketchy. should probably use an external getter
+                component_section_padding_top = parseInt($('section').css('padding-top')),
+                $toggle_markup_button, $html_collapsibles;
 
             function init() {
                 if ($('.FrontendDevelopmentGuide-page').length > 0) {
@@ -14437,7 +14439,7 @@ PICS.define('employee-guard.Tooltip', {
             function initPlugins() {
                 $('body').scrollspy({
                     target: '.sidenav',
-                    offset: 200
+                    offset: primary_nav_height + component_section_padding_top
                 });
             }
 
