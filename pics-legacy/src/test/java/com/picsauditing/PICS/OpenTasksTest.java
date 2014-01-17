@@ -44,8 +44,10 @@ public class OpenTasksTest extends PicsActionTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
 	private final String RequiresTwoUsers = "PICS now requires contractors to have two or more users to help maintain their account.";
 	private final String UpdatedAgreement = "Please review the terms of our updated Contractor User Agreement";
+    private final String UpdatedAgreement_French = "French Please review the terms of our updated Contractor User Agreement";
 	private final String NeedsTradesUpdated = "Please review your provided services.";
 	private final String NoTradesSelected = "You must have at least 1 Trade selected.";
+    private final String NoTradesSelected_French = "French You must have at least 1 Trade selected.";
 	// "Updgrade" [SIC] - it is in the db this way
 	private final String BidOnlyUpdgrade = "Your Account is a Bid-Only Account and will expire. Please upgrade your account to a full membership.";
 	private final String GenerateInvoice = "Your Account has been upgraded. To continue working at your selected facilities please generate and pay the invoice";
@@ -53,6 +55,7 @@ public class OpenTasksTest extends PicsActionTest {
 	private final String UpdatePaymentMethod = "Please update your payment method";
 	private final String FixPolicyIssues = "Please fix issues with your Policy";
 	private final String FixAnnualIssues = "Please fix issues with your Annual Update";
+    private final String FixAnnualIssues_French = "French Please fix issues with your Annual Update";
 	private final String FixWcbIssues = "Please fix issues with your {1}{2,choice,0#|1# for {3}}";
 	private final String UploadAndSubmitPolicy = "Please upload and submit your Policy";
 	private final String ResubmitPolicy = "Please review and resubmit your Policy";
@@ -444,6 +447,19 @@ public class OpenTasksTest extends PicsActionTest {
 		assertThat(openTaskList, hasItem(FixAnnualIssues));
 	}
 
+    @Test
+    public void testGetOpenTasksEmail_InUserNotContractorLocale() throws Exception {
+        when(user.getLocale()).thenReturn(Locale.FRENCH);
+        when(audit.hasCaoStatus(AuditStatus.Incomplete)).thenReturn(true);
+        setUpAnnualUpdateAuditTask();
+
+        List<String> openTaskList = openTasks.getOpenTasksEmail(contractor, user);
+
+        assertThat(openTaskList, hasItem(FixAnnualIssues_French));
+        assertThat(openTaskList, hasItem(UpdatedAgreement_French));
+        assertThat(openTaskList, hasItem(NoTradesSelected_French));
+    }
+
 	@Test
 	public void testGetOpenTasks_UploadAndSubmitPolicy() throws Exception {
 		when(audit.hasCaoStatus(AuditStatus.Incomplete)).thenReturn(false);
@@ -656,13 +672,18 @@ public class OpenTasksTest extends PicsActionTest {
 	@SuppressWarnings("deprecation")
 	private void setUpTranslationServiceText() {
 		when(translationService.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
+        when(translationService.hasKey(anyString(), eq(Locale.FRENCH))).thenReturn(true);
 
 		when(translationService.getText(eq("ContractorWidget.message.NoTradesSelected"), eq(Locale.ENGLISH), any()))
 				.thenReturn(NoTradesSelected);
+        when(translationService.getText(eq("ContractorWidget.message.NoTradesSelected"), eq(Locale.FRENCH), any()))
+                .thenReturn(NoTradesSelected_French);
 		when(translationService.getText(eq("ContractorWidget.message.NeedsTradesUpdated"), eq(Locale.ENGLISH), any()))
 				.thenReturn(NeedsTradesUpdated);
 		when(translationService.getText(eq("ContractorWidget.message.UpdatedAgreement"), eq(Locale.ENGLISH), any()))
 				.thenReturn(UpdatedAgreement);
+        when(translationService.getText(eq("ContractorWidget.message.UpdatedAgreement"), eq(Locale.FRENCH), any()))
+                .thenReturn(UpdatedAgreement_French);
 		when(translationService.getText(eq("ContractorWidget.message.RequiresTwoUsers"), eq(Locale.ENGLISH), any()))
 				.thenReturn(RequiresTwoUsers);
 		when(translationService.getText(eq("ContractorWidget.message.ImportAndSubmitPQF"), eq(Locale.ENGLISH), any()))
@@ -685,6 +706,9 @@ public class OpenTasksTest extends PicsActionTest {
 		when(
 				translationService.getText(eq("ContractorWidget.message.FixAnnualUpdateIssues"), eq(Locale.ENGLISH),
 						anyVararg())).thenReturn(FixAnnualIssues);
+        when(
+                translationService.getText(eq("ContractorWidget.message.FixAnnualUpdateIssues"), eq(Locale.FRENCH),
+                        anyVararg())).thenReturn(FixAnnualIssues_French);
 		when(
 				translationService.getText(eq("ContractorWidget.message.UploadAndSubmitPolicy"), eq(Locale.ENGLISH),
 						anyVararg())).thenReturn(UploadAndSubmitPolicy);
