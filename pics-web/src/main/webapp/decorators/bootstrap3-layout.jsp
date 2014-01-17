@@ -21,7 +21,8 @@
     <%--Make ie8 corrections asap--%>
     <!--[if lt IE 9]><script src="/bootstrap3/js/vendor/respond.js?v=${version}"></script><![endif]-->
 
-    <link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome/font-awesome-ie7.css?v=${version}">
+    <!--[if lt IE8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome/font-awesome-ie7.css?v=${version}"><![endif]-->
+
     <script src="/bootstrap3/js/vendor/modernizr-2.6.1.min.js?v=${version}"></script>
 </head>
 <%--<body id="${actionName}_${methodName}_page" class="${actionName}-page page">--%>
