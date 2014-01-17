@@ -10,7 +10,7 @@ import java.util.List;
 public class UkStatistics extends SafetyStatistics{
 
 	private List<AuditData> questionsToVerify = new ArrayList<AuditData>();
-	private int[] questionIdsToVerify = {7691, 8867, 8868, 8869, 8870, 8871, 8872, 9967, 9968, 12033};
+	private int[] questionIdsToVerify = {7691, 8867, 8868, 8869, 8870, 8871, 8872, 8991, 9099, 9966, 9967, 9968, 12033};
 
 	public UkStatistics(int year, List<AuditData> data, boolean categoryApplies) {
 		super(year, OshaType.UK_HSE, data);
