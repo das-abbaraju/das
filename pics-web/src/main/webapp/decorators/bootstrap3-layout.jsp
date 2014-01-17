@@ -17,8 +17,11 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <link rel="stylesheet" href="/bootstrap3/css/style.css?v=${version}">
-    <!--[if lt IE 8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome-ie7.css?v=${version}"><![endif]-->
 
+    <%--Make ie8 corrections asap--%>
+    <!--[if lt IE 9]><script src="/bootstrap3/js/vendor/respond.js?v=${version}"></script><![endif]-->
+
+    <!--[if lt IE 8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome-ie7.css?v=${version}"><![endif]-->
     <script src="/bootstrap3/js/vendor/modernizr-2.6.1.min.js?v=${version}"></script>
 </head>
 <%--<body id="${actionName}_${methodName}_page" class="${actionName}-page page">--%>
@@ -42,7 +45,6 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script>google.load('visualization', '1.0', {'packages':['corechart']});</script>
 <script src="/bootstrap3/js/script.js?v=${version}"></script>
-
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <script>
     var _gaq=[['_setAccount','UA-2785572-4'],['_trackPageview']];

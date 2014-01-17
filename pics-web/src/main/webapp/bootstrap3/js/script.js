@@ -15137,6 +15137,24 @@ PICS.define('select2.Select2', {
         };
     }())
 });
+// Provides an alternative to Bootstrap 3's styling of table stripes,
+// e.g., for ie8, because BS3 uses the unsupported nth-child selector.
+PICS.define('widget.TableStripe', {
+    methods: (function () {
+        function init() {
+            var table_striped_rows = $('.table-striped tr'),
+                odd_rows = table_striped_rows.filter(':odd'),
+                even_rows = table_striped_rows.filter(':even');
+
+            odd_rows.addClass('odd');
+            even_rows.addClass('even');
+        }
+
+        return {
+            init: init
+        };
+    }())
+});
 /**
  * Chart: Abstract base class for all chart types.
  *
@@ -15677,3 +15695,46 @@ PICS.define('select2.Select2', {
         }())
     });
 })(jQuery);
+PICS.define('widget.Placeholder', {
+    methods: (function () {
+        function init() {
+          if (placeholderSupported()) {
+            return;
+          }
+
+          $('*[placeholder]').each(insertPlaceholder);
+
+          $(document).on({
+            focus: removePlaceholder,
+            blur: insertPlaceholder
+          }, "input[placeholder]");
+        }
+
+        function placeholderSupported() {
+          var $input = $('<input>');
+
+          return ('placeholder' in $input[0]);
+        }
+
+        function removePlaceholder() {
+          var $input = $(this);
+
+          if ($input.val() == $input.attr('placeholder')) {
+            $input.val('');
+          }
+        }
+
+        function insertPlaceholder() {
+          var $input = $(this);
+
+          if ($input.val() == '' || $input.val() == input.attr('placeholder')) {
+            $input.val($input.attr('placeholder'));
+          }
+        }
+
+        return {
+            init: init,
+            placeholderSupported: placeholderSupported
+        };
+    }())
+});
