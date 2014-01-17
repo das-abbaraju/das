@@ -23,6 +23,7 @@ public enum ModelType {
     ContractorStatistics,
     ContractorTags,
     ContractorTrades,
+    ContractorUsers,
     Countries,
     Emails,
     EmployeeCompetencies,
