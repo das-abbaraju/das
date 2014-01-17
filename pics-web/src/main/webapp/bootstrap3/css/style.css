@@ -12977,19 +12977,20 @@ section.visible h1 {
 .btn-default {
   text-shadow: none;
   background: -webkit-linear-gradient(#e6e6e6, #cccccc);
+  background: #cccccc;
   background-image: linear-gradient(to bottom, #e6e6e6, #cccccc);
   -webkit-box-shadow: 0px 2px 0px #b3b3b3;
      -moz-box-shadow: 0px 2px 0px #b3b3b3;
           box-shadow: 0px 2px 0px #b3b3b3;
 }
 
-/* line 41, ../sass/pics/components/_button.scss */
+/* line 42, ../sass/pics/components/_button.scss */
 
 .btn-default:hover {
   background: #e6e6e6;
 }
 
-/* line 45, ../sass/pics/components/_button.scss */
+/* line 46, ../sass/pics/components/_button.scss */
 
 .btn-default:active {
   background: #cccccc;
@@ -12998,9 +12999,10 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #b3b3b3 inset;
 }
 
-/* line 50, ../sass/pics/components/_button.scss */
+/* line 51, ../sass/pics/components/_button.scss */
 
 .btn-primary {
+  background: #3498db;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3498db), color-stop(100%, #2980b9));
   background-image: -webkit-linear-gradient(#3498db, #2980b9);
   background-image: -moz-linear-gradient(#3498db, #2980b9);
@@ -13011,13 +13013,13 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #105093;
 }
 
-/* line 55, ../sass/pics/components/_button.scss */
+/* line 57, ../sass/pics/components/_button.scss */
 
 .btn-primary:hover {
   background: #3498db;
 }
 
-/* line 59, ../sass/pics/components/_button.scss */
+/* line 61, ../sass/pics/components/_button.scss */
 
 .btn-primary:active {
   background: #2980b9;
@@ -13026,9 +13028,10 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #105093 inset;
 }
 
-/* line 64, ../sass/pics/components/_button.scss */
+/* line 66, ../sass/pics/components/_button.scss */
 
 .btn-success {
+  background: #0f9d58;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33b679), color-stop(100%, #0f9d58));
   background-image: -webkit-linear-gradient(#33b679, #0f9d58);
   background-image: -moz-linear-gradient(#33b679, #0f9d58);
@@ -13039,13 +13042,13 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #05702e;
 }
 
-/* line 69, ../sass/pics/components/_button.scss */
+/* line 72, ../sass/pics/components/_button.scss */
 
 .btn-success:hover {
   background: #33b679;
 }
 
-/* line 73, ../sass/pics/components/_button.scss */
+/* line 76, ../sass/pics/components/_button.scss */
 
 .btn-success:active {
   background: #0f9d58;
@@ -13054,9 +13057,10 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #05702e inset;
 }
 
-/* line 78, ../sass/pics/components/_button.scss */
+/* line 81, ../sass/pics/components/_button.scss */
 
 .btn-info {
+  background: #73bbe8;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #9cccf9), color-stop(100%, #73bbe8));
   background-image: -webkit-linear-gradient(#9cccf9, #73bbe8);
   background-image: -moz-linear-gradient(#9cccf9, #73bbe8);
@@ -13067,13 +13071,13 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #4496d8;
 }
 
-/* line 83, ../sass/pics/components/_button.scss */
+/* line 87, ../sass/pics/components/_button.scss */
 
 .btn-info:hover {
   background: #9cccf9;
 }
 
-/* line 87, ../sass/pics/components/_button.scss */
+/* line 91, ../sass/pics/components/_button.scss */
 
 .btn-info:active {
   background: #73bbe8;
@@ -13082,9 +13086,10 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #4496d8 inset;
 }
 
-/* line 92, ../sass/pics/components/_button.scss */
+/* line 96, ../sass/pics/components/_button.scss */
 
 .btn-warning {
+  background: #f4b400;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbcb43), color-stop(100%, #f4b400));
   background-image: -webkit-linear-gradient(#fbcb43, #f4b400);
   background-image: -moz-linear-gradient(#fbcb43, #f4b400);
@@ -13095,13 +13100,13 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #ec8c00;
 }
 
-/* line 97, ../sass/pics/components/_button.scss */
+/* line 102, ../sass/pics/components/_button.scss */
 
 .btn-warning:hover {
   background: #fbcb43;
 }
 
-/* line 101, ../sass/pics/components/_button.scss */
+/* line 106, ../sass/pics/components/_button.scss */
 
 .btn-warning:active {
   background: #f4b400;
@@ -13110,9 +13115,10 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #ec8c00 inset;
 }
 
-/* line 106, ../sass/pics/components/_button.scss */
+/* line 111, ../sass/pics/components/_button.scss */
 
 .btn-danger {
+  background: #c0392b;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e74c3c), color-stop(100%, #c0392b));
   background-image: -webkit-linear-gradient(#e74c3c, #c0392b);
   background-image: -moz-linear-gradient(#e74c3c, #c0392b);
@@ -13123,13 +13129,13 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #800a06;
 }
 
-/* line 111, ../sass/pics/components/_button.scss */
+/* line 117, ../sass/pics/components/_button.scss */
 
 .btn-danger:hover {
   background: #e74c3c;
 }
 
-/* line 115, ../sass/pics/components/_button.scss */
+/* line 121, ../sass/pics/components/_button.scss */
 
 .btn-danger:active {
   background: #c0392b;
@@ -13138,46 +13144,46 @@ section.visible h1 {
           box-shadow: 0px 2px 0px #800a06 inset;
 }
 
-/* line 120, ../sass/pics/components/_button.scss */
+/* line 126, ../sass/pics/components/_button.scss */
 
 .btn-block {
   margin-bottom: 10px;
 }
 
-/* line 126, ../sass/pics/components/_button.scss */
+/* line 132, ../sass/pics/components/_button.scss */
 
 .page-actions a,
 .page-actions button {
   margin-left: 0;
 }
 
-/* line 131, ../sass/pics/components/_button.scss */
+/* line 137, ../sass/pics/components/_button.scss */
 
 .page-actions a:last-of-type,
 .page-actions button:last-of-type {
   margin-right: 0;
 }
 
-/* line 135, ../sass/pics/components/_button.scss */
+/* line 141, ../sass/pics/components/_button.scss */
 
 .page-actions .btn {
   position: relative;
   min-width: 0;
 }
 
-/* line 141, ../sass/pics/components/_button.scss */
+/* line 147, ../sass/pics/components/_button.scss */
 
 .btn-auto-width {
   min-width: 0;
 }
 
-/* line 145, ../sass/pics/components/_button.scss */
+/* line 151, ../sass/pics/components/_button.scss */
 
 .icon-plus-sign {
   color: #229322;
 }
 
-/* line 149, ../sass/pics/components/_button.scss */
+/* line 155, ../sass/pics/components/_button.scss */
 
 .edit-btn {
   margin-left: -15px;
@@ -13185,7 +13191,7 @@ section.visible h1 {
   text-decoration: none;
 }
 
-/* line 154, ../sass/pics/components/_button.scss */
+/* line 160, ../sass/pics/components/_button.scss */
 
 .edit-btn:hover {
   color: #73bbe8;
@@ -13911,13 +13917,75 @@ ul.skill-nav a {
   background-color: #fadbd8;
 }
 
-/* line 90, ../sass/pics/components/_table.scss */
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+
+/* line 94, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.odd td {
+  background-color: #f1f1f2;
+}
+
+/* line 97, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.odd td.success {
+  color: #33b679;
+  background-color: #d6f0e4;
+}
+
+/* line 102, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.odd td.warning {
+  color: #f4b400;
+  background-color: #fef5d9;
+}
+
+/* line 107, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.odd td.danger {
+  color: #e74c3c;
+  background-color: #fadbd8;
+}
+
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+
+/* line 116, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.even td {
+  background-color: none;
+}
+
+/* line 119, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.even td.success {
+  color: #33b679;
+  background-color: #d6f0e4;
+}
+
+/* line 124, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.even td.warning {
+  color: #f4b400;
+  background-color: #fef5d9;
+}
+
+/* line 129, ../sass/pics/components/_table.scss */
+
+.table-striped > tbody > tr.even td.danger {
+  color: #e74c3c;
+  background-color: #fadbd8;
+}
+
+/* line 138, ../sass/pics/components/_table.scss */
 
 .table-hover tbody tr:hover td {
   background-color: #d6eaf8;
 }
 
-/* line 94, ../sass/pics/components/_table.scss */
+/* line 142, ../sass/pics/components/_table.scss */
 
 .table td a {
   display: block;

@@ -36,6 +36,7 @@
   background: -webkit-linear-gradient($default_light, $default_med);
   @include box-shadow(0px 2px 0px $default_dark);
   text-shadow: none;
+  background: $default_med;
 }
 
 .btn-default:hover {
@@ -50,6 +51,7 @@
 .btn-primary {
   @include background-image(linear-gradient($primary_light, $primary_med));
   @include box-shadow(0px 2px 0px $primary_dark);
+  background: $primary_light;
 }
 
 .btn-primary:hover {
@@ -64,6 +66,7 @@
 .btn-success {
   @include background-image(linear-gradient($success_light, $success_med));
   @include box-shadow(0px 2px 0px $success_dark);
+  background: $success_med;
 }
 
 .btn-success:hover {
@@ -78,6 +81,7 @@
 .btn-info {
   @include background-image(linear-gradient($info_light, $info_med));
   @include box-shadow(0px 2px 0px $info_dark);
+  background: $info_med;
 }
 
 .btn-info:hover {
@@ -92,6 +96,7 @@
 .btn-warning {
   @include background-image(linear-gradient($warning_light, $warning_med));
   @include box-shadow(0px 2px 0px $warning_dark);
+  background: $warning_med;
 }
 
 .btn-warning:hover {
@@ -106,6 +111,7 @@
 .btn-danger {
   @include background-image(linear-gradient($danger_light, $danger_med));
   @include box-shadow(0px 2px 0px $danger_dark);
+  background: $danger_med;
 }
 
 .btn-danger:hover {

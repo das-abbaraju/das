@@ -87,6 +87,54 @@
     }
 }
 
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+
+.table-striped > tbody > tr.odd td {
+    background-color: $pics_cool_grey;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
+}
+
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+.table-striped > tbody > tr.even td {
+    background-color: none;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
+}
+
+
+
+
 .table-hover tbody tr:hover td {
     background-color: $primary-tint;
 }
