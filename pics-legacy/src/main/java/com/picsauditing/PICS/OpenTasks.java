@@ -136,7 +136,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutDeclaringTradesEmail() {
-		gatherTasksAboutDeclaringTrades(contractor.getLocale());
+		gatherTasksAboutDeclaringTrades(user.getLocale());
 	}
 
 	private void gatherTasksAboutDeclaringTrades(Locale locale) {
@@ -155,7 +155,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutRelationshipBetweenContractorAndPicsEmail() {
-		gatherTasksAboutRelationshipBetweenContractorAndPics(contractor.getLocale());
+		gatherTasksAboutRelationshipBetweenContractorAndPics(user.getLocale());
 	}
 
 	private void gatherTasksAboutRelationshipBetweenContractorAndPics(Locale locale) {
@@ -187,7 +187,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutUploadingPqfEmail() {
-		gatherTasksAboutUploadingPqfEmail(contractor.getLocale());
+		gatherTasksAboutUploadingPqfEmail(user.getLocale());
 	}
 
 	private void gatherTasksAboutUploadingPqfEmail(Locale locale) {
@@ -215,7 +215,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutBillingAndPaymentsEmail() {
-		gatherTasksAboutBillingAndPaymentsEmail(contractor.getLocale());
+		gatherTasksAboutBillingAndPaymentsEmail(user.getLocale());
 	}
 
 	private void gatherTasksAboutBillingAndPaymentsEmail(Locale locale) {
@@ -249,7 +249,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutAuditsEmail() {
-		gatherTasksAboutAuditsEmail(contractor.getLocale());
+		gatherTasksAboutAuditsEmail(user.getLocale());
 	}
 
 	private void gatherTasksAboutAuditsEmail(Locale locale) {
@@ -310,7 +310,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 	@Deprecated
 	private void gatherTasksAboutWebCamShipmentsEmail() {
-		gatherTasksAboutWebCamShipments(contractor.getLocale());
+		gatherTasksAboutWebCamShipments(user.getLocale());
 	}
 
 	@Deprecated
@@ -342,7 +342,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutOperatorQualificationEmail() {
-		gatherTasksAboutOperatorQualificationEmail(contractor.getLocale());
+		gatherTasksAboutOperatorQualificationEmail(user.getLocale());
 	}
 
 	private void gatherTasksAboutOperatorQualificationEmail(Locale locale) {
@@ -372,7 +372,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void vopakSpecificOperatorQualificationTagEmail() {
-		vopakSpecificOperatorQualificationTagEmail(contractor.getLocale());
+		vopakSpecificOperatorQualificationTagEmail(user.getLocale());
 	}
 
 	private void vopakSpecificOperatorQualificationTagEmail(Locale locale) {
