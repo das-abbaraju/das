@@ -223,7 +223,19 @@ public class ContractorRegistrationStepTest {
 		assertEquals("ContractorView.action", ContractorRegistrationStep.Done.getUrl());
 	}
 
-	@Test
+    @Test
+    public void testPageIsARegistrationStep() {
+        assertTrue(ContractorRegistrationStep.pageIsARegistrationStep("Registration"));
+        assertTrue(ContractorRegistrationStep.pageIsARegistrationStep("RegistrationAddClientSite"));
+        assertTrue(ContractorRegistrationStep.pageIsARegistrationStep("RegistrationServiceEvaluation"));
+        assertTrue(ContractorRegistrationStep.pageIsARegistrationStep("RegistrationMakePayment"));
+
+        assertFalse(ContractorRegistrationStep.pageIsARegistrationStep("ContractorView"));
+        assertFalse(ContractorRegistrationStep.pageIsARegistrationStep("Home"));
+        assertFalse(ContractorRegistrationStep.pageIsARegistrationStep("Login"));
+    }
+
+    @Test
 	public void testIsDone() {
 		assertTrue(ContractorRegistrationStep.Done.isDone());
 		assertFalse(ContractorRegistrationStep.Payment.isDone());
