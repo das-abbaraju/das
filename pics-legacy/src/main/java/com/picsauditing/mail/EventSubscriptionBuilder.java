@@ -121,7 +121,6 @@ public class EventSubscriptionBuilder {
 	}
 
 	public static void theSystemIsDown(ContractorCronStatistics stats) {
-
 		Calendar now = Calendar.getInstance();
 
 		if (stats.isEmailCronError()) {
@@ -129,18 +128,6 @@ public class EventSubscriptionBuilder {
 			for (EmailSubscription subscription : subscriptions) {
 				if (isAppropriateToSend(now, subscription)) {
 					sendSystemStatusEmail(subscription, stats);
-				}
-			}
-		}
-
-		if (stats.isContractorCronError()) {
-			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorCronFailure,
-					Account.PicsID);
-			if (stats.isContractorCronError()) {
-				for (EmailSubscription subscription : subscriptions) {
-					if (isAppropriateToSend(now, subscription)) {
-						sendSystemStatusEmail(subscription, stats);
-					}
 				}
 			}
 		}
