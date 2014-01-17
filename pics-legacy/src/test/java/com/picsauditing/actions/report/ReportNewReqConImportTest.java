@@ -1,8 +1,6 @@
 package com.picsauditing.actions.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -13,13 +11,16 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.RequestNewContractorService;
 import com.picsauditing.util.Strings;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -60,6 +61,8 @@ public class ReportNewReqConImportTest extends PicsTranslationTest {
 	private Workbook workbook;
     @Mock
     private ContractorRegistrationRequest contractorRegistrationRequest;
+    @Mock
+    private RequestNewContractorService requestNewContractorService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -75,6 +78,7 @@ public class ReportNewReqConImportTest extends PicsTranslationTest {
 		Whitebox.setInternalState(reportNewReqConImport, "featureToggle", featureToggle);
 		Whitebox.setInternalState(reportNewReqConImport, "permissions", permissions);
 		Whitebox.setInternalState(reportNewReqConImport, "workbook", workbook);
+        Whitebox.setInternalState(reportNewReqConImport, "requestNewContractorService", requestNewContractorService);
 	}
 
 	@Test
@@ -202,19 +206,38 @@ public class ReportNewReqConImportTest extends PicsTranslationTest {
 	}
 
     @Test
-    public void testCheckRequestForErrors_allRequiredFields() {
-        when(contractorRegistrationRequest.getRequestedByUser()).thenReturn(new User(25));
-        when(contractorRegistrationRequest.getContact()).thenReturn("John Doe");
-        when(contractorRegistrationRequest.getCountrySubdivision()).thenReturn(new CountrySubdivision("US-CA"));
-        when(contractorRegistrationRequest.getCountry()).thenReturn(new Country("US"));
-        when(contractorRegistrationRequest.getRequestedBy()).thenReturn(new OperatorAccount());
-        when(contractorRegistrationRequest.getCountry()).thenReturn(new Country("US"));
-        when(contractorRegistrationRequest.getReasonForRegistration()).thenReturn("Just because!");
-        when(contractorRegistrationRequest.getAddress()).thenReturn("Just because!");
-        when(contractorRegistrationRequest.getEmail()).thenReturn("Just because!");
-        when(contractorRegistrationRequest.getPhone()).thenReturn("Just because!");
-        reportNewReqConImport.checkRequestForErrors(0, contractorRegistrationRequest);
+    public void testCheckRequestForErrors_Contractor() throws Exception {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+        contractor.setCountry(new Country("US"));
+        contractor.setCountrySubdivision(new CountrySubdivision("US-CA"));
+        contractor.setAddress("123 Main St.");
+
+        Whitebox.invokeMethod(reportNewReqConImport, "checkContractorForErrors", 0, contractor);
         assertFalse(reportNewReqConImport.hasActionErrors());
-        verify(contractorRegistrationRequest).setDeadline((Date) any());
+    }
+
+    @Test
+    public void testCheckRequestForErrors_PrimaryContact() throws Exception {
+        User primaryContact = EntityFactory.makeUser();
+        primaryContact.setFirstName("John");
+        primaryContact.setLastName("Doe");
+        primaryContact.setPhone("555-555-555");
+        primaryContact.setEmail("fake@fake.com");
+
+        Whitebox.invokeMethod(reportNewReqConImport, "checkPrimaryContactForErrors", 0, primaryContact);
+        assertFalse(reportNewReqConImport.hasActionErrors());
+    }
+
+    @Test
+    public void testCheckRequestForErrors_Relationship() throws Exception {
+        ContractorOperator relationShip = new ContractorOperator();
+        relationShip.setOperatorAccount(new OperatorAccount());
+        relationShip.setRequestedBy(new User());
+        relationShip.setReasonForRegistration("Just because");
+
+
+        Whitebox.invokeMethod(reportNewReqConImport, "checkRelationshipForErrors", 0, relationShip);
+        assertFalse(reportNewReqConImport.hasActionErrors());
+        assertTrue(relationShip.getDeadline() != null);
     }
 }
