@@ -10,7 +10,6 @@ JOIN accounts a ON a.id=ca.conID
 WHERE ca.auditTypeID=1
 AND ca.expiresDate < NOW()
 AND d.questionID=1331
-and d.answer is not null
 AND a.status='Active'
 ;
 
