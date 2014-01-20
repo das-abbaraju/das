@@ -684,10 +684,10 @@ ContractorFlagBaselineFlag
 ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
+ContractorFlagForceEnd
 ContractorFlagHasOracleNumber
 ContractorFlagHasSAPNumber
 ContractorFlagHasVendorNumber
-ContractorFlagForceEnd
 ContractorFlagNetworkLevel
 ContractorFlagTag
 ContractorFlagWaitingOn
@@ -752,10 +752,10 @@ ContractorFlagBaselineFlag
 ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
+ContractorFlagForceEnd
 ContractorFlagHasOracleNumber
 ContractorFlagHasSAPNumber
 ContractorFlagHasVendorNumber
-ContractorFlagForceEnd
 ContractorFlagNetworkLevel
 ContractorFlagTag
 ContractorFlagWaitingOn
