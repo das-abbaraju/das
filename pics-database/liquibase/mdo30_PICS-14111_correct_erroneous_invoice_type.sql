@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset mdo:24
+--changeset mdo:30
 --preConditions onFail MARK_RAN
 --onUpdateSQL IGNORE
 UPDATE invoice
