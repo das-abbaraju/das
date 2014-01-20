@@ -134,7 +134,7 @@ public class FeeService {
                 Map<InvoiceFee,BigDecimal> feeLevel = foundFeeClasses.get(feeClass);
                 InvoiceFee invoiceFee = feeLevel.keySet().iterator().next();
 
-                setFee(contractor, invoiceFee, feeLevel.get(invoiceFee), payingFacilities, true);
+                setFee(contractor, feeDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities), feeLevel.get(invoiceFee), payingFacilities, true);
             }
             else
                 clearFee(contractor, feeClass, true);
