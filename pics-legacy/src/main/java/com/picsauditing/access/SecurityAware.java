@@ -20,4 +20,6 @@ public interface SecurityAware {
 	void updateClientSessionCookieExpiresTime();
 
 	String clearPermissionsSessionAndCookie() throws Exception;
+
+    boolean isUserQuarantined();
 }
