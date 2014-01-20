@@ -119,6 +119,8 @@
     <include file="./liquibase/sshacter40_PICS-13646_DiscrepenciesReportView.sql"/>
     <include file="./liquibase/mdo27_PICS-14154_AddIndexForConOpNums.sql"/>
     <include file="./liquibase/mdo30_PICS-14111_correct_erroneous_invoice_type.sql"/>
-    <include file="./liquibase/mdo31_PICS-14262_fixTradeSS.sql"/>
+    
+	<!-- 7.1.3 -->
+	<include file="./liquibase/mdo31_PICS-14262_fixTradeSS.sql"/>
 
 </databaseChangeLog>
