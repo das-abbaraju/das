@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
+import org.apache.struts2.dispatcher.mapper.ActionMapping;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.mockito.Mock;
@@ -51,6 +53,8 @@ public class PicsActionTest extends PicsTranslationTest {
 	protected AppPropertyDAO propertyDAO;
 	@Mock
 	protected LanguageModel languageModel;
+    @Mock
+    protected ActionMapping actionMapping;
 
 	@SuppressWarnings("rawtypes")
 	@Mock
@@ -87,6 +91,7 @@ public class PicsActionTest extends PicsTranslationTest {
 		context.put(ActionContext.PARAMETERS, parameters);
 		context.put(ActionContext.ACTION_NAME, "UnitTest");
 		context.put(StrutsStatics.HTTP_RESPONSE, response);
+        context.put(ServletActionContext.ACTION_MAPPING, actionMapping);
 
 		actionContext = new ActionContext(context);
 		ActionContext.setContext(actionContext);

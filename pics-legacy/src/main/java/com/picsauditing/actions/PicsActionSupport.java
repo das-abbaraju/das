@@ -1392,14 +1392,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
     public boolean isUserQuarantined() {
         try {
-            String actionName = getActionName();
-            if (!AjaxUtils.isAjax(getRequest()) && !"TranslateJS".equals(actionName) && !"Login".equals(actionName)) {
+            if (!AjaxUtils.isAjax(getRequest())) {
                 User user = getUser();
                 if (user != null) {
                     Account account = user.getAccount();
-                    if (account != null && account.getStatus() != null && account.getStatus().isPending()) {
+                    if (account != null && account.isContractor() && account.getStatus() != null && account.getStatus().isPending()) {
                         ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
-                        if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(actionName)) {
+                        if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(getActionName())) {
                             return true;
                         }
                     }
