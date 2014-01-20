@@ -177,15 +177,6 @@ public enum Subscription implements Translatable {
 			setRequiredForAdmin(true);
 		}
 	},
-	ContractorCronFailure {
-		public void initialize() {
-			setTemplateID(182);
-			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
-					SubscriptionTimePeriod.Event });
-			setDefaultTimePeriod(SubscriptionTimePeriod.Event);
-			setRequiredForAdmin(true);
-		}
-	},
 	CancelledScheduledAudits {
 		public void initialize() {
 			setTemplateID(220);
