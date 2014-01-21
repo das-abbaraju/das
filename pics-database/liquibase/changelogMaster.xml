@@ -124,5 +124,6 @@
 	<include file="./liquibase/mdo31_PICS-14262_fixTradeSS.sql"/>
 	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
 	<include file="./liquibase/mdo35_PICS-14251_ChangeAUDNZDBackTo2013Pricing.sql"/>
+	<include file="./liquibase/mdo37_PICS-13742_ERMResubmit.sql"/>
 
 </databaseChangeLog>

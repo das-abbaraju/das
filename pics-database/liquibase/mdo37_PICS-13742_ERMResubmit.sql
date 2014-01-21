@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset mdo:23
+--changeset mdo:37
 --preConditions onFail MARK_RAN
 --onUpdateSQL IGNORE
 INSERT into contractor_audit_operator_workflow (caoID, status, previousStatus, notes, createdBy, creationDate, updateDate, updatedBy)
