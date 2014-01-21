@@ -24,6 +24,7 @@ public class ContractorTable extends AbstractTable {
     public static final String Tag = "Tag";
     public static final String ContractorStatistics = "ContractorStatistics";
     public static final String ContractorTrade = "ContractorTrade";
+    public static final String TradeSafetySensitive = "TradeSafetySensitive";
     public static final String ContractorFee = "ContractorFee";
 
     public static final String SuncorDrugAlcoholPolicy = "SuncorDrugAlcoholPolicy";
@@ -117,6 +118,10 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey trade = new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id",
                 "conID"));
         addOptionalKey(trade);
+
+        ReportForeignKey tradeSafetySensitive = new ReportForeignKey(TradeSafetySensitive, new ContractorTradeSafetySensitivityView(), new ReportOnClause("id",
+                "accountID"));
+        addOptionalKey(tradeSafetySensitive);
 
         addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),
                 new ReportOnClause("recommendedCsrID")));

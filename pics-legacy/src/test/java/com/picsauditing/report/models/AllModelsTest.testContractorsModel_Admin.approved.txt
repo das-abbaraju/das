@@ -93,6 +93,7 @@ ContractorSupplierDiversityColumn
 ContractorTagTagID
 ContractorTradeActivityPercent
 ContractorTradeManufacture
+ContractorTradeSafetySensitiveTradeSafetySensitive
 ContractorTradeSelfPerformed
 ContractorTrades
 ContractorTradesUpdated
