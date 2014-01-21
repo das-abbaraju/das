@@ -48,6 +48,7 @@ public class DeactivateNonRenewalAccounts implements CronTask {
         List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
         for (ContractorAccount contractor : conAcctList) {
             logger.debug("Deactivating" + contractor.getName() + " (" + contractor.getId() + ")");
+            logger.debug("Status: " + contractor.getStatus() + ", renewal status: " + contractor.isRenew() + ", Renewal Date: " + contractor.getPaymentExpires());
             final String reason = contractor.getAccountLevel().isBidOnly() ? AccountStatusChanges
                     .BID_ONLY_ACCOUNT_REASON : AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
             billingService.syncBalance(contractor);
