@@ -2,11 +2,10 @@ package com.picsauditing.actions.operators;
 
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.PastAuditYear;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,10 +17,13 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 public class OperatorConfigurationTest extends PicsActionTest {
+    public static final int OPERATOR_ID = 3;
     @Mock
     protected AuditDecisionTableDAO adtDAO;
     @Mock
     protected AuditTypeRuleCache auditTypeRuleCache;
+    @Mock
+    protected AuditCategoryRuleCache auditCategoryRuleCache;
 
     public OperatorConfiguration operatorConfiguration;
 
@@ -31,24 +33,45 @@ public class OperatorConfigurationTest extends PicsActionTest {
         operatorConfiguration = new OperatorConfiguration();
         Whitebox.setInternalState(operatorConfiguration, "adtDAO", adtDAO);
         Whitebox.setInternalState(operatorConfiguration, "auditTypeRuleCache", auditTypeRuleCache);
+        Whitebox.setInternalState(operatorConfiguration, "auditCategoryRuleCache", auditCategoryRuleCache);
     }
 
     @Test
     public void testAddAudit() throws Exception {
-        OperatorAccount operator = OperatorAccount.builder().id(3).build();
+        OperatorAccount operator = OperatorAccount.builder().id(OPERATOR_ID).build();
+        int auditTypeId = 1337;
         operatorConfiguration.setOperator(operator);
-        operatorConfiguration.setAuditTypeID(1337);
-        operatorConfiguration.setButton("Add Audit");
+        operatorConfiguration.setAuditTypeID(auditTypeId);
+        operatorConfiguration.setButton(OperatorConfiguration.BUTTON_ADD_AUDIT);
 
-        ArgumentCaptor<AuditTypeRule> auditTypeRule = ArgumentCaptor.forClass(AuditTypeRule.class);
+        ArgumentCaptor<AuditTypeRule> auditTypeRuleCaptor = ArgumentCaptor.forClass(AuditTypeRule.class);
 
-        assertEquals("audit", operatorConfiguration.execute());
+        assertEquals(OperatorConfiguration.RESULT_AUDIT, operatorConfiguration.execute());
 
-        verify(adtDAO).save(auditTypeRule.capture());
-        assertEquals(1337, auditTypeRule.getValue().getAuditType().getId());
-        assertEquals(3, auditTypeRule.getValue().getOperatorAccount().getId());
-        assertEquals(PastAuditYear.Any, auditTypeRule.getValue().getYearToCheck());
+        verify(adtDAO).save(auditTypeRuleCaptor.capture());
+        AuditTypeRule auditTypeRule = auditTypeRuleCaptor.getValue();
+        assertEquals(auditTypeId, auditTypeRule.getAuditType().getId());
+        assertEquals(OPERATOR_ID, auditTypeRule.getOperatorAccount().getId());
+        assertEquals(PastAuditYear.Any, auditTypeRule.getYearToCheck());
     }
 
+    @Test
+    public void testAddCategory() throws Exception {
+        OperatorAccount operator = OperatorAccount.builder().id(OPERATOR_ID).build();
+        int categoryId = 1337;
+        operatorConfiguration.setOperator(operator);
+        operatorConfiguration.setCatID(categoryId);
+        operatorConfiguration.setButton(OperatorConfiguration.BUTTON_AUDIT_CAT);
 
+        ArgumentCaptor<AuditCategoryRule> auditCategoryRuleCaptor = ArgumentCaptor.forClass(AuditCategoryRule.class);
+
+        assertEquals(OperatorConfiguration.RESULT_CATEGORY, operatorConfiguration.execute());
+
+        verify(adtDAO).save(auditCategoryRuleCaptor.capture());
+        AuditCategoryRule auditCategoryRule = auditCategoryRuleCaptor.getValue();
+        assertEquals(AuditType.PQF, auditCategoryRule.getAuditType().getId());
+        assertEquals(categoryId, auditCategoryRule.getAuditCategory().getId());
+        assertEquals(OPERATOR_ID, auditCategoryRule.getOperatorAccount().getId());
+        assertEquals(PastAuditYear.Any, auditCategoryRule.getYearToCheck());
+    }
 }

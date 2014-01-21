@@ -19,8 +19,7 @@ import com.picsauditing.search.SelectUser;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
-import com.picsauditing.strutsutil.AdvancedValidationAware;
-import com.picsauditing.strutsutil.FileDownloadContainer;
+import com.picsauditing.strutsutil.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.*;
 import com.picsauditing.util.system.PicsEnvironment;
@@ -1391,4 +1390,23 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         return featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER) || featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE);
     }
 
+    public boolean isUserQuarantined() {
+        try {
+            if (!AjaxUtils.isAjax(getRequest())) {
+                User user = getUser();
+                if (user != null) {
+                    Account account = user.getAccount();
+                    if (account != null && account.isContractor() && account.getStatus() != null && account.getStatus().isPending()) {
+                        ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
+                        if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(getActionName())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // if anything goes wrong (such as no action name for unmapped actions), we'll just let them pass
+        }
+        return false;
+    }
 }

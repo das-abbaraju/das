@@ -7,15 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.AuditDataService;
+import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class VerifyAudit extends AuditActionSupport {
 
@@ -24,9 +20,11 @@ public class VerifyAudit extends AuditActionSupport {
 	private static final ArrayList<String> OSHA_PROBLEMS;
 	private static final ArrayList<String> EMR_EXEMPTION_REASONS;
 	private static final ArrayList<String> OSHA_EXEMPTION_REASONS;
-	
-	
-	static {
+
+    @Autowired
+    private AuditDataService auditDataService;
+
+    static {
 		EMR_PROBLEMS = new ArrayList<String>();
 		EMR_PROBLEMS.add("");
 		EMR_PROBLEMS.add("Need EMR");
@@ -151,20 +149,41 @@ public class VerifyAudit extends AuditActionSupport {
 		if (conAudit == null || !conAudit.getAuditType().isAnnualAddendum())
 			return false;
 		if (OshaType.OSHA.equals(oshaType)) {
-			return conAudit.isDataExpectedAnswer(
-					AuditQuestion.OSHA_KEPT_ID, "Yes");
+            if (getOsha() != null && getOsha().getSafetyStatistics(OshaType.OSHA) != null)
+			    return true;
+            else
+                return false;
 		}
 		if (OshaType.COHS.equals(oshaType)) {
 			return conAudit.isDataExpectedAnswer(
 					AuditQuestion.COHS_KEPT_ID, "Yes");
 		}
 		if (OshaType.UK_HSE.equals(oshaType)) {
-			return conAudit.isDataExpectedAnswer(
-					AuditQuestion.UK_HSE_KEPT_ID, "Yes");
+            if (getOsha() != null && getOsha().getSafetyStatistics(OshaType.UK_HSE) != null)
+                return true;
+            else
+                return false;
 		}
 		
 		return true;
 	}
+
+    public boolean isOshaFileVisible(OshaType oshaType) {
+        String answer = oshaAudit.getSpecificRate(oshaType, OshaRateType.FileUpload);
+        return (answer != null && !Strings.EMPTY_STRING.equals(answer));
+    }
+
+    public List<AuditData> getVisibleOshaQuestions(OshaType oshaType) {
+        List<AuditData> visibleList = new ArrayList<AuditData>();
+        for (AuditData data:oshaAudit.getQuestionsToVerify(oshaType)) {
+            AnswerMap answerMap = auditDataService.loadAnswerMap(data);
+            if (data.getQuestion().isVisible(answerMap)) {
+                visibleList.add(data);
+            }
+        }
+
+        return visibleList;
+    }
 
 	public boolean isShowQuestionToVerify(AuditQuestion auditQuestion, boolean isAnswered) {
 		int questionid = auditQuestion.getId();

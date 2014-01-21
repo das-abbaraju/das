@@ -1,7 +1,11 @@
+--liquibase formatted sql
+
+--sql:
+--changeset gmeurer:3a splitStatements:true endDelimiter:|
 DROP PROCEDURE IF EXISTS	etlTranslationUsage
 ;
-
-DELIMITER //
+--sql:
+--changeset gmeurer:3b splitStatements:false endDelimiter:|
 CREATE DEFINER=`pics_admin`@`%` PROCEDURE	etlTranslationUsage
   (
      IN 	_msgKey             VARCHAR(100)
@@ -119,6 +123,4 @@ CALL etlTranslationUsage
     END ETL;
 ###############################################################################
   END
-//
-DELIMITER ;
 ;

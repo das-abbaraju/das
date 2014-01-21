@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.Iterator;
 
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -55,8 +56,11 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected AuditBuilder auditBuilderController;
 	@Autowired
 	private EmailSender emailSender;
+    @Autowired
+    protected ContractorOperatorService contractorOperatorService;
 
-	protected ContractorAccount contractor;
+
+    protected ContractorAccount contractor;
 	protected String operatorNotes;
 
 	@Override
@@ -201,7 +205,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		for (ContractorOperator cOperator : cAccount.getNonCorporateOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
 				cOperator.setWorkStatus(ApprovalStatus.Y);
-				cOperator.cascadeWorkStatusToParent();
+                contractorOperatorService.cascadeWorkStatusToParent(cOperator);
 				cOperator.setAuditColumns(permissions);
 				contractorOperatorDAO.save(cOperator);
 				break;

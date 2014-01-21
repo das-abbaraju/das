@@ -1,9 +1,7 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
@@ -36,6 +34,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private Map<FeeClass, ContractorFee> fees;
 	private BigDecimal invoiceTotal;
 
+    @Mock
+    private ContractorAccountDAO accountDAO;
 	@Mock
 	private ContractorAccount mockContractor;
 	@Mock
@@ -77,7 +77,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 	@Mock
 	private Invoice mockInvoice;
 	@Mock
-	private Invoice previousInvoiceActivation;
+	private Invoice invoice;
 	@Mock
 	private InvoiceItem previousInvoiceItem;
 	@Mock
@@ -99,6 +99,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Whitebox.setInternalState(billingService, "taxService", taxService);
 		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
 		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
+		Whitebox.setInternalState(billingService, "accountDao", accountDAO);
 		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
 		Whitebox.setInternalState(billingService, "invoiceItemDAO", invoiceItemDAO);
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
@@ -502,11 +503,11 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private void preparePriorHistoryForContractor() {
 		List<Invoice> previousInvoiceListActivation = new ArrayList<Invoice>();
 		List<InvoiceItem> previousInvoiceItemList = new ArrayList<InvoiceItem>();
-		previousInvoiceListActivation.add(previousInvoiceActivation);
+		previousInvoiceListActivation.add(invoice);
 		previousInvoiceItemList.add(previousInvoiceItem);
-		when(previousInvoiceActivation.getItems()).thenReturn(previousInvoiceItemList);
+		when(invoice.getItems()).thenReturn(previousInvoiceItemList);
 		when(previousInvoiceItem.getRevenueFinishDate()).thenReturn(DateBean.addMonths(new Date(), 10));
-		when(previousInvoiceActivation.getInvoiceType()).thenReturn(InvoiceType.Activation);
+		when(invoice.getInvoiceType()).thenReturn(InvoiceType.Activation);
 		when(mockContractor.getSortedInvoices()).thenReturn(previousInvoiceListActivation);
 	}
 
@@ -1005,4 +1006,20 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Date actual = calculateInvoiceItemRevRecFinishDateForTest(testInvoiceCreationDate, paymentExpires, invoiceType);
 		assertEquals(expected,actual);
 	}
+
+    @Test
+    public void testActivateContractor_DeclinedAccount() throws Exception {
+        billingStatusCommon(30);
+        setupInvoiceAndItems();
+        when(mockContractor.getStatus()).thenReturn(AccountStatus.Declined);
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Paid);
+        when(invoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.isActivation()).thenReturn(true);
+
+        boolean activated = billingService.activateContractor(mockContractor, invoice);
+
+        assertTrue(activated);
+        verify(accountDAO).save(mockContractor);
+    }
+
 }

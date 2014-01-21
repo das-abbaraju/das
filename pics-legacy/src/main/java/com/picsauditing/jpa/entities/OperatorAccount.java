@@ -758,22 +758,6 @@ public class OperatorAccount extends Account {
 		return false;
 	}
 
-	@Transient
-	public boolean areAllContractorRelationshipsUniform() {
-		ApprovalStatus workStatus = null;
-		for (ContractorOperator contractorOperator : contractorOperators) {
-			if (contractorOperator.getOperatorAccount().isAutoApproveRelationships()) {
-				continue;
-			}
-			if (workStatus == null) {
-				workStatus = contractorOperator.getWorkStatus();
-			} else if (workStatus != contractorOperator.getWorkStatus()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public FlagCriteria getFlagCriteria(int flagCriteriaId) {
 		for (FlagCriteriaOperator flag : getFlagCriteria()) {
 			if (flag.getCriteria().getId() == flagCriteriaId) {

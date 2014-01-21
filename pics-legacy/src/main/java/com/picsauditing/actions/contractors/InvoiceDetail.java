@@ -678,6 +678,18 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         return getText(contractor.getLocale(),"FeeClass.VAT");
     }
 
+    public String getPicsTaxId() {
+        if (invoice.getCurrency().isEUR() || invoice.getCurrency().isGBP()) {
+            return "Company registered Number: 07660778 – VAT Number: GB126 9246 04";
+        }
+
+        if (invoice.getAccount().getCountry().isBrazil()) {
+            return "CNPJ #: 18.791.925/0001-63";
+        }
+
+        return "";
+    }
+
     public SapAppPropertyUtil getSapAppPropertyUtil() {
 		return sapAppPropertyUtil;
 	}

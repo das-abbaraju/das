@@ -7,25 +7,15 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.picsauditing.model.user.UserManagementService;
+import com.picsauditing.service.RequestNewContractorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -82,6 +72,8 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 	private URLUtils urlUtil;
 	@Mock
 	private UserManagementService userManagementService;
+    @Mock
+    private RequestNewContractorService requestNewContractorService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -99,12 +91,16 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 		when(urlUtil.getActionUrl(anyString(), any(HashMap.class))).thenReturn("URL");
 		when(userManagementService.saveWithAuditColumnsAndRefresh(any(User.class), any(Permissions.class))).thenReturn(user);
+        when(requestNewContractorService.saveRequestingContractor(contractor, operator)).thenReturn(contractor);
+        when(requestNewContractorService.savePrimaryContact(contractor, user)).thenReturn(user);
+        when(requestNewContractorService.saveRelationship(contractor, relationship)).thenReturn(relationship);
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractorAccount, "featureToggle", featureToggle);
 		Whitebox.setInternalState(requestNewContractorAccount, "permissions", permissions);
 		Whitebox.setInternalState(requestNewContractorAccount, "urlUtil", urlUtil);
-		Whitebox.setInternalState(requestNewContractorAccount, "userManagementService", userManagementService);
+        Whitebox.setInternalState(requestNewContractorAccount, "userManagementService", userManagementService);
+        Whitebox.setInternalState(requestNewContractorAccount, "requestNewContractorService", requestNewContractorService);
 	}
 
 	@Test
@@ -256,13 +252,10 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 
-		verify(contractor).generateRegistrationHash();
 		verify(contractor).setLastContactedByAutomatedEmailDate(any(Date.class));
 		verify(contractor).setLastContactedByInsideSales(anyInt());
 		verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
 		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
-		verify(entityManager, times(4)).persist(any(BaseTable.class));
-		verify(entityManager, never()).merge(any(BaseTable.class));
 	}
 
 	// As another requesting operator, another request email should be sent out
@@ -294,6 +287,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		when(query.getResultList()).thenReturn(requests);
 		when(request.getRequestedBy()).thenReturn(otherOperator);
 		when(user.getId()).thenReturn(1);
+        when(requestNewContractorService.saveRelationship(contractor, relationship)).thenReturn(relationship);
 
 		requestNewContractorAccount.setPrimaryContact(user);
 		requestNewContractorAccount.setContractor(contractor);
@@ -302,10 +296,6 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 
 		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
-		// Contractor, user and request already exist
-		verify(entityManager, times(2)).merge(any(BaseTable.class));
-		// New contractorOperator, note and email
-		verify(entityManager, times(2)).persist(any(BaseTable.class));
 	}
 
 	@Test
@@ -512,6 +502,63 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		requestNewContractorAccount.setContactNote("Test");
 		assertFalse(requestNewContractorAccount.isContactNoteMissing());
 	}
+
+    @Test
+    public void testResolveDuplicate() {
+        int requestRelationshipId = 1;
+        int duplicateContractorId = 2;
+        ContractorAccount oldContractor = ContractorAccount.builder().id(requestRelationshipId).build();
+        ContractorOperator requestRelationship = ContractorOperator.builder()
+                .contractor(oldContractor)
+                .build();
+        ContractorAccount duplicateContractor = ContractorAccount.builder()
+                .primaryContact(User.builder().build())
+                .id(duplicateContractorId)
+                .build();
+        requestNewContractorAccount.setRequestRelationship(requestRelationship);
+        requestNewContractorAccount.setDuplicateContractor(duplicateContractor);
+
+        assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.resolveDuplicate());
+        assertEquals(duplicateContractorId, requestNewContractorAccount.getContractor().getId());
+        assertEquals(duplicateContractor, requestNewContractorAccount.getRequestRelationship().getContractorAccount());
+        assertEquals(duplicateContractor.getPrimaryContact(), requestNewContractorAccount.getPrimaryContact());
+        assertEquals(RequestNewContractorAccount.REASON_REQUEST_DECLINED, oldContractor.getReason());
+        assertEquals(RequestNewContractorAccount.DUPLICATE_CONTRACTOR_NAME + duplicateContractor.getId(), oldContractor.getName());
+        assertEquals(AccountStatus.Deleted, oldContractor.getStatus());
+    }
+
+    @Test
+    public void testResolveDuplicate_NullDuplicateContractor() {
+        when(translationService.getText(eq(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE),
+                any(Locale.class), anyObject())).thenReturn(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE);
+        when(translationService.hasKey(eq(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE),
+                any(Locale.class))).thenReturn(true);
+
+        assertEquals(PicsActionSupport.INPUT, requestNewContractorAccount.resolveDuplicate());
+        assertEquals(RequestNewContractorAccount.DUPLICATE_ID_MISSING_ERROR_MESSAGE,
+                requestNewContractorAccount.getFieldErrors().get(RequestNewContractorAccount.DUPLICATE_CONTRACTOR_FIELD_NAME).get(0));
+    }
+
+    @Test
+    public void testResolveDuplicate_SameDuplicatedContractorId() {
+        when(translationService.getText(eq(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE),
+                any(Locale.class), anyObject())).thenReturn(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE);
+        when(translationService.hasKey(eq(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE),
+                any(Locale.class))).thenReturn(true);
+
+        int contractorId = 1;
+        ContractorAccount oldContractorAccount = ContractorAccount.builder().id(contractorId).build();
+        ContractorAccount duplicateContractor = ContractorAccount.builder()
+                .primaryContact(User.builder().build())
+                .id(contractorId)
+                .build();
+        requestNewContractorAccount.setContractor(oldContractorAccount);
+        requestNewContractorAccount.setDuplicateContractor(duplicateContractor);
+
+        assertEquals(PicsActionSupport.INPUT, requestNewContractorAccount.resolveDuplicate());
+        assertEquals(RequestNewContractorAccount.SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE,
+                requestNewContractorAccount.getFieldErrors().get(RequestNewContractorAccount.DUPLICATE_CONTRACTOR_FIELD_NAME).get(0));
+    }
 
 	private void setPermissionsAsOperator() {
 		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);

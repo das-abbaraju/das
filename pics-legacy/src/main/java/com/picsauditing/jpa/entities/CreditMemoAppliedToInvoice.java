@@ -43,8 +43,10 @@ public class CreditMemoAppliedToInvoice extends TransactionApplied {
         applied.setCreationDate(new Date());
         applied.setUpdateDate(new Date());
         applied.setInvoice(inv);
-        applied.setCreditMemo(new InvoiceCreditMemo());
-        applied.getCreditMemo().setAccount(inv.getAccount());
+		InvoiceCreditMemo creditMemo = new InvoiceCreditMemo();
+		creditMemo.setCurrency(inv.getCurrency());
+		creditMemo.setAccount(inv.getAccount());
+        applied.setCreditMemo(creditMemo);
         inv.getCreditMemos().add(applied);
         return applied;
     }

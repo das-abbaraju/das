@@ -8,6 +8,13 @@ public enum ContractorRegistrationStep {
 	Payment, // a.k.a. Join
 	Done;
 
+    protected static final List<String> stepPages = new ArrayList() {{
+        add("Registration");
+        add("RegistrationAddClientSite");
+        add("RegistrationServiceEvaluation");
+        add("RegistrationMakePayment");
+    }};
+
 	static public ContractorRegistrationStep getStep(ContractorAccount contractor) {
 		if (contractor == null || contractor.getId() == 0) {
 			return Register;
@@ -59,7 +66,11 @@ public enum ContractorRegistrationStep {
 		return true;
 	}
 
-	public String getUrl() {
+    public static boolean pageIsARegistrationStep(String actionName) {
+        return stepPages.contains(actionName);
+    }
+
+    public String getUrl() {
 
 		switch (this) {
 		case Register:

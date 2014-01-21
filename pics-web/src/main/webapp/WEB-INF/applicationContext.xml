@@ -17,6 +17,14 @@
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>
 
+    <bean id="AsyncTaskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10"/>
+        <property name="maxPoolSize" value="100"/>
+        <property name="queueCapacity" value="0"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="false"/>
+    </bean>
+
     <bean id="SpringUtils" class="com.picsauditing.util.SpringUtils"/>
     <bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
 
@@ -144,6 +152,7 @@
     <bean id="ProductServiceQuery" class="com.picsauditing.actions.billing.ProductServiceQuery" />
     <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
           scope="prototype"/>
+    <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
@@ -209,6 +218,7 @@
     <bean id="AppPropertyService" class="com.picsauditing.service.AppPropertyService"/>
     <bean id="MailCronService" class="com.picsauditing.service.mail.MailCronService"/>
     <bean id="ContractorAuditService" class="com.picsauditing.service.ContractorAuditService"/>
+    <bean id="ContractorOperatorService" class="com.picsauditing.service.contractor.ContractorOperatorService" />
     <bean id="FacilitiesEditModel" class="com.picsauditing.model.operators.FacilitiesEditModel"/>
     <bean id="AuditEditModel" class="com.picsauditing.models.audits.AuditEditModel"/>
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>

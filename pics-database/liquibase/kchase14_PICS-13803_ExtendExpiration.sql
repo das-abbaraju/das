@@ -4,7 +4,7 @@
 -- extend expiration date
 update
 contractor_audit as ca
-set ca.expiresDate = date_add(ca.effectiveDate, INTERVAL 36 month)
+set ca.expiresDate = date_add(CONCAT(YEAR(ca.effectiveDate), '-03-15 00:00:00'), INTERVAL 36 month)
 where ca.auditTypeID = 32
 and ca.effectiveDate is not null and ca.expiresDate is not null
 and ca.effectiveDate > '2013-01-01 00:00:00'

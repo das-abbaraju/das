@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 public class AccountEmployeeGuardDAO {
@@ -35,4 +36,13 @@ public class AccountEmployeeGuardDAO {
 		em.remove(accountEmployeeGuard);
 		em.flush();
 	}
+
+    public boolean hasEmployeeGUARDOperator(String accounts) {
+        Query query = em.createNativeQuery("select * from accountemployeeguard aeg WHERE aeg.accountId IN (:accounts)", AccountEmployeeGuard.class);
+        query.setParameter("accounts", accounts);
+
+        List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
+
+        return accountEmployeeGuards.size() > 0;
+    }
 }

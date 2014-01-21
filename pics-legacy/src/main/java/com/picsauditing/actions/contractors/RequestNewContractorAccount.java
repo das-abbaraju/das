@@ -10,6 +10,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.model.user.UserManagementService;
+import com.picsauditing.service.RequestNewContractorService;
 import com.picsauditing.validator.RequestNewContractorValidator;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -48,7 +49,11 @@ import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class RequestNewContractorAccount extends ContractorActionSupport implements AjaxValidator {
-	@Autowired
+    public static final String DUPLICATE_CONTRACTOR_NAME = "See duplicate account #";
+    public static final String DUPLICATE_CONTRACTOR_FIELD_NAME = "duplicateContractor";
+    public static final String DUPLICATE_ID_MISSING_ERROR_MESSAGE = "RequestNewContractor.error.DuplicatedContractorId";
+    public static final String SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE = "RequestNewContractor.error.SameDuplicatedContractorId";
+    @Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
@@ -70,6 +75,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	private RequestNewContractorValidator validator;
 	@Autowired
 	private UserManagementService userManagementService;
+    @Autowired
+    private RequestNewContractorService requestNewContractorService;
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
@@ -167,9 +174,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String resolveDuplicate() {
 		if (duplicateContractor == null) {
-			addFieldError("duplicateContractor", getText("RequestNewContractor.error.DuplicatedContractorId"));
+			addFieldError(DUPLICATE_CONTRACTOR_FIELD_NAME, getText(DUPLICATE_ID_MISSING_ERROR_MESSAGE));
 			return INPUT;
 		}
+        if (duplicateContractor.getId() == contractor.getId()) {
+            addFieldError(DUPLICATE_CONTRACTOR_FIELD_NAME, getText(SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE));
+            return INPUT;
+        }
 
 		ContractorAccount oldContractor = requestRelationship.getContractorAccount();
 
@@ -179,7 +190,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 		dao.save(requestRelationship);
 
 		oldContractor.setReason(REASON_REQUEST_DECLINED);
-		oldContractor.setName("See duplicate account #" + duplicateContractor.getId());
+		oldContractor.setName(DUPLICATE_CONTRACTOR_NAME + duplicateContractor.getId());
 		oldContractor.setStatus(AccountStatus.Deleted);
 		dao.save(oldContractor);
 
@@ -392,7 +403,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
-		saveRequiredFieldsAndSaveEntities();
+        requestNewContractorService.setPermissions(permissions);
+        contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
+        primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
+        requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
 
 		if (contactType == RequestContactType.DECLINED) {
 			contractor.setStatus(AccountStatus.Declined);

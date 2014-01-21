@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -46,6 +47,8 @@ public class FacilityChanger {
     private BillingService billingService;
     @Autowired
     private FeeService feeService;
+    @Autowired
+    protected ContractorOperatorService contractorOperatorService;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -73,7 +76,7 @@ public class FacilityChanger {
 			// This could be controversial, but we're going to always approve if
 			// the operator adds them
 			co.setWorkStatus(ApprovalStatus.Y);
-			co.cascadeWorkStatusToParent();
+            contractorOperatorService.cascadeWorkStatusToParent(co);
 		}
 
 		if (operator.isGeneralContractor()) {

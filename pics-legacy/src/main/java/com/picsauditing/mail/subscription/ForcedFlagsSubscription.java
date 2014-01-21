@@ -67,7 +67,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			List<DynaBean> forcedFlags = new ArrayList<DynaBean>();
 
 			for (DynaBean bean : data) {
-                if (((Integer) bean.get("forcedByAccountId")).intValue() != 37951) // Michael Do's ID, remove for 2014
+                if (!bean.get("forcedBy").toString().equals("Michael Do")) // Michael Do's, remove for 2014
 				    forcedFlags.add(bean);
 			}
 

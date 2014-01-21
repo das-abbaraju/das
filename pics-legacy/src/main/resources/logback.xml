@@ -117,7 +117,7 @@
 		<appender-ref ref="perf4jFileAppender"/>
 	</logger>
 
-	<logger name="org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog">
+	<logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
 		<level value="error" />
 	</logger>
 

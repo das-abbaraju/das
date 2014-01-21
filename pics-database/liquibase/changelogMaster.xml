@@ -103,5 +103,26 @@
 	<include file="./liquibase/kchase15_PICS-14060_TeackCoal.sql"/>
 	<include file="./liquibase/mdo21_PICS-13952_Remove_payment.sql"/>
 	<include file="./liquibase/pschlesinger12_PICS-13113_AddAdditionalGeneralLedgerAcctsForSap.sql"/>
+	<include file="./liquibase/gmeurer2_PICS-13851_add_usage_colum_sortOrder.sql"/>
+	<include file="./liquibase/gmeurer3_etlTranslationUsage.sql"/>
+	<!--
+	<include file="./liquibase/pschlesinger13_UpdatingCADValues.sql"/>
+	-->
+
+    <!-- 7.1.0 --> 
+	<include file="./liquibase/pschlesinger10_PICS-14106_ChangeNameOfEmeaBusinessUnit.sql"/>
+
+	<!-- 7.1.1 --> 
+	<include file="./liquibase/mdo28_PICS-14143_UpdateBaseReportsToPublic.sql"/>
+	
+	<!-- 7.1.2 -->
+    <include file="./liquibase/sshacter40_PICS-13646_DiscrepenciesReportView.sql"/>
+    <include file="./liquibase/mdo27_PICS-14154_AddIndexForConOpNums.sql"/>
+    <include file="./liquibase/mdo30_PICS-14111_correct_erroneous_invoice_type.sql"/>
+    
+	<!-- 7.1.3 -->
+	<include file="./liquibase/mdo31_PICS-14262_fixTradeSS.sql"/>
+	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
+	<include file="./liquibase/mdo35_PICS-14251_ChangeAUDNZDBackTo2013Pricing.sql"/>
 
 </databaseChangeLog>

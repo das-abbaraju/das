@@ -47,17 +47,8 @@ public class ReportContractorResources extends ReportActionSupport {
 		getFilter().setShowTitleName(true);
 		
 		findContractor();
-		
-		Set<Integer> ids = new HashSet<Integer>();
 
-		if (contractor != null) {
-			ids.add(Account.PicsID);
-
-            for (ContractorOperator conOp : contractor.getOperators()) {
-                if (!conOp.isWorkStatusRejected())
-                    ids.add(conOp.getOperatorAccount().getId());
-            }
-		}
+        Set<Integer> ids = extractOperatorIdsFromContractorOperators();
 
 		if (ids.size() > 0) {
 			sql.addWhere("o.opID IN (" + Strings.implode(ids, ",") + ")");
@@ -116,7 +107,20 @@ public class ReportContractorResources extends ReportActionSupport {
 		return SUCCESS;
 	}
 
-	private void findContractor() {
+    private Set<Integer> extractOperatorIdsFromContractorOperators() {
+        Set<Integer> ids = new HashSet<>();
+
+        if (contractor != null) {
+            ids.add(Account.PicsID);
+
+            for (ContractorOperator conOp : contractor.getOperators()) {
+                ids.add(conOp.getOperatorAccount().getId());
+            }
+        }
+        return ids;
+    }
+
+    private void findContractor() {
 		loadPermissions();
 		if (id == 0 && permissions.isContractor()) {
 			id = permissions.getAccountId();

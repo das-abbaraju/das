@@ -34,6 +34,8 @@ public class ReportPreferencesServiceTest {
 	private ReportDAO reportDao;
 	@Mock
 	private ReportUserDAO reportUserDao;
+    @Mock
+    private ReportUser reportUser;
 	@Mock
 	private User user;
 	@Mock
@@ -294,5 +296,60 @@ public class ReportPreferencesServiceTest {
 
 		return reportUser;
 	}
+
+    @Test
+    public void testAddUserTypeFavorites() {
+        ReportUser unresponsiveCompanies = new ReportUser();
+        unresponsiveCompanies.setUser(user);
+        Report unresponsiveCompaniesReport = new Report();
+        unresponsiveCompaniesReport.setId(7);
+        unresponsiveCompanies.setReport(unresponsiveCompaniesReport);
+        when(reportUserDao.findOne(USER_ID,7)).thenReturn(unresponsiveCompanies);
+
+        ReportUser redFlagged = new ReportUser();
+        redFlagged.setUser(user);
+        Report redFlaggedReport = new Report();
+        redFlaggedReport.setId(105);
+        redFlagged.setReport(redFlaggedReport);
+        when(reportUserDao.findOne(USER_ID, 105)).thenReturn(redFlagged);
+
+        ReportUser usFatalities = new ReportUser();
+        usFatalities.setUser(user);
+        Report usFatalitiesReport = new Report();
+        usFatalitiesReport.setId(619);
+        usFatalities.setReport(usFatalitiesReport);
+        when(reportUserDao.findOne(USER_ID,619)).thenReturn(usFatalities);
+
+        ReportUser emr = new ReportUser();
+        emr.setUser(user);
+        Report emrReport = new Report();
+        emrReport.setId(435);
+        emr.setReport(emrReport);
+        when(reportUserDao.findOne(USER_ID,435)).thenReturn(emr);
+
+        ReportUser trir = new ReportUser();
+        trir.setUser(user);
+        Report trirReport = new Report();
+        trirReport.setId(433);
+        trir.setReport(trirReport);
+        when(reportUserDao.findOne(USER_ID,433)).thenReturn(trir);
+
+        ReportUser contractorList = new ReportUser();
+        contractorList.setUser(user);
+        Report contractorListReport = new Report();
+        contractorListReport.setId(100);
+        contractorList.setReport(contractorListReport);
+        when(reportUserDao.findOne(USER_ID,100)).thenReturn(contractorList);
+
+        List<ReportUser> favorites = reportPreferencesService.addUserTypeFavorites(USER_ID,UserType.SafetyHealthAndEnvironmental);
+
+        assertEquals(6, favorites.size());
+        assertEquals(100, favorites.get(0).getReport().getId());
+        assertEquals(433, favorites.get(1).getReport().getId());
+        assertEquals(435, favorites.get(2).getReport().getId());
+        assertEquals(619, favorites.get(3).getReport().getId());
+        assertEquals(105, favorites.get(4).getReport().getId());
+        assertEquals(7, favorites.get(5).getReport().getId());
+    }
 
 }

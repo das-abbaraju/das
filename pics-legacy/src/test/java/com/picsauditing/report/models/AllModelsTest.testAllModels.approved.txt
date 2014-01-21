@@ -650,8 +650,10 @@ ContractorAuditGUARD
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorFeeCurrentAmount
+ContractorFeeCurrentFacilityCount
 ContractorFeeFeeClass
 ContractorFeeNewAmount
+ContractorFeeNewFacilityCount
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk

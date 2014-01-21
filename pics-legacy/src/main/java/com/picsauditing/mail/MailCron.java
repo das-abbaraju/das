@@ -31,7 +31,7 @@ public class MailCron extends ActionSupport {
     public String subscription() {
         try {
             mailCronService.processEmailSubscription(subscriptionID);
-        } catch (SubscriptionValidationException e) {
+        } catch (Exception e) {
 	        logger.error(e.getMessage());
             addActionError(e.getMessage());
         }
@@ -40,14 +40,24 @@ public class MailCron extends ActionSupport {
 
     @Anonymous
     public String send() {
-        String statusMessage = mailCronService.processPendingEmails();
-        addActionMessage(statusMessage);
+        try {
+            String statusMessage = mailCronService.processPendingEmails();
+            addActionMessage(statusMessage);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            addActionError(e.getMessage());
+        }
         return PicsActionSupport.ACTION_MESSAGES;
     }
 
     @Anonymous
     public String listAjax() {
-        output = mailCronService.getSubscriptionIdsToSendAsCommaDelimited();
+        try {
+            output = mailCronService.getSubscriptionIdsToSendAsCommaDelimited();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            addActionError(e.getMessage());
+        }
         return PicsActionSupport.PLAIN_TEXT;
     }
 

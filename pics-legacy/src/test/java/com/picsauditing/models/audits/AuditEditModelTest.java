@@ -55,7 +55,7 @@ public class AuditEditModelTest  extends PicsTest {
     @Test
     public void testIsCanEditCategory_PqfCategory() {
         ContractorAudit audit = createAuditWithSingleCao(AuditType.PQF);
-        audit.getOperators().get(0).changeStatus(AuditStatus.Submitted, null);
+        audit.getOperators().get(0).changeStatus(AuditStatus.Resubmitted, null);
         audit.getAuditType().setClassType(AuditTypeClass.PQF);
         AuditCategory category = EntityFactory.addCategories(audit.getAuditType(), 100, "Test");
         category.setAuditType(audit.getAuditType());
@@ -179,6 +179,28 @@ public class AuditEditModelTest  extends PicsTest {
         ContractorAuditOperator pendingCao = ContractorAuditOperator.builder()
                 .audit(audit)
                 .status(AuditStatus.Pending)
+                .visible()
+                .build();
+
+        audit.setOperators(Arrays.asList(new ContractorAuditOperator[]{pendingCao}));
+
+        audit.getAuditType().setClassType(AuditTypeClass.PQF);
+        audit.getAuditType().setCanContractorEdit(true);
+
+        User group = new User();
+        group.setIsGroup(YesNo.Yes);
+
+        when(permissions.isContractor()).thenReturn(true);
+        assertTrue(test.isCanEditAudit(audit, permissions));
+    }
+
+    @Test
+    public void testIsCanEditAudit_Contractor_ByAuditType_PqfResubmitedCao() {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
+
+        ContractorAuditOperator pendingCao = ContractorAuditOperator.builder()
+                .audit(audit)
+                .status(AuditStatus.Resubmit)
                 .visible()
                 .build();
 

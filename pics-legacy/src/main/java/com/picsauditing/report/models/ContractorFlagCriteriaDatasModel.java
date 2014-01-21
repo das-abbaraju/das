@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
+import com.picsauditing.util.Strings;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 
 	public static final String FLAG_CRITERIA_LABEL = "FlagCriteriaLabel";
 	public static final String FLAG_CRITERIA_DESCRIPTION = "FlagCriteriaDescription";
+    public static final String CONTRACTOR_OPERATOR = "ContractorFlag";
 
 	public ContractorFlagCriteriaDatasModel(Permissions permissions) {
 		super(permissions, new FlagDataTable());
@@ -23,7 +25,7 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 		ModelSpec spec = new ModelSpec(null, "FlagData");
 
 		ModelSpec contractorOperator = spec.join(FlagDataTable.ContractorOperator);
-		contractorOperator.alias = "ContractorFlag";
+		contractorOperator.alias = CONTRACTOR_OPERATOR;
 		contractorOperator.minimumImportance = FieldImportance.Average;
 
 		ModelSpec coOperator = contractorOperator.join(ContractorOperatorTable.Operator);
@@ -80,7 +82,7 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 	@Override
 	public String getWhereClause(List<Filter> filters) {
 		super.getWhereClause(filters);
-		permissionQueryBuilder.setContractorOperatorAlias("ContractorFlag");
+        permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
 
 		Filter accountStatusFilter = getValidAccountStatusFilter(filters);
 
@@ -93,7 +95,13 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 			}
 		}
 
-		return permissionQueryBuilder.buildWhereClause();
+        String whereClause = permissionQueryBuilder.buildWhereClause();
+
+        if (permissions.isCorporate()) {
+            return whereClause + " AND " + CONTRACTOR_OPERATOR + ".opID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
+        }
+
+        return whereClause;
 	}
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {

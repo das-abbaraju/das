@@ -1,0 +1,48 @@
+.progress {
+    box-shadow: none;
+    border-radius: 15px;
+}
+
+.progress-bar {
+    box-shadow: none;
+}
+
+.progress-primary {
+    background: $primary_tint;
+
+    .progress-bar {
+        background-color: $primary_light;
+    }
+}
+
+.progress-info {
+    background: $info_tint;
+
+    .progress-bar {
+        background-color: $info_light;
+    }
+}
+
+.progress-success {
+    background: $success_tint;
+
+    .progress-bar {
+        background-color: $success_light;
+    }
+}
+
+.progress-warning {
+    background: $warning_tint;
+
+    .progress-bar {
+        background-color: $warning_light;
+    }
+}
+
+.progress-danger {
+    background: $danger_tint;
+
+    .progress-bar {
+        background-color: $danger_light;
+    }
+}

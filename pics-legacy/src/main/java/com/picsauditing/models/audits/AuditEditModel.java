@@ -56,7 +56,7 @@ public class AuditEditModel {
         boolean result;
         boolean atLeastOneCaoAfterSubmitted = false;
         for (ContractorAuditOperator cao: conAudit.getOperatorsVisible()) {
-            if (cao.getStatus().after(AuditStatus.Submitted)) {
+            if (cao.getStatus().after(AuditStatus.Resubmitted)) {
                 atLeastOneCaoAfterSubmitted = true;
                 break;
             }
@@ -289,7 +289,7 @@ public class AuditEditModel {
 		if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.PQF) && !conAudit.getAuditType().isPicsPqf()) {
             boolean nothingPendingOrIncomplete = true;
 			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-				if (cao.getStatus().before(AuditStatus.Submitted)) {
+				if (cao.getStatus().before(AuditStatus.Submitted) || cao.getStatus().equals(AuditStatus.Resubmit)) {
                     nothingPendingOrIncomplete = false;
 					break;
 				}

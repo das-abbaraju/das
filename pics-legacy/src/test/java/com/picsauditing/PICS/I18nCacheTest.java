@@ -1,13 +1,12 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 import java.sql.SQLException;
 import java.util.Locale;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,7 +49,6 @@ public class I18nCacheTest extends PicsActionTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		super.setupMocks();
-		Mockito.reset(featureToggle);
 
         Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", appTranslationDAO);
 
@@ -271,4 +269,31 @@ public class I18nCacheTest extends PicsActionTest {
 		assertNotNull(cache);
 		assertEquals(0, cache.size());
 	}
+
+    @Test
+    public void testIsEmptyStringValidTranslation_EmptyIsValidInEnglish() throws Exception {
+        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION)).thenReturn(true);
+
+        Boolean result = Whitebox.invokeMethod(i18nCache, "isEmptyStringValidTranslation", "en");
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsEmptyStringValidTranslation_EmptyIsNotValidInChinese() throws Exception {
+        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION)).thenReturn(true);
+
+        Boolean result = Whitebox.invokeMethod(i18nCache, "isEmptyStringValidTranslation", "zh");
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsEmptyStringValidTranslation_EmptyIsNotValidInEnglishIfToggleOff() throws Exception {
+        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION)).thenReturn(false);
+
+        Boolean result = Whitebox.invokeMethod(i18nCache, "isEmptyStringValidTranslation", "en");
+
+        assertFalse(result);
+    }
 }

@@ -8,11 +8,10 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.SessionCookie;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 import com.picsauditing.util.system.PicsEnvironment;
@@ -38,6 +37,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class PicsActionSupportTest extends PicsActionTest {
+    private static final String NON_AJAX_HTTP_HEADER = "HttpRequest";
+    private static final int NOT_ZERO = 123;
 
     private PicsActionSupport picsActionSupport;
 
@@ -57,6 +58,10 @@ public class PicsActionSupportTest extends PicsActionTest {
     private UserLoginLogDAO loginLogDAO;
     @Mock
     private User user;
+    @Mock
+    private Account account;
+    @Mock
+    private ContractorAccount contractorAccount;
 
     @Before
     public void setUp() throws Exception {
@@ -66,6 +71,11 @@ public class PicsActionSupportTest extends PicsActionTest {
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(picsActionSupport, this);
         Whitebox.setInternalState(picsActionSupport, "featureToggleChecker", featureToggleChecker);
+
+        when(request.getHeader(AjaxUtils.HTTP_HEADER_X_REQUESTED_WITH)).thenReturn(NON_AJAX_HTTP_HEADER);
+        Whitebox.setInternalState(picsActionSupport, "user", user);
+        when(user.getAccount()).thenReturn(account);
+        when(account.getStatus()).thenReturn(AccountStatus.Active);
     }
 
     @After
@@ -628,4 +638,86 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		Whitebox.invokeMethod(picsActionSupport, "calculateTimeRemaining", sessionCookie, permissions);
 	}
+
+    @Test
+    public void testIsUserQuarantined_AjaxRequestAlwaysFalse() throws Exception {
+        when(request.getHeader(AjaxUtils.HTTP_HEADER_X_REQUESTED_WITH)).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER_VALUE);
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsUserQuarantined_NullUser_ReturnsFalse() throws Exception {
+        Whitebox.setInternalState(picsActionSupport, "user", (User)null);
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsUserQuarantined_NullAccount_ReturnsFalse() throws Exception {
+        when(user.getAccount()).thenReturn((Account)null);
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsUserQuarantined_AccountNotContractor_ReturnsFalse() throws Exception {
+        when(account.isContractor()).thenReturn(false);
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsUserQuarantined_ContractorNullStatus_ReturnsFalse() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(null);
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsUserQuarantined_ActiveContractor_ReturnsFalse() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsUserQuarantined_PendingContractorRegistrationStepRemainsOnRegistrationPage_ReturnsFalse() throws Exception {
+        when(user.getAccount()).thenReturn(contractorAccount);
+        when(contractorAccount.getId()).thenReturn(NOT_ZERO);
+        when(contractorAccount.isContractor()).thenReturn(true);
+        when(contractorAccount.getStatus()).thenReturn(AccountStatus.Pending);
+        when(actionMapping.getName()).thenReturn("RegistrationAddClientSite");
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsUserQuarantined_PendingContractorRegistrationStepTryingOffRegistrationPage_ReturnsTrue() throws Exception {
+        when(user.getAccount()).thenReturn(contractorAccount);
+        when(contractorAccount.getId()).thenReturn(NOT_ZERO);
+        when(contractorAccount.isContractor()).thenReturn(true);
+        when(contractorAccount.getStatus()).thenReturn(AccountStatus.Pending);
+        when(actionMapping.getName()).thenReturn("ContractorView");
+
+        Boolean result = picsActionSupport.isUserQuarantined();
+
+        assertTrue(result);
+    }
+
 }

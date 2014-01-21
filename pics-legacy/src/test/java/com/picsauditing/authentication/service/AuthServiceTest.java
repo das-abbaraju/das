@@ -66,8 +66,8 @@ public class AuthServiceTest extends PicsActionTest {
 
 		authService.createNewAppUser();
 
-		assertEquals("SUCCESS", authService.getJson().get("status"));
-		verify(appUserDAO, times(1)).save(any(AppUser.class));
+		assertEquals("FAIL", authService.getJson().get("status"));
+		verify(appUserDAO, never()).save(any(AppUser.class));
 	}
 
 	@Test

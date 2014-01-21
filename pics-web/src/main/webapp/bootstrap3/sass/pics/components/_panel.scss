@@ -1,0 +1,59 @@
+.panel-default {
+    border-color: $default_light;
+}
+
+.panel-default > .panel-heading {
+    color: #454545;
+    background-color: $default_light;
+    border-color: $default_light;
+}
+
+.panel-info {
+    border-color: $info_light;
+}
+
+.panel-info > .panel-heading {
+    color: #fff;
+    background-color: $info_light;
+    border-color: $info_light;
+}
+
+.panel-warning {
+    border-color: $warning_light;
+}
+
+.panel-warning > .panel-heading {
+    color: #fff;
+    background-color: $warning_light;
+    border-color: $warning_light;
+}
+
+.panel-primary {
+    border-color: $primary_light;
+}
+
+.panel-primary > .panel-heading {
+    color: #fff;
+    background-color: $primary_light;
+    border-color: $primary_light;
+}
+
+.panel-success {
+    border-color: $success_light;
+}
+
+.panel-success > .panel-heading {
+    color: #fff;
+    background-color: $success_light;
+    border-color: $success_light;
+}
+
+.panel-danger {
+    border-color: $danger_light;
+}
+
+.panel-danger > .panel-heading {
+    color: #fff;
+    background-color: $danger_light;
+    border-color: $danger_light;
+}

@@ -9,8 +9,8 @@ import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public final class TranslatableString {
     private static final String COMMAND_KEY = "TranslatableString";
-	private String key;
-    private TranslationService translationService;
+    private static TranslationService translationService;
+    private String key;
 
 	public TranslatableString(String key) {
 		this.key = key;
@@ -56,5 +56,9 @@ public final class TranslatableString {
         TranslationServiceProperties.Builder propertyBuilder = TranslationServiceFactory.baseTranslationServiceProperties();
         propertyBuilder.translationCommandKey(COMMAND_KEY);
         return propertyBuilder;
+    }
+
+    public static void clearTranslationService() {
+        translationService = null;
     }
 }

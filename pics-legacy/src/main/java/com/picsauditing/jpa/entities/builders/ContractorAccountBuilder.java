@@ -18,9 +18,14 @@ public class ContractorAccountBuilder {
     }
 
     public ContractorAccountBuilder operator(OperatorAccount operator) {
+        return operator(operator, ApprovalStatus.Y);
+    }
+
+    public ContractorAccountBuilder operator(OperatorAccount operator, ApprovalStatus workStatus) {
         ContractorOperator joinTable = new ContractorOperator();
         joinTable.setOperatorAccount(operator);
         joinTable.setContractorAccount(contractor);
+        joinTable.setWorkStatus(workStatus);
         contractor.getOperators().add(joinTable);
 
         return this;
@@ -55,6 +60,11 @@ public class ContractorAccountBuilder {
 
     public ContractorAccountBuilder onSiteServices() {
         contractor.setOnsiteServices(true);
+        return this;
+    }
+
+    public ContractorAccountBuilder primaryContact(User user) {
+        contractor.setPrimaryContact(user);
         return this;
     }
 }

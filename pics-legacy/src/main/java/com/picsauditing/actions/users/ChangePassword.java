@@ -97,9 +97,7 @@ public class ChangePassword extends PicsActionSupport {
 					addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
 				}
 
-				Vector<String> errors = passwordValidator.validatePassword(user, password1);
-				for (String error : errors)
-					addActionError(error);
+                addActionErrorsForPasswordValidation();
 
 				if (getActionErrors().size() > 0) {
 					return SUCCESS;
@@ -146,6 +144,18 @@ public class ChangePassword extends PicsActionSupport {
 		this.setUrlForRedirect(url);
 		return SUCCESS;
 	}
+
+    private void addActionErrorsForPasswordValidation() {
+        Vector<String> errors = passwordValidator.validatePassword(user, password1);
+        for (String error : errors) {
+            String[] params = error.split("::");
+            if (params.length > 1) {
+                addActionError(getText(params[0], new Object[] { params[1] }));
+            } else {
+                addActionError(getText(error));
+            }
+        }
+    }
 
     private void savePasswordHistory(String oldPassword) {
 	    if (!getAccount().getPasswordSecurityLevel().enforceHistory()) {

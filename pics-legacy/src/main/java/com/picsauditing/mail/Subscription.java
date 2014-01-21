@@ -24,7 +24,7 @@ public enum Subscription implements Translatable {
 	},
 	ContractorAdded {
 		public void initialize() {
-			setTemplateID(107);
+            setTemplateID(DYNAMIC_REPORTS_SUBSCRIPTION_TEMPLATE_ID);
 			setRequiredForOperator(true);
 		}
 	},
@@ -177,15 +177,6 @@ public enum Subscription implements Translatable {
 			setRequiredForAdmin(true);
 		}
 	},
-	ContractorCronFailure {
-		public void initialize() {
-			setTemplateID(182);
-			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
-					SubscriptionTimePeriod.Event });
-			setDefaultTimePeriod(SubscriptionTimePeriod.Event);
-			setRequiredForAdmin(true);
-		}
-	},
 	CancelledScheduledAudits {
 		public void initialize() {
 			setTemplateID(220);
@@ -197,7 +188,7 @@ public enum Subscription implements Translatable {
 	},
     DynamicReports {
         public void initialize() {
-            setTemplateID(350);
+            setTemplateID(DYNAMIC_REPORTS_SUBSCRIPTION_TEMPLATE_ID);
             setDefaultTimePeriod(SubscriptionTimePeriod.None);
             setRequiredForAdmin(true);
             setRequiredForOperator(true);
@@ -226,7 +217,9 @@ public enum Subscription implements Translatable {
 		// }
 	};
 
-	private int templateID;
+    private static final int DYNAMIC_REPORTS_SUBSCRIPTION_TEMPLATE_ID = 350;
+
+    private int templateID;
 	private String description;
 	private String longDescription;
 	private SubscriptionTimePeriod[] supportedTimePeriods = { SubscriptionTimePeriod.None,
@@ -359,7 +352,7 @@ public enum Subscription implements Translatable {
 		return emailSubscription;
 	}
 
-	@Override
+    @Override
 	public String getI18nKey() {
 		return (!getClass().getSimpleName().isEmpty() ? getClass().getSimpleName() : getClass().getSuperclass()
 				.getSimpleName()) + "." + toString();

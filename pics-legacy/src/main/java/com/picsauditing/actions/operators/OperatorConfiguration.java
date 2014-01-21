@@ -1,7 +1,6 @@
 package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -27,7 +26,15 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OperatorConfiguration extends OperatorActionSupport implements Preparable {
-	@Autowired
+    public static final String BUTTON_CLEAR = "Clear";
+    public static final String BUTTON_REMOVE = "Remove";
+    public static final String BUTTON_CHECK_CAT = "checkCat";
+    public static final String BUTTON_BUILD_CAT = "buildCat";
+    public static final String BUTTON_ADD_AUDIT = "Add Audit";
+    public static final String BUTTON_AUDIT_CAT = "Add Cat";
+    public static final String RESULT_AUDIT = "audit";
+    public static final String RESULT_CATEGORY = "category";
+    @Autowired
 	protected AuditDecisionTableDAO adtDAO;
 	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
@@ -69,13 +76,13 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	@RequiredPermission(value = OpPerms.ManageOperators, type = OpType.Edit)
 	public String execute() throws Exception {
 		if (button != null) {
-			if ("Clear".equals(button)) {
+			if (BUTTON_CLEAR.equals(button)) {
 				flagClearCache();
 				addActionMessage("Clearing Category and Audit Type Cache...");
 				return SUCCESS;
 			}
 
-			if ("Remove".equals(button)) {
+			if (BUTTON_REMOVE.equals(button)) {
 				if (corpID > 0) {
 					// Remove facility
 					Facility corp = facilitiesDAO.findByCorpOp(corpID, operator.getId());
@@ -84,7 +91,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			}
 			// check to see if category under this audit type with operator name
 			// already exists
-			if ("checkCat".equals(button)) {
+			if (BUTTON_CHECK_CAT.equals(button)) {
 				if (auditTypeID > 0) {
 					boolean addLink = true;
 					for (AuditCategory cat : auditCategoryDAO.findByAuditTypeID(auditTypeID)) {
@@ -98,7 +105,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				return JSON;
 			}
 
-			if ("buildCat".equals(button)) {
+			if (BUTTON_BUILD_CAT.equals(button)) {
                 AuditType auditType = typeDAO.find(auditTypeID);
                 if (auditType == null) {
                     throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
@@ -115,35 +122,12 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
                 return this.setUrlForRedirect("ManageCategory.action?id=" + cat.getId());
 			}
 
-			if ("Add Audit".equals(button)) {
-				if (auditTypeID > 0) {
-					AuditTypeRule rule = new AuditTypeRule();
-					rule.setOperatorAccount(operator);
-					rule.setAuditType(new AuditType(auditTypeID));
-					rule.defaultDates();
-					rule.calculatePriority();
-					rule.setAuditColumns(permissions);
-                    rule.setYearToCheck(PastAuditYear.Any);
-					adtDAO.save(rule);
-				}
-				auditTypeRuleCache.clear();
-				return "audit";
+			if (BUTTON_ADD_AUDIT.equals(button)) {
+                return addAuditToOperator();
 			}
 
-			if ("Add Cat".equals(button)) {
-				if (catID > 0) {
-					AuditCategoryRule rule = new AuditCategoryRule();
-					rule.setOperatorAccount(operator);
-					rule.setAuditType(new AuditType(1));
-					rule.setAuditCategory(new AuditCategory());
-					rule.getAuditCategory().setId(catID);
-					rule.defaultDates();
-					rule.calculatePriority();
-					rule.setAuditColumns(permissions);
-					adtDAO.save(rule);
-				}
-				auditCategoryRuleCache.clear();
-				return "category";
+			if (BUTTON_AUDIT_CAT.equals(button)) {
+                return addCategoryToOperator();
 			}
 
 			// Clearing the Cache on all 3 servers
@@ -157,7 +141,40 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		return SUCCESS;
 	}
 
-	public String addParentAccount() throws Exception {
+    private String addAuditToOperator() {
+        if (auditTypeID > 0) {
+            AuditTypeRule rule = new AuditTypeRule();
+            createAuditRule(rule, new AuditType(auditTypeID));
+            auditTypeRuleCache.clear();
+        }
+
+        return RESULT_AUDIT;
+    }
+
+    private String addCategoryToOperator() {
+        if (catID > 0) {
+            AuditCategoryRule rule = new AuditCategoryRule();
+            rule.setAuditCategory(new AuditCategory());
+            rule.getAuditCategory().setId(catID);
+
+            createAuditRule(rule, new AuditType(AuditType.PQF));
+            auditCategoryRuleCache.clear();
+        }
+
+        return RESULT_CATEGORY;
+    }
+
+    private void createAuditRule(AuditRule rule, AuditType auditType) {
+        rule.setOperatorAccount(operator);
+        rule.setAuditType(auditType);
+        rule.defaultDates();
+        rule.calculatePriority();
+        rule.setAuditColumns(permissions);
+        rule.setYearToCheck(PastAuditYear.Any);
+        adtDAO.save(rule);
+    }
+
+    public String addParentAccount() throws Exception {
 		if (corpID > 0) {
 			OperatorAccount corp = operatorDao.find(corpID);
 			if (corp != null) {

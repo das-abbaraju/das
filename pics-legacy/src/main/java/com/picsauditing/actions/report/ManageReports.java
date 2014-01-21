@@ -6,10 +6,8 @@ import com.picsauditing.access.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.*;
@@ -65,6 +63,7 @@ public class ManageReports extends PicsActionSupport {
 	private Pagination<ReportInfo> pagination;
 
 	private boolean isCurrentUserOwner;
+    private UserType userType;
 
 	// URL parameters
 	private int reportId;
@@ -109,6 +108,11 @@ public class ManageReports extends PicsActionSupport {
 
 			if (CollectionUtils.isEmpty(reportFavoriteList)) {
 				reportFavoriteList = Collections.emptyList();
+
+                if (userType != null) {
+                    favorites = reportPreferencesService.addUserTypeFavorites(permissions.getUserId(), userType);
+                    reportFavoriteList = reportFavoriteInfoConverter.convert(favorites);
+                }
 			}
 
 			if (reportFavoriteList.size() > MAX_REPORTS_IN_MENU) {
@@ -126,7 +130,6 @@ public class ManageReports extends PicsActionSupport {
 		reportList = new ArrayList<>();
 
 		try {
-
 			reportList = manageReportsService.getReportsForOwnedByUser(buildReportSearch());
 		} catch (NoResultException nre) {
 			logger.warn("Unable to moveFavoriteDown. ReportUser not found for user id " + permissions.getUserId()
@@ -164,7 +167,11 @@ public class ManageReports extends PicsActionSupport {
 		return determineViewName("searchList", "search");
 	}
 
-	public String access() throws UnauthorizedException {
+    public String getStarted() {
+        return "getStarted";
+    }
+
+    public String access() throws UnauthorizedException {
 		userAccessList = Collections.emptyList();
 		groupAccessList = Collections.emptyList();
 
@@ -586,6 +593,10 @@ public class ManageReports extends PicsActionSupport {
         return "allFavoriteReportsAjax";
     }
 
+    public UserType[] getUserTypes() {
+        return UserType.values();
+    }
+
 	public List<ReportFavoriteInfo> getReportFavoriteListOverflow() {
 		return reportFavoriteListOverflow;
 	}
@@ -681,7 +692,15 @@ public class ManageReports extends PicsActionSupport {
 		return isCurrentUserOwner;
 	}
 
-	public Report getReport() {
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public Report getReport() {
 		return report;
 	}
 

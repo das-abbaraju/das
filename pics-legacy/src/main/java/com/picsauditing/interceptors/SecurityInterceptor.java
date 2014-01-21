@@ -15,17 +15,17 @@ public class SecurityInterceptor extends AbstractInterceptor {
 
     @Override
 	public String intercept(ActionInvocation invocation) throws Exception {
-		maintainSessionCookieForValidityAndExpiration(invocation);
+		checkSessionLevelSecurity(invocation);
 		checkMethodLevelSecurity(invocation);
 		return invocation.invoke();
 	}
 
-    private void maintainSessionCookieForValidityAndExpiration(ActionInvocation invocation) throws Exception {
+    private void checkSessionLevelSecurity(ActionInvocation invocation) throws Exception {
         if (invocation.getAction() instanceof SecurityAware && !(invocation.getAction() instanceof LoginController)) {
             SecurityAware action = (SecurityAware) invocation.getAction();
             Method method = action.getClass().getMethod(invocation.getProxy().getMethod());
             if (!method.isAnnotationPresent(Anonymous.class)) {
-                if (action.sessionCookieIsValidAndNotExpired()) {
+                if (action.sessionCookieIsValidAndNotExpired() && !action.isUserQuarantined()) {
                     action.updateClientSessionCookieExpiresTime();
                 } else {
                     action.clearPermissionsSessionAndCookie();
