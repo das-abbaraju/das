@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset mdo:24
+--changeset mdo:36
 --preConditions onFail MARK_RAN
 --onUpdateSQL IGNORE
 UPDATE IGNORE report_user
