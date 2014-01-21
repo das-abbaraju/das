@@ -122,5 +122,6 @@
     
 	<!-- 7.1.3 -->
 	<include file="./liquibase/mdo31_PICS-14262_fixTradeSS.sql"/>
+	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
 
 </databaseChangeLog>
