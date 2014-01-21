@@ -126,5 +126,6 @@
 	<include file="./liquibase/mdo35_PICS-14251_ChangeAUDNZDBackTo2013Pricing.sql"/>
 	<include file="./liquibase/mdo37_PICS-13742_ERMResubmit.sql"/>
     <include file="./liquibase/uaung2_PICS-14166_AddDiscriminatorColumn.sql"/>
+    <include file="./liquibase/mdo36_PICS-13858_switchFavoriteReports.sql"/>
 
 </databaseChangeLog>
