@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "account_group")
-@Where(clause = "deletedDate IS NULL")
+@Where(clause = "deletedDate IS NULL AND type = 'Group'")
 @SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE account_group SET deletedDate = NOW() WHERE id = ?")
 public class AccountGroup implements BaseEntity, Comparable<AccountGroup> {
