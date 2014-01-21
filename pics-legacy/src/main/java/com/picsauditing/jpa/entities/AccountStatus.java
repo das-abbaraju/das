@@ -104,8 +104,12 @@ public enum AccountStatus implements Translatable, PermissionAware {
 	public boolean isActivePending() {
 		return this == Active || this == Pending;
 	}
-	
-	public boolean isActivePendingRequested() {
+
+    public boolean isActiveDemoPending() {
+        return this == Active || this == Pending || this == Demo;
+    }
+
+    public boolean isActivePendingRequested() {
 		return this == Active || this == Pending || this == Requested;
 	}
 

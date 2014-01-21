@@ -1175,4 +1175,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		return (status != null && status.isActiveOrDemo());
 	}
 
+    @Transient
+    public boolean isActiveDemoPending() {
+        return (status != null && status.isActiveDemoPending());
+    }
 }
