@@ -375,33 +375,7 @@
 			</div>
 		</s:form>
 		
-		<s:if test="payment != null && payment.id > 0 && payment.balance > 0">
-			<s:form>
-				<s:hidden name="payment.id" />
-				
-				<h3 style="margin-top: 50px">Refund</h3>
-				
-				<fieldset class="form bottom">
-					<ol>
-						<li>
-							<label>Refund Method:</label>
-							<s:text name="%{payment.paymentMethod.i18nKey}" />
-						</li>
-						<li>
-							<label>Amount:</label>
-							<s:textfield name="refundAmount" value="%{payment.balance}" />
-						</li>
-					</ol>
-					
-					<div>
-						<input type="submit" class="picsbutton" value="Refund on BrainTree/PICS" name="button" />
-						<input type="submit" class="picsbutton" value="Refund PICS Only" name="button" />
-					</div>
-				</fieldset>
-			</s:form>
-		</s:if>
-		
-		<s:if test="payment == null || payment.id == 0">
+        <s:if test="payment == null || payment.id == 0">
 			<script>
 				<s:if test="contractor.paymentMethod.creditCard && contractor.balance > 0">
 					applyAll();

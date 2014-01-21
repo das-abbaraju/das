@@ -33,7 +33,6 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
 
-	private static final String REFUND_ON_BRAIN_TREE_PICS_BUTTON = "Refund on BrainTree/PICS";
 	private static final String COLLECT_PAYMENT_BUTTON = "Collect Payment";
 	private static final String SAVE_BUTTON = "Save";
 	private static final String APPLY_BUTTON = "apply";
@@ -146,19 +145,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			return processVoidPayment();
 		}
 
-		if (button.startsWith(REFUND_BUTTON)) {
-			if (anyErrorsInRefund()) {
-				return ERROR;
-			}
-
-			try {
-				message = handleRefund(message);
-			} catch (Exception e) {
-				addActionError("Failed to cancel credit card transaction: " + e.getMessage());
-				return ERROR;
-			}
-		}
-
         savePaymentToDB();
 
         if (amountApplyMap.size() > 0 ) {
@@ -200,18 +186,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				throw new Exception();
 			}
 		}
-	}
-
-	private String handleRefund(String message) throws Exception {
-		Refund refund = generateRefund();
-
-		if (isBrainTreeCreditCardRefund()) {
-			paymentService.processRefund(payment.getTransactionID(), refundAmount);
-			message = "Successfully refunded credit card on BrainTree";
-		}
-
-		saveRefundToDB(refund);
-		return message;
 	}
 
 	private void handleApply() throws IOException {
@@ -285,33 +259,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	}
 
 
-	private void saveRefundToDB(Refund refund) {
-		AccountingSystemSynchronization.setToSynchronize(refund);
-		PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
-		paymentDAO.save(refund);
-	}
-
 	private void savePaymentToDB() {
 		payment.updateAmountApplied();
 		AccountingSystemSynchronization.setToSynchronize(payment);
 		payment = paymentDAO.save(payment);
-	}
-
-	private boolean isBrainTreeCreditCardRefund() {
-		return REFUND_ON_BRAIN_TREE_PICS_BUTTON.equals(button) && payment.getPaymentMethod().isCreditCard();
-	}
-
-	private boolean anyErrorsInRefund() {
-		if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
-			addActionError("You can't refund negative amounts");
-			return true;
-		}
-
-		if (refundAmount.compareTo(payment.getBalance()) > 0) {
-			addActionError("You can't refund more than the remaining balance");
-			return true;
-		}
-		return false;
 	}
 
 	private void handleCreditCard() throws Exception {
@@ -446,23 +397,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
 	}
 
-	private Refund generateRefund() {
-		Refund refund = new Refund();
-		refund.setTotalAmount(refundAmount);
-		refund.setAccount(contractor);
-		refund.setAuditColumns(permissions);
-		refund.setStatus(TransactionStatus.Paid);
-		if (isBrainTreeCreditCardRefund()) {
-			refund.setCcNumber(payment.getCcNumber());
-			refund.setTransactionID(payment.getTransactionID());
-		}
-		return refund;
-	}
-
 	private void updateAmountAppliedOnPaymentRefunds() {
 		for (PaymentAppliedToRefund ip : payment.getRefunds()) {
-ip.getRefund().updateAmountApplied();
-}
+            ip.getRefund().updateAmountApplied();
+        }
 	}
 
 
