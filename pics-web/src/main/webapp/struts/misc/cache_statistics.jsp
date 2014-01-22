@@ -8,13 +8,23 @@
 
 <h1>Cache Statistics</h1>
 
-<s:if test="caches.size() == 0">
-	<div class="info">Ehcache Empty</div>
+<s:if test="selectedCacheNames.size() == 0">
+    <h3>Select the caches about which you want to get statistics:</h3>
+    <form>
+        <s:select
+                list="cacheNames"
+                multiple="true"
+                cssClass="forms"
+                name="selectedCacheNames"
+                />
+        <s:submit cssClass="picsbutton" cssStyle="float:right;" value="Get Statistics" />
+    </form>
 </s:if>
 <s:else>
 	<s:div cssClass="alert">
-		<h4>Total Memory Usage: <s:property value="totalMemoryUsage/1000000" /> MBs</h4>
-		<h4>Total Elements In Memory: <s:property value="totalSize" /></h4>
+        <h3>In Selected Caches:</h3>
+		<h4>Total Memory Usage: <s:property value="totalMemoryUsageOfSelectedCaches/1000000" /> MBs</h4>
+		<h4>Total Elements In Memory: <s:property value="totalSizeOfSelectedCaches" /></h4>
 	</s:div>
 	<s:iterator value="caches">
 		<s:div cssClass="alert">
