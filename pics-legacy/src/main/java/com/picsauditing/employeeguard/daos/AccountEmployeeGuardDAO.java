@@ -43,9 +43,10 @@ public class AccountEmployeeGuardDAO {
 		return accounts;
 	}
 
-    public boolean hasEmployeeGUARDOperator(String accounts) {
-        Query query = em.createNativeQuery("select * from accountemployeeguard aeg WHERE aeg.accountId IN (:accounts)", AccountEmployeeGuard.class);
-        query.setParameter("accounts", accounts);
+    public boolean hasEmployeeGUARDOperator(int conID) {
+        Query query = em.createNativeQuery("select * from accountemployeeguard aeg " +
+                "WHERE aeg.accountId IN (select co.opID FROM contractor_operator co WHERE co.conID = :conID)", AccountEmployeeGuard.class);
+        query.setParameter("conID", conID);
 
         List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
 

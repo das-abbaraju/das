@@ -186,8 +186,6 @@ public class FeeService {
         boolean requiresOQ = false;
         boolean isLinkedToSuncor = false;
         Set<FeeClass> feeClasses = new HashSet<FeeClass>();
-        List<Integer> possibleEGAccounts = new ArrayList<>();
-        possibleEGAccounts.add(contractor.getId());
 
         for (ContractorOperator co : contractor.getOperators()) {
             if (!requiresOQ && co.getOperatorAccount().isRequiresOQ())
@@ -195,8 +193,6 @@ public class FeeService {
 
             if (!isLinkedToSuncor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
                 isLinkedToSuncor = true;
-
-            possibleEGAccounts.add(co.getOperatorAccount().getId());
         }
 
         if (contractor.getAccountLevel().isListOnly()) {
@@ -210,7 +206,7 @@ public class FeeService {
         else
             feeClasses.add(FeeClass.DocuGUARD);
 
-        hasEmployeeGuardAccount = accountEmployeeGuardDAO.hasEmployeeGUARDOperator(Strings.implode(possibleEGAccounts));
+        hasEmployeeGuardAccount = accountEmployeeGuardDAO.hasEmployeeGUARDOperator(contractor.getId());
         AuditTypesBuilder builder = new AuditTypesBuilder(getRuleCache(), contractor);
         Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
         Set<AuditTypeDetail> auditTypeDetails = builder.calculate();
