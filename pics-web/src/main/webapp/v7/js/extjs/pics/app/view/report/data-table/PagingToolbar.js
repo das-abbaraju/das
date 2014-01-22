@@ -36,7 +36,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
+        text: '<i class="icon-plus"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
     }],
 
     initComponent: function () {

@@ -62,9 +62,9 @@ $site_menu_search_more_results_text_color: #333;
 	.icon-info-sign
 	{
 		color: #999;
-		font-size: 20px;
 		position: relative;
 		left: -3px;
+		top: 3px;
 	}
 
 	#settings_modal_report_info_button
@@ -151,6 +151,7 @@ $site_menu_search_more_results_text_color: #333;
 	legend
 	{
 		padding-bottom: 10px;
+		font-size: 13px;
 	}
 
 	.subscription-info
@@ -165,7 +166,7 @@ $site_menu_search_more_results_text_color: #333;
 #report_share,
 #report_subscribe
 {
-	padding: 8px 10px 10px;
+	padding: 0 10px 10px;
 }
 
 #report_edit-body,
@@ -201,7 +202,6 @@ $site_menu_search_more_results_text_color: #333;
 	{
 		color: #ccc;
 		cursor: pointer;
-		font-size: 18px;
 		position: relative;
 		text-decoration: none;
 	}
@@ -300,7 +300,6 @@ $site_menu_search_more_results_text_color: #333;
 		label
 		{
 			line-height: 14px;
-			padding: 7px 0px 0px !important;
 		}
 
 		.icon-search
