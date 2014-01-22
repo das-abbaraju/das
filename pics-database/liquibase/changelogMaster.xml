@@ -129,5 +129,6 @@
     <include file="./liquibase/mdo36_PICS-13858_switchFavoriteReports.sql"/>
     <include file="./liquibase/sshacter41_PICS-13646_UpdatedView.sql"/>
     <include file="./liquibase/mdo32_PICS-14250_deleteRefundAndPayment.sql"/>
+    <include file="./liquibase/mdo29_PICS-14233_0_DollarInvoicesForAI_IG.sql"/>
 
 </databaseChangeLog>
