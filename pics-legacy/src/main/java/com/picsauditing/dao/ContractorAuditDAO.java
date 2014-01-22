@@ -543,4 +543,12 @@ public class ContractorAuditDAO extends PicsDAO {
 
 		return previousAudit;
 	}
+
+	public List<ContractorAudit> findSubsequentAudits(ContractorAudit conAudit) {
+		Query query = em.createQuery("SELECT ca FROM ContractorAudit ca WHERE ca.previousAudit = :conAudit " +
+				"ORDER BY ca.creationDate DESC");
+		query.setParameter("conAudit", conAudit);
+
+		return query.getResultList();
+	}
 }

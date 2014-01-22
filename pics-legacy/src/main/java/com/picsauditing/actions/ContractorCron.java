@@ -127,7 +127,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private String handleException(Exception exception, ContractorAccount contractor) {
-		logger.error("ContractorCron failed for conID {}. Reason: {}", conID, exception.getMessage());
+		logger.error("ContractorCron failed for conID " + conID, exception);
 		setRecalculationToTomorrow(contractor);
 
 		if (Strings.isNotEmpty(redirectUrl)) {
@@ -135,7 +135,7 @@ public class ContractorCron extends PicsActionSupport {
 				exceptionService.sendExceptionEmail(permissions, exception, "Error in Contractor Cron calculating account id #" + conID);
 				return setUrlForRedirect(redirectUrl);  // todo: Investigate. Why do we return the redirectUrl only if the email succeeds?
 			} catch (Exception e) {
-				logger.error("An error occurred while sending exception email for ContractorCron. ConID = {}", conID, e);
+				logger.error("An error occurred while sending exception email for ContractorCron. ConID " + conID, e);
 			}
 		}
 		return Strings.EMPTY_STRING;
