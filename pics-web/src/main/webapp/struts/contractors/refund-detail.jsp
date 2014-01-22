@@ -35,7 +35,7 @@
                                                   listKey="key" listValue="value" />
                                     </li>
                                     <li>
-                                        <label>Check/Credit Card Number: </label>
+                                        <label>Check Number: </label>
                                         <s:textfield name="transactionNumber"/>
                                     </li>
                                     <li>
@@ -46,7 +46,6 @@
                             </fieldset>
                             <fieldset class="form submit">
                                 <s:submit cssClass="picsbutton positive" method="save" value="Refund PICS Only" />
-                                <s:submit cssClass="picsbutton positive" method="saveAndBrainTreeSubmit" value="Refund Braintree/PICS" />
                             </fieldset>
                         </td>
                     </tr>
