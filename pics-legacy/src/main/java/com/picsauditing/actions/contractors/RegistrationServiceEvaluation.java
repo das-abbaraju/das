@@ -127,7 +127,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 					meetsOperatorsRequirements = true;
 			}
 
-			if (!meetsOperatorsRequirements) {
+			if (!meetsOperatorsRequirements && operator.getAccountTypes().size() != 0) {
 				String msg = operator.getName() + " requires you to select "
 						+ StringUtils.join(operator.getAccountTypes(), " or ");
 				addActionError(msg);
