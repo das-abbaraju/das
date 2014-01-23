@@ -428,7 +428,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 			contractor.setLastContactedByInsideSalesDate(now);
 			contractor.setLastContactedByAutomatedEmailDate(now);
 
-			addNote("Sent initial contact email.");
+			addNote("Sent initial contact email.","");
 		}
 
 		saveNoteIfContacted();
@@ -493,18 +493,18 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
-	private void addNote(String additionalNote) {
+	private void addNote(String summary, String additionalNote) {
 		// Save notes to RR note field and a new Note entity
 		OperatorAccount clientSiteAccount = requestRelationship.getOperatorAccount();
 		int clientSiteId = (clientSiteAccount != null) ? clientSiteAccount.getId() : 1;
 
-		addNote(contractor, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, clientSiteId, null);
+		addNote(contractor, summary, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, clientSiteId);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveNoteIfContacted() {
 		if (contactType != null) {
-			addNote(getText(contactType.getNote()) + ": " + contactNote);
+			addNote(getText(contactType.getNote()) + ": ", contactNote);
 
 			Date now = new Date();
 
