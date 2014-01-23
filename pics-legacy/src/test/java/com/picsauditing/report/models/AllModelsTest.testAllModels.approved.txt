@@ -684,6 +684,7 @@ ContractorFlagBaselineFlag
 ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
+ContractorFlagForceEnd
 ContractorFlagHasOracleNumber
 ContractorFlagHasSAPNumber
 ContractorFlagHasVendorNumber
@@ -751,6 +752,7 @@ ContractorFlagBaselineFlag
 ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
+ContractorFlagForceEnd
 ContractorFlagHasOracleNumber
 ContractorFlagHasSAPNumber
 ContractorFlagHasVendorNumber
