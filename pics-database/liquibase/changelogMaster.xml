@@ -121,9 +121,9 @@
 	<include file="./liquibase/mdo30_PICS-14111_correct_erroneous_invoice_type.sql"/>
 	<include file="./liquibase/mdo31_PICS-14262_fixTradeSS.sql"/>
 	<include file="./liquibase/pschlesinger14_CleanUpAccountsTableCountrySubdivision.sql"/>
-	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
 	<include file="./liquibase/mdo35_PICS-14251_ChangeAUDNZDBackTo2013Pricing.sql"/>
 	<include file="./liquibase/jgriffith1_PICS-14278_Contractors_for_Momentive.sql"/>
+	<include file="./liquibase/kchase16_PICS-13674_DupSafetyManual.sql"/>
 
 	<!-- 7.1.3 -->
 	<include file="./liquibase/mdo36_PICS-13858_switchFavoriteReports.sql"/>
@@ -132,5 +132,6 @@
 	<include file="./liquibase/sshacter41_PICS-13646_UpdatedView.sql"/>
 	<include file="./liquibase/mdo32_PICS-14250_deleteRefundAndPayment.sql"/>
 	<include file="./liquibase/mdo29_PICS-14233_0_DollarInvoicesForAI_IG.sql"/>
+	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
 
 </databaseChangeLog>
