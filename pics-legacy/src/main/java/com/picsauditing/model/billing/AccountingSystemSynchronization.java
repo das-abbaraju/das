@@ -10,17 +10,7 @@ public class AccountingSystemSynchronization {
 	public static void setToSynchronize(Transaction transaction) {
         if (transaction.getAccount().isDemo()) return;
 		transaction.setQbSync(true);
-        setSapToSynchronize(transaction);
 	}
-
-    public static void setSapToSynchronize(Transaction transaction) {
-        if (transaction.getAccount().getStatus().isPendingDeclinedOrDemo()) return;
-
-        if (sapAppPropertyUtil == null) sapAppPropertyUtil = SapAppPropertyUtil.factory();
-        if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(transaction)) {
-            transaction.setSapSync(true);
-        }
-    }
 
     public static void setNotToSynchronize(Transaction transaction) {
         if (transaction.getAccount().isDemo()) return;
