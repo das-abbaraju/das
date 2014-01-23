@@ -324,18 +324,18 @@ public class CaoSave extends AuditActionSupport {
 		if (step.getEmailTemplate() != null) {
 			try {
 				sendStatusChangeEmail(step, cao);
+
+                String summary = "Email sent to contractor for Changed Status for "
+                        + cao.getAudit().getAuditType().getName().toString() + "(" + cao.getAudit().getId() + ") ";
+                if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
+                    summary += " for " + cao.getAudit().getAuditFor();
+                summary += " from " + prevStatus + " to " + cao.getStatus();
+                addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false,
+                        Account.PicsID, null, null);
 			} catch (EmailBuildErrorException e) {
 				logger.error("CaoSave.save(): Failed to build email for status change for CAO with id: {}. {}",
 						new Object[]{cao.getId(), e.getMessage()});
 			}
-
-			String summary = "Email sent to contractor for Changed Status for "
-					+ cao.getAudit().getAuditType().getName().toString() + "(" + cao.getAudit().getId() + ") ";
-			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
-				summary += " for " + cao.getAudit().getAuditFor();
-			summary += " from " + prevStatus + " to " + cao.getStatus();
-			addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false,
-					Account.PicsID, null, null);
 		}
 		
 		if (cao.getAudit().getAuditType().isPicsPqf() && newStatus.isSubmitted()) {
