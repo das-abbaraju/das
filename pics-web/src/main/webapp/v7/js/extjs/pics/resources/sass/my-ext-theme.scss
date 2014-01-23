@@ -80,6 +80,7 @@ $toolbar-font-size: 13px;
  * Author: Carey Hinoki
  */
 
+@import 'my-ext-theme/mixins/mixins';
 @import 'my-ext-theme/layout/layout';
 @import 'my-ext-theme/report/column-filter-modals';
 @import 'my-ext-theme/report/column-function';

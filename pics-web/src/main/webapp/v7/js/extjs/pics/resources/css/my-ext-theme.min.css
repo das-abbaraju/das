@@ -8495,23 +8495,166 @@ body {
 @-webkit-keyframes loader {
   /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
   0% {
-    -webkit-transform: rotate(0deg); }
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
 
   /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
   25% {
-    -webkit-transform: rotate(90deg); }
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
 
   /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
   50% {
-    -webkit-transform: rotate(180deg); }
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
 
   /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
   75% {
-    -webkit-transform: rotate(270deg); }
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
 
   /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
   100% {
-    -webkit-transform: rotate(360deg); } }
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@-moz-keyframes loader {
+  /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
+  25% {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
+
+  /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
+  50% {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+
+  /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
+  75% {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
+
+  /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@-o-keyframes loader {
+  /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
+  25% {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
+
+  /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
+  50% {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+
+  /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
+  75% {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
+
+  /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes loader {
+  /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
+  25% {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
+
+  /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
+  50% {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+
+  /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
+  75% {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
+
+  /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
 
 /* line 9, ../sass/my-ext-theme/report/loading/_loading.scss */
 #loading_page {
@@ -8523,7 +8666,10 @@ body {
   width: 100px; }
   /* line 17, ../sass/my-ext-theme/report/loading/_loading.scss */
   #loading_page svg {
-    -webkit-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1); }
+    -webkit-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
+    -moz-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
+    -o-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
+    animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1); }
 
 /* line 2, ../sass/my-ext-theme/report/alert/_success.scss */
 #success_message {
@@ -9788,19 +9934,19 @@ textarea.x-form-invalid-field {
   background-position: 0%;
   border-color: #c0392b; }
 
-/* line 95, ../sass/my-ext-theme.scss */
+/* line 96, ../sass/my-ext-theme.scss */
 .x-reset .x-tool img {
   background-image: url("../../app/resources/images/tool-sprites.gif"); }
 
-/* line 104, ../sass/my-ext-theme.scss */
+/* line 105, ../sass/my-ext-theme.scss */
 .x-nlg #site_menu,
 .x-nlg .x-menu-item-active .x-menu-item-link,
 .x-nlg .x-btn-default-small {
   background-image: none !important; }
-/* line 109, ../sass/my-ext-theme.scss */
+/* line 110, ../sass/my-ext-theme.scss */
 .x-nlg .x-menu-item-active .x-menu-item-link {
   background: #a84d10; }
-/* line 120, ../sass/my-ext-theme.scss */
+/* line 121, ../sass/my-ext-theme.scss */
 .x-nlg #report_toolbar,
 .x-nlg #paging_toolbar,
 .x-nlg .x-grid-header-ct,
@@ -9809,7 +9955,7 @@ textarea.x-form-invalid-field {
 .x-nlg .x-btn-default-small,
 .x-nlg #report_filter_actions {
   background-image: none !important; }
-/* line 127, ../sass/my-ext-theme.scss */
+/* line 128, ../sass/my-ext-theme.scss */
 .x-nlg .x-grid-header-ct,
 .x-nlg .x-column-header,
 .x-nlg .x-column-header-over {

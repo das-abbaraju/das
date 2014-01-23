@@ -1,9 +1,9 @@
-@-webkit-keyframes loader {
-    0% { -webkit-transform: rotate(0deg); }
-    25% { -webkit-transform: rotate(90deg); }
-    50% { -webkit-transform: rotate(180deg); }
-    75% { -webkit-transform: rotate(270deg); }
-    100% { -webkit-transform: rotate(360deg); }
+@include keyframes(loader) {
+    0% { @include rotate(0deg) }
+    25% { @include rotate(90deg) }
+    50% { @include rotate(180deg) }
+    75% { @include rotate(270deg) }
+    100% { @include rotate(360deg) }
 }
 
 #loading_page {
@@ -15,6 +15,6 @@
     width: 100px;
 
     svg {
-      -webkit-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
+        @include animation('loader 3s infinite cubic-bezier(0.5, 0, 0, 1)');
     }
 }
