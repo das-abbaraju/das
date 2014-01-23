@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
 public class InvoiceDetailTest extends PicsActionTest {
@@ -223,6 +224,17 @@ public class InvoiceDetailTest extends PicsActionTest {
         verify(billingService, times(1)).syncBalance(contractor);
         verify(contractorAccountDAO, times(1)).save(contractor);
         verify(invoiceDAO, times(1)).save(any(RefundAppliedToCreditMemo.class));
+    }
+
+    @Test
+    public void testCreateRefundForCreditMemo() throws Exception {
+        invoiceDetail.setCreditMemo(invoiceCreditMemo);
+        when(invoiceCreditMemo.getAccount()).thenReturn(contractor);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
+        RefundAppliedToCreditMemo refundAppliedToCreditMemo = Whitebox.invokeMethod(invoiceDetail, "createRefundForCreditMemo", BigDecimal.TEN.negate());
+        assertEquals(BigDecimal.TEN, refundAppliedToCreditMemo.getAmount());
+        assertEquals(BigDecimal.TEN,refundAppliedToCreditMemo.getRefund().getAmountApplied());
+        assertFalse(refundAppliedToCreditMemo.getCreditMemo().isSapSync());
     }
 
     private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult)

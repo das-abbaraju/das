@@ -109,8 +109,11 @@ public class RefundDetailTest extends PicsActionTest {
 
     @Test
 	public void testCreateRefundForCreditMemo() throws Exception {
+        when(invoiceCreditMemo.getAccount()).thenReturn(contractorAccount);
+        when(contractorAccount.getStatus()).thenReturn(AccountStatus.Declined);
         RefundAppliedToCreditMemo refundAppliedToCreditMemo = Whitebox.invokeMethod(refundDetail, "createRefundForCreditMemo", BigDecimal.TEN.negate());
         assertEquals(BigDecimal.TEN,refundAppliedToCreditMemo.getAmount());
         assertEquals(BigDecimal.TEN,refundAppliedToCreditMemo.getRefund().getAmountApplied());
+        assertFalse(refundAppliedToCreditMemo.getCreditMemo().isSapSync());
 	}
 }
