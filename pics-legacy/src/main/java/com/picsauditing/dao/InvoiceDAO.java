@@ -104,6 +104,7 @@ public class InvoiceDAO extends PicsDAO {
         return query.getResultList();
     }
 
+    @Transactional(propagation = Propagation.NESTED)
     public void updateTransactionsToSapSync() {
         String sql = " UPDATE accounts a " +
                 " JOIN invoice i ON a.id = i.accountID " +
