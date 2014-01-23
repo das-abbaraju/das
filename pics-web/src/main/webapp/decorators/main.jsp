@@ -62,7 +62,7 @@
 
 <s:set var="version"><%= version %></s:set>
 <s:set var="has_contractor_menu">${PICS_MenuContext_ContractorSubmenu}</s:set>
-<s:set var="has_contractor_menu_class" value="%{#has_contractor_menu == 'true' ? 'has-contractor-menu' : ''}"/>
+<s:set var="has_contractor_menu_class" value="#PICS_MenuContext_ContractorSubmenu ? 'has-contractor-menu' : ''"/>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">

@@ -3436,7 +3436,7 @@ body {
 @media (min-width: 992px) {
   /* line 111, ../sass/_secondary-navigation.scss */
   body.has-contractor-menu {
-    padding-top: 85px;
+    padding-top: 103px;
   }
   /* line 114, ../sass/_secondary-navigation.scss */
   body.has-contractor-menu #primary_navigation {
