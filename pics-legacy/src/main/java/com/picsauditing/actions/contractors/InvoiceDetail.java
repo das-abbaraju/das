@@ -249,8 +249,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         refundApplied.setRefund(refund);
 
-        AccountingSystemSynchronization.setSapToSynchronize(creditMemo);
-
         return refundApplied;
     }
 

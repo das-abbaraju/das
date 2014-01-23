@@ -178,8 +178,6 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 
         refundApplied.setRefund(refund);
 
-        AccountingSystemSynchronization.setSapToSynchronize(creditMemo);
-
         return refundApplied;
     }
 
