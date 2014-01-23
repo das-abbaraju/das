@@ -65,35 +65,6 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         return saveRefund(refundApplied);
     }
 
-    public String saveAndBrainTreeSubmit() throws IOException {
-        RefundAppliedToCreditMemo refundApplied = generateRefund();
-
-        if (refundApplied == null || handleBrainTreeRefund(refundApplied)) {
-            return ERROR;
-        }
-
-        return saveRefund(refundApplied);
-    }
-
-    private boolean handleBrainTreeRefund(RefundAppliedToCreditMemo refundApplied) {
-        refundApplied.getRefund().setCcNumber(transactionNumber);
-        refundApplied.getRefund().setTransactionID(transactionID);
-
-        String message = null;
-        try {
-            paymentService.processRefund(transactionID, refundApplied.getAmount());
-            message = "Successfully refunded credit card on BrainTree";
-        } catch (Exception e) {
-            addActionError("Failed to cancel credit card transaction: " + e.getMessage());
-            return true;
-        }
-
-        if (message != null) {
-            addActionMessage(message);
-        }
-        return false;
-    }
-
     private String saveRefund(RefundAppliedToCreditMemo refundApplied) throws IOException {
         invoiceDAO.save(refundApplied);
         billingService.syncBalance(contractor);

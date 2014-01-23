@@ -69,45 +69,6 @@ public class RefundDetailTest extends PicsActionTest {
 	}
 
     @Test
-    public void testSaveBrainTree_noPaymentMethodError() throws Exception {
-        refundDetail.setPaymentMethod(null);
-        assertEquals(PicsActionSupport.ERROR,refundDetail.saveAndBrainTreeSubmit());
-        assertTrue(refundDetail.getActionErrors().contains("Please select a refund method."));
-    }
-
-    @Test
-    public void testSaveBrainTree_NoRefund() throws Exception {
-        when(contractorAccount.getBalance()).thenReturn(BigDecimal.TEN);
-        assertEquals(PicsActionSupport.ERROR,refundDetail.saveAndBrainTreeSubmit());
-        assertTrue(refundDetail.getActionMessages().contains("No Refund Needed"));
-    }
-
-    @Test
-    public void testSaveBrainTree_fullyRefunded() throws Exception {
-        when(contractorAccount.getBalance()).thenReturn(BigDecimal.TEN.negate());
-        when(invoiceCreditMemo.getCreditLeft()).thenReturn(BigDecimal.ZERO);
-        assertEquals(PicsActionSupport.ERROR,refundDetail.saveAndBrainTreeSubmit());
-        assertTrue(refundDetail.getActionErrors().contains("This credit memo has been fully refunded"));
-    }
-
-    @Test
-    public void testSaveBrainTree_overRefund() throws Exception {
-        when(contractorAccount.getBalance()).thenReturn(BigDecimal.TEN.negate());
-        when(invoiceCreditMemo.getCreditLeft()).thenReturn(BigDecimal.TEN.negate());
-        assertEquals(PicsActionSupport.ERROR,refundDetail.saveAndBrainTreeSubmit());
-        assertTrue(refundDetail.getActionErrors().contains("This credit memo's linked refunds total a higher value than the credit memo's value itself"));
-    }
-
-    @Test
-    public void testSaveBrainTree() throws Exception {
-        when(contractorAccount.getBalance()).thenReturn(BigDecimal.TEN.negate());
-        when(invoiceCreditMemo.getCreditLeft()).thenReturn(BigDecimal.TEN);
-        refundDetail.saveAndBrainTreeSubmit();
-        verify(paymentService).processRefund("12345", BigDecimal.TEN.setScale(2,BigDecimal.ROUND_UP));
-        verify(invoiceDAO).save((RefundAppliedToCreditMemo)any());
-    }
-
-    @Test
 	public void testCreateRefundForCreditMemo() throws Exception {
         RefundAppliedToCreditMemo refundAppliedToCreditMemo = Whitebox.invokeMethod(refundDetail, "createRefundForCreditMemo", BigDecimal.TEN.negate());
         assertEquals(BigDecimal.TEN,refundAppliedToCreditMemo.getAmount());
