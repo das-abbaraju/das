@@ -276,5 +276,19 @@ public class OperatorAccountDAO extends PicsDAO {
 		Query query = em.createNativeQuery(select, OperatorAccount.class);
 
 		return query.getResultList();
-	}
+    }
+
+    public List<OperatorAccount> findAllTopLevelOperators(int contractorId) {
+        String queryString = "SELECT a.*, o.* FROM contractor_operator co " +
+        "JOIN operators o ON o.id = co.opID " +
+        "JOIN accounts a ON a.id = o.reportingID " +
+        "WHERE co.conID = :contractorId " +
+        "AND o.inPicsConsortium = 0 "+
+        "GROUP BY o.reportingID ";
+
+        Query query = em.createNativeQuery(queryString, OperatorAccount.class);
+
+        query.setParameter("contractorId", contractorId);
+        return query.getResultList();
+    }
 }
