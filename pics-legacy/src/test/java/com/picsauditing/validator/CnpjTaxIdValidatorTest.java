@@ -24,6 +24,13 @@ public class CnpjTaxIdValidatorTest {
     }
 
     @Test
+    public void testValidated_NullId() throws Exception {
+        thrown.expect(ValidationException.class);
+        thrown.expectMessage("Invalid CNPJ: ");
+        cnpjTaxIdValidator.validated(new Country(Country.BRAZIL_ISO_CODE), null);
+    }
+
+    @Test
     public void testValidated_Correct_WithTrailingSpaces() throws Exception {
         String correctCnpj = "18.791.925/0001-63    ";
         cnpjTaxIdValidator.validated(new Country(Country.BRAZIL_ISO_CODE), correctCnpj);
