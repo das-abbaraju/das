@@ -989,6 +989,30 @@ public class ContractorAccount extends Account implements JSONable {
 		return currentAnnualUpdates;
 	}
 
+    @Transient
+    public Map<MultiYearScope, ContractorAudit> getAfterPendingAnnualUpdates() {
+        Map<MultiYearScope, ContractorAudit> annualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
+        Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
+        YearList years = new YearList();
+
+        for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
+            if (annualUpdate.hasCaoStatusAfter(AuditStatus.Pending)) {
+                years.add(annualUpdate.getAuditFor());
+                annuals.put(Integer.parseInt(annualUpdate.getAuditFor()), annualUpdate);
+            }
+        }
+
+        annualUpdates.put(MultiYearScope.LastYearOnly,
+                annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
+        annualUpdates.put(MultiYearScope.TwoYearsAgo,
+                annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
+        annualUpdates.put(MultiYearScope.ThreeYearsAgo,
+                annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
+
+        return annualUpdates;
+
+    }
+
 	@Transient
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();

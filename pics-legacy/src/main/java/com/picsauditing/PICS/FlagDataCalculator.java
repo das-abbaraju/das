@@ -12,7 +12,6 @@ import java.util.Set;
 
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.rbic.RulesRunner;
-import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -320,7 +319,8 @@ public class FlagDataCalculator {
 							}
 
                             if (criteria.getQuestion().getAuditType().getId() == AuditType.ANNUALADDENDUM) {
-                                if (!ca.getAuditFor().equals(criteria.getMultiYearScope().getAuditFor())) {
+                                ContractorAudit annualUpdate = con.getAfterPendingAnnualUpdates().get(criteria.getMultiYearScope());
+                                if (annualUpdate == null || !ca.getAuditFor().equals(annualUpdate.getAuditFor())) {
                                     continue;
                                 }
                             }
@@ -343,7 +343,6 @@ public class FlagDataCalculator {
 							break;
 						}
 					}
-					// cao is before required status
 				}
 			}
 

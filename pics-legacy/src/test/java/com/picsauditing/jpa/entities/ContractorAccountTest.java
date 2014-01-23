@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.util.YearList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -117,6 +118,103 @@ public class ContractorAccountTest {
 		when(bidOnlyInvoiceFee.isBidonly()).thenReturn(true);
 		when(listOnlyinvoiceFee.isFree()).thenReturn(listOnly);
 	}
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_3Pending() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Pending);
+
+        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
+        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_MiddlePending() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Complete);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+
+        assertEquals(lastYear, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
+        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_RecentPending() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+
+        assertEquals(twoYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
+        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_RecentPendingFourYears() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+        ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
+
+        assertEquals(twoYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
+        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+        assertEquals(fourYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_FourYears() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Complete);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+        ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
+
+        assertEquals(lastYear, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
+        assertEquals(twoYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    private ContractorAudit createAnnualUpdate(int yearsAgo, ContractorAccount contractor, AuditStatus status) {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM,contractor);
+
+        Calendar expirationDate = Calendar.getInstance();
+        expirationDate.add(Calendar.YEAR, 3);
+
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.add(Calendar.YEAR, yearsAgo);
+        int year = currentDate.get(Calendar.YEAR);
+
+        audit.setAuditFor("" + year);
+        audit.setExpiresDate(expirationDate.getTime());
+        addCao(audit, EntityFactory.makeOperator(), status);
+
+        return audit;
+    }
+
+    private void addCao(ContractorAudit audit, OperatorAccount operator, AuditStatus status) {
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setAudit(audit);
+        cao.changeStatus(status, null);
+        cao.setOperator(operator);
+        audit.getOperators().add(cao);
+
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        caop.setCao(cao);
+        caop.setOperator(operator);
+        cao.getCaoPermissions().add(caop);
+    }
 
     @Test
     public void testGetCurrentCsr_ReturnsCurrentCsr() throws Exception {
