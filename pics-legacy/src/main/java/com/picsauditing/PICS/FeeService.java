@@ -184,7 +184,6 @@ public class FeeService {
         boolean hasHseCompetency = false;
         boolean requiresOQ = false;
         boolean isLinkedToSuncor = false;
-        boolean isLinkedToImperialOil = false;
         Set<FeeClass> feeClasses = new HashSet<FeeClass>();
         List<Integer> possibleEGAccounts = new ArrayList<>();
         possibleEGAccounts.add(contractor.getId());
@@ -195,9 +194,6 @@ public class FeeService {
 
             if (!isLinkedToSuncor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
                 isLinkedToSuncor = true;
-
-            if (!isLinkedToImperialOil && co.getOperatorAccount().isDescendantOf(OperatorAccount.IMPERIAL_OIL))
-                isLinkedToImperialOil = true;
 
             possibleEGAccounts.add(co.getOperatorAccount().getId());
         }
@@ -224,7 +220,7 @@ public class FeeService {
             if (auditType == null)
                 continue;
 
-            if (hasAuditGUARD(auditType, isLinkedToSuncor, isLinkedToImperialOil))
+            if (hasAuditGUARD(auditType, isLinkedToSuncor))
                 feeClasses.add(FeeClass.AuditGUARD);
 
             if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
@@ -256,10 +252,8 @@ public class FeeService {
         calculateUpgradeDate(contractor, currentBillingStatus);
     }
 
-    private boolean hasAuditGUARD(AuditType auditType, boolean linkedToSuncor, boolean linkedToImperialOil) {
-        return auditType.isAlwaysBilledForAuditGUARD() ||
-                (auditType.isCorIec() && linkedToSuncor) ||
-                (auditType.isCor() && linkedToImperialOil);
+    private boolean hasAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
+        return auditType.isAlwaysBilledForAuditGUARD() || (auditType.isIec() && linkedToSuncor);
     }
 
     // TODO: THIS IS TO BE REMOVED BEFORE 2015
