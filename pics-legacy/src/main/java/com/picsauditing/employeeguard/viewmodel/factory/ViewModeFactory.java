@@ -5,8 +5,8 @@ public class ViewModeFactory {
     private static EmployeeAssignmentModelFactory employeeAssignmentModelFactory = new EmployeeAssignmentModelFactory();
     private static SkillModelFactory skillModelFactory = new SkillModelFactory();
     private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
-    private static EmployeeSiteAssignmentFactory employeeSiteAssignmentFactory = new EmployeeSiteAssignmentFactory();
-    private static EmployeeSiteRoleAssignmentFactory employeeSiteRoleAssignmentFactory = new EmployeeSiteRoleAssignmentFactory();
+    private static EmployeeProjectAssignmentFactory employeeProjectAssignmentFactory = new EmployeeProjectAssignmentFactory();
+    private static EmployeeProjectRoleAssignmentFactory employeeProjectRoleAssignmentFactory = new EmployeeProjectRoleAssignmentFactory();
     private static OperatorProjectAssignmentFactory operatorProjectAssignmentFactory = new OperatorProjectAssignmentFactory();
     private static OperatorProjectRoleAssignmentFactory operatorProjectRoleAssignmentFactory = new OperatorProjectRoleAssignmentFactory();
 
@@ -22,12 +22,12 @@ public class ViewModeFactory {
         return projectAssignmentBreakdownFactory;
     }
 
-    public static EmployeeSiteAssignmentFactory getEmployeeSiteAssignmentFactory() {
-        return employeeSiteAssignmentFactory;
+    public static EmployeeProjectAssignmentFactory getEmployeeProjectAssignmentFactory() {
+        return employeeProjectAssignmentFactory;
     }
 
-    public static EmployeeSiteRoleAssignmentFactory getEmployeeSiteRoleAssignmentFactory() {
-        return employeeSiteRoleAssignmentFactory;
+    public static EmployeeProjectRoleAssignmentFactory getEmployeeProjectRoleAssignmentFactory() {
+        return employeeProjectRoleAssignmentFactory;
     }
 
     public static OperatorProjectAssignmentFactory getOperatorProjectAssignmentFactory() {

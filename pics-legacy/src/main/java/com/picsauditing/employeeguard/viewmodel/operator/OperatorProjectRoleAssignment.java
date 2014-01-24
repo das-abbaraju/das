@@ -1,14 +1,14 @@
 package com.picsauditing.employeeguard.viewmodel.operator;
 
-import com.picsauditing.employeeguard.forms.operator.RoleInfo;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.Role;
+import com.picsauditing.employeeguard.viewmodel.model.Skill;
 
 import java.util.List;
 
 public class OperatorProjectRoleAssignment {
 
-    private final List<RoleInfo> roles;
-    private final List<SkillInfo> skills;
+    private final List<Role> roles;
+    private final List<Skill> skills;
     private final List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments;
 
     public OperatorProjectRoleAssignment(final Builder builder) {
@@ -23,16 +23,16 @@ public class OperatorProjectRoleAssignment {
 
     public static class Builder {
 
-        private List<RoleInfo> roles;
-        private List<SkillInfo> skills;
+        private List<Role> roles;
+        private List<Skill> skills;
         private List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments;
 
-        public Builder roles(final List<RoleInfo> roles) {
+        public Builder roles(final List<Role> roles) {
             this.roles = roles;
             return this;
         }
 
-        public Builder skills(final List<SkillInfo> skills) {
+        public Builder skills(final List<Skill> skills) {
             this.skills = skills;
             return this;
         }

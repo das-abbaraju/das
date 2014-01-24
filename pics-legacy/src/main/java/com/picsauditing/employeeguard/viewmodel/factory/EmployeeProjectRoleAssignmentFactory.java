@@ -11,7 +11,7 @@ import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectRoleAssi
 
 import java.util.*;
 
-public class EmployeeSiteRoleAssignmentFactory {
+public class EmployeeProjectRoleAssignmentFactory {
 
     public List<EmployeeProjectRoleAssignment> create(final Map<AccountModel, Set<Employee>> contractorEmployeeMap,
                                                 final List<AccountSkill> jobRoleSkills,

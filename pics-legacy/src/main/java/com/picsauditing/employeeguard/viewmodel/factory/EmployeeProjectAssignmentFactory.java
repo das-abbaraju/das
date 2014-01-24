@@ -11,7 +11,7 @@ import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectAssignme
 
 import java.util.*;
 
-public class EmployeeSiteAssignmentFactory {
+public class EmployeeProjectAssignmentFactory {
 
     public EmployeeProjectAssignment create(final AccountModel accountModel,
                                             final Employee employee,
