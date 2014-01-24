@@ -7,32 +7,32 @@ import java.util.List;
 public class OperatorProjectAssignment {
 
     private final List<RoleInfo> roles;
-    private final List<EmployeeSiteAssignment> employeeSiteAssignments;
+    private final List<EmployeeProjectAssignment> employeeProjectAssignments;
 
     public OperatorProjectAssignment(Builder builder) {
         this.roles = builder.roles;
-        this.employeeSiteAssignments = builder.employeeSiteAssignments;
+        this.employeeProjectAssignments = builder.employeeProjectAssignments;
     }
 
     public List<RoleInfo> getRoles() {
         return roles;
     }
 
-    public List<EmployeeSiteAssignment> getEmployeeSiteAssignments() {
-        return employeeSiteAssignments;
+    public List<EmployeeProjectAssignment> getEmployeeProjectAssignments() {
+        return employeeProjectAssignments;
     }
 
     public static class Builder {
         private List<RoleInfo> roles;
-        private List<EmployeeSiteAssignment> employeeSiteAssignments;
+        private List<EmployeeProjectAssignment> employeeProjectAssignments;
 
         public Builder roles(List<RoleInfo> roles) {
             this.roles = roles;
             return this;
         }
 
-        public Builder employeeSiteAssignments(List<EmployeeSiteAssignment> employeeSiteAssignments) {
-            this.employeeSiteAssignments = employeeSiteAssignments;
+        public Builder employeeSiteAssignments(List<EmployeeProjectAssignment> employeeProjectAssignments) {
+            this.employeeProjectAssignments = employeeProjectAssignments;
             return this;
         }
 

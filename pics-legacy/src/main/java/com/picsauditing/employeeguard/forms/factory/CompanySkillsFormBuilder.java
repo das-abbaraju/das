@@ -13,7 +13,7 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;

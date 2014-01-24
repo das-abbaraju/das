@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.viewmodel;
+package com.picsauditing.employeeguard.viewmodel.model;
 
 import com.picsauditing.employeeguard.entities.SkillType;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;

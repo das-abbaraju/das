@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.forms.IdentifierAndNameCompositeForm;
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.employeeguard.forms.operator.ContractorRoleInfo;
 import com.picsauditing.employeeguard.forms.operator.ProjectRoleAssignment;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;

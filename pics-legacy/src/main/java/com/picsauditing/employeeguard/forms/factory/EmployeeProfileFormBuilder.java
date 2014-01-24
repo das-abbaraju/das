@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.forms.employee.CompanyGroupInfo;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.model.i18n.KeyValue;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;

@@ -24,7 +24,7 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator;
 import com.picsauditing.employeeguard.validators.employee.EmployeeFormValidator;
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
 import com.picsauditing.forms.binding.FormBinding;

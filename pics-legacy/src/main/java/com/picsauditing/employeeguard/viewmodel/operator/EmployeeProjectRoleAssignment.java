@@ -1,21 +1,26 @@
 package com.picsauditing.employeeguard.viewmodel.operator;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import org.apache.commons.collections.CollectionUtils;
 
-public class EmployeeSiteAssignment {
+import java.util.Collections;
+import java.util.List;
+
+public class EmployeeProjectRoleAssignment {
 
     private final int contractorId;
     private final String contractorName;
     private final int employeeId;
     private final String employeeName;
-    private final SkillStatus skillStatusRollUp;
+    private final List<SkillStatus> skillStatuses;
 
-    public EmployeeSiteAssignment(final Builder builder) {
+    public EmployeeProjectRoleAssignment(final Builder builder) {
         this.contractorId = builder.contractorId;
         this.contractorName = builder.contractorName;
         this.employeeId = builder.employeeId;
         this.employeeName = builder.employeeName;
-        this.skillStatusRollUp = builder.skillStatusRollUp;
+        this.skillStatuses = CollectionUtils.isEmpty(builder.skillStatuses) ? Collections.<SkillStatus>emptyList()
+                : Collections.unmodifiableList(builder.skillStatuses);
     }
 
     public int getContractorId() {
@@ -34,44 +39,45 @@ public class EmployeeSiteAssignment {
         return employeeName;
     }
 
-    public SkillStatus getSkillStatusRollUp() {
-        return skillStatusRollUp;
+    public List<SkillStatus> getSkillStatuses() {
+        return skillStatuses;
     }
 
     public static class Builder {
+
         private int contractorId;
         private String contractorName;
         private int employeeId;
         private String employeeName;
-        private SkillStatus skillStatusRollUp;
+        private List<SkillStatus> skillStatuses;
 
-        public Builder contractorId(final int contractorId) {
+        public Builder contractorId(int contractorId) {
             this.contractorId = contractorId;
             return this;
         }
 
-        public Builder contractorName(final String contractorName) {
+        public Builder contractorName(String contractorName) {
             this.contractorName = contractorName;
             return this;
         }
 
-        public Builder employeeId(final int employeeId) {
+        public Builder employeeId(int employeeId) {
             this.employeeId = employeeId;
             return this;
         }
 
-        public Builder employeeName(final String employeeName) {
+        public Builder employeeName(String employeeName) {
             this.employeeName = employeeName;
             return this;
         }
 
-        public Builder skillStatusRollUp(final SkillStatus skillStatusRollUp) {
-            this.skillStatusRollUp = skillStatusRollUp;
+        public Builder skillStatuses(List<SkillStatus> skillStatuses) {
+            this.skillStatuses = skillStatuses;
             return this;
         }
 
-        public EmployeeSiteAssignment build() {
-            return new EmployeeSiteAssignment(this);
+        public EmployeeProjectRoleAssignment build() {
+            return new EmployeeProjectRoleAssignment(this);
         }
     }
 }

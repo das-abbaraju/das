@@ -5,6 +5,8 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.forms.operator.OperatorProjectAssignmentMatrix;
 import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.ProjectService;
+import com.picsauditing.employeeguard.viewmodel.operator.OperatorProjectAssignment;
+import com.picsauditing.employeeguard.viewmodel.operator.OperatorProjectRoleAssignment;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +19,8 @@ public class AssignmentAction extends PicsRestActionSupport {
 	private ProjectService projectService;
 
 	private OperatorProjectAssignmentMatrix operatorProjectAssignmentMatrix;
+    private OperatorProjectAssignment operatorProjectAssignment;
+    private OperatorProjectRoleAssignment operatorProjectRoleAssignment;
 
 	private Project project;
 
@@ -47,6 +51,14 @@ public class AssignmentAction extends PicsRestActionSupport {
 	public OperatorProjectAssignmentMatrix getOperatorProjectAssignmentMatrix() {
 		return operatorProjectAssignmentMatrix;
 	}
+
+    public OperatorProjectAssignment getOperatorProjectAssignment() {
+        return operatorProjectAssignment;
+    }
+
+    public OperatorProjectRoleAssignment getOperatorProjectRoleAssignment() {
+        return operatorProjectRoleAssignment;
+    }
 
 	public Project getProject() {
 		return project;
