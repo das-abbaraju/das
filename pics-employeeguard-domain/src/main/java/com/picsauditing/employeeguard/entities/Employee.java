@@ -240,7 +240,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@Transient
 	public String getName() {
-		return firstName + " " + getLastName();
+		return getFirstName() + " " + getLastName();
 	}
 
 	@Override
