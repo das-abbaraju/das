@@ -44,6 +44,11 @@
             <result name="show">/struts/employee-guard/operator/project/show.jsp</result>
         </action>
 
+        <!-- Assignments -->
+        <action name="assignments" class="com.picsauditing.employeeguard.controllers.operator.AssignmentsAction">
+            <result name="list">/struts/employee-guard/operator/assignments/site/status.jsp</result>
+        </action>
+
         <!-- Role -->
         <action name="role" class="com.picsauditing.employeeguard.controllers.operator.RoleAction">
             <result name="create">/struts/employee-guard/operator/role/create.jsp</result>

@@ -81,6 +81,18 @@
                             </breadcrumb>
                         </children>
                     </breadcrumb>
+                    <breadcrumb>
+                        <hint>assignments</hint>
+                        <label>Assignments</label>
+                        <uri>/employee-guard/operator/assignments</uri>
+                        <children>
+                            <breadcrumb>
+                                <hint>show</hint>
+                                <label>{name}</label>
+                                <uri>/employee-guard/operator/assignments/{id}</uri>
+                            </breadcrumb>
+                        </children>
+                    </breadcrumb>
                 </children>
             </breadcrumb>
 

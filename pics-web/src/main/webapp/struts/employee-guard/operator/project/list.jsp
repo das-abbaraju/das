@@ -5,6 +5,7 @@
 <%-- Url --%>
 <s:url action="project" var="operator_project_list_url"/>
 <s:url action="project" method="create" var="operator_project_create_url"/>
+<s:url action="assignments" var="operator_assignments_list_url" />
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
@@ -19,7 +20,7 @@
     <div class="content">
         <div class="row">
             <div class="col-md-2 col-md-offset-1">
-                <i class="icon-building icon-large"></i><a href="#">17</a>
+                <i class="icon-building icon-large"></i><a href="${operator_assignments_list_url}">17</a>
             </div>
             <div class="col-md-2">
                 <i class="icon-user icon-large"></i><a href="#">852</a>
