@@ -51,6 +51,7 @@
     <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
     <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>
     <bean id="ProjectService" class="com.picsauditing.employeeguard.services.ProjectService"/>
+    <bean id="RoleService" class="com.picsauditing.employeeguard.services.RoleService"/>
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
     <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
 
