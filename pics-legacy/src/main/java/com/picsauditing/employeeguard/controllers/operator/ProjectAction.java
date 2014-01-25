@@ -7,15 +7,15 @@ import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.*;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.ProjectService;
+import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.validators.project.ProjectFormValidator;
@@ -41,7 +41,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;
 	@Autowired
-	private GroupService roleService;
+	private RoleService roleService;
 	@Autowired
 	private ProjectFormValidator projectFormValidator;
 	@Autowired
@@ -67,7 +67,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	private ProjectInfo project;
 	private List<ProjectInfo> projects;
 	private List<AccountSkill> projectSkills;
-	private List<Group> projectRoles;
+	private List<Role> projectRoles;
 	private List<AccountModel> projectSites;
 
 	/* pages */
@@ -111,7 +111,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	public String create() {
 		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
 
-		projectRoles = roleService.getGroupsForAccounts(accountIds);
+		projectRoles = roleService.getRolesForAccounts(accountIds);
 		projectSkills = skillService.getOptionalSkillsForAccounts(accountIds);
 		projectSites = accountService.getChildOperators(permissions.getAccountId());
 
@@ -136,7 +136,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 		projectRolesForm = new ProjectRolesForm.Builder().project(projectFromDatabase).build();
 
 		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
-		projectRoles = roleService.getGroupsForAccounts(accountIds);
+		projectRoles = roleService.getRolesForAccounts(accountIds);
 
 		return "job-roles-form";
 	}
@@ -220,7 +220,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	private void prepareFormDataWhenValidationFails() {
-		projectRoles = roleService.getGroupsForAccount(permissions.getAccountId());
+		projectRoles = roleService.getRolesForAccount(permissions.getAccountId());
 		projectSkills = skillService.getOptionalSkillsForAccount(permissions.getAccountId());
 	}
 
@@ -278,7 +278,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 		return projectSkills;
 	}
 
-	public List<Group> getProjectRoles() {
+	public List<Role> getProjectRoles() {
 		return projectRoles;
 	}
 

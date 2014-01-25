@@ -5,7 +5,7 @@
 <%-- Url --%>
 <s:url action="project" var="operator_project_list_url"/>
 <s:url action="project" method="create" var="operator_project_create_url"/>
-<s:url action="assignments" var="operator_assignments_list_url" />
+<s:url action="project/site-assignment" var="operator_assignments_list_url" />
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">

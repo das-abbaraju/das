@@ -106,7 +106,7 @@ public class ProjectService {
 		project.getRoles().clear();
 
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(accountId);
-		List<Role> rolesInDatabase = roleDAO.findGroupByAccountIdsAndNames(corporateIds, names);
+		List<Role> rolesInDatabase = roleDAO.findRoleByAccountIdsAndNames(corporateIds, names);
 		for (Role role : rolesInDatabase) {
 			project.getRoles().add(new ProjectRole(project, role));
 		}
@@ -253,8 +253,8 @@ public class ProjectService {
 		List<Employee> employeesAssignedToProject = getEmployeesAssignedToProjectFromRemovedCompanies(originalProject, removedCompanies);
 
 		for (Employee employee : employeesAssignedToProject) {
-			EntityHelper.softDelete(employee.getRoles(), appUserId);
-			projectRoleEmployeeDAO.delete(employee.getRoles());
+			EntityHelper.softDelete(employee.getProjectRoles(), appUserId);
+			projectRoleEmployeeDAO.delete(employee.getProjectRoles());
 		}
 	}
 

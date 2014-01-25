@@ -53,7 +53,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-	private List<RoleEmployee> roleEmployee = new ArrayList<>();
+	private List<RoleEmployee> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
@@ -61,7 +61,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-	private List<ProjectRoleEmployee> roles = new ArrayList<>();
+	private List<ProjectRoleEmployee> projectRoles = new ArrayList<>();
 
 	public Employee() {
 	}
@@ -226,12 +226,12 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		this.groups = groups;
 	}
 
-	public List<RoleEmployee> getRoleEmployee() {
-		return roleEmployee;
+	public List<RoleEmployee> getRoles() {
+		return roles;
 	}
 
-	public void setRoleEmployee(List<RoleEmployee> roleEmployee) {
-		this.roleEmployee = roleEmployee;
+	public void setRoles(List<RoleEmployee> roleEmployee) {
+		this.roles = roleEmployee;
 	}
 
 	public List<AccountSkillEmployee> getSkills() {
@@ -242,12 +242,12 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		this.skills = skills;
 	}
 
-	public List<ProjectRoleEmployee> getRoles() {
-		return roles;
+	public List<ProjectRoleEmployee> getProjectRoles() {
+		return projectRoles;
 	}
 
-	public void setRoles(List<ProjectRoleEmployee> roles) {
-		this.roles = roles;
+	public void setProjectRoles(List<ProjectRoleEmployee> roles) {
+		this.projectRoles = roles;
 	}
 
 	@Transient

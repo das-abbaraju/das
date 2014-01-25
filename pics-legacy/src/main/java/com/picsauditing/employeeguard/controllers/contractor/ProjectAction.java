@@ -88,12 +88,12 @@ public class ProjectAction extends PicsRestActionSupport {
         AccountModel accountModel = accountService.getAccountById(projectCompany.getProject().getAccountId());
         project = formBuilderFactory.getContratorDetailProjectFormBuilder().build(projectCompany, accountModel);
 
-        List<AccountSkillEmployee> accounSkillEmployees = accountSkillEmployeeService
+        List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService
                 .getAccountSkillEmployeeForProjectAndContractor(projectCompany.getProject(), permissions.getAccountId());
         List<ProjectRoleEmployee> projectRoleEmployees = projectRoleService.getProjectRolesForContractor
                 (projectCompany.getProject(), permissions.getAccountId());
         projectAssignmentBreakdown = ViewModeFactory.getProjectAssignmentBreakdownFactory()
-                .create(projectRoleEmployees, accounSkillEmployees);
+                .create(projectRoleEmployees, accountSkillEmployees);
 
         return SHOW;
     }

@@ -45,7 +45,7 @@
         </action>
 
         <!-- Assignments -->
-        <action name="assignments" class="com.picsauditing.employeeguard.controllers.operator.AssignmentsAction">
+        <action name="project/site-assignment" class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction">
             <result name="list">/struts/employee-guard/operator/assignments/site/status.jsp</result>
         </action>
 

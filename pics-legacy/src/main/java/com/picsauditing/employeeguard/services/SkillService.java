@@ -23,9 +23,11 @@ public class SkillService {
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
+	private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Autowired
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -181,6 +183,7 @@ public class SkillService {
 		newSiteSkills = IntersectionAndComplementProcess.intersection(newSiteSkills, existingSiteSkills, SiteSkill.COMPARATOR, skillCallback);
 
 		siteSkillDAO.save(newSiteSkills);
+		siteSkillDAO.delete(skillCallback.getRemovedEntities());
 
 		List<Project> affectedProjects = projectService.getProjectsForAccount(siteId);
 		List<Employee> affectedEmployees = employeeService.getEmployeesByProjects(affectedProjects);
@@ -290,7 +293,7 @@ public class SkillService {
 			allRequiredSkills.addAll(projectService.getRequiredSkills(project));
 		}
 
-		for (ProjectRoleEmployee projectRoleEmployee : employee.getRoles()) {
+		for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
 			for (AccountSkillRole accountSkillRole : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
 				allRequiredSkills.add(accountSkillRole.getSkill());
 			}
@@ -302,17 +305,16 @@ public class SkillService {
 	}
 
 	public Map<AccountSkill, Set<Role>> getProjectRoleSkillsMap(final Employee employee) {
-		List<ProjectSkillRole> projectSkillRoles = projectSkillRoleDAO.findByEmployee(employee);
-		return Utilities.convertToMapOfSets(projectSkillRoles, new Utilities.EntityKeyValueConvertable<ProjectSkillRole, AccountSkill, Role>() {
-
+		List<AccountSkillRole> projectSkillRoles = accountSkillRoleDAO.findByEmployee(employee);
+		return Utilities.convertToMapOfSets(projectSkillRoles, new Utilities.EntityKeyValueConvertable<AccountSkillRole, AccountSkill, Role>() {
 			@Override
-			public AccountSkill getKey(ProjectSkillRole entity) {
-				return entity.getProjectSkill().getSkill();
+			public AccountSkill getKey(AccountSkillRole entity) {
+				return entity.getSkill();
 			}
 
 			@Override
-			public Role getValue(ProjectSkillRole entity) {
-				return entity.getProjectRole().getRole();
+			public Role getValue(AccountSkillRole entity) {
+				return entity.getRole();
 			}
 		});
 	}

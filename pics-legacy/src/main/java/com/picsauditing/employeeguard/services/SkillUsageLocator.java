@@ -35,7 +35,7 @@ public class SkillUsageLocator {
 	private Map<Employee, List<Project>> buildEmployeeProjectsMap(final Set<Employee> employees) {
 		Map<Employee, List<Project>> employeeProjectsMap = new TreeMap<>();
 		for (Employee employee : employees) {
-			List<Project> projects = ExtractorUtil.extractList(employee.getRoles(), new Extractor<ProjectRoleEmployee, Project>() {
+			List<Project> projects = ExtractorUtil.extractList(employee.getProjectRoles(), new Extractor<ProjectRoleEmployee, Project>() {
 				@Override
 				public Project extract(ProjectRoleEmployee projectRoleEmployee) {
 					return projectRoleEmployee.getProjectRole().getProject();

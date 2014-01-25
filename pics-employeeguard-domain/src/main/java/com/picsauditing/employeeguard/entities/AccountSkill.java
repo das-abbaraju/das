@@ -74,6 +74,11 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 5)
+	private List<AccountSkillRole> roles = new ArrayList<>();
+
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<AccountSkillEmployee> employees = new ArrayList<>();
 
@@ -214,6 +219,14 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 
 	public void setGroups(List<AccountSkillGroup> groups) {
 		this.groups = groups;
+	}
+
+	public List<AccountSkillRole> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<AccountSkillRole> roles) {
+		this.roles = roles;
 	}
 
 	public List<AccountSkillEmployee> getEmployees() {

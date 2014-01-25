@@ -23,7 +23,7 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
         return query.getSingleResult();
     }
 
-    public List<Role> findGroupByAccountIdsAndNames(final List<Integer> accountIds, final List<String> names) {
+    public List<Role> findRoleByAccountIdsAndNames(final List<Integer> accountIds, final List<String> names) {
         // Not sure if we need to check accountId
         if (CollectionUtils.isEmpty(accountIds) || CollectionUtils.isEmpty(names)) {
             return Collections.emptyList();

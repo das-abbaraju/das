@@ -45,6 +45,18 @@
                                 <label>{name}</label>
                                 <uri>/employee-guard/operator/project/{id}</uri>
                             </breadcrumb>
+                            <breadcrumb>
+                                <hint>site-assignment</hint>
+                                <label>Site Assignments</label>
+                                <uri>/employee-guard/operator/project/site-assignment</uri>
+                                <children>
+                                    <breadcrumb>
+                                        <hint>show</hint>
+                                        <label>{name}</label>
+                                        <uri>/employee-guard/operator/project/site-assignment/{id}</uri>
+                                    </breadcrumb>
+                                </children>
+                            </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>
@@ -78,18 +90,6 @@
                                 <hint>show</hint>
                                 <label>{name}</label>
                                 <uri>/employee-guard/operator/role/{id}</uri>
-                            </breadcrumb>
-                        </children>
-                    </breadcrumb>
-                    <breadcrumb>
-                        <hint>assignments</hint>
-                        <label>Assignments</label>
-                        <uri>/employee-guard/operator/assignments</uri>
-                        <children>
-                            <breadcrumb>
-                                <hint>show</hint>
-                                <label>{name}</label>
-                                <uri>/employee-guard/operator/assignments/{id}</uri>
                             </breadcrumb>
                         </children>
                     </breadcrumb>

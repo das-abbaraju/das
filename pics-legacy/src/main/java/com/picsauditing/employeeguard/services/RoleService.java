@@ -36,6 +36,10 @@ public class RoleService {
 		return Collections.emptyList();
 	}
 
+	public List<Role> getRolesForAccount(final int accountId) {
+		return getRolesForAccounts(Arrays.asList(accountId));
+	}
+
 	public List<Role> getRolesForAccounts(final List<Integer> accountIds) {
 		return roleDAO.findByAccounts(accountIds);
 	}

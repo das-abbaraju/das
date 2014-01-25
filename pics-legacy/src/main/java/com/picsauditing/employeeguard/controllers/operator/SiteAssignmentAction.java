@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class AssignmentsAction extends PicsRestActionSupport {
+public class SiteAssignmentAction extends PicsRestActionSupport {
 
     private static final long serialVersionUID = 1288428610452669599L;
 

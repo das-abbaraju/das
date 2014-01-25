@@ -42,7 +42,7 @@ public class OperatorEmployeeProjectAssignmentFactory {
 		Map<Employee, List<Role>> employeeJobRoles = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
-			for (ProjectRoleEmployee projectRoleEmployee : employee.getRoles()) {
+			for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
 				Role role = projectRoleEmployee.getProjectRole().getRole();
 				if (jobRoles.contains(role)) {
 					if (!employeeJobRoles.containsKey(employee)) {
