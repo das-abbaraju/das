@@ -87,7 +87,6 @@ public class GroupService {
 		groupInDatabase = accountGroupDAO.save(groupInDatabase);
 
 		List<AccountSkillGroup> newAccountSkillGroups = new ArrayList<>();
-
 		if (ArrayUtils.isNotEmpty(groupNameSkillsForm.getSkills())) {
 			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupNameSkillsForm.getSkills())));
 			for (AccountSkill accountSkill : skills) {
@@ -102,7 +101,8 @@ public class GroupService {
 				AccountSkillGroup.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-		groupInDatabase.setSkills(accountSkillGroups);
+        groupInDatabase.getSkills().clear();
+		groupInDatabase.getSkills().addAll(accountSkillGroups);
 		groupInDatabase = accountGroupDAO.save(groupInDatabase);
 
 		for (GroupEmployee groupEmployee : groupInDatabase.getEmployees()) {

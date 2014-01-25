@@ -201,7 +201,7 @@ public class AssignmentService {
     }
 
     public Map<Employee, Set<AccountSkill>> getContractorEmployeeAssignmentSkillsForRole(final int contractorId, final Role role) {
-        Map<Employee, Set<Role>> employeeRoles =
+//        Map<Employee, Set<Role>> employeeRoles =
 
         Map<Role, Set<AccountSkill>> roleSkills = getRoleSkills(role);
 

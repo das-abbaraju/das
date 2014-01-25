@@ -14,24 +14,24 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("Group")
-@Where(clause = "deletedDate IS NULL")
+//@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, type, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, 'Group', ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE account_group SET deletedDate = NOW() WHERE id = ?")
 public class Group extends AccountGroup implements Comparable<Group> {
 
 	private static final long serialVersionUID = 7074027976165804080L;
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	protected List<GroupEmployee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
-	@BatchSize(size = 5)
-	private List<ProjectRole> projects = new ArrayList<>();
+//	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+//	@Where(clause = "deletedDate IS NULL")
+//	@BatchSize(size = 5)
+//	private List<ProjectRole> projects = new ArrayList<>();
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	protected List<AccountSkillGroup> skills = new ArrayList<>();
@@ -65,13 +65,13 @@ public class Group extends AccountGroup implements Comparable<Group> {
 		this.employees = groupEmployees;
 	}
 
-	public List<ProjectRole> getProjects() {
-		return projects;
-	}
-
-	public void setProjects(List<ProjectRole> projects) {
-		this.projects = projects;
-	}
+//	public List<ProjectRole> getProjects() {
+//		return projects;
+//	}
+//
+//	public void setProjects(List<ProjectRole> projects) {
+//		this.projects = projects;
+//	}
 
 	public List<AccountSkillGroup> getSkills() {
 		return skills;

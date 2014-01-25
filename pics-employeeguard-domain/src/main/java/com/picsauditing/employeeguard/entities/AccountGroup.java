@@ -1,5 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -7,6 +9,7 @@ import java.util.Date;
 @Table(name = "account_group")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@Where(clause = "deletedDate IS NULL")
 public abstract class AccountGroup implements BaseEntity {
 
 	@Id

@@ -174,12 +174,12 @@ public class AccountSkillGroup implements BaseEntity {
 	public String toString() {
 		String string = Strings.EMPTY_STRING;
 
-		if (skill != null) {
-			string += skill.toString();
+		if (getSkill() != null) {
+			string += getSkill().toString();
 		}
 
-		if (group != null) {
-			string += " " + group.toString();
+		if (getGroup() != null) {
+			string += " " + getGroup().toString();
 		}
 
 		return string;
