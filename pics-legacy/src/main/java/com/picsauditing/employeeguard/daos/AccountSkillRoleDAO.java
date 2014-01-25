@@ -22,16 +22,18 @@ public class AccountSkillRoleDAO extends AbstractBaseEntityDAO<AccountSkillRole>
         return query.getResultList();
     }
 
-	public List<AccountSkillRole> findByEmployee(final Employee employee) {
+	public List<AccountSkillRole> findProjectRoleSkillsByEmployee(final Employee employee) {
 		if (employee == null) {
 			return Collections.emptyList();
 		}
 
 		// Employee to project roles to roles to account skill roles
-		TypedQuery<AccountSkillRole> query = em.createQuery("SELECT asr FROM AccountSkillRole asr " +
-				"JOIN asr.role r " +
-				"JOIN r.employees re " +
-				"WHERE re.employee = :employee", AccountSkillRole.class);
+		TypedQuery<AccountSkillRole> query = em.createQuery("SELECT asr FROM Employee e " +
+				"JOIN e.projectRoles pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.role r " +
+				"JOIN r.skills asr " +
+				"WHERE e = :employee", AccountSkillRole.class);
 
 		query.setParameter("employee", employee);
 

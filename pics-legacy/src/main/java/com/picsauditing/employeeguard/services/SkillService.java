@@ -305,7 +305,7 @@ public class SkillService {
 	}
 
 	public Map<AccountSkill, Set<Role>> getProjectRoleSkillsMap(final Employee employee) {
-		List<AccountSkillRole> projectSkillRoles = accountSkillRoleDAO.findByEmployee(employee);
+		List<AccountSkillRole> projectSkillRoles = accountSkillRoleDAO.findProjectRoleSkillsByEmployee(employee);
 		return Utilities.convertToMapOfSets(projectSkillRoles, new Utilities.EntityKeyValueConvertable<AccountSkillRole, AccountSkill, Role>() {
 			@Override
 			public AccountSkill getKey(AccountSkillRole entity) {
