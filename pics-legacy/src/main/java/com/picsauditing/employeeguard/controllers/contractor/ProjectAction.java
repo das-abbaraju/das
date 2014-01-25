@@ -14,6 +14,8 @@ import com.picsauditing.employeeguard.services.ContractorProjectService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
+import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
+import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentStatisticsModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectAction extends PicsRestActionSupport {
 
@@ -44,6 +47,7 @@ public class ProjectAction extends PicsRestActionSupport {
     private ContractorDetailProjectForm project;
     private List<ContractorProjectForm> projects;
     private ProjectAssignmentBreakdown projectAssignmentBreakdown;
+	private Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> siteAssignmentsAndProjects;
 
     /* pages */
 
@@ -121,4 +125,8 @@ public class ProjectAction extends PicsRestActionSupport {
     public ProjectAssignmentBreakdown getProjectAssignmentBreakdown() {
         return projectAssignmentBreakdown;
     }
+
+	public Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> getSiteAssignmentsAndProjects() {
+		return siteAssignmentsAndProjects;
+	}
 }
