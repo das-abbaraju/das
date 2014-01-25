@@ -51,7 +51,7 @@
 
                 <div class="content">
                     <s:if test="requiredSkills.isEmpty()">
-                        <div class="col-md-9 col-md-offset-3 no-value edit-display-values">
+                        <div class="col-md-9 col-md-offset-3 empty-message-text edit-display-values">
                             No Required Skills
                         </div>
                     </s:if>
@@ -118,7 +118,7 @@
 
                 <div class="content">
                     <s:if test="requiredSkills.isEmpty()">
-                        <div class="col-md-9 col-md-offset-3 no-value edit-display-values">
+                        <div class="col-md-9 col-md-offset-3 empty-message-text edit-display-values">
                             No Required Skills
                         </div>
                     </s:if>
