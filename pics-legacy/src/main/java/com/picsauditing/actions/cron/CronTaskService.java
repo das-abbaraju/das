@@ -46,6 +46,7 @@ public class CronTaskService {
         classes.add("ReportSuggestionsTask");
         classes.add("RunConCronForOldAccountsWithBalances");
         classes.add("SendEmailToBidOnlyAccounts");
+        classes.add("SetSapSync");
         classes.add("TestTask");
         return classes;
     }

@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingService;
-import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.dao.*;
 import com.picsauditing.util.SapAppPropertyUtil;
@@ -37,6 +36,7 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 	public void prepare() {
 		if (sapAppPropertyUtil == null) {
 			sapAppPropertyUtil = SapAppPropertyUtil.factory();
+            AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		}
 		int transactionId = getParameter("creditmemo.id");
 		if (transactionId > 0) {
@@ -148,10 +148,6 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         refund.setAccount(contractor);
 
         refundApplied.setRefund(refund);
-
-        if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(creditMemo)) {
-            refundApplied.getRefund().setSapSync(true);
-        }
 
         return refundApplied;
     }

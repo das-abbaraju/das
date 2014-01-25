@@ -13,6 +13,7 @@ import java.util.{List => StrutsList}
 import com.picsauditing.util.SapAppPropertyUtil
 import scala.Some
 import com.picsauditing.PICS.TaxService
+import com.picsauditing.model.billing.AccountingSystemSynchronization
 
 @RequiredPermission(OpPerms.Billing)
 class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {
@@ -109,9 +110,6 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
       creditMemo.updateAmountApplied()
       creditMemo.setAmount(creditMemo.getCreditMemo.getAmountApplied)
       creditMemo.setAuditColumns(permissions)
-      if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabled(creditMemo.getInvoice.getAccount.getCountry.getBusinessUnit.getId)) {
-        creditMemo.getCreditMemo.setSapSync(true)
-      }
     }
 
     creditMemo.getCreditMemo.setStatus(TransactionStatus.Paid)

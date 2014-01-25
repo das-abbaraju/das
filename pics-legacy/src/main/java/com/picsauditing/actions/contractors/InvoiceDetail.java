@@ -249,10 +249,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         refundApplied.setRefund(refund);
 
-        if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(creditMemo)) {
-            refundApplied.getRefund().setSapSync(true);
-        }
-
         return refundApplied;
     }
 
