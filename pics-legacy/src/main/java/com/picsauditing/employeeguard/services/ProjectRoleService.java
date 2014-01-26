@@ -48,11 +48,11 @@ public class ProjectRoleService {
 		return projectRoleDAO.findByProjectsAndRole(projectIds, role);
 	}
 
-	public List<ProjectRoleEmployee> getProjectRolesForContractor(Project project, int accountId) {
+	public List<ProjectRoleEmployee> getProjectRolesForContractor(final Project project, final int accountId) {
 		return projectRoleDAO.findByProjectAndContractor(project, accountId);
 	}
 
-	public List<ProjectRoleEmployee> getProjectRolesForContractor(int accountId) {
+	public List<ProjectRoleEmployee> getProjectRolesForContractor(final int accountId) {
 		return projectRoleEmployeeDAO.findByAccountId(accountId);
 	}
 }

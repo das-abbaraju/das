@@ -1,9 +1,7 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.ProjectCompany;
-import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.ContractorDetailProjectForm;
 import com.picsauditing.employeeguard.forms.contractor.ContractorProjectForm;
@@ -13,18 +11,18 @@ import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ContractorProjectService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.Extractor;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentStatisticsModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
 import com.picsauditing.forms.binding.FormBinding;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ProjectAction extends PicsRestActionSupport {
 
@@ -59,7 +57,7 @@ public class ProjectAction extends PicsRestActionSupport {
             projectCompanies = contractorProjectService.getProjectsForContractor(permissions.getAccountId());
         }
 
-	    List<ProjectRoleEmployee> employeeRoles = projectRoleService.getProjectRolesForContractor(permissions.getAccountId());
+	    Map<Employee, Set<Role>> employeeRoles = projectRoleService.getAllEmployeeRoles(permissions.getAccountId());
 	    List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
 
         projects = buildProjectsFromProjectCompanies(projectCompanies);
@@ -69,24 +67,15 @@ public class ProjectAction extends PicsRestActionSupport {
     }
 
     private List<ContractorProjectForm> buildProjectsFromProjectCompanies(List<ProjectCompany> projectCompanies) {
-        List<Integer> siteIds = getSiteIds(projectCompanies);
+        List<Integer> siteIds = ExtractorUtil.extractList(projectCompanies, new Extractor<ProjectCompany, Integer>() {
+	        @Override
+	        public Integer extract(ProjectCompany projectCompany) {
+		        return projectCompany.getProject().getAccountId();
+	        }
+        });
         List<AccountModel> accountModels = accountService.getAccountsByIds(siteIds);
 
-        return formBuilderFactory.getContractorProjectFormBuilder().build(projectCompanies, accountModels);
-    }
-
-    // TODO: Find some way to abstract this into a general utility class for Entities
-    private List<Integer> getSiteIds(List<ProjectCompany> projectCompanies) {
-        if (CollectionUtils.isEmpty(projectCompanies)) {
-            return Collections.emptyList();
-        }
-
-        List<Integer> siteIds = new ArrayList<>();
-        for (ProjectCompany projectCompany : projectCompanies) {
-            siteIds.add(projectCompany.getProject().getAccountId());
-        }
-
-        return siteIds;
+        return formBuilderFactory.getContractorProjectFormFactory().build(projectCompanies, accountModels);
     }
 
     public String show() {

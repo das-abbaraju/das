@@ -159,6 +159,12 @@
             <result name="show">/struts/employee-guard/contractor/skill/show.jsp</result>
         </action>
 
+        <!-- Site Assignment -->
+        <action name="project/site-assignment/{id}" class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="status">
+            <result name="status">/struts/employee-guard/contractor/assignments/site/status.jsp</result>
+            <result name="role">/struts/employee-guard/contractor/assignments/site/role.jsp</result>
+        </action>
+
         <!-- Project -->
         <action name="project" class="com.picsauditing.employeeguard.controllers.contractor.ProjectAction">
             <result name="list">/struts/employee-guard/contractor/project/list.jsp</result>

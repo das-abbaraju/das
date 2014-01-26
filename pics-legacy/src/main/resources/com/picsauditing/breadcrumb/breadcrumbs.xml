@@ -185,6 +185,18 @@
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>
+                            <breadcrumb>
+                                <hint>site-assignment</hint>
+                                <label>Site Assignments</label>
+                                <uri>/employee-guard/contractor/project/site-assignment</uri>
+                                <children>
+                                    <breadcrumb>
+                                        <hint>show</hint>
+                                        <label>{name}</label>
+                                        <uri>/employee-guard/contractor/project/site-assignment/{id}</uri>
+                                    </breadcrumb>
+                                </children>
+                            </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>

@@ -22,8 +22,6 @@ public class AccountSkillEmployeeService {
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
 	@Autowired
-	private SkillService skillService;
-	@Autowired
 	private SkillUsageLocator skillUsageLocator;
 
 	public List<AccountSkillEmployee> findByProfile(final Profile profile) {
@@ -93,41 +91,6 @@ public class AccountSkillEmployeeService {
 		}
 
 		return newSkillEmployees;
-	}
-
-	public void addNewAccountSkillEmployees(final Employee employee, final List<AccountSkill> addedSkills, final int appUserId) {
-		Date now = new Date();
-
-		List<AccountSkillEmployee> newAccountSkillEmployees = createNewAccountSkillEmployeesForEmployee(addedSkills, now, employee);
-		List<AccountSkillEmployee> existingAccountSkillEmployees = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, addedSkills);
-		newAccountSkillEmployees = IntersectionAndComplementProcess.intersection(
-				newAccountSkillEmployees,
-				existingAccountSkillEmployees,
-				AccountSkillEmployee.COMPARATOR,
-				new BaseEntityCallback<AccountSkillEmployee>(appUserId, now));
-
-		accountSkillEmployeeDAO.save(newAccountSkillEmployees);
-	}
-
-	public void deleteAccountSkillEmployees(final Employee employee, final List<AccountSkill> deletedSkills, final int appUserId) {
-		Set<AccountSkill> skillsRequiredForEmployee = skillService.findAllSkillsRequiredForEmployee(employee);
-		deletedSkills.removeAll(skillsRequiredForEmployee);
-
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, deletedSkills);
-		EntityHelper.softDelete(accountSkillEmployees, appUserId);
-		accountSkillEmployeeDAO.delete(accountSkillEmployees);
-	}
-
-	private List<AccountSkillEmployee> createNewAccountSkillEmployeesForEmployee(Collection<AccountSkill> skills, Date timestamp, Employee employee) {
-		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
-
-		for (AccountSkill skill : skills) {
-			AccountSkillEmployee skillEmployee = new AccountSkillEmployee(skill, employee);
-			skillEmployee.setStartDate(timestamp);
-			accountSkillEmployees.add(skillEmployee);
-		}
-
-		return accountSkillEmployees;
 	}
 
 	public void linkEmployeesToSkill(final Group group, final int userId) {
@@ -278,10 +241,6 @@ public class AccountSkillEmployeeService {
 			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
 			accountSkillEmployeeDAO.save(accountSkillEmployee);
 		}
-	}
-
-	public List<AccountSkillEmployee> getAccountSkillEmployeeForAccountAndSkills(final int accountId, final List<AccountSkill> accountSkills) {
-		return accountSkillEmployeeDAO.findByEmployeeAccountAndSkills(accountId, accountSkills);
 	}
 
 	public List<AccountSkillEmployee> getAccountSkillEmployeeForProjectAndContractor(Project project, int accountId) {

@@ -2,21 +2,24 @@ package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.services.SkillUsageLocator;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
-import com.picsauditing.employeeguard.viewmodel.factory.EmployeeSiteAssignmentModelFactory;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class SiteAssignmentAction extends PicsRestActionSupport {
 
+	@Autowired
+	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -24,27 +27,20 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	private int roleId;
 	private int employeeId;
+	private AccountModel site;
 
 	private SiteAssignmentModel siteAssignmentModel;
 
-	public String index() {
+	public String status() {
+		site = accountService.getAccountById(NumberUtils.toInt(id));
+		AccountModel account = accountService.getAccountById(permissions.getAccountId());
 
-		// Find employees
-		List<Employee> employees = employeeService.getEmployeesForAccount(permissions.getAccountId());
-		// Look up overall employee skill status excluding project skills
-
-		Map<Employee, SkillStatus> rollupStatuses = new TreeMap<>();
+		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
 		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
 
-		for (SkillUsage skillUsage : skillUsages) {
-			// Calculate for account group skills, project role skills, site skills, corporate skills
+		siteAssignmentModel = ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages);
 
-		}
-
-		EmployeeSiteAssignmentModelFactory employeeSiteAssignmentModelFactory = new EmployeeSiteAssignmentModelFactory();
-//		List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels = employeeSiteAssignmentModelFactory.create();
-
-		return "list";
+		return "status";
 	}
 
 	public String unassign() {
@@ -71,7 +67,11 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		this.employeeId = employeeId;
 	}
 
-	public void setSiteAssignmentModel(SiteAssignmentModel siteAssignmentModel) {
-		this.siteAssignmentModel = siteAssignmentModel;
+	public AccountModel getSite() {
+		return site;
+	}
+
+	public SiteAssignmentModel getSiteAssignmentModel() {
+		return siteAssignmentModel;
 	}
 }

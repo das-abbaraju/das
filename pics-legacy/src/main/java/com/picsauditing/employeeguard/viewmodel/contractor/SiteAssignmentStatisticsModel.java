@@ -1,27 +1,23 @@
 package com.picsauditing.employeeguard.viewmodel.contractor;
 
+import com.picsauditing.employeeguard.services.models.AccountModel;
+
 public class SiteAssignmentStatisticsModel implements Comparable<SiteAssignmentStatisticsModel> {
 
-	private final int siteId;
-	private final String siteName;
+	private final AccountModel site;
 	private final int completed;
 	private final int expiring;
 	private final int expired;
 
 	public SiteAssignmentStatisticsModel(final Builder builder) {
-		this.siteId = builder.siteId;
-		this.siteName = builder.siteName;
+		this.site = builder.site;
 		this.completed = builder.completed;
 		this.expiring = builder.expiring;
 		this.expired = builder.expired;
 	}
 
-	public int getSiteId() {
-		return siteId;
-	}
-
-	public String getSiteName() {
-		return siteName;
+	public AccountModel getSite() {
+		return site;
 	}
 
 	public int getCompleted() {
@@ -38,37 +34,31 @@ public class SiteAssignmentStatisticsModel implements Comparable<SiteAssignmentS
 
 	@Override
 	public int compareTo(SiteAssignmentStatisticsModel that) {
-		return this.siteName.compareTo(that.siteName);
+		return this.site.compareTo(that.site);
 	}
 
 	public static class Builder {
-		private int siteId;
-		private String siteName;
+		private AccountModel site;
 		private int completed;
 		private int expiring;
 		private int expired;
 
-		public Builder siteId(int siteId) {
-			this.siteId = siteId;
+		public Builder site(final AccountModel site) {
+			this.site = site;
 			return this;
 		}
 
-		public Builder siteName(String siteName) {
-			this.siteName = siteName;
-			return this;
-		}
-
-		public Builder completed(int completed) {
+		public Builder completed(final int completed) {
 			this.completed = completed;
 			return this;
 		}
 
-		public Builder expiring(int expiring) {
+		public Builder expiring(final int expiring) {
 			this.expiring = expiring;
 			return this;
 		}
 
-		public Builder expired(int expired) {
+		public Builder expired(final int expired) {
 			this.expired = expired;
 			return this;
 		}

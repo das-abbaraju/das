@@ -282,7 +282,9 @@ public class Utilities {
 	}
 
 	public interface MapConvertable<K, E> {
+
 		K getKey(E entity);
+
 	}
 
 	/**
@@ -333,7 +335,9 @@ public class Utilities {
 	}
 
 	public interface Identitifable<E, ID> {
+
 		ID getId(E element);
+
 	}
 
 	public static <E, ID> Set<ID> getIdsFromCollection(Collection<E> elements, Identitifable<E, ID> identitifable) {
@@ -350,6 +354,7 @@ public class Utilities {
 	}
 
 	public interface EntityKeyValueConvertable<E, K, V> {
+
 		K getKey(E entity);
 
 		V getValue(E entity);
@@ -402,5 +407,27 @@ public class Utilities {
 		}
 
 		map.get(key).addAll(value);
+	}
+
+	public static <K, V> Map<V, List<K>> invertMap(Map<K, List<V>> map) {
+		Map<V, List<K>> invertedMap = new HashMap<>();
+
+		for (Map.Entry<K, List<V>> entry : map.entrySet()) {
+			for (V value : entry.getValue()) {
+				addToMapOfKeyToList(invertedMap, value, entry.getKey());
+			}
+		}
+
+		return invertedMap;
+	}
+
+	public static <K, V> Set<V> extractAndFlattenValuesFromMap(final Map<K, ? extends Collection<V>> map) {
+		Set<V> values = new HashSet<>();
+
+		for (Map.Entry<K, ? extends Collection<V>> entry : map.entrySet()) {
+			values.addAll(entry.getValue());
+		}
+
+		return values;
 	}
 }
