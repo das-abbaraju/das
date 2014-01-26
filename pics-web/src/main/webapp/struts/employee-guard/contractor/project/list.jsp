@@ -16,7 +16,7 @@
         <h1>
             <div class="row">
                 <div class="col-md-6 col-sm-5 col-xs-6">
-                    <i class="icon-user icon-large"></i> ${site_assignment.site.name}
+                    ${site_assignment.site.name}
                 </div>
                 <div class="col-md-6 col-sm-7 col-xs-6 text-right">
                     <s:url action="project/site-assignment/{id}" var="contractor_site_assignment">

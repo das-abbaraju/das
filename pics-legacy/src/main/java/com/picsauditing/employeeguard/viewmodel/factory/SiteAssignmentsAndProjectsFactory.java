@@ -57,8 +57,9 @@ public class SiteAssignmentsAndProjectsFactory {
 		Map<AccountModel, Map<Employee, Set<Role>>> employeeRolesToSite = new HashMap<>();
 
 		for (Map.Entry<AccountModel, Set<Project>> projectEntry : projects.entrySet()) {
+			AccountModel site = projectEntry.getKey();
+
 			for (Map.Entry<Employee, Set<Role>> employeeEntry : employeeRoles.entrySet()) {
-				AccountModel site = projectEntry.getKey();
 				Employee employee = employeeEntry.getKey();
 
 				if (employeeBelongsToSite(site, employee) || employeeBelongsToProject(projectEntry.getValue(), employee)) {
@@ -68,6 +69,11 @@ public class SiteAssignmentsAndProjectsFactory {
 
 					employeeRolesToSite.get(site).put(employee, employeeEntry.getValue());
 				}
+			}
+
+			if (!employeeRolesToSite.containsKey(site)) {
+				// No employee has been added to this project yet
+				employeeRolesToSite.put(site, Collections.<Employee, Set<Role>>emptyMap());
 			}
 		}
 
@@ -137,12 +143,17 @@ public class SiteAssignmentsAndProjectsFactory {
 		Map<AccountModel, Set<AccountSkillEmployee>> employeeSkillsPerSite = new HashMap<>();
 
 		for (Map.Entry<AccountModel, Map<Employee, Set<Role>>> siteEntry : employeeRolesPerSite.entrySet()) {
+			AccountModel site = siteEntry.getKey();
 			Map<Employee, Set<Role>> employeeRoles = siteEntry.getValue();
 
 			for (Map.Entry<Employee, Set<Role>> roleEntry : employeeRoles.entrySet()) {
 				for (Role role : roleEntry.getValue()) {
-					Utilities.addAllToMapOfKeyToSet(employeeSkillsPerSite, siteEntry.getKey(), employeeSkillsPerRole.get(roleEntry.getKey(), role));
+					Utilities.addAllToMapOfKeyToSet(employeeSkillsPerSite, site, employeeSkillsPerRole.get(roleEntry.getKey(), role));
 				}
+			}
+
+			if (!employeeSkillsPerSite.containsKey(site)) {
+				employeeSkillsPerSite.put(site, Collections.<AccountSkillEmployee>emptySet());
 			}
 		}
 
