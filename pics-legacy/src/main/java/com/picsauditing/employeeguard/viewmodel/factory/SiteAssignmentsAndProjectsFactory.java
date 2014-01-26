@@ -209,23 +209,24 @@ public class SiteAssignmentsAndProjectsFactory {
 	                                                            final Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole) {
 
 		Set<Project> projects = Utilities.extractAndFlattenValuesFromMap(accountsToProjects);
-
 		List<ContractorProjectForm> contractorProjects = ViewModeFactory.getContractorProjectFormFactory().build(accountsToProjects.keySet(), projects);
 
 		List<ProjectStatisticsModel> projectStatistics = new ArrayList<>();
 		for (Project project : projects) {
 			ContractorProjectForm contractorProject = findContractorProject(project.getId(), contractorProjects);
 
+			Set<AccountSkillEmployee> allSkills = new HashSet<>();
+			Set<ProjectRoleEmployee> allRoles = new HashSet<>();
+
 			for (ProjectRole projectRole : project.getRoles()) {
-				final Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills = employeeSkillsByRole.column(projectRole.getRole());
+				Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills = employeeSkillsByRole.column(projectRole.getRole());
 
-				Set<AccountSkillEmployee> allSkills = Utilities.extractAndFlattenValuesFromMap(employeesAndSkills);
-				Set<ProjectRoleEmployee> projectRoleEmployees = filterProjectRoleEmployees(projectRole, employeesAndSkills);
-
-				ProjectAssignmentBreakdown assignmentBreakdown = ViewModeFactory.getProjectAssignmentBreakdownFactory().create(projectRoleEmployees, allSkills);
-
-				projectStatistics.add(new ProjectStatisticsModel(contractorProject, assignmentBreakdown));
+				allSkills.addAll(Utilities.extractAndFlattenValuesFromMap(employeesAndSkills));
+				allRoles.addAll(filterProjectRoleEmployees(projectRole, employeesAndSkills));
 			}
+
+			ProjectAssignmentBreakdown assignmentBreakdown = ViewModeFactory.getProjectAssignmentBreakdownFactory().create(allRoles, allSkills);
+			projectStatistics.add(new ProjectStatisticsModel(contractorProject, assignmentBreakdown));
 		}
 
 		return projectStatistics;

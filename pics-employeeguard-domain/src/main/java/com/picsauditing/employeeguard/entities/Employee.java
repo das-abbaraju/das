@@ -48,11 +48,11 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
+	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT g.id FROM account_group g WHERE g.type = 'Group')")
 	private List<GroupEmployee> groups = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
+	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT r.id FROM account_group r WHERE r.type = 'Role')")
 	private List<RoleEmployee> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
