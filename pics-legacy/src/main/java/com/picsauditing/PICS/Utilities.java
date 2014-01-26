@@ -326,11 +326,7 @@ public class Utilities {
 		Map<K, List<E>> map = new HashMap<>();
 		for (E entity : entities) {
 			K key = mapConverter.getKey(entity);
-			if (!map.containsKey(key)) {
-				map.put(key, new ArrayList<E>());
-			}
-
-			map.get(key).add(entity);
+			addToMapOfKeyToList(map, key, entity);
 		}
 
 		return map;
@@ -378,13 +374,25 @@ public class Utilities {
 		Map<K, Set<V>> map = new HashMap<>();
 		for (E entity : entities) {
 			K key = entityKeyValueConvertable.getKey(entity);
-			if (!map.containsKey(key)) {
-				map.put(key, new HashSet<V>());
-			}
-
-			map.get(key).add(entityKeyValueConvertable.getValue(entity));
+			addToMapOfKeyToSet(map, key, entityKeyValueConvertable.getValue(entity));
 		}
 
 		return map;
+	}
+
+	public static <K, V> void addToMapOfKeyToList(Map<K, List<V>> map, K key, V value) {
+		if (!map.containsKey(key)) {
+			map.put(key, new ArrayList<V>());
+		}
+
+		map.get(key).add(value);
+	}
+
+	public static <K, V> void addToMapOfKeyToSet(Map<K, Set<V>> map, K key, V value) {
+		if (!map.containsKey(key)) {
+			map.put(key, new HashSet<V>());
+		}
+
+		map.get(key).add(value);
 	}
 }

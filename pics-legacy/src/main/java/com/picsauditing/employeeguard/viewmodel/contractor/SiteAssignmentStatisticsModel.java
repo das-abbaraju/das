@@ -2,16 +2,22 @@ package com.picsauditing.employeeguard.viewmodel.contractor;
 
 public class SiteAssignmentStatisticsModel implements Comparable<SiteAssignmentStatisticsModel> {
 
+	private final int siteId;
 	private final String siteName;
 	private final int completed;
 	private final int expiring;
 	private final int expired;
 
 	public SiteAssignmentStatisticsModel(final Builder builder) {
+		this.siteId = builder.siteId;
 		this.siteName = builder.siteName;
 		this.completed = builder.completed;
 		this.expiring = builder.expiring;
 		this.expired = builder.expired;
+	}
+
+	public int getSiteId() {
+		return siteId;
 	}
 
 	public String getSiteName() {
@@ -36,10 +42,16 @@ public class SiteAssignmentStatisticsModel implements Comparable<SiteAssignmentS
 	}
 
 	public static class Builder {
+		private int siteId;
 		private String siteName;
 		private int completed;
 		private int expiring;
 		private int expired;
+
+		public Builder siteId(int siteId) {
+			this.siteId = siteId;
+			return this;
+		}
 
 		public Builder siteName(String siteName) {
 			this.siteName = siteName;
