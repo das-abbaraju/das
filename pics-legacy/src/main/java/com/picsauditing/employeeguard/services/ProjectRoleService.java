@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
+import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.util.ListUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ public class ProjectRoleService {
 
 	@Autowired
 	private ProjectRoleDAO projectRoleDAO;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private ProjectService projectService;
 
@@ -47,5 +50,9 @@ public class ProjectRoleService {
 
 	public List<ProjectRoleEmployee> getProjectRolesForContractor(Project project, int accountId) {
 		return projectRoleDAO.findByProjectAndContractor(project, accountId);
+	}
+
+	public List<ProjectRoleEmployee> getProjectRolesForContractor(int accountId) {
+		return projectRoleEmployeeDAO.findByAccountId(accountId);
 	}
 }

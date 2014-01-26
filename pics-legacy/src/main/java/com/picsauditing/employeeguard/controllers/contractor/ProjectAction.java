@@ -59,14 +59,16 @@ public class ProjectAction extends PicsRestActionSupport {
             projectCompanies = contractorProjectService.getProjectsForContractor(permissions.getAccountId());
         }
 
-        projects = buildProjectsFromProjectCompanyies(projectCompanies);
+	    List<ProjectRoleEmployee> employeeRoles = projectRoleService.getProjectRolesForContractor(permissions.getAccountId());
+	    List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
 
-        Collections.sort(projects);
+        projects = buildProjectsFromProjectCompanies(projectCompanies);
+	    siteAssignmentsAndProjects = ViewModeFactory.getSiteAssignmentsAndProjectsFactory().create(projects, employeeRoles, employeeSkills);
 
         return LIST;
     }
 
-    private List<ContractorProjectForm> buildProjectsFromProjectCompanyies(List<ProjectCompany> projectCompanies) {
+    private List<ContractorProjectForm> buildProjectsFromProjectCompanies(List<ProjectCompany> projectCompanies) {
         List<Integer> siteIds = getSiteIds(projectCompanies);
         List<AccountModel> accountModels = accountService.getAccountsByIds(siteIds);
 

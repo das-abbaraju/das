@@ -287,4 +287,8 @@ public class AccountSkillEmployeeService {
 	public List<AccountSkillEmployee> getAccountSkillEmployeeForProjectAndContractor(Project project, int accountId) {
 		return accountSkillEmployeeDAO.findByProjectAndContractor(project, accountId);
 	}
+
+	public List<AccountSkillEmployee> getSkillsForAccount(int accountId) {
+		return accountSkillEmployeeDAO.findByEmployeeAccount(accountId);
+	}
 }

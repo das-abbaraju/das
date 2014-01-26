@@ -395,4 +395,12 @@ public class Utilities {
 
 		map.get(key).add(value);
 	}
+
+	public static <K, V> void addAllToMapOfKeyToSet(Map<K, Set<V>> map, K key, Collection<V> value) {
+		if (!map.containsKey(key)) {
+			map.put(key, new HashSet<V>());
+		}
+
+		map.get(key).addAll(value);
+	}
 }

@@ -12,6 +12,33 @@
 </s:include>
 
 <section class="employee-guard-section info-toolbar">
+    <s:iterator value="siteAssignmentsAndProjects.keySet()" var="siteAssignment">
+        <h1>
+            <div class="row">
+                <div class="col-md-6 col-sm-5 col-xs-6">
+                    <i class="icon-user icon-large"></i> ${siteAssignment.siteName}
+                </div>
+                <div class="col-md-6 col-sm-7 col-xs-6 text-right">
+                    <button type="button" class="btn btn-warning btn-xs pull-right">
+                        <i class="icon-map-marker icon-large"></i> Site Assignments
+                    </button>
+                    <ul class="list-inline hidden-xs pull-right">
+                        <li class="success">
+                            <i class="icon-ok-sign icon-large"></i>${siteAssignment.completed}
+                        </li>
+                        <li class="warning">
+                            <i class="icon-warning-sign icon-large"></i>${siteAssignment.expiring}
+                        </li>
+                        <li class="danger">
+                            <i class="icon-minus-sign-alt icon-large"></i>${siteAssignment.expired}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </h1>
+    </s:iterator>
+
+
     <h1>
         <div class="row">
             <div class="col-md-6 col-sm-5 col-xs-6">
