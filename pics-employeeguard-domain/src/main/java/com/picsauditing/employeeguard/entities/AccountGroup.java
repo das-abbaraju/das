@@ -22,9 +22,6 @@ public abstract class AccountGroup implements BaseEntity {
 	protected String name;
 	protected String description;
 
-	@Column(insertable = false, updatable = false)
-	protected String type;
-
 	protected int createdBy;
 	protected int updatedBy;
 	protected int deletedBy;
@@ -68,14 +65,6 @@ public abstract class AccountGroup implements BaseEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public int getCreatedBy() {

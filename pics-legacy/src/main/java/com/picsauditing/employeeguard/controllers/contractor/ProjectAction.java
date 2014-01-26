@@ -5,10 +5,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.ContractorDetailProjectForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
-import com.picsauditing.employeeguard.services.ContractorProjectService;
-import com.picsauditing.employeeguard.services.ProjectRoleService;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
@@ -32,6 +29,8 @@ public class ProjectAction extends PicsRestActionSupport {
     private ContractorProjectService contractorProjectService;
     @Autowired
     private ProjectRoleService projectRoleService;
+	@Autowired
+	private SiteSkillService siteSkillService;
 
     @Autowired
     private FormBuilderFactory formBuilderFactory;
@@ -60,10 +59,11 @@ public class ProjectAction extends PicsRestActionSupport {
 
 	private void buildSiteAssignmentsAndProjects(List<ProjectCompany> projectCompanies) {
 		Map<AccountModel, Set<Project>> siteProjects = contractorProjectService.getSiteToProjectMapping(projectCompanies);
+		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = siteSkillService.getRequiredSkillsForProjects(projectCompanies);
 		Map<Employee, Set<Role>> employeeRoles = projectRoleService.getEmployeeProjectAndSiteRolesByAccount(permissions.getAccountId());
 		List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
 
-		siteAssignmentsAndProjects = ViewModeFactory.getSiteAssignmentsAndProjectsFactory().create(siteProjects, employeeRoles, employeeSkills);
+		siteAssignmentsAndProjects = ViewModeFactory.getSiteAssignmentsAndProjectsFactory().create(siteProjects, siteRequiredSkills, employeeRoles, employeeSkills);
 	}
 
     public String show() {
