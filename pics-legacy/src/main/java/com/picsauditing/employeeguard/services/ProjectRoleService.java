@@ -1,16 +1,19 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.util.ListUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ProjectRoleService {
 
+	@Autowired
+	private EmployeeDAO employeeDAO;
 	@Autowired
 	private ProjectRoleDAO projectRoleDAO;
 	@Autowired
@@ -54,5 +57,22 @@ public class ProjectRoleService {
 
 	public List<ProjectRoleEmployee> getProjectRolesForContractor(final int accountId) {
 		return projectRoleEmployeeDAO.findByAccountId(accountId);
+	}
+
+	public Map<Employee, Set<Role>> getEmployeeProjectAndSiteRolesByAccount(final int accountId) {
+		List<Employee> employees = employeeDAO.findByAccount(accountId);
+
+		Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
+		for (Employee employee : employees) {
+			for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
+				Utilities.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
+			}
+
+			for (RoleEmployee roleEmployee : employee.getRoles()) {
+				Utilities.addToMapOfKeyToSet(employeeRoles, employee, roleEmployee.getRole());
+			}
+		}
+
+		return employeeRoles;
 	}
 }

@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentStatisticsModel;
 import com.picsauditing.util.generic.GenericPredicate;
@@ -19,7 +20,7 @@ import java.util.*;
 public class SiteAssignmentsAndProjectsFactory {
 
 	public Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> create(
-			final Map<AccountModel, List<Project>> projects,
+			final Map<AccountModel, Set<Project>> projects,
 			final Map<Employee, Set<Role>> employeeRoles,
 			final List<AccountSkillEmployee> employeeSkills) {
 
@@ -52,10 +53,10 @@ public class SiteAssignmentsAndProjectsFactory {
 		return Collections.unmodifiableMap(siteAssignmentsAndProjects);
 	}
 
-	private Map<AccountModel, Map<Employee, Set<Role>>> getEmployeeRolesPerSite(Map<AccountModel, List<Project>> projects, Map<Employee, Set<Role>> employeeRoles) {
+	private Map<AccountModel, Map<Employee, Set<Role>>> getEmployeeRolesPerSite(Map<AccountModel, Set<Project>> projects, Map<Employee, Set<Role>> employeeRoles) {
 		Map<AccountModel, Map<Employee, Set<Role>>> employeeRolesToSite = new HashMap<>();
 
-		for (Map.Entry<AccountModel, List<Project>> projectEntry : projects.entrySet()) {
+		for (Map.Entry<AccountModel, Set<Project>> projectEntry : projects.entrySet()) {
 			for (Map.Entry<Employee, Set<Role>> employeeEntry : employeeRoles.entrySet()) {
 				AccountModel site = projectEntry.getKey();
 				Employee employee = employeeEntry.getKey();
@@ -83,7 +84,7 @@ public class SiteAssignmentsAndProjectsFactory {
 		return false;
 	}
 
-	private boolean employeeBelongsToProject(List<Project> projects, Employee employee) {
+	private boolean employeeBelongsToProject(Set<Project> projects, Employee employee) {
 		for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
 			if (projects.contains(projectRoleEmployee.getProjectRole().getProject())) {
 				return true;
@@ -204,10 +205,52 @@ public class SiteAssignmentsAndProjectsFactory {
 		}
 	}
 
-	private List<ProjectStatisticsModel> buildProjectStatistics(final Map<AccountModel, List<Project>> projects,
+	private List<ProjectStatisticsModel> buildProjectStatistics(final Map<AccountModel, Set<Project>> accountsToProjects,
 	                                                            final Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole) {
 
-		Set<Project> uniqueProjects = Utilities.extractAndFlattenValuesFromMap(projects);
-		List<ContractorProjectForm> contractorProjects = ViewModeFactory.getContractorProjectFormFactory().build(projects.keySet(), uniqueProjects);
+		Set<Project> projects = Utilities.extractAndFlattenValuesFromMap(accountsToProjects);
+
+		List<ContractorProjectForm> contractorProjects = ViewModeFactory.getContractorProjectFormFactory().build(accountsToProjects.keySet(), projects);
+
+		List<ProjectStatisticsModel> projectStatistics = new ArrayList<>();
+		for (Project project : projects) {
+			ContractorProjectForm contractorProject = findContractorProject(project.getId(), contractorProjects);
+
+			for (ProjectRole projectRole : project.getRoles()) {
+				final Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills = employeeSkillsByRole.column(projectRole.getRole());
+
+				Set<AccountSkillEmployee> allSkills = Utilities.extractAndFlattenValuesFromMap(employeesAndSkills);
+				Set<ProjectRoleEmployee> projectRoleEmployees = filterProjectRoleEmployees(projectRole, employeesAndSkills);
+
+				ProjectAssignmentBreakdown assignmentBreakdown = ViewModeFactory.getProjectAssignmentBreakdownFactory().create(projectRoleEmployees, allSkills);
+
+				projectStatistics.add(new ProjectStatisticsModel(contractorProject, assignmentBreakdown));
+			}
+		}
+
+		return projectStatistics;
+	}
+
+	private ContractorProjectForm findContractorProject(int projectId, List<ContractorProjectForm> contractorProjects) {
+		for (ContractorProjectForm contractorProject : contractorProjects) {
+			if (contractorProject.getProjectId() == projectId) {
+				return contractorProject;
+			}
+		}
+
+		return null;
+	}
+
+	private Set<ProjectRoleEmployee> filterProjectRoleEmployees(ProjectRole projectRole, final Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills) {
+		Set<ProjectRoleEmployee> projectRoleEmployees = new HashSet<>(projectRole.getEmployees());
+
+		CollectionUtils.filter(projectRoleEmployees, new GenericPredicate<ProjectRoleEmployee>() {
+			@Override
+			public boolean evaluateEntity(ProjectRoleEmployee projectRoleEmployee) {
+				return employeesAndSkills.containsKey(projectRoleEmployee.getEmployee());
+			}
+		});
+
+		return projectRoleEmployees;
 	}
 }

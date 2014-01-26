@@ -430,4 +430,14 @@ public class Utilities {
 
 		return values;
 	}
+
+	public static <V> Set<V> flattenCollectionOfCollection(Collection<? extends Collection<V>> collectionOfCollection) {
+		Set<V> values = new HashSet<>();
+
+		for (Collection<V> set : collectionOfCollection) {
+			values.addAll(set);
+		}
+
+		return values;
+	}
 }

@@ -4,15 +4,12 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.ContractorDetailProjectForm;
-import com.picsauditing.employeeguard.forms.contractor.ContractorProjectForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ContractorProjectService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.util.Extractor;
-import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentStatisticsModel;
@@ -43,7 +40,6 @@ public class ProjectAction extends PicsRestActionSupport {
     private SearchForm searchForm;
 
     private ContractorDetailProjectForm project;
-    private List<ContractorProjectForm> projects;
     private ProjectAssignmentBreakdown projectAssignmentBreakdown;
 	private Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> siteAssignmentsAndProjects;
 
@@ -57,26 +53,18 @@ public class ProjectAction extends PicsRestActionSupport {
             projectCompanies = contractorProjectService.getProjectsForContractor(permissions.getAccountId());
         }
 
-	    Map<Employee, Set<Role>> employeeRoles = projectRoleService.getAllEmployeeRoles(permissions.getAccountId());
-	    List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
-
-        projects = buildProjectsFromProjectCompanies(projectCompanies);
-	    siteAssignmentsAndProjects = ViewModeFactory.getSiteAssignmentsAndProjectsFactory().create(projects, employeeRoles, employeeSkills);
+	    buildSiteAssignmentsAndProjects(projectCompanies);
 
         return LIST;
     }
 
-    private List<ContractorProjectForm> buildProjectsFromProjectCompanies(List<ProjectCompany> projectCompanies) {
-        List<Integer> siteIds = ExtractorUtil.extractList(projectCompanies, new Extractor<ProjectCompany, Integer>() {
-	        @Override
-	        public Integer extract(ProjectCompany projectCompany) {
-		        return projectCompany.getProject().getAccountId();
-	        }
-        });
-        List<AccountModel> accountModels = accountService.getAccountsByIds(siteIds);
+	private void buildSiteAssignmentsAndProjects(List<ProjectCompany> projectCompanies) {
+		Map<AccountModel, Set<Project>> siteProjects = contractorProjectService.getSiteToProjectMapping(projectCompanies);
+		Map<Employee, Set<Role>> employeeRoles = projectRoleService.getEmployeeProjectAndSiteRolesByAccount(permissions.getAccountId());
+		List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
 
-        return formBuilderFactory.getContractorProjectFormFactory().build(projectCompanies, accountModels);
-    }
+		siteAssignmentsAndProjects = ViewModeFactory.getSiteAssignmentsAndProjectsFactory().create(siteProjects, employeeRoles, employeeSkills);
+	}
 
     public String show() {
         ProjectCompany projectCompany = contractorProjectService.getProject(id, permissions.getAccountId());
@@ -107,10 +95,6 @@ public class ProjectAction extends PicsRestActionSupport {
 
     public ContractorDetailProjectForm getProject() {
         return project;
-    }
-
-    public List<ContractorProjectForm> getProjects() {
-        return projects;
     }
 
     public ProjectAssignmentBreakdown getProjectAssignmentBreakdown() {
