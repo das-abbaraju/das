@@ -1,0 +1,55 @@
+#primary_navigation.bootstrap3 .search-box {
+    width: 127px;
+    height: 20px;
+}
+
+#secondary_navigation {
+    color: #777777 !important;
+}
+
+#secondary_navigation nav {
+    background: #2c3f50;
+}
+
+/*
+
+May or may not be needed to fix ie8 issues with Employee Guard:
+
+fieldset {
+    width: 100%;
+    margin: 0 !important;
+}
+
+table {
+    margin: 0 !important;
+}
+
+.form-control {
+    height: auto;
+    padding: 6px 12px 10px 12px;
+}
+
+.breadcrumb > li {
+    display: inline;
+}
+
+.employee-guard-list li {
+    display: inline;
+}
+
+form.search-query {
+    margin-bottom: 0;
+}
+
+.form-group {
+    width: 100%;
+    display: block;
+}
+
+dl {
+    width: 100%;
+}
+
+dd {
+    display: block;
+}*/

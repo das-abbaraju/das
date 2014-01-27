@@ -1,19 +1,20 @@
-#loading_page
-{
-    height: 140px;
-    left: 50%;
-    margin: -70px 0 0 -90px;
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    width: 180px;
+@include keyframes(loader) {
+    0% { @include rotate(0deg) }
+    25% { @include rotate(90deg) }
+    50% { @include rotate(180deg) }
+    75% { @include rotate(270deg) }
+    100% { @include rotate(360deg) }
 }
 
-#loading_page h1
-{
-    color: #333;
-    font-family:Helvetica Neue, Helvetica, Arial, sans-serif;
-    font-size:13px;
-    margin:0px;
-    padding:0px;
+#loading_page {
+    height: 100px;
+    left: 50%;
+    margin: -150px 0 0 -50px;
+    position: absolute;
+    top: 50%;
+    width: 100px;
+
+    svg {
+        @include animation('loader 3s infinite cubic-bezier(0.5, 0, 0, 1)');
+    }
 }

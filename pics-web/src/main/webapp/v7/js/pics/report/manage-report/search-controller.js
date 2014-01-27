@@ -5,13 +5,13 @@ PICS.define('report.manage-report.SearchController', {
                 $('#report_search_form input[type=text]')
                     .on('keyup', PICS.debounce(this.search, 250))
                     .focus();
-                
+
                 $('#search_reports_container')
                     .on('click', '.report > .favorite', this.unfavoriteReport)
                     .on('click', '.report > .unfavorite', this.favoriteReport);
             }
         },
-        
+
         favoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
@@ -19,7 +19,7 @@ PICS.define('report.manage-report.SearchController', {
                 $favorite_icon = $favorite_star.find('.icon-star'),
                 $body = $('body'),
                 report_id = $element.data('report-id');
-            
+
             $body.trigger('report-favorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
@@ -27,13 +27,13 @@ PICS.define('report.manage-report.SearchController', {
                     $favorite_icon.addClass('selected');
                 }
             });
-            
+
             event.preventDefault();
         },
-        
+
         search: function (event) {
             var element = $(this);
-            
+
             PICS.ajax({
                 url: 'ManageReports!search.action',
                 data: {
@@ -44,7 +44,7 @@ PICS.define('report.manage-report.SearchController', {
                 }
             });
         },
-        
+
         unfavoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
@@ -52,7 +52,7 @@ PICS.define('report.manage-report.SearchController', {
                 $favorite_icon = $favorite_star.find('.icon-star'),
                 $body = $('body'),
                 report_id = $element.data('report-id');
-            
+
             $body.trigger('report-unfavorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
@@ -60,8 +60,8 @@ PICS.define('report.manage-report.SearchController', {
                     $favorite_icon.removeClass('selected');
                 }
             });
-            
+
             event.preventDefault();
-        },
+        }
     }
 });

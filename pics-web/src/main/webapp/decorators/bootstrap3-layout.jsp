@@ -2,6 +2,9 @@
 <%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<%-- <s:set var="has_contractor_menu_class" value="%{showContractorStatusSubMenu() ? 'has-contractor-menu' : ''}" --%>
+<s:set var="has_contractor_menu_class">has-contractor-menu</s:set>
+
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -12,33 +15,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>PICS - <decorator:title default="PICS" /></title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <link rel="stylesheet" href="/bootstrap3/css/style.css?v=${version}">
 
     <%--Make ie8 corrections asap--%>
-    <!--[if lt IE 9]><script src="/bootstrap3/js/vendor/respond.js?v=${version}"></script><![endif]-->
+    <!--[if lt IE 9]>
+        <script src="/bootstrap3/js/vendor/respond.js?v=${version}"></script>
+        <link rel="stylesheet" href="/bootstrap3/css/ie8.css?v=${version}">
+    <![endif]-->
 
     <!--[if lt IE 8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome-ie7.css?v=${version}"><![endif]-->
     <script src="/bootstrap3/js/vendor/modernizr-2.6.1.min.js?v=${version}"></script>
 </head>
 <%--<body id="${actionName}_${methodName}_page" class="${actionName}-page page">--%>
-<body id="${uniquePageId}_page" class="${pageId}-page page" data-is-bootstrap="true" data-spy="scroll" data-offset-top="200" data-target="#side-navigation">
+<body id="${uniquePageId}_page" class="${pageId}-page page ${has_contractor_menu_class}" data-spy="scroll" data-offset-top="200" data-target="#side-navigation">
 
-<header>
-    <s:action name="Menu!menu" executeResult="true" />
-</header>
+<div id="main" role="main">
+    <header>
+        <s:action name="Menu!bootstrap3Menu" executeResult="true" />
+        <s:action name="Menu!mobileMenu" executeResult="true" />
+    </header>
 
-<div id="main" role="main" class="container">
-    <decorator:body />
+    <div class="container">
+        <decorator:body />
+    </div>
+
+    <footer>
+        <s:include value="/struts/layout/_environment.jsp" />
+    </footer>
 </div>
-
-<footer>
-    <s:include value="/struts/layout/_environment.jsp" />
-</footer>
-
 <%-- include javascript translations --%>
 <s:action name="TranslateJS2" executeResult="true" />
 

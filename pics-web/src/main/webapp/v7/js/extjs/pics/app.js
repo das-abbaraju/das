@@ -38,11 +38,10 @@ Ext.application({
     },
 
     launch: function () {
-
         Ext.apply(PICS, {
             updateDocumentTitle: this.updateDocumentTitle
         });
-        
+
         PICS.data.ServerCommunication.loadAll({
             success_callback: function () {
                 this.createViewport();
@@ -96,12 +95,12 @@ Ext.application({
             }
         });
     },
-    
+
     updateDocumentTitle: function () {
         var report_store = Ext.StoreManager.get('report.Reports'),
             report = report_store.first(),
             report_name = report.get('name');
-        
+
         document.title = report_name;
     }
 });

@@ -1,12 +1,17 @@
 package com.picsauditing.actions.contractors;
 
-import com.picsauditing.access.*;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.menu.MenuComponent;
+import com.picsauditing.menu.builder.AuditMenuBuilder;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.PermissionToViewContractor;
@@ -94,7 +99,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			permissionToViewContractor = new PermissionToViewContractor(id, permissions);
 			permissionToViewContractor.setActiveAudits(getActiveAudits());
 			permissionToViewContractor.setOperators(getOperators());
-            permissionToViewContractor.setContractor(contractor);
+			permissionToViewContractor.setContractor(contractor);
 		}
 
 		return permissionToViewContractor.check(limitedView);
@@ -255,24 +260,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		for (AuditMenuBuilder.Service service : menu.keySet()) {
 			MenuComponent header = menu.get(service).remove(0);
-
-			switch (service) {
-				case DOCUGUARD:
-					header.setName(getText("AuditType.1.name"));
-					break;
-				case INSUREGUARD:
-					header.setName(getText("global.InsureGUARD"));
-					break;
-				case EMPLOYEEGUARD:
-					header.setName(getText("global.EmployeeGUARD"));
-					break;
-				case AUDITGUARD:
-					header.setName(getText("global.AuditGUARD"));
-					break;
-				case CLIENT_REVIEWS:
-					header.setName(getText("global.ClientReviews"));
-					break;
-			}
+			setHeaderBasedOnService(service, header);
 
 			Iterator<MenuComponent> menuComponentIterator = menu.get(service).iterator();
 			while (menuComponentIterator.hasNext()) {
@@ -287,13 +275,38 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			v6.add(header);
 
-			if (annualUpdates != null && annualUpdates.hasChildren()) {
-				v6.add(annualUpdates);
-				annualUpdates = null;
-			}
+			annualUpdates = addAnnualUpdates(v6, annualUpdates);
 		}
 
 		return v6;
+	}
+
+	private void setHeaderBasedOnService(AuditMenuBuilder.Service service, MenuComponent header) {
+		switch (service) {
+			case DOCUGUARD:
+				header.setName(getText("AuditType.1.name"));
+				break;
+			case INSUREGUARD:
+				header.setName(getText("global.InsureGUARD"));
+				break;
+			case EMPLOYEEGUARD:
+				header.setName(getText("global.EmployeeGUARD"));
+				break;
+			case AUDITGUARD:
+				header.setName(getText("global.AuditGUARD"));
+				break;
+			case CLIENT_REVIEWS:
+				header.setName(getText("global.ClientReviews"));
+				break;
+		}
+	}
+
+	private MenuComponent addAnnualUpdates(List<MenuComponent> v6, MenuComponent annualUpdates) {
+		if (annualUpdates != null && annualUpdates.hasChildren()) {
+			v6.add(annualUpdates);
+			annualUpdates = null;
+		}
+		return annualUpdates;
 	}
 
 	private MenuComponent addToAnnualUpdateMenu(MenuComponent annualUpdates, MenuComponent child) {
@@ -308,15 +321,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return annualUpdates;
 	}
 
-	/**
-	 * TODO: Find out if this comment is useful. Is the method it is for
-	 * missing. Only show the COR/SECOR link for contractors who have answered
-	 * Yes to that question and linked to an operator that subscribes to COR
-	 */
-
 	public boolean isShowHeader() {
-        if (permissions.isContractor())
-            return true;
+		if (permissions.isContractor())
+			return true;
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
 		if (permissions.isOperator())
@@ -338,13 +345,27 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public boolean isShowV6Menu() {
-		return !permissions.isContractor() || !permissions.isUsingVersion7Menus();
+		return !permissions.isUsingVersion7Menus();
+	}
+
+	public boolean isShowContractorSubmenu() {
+		if (permissions.isContractor()) {
+			return false;
+		}
+
+		if (!permissions.isUsingVersion7Menus()) {
+			return false;
+		}
+
+		return isShowHeader();
 	}
 
 	public boolean isCheckPermissionForOperator() {
-		for (ContractorOperator operator : getOperators())
-			if (operator.getOperatorAccount().getId() == permissions.getAccountId())
+		for (ContractorOperator operator : getOperators()) {
+			if (operator.getOperatorAccount().getId() == permissions.getAccountId()) {
 				return true;
+			}
+		}
 
 		return false;
 	}

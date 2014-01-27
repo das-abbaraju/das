@@ -12,7 +12,7 @@
                     this.configureDropdown(dropdown_toggle_element);
 
                 }
-                
+
                 // autocomplete user searchbox
                 if (search_query_element.length > 0) {
                     this.configureUserSearch(search_query_element);
@@ -31,9 +31,8 @@
                     item: '<li><a href="#"></a></li>'
                 });
 
-
                 search_query_element.data('typeahead').process = function (items, total_results) {
-                    return this.render(items.slice(0, this.options.items), total_results).show();                    
+                    return this.render(items.slice(0, this.options.items), total_results).show();
                 };
 
                 search_query_element.data('typeahead').render = function (items, total_results) {
@@ -108,7 +107,7 @@
 
                     return this.hide();
                 };
-                
+
                 // fix for https://github.com/twitter/bootstrap/issues/2954
                 search_query_element.data('typeahead').move = function (e) {
                     if (!this.shown) return
@@ -119,21 +118,21 @@
                         case 27: // escape
                             e.preventDefault()
                             break
-                        
+
                         case 38: // up arrow
                             if (!e.charCode) {
                                 e.preventDefault()
                                 this.prev()
                             }
-                            
+
                             break
-                        
+
                         case 40: // down arrow
                             if (!e.charCode) {
                                 e.preventDefault()
                                 this.next()
                             }
-                            
+
                             break
                     }
 

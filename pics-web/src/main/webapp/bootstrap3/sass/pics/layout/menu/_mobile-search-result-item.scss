@@ -1,0 +1,70 @@
+#mobile_menu_search {
+    li {
+        padding: 5px 0;
+
+        .account-deactivated,
+        .account-inactive {
+            .name,
+            .id,
+            .location,
+            .type {
+                color: $pics_warm_grey;
+            }
+        }
+
+        .account-demo {
+            .name,
+            .id,
+            .location,
+            .type {
+                font-style: italic;
+            }
+        }
+
+        .account-deleted {
+            .name,
+            .id,
+            .location,
+            .type {
+                text-decoration: line-through;
+            }
+        }
+    }
+
+    li:first-child {
+        padding-top: 0;
+    }
+
+    li.selected {
+        background-color: #252525;
+    }
+
+    li.no-results-message {
+        padding-top: 20px;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    a {
+        text-decoration: none;
+        white-space: normal;
+        text-indent: 0;
+        font-size: 14px;
+        line-height: 1;
+    }
+
+    h1 {
+        color: $default_med;
+        line-height: 1;
+        margin: 0;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    p {
+        line-height: 1;
+        color: $pics_warm_grey;
+        margin: 0;
+        font-size: 14px;
+    }
+}

@@ -17,16 +17,23 @@ module.exports = function(grunt) {
         files: [
             'js/strict-mode.js',
             'js/vendor/jquery/jquery-1.9.1.min.js',
-            'js/vendor/jquery/jquery-ui-1.10.3.custom.js',
+            'js/vendor/jquery/jquery-ui.js',
             'js/vendor/bootstrap/bootstrap.js',
             'js/vendor/bootstrap/bootstrap.typeahead.js',
+            'js/vendor/bootstrap/bootstrap.tooltip.js',
             'js/vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
             'js/vendor/select2/select2.js',
+            'js/vendor/hogan-2.0.0.js',
+            'js/vendor/typeahead.js',
+            'js/vendor/jquery.hammer.js',
+            'js/vendor/mmenu/jquery.mmenu.js',
+            'js/vendor/mmenu/jquery.mmenu.searchfield.js',
+            'js/vendor/mmenu/jquery.mmenu.dragopen.js',
+            'js/vendor/prettify.js',
             'js/vendor/moment.js',
             'js/plugins.js',
             'js/core.js',
-            'js/pics/**/*.js',
-            'js/main.js'
+            'js/pics/**/*.js'
         ]
     },
 
@@ -80,6 +87,9 @@ module.exports = function(grunt) {
                 'css/vendor/select2/select2-bootstrap.css',
                 'css/vendor/select2/select2-override.css',
                 'css/vendor/highlight/default.css',
+                'css/vendor/mmenu/jquery.mmenu.all.css',
+                'css/vendor/mmenu/mmenu-override.css',
+                'css/vendor/prettify.css',
                 'css/pics.css'
             ],
             dest: 'css/style.css',
@@ -175,7 +185,7 @@ module.exports = function(grunt) {
           grunt.task.run('concat', 'compass:debug', 'recess:debug');
       }
 
-      grunt.task.run('jasmine');
+      //grunt.task.run('jasmine');
   });
 
   // grunt build-js:prod

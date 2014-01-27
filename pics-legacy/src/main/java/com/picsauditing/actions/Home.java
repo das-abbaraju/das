@@ -1,21 +1,15 @@
 package com.picsauditing.actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.WidgetUserDAO;
 import com.picsauditing.jpa.entities.Widget;
 import com.picsauditing.jpa.entities.WidgetUser;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
-public class Home extends ContractorActionSupport {
+public class Home extends PicsActionSupport {
 	@Autowired
 	private WidgetUserDAO wdao;
 
@@ -25,12 +19,11 @@ public class Home extends ContractorActionSupport {
 		List<WidgetUser> widgetsToShowForUser = Collections.emptyList();
 
 		if (permissions.isContractor()) {
-			findContractor();
-			if (!contractor.getStatus().isActiveOrDemo()) {
+			if (!permissions.getAccountStatus().isActiveOrDemo()) {
 				addActionError("Your account is inactive. You can't access this page");
 				return BLANK;
 			}
-			
+
 			return setUrlForRedirect("ContractorView.action");
 		} else if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.Dashboard)) {
 			// Redirect operators/corporate accounts without the dashboard

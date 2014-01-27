@@ -15,7 +15,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
+        text: '<i class="icon-plus"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
     }],
     layout: {
         type: 'hbox',

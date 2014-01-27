@@ -1,7 +1,15 @@
-#secondary_navigation
+#secondary_navigation {
+    top: 50px;
+    background: #eaeaea;
+    @include background-image(linear-gradient(to bottom, #fff, #eaeaea));
+    border-bottom: 2px solid $default_med;
+    height: 50px;
+}
+
+/*#secondary_navigation
 {
     top: 50px;
-    
+
     .navbar-inner
     {
     	background: #333;
@@ -15,7 +23,7 @@
 	    padding-bottom: 0;
 	    padding-top: 0;
     }
-    
+
     [data-toggle=collapse]
 	{
 	    background-color: transparent;
@@ -25,22 +33,22 @@
 	    float: right;
 	    line-height: 28px;
 	}
-	
+
 	.nav > li > a
 	{
 	    border: 0;
 	    color: #ccc;
 	    padding: 4px 15px 5px;
 	    text-shadow: none;
-	    
+
 	    &:hover
 	    {
 	    	color: $pics_cool_grey;
 	    }
 	}
-	
+
 	.nav li.dropdown.open > .dropdown-toggle,
-    .nav li.dropdown.active > .dropdown-toggle, 
+    .nav li.dropdown.active > .dropdown-toggle,
     .nav li.dropdown.open.active > .dropdown-toggle
 	{
 	    color: $pics_light_blue;
@@ -48,7 +56,7 @@
 	    @include background-image(linear-gradient(#000, #252525));
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000',endColorstr='#ff252525',GradientType=0);
 	}
-	
+
 	.nav.account span
 	{
 	    color: #73bbe8;
@@ -63,27 +71,27 @@
     #secondary_navigation
     {
         margin-bottom: 0;
-        
+
         .navbar-inner
         {
             background: #252525;
         }
-        
+
         [data-toggle=collapse]
         {
             display: block;
         }
-        
+
         .nav > li > a
         {
             @include border-radius(0);
             padding: 6px 5px;
-            
+
             &:hover
             {
             	background-color: #252525;
             }
-            
+
             &[data-toggle="dropdown"]:after
             {
 				bottom: 1px;
@@ -93,7 +101,7 @@
             	position: relative;
             }
         }
-        
+
         .secondary-navigation-items
         {
             .nav > li > .dropdown-menu
@@ -101,39 +109,39 @@
                 background: #131313;
                 display: none;
             }
-        
+
             .nav > .open > .dropdown-menu
             {
                 display: block;
             }
-            
+
             .dropdown-menu a
             {
                 @include border-radius(0);
                 color: $pics_cool_grey;
                 font-weight: normal;
-                
+
                 &:hover
                 {
                     background: #000;
                     color: #fff;
                 }
             }
-            
+
             .dropdown-submenu > a:after
             {
             	margin: 0;
             }
-            
+
             .dropdown-submenu:hover > a,
             .dropdown-submenu:focus > a
             {
                 background: #131313;
             }
         }
-        
+
         .nav li.dropdown.open > .dropdown-toggle,
-        .nav li.dropdown.active > .dropdown-toggle, 
+        .nav li.dropdown.active > .dropdown-toggle,
         .nav li.dropdown.open.active > .dropdown-toggle
         {
             background: #252525;
@@ -141,15 +149,15 @@
             border-bottom: 0;
             color: #fff;
         }
-        
+
         .nav.account
         {
         	float: left;
-        	
+
         	span
         	{
         		padding: 5px;
         	}
         }
     }
-}
+}*/

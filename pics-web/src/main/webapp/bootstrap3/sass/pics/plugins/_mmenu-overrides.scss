@@ -1,0 +1,67 @@
+.mm-menu i {
+    font-family: FontAwesome;
+    margin-right: 6px;
+}
+
+/* borders */
+.mm-list > li:not(.mm-subtitle):not(.mm-label):not(.mm-noresults)::after {
+  border-bottom-width: none;
+  border-bottom-style: none;
+}
+
+/* sizes */
+.mm-ismenu li > a,
+.mm-ismenu li > span {
+    line-height: 30px;
+}
+
+/* font styles - subopen, subclose*/
+.mm-ismenu * {
+    font-size: 18px;
+    text-shadow: none;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+/* link styles */
+.mm-ismenu li,
+.mm-ismenu li > a,
+.mm-ismenu li > span {
+    color: $default_med;
+    text-decoration: none;
+}
+
+.mm-ismenu li > span > a {
+    color: $default_med;
+}
+
+/* subopen/close */
+.mm-menu .mm-list > li > a.mm-subclose {
+    text-indent: 0;
+    padding-top: 10px;
+    margin-top: 0;
+    background: #333333;
+    border-bottom: 2px solid #252525;
+    color: $default_med;
+}
+
+/* arrows styles using pngs */
+.mm-list a.mm-subopen:after,
+.mm-list a.mm-subclose:before {
+    width: 10px;
+    height: 10px;
+    margin-bottom: -7px;
+}
+
+.mm-menu a.mm-subopen:after {
+    right: 22px;
+}
+
+.mm-menu a.mm-subclose:before {
+    left: auto;
+    right: 15px;
+    margin-bottom: -6px;
+}
+
+.mm-menu.mm-hassearch .mm-panel {
+    padding-top: 0;
+}
