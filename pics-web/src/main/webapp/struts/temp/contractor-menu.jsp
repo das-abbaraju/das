@@ -10,13 +10,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            
+
             <div class="nav-collapse collapse">
                 <a class="brand" href="/"></a>
                 <ul class="nav">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Company</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a href="#">Notes</a></li>
                             <li><a href="#">Client Sites</a></li>
@@ -30,7 +30,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">DocuGUARD</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a href="#">Summary</a></li>
                             <li><a href="#">PQF 2013</a></li>
@@ -39,7 +39,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">AuditGUARD</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a href="#">Summary</a></li>
                             <li><a href="#">Manual Audit 2013</a></li>
@@ -48,7 +48,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">InsureGUARD</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a href="#">Summary</a></li>
                             <li><a href="#">Certificates Manager</a></li>
@@ -60,7 +60,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">EmployeeGUARD</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a href="#">Summary</a></li>
                             <li><a href="#">Employees</a></li>
@@ -70,7 +70,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a href="#">Help Center</a></li>
                             <li><a href="#">Live Chat</a></li>
@@ -78,7 +78,7 @@
                             <li><a href="#">About PICS Organizer</a></li>
                             <li class="dropdown-submenu">
                                 <a href="#">Reference</a>
-                                
+
                                 <ul class="dropdown-menu">
                                     <li><a href="#">Trade Taxonomy</a></li>
                                     <li><a href="#">Navigation Menu</a></li>
@@ -90,7 +90,7 @@
                 <ul class="nav pull-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Joe Cool <i class="icon-cog icon-large"></i></a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a href="#">Edit Profile</a></li>
                             <li><a href="#">Logout</a></li>

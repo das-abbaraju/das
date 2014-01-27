@@ -100,6 +100,7 @@
     <!--[if lt IE 8]>
     <link rel="stylesheet" href="css/bootstrap/css/font-awesome-ie7.min.css"><![endif]-->
 
+    <!--[if lt IE 9]><link rel="stylesheet" href="/bootstrap3/css/ie8.css?v=${version}"><![endif]-->
 
     <jsp:include page="/struts/layout/include_javascript.jsp"/>
 

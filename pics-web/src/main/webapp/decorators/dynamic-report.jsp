@@ -23,6 +23,12 @@
         <link rel="stylesheet" href="/bootstrap3/css/style.css?v=${version}">
         <!--[if lt IE 8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome-ie7.css"><![endif]-->
 
+        <%--Make ie8 corrections asap--%>
+        <!--[if lt IE 9]>
+            <script src="/bootstrap3/js/vendor/respond.js?v=${version}"></script>
+            <link rel="stylesheet" href="/bootstrap3/css/ie8.css?v=${version}">
+        <![endif]-->
+
         <%-- include javascript translations --%>
         <s:action name="TranslateJS2" executeResult="true" />
 

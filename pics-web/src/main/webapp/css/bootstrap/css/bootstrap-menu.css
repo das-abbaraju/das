@@ -3320,17 +3320,9 @@ body {
   border-bottom: 2px solid #1a1a1a;
   height: 28px;
   z-index: 100;
-  /*    ul {
-          width: 100%;
-      }
-  
-      li:last-child {
-          float: right;
-      }
-  */
   /* END dropdown menu */
 }
-/* line 17, ../sass/_secondary-navigation.scss */
+/* line 9, ../sass/_secondary-navigation.scss */
 #secondary_navigation .navbar-inner {
   background: none;
   border: 0;
@@ -3339,40 +3331,40 @@ body {
   -moz-box-shadow: rgba(0, 0, 0, 0) 0 0 0;
   box-shadow: rgba(0, 0, 0, 0) 0 0 0;
 }
-/* line 25, ../sass/_secondary-navigation.scss */
+/* line 17, ../sass/_secondary-navigation.scss */
 #secondary_navigation .nav > li > a {
   padding-top: 4px;
   padding-bottom: 4px;
   color: #f1f1f2;
   text-shadow: none;
 }
-/* line 32, ../sass/_secondary-navigation.scss */
+/* line 24, ../sass/_secondary-navigation.scss */
 #secondary_navigation .nav > li > a:hover {
   color: #fff;
 }
-/* line 37, ../sass/_secondary-navigation.scss */
+/* line 29, ../sass/_secondary-navigation.scss */
 #secondary_navigation .nav li.dropdown.open > .dropdown-toggle {
   background: #2c3f50;
   border-top: 2px solid #bcbcbc;
   color: #fff;
 }
-/* line 44, ../sass/_secondary-navigation.scss */
+/* line 36, ../sass/_secondary-navigation.scss */
 #secondary_navigation nav .dropdown-menu li a:link,
 #secondary_navigation nav .dropdown-menu li a:visited {
   color: #454545;
   text-decoration: none;
 }
-/* line 49, ../sass/_secondary-navigation.scss */
+/* line 41, ../sass/_secondary-navigation.scss */
 #secondary_navigation nav .dropdown-menu li a:hover {
   color: #ffffff;
   text-decoration: none;
 }
-/* line 54, ../sass/_secondary-navigation.scss */
+/* line 46, ../sass/_secondary-navigation.scss */
 #secondary_navigation nav a:hover {
   color: #73bbe8;
   text-decoration: none;
 }
-/* line 59, ../sass/_secondary-navigation.scss */
+/* line 51, ../sass/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu {
   border: 0px;
   -webkit-border-radius: 5px;
@@ -3384,7 +3376,7 @@ body {
   -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
   box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
 }
-/* line 67, ../sass/_secondary-navigation.scss */
+/* line 59, ../sass/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu li > a:hover,
 #secondary_navigation .dropdown-menu .active > a,
 #secondary_navigation .dropdown-menu .active > a:hover {
@@ -3393,8 +3385,9 @@ body {
   background-image: -moz-linear-gradient(#3498db, #2980b9);
   background-image: -o-linear-gradient(#3498db, #2980b9);
   background-image: linear-gradient(#3498db, #2980b9);
+  background: #2980b9;
 }
-/* line 71, ../sass/_secondary-navigation.scss */
+/* line 64, ../sass/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu .divider {
   background-color: #e6e6e6;
   border-bottom: 1px solid #ffffff;
@@ -3402,7 +3395,7 @@ body {
   margin: 9px 1px;
   overflow: hidden;
 }
-/* line 79, ../sass/_secondary-navigation.scss */
+/* line 72, ../sass/_secondary-navigation.scss */
 #secondary_navigation .dropdown-menu .nav-header {
   color: #cccccc;
   display: block;
@@ -3415,11 +3408,11 @@ body {
   padding-right: 20px;
   text-transform: uppercase;
 }
-/* line 92, ../sass/_secondary-navigation.scss */
+/* line 85, ../sass/_secondary-navigation.scss */
 #secondary_navigation .nav li + .nav-header {
   margin-top: 9px;
 }
-/* line 100, ../sass/_secondary-navigation.scss */
+/* line 93, ../sass/_secondary-navigation.scss */
 #secondary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #secondary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #secondary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -3434,11 +3427,11 @@ body {
 }
 
 @media (min-width: 992px) {
-  /* line 111, ../sass/_secondary-navigation.scss */
+  /* line 104, ../sass/_secondary-navigation.scss */
   body.has-contractor-menu {
     padding-top: 103px;
   }
-  /* line 114, ../sass/_secondary-navigation.scss */
+  /* line 107, ../sass/_secondary-navigation.scss */
   body.has-contractor-menu #primary_navigation {
     border-bottom: none;
     height: 50px;
