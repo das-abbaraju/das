@@ -22,6 +22,8 @@ import java.util.*;
 public class RoleService {
 
 	@Autowired
+	private AccountService accountService;
+	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
@@ -116,21 +118,26 @@ public class RoleService {
 	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSite(final int siteId, final int contractorId) {
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+		// find roles by this site that duplicate roles with the above corporate ids
+		Map<Role, Role> siteRoleToCorporateRole = roleDAO.findDuplicatedRoles(corporateIds, siteId);
+
 		List<Employee> employees = employeeDAO.findByAccount(contractorId);
 
 		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
 		for (Employee employee : employees) {
-			addSkillsFromSiteRoles(siteId, employeeSkills, employee);
+			addSkillsFromSiteRoles(siteId, employeeSkills, employee, siteRoleToCorporateRole);
 			addSkillsFromSiteProjectRoles(siteId, employeeSkills, employee);
 		}
 
 		return employeeSkills;
 	}
 
-	private void addSkillsFromSiteRoles(int siteId, Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee) {
+	private void addSkillsFromSiteRoles(int siteId, Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee, Map<Role, Role> siteRoleToCorporateRole) {
 		for (RoleEmployee roleEmployee : employee.getRoles()) {
 			if (roleEmployee.getRole().getAccountId() == siteId) {
-				addRoleSkills(employeeSkills, employee, roleEmployee.getRole().getSkills());
+				Role corporateRole = siteRoleToCorporateRole.get(roleEmployee.getRole());
+				addRoleSkills(employeeSkills, employee, corporateRole.getSkills());
 			}
 		}
 	}

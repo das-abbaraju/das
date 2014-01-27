@@ -4,9 +4,12 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 
@@ -70,4 +73,24 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
         query.setParameter("searchTerm", "%" + searchTerm + "%");
         return query.getResultList();
     }
+
+	public Map<Role, Role> findDuplicatedRoles(List<Integer> corporateIds, int siteId) {
+		/*
+		select corp.*
+		from account_group site
+		join account_group corp on corp.name = site.name and corp.accountId in corporateIds
+		where site.accountId = siteId
+		 */
+
+		List<Role> siteRoles = findByAccounts(Arrays.asList(siteId));
+
+		Query query = em.createNativeQuery("SELECT corp.* FROM account_group site " +
+				"JOIN account_group corp ON corp.name = site.name " +
+				"WHERE site.accountId = :siteId " +
+				"AND corp.accountId IN (:corpIds) " +
+				"AND site.type = 'Role' " +
+				"AND corp.type = 'Role'", Role.class);
+
+		return null;
+	}
 }
