@@ -42,6 +42,8 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 
+import javax.swing.text.html.parser.Entity;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ContractorFlagETL.class)
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
@@ -84,7 +86,63 @@ public class ContractorFlagETLTest {
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(contractorFlagETL, this);
 	}
 
-	@Test
+    @Test
+    public void testPerformFlaggingForNonEMR_NullOrEmptyAnswer() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditData data = EntityFactory.makeAuditData("", question);
+
+        when(flagCriteria.getQuestion()).thenReturn(question);
+        when(answerMap.get(question.getId())).thenReturn(null);
+
+        Set<FlagCriteriaContractor> changes;
+        changes = Whitebox.invokeMethod(contractorFlagETL, "performFlaggingForNonEMR", contractor, answerMap, flagCriteria);
+        assertEquals(0, changes.size());
+
+        when(answerMap.get(question.getId())).thenReturn(data);
+        changes = Whitebox.invokeMethod(contractorFlagETL, "performFlaggingForNonEMR", contractor, answerMap, flagCriteria);
+        assertEquals(0, changes.size());
+    }
+
+    @Test
+    public void testPerformFlaggingForNonEMR_VisibleQuestion_No() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditData data = EntityFactory.makeAuditData("No", question);
+
+        AuditQuestion parentQuestion = EntityFactory.makeAuditQuestion();
+        AuditData parentData = EntityFactory.makeAuditData("No", parentQuestion);
+        question.setVisibleQuestion(parentQuestion);
+        question.setVisibleAnswer("Yes");
+
+        when(answerMap.get(question.getId())).thenReturn(data);
+        when(answerMap.get(parentQuestion.getId())).thenReturn(parentData);
+        when(flagCriteria.getQuestion()).thenReturn(question);
+
+        Set<FlagCriteriaContractor> changes;
+        changes = Whitebox.invokeMethod(contractorFlagETL, "performFlaggingForNonEMR", contractor, answerMap, flagCriteria);
+        assertEquals(0, changes.size());
+    }
+
+    @Test
+    public void testPerformFlaggingForNonEMR_VisibleQuestion_Yes() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditData data = EntityFactory.makeAuditData("No", question);
+
+        AuditQuestion parentQuestion = EntityFactory.makeAuditQuestion();
+        AuditData parentData = EntityFactory.makeAuditData("Yes", parentQuestion);
+        question.setVisibleQuestion(parentQuestion);
+        question.setVisibleAnswer("Yes");
+        question.setQuestionType("text");
+
+        when(answerMap.get(question.getId())).thenReturn(data);
+        when(answerMap.get(parentQuestion.getId())).thenReturn(parentData);
+        when(flagCriteria.getQuestion()).thenReturn(question);
+
+        Set<FlagCriteriaContractor> changes;
+        changes = Whitebox.invokeMethod(contractorFlagETL, "performFlaggingForNonEMR", contractor, answerMap, flagCriteria);
+        assertEquals(1, changes.size());
+    }
+
+    @Test
 	public void testCheckForMissingAnswer_NotFlaggableWhenMissing() throws Exception {
 		when(flagCriteria.isFlaggableWhenMissing()).thenReturn(false);
 		FlagCriteriaContractor result = Whitebox.invokeMethod(contractorFlagETL, "checkForMissingAnswer", flagCriteria,
