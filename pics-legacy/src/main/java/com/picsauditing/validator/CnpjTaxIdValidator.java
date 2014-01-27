@@ -12,10 +12,13 @@ public class CnpjTaxIdValidator extends TaxIdValidator {
 
     @Override
     public String validated(Country country, String taxId) throws ValidationException {
-        if (taxId.matches(REGEX_CNPJ_TAX_id)) {
-            return taxId;
+        if (taxId != null) {
+            if (taxId.trim().matches(REGEX_CNPJ_TAX_id)) {
+                return taxId.trim();
+            }
+            throw new ValidationException(INVALID_CNPJ_ERROR_MESSAGE + taxId);
         }
-        throw new ValidationException(INVALID_CNPJ_ERROR_MESSAGE + taxId);
+        throw new ValidationException(INVALID_CNPJ_ERROR_MESSAGE);
     }
 
     @Override
