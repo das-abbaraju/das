@@ -17,11 +17,12 @@ public class EmployeeSiteAssignmentModelFactory {
 
 		for (Map.Entry<Employee, SkillStatus> entry : employeeStatuses.entrySet()) {
 			Employee employee = entry.getKey();
+			int assignments = roleAssignments.containsKey(employee) ? roleAssignments.get(employee).size() : 0;
 
 			EmployeeSiteAssignmentModel model = new EmployeeSiteAssignmentModel.Builder()
 					.accountId(employee.getAccountId())
 					.accountName(accounts.get(employee.getAccountId()).getName())
-					.assignments(roleAssignments.get(employee).size())
+					.assignments(assignments)
 					.employeeId(employee.getId())
 					.employeeName(employee.getName())
 					.employeeTitle(employee.getPositionName())

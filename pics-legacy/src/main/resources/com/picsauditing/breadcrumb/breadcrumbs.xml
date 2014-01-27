@@ -3,6 +3,7 @@
     <breadcrumb>
         <hint>employee-guard</hint>
         <children>
+            <!-- Operator -->
             <breadcrumb>
                 <hint>operator</hint>
                 <label>EmployeeGUARD</label>
@@ -96,6 +97,7 @@
                 </children>
             </breadcrumb>
 
+            <!-- Contractor -->
             <breadcrumb>
                 <hint>contractor</hint>
                 <label>EmployeeGUARD</label>
@@ -187,7 +189,7 @@
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>site-assignment</hint>
-                                <label>Site Assignments</label>
+                                <label>Assignments: {name}</label>
                                 <uri>/employee-guard/contractor/project/site-assignment</uri>
                                 <children>
                                     <breadcrumb>
@@ -229,6 +231,7 @@
                 </children>
             </breadcrumb>
 
+            <!-- Employee -->
             <breadcrumb>
                 <hint>employee</hint>
                 <label>Dashboard</label>

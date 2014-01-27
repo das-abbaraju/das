@@ -65,15 +65,23 @@ public class SiteAssignmentModelFactory {
 		});
 	}
 
-	private Map<Employee, List<Role>> getEmployeeRoles(List<Employee> employees, int id) {
+	private Map<Employee, List<Role>> getEmployeeRoles(List<Employee> employees, int siteId) {
 		Map<Employee, List<Role>> employeeRoles = new HashMap<>();
 
 		for (Employee employee : employees) {
 			for (RoleEmployee roleEmployee : employee.getRoles()) {
 				Role role = roleEmployee.getRole();
 
-				if (role.getAccountId() == id) {
+				if (role.getAccountId() == siteId) {
 					Utilities.addToMapOfKeyToList(employeeRoles, employee, role);
+				}
+			}
+
+			for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
+				Project project = projectRoleEmployee.getProjectRole().getProject();
+
+				if (project.getAccountId() == siteId) {
+					Utilities.addToMapOfKeyToList(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
 				}
 			}
 		}
