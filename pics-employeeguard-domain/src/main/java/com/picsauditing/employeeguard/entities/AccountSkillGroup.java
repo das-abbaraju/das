@@ -32,7 +32,7 @@ public class AccountSkillGroup implements BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "groupID", nullable = false)
-	private AccountGroup group;
+	private Group group;
 
 	private int createdBy;
 	private int updatedBy;
@@ -73,8 +73,8 @@ public class AccountSkillGroup implements BaseEntity {
 	public AccountSkillGroup() {
 	}
 
-	public AccountSkillGroup(AccountGroup accountGroup, AccountSkill accountSkill) {
-		this.group = accountGroup;
+	public AccountSkillGroup(Group group, AccountSkill accountSkill) {
+		this.group = group;
 		this.skill = accountSkill;
 	}
 
@@ -94,11 +94,11 @@ public class AccountSkillGroup implements BaseEntity {
 		this.skill = skill;
 	}
 
-	public AccountGroup getGroup() {
+	public Group getGroup() {
 		return group;
 	}
 
-	public void setGroup(AccountGroup group) {
+	public void setGroup(Group group) {
 		this.group = group;
 	}
 
@@ -192,9 +192,9 @@ public class AccountSkillGroup implements BaseEntity {
 		}
 	};
 
-	public static transient final Extractor<AccountSkillGroup, AccountGroup> GROUP_EXTRACTOR = new Extractor<AccountSkillGroup, AccountGroup>() {
+	public static transient final Extractor<AccountSkillGroup, Group> GROUP_EXTRACTOR = new Extractor<AccountSkillGroup, Group>() {
 		@Override
-		public AccountGroup extract(AccountSkillGroup accountSkillGroup) {
+		public Group extract(AccountSkillGroup accountSkillGroup) {
 			return accountSkillGroup.getGroup();
 		}
 	};

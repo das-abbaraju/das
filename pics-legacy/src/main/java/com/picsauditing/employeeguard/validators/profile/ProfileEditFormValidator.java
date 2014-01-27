@@ -2,12 +2,12 @@ package com.picsauditing.employeeguard.validators.profile;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
-import com.picsauditing.employeeguard.validators.AbstractValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ProfileEditFormValidator extends AbstractValidator<EmployeeProfileEditForm> {
+public class ProfileEditFormValidator extends AbstractBasicValidator<EmployeeProfileEditForm> {
 
     public static final String PROFILE_EDIT_FORM = "personalInfo";
 
@@ -20,7 +20,7 @@ public class ProfileEditFormValidator extends AbstractValidator<EmployeeProfileE
     }
 
     @Override
-    protected void performValidation(EmployeeProfileEditForm form) {
+    protected void doFormValidation(EmployeeProfileEditForm form) {
         if (Strings.isEmpty(form.getFirstName())) {
             addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_EDIT_FORM, "firstName"), "First name is missing");
         }

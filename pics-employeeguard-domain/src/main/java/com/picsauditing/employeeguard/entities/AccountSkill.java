@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 
@@ -7,9 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "account_skill")
@@ -81,6 +80,11 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<ProjectSkill> projects = new ArrayList<>();
+
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 10)
+	private List<SiteSkill> sites = new ArrayList<>();
 
 	public AccountSkill() {
 	}
@@ -227,6 +231,14 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		this.projects = projects;
 	}
 
+	public List<SiteSkill> getSites() {
+		return sites;
+	}
+
+	public void setSites(List<SiteSkill> sites) {
+		this.sites = sites;
+	}
+
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
@@ -264,7 +276,36 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		return 0;
 	}
 
-	@Override
+    public final static class AccountSkillUniqueIndex implements UniqueIndexable {
+
+        private final int id;
+        private final int accountId;
+        private final SkillType skillType;
+        private final String name;
+
+        public AccountSkillUniqueIndex(final int id, final int accountId, final SkillType skillType, final String name) {
+            this.id = id;
+            this.accountId = accountId;
+            this.skillType = skillType;
+            this.name = name;
+        }
+
+        @Override
+        public Map<String, Object> getUniqueIndexableValues() {
+            return Collections.unmodifiableMap(new HashMap<String, Object>() {{
+                put("accountId", accountId);
+                put("skillType", skillType);
+                put("name", name);
+            }});
+        }
+
+        @Override
+        public int getId() {
+            return id;
+        }
+    }
+
+    @Override
 	public String toString() {
 		return id + " " + name;
 	}

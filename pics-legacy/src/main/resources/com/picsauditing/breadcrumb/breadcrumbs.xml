@@ -10,7 +10,7 @@
                 <children>
                     <breadcrumb>
                         <hint>project</hint>
-                        <label>Projects</label>
+                        <label>Assignments and Projects</label>
                         <uri>/employee-guard/operator/project</uri>
                         <children>
                             <breadcrumb>
@@ -22,6 +22,11 @@
                                         <hint>assignments</hint>
                                         <label>Assign Employees</label>
                                         <uri>/employee-guard/operator/project/{id}/assignments/{id}</uri>
+                                    </breadcrumb>
+                                    <breadcrumb>
+                                        <hint>site-assignment</hint>
+                                        <label>Site Assignments</label>
+                                        <uri>/employee-guard/operator/site-assignment/{id}</uri>
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>
@@ -143,7 +148,7 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>project</hint>
-                        <label>Projects</label>
+                        <label>Assignments and Projects</label>
                         <uri>/employee-guard/contractor/project</uri>
                         <children>
                             <breadcrumb>
@@ -160,6 +165,11 @@
                                         <hint>assignments</hint>
                                         <label>Assign Employees</label>
                                         <uri>/employee-guard/contractor/project/{id}/assignments/{id}</uri>
+                                    </breadcrumb>
+                                    <breadcrumb>
+                                        <hint>site-assignment</hint>
+                                        <label>Assign Employees</label>
+                                        <uri>/employee-guard/contractor/site-assignment/{id}</uri>
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>

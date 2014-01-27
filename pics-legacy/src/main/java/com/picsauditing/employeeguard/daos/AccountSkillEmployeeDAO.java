@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountSkillEmployeeDAO extends BaseEntityDAO<AccountSkillEmployee> {
+public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillEmployee> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountSkillEmployeeDAO.class);
 

@@ -16,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_group_employee (createdBy, createdDate, deletedBy, deletedDate, employeeID, groupID, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE account_group_employee SET deletedDate = NOW() WHERE id = ?")
-public class AccountGroupEmployee implements BaseEntity {
+public class SiteAssignmentEmployee implements BaseEntity {
 
 	private static final long serialVersionUID = 1587847390689342196L;
 
@@ -27,7 +27,7 @@ public class AccountGroupEmployee implements BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "groupID", nullable = false)
-	private AccountGroup group;
+	private SiteAssignment siteAssignment;
 
 	@ManyToOne
 	@JoinColumn(name = "employeeID", nullable = false)
@@ -46,9 +46,9 @@ public class AccountGroupEmployee implements BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	public static transient final Comparator<AccountGroupEmployee> COMPARATOR = new Comparator<AccountGroupEmployee>() {
+	public static transient final Comparator<SiteAssignmentEmployee> COMPARATOR = new Comparator<SiteAssignmentEmployee>() {
 		@Override
-		public int compare(AccountGroupEmployee o1, AccountGroupEmployee o2) {
+		public int compare(SiteAssignmentEmployee o1, SiteAssignmentEmployee o2) {
 			if (o1 == null && o2 == null) {
 				return 0;
 			}
@@ -57,36 +57,36 @@ public class AccountGroupEmployee implements BaseEntity {
 				return 0;
 			}
 
-			if (!o1.getGroup().equals(o2.getGroup())) {
+			if (!o1.getSiteAssignment().equals(o2.getSiteAssignment())) {
 				return -1;
 			}
 
 			return 1;
 		}
 
-		private boolean areEqual(AccountGroupEmployee o1, AccountGroupEmployee o2) {
-			return ((o1.getGroup().equals(o2.getGroup())) && (o1.getEmployee().equals(o2.getEmployee())));
+		private boolean areEqual(SiteAssignmentEmployee o1, SiteAssignmentEmployee o2) {
+			return ((o1.getSiteAssignment().equals(o2.getSiteAssignment())) && (o1.getEmployee().equals(o2.getEmployee())));
 		}
 	};
 
-	public AccountGroupEmployee() {
+	public SiteAssignmentEmployee() {
 	}
 
-	public AccountGroupEmployee(Employee employee, AccountGroup accountGroup) {
+	public SiteAssignmentEmployee(Employee employee, SiteAssignment siteAssignment) {
 		this.employee = employee;
-		this.group = accountGroup;
+		this.siteAssignment = siteAssignment;
 	}
 
-	public AccountGroupEmployee(AccountGroupEmployee accountGroupEmployee) {
-		this.id = accountGroupEmployee.getId();
-		this.group = accountGroupEmployee.getGroup();
-		this.employee = accountGroupEmployee.getEmployee();
-		this.createdBy = accountGroupEmployee.getCreatedBy();
-		this.createdDate = accountGroupEmployee.getCreatedDate();
-		this.updatedBy = accountGroupEmployee.getUpdatedBy();
-		this.updatedDate = accountGroupEmployee.getUpdatedDate();
-		this.deletedBy = accountGroupEmployee.getDeletedBy();
-		this.deletedDate = accountGroupEmployee.getDeletedDate();
+	public SiteAssignmentEmployee(SiteAssignmentEmployee groupEmployee) {
+		this.id = groupEmployee.getId();
+		this.siteAssignment = groupEmployee.getSiteAssignment();
+		this.employee = groupEmployee.getEmployee();
+		this.createdBy = groupEmployee.getCreatedBy();
+		this.createdDate = groupEmployee.getCreatedDate();
+		this.updatedBy = groupEmployee.getUpdatedBy();
+		this.updatedDate = groupEmployee.getUpdatedDate();
+		this.deletedBy = groupEmployee.getDeletedBy();
+		this.deletedDate = groupEmployee.getDeletedDate();
 	}
 
 	public int getId() {
@@ -97,12 +97,12 @@ public class AccountGroupEmployee implements BaseEntity {
 		this.id = id;
 	}
 
-	public AccountGroup getGroup() {
-		return group;
+	public SiteAssignment getSiteAssignment() {
+		return siteAssignment;
 	}
 
-	public void setGroup(AccountGroup group) {
-		this.group = group;
+	public void setSiteAssignment(SiteAssignment group) {
+		this.siteAssignment = group;
 	}
 
 	public Employee getEmployee() {
@@ -166,9 +166,10 @@ public class AccountGroupEmployee implements BaseEntity {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		AccountGroupEmployee that = (AccountGroupEmployee) o;
+		SiteAssignmentEmployee that = (SiteAssignmentEmployee) o;
 
-		if (getGroup() != null ? !getGroup().equals(that.getGroup()) : that.getGroup() != null) return false;
+		if (getSiteAssignment() != null ? !getSiteAssignment().equals(that.getSiteAssignment()) : that.getSiteAssignment() != null)
+			return false;
 		if (getEmployee() != null ? !getEmployee().equals(that.getEmployee()) : that.getEmployee() != null)
 			return false;
 
@@ -177,15 +178,15 @@ public class AccountGroupEmployee implements BaseEntity {
 
 	@Override
 	public int hashCode() {
-		int result = 31 * (getGroup() != null ? getGroup().hashCode() : 0);
+		int result = 31 * (getSiteAssignment() != null ? getSiteAssignment().hashCode() : 0);
 		result = 31 * result + (getEmployee() != null ? getEmployee().hashCode() : 0);
 		return result;
 	}
 
-	public static transient final Extractor<AccountGroupEmployee, AccountGroup> GROUP_EXTRACTOR = new Extractor<AccountGroupEmployee, AccountGroup>() {
+	public static transient final Extractor<SiteAssignmentEmployee, SiteAssignment> SITE_ASSIGNMENT_EXTRACTOR = new Extractor<SiteAssignmentEmployee, SiteAssignment>() {
 		@Override
-		public AccountGroup extract(AccountGroupEmployee accountGroupEmployee) {
-			return accountGroupEmployee.getGroup();
+		public SiteAssignment extract(SiteAssignmentEmployee groupEmployee) {
+			return groupEmployee.getSiteAssignment();
 		}
 	};
 }

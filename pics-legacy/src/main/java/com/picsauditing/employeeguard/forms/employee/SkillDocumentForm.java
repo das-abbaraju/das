@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 public class SkillDocumentForm {
 
-	//    public enum Proof { Certified, Document, None }
 	public enum ExpirationType {
 		Date, NoExpiration, None
 	}

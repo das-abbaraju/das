@@ -1,87 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0"
-	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
         >
 
-	<persistence-unit name="punit" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="punit" transaction-type="RESOURCE_LOCAL">
 
-		<class>com.picsauditing.jpa.entities.Account</class>
-		<class>com.picsauditing.jpa.entities.AppProperty</class>
-		<class>com.picsauditing.jpa.entities.AssessmentTest</class>
-		<class>com.picsauditing.jpa.entities.AuditCategory</class>
-		<class>com.picsauditing.jpa.entities.AuditCategoryRule</class>
-		<class>com.picsauditing.jpa.entities.AuditData</class>
-		<class>com.picsauditing.jpa.entities.AuditExtractOption</class>
-		<class>com.picsauditing.jpa.entities.AuditQuestion</class>
-		<class>com.picsauditing.jpa.entities.AuditOptionGroup</class>
-		<class>com.picsauditing.jpa.entities.AuditOptionValue</class>
-		<class>com.picsauditing.jpa.entities.AuditStatus</class>
-		<class>com.picsauditing.jpa.entities.AuditTransformOption</class>
-		<class>com.picsauditing.jpa.entities.AuditType</class>
-		<class>com.picsauditing.jpa.entities.AuditTypeClass</class>
-		<class>com.picsauditing.jpa.entities.AuditTypeRule</class>
-		<class>com.picsauditing.jpa.entities.BaseTable</class>
-		<class>com.picsauditing.jpa.entities.ContractorAccount</class>
-		<class>com.picsauditing.jpa.entities.ContractorAudit</class>
-		<class>com.picsauditing.jpa.entities.ContractorAuditOperator</class>
-		<class>com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow</class>
-		<class>com.picsauditing.jpa.entities.ContractorOperator</class>
-		<class>com.picsauditing.jpa.entities.Country</class>
-		<class>com.picsauditing.jpa.entities.CountrySubdivision</class>
+        <class>com.picsauditing.jpa.entities.Account</class>
+        <class>com.picsauditing.jpa.entities.AppProperty</class>
+        <class>com.picsauditing.jpa.entities.AssessmentTest</class>
+        <class>com.picsauditing.jpa.entities.AuditCategory</class>
+        <class>com.picsauditing.jpa.entities.AuditCategoryRule</class>
+        <class>com.picsauditing.jpa.entities.AuditData</class>
+        <class>com.picsauditing.jpa.entities.AuditExtractOption</class>
+        <class>com.picsauditing.jpa.entities.AuditQuestion</class>
+        <class>com.picsauditing.jpa.entities.AuditOptionGroup</class>
+        <class>com.picsauditing.jpa.entities.AuditOptionValue</class>
+        <class>com.picsauditing.jpa.entities.AuditStatus</class>
+        <class>com.picsauditing.jpa.entities.AuditTransformOption</class>
+        <class>com.picsauditing.jpa.entities.AuditType</class>
+        <class>com.picsauditing.jpa.entities.AuditTypeClass</class>
+        <class>com.picsauditing.jpa.entities.AuditTypeRule</class>
+        <class>com.picsauditing.jpa.entities.BaseTable</class>
+        <class>com.picsauditing.jpa.entities.ContractorAccount</class>
+        <class>com.picsauditing.jpa.entities.ContractorAudit</class>
+        <class>com.picsauditing.jpa.entities.ContractorAuditOperator</class>
+        <class>com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow</class>
+        <class>com.picsauditing.jpa.entities.ContractorOperator</class>
+        <class>com.picsauditing.jpa.entities.Country</class>
+        <class>com.picsauditing.jpa.entities.CountrySubdivision</class>
         <class>com.picsauditing.jpa.entities.CreditMemoAppliedToInvoice</class>
-		<class>com.picsauditing.jpa.entities.EmailAttachment</class>
-		<class>com.picsauditing.jpa.entities.EmailQueue</class>
-		<class>com.picsauditing.jpa.entities.EmailStatus</class>
-		<class>com.picsauditing.jpa.entities.EmailSubscription</class>
-		<class>com.picsauditing.jpa.entities.EmailTemplate</class>
-		<class>com.picsauditing.jpa.entities.Employee</class>
-		<class>com.picsauditing.jpa.entities.EmployeeRole</class>
-		<class>com.picsauditing.jpa.entities.EmployeeSite</class>
-		<class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class>
-		<class>com.picsauditing.jpa.entities.ErrorLog</class>
-		<class>com.picsauditing.jpa.entities.Facility</class>
-		<class>com.picsauditing.jpa.entities.FlagColor</class>
-		<class>com.picsauditing.jpa.entities.Invoice</class>
+        <class>com.picsauditing.jpa.entities.EmailAttachment</class>
+        <class>com.picsauditing.jpa.entities.EmailQueue</class>
+        <class>com.picsauditing.jpa.entities.EmailStatus</class>
+        <class>com.picsauditing.jpa.entities.EmailSubscription</class>
+        <class>com.picsauditing.jpa.entities.EmailTemplate</class>
+        <class>com.picsauditing.jpa.entities.Employee</class>
+        <class>com.picsauditing.jpa.entities.EmployeeRole</class>
+        <class>com.picsauditing.jpa.entities.EmployeeSite</class>
+        <class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class>
+        <class>com.picsauditing.jpa.entities.ErrorLog</class>
+        <class>com.picsauditing.jpa.entities.Facility</class>
+        <class>com.picsauditing.jpa.entities.FlagColor</class>
+        <class>com.picsauditing.jpa.entities.Invoice</class>
         <class>com.picsauditing.jpa.entities.InvoiceCreditMemo</class>
-		<class>com.picsauditing.jpa.entities.InvoiceItem</class>
-		<class>com.picsauditing.jpa.entities.JobCompetency</class>
-		<class>com.picsauditing.jpa.entities.JobCompetencyStats</class>
-		<class>com.picsauditing.jpa.entities.JobRole</class>
-		<class>com.picsauditing.jpa.entities.JobSite</class>
-		<class>com.picsauditing.jpa.entities.JobSiteTask</class>
-		<class>com.picsauditing.jpa.entities.JobTask</class>
-		<class>com.picsauditing.jpa.entities.JobTaskCriteria</class>
-		<class>com.picsauditing.jpa.entities.ListType</class>
-		<class>com.picsauditing.jpa.entities.LowMedHigh</class>
-		<class>com.picsauditing.jpa.entities.MultiYearScope</class>
-		<class>com.picsauditing.jpa.entities.Note</class>
-		<class>com.picsauditing.jpa.entities.NoteCategory</class>
-		<class>com.picsauditing.jpa.entities.NoteStatus</class>
-		<class>com.picsauditing.jpa.entities.OperatorAccount</class>
-		<class>com.picsauditing.jpa.entities.OperatorCompetency</class>
-		<class>com.picsauditing.jpa.entities.OperatorForm</class>
-		<class>com.picsauditing.jpa.entities.OshaAudit</class>
-		<class>com.picsauditing.jpa.entities.OshaType</class>
-		<class>com.picsauditing.jpa.entities.RulesRow</class>
+        <class>com.picsauditing.jpa.entities.InvoiceItem</class>
+        <class>com.picsauditing.jpa.entities.JobCompetency</class>
+        <class>com.picsauditing.jpa.entities.JobCompetencyStats</class>
+        <class>com.picsauditing.jpa.entities.JobRole</class>
+        <class>com.picsauditing.jpa.entities.JobSite</class>
+        <class>com.picsauditing.jpa.entities.JobSiteTask</class>
+        <class>com.picsauditing.jpa.entities.JobTask</class>
+        <class>com.picsauditing.jpa.entities.JobTaskCriteria</class>
+        <class>com.picsauditing.jpa.entities.ListType</class>
+        <class>com.picsauditing.jpa.entities.LowMedHigh</class>
+        <class>com.picsauditing.jpa.entities.MultiYearScope</class>
+        <class>com.picsauditing.jpa.entities.Note</class>
+        <class>com.picsauditing.jpa.entities.NoteCategory</class>
+        <class>com.picsauditing.jpa.entities.NoteStatus</class>
+        <class>com.picsauditing.jpa.entities.OperatorAccount</class>
+        <class>com.picsauditing.jpa.entities.OperatorCompetency</class>
+        <class>com.picsauditing.jpa.entities.OperatorForm</class>
+        <class>com.picsauditing.jpa.entities.OshaAudit</class>
+        <class>com.picsauditing.jpa.entities.OshaType</class>
+        <class>com.picsauditing.jpa.entities.RulesRow</class>
         <class>com.picsauditing.jpa.entities.ReturnItem</class>
-		<class>com.picsauditing.jpa.entities.Token</class>
-		<class>com.picsauditing.jpa.entities.User</class>
-		<class>com.picsauditing.jpa.entities.UserAccess</class>
-		<class>com.picsauditing.jpa.entities.UserAssignment</class>
-		<class>com.picsauditing.jpa.entities.UserGroup</class>
-		<class>com.picsauditing.jpa.entities.UserLoginLog</class>
-		<class>com.picsauditing.jpa.entities.WaitingOn</class>
-		<class>com.picsauditing.jpa.entities.Widget</class>
-		<class>com.picsauditing.jpa.entities.WidgetUser</class>
-		<class>com.picsauditing.jpa.entities.YesNo</class>
+        <class>com.picsauditing.jpa.entities.Token</class>
+        <class>com.picsauditing.jpa.entities.User</class>
+        <class>com.picsauditing.jpa.entities.UserAccess</class>
+        <class>com.picsauditing.jpa.entities.UserAssignment</class>
+        <class>com.picsauditing.jpa.entities.UserGroup</class>
+        <class>com.picsauditing.jpa.entities.UserLoginLog</class>
+        <class>com.picsauditing.jpa.entities.WaitingOn</class>
+        <class>com.picsauditing.jpa.entities.Widget</class>
+        <class>com.picsauditing.jpa.entities.WidgetUser</class>
+        <class>com.picsauditing.jpa.entities.YesNo</class>
 
         <class>com.picsauditing.employeeguard.entities.AccountEmployeeGuard</class>
-        <class>com.picsauditing.employeeguard.entities.AccountGroup</class>
-        <class>com.picsauditing.employeeguard.entities.AccountGroupEmployee</class>
+        <class>com.picsauditing.employeeguard.entities.Group</class>
+        <class>com.picsauditing.employeeguard.entities.GroupEmployee</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkill</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkillEmployee</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkillGroup</class>
+        <class>com.picsauditing.employeeguard.entities.AccountSkillSiteAssignment</class>
         <class>com.picsauditing.employeeguard.entities.EmailHash</class>
         <class>com.picsauditing.employeeguard.entities.Employee</class>
         <class>com.picsauditing.employeeguard.entities.Profile</class>
@@ -92,30 +93,32 @@
         <class>com.picsauditing.employeeguard.entities.ProjectRoleEmployee</class>
         <class>com.picsauditing.employeeguard.entities.ProjectSkill</class>
         <class>com.picsauditing.employeeguard.entities.ProjectSkillRole</class>
+        <class>com.picsauditing.employeeguard.entities.SiteAssignment</class>
+        <class>com.picsauditing.employeeguard.entities.SiteAssignmentEmployee</class>
         <class>com.picsauditing.employeeguard.entities.SiteSkill</class>
         <class>com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee</class>
 
-		<properties>
-			<property name="hibernate.hbm2ddl.auto" value="" />
-			<property name="hibernate.max_fetch_depth" value="1" />
-			<property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.default_batch_fetch_size" value="16" />
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value=""/>
+            <property name="hibernate.max_fetch_depth" value="1"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.default_batch_fetch_size" value="16"/>
 
             <property name="hibernate.format_sql" value="false"/>
             <property name="hibernate.use_sql_comments" value="false"/>
-			<property name="hibernate.cache.region.factory_class"
-				value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
-			<property name="hibernate.generate_statistics" value="true" />
+            <property name="hibernate.cache.region.factory_class"
+                      value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
+            <property name="hibernate.generate_statistics" value="true"/>
 
-			<property name="hibernate.cache.provider_configuration"
-				value="ehcache.xml" />
-			<property name="hibernate.cache.use_minimal_puts" value="false" />
-			<property name="hibernate.cache.use_query_cache" value="true" />
-			<property name="hibernate.cache.use_second_level_cache"
-				value="true" />
-			<property name="hibernate.cache.use_structured_entries"
-				value="true" />
+            <property name="hibernate.cache.provider_configuration"
+                      value="ehcache.xml"/>
+            <property name="hibernate.cache.use_minimal_puts" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="true"/>
+            <property name="hibernate.cache.use_second_level_cache"
+                      value="true"/>
+            <property name="hibernate.cache.use_structured_entries"
+                      value="true"/>
 
-		</properties>
-	</persistence-unit>
+        </properties>
+    </persistence-unit>
 </persistence>

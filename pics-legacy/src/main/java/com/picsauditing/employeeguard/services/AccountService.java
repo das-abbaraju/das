@@ -5,6 +5,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.services.external.BillingService;
+import com.picsauditing.employeeguard.services.external.ProductSubscriptionService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
@@ -30,6 +31,8 @@ public class AccountService {
 	private OperatorAccountDAO operatorDAO;
 	@Autowired
 	private BillingService billingService;
+	@Autowired
+	private ProductSubscriptionService productSubscriptionService;
 
 	public AccountModel getAccountById(int accountId) {
 		Account account = accountDAO.find(accountId);
@@ -51,15 +54,15 @@ public class AccountService {
 		return mapAccountsToAccountModels(employeeGUARDCorporates);
 	}
 
-    public Map<Integer, AccountModel> getIdToAccountModelMap(final Collection<Integer> accountIds) {
-        return Utilities.convertToMap(getAccountsByIds(accountIds), new Utilities.MapConvertable<Integer, AccountModel>() {
+	public Map<Integer, AccountModel> getIdToAccountModelMap(final Collection<Integer> accountIds) {
+		return Utilities.convertToMap(getAccountsByIds(accountIds), new Utilities.MapConvertable<Integer, AccountModel>() {
 
-            @Override
-            public Integer getKey(AccountModel accountModel) {
-                return accountModel.getId();
-            }
-        });
-    }
+			@Override
+			public Integer getKey(AccountModel accountModel) {
+				return accountModel.getId();
+			}
+		});
+	}
 
 	public List<Integer> getTopmostCorporateAccountIds(final int accountId) {
 		if (accountId <= 0) {
@@ -71,9 +74,9 @@ public class AccountService {
 
 	private List<OperatorAccount> getEmployeeGUARDCorporates(int accountId) {
 		OperatorAccount operator = operatorDAO.find(accountId);
-        if (operator == null) {
-            return Collections.emptyList();
-        }
+		if (operator == null) {
+			return Collections.emptyList();
+		}
 
 		ArrayList<OperatorAccount> topDogs = new ArrayList<>();
 		ArrayList<Integer> visited = new ArrayList<>();
@@ -232,5 +235,13 @@ public class AccountService {
 		}
 
 		return ids;
+	}
+
+	public boolean doesContractorStillNeedEmployeeGuard(final int contractorID) {
+		return doesContractorStillNeedEmployeeGuard(accountDAO.find(contractorID));
+	}
+
+	private boolean doesContractorStillNeedEmployeeGuard(final Account account) {
+		return productSubscriptionService.hasEmployeeGUARD(account);
 	}
 }

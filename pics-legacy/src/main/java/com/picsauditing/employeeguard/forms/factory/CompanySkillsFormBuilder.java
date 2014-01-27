@@ -198,7 +198,7 @@ public class CompanySkillsFormBuilder {
 				}
 			}
 
-			AccountGroup role = projectRoleEmployee.getProjectRole().getRole();
+			Group role = projectRoleEmployee.getProjectRole().getRole();
 			for (AccountSkillGroup accountSkillGroup : role.getSkills()) {
 				projectSkills.get(project).add(accountSkillGroup.getSkill());
 				allRequiredSkills.add(accountSkillGroup.getSkill());

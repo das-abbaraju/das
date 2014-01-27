@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.operator;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectRole;
 import org.apache.commons.lang3.ArrayUtils;
@@ -23,7 +23,7 @@ public class ProjectRolesForm {
 
 		if (ArrayUtils.isNotEmpty(roles)) {
 			for (String roleName : roles) {
-				AccountGroup group = new AccountGroup();
+				Group group = new Group();
 				group.setName(roleName);
 
 				ProjectRole projectRole = new ProjectRole(project, group);

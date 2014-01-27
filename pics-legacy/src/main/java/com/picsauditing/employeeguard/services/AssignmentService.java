@@ -47,7 +47,7 @@ public class AssignmentService {
 		extractSkillsFromProjectRoles(project, accountSkills, roleId);
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.findByEmployeesAndSkills(employees, accountSkills);
 
-		List<AccountGroup> jobRoles = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
+		List<Group> jobRoles = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
 		jobRoles = ListUtil.removeDuplicatesAndSort(jobRoles);
 		List<RoleInfo> roleInfos = formBuilderFactory.getRoleInfoFactory().build(jobRoles);
 
@@ -137,5 +137,10 @@ public class AssignmentService {
 		}
 
 		return ListUtil.removeDuplicatesAndSort(skillNames);
+	}
+
+	public Set<Employee> getContractorEmployeesForSite(final int siteId) {
+		// TODO Show all employees assigned to projects under this site
+		return Collections.emptySet();
 	}
 }

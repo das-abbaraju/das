@@ -12,14 +12,12 @@ import org.mockito.MockitoAnnotations;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class AbstractValidatorTest {
 
-    private AbstractValidator validator;
+    private AbstractBasicValidator validator;
 
     @Mock
     private HttpServletRequest request;
@@ -58,12 +56,12 @@ public class AbstractValidatorTest {
         assertEquals("Name is missing", validatorContext.getFieldErrors().get(AbstractValidatorImpl.FORM_NAME + ".name").get(0));
     }
 
-    private class AbstractValidatorImpl extends AbstractValidator {
+    private class AbstractValidatorImpl extends AbstractBasicValidator {
 
         public static final String FORM_NAME = "FORM";
 
         @Override
-        protected void performValidation(Object form) {
+        protected void doFormValidation(Object form) {
             addFieldErrorIfMessage(fieldKeyBuilder(FORM_NAME, "name"), "Name is missing");
         }
 
