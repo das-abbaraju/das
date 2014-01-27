@@ -5,7 +5,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class AppVersion {
     // TODO Move current to pics-web somehow
     // Update Current Version each release
-    static public AppVersion current = new AppVersion(7, 1, 3);
+    static public AppVersion current = new AppVersion(7, 1, 4);
 
     private int major;
     private int minor;
