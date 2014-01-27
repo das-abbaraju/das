@@ -138,7 +138,61 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		doNothing().when(auditPercentCalculatior).updatePercentageCompleted(catData);
 	}
 
-	@Test
+    @Test
+    public void testGetRollbackStatus_PolicySubmitted() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setClassType(AuditTypeClass.Policy);
+        audit.setAuditType(auditType);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Submitted)
+                                .visible()
+                                .build()
+                )
+        );
+
+        assertEquals(AuditStatus.Incomplete, Whitebox.invokeMethod(auditDataSave, "getRollbackStatus", audit, audit.getOperators().get(0)));
+    }
+
+    @Test
+    public void testGetRollbackStatus_PolicyComplete() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setClassType(AuditTypeClass.Policy);
+        audit.setAuditType(auditType);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Complete)
+                                .visible()
+                                .build()
+                )
+        );
+
+        assertEquals(AuditStatus.Resubmitted, Whitebox.invokeMethod(auditDataSave, "getRollbackStatus", audit, audit.getOperators().get(0)));
+    }
+
+    @Test
+    public void testGetRollbackStatus_PolicyApproved() throws Exception {
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setClassType(AuditTypeClass.Policy);
+        audit.setAuditType(auditType);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Approved)
+                                .visible()
+                                .build()
+                )
+        );
+
+        assertEquals(AuditStatus.Resubmitted, Whitebox.invokeMethod(auditDataSave, "getRollbackStatus", audit, audit.getOperators().get(0)));
+    }
+
+    @Test
 	public void testESignatureVerify() throws Exception {
 		AuditData auditData = EntityFactory.makeAuditData("John Smith / Supervisor");
 		auditData.setComment("123.123.123.123");

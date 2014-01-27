@@ -15,7 +15,6 @@ import com.picsauditing.service.AuditDataService;
 import com.picsauditing.service.ContractorAuditService;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.NoResultException;
@@ -213,11 +212,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
 								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
-							AuditStatus newStatus = AuditStatus.Incomplete;
-                            if (tempAudit.getAuditType().getRollbackStatus() != null) {
-                                newStatus = tempAudit.getAuditType().getRollbackStatus();
-                            } else if (tempAudit.getAuditType().getClassType().isPolicy())
-								newStatus = AuditStatus.Resubmitted;
+                            AuditStatus newStatus = getRollbackStatus(tempAudit, cao);
 
 							ContractorAuditOperatorWorkflow caow = cao
 									.changeStatus(newStatus, permissions);
@@ -228,7 +223,6 @@ public class AuditDataSave extends AuditActionSupport {
 							}
 
                             caoSaveModel.updateParentAuditOnCompleteIncomplete(tempAudit, newStatus);
-                            break;
 						}
 					}
 					if (updateAudit) {
@@ -321,7 +315,18 @@ public class AuditDataSave extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private BaseTable saveContractorAccount(ContractorAccount contractor) {
+    private AuditStatus getRollbackStatus(ContractorAudit tempAudit, ContractorAuditOperator cao) {
+        AuditStatus newStatus = AuditStatus.Incomplete;
+
+        if (tempAudit.getAuditType().getRollbackStatus() != null) {
+            newStatus = tempAudit.getAuditType().getRollbackStatus();
+        } else if (tempAudit.getAuditType().getClassType().isPolicy() && cao.getStatus().after(AuditStatus.Submitted)) {
+            newStatus = AuditStatus.Resubmitted;
+        }
+        return newStatus;
+    }
+
+    private BaseTable saveContractorAccount(ContractorAccount contractor) {
 		return contractorAccountDao.save(contractor);   // todo: Move to a service.
 	}
 
