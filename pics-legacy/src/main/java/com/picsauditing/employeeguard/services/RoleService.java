@@ -1,11 +1,11 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillRole;
-import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.entities.RoleEmployee;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
@@ -25,6 +25,10 @@ public class RoleService {
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Autowired
+	private EmployeeDAO employeeDAO;
+	@Autowired
+	private ProjectRoleDAO projectRoleDAO;
 	@Autowired
 	private RoleDAO roleDAO;
 
@@ -109,5 +113,39 @@ public class RoleService {
 
 	public Role getRole(final String id) {
 		return roleDAO.find(NumberUtils.toInt(id));
+	}
+
+	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSite(final int siteId, final int contractorId) {
+		List<Employee> employees = employeeDAO.findByAccount(contractorId);
+
+		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
+		for (Employee employee : employees) {
+			addSkillsFromSiteRoles(siteId, employeeSkills, employee);
+			addSkillsFromSiteProjectRoles(siteId, employeeSkills, employee);
+		}
+
+		return employeeSkills;
+	}
+
+	private void addSkillsFromSiteRoles(int siteId, Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee) {
+		for (RoleEmployee roleEmployee : employee.getRoles()) {
+			if (roleEmployee.getRole().getAccountId() == siteId) {
+				addRoleSkills(employeeSkills, employee, roleEmployee.getRole().getSkills());
+			}
+		}
+	}
+
+	private void addSkillsFromSiteProjectRoles(int siteId, Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee) {
+		for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
+			if (projectRoleEmployee.getProjectRole().getProject().getAccountId() == siteId) {
+				addRoleSkills(employeeSkills, employee, projectRoleEmployee.getProjectRole().getRole().getSkills());
+			}
+		}
+	}
+
+	private void addRoleSkills(Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee, List<AccountSkillRole> roleSkills) {
+		for (AccountSkillRole accountSkillRole : roleSkills) {
+			Utilities.addToMapOfKeyToSet(employeeSkills, employee, accountSkillRole.getSkill());
+		}
 	}
 }
