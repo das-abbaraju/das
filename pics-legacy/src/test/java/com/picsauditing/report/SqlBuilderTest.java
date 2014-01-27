@@ -4,9 +4,13 @@ import static com.picsauditing.util.Assert.assertContains;
 import static com.picsauditing.util.Assert.assertNotContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.*;
@@ -26,6 +30,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.search.SelectSQL;
+import org.powermock.reflect.Whitebox;
 
 @UseReporter(DiffReporter.class)
 public class SqlBuilderTest {
@@ -285,6 +290,21 @@ public class SqlBuilderTest {
 		String expected = "JOIN contractor_operator AS ContractorFlag ON Contractor.id = ContractorFlag.conID AND ContractorFlag.opID = "
 				+ permissions.getAccountId();
 		assertContains(expected, sqlResult);
+	}
+
+    @Test
+    public void testClearURL() throws Exception {
+        Report report = mock(Report.class);
+        when(report.hasGroupBy()).thenReturn(true);
+        List<Column> columns = new ArrayList<>();
+        Column column = mock(Column.class);
+        Field field = mock(Field.class);
+        columns.add(column);
+        when(report.getColumns()).thenReturn(columns);
+        when(column.getField()).thenReturn(field);
+
+        Whitebox.invokeMethod(sqlBuilder, "clearUrlIfGroupBy", report);
+        verify(field).setUrl(null);
 	}
 
 	private Column addColumn(String fieldName, Report report) {
