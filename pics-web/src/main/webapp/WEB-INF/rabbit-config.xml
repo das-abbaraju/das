@@ -48,7 +48,7 @@
 
 	<beans:bean id="employeeGuardListener" class="com.picsauditing.employeeguard.messaging.EmployeeGuardListener" />
 
-	<rabbit:listener-container id="employeeGuardListenerContainer" connection-factory="rabbitConnectionFactory" concurrency="1">
+    <rabbit:listener-container id="employeeGuardListenerContainer" connection-factory="connectionFactory" concurrency="1">
 		<rabbit:listener queues="employeeguard-queue" ref="employeeGuardListener" method="onMessage" />
 	</rabbit:listener-container>
 
