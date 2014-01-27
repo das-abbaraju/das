@@ -193,7 +193,7 @@
                                 <uri>/employee-guard/contractor/project/site-assignment</uri>
                                 <children>
                                     <breadcrumb>
-                                        <hint>show</hint>
+                                        <hint>status</hint>
                                         <label>{name}</label>
                                         <uri>/employee-guard/contractor/project/site-assignment/{id}</uri>
                                     </breadcrumb>
