@@ -924,27 +924,26 @@ body {
   padding: 20px 30px;
 }
 /* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
-.employee-guard-section.info-toolbar button {
-  display: inline-block;
-  margin-right: 0px;
+.employee-guard-section.info-toolbar a.btn {
   margin-left: 5px;
+  margin-right: 0px;
 }
-/* line 36, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 35, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section.info-toolbar ul {
   margin-bottom: 0px;
 }
-/* line 42, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 41, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section.info-toolbar ul li.success, .employee-guard-section.info-toolbar ul li.warning, .employee-guard-section.info-toolbar ul li.danger {
   background-color: transparent;
 }
 
-/* line 50, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 49, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section:first-child > h1 {
   margin-top: 0;
 }
 
 @media (max-width: 767px) {
-  /* line 56, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+  /* line 55, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
   .employee-guard-section .content {
     padding: 20px 0px;
   }
