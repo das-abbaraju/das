@@ -36,7 +36,7 @@
   background: -webkit-linear-gradient($default_mercury, $default_silver);
   @include box-shadow(0px 2px 0px $default_pewter);
   text-shadow: none;
-  background: $default_med;
+  background: $default_silver;
 }
 
 .btn-default:hover {
