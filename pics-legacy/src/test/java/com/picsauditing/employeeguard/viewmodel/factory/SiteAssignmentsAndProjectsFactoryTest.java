@@ -42,6 +42,8 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 	private ProjectRoleEmployee projectRoleEmployee;
 	@Mock
 	private Role role;
+	@Mock
+	private RoleEmployee roleEmployee;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,7 +75,7 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 		Map<Employee, Set<Role>> employeeRoles = getEmployeeRoles();
 		List<AccountSkillEmployee> accountSkillEmployees = getEmployeeSkills();
 
-		linkMocks();
+		linkMocks(accountModel);
 
 		Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> siteAssignments =
 				siteAssignmentsAndProjectsFactory.create(siteProjects, siteAndCorporateRequiredSkills, employeeRoles, accountSkillEmployees);
@@ -100,16 +102,21 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 	private List<AccountSkillEmployee> getEmployeeSkills() {
 		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
 		accountSkillEmployees.add(siteSkill);
+		accountSkillEmployees.add(projectSkill);
 		return accountSkillEmployees;
 	}
 
-	private void linkMocks() {
+	private void linkMocks(AccountModel accountModel) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, 15);
+
+		when(employee.getRoles()).thenReturn(Arrays.asList(roleEmployee));
 		when(siteSkill.getEmployee()).thenReturn(employee);
 		when(siteSkill.getEndDate()).thenReturn(calendar.getTime());
 		when(siteSkill.getSkill()).thenReturn(siteRequired);
+
 		calendar.add(Calendar.MONTH, 3);
+
 		when(project.getRoles()).thenReturn(Arrays.asList(projectRole));
 		when(projectSkill.getEmployee()).thenReturn(employee);
 		when(projectSkill.getSkill()).thenReturn(projectRequired);
@@ -117,7 +124,11 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 		when(projectRole.getRole()).thenReturn(role);
 		when(projectRoleEmployee.getEmployee()).thenReturn(employee);
 		when(projectRoleEmployee.getProjectRole()).thenReturn(projectRole);
+		when(projectRoleSkill.getSkill()).thenReturn(projectRequired);
+		when(role.getAccountId()).thenReturn(accountModel.getId());
 		when(role.getSkills()).thenReturn(Arrays.asList(projectRoleSkill));
+		when(roleEmployee.getEmployee()).thenReturn(employee);
+		when(roleEmployee.getRole()).thenReturn(role);
 	}
 
 	private void performAssertions(AccountModel accountModel, Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> siteAssignments) {

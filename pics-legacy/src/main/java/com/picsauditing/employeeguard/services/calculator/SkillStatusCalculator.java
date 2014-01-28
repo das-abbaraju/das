@@ -17,7 +17,7 @@ public class SkillStatusCalculator {
 
 		if (endDate == null || endDate.before(today)) {
 			return SkillStatus.Expired;
-		} else if (endDate.before(DateBean.addMonths(new Date(), 1))) {
+		} else if (endDate.before(DateBean.addMonths(today, 1))) {
 			return SkillStatus.Expiring;
 		} else {
 			return SkillStatus.Complete;

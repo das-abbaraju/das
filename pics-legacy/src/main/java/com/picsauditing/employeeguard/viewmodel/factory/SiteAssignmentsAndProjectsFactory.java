@@ -64,13 +64,29 @@ public class SiteAssignmentsAndProjectsFactory {
 
 			for (Map.Entry<Employee, Set<Role>> employeeEntry : employeeRoles.entrySet()) {
 				Employee employee = employeeEntry.getKey();
+				final Set<Project> projectSet = projectEntry.getValue();
 
-				if (employeeBelongsToSite(site, employee) || employeeBelongsToProject(projectEntry.getValue(), employee)) {
+				if (employeeBelongsToSite(site, employee) || employeeBelongsToProject(projectSet, employee)) {
 					if (!employeeRolesToSite.containsKey(site)) {
 						employeeRolesToSite.put(site, new HashMap<Employee, Set<Role>>());
 					}
 
-					employeeRolesToSite.get(site).put(employee, employeeEntry.getValue());
+					Set<Role> filteredByProject = new HashSet<>(employeeEntry.getValue());
+					CollectionUtils.filter(filteredByProject, new GenericPredicate<Role>() {
+						@Override
+						public boolean evaluateEntity(Role role) {
+							for (ProjectRole projectRole : role.getProjects()) {
+								if (projectSet.contains(projectRole.getProject())) {
+									return true;
+								}
+							}
+
+							return false;
+						}
+					});
+
+
+					employeeRolesToSite.get(site).put(employee, filteredByProject);
 				}
 			}
 
