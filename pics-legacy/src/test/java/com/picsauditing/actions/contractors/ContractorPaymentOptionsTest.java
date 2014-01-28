@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 
+import com.picsauditing.PICS.TaxService;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,10 +17,10 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.PermissionToViewContractor;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
 
 public class ContractorPaymentOptionsTest extends PicsActionTest {
 	private ContractorPaymentOptions contractorPaymentOptions;
@@ -31,6 +33,8 @@ public class ContractorPaymentOptionsTest extends PicsActionTest {
 	private ContractorAccount contractor;
 	@Mock
 	private PermissionToViewContractor permissionToViewContractor;
+    @Mock
+    private TaxService taxService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,6 +53,7 @@ public class ContractorPaymentOptionsTest extends PicsActionTest {
 		when(appPropDao.find("brainTree.key_id")).thenReturn(new AppProperty("key_id", "key_id"));
 
 		Whitebox.setInternalState(contractorPaymentOptions, "permissionToViewContractor", permissionToViewContractor);
+        Whitebox.setInternalState(contractorPaymentOptions, "taxService", taxService);
 	}
 
 	@Test
@@ -72,5 +77,38 @@ public class ContractorPaymentOptionsTest extends PicsActionTest {
 		verify(contractorAccountDao).save(contractor);
 		assertThat(actionResult, is(equalTo(Action.SUCCESS)));
 	}
+
+    @Test
+    public void testInitTaxFee() throws Exception {
+        contractorPaymentOptions.setContractor(contractor);
+        CountrySubdivision mockCountrySubdivision = mock(CountrySubdivision.class);
+        Country mockCountry = mock(Country.class);
+        ContractorFee mockContractorFee = mock(ContractorFee.class);
+        ContractorFee mockContractorFee2 = mock(ContractorFee.class);
+        InvoiceFee mockInvoiceFee = mock(InvoiceFee.class);
+        InvoiceFee mockInvoiceFee2 = mock(InvoiceFee.class);
+
+        when(contractor.getCountrySubdivision()).thenReturn(mockCountrySubdivision);
+        when(contractor.getCountry()).thenReturn(mockCountry);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+        HashMap<FeeClass, ContractorFee> fees = new HashMap<FeeClass, ContractorFee>();
+        fees.put(FeeClass.DocuGUARD, mockContractorFee);
+        fees.put(FeeClass.ImportFee, mockContractorFee2);
+        when(contractor.getFees()).thenReturn(fees);
+        when(mockContractorFee.getNewLevel()).thenReturn(mockInvoiceFee);
+        when(mockContractorFee.getNewAmount()).thenReturn(BigDecimal.TEN);
+        when(mockInvoiceFee.isFree()).thenReturn(false);
+        when(mockContractorFee.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
+        when(mockContractorFee2.getNewLevel()).thenReturn(mockInvoiceFee2);
+        when(mockContractorFee2.getNewAmount()).thenReturn(BigDecimal.TEN);
+        when(mockInvoiceFee2.isFree()).thenReturn(false);
+        when(mockContractorFee2.getFeeClass()).thenReturn(FeeClass.ImportFee);
+        when(taxService.getTaxInvoiceFee(FeeClass.CanadianTax, mockCountry, mockCountrySubdivision)).thenReturn(mockInvoiceFee);
+
+        Whitebox.invokeMethod(contractorPaymentOptions, "initTaxFee");
+
+        verify(mockInvoiceFee).getTax(BigDecimal.TEN.setScale(2));
+
+    }
 
 }
