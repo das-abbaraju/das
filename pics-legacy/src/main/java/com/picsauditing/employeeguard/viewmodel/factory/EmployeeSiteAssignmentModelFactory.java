@@ -9,10 +9,11 @@ import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmen
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EmployeeSiteAssignmentModelFactory {
 
-	public List<EmployeeSiteAssignmentModel> create(Map<Employee, SkillStatus> employeeStatuses, Map<Employee, List<Role>> roleAssignments, Map<Integer, AccountModel> accounts) {
+	public List<EmployeeSiteAssignmentModel> create(Map<Employee, SkillStatus> employeeStatuses, Map<Employee, Set<Role>> roleAssignments, Map<Integer, AccountModel> accounts) {
 		List<EmployeeSiteAssignmentModel> models = new ArrayList<>();
 
 		for (Map.Entry<Employee, SkillStatus> entry : employeeStatuses.entrySet()) {

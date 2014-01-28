@@ -19,37 +19,34 @@ public class SiteAssignmentModelFactory {
 
 	public SiteAssignmentModel create(List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels,
 	                                  Map<Role, ? extends Collection<Employee>> roleEmployees) {
-		Map<String, Integer> roleEmployeeCount = new TreeMap<>();
-
-		for (Map.Entry<Role, ? extends Collection<Employee>> entry : roleEmployees.entrySet()) {
-			roleEmployeeCount.put(entry.getKey().getName(), entry.getValue().size());
-		}
-
 		return new SiteAssignmentModel.Builder()
 				.employeeSiteAssignmentModels(employeeSiteAssignmentModels)
 				.totalEmployeesAssignedToSite(employeeSiteAssignmentModels.size())
-				.roleEmployeeCount(roleEmployeeCount)
+				.roleEmployeeCount(extractRoleEmployeeCount(roleEmployees))
 				.build();
 	}
 
-	public SiteAssignmentModel create(final AccountModel site,
+    private Map<String, Integer> extractRoleEmployeeCount(Map<Role, ? extends Collection<Employee>> roleEmployees) {
+        Map<String, Integer> roleEmployeeCount = new TreeMap<>();
+
+        for (Map.Entry<Role, ? extends Collection<Employee>> entry : roleEmployees.entrySet()) {
+            roleEmployeeCount.put(entry.getKey().getName(), entry.getValue().size());
+        }
+        return roleEmployeeCount;
+    }
+
+    public SiteAssignmentModel create(final AccountModel site,
 	                                  final List<AccountModel> employeeAccounts,
 	                                  final List<SkillUsage> skillUsages,
 	                                  final List<Role> siteRoles) {
 		List<Employee> employees = getEmployees(skillUsages);
 		Map<Employee, Set<AccountSkill>> employeeSkills = getEmployeeSkills(skillUsages);
-		Map<Employee, List<Role>> employeeRoles = getEmployeeRoles(employees, site.getId());
+		Map<Employee, Set<Role>> employeeRoles = getEmployeeRoles(employees, site.getId());
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignments = buildEmployeeSiteAssignments(employeeAccounts, employeeSkills, employeeRoles);
 
-		Map<Role, Set<Employee>> rolesToEmployees = new HashMap<>();
+		Map<Role, Set<Employee>> rolesToEmployees = Utilities.invertMapOfSet(employeeRoles);
 		for (Role role : siteRoles) {
-			for (Map.Entry<Employee, List<Role>> employeeRoleSet : employeeRoles.entrySet()) {
-				if (employeeRoleSet.getValue().contains(role)) {
-					Utilities.addToMapOfKeyToSet(rolesToEmployees, role, employeeRoleSet.getKey());
-				}
-			}
-
 			if (!rolesToEmployees.containsKey(role)) {
 				rolesToEmployees.put(role, Collections.<Employee>emptySet());
 			}
@@ -80,15 +77,15 @@ public class SiteAssignmentModelFactory {
 		});
 	}
 
-	private Map<Employee, List<Role>> getEmployeeRoles(List<Employee> employees, int siteId) {
-		Map<Employee, List<Role>> employeeRoles = new HashMap<>();
+	private Map<Employee, Set<Role>> getEmployeeRoles(List<Employee> employees, int siteId) {
+		Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
 
 		for (Employee employee : employees) {
 			for (RoleEmployee roleEmployee : employee.getRoles()) {
 				Role role = roleEmployee.getRole();
 
 				if (role.getAccountId() == siteId) {
-					Utilities.addToMapOfKeyToList(employeeRoles, employee, role);
+					Utilities.addToMapOfKeyToSet(employeeRoles, employee, role);
 				}
 			}
 
@@ -96,7 +93,7 @@ public class SiteAssignmentModelFactory {
 				Project project = projectRoleEmployee.getProjectRole().getProject();
 
 				if (project.getAccountId() == siteId) {
-					Utilities.addToMapOfKeyToList(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
+					Utilities.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
 				}
 			}
 		}
@@ -106,7 +103,7 @@ public class SiteAssignmentModelFactory {
 
 	private List<EmployeeSiteAssignmentModel> buildEmployeeSiteAssignments(List<AccountModel> employeeAccounts,
 	                                                                       Map<Employee, Set<AccountSkill>> employeeSkills,
-	                                                                       Map<Employee, List<Role>> employeeRoles) {
+	                                                                       Map<Employee, Set<Role>> employeeRoles) {
 		Map<Integer, AccountModel> accounts = getIdToAccountModel(employeeAccounts);
 		Map<Employee, SkillStatus> statusRollUp = calculateEmployeeSkillStatus(employeeSkills);
 

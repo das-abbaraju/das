@@ -232,7 +232,7 @@ public class UtilitiesTest {
 		map.put("Test 1", Arrays.asList(1, 2));
 		map.put("Test 2", Arrays.asList(2, 3));
 
-		Map<Integer, List<String>> invertedMap = Utilities.invertMap(map);
+		Map<Integer, List<String>> invertedMap = Utilities.invertMapOfList(map);
 
 		assertTrue(invertedMap.get(1).contains("Test 1"));
 		assertTrue(invertedMap.get(2).contains("Test 1"));

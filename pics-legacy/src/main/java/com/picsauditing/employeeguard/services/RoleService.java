@@ -172,4 +172,8 @@ public class RoleService {
 			}
 		}
 	}
+
+    public Map<Employee, Set<Role>> getEmployeeRolesForSite(final int contractorId, final int siteId) {
+        return Collections.emptyMap();
+    }
 }

@@ -409,7 +409,7 @@ public class Utilities {
 		map.get(key).addAll(value);
 	}
 
-	public static <K, V> Map<V, List<K>> invertMap(Map<K, List<V>> map) {
+	public static <K, V> Map<V, List<K>> invertMapOfList(Map<K, List<V>> map) {
 		Map<V, List<K>> invertedMap = new HashMap<>();
 
 		for (Map.Entry<K, List<V>> entry : map.entrySet()) {
@@ -420,6 +420,18 @@ public class Utilities {
 
 		return invertedMap;
 	}
+
+    public static <K, V> Map<V, Set<K>> invertMapOfSet(Map<K, Set<V>> map) {
+        Map<V, Set<K>> invertedMap = new HashMap<>();
+
+        for (Map.Entry<K, Set<V>> entry : map.entrySet()) {
+            for (V value : entry.getValue()) {
+                addToMapOfKeyToSet(invertedMap, value, entry.getKey());
+            }
+        }
+
+        return invertedMap;
+    }
 
 	public static <K, V> Set<V> extractAndFlattenValuesFromMap(final Map<K, ? extends Collection<V>> map) {
 		Set<V> values = new HashSet<>();

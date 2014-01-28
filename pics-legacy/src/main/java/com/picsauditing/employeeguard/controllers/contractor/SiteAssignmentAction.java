@@ -33,18 +33,18 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String status() {
 		site = accountService.getAccountById(NumberUtils.toInt(id));
-		buildSiteAssignmentModel();
+		siteAssignmentModel = buildSiteAssignmentModel();
 
 		return "status";
 	}
 
-	private void buildSiteAssignmentModel() {
+	private SiteAssignmentModel buildSiteAssignmentModel() {
 		AccountModel account = accountService.getAccountById(permissions.getAccountId());
 		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
 		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
 		List<Role> roles = getSiteRoles();
 
-		siteAssignmentModel = ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roles);
+		return ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roles);
 	}
 
 	private List<Role> getSiteRoles() {
