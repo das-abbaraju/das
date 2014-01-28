@@ -3,8 +3,8 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
+import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -30,9 +30,9 @@ public class RoleService {
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
-	private ProjectRoleDAO projectRoleDAO;
-	@Autowired
 	private RoleDAO roleDAO;
+	@Autowired
+	private SiteSkillDAO siteSkillDAO;
 
 	public Role getRole(final String id, final int accountId) {
 		return roleDAO.findRoleByAccount(NumberUtils.toInt(id), accountId);
@@ -130,6 +130,8 @@ public class RoleService {
 			addSkillsFromSiteProjectRoles(siteId, employeeSkills, employee);
 		}
 
+		addSiteRequiredSkills(siteId, corporateIds, employeeSkills);
+
 		return employeeSkills;
 	}
 
@@ -153,6 +155,21 @@ public class RoleService {
 	private void addRoleSkills(Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee, List<AccountSkillRole> roleSkills) {
 		for (AccountSkillRole accountSkillRole : roleSkills) {
 			Utilities.addToMapOfKeyToSet(employeeSkills, employee, accountSkillRole.getSkill());
+		}
+	}
+
+	private void addSiteRequiredSkills(int siteId, List<Integer> corporateIds, Map<Employee, Set<AccountSkill>> employeeSkills) {
+		List<SiteSkill> siteSkills = siteSkillDAO.findByAccountId(siteId);
+		List<SiteSkill> corporateSkills = siteSkillDAO.findByAccountIds(corporateIds);
+
+		for (Map.Entry<Employee, Set<AccountSkill>> employeeSkillSet : employeeSkills.entrySet()) {
+			for (SiteSkill siteSkill : siteSkills) {
+				Utilities.addToMapOfKeyToSet(employeeSkills, employeeSkillSet.getKey(), siteSkill.getSkill());
+			}
+
+			for (SiteSkill corporateSkill : corporateSkills) {
+				Utilities.addToMapOfKeyToSet(employeeSkills, employeeSkillSet.getKey(), corporateSkill.getSkill());
+			}
 		}
 	}
 }
