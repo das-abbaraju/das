@@ -201,6 +201,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 
 			if (CollectionUtils.isEmpty(queryList)) {
 				queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
+                totalRows = db.getAllRows();
 			}
 
 			output = concatQueryResults(queryList);
