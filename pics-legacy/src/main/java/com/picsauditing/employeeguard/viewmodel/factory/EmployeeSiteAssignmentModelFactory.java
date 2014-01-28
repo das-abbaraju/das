@@ -27,6 +27,7 @@ public class EmployeeSiteAssignmentModelFactory {
 					.employeeId(employee.getId())
 					.employeeName(employee.getName())
 					.employeeTitle(employee.getPositionName())
+                    .numberOfRolesAssigned(roleAssignments.get(employee).size())
 					.status(entry.getValue())
 					.build();
 
