@@ -47,6 +47,7 @@
         <action name="RefundDetail"
                 class="com.picsauditing.actions.contractors.RefundDetail">
             <result>struts/contractors/refund-detail.jsp</result>
+            <result name="error">struts/contractors/refund-detail.jsp</result>
         </action>
 
 		<action name="BillingAddress"

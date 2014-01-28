@@ -9,6 +9,10 @@
     </head>
 
     <body>
+        <s:if test="!permissions.contractor || contractor.status.activeDemo">
+            <s:include value="conHeader.jsp"></s:include>
+        </s:if>
+
         <div>
 
             <s:form id="save_refund" method="POST" enctype="multipart/form-data">
