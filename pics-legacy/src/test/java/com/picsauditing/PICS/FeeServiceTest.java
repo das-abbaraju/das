@@ -1135,7 +1135,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyString())).thenReturn(false);
+        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1194,7 +1194,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyString())).thenReturn(false);
+        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1310,7 +1310,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyString())).thenReturn(false);
+        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1359,7 +1359,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyString())).thenReturn(true);
+        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(true);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
