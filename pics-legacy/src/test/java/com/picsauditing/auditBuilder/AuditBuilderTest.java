@@ -63,6 +63,10 @@ public class AuditBuilderTest extends PicsTest {
 	private AuditDecisionTableDAO auditDecisionTableDAO;
     @Mock
     AuditTypeDAO auditTypeDao;
+    @Mock
+    ContractorAudit audit;
+    @Mock
+    AuditType auditType;
 
 	ContractorAccount contractor;
 	OperatorAccount operator;
@@ -590,8 +594,8 @@ public class AuditBuilderTest extends PicsTest {
 	public void testMultipleCaoToOneCaoStatusMerge() throws Exception {
 		ContractorAudit conAudit = setupTestAudit();
 		conAudit.getAuditType().setCanOperatorView(true);
-		conAudit.getAuditType().setId(200);
-		conAudit.getAuditType().setClassType(AuditTypeClass.Policy);
+		conAudit.getAuditType().setId(AuditType.INTEGRITYMANAGEMENT);
+		conAudit.getAuditType().setClassType(AuditTypeClass.PQF);
 
 		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
 		ContractorAuditOperator cao2 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
@@ -843,7 +847,16 @@ public class AuditBuilderTest extends PicsTest {
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
-	private ContractorAudit setupMockContractorAudit(AuditStatus auditStatus, int percentComplete) {
+    @Test
+    public void testIsAuditThatCanAdjustStatus() throws Exception {
+        AuditType auditType = mock(AuditType.class);
+        when(audit.getAuditType()).thenReturn(auditType);
+        when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+        boolean canAdjust = Whitebox.invokeMethod(auditBuilder, "isAuditThatCanAdjustStatus", audit);
+        assertFalse(canAdjust);
+    }
+
+    private ContractorAudit setupMockContractorAudit(AuditStatus auditStatus, int percentComplete) {
 		List<ContractorAudit> contractorAudits = new ArrayList<>();
 		ContractorAudit contractorAudit = mock(ContractorAudit.class);
 		contractorAudits.add(contractorAudit);
