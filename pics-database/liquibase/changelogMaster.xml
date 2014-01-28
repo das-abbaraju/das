@@ -134,5 +134,8 @@
 	<include file="./liquibase/mdo29_PICS-14233_0_DollarInvoicesForAI_IG.sql"/>
 	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
 	<include file="./liquibase/mdo26_PICS-12788_updateAllNewUsersToV7.sql"/>
+	
+	<!-- 7.1.4 -->
+	<include file="./liquibase/sshacter42_PICS-12791_ErrorSerchingWithChineseCharacters.sql"/>
 
 </databaseChangeLog>
