@@ -86,4 +86,39 @@ public class InvoiceDAO extends PicsDAO {
 		query.setParameter("invoiceType", InvoiceType.LateFee);
 		return query.getResultList();
 	}
+
+    public List<Transaction> findTransactionsToSapSync() {
+        String sql = " SELECT i.* " +
+                " FROM accounts a " +
+                " JOIN invoice i ON a.id = i.accountID " +
+                " JOIN ref_country rc ON a.country = rc.isocode " +
+                " WHERE a.status NOT IN ('Pending','Declined','Demo') " +
+                " AND i.status != 'Void' " +
+                " AND i.sapLastSync IS NULL " +
+                " AND i.sapSync = 0 " +
+                " AND i.creationDate >= '2011-11-01' " +
+                " AND i.creationDate < DATE_SUB(NOW(), INTERVAL 1 DAY)" +
+                " AND rc.businessUnitID IN (select value FROM app_properties WHERE property = 'SAP.BusinessUnits.Enabled')";
+
+        Query query = em.createNativeQuery(sql);
+        return query.getResultList();
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public void updateTransactionsToSapSync() {
+        String sql = " UPDATE accounts a " +
+                " JOIN invoice i ON a.id = i.accountID " +
+                " JOIN ref_country rc ON a.country = rc.isocode " +
+                " SET i.sapSync = 1 " +
+                " WHERE a.status NOT IN ('Pending','Declined','Demo') " +
+                " AND i.status != 'Void' " +
+                " AND i.sapLastSync IS NULL " +
+                " AND i.sapSync = 0 " +
+                " AND i.creationDate >= '2011-11-01' " +
+                " AND i.creationDate < DATE_SUB(NOW(), INTERVAL 1 DAY)" +
+                " AND rc.businessUnitID IN (select value FROM app_properties WHERE property = 'SAP.BusinessUnits.Enabled')";
+
+        Query query = em.createNativeQuery(sql);
+        query.executeUpdate();
+    }
 }

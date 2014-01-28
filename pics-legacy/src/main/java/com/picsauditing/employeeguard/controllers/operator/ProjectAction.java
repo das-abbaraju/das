@@ -6,8 +6,8 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.forms.SearchForm;
@@ -67,7 +67,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	private ProjectInfo project;
 	private List<ProjectInfo> projects;
 	private List<AccountSkill> projectSkills;
-	private List<AccountGroup> projectRoles;
+	private List<Group> projectRoles;
 	private List<AccountModel> projectSites;
 
 	/* pages */
@@ -278,7 +278,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 		return projectSkills;
 	}
 
-	public List<AccountGroup> getProjectRoles() {
+	public List<Group> getProjectRoles() {
 		return projectRoles;
 	}
 

@@ -1,15 +1,16 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.Role;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
+public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 
 	public AccountSkillDAO() {
 		this.type = AccountSkill.class;
@@ -97,7 +98,7 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
-	public List<AccountSkill> findByGroups(List<AccountGroup> groups) {
+	public List<AccountSkill> findByGroups(List<Group> groups) {
 		if (CollectionUtils.isEmpty(groups)) {
 			return Collections.emptyList();
 		}
@@ -141,4 +142,9 @@ public class AccountSkillDAO extends BaseEntityDAO<AccountSkill> {
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}
+
+    public List<AccountSkill> findByRoles(final List<Role> roles) {
+        // TODO: Finish this.
+        return Collections.emptyList();
+    }
 }

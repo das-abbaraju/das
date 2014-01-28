@@ -177,6 +177,7 @@
     <bean id="ReportSuggestionsTask" class="com.picsauditing.actions.cron.ReportSuggestionsTask" scope="prototype"/>
     <bean id="RunConCronForOldAccountsWithBalances" class="com.picsauditing.actions.cron.RunConCronForOldAccountsWithBalances" scope="prototype"/>
     <bean id="SendEmailToBidOnlyAccounts" class="com.picsauditing.actions.cron.SendEmailToBidOnlyAccounts" scope="prototype"/>
+    <bean id="SetSapSync" class="com.picsauditing.actions.cron.SetSapSync" scope="prototype"/>
     <bean id="TestTask" class="com.picsauditing.actions.cron.TestTask" scope="prototype"/>
 
     <!-- Validators -->

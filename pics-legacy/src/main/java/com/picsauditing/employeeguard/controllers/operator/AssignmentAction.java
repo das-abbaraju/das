@@ -76,7 +76,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 
     public String role() {
         project = projectService.getProject(String.valueOf(projectId), assignmentId);
-        AccountGroup role = groupService.getGroup(id);
+        Role role = groupService.getGroup(id);
         List<AccountSkill> jobRoleSkills = getJobRoleSkills(role.getSkills());
 
         // Does not have the correct # of skills, missing project skill, site skill, corporate skill

@@ -1,18 +1,18 @@
 package com.picsauditing.employeeguard.forms.factory;
 
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.forms.employee.CompanyGroupInfo;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
-import com.picsauditing.model.i18n.KeyValue;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.model.i18n.KeyValue;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -83,16 +83,16 @@ public class EmployeeProfileFormBuilder {
 
 		List<Integer> accountIds = getAccountIds(profile.getEmployees());
 		for (Integer accountId : accountIds) {
-			List<AccountGroup> groups = groupService.getGroupsForAccount(accountId);
+			List<Group> groups = groupService.getGroupsForAccount(accountId);
 			accountGroupMap.put(accountId, getKeyValueList(groups));
 		}
 
 		return accountGroupMap;
 	}
 
-	private List<KeyValue<Integer, String>> getKeyValueList(List<AccountGroup> groups) {
+	private List<KeyValue<Integer, String>> getKeyValueList(List<Group> groups) {
 		List<KeyValue<Integer, String>> values = new ArrayList<>();
-		for (AccountGroup group : groups) {
+		for (Group group : groups) {
 			values.add(new KeyValue(group.getAccountId(), group.getName()));
 		}
 
@@ -102,7 +102,7 @@ public class EmployeeProfileFormBuilder {
 	private List<CompanyGroupInfo> getCompanyGroupInfoList(final Profile profile, List<AccountModel> accountModels) {
 		List<CompanyGroupInfo> companyGroupInfoList = new ArrayList<>();
 
-		Map<Integer, List<AccountGroup>> map = groupService.getMapOfAccountToGroupListByProfile(profile);
+		Map<Integer, List<Group>> map = groupService.getMapOfAccountToGroupListByProfile(profile);
 
 		for (AccountModel accountModel : accountModels) {
 			CompanyGroupInfo companyGroupInfo = new CompanyGroupInfo();

@@ -3,10 +3,13 @@ package com.picsauditing.employeeguard.forms.operator;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectSkill;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.util.DateUtil;
+import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class ProjectNameSkillsForm extends ProjectNameLocationForm {
+    private int siteId;
 	private String site;
 	private int startYear;
 	private int startMonth;
@@ -16,7 +19,15 @@ public class ProjectNameSkillsForm extends ProjectNameLocationForm {
 	private int endDay;
 	private int[] skills;
 
-	public String getSite() {
+    public int getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(int siteId) {
+        this.siteId = siteId;
+    }
+
+    public String getSite() {
 		return site;
 	}
 
@@ -96,7 +107,18 @@ public class ProjectNameSkillsForm extends ProjectNameLocationForm {
 		return project;
 	}
 
-	public static class Builder {
+    @Override
+    public UniqueIndexable getUniqueIndexable() {
+        return new Project.ProjectUniqueIndex(SessionInfoProviderFactory.getSessionInfoProvider().getId(),
+                siteId, name);
+    }
+
+    @Override
+    public Class<?> getType() {
+        return Project.class;
+    }
+
+    public static class Builder {
 		private Project project;
 		private String site;
 
@@ -118,6 +140,7 @@ public class ProjectNameSkillsForm extends ProjectNameLocationForm {
 				int[] explodedEnd = DateUtil.dateToExploded(project.getEndDate());
 
 				projectForm.name = project.getName();
+                projectForm.siteId = project.getAccountId();
 				projectForm.location = project.getLocation();
 
 				if (ArrayUtils.isNotEmpty(explodedStart)) {

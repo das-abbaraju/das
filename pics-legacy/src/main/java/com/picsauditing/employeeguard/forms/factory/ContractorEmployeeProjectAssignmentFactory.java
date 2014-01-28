@@ -13,30 +13,30 @@ import java.util.TreeMap;
 
 public class ContractorEmployeeProjectAssignmentFactory {
 
-	public List<ContractorEmployeeProjectAssignment> buildList(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, List<AccountGroup> jobRoles) {
+	public List<ContractorEmployeeProjectAssignment> buildList(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, List<Group> jobRoles) {
 		Map<Employee, List<AccountSkillEmployee>> employeeMap = buildEmployeeSkillsMap(accountEmployees, accountSkillEmployees);
 
 		List<ContractorEmployeeProjectAssignment> employeeAssignmentInformation = new ArrayList<>();
-		Map<Employee, List<AccountGroup>> employeeJobRolesMap = buildEmployeeJobRoles(accountEmployees, jobRoles);
+		Map<Employee, List<Group>> employeeJobRolesMap = buildEmployeeJobRoles(accountEmployees, jobRoles);
 		for (Map.Entry<Employee, List<AccountSkillEmployee>> employeeMapEntry : employeeMap.entrySet()) {
-			List<AccountGroup> employeeJobRoles = employeeJobRolesMap.get(employeeMapEntry.getKey());
+			List<Group> employeeJobRoles = employeeJobRolesMap.get(employeeMapEntry.getKey());
 			employeeAssignmentInformation.add(build(employeeMapEntry.getKey(), employeeMapEntry.getValue(), accountSkills, employeeJobRoles));
 		}
 
 		return employeeAssignmentInformation;
 	}
 
-	private Map<Employee, List<AccountGroup>> buildEmployeeJobRoles(List<Employee> accountEmployees, List<AccountGroup> jobRoles) {
-		Map<Employee, List<AccountGroup>> employeeJobRoles = new TreeMap<>();
+	private Map<Employee, List<Group>> buildEmployeeJobRoles(List<Employee> accountEmployees, List<Group> jobRoles) {
+		Map<Employee, List<Group>> employeeJobRoles = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
-			for (AccountGroupEmployee accountGroupEmployee : employee.getGroups()) {
-				if (jobRoles.contains(accountGroupEmployee.getGroup())) {
+			for (GroupEmployee groupEmployee : employee.getGroups()) {
+				if (jobRoles.contains(groupEmployee.getGroup())) {
 					if (!employeeJobRoles.containsKey(employee)) {
-						employeeJobRoles.put(employee, new ArrayList<AccountGroup>());
+						employeeJobRoles.put(employee, new ArrayList<Group>());
 					}
 
-					employeeJobRoles.get(employee).add(accountGroupEmployee.getGroup());
+					employeeJobRoles.get(employee).add(groupEmployee.getGroup());
 				}
 			}
 		}
@@ -62,7 +62,7 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return employeeSkillMap;
 	}
 
-	public ContractorEmployeeProjectAssignment build(Employee employee, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, List<AccountGroup> jobRoles) {
+	public ContractorEmployeeProjectAssignment build(Employee employee, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, List<Group> jobRoles) {
 		ContractorEmployeeProjectAssignment employeeAssignmentInformation = new ContractorEmployeeProjectAssignment();
 		employeeAssignmentInformation = addEmployeeInfo(employeeAssignmentInformation, employee);
 		employeeAssignmentInformation.setSkillStatuses(buildOrderedSkillStatus(accountSkills, accountSkillEmployees));

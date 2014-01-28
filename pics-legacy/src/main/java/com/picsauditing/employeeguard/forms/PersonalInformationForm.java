@@ -1,6 +1,8 @@
 package com.picsauditing.employeeguard.forms;
 
-public interface PersonalInformationForm {
+import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
+
+public interface PersonalInformationForm extends DuplicateInfoProvider {
 	String getFirstName();
 
 	void setFirstName(String firstName);

@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.entities.ProfileDocument;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class ProfileDocumentDAO extends BaseEntityDAO<ProfileDocument> {
+public class ProfileDocumentDAO extends AbstractBaseEntityDAO<ProfileDocument> {
 	private static final String FIND_DOCUMENTS_BY_PROFILE_ID = "FROM ProfileDocument d " +
 			"WHERE d.profile.id = :profileId";
 

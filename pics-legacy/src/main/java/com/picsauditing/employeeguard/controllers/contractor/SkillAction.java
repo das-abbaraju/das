@@ -6,8 +6,8 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.IntervalType;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
@@ -33,8 +33,8 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	private static final long serialVersionUID = -3879403139978601779L;
 
 	/* Service + Validator */
-    @Autowired
-    private EmployeeService employeeService;
+	@Autowired
+	private EmployeeService employeeService;
 	@Autowired
 	private GroupService groupService;
 	@Autowired
@@ -51,8 +51,8 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	/* Models */
 	private AccountSkill skill;
 	private List<AccountSkill> skills;
-	private List<AccountGroup> skillGroups;
-    private List<SkillModel> skillModels;
+	private List<Group> skillGroups;
+	private List<SkillModel> skillModels;
 
 	/* Other */
 	private UrlBuilder urlBuilder;
@@ -60,7 +60,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	/* Pages */
 
 	public String index() {
-        int accountId = permissions.getAccountId();
+		int accountId = permissions.getAccountId();
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();
 			skills = skillService.search(searchTerm, accountId);
@@ -68,8 +68,8 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 			skills = skillService.getSkillsForAccount(accountId);
 		}
 
-        skillModels = ViewModeFactory.getSkillModelFactory().create(skills,
-                (int) employeeService.getNumberOfEmployeesForAccount(accountId));
+		skillModels = ViewModeFactory.getSkillModelFactory().create(skills,
+				(int) employeeService.getNumberOfEmployeesForAccount(accountId));
 
 		Collections.sort(skillModels);
 
@@ -203,7 +203,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		return skills;
 	}
 
-	public List<AccountGroup> getSkillGroups() {
+	public List<Group> getSkillGroups() {
 		return skillGroups;
 	}
 
@@ -211,7 +211,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		return IntervalType.getDisplayableOptions();
 	}
 
-    public List<SkillModel> getSkillModels() {
-        return skillModels;
-    }
+	public List<SkillModel> getSkillModels() {
+		return skillModels;
+	}
 }

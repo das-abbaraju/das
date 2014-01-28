@@ -11,8 +11,8 @@ import java.util.*;
 
 public class ProjectRoleService {
 
-    @Autowired
-    private ProjectRoleDAO projectRoleDAO;
+	@Autowired
+	private ProjectRoleDAO projectRoleDAO;
     @Autowired
     private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
@@ -36,28 +36,28 @@ public class ProjectRoleService {
 		return ListUtil.removeDuplicatesAndSort(accountSkills);
 	}
 
-    public List<ProjectRole> getRolesForEmployee(Employee employee) {
-        return projectRoleDAO.findByEmployee(employee);
-    }
+	public List<ProjectRole> getRolesForEmployee(Employee employee) {
+		return projectRoleDAO.findByEmployee(employee);
+	}
 
-    public List<ProjectRole> getRolesForProfile(Profile profile) {
-        return projectRoleDAO.findByProfile(profile);
-    }
+	public List<ProjectRole> getRolesForProfile(Profile profile) {
+		return projectRoleDAO.findByProfile(profile);
+	}
 
-	public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, AccountGroup role) {
+	public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, Group role) {
 		return projectRoleDAO.findByProjectsAndRole(projectIds, role);
 	}
 
-    public List<ProjectRoleEmployee> getProjectRolesForContractor(Project project, int accountId) {
-        return projectRoleDAO.findByProjectAndContractor(project, accountId);
-    }
+	public List<ProjectRoleEmployee> getProjectRolesForContractor(final Project project, final int accountId) {
+		return projectRoleDAO.findByProjectAndContractor(project, accountId);
+	}
 
-    public Map<AccountGroup, Set<AccountSkill>> getRolesAndSkillsForProject(final Project project) {
+    public Map<Group, Set<AccountSkill>> getRolesAndSkillsForProject(final Project project) {
         List<ProjectRole> projectRoles = projectRoleDAO.findByProject(project);
 
-        Map<AccountGroup, Set<AccountSkill>> roleSkills = new HashMap<>();
+        Map<Group, Set<AccountSkill>> roleSkills = new HashMap<>();
         for (ProjectRole projectRole : projectRoles) {
-            AccountGroup role = projectRole.getRole();
+            Group role = projectRole.getRole();
             if (!roleSkills.containsKey(role)) {
                 roleSkills.put(role, new HashSet<AccountSkill>());
             }
@@ -95,8 +95,8 @@ public class ProjectRoleService {
     }
 
     public Map<AccountModel, Set<Employee>> getEmployeesAssignedToProjectRole(final Project project,
-                                                                          final AccountGroup role,
-                                                                          final Map<Integer, AccountModel> accountModels) {
+                                                                              final Role role,
+                                                                              final Map<Integer, AccountModel> accountModels) {
         List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByProjectAndRole(project, role);
 
         Map<AccountModel, Set<Employee>> contractorEmployees = new HashMap<>();

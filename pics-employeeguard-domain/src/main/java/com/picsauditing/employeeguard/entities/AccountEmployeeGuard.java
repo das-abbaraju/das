@@ -5,6 +5,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "accountemployeeguard")
 public class AccountEmployeeGuard {
+
+	public AccountEmployeeGuard() {
+	}
+
+	public AccountEmployeeGuard(final int accountId) {
+		this.accountId = accountId;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "accountID")

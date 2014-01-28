@@ -48,8 +48,8 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private static final long serialVersionUID = 1334317982294098486L;
 
 	/* Service + Validator */
-    @Autowired
-    private AccountService accountService;
+	@Autowired
+	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -68,8 +68,8 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private PhotoUtil photoUtil;
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
-    @Autowired
-    private ProjectRoleService projectRoleService;
+	@Autowired
+	private ProjectRoleService projectRoleService;
 
 	/* Forms */
 	@FormBinding("contractor_employee_create")
@@ -86,9 +86,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	/* Models */
 	private Employee employee;
 	private List<Employee> employees;
-	private List<AccountGroup> employeeGroups;
+	private List<Group> employeeGroups;
 	private List<SkillInfo> skillInfoList;
-    private List<EmployeeAssignmentModel> employeeAssignments;
+	private List<EmployeeAssignmentModel> employeeAssignments;
 
 	/* Misc data */
 	private InputStream inputStream;
@@ -116,12 +116,11 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	public String show() throws PageNotFoundException {
 		loadEmployee();
 		skillInfoList = formBuilderFactory.getSkillInfoBuilder().build(employee.getSkills());
-        loadEmployeeAssignments(employee);
+		loadEmployeeAssignments(employee);
 
 		return SHOW;
 	}
 
-	//	@RequiredPermission({OpPerms.ManageEmployees, OpPerms.ContractorSafety})
 	public String create() throws IOException {
 		loadEmployeeGroups();
 
@@ -216,20 +215,20 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		employee = employeeService.findEmployee(id, permissions.getAccountId());
 	}
 
-    private void loadEmployeeAssignments(Employee employee) {
-        List<ProjectRole> projectRoles = projectRoleService.getRolesForEmployee(employee);
-        Set<Integer> accountIds = Utilities.getIdsFromCollection(projectRoles, new Utilities.Identitifable<ProjectRole, Integer>() {
+	private void loadEmployeeAssignments(Employee employee) {
+		List<ProjectRole> projectRoles = projectRoleService.getRolesForEmployee(employee);
+		Set<Integer> accountIds = Utilities.getIdsFromCollection(projectRoles, new Utilities.Identitifable<ProjectRole, Integer>() {
 
-            @Override
-            public Integer getId(ProjectRole projectRole) {
-                return projectRole.getProject().getAccountId();
-            }
-        });
+			@Override
+			public Integer getId(ProjectRole projectRole) {
+				return projectRole.getProject().getAccountId();
+			}
+		});
 
-        Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
+		Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
 
-        employeeAssignments = ViewModeFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
-    }
+		employeeAssignments = ViewModeFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
+	}
 
 	private void loadEmployeeGroups() {
 		employeeGroups = groupService.getGroupsForAccount(permissions.getAccountId());
@@ -334,7 +333,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		return employees;
 	}
 
-	public List<AccountGroup> getEmployeeGroups() {
+	public List<Group> getEmployeeGroups() {
 		return employeeGroups;
 	}
 
@@ -350,7 +349,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		return skillInfoList;
 	}
 
-    public List<EmployeeAssignmentModel> getEmployeeAssignments() {
-        return employeeAssignments;
-    }
+	public List<EmployeeAssignmentModel> getEmployeeAssignments() {
+		return employeeAssignments;
+	}
 }

@@ -2,11 +2,11 @@ package com.picsauditing.employeeguard.validators.document;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
-import com.picsauditing.employeeguard.validators.AbstractValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
-public class ProfileDocumentFormValidator extends AbstractValidator<DocumentForm> {
+public class ProfileDocumentFormValidator extends AbstractBasicValidator<DocumentForm> {
 
 	public static final String PROFILE_DOCUMENT_FORM = "documentForm";
 
@@ -16,7 +16,7 @@ public class ProfileDocumentFormValidator extends AbstractValidator<DocumentForm
 	}
 
 	@Override
-	protected void performValidation(DocumentForm documentForm) {
+	protected void doFormValidation(DocumentForm documentForm) {
 		if (!ProfileDocumentValidationUtil.valid(documentForm, ProfileDocumentValidationUtil.DocumentField.NAME)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "name"), "Name is missing");
 		}

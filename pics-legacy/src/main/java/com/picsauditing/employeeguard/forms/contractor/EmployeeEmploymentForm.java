@@ -1,8 +1,11 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
+import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
+import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 
-public class EmployeeEmploymentForm {
+public class EmployeeEmploymentForm implements DuplicateInfoProvider {
 	private String title;
 	private String employeeId;
 	private String[] groups;
@@ -49,4 +52,15 @@ public class EmployeeEmploymentForm {
 	public void setGroups(String[] groups) {
 		this.groups = groups;
 	}
+
+    @Override
+    public UniqueIndexable getUniqueIndexable() {
+        return new Employee.EmployeeAccountSlugUniqueKey(SessionInfoProviderFactory.getSessionInfoProvider().getId(),
+                SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), employeeId);
+    }
+
+    @Override
+    public Class<?> getType() {
+        return Employee.class;
+    }
 }

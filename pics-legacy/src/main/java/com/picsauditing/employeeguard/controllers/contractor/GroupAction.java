@@ -6,9 +6,9 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountGroup;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
@@ -52,8 +52,8 @@ public class GroupAction extends PicsRestActionSupport implements AjaxValidator 
 
 	/* Models */
 
-	private AccountGroup group;
-	private List<AccountGroup> groups;
+	private Group group;
+	private List<Group> groups;
 	private List<AccountSkill> groupSkills;
 	private List<Employee> groupEmployees;
 
@@ -160,10 +160,10 @@ public class GroupAction extends PicsRestActionSupport implements AjaxValidator 
 
 	/* Validation */
 
-    // For the Ajax Validation
-    public Validator getCustomValidator() {
-        return groupFormValidator;
-    }
+	// For the Ajax Validation
+	public Validator getCustomValidator() {
+		return groupFormValidator;
+	}
 
 	@Override
 	public void validate() {
@@ -216,11 +216,11 @@ public class GroupAction extends PicsRestActionSupport implements AjaxValidator 
 
 	/* Model - Getters */
 
-	public AccountGroup getGroup() throws PageNotFoundException {
+	public Group getGroup() throws PageNotFoundException {
 		return group;
 	}
 
-	public List<AccountGroup> getGroups() {
+	public List<Group> getGroups() {
 		return groups;
 	}
 
