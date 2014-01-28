@@ -17,10 +17,11 @@ import java.util.*;
 
 public class SiteAssignmentModelFactory {
 
-	public SiteAssignmentModel create(List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels, Map<Role, List<Employee>> roleEmployees) {
+	public SiteAssignmentModel create(List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels,
+	                                  Map<Role, ? extends Collection<Employee>> roleEmployees) {
 		Map<String, Integer> roleEmployeeCount = new TreeMap<>();
 
-		for (Map.Entry<Role, List<Employee>> entry : roleEmployees.entrySet()) {
+		for (Map.Entry<Role, ? extends Collection<Employee>> entry : roleEmployees.entrySet()) {
 			roleEmployeeCount.put(entry.getKey().getName(), entry.getValue().size());
 		}
 
@@ -31,14 +32,28 @@ public class SiteAssignmentModelFactory {
 				.build();
 	}
 
-	public SiteAssignmentModel create(final AccountModel site, final List<AccountModel> employeeAccounts, final List<SkillUsage> skillUsages) {
+	public SiteAssignmentModel create(final AccountModel site,
+	                                  final List<AccountModel> employeeAccounts,
+	                                  final List<SkillUsage> skillUsages,
+	                                  final List<Role> siteRoles) {
 		List<Employee> employees = getEmployees(skillUsages);
 		Map<Employee, Set<AccountSkill>> employeeSkills = getEmployeeSkills(skillUsages);
 		Map<Employee, List<Role>> employeeRoles = getEmployeeRoles(employees, site.getId());
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignments = buildEmployeeSiteAssignments(employeeAccounts, employeeSkills, employeeRoles);
 
-		Map<Role, List<Employee>> rolesToEmployees = Utilities.invertMap(employeeRoles);
+		Map<Role, Set<Employee>> rolesToEmployees = new HashMap<>();
+		for (Role role : siteRoles) {
+			for (Map.Entry<Employee, List<Role>> employeeRoleSet : employeeRoles.entrySet()) {
+				if (employeeRoleSet.getValue().contains(role)) {
+					Utilities.addToMapOfKeyToSet(rolesToEmployees, role, employeeRoleSet.getKey());
+				}
+			}
+
+			if (!rolesToEmployees.containsKey(role)) {
+				rolesToEmployees.put(role, Collections.<Employee>emptySet());
+			}
+		}
 
 		return create(employeeSiteAssignments, rolesToEmployees);
 	}

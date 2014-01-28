@@ -2,10 +2,8 @@ package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.SkillUsage;
-import com.picsauditing.employeeguard.services.SkillUsageLocator;
+import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
@@ -24,6 +22,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private EmployeeService employeeService;
 	@Autowired
 	private SkillUsageLocator skillUsageLocator;
+	@Autowired
+	private RoleService roleService;
 
 	private int roleId;
 	private int employeeId;
@@ -33,14 +33,24 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String status() {
 		site = accountService.getAccountById(NumberUtils.toInt(id));
-		AccountModel account = accountService.getAccountById(permissions.getAccountId());
-
-		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
-		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
-
-		siteAssignmentModel = ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages);
+		buildSiteAssignmentModel();
 
 		return "status";
+	}
+
+	private void buildSiteAssignmentModel() {
+		AccountModel account = accountService.getAccountById(permissions.getAccountId());
+		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
+		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
+		List<Role> roles = getSiteRoles();
+
+		siteAssignmentModel = ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roles);
+	}
+
+	private List<Role> getSiteRoles() {
+		List<Integer> siteAndCorporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
+		siteAndCorporateIds.add(site.getId());
+		return roleService.getRolesForAccounts(siteAndCorporateIds);
 	}
 
 	public String unassign() {

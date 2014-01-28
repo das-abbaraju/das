@@ -130,7 +130,7 @@ public class RoleService {
 			addSkillsFromSiteProjectRoles(siteId, employeeSkills, employee);
 		}
 
-		addSiteRequiredSkills(siteId, corporateIds, employeeSkills);
+//		addSiteRequiredSkills(siteId, corporateIds, employeeSkills);
 
 		return employeeSkills;
 	}
