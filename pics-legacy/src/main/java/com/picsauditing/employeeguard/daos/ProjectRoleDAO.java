@@ -66,4 +66,11 @@ public class ProjectRoleDAO extends BaseEntityDAO<ProjectRole> {
         query.setParameter("accountId", accountId);
         return query.getResultList();
     }
+
+    public List<ProjectRole> findByProject(final Project project) {
+        TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
+                "WHERE pr.project = :project", ProjectRole.class);
+        query.setParameter("project", project);
+        return query.getResultList();
+    }
 }

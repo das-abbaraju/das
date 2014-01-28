@@ -14,12 +14,7 @@ import java.util.*;
 public class EmployeeProjectRoleAssignmentFactory {
 
     public List<EmployeeProjectRoleAssignment> create(final Map<AccountModel, Set<Employee>> contractorEmployeeMap,
-                                                final List<AccountSkill> jobRoleSkills,
-                                                final List<AccountSkill> siteRequiredSkills,
-                                                final List<AccountSkill> corporateRequiredSkills) {
-        List<AccountSkill> orderedSkills = sortSkills(buildSetOfSkills(jobRoleSkills, siteRequiredSkills,
-                corporateRequiredSkills));
-
+                                                      final List<AccountSkill> orderedSkills) {
         List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments = new ArrayList<>();
         for (AccountModel accountModel : contractorEmployeeMap.keySet()) {
             for (Employee employee : contractorEmployeeMap.get(accountModel)) {
@@ -33,12 +28,7 @@ public class EmployeeProjectRoleAssignmentFactory {
 
     public EmployeeProjectRoleAssignment create(final AccountModel accountModel,
                                                 final Employee employee,
-                                                final List<AccountSkill> jobRoleSkills,
-                                                final List<AccountSkill> siteRequiredSkills,
-                                                final List<AccountSkill> corporateRequiredSkills) {
-        List<AccountSkill> orderedSkills = sortSkills(buildSetOfSkills(jobRoleSkills, siteRequiredSkills,
-                corporateRequiredSkills));
-
+                                                final List<AccountSkill> orderedSkills) {
         return buildEmployeeProjectRoleAssignment(accountModel, employee, orderedSkills);
     }
 
@@ -54,21 +44,6 @@ public class EmployeeProjectRoleAssignmentFactory {
                 .employeeName(employee.getName())
                 .skillStatuses(getRoleSkillStatuses(employeeSkillMap, orderedSkills))
                 .build();
-    }
-
-    private List<AccountSkill> sortSkills(Set<AccountSkill> accountSkills) {
-        List<AccountSkill> sortedSkills = new ArrayList<>(accountSkills);
-        Collections.sort(sortedSkills);
-        return sortedSkills;
-    }
-
-    private Set<AccountSkill> buildSetOfSkills(final List<AccountSkill> jobRoleSkills,
-                                               final List<AccountSkill> siteRequiredSkills,
-                                               final List<AccountSkill> corporateRequiredSkills) {
-        Set<AccountSkill> accountSkills = new HashSet<>(jobRoleSkills);
-        accountSkills.addAll(siteRequiredSkills);
-        accountSkills.addAll(corporateRequiredSkills);
-        return accountSkills;
     }
 
     private Map<AccountSkill, AccountSkillEmployee> buildEmployeeAccountSkillMap(List<AccountSkillEmployee> employeeSkills) {

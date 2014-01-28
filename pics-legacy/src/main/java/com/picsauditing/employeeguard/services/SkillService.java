@@ -56,6 +56,12 @@ public class SkillService {
         return ExtractorUtil.extractList(requiredByAccount, SiteSkill.SKILL_EXTRACTOR);
     }
 
+    public List<AccountSkill> getParentSiteRequiredSkills(int accountId) {
+        List<Integer> parentIds = accountService.getTopmostCorporateAccountIds(accountId);
+        List<SiteSkill> requiredSkills = siteSkillDAO.findByAccountIds(parentIds);
+        return ExtractorUtil.extractList(requiredSkills, SiteSkill.SKILL_EXTRACTOR);
+    }
+
     public Map<AccountModel, List<AccountSkill>> getSiteRequiredSkills(int accountId) {
         List<Integer> childOperators = accountService.getChildOperatorIds(accountId);
         List<SiteSkill> requiredByAccounts = siteSkillDAO.findByAccountIds(childOperators);
@@ -95,6 +101,10 @@ public class SkillService {
 
     public List<AccountSkill> getSkillsForProfile(final Profile profile) {
         return accountSkillDAO.findByProfile(profile);
+    }
+
+    public List<AccountSkill> getSkillsForRole(final AccountGroup role) {
+        return accountSkillDAO.findByGroups(Arrays.asList(role));
     }
 
     public AccountSkill save(AccountSkill accountSkill, int accountId, int appUserId) {

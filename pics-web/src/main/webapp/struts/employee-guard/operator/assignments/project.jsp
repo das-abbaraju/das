@@ -25,7 +25,7 @@
         <li class="active">
             <a href="${operator_project_assignments}">Project</a>
         </li>
-        <s:iterator value="operatorProjectAssignmentMatrix.roles" var="operator_project_role">
+        <s:iterator value="operatorProjectAssignment.roles" var="operator_project_role">
             <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="operator_project_role_url">
                 <s:param name="projectId">
                     ${project.id}
@@ -54,33 +54,31 @@
             </thead>
 
             <tbody>
-            <s:iterator value="operatorProjectAssignmentMatrix.assignments" var="operator_project_employee">
-                <s:if test="#operator_project_employee.hasRoles">
-                    <tr>
-                        <td>${operator_project_employee.companyName}</td>
-                        <td>${operator_project_employee.employeeName}</td>
-                        <s:iterator value="#operator_project_employee.skillStatuses" var="employee_skill_status">
-                            <s:if test="#employee_skill_status.expired" >
-                                <s:set var="skill_icon">icon-minus-sign-alt</s:set>
-                                <s:set var="skill_status_class">danger</s:set>
-                            </s:if>
-                            <s:elseif test="#employee_skill_status.expiring" >
-                                <s:set var="skill_icon">icon-warning-sign</s:set>
-                                <s:set var="skill_status_class">warning</s:set>
-                            </s:elseif>
-                            <s:elseif test="#employee_skill_status.pending" >
-                                <s:set var="skill_icon">icon-ok-circle</s:set>
-                                <s:set var="skill_status_class">success</s:set>
-                            </s:elseif>
-                            <s:else>
-                                <s:set var="skill_icon">icon-ok-sign</s:set>
-                                <s:set var="skill_status_class">success</s:set>
-                            </s:else>
+            <s:iterator value="operatorProjectAssignment.employeeProjectAssignments" var="operator_project_employee">
+                <tr>
+                    <td>${operator_project_employee.contractorName}</td>
+                    <td>${operator_project_employee.employeeName}</td>
+                    <s:iterator value="#operator_project_employee.skillStatusRollUp" var="employee_skill_status">
+                        <s:if test="#employee_skill_status.expired" >
+                            <s:set var="skill_icon">icon-minus-sign-alt</s:set>
+                            <s:set var="skill_status_class">danger</s:set>
+                        </s:if>
+                        <s:elseif test="#employee_skill_status.expiring" >
+                            <s:set var="skill_icon">icon-warning-sign</s:set>
+                            <s:set var="skill_status_class">warning</s:set>
+                        </s:elseif>
+                        <s:elseif test="#employee_skill_status.pending" >
+                            <s:set var="skill_icon">icon-ok-circle</s:set>
+                            <s:set var="skill_status_class">success</s:set>
+                        </s:elseif>
+                        <s:else>
+                            <s:set var="skill_icon">icon-ok-sign</s:set>
+                            <s:set var="skill_status_class">success</s:set>
+                        </s:else>
 
-                            <td class="text-center ${skill_status_class}"><i class="${skill_icon} icon-large"></i></td>
-                        </s:iterator>
-                    </tr>
-                </s:if>
+                        <td class="text-center ${skill_status_class}"><i class="${skill_icon} icon-large"></i></td>
+                    </s:iterator>
+                </tr>
             </s:iterator>
             </tbody>
         </table>

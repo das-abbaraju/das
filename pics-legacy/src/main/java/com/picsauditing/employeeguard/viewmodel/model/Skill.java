@@ -19,7 +19,7 @@ public class Skill implements Comparable<Skill> {
     public Skill(final Builder builder) {
         this.id = builder.id;
         this.accountId = builder.accountId;
-        this.endDate = new Date(builder.endDate.getTime());
+        this.endDate = builder.endDate == null ? null : new Date(builder.endDate.getTime());
         this.name = builder.name;
         this.description = builder.description;
         this.skillType = builder.skillType;

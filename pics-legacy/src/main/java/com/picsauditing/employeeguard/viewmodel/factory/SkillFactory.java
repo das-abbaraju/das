@@ -8,9 +8,7 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.Skill;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class SkillFactory {
 
@@ -70,5 +68,38 @@ public class SkillFactory {
 
     private static SkillStatus calculateSkillStatus(final AccountSkillEmployee accountSkillEmployee) {
         return SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
+    }
+
+    public static List<Skill> createSortedOperatorProjectAssignmentSkillHeader(final List<AccountSkill> jobRoleSkills,
+                                                                               final List<AccountSkill> projectSkills,
+                                                                               final List<AccountSkill> siteRequiredSkills,
+                                                                               final List<AccountSkill> corporateRequiredSkills) {
+        return createFromAccountSkills(sortSkills(buildSetOfSkills(jobRoleSkills, projectSkills, siteRequiredSkills,
+                corporateRequiredSkills)));
+    }
+
+    public static List<AccountSkill> createSortedOperatorProjectAssignmentAccountSkillsHeader(final List<AccountSkill> jobRoleSkills,
+                                                                                              final List<AccountSkill> projectSkills,
+                                                                                              final List<AccountSkill> siteRequiredSkills,
+                                                                                              final List<AccountSkill> corporateRequiredSkills) {
+        return sortSkills(buildSetOfSkills(jobRoleSkills, projectSkills, siteRequiredSkills,
+                corporateRequiredSkills));
+    }
+
+    private static Set<AccountSkill> buildSetOfSkills(final List<AccountSkill> jobRoleSkills,
+                                                      final List<AccountSkill> projectSkills,
+                                                      final List<AccountSkill> siteRequiredSkills,
+                                                      final List<AccountSkill> corporateRequiredSkills) {
+        Set<AccountSkill> accountSkills = new HashSet<>(jobRoleSkills);
+        accountSkills.addAll(siteRequiredSkills);
+        accountSkills.addAll(corporateRequiredSkills);
+        accountSkills.addAll(projectSkills);
+        return accountSkills;
+    }
+
+    private static List<AccountSkill> sortSkills(Set<AccountSkill> accountSkills) {
+        List<AccountSkill> sortedSkills = new ArrayList<>(accountSkills);
+        Collections.sort(sortedSkills);
+        return sortedSkills;
     }
 }

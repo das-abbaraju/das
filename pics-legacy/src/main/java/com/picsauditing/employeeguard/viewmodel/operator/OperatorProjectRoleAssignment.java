@@ -2,7 +2,9 @@ package com.picsauditing.employeeguard.viewmodel.operator;
 
 import com.picsauditing.employeeguard.viewmodel.model.Role;
 import com.picsauditing.employeeguard.viewmodel.model.Skill;
+import org.apache.commons.collections.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 public class OperatorProjectRoleAssignment {
@@ -12,9 +14,23 @@ public class OperatorProjectRoleAssignment {
     private final List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments;
 
     public OperatorProjectRoleAssignment(final Builder builder) {
-        this.roles = builder.roles;
-        this.skills = builder.skills;
-        this.employeeProjectRoleAssignments = builder.employeeProjectRoleAssignments;
+        this.roles = CollectionUtils.isEmpty(builder.roles)
+                ? Collections.<Role>emptyList() : Collections.unmodifiableList(builder.roles);
+
+        this.skills = CollectionUtils.isEmpty(builder.skills)
+                ? Collections.<Skill>emptyList() : Collections.unmodifiableList(builder.skills);
+
+        this.employeeProjectRoleAssignments = CollectionUtils.isEmpty(builder.employeeProjectRoleAssignments)
+                ? Collections.<EmployeeProjectRoleAssignment>emptyList()
+                : Collections.unmodifiableList(builder.employeeProjectRoleAssignments);
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
     }
 
     public List<EmployeeProjectRoleAssignment> getEmployeeProjectRoleAssignments() {
