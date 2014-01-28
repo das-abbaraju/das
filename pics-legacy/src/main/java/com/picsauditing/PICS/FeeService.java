@@ -20,10 +20,9 @@ public class FeeService {
     @Autowired
     private InvoiceFeeDAO feeDAO;
     @Autowired
-    protected static AuditTypeRuleCache ruleCache;
-    @Autowired
     private BillingService billingService;
 
+    protected static AuditTypeRuleCache ruleCache;
     private boolean hasEmployeeGuardAccount = false;
 
     public AuditTypeRuleCache getRuleCache() {
@@ -217,7 +216,7 @@ public class FeeService {
             if (auditType == null)
                 continue;
 
-            if (auditType.isDesktop() || auditType.isImplementation() || auditType.isSsip() || (auditType.isCorIec() && isLinkedToSuncor))
+            if (hasAuditGUARD(auditType, isLinkedToSuncor))
                 feeClasses.add(FeeClass.AuditGUARD);
 
             if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
@@ -247,6 +246,10 @@ public class FeeService {
         buildFeeNewLevels(contractor, payingFacilities, feeClasses, operatorsRequiringInsureGUARD);
 
         calculateUpgradeDate(contractor, currentBillingStatus);
+    }
+
+    private boolean hasAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
+        return auditType.isAlwaysBilledForAuditGUARD() || (auditType.isIec() && linkedToSuncor);
     }
 
     // TODO: THIS IS TO BE REMOVED BEFORE 2015
