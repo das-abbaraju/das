@@ -112,9 +112,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private Locale locale = Locale.ENGLISH;
 	private String department;
 	private String apiKey;
-	private boolean usingDynamicReports;
+	private boolean usingDynamicReports = true;
 	private Date usingDynamicReportsDate;
-	private boolean usingVersion7Menus;
+	private boolean usingVersion7Menus = true;
 	private Date usingVersion7MenusDate;
 	private int assignmentCapacity;
 	private Date reportsManagerTutorialDate;
