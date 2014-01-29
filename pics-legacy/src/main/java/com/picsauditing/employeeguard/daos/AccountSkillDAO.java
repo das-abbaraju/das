@@ -98,7 +98,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
-	public List<AccountSkill> findByGroups(List<Group> groups) {
+	public List<AccountSkill> findByGroups(final List<Group> groups) {
 		if (CollectionUtils.isEmpty(groups)) {
 			return Collections.emptyList();
 		}
@@ -107,6 +107,16 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		query.setParameter("groups", groups);
 		return query.getResultList();
 	}
+
+    public List<AccountSkill> findByRoles(final List<Role> roles) {
+        if (CollectionUtils.isEmpty(roles)) {
+            return Collections.emptyList();
+        }
+
+        TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT asr.skill FROM AccountSkillRole asr WHERE asr.group IN ( :roles ) ", AccountSkill.class);
+        query.setParameter("roles", roles);
+        return query.getResultList();
+    }
 
 	public List<AccountSkill> search(final String searchTerm, final int accountId) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId = :accountId " +

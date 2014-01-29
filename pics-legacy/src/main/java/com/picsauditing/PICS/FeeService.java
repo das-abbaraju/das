@@ -20,10 +20,9 @@ public class FeeService {
     @Autowired
     private InvoiceFeeDAO feeDAO;
     @Autowired
-    protected static AuditTypeRuleCache ruleCache;
-    @Autowired
     private BillingService billingService;
 
+    protected static AuditTypeRuleCache ruleCache;
     private boolean hasEmployeeGuardAccount = false;
 
     public AuditTypeRuleCache getRuleCache() {
@@ -186,8 +185,6 @@ public class FeeService {
         boolean requiresOQ = false;
         boolean isLinkedToSuncor = false;
         Set<FeeClass> feeClasses = new HashSet<FeeClass>();
-        List<Integer> possibleEGAccounts = new ArrayList<>();
-        possibleEGAccounts.add(contractor.getId());
 
         for (ContractorOperator co : contractor.getOperators()) {
             if (!requiresOQ && co.getOperatorAccount().isRequiresOQ())
@@ -195,8 +192,6 @@ public class FeeService {
 
             if (!isLinkedToSuncor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
                 isLinkedToSuncor = true;
-
-            possibleEGAccounts.add(co.getOperatorAccount().getId());
         }
 
         if (contractor.getAccountLevel().isListOnly()) {
@@ -210,7 +205,7 @@ public class FeeService {
         else
             feeClasses.add(FeeClass.DocuGUARD);
 
-        hasEmployeeGuardAccount = accountEmployeeGuardDAO.hasEmployeeGUARDOperator(Strings.implode(possibleEGAccounts));
+        hasEmployeeGuardAccount = accountEmployeeGuardDAO.hasEmployeeGUARDOperator(contractor.getId());
         AuditTypesBuilder builder = new AuditTypesBuilder(getRuleCache(), contractor);
         Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
         Set<AuditTypeDetail> auditTypeDetails = builder.calculate();
@@ -221,7 +216,7 @@ public class FeeService {
             if (auditType == null)
                 continue;
 
-            if (auditType.isDesktop() || auditType.isImplementation() || auditType.isSsip() || (auditType.isCorIec() && isLinkedToSuncor))
+            if (hasAuditGUARD(auditType, isLinkedToSuncor))
                 feeClasses.add(FeeClass.AuditGUARD);
 
             if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
@@ -251,6 +246,10 @@ public class FeeService {
         buildFeeNewLevels(contractor, payingFacilities, feeClasses, operatorsRequiringInsureGUARD);
 
         calculateUpgradeDate(contractor, currentBillingStatus);
+    }
+
+    private boolean hasAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
+        return auditType.isAlwaysBilledForAuditGUARD() || (auditType.isIec() && linkedToSuncor);
     }
 
     // TODO: THIS IS TO BE REMOVED BEFORE 2015

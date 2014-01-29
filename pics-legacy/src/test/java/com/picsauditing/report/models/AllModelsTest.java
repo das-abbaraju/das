@@ -161,7 +161,7 @@ public class AllModelsTest {
     public void testGetWhereClause_COModel_asCorporate() throws Exception {
         permissions.setAccountType("Corporate");
         model = new ContractorOperatorsModel(permissions);
-        assertEquals("Account.status IN ('Active') AND Account.id IN (SELECT co.conID FROM contractor_operator co WHERE co.opID IN () AND co.workStatus = 'Y') AND ContractorOperator.opID IN ()", model.getWhereClause(new ArrayList<Filter>()));
+        assertEquals("Account.status IN ('Active') AND ContractorOperator.opID IN ()", model.getWhereClause(new ArrayList<Filter>()));
     }
 
     private String getJoin() {

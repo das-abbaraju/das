@@ -588,8 +588,7 @@ public class AuditBuilder {
 	private boolean isAuditThatCanAdjustStatus(ContractorAudit conAudit) {
 		return conAudit.getAuditType().isPicsPqf()
 				|| conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
-				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM
-				|| conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy);
+				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM;
 	}
 
 	private void adjustCaosToStatus(ContractorAudit conAudit, HashSet<ContractorAuditOperator> caosToChange, AuditStatus status) {

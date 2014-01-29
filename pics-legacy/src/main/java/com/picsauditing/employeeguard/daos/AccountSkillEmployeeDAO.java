@@ -131,9 +131,9 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
     public List<AccountSkillEmployee> findByProjectAndContractor(Project project, int accountId) {
         String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
                 "JOIN ase.skill s " +
-                "JOIN s.groups asg " +
-                "JOIN asg.group g " +
-                "JOIN g.projects pr " +
+                "JOIN s.roles asr " +
+                "JOIN asr.role r " +
+                "JOIN r.projects pr " +
                 "JOIN pr.employees pre " +
                 "JOIN pre.employee e " +
                 "WHERE pr.project = :project AND e.accountId = :accountId";

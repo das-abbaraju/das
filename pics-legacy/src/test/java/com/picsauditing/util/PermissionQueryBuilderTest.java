@@ -45,6 +45,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		CLIENT_SITES.add(new Integer(17));
 		CLIENT_SITES.add(new Integer(18));
 
+        when(permissions.getAccountIdString()).thenReturn("1100");
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(visibleStatuses.isEmpty()).thenReturn(true);
@@ -277,7 +278,19 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		assertContains(expected, builder.buildWhereClause());
 	}
 
-	private void setPermissionAccount() {
+    @Test
+    public void testOnlyApproved__NoOperators() throws Exception {
+        when(permissions.isCorporate()).thenReturn(true);
+        when(permissions.getOperatorChildren()).thenReturn(new HashSet());
+        setPermissionAccount();
+        when(permissions.isGeneralContractor()).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.ViewUnApproved)).thenReturn(false);
+
+        String expected = "a.status IN ('Active')";
+        assertContains(expected, builder.buildWhereClause());
+    }
+
+    private void setPermissionAccount() {
 		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
 		when(permissions.getAccountIdString()).thenReturn(new Integer(ACCOUNT_ID).toString());
 		when(permissions.isOperatorCorporate()).thenReturn(true);

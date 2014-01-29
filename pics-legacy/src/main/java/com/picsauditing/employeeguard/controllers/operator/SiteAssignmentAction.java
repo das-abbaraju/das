@@ -2,23 +2,27 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.forms.IdentifierAndNameCompositeForm;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.employeeguard.forms.operator.ContractorRoleInfo;
 import com.picsauditing.employeeguard.forms.operator.ProjectRoleAssignment;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.SkillInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class AssignmentsAction extends PicsRestActionSupport {
+public class SiteAssignmentAction extends PicsRestActionSupport {
 
     private static final long serialVersionUID = 1288428610452669599L;
 
     int roleId;
 
     private List<ProjectRoleAssignment> projectRoleAssignments;
+
+	public String index() {
+		return LIST;
+	}
 
     public String show() {
         projectRoleAssignments = buildFakeProjectRoleAssignments();

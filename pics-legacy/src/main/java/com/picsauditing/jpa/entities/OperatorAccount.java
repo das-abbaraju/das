@@ -34,6 +34,7 @@ public class OperatorAccount extends Account {
 	public static final int PicsConsortium = 4;
 	public static final int PICSPSM = 8;
 	public static final int SUNCOR = 10566;
+	public static final int IMPERIAL_OIL = 37472;
 	public static final int SALES = 23325;
 	public static final int TESORO = 1436;
 	public static final int VALSPAR_GARLAND = 23335;

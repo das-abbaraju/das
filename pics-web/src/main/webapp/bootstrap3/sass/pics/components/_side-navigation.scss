@@ -1,6 +1,6 @@
 .sidenav,
 #side-navigation {
-	background-color: $default_tint;
+	background-color: $default_platinum;
 
 	.nav > .active > a,
 	.nav > .active:hover > a,
@@ -11,7 +11,7 @@
 	    color: $primary_light;
 	}
 	.nav > li > a {
-	    color: #454545;
+	    color: $default_steel;
 	    display: block;
 	    padding: 5px 20px;
 	}
@@ -24,10 +24,8 @@
 			padding-top: 3px;
 			padding-bottom: 3px;
 			padding-left: 30px;
-
 	    }
 	}
-
 
 	.nav > .active > ul {
 	    display: block;

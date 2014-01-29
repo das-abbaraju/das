@@ -1,30 +1,5 @@
 package com.picsauditing.actions.employees;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
@@ -32,18 +7,25 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.JobCompetency;
-import com.picsauditing.jpa.entities.JobRole;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorCompetency;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class ManageJobRolesTest extends PicsTranslationTest {
 

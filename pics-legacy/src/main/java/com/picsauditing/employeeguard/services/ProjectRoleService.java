@@ -1,5 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -12,9 +14,11 @@ import java.util.*;
 public class ProjectRoleService {
 
 	@Autowired
+	private EmployeeDAO employeeDAO;
+	@Autowired
 	private ProjectRoleDAO projectRoleDAO;
-    @Autowired
-    private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private ProjectService projectService;
 
@@ -27,8 +31,8 @@ public class ProjectRoleService {
 	public List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {
 		List<AccountSkill> accountSkills = new ArrayList<>();
 
-		for (AccountSkillGroup accountSkillGroup : projectRole.getRole().getSkills()) {
-			accountSkills.add(accountSkillGroup.getSkill());
+		for (AccountSkillRole accountSkillRole : projectRole.getRole().getSkills()) {
+			accountSkills.add(accountSkillRole.getSkill());
 		}
 
 		accountSkills.addAll(projectService.getRequiredSkills(projectRole.getProject()));
@@ -52,12 +56,12 @@ public class ProjectRoleService {
 		return projectRoleDAO.findByProjectAndContractor(project, accountId);
 	}
 
-    public Map<Group, Set<AccountSkill>> getRolesAndSkillsForProject(final Project project) {
+    public Map<Role, Set<AccountSkill>> getRolesAndSkillsForProject(final Project project) {
         List<ProjectRole> projectRoles = projectRoleDAO.findByProject(project);
 
-        Map<Group, Set<AccountSkill>> roleSkills = new HashMap<>();
+        Map<Role, Set<AccountSkill>> roleSkills = new HashMap<>();
         for (ProjectRole projectRole : projectRoles) {
-            Group role = projectRole.getRole();
+            Role role = projectRole.getRole();
             if (!roleSkills.containsKey(role)) {
                 roleSkills.put(role, new HashSet<AccountSkill>());
             }
@@ -68,10 +72,10 @@ public class ProjectRoleService {
         return roleSkills;
     }
 
-    private Set<AccountSkill> getSkillsFromAccountSkillGroup(final List<AccountSkillGroup> accountSkillGroups) {
+    private Set<AccountSkill> getSkillsFromAccountSkillGroup(final List<AccountSkillRole> accountSkillGroups) {
         Set<AccountSkill> accountSkills = new HashSet<>();
-        for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
-            accountSkills.add(accountSkillGroup.getSkill());
+        for (AccountSkillRole accountSkillRole : accountSkillGroups) {
+            accountSkills.add(accountSkillRole.getSkill());
         }
 
         return accountSkills;
@@ -112,4 +116,24 @@ public class ProjectRoleService {
 
         return contractorEmployees;
     }
+	public List<ProjectRoleEmployee> getProjectRolesForContractor(final int accountId) {
+		return projectRoleEmployeeDAO.findByAccountId(accountId);
+	}
+
+	public Map<Employee, Set<Role>> getEmployeeProjectAndSiteRolesByAccount(final int accountId) {
+		List<Employee> employees = employeeDAO.findByAccount(accountId);
+
+		Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
+		for (Employee employee : employees) {
+			for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
+				Utilities.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
+			}
+
+			for (RoleEmployee roleEmployee : employee.getRoles()) {
+				Utilities.addToMapOfKeyToSet(employeeRoles, employee, roleEmployee.getRole());
+			}
+		}
+
+		return employeeRoles;
+	}
 }

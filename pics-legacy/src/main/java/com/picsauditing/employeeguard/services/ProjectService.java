@@ -37,6 +37,8 @@ public class ProjectService {
 	private ProjectRoleDAO projectRoleDAO;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+    @Autowired
+    private RoleDAO roleDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
@@ -101,8 +103,8 @@ public class ProjectService {
 		project.getRoles().clear();
 
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(accountId);
-		List<Group> rolesInDatabase = accountGroupDAO.findGroupByAccountIdsAndNames(corporateIds, names);
-		for (Group role : rolesInDatabase) {
+		List<Role> rolesInDatabase = roleDAO.findRoleByAccountIdsAndNames(corporateIds, names);
+		for (Role role : rolesInDatabase) {
 			project.getRoles().add(new ProjectRole(project, role));
 		}
 	}
@@ -248,8 +250,8 @@ public class ProjectService {
 		List<Employee> employeesAssignedToProject = getEmployeesAssignedToProjectFromRemovedCompanies(originalProject, removedCompanies);
 
 		for (Employee employee : employeesAssignedToProject) {
-			EntityHelper.softDelete(employee.getRoles(), appUserId);
-			projectRoleEmployeeDAO.delete(employee.getRoles());
+			EntityHelper.softDelete(employee.getProjectRoles(), appUserId);
+			projectRoleEmployeeDAO.delete(employee.getProjectRoles());
 		}
 	}
 
@@ -295,8 +297,8 @@ public class ProjectService {
 		}
 
 		for (ProjectRole projectRole : project.getRoles()) {
-			for (AccountSkillGroup accountSkillGroup : projectRole.getRole().getSkills()) {
-				requiredSkills.add(accountSkillGroup.getSkill());
+			for (AccountSkillRole accountSkillRole : projectRole.getRole().getSkills()) {
+				requiredSkills.add(accountSkillRole.getSkill());
 			}
 		}
 

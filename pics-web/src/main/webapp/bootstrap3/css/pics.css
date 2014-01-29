@@ -6,26 +6,44 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
-/* line 54, ../sass/pics/_defaults.scss */
+/* line 48, ../sass/pics/_defaults.scss */
 body {
   color: #454545;
 }
 
-/* line 58, ../sass/pics/_defaults.scss */
+/* line 52, ../sass/pics/_defaults.scss */
 figure {
   margin: 0;
 }
 
-/* line 62, ../sass/pics/_defaults.scss */
+/* line 56, ../sass/pics/_defaults.scss */
 a {
   color: #226396;
 }
 
-/* line 67, ../sass/pics/_defaults.scss */
+/* line 61, ../sass/pics/_defaults.scss */
 a:hover,
 a:focus {
   color: #73bbe8;
   text-decoration: none;
+}
+
+/* line 66, ../sass/pics/_defaults.scss */
+.success {
+  background-color: #d6f0e4;
+  color: #33b679;
+}
+
+/* line 71, ../sass/pics/_defaults.scss */
+.warning {
+  background-color: #fef5d9;
+  color: #f4b400;
+}
+
+/* line 76, ../sass/pics/_defaults.scss */
+.danger {
+  background-color: #fadbd8;
+  color: #e74c3c;
 }
 
 /* line 2, ../sass/pics/layout/_layout.scss */
@@ -60,7 +78,7 @@ body {
 }
 /* line 2, ../sass/pics/layout/_environment.scss */
 #environment {
-  background: #333;
+  background: #333333;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
   background-image: -webkit-linear-gradient(#252525, #333333);
   background-image: -moz-linear-gradient(#252525, #333333);
@@ -75,7 +93,7 @@ body {
 }
 /* line 13, ../sass/pics/layout/_environment.scss */
 #environment a {
-  color: #ccc;
+  color: #cccccc;
   float: right;
   padding: 0 10px;
   text-decoration: none;
@@ -213,7 +231,7 @@ body {
 }
 /* line 80, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-search .icon-search {
-  color: #ccc;
+  color: #cccccc;
   left: 24px;
   position: absolute;
   top: 16px;
@@ -490,7 +508,7 @@ body {
 }
 /* line 87, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .total-results p {
-  color: #999;
+  color: #999999;
   font-size: 13px;
   margin: 0;
 }
@@ -500,7 +518,7 @@ body {
   #user_searchbox {
     background-color: #fff;
     padding: 5px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     border: 1px solid rgba(0, 0, 0, 0.2);
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -524,7 +542,7 @@ body {
 }
 /* line 6, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .navbar-inner {
-  background: #333;
+  background: #333333;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
   background-image: -webkit-linear-gradient(#252525, #333333);
   background-image: -moz-linear-gradient(#252525, #333333);
@@ -551,7 +569,7 @@ body {
 /* line 30, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation .nav > li > a {
   border: 0;
-  color: #ccc;
+  color: #cccccc;
   padding: 4px 15px 5px;
   text-shadow: none;
 }
@@ -676,20 +694,20 @@ body {
   margin-left: 10px;
 }
 
-/* line 4, ../sass/pics/layout/_page-header.scss */
+/* line 2, ../sass/pics/layout/_page-header.scss */
 .page-header.pics {
   border: 0px;
   margin: 20px 0px;
   padding: 0px;
 }
-/* line 10, ../sass/pics/layout/_page-header.scss */
+/* line 7, ../sass/pics/layout/_page-header.scss */
 .page-header.pics .title {
   color: #73bbe8;
   font-size: 36px;
   font-weight: normal;
   margin-bottom: 0;
 }
-/* line 18, ../sass/pics/layout/_page-header.scss */
+/* line 14, ../sass/pics/layout/_page-header.scss */
 .page-header.pics .subtitle {
   color: #808285;
   font-size: 14px;
@@ -796,7 +814,7 @@ body {
   /* line 7, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dt {
     clear: left;
-    color: #999;
+    color: #999999;
     font-weight: normal;
     margin: 0 0px 5px 0;
     text-align: right;
@@ -807,15 +825,15 @@ body {
   }
 }
 @media (max-width: 991px) {
-  /* line 25, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  /* line 23, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dt {
     margin: 0;
   }
-  /* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  /* line 27, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dd {
     margin-bottom: 5px;
   }
-  /* line 34, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  /* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dd ul.inline li:first-child {
     padding-left: 0;
   }
@@ -849,17 +867,20 @@ body {
 }
 /* line 26, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 .employee-guard-list-rollup li.danger {
+  background-color: transparent;
   color: #e74c3c;
 }
-/* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 31, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 .employee-guard-list-rollup li.warning {
+  background-color: transparent;
   color: #f4b400;
 }
-/* line 34, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 36, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 .employee-guard-list-rollup li.success {
+  background-color: transparent;
   color: #33b679;
 }
-/* line 38, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
+/* line 41, ../sass/pics/employee-guard/mixins/_employee-guard-list.scss */
 .employee-guard-list-rollup li .assigned-count {
   font-size: 20px;
   font-weight: bold;
@@ -877,7 +898,7 @@ body {
   vertical-align: 10px;
 }
 
-/* line 5, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 4, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section > h1 {
   background-color: #f1f1f2;
   color: #808285;
@@ -886,35 +907,43 @@ body {
   padding: 10px;
   margin-bottom: 0px;
 }
-/* line 14, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 12, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section > h1 i {
   margin-right: 5px;
 }
-/* line 19, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
-.employee-guard-section > h1 a {
-  float: right;
-  line-height: 40px;
-}
-/* line 25, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 17, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section .edit {
   text-align: right;
 }
-/* line 28, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 20, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section .edit i:hover {
   color: #73bbe8;
 }
-/* line 33, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 25, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section .content {
   padding: 20px 30px;
 }
+/* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+.employee-guard-section.info-toolbar a.btn {
+  margin-left: 5px;
+  margin-right: 0px;
+}
+/* line 35, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+.employee-guard-section.info-toolbar ul {
+  margin-bottom: 0px;
+}
+/* line 41, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+.employee-guard-section.info-toolbar ul li.success, .employee-guard-section.info-toolbar ul li.warning, .employee-guard-section.info-toolbar ul li.danger {
+  background-color: transparent;
+}
 
-/* line 39, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 49, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 .employee-guard-section:first-child > h1 {
   margin-top: 0;
 }
 
 @media (max-width: 767px) {
-  /* line 45, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+  /* line 55, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
   .employee-guard-section .content {
     padding: 20px 0px;
   }
@@ -1164,93 +1193,50 @@ body {
     padding-top: 0px;
   }
 }
-/* line 1, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment {
-  /*Assigned Employee Styles*/
-}
-/* line 2, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr {
-  cursor: pointer;
-}
-/* line 4, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr .success {
-  color: #b3b3b3;
-}
-/* line 8, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr .warning {
-  color: #b3b3b3;
-}
-/* line 12, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr .danger {
-  color: #b3b3b3;
-}
-/* line 17, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment.view-only tr {
+/* line 5, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment.view-only tr {
   cursor: auto;
 }
-/* line 23, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr.assigned .assign-employee {
+/* line 9, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr {
+  cursor: pointer;
+}
+/* line 14, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr:hover .icon-minus-sign-alt {
+  color: #e74c3c;
+}
+/* line 18, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr:hover .icon-warning-sign {
+  color: #fbcb43;
+}
+/* line 22, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr:hover .icon-ok-circle {
+  color: #33b679;
+}
+/* line 26, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr:hover .icon-ok-sign {
+  color: #33b679;
+}
+/* line 31, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr:hover .assign-employee i {
+  color: #ec8c00;
+}
+/* line 38, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr.assigned .assign-employee {
   background-color: #fbcb43;
 }
-/* line 26, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr.assigned .assign-employee a {
+/* line 41, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr.assigned .assign-employee i {
   color: #ec8c00;
 }
-/* line 31, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr.assigned .success {
-  background-color: #d6f0e4;
-  color: #33b679;
-}
-/* line 36, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr.assigned .warning {
-  background-color: #fef5d9;
-  color: #f4b400;
-}
-/* line 41, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tr.assigned .danger {
-  background-color: #fadbd8;
-  color: #e74c3c;
-}
-/* line 47, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tbody > tr:nth-child(odd) td {
-  background-color: #f1f1f2;
-}
-/* line 51, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tbody > tr:nth-child(even) td {
-  background: none;
-}
-/* line 55, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tbody > tr:hover td {
-  background-color: #ebf5fe;
-}
-/* line 58, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tbody > tr:hover td.success {
-  color: #33b679;
-}
-/* line 62, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tbody > tr:hover td.warning {
-  color: #f4b400;
-}
-/* line 66, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tbody > tr:hover td.danger {
-  color: #e74c3c;
-}
-/* line 70, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment tbody > tr:hover td.assign-employee a {
-  color: #ec8c00;
-}
-/* line 76, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment td.assign-employee {
-  color: #b3b3b3;
-  text-align: center;
-}
-/* line 80, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment td.assign-employee a {
-  color: #b3b3b3;
-}
-/* line 85, ../sass/pics/employee-guard/contractor/assignments/_assignments.scss */
-#employee_assignment td a {
+/* line 47, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.table-assignment tr td a {
   display: inline;
+}
+
+/* line 54, ../sass/pics/employee-guard/assignments/_assignments.scss */
+.nav-assignment .site-status {
+  margin-bottom: 20px;
 }
 
 /* line 2, ../sass/pics/employee-guard/mixins/_employee-image.scss */
@@ -1385,7 +1371,7 @@ body {
   margin-top: 15px;
 }
 
-/* line 13, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 10, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .contains,
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .complete,
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .expire,
@@ -1404,7 +1390,7 @@ body {
 #employee_guard_contractor_matrix_skills_to_employee_groups_skillsToRoles_page .matrix .incomplete {
   text-align: center;
 }
-/* line 18, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 14, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .contains,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .contains,
 #employee_guard_contractor_matrix_employee_to_skills_employeeToSkills_page .matrix .contains,
@@ -1412,7 +1398,7 @@ body {
   background-color: #c3e0f9;
   color: #226396;
 }
-/* line 24, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 19, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .complete,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .complete,
 #employee_guard_contractor_matrix_employee_to_skills_employeeToSkills_page .matrix .complete,
@@ -1420,7 +1406,7 @@ body {
   background-color: #acf5ac;
   color: #229322;
 }
-/* line 30, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 24, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .expire,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .expire,
 #employee_guard_contractor_matrix_employee_to_skills_employeeToSkills_page .matrix .expire,
@@ -1428,7 +1414,7 @@ body {
   background-color: #fcf3cc;
   color: #e67e1c;
 }
-/* line 36, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
+/* line 29, ../sass/pics/employee-guard/contractor/matrix/_matrix.scss */
 #employee_guard_contractor_matrix_employee_groups_to_employees_rolesToEmployees_page .matrix .incomplete,
 #employee_guard_contractor_matrix_employees_to_skills_employeesToSkills_page .matrix .incomplete,
 #employee_guard_contractor_matrix_employee_to_skills_employeeToSkills_page .matrix .incomplete,
@@ -1716,6 +1702,35 @@ body {
 /* line 69, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 .employee_guard_employee_profile-page .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
+}
+
+/* line 1, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+.operator-site-assignments {
+  margin-bottom: 30px;
+}
+/* line 4, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+.operator-site-assignments .row {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+/* line 9, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+.operator-site-assignments .row i {
+  margin-right: 10px;
+}
+/* line 14, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+.operator-site-assignments .icon-building {
+  color: #999999;
+}
+/* line 18, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+.operator-site-assignments .icon-user {
+  color: #73bbe8;
+}
+/* line 24, ../sass/pics/employee-guard/operator/assignments/_assignments.scss */
+.operator-site-assignments .success,
+.operator-site-assignments .warning,
+.operator-site-assignments .danger {
+  background: transparent;
 }
 
 /* line 2, ../sass/pics/employee-guard/operator/role/_role.scss */
@@ -2473,7 +2488,7 @@ label {
 
 /* line 30, ../sass/pics/components/_form.scss */
 .search-query .icon-search {
-  color: #CCCCCC;
+  color: #cccccc;
   left: 15px;
   position: absolute;
   top: 15px;
@@ -2619,23 +2634,33 @@ body.modal-open,
   margin-right: 0px;
 }
 
-/* line 1, ../sass/pics/components/_navigation.scss */
+/* line 2, ../sass/pics/components/_navigation.scss */
+.nav-pills li .badge {
+  line-height: 18px;
+  background-color: #3498db;
+}
+/* line 8, ../sass/pics/components/_navigation.scss */
+.nav-pills li.active .badge {
+  background-color: transparent;
+  color: #FFFFFF;
+}
+
+/* line 15, ../sass/pics/components/_navigation.scss */
 .nav-pills a {
   color: #3498db;
   font-size: 18px;
 }
-
-/* line 6, ../sass/pics/components/_navigation.scss */
-.nav-pills li a:hover {
+/* line 19, ../sass/pics/components/_navigation.scss */
+.nav-pills a:hover {
   background-color: #f1f1f2;
 }
 
-/* line 10, ../sass/pics/components/_navigation.scss */
+/* line 24, ../sass/pics/components/_navigation.scss */
 .nav-pills i {
   margin-right: 6px;
 }
 
-/* line 14, ../sass/pics/components/_navigation.scss */
+/* line 28, ../sass/pics/components/_navigation.scss */
 .nav .nav-header {
   color: #cccccc;
   display: block;
@@ -2645,13 +2670,13 @@ body.modal-open,
   padding: 3px 20px;
 }
 
-/* line 23, ../sass/pics/components/_navigation.scss */
+/* line 37, ../sass/pics/components/_navigation.scss */
 .nav .nav-divider {
   margin: 0px;
 }
 
 /* Skill Navigation */
-/* line 28, ../sass/pics/components/_navigation.scss */
+/* line 42, ../sass/pics/components/_navigation.scss */
 ul.skill-nav {
   background-color: #f1f1f2;
   -webkit-border-radius: 5px;
@@ -2661,22 +2686,22 @@ ul.skill-nav {
   border-radius: 5px;
   padding: 10px 0px;
 }
-/* line 33, ../sass/pics/components/_navigation.scss */
+/* line 47, ../sass/pics/components/_navigation.scss */
 ul.skill-nav .skill-nav {
   padding: 0px;
 }
-/* line 37, ../sass/pics/components/_navigation.scss */
+/* line 51, ../sass/pics/components/_navigation.scss */
 ul.skill-nav a:hover {
   background-color: #e6e6e6;
   color: #454545;
 }
-/* line 42, ../sass/pics/components/_navigation.scss */
+/* line 56, ../sass/pics/components/_navigation.scss */
 ul.skill-nav a.active {
   border-right: 2px inset #3498db;
   color: #3498db;
   font-weight: bold;
 }
-/* line 48, ../sass/pics/components/_navigation.scss */
+/* line 62, ../sass/pics/components/_navigation.scss */
 ul.skill-nav a {
   color: #454545;
   padding: 2px 0px 3px 40px;
@@ -2852,7 +2877,7 @@ ul.skill-nav a {
   padding-bottom: 3px;
   padding-left: 30px;
 }
-/* line 32, ../sass/pics/components/_side-navigation.scss */
+/* line 30, ../sass/pics/components/_side-navigation.scss */
 .sidenav .nav > .active > ul,
 #side-navigation .nav > .active > ul {
   display: block;
@@ -2896,84 +2921,81 @@ ul.skill-nav a {
 }
 
 /* line 32, ../sass/pics/components/_table.scss */
-.table tbody > tr > td {
-  border: 0;
-  vertical-align: middle;
-}
-/* line 36, ../sass/pics/components/_table.scss */
-.table tbody > tr > td.success {
-  background-color: #d6f0e4;
-  color: #33b679;
-}
-/* line 41, ../sass/pics/components/_table.scss */
-.table tbody > tr > td.warning {
-  background-color: #fef5d9;
-  color: #f4b400;
-}
-/* line 46, ../sass/pics/components/_table.scss */
-.table tbody > tr > td.danger {
-  background-color: #fadbd8;
-  color: #e74c3c;
-}
-
-/* line 52, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr:nth-child(odd) td {
   background-color: #f1f1f2;
 }
-/* line 55, ../sass/pics/components/_table.scss */
-.table-striped > tbody > tr:nth-child(odd) td.success {
-  background-color: #d6f0e4;
-  color: #33b679;
-}
-/* line 60, ../sass/pics/components/_table.scss */
-.table-striped > tbody > tr:nth-child(odd) td.warning {
-  background-color: #fef5d9;
-  color: #f4b400;
-}
-/* line 65, ../sass/pics/components/_table.scss */
-.table-striped > tbody > tr:nth-child(odd) td.danger {
-  background-color: #fadbd8;
-  color: #e74c3c;
-}
 
-/* line 71, ../sass/pics/components/_table.scss */
+/* line 38, ../sass/pics/components/_table.scss */
+.table tbody > tr > td,
+.table-striped > tbody > tr:nth-child(odd) td,
 .table-striped > tbody > tr:nth-child(even) td {
-  background-color: none;
+  border: 0;
+  vertical-align: middle;
 }
-/* line 74, ../sass/pics/components/_table.scss */
+/* line 42, ../sass/pics/components/_table.scss */
+.table tbody > tr > td i,
+.table-striped > tbody > tr:nth-child(odd) td i,
+.table-striped > tbody > tr:nth-child(even) td i {
+  color: #b3b3b3;
+}
+/* line 46, ../sass/pics/components/_table.scss */
+.table tbody > tr > td.success,
+.table-striped > tbody > tr:nth-child(odd) td.success,
 .table-striped > tbody > tr:nth-child(even) td.success {
   background-color: #d6f0e4;
   color: #33b679;
 }
-/* line 79, ../sass/pics/components/_table.scss */
+/* line 50, ../sass/pics/components/_table.scss */
+.table tbody > tr > td.success i,
+.table-striped > tbody > tr:nth-child(odd) td.success i,
+.table-striped > tbody > tr:nth-child(even) td.success i {
+  color: #33b679;
+}
+/* line 55, ../sass/pics/components/_table.scss */
+.table tbody > tr > td.warning,
+.table-striped > tbody > tr:nth-child(odd) td.warning,
 .table-striped > tbody > tr:nth-child(even) td.warning {
   background-color: #fef5d9;
   color: #f4b400;
 }
-/* line 84, ../sass/pics/components/_table.scss */
+/* line 59, ../sass/pics/components/_table.scss */
+.table tbody > tr > td.warning i,
+.table-striped > tbody > tr:nth-child(odd) td.warning i,
+.table-striped > tbody > tr:nth-child(even) td.warning i {
+  color: #f4b400;
+}
+/* line 64, ../sass/pics/components/_table.scss */
+.table tbody > tr > td.danger,
+.table-striped > tbody > tr:nth-child(odd) td.danger,
 .table-striped > tbody > tr:nth-child(even) td.danger {
   background-color: #fadbd8;
+  color: #e74c3c;
+}
+/* line 68, ../sass/pics/components/_table.scss */
+.table tbody > tr > td.danger i,
+.table-striped > tbody > tr:nth-child(odd) td.danger i,
+.table-striped > tbody > tr:nth-child(even) td.danger i {
   color: #e74c3c;
 }
 
 /* This must be duplicated in order for it to work in ie8.
  * If not, the nth-child selector causes ie8 to ignore them.
  */
-/* line 94, ../sass/pics/components/_table.scss */
+/* line 78, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.odd td {
   background-color: #f1f1f2;
 }
-/* line 97, ../sass/pics/components/_table.scss */
+/* line 81, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.odd td.success {
   background-color: #d6f0e4;
   color: #33b679;
 }
-/* line 102, ../sass/pics/components/_table.scss */
+/* line 86, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.odd td.warning {
   background-color: #fef5d9;
   color: #f4b400;
 }
-/* line 107, ../sass/pics/components/_table.scss */
+/* line 91, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.odd td.danger {
   background-color: #fadbd8;
   color: #e74c3c;
@@ -2982,32 +3004,32 @@ ul.skill-nav a {
 /* This must be duplicated in order for it to work in ie8.
  * If not, the nth-child selector causes ie8 to ignore them.
  */
-/* line 116, ../sass/pics/components/_table.scss */
+/* line 100, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.even td {
   background-color: none;
 }
-/* line 119, ../sass/pics/components/_table.scss */
+/* line 103, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.even td.success {
   background-color: #d6f0e4;
   color: #33b679;
 }
-/* line 124, ../sass/pics/components/_table.scss */
+/* line 108, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.even td.warning {
   background-color: #fef5d9;
   color: #f4b400;
 }
-/* line 129, ../sass/pics/components/_table.scss */
+/* line 113, ../sass/pics/components/_table.scss */
 .table-striped > tbody > tr.even td.danger {
   background-color: #fadbd8;
   color: #e74c3c;
 }
 
-/* line 138, ../sass/pics/components/_table.scss */
+/* line 122, ../sass/pics/components/_table.scss */
 .table-hover tbody tr:hover td {
   background-color: #d6eaf8;
 }
 
-/* line 142, ../sass/pics/components/_table.scss */
+/* line 126, ../sass/pics/components/_table.scss */
 .table td a {
   display: block;
 }

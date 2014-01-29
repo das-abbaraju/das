@@ -3,7 +3,7 @@
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
 <%-- Url --%>
-<s:url action="project/{projectId}/assignments/{id}" var="operator_project_assignments">
+<s:url action="project/{projectId}/assignments/{id}" var="contractor_project_assignments">
     <s:param name="projectId">
         ${project.id}
     </s:param>
@@ -21,13 +21,12 @@
 
 <div class="row">
     <ul class="nav nav-pills nav-stacked col-md-3">
-        <li>
-            <a href="${operator_project_assignments}">Project</a>
-        </li>
 
-        <s:set var="selected_role" value="%{id}"/>
-        <s:iterator value="operatorProjectRoleAssignment.roles" var="operator_project_role">
-            <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="operator_project_role_url">
+        <li class="active">
+            <a href="${contractor_project_assignments}">Project</a>
+        </li>
+        <s:iterator value="contractorProjectAssignmentMatrix.roles" var="contractor_project_role">
+            <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="contractor_project_role_url">
                 <s:param name="projectId">
                     ${project.id}
                 </s:param>
@@ -35,33 +34,40 @@
                     ${project.accountId}
                 </s:param>
                 <s:param name="id">
-                    ${operator_project_role.id}
+                    ${contractor_project_role.id}
                 </s:param>
             </s:url>
-            <li <s:if test="#selected_role == #operator_project_role.id">class="active"</s:if>>
-                <a href="${operator_project_role_url}">${operator_project_role.name}</a>
+            <li>
+                <a href="${contractor_project_role_url}">${contractor_project_role.name}</a>
             </li>
         </s:iterator>
     </ul>
 
     <div class="table-responsive col-md-9">
-        <table id="employee_assignment" class="table table-striped table-condensed table-hover view-only">
+        <table class="table table-striped table-condensed table-hover">
             <thead>
                 <tr>
-                    <th>Company</th>
                     <th>Employee</th>
-                    <s:iterator value="operatorProjectRoleAssignment.skills" var="skill_name">
-                        <th class="text-center">${skill_name.name}</th>
+                    <th>Title</th>
+                    <s:iterator value="contractorProjectAssignmentMatrix.skillNames" var="skill_name">
+                        <th class="text-center">${skill_name}</th>
                     </s:iterator>
                 </tr>
             </thead>
 
             <tbody>
-                <s:iterator value="operatorProjectRoleAssignment.employeeProjectRoleAssignments" var="operator_project_employee">
-                    <tr class="assigned">
-                        <td>${operator_project_employee.contractorName}</td>
-                        <td>${operator_project_employee.employeeName}</td>
-                        <s:iterator value="#operator_project_employee.skillStatuses" var="employee_skill_status">
+                <s:iterator value="contractorProjectAssignmentMatrix.assignments" var="contractor_project_employee">
+                    <tr class="assign-employee-container">
+                        <td>
+                            <s:url action="employee" var="contractor_project_employee_url">
+                                <s:param name="id">
+                                    ${contractor_project_employee.employeeId}
+                                </s:param>
+                            </s:url>
+                            <a href="${contractor_project_employee_url}" class="disable-assignment">${contractor_project_employee.name}</a>
+                        </td>
+                        <td>${contractor_project_employee.title}</td>
+                        <s:iterator value="#contractor_project_employee.skillStatuses" var="employee_skill_status">
                             <s:if test="#employee_skill_status.expired">
                                 <s:set var="skill_icon">icon-minus-sign-alt</s:set>
                                 <s:set var="skill_status_class">danger</s:set>
@@ -79,7 +85,7 @@
                                 <s:set var="skill_status_class">success</s:set>
                             </s:else>
 
-                            <td class="text-center ${skill_status_class}">
+                            <td class="${skill_status_class} text-center">
                                 <i class="${skill_icon} icon-large"></i>
                             </td>
                         </s:iterator>

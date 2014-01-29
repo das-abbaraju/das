@@ -32,20 +32,20 @@
 /*end pseudo element*/
 
 .btn-default {
-  background-image: linear-gradient(to bottom, $default_light, $default_med);
-  background: -webkit-linear-gradient($default_light, $default_med);
-  @include box-shadow(0px 2px 0px $default_dark);
+  background-image: linear-gradient(to bottom, $default_mercury, $default_silver);
+  background: -webkit-linear-gradient($default_mercury, $default_silver);
+  @include box-shadow(0px 2px 0px $default_pewter);
   text-shadow: none;
-  background: $default_med;
+  background: $default_silver;
 }
 
 .btn-default:hover {
-  background: $default_light;
+  background: $default_mercury;
 }
 
 .btn-default:active {
-  background:$default_med;
-  @include box-shadow(0px 2px 0px $default_dark inset);
+  background: $default_silver;
+  @include box-shadow(0px 2px 0px $default_pewter inset);
 }
 
 .btn-primary {

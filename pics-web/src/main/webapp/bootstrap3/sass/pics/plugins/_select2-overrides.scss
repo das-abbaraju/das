@@ -2,7 +2,7 @@
    Please put any "global" overrides for select2 in select2-override.css until that file is no longer needed.
 */
 .form-control.select2-container {
-    color: #454545;
+    color: $default_steel;
 }
 
 /*Single Select*/
@@ -30,14 +30,14 @@
 
     .select2-choice {
         background: none;
-        color: #454545;
+        color: $default_steel;
         font-size: 14px;
         line-height: inherit;
         padding: 8px 18px 8px 12px;
         height: 34px;
 
         .select2-arrow {
-            color: #999999;
+            color: $default_aluminum;
             top: 7px;
         }
     }
@@ -46,11 +46,11 @@
 /*Multi Select*/
 .select2-container-multi .select2-choices .select2-search-choice
 {
-    background-color: $default_light;
-    border: 1px solid $default_med;
+    background-color: $default_mercury;
+    border: 1px solid $default_silver;
 
     a {
-        color: #999999;
+        color: $default_aluminum;
         font-size: 12px;
 
         &:hover {

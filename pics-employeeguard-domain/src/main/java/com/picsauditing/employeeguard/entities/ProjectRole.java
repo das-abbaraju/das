@@ -23,7 +23,7 @@ public class ProjectRole implements BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "groupID", nullable = false)
-	private Group role;
+	private Role role;
 
 	@ManyToOne
 	@JoinColumn(name = "projectID", nullable = false)
@@ -55,7 +55,7 @@ public class ProjectRole implements BaseEntity {
 	public ProjectRole() {
 	}
 
-	public ProjectRole(Project project, Group role) {
+	public ProjectRole(Project project, Role role) {
 		this.project = project;
 		this.role = role;
 	}
@@ -70,12 +70,12 @@ public class ProjectRole implements BaseEntity {
 		this.id = id;
 	}
 
-	public Group getRole() {
+	public Role getRole() {
 		return role;
 	}
 
-	public void setRole(Group group) {
-		this.role = group;
+	public void setRole(Role Role) {
+		this.role = role;
 	}
 
 	public Project getProject() {
@@ -205,9 +205,9 @@ public class ProjectRole implements BaseEntity {
 		}
 	};
 
-	public static transient final Extractor<ProjectRole, Group> ROLE_EXTRACTOR = new Extractor<ProjectRole, Group>() {
+	public static transient final Extractor<ProjectRole, Role> ROLE_EXTRACTOR = new Extractor<ProjectRole, Role>() {
 		@Override
-		public Group extract(ProjectRole projectRole) {
+		public Role extract(ProjectRole projectRole) {
 			return projectRole.getRole();
 		}
 	};

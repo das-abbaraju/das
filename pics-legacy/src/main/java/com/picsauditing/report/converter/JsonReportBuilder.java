@@ -89,7 +89,7 @@ public class JsonReportBuilder {
 			try {
 				jsonArray.add(columnToJson(column));
 			} catch (ReportValidationException rve) {
-				logger.error(rve.getMessage());
+				logger.debug(rve.getMessage());
 			}
 		}
 
@@ -145,7 +145,7 @@ public class JsonReportBuilder {
 			try {
 				jsonArray.add(filterToJson(filter));
 			} catch (ReportValidationException rve) {
-				logger.error(rve.getMessage());
+                logger.debug(rve.getMessage());
 			}
 		}
 

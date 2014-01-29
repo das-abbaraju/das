@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -7,6 +8,7 @@ import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProject
 import com.picsauditing.employeeguard.forms.contractor.ContractorProjectAssignmentMatrix;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
@@ -18,10 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ContractorProjectService {
 	private static final Logger LOG = LoggerFactory.getLogger(ContractorProjectService.class);
@@ -42,6 +41,8 @@ public class ContractorProjectService {
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
+	@Autowired
+	private SkillUsageLocator skillUsageLocator;
 
 	public ProjectCompany getProject(String id, int accountId) {
 		return projectCompanyDAO.findProject(NumberUtils.toInt(id), accountId);
@@ -76,7 +77,6 @@ public class ContractorProjectService {
 		EntityHelper.softDelete(projectRoleEmployee, appUserId);
 		projectRoleEmployeeDAO.delete(projectRoleEmployee);
 
-		// FIXME
 		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
 	}
 
@@ -92,7 +92,7 @@ public class ContractorProjectService {
 	}
 
 	private List<RoleInfo> buildRoleInfos(Project project) {
-		List<Group> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
+		List<Role> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
 		return formBuilderFactory.getRoleInfoFactory().build(groups);
 	}
 
@@ -175,6 +175,32 @@ public class ContractorProjectService {
 	}
 
 	private List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {
-		return ExtractorUtil.extractList(projectRole.getRole().getSkills(), AccountSkillGroup.SKILL_EXTRACTOR);
+		return ExtractorUtil.extractList(projectRole.getRole().getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
+	}
+
+	public Map<AccountModel, Set<Project>> getSiteToProjectMapping(final List<ProjectCompany> projectCompanies) {
+		if (CollectionUtils.isEmpty(projectCompanies)) {
+			return Collections.emptyMap();
+		}
+
+		List<Integer> siteIds = getSiteIdsFromProjectCompanies(projectCompanies);
+		Map<Integer, AccountModel> siteModels = accountService.getIdToAccountModelMap(siteIds);
+
+		Map<AccountModel, Set<Project>> siteToProjectMap = new HashMap<>();
+
+		for (ProjectCompany projectCompany : projectCompanies) {
+			Utilities.addToMapOfKeyToSet(siteToProjectMap, siteModels.get(projectCompany.getProject().getAccountId()), projectCompany.getProject());
+		}
+
+		return siteToProjectMap;
+	}
+
+	private List<Integer> getSiteIdsFromProjectCompanies(List<ProjectCompany> projectCompanies) {
+		return ExtractorUtil.extractList(projectCompanies, new Extractor<ProjectCompany, Integer>() {
+			@Override
+			public Integer extract(ProjectCompany projectCompany) {
+				return projectCompany.getProject().getAccountId();
+			}
+		});
 	}
 }

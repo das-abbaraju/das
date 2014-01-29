@@ -1,52 +1,66 @@
-.nav-pills a {
-	color: $primary_light;
-	font-size: 18px;
-}
+.nav-pills li {
+    .badge {
+        line-height: 18px;
+        background-color: $primary_light;
+    }
 
-.nav-pills li a:hover {
-	background-color: $pics_cool_grey;
+    &.active {
+        .badge {
+            background-color: transparent;
+            color: #FFFFFF;
+        }
+    }
+
+}
+.nav-pills a {
+    color: $primary_light;
+    font-size: 18px;
+
+    &:hover {
+        background-color: $pics_cool_grey;
+    }
 }
 
 .nav-pills i {
-	margin-right: 6px;
+    margin-right: 6px;
 }
 
 .nav .nav-header {
-  	color: $default_med;
-	display: block;
-	font-size: 12px;
-	font-weight: bold;
-	line-height: 1.428571429;
-	padding: 3px 20px;
+    color: $default_silver;
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.428571429;
+    padding: 3px 20px;
 }
 
 .nav .nav-divider {
-	margin: 0px;
+    margin: 0px;
 }
 
 /* Skill Navigation */
 ul.skill-nav {
-	background-color: $default_tint;
-	@include border-radius(5px);
-	padding: 10px 0px;
+    background-color: $default_platinum;
+    @include border-radius(5px);
+    padding: 10px 0px;
 
-	.skill-nav {
-		padding: 0px;
-	}
+    .skill-nav {
+        padding: 0px;
+    }
 
-	& a:hover {
-		background-color: $default_light;
-		color: #454545;
-	}
+    & a:hover {
+        background-color: $default_mercury;
+        color: $default_steel;
+    }
 
-	& a.active {
-		border-right: 2px inset $primary_light;
-		color: $primary_light;
-		font-weight: bold;
-	}
+    & a.active {
+        border-right: 2px inset $primary_light;
+        color: $primary_light;
+        font-weight: bold;
+    }
 
-	a {
-		color: #454545;
-		padding: 2px 0px 3px 40px;
-	}
+    a {
+        color: $default_steel;
+        padding: 2px 0px 3px 40px;
+    }
 }

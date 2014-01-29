@@ -201,6 +201,21 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
         assertFalse(serviceEvaluation.shouldShowSsip());
     }
 
+    @Test
+    public void testConTypesOk_NoOperatorSelectedTypes() {
+        ArrayList<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
+        ContractorOperator co = new ContractorOperator();
+        co.setOperatorAccount(operator);
+        contractorOperators.add(co);
+        contractor.setOperators(contractorOperators);
+        when(operator.isOperator()).thenReturn(true);
+        when(operator.getStatus()).thenReturn(AccountStatus.Active);
+
+        serviceEvaluation.setContractor(contractor);
+
+        assertTrue(serviceEvaluation.conTypesOK());
+    }
+
     private void setupShouldShowSsip(AuditTypeRule... rules) {
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
         List<AuditTypeRule> listOfRules = Arrays.asList(rules);

@@ -363,7 +363,10 @@ public class UsersManage extends PicsActionSupport {
 		startup();
 
 		UserGroupManagementStatus status = validateUserOrGroupIsMovable();
-		if (!status.isOk) {
+        if (moveToAccount == 0) {
+            addActionError("Must give an account to move user to");
+        }
+		else if (!status.isOk) {
 			addActionErrorFromStatus(status);
 		} else {
 			userManagementService.moveUserToNewAccount(user, moveToAccount);
