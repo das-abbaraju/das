@@ -7,6 +7,7 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.external.ProductSubscriptionService;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
@@ -396,8 +397,8 @@ public final class MenuBuilder {
 		}
 
 		if (permissions.isOperatorCorporate()) {
-			AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
-			if (accountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
+            ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
+			if (productSubscriptionService.hasEmployeeGUARD(permissions.getAccountId())) {
 				manageMenu.addChild("EmployeeGUARD", "/employee-guard/operator/dashboard");
 			}
 		}
@@ -593,23 +594,6 @@ public final class MenuBuilder {
 
 	private static boolean inEmployeeMode() {
 		return ServletActionContext.getRequest().getRequestURI().contains("employee-guard/employee");
-	}
-
-	private static boolean isOfPicsOrgAccountType(AccountType accountType, Permissions permissions) {
-		if (isPicsOrgUser(permissions.getAppUserID())) {
-			return accountType == getPicsOrgAccountType(permissions);
-		}
-
-		return false;
-	}
-
-	private static AccountType getPicsOrgAccountType(Permissions permissions) {
-		if (isPicsOrgUser(permissions.getAppUserID())) {
-			AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
-			return accountService.getAccountTypeByUserID(permissions.getUserId());
-		}
-
-		return null;
 	}
 
 	private static boolean switchedToAnotherUser(Permissions permissions) {

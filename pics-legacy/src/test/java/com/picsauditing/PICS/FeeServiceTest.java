@@ -4,6 +4,7 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
+import com.picsauditing.employeeguard.services.external.ProductSubscriptionService;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
@@ -37,8 +38,6 @@ public class FeeServiceTest extends PicsTranslationTest {
     @Mock
     private ContractorAccount contractorAccount;
     @Mock
-    private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
-    @Mock
 	private InvoiceFeeDAO feeDAO;
     @Mock
     private Invoice invoice;
@@ -58,6 +57,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     private Country country;
     @Mock
     private PaymentAppliedToInvoice paymentAppliedToInvoice;
+    @Mock
+    private ProductSubscriptionService productSubscriptionService;
     @Mock
     private ContractorOperator contractorOperator1;
     @Mock
@@ -112,7 +113,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         feeService = new FeeService();
         FeeService.ruleCache = ruleCache;
         Whitebox.setInternalState(feeService, "feeDAO", feeDAO);
-        Whitebox.setInternalState(feeService, "accountEmployeeGuardDAO", accountEmployeeGuardDAO);
+        Whitebox.setInternalState(feeService, "productSubscriptionService", productSubscriptionService);
         Whitebox.setInternalState(feeService, "billingService", billingService);
 
         setUpContractor();
@@ -1021,7 +1022,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(false);
+        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1080,7 +1081,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(false);
+        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1196,7 +1197,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(false);
+        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1245,7 +1246,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(accountEmployeeGuardDAO.hasEmployeeGUARDOperator(anyInt())).thenReturn(true);
+        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(true);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);

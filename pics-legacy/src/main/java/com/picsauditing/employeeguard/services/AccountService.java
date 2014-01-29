@@ -167,10 +167,6 @@ public class AccountService {
 		}
 	}
 
-	public boolean isEmployeeGUARDEnabled(final int accountId) {
-		return accountEmployeeGuardDAO.isEmployeeGUARDEnabled(accountId);
-	}
-
 	private <E extends Account> List<AccountModel> mapAccountsToAccountModels(List<E> accounts) {
 		if (CollectionUtils.isEmpty(accounts)) {
 			return Collections.emptyList();
