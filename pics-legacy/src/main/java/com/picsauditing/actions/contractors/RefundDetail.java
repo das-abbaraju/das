@@ -2,39 +2,13 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingService;
-import com.picsauditing.PICS.FeeService;
-import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.data.DataEvent;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.PICS.data.InvoiceDataEvent;
-import com.picsauditing.PICS.data.InvoiceDataEvent.InvoiceEventType;
-import com.picsauditing.PICS.data.PaymentDataEvent;
-import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.billing.BrainTree;
-import com.picsauditing.braintree.CreditCard;
-import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
-import com.picsauditing.model.billing.BillingNoteModel;
-import com.picsauditing.model.billing.CommissionDetail;
-import com.picsauditing.model.billing.InvoiceModel;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Transient;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -46,9 +20,12 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 	private InvoiceDAO invoiceDAO;
 	@Autowired
 	private BillingService billingService;
+    @Autowired
+    private BrainTree paymentService;
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
+    private String urlForRedirect;
 	private InvoiceCreditMemo creditMemo;
     private PaymentMethod paymentMethod;
     private String transactionNumber;
@@ -59,6 +36,7 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 	public void prepare() {
 		if (sapAppPropertyUtil == null) {
 			sapAppPropertyUtil = SapAppPropertyUtil.factory();
+            AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		}
 		int transactionId = getParameter("creditmemo.id");
 		if (transactionId > 0) {
@@ -78,13 +56,43 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
 	}
 
     public String save() throws IOException {
+        RefundAppliedToCreditMemo refundApplied = generateRefund();
 
-        if (paymentMethod == null) {
-            addActionError("Please select a refund method.");
+        if (refundApplied == null) {
+            return ERROR;
         }
 
-        String urlForRedirect = "InvoiceDetail.action?invoice.id=" + creditMemo.getId();
+        return saveRefund(refundApplied);
+    }
 
+    private String saveRefund(RefundAppliedToCreditMemo refundApplied) throws IOException {
+        invoiceDAO.save(refundApplied);
+        billingService.syncBalance(contractor);
+        contractorAccountDao.save(contractor);
+        BigDecimal absolute = refundApplied.getRefund().getAmountApplied();
+        addActionMessage("Refund created for " + absolute.toString() + " " + creditMemo.getCurrency());
+
+        return this.setUrlForRedirect(urlForRedirect);
+    }
+
+    private RefundAppliedToCreditMemo generateRefund() {
+        if (paymentMethod == null) {
+            addActionError("Please select a refund method.");
+            return null;
+        }
+
+        urlForRedirect = "InvoiceDetail.action?invoice.id=" + creditMemo.getId();
+
+        BigDecimal amountApplied = calculateAmountApplied();
+        if (amountApplied == null) {
+            return null;
+        }
+
+        RefundAppliedToCreditMemo refundApplied = createRefundForCreditMemo(amountApplied);
+        return refundApplied;
+    }
+
+    private BigDecimal calculateAmountApplied() {
         BigDecimal balance = BigDecimal.ZERO.add(contractor.getBalance());
 
         if (balance.doubleValue() < 0) {
@@ -98,26 +106,18 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
             }
             else {
                 if (balance.abs().doubleValue() <= creditLeft.doubleValue()) {
-                    amountApplied = amountApplied.add(balance);
+                    return amountApplied.add(balance);
                 }
                 else {
-                    amountApplied = amountApplied.add(creditLeft);
+                    return amountApplied.add(creditLeft);
                 }
-
-                RefundAppliedToCreditMemo refundApplied = createRefundForCreditMemo(amountApplied);
-
-                invoiceDAO.save(refundApplied);
-                billingService.syncBalance(contractor);
-                contractorAccountDao.save(contractor);
-                BigDecimal absolute = amountApplied.abs();
-                addActionMessage("Refund created for " + absolute.toString() + " " + creditMemo.getCurrency());
             }
         }
         else {
             addActionMessage("No Refund Needed");
         }
 
-        return this.setUrlForRedirect(urlForRedirect);
+        return null;
     }
 
     private RefundAppliedToCreditMemo createRefundForCreditMemo(BigDecimal amount) {
@@ -148,10 +148,6 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         refund.setAccount(contractor);
 
         refundApplied.setRefund(refund);
-
-        if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(creditMemo)) {
-            refundApplied.getRefund().setSapSync(true);
-        }
 
         return refundApplied;
     }

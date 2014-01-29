@@ -40,6 +40,7 @@
         <table class="table table-striped table-condensed table-hover">
             <thead>
                 <tr>
+                    <th class="text-center">Assign</th>
                     <th>Employee</th>
                     <th>Title</th>
                     <th class="text-center">Site Status</th>
@@ -49,6 +50,9 @@
             <tbody>
                 <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">
                     <tr class="assign-employee-container">
+                        <td class="text-center">
+                            ${employee_site_assignment.numberOfRolesAssigned}
+                        </td>
                         <td>
                             <s:url action="employee" var="employee_site_assignment_url">
                                 <s:param name="id">

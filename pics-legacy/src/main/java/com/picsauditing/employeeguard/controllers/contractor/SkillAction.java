@@ -16,7 +16,7 @@ import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.validators.skill.SkillFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.SkillModel;
-import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.web.UrlBuilder;
@@ -68,7 +68,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 			skills = skillService.getSkillsForAccount(accountId);
 		}
 
-		skillModels = ViewModeFactory.getSkillModelFactory().create(skills,
+		skillModels = ViewModelFactory.getSkillModelFactory().create(skills,
 				(int) employeeService.getNumberOfEmployeesForAccount(accountId));
 
 		Collections.sort(skillModels);

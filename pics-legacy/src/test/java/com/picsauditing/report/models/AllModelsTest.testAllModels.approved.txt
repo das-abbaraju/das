@@ -684,6 +684,7 @@ ContractorFlagBaselineFlag
 ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
+ContractorFlagForceEnd
 ContractorFlagHasOracleNumber
 ContractorFlagHasSAPNumber
 ContractorFlagHasVendorNumber
@@ -751,6 +752,7 @@ ContractorFlagBaselineFlag
 ContractorFlagCreationDate
 ContractorFlagFlagColor
 ContractorFlagFlagLastUpdated
+ContractorFlagForceEnd
 ContractorFlagHasOracleNumber
 ContractorFlagHasSAPNumber
 ContractorFlagHasVendorNumber
@@ -1243,6 +1245,57 @@ ContractorTradeManufacture
 ContractorTradeSelfPerformed
 ContractorWorksAtClientSite
 TradeName
+
+Model: ContractorUsers
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountContractorAccountLevel
+AccountContractorAuditGUARD
+AccountContractorDocuGUARD
+AccountContractorDontReassign
+AccountContractorEmployeeGUARD
+AccountContractorInsureGUARD
+AccountContractorMembershipDate
+AccountContractorProductRisk
+AccountContractorProductRiskVerified
+AccountContractorSafetySensitive
+AccountContractorSoleProprietor
+AccountContractorTransportationRisk
+AccountContractorTransportationRiskVerified
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+AccountType
+GroupsID
+GroupsIsActive
+GroupsName
+UserAssignmentCapacity
+UserCreationDate
+UserDepartment
+UserEmail
+UserFax
+UserFirstName
+UserID
+UserIsActive
+UserIsGroup
+UserLastLogin
+UserLastName
+UserLocale
+UserName
+UserPhone
+UserTimezone
+UserUsername
+UserUsingVersion7Menus
 
 Model: Countries
 Permission: Permissions{permissions=[]}

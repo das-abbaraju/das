@@ -4,15 +4,16 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
-import com.picsauditing.employeeguard.validators.AbstractValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
+import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
-public class EmployeeFormValidator extends AbstractValidator<PersonalInformationForm> {
+public class EmployeeFormValidator extends AbstractBasicAndDuplicateValidator<PersonalInformationForm> {
 
 	public static final String EMPLOYEE_CREATE_FORM = "employeeForm";
 	public static final String EMPLOYEE_PERSONAL_FORM = "employeePersonalForm";
 
 	@Override
-	public void performValidation(PersonalInformationForm personalInformationForm) {
+	public void doFormValidation(PersonalInformationForm personalInformationForm) {
 		String formName = EMPLOYEE_CREATE_FORM;
 		if (personalInformationForm instanceof EmployeePersonalForm) {
 			formName = EMPLOYEE_PERSONAL_FORM;
@@ -41,4 +42,9 @@ public class EmployeeFormValidator extends AbstractValidator<PersonalInformation
 
 		return employeePersonalForm;
 	}
+
+    @Override
+    protected String getDuplicateErrorMessage() {
+        return "Email";
+    }
 }

@@ -14,6 +14,10 @@
 <div class="col-md-8">
     <tw:form formName="operator_project_create" action="${operator_project_create_url}" method="post"
              class="form-horizontal js-validation">
+        <s:if test="permissions.operator">
+            <input name="operator_project_create.siteId" type="hidden" value="${permissions.accountId}"/>
+        </s:if>
+
         <fieldset>
             <s:if test="permissions.corporate">
                 <div class="form-group">

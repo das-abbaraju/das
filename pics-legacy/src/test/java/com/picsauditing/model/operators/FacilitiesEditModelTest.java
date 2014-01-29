@@ -105,7 +105,7 @@ public class FacilitiesEditModelTest {
 
     @Test
     public void testCopySingleCurrentAccountUserToChildAccounts_Happy() throws Exception {
-        when(facilityOperator.isActiveOrDemo()).thenReturn(true);
+        when(facilityOperator.isActiveDemoPending()).thenReturn(true);
         when(accountUser.getRole()).thenReturn(UserAccountRole.PICSAccountRep);
 
         facilitiesEditModel.copySingleCurrentAccountUserToChildAccounts(permissions, operator, accountUser);
@@ -117,7 +117,7 @@ public class FacilitiesEditModelTest {
 
     @Test
     public void testCopySingleCurrentAccountUserToChildAccounts_RoleNotAccountRepNoCopy() throws Exception {
-        when(facilityOperator.isActiveOrDemo()).thenReturn(true);
+        when(facilityOperator.isActiveDemoPending()).thenReturn(true);
         when(accountUser.getRole()).thenReturn(UserAccountRole.PICSSalesRep);
 
         facilitiesEditModel.copySingleCurrentAccountUserToChildAccounts(permissions, operator, accountUser);
@@ -127,7 +127,7 @@ public class FacilitiesEditModelTest {
 
     @Test
     public void testCopySingleCurrentAccountUserToChildAccounts_NoActiveChildFacilitiesNoCopy() throws Exception {
-        when(facilityOperator.isActiveOrDemo()).thenReturn(false);
+        when(facilityOperator.isActiveDemoPending()).thenReturn(false);
 
         facilitiesEditModel.copySingleCurrentAccountUserToChildAccounts(permissions, operator, accountUser);
 

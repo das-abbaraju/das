@@ -8,14 +8,20 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.jpa.entities.Country;
+import org.powermock.reflect.Whitebox;
 
 public class AccountActionSupportTest extends PicsTranslationTest {
+
+    @Mock
+    protected NoteDAO noteDao;
 
 	private AccountActionSupport accountActionSupport;
 
@@ -23,7 +29,15 @@ public class AccountActionSupportTest extends PicsTranslationTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		accountActionSupport = new AccountActionSupport();
-	}
+        Whitebox.setInternalState(accountActionSupport, "noteDao", noteDao);
+    }
+
+    @Test
+    public void testAddNote_EmailBody() {
+        Note note = accountActionSupport.addNote(new Account(), "Summary", "Body", NoteCategory.Registration, LowMedHigh.High, true, 1);
+        assertEquals("Summary", note.getSummary());
+        assertEquals("Body", note.getBody());
+    }
 
 	@Test
 	public void testGetCountrySubdivisionLabelKeyFor_HasTranslationKey() throws Exception {

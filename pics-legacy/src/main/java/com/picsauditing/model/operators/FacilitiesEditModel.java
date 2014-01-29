@@ -224,7 +224,7 @@ public class FacilitiesEditModel {
 
     public void copySingleCurrentAccountUserToChildAccounts(Permissions permissions, OperatorAccount operator, AccountUser accountUser) throws Exception {
         for (Facility facility : operator.getOperatorFacilities()) {
-            if (facility.getOperator().isActiveOrDemo()) {
+            if (facility.getOperator().isActiveDemoPending()) {
                 OperatorAccount childOperator = facility.getOperator();
                 if (accountUser.getRole() == UserAccountRole.PICSAccountRep) {
                     childOperator.setCurrentAccountRepresentative(accountUser.getUser(), permissions.getUserId());

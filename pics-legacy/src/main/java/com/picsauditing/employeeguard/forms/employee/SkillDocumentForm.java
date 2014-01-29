@@ -1,12 +1,11 @@
 package com.picsauditing.employeeguard.forms.employee;
 
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 
 import java.util.Calendar;
 
 public class SkillDocumentForm {
 
-	//    public enum Proof { Certified, Document, None }
 	public enum ExpirationType {
 		Date, NoExpiration, None
 	}

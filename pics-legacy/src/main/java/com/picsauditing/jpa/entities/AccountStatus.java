@@ -67,6 +67,10 @@ public enum AccountStatus implements Translatable, PermissionAware {
         return this == Pending || this == Deactivated || this == Requested || this == Declined;
     }
 
+    public boolean isPendingDeclinedOrDemo() {
+        return this == Pending || this == Declined || this == Demo;
+    }
+
     @Deprecated
     // TODO find any usages within JSPs and rename them
     public boolean isActiveDemo() {
@@ -104,8 +108,12 @@ public enum AccountStatus implements Translatable, PermissionAware {
 	public boolean isActivePending() {
 		return this == Active || this == Pending;
 	}
-	
-	public boolean isActivePendingRequested() {
+
+    public boolean isActiveDemoPending() {
+        return this == Active || this == Pending || this == Demo;
+    }
+
+    public boolean isActivePendingRequested() {
 		return this == Active || this == Pending || this == Requested;
 	}
 

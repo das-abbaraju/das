@@ -154,6 +154,9 @@ public class ContractorFlagETL {
 				if (type != null && !type.isAnnualAddendum()) {
 					logger.info("Found question for evaluation: {}", question);
 					criteriaQuestionSet.add(question.getId());
+                    if (question.getVisibleQuestion() != null) {
+                        criteriaQuestionSet.add(question.getVisibleQuestion().getId());
+                    }
 
 					if (fc.includeExcess() != null) {
 						criteriaQuestionSet.add(fc.includeExcess());
@@ -179,7 +182,7 @@ public class ContractorFlagETL {
 
 		// can be null
 		final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
-		if (auditData != null && !Strings.isEmpty(auditData.getAnswer())) {
+		if (isAnswerApplicable(auditData, answerMap)) {
 			FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, "");
 			if (flagCriteria.getQuestion().getQuestionType().equals("AMBest")) {
 				performFlaggingForAMBest(flagCriteria, auditData, fcc);
@@ -211,7 +214,25 @@ public class ContractorFlagETL {
 		return changes;
 	}
 
-	private void performFlaggingForAMBest(FlagCriteria flagCriteria, final AuditData auditData,
+    private boolean isAnswerApplicable(AuditData auditData, Map<Integer, AuditData> answerMap) {
+        if (auditData == null)
+            return false;
+        if (Strings.isEmpty(auditData.getAnswer()))
+            return false;
+
+        if (auditData.getQuestion().getVisibleQuestion() != null) {
+            AuditData visibleAnswer = answerMap.get(auditData.getQuestion().getVisibleQuestion().getId());
+            if (visibleAnswer == null)
+                return false;
+            if (Strings.isEmpty(visibleAnswer.getAnswer()))
+                return false;
+            if (!visibleAnswer.getAnswer().equals(auditData.getQuestion().getVisibleAnswer()))
+                return false;
+        }
+        return true;
+    }
+
+    private void performFlaggingForAMBest(FlagCriteria flagCriteria, final AuditData auditData,
 			FlagCriteriaContractor fcc) {
 		AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
 		AmBest amBest = amBestDAO.findByNaic(auditData.getComment());

@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;

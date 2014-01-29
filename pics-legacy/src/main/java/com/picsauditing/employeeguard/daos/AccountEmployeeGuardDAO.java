@@ -1,6 +1,8 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,6 +11,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class AccountEmployeeGuardDAO {
+    private static final Logger LOG = LoggerFactory.getLogger(AccountEmployeeGuardDAO.class);
 
 	@PersistenceContext
 	protected EntityManager em;
@@ -18,14 +21,17 @@ public class AccountEmployeeGuardDAO {
 			return null;
 		}
 
-		TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
-		query.setParameter("accountId", accountId);
+        AccountEmployeeGuard result = null;
 
-		return query.getSingleResult();
-	}
+        try {
+            TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
+            query.setParameter("accountId", accountId);
+            result = query.getSingleResult();
+        } catch (Exception e) {
+            LOG.error("Unable to find account {}", accountId, e);
+        }
 
-	public boolean isEmployeeGUARDEnabled(final int accountId) {
-		return find(accountId) != null;
+        return result;
 	}
 
 	public void save(AccountEmployeeGuard accountEmployeeGuard) {
@@ -37,13 +43,4 @@ public class AccountEmployeeGuardDAO {
 		em.remove(accountEmployeeGuard);
 		em.flush();
 	}
-
-    public boolean hasEmployeeGUARDOperator(String accounts) {
-        Query query = em.createNativeQuery("select * from accountemployeeguard aeg WHERE aeg.accountId IN (:accounts)", AccountEmployeeGuard.class);
-        query.setParameter("accounts", accounts);
-
-        List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
-
-        return accountEmployeeGuards.size() > 0;
-    }
 }

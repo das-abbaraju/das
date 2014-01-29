@@ -149,7 +149,8 @@
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
     <bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
-    <bean id="ProductServiceQuery" class="com.picsauditing.actions.billing.ProductServiceQuery" />
+    <bean id="ProductSubscriptionService"
+          class="com.picsauditing.provisioning.ProductSubscriptionServiceImpl"/>
     <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
           scope="prototype"/>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
@@ -177,6 +178,7 @@
     <bean id="ReportSuggestionsTask" class="com.picsauditing.actions.cron.ReportSuggestionsTask" scope="prototype"/>
     <bean id="RunConCronForOldAccountsWithBalances" class="com.picsauditing.actions.cron.RunConCronForOldAccountsWithBalances" scope="prototype"/>
     <bean id="SendEmailToBidOnlyAccounts" class="com.picsauditing.actions.cron.SendEmailToBidOnlyAccounts" scope="prototype"/>
+    <bean id="SetSapSync" class="com.picsauditing.actions.cron.SetSapSync" scope="prototype"/>
     <bean id="TestTask" class="com.picsauditing.actions.cron.TestTask" scope="prototype"/>
 
     <!-- Validators -->
@@ -234,6 +236,7 @@
           scope="prototype"/>
     <bean id="ContractorDashboardApprovalMessage" class="com.picsauditing.model.user.ContractorDashboardApprovalMessage"/>
     <bean id="FileSystemAccessor" class="com.picsauditing.util.FileSystemAccessor"/>
+    <bean id="TopLevelOperatorFinder" class="com.picsauditing.service.contractor.TopLevelOperatorFinder"/>
 
     <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder" scope="prototype"/>
     <bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel"/>

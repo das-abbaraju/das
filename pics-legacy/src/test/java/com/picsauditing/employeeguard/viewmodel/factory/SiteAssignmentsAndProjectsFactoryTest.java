@@ -121,11 +121,13 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 		when(projectSkill.getEmployee()).thenReturn(employee);
 		when(projectSkill.getSkill()).thenReturn(projectRequired);
 		when(projectSkill.getEndDate()).thenReturn(calendar.getTime());
+		when(projectRole.getProject()).thenReturn(project);
 		when(projectRole.getRole()).thenReturn(role);
 		when(projectRoleEmployee.getEmployee()).thenReturn(employee);
 		when(projectRoleEmployee.getProjectRole()).thenReturn(projectRole);
 		when(projectRoleSkill.getSkill()).thenReturn(projectRequired);
 		when(role.getAccountId()).thenReturn(accountModel.getId());
+		when(role.getProjects()).thenReturn(Arrays.asList(projectRole));
 		when(role.getSkills()).thenReturn(Arrays.asList(projectRoleSkill));
 		when(roleEmployee.getEmployee()).thenReturn(employee);
 		when(roleEmployee.getRole()).thenReturn(role);
@@ -142,17 +144,6 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 			assertEquals(1, siteModel.getExpiring());
 			assertEquals(0, siteModel.getExpired());
 			assertEquals(accountModel, siteModel.getSite());
-
-			assertNull(siteAssignmentSet.getValue());
-
-			for (ProjectStatisticsModel projectModel : siteAssignmentSet.getValue()) {
-				assertNotNull(projectModel.getProject());
-				assertEquals(NAME, projectModel.getProject().getSiteName());
-				assertNotNull(projectModel.getAssignments());
-				assertEquals(1, projectModel.getAssignments().getComplete());
-				assertEquals(0, projectModel.getAssignments().getExpiring());
-				assertEquals(0, projectModel.getAssignments().getExpired());
-			}
 		}
 	}
 }

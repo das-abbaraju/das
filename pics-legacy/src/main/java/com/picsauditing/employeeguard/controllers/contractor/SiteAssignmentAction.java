@@ -10,7 +10,7 @@ import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
-import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,7 +55,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
 		AccountModel account = accountService.getAccountById(permissions.getAccountId());
-		return ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
+		return ViewModelFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
 	}
 
 	private Map<RoleInfo, Integer> getRoleEmployeeCounts(List<Employee> employees) {
@@ -63,9 +63,9 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
 
 		List<Role> siteRoles = getSiteRoles();
-		List<RoleInfo> roleInfos = ViewModeFactory.getRoleInfoFactory().build(siteRoles);
+		List<RoleInfo> roleInfos = ViewModelFactory.getRoleInfoFactory().build(siteRoles);
 
-		return ViewModeFactory.getRoleEmployeeCountFactory()
+		return ViewModelFactory.getRoleEmployeeCountFactory()
 				.create(roleInfos, corporateToSiteRoles, employees);
 	}
 
@@ -96,7 +96,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
-		return ViewModeFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
+		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
 				.create(employeesAssignedToSite.size(), roleCounts, employees, employeeSkills);
 	}
 

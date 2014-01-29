@@ -216,7 +216,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(type = FieldType.Date)
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getForceEnd() {
 		return forceEnd;
 	}

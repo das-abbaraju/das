@@ -14,6 +14,7 @@
     <bean id="AccountSkillEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO"/>
     <bean id="AccountSkillGroupDAO" class="com.picsauditing.employeeguard.daos.AccountSkillGroupDAO"/>
     <bean id="AccountSkillRoleDAO" class="com.picsauditing.employeeguard.daos.AccountSkillRoleDAO"/>
+    <bean id="DuplicateEntityChecker" class="com.picsauditing.employeeguard.daos.DuplicateEntityChecker"/>
     <bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
     <bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
     <bean id="ProfileDocumentDAO" class="com.picsauditing.employeeguard.daos.ProfileDocumentDAO"/>
@@ -34,7 +35,6 @@
     <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
     <bean id="AccountSkillEmployeeService" class="com.picsauditing.employeeguard.services.AccountSkillEmployeeService"/>
     <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
-    <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
     <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
     <bean id="EGBillingService" class="com.picsauditing.employeeguard.services.external.BillingService"/>
@@ -45,8 +45,6 @@
     <bean id="EmployeeLoginService" class="com.picsauditing.employeeguard.services.LoginService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
-    <bean id="ProductSubscriptionService"
-          class="com.picsauditing.employeeguard.services.external.ProductSubscriptionServiceImpl"/>
     <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>
     <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
     <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>

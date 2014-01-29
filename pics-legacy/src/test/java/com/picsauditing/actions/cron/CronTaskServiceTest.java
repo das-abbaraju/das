@@ -23,7 +23,7 @@ public class CronTaskServiceTest {
     @Test
     public void testAllTests() {
         Collection<String> allTasks = service.getAllTasks();
-        assertEquals(18, allTasks.size());
+        assertEquals(19, allTasks.size());
     }
 
     @Test

@@ -38,6 +38,7 @@ public class ContractorsModel extends AbstractModel {
             pqf.join(ContractorAuditTable.CALicenseExpDate);
         }
 
+        contractor.join(ContractorTable.TradeSafetySensitive);
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
         contractorTrade.minimumImportance = FieldImportance.Average;

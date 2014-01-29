@@ -3,6 +3,7 @@ package com.picsauditing.actions.users;
 import com.opensymphony.xwork2.Action;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.*;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
@@ -27,10 +28,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -44,6 +42,8 @@ public class UsersManageTest extends PicsActionTest {
 	private UsersManage usersManage;
 	private List<UserGroup> userGroups;
 	private List<UserGroup> members;
+    private Set<Integer> operatorChildren;
+
 	@Mock
 	private User user;
 	@Mock
@@ -87,8 +87,10 @@ public class UsersManageTest extends PicsActionTest {
         Whitebox.setInternalState(usersManage, "userManagementService", userManagementService);
         Whitebox.setInternalState(usersManage, "groupManagementService", groupManagementService);
 
-        when(permissions.getOperatorChildren()).thenReturn(new HashSet<Integer>());
+        operatorChildren = new HashSet<>();
+        when(permissions.getOperatorChildren()).thenReturn(operatorChildren);
         when(translationService.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
+        when(user.getAccount()).thenReturn(account);
 	}
 
     @Test
@@ -500,13 +502,96 @@ public class UsersManageTest extends PicsActionTest {
 		assertEquals(0, user.getCountriesServiced().size());
 	}
 
-	private void setUpUserAndAccount() {
+    @Test
+    public void testVerifyAccountAccess_UserEditingAccountTheyAreIn() throws Exception {
+        when(permissions.getAccountId()).thenReturn(987);
+        when(account.getId()).thenReturn(987);
+        usersManage.setAccount(account);
+
+        try {
+            Whitebox.invokeMethod(usersManage, "verifyAccountAccess");
+        } catch (Exception fail) {
+            fail("There should be no exceptions from this call");
+        }
+    }
+
+    @Test
+    public void testVerifyAccountAccess_UserEditingAccountInOperatorChildren() throws Exception {
+        when(permissions.getAccountId()).thenReturn(987);
+        when(account.getId()).thenReturn(123);
+        operatorChildren.add(123);
+        usersManage.setAccount(account);
+
+        try {
+            Whitebox.invokeMethod(usersManage, "verifyAccountAccess");
+        } catch (Exception fail) {
+            fail("There should be no exceptions from this call");
+        }
+    }
+
+    @Test(expected = NoRightsException.class)
+    public void testVerifyAccountAccess_UserEditingAccountNotOperatorChildrenNoAllOperatorsPerm() throws Exception {
+        when(permissions.getAccountId()).thenReturn(987);
+        when(account.getId()).thenReturn(123);
+        operatorChildren.add(555);
+        doThrow(new NoRightsException("Test")).when(permissions).tryPermission(OpPerms.AllOperators);
+        usersManage.setAccount(account);
+
+        Whitebox.invokeMethod(usersManage, "verifyAccountAccess");
+    }
+
+    @Test
+    public void testVerifyUserInAccounts_NoUserNoException() throws Exception {
+        usersManage.setUser(null);
+        try {
+            Whitebox.invokeMethod(usersManage, "verifyUserInAccount");
+        } catch (Exception fail) {
+            fail("There should be no exceptions from this call");
+        }
+    }
+
+    @Test
+    public void testVerifyUserInAccounts_UserInAccount_NoException() throws Exception {
+        when(account.getId()).thenReturn(123);
+        usersManage.setUser(user);
+        usersManage.setAccount(account);
+        try {
+            Whitebox.invokeMethod(usersManage, "verifyUserInAccount");
+        } catch (Exception fail) {
+            fail("There should be no exceptions from this call");
+        }
+    }
+
+    @Test
+    public void testVerifyUserInAccounts_CreatingNewUser_UserHasNoAccountYet_NoException() throws Exception {
+        when(user.getAccount()).thenReturn(null);
+        usersManage.setUser(user);
+        usersManage.setAccount(account);
+        try {
+            Whitebox.invokeMethod(usersManage, "verifyUserInAccount");
+        } catch (Exception fail) {
+            fail("There should be no exceptions from this call");
+        }
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void testVerifyUserInAccounts_UserNotInAccount_ThrowsException() throws Exception {
+        Account wrongAccount = mock(Account.class);
+        when(wrongAccount.getId()).thenReturn(98765);
+        when(account.getId()).thenReturn(123);
+        usersManage.setUser(user);
+        usersManage.setAccount(wrongAccount);
+        Whitebox.invokeMethod(usersManage, "verifyUserInAccount");
+    }
+
+    private void setUpUserAndAccount() {
 		// Just seed some data so we don't get NPEs when calling functions
 		User user = new User(123);
 		user.setName("USER NAME");
 		user.setUsername("USERNAME");
 		user.setEmail("me@here.com");
 		Account account = new Account();
+        account.setId(456);
 		user.setAccount(account);
 		usersManage.setUser(user);
 		usersManage.setAccount(account);

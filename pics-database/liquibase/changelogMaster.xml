@@ -60,10 +60,10 @@
     <include file="./liquibase/mdo12_PICS-13617_SS_trades_nullable.sql"/>
     <include file="./liquibase/dalvarado6_PICS-13611_Add_rules_for_SS.sql"/>
 
-	<!-- Release 6.67 --> 
+	<!-- Release 6.67 -->
     <include file="./liquibase/sshacter13_FixEmailSubscription.sql"/>
 
-	<!-- Rlease 6.68 --> 
+	<!-- Rlease 6.68 -->
     <include file="./liquibase/pschlesinger9_PICS-13683_CorrectDueDates.sql"/>
     <include file="./liquibase/kchase11_PICS-13652_TradeRiskRank.sql"/>
     <include file="./liquibase/kchase12_PICS-13079_EmailNotViewable.sql"/>
@@ -109,20 +109,34 @@
 	<include file="./liquibase/pschlesinger13_UpdatingCADValues.sql"/>
 	-->
 
-    <!-- 7.1.0 --> 
+    <!-- 7.1.0 -->
 	<include file="./liquibase/pschlesinger10_PICS-14106_ChangeNameOfEmeaBusinessUnit.sql"/>
 
-	<!-- 7.1.1 --> 
+	<!-- 7.1.1 -->
 	<include file="./liquibase/mdo28_PICS-14143_UpdateBaseReportsToPublic.sql"/>
-	
+
 	<!-- 7.1.2 -->
-    <include file="./liquibase/sshacter40_PICS-13646_DiscrepenciesReportView.sql"/>
-    <include file="./liquibase/mdo27_PICS-14154_AddIndexForConOpNums.sql"/>
-    <include file="./liquibase/mdo30_PICS-14111_correct_erroneous_invoice_type.sql"/>
-    
-	<!-- 7.1.3 -->
+ 	<include file="./liquibase/sshacter40_PICS-13646_DiscrepenciesReportView.sql"/>
+	<include file="./liquibase/mdo27_PICS-14154_AddIndexForConOpNums.sql"/>
+	<include file="./liquibase/mdo30_PICS-14111_correct_erroneous_invoice_type.sql"/>
 	<include file="./liquibase/mdo31_PICS-14262_fixTradeSS.sql"/>
-	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
+	<include file="./liquibase/pschlesinger14_CleanUpAccountsTableCountrySubdivision.sql"/>
 	<include file="./liquibase/mdo35_PICS-14251_ChangeAUDNZDBackTo2013Pricing.sql"/>
+	<include file="./liquibase/jgriffith1_PICS-14278_Contractors_for_Momentive.sql"/>
+	<include file="./liquibase/kchase16_PICS-13674_DupSafetyManual.sql"/>
+
+	<!-- 7.1.3 -->
+	<include file="./liquibase/mdo36_PICS-13858_switchFavoriteReports.sql"/>
+	<include file="./liquibase/mdo37_PICS-13742_ERMResubmit.sql"/>
+	<include file="./liquibase/uaung2_PICS-14166_AddDiscriminatorColumn.sql"/>
+	<include file="./liquibase/sshacter41_PICS-13646_UpdatedView.sql"/>
+	<include file="./liquibase/mdo32_PICS-14250_deleteRefundAndPayment.sql"/>
+	<include file="./liquibase/mdo29_PICS-14233_0_DollarInvoicesForAI_IG.sql"/>
+	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
+	<include file="./liquibase/mdo26_PICS-12788_updateAllNewUsersToV7.sql"/>
+	<include file="./liquibase/mdo40_PICs-14382_deleteAnyReportUsersToReport108.sql"/>
+	
+	<!-- 7.1.4 -->
+	<include file="./liquibase/sshacter42_PICS-12791_ErrorSerchingWithChineseCharacters.sql"/>
 
 </databaseChangeLog>

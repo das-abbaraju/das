@@ -5,7 +5,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.services.external.BillingService;
-import com.picsauditing.employeeguard.services.external.ProductSubscriptionService;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
@@ -165,10 +165,6 @@ public class AccountService {
 		for (ContractorOperator contractorOperator : operator.getContractorOperators()) {
 			contractors.add(contractorOperator.getContractorAccount());
 		}
-	}
-
-	public boolean isEmployeeGUARDEnabled(final int accountId) {
-		return accountEmployeeGuardDAO.isEmployeeGUARDEnabled(accountId);
 	}
 
 	private <E extends Account> List<AccountModel> mapAccountsToAccountModels(List<E> accounts) {

@@ -135,18 +135,7 @@ public class AuditBuilder {
 			}
 		}
 
-		/* Remove unneeded audits */
-		Iterator<ContractorAudit> iter = contractor.getAudits().iterator();
-		while (iter.hasNext()) {
-			ContractorAudit conAudit = iter.next();
-			// checking to see if we still need audit
-			if (!conAudit.isManuallyAdded() && !requiredAuditTypes.contains(conAudit.getAuditType())) {
-				if (canDelete(conAudit)) {
-					iter.remove();
-					conAuditDao.remove(conAudit);
-				}
-			}
-		}
+		removeUnneededAudits(contractor, requiredAuditTypes);
 
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
 
@@ -194,7 +183,61 @@ public class AuditBuilder {
 		conAuditDao.save(contractor);
 	}
 
-    private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
+	private void removeUnneededAudits(ContractorAccount contractor, Set<AuditType> requiredAuditTypes) {
+		Iterator<ContractorAudit> iter = contractor.getAudits().iterator();
+		while (iter.hasNext()) {
+			ContractorAudit conAudit = iter.next();
+			if (okToRemoveAudit(conAudit, requiredAuditTypes)) {
+				iter.remove();
+				conAuditDao.remove(conAudit);
+			}
+		}
+	}
+
+	private boolean okToRemoveAudit(ContractorAudit conAudit, Set<AuditType> requiredAuditTypes) {
+		if (conAudit.isManuallyAdded()) {
+			return false;
+		}
+
+		if (requiredAuditTypes.contains(conAudit.getAuditType())) {
+			return false;
+		}
+
+		// Never delete the PQF or WCB
+		if (conAudit.getAuditType().isPicsPqf() || conAudit.getAuditType().isWCB()) {
+			return false;
+		}
+
+		if (conAudit.getScheduledDate() != null) {
+			return false;
+		}
+
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Pending)) {
+				return false;
+			}
+			else if (cao.getPercentComplete() > 0) {
+				return false;
+			}
+		}
+
+		if (conAudit.getData().size() == 0) {
+			return false;
+		}
+
+		if (isAPreviousAudit(conAudit)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean isAPreviousAudit(ContractorAudit conAudit) {
+		List<ContractorAudit> subsequentAudits = conAuditDao.findSubsequentAudits(conAudit);
+		return !subsequentAudits.isEmpty();
+	}
+
+	private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
         List<String> auditFors = auditPeriodService.getAuditForByDate(auditType, today);
         List<AuditType> children = auditTypeDao.findWhere("t.parent.id = " + auditType.getId());
         AuditType childAuditType = null;
@@ -399,32 +442,6 @@ public class AuditBuilder {
 		return true;
 	}
 
-	private boolean canDelete(ContractorAudit conAudit) {
-		// Never delete the PQF or WCB
-		if (conAudit.getAuditType().isPicsPqf() || conAudit.getAuditType().isWCB()) {
-			return false;
-		}
-
-		if (conAudit.getScheduledDate() != null) {
-			return false;
-		}
-
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().after(AuditStatus.Pending)) {
-				return false;
-			}
-			else if (cao.getPercentComplete() > 0) {
-				return false;
-			}
-		}
-
-		if (conAudit.getData().size() == 0) {
-			return false;
-		}
-
-		return true;
-	}
-
 	private AuditTypeDetail findDetailForAuditType(Set<AuditTypeDetail> requiredAuditTypeDetails, AuditType auditType) {
 		for (AuditTypeDetail detail : requiredAuditTypeDetails) {
 			if (detail.rule.getAuditType().equals(auditType)) {
@@ -571,8 +588,7 @@ public class AuditBuilder {
 	private boolean isAuditThatCanAdjustStatus(ContractorAudit conAudit) {
 		return conAudit.getAuditType().isPicsPqf()
 				|| conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
-				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM
-				|| conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy);
+				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM;
 	}
 
 	private void adjustCaosToStatus(ContractorAudit conAudit, HashSet<ContractorAuditOperator> caosToChange, AuditStatus status) {

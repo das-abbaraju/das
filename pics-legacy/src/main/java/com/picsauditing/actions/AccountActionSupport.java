@@ -149,7 +149,23 @@ public class AccountActionSupport extends PicsActionSupport {
 		return addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
 	}
 
-	protected Note addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
+    protected Note addNote(Account account, String summary, String newNote, NoteCategory category, LowMedHigh priority,
+                           boolean canContractorView, int viewableBy) {
+        Note note = new Note();
+        note.setAccount(account);
+        note.setAuditColumns(permissions);
+        note.setSummary(summary);
+        note.setBody(newNote);
+        note.setPriority(priority);
+        note.setNoteCategory(category);
+        note.setViewableById(viewableBy);
+        note.setCanContractorView(canContractorView);
+        note.setStatus(NoteStatus.Closed);
+        noteDao.save(note);
+        return note;
+    }
+
+    protected Note addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
 			boolean canContractorView, int viewableBy, User user, Employee employee) {
 		Note note = new Note();
 		note.setAccount(account);

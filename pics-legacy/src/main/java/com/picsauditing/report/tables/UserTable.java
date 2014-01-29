@@ -28,6 +28,6 @@ public class UserTable extends AbstractTable {
 
 		ReportForeignKey group = new ReportForeignKey(Group, new UserGroupTable(), new ReportOnClause("id","userID"));
 		group.setMinimumImportance(FieldImportance.Average);
-		addRequiredKey(group);
+		addOptionalKey(group);
 	}
 }

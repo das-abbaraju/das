@@ -26,7 +26,7 @@
         </li>
 
         <s:set var="selected_role" value="%{id}"/>
-        <s:iterator value="operatorProjectAssignmentMatrix.roles" var="operator_project_role">
+        <s:iterator value="operatorProjectRoleAssignment.roles" var="operator_project_role">
             <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="operator_project_role_url">
                 <s:param name="projectId">
                     ${project.id}
@@ -50,16 +50,16 @@
                 <tr>
                     <th>Company</th>
                     <th>Employee</th>
-                    <s:iterator value="operatorProjectAssignmentMatrix.skillNames" var="skill_name">
-                        <th class="text-center">${skill_name}</th>
+                    <s:iterator value="operatorProjectRoleAssignment.skills" var="skill_name">
+                        <th class="text-center">${skill_name.name}</th>
                     </s:iterator>
                 </tr>
             </thead>
 
             <tbody>
-                <s:iterator value="operatorProjectAssignmentMatrix.assignments" var="operator_project_employee">
+                <s:iterator value="operatorProjectRoleAssignment.employeeProjectRoleAssignments" var="operator_project_employee">
                     <tr class="assigned">
-                        <td>${operator_project_employee.companyName}</td>
+                        <td>${operator_project_employee.contractorName}</td>
                         <td>${operator_project_employee.employeeName}</td>
                         <s:iterator value="#operator_project_employee.skillStatuses" var="employee_skill_status">
                             <s:if test="#employee_skill_status.expired">
@@ -79,7 +79,7 @@
                                 <s:set var="skill_status_class">success</s:set>
                             </s:else>
 
-                            <td class="${skill_status_class}">
+                            <td class="text-center ${skill_status_class}">
                                 <i class="${skill_icon} icon-large"></i>
                             </td>
                         </s:iterator>

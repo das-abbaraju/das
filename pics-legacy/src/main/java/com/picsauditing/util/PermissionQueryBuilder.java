@@ -67,33 +67,37 @@ public class PermissionQueryBuilder {
 		if (!permissions.isOperatorCorporate())
 			contractorOperatorAlias = "";
 
-		String subSQL;
-		query += " AND ";
+        if (!getOperatorIDs().isEmpty()) {
+            String subSQL;
+            query += " AND ";
 
-		if (!Strings.isEmpty(contractorOperatorAlias) && permissions.isOperator())
-			return query + buildContractorOperatorClause(contractorOperatorAlias);
+            if (!Strings.isEmpty(contractorOperatorAlias) && permissions.isOperator())
+                return query + buildContractorOperatorClause(contractorOperatorAlias);
 
-		String contractorOperatorAlias = isHQL() ? "co" : "co";
+            String contractorOperatorAlias = isHQL() ? "co" : "co";
 
-		if (permissions.isOnlyAuditor())
-			subSQL = buildAuditorSubquery();
-		else if (permissions.isOperatorCorporate()) {
-			if (modelType == ModelType.Operators)
-			{
-				subSQL = buildFacilitiesSubquery();
-			}
-			else
-				subSQL = buildContractorOperatorSubquery(contractorOperatorAlias);
-		}
-		else
-			return PERMISSION_DENIED;
+            if (permissions.isOnlyAuditor())
+                subSQL = buildAuditorSubquery();
+            else if (permissions.isOperatorCorporate()) {
+                if (modelType == ModelType.Operators)
+                {
+                    subSQL = buildFacilitiesSubquery();
+                }
+                else
+                    subSQL = buildContractorOperatorSubquery(contractorOperatorAlias);
+            }
+            else
+                return PERMISSION_DENIED;
 
-		query += accountAlias;
+            query += accountAlias;
 
-		if (!isHQL())
-			query += ".id";
+            if (!isHQL())
+                query += ".id";
 
-		return query + " IN (" + subSQL + ")";
+            return query + " IN (" + subSQL + ")";
+        }
+
+        return query;
 	}
 
 	private String buildAuditorSubquery() {

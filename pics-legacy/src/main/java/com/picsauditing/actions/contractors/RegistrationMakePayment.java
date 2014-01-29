@@ -119,16 +119,9 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 		// Email proforma invoice
 		if (EMAIL_BUTTON.equals(button)) {
-			contractor.setPaymentMethod(PaymentMethod.EFT);
-			contractorAccountDao.save(contractor);
-			try {
-				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice);
-				addActionMessage(getText("RegistrationMakePayment.message.SentProFormaEmail"));
-			} catch (Exception e) {
-				addActionError(getText("RegistrationMakePayment.message.ProFormaEmailError"));
-			}
+            processProformaOption();
 
-			url = "Login.action";
+			url = "Login.action?button=logout";
 			return REDIRECT;
 		}
 
@@ -145,7 +138,18 @@ public class RegistrationMakePayment extends RegistrationAction {
 		return SUCCESS;
 	}
 
-	public String completeRegistration() throws Exception {
+    private void processProformaOption() {
+        contractor.setPaymentMethod(PaymentMethod.EFT);
+        contractorAccountDao.save(contractor);
+        try {
+            EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice);
+            addActionMessage(getText("RegistrationMakePayment.message.SentProFormaEmail"));
+        } catch (Exception e) {
+            addActionError(getText("RegistrationMakePayment.message.ProFormaEmailError"));
+        }
+    }
+
+    public String completeRegistration() throws Exception {
 		findContractor();
 		if (redirectIfNotReadyForThisStep()) {
 			return BLANK;

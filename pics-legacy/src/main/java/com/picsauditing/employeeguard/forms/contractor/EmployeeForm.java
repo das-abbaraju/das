@@ -4,13 +4,16 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
+import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
+import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 
 import java.io.File;
 
-public class EmployeeForm implements AddAnotherForm, PersonalInformationForm, PhotoForm {
+public class EmployeeForm implements AddAnotherForm, PersonalInformationForm, PhotoForm, DuplicateInfoProvider {
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
@@ -138,7 +141,17 @@ public class EmployeeForm implements AddAnotherForm, PersonalInformationForm, Ph
 				.email(email).phoneNumber(phoneNumber).slug(employeeId).positionName(title).groups(groups).build();
 	}
 
-	public static class Builder {
+    @Override
+    public UniqueIndexable getUniqueIndexable() {
+        return new Employee.EmployeeAccountEmailAndSlugUniqueKey(0, SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), email, employeeId);
+    }
+
+    @Override
+    public Class<?> getType() {
+        return Employee.class;
+    }
+
+    public static class Builder {
 
 		private Employee employee;
 

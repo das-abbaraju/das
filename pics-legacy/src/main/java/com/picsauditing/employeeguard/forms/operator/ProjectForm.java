@@ -1,8 +1,10 @@
 package com.picsauditing.employeeguard.forms.operator;
 
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.util.DateUtil;
+import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class ProjectForm extends ProjectNameLocationForm implements AddAnotherForm {
@@ -130,7 +132,17 @@ public class ProjectForm extends ProjectNameLocationForm implements AddAnotherFo
 		return project;
 	}
 
-	public static class Builder {
+    @Override
+    public UniqueIndexable getUniqueIndexable() {
+        return new Project.ProjectUniqueIndex(0, siteId, name);
+    }
+
+    @Override
+    public Class<?> getType() {
+        return Project.class;
+    }
+
+    public static class Builder {
 		private Project project;
 
 		public Builder project(Project project) {

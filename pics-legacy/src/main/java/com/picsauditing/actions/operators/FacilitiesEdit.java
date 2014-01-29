@@ -84,6 +84,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
     private CountrySubdivision countrySubdivision;
     private int contactID;
     private boolean autoApproveRelationships;
+    private String timeoutDays;
+    private String sessionTimeout;
 
     public List<OperatorAccount> notChildOperatorList;
     public List<OperatorAccount> childOperatorList;
@@ -113,6 +115,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
         notChildOperatorList = getOperatorsNotMyChildrenOrMyself();
         childOperatorList = operator.getChildOperators();
+        timeoutDays = "" + operator.getRememberMeTimeInDays();
+        sessionTimeout = "" + operator.getSessionTimeout();
 
         loadSelectedClients();
 
@@ -193,6 +197,20 @@ public class FacilitiesEdit extends OperatorActionSupport {
     public String save() {
         if (operator.getId() == 0) {
             operator.setType(getCreateType());
+        }
+
+        try {
+            operator.setRememberMeTimeInDays(Integer.parseInt(timeoutDays));
+        } catch (NumberFormatException e) {
+            addActionError(getText("FacilitiesEdit.RememberMeInteger"));
+            return REDIRECT;
+        }
+
+        try {
+            operator.setSessionTimeout(Integer.parseInt(sessionTimeout));
+        } catch (Exception e) {
+            addActionError(getText("FacilitiesEdit.SessionTimeoutInteger"));
+            return REDIRECT;
         }
 
         if (facilities == null) {
@@ -447,6 +465,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getTimeoutDays() { return timeoutDays; }
+
+    public void setTimeoutDays(String timeoutDays) { this.timeoutDays = timeoutDays; }
+
+    public String getSessionTimeout() { return sessionTimeout; }
+
+    public void setSessionTimeout(String sessionTimeout) { this.sessionTimeout = sessionTimeout; }
 
     public Set<OperatorAccount> getRelatedFacilities() {
         if (relatedFacilities == null) {

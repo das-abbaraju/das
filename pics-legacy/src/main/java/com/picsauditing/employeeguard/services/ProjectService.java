@@ -18,10 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ProjectService {
 	@Autowired
@@ -322,4 +319,13 @@ public class ProjectService {
 	public Project getProjectByRoleAndAccount(final String roleId, final int accountId) {
 		return projectDAO.findProjectByRoleAndAccount(NumberUtils.toInt(roleId), accountId);
 	}
+
+    public Set<Integer> getContractorIdsForProject(final Project project) {
+        Set<Integer> contractorIds = new HashSet<>();
+        for (ProjectCompany projectCompany : project.getCompanies()) {
+            contractorIds.add(projectCompany.getAccountId());
+        }
+
+        return contractorIds;
+    }
 }

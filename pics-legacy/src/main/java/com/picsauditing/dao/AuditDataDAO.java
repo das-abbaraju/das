@@ -121,10 +121,10 @@ public class AuditDataDAO extends PicsDAO {
 
 	public List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
-				"WHERE d.audit.contractorAccount = :contractor " +
+				"WHERE d.audit.contractorAccount.id = :contractor " +
 				"AND d.question = :question " +
 				"AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate > :today)");
-		query.setParameter("contractor", contractor);
+		query.setParameter("contractor", contractor.getId());
 		query.setParameter("question", question);
 		query.setParameter("today", new Date());
 

@@ -1,16 +1,14 @@
 package com.picsauditing.actions.users;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.access.*;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.group.GroupManagementService;
@@ -365,7 +363,10 @@ public class UsersManage extends PicsActionSupport {
 		startup();
 
 		UserGroupManagementStatus status = validateUserOrGroupIsMovable();
-		if (!status.isOk) {
+        if (moveToAccount == 0) {
+            addActionError("Must give an account to move user to");
+        }
+		else if (!status.isOk) {
 			addActionErrorFromStatus(status);
 		} else {
 			userManagementService.moveUserToNewAccount(user, moveToAccount);
@@ -490,14 +491,9 @@ public class UsersManage extends PicsActionSupport {
 			account = accountDAO.find(permissions.getAccountId());
 		}
 
-		// Make sure we can edit users in this account
-		if (permissions.getAccountId() != account.getId()) {
-			if (!permissions.getOperatorChildren().contains(account.getId())) {
-				permissions.tryPermission(OpPerms.AllOperators);
-			}
-		}
+        checkPermissionToEditUserInAccount();
 
-		// checking to see if primary account user is set
+        // checking to see if primary account user is set
 		if (!isSaveAction && (!isPrimaryUserEstablished() || isUserPrimaryContact())) {
 			setPrimaryAccount = true;
 		}
@@ -508,7 +504,28 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
-	private boolean isPrimaryUserEstablished() {
+    private void checkPermissionToEditUserInAccount() throws NoRightsException, UnauthorizedException {
+        verifyAccountAccess();
+        verifyUserInAccount();
+    }
+
+    private void verifyUserInAccount() throws UnauthorizedException {
+        if (user != null && user.getAccount() != null) {
+            if (user.getAccount().getId() != account.getId()) {
+                throw new UnauthorizedException("Illegal access to page");
+            }
+        }
+    }
+
+    private void verifyAccountAccess() throws NoRightsException {
+        if (permissions.getAccountId() != account.getId()) {
+            if (!permissions.getOperatorChildren().contains(account.getId())) {
+                permissions.tryPermission(OpPerms.AllOperators);
+            }
+        }
+    }
+
+    private boolean isPrimaryUserEstablished() {
 		return (account != null && account.getPrimaryContact() != null);
 	}
 
