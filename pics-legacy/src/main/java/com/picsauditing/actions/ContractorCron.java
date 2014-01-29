@@ -747,7 +747,6 @@ public class ContractorCron extends PicsActionSupport {
 		if (co.getContractorAccount().getAccountLevel().isBidOnly()
 				|| co.getContractorAccount().getStatus().isPending()
 				|| co.getContractorAccount().getStatus().isDeleted()
-                || co.getContractorAccount().getStatus().isDeclined()
 				|| co.getContractorAccount().getStatus().isDeactivated()) {
 			overallColor = FlagColor.Clear;
 			reason = "Contractor no longer tracked by flags.";

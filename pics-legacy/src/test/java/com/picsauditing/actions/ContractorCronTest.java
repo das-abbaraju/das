@@ -138,34 +138,6 @@ public class ContractorCronTest extends PicsActionTest {
     }
 
     @Test
-    public void testFlagCalculator_declinedAccount() throws Exception {
-        ContractorCronStep[] steps = new ContractorCronStep[1];
-        steps[0] = ContractorCronStep.Flag;
-
-        ContractorOperator conOp = new ContractorOperator();
-        conOp.setContractorAccount(contractor);
-        conOp.setOperatorAccount(operator);
-
-        FlagCriteria criteria = new FlagCriteria();
-        criteria.setInsurance(true);
-        FlagData flagData = new FlagData();
-        flagData.setCriteria(criteria);
-        List<FlagData> changes = new ArrayList<>();
-        changes.add(flagData);
-
-        Whitebox.setInternalState(contractorCron, "steps", steps);
-        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
-        Whitebox.setInternalState(contractorCron, "flagChangePublisher", flagChangePublisher);
-        when(flagDataCalculator.calculate()).thenReturn(changes);
-        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
-        when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
-
-        Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        assertEquals("{}", conOp.getFlagDetail());
-        assertEquals(FlagColor.Clear, conOp.getFlagColor());
-    }
-
-    @Test
 	public void testManualAuditSlaReset() throws Exception {
 		contractor = EntityFactory.makeContractor();
 
