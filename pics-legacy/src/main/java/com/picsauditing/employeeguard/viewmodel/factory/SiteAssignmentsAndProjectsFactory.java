@@ -85,7 +85,6 @@ public class SiteAssignmentsAndProjectsFactory {
 						}
 					});
 
-
 					employeeRolesToSite.get(site).put(employee, filteredByProject);
 				}
 			}
