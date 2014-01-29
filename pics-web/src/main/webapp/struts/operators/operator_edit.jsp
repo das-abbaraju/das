@@ -443,11 +443,19 @@
                         onchange="$('#rememberMeTimeTextbox').attr('disabled', !this.checked)"/>
         </li>
         <li>
-            <s:textfield id="rememberMeTimeTextbox" name="operator.rememberMeTimeInDays" theme="formhelp"
+            <label><s:text name="OperatorAccount.rememberMeTimeInDays"/>:</label>
+            <s:textfield id="rememberMeTimeTextbox" name="timeoutDays"
                          disabled="!operator.rememberMeTimeEnabled"/>
+            <pics:fieldhelp title="Remember Me Timeout (Days)">
+                <p>How many days do you want to stay logged in?</p>
+            </pics:fieldhelp>
         </li>
         <li>
-            <s:textfield name="operator.sessionTimeout" theme="formhelp"/>
+            <label><s:text name="OperatorAccount.sessionTimeout"/>:</label>
+            <s:textfield name="sessionTimeout"/>
+            <pics:fieldhelp title="User Inactivity Timeout (Minutes)">
+                <p>User Inactivity Timeout (Minutes)</p>
+            </pics:fieldhelp>
         </li>
     </ol>
 </fieldset>
