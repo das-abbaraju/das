@@ -44,19 +44,18 @@
 
 			<div class="content">
 				<tw:form formName="contractor_employee_export" action="${contractor_employee_export_url}" method="post">
-					<div class="control-group">
+<%-- 					<div class="control-group">
 						<div class="controls">
-							<%-- <tw:label class="radio">
+							<tw:label class="radio">
 								<tw:input inputName="type" id="contractor_employee_export_type_pdf" type="radio"
 								          value="PDF"/> PDF
-							</tw:label> --%>
-
+							</tw:label>
 							<tw:label class="radio">
 								<tw:input inputName="type" id="contractor_employee_export_type_csv" type="radio"
 								          value="CSV" checked="checked"/> Spreadsheet
 							</tw:label>
 						</div>
-					</div>
+					</div> --%>
 
 					<div class="control-group">
 						<div class="controls">
