@@ -251,7 +251,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@Transient
 	public String getName() {
-		return firstName + " " + getLastName();
+		return getFirstName() + " " + getLastName();
 	}
 
     public final static class EmployeeAccountEmailUniqueKey implements UniqueIndexable {

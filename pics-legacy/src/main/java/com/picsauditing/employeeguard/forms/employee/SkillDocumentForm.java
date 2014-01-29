@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.employee;
 
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 
 import java.util.Calendar;
 

@@ -406,4 +406,14 @@ public class SkillService {
 
 		return Collections.emptyMap();
 	}
+
+    public List<AccountSkill> getParentSiteRequiredSkills(int accountId) {
+        List<Integer> parentIds = accountService.getTopmostCorporateAccountIds(accountId);
+        List<SiteSkill> requiredSkills = siteSkillDAO.findByAccountIds(parentIds);
+        return ExtractorUtil.extractList(requiredSkills, SiteSkill.SKILL_EXTRACTOR);
+    }
+
+    public List<AccountSkill> getSkillsForRole(final Role role) {
+        return accountSkillDAO.findByRoles(Arrays.asList(role));
+    }
 }

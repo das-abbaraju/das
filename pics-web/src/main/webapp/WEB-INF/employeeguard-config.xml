@@ -35,7 +35,6 @@
     <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
     <bean id="AccountSkillEmployeeService" class="com.picsauditing.employeeguard.services.AccountSkillEmployeeService"/>
     <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
-    <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
     <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
     <bean id="EGBillingService" class="com.picsauditing.employeeguard.services.external.BillingService"/>
