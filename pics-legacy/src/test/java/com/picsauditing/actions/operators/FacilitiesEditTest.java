@@ -161,7 +161,45 @@ public class FacilitiesEditTest extends PicsActionTest {
 		assertEquals(userList.size(), primaryContactSet.size());
 	}
 
-	@Test
+    @Test
+    public void testSave_RememberMe_NonInteger() {
+        facilitiesEdit.setTimeoutDays("7.5");
+        facilitiesEdit.setSessionTimeout("60");
+        facilitiesEdit.save();
+        assertTrue(facilitiesEdit.hasActionErrors());
+    }
+
+    @Test
+    public void testSave() {
+        Country country = mock(Country.class);
+        CountrySubdivision countrySubdivision = mock(CountrySubdivision.class);
+
+        when(countrySubdivision.getCountry()).thenReturn(country);
+        when(operatorDAO.save(operator)).thenReturn(operator);
+
+        operator.setCountry(country);
+        operator.setCountrySubdivision(countrySubdivision);
+        operator.setDiscountPercent(BigDecimal.ZERO);
+        operator.setParent(operator);
+        operator.setName("Operator");
+
+        facilitiesEdit.setTimeoutDays("7");
+        facilitiesEdit.setSessionTimeout("60");
+        facilitiesEdit.setOperator(operator);
+        facilitiesEdit.save();
+        assertFalse(facilitiesEdit.hasActionErrors());
+        assertEquals(7, operator.getRememberMeTimeInDays());
+    }
+
+    @Test
+    public void testSave_SessionTimeout_NonInteger() {
+        facilitiesEdit.setTimeoutDays("7");
+        facilitiesEdit.setSessionTimeout("60.5");
+        facilitiesEdit.save();
+        assertTrue(facilitiesEdit.hasActionErrors());
+    }
+
+    @Test
 	public void testSave_PreventSettingSelfAsParent() {
 		Country country = mock(Country.class);
 		CountrySubdivision countrySubdivision = mock(CountrySubdivision.class);
