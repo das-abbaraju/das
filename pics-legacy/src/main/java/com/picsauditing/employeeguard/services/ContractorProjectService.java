@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProjectAssignment;
-import com.picsauditing.employeeguard.forms.contractor.ContractorProjectAssignmentMatrix;
+import com.picsauditing.employeeguard.viewmodel.contractor.ContractorProjectAssignmentMatrix;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.models.AccountModel;
@@ -106,11 +106,11 @@ public class ContractorProjectService {
 
 	private List<String> buildSkillNames(List<AccountSkill> requiredSkills) {
 		return ExtractorUtil.extractList(requiredSkills, new Extractor<AccountSkill, String>() {
-			@Override
-			public String extract(AccountSkill accountSkill) {
-				return accountSkill.getName();
-			}
-		});
+            @Override
+            public String extract(AccountSkill accountSkill) {
+                return accountSkill.getName();
+            }
+        });
 	}
 
 	private List<Employee> getAssignedEmployees(final Project project, final int accountId) {
