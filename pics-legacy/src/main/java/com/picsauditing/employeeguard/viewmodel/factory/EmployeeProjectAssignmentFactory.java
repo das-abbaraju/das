@@ -1,10 +1,7 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.employeeguard.entities.AccountGroup;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
@@ -32,8 +29,8 @@ public class EmployeeProjectAssignmentFactory {
     }
 
     public List<EmployeeProjectAssignment> create(final Map<AccountModel, Set<Employee>> contractorEmployees,
-                                                  final Map<Employee, Set<AccountGroup>> employeeRoleAssignments,
-                                                  final Map<AccountGroup, Set<AccountSkill>> projectRoleSkills,
+                                                  final Map<Employee, Set<Role>> employeeRoleAssignments,
+                                                  final Map<Role, Set<AccountSkill>> projectRoleSkills,
                                                   final List<AccountSkill> projectSkills,
                                                   final List<AccountSkill> siteRequiredSkills,
                                                   final List<AccountSkill> corporateRequiredSkills) {
@@ -54,8 +51,8 @@ public class EmployeeProjectAssignmentFactory {
         return employeeProjectAssignments;
     }
 
-    private List<AccountSkill> getAllEmployeeProjectRoleSkills(final Set<AccountGroup> employeeRoleAssignments,
-                                                               final Map<AccountGroup, Set<AccountSkill>> projectRoleSkills) {
+    private List<AccountSkill> getAllEmployeeProjectRoleSkills(final Set<Role> employeeRoleAssignments,
+                                                               final Map<Role, Set<AccountSkill>> projectRoleSkills) {
         if (CollectionUtils.isEmpty(employeeRoleAssignments)) {
             return Collections.emptyList();
         }

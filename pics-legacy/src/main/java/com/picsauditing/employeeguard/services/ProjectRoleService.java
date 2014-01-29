@@ -13,48 +13,48 @@ import java.util.*;
 
 public class ProjectRoleService {
 
-	@Autowired
-	private EmployeeDAO employeeDAO;
-	@Autowired
-	private ProjectRoleDAO projectRoleDAO;
-	@Autowired
-	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-	@Autowired
-	private ProjectService projectService;
+    @Autowired
+    private EmployeeDAO employeeDAO;
+    @Autowired
+    private ProjectRoleDAO projectRoleDAO;
+    @Autowired
+    private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+    @Autowired
+    private ProjectService projectService;
 
-	/**
-	 * Includes skills attached directly on projects as well as site and corporate required skills
-	 *
-	 * @param projectRole
-	 * @return
-	 */
-	public List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {
-		List<AccountSkill> accountSkills = new ArrayList<>();
+    /**
+     * Includes skills attached directly on projects as well as site and corporate required skills
+     *
+     * @param projectRole
+     * @return
+     */
+    public List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {
+        List<AccountSkill> accountSkills = new ArrayList<>();
 
-		for (AccountSkillRole accountSkillRole : projectRole.getRole().getSkills()) {
-			accountSkills.add(accountSkillRole.getSkill());
-		}
+        for (AccountSkillRole accountSkillRole : projectRole.getRole().getSkills()) {
+            accountSkills.add(accountSkillRole.getSkill());
+        }
 
-		accountSkills.addAll(projectService.getRequiredSkills(projectRole.getProject()));
+        accountSkills.addAll(projectService.getRequiredSkills(projectRole.getProject()));
 
-		return ListUtil.removeDuplicatesAndSort(accountSkills);
-	}
+        return ListUtil.removeDuplicatesAndSort(accountSkills);
+    }
 
-	public List<ProjectRole> getRolesForEmployee(Employee employee) {
-		return projectRoleDAO.findByEmployee(employee);
-	}
+    public List<ProjectRole> getRolesForEmployee(Employee employee) {
+        return projectRoleDAO.findByEmployee(employee);
+    }
 
-	public List<ProjectRole> getRolesForProfile(Profile profile) {
-		return projectRoleDAO.findByProfile(profile);
-	}
+    public List<ProjectRole> getRolesForProfile(Profile profile) {
+        return projectRoleDAO.findByProfile(profile);
+    }
 
-	public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, Group role) {
-		return projectRoleDAO.findByProjectsAndRole(projectIds, role);
-	}
+    public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, Group role) {
+        return projectRoleDAO.findByProjectsAndRole(projectIds, role);
+    }
 
-	public List<ProjectRoleEmployee> getProjectRolesForContractor(final Project project, final int accountId) {
-		return projectRoleDAO.findByProjectAndContractor(project, accountId);
-	}
+    public List<ProjectRoleEmployee> getProjectRolesForContractor(final Project project, final int accountId) {
+        return projectRoleDAO.findByProjectAndContractor(project, accountId);
+    }
 
     public Map<Role, Set<AccountSkill>> getRolesAndSkillsForProject(final Project project) {
         List<ProjectRole> projectRoles = projectRoleDAO.findByProject(project);
@@ -81,15 +81,15 @@ public class ProjectRoleService {
         return accountSkills;
     }
 
-    public Map<Employee, Set<AccountGroup>> getEmployeeProjectRoleAssignment(final Project project) {
+    public Map<Employee, Set<Role>> getEmployeeProjectRoleAssignment(final Project project) {
         List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO
                 .findByProject(project);
 
-        Map<Employee, Set<AccountGroup>> employeeProjectRoleAssignment = new HashMap<>();
+        Map<Employee, Set<Role>> employeeProjectRoleAssignment = new HashMap<>();
         for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
             Employee employee = projectRoleEmployee.getEmployee();
             if (!employeeProjectRoleAssignment.containsKey(employee)) {
-                employeeProjectRoleAssignment.put(employee, new HashSet<AccountGroup>());
+                employeeProjectRoleAssignment.put(employee, new HashSet<Role>());
             }
 
             employeeProjectRoleAssignment.get(employee).add(projectRoleEmployee.getProjectRole().getRole());
@@ -116,24 +116,25 @@ public class ProjectRoleService {
 
         return contractorEmployees;
     }
-	public List<ProjectRoleEmployee> getProjectRolesForContractor(final int accountId) {
-		return projectRoleEmployeeDAO.findByAccountId(accountId);
-	}
 
-	public Map<Employee, Set<Role>> getEmployeeProjectAndSiteRolesByAccount(final int accountId) {
-		List<Employee> employees = employeeDAO.findByAccount(accountId);
+    public List<ProjectRoleEmployee> getProjectRolesForContractor(final int accountId) {
+        return projectRoleEmployeeDAO.findByAccountId(accountId);
+    }
 
-		Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
-		for (Employee employee : employees) {
-			for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
-				Utilities.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
-			}
+    public Map<Employee, Set<Role>> getEmployeeProjectAndSiteRolesByAccount(final int accountId) {
+        List<Employee> employees = employeeDAO.findByAccount(accountId);
 
-			for (RoleEmployee roleEmployee : employee.getRoles()) {
-				Utilities.addToMapOfKeyToSet(employeeRoles, employee, roleEmployee.getRole());
-			}
-		}
+        Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
+        for (Employee employee : employees) {
+            for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
+                Utilities.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
+            }
 
-		return employeeRoles;
-	}
+            for (RoleEmployee roleEmployee : employee.getRoles()) {
+                Utilities.addToMapOfKeyToSet(employeeRoles, employee, roleEmployee.getRole());
+            }
+        }
+
+        return employeeRoles;
+    }
 }

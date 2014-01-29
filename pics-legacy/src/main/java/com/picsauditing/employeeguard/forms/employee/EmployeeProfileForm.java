@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.forms.employee;
 
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.model.Skill;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public class EmployeeProfileForm {
 
     private EmployeeProfileEditForm personalInformation;
-    private List<SkillInfo> skillInfoList;
+    private List<Skill> skillInfoList;
     private List<AccountModel> employmentInfo;
     private List<CompanyGroupInfo> companyGroupInfoList;
 
@@ -20,11 +21,11 @@ public class EmployeeProfileForm {
         this.personalInformation = personalInformation;
     }
 
-    public List<SkillInfo> getSkillInfoList() {
+    public List<Skill> getSkillInfoList() {
         return skillInfoList;
     }
 
-    public void setSkillInfoList(List<SkillInfo> skillInfoList) {
+    public void setSkillInfoList(List<Skill> skillInfoList) {
         this.skillInfoList = skillInfoList;
     }
 

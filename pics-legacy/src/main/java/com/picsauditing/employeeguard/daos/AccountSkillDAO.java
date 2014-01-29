@@ -152,9 +152,4 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}
-
-    public List<AccountSkill> findByRoles(final List<Role> roles) {
-        // TODO: Finish this.
-        return Collections.emptyList();
-    }
 }

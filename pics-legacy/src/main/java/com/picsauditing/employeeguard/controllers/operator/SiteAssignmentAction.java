@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.forms.operator.ContractorRoleInfo;
 import com.picsauditing.employeeguard.forms.operator.ProjectRoleAssignment;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.viewmodel.SkillInfo;
+import com.picsauditing.employeeguard.viewmodel.model.Skill;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,17 +64,17 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
         ContractorRoleInfo contractorRoleInfo = new ContractorRoleInfo();
         contractorRoleInfo.setAccountModel(new AccountModel.Builder().id(1).name("PICS").build());
         contractorRoleInfo.setEmployeeInfo(new IdentifierAndNameCompositeForm(employeeId, employeeName));
-        contractorRoleInfo.setSkillInfoList(Arrays.asList(buildSkillInfo(1, "Mechanic", SkillStatus.Complete),
-                buildSkillInfo(2, "Fireman", SkillStatus.Expired), buildSkillInfo(3, "Manager", SkillStatus.Expiring)));
+        contractorRoleInfo.setSkillList(Arrays.asList(buildSkill(1, "Mechanic", SkillStatus.Complete),
+                buildSkill(2, "Fireman", SkillStatus.Expired), buildSkill(3, "Manager", SkillStatus.Expiring)));
         return contractorRoleInfo;
     }
 
-    private SkillInfo buildSkillInfo(int id, String name, SkillStatus skillStatus) {
-        SkillInfo skillInfo = new SkillInfo();
-        skillInfo.setId(id);
-        skillInfo.setName(name);
-        skillInfo.setSkillStatus(skillStatus);
-        return skillInfo;
+    private Skill buildSkill(int id, String name, SkillStatus skillStatus) {
+        return new Skill.Builder()
+                .id(id)
+                .name(name)
+                .skillStatus(skillStatus)
+                .build();
     }
 
     public int getRoleId() {

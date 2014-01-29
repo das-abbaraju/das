@@ -31,6 +31,8 @@ public class AssignmentAction extends PicsRestActionSupport {
     @Autowired
     private ProjectRoleService projectRoleService;
     @Autowired
+    private RoleService roleService;
+    @Autowired
     private SkillService skillService;
 
     private OperatorProjectAssignment operatorProjectAssignment;
@@ -76,10 +78,9 @@ public class AssignmentAction extends PicsRestActionSupport {
 
     public String role() {
         project = projectService.getProject(String.valueOf(projectId), assignmentId);
-        Role role = groupService.getGroup(id);
+        Role role = roleService.getRole(id);
         List<AccountSkill> jobRoleSkills = getJobRoleSkills(role.getSkills());
 
-        // Does not have the correct # of skills, missing project skill, site skill, corporate skill
         operatorProjectRoleAssignment = ViewModeFactory.getOperatorProjectRoleAssignmentFactory()
                 .create(RoleFactory.createFromProjectRoles(project.getRoles()),
                         SkillFactory
@@ -93,17 +94,17 @@ public class AssignmentAction extends PicsRestActionSupport {
         return "role";
     }
 
-    private List<AccountSkill> getJobRoleSkills(final List<AccountSkillGroup> accountSkillGroups) {
+    private List<AccountSkill> getJobRoleSkills(final List<AccountSkillRole> accountSkillRoles) {
         List<AccountSkill> accountSkills = new ArrayList<>();
-        for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
-            accountSkills.add(accountSkillGroup.getSkill());
+        for (AccountSkillRole accountSkillRole : accountSkillRoles) {
+            accountSkills.add(accountSkillRole.getSkill());
         }
 
         return accountSkills;
     }
 
     private List<EmployeeProjectRoleAssignment> getEmployeeProjectRoleAssignmentList(final Project project,
-                                                                                     final AccountGroup role,
+                                                                                     final Role role,
                                                                                      final List<AccountSkill> jobRoleSkills) {
         Map<Integer, AccountModel> contractors = accountService
                 .getIdToAccountModelMap(projectService.getContractorIdsForProject(project));

@@ -31,64 +31,32 @@ public class Skill implements Comparable<Skill> {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getAccountId() {
         return accountId;
-    }
-
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
     }
 
     public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public SkillType getSkillType() {
         return skillType;
-    }
-
-    public void setSkillType(SkillType skillType) {
-        this.skillType = skillType;
     }
 
     public SkillStatus getSkillStatus() {
         return skillStatus;
     }
 
-    public void setSkillStatus(SkillStatus skillStatus) {
-        this.skillStatus = skillStatus;
-    }
-
     public boolean isDoesNotExpire() {
         return doesNotExpire;
-    }
-
-    public void setDoesNotExpire(boolean doesNotExpire) {
-        this.doesNotExpire = doesNotExpire;
     }
 
     @Override
