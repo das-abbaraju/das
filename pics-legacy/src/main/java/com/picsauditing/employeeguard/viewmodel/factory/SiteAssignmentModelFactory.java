@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
@@ -26,11 +27,12 @@ public class SiteAssignmentModelFactory {
 				.build();
 	}
 
-    private Map<String, Integer> extractRoleEmployeeCount(Map<Role, ? extends Collection<Employee>> roleEmployees) {
-        Map<String, Integer> roleEmployeeCount = new TreeMap<>();
+    private Map<RoleInfo, Integer> extractRoleEmployeeCount(Map<Role, ? extends Collection<Employee>> roleEmployees) {
+        Map<RoleInfo, Integer> roleEmployeeCount = new TreeMap<>();
 
         for (Map.Entry<Role, ? extends Collection<Employee>> entry : roleEmployees.entrySet()) {
-            roleEmployeeCount.put(entry.getKey().getName(), entry.getValue().size());
+	        RoleInfo roleInfo = ViewModeFactory.getRoleInfoFactory().build(entry.getKey());
+            roleEmployeeCount.put(roleInfo, entry.getValue().size());
         }
         return roleEmployeeCount;
     }

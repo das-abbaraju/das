@@ -1,11 +1,13 @@
 package com.picsauditing.employeeguard.viewmodel.contractor;
 
+import com.picsauditing.employeeguard.forms.operator.RoleInfo;
+
 import java.util.List;
 import java.util.Map;
 
 public class SiteAssignmentModel {
 	private final List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels;
-	private final Map<String, Integer> roleEmployee;
+	private final Map<RoleInfo, Integer> roleEmployee;
 	private final int totalEmployeesAssignedToSite;
 
 	public SiteAssignmentModel(final Builder builder) {
@@ -18,7 +20,7 @@ public class SiteAssignmentModel {
 		return employeeSiteAssignmentModels;
 	}
 
-	public Map<String, Integer> getRoleEmployee() {
+	public Map<RoleInfo, Integer> getRoleEmployee() {
 		return roleEmployee;
 	}
 
@@ -28,7 +30,7 @@ public class SiteAssignmentModel {
 
 	public static class Builder {
 		private List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels;
-		private Map<String, Integer> roleEmployee;
+		private Map<RoleInfo, Integer> roleEmployee;
 		private int totalEmployeesAssignedToSite;
 
 		public Builder employeeSiteAssignmentModels(List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels) {
@@ -36,7 +38,7 @@ public class SiteAssignmentModel {
 			return this;
 		}
 
-		public Builder roleEmployeeCount(Map<String, Integer> employeeRoleCount) {
+		public Builder roleEmployeeCount(Map<RoleInfo, Integer> employeeRoleCount) {
 			this.roleEmployee = employeeRoleCount;
 			return this;
 		}

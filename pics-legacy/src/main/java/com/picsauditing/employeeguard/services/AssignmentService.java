@@ -14,6 +14,7 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -58,7 +59,7 @@ public class AssignmentService {
 
         List<Role> jobRoles = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
         jobRoles = ListUtil.removeDuplicatesAndSort(jobRoles);
-        List<RoleInfo> roleInfos = formBuilderFactory.getRoleInfoFactory().build(jobRoles);
+        List<RoleInfo> roleInfos = ViewModeFactory.getRoleInfoFactory().build(jobRoles);
 
         Map<Integer, AccountModel> accountModels = getIdToAccountModel(contractors);
         List<OperatorEmployeeProjectAssignment> operatorEmployeeProjectAssignments =

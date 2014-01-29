@@ -20,7 +20,6 @@ public class FormBuilderFactory {
 	private final OperatorProjectFormBuilder operatorProjectFormBuilder = new OperatorProjectFormBuilder();
 	private final ContractorEmployeeProjectAssignmentFactory contractorEmployeeProjectAssignmentFactory = new ContractorEmployeeProjectAssignmentFactory();
 	private final OperatorEmployeeProjectAssignmentFactory operatorEmployeeProjectAssignmentFactory = new OperatorEmployeeProjectAssignmentFactory();
-	private final RoleInfoFactory roleInfoFactory = new RoleInfoFactory();
 	private final ProfileDocumentInfoBuilder profileDocumentInfoBuilder = new ProfileDocumentInfoBuilder();
 
 	public CompanySkillsFormBuilder getCompanySkillsFormBuilder() {
@@ -61,10 +60,6 @@ public class FormBuilderFactory {
 
 	public OperatorEmployeeProjectAssignmentFactory getOperatorEmployeeProjectAssignmentFactory() {
 		return operatorEmployeeProjectAssignmentFactory;
-	}
-
-	public RoleInfoFactory getRoleInfoFactory() {
-		return roleInfoFactory;
 	}
 
 	public ProjectInfoFactory getProjectInfoFactory() {

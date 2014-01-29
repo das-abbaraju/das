@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -25,11 +26,14 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private RoleService roleService;
 
-	private int roleId;
+	private int siteId;
 	private int employeeId;
+
 	private AccountModel site;
+	private Role role;
 
 	private SiteAssignmentModel siteAssignmentModel;
+	private ContractorEmployeeRoleAssignmentMatrix assignmentMatrix;
 
 	public String status() {
 		site = accountService.getAccountById(NumberUtils.toInt(id));
@@ -48,9 +52,13 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	private List<Role> getSiteRoles() {
-		List<Integer> siteAndCorporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
-		siteAndCorporateIds.add(site.getId());
-		return roleService.getRolesForAccounts(siteAndCorporateIds);
+		if (role == null) {
+			List<Integer> siteAndCorporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
+			siteAndCorporateIds.add(site.getId());
+			return roleService.getRolesForAccounts(siteAndCorporateIds);
+		}
+
+		return Arrays.asList(role);
 	}
 
 	public String unassign() {
@@ -58,15 +66,18 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	public String role() {
+		role = roleService.getRole(id);
+		site = accountService.getAccountById(siteId);
+
 		return "role";
 	}
 
-	public int getRoleId() {
-		return roleId;
+	public int getSiteId() {
+		return siteId;
 	}
 
-	public void setRoleId(int roleId) {
-		this.roleId = roleId;
+	public void setSiteId(int siteId) {
+		this.siteId = siteId;
 	}
 
 	public int getEmployeeId() {
@@ -81,7 +92,15 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		return site;
 	}
 
+	public Role getRole() {
+		return role;
+	}
+
 	public SiteAssignmentModel getSiteAssignmentModel() {
 		return siteAssignmentModel;
+	}
+
+	public ContractorEmployeeRoleAssignmentMatrix getAssignmentMatrix() {
+		return assignmentMatrix;
 	}
 }

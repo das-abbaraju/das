@@ -12,7 +12,7 @@ public class ContractorEmployeeRoleAssignmentMatrix {
 
     private final int totalNumberOfEmployeesAssignedToSite;
     private final List<String> skillNames;
-    private final Map<String, Integer> roleEmployee;
+    private final Map<RoleInfo, Integer> roleEmployee;
     private final List<ContractorEmployeeRoleAssignment> assignments;
 
     public ContractorEmployeeRoleAssignmentMatrix(Builder builder) {
@@ -20,7 +20,7 @@ public class ContractorEmployeeRoleAssignmentMatrix {
         this.skillNames = CollectionUtils.isEmpty(builder.skillNames)
                 ? Collections.<String>emptyList() : Collections.unmodifiableList(builder.skillNames);
         this.roleEmployee = MapUtils.isEmpty(builder.roleEmployee)
-                ? Collections.<String, Integer>emptyMap() : Collections.unmodifiableMap(builder.roleEmployee);
+                ? Collections.<RoleInfo, Integer>emptyMap() : Collections.unmodifiableMap(builder.roleEmployee);
         this.assignments = CollectionUtils.isEmpty(builder.assignments)
                 ? Collections.<ContractorEmployeeRoleAssignment>emptyList() : Collections.unmodifiableList(builder.assignments);
     }
@@ -33,7 +33,7 @@ public class ContractorEmployeeRoleAssignmentMatrix {
         return skillNames;
     }
 
-    public Map<String, Integer> getRoleEmployee() {
+    public Map<RoleInfo, Integer> getRoleEmployee() {
         return roleEmployee;
     }
 
@@ -44,7 +44,7 @@ public class ContractorEmployeeRoleAssignmentMatrix {
     public static class Builder {
         private int totalNumberOfEmployeesAssignedToSite;
         private List<String> skillNames;
-        private Map<String, Integer> roleEmployee;
+        private Map<RoleInfo, Integer> roleEmployee;
         private List<ContractorEmployeeRoleAssignment> assignments;
 
         public Builder totalNumberOfEmployeesAssignedToSite(int totalNumberOfEmployeesAssignedToSite) {
@@ -57,7 +57,7 @@ public class ContractorEmployeeRoleAssignmentMatrix {
             return this;
         }
 
-        public Builder roleEmployees(Map<String, Integer> roleEmployees) {
+        public Builder roleEmployees(Map<RoleInfo, Integer> roleEmployees) {
             this.roleEmployee = roleEmployees;
             return this;
         }

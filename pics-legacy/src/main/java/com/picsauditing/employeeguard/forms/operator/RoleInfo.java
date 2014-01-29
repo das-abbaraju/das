@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.operator;
 
-public class RoleInfo {
+public class RoleInfo implements Comparable<RoleInfo> {
 
     private int id;
     private String name;
@@ -20,4 +20,9 @@ public class RoleInfo {
     public void setName(String name) {
         this.name = name;
     }
+
+	@Override
+	public int compareTo(RoleInfo that) {
+		return this.getName().compareTo(that.getName());
+	}
 }

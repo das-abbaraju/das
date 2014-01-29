@@ -2,9 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
-<%-- Url --%>
-
-
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Assignments: ${site.name}</s:param>
@@ -23,9 +20,17 @@
         <li class="nav-divider"></li>
         <s:iterator value="siteAssignmentModel.roleEmployee.keySet()" var="operator_job_role">
             <li>
-                <a href="#">
+                <s:url var="operator_job_role_url" action="project/site-assignment/{siteId}/role/{id}">
+                    <s:param name="siteId">
+                        ${site.id}
+                    </s:param>
+                    <s:param name="id">
+                        ${operator_job_role.id}
+                    </s:param>
+                </s:url>
+                <a href="${operator_job_role_url}">
                     <span class="badge pull-right">${siteAssignmentModel.roleEmployee.get(operator_job_role)}</span>
-                    ${operator_job_role}
+                    ${operator_job_role.name}
                 </a>
             </li>
         </s:iterator>
