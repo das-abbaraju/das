@@ -45,7 +45,7 @@
             </s:url>
 
             <tr>
-                <td class="text-right">${contractor_group.employees == null ? 0 : contractor_group.employees.size()}</td>
+                <td class="text-center">${contractor_group.employees == null ? 0 : contractor_group.employees.size()}</td>
                 <td>
                     <a href="${contractor_group_show_url}">${contractor_group.name}</a>
                 </td>
