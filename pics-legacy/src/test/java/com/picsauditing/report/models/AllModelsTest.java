@@ -1,6 +1,5 @@
 package com.picsauditing.report.models;
 
-import static org.junit.Assert.*;
 import com.google.common.base.Joiner;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
@@ -20,6 +19,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @UseReporter(DiffReporter.class)
 public class AllModelsTest {

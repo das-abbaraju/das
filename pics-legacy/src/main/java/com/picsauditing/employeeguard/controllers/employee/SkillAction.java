@@ -8,12 +8,12 @@ import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.forms.binding.FormBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 

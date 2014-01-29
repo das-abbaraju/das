@@ -1,23 +1,18 @@
 package com.picsauditing.model.operators;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AccountUserDAO;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.FacilitiesDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 public class FacilitiesEditModel {
     private static final Logger logger = LoggerFactory.getLogger(FacilitiesEditModel.class);

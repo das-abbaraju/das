@@ -1,12 +1,12 @@
 package com.picsauditing.util;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.models.ModelType;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class PermissionQueryBuilder {
 	private static final String PERMISSION_DENIED = "1=0";

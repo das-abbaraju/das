@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.messaging;
 
 import com.picsauditing.employeeguard.services.EmployeeGuardServiceDisabler;
-import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.messaging.MessageHandler;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

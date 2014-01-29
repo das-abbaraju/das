@@ -2,7 +2,6 @@ package com.picsauditing.report.models;
 
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;

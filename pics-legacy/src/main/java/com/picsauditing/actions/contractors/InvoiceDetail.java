@@ -16,7 +16,6 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
-import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -27,6 +26,7 @@ import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.model.billing.CommissionDetail;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 import org.slf4j.Logger;
@@ -35,7 +35,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {

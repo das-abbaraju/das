@@ -13,7 +13,6 @@ import java.util.{List => StrutsList}
 import com.picsauditing.util.SapAppPropertyUtil
 import scala.Some
 import com.picsauditing.PICS.TaxService
-import com.picsauditing.model.billing.AccountingSystemSynchronization
 
 @RequiredPermission(OpPerms.Billing)
 class InvoiceReturnItemsController extends ContractorActionSupport with Preparable {

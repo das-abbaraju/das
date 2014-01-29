@@ -1,16 +1,19 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.actions.validation.AjaxValidator;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.service.RequestNewContractorService;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 import com.picsauditing.validator.RequestNewContractorValidator;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -18,34 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.RegistrationRequestEmailHelper;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.DataConversionRequestAccount;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.URLUtils;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class RequestNewContractorAccount extends ContractorActionSupport implements AjaxValidator {

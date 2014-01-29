@@ -1,9 +1,5 @@
 package com.picsauditing.report.models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -14,6 +10,10 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 import com.picsauditing.search.SelectCase;
 import com.picsauditing.util.Strings;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ContractorsModel extends AbstractModel {
 

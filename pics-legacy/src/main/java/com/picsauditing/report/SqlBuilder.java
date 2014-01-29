@@ -1,10 +1,5 @@
 package com.picsauditing.report;
 
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -12,9 +7,13 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ReportJoin;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.search.SelectSQL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class SqlBuilder {
 

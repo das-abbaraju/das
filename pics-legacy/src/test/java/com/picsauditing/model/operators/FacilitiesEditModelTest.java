@@ -1,18 +1,10 @@
 package com.picsauditing.model.operators;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -21,10 +13,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.FacilitiesDAO;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class FacilitiesEditModelTest {
 

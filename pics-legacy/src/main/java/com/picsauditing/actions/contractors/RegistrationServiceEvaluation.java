@@ -1,22 +1,21 @@
 package com.picsauditing.actions.contractors;
 
-import java.math.BigDecimal;
-import java.util.*;
-
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.util.Strings;
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class RegistrationServiceEvaluation extends RegistrationAction {

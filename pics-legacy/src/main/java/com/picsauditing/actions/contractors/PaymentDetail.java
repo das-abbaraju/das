@@ -2,8 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingService;
-import com.picsauditing.billing.BrainTree;
-import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
@@ -11,6 +9,9 @@ import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.CreditCard;
+import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
@@ -22,7 +23,6 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 

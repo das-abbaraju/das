@@ -1,25 +1,23 @@
 package com.picsauditing.util;
 
-import static com.picsauditing.util.Assert.assertContains;
-import static com.picsauditing.util.Assert.assertNotContains;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.models.ModelType;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.picsauditing.util.Assert.assertContains;
+import static com.picsauditing.util.Assert.assertNotContains;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class PermissionQueryBuilderTest extends PicsTest {
 

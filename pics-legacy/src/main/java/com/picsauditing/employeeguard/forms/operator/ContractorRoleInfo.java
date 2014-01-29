@@ -1,9 +1,8 @@
 package com.picsauditing.employeeguard.forms.operator;
 
 import com.picsauditing.employeeguard.forms.IdentifierAndNameCompositeForm;
-import com.picsauditing.employeeguard.viewmodel.model.Skill;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.model.Skill;
 
 import java.util.List;
 

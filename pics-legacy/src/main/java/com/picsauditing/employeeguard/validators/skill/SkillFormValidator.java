@@ -1,10 +1,8 @@
 package com.picsauditing.employeeguard.validators.skill;
 
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
-import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
 public class SkillFormValidator extends AbstractBasicAndDuplicateValidator<SkillForm> {
 

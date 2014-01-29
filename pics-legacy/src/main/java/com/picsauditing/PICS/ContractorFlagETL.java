@@ -1,23 +1,15 @@
 package com.picsauditing.PICS;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
+import com.picsauditing.PICS.flags.FlagAnswerParser;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.flags.FlagAnswerParser;
-import com.picsauditing.PICS.flags.MultiYearValueCalculator;
-import com.picsauditing.PICS.flags.OshaResult;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
+import java.util.*;
 
 public class ContractorFlagETL {
 	@Autowired

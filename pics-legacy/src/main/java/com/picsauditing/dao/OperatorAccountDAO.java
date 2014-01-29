@@ -1,15 +1,5 @@
 package com.picsauditing.dao;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Query;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
@@ -19,6 +9,14 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.Query;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {

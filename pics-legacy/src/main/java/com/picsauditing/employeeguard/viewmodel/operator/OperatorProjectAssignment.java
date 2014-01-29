@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.viewmodel.operator;
 
-import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.viewmodel.model.Role;
 
 import java.util.List;
