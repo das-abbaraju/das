@@ -198,6 +198,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 
 	private void loadEmployeeGUARDAudits() {
 		if (getEmployeeGuardAudits() == null) {
+            employeeGuardAudits = new ArrayList<>();
 			Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
 
 			if (contractor.isHasEmployeeGUARDTag()
@@ -206,10 +207,6 @@ public class EmployeeDashboard extends ContractorDocuments {
 				while (iter.hasNext()) {
 					ContractorAudit audit = iter.next();
 					if (audit.getAuditType().getClassType().isImEmployee() && audit.getOperators().size() > 0) {
-						if (employeeGuardAudits == null) {
-							employeeGuardAudits = new ArrayList<ContractorAudit>();
-						}
-
 						employeeGuardAudits.add(audit);
 					}
 				}

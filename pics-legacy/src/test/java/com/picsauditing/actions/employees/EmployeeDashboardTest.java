@@ -237,7 +237,14 @@ public class EmployeeDashboardTest extends PicsTranslationTest {
 		assertTrue(employeeDashboard.isCanEditCompetencies());
 	}
 
-	@Ignore
+    @Test
+    public void testLoadEmployeeGUARDAudits_NoAudits() throws Exception {
+        Whitebox.invokeMethod(employeeDashboard, "loadEmployeeGUARDAudits");
+
+        assertNotNull(employeeDashboard.getEmployeeGuardAudits());
+    }
+
+    @Ignore
 	@Test
 	public void testGetYearsDescending() throws Exception {
 		employeeDashboard.startup();
