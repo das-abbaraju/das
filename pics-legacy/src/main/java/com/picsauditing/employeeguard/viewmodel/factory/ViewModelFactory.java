@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.forms.factory.ContractorProjectFormFactory;
 
-public class ViewModeFactory {
+public class ViewModelFactory {
 
 	private static ContractorProjectFormFactory contractorProjectFormFactory = new ContractorProjectFormFactory();
     private static EmployeeAssignmentModelFactory employeeAssignmentModelFactory = new EmployeeAssignmentModelFactory();

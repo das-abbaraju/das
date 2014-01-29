@@ -273,7 +273,7 @@ public class SiteAssignmentsAndProjectsFactory {
 	                                                            final Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole) {
 
 		Set<Project> projects = Utilities.extractAndFlattenValuesFromMap(accountsToProjects);
-		List<ContractorProjectForm> contractorProjects = ViewModeFactory.getContractorProjectFormFactory().build(accountsToProjects.keySet(), projects);
+		List<ContractorProjectForm> contractorProjects = ViewModelFactory.getContractorProjectFormFactory().build(accountsToProjects.keySet(), projects);
 
 		List<ProjectStatisticsModel> projectStatistics = new ArrayList<>();
 		for (Project project : projects) {
@@ -289,7 +289,7 @@ public class SiteAssignmentsAndProjectsFactory {
 				allRoles.addAll(filterProjectRoleEmployees(projectRole, employeesAndSkills));
 			}
 
-			ProjectAssignmentBreakdown assignmentBreakdown = ViewModeFactory.getProjectAssignmentBreakdownFactory().create(allRoles, allSkills);
+			ProjectAssignmentBreakdown assignmentBreakdown = ViewModelFactory.getProjectAssignmentBreakdownFactory().create(allRoles, allSkills);
 			projectStatistics.add(new ProjectStatisticsModel(contractorProject, assignmentBreakdown));
 		}
 

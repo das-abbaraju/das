@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
-import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,7 +44,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
 		List<Role> roles = getSiteRoles();
 
-		return ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roles);
+		return ViewModelFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roles);
 	}
 
 	private List<Role> getSiteRoles() {

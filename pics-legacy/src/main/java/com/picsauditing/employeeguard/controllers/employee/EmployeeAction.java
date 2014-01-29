@@ -20,7 +20,7 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
-import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -141,7 +141,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
         Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
 
-        employeeAssignments = ViewModeFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
+        employeeAssignments = ViewModelFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
     }
 
     /* Validation */
