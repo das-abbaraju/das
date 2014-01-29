@@ -4,10 +4,9 @@ import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,11 +15,11 @@ import java.util.*;
 
 public class FeeService {
     @Autowired
-    private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
-    @Autowired
     private InvoiceFeeDAO feeDAO;
     @Autowired
     private BillingService billingService;
+    @Autowired
+    private ProductSubscriptionService productSubscriptionService;
 
     protected static AuditTypeRuleCache ruleCache;
     private boolean hasEmployeeGuardAccount = false;
@@ -205,7 +204,7 @@ public class FeeService {
         else
             feeClasses.add(FeeClass.DocuGUARD);
 
-        hasEmployeeGuardAccount = accountEmployeeGuardDAO.hasEmployeeGUARDOperator(contractor.getId());
+        hasEmployeeGuardAccount = productSubscriptionService.hasEmployeeGUARD(contractor.getId());
         AuditTypesBuilder builder = new AuditTypesBuilder(getRuleCache(), contractor);
         Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
         Set<AuditTypeDetail> auditTypeDetails = builder.calculate();

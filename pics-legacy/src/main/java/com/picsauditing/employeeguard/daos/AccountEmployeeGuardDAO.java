@@ -34,10 +34,6 @@ public class AccountEmployeeGuardDAO {
         return result;
 	}
 
-	public boolean isEmployeeGUARDEnabled(final int accountId) {
-		return find(accountId) != null;
-	}
-
 	public void save(AccountEmployeeGuard accountEmployeeGuard) {
 		em.persist(accountEmployeeGuard);
 		em.flush();
@@ -47,14 +43,4 @@ public class AccountEmployeeGuardDAO {
 		em.remove(accountEmployeeGuard);
 		em.flush();
 	}
-
-    public boolean hasEmployeeGUARDOperator(int conID) {
-        Query query = em.createNativeQuery("select * from accountemployeeguard aeg " +
-                "WHERE aeg.accountId IN (select co.opID FROM contractor_operator co WHERE co.conID = :conID)", AccountEmployeeGuard.class);
-        query.setParameter("conID", conID);
-
-        List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
-
-        return accountEmployeeGuards.size() > 0;
-    }
 }

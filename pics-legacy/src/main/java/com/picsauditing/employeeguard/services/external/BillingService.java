@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @see com.picsauditing.actions.billing.ProductServiceQuery
- *      <p/>
  *      Stand in for billing logic
  */
 public class BillingService {

@@ -30,7 +30,6 @@ public class AccountServiceFactory {
 		when(accountService.getContractors(anyInt())).thenReturn(Arrays.asList(contractor));
 		when(accountService.getTopmostCorporateAccountIds(anyInt())).thenReturn(Arrays.asList(Account.PICS_CORPORATE_ID));
 		when(accountService.getTopmostCorporateAccounts(anyInt())).thenReturn(Arrays.asList(corporate));
-		when(accountService.isEmployeeGUARDEnabled(anyInt())).thenReturn(true);
 
 		return accountService;
 	}

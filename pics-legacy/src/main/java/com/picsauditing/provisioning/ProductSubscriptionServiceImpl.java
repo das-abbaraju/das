@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.external;
+package com.picsauditing.provisioning;
 
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
@@ -25,22 +25,29 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		return false;
 	}
 
-	private boolean contractorHasEmployeeGUARD(ContractorAccount contractor) {
+    @Override
+    public boolean hasEmployeeGUARD(int accountId) {
+        return accountEmployeeGuardDAO.find(accountId) != null;
+    }
+
+    private boolean contractorHasEmployeeGUARD(ContractorAccount contractor) {
 		return contractorHasEmployeeGUARDOperator(contractor);
 	}
 
 	public boolean operatorHasEmployeeGUARD(OperatorAccount operator) {
-		return accountEmployeeGuardDAO.isEmployeeGUARDEnabled(operator.getId());
+		return isEmployeeGUARDEnabled(operator.getId());
 	}
 
 	private boolean contractorHasEmployeeGUARDOperator(ContractorAccount contractor) {
-		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
-			if (operatorHasEmployeeGUARD(operator)) {
-				return true;
-			}
-		}
+        return isEmployeeGUARDEnabled(contractor.getId());
+        // FIXME Find out what is needed for a contractor
+//		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
+//			if (operatorHasEmployeeGUARD(operator)) {
+//				return true;
+//			}
+//		}
 
-		return false;
+//		return false;
 	}
 
 	@Override
@@ -53,4 +60,8 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
 		accountEmployeeGuardDAO.remove(accountEmployeeGuard);
 	}
+
+    private boolean isEmployeeGUARDEnabled(final int accountId) {
+        return accountEmployeeGuardDAO.find(accountId) != null;
+    }
 }

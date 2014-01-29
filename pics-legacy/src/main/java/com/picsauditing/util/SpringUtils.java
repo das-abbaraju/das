@@ -47,6 +47,7 @@ public class SpringUtils implements ApplicationContextAware {
 	public static final String URL_UTILS = "StreamContentProvider";
 	public static final String EMPLOYEE_DAO = "EmployeeDAO";
 	public static final String ACCOUNT_SERVICE = "AccountService";
+	public static final String PRODUCT_SUBSCRIPTION_SERVICE = "ProductSubscriptionService";
 
 	private static ApplicationContext applicationContext;
 
