@@ -96,8 +96,9 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
-		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
-				.create(employeesAssignedToSite.size(), roleCounts, employees, employeeSkills);
+//		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
+//				.create(employeesAssignedToSite.size(), roleCounts, employees, employeeSkills);
+		return null;
 	}
 
 	public int getSiteId() {

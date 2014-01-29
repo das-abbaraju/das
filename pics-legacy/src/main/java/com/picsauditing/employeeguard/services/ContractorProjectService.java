@@ -12,7 +12,7 @@ import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorProjectAssignmentMatrix;
-import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
@@ -92,7 +92,7 @@ public class ContractorProjectService {
 
 	private List<RoleInfo> buildRoleInfos(Project project) {
 		List<Role> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
-		return ViewModeFactory.getRoleInfoFactory().build(groups);
+		return ViewModelFactory.getRoleInfoFactory().build(groups);
 	}
 
 	private List<ContractorEmployeeProjectAssignment> buildAssignments(final Project project, final List<AccountSkill> requiredSkills, final int accountId) {
