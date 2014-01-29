@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.forms.operator;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.entities.Role;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class ProjectRolesForm {
@@ -23,10 +24,10 @@ public class ProjectRolesForm {
 
 		if (ArrayUtils.isNotEmpty(roles)) {
 			for (String roleName : roles) {
-				Group group = new Group();
-				group.setName(roleName);
+				Role role = new Role();
+				role.setName(roleName);
 
-				ProjectRole projectRole = new ProjectRole(project, group);
+				ProjectRole projectRole = new ProjectRole(project, role);
 				project.getRoles().add(projectRole);
 			}
 		}

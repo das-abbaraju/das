@@ -11,8 +11,8 @@ import java.util.*;
 
 public class ProjectAssignmentBreakdownFactory {
 
-    public ProjectAssignmentBreakdown create(List<ProjectRoleEmployee> projectRoleEmployees,
-                                             List<AccountSkillEmployee> accountSkillEmployees) {
+    public ProjectAssignmentBreakdown create(Collection<ProjectRoleEmployee> projectRoleEmployees,
+                                             Collection<AccountSkillEmployee> accountSkillEmployees) {
         Map<Employee, Set<AccountSkill>> employeeSkills = getEmployeeSkill(projectRoleEmployees);
         Table<Employee, AccountSkill, AccountSkillEmployee> table = buildTable(accountSkillEmployees);
 
@@ -49,7 +49,7 @@ public class ProjectAssignmentBreakdownFactory {
         return worst;
     }
 
-    private Table<Employee, AccountSkill, AccountSkillEmployee> buildTable(List<AccountSkillEmployee> accountSkillEmployees) {
+    private Table<Employee, AccountSkill, AccountSkillEmployee> buildTable(Collection<AccountSkillEmployee> accountSkillEmployees) {
         Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
         for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
             table.put(accountSkillEmployee.getEmployee(), accountSkillEmployee.getSkill(), accountSkillEmployee);
@@ -58,7 +58,7 @@ public class ProjectAssignmentBreakdownFactory {
         return table;
     }
 
-    private Map<Employee, Set<AccountSkill>> getEmployeeSkill(List<ProjectRoleEmployee> projectRoleEmployees) {
+    private Map<Employee, Set<AccountSkill>> getEmployeeSkill(Collection<ProjectRoleEmployee> projectRoleEmployees) {
         Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
         for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
             Employee employee = projectRoleEmployee.getEmployee();
@@ -74,8 +74,8 @@ public class ProjectAssignmentBreakdownFactory {
 
     private Set<AccountSkill> getAccountSkillsFromProjectRoleEmployee(ProjectRoleEmployee projectRoleEmployee) {
         Set<AccountSkill> accountSkills = new HashSet<>();
-        for (AccountSkillGroup accountSkillGroup : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
-            accountSkills.add(accountSkillGroup.getSkill());
+        for (AccountSkillRole accountSkillRole : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
+            accountSkills.add(accountSkillRole.getSkill());
         }
 
         return accountSkills;

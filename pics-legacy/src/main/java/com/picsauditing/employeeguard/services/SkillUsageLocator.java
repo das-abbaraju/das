@@ -35,7 +35,7 @@ public class SkillUsageLocator {
 	private Map<Employee, List<Project>> buildEmployeeProjectsMap(final Set<Employee> employees) {
 		Map<Employee, List<Project>> employeeProjectsMap = new TreeMap<>();
 		for (Employee employee : employees) {
-			List<Project> projects = ExtractorUtil.extractList(employee.getRoles(), new Extractor<ProjectRoleEmployee, Project>() {
+			List<Project> projects = ExtractorUtil.extractList(employee.getProjectRoles(), new Extractor<ProjectRoleEmployee, Project>() {
 				@Override
 				public Project extract(ProjectRoleEmployee projectRoleEmployee) {
 					return projectRoleEmployee.getProjectRole().getProject();
@@ -51,7 +51,7 @@ public class SkillUsageLocator {
 	private List<SkillUsage> buildSkillUsages(final Set<Employee> employees,
 	                                          final Map<Employee, Map<AccountSkill, Set<Project>>> employeesProjectRequiredSkills,
 	                                          final Map<Employee, Map<AccountSkill, Set<Group>>> employeeContractorGroupSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Group>>> employeeProjectJobRoleSkills,
+	                                          final Map<Employee, Map<AccountSkill, Set<Role>>> employeeProjectJobRoleSkills,
 	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeCorporateSkills,
 	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeesSiteSkills,
 	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeSiteAssignmentSkills) {
@@ -102,8 +102,8 @@ public class SkillUsageLocator {
 		return employeesContractorGroupSkills;
 	}
 
-	private Map<Employee, Map<AccountSkill, Set<Group>>> getEmployeesProjectJobRoleSkills(final Set<Employee> employees) {
-		Map<Employee, Map<AccountSkill, Set<Group>>> employeesJobRoleSkills = new TreeMap<>();
+	private Map<Employee, Map<AccountSkill, Set<Role>>> getEmployeesProjectJobRoleSkills(final Set<Employee> employees) {
+		Map<Employee, Map<AccountSkill, Set<Role>>> employeesJobRoleSkills = new TreeMap<>();
 
 		for (Employee employee : employees) {
 			employeesJobRoleSkills.put(employee, skillService.getProjectRoleSkillsMap(employee));
@@ -166,7 +166,7 @@ public class SkillUsageLocator {
 		return skillService.getSkillGroups(groups);
 	}
 
-	private Map<AccountSkill, Set<Group>> getEmployeeProjectJobRoleSkills(final Employee employee) {
+	private Map<AccountSkill, Set<Role>> getEmployeeProjectJobRoleSkills(final Employee employee) {
 		return skillService.getProjectRoleSkillsMap(employee);
 	}
 

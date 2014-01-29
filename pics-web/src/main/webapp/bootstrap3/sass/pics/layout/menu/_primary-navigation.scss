@@ -24,7 +24,7 @@
     {
         border: 0;
         background-color: transparent;
-        color: #454545;
+        color: $default_steel;
         display: none;
         float: right;
         line-height: 50px;
@@ -53,7 +53,7 @@
         @include background-image(linear-gradient(#eaeaea, $pics_cool_grey));
         @include border-radius(0);
         border: 1px solid #aeaeae;
-        border-top: 1px solid #999999;
+        border-top: 1px solid $default_aluminum;
         border-bottom: 0px;
         color: #C66603;
     }
@@ -78,7 +78,7 @@
 
         .icon-search
         {
-            color: #ccc;
+            color: $default_silver;
             left: 24px;
             position: absolute;
             top: 16px;
@@ -92,7 +92,7 @@
 
         .search-query:focus ~ .icon-search
         {
-            color: #73bbe8;
+            color: $info_med;
         }
     }
 
@@ -237,7 +237,7 @@
             .dropdown-menu a
             {
                 @include border-radius(0);
-                color: #454545;
+                color: $default_steel;
                 font-weight: normal;
 
                 &:hover

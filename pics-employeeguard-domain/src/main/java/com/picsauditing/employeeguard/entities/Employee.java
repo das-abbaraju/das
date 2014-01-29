@@ -1,12 +1,13 @@
 package com.picsauditing.employeeguard.entities;
 
-import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "account_employee")
@@ -48,11 +49,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-	private List<GroupEmployee> groups = new ArrayList<>();
-
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
-	private List<SiteAssignmentEmployee> siteAssignments = new ArrayList<>();
+	private List<AccountGroupEmployee> groups = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
@@ -217,20 +214,12 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		this.deletedDate = deletedDate;
 	}
 
-	public List<GroupEmployee> getGroups() {
+	public List<AccountGroupEmployee> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<GroupEmployee> groups) {
+	public void setGroups(List<AccountGroupEmployee> groups) {
 		this.groups = groups;
-	}
-
-	public List<SiteAssignmentEmployee> getSiteAssignments() {
-		return siteAssignments;
-	}
-
-	public void setSiteAssignments(List<SiteAssignmentEmployee> siteAssignments) {
-		this.siteAssignments = siteAssignments;
 	}
 
 	public List<AccountSkillEmployee> getSkills() {
@@ -253,93 +242,6 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	public String getName() {
 		return firstName + " " + getLastName();
 	}
-
-    public final static class EmployeeAccountEmailUniqueKey implements UniqueIndexable {
-
-        private final int id;
-        private final int accountId;
-        private final String email;
-
-        public EmployeeAccountEmailUniqueKey(final int id, final int accountId, final String email) {
-            this.id = id;
-            this.accountId = accountId;
-            this.email = email;
-        }
-
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {
-                {
-                    put("accountId", accountId);
-                    put("email", email);
-                }
-            });
-        }
-
-        @Override
-        public int getId() {
-            return id;
-        }
-    }
-
-    public final static class EmployeeAccountSlugUniqueKey implements UniqueIndexable {
-
-        private final int id;
-        private final int accountId;
-        private final String slug;
-
-        public EmployeeAccountSlugUniqueKey(final int id, final int accountId, final String slug) {
-            this.id = id;
-            this.accountId = accountId;
-            this.slug = slug;
-        }
-
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {
-                {
-                    put("accountId", accountId);
-                    put("slug", slug);
-                }
-            });
-        }
-
-        @Override
-        public int getId() {
-            return id;
-        }
-    }
-
-    public final static class EmployeeAccountEmailAndSlugUniqueKey implements UniqueIndexable {
-
-        private final int id;
-        private final int accountId;
-        private final String email;
-        private final String slug;
-
-        public EmployeeAccountEmailAndSlugUniqueKey(final int id, final int accountId, final String email, final String slug) {
-            this.id = id;
-            this.accountId = accountId;
-            this.email = email;
-            this.slug = slug;
-        }
-
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {
-                {
-                    put("accountId", accountId);
-                    put("email", email);
-                    put("slug", slug);
-                }
-            });
-        }
-
-        @Override
-        public int getId() {
-            return id;
-        }
-    }
 
 	@Override
 	public boolean equals(final Object o) {

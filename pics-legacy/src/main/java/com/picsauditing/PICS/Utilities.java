@@ -282,7 +282,9 @@ public class Utilities {
 	}
 
 	public interface MapConvertable<K, E> {
+
 		K getKey(E entity);
+
 	}
 
 	/**
@@ -326,18 +328,16 @@ public class Utilities {
 		Map<K, List<E>> map = new HashMap<>();
 		for (E entity : entities) {
 			K key = mapConverter.getKey(entity);
-			if (!map.containsKey(key)) {
-				map.put(key, new ArrayList<E>());
-			}
-
-			map.get(key).add(entity);
+			addToMapOfKeyToList(map, key, entity);
 		}
 
 		return map;
 	}
 
 	public interface Identitifable<E, ID> {
+
 		ID getId(E element);
+
 	}
 
 	public static <E, ID> Set<ID> getIdsFromCollection(Collection<E> elements, Identitifable<E, ID> identitifable) {
@@ -354,6 +354,7 @@ public class Utilities {
 	}
 
 	public interface EntityKeyValueConvertable<E, K, V> {
+
 		K getKey(E entity);
 
 		V getValue(E entity);
@@ -378,13 +379,77 @@ public class Utilities {
 		Map<K, Set<V>> map = new HashMap<>();
 		for (E entity : entities) {
 			K key = entityKeyValueConvertable.getKey(entity);
-			if (!map.containsKey(key)) {
-				map.put(key, new HashSet<V>());
-			}
-
-			map.get(key).add(entityKeyValueConvertable.getValue(entity));
+			addToMapOfKeyToSet(map, key, entityKeyValueConvertable.getValue(entity));
 		}
 
 		return map;
+	}
+
+	public static <K, V> void addToMapOfKeyToList(Map<K, List<V>> map, K key, V value) {
+		if (!map.containsKey(key)) {
+			map.put(key, new ArrayList<V>());
+		}
+
+		map.get(key).add(value);
+	}
+
+	public static <K, V> void addToMapOfKeyToSet(Map<K, Set<V>> map, K key, V value) {
+		if (!map.containsKey(key)) {
+			map.put(key, new HashSet<V>());
+		}
+
+		map.get(key).add(value);
+	}
+
+	public static <K, V> void addAllToMapOfKeyToSet(Map<K, Set<V>> map, K key, Collection<V> value) {
+		if (!map.containsKey(key)) {
+			map.put(key, new HashSet<V>());
+		}
+
+		map.get(key).addAll(value);
+	}
+
+	public static <K, V> Map<V, List<K>> invertMapOfList(Map<K, List<V>> map) {
+		Map<V, List<K>> invertedMap = new HashMap<>();
+
+		for (Map.Entry<K, List<V>> entry : map.entrySet()) {
+			for (V value : entry.getValue()) {
+				addToMapOfKeyToList(invertedMap, value, entry.getKey());
+			}
+		}
+
+		return invertedMap;
+	}
+
+    public static <K, V> Map<V, Set<K>> invertMapOfSet(Map<K, Set<V>> map) {
+        Map<V, Set<K>> invertedMap = new HashMap<>();
+
+        for (Map.Entry<K, Set<V>> entry : map.entrySet()) {
+            for (V value : entry.getValue()) {
+                addToMapOfKeyToSet(invertedMap, value, entry.getKey());
+            }
+        }
+
+        return invertedMap;
+    }
+
+	public static <K, V> Set<V> extractAndFlattenValuesFromMap(final Map<K, ? extends Collection<V>> map) {
+		Set<V> values = new HashSet<>();
+
+		for (Map.Entry<K, ? extends Collection<V>> entry : map.entrySet()) {
+			values.addAll(entry.getValue());
+		}
+
+		return values;
+	}
+
+	public static <V> Set<V> flattenCollectionOfCollection(Collection<? extends Collection<V>> collectionOfCollection) {
+		Set<V> values = new HashSet<>();
+
+		for (Collection<V> set : collectionOfCollection) {
+			values.addAll(set);
+		}
+
+		return values;
 	}
 }

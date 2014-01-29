@@ -13799,48 +13799,82 @@ PICS.define('employee-guard.BindjQueryElements', {
 
 PICS.define('employee-guard.Assignment', {
     methods: (function () {
+        var $selected_row,
+            is_assigned;
+
         function init() {
-            $('#employee_assignment').on('click', 'tr', assignEmployee);
+            $('.table-assignment').on('click', 'tr', onAssignIconClick);
             $('.disable-assignment').on('click', function (event) {
                 event.stopPropagation();
             });
         }
 
-        function assignEmployee(event) {
-            var $element = $(event.target),
-                $container = $element.closest('tr'),
-                request_url = $container.attr('data-assign-url'),
-                unassign_url = $container.attr('data-unassign-url');
+        function onAssignIconClick(event) {
+            var $element = $(event.target);
 
             event.preventDefault();
 
-            if ($container.hasClass('assigned')) {
+            $selected_row = $element.closest('tr');
+            is_assigned = $selected_row.hasClass('assigned');
+
+            requestEmployeeAssignment();
+        }
+
+        function requestEmployeeAssignment() {
+            var request_url = $selected_row.attr('data-assign-url'),
+                unassign_url = $selected_row.attr('data-unassign-url');
+
+            if (is_assigned) {
                 request_url = unassign_url;
             }
 
-            if (request_url !== '') {
-                PICS.ajax({
-                    url: request_url,
-                    dataType: 'json',
-                    context: $container,
-                    success: checkAssignStatus
-                });
-            }
+            PICS.ajax({
+                url: request_url,
+                dataType: 'json',
+                success: onEmployeeAssignmentRequestSuccess
+            });
         }
 
-        function checkAssignStatus(data) {
-            var $container = $(this);
-
+        function onEmployeeAssignmentRequestSuccess(data) {
             if (data.status == "SUCCESS") {
-                toggleAssignedState($container);
+                toggleAssignedState();
             }
         }
 
-        function toggleAssignedState($container) {
-            if ($container.hasClass('assigned')) {
-                $container.removeClass('assigned');
+        function toggleAssignedState() {
+            if (is_assigned) {
+                removeAssignedState();
             } else {
-                $container.addClass('assigned');
+                addAssignedState();
+            }
+        }
+
+        function removeAssignedState() {
+            var $skill_status_column = $selected_row.find('.skill-status-icon');
+
+            $selected_row.removeClass('assigned');
+
+            $skill_status_column.removeClass('success danger warning');
+        }
+
+        function addAssignedState() {
+            $selected_row.addClass('assigned');
+
+            updateSkillStatusIcon();
+        }
+
+        function updateSkillStatusIcon() {
+            var $skill_status_column = $selected_row.find('.skill-status-icon'),
+                $icon = $skill_status_column.find('i');
+
+            if ($icon.hasClass('icon-minus-sign-alt')) {
+                $skill_status_column.addClass('danger');
+            } else if ($icon.hasClass('icon-warning-sign')) {
+                $skill_status_column.addClass('warning');
+            } else if ($icon.hasClass('icon-ok-circle')) {
+                $skill_status_column.addClass('success');
+            } else if ($icon.hasClass('icon-ok-sign')) {
+                $skill_status_column.addClass('success');
             }
         }
 
@@ -14135,52 +14169,16 @@ PICS.define('employee-guard.FormValidation', {
 
             if (data.fieldErrors) {
                 for (var id in data.fieldErrors) {
-
-                    if (id == 'PICS.DUPLICATE') {
-                        showDuplicateMessage($form, data.fieldErrors[id][0]);
-                    }
                     field_with_error = $('[name="' + id + '"]');
-                    field_with_error.closest('.form-group').addClass('has-error');
-                    field_with_error.after('<span class="help-block">' + data.fieldErrors[id][0] + '</span>');
+                    field_with_error.closest('.form-group').addClass("has-error");
                 }
             } else {
                 $form.submit();
             }
         }
 
-        function showDuplicateMessage($form, message) {
-            var fields = message.split(','),
-                field_list = createFieldList(fields);
-
-            var duplicate_message = [
-                '<div class="alert alert-danger">',
-                    '<h4>Oops! You have a duplicate.</h4>',
-                    '<p>Please check:',
-                        field_list,
-                    '</p>',
-                '</div>'
-            ];
-
-            duplicate_message = duplicate_message.join('');
-            $form.prepend(duplicate_message);
-        }
-
-        function createFieldList(fields) {
-            var list = ['<ul>'];
-
-            for (var x = 0; x < fields.length; x++) {
-                list.push('<li>' + fields[x] + '</li>');
-            }
-
-            list.push('</ul>');
-
-            return list.join('');
-        }
-
         function clearFieldErrors($form) {
-            $form.find('.has-error .help-block').remove();
-            $form.find('.has-error').removeClass('has-error');
-            $form.find('.alert').remove();
+            $form.find('.has-error').removeClass('has-error')
         }
 
         return {

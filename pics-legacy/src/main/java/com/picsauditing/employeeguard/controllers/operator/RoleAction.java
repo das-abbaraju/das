@@ -35,7 +35,9 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
-	private GroupService roleService;
+	private GroupService groupService;
+    @Autowired
+    private RoleService roleService;
 	@Autowired
 	private SkillService skillService;
 	@Autowired
@@ -56,10 +58,10 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	private SearchForm searchForm;
 
 	/* Models */
-	private Group role;
+	private Role role;
 	private Project roleProject;
 	private List<Project> operatorProjects;
-	private List<Group> roles;
+	private List<Role> roles;
 	private List<AccountSkill> roleSkills;
 	private List<Employee> roleEmployees;
 	private Map<AccountModel, List<ProjectRole>> siteProjects;
@@ -72,7 +74,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 			String searchTerm = getSearchForm().getSearchTerm();
 			roles = roleService.search(searchTerm, accountIds);
 		} else {
-			roles = roleService.getGroupsForAccounts(accountIds);
+			roles = roleService.getRolesForAccounts(accountIds);
 		}
 
 		Collections.sort(roles);
@@ -140,14 +142,14 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 		} else if (roleEmployeesForm != null) {
 			role = roleService.update(roleEmployeesForm, id, permissions.getAccountId(), permissions.getUserId());
 		} else {
-			role = roleService.update(roleProjectsForm, role, permissions.getAccountId(), permissions.getAppUserID());
+			role = groupService.update(roleProjectsForm, role, permissions.getAccountId(), permissions.getAppUserID());
 		}
 
 		return setUrlForRedirect("/employee-guard/operator/role/" + role.getId());
 	}
 
 	public String delete() throws Exception {
-		roleService.delete(id, permissions.getAccountId(), permissions.getUserId());
+		groupService.delete(id, permissions.getAccountId(), permissions.getUserId());
 
 		return redirectToList();
 	}
@@ -160,7 +162,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	private void loadRole() {
 		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
 
-		Group roleById = roleService.getGroup(id);
+		Role roleById = roleService.getRole(id);
 		if (accountIds.contains(roleById.getAccountId())) {
 			role = roleById;
 		}
@@ -221,11 +223,11 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 
 	/* getters and setters */
 
-	public Group getRole() {
+	public Role getRole() {
 		return role;
 	}
 
-	public List<Group> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 

@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -152,5 +153,30 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 				"WHERE pre.projectRole.project IN (:projects)", Employee.class);
 		query.setParameter("projects", projects);
 		return query.getResultList();
+	}
+
+	public List<Employee> findEmployeesAssignedToSite(final int accountId, final int siteId) {
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.projectRoles pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE e.accountId = :accountId " +
+				"AND p.accountId = :siteId", Employee.class);
+		query.setParameter("accountId", accountId);
+		query.setParameter("siteId", siteId);
+
+		List<Employee> employees = query.getResultList();
+
+		query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.roles re " +
+				"JOIN re.role r " +
+				"WHERE e.accountId = :accountId " +
+				"AND r.accountId = :siteId", Employee.class);
+		query.setParameter("accountId", accountId);
+		query.setParameter("siteId", siteId);
+
+		employees.addAll(query.getResultList());
+
+		return ListUtil.removeDuplicatesAndSort(employees);
 	}
 }

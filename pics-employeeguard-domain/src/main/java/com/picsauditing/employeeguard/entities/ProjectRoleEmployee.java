@@ -18,7 +18,6 @@ public class ProjectRoleEmployee implements BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
 	@ManyToOne
 	@JoinColumn(name = "projectGroupID", nullable = false)
 	private ProjectRole projectRole;
@@ -28,9 +27,9 @@ public class ProjectRoleEmployee implements BaseEntity {
 	private Employee employee;
 
 	private int createdBy;
+
 	private int updatedBy;
 	private int deletedBy;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 
@@ -174,6 +173,13 @@ public class ProjectRoleEmployee implements BaseEntity {
 
 		private boolean areEqual(ProjectRoleEmployee o1, ProjectRoleEmployee o2) {
 			return o1.projectRole.equals(o2.projectRole) && o1.employee.equals(o2.employee);
+		}
+	};
+
+	public static transient final Extractor<ProjectRoleEmployee,Employee> EMPLOYEE_EXTRACTOR = new Extractor<ProjectRoleEmployee, Employee>() {
+		@Override
+		public Employee extract(ProjectRoleEmployee projectRoleEmployee) {
+			return projectRoleEmployee.getEmployee();
 		}
 	};
 

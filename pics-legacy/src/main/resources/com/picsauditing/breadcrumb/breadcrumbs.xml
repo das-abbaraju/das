@@ -3,6 +3,7 @@
     <breadcrumb>
         <hint>employee-guard</hint>
         <children>
+            <!-- Operator -->
             <breadcrumb>
                 <hint>operator</hint>
                 <label>EmployeeGUARD</label>
@@ -45,6 +46,18 @@
                                 <label>{name}</label>
                                 <uri>/employee-guard/operator/project/{id}</uri>
                             </breadcrumb>
+                            <breadcrumb>
+                                <hint>site-assignment</hint>
+                                <label>Site Assignments</label>
+                                <uri>/employee-guard/operator/project/site-assignment</uri>
+                                <children>
+                                    <breadcrumb>
+                                        <hint>show</hint>
+                                        <label>{name}</label>
+                                        <uri>/employee-guard/operator/project/site-assignment/{id}</uri>
+                                    </breadcrumb>
+                                </children>
+                            </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>
@@ -84,6 +97,7 @@
                 </children>
             </breadcrumb>
 
+            <!-- Contractor -->
             <breadcrumb>
                 <hint>contractor</hint>
                 <label>EmployeeGUARD</label>
@@ -173,6 +187,18 @@
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>
+                            <breadcrumb>
+                                <hint>site-assignment</hint>
+                                <label>Assignments: {name}</label>
+                                <uri>/employee-guard/contractor/project/site-assignment</uri>
+                                <children>
+                                    <breadcrumb>
+                                        <hint>status</hint>
+                                        <label>{name}</label>
+                                        <uri>/employee-guard/contractor/project/site-assignment/{id}</uri>
+                                    </breadcrumb>
+                                </children>
+                            </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>
@@ -205,6 +231,7 @@
                 </children>
             </breadcrumb>
 
+            <!-- Employee -->
             <breadcrumb>
                 <hint>employee</hint>
                 <label>Dashboard</label>

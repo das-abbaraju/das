@@ -4,7 +4,7 @@ public enum SkillStatus {
 
     // TODO: Rename expiring to something more meaningful that the Skill is about to expire
 
-    // Keep in order of serverity, from highest severity to lowest
+    // Keep in order of severity, from highest severity to lowest
     Expired("expired"),
     Expiring("expiring"),
     Pending("pending"),

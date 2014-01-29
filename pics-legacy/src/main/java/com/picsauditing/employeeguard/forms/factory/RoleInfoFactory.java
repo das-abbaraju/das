@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 
 import java.util.ArrayList;
@@ -8,19 +9,19 @@ import java.util.List;
 
 public class RoleInfoFactory {
 
-	public List<RoleInfo> build(List<Group> groups) {
-		List<RoleInfo> roles = new ArrayList<>();
-		for (Group group : groups) {
-			roles.add(build(group));
+	public List<RoleInfo> build(final List<Role> roles) {
+		List<RoleInfo> roleInfos = new ArrayList<>();
+		for (Role role : roles) {
+            roleInfos.add(build(role));
 		}
 
-		return roles;
+		return roleInfos;
 	}
 
-	public RoleInfo build(Group groups) {
+	public RoleInfo build(Role role) {
 		RoleInfo roleInfo = new RoleInfo();
-		roleInfo.setId(groups.getId());
-		roleInfo.setName(groups.getName());
+		roleInfo.setId(role.getId());
+		roleInfo.setName(role.getName());
 		return roleInfo;
 	}
 }

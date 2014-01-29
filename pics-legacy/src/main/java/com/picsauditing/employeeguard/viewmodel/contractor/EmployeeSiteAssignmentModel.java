@@ -10,6 +10,7 @@ public class EmployeeSiteAssignmentModel {
 	private final int employeeId;
 	private final String employeeName;
 	private final String employeeTitle;
+    private final int numberOfRolesAssigned;
 	private final SkillStatus status;
 
 	public EmployeeSiteAssignmentModel(final Builder builder) {
@@ -19,6 +20,7 @@ public class EmployeeSiteAssignmentModel {
 		this.employeeId = builder.employeeId;
 		this.employeeName = builder.employeeName;
 		this.employeeTitle = builder.employeeTitle;
+        this.numberOfRolesAssigned = builder.numberOfRolesAssigned;
 		this.status = builder.status;
 	}
 
@@ -46,7 +48,11 @@ public class EmployeeSiteAssignmentModel {
 		return employeeTitle;
 	}
 
-	public SkillStatus getStatus() {
+    public int getNumberOfRolesAssigned() {
+        return numberOfRolesAssigned;
+    }
+
+    public SkillStatus getStatus() {
 		return status;
 	}
 
@@ -57,9 +63,10 @@ public class EmployeeSiteAssignmentModel {
 		private int employeeId;
 		private String employeeName;
 		private String employeeTitle;
+        public int numberOfRolesAssigned;
 		private SkillStatus status;
 
-		public Builder assignments(int assignments) {
+        public Builder assignments(int assignments) {
 			this.assignments = assignments;
 			return this;
 		}
@@ -88,6 +95,11 @@ public class EmployeeSiteAssignmentModel {
 			this.employeeTitle = employeeTitle;
 			return this;
 		}
+
+        public Builder numberOfRolesAssigned(int numberOfRolesAssigned) {
+            this.numberOfRolesAssigned = numberOfRolesAssigned;
+            return this;
+        }
 
 		public Builder status(SkillStatus status) {
 			this.status = status;
