@@ -2602,22 +2602,23 @@ button i {
 /* line 6, ../sass/pics/components/_modal.scss */
 .modal .modal-header {
   background-color: #f1f1f2;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -o-border-radius: 6px;
-  border-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
   padding-left: 20px;
 }
-/* line 12, ../sass/pics/components/_modal.scss */
+/* line 13, ../sass/pics/components/_modal.scss */
 .modal .modal-title {
   font-size: 24px;
 }
-/* line 17, ../sass/pics/components/_modal.scss */
+/* line 18, ../sass/pics/components/_modal.scss */
 .modal .modal-body p:last-child {
   margin-bottom: 0px;
 }
-/* line 22, ../sass/pics/components/_modal.scss */
+/* line 23, ../sass/pics/components/_modal.scss */
 .modal .modal-footer {
   border: none;
   margin-top: 0px;
@@ -2625,7 +2626,7 @@ button i {
 }
 
 /*Override to prevent shift on modal open.  Menu issue?*/
-/* line 34, ../sass/pics/components/_modal.scss */
+/* line 35, ../sass/pics/components/_modal.scss */
 body.modal-open,
 .modal-open
 .navbar-fixed-top,
