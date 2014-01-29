@@ -234,7 +234,7 @@ public class ManageJobRolesTest extends PicsTranslationTest {
 
 	@Test
 	public void testGetJobRoles_Existing() {
-		Whitebox.setInternalState(manageJobRoles, "projectJobRoleSkills", Collections.emptyList());
+		Whitebox.setInternalState(manageJobRoles, "jobRoles", Collections.emptyList());
 
 		assertNotNull(manageJobRoles.getJobRoles());
 

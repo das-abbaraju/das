@@ -2,14 +2,8 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.database.domain.Identifiable;
-import com.picsauditing.employeeguard.daos.AccountGroupDAO;
-import com.picsauditing.employeeguard.daos.AccountSkillDAO;
-import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.daos.ProjectDAO;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.daos.*;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
@@ -43,6 +37,8 @@ public class ProjectServiceTest extends PicsTranslationTest {
 	private EmployeeDAO employeeDAO;
 	@Mock
 	private ProjectDAO projectDAO;
+    @Mock
+    private RoleDAO roleDAO;
 
 	private AccountService accountService;
 	private AccountSkillEmployeeService accountSkillEmployeeService;
@@ -61,6 +57,7 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		Whitebox.setInternalState(projectService, "accountSkillEmployeeService", accountSkillEmployeeService);
 		Whitebox.setInternalState(projectService, "employeeDAO", employeeDAO);
 		Whitebox.setInternalState(projectService, "projectDAO", projectDAO);
+		Whitebox.setInternalState(projectService, "roleDAO", roleDAO);
 	}
 
 	@Test
@@ -112,16 +109,19 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 	@Test
 	public void testUpdate_Roles() throws Exception {
-		String groupName = "Group";
+		String roleName = "The Role";
 
-		List<Group> groups = new ArrayList<>();
-		groups.add(new AccountGroupBuilder().name(groupName).build());
-		when(accountGroupDAO.findGroupByAccountIdsAndNames(Arrays.asList(Account.PICS_CORPORATE_ID), Arrays.asList(groupName))).thenReturn(groups);
+		List<Role> roles = new ArrayList<>();
+        Role role = new Role();
+        role.setName(roleName);
+		roles.add(role);
+
+		when(roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(Account.PICS_CORPORATE_ID), Arrays.asList(roleName))).thenReturn(roles);
 
 		Project project = new Project();
 		project.setAccountId(Account.PicsID);
 		ProjectRolesForm projectRolesForm = new ProjectRolesForm();
-		projectRolesForm.setRoles(new String[]{groupName});
+		projectRolesForm.setRoles(new String[]{roleName});
 
 		projectService.update(project, projectRolesForm, Identifiable.SYSTEM);
 
