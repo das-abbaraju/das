@@ -4,11 +4,9 @@ import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
-import com.picsauditing.employeeguard.services.external.ProductSubscriptionService;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
