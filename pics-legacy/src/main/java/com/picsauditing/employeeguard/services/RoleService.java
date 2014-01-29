@@ -120,7 +120,7 @@ public class RoleService {
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSite(final int siteId, final int contractorId) {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 		// find roles by this site that duplicate roles with the above corporate ids
-		Map<Role, Role> siteRoleToCorporateRole = roleDAO.findDuplicatedRoles(corporateIds, siteId);
+		Map<Role, Role> siteRoleToCorporateRole = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
 
 		List<Employee> employees = employeeDAO.findByAccount(contractorId);
 
@@ -176,4 +176,10 @@ public class RoleService {
     public Map<Employee, Set<Role>> getEmployeeRolesForSite(final int contractorId, final int siteId) {
         return Collections.emptyMap();
     }
+
+	public Map<Role, Role> getSiteToCorporateRoles(int siteId) {
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+
+		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+	}
 }

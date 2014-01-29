@@ -42,8 +42,6 @@ public class ContractorProjectService {
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
-	@Autowired
-	private SkillUsageLocator skillUsageLocator;
 
 	public ProjectCompany getProject(String id, int accountId) {
 		return projectCompanyDAO.findProject(NumberUtils.toInt(id), accountId);

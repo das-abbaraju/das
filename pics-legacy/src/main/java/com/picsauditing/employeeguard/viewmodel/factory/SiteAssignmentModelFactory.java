@@ -18,43 +18,27 @@ import java.util.*;
 
 public class SiteAssignmentModelFactory {
 
-	public SiteAssignmentModel create(List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels,
-	                                  Map<Role, ? extends Collection<Employee>> roleEmployees) {
+	public SiteAssignmentModel create(final List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels,
+	                                  final Map<RoleInfo, Integer> roleCounts) {
 		return new SiteAssignmentModel.Builder()
 				.employeeSiteAssignmentModels(employeeSiteAssignmentModels)
 				.totalEmployeesAssignedToSite(employeeSiteAssignmentModels.size())
-				.roleEmployeeCount(extractRoleEmployeeCount(roleEmployees))
+				.roleEmployeeCount(roleCounts)
 				.build();
 	}
 
-    private Map<RoleInfo, Integer> extractRoleEmployeeCount(Map<Role, ? extends Collection<Employee>> roleEmployees) {
-        Map<RoleInfo, Integer> roleEmployeeCount = new TreeMap<>();
-
-        for (Map.Entry<Role, ? extends Collection<Employee>> entry : roleEmployees.entrySet()) {
-	        RoleInfo roleInfo = ViewModeFactory.getRoleInfoFactory().build(entry.getKey());
-            roleEmployeeCount.put(roleInfo, entry.getValue().size());
-        }
-        return roleEmployeeCount;
-    }
-
-    public SiteAssignmentModel create(final AccountModel site,
+	public SiteAssignmentModel create(final AccountModel site,
 	                                  final List<AccountModel> employeeAccounts,
 	                                  final List<SkillUsage> skillUsages,
-	                                  final List<Role> siteRoles) {
+	                                  final Map<RoleInfo, Integer> roleCounts) {
 		List<Employee> employees = getEmployees(skillUsages);
 		Map<Employee, Set<AccountSkill>> employeeSkills = getEmployeeSkills(skillUsages);
 		Map<Employee, Set<Role>> employeeRoles = getEmployeeRoles(employees, site.getId());
 
-		List<EmployeeSiteAssignmentModel> employeeSiteAssignments = buildEmployeeSiteAssignments(employeeAccounts, employeeSkills, employeeRoles);
+		List<EmployeeSiteAssignmentModel> employeeSiteAssignments =
+				buildEmployeeSiteAssignments(employeeAccounts, employeeSkills, employeeRoles);
 
-		Map<Role, Set<Employee>> rolesToEmployees = Utilities.invertMapOfSet(employeeRoles);
-		for (Role role : siteRoles) {
-			if (!rolesToEmployees.containsKey(role)) {
-				rolesToEmployees.put(role, Collections.<Employee>emptySet());
-			}
-		}
-
-		return create(employeeSiteAssignments, rolesToEmployees);
+		return create(employeeSiteAssignments, roleCounts);
 	}
 
 	private Map<Employee, Set<AccountSkill>> getEmployeeSkills(List<SkillUsage> skillUsages) {

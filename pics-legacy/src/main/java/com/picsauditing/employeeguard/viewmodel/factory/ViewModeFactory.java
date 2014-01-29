@@ -11,6 +11,7 @@ public class ViewModeFactory {
     private static EmployeeAssignmentModelFactory employeeAssignmentModelFactory = new EmployeeAssignmentModelFactory();
 	private static EmployeeSiteAssignmentModelFactory employeeSiteAssignmentModelFactory = new EmployeeSiteAssignmentModelFactory();
 	private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
+	private static RoleEmployeeCountFactory roleEmployeeCountFactory = new RoleEmployeeCountFactory();
 	private static RoleInfoFactory roleInfoFactory = new RoleInfoFactory();
 	private static SkillModelFactory skillModelFactory = new SkillModelFactory();
 	private static SiteAssignmentModelFactory siteAssignmentModelFactory = new SiteAssignmentModelFactory();
@@ -34,6 +35,10 @@ public class ViewModeFactory {
 
 	public static ProjectAssignmentBreakdownFactory getProjectAssignmentBreakdownFactory() {
 		return projectAssignmentBreakdownFactory;
+	}
+
+	public static RoleEmployeeCountFactory getRoleEmployeeCountFactory() {
+		return roleEmployeeCountFactory;
 	}
 
 	public static RoleInfoFactory getRoleInfoFactory() {

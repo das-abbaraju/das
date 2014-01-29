@@ -1,8 +1,11 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
@@ -13,12 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -43,22 +49,30 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	private SiteAssignmentModel buildSiteAssignmentModel() {
-		AccountModel account = accountService.getAccountById(permissions.getAccountId());
 		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
 		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
-		List<Role> roles = getSiteRoles();
 
-		return ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roles);
+		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
+
+		AccountModel account = accountService.getAccountById(permissions.getAccountId());
+		return ViewModeFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
+	}
+
+	private Map<RoleInfo, Integer> getRoleEmployeeCounts(List<Employee> employees) {
+		Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(site.getId());
+		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
+
+		List<Role> siteRoles = getSiteRoles();
+		List<RoleInfo> roleInfos = ViewModeFactory.getRoleInfoFactory().build(siteRoles);
+
+		return ViewModeFactory.getRoleEmployeeCountFactory()
+				.create(roleInfos, corporateToSiteRoles, employees);
 	}
 
 	private List<Role> getSiteRoles() {
-		if (role == null) {
-			List<Integer> siteAndCorporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
-			siteAndCorporateIds.add(site.getId());
-			return roleService.getRolesForAccounts(siteAndCorporateIds);
-		}
-
-		return Arrays.asList(role);
+		List<Integer> siteAndCorporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
+		siteAndCorporateIds.add(site.getId());
+		return roleService.getRolesForAccounts(siteAndCorporateIds);
 	}
 
 	public String unassign() {
@@ -68,8 +82,22 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	public String role() {
 		role = roleService.getRole(id);
 		site = accountService.getAccountById(siteId);
+		assignmentMatrix = buildRoleAssignmentMatrix();
 
 		return "role";
+	}
+
+	private ContractorEmployeeRoleAssignmentMatrix buildRoleAssignmentMatrix() {
+		List<Employee> employees = employeeService.getEmployeesForAccount(permissions.getAccountId());
+		List<Employee> employeesAssignedToSite =
+				employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
+		List<AccountSkillEmployee> employeeSkills =
+				accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
+
+		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
+
+		return ViewModeFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
+				.create(employeesAssignedToSite.size(), roleCounts, employees, employeeSkills);
 	}
 
 	public int getSiteId() {

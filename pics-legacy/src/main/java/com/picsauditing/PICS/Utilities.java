@@ -433,6 +433,16 @@ public class Utilities {
         return invertedMap;
     }
 
+	public static <K, V> Map<V, K> invertMap(Map<K, V> map) {
+		Map<V, K> invertedMap = new HashMap<>();
+
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			invertedMap.put(entry.getValue(), entry.getKey());
+		}
+
+		return invertedMap;
+	}
+
 	public static <K, V> Set<V> extractAndFlattenValuesFromMap(final Map<K, ? extends Collection<V>> map) {
 		Set<V> values = new HashSet<>();
 

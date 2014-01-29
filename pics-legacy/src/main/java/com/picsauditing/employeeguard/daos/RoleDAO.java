@@ -71,7 +71,7 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
         return query.getResultList();
     }
 
-	public Map<Role, Role> findDuplicatedRoles(List<Integer> corporateIds, int siteId) {
+	public Map<Role, Role> findSiteToCorporateRoles(List<Integer> corporateIds, int siteId) {
 		List<Role> siteRoles = findByAccounts(Arrays.asList(siteId));
 
 		Query query = em.createNativeQuery("SELECT corp.* FROM account_group site " +

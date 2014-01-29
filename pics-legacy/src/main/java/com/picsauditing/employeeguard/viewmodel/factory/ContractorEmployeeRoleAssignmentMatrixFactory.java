@@ -1,14 +1,21 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
+import com.picsauditing.employeeguard.forms.operator.RoleInfo;
+import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 
-public class ContractorEmployeeRoleAssignmentMatrixFactory {
-    public ContractorEmployeeRoleAssignmentMatrix create() {
-        // Map<Employee, Set<Role>> ?
-        // List<Employee> all contractor employees
-        // Skills for role
-        // Map<Role, Integer> for role counts???
+import java.util.List;
+import java.util.Map;
 
-        return new ContractorEmployeeRoleAssignmentMatrix.Builder().build();
-    }
+public class ContractorEmployeeRoleAssignmentMatrixFactory {
+
+	public ContractorEmployeeRoleAssignmentMatrix create(final int totalNumberOfEmployeesAssignedToSite,
+	                                                     final Map<RoleInfo, Integer> roleCounts,
+	                                                     final List<ContractorEmployeeRoleAssignment> assignments) {
+		return new ContractorEmployeeRoleAssignmentMatrix.Builder()
+				.totalNumberOfEmployeesAssignedToSite(totalNumberOfEmployeesAssignedToSite)
+				.roleEmployees(roleCounts)
+				.assignments(assignments)
+				.build();
+	}
 }
