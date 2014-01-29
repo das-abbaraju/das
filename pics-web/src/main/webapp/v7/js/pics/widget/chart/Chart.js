@@ -135,17 +135,19 @@
                     url;
 
                 // We use typeof here because row and column can equal zero.
-                if (typeof selection.row != 'undefined' && typeof selection.column != 'undefined') {
+                if (selection.row != null && selection.column != null) {
                     url = data_table.getProperty(selection.row, selection.column, 'url');
-                } else if (typeof selection.row != 'undefined') {
+                } else if (selection.row != null) {
                     url = data_table.getRowProperty(selection.row, 'url');
-                } else if (typeof selection.column != 'undefined') {
+                } else if (selection.column != null) {
                     url = data_table.getColumnProperty(selection.column, 'url');
                 }
 
                 if (url) {
                     window.location = url;
                 }
+
+
             }
 
             return {
