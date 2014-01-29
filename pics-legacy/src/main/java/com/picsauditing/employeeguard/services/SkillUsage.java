@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.Collections;
@@ -20,7 +17,7 @@ public class SkillUsage {
 	private final Employee employee;
 	private final Map<AccountSkill, Set<Project>> projectRequiredSkills;
 	private final Map<AccountSkill, Set<Group>> contractorGroupSkills;
-	private final Map<AccountSkill, Set<Group>> projectJobRoleSkills;
+	private final Map<AccountSkill, Set<Role>> projectJobRoleSkills;
 	private final Map<AccountSkill, Set<Integer>> corporateRequiredSkills;
 	private final Map<AccountSkill, Set<Integer>> siteRequiredSkills;
 	private final Map<AccountSkill, Set<Integer>> siteAssignmentSkills;
@@ -55,7 +52,7 @@ public class SkillUsage {
 		return contractorGroupSkills;
 	}
 
-	public Map<AccountSkill, Set<Group>> getProjectJobRoleSkills() {
+	public Map<AccountSkill, Set<Role>> getProjectJobRoleSkills() {
 		return projectJobRoleSkills;
 	}
 
@@ -107,7 +104,7 @@ public class SkillUsage {
 		private Employee employee;
 		private Map<AccountSkill, Set<Project>> projectRequiredSkills;
 		private Map<AccountSkill, Set<Group>> contractorGroupSkills;
-		private Map<AccountSkill, Set<Group>> projectJobRoleSkills;
+		private Map<AccountSkill, Set<Role>> projectJobRoleSkills;
 		private Map<AccountSkill, Set<Integer>> corporateRequiredSkills;
 		private Map<AccountSkill, Set<Integer>> siteRequiredSkills;
 		private Map<AccountSkill, Set<Integer>> siteAssignmentSkills;
@@ -127,7 +124,7 @@ public class SkillUsage {
 			return this;
 		}
 
-		public Builder projectJobRoleSkills(final Map<AccountSkill, Set<Group>> projectJobRoleSkills) {
+		public Builder projectJobRoleSkills(final Map<AccountSkill, Set<Role>> projectJobRoleSkills) {
 			this.projectJobRoleSkills = projectJobRoleSkills;
 			return this;
 		}

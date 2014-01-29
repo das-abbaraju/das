@@ -65,4 +65,11 @@ public class ProjectRoleDAO extends AbstractBaseEntityDAO<ProjectRole> {
 		query.setParameter("accountId", accountId);
 		return query.getResultList();
 	}
+
+	public List<ProjectRole> findBySiteId(int siteId) {
+		TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
+				"WHERE pr.project.accountId = :siteId", ProjectRole.class);
+		query.setParameter("siteId", siteId);
+		return query.getResultList();
+	}
 }

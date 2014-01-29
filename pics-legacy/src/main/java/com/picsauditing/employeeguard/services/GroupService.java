@@ -1,10 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.employeeguard.daos.AccountGroupDAO;
-import com.picsauditing.employeeguard.daos.AccountSkillDAO;
-import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -36,6 +33,8 @@ public class GroupService {
 	private ProjectService projectService;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+    @Autowired
+    private RoleDAO roleDAO;
 
 	public Group getGroup(String id, int accountId) {
 		return accountGroupDAO.findGroupByAccount(NumberUtils.toInt(id), accountId);
@@ -88,7 +87,6 @@ public class GroupService {
 		groupInDatabase = accountGroupDAO.save(groupInDatabase);
 
 		List<AccountSkillGroup> newAccountSkillGroups = new ArrayList<>();
-
 		if (ArrayUtils.isNotEmpty(groupNameSkillsForm.getSkills())) {
 			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupNameSkillsForm.getSkills())));
 			for (AccountSkill accountSkill : skills) {
@@ -103,7 +101,8 @@ public class GroupService {
 				AccountSkillGroup.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-		groupInDatabase.setSkills(accountSkillGroups);
+        groupInDatabase.getSkills().clear();
+		groupInDatabase.getSkills().addAll(accountSkillGroups);
 		groupInDatabase = accountGroupDAO.save(groupInDatabase);
 
 		for (GroupEmployee groupEmployee : groupInDatabase.getEmployees()) {
@@ -139,7 +138,7 @@ public class GroupService {
 		return accountGroupDAO.save(updatedGroup);
 	}
 
-	public Group update(final RoleProjectsForm roleProjectsForm, Group role, final int accountId, final int appUserId) {
+	public Role update(final RoleProjectsForm roleProjectsForm, Role role, final int accountId, final int appUserId) {
 		List<Integer> projectIds = Utilities.primitiveArrayToList(roleProjectsForm.getProjects());
 		List<Project> projects = projectService.getProjects(projectIds, accountId);
 
@@ -162,7 +161,7 @@ public class GroupService {
 		List<Employee> affectedEmployees = projectRoleEmployeeDAO.getEmployeesByRole(role);
 
 		role.setProjects(newProjectRoles);
-		role = accountGroupDAO.save(role);
+		role = roleDAO.save(role);
 
 		accountSkillEmployeeService.linkEmployeesToSkill(role, appUserId);
 		for (Employee employee : affectedEmployees) {

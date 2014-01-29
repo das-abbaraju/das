@@ -44,7 +44,7 @@
     font-weight: normal;
     line-height: normal;
     @include border-radius(15px);
-    border: 1px solid #cccccc;
+    border: 1px solid $default_silver;
     float: none;
     margin: 0px;
     outline-width: 0px;
@@ -189,7 +189,7 @@
     border-color:transparent;
     border-style:solid;
     border-width:5px 0 5px 5px;
-    border-left-color:#cccccc;
+    border-left-color:$default_silver;
     margin-top:5px;
     margin-right:-10px;
   }

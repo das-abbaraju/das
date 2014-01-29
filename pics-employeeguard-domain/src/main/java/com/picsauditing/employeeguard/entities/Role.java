@@ -14,8 +14,7 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("Role")
-@Where(clause = "deletedDate IS NULL")
-@SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, type, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, 'Group', ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, type, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, 'Role', ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE account_group SET deletedDate = NOW() WHERE id = ?")
 public class Role extends AccountGroup implements Comparable<Role> {
 
@@ -29,7 +28,12 @@ public class Role extends AccountGroup implements Comparable<Role> {
 	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
-	protected List<AccountSkillRole> skills = new ArrayList<>();
+	private List<AccountSkillRole> skills = new ArrayList<>();
+
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 5)
+	private List<RoleEmployee> employees;
 
 	public Role() {
 	}
@@ -66,6 +70,14 @@ public class Role extends AccountGroup implements Comparable<Role> {
 
 	public void setSkills(List<AccountSkillRole> skills) {
 		this.skills = skills;
+	}
+
+	public List<RoleEmployee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<RoleEmployee> employees) {
+		this.employees = employees;
 	}
 
 	@Override

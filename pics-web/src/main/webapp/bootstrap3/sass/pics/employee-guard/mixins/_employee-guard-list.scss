@@ -24,14 +24,17 @@
             padding: 5px 0px;
 
             &.danger {
+                background-color: transparent;
                 color: $danger_light;
             }
 
             &.warning {
+                background-color: transparent;
                 color: $warning_med;
             }
 
             &.success {
+                background-color: transparent;
                 color: $success_light;
             }
 

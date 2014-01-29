@@ -226,6 +226,36 @@ public class UtilitiesTest {
         verifyCoalesceIntoMapOfLists(result);
     }
 
+	@Test
+	public void testInvertMap() {
+		Map<String, List<Integer>> map = new HashMap<>();
+		map.put("Test 1", Arrays.asList(1, 2));
+		map.put("Test 2", Arrays.asList(2, 3));
+
+		Map<Integer, List<String>> invertedMap = Utilities.invertMapOfList(map);
+
+		assertTrue(invertedMap.get(1).contains("Test 1"));
+		assertTrue(invertedMap.get(2).contains("Test 1"));
+		assertFalse(invertedMap.get(3).contains("Test 1"));
+
+		assertTrue(invertedMap.get(2).contains("Test 2"));
+		assertTrue(invertedMap.get(3).contains("Test 2"));
+		assertFalse(invertedMap.get(1).contains("Test 2"));
+	}
+
+	@Test
+	public void testFlattenCollectionOfCollection() {
+		Set<String> set1 = new HashSet<>(Arrays.asList("Test 1", "Test 2"));
+		Set<String> set2 = new HashSet<>(Arrays.asList("Test 3"));
+
+		List<Set<String>> listOfSets = new ArrayList<>(Arrays.asList(set1, set2));
+		Set<String> results = Utilities.flattenCollectionOfCollection(listOfSets);
+
+		assertTrue(results.contains("Test 1"));
+		assertTrue(results.contains("Test 2"));
+		assertTrue(results.contains("Test 3"));
+	}
+
     private void verifyCoalesceIntoMapOfLists(Map<Integer, List<SimpleObject>> result) {
         Map<Integer, List<SimpleObject>> correctResult = new HashMap<Integer, List<SimpleObject>>() {{
             put(1, Arrays.asList(new SimpleObject(1, "John")));

@@ -322,4 +322,8 @@ public class EmployeeService {
 		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
 		softDeletedEmployeeDAO.save(employee);
 	}
+
+	public List<Employee> getEmployeesAssignedToSite(final int accountId, final int siteId) {
+		return employeeDAO.findEmployeesAssignedToSite(accountId, siteId);
+	}
 }

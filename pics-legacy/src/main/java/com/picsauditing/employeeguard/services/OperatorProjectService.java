@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 public class OperatorProjectService {
+
 	@Autowired
 	private ProjectCompanyDAO projectCompanyDAO;
 	@Autowired
@@ -22,6 +23,8 @@ public class OperatorProjectService {
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
+    @Autowired
+    private RoleEmployeeDAO roleEmployeeDAO;
 
 	public ProjectCompany getProject(String id, int accountId) {
 		return projectCompanyDAO.findProject(NumberUtils.toInt(id), accountId);
@@ -49,13 +52,13 @@ public class OperatorProjectService {
 				AccountSkillEmployee.COMPARATOR, new BaseEntityCallback(appUserId, now));
 		accountSkillEmployeeDAO.save(accountSkillEmployees);
 
-		GroupEmployee groupEmployee = new GroupEmployee(employee, projectRole.getRole());
+		RoleEmployee groupEmployee = new RoleEmployee(employee, projectRole.getRole());
 		EntityHelper.setCreateAuditFields(groupEmployee, appUserId, now);
-		accountGroupEmployeeDAO.save(groupEmployee);
+		roleEmployeeDAO.save(groupEmployee);
 	}
 
 	private List<AccountSkill> getSkillsForProjectGroup(ProjectRole projectRole) {
-		return accountSkillDAO.findByGroups(Arrays.asList(projectRole.getRole()));
+		return accountSkillDAO.findByRoles(Arrays.asList(projectRole.getRole()));
 	}
 
 	private List<AccountSkillEmployee> buildAccountSkillEmployees(Employee employee, List<AccountSkill> skills) {
@@ -78,9 +81,9 @@ public class OperatorProjectService {
 		EntityHelper.softDelete(accountSkillEmployees, appUserId);
 		accountSkillEmployeeDAO.delete(accountSkillEmployees);
 
-		GroupEmployee groupEmployee = accountGroupEmployeeDAO.findByGroupAndEmployee(employee, projectRole.getRole());
-		EntityHelper.softDelete(groupEmployee, appUserId);
-		accountGroupEmployeeDAO.delete(groupEmployee);
+		RoleEmployee roleEmployee = roleEmployeeDAO.findByGroupAndEmployee(employee, projectRole.getRole());
+		EntityHelper.softDelete(roleEmployee, appUserId);
+		roleEmployeeDAO.delete(roleEmployee);
 	}
 
 	private List<AccountSkillEmployee> getListOfSkillsForThisProject(Employee employee, ProjectRole projectRole) {

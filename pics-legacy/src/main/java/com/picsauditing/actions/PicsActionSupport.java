@@ -642,7 +642,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public Set<User> getAuditorList() {
 		if (auditorList == null) {
-			auditorList = new TreeSet<User>();
+			auditorList = new TreeSet<>();
 			auditorList.addAll(userDAO.findByGroup(User.GROUP_AUDITOR));
 			auditorList.addAll(userDAO.findByGroup(User.GROUP_CSR));
 		}
@@ -651,7 +651,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {
-			safetyList = new TreeSet<User>();
+			safetyList = new TreeSet<>();
 			if (permissions.isAdmin() && !permissions.isOperatorCorporate()) {
 				safetyList.addAll(userDAO.findByGroup(User.GROUP_SAFETY));
 			} else {
@@ -817,7 +817,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public Collection<String> internalGetAlertMessages() {
 		if (alertMessages == null) {
-			alertMessages = new ArrayList<String>();
+			alertMessages = new ArrayList<>();
 		}
 
 		return alertMessages;

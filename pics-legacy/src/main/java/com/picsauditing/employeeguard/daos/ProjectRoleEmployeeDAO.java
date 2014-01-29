@@ -49,7 +49,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		return query.getResultList();
 	}
 
-	public List<Employee> getEmployeesByRole(Group role) {
+	public List<Employee> getEmployeesByRole(Role role) {
 		if (role == null) {
 			return Collections.emptyList();
 		}
@@ -80,6 +80,13 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT pre.employee FROM ProjectRoleEmployee pre " +
 				"WHERE pre.projectRole.project = :project", Employee.class);
 		query.setParameter("project", project);
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByAccountId(final int accountId) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("FROM ProjectRoleEmployee pre " +
+				"WHERE pre.employee.accountId = :accountId", ProjectRoleEmployee.class);
+		query.setParameter("accountId", accountId);
 		return query.getResultList();
 	}
 }

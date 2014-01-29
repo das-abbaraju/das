@@ -17,7 +17,6 @@ public class FormBuilderFactory {
 	private final SkillInfoBuilder skillInfoBuilder = new SkillInfoBuilder();
 	private final ProjectCompaniesFormBuilder projectCompaniesFormBuilder = new ProjectCompaniesFormBuilder();
 	private final ContractorDetailProjectFormBuilder contratorDetailProjectFormBuilder = new ContractorDetailProjectFormBuilder();
-	private final ContractorProjectFormBuilder contractorProjectFormBuilder = new ContractorProjectFormBuilder();
 	private final OperatorProjectFormBuilder operatorProjectFormBuilder = new OperatorProjectFormBuilder();
 	private final ContractorEmployeeProjectAssignmentFactory contractorEmployeeProjectAssignmentFactory = new ContractorEmployeeProjectAssignmentFactory();
 	private final OperatorEmployeeProjectAssignmentFactory operatorEmployeeProjectAssignmentFactory = new OperatorEmployeeProjectAssignmentFactory();
@@ -50,10 +49,6 @@ public class FormBuilderFactory {
 
 	public ContractorDetailProjectFormBuilder getContratorDetailProjectFormBuilder() {
 		return contratorDetailProjectFormBuilder;
-	}
-
-	public ContractorProjectFormBuilder getContractorProjectFormBuilder() {
-		return contractorProjectFormBuilder;
 	}
 
 	public OperatorProjectFormBuilder getOperatorProjectFormBuilder() {

@@ -1,0 +1,27 @@
+.operator-site-assignments {
+    margin-bottom: 30px;
+
+    .row {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+
+        i {
+            margin-right: 10px;
+        }
+    }
+
+    .icon-building {
+        color: $default_aluminum;
+    }
+
+    .icon-user {
+        color: $info_med;
+    }
+
+    .success,
+    .warning,
+    .danger {
+        background: transparent;
+    }
+}

@@ -47,12 +47,12 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
+	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT g.id FROM account_group g WHERE g.type = 'Group')")
 	private List<GroupEmployee> groups = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
-	private List<SiteAssignmentEmployee> siteAssignments = new ArrayList<>();
+	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT r.id FROM account_group r WHERE r.type = 'Role')")
+	private List<RoleEmployee> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
@@ -60,7 +60,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-	private List<ProjectRoleEmployee> roles = new ArrayList<>();
+	private List<ProjectRoleEmployee> projectRoles = new ArrayList<>();
 
 	public Employee() {
 	}
@@ -225,12 +225,12 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		this.groups = groups;
 	}
 
-	public List<SiteAssignmentEmployee> getSiteAssignments() {
-		return siteAssignments;
+	public List<RoleEmployee> getRoles() {
+		return roles;
 	}
 
-	public void setSiteAssignments(List<SiteAssignmentEmployee> siteAssignments) {
-		this.siteAssignments = siteAssignments;
+	public void setRoles(List<RoleEmployee> roleEmployee) {
+		this.roles = roleEmployee;
 	}
 
 	public List<AccountSkillEmployee> getSkills() {
@@ -241,12 +241,12 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		this.skills = skills;
 	}
 
-	public List<ProjectRoleEmployee> getRoles() {
-		return roles;
+	public List<ProjectRoleEmployee> getProjectRoles() {
+		return projectRoles;
 	}
 
-	public void setRoles(List<ProjectRoleEmployee> roles) {
-		this.roles = roles;
+	public void setProjectRoles(List<ProjectRoleEmployee> roles) {
+		this.projectRoles = roles;
 	}
 
 	@Transient
@@ -269,10 +269,10 @@ public class Employee implements BaseEntity, Comparable<Employee> {
         @Override
         public Map<String, Object> getUniqueIndexableValues() {
             return Collections.unmodifiableMap(new HashMap<String, Object>() {
-                {
-                    put("accountId", accountId);
-                    put("email", email);
-                }
+	            {
+		            put("accountId", accountId);
+		            put("email", email);
+	            }
             });
         }
 
@@ -339,7 +339,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
         public int getId() {
             return id;
         }
-    }
+	}
 
 	@Override
 	public boolean equals(final Object o) {

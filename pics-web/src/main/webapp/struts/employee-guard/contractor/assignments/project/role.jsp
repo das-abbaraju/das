@@ -21,10 +21,11 @@
 
 <div class="row">
     <ul class="nav nav-pills nav-stacked col-md-3">
-
-        <li class="active">
+        <li>
             <a href="${contractor_project_assignments}">Project</a>
         </li>
+
+        <s:set var="selected_role" value="%{id}"/>
         <s:iterator value="contractorProjectAssignmentMatrix.roles" var="contractor_project_role">
             <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="contractor_project_role_url">
                 <s:param name="projectId">
@@ -37,16 +38,17 @@
                     ${contractor_project_role.id}
                 </s:param>
             </s:url>
-            <li>
+            <li <s:if test="#selected_role == #contractor_project_role.id">class="active"</s:if>>
                 <a href="${contractor_project_role_url}">${contractor_project_role.name}</a>
             </li>
         </s:iterator>
     </ul>
 
     <div class="table-responsive col-md-9">
-        <table id="employee_project" class="table table-striped table-condensed table-hover">
+        <table class="table table-striped table-condensed table-hover table-assignment">
             <thead>
                 <tr>
+                    <th class="text-center">Assign</th>
                     <th>Employee</th>
                     <th>Title</th>
                     <s:iterator value="contractorProjectAssignmentMatrix.skillNames" var="skill_name">
@@ -57,7 +59,45 @@
 
             <tbody>
                 <s:iterator value="contractorProjectAssignmentMatrix.assignments" var="contractor_project_employee">
-                    <tr class="assign-employee-container">
+                    <s:set var="employee_assigned" value="''"/>
+                    <s:if test="#contractor_project_employee.assigned">
+                        <s:set var="employee_assigned" value="'assigned'"/>
+                    </s:if>
+
+                    <s:url action="project/{projectId}/assignments/{assignmentId}/role/{roleId}/employee/{id}" method="assign" var="assign_contractor">
+                        <s:param name="projectId">
+                            ${project.id}
+                        </s:param>
+                        <s:param name="assignmentId">
+                            ${project.accountId}
+                        </s:param>
+                        <s:param name="id">
+                            ${contractor_project_employee.employeeId}
+                        </s:param>
+                        <s:param name="roleId">
+                            ${id}
+                        </s:param>
+                    </s:url>
+
+                    <s:url action="project/{projectId}/assignments/{assignmentId}/role/{roleId}/employee/{id}" method="unassign" var="unassign_contractor">
+                        <s:param name="projectId">
+                            ${project.id}
+                        </s:param>
+                        <s:param name="assignmentId">
+                            ${project.accountId}
+                        </s:param>
+                        <s:param name="id">
+                            ${contractor_project_employee.employeeId}
+                        </s:param>
+                        <s:param name="roleId">
+                            ${id}
+                        </s:param>
+                    </s:url>
+
+                    <tr class="assign-employee-container ${employee_assigned}" data-assign-url="${assign_contractor}" data-unassign-url="${unassign_contractor}">
+                        <td class="assign-employee text-center">
+                            <a href="#"><i class="icon-map-marker icon-large"></i></a>
+                        </td>
                         <td>
                             <s:url action="employee" var="contractor_project_employee_url">
                                 <s:param name="id">
