@@ -107,7 +107,7 @@ public class SiteAssignmentModelFactory {
 		Map<Integer, AccountModel> accounts = getIdToAccountModel(employeeAccounts);
 		Map<Employee, SkillStatus> statusRollUp = calculateEmployeeSkillStatus(employeeSkills);
 
-		return ViewModeFactory.getEmployeeSiteAssignmentModelFactory().create(statusRollUp, employeeRoles, accounts);
+		return ViewModelFactory.getEmployeeSiteAssignmentModelFactory().create(statusRollUp, employeeRoles, accounts);
 	}
 
 	private Map<Integer, AccountModel> getIdToAccountModel(List<AccountModel> employeeAccounts) {

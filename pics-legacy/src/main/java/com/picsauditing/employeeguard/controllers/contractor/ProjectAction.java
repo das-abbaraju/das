@@ -10,7 +10,7 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentStatisticsModel;
-import com.picsauditing.employeeguard.viewmodel.factory.ViewModeFactory;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -63,7 +63,7 @@ public class ProjectAction extends PicsRestActionSupport {
 		Map<Employee, Set<Role>> employeeRoles = projectRoleService.getEmployeeProjectAndSiteRolesByAccount(permissions.getAccountId());
 		List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
 
-		siteAssignmentsAndProjects = ViewModeFactory.getSiteAssignmentsAndProjectsFactory().create(siteProjects, siteRequiredSkills, employeeRoles, employeeSkills);
+		siteAssignmentsAndProjects = ViewModelFactory.getSiteAssignmentsAndProjectsFactory().create(siteProjects, siteRequiredSkills, employeeRoles, employeeSkills);
 	}
 
     public String show() {
@@ -75,7 +75,7 @@ public class ProjectAction extends PicsRestActionSupport {
                 .getAccountSkillEmployeeForProjectAndContractor(projectCompany.getProject(), permissions.getAccountId());
         List<ProjectRoleEmployee> projectRoleEmployees = projectRoleService.getProjectRolesForContractor
                 (projectCompany.getProject(), permissions.getAccountId());
-        projectAssignmentBreakdown = ViewModeFactory.getProjectAssignmentBreakdownFactory()
+        projectAssignmentBreakdown = ViewModelFactory.getProjectAssignmentBreakdownFactory()
                 .create(projectRoleEmployees, accountSkillEmployees);
 
         return SHOW;
