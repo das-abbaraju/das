@@ -209,6 +209,7 @@ public class LoginServiceTest {
 		verify(user).setForcePasswordReset(true);
 		verify(user).setResetHash("");
 		verify(user).unlockLogin();
+        verify(user).setPasswordChanged(null);
 	}
 
 	@Test(expected = AccountNotFoundException.class)
