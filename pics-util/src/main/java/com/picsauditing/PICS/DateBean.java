@@ -856,7 +856,7 @@ public class DateBean {
 		return checkDate.compareTo(date) < 0;
 	}
 
-	private static Date today() {
+	public static Date today() {
 		return new Date();
 	}
 

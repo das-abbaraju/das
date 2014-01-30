@@ -21,6 +21,6 @@ public class ContractorEmployeeRoleAssignmentFactory {
     }
 
 	public ContractorEmployeeRoleAssignment build(Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills) {
-
+        return null;
 	}
 }
