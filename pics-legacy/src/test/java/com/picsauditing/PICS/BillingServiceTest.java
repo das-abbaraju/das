@@ -165,6 +165,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 
     @Test
     public void testSyncBalance_requested() throws Exception {
+        when(mockContractor.getStatus()).thenReturn(AccountStatus.Requested);
         billingService.syncBalance(mockContractor);
         verify(feeService).getRuleCache();
     }
