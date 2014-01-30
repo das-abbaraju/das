@@ -142,4 +142,22 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
         query.setParameter("accountId", accountId);
         return query.getResultList();
     }
+
+	public List<AccountSkillEmployee> findByContractorAndRole(final int contractorId, final int roleId) {
+		if (contractorId == 0 || roleId == 0) {
+			return Collections.emptyList();
+		}
+
+		String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
+				"JOIN ase.skill s " +
+				"JOIN s.roles asr " +
+				"JOIN asr.role r " +
+				"JOIN ase.employee e " +
+				"WHERE e.accountId = :contractorId " +
+				"AND r.id = :roleId";
+		TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
+		query.setParameter("contractorId", contractorId);
+		query.setParameter("roleId", roleId);
+		return query.getResultList();
+	}
 }

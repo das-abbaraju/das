@@ -6,7 +6,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 
-public class ContractorEmployeeRoleAssignment {
+public class ContractorEmployeeRoleAssignment implements Comparable<ContractorEmployeeRoleAssignment> {
 
     private final boolean assigned;
     private final int employeeId;
@@ -80,4 +80,9 @@ public class ContractorEmployeeRoleAssignment {
             return new ContractorEmployeeRoleAssignment(this);
         }
     }
+
+	@Override
+	public int compareTo(ContractorEmployeeRoleAssignment that) {
+		return this.getName().compareTo(that.getName());
+	}
 }

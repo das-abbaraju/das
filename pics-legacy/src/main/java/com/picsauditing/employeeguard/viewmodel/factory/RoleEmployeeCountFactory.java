@@ -38,10 +38,6 @@ public class RoleEmployeeCountFactory {
 		for (RoleEmployee roleEmployee : employee.getRoles()) {
 			int roleId = roleEmployee.getRole().getId();
 
-			if (corporateRole.getId() == roleId) {
-				return true;
-			}
-
 			if (siteRole != null && siteRole.getId() == roleId) {
 				return true;
 			}

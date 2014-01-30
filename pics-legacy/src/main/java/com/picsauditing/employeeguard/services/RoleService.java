@@ -26,6 +26,8 @@ public class RoleService {
     private AccountSkillEmployeeService accountSkillEmployeeService;
     @Autowired
     private EmployeeDAO employeeDAO;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
     @Autowired
     private RoleDAO roleDAO;
     @Autowired
@@ -174,29 +176,24 @@ public class RoleService {
 
     public Map<Role, Set<Employee>> getRoleAssignments(final int contractorId, final int siteId) {
         List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-        Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
-        List<RoleEmployee> roleEmployees = roleEmployeeDAO.findByContractorAndSiteId(contractorId, siteId);
+	    Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
 
-        Map<Role, Set<Employee>> siteAssignment = Utilities.convertToMapOfSets(roleEmployees,
-                new Utilities.EntityKeyValueConvertable<RoleEmployee, Role, Employee>() {
-            @Override
-            public Role getKey(RoleEmployee entity) {
-                return entity.getRole();
-            }
+	    List<RoleEmployee> roleEmployees = roleEmployeeDAO.findByContractorAndSiteId(contractorId, siteId);
+	    List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByCorporateAndContractor(corporateIds, contractorId);
 
-            @Override
-            public Employee getValue(RoleEmployee entity) {
-                return entity.getEmployee();
-            }
-        });
+	    Map<Role, Set<Employee>> roleAssignments = new HashMap<>();
+	    for (RoleEmployee roleEmployee : roleEmployees) {
+		    Role corporateRole = siteToCorporateRoles.get(roleEmployee.getRole());
 
-        Map<Role, Set<Employee>> roleAssignments = new HashMap<>();
-        for (Role siteRole : siteToCorporateRoles.keySet()) {
-            Role corporateRole = siteToCorporateRoles.get(siteRole);
-            roleAssignments.put(corporateRole, siteAssignment.get(siteRole));
-        }
+		    Utilities.addToMapOfKeyToSet(roleAssignments, corporateRole, roleEmployee.getEmployee());
+	    }
 
-        return roleAssignments;
+	    for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
+		    Role role = projectRoleEmployee.getProjectRole().getRole();
+		    Utilities.addToMapOfKeyToSet(roleAssignments, role, projectRoleEmployee.getEmployee());
+	    }
+
+	    return roleAssignments;
     }
 
     public Map<Employee, Role> getEmployeeSiteRolesForRole(final int contractorId, final int siteId, final int corporateRoleId) {

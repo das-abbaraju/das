@@ -8,16 +8,14 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 public class SiteAssignmentAction extends PicsRestActionSupport {
 
@@ -62,17 +60,16 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(site.getId());
 		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
 
-		List<Role> siteRoles = getSiteRoles();
-		List<RoleInfo> roleInfos = ViewModelFactory.getRoleInfoFactory().build(siteRoles);
+		List<Role> corporateRoles = getCorporateRoles();
+		List<RoleInfo> corporateRoleInfo = ViewModelFactory.getRoleInfoFactory().build(corporateRoles);
 
 		return ViewModelFactory.getRoleEmployeeCountFactory()
-				.create(roleInfos, corporateToSiteRoles, employees);
+				.create(corporateRoleInfo, corporateToSiteRoles, employees);
 	}
 
-	private List<Role> getSiteRoles() {
-		List<Integer> siteAndCorporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
-		siteAndCorporateIds.add(site.getId());
-		return roleService.getRolesForAccounts(siteAndCorporateIds);
+	private List<Role> getCorporateRoles() {
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
+		return roleService.getRolesForAccounts(corporateIds);
 	}
 
 	public String unassign() {
@@ -88,17 +85,27 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	private ContractorEmployeeRoleAssignmentMatrix buildRoleAssignmentMatrix() {
-		List<Employee> employees = employeeService.getEmployeesForAccount(permissions.getAccountId());
-		List<Employee> employeesAssignedToSite =
-				employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
-		List<AccountSkillEmployee> employeeSkills =
-				accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
+		int contractorId = permissions.getAccountId();
 
+		List<Employee> employees = employeeService.getEmployeesForAccount(contractorId);
+		List<ContractorEmployeeRoleAssignment> assignments = buildContractorEmployeeRoleAssignments(contractorId, employees);
+		Collections.sort(assignments);
+
+		List<Employee> employeesAssignedToSite = employeeService.getEmployeesAssignedToSite(contractorId, site.getId());
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
-//		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
-//				.create(employeesAssignedToSite.size(), roleCounts, employees, employeeSkills);
-		return null;
+		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
+				.create(employeesAssignedToSite.size(), role.getSkills(), roleCounts, assignments);
+	}
+
+	private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(int contractorId,
+	                                                                                      List<Employee> employees) {
+		Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
+		Map<Employee, Set<AccountSkillEmployee>> employeeSkills =
+				accountSkillEmployeeService.getSkillMapForAccountAndRole(contractorId, role.getId());
+
+		return ViewModelFactory.getContractorEmployeeRoleAssignmentFactory()
+				.build(employees, role, employeesAssignedToRole.get(role), employeeSkills);
 	}
 
 	public int getSiteId() {

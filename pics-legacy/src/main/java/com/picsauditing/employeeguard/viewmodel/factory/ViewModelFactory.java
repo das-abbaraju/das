@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
+import com.picsauditing.employeeguard.forms.factory.ContractorEmployeeRoleAssignmentFactory;
 import com.picsauditing.employeeguard.forms.factory.ContractorProjectFormFactory;
 import com.picsauditing.employeeguard.forms.factory.RoleInfoFactory;
 
@@ -7,6 +8,8 @@ public class ViewModelFactory {
 
 	private static ContractorEmployeeRoleAssignmentMatrixFactory contractorEmployeeRoleAssignmentMatrixFactory =
 			new ContractorEmployeeRoleAssignmentMatrixFactory();
+	private static ContractorEmployeeRoleAssignmentFactory contractorEmployeeRoleAssignmentFactory =
+			new ContractorEmployeeRoleAssignmentFactory();
     private static ContractorProjectFormFactory contractorProjectFormFactory = new ContractorProjectFormFactory();
     private static EmployeeAssignmentModelFactory employeeAssignmentModelFactory = new EmployeeAssignmentModelFactory();
     private static EmployeeProjectAssignmentFactory employeeProjectAssignmentFactory = new EmployeeProjectAssignmentFactory();
@@ -23,6 +26,10 @@ public class ViewModelFactory {
 
 	public static ContractorEmployeeRoleAssignmentMatrixFactory getContractorEmployeeRoleAssignmentMatrixFactory() {
 		return contractorEmployeeRoleAssignmentMatrixFactory;
+	}
+
+	public static ContractorEmployeeRoleAssignmentFactory getContractorEmployeeRoleAssignmentFactory() {
+		return contractorEmployeeRoleAssignmentFactory;
 	}
 
 	public static ContractorProjectFormFactory getContractorProjectFormFactory() {
