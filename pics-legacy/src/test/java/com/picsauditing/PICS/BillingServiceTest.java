@@ -44,6 +44,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 	private Country country;
 	@Mock
 	private BusinessUnit businessUnit;
+    @Mock
+    private FeeService feeService;
 	@Mock
 	private TaxService taxService;
 	@Mock
@@ -97,6 +99,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 
 		billingService = new BillingService();
 		Whitebox.setInternalState(billingService, "taxService", taxService);
+		Whitebox.setInternalState(billingService, "feeService", feeService);
 		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
 		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
 		Whitebox.setInternalState(billingService, "accountDao", accountDAO);
@@ -160,7 +163,13 @@ public class BillingServiceTest extends PicsTranslationTest {
 		}
 	}
 
-	@Test
+    @Test
+    public void testSyncBalance_requested() throws Exception {
+        billingService.syncBalance(mockContractor);
+        verify(feeService).getRuleCache();
+    }
+
+    @Test
 	public void testCalculateInvoiceTotal() throws Exception {
 		InvoiceItem anotherItem = mock(InvoiceItem.class);
 		when(anotherItem.getAmount()).thenReturn(new BigDecimal(249.00));
