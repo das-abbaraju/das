@@ -13,7 +13,7 @@ public class RoleEmployeeDAO extends AbstractBaseEntityDAO<RoleEmployee> {
         this.type = RoleEmployee.class;
     }
 
-    public RoleEmployee findByGroupAndEmployee(final Employee employee, final Role role) {
+    public RoleEmployee findByEmployeeAndRole(final Employee employee, final Role role) {
         if (employee == null || role == null) {
             return null;
         }
@@ -33,4 +33,14 @@ public class RoleEmployeeDAO extends AbstractBaseEntityDAO<RoleEmployee> {
         query.setParameter("accountId", accountId);
         return query.getResultList();
     }
+
+	public List<RoleEmployee> findSiteRolesByContractorAndRoleId(final int contractorId, final Role siteRole) {
+		TypedQuery<RoleEmployee> query = em.createQuery("SELECT re FROM RoleEmployee re " +
+				"JOIN re.employee as e " +
+				"WHERE e.accountId = :contractorId " +
+				"AND re.role = :role", RoleEmployee.class);
+		query.setParameter("contractorId", contractorId);
+		query.setParameter("role", siteRole);
+		return query.getResultList();
+	}
 }

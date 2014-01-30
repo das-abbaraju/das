@@ -1,10 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.employeeguard.daos.AccountSkillDAO;
-import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.daos.RoleDAO;
-import com.picsauditing.employeeguard.daos.SiteSkillDAO;
+import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -31,6 +28,8 @@ public class RoleService {
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private RoleDAO roleDAO;
+	@Autowired
+	private RoleEmployeeDAO roleEmployeeDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
@@ -173,9 +172,27 @@ public class RoleService {
 		}
 	}
 
-    public Map<Employee, Set<Role>> getEmployeeRolesForSite(final int contractorId, final int siteId) {
-        return Collections.emptyMap();
-    }
+	public Map<Employee, Set<Role>> getEmployeeRolesForSite(final int contractorId, final int siteId) {
+		return Collections.emptyMap();
+	}
+
+	public Map<Employee, Role> getEmployeeSiteRolesForRole(final int contractorId, final int siteId, final int corporateRoleId) {
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+		Role siteRole = roleDAO.findSiteRoleByCorporateRole(corporateIds, siteId, corporateRoleId);
+
+		return Utilities.convertToMap(roleEmployeeDAO.findSiteRolesByContractorAndRoleId(contractorId, siteRole),
+				new Utilities.EntityKeyValueConvertable<RoleEmployee, Employee, Role>() {
+					@Override
+					public Employee getKey(RoleEmployee entity) {
+						return entity.getEmployee();
+					}
+
+					@Override
+					public Role getValue(RoleEmployee entity) {
+						return entity.getRole();
+					}
+				});
+	}
 
 	public Map<Role, Role> getSiteToCorporateRoles(int siteId) {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
