@@ -11003,9 +11003,13 @@ body {
   color: #808285;
 }
 
+/* This is for any select2 overrides that need sass vars or functions for "v7" pages only.
+   Please put any "global" overrides for select2 in select2-override.css until that file is no longer needed.
+*/
+
 /* line 4, ../sass/pics/plugins/_select2-overrides.scss */
 
-select2-search-choice .form-control.select2-container {
+.form-control.select2-container {
   color: #454545;
 }
 
@@ -11064,7 +11068,7 @@ select2-search-choice .form-control.select2-container {
 
 /*Multi Select*/
 
-/* line 48, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 47, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice {
   background-color: #e6e6e6;
@@ -11077,20 +11081,20 @@ select2-search-choice .form-control.select2-container {
           border-radius: 4px;
 }
 
-/* line 54, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 53, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice a {
   font-size: 12px;
   color: #999999;
 }
 
-/* line 58, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 57, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice a:hover {
   color: #c0392b;
 }
 
-/* line 62, ../sass/pics/plugins/_select2-overrides.scss */
+/* line 61, ../sass/pics/plugins/_select2-overrides.scss */
 
 .select2-container-multi .select2-choices .select2-search-choice a:active {
   color: #800a06;
@@ -11283,18 +11287,24 @@ select2-search-choice .form-control.select2-container {
 
 /* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 
+.employee-guard-section.info-toolbar .row {
+  line-height: 24px;
+}
+
+/* line 34, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+
 .employee-guard-section.info-toolbar a.btn {
   margin-right: 0;
   margin-left: 5px;
 }
 
-/* line 35, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 39, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 
 .employee-guard-section.info-toolbar ul {
   margin-bottom: 0;
 }
 
-/* line 41, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 45, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 
 .employee-guard-section.info-toolbar ul li.success,
 .employee-guard-section.info-toolbar ul li.warning,
@@ -11302,7 +11312,7 @@ select2-search-choice .form-control.select2-container {
   background-color: transparent;
 }
 
-/* line 49, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+/* line 53, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
 
 .employee-guard-section:first-child > h1 {
   margin-top: 0;
@@ -11310,7 +11320,7 @@ select2-search-choice .form-control.select2-container {
 
 @media (max-width: 767px) {
   {
-    /* line 55, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
+    /* line 59, ../sass/pics/employee-guard/mixins/_employee-guard-section.scss */
   
   }
   .employee-guard-section .content {
@@ -13217,6 +13227,12 @@ section.visible h1 {
 .edit-btn:hover {
   color: #73bbe8;
   text-decoration: none;
+}
+
+/* line 166, ../sass/pics/components/_button.scss */
+
+.btn-xs {
+  padding: 3px 8px;
 }
 
 @media (min-width: 991px) {

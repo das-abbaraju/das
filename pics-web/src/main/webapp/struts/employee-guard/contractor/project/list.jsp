@@ -67,10 +67,31 @@
                             <s:param name="id">${project_statistic.project.projectId}</s:param>
                         </s:url>
 
+                        <s:set var="success_class" value="" />
+                        <s:set var="warning_class" value="" />
+                        <s:set var="danger_class" value="" />
+                        <s:set var="success_assignments" value="" />
+                        <s:set var="warning_assignments" value="" />
+                        <s:set var="danger_assignments" value="" />
+
+                        <s:if test="#project_statistic.assignments.complete > 0">
+                            <s:set var="success_class">success</s:set>
+                            <s:set var="success_assignments">${project_statistic.assignments.complete}</s:set>
+                        </s:if>
+                        <s:if test="#project_statistic.assignments.expiring > 0">
+                            <s:set var="warning_class">warning</s:set>
+                            <s:set var="warning_assignments">${project_statistic.assignments.expiring}</s:set>
+                        </s:if>
+                        <s:if test="#project_statistic.assignments.expired > 0">
+                            <s:set var="danger_class">danger</s:set>
+                            <s:set var="danger_assignments">${project_statistic.assignments.expired}</s:set>
+                        </s:if>
+
+
                         <tr>
-                            <td class="success text-center">${project_statistic.assignments.complete}</td>
-                            <td class="warning text-center">${project_statistic.assignments.expiring}</td>
-                            <td class="danger text-center">${project_statistic.assignments.expired}</td>
+                            <td class="${success_class} text-center">${success_assignments}</td>
+                            <td class="${warning_class} text-center">${warning_assignments}</td>
+                            <td class="${danger_class} text-center">${danger_assignments}</td>
                             <td>
                                 <a href="${contractor_project_show_url}">${project_statistic.project.projectName}</a>
                             </td>
