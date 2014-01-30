@@ -71,7 +71,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws SQLException, IOException {
-		searchEngine = new SearchEngine(permissions);
+        if (searchEngine == null)
+		    searchEngine = new SearchEngine(permissions);
 		if ("getResult".equals(button)) { // pull up a result
 			Indexable record = null;
 			if ("account".equals(searchType))
@@ -111,6 +112,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				else {
 					queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
 					fullList = getFullResults(queryList);
+                    totalRows = db.getAllRows();
 				}
 
 				if (fullList == null)
@@ -149,6 +151,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				else {
 					queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
 					getResults(queryList);
+                    totalRows = db.getAllRows();
 				}
 			}
 
