@@ -119,36 +119,38 @@ public class EbixLoader implements CronTask {
                         try {
                             List<ContractorAudit> audits = null;
                             ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
-                            if (conAccount != null) {
-                                audits = contractorAuditDAO.findWhere(900, "auditType.id = "
-                                        + AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
-                                        + conAccount.getId(), "");
-                            }
-
-                            if (CollectionUtils.isEmpty(audits)) {
+                            if (!conAccount.getStatus().isDeclinedDeletedDeactivated()) {
                                 if (conAccount != null) {
-                                    logger.warn("WARNING: Ebix record found for contractor "
-                                            + conAccount.getId() + " but no Ebix Compliance audit was found");
-                                } else {
-                                    logger.warn("WARNING: Ebix record found for contractor MISSING CONTRACTOR ID but no Ebix Compliance audit was found");
+                                    audits = contractorAuditDAO.findWhere(900, "auditType.id = "
+                                            + AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
+                                            + conAccount.getId(), "");
                                 }
-                                continue;
-                            }
 
-                            for (ContractorAudit audit : audits) {
-                                logger.debug("Setting Ebix audit " + audit.getId() + " for contractor "
-                                        + conAccount.getId() + " to " + status.name());
-                                for (ContractorAuditOperator cao : audit.getOperators()) {
-                                    if (status != cao.getStatus()) {
-                                        cao.changeStatus(status, null);
-                                        contractorAuditDAO.save(audit);
-
-                                        conAccount.incrementRecalculation();
-                                        contractorAccountDAO.save(conAccount);
+                                if (CollectionUtils.isEmpty(audits)) {
+                                    if (conAccount != null) {
+                                        logger.warn("WARNING: Ebix record found for contractor "
+                                                + conAccount.getId() + " but no Ebix Compliance audit was found");
                                     } else {
-                                        logger.debug("No change for Ebix audit " + audit.getId()
-                                                + " for contractor " + conAccount.getId() + ", "
-                                                + status.name());
+                                        logger.warn("WARNING: Ebix record found for contractor MISSING CONTRACTOR ID but no Ebix Compliance audit was found");
+                                    }
+                                    continue;
+                                }
+
+                                for (ContractorAudit audit : audits) {
+                                    logger.debug("Setting Ebix audit " + audit.getId() + " for contractor "
+                                            + conAccount.getId() + " to " + status.name());
+                                    for (ContractorAuditOperator cao : audit.getOperators()) {
+                                        if (status != cao.getStatus()) {
+                                            cao.changeStatus(status, null);
+                                            contractorAuditDAO.save(audit);
+
+                                            conAccount.incrementRecalculation();
+                                            contractorAccountDAO.save(conAccount);
+                                        } else {
+                                            logger.debug("No change for Ebix audit " + audit.getId()
+                                                    + " for contractor " + conAccount.getId() + ", "
+                                                    + status.name());
+                                        }
                                     }
                                 }
                             }
