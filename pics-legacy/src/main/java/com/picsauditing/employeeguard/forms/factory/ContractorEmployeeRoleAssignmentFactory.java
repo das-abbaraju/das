@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -23,11 +24,12 @@ public class ContractorEmployeeRoleAssignmentFactory {
 		}
 
 		List<ContractorEmployeeRoleAssignment> assignments = new ArrayList<>();
-		List<AccountSkillRole> roleSkills = role.getSkills();
+		List<AccountSkill> roleSkills = ExtractorUtil.extractList(role.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
+		Collections.sort(roleSkills);
 
 		for (Employee employee : contractorEmployees) {
 			boolean assigned = CollectionUtils.isNotEmpty(assignedEmployees) && assignedEmployees.contains(employee);
-			List<SkillStatus> statuses = initializeSkillStatuses(roleSkills);
+			List<SkillStatus> statuses = initializeSkillStatuses(roleSkills.size());
 
 			if (employeeSkills.containsKey(employee)) {
 				statuses = calculateSkillStatuses(roleSkills, employeeSkills.get(employee));
@@ -45,26 +47,25 @@ public class ContractorEmployeeRoleAssignmentFactory {
 		return assignments;
 	}
 
-	private List<SkillStatus> initializeSkillStatuses(List<AccountSkillRole> roleSkills) {
-		if (CollectionUtils.isEmpty(roleSkills)) {
-			return Collections.emptyList();
-		}
-
+	private List<SkillStatus> initializeSkillStatuses(int size) {
 		List<SkillStatus> skillStatuses = new ArrayList<>();
-		for (int index = 0; index < roleSkills.size(); index++) {
+
+		for (int index = 0; index < size; index++) {
 			skillStatuses.add(SkillStatus.Expired);
 		}
 
 		return skillStatuses;
 	}
 
-	private List<SkillStatus> calculateSkillStatuses(List<AccountSkillRole> roleSkills,
+	private List<SkillStatus> calculateSkillStatuses(List<AccountSkill> roleSkills,
 	                                                 Set<AccountSkillEmployee> accountSkillEmployees) {
 		List<SkillStatus> statuses = new ArrayList<>();
-		for (AccountSkillRole accountSkillRole : roleSkills) {
-			AccountSkillEmployee accountSkillEmployee = findEmployeeSkill(accountSkillRole.getSkill(), accountSkillEmployees);
+
+		for (AccountSkill skill : roleSkills) {
+			AccountSkillEmployee accountSkillEmployee = findEmployeeSkill(skill, accountSkillEmployees);
 			statuses.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
 		}
+
 		return statuses;
 	}
 

@@ -51,7 +51,17 @@
                 <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">
                     <tr class="assign-employee-container">
                         <td class="text-center">
-                            ${employee_site_assignment.numberOfRolesAssigned}
+                            <s:url action="project/site-assignment/{siteId}/employee/{id}/unassign" var="employee_unassign_from_site">
+                                <s:param name="siteId">
+                                    ${site.id}
+                                </s:param>
+                                <s:param name="id">
+                                    ${employee_site_assignment.employeeId}
+                                </s:param>
+                            </s:url>
+                            <a href="${employee_unassign_from_site}">
+                                ${employee_site_assignment.numberOfRolesAssigned}
+                            </a>
                         </td>
                         <td>
                             <s:url action="employee" var="employee_site_assignment_url">
@@ -59,7 +69,9 @@
                                     ${employee_site_assignment.employeeId}
                                 </s:param>
                             </s:url>
-                            <a href="${employee_site_assignment_url}" class="disable-assignment">${employee_site_assignment.employeeName}</a>
+                            <a href="${employee_site_assignment_url}" class="disable-assignment">
+                                ${employee_site_assignment.employeeName}
+                            </a>
                         </td>
                         <td>${employee_site_assignment.employeeTitle}</td>
                         <s:if test="#employee_site_assignment.status.expired">

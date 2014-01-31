@@ -2,12 +2,11 @@ package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
@@ -31,7 +30,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private RoleService roleService;
 
 	private int siteId;
-	private int employeeId;
+	private int roleId;
 
 	private AccountModel site;
 	private Role role;
@@ -72,7 +71,14 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		return roleService.getRolesForAccounts(corporateIds);
 	}
 
+	public String assign() {
+		return "assign";
+	}
+
 	public String unassign() {
+		// project/site-assignment/{siteId}/employee/{id}/unassign
+		roleService.removeSiteRolesFromEmployee(NumberUtils.toInt(id), siteId);
+
 		return "unassign";
 	}
 
@@ -94,8 +100,11 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		List<Employee> employeesAssignedToSite = employeeService.getEmployeesAssignedToSite(contractorId, site.getId());
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
+		List<AccountSkill> roleSkills = ExtractorUtil.extractList(role.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
+		Collections.sort(roleSkills);
+
 		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
-				.create(employeesAssignedToSite.size(), role.getSkills(), roleCounts, assignments);
+				.create(employeesAssignedToSite.size(), roleSkills, roleCounts, assignments);
 	}
 
 	private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(int contractorId,
@@ -116,12 +125,12 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		this.siteId = siteId;
 	}
 
-	public int getEmployeeId() {
-		return employeeId;
+	public int getRoleId() {
+		return roleId;
 	}
 
-	public void setEmployeeId(int employeeId) {
-		this.employeeId = employeeId;
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
 	}
 
 	public AccountModel getSite() {

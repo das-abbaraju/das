@@ -160,6 +160,12 @@
         </action>
 
         <!-- Site Assignment -->
+        <action name="project/site-assignment/{siteId}/role/{roleId}/employee/{id}/assign"
+                class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="assign">
+        </action>
+        <action name="project/site-assignment/{siteId}/employee/{id}/unassign"
+                class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="unassign">
+        </action>
         <action name="project/site-assignment/{siteId}/role/{id}" class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="role">
             <result name="role">/struts/employee-guard/contractor/assignments/site/role.jsp</result>
         </action>

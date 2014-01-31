@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.employeeguard.entities.AccountSkillRole;
+import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
@@ -12,12 +12,12 @@ import java.util.Map;
 public class ContractorEmployeeRoleAssignmentMatrixFactory {
 
 	public ContractorEmployeeRoleAssignmentMatrix create(final int totalNumberOfEmployeesAssignedToSite,
-	                                                     final List<AccountSkillRole> roleSkills,
+	                                                     final List<AccountSkill> roleSkills,
 	                                                     final Map<RoleInfo, Integer> roleCounts,
 	                                                     final List<ContractorEmployeeRoleAssignment> assignments) {
 		List<String> skillNames = new ArrayList<>();
-		for (AccountSkillRole accountSkillRole : roleSkills) {
-			skillNames.add(accountSkillRole.getSkill().getName());
+		for (AccountSkill skill : roleSkills) {
+			skillNames.add(skill.getName());
 		}
 
 		return new ContractorEmployeeRoleAssignmentMatrix.Builder()

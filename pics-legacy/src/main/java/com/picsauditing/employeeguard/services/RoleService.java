@@ -219,4 +219,8 @@ public class RoleService {
 
         return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
     }
+
+	public void removeSiteRolesFromEmployee(final int employeeId, final int siteId) {
+		// FIXME
+	}
 }

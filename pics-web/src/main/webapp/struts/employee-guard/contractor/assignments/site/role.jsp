@@ -3,7 +3,7 @@
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
 <%-- Url --%>
-<s:url action="project/site-assignment/{siteId}" var="contractor_site_assignments">
+<s:url action="project/site-assignment/{id}" var="contractor_site_assignments">
     <s:param name="id">
         ${site.id}
     </s:param>
