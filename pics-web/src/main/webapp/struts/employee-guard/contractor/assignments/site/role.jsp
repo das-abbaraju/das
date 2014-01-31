@@ -54,7 +54,7 @@
         </ul>
     </div>
 
-    <s:if test="assignmentMatrix.assignments.size() > 0">
+    <s:if test="!assignmentMatrix.assignments.isEmpty()">
         <div class="table-responsive col-md-9">
             <table class="table table-striped table-condensed table-hover table-assignment">
                 <thead>
