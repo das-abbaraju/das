@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @UseReporter(DiffReporter.class)
 public class AllModelsTest {
@@ -134,6 +135,23 @@ public class AllModelsTest {
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         model = new InvoicesModel(permissions);
         Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testInvoiceModel_UrlOperator() throws Exception {
+        model = new InvoicesModel(permissions);
+        Map<String, Field> fields = model.getAvailableFields();
+        Field accountName = fields.get("AccountName".toUpperCase());
+        assertTrue(accountName.getUrl().startsWith("ContractorView"));
+    }
+
+    @Test
+    public void testInvoiceModel_UrlAdmin() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+        model = new InvoicesModel(permissions);
+        Map<String, Field> fields = model.getAvailableFields();
+        Field accountName = fields.get("AccountName".toUpperCase());
+        assertTrue(accountName.getUrl().startsWith("BillingDetail"));
     }
 
     @Test
