@@ -446,15 +446,15 @@
             <label><s:text name="OperatorAccount.rememberMeTimeInDays"/>:</label>
             <s:textfield id="rememberMeTimeTextbox" name="timeoutDays"
                          disabled="!operator.rememberMeTimeEnabled"/>
-            <pics:fieldhelp title="Remember Me Timeout (Days)">
-                <p>How many days do you want to stay logged in?</p>
+            <pics:fieldhelp title="Remember Me Timeout">
+                <p>Number of days a users is allowed to be signed in for. When expired, the user will be signed out and required to re-login to PICS.</p>
             </pics:fieldhelp>
         </li>
         <li>
             <label><s:text name="OperatorAccount.sessionTimeout"/>:</label>
             <s:textfield name="sessionTimeout"/>
-            <pics:fieldhelp title="User Inactivity Timeout (Minutes)">
-                <p>User Inactivity Timeout (Minutes)</p>
+            <pics:fieldhelp title="User Inactivity Timeout">
+                <p>Number of minutes that a user is allowed to be idle for. When expired, the user will be signed out and required to re-login to PICS.</p>
             </pics:fieldhelp>
         </li>
     </ol>
