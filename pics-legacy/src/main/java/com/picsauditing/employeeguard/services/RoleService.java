@@ -1,8 +1,11 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.RoleEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
@@ -10,6 +13,7 @@ import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +30,8 @@ public class RoleService {
     private AccountSkillEmployeeService accountSkillEmployeeService;
     @Autowired
     private EmployeeDAO employeeDAO;
-	@Autowired
-	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+    @Autowired
+    private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
     @Autowired
     private RoleDAO roleDAO;
     @Autowired
@@ -176,24 +180,24 @@ public class RoleService {
 
     public Map<Role, Set<Employee>> getRoleAssignments(final int contractorId, final int siteId) {
         List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-	    Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+        Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
 
-	    List<RoleEmployee> roleEmployees = roleEmployeeDAO.findByContractorAndSiteId(contractorId, siteId);
-	    List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByCorporateAndContractor(corporateIds, contractorId);
+        List<RoleEmployee> roleEmployees = roleEmployeeDAO.findByContractorAndSiteId(contractorId, siteId);
+        List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByCorporateAndContractor(corporateIds, contractorId);
 
-	    Map<Role, Set<Employee>> roleAssignments = new HashMap<>();
-	    for (RoleEmployee roleEmployee : roleEmployees) {
-		    Role corporateRole = siteToCorporateRoles.get(roleEmployee.getRole());
+        Map<Role, Set<Employee>> roleAssignments = new HashMap<>();
+        for (RoleEmployee roleEmployee : roleEmployees) {
+            Role corporateRole = siteToCorporateRoles.get(roleEmployee.getRole());
 
-		    Utilities.addToMapOfKeyToSet(roleAssignments, corporateRole, roleEmployee.getEmployee());
-	    }
+            Utilities.addToMapOfKeyToSet(roleAssignments, corporateRole, roleEmployee.getEmployee());
+        }
 
-	    for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
-		    Role role = projectRoleEmployee.getProjectRole().getRole();
-		    Utilities.addToMapOfKeyToSet(roleAssignments, role, projectRoleEmployee.getEmployee());
-	    }
+        for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
+            Role role = projectRoleEmployee.getProjectRole().getRole();
+            Utilities.addToMapOfKeyToSet(roleAssignments, role, projectRoleEmployee.getEmployee());
+        }
 
-	    return roleAssignments;
+        return roleAssignments;
     }
 
     public Map<Employee, Role> getEmployeeSiteRolesForRole(final int contractorId, final int siteId, final int corporateRoleId) {
@@ -220,7 +224,71 @@ public class RoleService {
         return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
     }
 
-	public void removeSiteRolesFromEmployee(final int employeeId, final int siteId) {
-		// FIXME
-	}
+    public void removeSiteRolesFromEmployee(final int employeeId, final int siteId) {
+        // FIXME
+    }
+
+    public void assignEmployeeToSite(final int siteId, final int roleId, final Employee employee, final int userId) {
+        assignEmployeeToRole(siteId, roleId, employee, userId);
+        updateEmployeeSkillsForRole(roleId, employee, userId);
+    }
+
+    private void assignEmployeeToRole(final int siteId, final int roleId, final Employee employee, final int userId) {
+        List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+        Map<Role, Role> siteToCorporateRoleMap = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+        List<RoleEmployee> roleEmployees = buildRoleEmployees(siteToCorporateRoleMap, employee, userId);
+        roleEmployeeDAO.save(roleEmployees);
+    }
+
+    private void updateEmployeeSkillsForRole(final int roleId, final Employee employee, final int userId) {
+        Set<AccountSkill> jobRoleSkills = null;
+        List<AccountSkill> employeeSkills = null;
+        List<AccountSkillEmployee> accountSkillEmployees = buildAccountSkillEmployee(employee, jobRoleSkills,
+                employeeSkills, userId);
+        accountSkillEmployeeService.save(accountSkillEmployees);
+    }
+
+    private List<RoleEmployee> buildRoleEmployees(final Map<Role, Role> siteToCorporateRoleMap,
+                                                  final Employee employee, final int userId) {
+        if (MapUtils.isEmpty(siteToCorporateRoleMap)) {
+            return Collections.emptyList();
+        }
+
+        Date createdDate = DateBean.today();
+        List<RoleEmployee> roleEmployees = new ArrayList<>();
+        for (Role role : siteToCorporateRoleMap.keySet()) {
+            roleEmployees.add(new RoleEmployeeBuilder()
+                    .role(role)
+                    .employee(employee)
+                    .createdBy(userId)
+                    .createdDate(createdDate)
+                    .build());
+        }
+
+        return roleEmployees;
+    }
+
+    private List<AccountSkillEmployee> buildAccountSkillEmployee(final Employee employee,
+                                                                 final Set<AccountSkill> jobRoleSkills,
+                                                                 final List<AccountSkill> employeeSkills,
+                                                                 final int userId) {
+        if (CollectionUtils.isEmpty(jobRoleSkills)) {
+            return Collections.emptyList();
+        }
+
+        Date createdDate = DateBean.today();
+        List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
+        for (AccountSkill accountSkill : jobRoleSkills) {
+            if (!employeeSkills.contains(accountSkill)) {
+                accountSkillEmployees.add(new AccountSkillEmployeeBuilder()
+                        .accountSkill(accountSkill)
+                        .employee(employee)
+                        .createdBy(userId)
+                        .createdDate(createdDate)
+                        .build());
+            }
+        }
+
+        return accountSkillEmployees;
+    }
 }

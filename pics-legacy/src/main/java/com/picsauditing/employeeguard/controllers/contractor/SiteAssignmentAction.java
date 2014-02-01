@@ -72,6 +72,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	public String assign() {
+        Employee employee = null;
+        roleService.assignEmployeeToSite(siteId, NumberUtils.toInt(id), employee, permissions.getUserId());
 		return "assign";
 	}
 
