@@ -116,17 +116,29 @@ public class AccountService {
 	}
 
 	public List<AccountModel> getChildOperators(final int accountId) {
-		OperatorAccount operator = operatorDAO.find(accountId);
-		if (operator == null) {
+		return getChildOperators(Arrays.asList(accountId));
+	}
+
+	public List<AccountModel> getChildOperators(final List<Integer> accountIds) {
+		List<OperatorAccount> operators = operatorDAO.findOperators(accountIds);
+		if (CollectionUtils.isEmpty(operators)) {
 			return Collections.emptyList();
 		}
 
-		List<OperatorAccount> accounts = billingService.filterEmployeeGUARDAccounts(operator.getChildOperators());
-		return mapAccountsToAccountModels(accounts);
+		Set<OperatorAccount> childAccounts = new HashSet<>();
+		for (OperatorAccount corporate : operators) {
+			childAccounts.addAll(billingService.filterEmployeeGUARDAccounts(corporate.getChildOperators()));
+		}
+
+		return mapAccountsToAccountModels(new ArrayList<>(childAccounts));
 	}
 
 	public List<Integer> getChildOperatorIds(final int accountId) {
 		return extractIdFromAccountModel(getChildOperators(accountId).toArray(new AccountModel[0]));
+	}
+
+	public List<Integer> getChildOperatorIds(final List<Integer> accountIds) {
+		return extractIdFromAccountModel(getChildOperators(accountIds).toArray(new AccountModel[0]));
 	}
 
 	public AccountType getAccountTypeByUserID(int userID) {
