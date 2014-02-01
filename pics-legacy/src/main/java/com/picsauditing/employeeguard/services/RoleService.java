@@ -27,6 +27,8 @@ public class RoleService {
     @Autowired
     private AccountSkillDAO accountSkillDAO;
     @Autowired
+    private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+    @Autowired
     private AccountSkillEmployeeService accountSkillEmployeeService;
     @Autowired
     private EmployeeDAO employeeDAO;
@@ -41,10 +43,6 @@ public class RoleService {
 
     public Role getRole(final String id, final int accountId) {
         return roleDAO.findRoleByAccount(NumberUtils.toInt(id), accountId);
-    }
-
-    public List<RoleEmployee> getSiteAssignmentsForRole(final Role role) {
-        return Collections.emptyList();
     }
 
     public List<Role> getRolesForAccount(final int accountId) {
@@ -290,5 +288,48 @@ public class RoleService {
         }
 
         return accountSkillEmployees;
+    }
+
+    public void removeSiteSpecificRolesFromEmployee(final int employeeId, final int siteId) {
+        deleteProjectRolesFromEmployee(employeeId, siteId);
+        deleteSiteRolesFromEmployee(employeeId, siteId);
+
+        // See if the site skills are being used elsewhere, prune the ones that aren't
+        // If another site is tied to projects / roles that is under the same corporate, leave the corporate skills alone
+        List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+        List<Integer> otherSiteIds = getOtherSiteIds(corporateIds, siteId);
+        // Simplest case: this operator has no siblings -- delete all skills related to this site/corp
+        if (CollectionUtils.isEmpty(otherSiteIds)) {
+            List<AccountSkillEmployee> accountSkillEmployees =
+                    accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(employeeId, corporateIds);
+            accountSkillEmployeeDAO.delete(accountSkillEmployees);
+        } else {
+            // Find all the skills that are not in use by any other operator and delete those
+            // FIXME
+        }
+    }
+
+    private void deleteProjectRolesFromEmployee(int employeeId, int siteId) {
+        List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByEmployeeAndSiteId(employeeId, siteId);
+        projectRoleEmployeeDAO.delete(projectRoleEmployees);
+    }
+
+    private void deleteSiteRolesFromEmployee(int employeeId, int siteId) {
+        List<RoleEmployee> roleEmployees = roleEmployeeDAO.findByEmployeeAndSiteId(employeeId, siteId);
+        roleEmployeeDAO.delete(roleEmployees);
+    }
+
+    private List<Integer> getOtherSiteIds(List<Integer> corporateIds, int siteId) {
+        List<Integer> otherSiteIds = accountService.getChildOperatorIds(corporateIds);
+        Iterator<Integer> siteIdIterator = otherSiteIds.iterator();
+
+        while (siteIdIterator.hasNext()) {
+            int otherSiteId = siteIdIterator.next();
+            if (siteId == otherSiteId) {
+                siteIdIterator.remove();
+            }
+        }
+
+        return otherSiteIds;
     }
 }
