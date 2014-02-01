@@ -239,9 +239,12 @@ public class RoleService {
     }
 
     private void updateEmployeeSkillsForRole(final int roleId, final Employee employee, final int userId) {
-        Set<AccountSkill> jobRoleSkills = null;
+        Set<AccountSkill> allSkillsForJobRole = null;
+        allSkillsForJobRole.addAll(null); // add in the Site required skills
+        allSkillsForJobRole.addAll(null); // add in the Corporate required skills
+
         List<AccountSkill> employeeSkills = null;
-        List<AccountSkillEmployee> accountSkillEmployees = buildAccountSkillEmployee(employee, jobRoleSkills,
+        List<AccountSkillEmployee> accountSkillEmployees = buildAccountSkillEmployee(employee, allSkillsForJobRole,
                 employeeSkills, userId);
         accountSkillEmployeeService.save(accountSkillEmployees);
     }
@@ -267,16 +270,16 @@ public class RoleService {
     }
 
     private List<AccountSkillEmployee> buildAccountSkillEmployee(final Employee employee,
-                                                                 final Set<AccountSkill> jobRoleSkills,
+                                                                 final Set<AccountSkill> allSkillsForJobRole,
                                                                  final List<AccountSkill> employeeSkills,
                                                                  final int userId) {
-        if (CollectionUtils.isEmpty(jobRoleSkills)) {
+        if (CollectionUtils.isEmpty(allSkillsForJobRole)) {
             return Collections.emptyList();
         }
 
         Date createdDate = DateBean.today();
         List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
-        for (AccountSkill accountSkill : jobRoleSkills) {
+        for (AccountSkill accountSkill : allSkillsForJobRole) {
             if (!employeeSkills.contains(accountSkill)) {
                 accountSkillEmployees.add(new AccountSkillEmployeeBuilder()
                         .accountSkill(accountSkill)
