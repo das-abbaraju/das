@@ -15,6 +15,13 @@ import com.picsauditing.access.Permissions;
 
 @SuppressWarnings("unchecked")
 public class InvoiceDAO extends PicsDAO {
+
+    private static final String SAP_TABLE_SQL = " accounts a JOIN invoice i ON a.id = i.accountID JOIN ref_country rc ON a.country = rc.isocode ";
+    private static final String SAP_WHERE_CLAUSE_SQL = " WHERE a.status NOT IN ('Pending','Declined','Demo') " +
+            "AND i.status != 'Void' AND i.sapLastSync IS NULL AND i.sapSync = 0 AND i.creationDate >= '2013-12-01' " +
+            "AND i.creationDate < DATE_SUB(NOW(), INTERVAL 1 DAY) " +
+            "AND rc.businessUnitID IN (select value FROM app_properties WHERE property = 'SAP.BusinessUnits.Enabled')";
+
 	@Transactional(propagation = Propagation.NESTED)
 	public Invoice save(Invoice o) {
 		if (o.getId() == 0) {
@@ -88,17 +95,7 @@ public class InvoiceDAO extends PicsDAO {
 	}
 
     public List<Transaction> findTransactionsToSapSync() {
-        String sql = " SELECT i.* " +
-                " FROM accounts a " +
-                " JOIN invoice i ON a.id = i.accountID " +
-                " JOIN ref_country rc ON a.country = rc.isocode " +
-                " WHERE a.status NOT IN ('Pending','Declined','Demo') " +
-                " AND i.status != 'Void' " +
-                " AND i.sapLastSync IS NULL " +
-                " AND i.sapSync = 0 " +
-                " AND i.creationDate >= '2011-11-01' " +
-                " AND i.creationDate < DATE_SUB(NOW(), INTERVAL 1 DAY)" +
-                " AND rc.businessUnitID IN (select value FROM app_properties WHERE property = 'SAP.BusinessUnits.Enabled')";
+        String sql = " SELECT i.* FROM " + SAP_TABLE_SQL + SAP_WHERE_CLAUSE_SQL;
 
         Query query = em.createNativeQuery(sql);
         return query.getResultList();
@@ -106,17 +103,7 @@ public class InvoiceDAO extends PicsDAO {
 
     @Transactional(propagation = Propagation.NESTED)
     public void updateTransactionsToSapSync() {
-        String sql = " UPDATE accounts a " +
-                " JOIN invoice i ON a.id = i.accountID " +
-                " JOIN ref_country rc ON a.country = rc.isocode " +
-                " SET i.sapSync = 1 " +
-                " WHERE a.status NOT IN ('Pending','Declined','Demo') " +
-                " AND i.status != 'Void' " +
-                " AND i.sapLastSync IS NULL " +
-                " AND i.sapSync = 0 " +
-                " AND i.creationDate >= '2011-11-01' " +
-                " AND i.creationDate < DATE_SUB(NOW(), INTERVAL 1 DAY)" +
-                " AND rc.businessUnitID IN (select value FROM app_properties WHERE property = 'SAP.BusinessUnits.Enabled')";
+        String sql = " UPDATE " + SAP_TABLE_SQL + " SET i.sapSync = 1 " + SAP_WHERE_CLAUSE_SQL;
 
         Query query = em.createNativeQuery(sql);
         query.executeUpdate();

@@ -137,7 +137,7 @@ public class ContractorCronTest extends PicsActionTest {
         assertEquals("{}", conOp.getFlagDetail());
     }
 
-	@Test
+    @Test
 	public void testManualAuditSlaReset() throws Exception {
 		contractor = EntityFactory.makeContractor();
 
