@@ -69,9 +69,6 @@ public class BillingService {
     }
 
     public void syncBalance(ContractorAccount contractor) {
-        if (contractor.getStatus().isRequested() || contractor.getStatus().isDeclined())
-            return;
-
         BigDecimal balance = calculateCurrentBalance(contractor);
 
         contractor.setBalance(balance.setScale(2, BigDecimal.ROUND_UP));
