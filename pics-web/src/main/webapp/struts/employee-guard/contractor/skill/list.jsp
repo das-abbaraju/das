@@ -51,7 +51,7 @@
 
                 <tr>
 
-                        <td class="text-right">${contractorSkill.numberOfEmployees}</td>
+                        <td class="text-center">${contractorSkill.numberOfEmployees}</td>
                         <td><a href="${contractor_skill_show_url}">${contractorSkill.name}</a></td>
                         <td>
                             <s:if test="#contractorSkill.ruleType.required">

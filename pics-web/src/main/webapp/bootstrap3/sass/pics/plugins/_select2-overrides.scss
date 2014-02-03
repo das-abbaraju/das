@@ -44,10 +44,11 @@
 }
 
 /*Multi Select*/
-.select2-container-multi .select2-choices .select2-search-choice
-{
+.select2-container-multi .select2-choices .select2-search-choice {
     background-color: $default_mercury;
-    border: 1px solid $default_silver;
+    background-image: none;
+    border: 0;
+    @include border-radius(4px);
 
     a {
         color: $default_aluminum;
@@ -55,6 +56,10 @@
 
         &:hover {
             color: $danger_med;
+        }
+
+        &:active {
+            color: $danger_dark;
         }
     }
 }
