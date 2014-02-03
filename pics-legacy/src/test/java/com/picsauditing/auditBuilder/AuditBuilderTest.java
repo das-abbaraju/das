@@ -327,6 +327,31 @@ public class AuditBuilderTest extends PicsTest {
     }
 
     @Test
+    public void testAuditBuilderDate_NoDateSet() {
+        Calendar cal = Calendar.getInstance();
+        Calendar compareCal = Calendar.getInstance();
+        AuditBuilder builder = new AuditBuilder();
+        Date date = builder.getToday();
+        compareCal.setTime(date);
+        assertEquals(cal.get(Calendar.YEAR), compareCal.get(Calendar.YEAR));
+        assertEquals(cal.get(Calendar.MONTH), compareCal.get(Calendar.MONTH));
+    }
+
+    @Test
+    public void testAuditBuilderDate_DateSet() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        cal.add(Calendar.MONTH, -1);
+        Calendar compareCal = Calendar.getInstance();
+        AuditBuilder builder = new AuditBuilder();
+        builder.setToday(cal.getTime());
+        Date date = builder.getToday();
+        compareCal.setTime(date);
+        assertEquals(cal.get(Calendar.YEAR), compareCal.get(Calendar.YEAR));
+        assertEquals(cal.get(Calendar.MONTH), compareCal.get(Calendar.MONTH));
+    }
+
+    @Test
 	public void testBuildAudits_ReviewCompetency() throws Exception {
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.INTEGRITYMANAGEMENT));
 		addCategoryRules(null);
