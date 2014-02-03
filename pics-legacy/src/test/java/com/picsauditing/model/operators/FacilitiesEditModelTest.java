@@ -1,8 +1,6 @@
 package com.picsauditing.model.operators;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -338,7 +336,14 @@ public class FacilitiesEditModelTest {
 		}
 	}
 
-	public void testAddPicsCountry(String currentIsoCode) throws Exception {
+    @Test
+    public void testAddOneToManyAccountUser_noUser() throws Exception {
+        FacilitiesEditStatus status = facilitiesEditModel.addOneToManyAccountUser(permissions, operator, accountUser);
+
+        assertEquals("No User Selected",status.notOkErrorMessage);
+    }
+
+    public void testAddPicsCountry(String currentIsoCode) throws Exception {
 		country.setIsoCode(currentIsoCode);
 
 		facilitiesEditModel.addPicsCountry(operator, permissions);
