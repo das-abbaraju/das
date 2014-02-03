@@ -13,143 +13,154 @@ import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRol
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class SiteAssignmentAction extends PicsRestActionSupport {
 
-	@Autowired
-	private AccountService accountService;
-	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
-	@Autowired
-	private EmployeeService employeeService;
-	@Autowired
-	private SkillUsageLocator skillUsageLocator;
-	@Autowired
-	private RoleService roleService;
+    public static final Logger LOG = LoggerFactory.getLogger(SiteAssignmentAction.class);
 
-	private int siteId;
-	private int roleId;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private AccountSkillEmployeeService accountSkillEmployeeService;
+    @Autowired
+    private EmployeeService employeeService;
+    @Autowired
+    private SkillUsageLocator skillUsageLocator;
+    @Autowired
+    private RoleService roleService;
 
-	private AccountModel site;
-	private Role role;
+    private int siteId;
+    private int roleId;
 
-	private SiteAssignmentModel siteAssignmentModel;
-	private ContractorEmployeeRoleAssignmentMatrix assignmentMatrix;
+    private AccountModel site;
+    private Role role;
 
-	public String status() {
-		site = accountService.getAccountById(NumberUtils.toInt(id));
-		siteAssignmentModel = buildSiteAssignmentModel();
+    private SiteAssignmentModel siteAssignmentModel;
+    private ContractorEmployeeRoleAssignmentMatrix assignmentMatrix;
 
-		return "status";
-	}
+    public String status() {
+        site = accountService.getAccountById(NumberUtils.toInt(id));
+        siteAssignmentModel = buildSiteAssignmentModel();
 
-	private SiteAssignmentModel buildSiteAssignmentModel() {
-		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
-		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
+        return "status";
+    }
 
-		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
+    private SiteAssignmentModel buildSiteAssignmentModel() {
+        List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
+        List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
 
-		AccountModel account = accountService.getAccountById(permissions.getAccountId());
-		return ViewModelFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
-	}
+        Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
-	private Map<RoleInfo, Integer> getRoleEmployeeCounts(List<Employee> employees) {
-		Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(site.getId());
-		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
+        AccountModel account = accountService.getAccountById(permissions.getAccountId());
+        return ViewModelFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
+    }
 
-		List<Role> corporateRoles = getCorporateRoles();
-		List<RoleInfo> corporateRoleInfo = ViewModelFactory.getRoleInfoFactory().build(corporateRoles);
+    private Map<RoleInfo, Integer> getRoleEmployeeCounts(List<Employee> employees) {
+        Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(site.getId());
+        Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
 
-		return ViewModelFactory.getRoleEmployeeCountFactory()
-				.create(corporateRoleInfo, corporateToSiteRoles, employees);
-	}
+        List<Role> corporateRoles = getCorporateRoles();
+        List<RoleInfo> corporateRoleInfo = ViewModelFactory.getRoleInfoFactory().build(corporateRoles);
 
-	private List<Role> getCorporateRoles() {
-		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
-		return roleService.getRolesForAccounts(corporateIds);
-	}
+        return ViewModelFactory.getRoleEmployeeCountFactory()
+                .create(corporateRoleInfo, corporateToSiteRoles, employees);
+    }
 
-	public String assign() {
-        Employee employee = null;
-        roleService.assignEmployeeToSite(siteId, NumberUtils.toInt(id), employee, permissions.getUserId());
-		return "assign";
-	}
+    private List<Role> getCorporateRoles() {
+        List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
+        return roleService.getRolesForAccounts(corporateIds);
+    }
 
-	public String unassign() {
-		Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-		roleService.removeSiteSpecificRolesFromEmployee(employee.getId(), siteId);
-		accountSkillEmployeeService.linkEmployeeToSkills(employee, permissions.getAppUserID(), DateBean.today());
+    public String assign() {
+        try {
+            Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
+            roleService.assignEmployeeToSite(siteId, roleId, employee, permissions.getUserId());
+            json.put("status", "SUCCESS");
+        } catch (Exception e) {
+            LOG.error("Error assigning employee id " + id + " to role id = " + roleId, e);
+            json.put("status", "FAILURE");
+        }
 
-		return "unassign";
-	}
+        return JSON;
+    }
 
-	public String role() {
-		role = roleService.getRole(id);
-		site = accountService.getAccountById(siteId);
-		assignmentMatrix = buildRoleAssignmentMatrix(role, site);
+    public String unassign() {
+        Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
+        roleService.removeSiteSpecificRolesFromEmployee(employee.getId(), siteId);
+        accountSkillEmployeeService.linkEmployeeToSkills(employee, permissions.getAppUserID(), DateBean.today());
 
-		return "role";
-	}
+        return "unassign";
+    }
 
-	private ContractorEmployeeRoleAssignmentMatrix buildRoleAssignmentMatrix(final Role role, final AccountModel site) {
-		int contractorId = permissions.getAccountId();
+    public String role() {
+        role = roleService.getRole(id);
+        site = accountService.getAccountById(siteId);
+        assignmentMatrix = buildRoleAssignmentMatrix(role, site);
 
-		List<Employee> employees = employeeService.getEmployeesForAccount(contractorId);
-		List<ContractorEmployeeRoleAssignment> assignments = buildContractorEmployeeRoleAssignments(contractorId, employees, role, site);
-		Collections.sort(assignments);
+        return "role";
+    }
 
-		List<Employee> employeesAssignedToSite = employeeService.getEmployeesAssignedToSite(contractorId, site.getId());
-		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
+    private ContractorEmployeeRoleAssignmentMatrix buildRoleAssignmentMatrix(final Role role, final AccountModel site) {
+        int contractorId = permissions.getAccountId();
 
-		List<AccountSkill> roleSkills = ExtractorUtil.extractList(role.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
-		Collections.sort(roleSkills);
+        List<Employee> employees = employeeService.getEmployeesForAccount(contractorId);
+        List<ContractorEmployeeRoleAssignment> assignments = buildContractorEmployeeRoleAssignments(contractorId, employees, role, site);
+        Collections.sort(assignments);
 
-		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
-				.create(employeesAssignedToSite.size(), roleSkills, roleCounts, assignments);
-	}
+        List<Employee> employeesAssignedToSite = employeeService.getEmployeesAssignedToSite(contractorId, site.getId());
+        Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
-	private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(
-			final int contractorId, final List<Employee> employees, final Role role, final AccountModel site) {
-		Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
-		Map<Employee, Set<AccountSkillEmployee>> employeeSkills =
-				accountSkillEmployeeService.getSkillMapForAccountAndRole(contractorId, role.getId());
+        List<AccountSkill> roleSkills = ExtractorUtil.extractList(role.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
+        Collections.sort(roleSkills);
 
-		return ViewModelFactory.getContractorEmployeeRoleAssignmentFactory()
-				.build(employees, role, employeesAssignedToRole.get(role), employeeSkills);
-	}
+        return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
+                .create(employeesAssignedToSite.size(), roleSkills, roleCounts, assignments);
+    }
 
-	public int getSiteId() {
-		return siteId;
-	}
+    private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(
+            final int contractorId, final List<Employee> employees, final Role role, final AccountModel site) {
+        Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
+        Map<Employee, Set<AccountSkillEmployee>> employeeSkills =
+                accountSkillEmployeeService.getSkillMapForAccountAndRole(contractorId, role.getId());
 
-	public void setSiteId(int siteId) {
-		this.siteId = siteId;
-	}
+        return ViewModelFactory.getContractorEmployeeRoleAssignmentFactory()
+                .build(employees, role, employeesAssignedToRole.get(role), employeeSkills);
+    }
 
-	public int getRoleId() {
-		return roleId;
-	}
+    public int getSiteId() {
+        return siteId;
+    }
 
-	public void setRoleId(int roleId) {
-		this.roleId = roleId;
-	}
+    public void setSiteId(int siteId) {
+        this.siteId = siteId;
+    }
 
-	public AccountModel getSite() {
-		return site;
-	}
+    public int getRoleId() {
+        return roleId;
+    }
 
-	public Role getRole() {
-		return role;
-	}
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
 
-	public SiteAssignmentModel getSiteAssignmentModel() {
-		return siteAssignmentModel;
-	}
+    public AccountModel getSite() {
+        return site;
+    }
 
-	public ContractorEmployeeRoleAssignmentMatrix getAssignmentMatrix() {
-		return assignmentMatrix;
-	}
+    public Role getRole() {
+        return role;
+    }
+
+    public SiteAssignmentModel getSiteAssignmentModel() {
+        return siteAssignmentModel;
+    }
+
+    public ContractorEmployeeRoleAssignmentMatrix getAssignmentMatrix() {
+        return assignmentMatrix;
+    }
 }
