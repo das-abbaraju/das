@@ -329,6 +329,10 @@ public class RoleService {
 
 		addSiteSkillsToRequiredSkillSet(projectCompanies, required);
 
+		// TODO
+		// Add project skills
+		// add other site role skills
+
 		return required;
 	}
 
