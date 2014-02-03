@@ -106,10 +106,11 @@ public class RoleServiceTest {
 		List<RoleEmployee> roleEmployees = Arrays.asList(roleEmployee);
 
 		when(accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(anyInt(), anyList())).thenReturn(accountSkillEmployees);
+        when(employee.getId()).thenReturn(EMPLOYEE_ID);
 		when(projectRoleEmployeeDAO.findByEmployeeAndSiteId(anyInt(), anyInt())).thenReturn(projectRoleEmployees);
 		when(roleEmployeeDAO.findByEmployeeAndSiteId(anyInt(), anyInt())).thenReturn(roleEmployees);
 
-		roleService.removeSiteSpecificRolesFromEmployee(EMPLOYEE_ID, SITE_ID);
+		roleService.removeSiteSpecificRolesFromEmployee(employee, SITE_ID);
 
 		verify(accountSkillEmployeeDAO).delete(accountSkillEmployees);
 		verify(projectRoleEmployeeDAO).delete(projectRoleEmployees);
@@ -141,6 +142,7 @@ public class RoleServiceTest {
 		when(deleteSkill.getAccountId()).thenReturn(SITE_ID);
 		when(keepSkill.getAccountId()).thenReturn(SITE_ID_2);
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
+        when(employee.getId()).thenReturn(EMPLOYEE_ID);
 		when(employeeDAO.find(EMPLOYEE_ID)).thenReturn(employee);
 		when(project.getAccountId()).thenReturn(SITE_ID_2);
 		when(project.getRoles()).thenReturn(Arrays.asList(projectRole));
@@ -151,7 +153,7 @@ public class RoleServiceTest {
 		when(role.getSkills()).thenReturn(Arrays.asList(accountSkillRole));
 		when(roleEmployeeDAO.findByEmployeeAndSiteId(EMPLOYEE_ID, SITE_ID)).thenReturn(roleEmployees);
 
-		roleService.removeSiteSpecificRolesFromEmployee(EMPLOYEE_ID, SITE_ID);
+		roleService.removeSiteSpecificRolesFromEmployee(employee, SITE_ID);
 
 		verify(accountSkillEmployeeDAO).delete(Arrays.asList(accountSkillEmployee));
 		verify(projectRoleEmployeeDAO).delete(projectRoleEmployees);

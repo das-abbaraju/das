@@ -270,18 +270,17 @@ public class RoleService {
 	}
 
 	@Transactional
-	public void removeSiteSpecificRolesFromEmployee(final int employeeId, final int siteId) {
-		deleteProjectRolesFromEmployee(employeeId, siteId);
-		deleteSiteRolesFromEmployee(employeeId, siteId);
+	public void removeSiteSpecificRolesFromEmployee(Employee employee, final int siteId) {
+		deleteProjectRolesFromEmployee(employee.getId(), siteId);
+		deleteSiteRolesFromEmployee(employee.getId(), siteId);
 
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 		List<Integer> otherSiteIds = getOtherSiteIds(corporateIds, siteId);
 		if (CollectionUtils.isEmpty(otherSiteIds)) {
 			List<AccountSkillEmployee> accountSkillEmployees =
-					accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(employeeId, corporateIds);
+					accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(employee.getId(), corporateIds);
 			accountSkillEmployeeDAO.delete(accountSkillEmployees);
 		} else {
-			Employee employee = employeeDAO.find(employeeId);
 			final int contractorId = employee.getAccountId();
             // All of the projects the contractor has been assigned to that is not related to the site
 			List<ProjectCompany> projectCompanies = projectCompanyDAO.findByContractorExcludingSite(contractorId, siteId);

@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
@@ -82,7 +81,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
             roleService.assignEmployeeToSite(siteId, roleId, employee, permissions.getUserId());
             json.put("status", "SUCCESS");
         } catch (Exception e) {
-            LOG.error("Error assigning employee id " + id + " to role id = " + roleId, e);
+            LOG.error("Error assigning employee id = " + id + " to role id = " + roleId, e);
             json.put("status", "FAILURE");
         }
 
@@ -90,11 +89,16 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     }
 
     public String unassign() {
-        Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-        roleService.removeSiteSpecificRolesFromEmployee(employee.getId(), siteId);
-        accountSkillEmployeeService.linkEmployeeToSkills(employee, permissions.getAppUserID(), DateBean.today());
+        try {
+            Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
+            roleService.removeSiteSpecificRolesFromEmployee(employee, siteId);
+            json.put("status", "SUCCESS");
+        } catch (Exception e) {
+            LOG.error("Error unassigning employee id = " + id + " from role id = " + roleId, e);
+            json.put("status", "FAILURE");
+        }
 
-        return "unassign";
+        return JSON;
     }
 
     public String role() {

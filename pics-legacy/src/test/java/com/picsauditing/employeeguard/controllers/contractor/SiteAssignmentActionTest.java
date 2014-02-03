@@ -59,6 +59,24 @@ public class SiteAssignmentActionTest extends PicsActionTest {
         verifyAssignmentSuccess(siteAssignmentAction.getJson());
     }
 
+    @Test
+    public void testUnassign_AssignmentFailed() throws Exception {
+        when(employeeService.findEmployee(anyString(), anyInt())).thenThrow(new NoResultException());
+
+        siteAssignmentAction.unassign();
+
+        verifyAssignmentFailure(siteAssignmentAction.getJson());
+    }
+
+    @Test
+    public void testUnassign_AssignmentSuccessful() throws Exception {
+        when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(new Employee());
+
+        siteAssignmentAction.assign();
+
+        verifyAssignmentSuccess(siteAssignmentAction.getJson());
+    }
+
     private void verifyAssignmentFailure(final JSONObject json) {
         assertEquals("{\"status\":\"FAILURE\"}", json.toJSONString());
     }
