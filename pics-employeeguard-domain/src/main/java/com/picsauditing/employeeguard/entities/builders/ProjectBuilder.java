@@ -35,6 +35,11 @@ public class ProjectBuilder {
         return this;
     }
 
+	public ProjectBuilder accountId(int accountId) {
+		project.setAccountId(accountId);
+		return this;
+	}
+
 	public Project build() {
 		return project;
 	}
