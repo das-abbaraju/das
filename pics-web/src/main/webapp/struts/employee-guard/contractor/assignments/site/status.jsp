@@ -40,7 +40,7 @@
 
     <s:if test="!siteAssignmentModel.employeeSiteAssignmentModels.isEmpty()">
         <div class="table-responsive col-md-9">
-            <table class="table table-striped table-condensed table-hover">
+            <table class="table table-striped table-condensed table-hover table-assignment">
                 <thead>
                     <tr>
                         <th class="text-center">Assign</th>
@@ -52,18 +52,18 @@
 
                 <tbody>
                     <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">
-                        <tr class="assign-employee-container">
-                            <td class="text-center">
-                                <s:url action="project/site-assignment/{siteId}/employee/{id}/unassignAll" var="employee_unassign_from_site">
-                                    <s:param name="siteId">
-                                        ${site.id}
-                                    </s:param>
-                                    <s:param name="id">
-                                        ${employee_site_assignment.employeeId}
-                                    </s:param>
-                                </s:url>
+                        <s:url action="project/site-assignment/{siteId}/employee/{id}/unassign" var="employee_unassign_from_site">
+                            <s:param name="siteId">
+                                ${site.id}
+                            </s:param>
+                            <s:param name="id">
+                                ${employee_site_assignment.employeeId}
+                            </s:param>
+                        </s:url>
+                        <tr class="assign-employee-container assigned">
+                            <td class="assign-employee text-center">
                                 <a href="${employee_unassign_from_site}">
-                                    ${employee_site_assignment.numberOfRolesAssigned}
+                                    <i class="icon-map-marker icon-large"></i> ${employee_site_assignment.numberOfRolesAssigned}
                                 </a>
                             </td>
                             <td>

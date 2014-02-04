@@ -77,7 +77,30 @@
                             <s:set var="employee_assigned_class" value="" />
                         </s:else>
 
-                        <tr class="assign-employee-container ${employee_assigned_class}">
+                        <s:url action="project/site-assignment/{siteId}/role/{roleId}/employee/{id}/assign" var="assign_contractor">
+                            <s:param name="siteId">
+                                ${site.id}
+                            </s:param>
+                            <s:param name="roleId">
+                                ${id}
+                            </s:param>
+                            <s:param name="id">
+                                ${employee_site_assignment.employeeId}
+                            </s:param>
+                        </s:url>
+                        <s:url action="project/site-assignment/{siteId}/role/{roleId}/employee/{id}/unassign" var="unassign_contractor">
+                            <s:param name="siteId">
+                                ${site.id}
+                            </s:param>
+                            <s:param name="roleId">
+                                ${id}
+                            </s:param>
+                            <s:param name="id">
+                                ${employee_site_assignment.employeeId}
+                            </s:param>
+                        </s:url>
+
+                        <tr class="assign-employee-container ${employee_assigned_class}" data-assign-url="${assign_contractor}" data-unassign-url="${unassign_contractor}">
                             <td class="assign-employee text-center">
                                 <a href="#"><i class="icon-map-marker icon-large"></i></a>
                             </td>
