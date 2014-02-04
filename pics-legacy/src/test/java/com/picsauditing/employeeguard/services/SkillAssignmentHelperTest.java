@@ -12,8 +12,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
@@ -64,13 +63,12 @@ public class SkillAssignmentHelperTest {
 														.build()))
 										.roles(Arrays.asList(
 												new ProjectRoleBuilder()
-														.role(
-																new RoleBuilder()
-																		.skills(Arrays.asList(
-																				new AccountSkillBuilder()
-																						.name("Project Role Skill")
-																						.build()))
-																		.build())
+														.role(new RoleBuilder()
+																.skills(Arrays.asList(
+																		new AccountSkillBuilder()
+																				.name("Project Role Skill")
+																				.build()))
+																.build())
 														.build()
 										))
 										.accountId(SITE_ID)
@@ -81,13 +79,12 @@ public class SkillAssignmentHelperTest {
 								new ProjectBuilder()
 										.roles(Arrays.asList(
 												new ProjectRoleBuilder()
-														.role(
-																new RoleBuilder()
-																		.skills(Arrays.asList(
-																				new AccountSkillBuilder()
-																						.name("Project Role Skill to keep")
-																						.build()))
-																		.build())
+														.role(new RoleBuilder()
+																.skills(Arrays.asList(
+																		new AccountSkillBuilder()
+																				.name("Project Role Skill")
+																				.build()))
+																.build())
 														.build()))
 										.accountId(OTHER_SITE_ID)
 										.build()
@@ -96,18 +93,22 @@ public class SkillAssignmentHelperTest {
 	}
 
 	@Test
-	public void testGetRequiredSkillsFromProjectsAndSiteRoles_() throws Exception {
+	public void testGetRequiredSkillsFromProjectsAndSiteRoles_WithSiteRolesAndSkillsToRemove() throws Exception {
 		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(Arrays.asList(CORPORATE_ID, 45));
 
-		// TODO: Provide correct data here (site skill builder with correct skill
-		when(siteSkillDAO.findByAccountIds(anyListOf(Integer.class))).thenReturn(Arrays.asList(new SiteSkill()));
+		SiteSkill siteSkill = new SiteSkill();
+		siteSkill.setSkill(
+				new AccountSkillBuilder()
+						.name("Site Skill")
+						.build());
+
+		when(siteSkillDAO.findByAccountIds(anyListOf(Integer.class))).thenReturn(Arrays.asList(siteSkill));
 
 		Role siteRole = new RoleBuilder()
 				.accountId(OTHER_SITE_ID)
 				.name("Other Site Role")
 				.build();
 
-		// TODO: Provide correct data here (site skill builder with correct skill
 		RoleEmployee roleEmployee = new RoleEmployee();
 		roleEmployee.setRole(siteRole);
 
@@ -119,7 +120,8 @@ public class SkillAssignmentHelperTest {
 				new EmployeeBuilder().build(),
 				siteToCorporateRoles);
 
-		assertTrue(result.isEmpty());
+		assertFalse(result.isEmpty());
+		assertEquals(4, result.size());
 	}
 
 	private Map<Role, Role> initializeSiteToCorporateRoles(Role siteRole) {
@@ -140,6 +142,34 @@ public class SkillAssignmentHelperTest {
 
 	@Test
 	public void testFilterNoLongerNeededEmployeeSkills() throws Exception {
-		fail("Not implemented yet.");
+		AccountSkill keep = new AccountSkillBuilder()
+				.name("Skill to keep")
+				.build();
+		Set<AccountSkill> requiredSkills = new HashSet<>();
+		requiredSkills.add(keep);
+
+		Employee employee = new EmployeeBuilder()
+				.skills(Arrays.asList(
+						new AccountSkillEmployeeBuilder()
+								.accountSkill(keep)
+								.build(),
+						new AccountSkillEmployeeBuilder()
+								.accountSkill(
+										new AccountSkillBuilder()
+												.name("Skill to remove")
+												.build())
+								.build()
+				))
+				.build();
+
+		Set<AccountSkillEmployee> result = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, 12345, requiredSkills);
+
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+		assertEquals(1, result.size());
+
+		for (AccountSkillEmployee accountSkillEmployee : result) {
+			assertEquals("Skill to remove", accountSkillEmployee.getSkill().getName());
+		}
 	}
 }

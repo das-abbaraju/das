@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.entities.builders;
 import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.lang.ArrayUtils;
 
+import java.util.Date;
 import java.util.List;
 
 public class RoleBuilder {
@@ -83,6 +84,16 @@ public class RoleBuilder {
 
 	public RoleBuilder accountId(int accountId) {
 		role.setAccountId(accountId);
+		return this;
+	}
+
+	public RoleBuilder createdBy(int createdBy) {
+		role.setCreatedBy(createdBy);
+		return this;
+	}
+
+	public RoleBuilder createdDate(Date createdDate) {
+		role.setCreatedDate(createdDate);
 		return this;
 	}
 

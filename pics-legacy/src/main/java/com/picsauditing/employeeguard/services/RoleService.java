@@ -5,21 +5,18 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.util.Extractor;
-import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.generic.GenericPredicate;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -213,7 +210,7 @@ public class RoleService {
 		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
 	}
 
-	public void assignEmployeeToSite(final int siteId, final int corporateRoleId, final Employee employee,
+	public void assignEmployeeToRole(final int siteId, final int corporateRoleId, final Employee employee,
 	                                 final int userId) {
 		List<Integer> corporateIds = Collections.unmodifiableList(accountService.getTopmostCorporateAccountIds(siteId));
 		assignEmployeeToRole(siteId, corporateIds, corporateRoleId, employee, userId);
@@ -223,6 +220,20 @@ public class RoleService {
 	private void assignEmployeeToRole(final int siteId, final List<Integer> corporateIds, final int roleId,
 	                                  final Employee employee, final int userId) {
 		Role siteRole = roleDAO.findSiteRoleByCorporateRole(corporateIds, siteId, roleId);
+
+		if (siteRole == null) {
+			Role corporateRole = roleDAO.find(roleId);
+			siteRole = new RoleBuilder()
+					.accountId(siteId)
+					.description(corporateRole.getDescription())
+					.name(corporateRole.getName())
+					.createdBy(userId)
+					.createdDate(new Date())
+					.build();
+
+			roleDAO.save(siteRole);
+		}
+
 		RoleEmployee roleEmployee = buildRoleEmployee(siteRole, employee, userId);
 		roleEmployeeDAO.save(roleEmployee);
 	}
@@ -241,6 +252,12 @@ public class RoleService {
 	}
 
 	private RoleEmployee buildRoleEmployee(final Role siteRole, final Employee employee, final int userId) {
+		RoleEmployee roleEmployee = roleEmployeeDAO.findByEmployeeAndRole(employee, siteRole);
+
+		if (roleEmployee != null) {
+			return roleEmployee;
+		}
+
 		return new RoleEmployeeBuilder()
 				.role(siteRole)
 				.employee(employee)
@@ -266,6 +283,7 @@ public class RoleService {
 						.employee(employee)
 						.createdBy(userId)
 						.createdDate(createdDate)
+						.startDate(createdDate)
 						.build());
 			}
 		}
@@ -273,8 +291,11 @@ public class RoleService {
 		return accountSkillEmployees;
 	}
 
-	@Transactional
-	public void unassignEmployeeFromSite(Employee employee, final int siteId) {
+	public void unassignEmployeeFromRole(Employee employee, int roleId) {
+
+	}
+
+	public void unassignEmployeeFromSite(Employee employee, final int siteId, final int userId) {
 		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee.getId(), siteId);
 		roleAssignmentHelper.deleteSiteRolesFromEmployee(employee.getId(), siteId);
 
@@ -301,16 +322,6 @@ public class RoleService {
         accountSkillEmployeeDAO.delete(accountSkillEmployees);
     }
 
-//	private void deleteProjectRolesFromEmployee(int employeeId, int siteId) {
-//		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByEmployeeAndSiteId(employeeId, siteId);
-//		projectRoleEmployeeDAO.delete(projectRoleEmployees);
-//	}
-
-//	private void deleteSiteRolesFromEmployee(int employeeId, int siteId) {
-//		List<RoleEmployee> roleEmployees = roleEmployeeDAO.findByEmployeeAndSiteId(employeeId, siteId);
-//		roleEmployeeDAO.delete(roleEmployees);
-//	}
-
 	private List<Integer> getOtherSiteIds(List<Integer> corporateIds, int siteId) {
 		List<Integer> otherSiteIds = accountService.getChildOperatorIds(corporateIds);
 		Iterator<Integer> siteIdIterator = otherSiteIds.iterator();
@@ -324,102 +335,4 @@ public class RoleService {
 
 		return otherSiteIds;
 	}
-
-//	private Set<AccountSkill> getRequiredSkillsFromProjectsAndSiteRoles(List<ProjectCompany> projectCompanies, Employee employee, Map<Role, Role> siteToCorporateRoles) {
-//		Set<AccountSkill> required = new HashSet<>();
-//
-//		for (ProjectCompany projectCompany : projectCompanies) {
-//			Project project = projectCompany.getProject();
-//
-//			required.addAll(getProjectSkills(project));
-//			required.addAll(getProjectRoleSkills(project));
-//		}
-//
-//		List<Integer> siteIds = getSiteIdsFromProjects(projectCompanies);
-//
-//        required.addAll(getSiteSkills(new HashSet<>(siteIds)));
-//        required.addAll(getSiteRoleSkills(employee, siteIds, siteToCorporateRoles));
-//
-//		return required;
-//	}
-
-//	private Set<AccountSkill> getProjectSkills(Project project) {
-//        Set<AccountSkill> requiredSkills = new HashSet<>();
-//
-//		for (ProjectSkill projectSkill : project.getSkills()) {
-//			requiredSkills.add(projectSkill.getSkill());
-//		}
-//
-//        return requiredSkills;
-//	}
-
-//	private Set<AccountSkill> getProjectRoleSkills(Project project) {
-//        Set<AccountSkill> requiredSkills = new HashSet<>();
-//
-//		for (ProjectRole projectRole : project.getRoles()) {
-//			for (AccountSkillRole accountSkillRole : projectRole.getRole().getSkills()) {
-//				requiredSkills.add(accountSkillRole.getSkill());
-//			}
-//		}
-//
-//        return requiredSkills;
-//	}
-
-//	private Set<AccountSkill> getSiteSkills(Set<Integer> siteIds) {
-//        Set<AccountSkill> requiredSkills = new HashSet<>();
-//		Set<Integer> siteAndCorporateIds = new HashSet<>();
-//
-//		for (Integer siteId : siteIds) {
-//			siteAndCorporateIds.addAll(accountService.getTopmostCorporateAccountIds(siteId));
-//		}
-//
-//		siteAndCorporateIds.addAll(siteIds);
-//		List<SiteSkill> siteSkills = siteSkillDAO.findByAccountIds(siteAndCorporateIds);
-//		for (SiteSkill siteSkill : siteSkills) {
-//			requiredSkills.add(siteSkill.getSkill());
-//		}
-//
-//        return requiredSkills;
-//	}
-
-//	private Set<AccountSkill> getSiteRoleSkills(Employee employee, List<Integer> siteIds, Map<Role, Role> siteToCorporateRoles) {
-//        Set<AccountSkill> requiredSkills = new HashSet<>();
-//		List<RoleEmployee> siteRoles = roleEmployeeDAO.findByEmployeeAndSiteIds(employee.getId(), siteIds);
-//
-//		for (RoleEmployee roleEmployee : siteRoles) {
-//            Role corporateRole = siteToCorporateRoles.get(roleEmployee.getRole());
-//
-//			for (AccountSkillRole accountSkillRole : corporateRole.getSkills()) {
-//				requiredSkills.add(accountSkillRole.getSkill());
-//			}
-//		}
-//
-//        return requiredSkills;
-//	}
-
-//	private List<Integer> getSiteIdsFromProjects(List<ProjectCompany> projectCompanies) {
-//		return ExtractorUtil.extractList(projectCompanies, new Extractor<ProjectCompany, Integer>() {
-//			@Override
-//			public Integer extract(ProjectCompany projectCompany) {
-//				return projectCompany.getProject().getAccountId();
-//			}
-//		});
-//	}
-
-//	private Set<AccountSkillEmployee> filterNoLongerNeededEmployeeSkills(Employee employee,
-//	                                                                     final int contractorId,
-//	                                                                     final Set<AccountSkill> requiredSkills) {
-//		HashSet<AccountSkillEmployee> accountSkillEmployees = new HashSet<>(employee.getSkills());
-//
-//		CollectionUtils.filter(accountSkillEmployees, new GenericPredicate<AccountSkillEmployee>() {
-//			@Override
-//			public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
-//				boolean notContractorSkill = accountSkillEmployee.getSkill().getAccountId() != contractorId;
-//				boolean notRequiredSkill = !requiredSkills.contains(accountSkillEmployee.getSkill());
-//				return notContractorSkill && notRequiredSkill;
-//			}
-//		});
-//
-//		return accountSkillEmployees;
-//	}
 }

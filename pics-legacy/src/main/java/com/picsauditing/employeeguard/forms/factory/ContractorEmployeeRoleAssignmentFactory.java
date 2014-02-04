@@ -6,7 +6,6 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 
 import java.util.*;
 
@@ -16,10 +15,7 @@ public class ContractorEmployeeRoleAssignmentFactory {
 	                                                    final Role role,
 	                                                    final Set<Employee> assignedEmployees,
 	                                                    final Map<Employee, Set<AccountSkillEmployee>> employeeSkills) {
-		if (CollectionUtils.isEmpty(contractorEmployees)
-				|| role == null
-				|| CollectionUtils.isEmpty(assignedEmployees)
-				|| MapUtils.isEmpty(employeeSkills)) {
+		if (CollectionUtils.isEmpty(contractorEmployees) || role == null) {
 			return Collections.emptyList();
 		}
 

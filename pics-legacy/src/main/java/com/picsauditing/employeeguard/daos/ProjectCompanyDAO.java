@@ -44,8 +44,8 @@ public class ProjectCompanyDAO extends AbstractBaseEntityDAO<ProjectCompany> {
     }
 
 	public List<ProjectCompany> findByContractorExcludingSite(final int contractorId, final int siteId) {
-		TypedQuery<ProjectCompany> query = em.createQuery("FROM ProjectCompany pc " +
-				"JOIN Project p " +
+		TypedQuery<ProjectCompany> query = em.createQuery("SElECT pc FROM ProjectCompany pc " +
+				"JOIN pc.project p " +
 				"WHERE p.accountId != :siteId " +
 				"AND pc.accountId = :contractorId", ProjectCompany.class);
 

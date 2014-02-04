@@ -103,7 +103,7 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 
 	public Role findSiteRoleByCorporateRole(final List<Integer> corporateIds, final int siteId, final int corporateRoleId) {
 		try {
-			Query query = em.createNativeQuery("SELECT corp.* FROM account_group site " +
+			Query query = em.createNativeQuery("SELECT site.* FROM account_group site " +
 					"JOIN account_group corp ON corp.name = site.name " +
 					"WHERE site.accountId = :siteId " +
 					"AND corp.accountId IN (:corporateIds) " +

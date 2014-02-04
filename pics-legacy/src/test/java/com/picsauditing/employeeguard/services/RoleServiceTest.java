@@ -9,26 +9,21 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RoleServiceTest {
 
 	public static final int CONTRACTOR_ID = 1234;
 	public static final int CORPORATE_ID = 712;
-	public static final int CORPORATE_ID_2 = 55653;
 	public static final int CORPORATE_ROLE_ID = 23;
 	public static final int EMPLOYEE_ID = 3;
 	public static final int SITE_ID = 345;
-	public static final int SITE_ID_2 = 55654;
 	public static final int USER_ID = 6;
+	public static final int APP_USER_ID = 12345;
 
 	private RoleService roleService;
 
@@ -49,9 +44,13 @@ public class RoleServiceTest {
 	@Mock
 	private RoleDAO roleDAO;
 	@Mock
+	private RoleAssignmentHelper roleAssignmentHelper;
+	@Mock
 	private RoleEmployeeDAO roleEmployeeDAO;
 	@Mock
 	private SiteSkillDAO siteSkillDAO;
+	@Mock
+	private SkillAssignmentHelper skillAssignmentHelper;
 	// Entities
 	@Mock
 	private AccountSkillEmployee accountSkillEmployee;
@@ -84,80 +83,65 @@ public class RoleServiceTest {
 		Whitebox.setInternalState(roleService, "accountSkillEmployeeService", accountSkillEmployeeService);
 		Whitebox.setInternalState(roleService, "employeeDAO", employeeDAO);
 		Whitebox.setInternalState(roleService, "roleDAO", roleDAO);
+		Whitebox.setInternalState(roleService, "roleAssignmentHelper", roleAssignmentHelper);
 		Whitebox.setInternalState(roleService, "roleEmployeeDAO", roleEmployeeDAO);
 		Whitebox.setInternalState(roleService, "projectCompanyDAO", projectCompanyDAO);
 		Whitebox.setInternalState(roleService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 		Whitebox.setInternalState(roleService, "siteSkillDAO", siteSkillDAO);
+		Whitebox.setInternalState(roleService, "skillAssignmentHelper", skillAssignmentHelper);
 	}
 
 	@Test
 	public void testAssignEmployeeToSite() {
 		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(Arrays.asList(CORPORATE_ID));
 
-		roleService.assignEmployeeToSite(SITE_ID, CORPORATE_ROLE_ID, buildFakeEmployee(), USER_ID);
+		roleService.assignEmployeeToRole(SITE_ID, CORPORATE_ROLE_ID, buildFakeEmployee(), USER_ID);
 
 		verifyTest();
 	}
 
 	@Test
-	public void testRemoveSiteSpecificRolesFromEmployee_NoCorporateOrOtherSites() {
+	public void testUnassignEmployeeFromSite_NoCorporateOrOtherSites() {
 		List<AccountSkillEmployee> accountSkillEmployees = Arrays.asList(accountSkillEmployee);
-		List<ProjectRoleEmployee> projectRoleEmployees = Arrays.asList(projectRoleEmployee);
-		List<RoleEmployee> roleEmployees = Arrays.asList(roleEmployee);
 
 		when(accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(anyInt(), anyList())).thenReturn(accountSkillEmployees);
-        when(employee.getId()).thenReturn(EMPLOYEE_ID);
-		when(projectRoleEmployeeDAO.findByEmployeeAndSiteId(anyInt(), anyInt())).thenReturn(projectRoleEmployees);
-		when(roleEmployeeDAO.findByEmployeeAndSiteId(anyInt(), anyInt())).thenReturn(roleEmployees);
+		when(employee.getId()).thenReturn(EMPLOYEE_ID);
 
-		roleService.unassignEmployeeFromSite(employee, SITE_ID);
+		roleService.unassignEmployeeFromSite(employee, SITE_ID, APP_USER_ID);
 
+		verifyUnassign();
 		verify(accountSkillEmployeeDAO).delete(accountSkillEmployees);
-		verify(projectRoleEmployeeDAO).delete(projectRoleEmployees);
-		verify(roleEmployeeDAO).delete(roleEmployees);
 	}
 
 	@Test
 	public void testUnassignEmployeeFromSite_WithCorporateAndOtherSites() {
-		AccountSkill deleteSkill = mock(AccountSkill.class);
-		AccountSkill keepSkill = mock(AccountSkill.class);
-		AccountSkillEmployee accountSkillEmployee2 = mock(AccountSkillEmployee.class);
+		setUpUnassignEmployeeFromSite();
 
-		List<AccountSkillEmployee> accountSkillEmployees = Arrays.asList(accountSkillEmployee, accountSkillEmployee2);
+		roleService.unassignEmployeeFromSite(employee, SITE_ID, APP_USER_ID);
 
-		List<Integer> childIds = new ArrayList<>();
-		childIds.add(SITE_ID);
-		childIds.add(SITE_ID_2);
+		verifyUnassign();
+		verify(accountSkillEmployeeDAO).delete(anyListOf(AccountSkillEmployee.class));
+	}
 
-		List<Integer> corporateIds = Arrays.asList(CORPORATE_ID, CORPORATE_ID_2);
-		List<ProjectRoleEmployee> projectRoleEmployees = Arrays.asList(projectRoleEmployee);
-		List<RoleEmployee> roleEmployees = Arrays.asList(roleEmployee);
+	private void setUpUnassignEmployeeFromSite() {
+		List<ProjectCompany> projectCompanies = Arrays.asList(projectCompany);
+		Map<Role, Role> siteToCorporateRoles = Collections.emptyMap();
+		Set<AccountSkill> accountSkills = new HashSet<>(Arrays.asList(new AccountSkill()));
+		HashSet<AccountSkillEmployee> accountSkillEmployees = new HashSet<>(Arrays.asList(new AccountSkillEmployee()));
 
-		when(accountSkillEmployee.getSkill()).thenReturn(deleteSkill);
-		when(accountSkillEmployee2.getSkill()).thenReturn(keepSkill);
-		when(accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(EMPLOYEE_ID, corporateIds)).thenReturn(accountSkillEmployees);
-		when(accountSkillRole.getSkill()).thenReturn(keepSkill);
-		when(accountService.getChildOperatorIds(corporateIds)).thenReturn(childIds);
-		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(corporateIds);
-		when(deleteSkill.getAccountId()).thenReturn(SITE_ID);
-		when(keepSkill.getAccountId()).thenReturn(SITE_ID_2);
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
-        when(employee.getId()).thenReturn(EMPLOYEE_ID);
-		when(employeeDAO.find(EMPLOYEE_ID)).thenReturn(employee);
-		when(project.getAccountId()).thenReturn(SITE_ID_2);
-		when(project.getRoles()).thenReturn(Arrays.asList(projectRole));
-		when(projectCompany.getProject()).thenReturn(project);
-		when(projectCompanyDAO.findByContractorExcludingSite(CONTRACTOR_ID, SITE_ID)).thenReturn(Arrays.asList(projectCompany));
-		when(projectRole.getRole()).thenReturn(role);
-		when(projectRoleEmployeeDAO.findByEmployeeAndSiteId(EMPLOYEE_ID, SITE_ID)).thenReturn(projectRoleEmployees);
-		when(role.getSkills()).thenReturn(Arrays.asList(accountSkillRole));
-		when(roleEmployeeDAO.findByEmployeeAndSiteId(EMPLOYEE_ID, SITE_ID)).thenReturn(roleEmployees);
+		when(employee.getId()).thenReturn(EMPLOYEE_ID);
+		when(projectCompanyDAO.findByContractorExcludingSite(CONTRACTOR_ID, SITE_ID)).thenReturn(projectCompanies);
+		when(roleDAO.findSiteToCorporateRoles(anyListOf(Integer.class), anyInt())).thenReturn(siteToCorporateRoles);
+		when(skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(projectCompanies, employee, siteToCorporateRoles))
+				.thenReturn(accountSkills);
+		when(skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, CONTRACTOR_ID, accountSkills))
+				.thenReturn(accountSkillEmployees);
+	}
 
-		roleService.unassignEmployeeFromSite(employee, SITE_ID);
-
-		verify(accountSkillEmployeeDAO).delete(Arrays.asList(accountSkillEmployee));
-		verify(projectRoleEmployeeDAO).delete(projectRoleEmployees);
-		verify(roleEmployeeDAO).delete(roleEmployees);
+	private void verifyUnassign() {
+		verify(roleAssignmentHelper).deleteProjectRolesFromEmployee(EMPLOYEE_ID, SITE_ID);
+		verify(roleAssignmentHelper).deleteSiteRolesFromEmployee(EMPLOYEE_ID, SITE_ID);
 	}
 
 	private void verifyTest() {

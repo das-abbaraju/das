@@ -1,9 +1,13 @@
 package com.picsauditing.employeeguard.entities.builders;
 
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.List;
 
 public class EmployeeBuilder {
 
@@ -76,8 +80,17 @@ public class EmployeeBuilder {
 		return this;
 	}
 
+	public EmployeeBuilder skills(List<AccountSkillEmployee> accountSkillEmployees) {
+		if (CollectionUtils.isEmpty(accountSkillEmployees)) {
+			return this;
+		}
+
+		employee.getSkills().clear();
+		employee.setSkills(accountSkillEmployees);
+		return this;
+	}
+
 	public Employee build() {
 		return employee;
 	}
-
 }

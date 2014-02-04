@@ -127,7 +127,8 @@ public class AccountService {
 
 		Set<OperatorAccount> childAccounts = new HashSet<>();
 		for (OperatorAccount corporate : operators) {
-			childAccounts.addAll(billingService.filterEmployeeGUARDAccounts(corporate.getChildOperators()));
+			List<OperatorAccount> childOperators = new ArrayList<>(corporate.getChildOperators());
+			childAccounts.addAll(billingService.filterEmployeeGUARDAccounts(childOperators));
 		}
 
 		return mapAccountsToAccountModels(new ArrayList<>(childAccounts));

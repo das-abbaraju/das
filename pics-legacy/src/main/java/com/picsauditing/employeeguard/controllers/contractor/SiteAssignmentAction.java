@@ -78,7 +78,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     public String assign() {
         try {
             Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-            roleService.assignEmployeeToSite(siteId, roleId, employee, permissions.getUserId());
+            roleService.assignEmployeeToRole(siteId, roleId, employee, permissions.getAppUserID());
             json.put("status", "SUCCESS");
         } catch (Exception e) {
             LOG.error("Error assigning employee id = " + id + " to role id = " + roleId, e);
@@ -88,13 +88,26 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
         return JSON;
     }
 
-    public String unassign() {
+	public String unassign() {
+		try {
+			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
+			roleService.unassignEmployeeFromRole(employee, roleId);
+			json.put("status", "SUCCESS");
+		} catch (Exception e) {
+			LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
+			json.put("status", "FAILURE");
+		}
+
+		return JSON;
+	}
+
+    public String unassignAll() {
         try {
             Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-            roleService.unassignEmployeeFromSite(employee, siteId);
+            roleService.unassignEmployeeFromSite(employee, siteId, permissions.getAppUserID());
             json.put("status", "SUCCESS");
         } catch (Exception e) {
-            LOG.error("Error unassigning employee id = " + id + " from role id = " + roleId, e);
+            LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
             json.put("status", "FAILURE");
         }
 

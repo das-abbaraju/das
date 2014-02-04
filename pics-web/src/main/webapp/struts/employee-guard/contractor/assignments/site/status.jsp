@@ -54,7 +54,7 @@
                     <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">
                         <tr class="assign-employee-container">
                             <td class="text-center">
-                                <s:url action="project/site-assignment/{siteId}/employee/{id}/unassign" var="employee_unassign_from_site">
+                                <s:url action="project/site-assignment/{siteId}/employee/{id}/unassignAll" var="employee_unassign_from_site">
                                     <s:param name="siteId">
                                         ${site.id}
                                     </s:param>
