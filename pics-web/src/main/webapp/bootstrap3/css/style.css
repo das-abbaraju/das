@@ -13489,6 +13489,7 @@ button i {
 .modal .modal-header {
   padding-left: 20px;
   background-color: #f1f1f2;
+  border-bottom: 0;
   -webkit-border-top-right-radius: 6px;
           border-top-right-radius: 6px;
   -webkit-border-top-left-radius: 6px;
@@ -13497,19 +13498,19 @@ button i {
   -moz-border-radius-topleft: 6px;
 }
 
-/* line 13, ../sass/pics/components/_modal.scss */
+/* line 14, ../sass/pics/components/_modal.scss */
 
 .modal .modal-title {
   font-size: 24px;
 }
 
-/* line 18, ../sass/pics/components/_modal.scss */
+/* line 19, ../sass/pics/components/_modal.scss */
 
 .modal .modal-body p:last-child {
   margin-bottom: 0;
 }
 
-/* line 23, ../sass/pics/components/_modal.scss */
+/* line 24, ../sass/pics/components/_modal.scss */
 
 .modal .modal-footer {
   padding-top: 0;
@@ -13519,7 +13520,7 @@ button i {
 
 /*Override to prevent shift on modal open.  Menu issue?*/
 
-/* line 35, ../sass/pics/components/_modal.scss */
+/* line 36, ../sass/pics/components/_modal.scss */
 
 body.modal-open,
 .modal-open .navbar-fixed-top,
