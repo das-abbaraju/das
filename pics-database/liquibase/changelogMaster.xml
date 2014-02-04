@@ -141,4 +141,7 @@
 	<include file="./liquibase/sshacter42_PICS-12791_ErrorSerchingWithChineseCharacters.sql"/>
 	<include file="./liquibase/mdo33_PICS-14211_changeEndDateForRevRec.sql"/>
 
+	<!-- 7.1.5 -->
+	<include file="./liquibase/kchase22_PICS-14434_UpdatePeriodicAudit.sql"/>
+
 </databaseChangeLog>
