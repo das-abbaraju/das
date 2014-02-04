@@ -93,14 +93,20 @@ public class RoleServiceTest {
 
 	@Test
 	public void testAssignEmployeeToSite() {
-		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(Arrays.asList(CORPORATE_ID));
+        setupTestForAssigningEmployeeToSite();
 
 		roleService.assignEmployeeToRole(SITE_ID, CORPORATE_ROLE_ID, buildFakeEmployee(), USER_ID);
 
 		verifyTest();
 	}
 
-	@Test
+    private void setupTestForAssigningEmployeeToSite() {
+        List<Integer> corporateIds = Arrays.asList(CORPORATE_ID);
+        when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(corporateIds);
+        when(roleDAO.findSiteRoleByCorporateRole(corporateIds, SITE_ID, CORPORATE_ROLE_ID)).thenReturn(new Role());
+    }
+
+    @Test
 	public void testUnassignEmployeeFromSite_NoCorporateOrOtherSites() {
 		List<AccountSkillEmployee> accountSkillEmployees = Arrays.asList(accountSkillEmployee);
 
