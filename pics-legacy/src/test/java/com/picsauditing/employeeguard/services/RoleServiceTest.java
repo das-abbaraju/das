@@ -110,7 +110,7 @@ public class RoleServiceTest {
 		when(projectRoleEmployeeDAO.findByEmployeeAndSiteId(anyInt(), anyInt())).thenReturn(projectRoleEmployees);
 		when(roleEmployeeDAO.findByEmployeeAndSiteId(anyInt(), anyInt())).thenReturn(roleEmployees);
 
-		roleService.removeSiteSpecificRolesFromEmployee(employee, SITE_ID);
+		roleService.unassignEmployeeFromSite(employee, SITE_ID);
 
 		verify(accountSkillEmployeeDAO).delete(accountSkillEmployees);
 		verify(projectRoleEmployeeDAO).delete(projectRoleEmployees);
@@ -118,7 +118,7 @@ public class RoleServiceTest {
 	}
 
 	@Test
-	public void testRemoveSiteSpecificRolesFromEmployee_WithCorporateAndOtherSites() {
+	public void testUnassignEmployeeFromSite_WithCorporateAndOtherSites() {
 		AccountSkill deleteSkill = mock(AccountSkill.class);
 		AccountSkill keepSkill = mock(AccountSkill.class);
 		AccountSkillEmployee accountSkillEmployee2 = mock(AccountSkillEmployee.class);
@@ -153,7 +153,7 @@ public class RoleServiceTest {
 		when(role.getSkills()).thenReturn(Arrays.asList(accountSkillRole));
 		when(roleEmployeeDAO.findByEmployeeAndSiteId(EMPLOYEE_ID, SITE_ID)).thenReturn(roleEmployees);
 
-		roleService.removeSiteSpecificRolesFromEmployee(employee, SITE_ID);
+		roleService.unassignEmployeeFromSite(employee, SITE_ID);
 
 		verify(accountSkillEmployeeDAO).delete(Arrays.asList(accountSkillEmployee));
 		verify(projectRoleEmployeeDAO).delete(projectRoleEmployees);

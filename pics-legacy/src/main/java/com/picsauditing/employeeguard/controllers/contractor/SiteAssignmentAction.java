@@ -91,7 +91,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     public String unassign() {
         try {
             Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-            roleService.removeSiteSpecificRolesFromEmployee(employee, siteId);
+            roleService.unassignEmployeeFromSite(employee, siteId);
             json.put("status", "SUCCESS");
         } catch (Exception e) {
             LOG.error("Error unassigning employee id = " + id + " from role id = " + roleId, e);
