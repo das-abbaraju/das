@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.InvoiceItemBuilder;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -83,5 +85,9 @@ public class InvoiceItem extends TransactionItem {
 
     public void setTransaction(Transaction transaction) {
         setInvoice((Invoice) transaction);
+    }
+
+    public static InvoiceItemBuilder builder() {
+        return new InvoiceItemBuilder();
     }
 }

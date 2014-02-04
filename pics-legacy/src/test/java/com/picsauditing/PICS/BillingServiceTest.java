@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
+import com.picsauditing.service.billing.InvoiceDiscountsService;
 import com.picsauditing.util.SapAppPropertyUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -92,6 +93,8 @@ public class BillingServiceTest extends PicsTranslationTest {
     private ContractorFee upgradeFee;
     @Mock
     private InvoiceFee upgradeinvoiceFee;
+    @Mock
+    private InvoiceDiscountsService invoiceDiscountsService;
 
 	@Before
 	public void setUp() {
@@ -105,6 +108,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Whitebox.setInternalState(billingService, "accountDao", accountDAO);
 		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
 		Whitebox.setInternalState(billingService, "invoiceItemDAO", invoiceItemDAO);
+        Whitebox.setInternalState(billingService, "invoiceDiscountsService", invoiceDiscountsService);
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		assert (OAMocksSet.isEmpty());
 
@@ -114,6 +118,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(mockContractor.getCountry()).thenReturn(country);
         when(country.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
+        when(invoiceDiscountsService.applyDiscounts(eq(mockContractor), anyListOf(InvoiceItem.class)))
+                .thenReturn(Collections.<InvoiceItem>emptyList());
 	}
 
 	private void setupInvoiceAndItems() {
