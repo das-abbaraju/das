@@ -1,12 +1,11 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.RoleService;
 import org.json.simple.JSONObject;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,13 +15,13 @@ import org.powermock.reflect.Whitebox;
 import javax.persistence.NoResultException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class SiteAssignmentActionTest extends PicsActionTest {
 
+    public static final int SITE_ID = 123;
     private SiteAssignmentAction siteAssignmentAction;
 
     @Mock
@@ -72,7 +71,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
     public void testUnassign_AssignmentSuccessful() throws Exception {
         when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(new Employee());
 
-        siteAssignmentAction.assign();
+        siteAssignmentAction.unassign();
 
         verifyAssignmentSuccess(siteAssignmentAction.getJson());
     }
@@ -83,5 +82,25 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
     private void verifyAssignmentSuccess(final JSONObject json) {
         assertEquals("{\"status\":\"SUCCESS\"}", json.toJSONString());
+    }
+
+    @Test
+    public void testUnassignAll() throws Exception {
+        setupUnassignAllTest();
+
+        String result = siteAssignmentAction.unassignAll();
+
+        verifyUnassignAllTest(result);
+    }
+
+    private void setupUnassignAllTest() {
+        Employee employee = new Employee();
+        when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(employee);
+        siteAssignmentAction.setSiteId(SITE_ID);
+    }
+
+    private void verifyUnassignAllTest(String result) {
+        assertEquals(PicsActionSupport.REDIRECT, result);
+        assertEquals("/employee-guard/contractor/project/site-assignment/" + SITE_ID, siteAssignmentAction.getUrl());
     }
 }
