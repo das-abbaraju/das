@@ -26,6 +26,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -230,7 +231,16 @@ public class InvoiceDetailTest extends PicsActionTest {
     public void testCreateRefundForCreditMemo() throws Exception {
         RefundAppliedToCreditMemo refundAppliedToCreditMemo = Whitebox.invokeMethod(invoiceDetail, "createRefundForCreditMemo", BigDecimal.TEN.negate());
         assertEquals(BigDecimal.TEN, refundAppliedToCreditMemo.getAmount());
-        assertEquals(BigDecimal.TEN,refundAppliedToCreditMemo.getRefund().getAmountApplied());
+        assertEquals(BigDecimal.TEN, refundAppliedToCreditMemo.getRefund().getAmountApplied());
+    }
+
+    @Test
+    public void testReturnItem() throws Exception {
+        InvoiceItem invoiceItem = mock(InvoiceItem.class);
+        when(invoiceItem.getRevenueFinishDate()).thenReturn(new Date());
+        when(invoiceItem.getAmount()).thenReturn(BigDecimal.TEN);
+        ReturnItem item = new ReturnItem(invoiceItem);
+        assertEquals(item.getRevenueStartDate(), item.getRevenueFinishDate());
     }
 
     private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult)

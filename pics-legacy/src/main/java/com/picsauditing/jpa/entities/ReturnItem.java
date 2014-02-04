@@ -20,7 +20,11 @@ public class ReturnItem extends TransactionItem {
         invoiceFee = item.invoiceFee;
 		if (returnedItem.getRevenueFinishDate() != null) {
 			revenueStartDate = new Date();
-			revenueFinishDate = returnedItem.getRevenueFinishDate();
+            revenueFinishDate = returnedItem.getRevenueFinishDate();
+
+            if (revenueStartDate.after(revenueFinishDate)) {
+                revenueFinishDate = revenueStartDate;
+            }
 		}
         amount = item.getAmount().multiply(BigDecimal.valueOf(-1));
     }
