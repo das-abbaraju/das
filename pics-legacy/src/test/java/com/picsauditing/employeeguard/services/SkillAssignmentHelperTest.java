@@ -93,7 +93,9 @@ public class SkillAssignmentHelperTest {
         // TODO: Provide correct data here (site skill builder with correct skill
         when(roleEmployeeDAO.findByEmployeeAndSiteIds(anyInt(), anyListOf(Integer.class))).thenReturn(Arrays.asList(new RoleEmployee()));
 
-        Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(getFakeProjectCompanies(), null, null);
+        Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(
+                getFakeProjectCompanies(),
+                new EmployeeBuilder().build(), null);
 
         assertTrue(result.isEmpty());
     }
