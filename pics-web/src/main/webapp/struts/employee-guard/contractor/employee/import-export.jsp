@@ -44,7 +44,8 @@
 
 			<div class="content">
 				<tw:form formName="contractor_employee_export" action="${contractor_employee_export_url}" method="post">
-<%-- 					<div class="control-group">
+                <%--Commened out to resuse whem multiple download types avaiable
+                    <div class="control-group">
 						<div class="controls">
 							<tw:label class="radio">
 								<tw:input inputName="type" id="contractor_employee_export_type_pdf" type="radio"
@@ -56,7 +57,7 @@
 							</tw:label>
 						</div>
 					</div> --%>
-
+					<p>Export your employees as a spreadsheet.</p>
 					<div class="control-group">
 						<div class="controls">
 							<tw:button type="submit" class="btn btn-default">Export Employees</tw:button>
