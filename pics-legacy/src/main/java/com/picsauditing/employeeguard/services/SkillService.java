@@ -31,13 +31,11 @@ public class SkillService {
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
-	private EmployeeSkillAssigner employeeSkillAssigner;
-	@Autowired
 	private ProjectService projectService;
 	@Autowired
 	private ProjectSkillDAO projectSkillDAO;
 	@Autowired
-	private ProjectSkillRoleDAO projectSkillRoleDAO;
+	private RoleDAO roleDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
@@ -402,18 +400,41 @@ public class SkillService {
 	}
 
 	public Map<AccountSkill, Set<Integer>> getSiteAssignmentSkills(final Employee employee) {
-		// List<Group> directlyAssignedJobRoles = accountGroupDAO.findJobRolesForEmployee(employee);
+		Map<Role, Role> siteToCorporateRoles = getSiteToCorporateRoles(employee);
 
-		return Collections.emptyMap();
+		Map<AccountSkill, Set<Integer>> siteAssignmentSkills = new HashMap<>();
+		for (Map.Entry<Role, Role> entry : siteToCorporateRoles.entrySet()) {
+			Role siteRole = entry.getKey();
+			Role corporateRole = entry.getValue();
+
+			List<AccountSkill> corporateSkills = ExtractorUtil.extractList(corporateRole.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
+
+			for (AccountSkill accountSkill : corporateSkills) {
+				Utilities.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, siteRole.getAccountId());
+				Utilities.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, corporateRole.getAccountId());
+			}
+		}
+
+		return siteAssignmentSkills;
 	}
 
-    public List<AccountSkill> getParentSiteRequiredSkills(int accountId) {
-        List<Integer> parentIds = accountService.getTopmostCorporateAccountIds(accountId);
-        List<SiteSkill> requiredSkills = siteSkillDAO.findByAccountIds(parentIds);
-        return ExtractorUtil.extractList(requiredSkills, SiteSkill.SKILL_EXTRACTOR);
-    }
+	private Map<Role, Role> getSiteToCorporateRoles(Employee employee) {
+		Set<Integer> siteIds = new HashSet<>();
+		for (RoleEmployee roleEmployee : employee.getRoles()) {
+			siteIds.add(roleEmployee.getRole().getAccountId());
+		}
 
-    public List<AccountSkill> getSkillsForRole(final Role role) {
-        return accountSkillDAO.findByRoles(Arrays.asList(role));
-    }
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteIds);
+		return roleDAO.findSiteToCorporateRoles(corporateIds, siteIds);
+	}
+
+	public List<AccountSkill> getParentSiteRequiredSkills(int accountId) {
+		List<Integer> parentIds = accountService.getTopmostCorporateAccountIds(accountId);
+		List<SiteSkill> requiredSkills = siteSkillDAO.findByAccountIds(parentIds);
+		return ExtractorUtil.extractList(requiredSkills, SiteSkill.SKILL_EXTRACTOR);
+	}
+
+	public List<AccountSkill> getSkillsForRole(final Role role) {
+		return accountSkillDAO.findByRoles(Arrays.asList(role));
+	}
 }

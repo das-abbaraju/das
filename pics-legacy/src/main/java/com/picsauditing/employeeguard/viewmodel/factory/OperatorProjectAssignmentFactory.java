@@ -1,8 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.viewmodel.model.Role;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectAssignment;
 import com.picsauditing.employeeguard.viewmodel.operator.OperatorProjectAssignment;
 

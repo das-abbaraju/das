@@ -1,42 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.jpa.entities.builders.UserBuilder;
-import com.picsauditing.util.Strings;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.perf4j.StopWatch;
-import org.perf4j.slf4j.Slf4JStopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -51,7 +19,22 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import javax.persistence.Column;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity

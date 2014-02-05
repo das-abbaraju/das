@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.viewmodel.contractor;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-public class EmployeeSiteAssignmentModel {
+public class EmployeeSiteAssignmentModel implements Comparable<EmployeeSiteAssignmentModel> {
 
 	private final int assignments;
 	private final int accountId;
@@ -54,6 +54,11 @@ public class EmployeeSiteAssignmentModel {
 
     public SkillStatus getStatus() {
 		return status;
+	}
+
+	@Override
+	public int compareTo(EmployeeSiteAssignmentModel that) {
+		return this.employeeName.compareToIgnoreCase(that.employeeName);
 	}
 
 	public static class Builder {

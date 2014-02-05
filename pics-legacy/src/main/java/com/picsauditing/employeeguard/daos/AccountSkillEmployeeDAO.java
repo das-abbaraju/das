@@ -117,17 +117,6 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 		return query.getResultList();
 	}
 
-	public List<AccountSkillEmployee> findByEmployeeAccountAndSkills(final int accountId, final List<AccountSkill> accountSkills) {
-		if (accountId == 0 || CollectionUtils.isEmpty(accountSkills)) {
-			return Collections.emptyList();
-		}
-
-		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee.accountId = :accountId AND ase.skill IN :skills", AccountSkillEmployee.class);
-		query.setParameter("accountId", accountId);
-		query.setParameter("skills", accountSkills);
-		return query.getResultList();
-	}
-
     public List<AccountSkillEmployee> findByProjectAndContractor(Project project, int accountId) {
         String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
                 "JOIN ase.skill s " +
@@ -142,4 +131,39 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
         query.setParameter("accountId", accountId);
         return query.getResultList();
     }
+
+	public List<AccountSkillEmployee> findByContractorAndRole(final int contractorId, final int roleId) {
+		if (contractorId == 0 || roleId == 0) {
+			return Collections.emptyList();
+		}
+
+		String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
+				"JOIN ase.skill s " +
+				"JOIN s.roles asr " +
+				"JOIN asr.role r " +
+				"JOIN ase.employee e " +
+				"WHERE e.accountId = :contractorId " +
+				"AND r.id = :roleId";
+		TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
+		query.setParameter("contractorId", contractorId);
+		query.setParameter("roleId", roleId);
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> findByEmployeeAndCorporateIds(final int employeeId, final List<Integer> corporateIds) {
+		if (employeeId == 0 || CollectionUtils.isEmpty(corporateIds)) {
+			return Collections.emptyList();
+		}
+
+		String s = "SELECT DISTINCT ase " +
+				"FROM AccountSkillEmployee ase " +
+				"JOIN ase.employee e " +
+				"JOIN ase.skill s " +
+				"WHERE e.id = :employeeId " +
+				"AND s.accountId IN (:corporateIds)";
+		TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
+		query.setParameter("employeeId", employeeId);
+		query.setParameter("corporateIds", corporateIds);
+		return query.getResultList();
+	}
 }

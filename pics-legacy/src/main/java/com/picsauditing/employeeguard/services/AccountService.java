@@ -5,13 +5,13 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.services.external.BillingService;
-import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class AccountService {
 			return Collections.emptyList();
 		}
 
-		List<OperatorAccount> employeeGUARDCorporates = getEmployeeGUARDCorporates(accountId);
+		List<OperatorAccount> employeeGUARDCorporates = getEmployeeGUARDCorporates(Arrays.asList(accountId));
 		// We don't have a need to modify accounts, so we'll map these corporate accounts to AccountModels
 		return mapAccountsToAccountModels(employeeGUARDCorporates);
 	}
@@ -64,25 +64,38 @@ public class AccountService {
 		});
 	}
 
+	public List<Integer> getTopmostCorporateAccountIds(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		return extractIdFromAccountModel(getEmployeeGUARDCorporates(accountIds));
+	}
+
 	public List<Integer> getTopmostCorporateAccountIds(final int accountId) {
 		if (accountId <= 0) {
 			return Collections.emptyList();
 		}
 
-		return extractIdFromAccountModel(getEmployeeGUARDCorporates(accountId));
+		return extractIdFromAccountModel(getEmployeeGUARDCorporates(Arrays.asList(accountId)));
 	}
 
-	private List<OperatorAccount> getEmployeeGUARDCorporates(int accountId) {
-		OperatorAccount operator = operatorDAO.find(accountId);
-		if (operator == null) {
+	private List<OperatorAccount> getEmployeeGUARDCorporates(Collection<Integer> accountIds) {
+		List<OperatorAccount> operators = operatorDAO.findOperators(new ArrayList<>(accountIds));
+		if (CollectionUtils.isEmpty(operators)) {
 			return Collections.emptyList();
 		}
 
 		ArrayList<OperatorAccount> topDogs = new ArrayList<>();
 		ArrayList<Integer> visited = new ArrayList<>();
 
-		List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, topDogs, visited);
-		return billingService.filterEmployeeGUARDAccounts(topmostCorporates);
+		Set<OperatorAccount> corporates = new HashSet<>();
+		for (OperatorAccount operator : operators) {
+			List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, topDogs, visited);
+			corporates.addAll(billingService.filterEmployeeGUARDAccounts(topmostCorporates));
+		}
+
+		return new ArrayList<>(corporates);
 	}
 
 	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<OperatorAccount> topDogs, List<Integer> visited) {
@@ -116,17 +129,30 @@ public class AccountService {
 	}
 
 	public List<AccountModel> getChildOperators(final int accountId) {
-		OperatorAccount operator = operatorDAO.find(accountId);
-		if (operator == null) {
+		return getChildOperators(Arrays.asList(accountId));
+	}
+
+	public List<AccountModel> getChildOperators(final List<Integer> accountIds) {
+		List<OperatorAccount> operators = operatorDAO.findOperators(accountIds);
+		if (CollectionUtils.isEmpty(operators)) {
 			return Collections.emptyList();
 		}
 
-		List<OperatorAccount> accounts = billingService.filterEmployeeGUARDAccounts(operator.getChildOperators());
-		return mapAccountsToAccountModels(accounts);
+		Set<OperatorAccount> childAccounts = new HashSet<>();
+		for (OperatorAccount corporate : operators) {
+			List<OperatorAccount> childOperators = new ArrayList<>(corporate.getChildOperators());
+			childAccounts.addAll(billingService.filterEmployeeGUARDAccounts(childOperators));
+		}
+
+		return mapAccountsToAccountModels(new ArrayList<>(childAccounts));
 	}
 
 	public List<Integer> getChildOperatorIds(final int accountId) {
 		return extractIdFromAccountModel(getChildOperators(accountId).toArray(new AccountModel[0]));
+	}
+
+	public List<Integer> getChildOperatorIds(final List<Integer> accountIds) {
+		return extractIdFromAccountModel(getChildOperators(accountIds).toArray(new AccountModel[0]));
 	}
 
 	public AccountType getAccountTypeByUserID(int userID) {

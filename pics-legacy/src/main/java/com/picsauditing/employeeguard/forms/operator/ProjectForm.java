@@ -4,7 +4,6 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.util.DateUtil;
-import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class ProjectForm extends ProjectNameLocationForm implements AddAnotherForm {

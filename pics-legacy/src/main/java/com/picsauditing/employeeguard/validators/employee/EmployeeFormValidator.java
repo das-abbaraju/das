@@ -5,7 +5,6 @@ import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
-import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
 public class EmployeeFormValidator extends AbstractBasicAndDuplicateValidator<PersonalInformationForm> {
 

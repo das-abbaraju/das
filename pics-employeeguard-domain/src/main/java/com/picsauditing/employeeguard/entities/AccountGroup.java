@@ -1,9 +1,5 @@
 package com.picsauditing.employeeguard.entities;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLInsert;
-import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
 import java.util.Date;
 

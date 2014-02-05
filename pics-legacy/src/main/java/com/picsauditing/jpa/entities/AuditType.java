@@ -1,34 +1,19 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.service.i18n.ExplicitUsageContext;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldImportance;
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity

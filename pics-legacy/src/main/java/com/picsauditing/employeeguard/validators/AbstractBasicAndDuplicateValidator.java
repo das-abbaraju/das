@@ -3,9 +3,7 @@ package com.picsauditing.employeeguard.validators;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.employeeguard.daos.DuplicateEntityChecker;
-import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
-import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractBasicAndDuplicateValidator<T extends DuplicateInfoProvider> extends AbstractBasicValidator<T> {

@@ -1,19 +1,9 @@
 package com.picsauditing.actions.contractors;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.picsauditing.PICS.*;
-import com.picsauditing.jpa.entities.*;
-import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.FeeService;
+import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -29,6 +19,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -38,6 +29,17 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.ContractorValidator;
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends RegistrationAction {

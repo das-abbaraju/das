@@ -1,22 +1,19 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.picsauditing.PicsTranslationTest;
 import org.powermock.reflect.Whitebox;
+
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.when;
 
 public class AccountActionSupportTest extends PicsTranslationTest {
 

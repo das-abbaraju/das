@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -249,5 +250,16 @@ public class AccountSkillEmployeeService {
 
 	public List<AccountSkillEmployee> getSkillsForAccount(int accountId) {
 		return accountSkillEmployeeDAO.findByEmployeeAccount(accountId);
+	}
+
+	public Map<Employee, Set<AccountSkillEmployee>> getSkillMapForAccountAndRole(int accountId, int roleId) {
+		List<AccountSkillEmployee> roleSkills = accountSkillEmployeeDAO.findByContractorAndRole(accountId, roleId);
+
+		Map<Employee, Set<AccountSkillEmployee>> skillMap = new HashMap<>();
+		for (AccountSkillEmployee accountSkillEmployee : roleSkills) {
+			Utilities.addToMapOfKeyToSet(skillMap, accountSkillEmployee.getEmployee(), accountSkillEmployee);
+		}
+
+		return skillMap;
 	}
 }

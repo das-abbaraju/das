@@ -4,7 +4,7 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectRole;
-import com.picsauditing.employeeguard.forms.contractor.ContractorProjectAssignmentMatrix;
+import com.picsauditing.employeeguard.viewmodel.contractor.ContractorProjectAssignmentMatrix;
 import com.picsauditing.employeeguard.services.ContractorProjectService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProjectService;

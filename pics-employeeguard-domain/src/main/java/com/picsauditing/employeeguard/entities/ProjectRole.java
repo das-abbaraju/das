@@ -74,7 +74,7 @@ public class ProjectRole implements BaseEntity {
 		return role;
 	}
 
-	public void setRole(Role Role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 

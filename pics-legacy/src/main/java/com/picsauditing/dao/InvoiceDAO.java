@@ -1,17 +1,15 @@
 package com.picsauditing.dao;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import javax.persistence.Query;
-
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.access.Permissions;
+import javax.persistence.Query;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class InvoiceDAO extends PicsDAO {

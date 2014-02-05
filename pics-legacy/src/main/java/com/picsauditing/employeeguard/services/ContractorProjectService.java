@@ -5,13 +5,14 @@ import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProjectAssignment;
-import com.picsauditing.employeeguard.forms.contractor.ContractorProjectAssignmentMatrix;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
+import com.picsauditing.employeeguard.viewmodel.contractor.ContractorProjectAssignmentMatrix;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,8 +42,6 @@ public class ContractorProjectService {
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
-	@Autowired
-	private SkillUsageLocator skillUsageLocator;
 
 	public ProjectCompany getProject(String id, int accountId) {
 		return projectCompanyDAO.findProject(NumberUtils.toInt(id), accountId);
@@ -93,7 +92,7 @@ public class ContractorProjectService {
 
 	private List<RoleInfo> buildRoleInfos(Project project) {
 		List<Role> groups = ExtractorUtil.extractList(project.getRoles(), ProjectRole.ROLE_EXTRACTOR);
-		return formBuilderFactory.getRoleInfoFactory().build(groups);
+		return ViewModelFactory.getRoleInfoFactory().build(groups);
 	}
 
 	private List<ContractorEmployeeProjectAssignment> buildAssignments(final Project project, final List<AccountSkill> requiredSkills, final int accountId) {
@@ -106,11 +105,11 @@ public class ContractorProjectService {
 
 	private List<String> buildSkillNames(List<AccountSkill> requiredSkills) {
 		return ExtractorUtil.extractList(requiredSkills, new Extractor<AccountSkill, String>() {
-			@Override
-			public String extract(AccountSkill accountSkill) {
-				return accountSkill.getName();
-			}
-		});
+            @Override
+            public String extract(AccountSkill accountSkill) {
+                return accountSkill.getName();
+            }
+        });
 	}
 
 	private List<Employee> getAssignedEmployees(final Project project, final int accountId) {

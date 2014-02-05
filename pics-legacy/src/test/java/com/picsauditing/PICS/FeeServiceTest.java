@@ -3,8 +3,8 @@ package com.picsauditing.PICS;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +15,7 @@ import org.powermock.reflect.Whitebox;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 

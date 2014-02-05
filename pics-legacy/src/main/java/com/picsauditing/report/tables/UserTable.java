@@ -1,7 +1,6 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 
 public class UserTable extends AbstractTable {

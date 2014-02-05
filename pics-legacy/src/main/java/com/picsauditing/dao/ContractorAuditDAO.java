@@ -1,29 +1,21 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
-
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Report;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.PermissionQueryBuilder;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.search.Report;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.PermissionQueryBuilder;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class ContractorAuditDAO extends PicsDAO {

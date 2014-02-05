@@ -1,27 +1,26 @@
 package com.picsauditing.report.converter;
 
-import static com.picsauditing.report.ReportJson.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dr.domain.fields.FilterType;
 import com.picsauditing.dr.domain.fields.QueryFilterOperator;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportPreferencesService;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.service.PermissionService;
-import com.picsauditing.service.ReportPreferencesService;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.picsauditing.report.ReportJson.*;
 
 @SuppressWarnings("unchecked")
 public class JsonReportBuilder {

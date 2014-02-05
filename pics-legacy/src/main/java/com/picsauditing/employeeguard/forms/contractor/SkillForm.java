@@ -1,13 +1,11 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
 import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
-
-import java.util.Map;
 
 public class SkillForm implements AddAnotherForm, DuplicateInfoProvider {
 

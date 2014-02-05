@@ -1,36 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.OrderBy;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -44,6 +13,14 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.OrderBy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.json.simple.JSONObject;
+
+import javax.persistence.*;
+import javax.persistence.Column;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity

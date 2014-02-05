@@ -1,32 +1,27 @@
 package com.picsauditing.actions.audits;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.*;
-import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
-import com.picsauditing.service.audit.CaoAutoAdvancer;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.*;
 import com.picsauditing.models.audits.CaoSaveModel;
+import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.service.audit.CaoAutoAdvancer;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.*;
 
 // TODO TECHNICAL DEBT: PICS-11385 CaoSave violates the Single Responsibility Principle
 @SuppressWarnings("serial")

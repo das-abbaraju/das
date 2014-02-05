@@ -13,11 +13,11 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.BillingNoteModel;
+import com.picsauditing.util.SapAppPropertyUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,7 +29,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
 public class InvoiceDetailTest extends PicsActionTest {

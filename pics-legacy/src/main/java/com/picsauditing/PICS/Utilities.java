@@ -385,6 +385,23 @@ public class Utilities {
 		return map;
 	}
 
+	public static <E, K, V> Map<K, V> convertToMap(final Collection<E> entities,
+	                                               final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, V> map = new HashMap<>();
+		for (E entity : entities) {
+			K key = entityKeyValueConvertable.getKey(entity);
+			V value = entityKeyValueConvertable.getValue(entity);
+
+			map.put(key, value);
+		}
+
+		return map;
+	}
+
 	public static <K, V> void addToMapOfKeyToList(Map<K, List<V>> map, K key, V value) {
 		if (!map.containsKey(key)) {
 			map.put(key, new ArrayList<V>());
@@ -432,6 +449,16 @@ public class Utilities {
 
         return invertedMap;
     }
+
+	public static <K, V> Map<V, K> invertMap(Map<K, V> map) {
+		Map<V, K> invertedMap = new HashMap<>();
+
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			invertedMap.put(entry.getValue(), entry.getKey());
+		}
+
+		return invertedMap;
+	}
 
 	public static <K, V> Set<V> extractAndFlattenValuesFromMap(final Map<K, ? extends Collection<V>> map) {
 		Set<V> values = new HashSet<>();

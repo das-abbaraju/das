@@ -5,7 +5,6 @@ import com.picsauditing.employeeguard.forms.operator.ProjectForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameLocationForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
-import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
 public class ProjectFormValidator extends AbstractBasicAndDuplicateValidator<ProjectNameLocationForm> {
 	public static final String PROJECT_FORM = "projectForm";

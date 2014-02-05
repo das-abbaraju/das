@@ -1,20 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import com.picsauditing.util.YearList;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.validator.InputValidator;
+import com.picsauditing.validator.VATValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,12 +13,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.validator.InputValidator;
-import com.picsauditing.validator.VATValidator;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 public class ContractorAccountTest {
 	private ContractorAccount contractor;

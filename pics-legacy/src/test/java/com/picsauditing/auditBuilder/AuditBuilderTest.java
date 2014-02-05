@@ -1,26 +1,18 @@
 package com.picsauditing.auditBuilder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.test.TranslatorFactorySetup;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,16 +22,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.test.TranslatorFactorySetup;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
 
 public class AuditBuilderTest extends PicsTest {
 	AuditBuilder auditBuilder;

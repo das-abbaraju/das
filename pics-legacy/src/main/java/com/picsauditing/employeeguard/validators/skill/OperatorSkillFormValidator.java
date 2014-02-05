@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.validators.skill;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
-import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
 public class OperatorSkillFormValidator extends AbstractBasicAndDuplicateValidator<OperatorSkillForm> {
 	public static final String OPERATOR_SKILL_FORM = "operatorSkillForm";

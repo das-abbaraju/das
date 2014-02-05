@@ -79,10 +79,10 @@ public class PicsActionTest extends PicsTranslationTest {
 	}
 
 	protected void setupMocks() {
-		parameters = new HashMap<String, Object>();
+		parameters = new HashMap<>();
 
-		session = new HashMap<String, Object>();
-		Map<String, Object> context = new HashMap<String, Object>();
+		session = new HashMap<>();
+		Map<String, Object> context = new HashMap<>();
 		context.put(StrutsStatics.HTTP_REQUEST, request);
 		context.put(StrutsStatics.HTTP_RESPONSE, response);
 		context.put(StrutsStatics.SERVLET_CONTEXT, servletContext);
