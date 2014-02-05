@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -166,4 +168,15 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 		query.setParameter("corporateIds", corporateIds);
 		return query.getResultList();
 	}
+
+    @Transactional(propagation = Propagation.NESTED)
+    public void deleteByIds(Collection<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+
+        Query query = em.createQuery("DELETE FROM AccountSkillEmployee ase WHERE ase.id IN (:ids)");
+        query.setParameter("ids", ids);
+        query.executeUpdate();
+    }
 }
