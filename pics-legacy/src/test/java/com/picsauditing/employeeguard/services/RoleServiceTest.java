@@ -13,7 +13,6 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -151,19 +150,19 @@ public class RoleServiceTest {
 
 		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
 
-		when(accountService.getTopmostCorporateAccountIds(anyInt())).thenReturn(corporateIds);
-		when(accountSkillEmployeeDAO.findByAccountAndEmployee(employee)).thenReturn(accountSkillEmployees);
-		when(roleDAO.find(anyInt())).thenReturn(corporateRole);
-		when(roleDAO.findSiteToCorporateRoles(corporateIds, Arrays.asList(SITE_ID))).thenReturn(siteToCorporateRoles);
+		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(corporateIds);
+		when(accountSkillEmployeeDAO.findByAccountAndEmployee(employee)).thenReturn(Collections.<AccountSkillEmployee>emptyList());
+		when(employee.getSkills()).thenReturn(accountSkillEmployees);
+		when(roleDAO.find(CORPORATE_ROLE_ID)).thenReturn(corporateRole);
+		when(roleDAO.findSiteToCorporateRoles(corporateIds, SITE_ID)).thenReturn(siteToCorporateRoles);
 		when(skillUsage.allSkills()).thenReturn(accountSkills);
 		when(skillUsageLocator.getSkillUsagesForEmployee(employee)).thenReturn(skillUsage);
 
-		verify(accountSkillEmployeeDAO).findByAccountAndEmployee(employee);
+		roleService.unassignEmployeeFromRole(employee, CORPORATE_ROLE_ID, SITE_ID);
+
+		verify(accountSkillEmployeeDAO).delete(accountSkillEmployees);
 		verify(roleAssignmentHelper).deleteProjectRolesFromEmployee(employee, corporateRole);
 		verify(roleAssignmentHelper).deleteSiteRoleFromEmployee(employee, corporateRole, corporateToSiteRoles);
-		verify(skillUsageLocator).getSkillUsagesForEmployee(employee);
-
-		fail("Not implemented");
 	}
 
 	private void setUpUnassignEmployeeFromSite() {

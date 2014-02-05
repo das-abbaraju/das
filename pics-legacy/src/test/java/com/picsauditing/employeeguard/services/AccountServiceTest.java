@@ -14,6 +14,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -69,7 +70,8 @@ public class AccountServiceTest {
 				return (List<OperatorAccount>) invocationOnMock.getArguments()[0];
 			}
 		});
-		when(operatorAccountDAO.find(4)).thenReturn(site1);
+
+		when(operatorAccountDAO.findOperators(Arrays.asList(4))).thenReturn(Arrays.asList(site1));
 
 		List<AccountModel> topDogs = accountService.getTopmostCorporateAccounts(4);
 		assertEquals("Corporate 1", topDogs.get(0).getName());
