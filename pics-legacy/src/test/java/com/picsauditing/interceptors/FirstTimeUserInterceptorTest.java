@@ -41,7 +41,6 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-
 		firstTimeUserInterceptor = new FirstTimeUserInterceptor();
 		when(actionContext.getSession()).thenReturn(session);
 		when(invocation.invoke()).thenReturn("next");
@@ -65,6 +64,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
+        when(permissions.isActive()).thenReturn(true);
 
 		when(session.get("permissions")).thenReturn(permissions);
 
@@ -94,7 +94,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testShouldRedirectToV7NavigationTutorial_FirstTimeUser() throws Exception {
+	public void testShouldRedirectToV7NavigationTutorial_InactiveFirstTimeUser() throws Exception {
         when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(true);
@@ -103,10 +103,24 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 		Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToV7NavigationTutorial",
 				permissions);
 
-		assertTrue(result);
+        assertFalse(result);
 	}
 
-	@Test
+    @Test
+    public void testShouldRedirectToV7NavigationTutorial_ActiveFirstTimeUser() throws Exception {
+        when(permissions.getSwitchedToUserName()).thenReturn(null);
+        when(permissions.isLoggedIn()).thenReturn(true);
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
+        when(permissions.isActive()).thenReturn(true);
+
+        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToV7NavigationTutorial",
+                permissions);
+
+        assertTrue(result);
+    }
+
+    @Test
 	public void testIntercept_reportsManagerTutorial_RedirectForFirstTimeUser() throws Exception {
         when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
