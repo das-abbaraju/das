@@ -92,6 +92,7 @@ public class FacilitiesEditTest extends PicsActionTest {
 
         Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
         Whitebox.setInternalState(facilitiesEdit, "accountStatusChanges", accountStatusChanges);
+        Whitebox.setInternalState(facilitiesEdit, "operatorDao", operatorDAO);
         Whitebox.setInternalState(facilitiesEditModel, "featureToggle", featureToggle);
 
 		operator = new OperatorAccount();
@@ -160,6 +161,21 @@ public class FacilitiesEditTest extends PicsActionTest {
 		Whitebox.invokeMethod(facilitiesEdit, "addParentPrimaryOperatorContactUsers", primaryContactSet);
 		assertEquals(userList.size(), primaryContactSet.size());
 	}
+
+    @Test
+    public void testSave_RememberMe_NotEnable() {
+        facilitiesEdit.getOperator().setRememberMeTimeEnabled(false);
+        facilitiesEdit.getOperator().setRememberMeTimeInDays(1);
+        facilitiesEdit.setTimeoutDays("7");
+        facilitiesEdit.setSessionTimeout("60");
+        facilitiesEdit.getOperator().setName("Fake");
+        facilitiesEdit.getOperator().setCountry(new Country("US"));
+        facilitiesEdit.getOperator().setCountrySubdivision(new CountrySubdivision("US-CA"));
+        when(operatorDAO.save(operator)).thenReturn(operator);
+        facilitiesEdit.save();
+        assertEquals(1, operator.getRememberMeTimeInDays());
+    }
+
 
     @Test
     public void testSave_RememberMe_NonInteger() {

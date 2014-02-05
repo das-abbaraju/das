@@ -199,11 +199,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
             operator.setType(getCreateType());
         }
 
-        try {
-            operator.setRememberMeTimeInDays(Integer.parseInt(timeoutDays));
-        } catch (NumberFormatException e) {
-            addActionError(getText("FacilitiesEdit.RememberMeInteger"));
-            return REDIRECT;
+        if (operator.isRememberMeTimeEnabled()) {
+            try {
+                operator.setRememberMeTimeInDays(Integer.parseInt(timeoutDays));
+            } catch (NumberFormatException e) {
+                addActionError(getText("FacilitiesEdit.RememberMeInteger"));
+                return REDIRECT;
+            }
         }
 
         try {
