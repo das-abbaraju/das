@@ -129,6 +129,13 @@ public class FacilitiesEditModel {
 
     public FacilitiesEditStatus addOneToManyAccountUser(Permissions permissions, OperatorAccount operator, AccountUser accountUser) {
         FacilitiesEditStatus status = new FacilitiesEditStatus();
+
+        if (accountUser.getUser().getId() == 0) {
+            status.notOkErrorMessage = "No User Selected";
+            status.isOk = false;
+            return status;
+        }
+
         if (accountUser.getRole() == UserAccountRole.PICSSalesRep) {
             AccountUser newAccountUser = new AccountUser();
             setCommissionableServiceLevel(newAccountUser, accountUser.getServiceLevel());

@@ -1,10 +1,16 @@
 package com.picsauditing.model.operators;
 
-import com.picsauditing.EntityFactory;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -13,13 +19,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.FacilitiesDAO;
 
 public class FacilitiesEditModelTest {
 
@@ -333,7 +336,14 @@ public class FacilitiesEditModelTest {
 		}
 	}
 
-	public void testAddPicsCountry(String currentIsoCode) throws Exception {
+    @Test
+    public void testAddOneToManyAccountUser_noUser() throws Exception {
+        FacilitiesEditStatus status = facilitiesEditModel.addOneToManyAccountUser(permissions, operator, accountUser);
+
+        assertEquals("No User Selected",status.notOkErrorMessage);
+    }
+
+    public void testAddPicsCountry(String currentIsoCode) throws Exception {
 		country.setIsoCode(currentIsoCode);
 
 		facilitiesEditModel.addPicsCountry(operator, permissions);

@@ -165,6 +165,7 @@ public class LoginService {
 			user.setForcePasswordReset(true);
 			user.setResetHash("");
 			user.unlockLogin();
+            user.setPasswordChanged(null);
 		}
 	}
 

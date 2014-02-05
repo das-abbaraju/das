@@ -14,10 +14,12 @@ import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
+import com.picsauditing.service.billing.InvoiceDiscountsService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -60,6 +62,8 @@ public class BillingService {
     private FeeService feeService;
     @Autowired
     private TaxService taxService;
+    @Autowired
+    private InvoiceDiscountsService invoiceDiscountsService;
 
 	private final TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
@@ -69,9 +73,6 @@ public class BillingService {
     }
 
     public void syncBalance(ContractorAccount contractor) {
-        if (contractor.getStatus().isRequested() || contractor.getStatus().isDeclined())
-            return;
-
         BigDecimal balance = calculateCurrentBalance(contractor);
 
         contractor.setBalance(balance.setScale(2, BigDecimal.ROUND_UP));
@@ -101,6 +102,7 @@ public class BillingService {
             if (!creditMemo.getStatus().isVoid())
                 currentBalance = currentBalance.subtract(creditMemo.getTotalAmount());
         }
+
 
         return currentBalance;
     }
@@ -327,6 +329,7 @@ public class BillingService {
 		addActivationFeeIfApplies(contractor, billingStatus, items);
         addProductItems(contractor, billingStatus, user, items);
         addSSIPDiscountIfApplies(contractor, items);
+        items.addAll(invoiceDiscountsService.applyDiscounts(contractor, items));
 
 		return items;
 	}

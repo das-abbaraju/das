@@ -5,7 +5,9 @@
 
 	.modal-header {
 		background-color: $pics_cool_grey;
-		@include border-radius(6px);
+		@include border-top-left-radius(6px);
+		@include border-top-right-radius(6px);
+		border-bottom: 0px;
 		padding-left: 20px;
 	}
 

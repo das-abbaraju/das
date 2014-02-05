@@ -5,17 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.PICS.TaxService;
+import com.picsauditing.jpa.entities.builders.InvoiceFeeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -50,6 +45,7 @@ public class InvoiceFee extends BaseTable {
 	private boolean commissionEligible;
 	private List<InvoiceFeeCountry> invoiceFeeCountries = new ArrayList<InvoiceFeeCountry>();
 	private InvoiceFeeCountry regionalFee;
+    private int discountOperatorID;
 
 	public InvoiceFee() {
 	}
@@ -168,6 +164,14 @@ public class InvoiceFee extends BaseTable {
 		return displayOrder;
 	}
 
+    public int getDiscountOperatorID() {
+        return discountOperatorID;
+    }
+
+    public void setDiscountOperatorID(int discountOperatorID) {
+        this.discountOperatorID = discountOperatorID;
+    }
+
     @ReportField(type = FieldType.Boolean)
 	public boolean isCommissionEligible() {
 		return commissionEligible;
@@ -277,4 +281,8 @@ public class InvoiceFee extends BaseTable {
 	public boolean isRefundable() {
 		return !FeeService.NON_REFUNDABLE_FEE_CLASSES().contains(feeClass);
 	}
+
+    public static InvoiceFeeBuilder builder() {
+        return new InvoiceFeeBuilder();
+    }
 }

@@ -106,6 +106,7 @@ public class ChangePassword extends PicsActionSupport {
 				// Set password to the encrypted version
 				String oldPassword = user.getPassword();
 				user.setEncryptedPassword(password1);
+                user.setPasswordChanged(new Date());
                 savePasswordHistory(oldPassword);
 
 				// If the user is changing their password, they are no longer

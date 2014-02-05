@@ -91,7 +91,10 @@ public class UsersManageTest extends PicsActionTest {
 
         operatorChildren = new HashSet<>();
         when(permissions.getOperatorChildren()).thenReturn(operatorChildren);
+        when(permissions.getVisibleAccounts()).thenReturn(operatorChildren);
+        doNothing().when(permissions).tryPermission(any(OpPerms.class));
         when(translationService.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
+        when(account.isContractor()).thenReturn(true);
         when(user.getAccount()).thenReturn(account);
 	}
 
@@ -531,7 +534,7 @@ public class UsersManageTest extends PicsActionTest {
         }
     }
 
-    @Test(expected = NoRightsException.class)
+    @Test(expected = UnauthorizedException.class)
     public void testVerifyAccountAccess_UserEditingAccountNotOperatorChildrenNoAllOperatorsPerm() throws Exception {
         when(permissions.getAccountId()).thenReturn(987);
         when(account.getId()).thenReturn(123);
@@ -586,6 +589,122 @@ public class UsersManageTest extends PicsActionTest {
         Whitebox.invokeMethod(usersManage, "verifyUserInAccount");
     }
 
+    @Test
+    public void testLoggedInUserHasPermissionOnUserOrAccount_NullAccountToCheckReturnsFalse() throws Exception {
+        usersManage.setUser(null);
+        usersManage.setAccount(null);
+
+        Boolean returned = Whitebox.invokeMethod(usersManage, "loggedInUserHasPermissionOnUserOrAccount");
+
+        assertFalse(returned);
+    }
+
+    @Test
+    public void testLoggedInUserHasPermissionOnUserOrAccount_IsContractorRequiresAllContractors() throws Exception {
+        doThrow(new NoRightsException("Test")).when(permissions).tryPermission(OpPerms.AllContractors);
+        when(account.isContractor()).thenReturn(true);
+        usersManage.setUser(null);
+        usersManage.setAccount(account);
+
+        Boolean returned = Whitebox.invokeMethod(usersManage, "loggedInUserHasPermissionOnUserOrAccount");
+
+        assertFalse(returned);
+        verify(permissions).tryPermission(OpPerms.AllContractors);
+    }
+
+    @Test
+    public void testLoggedInUserHasPermissionOnUserOrAccount_IsOperatorRequiresAllOperators() throws Exception {
+        doThrow(new NoRightsException("Test")).when(permissions).tryPermission(OpPerms.AllOperators);
+        when(account.isContractor()).thenReturn(false);
+        when(account.isOperator()).thenReturn(true);
+        usersManage.setUser(null);
+        usersManage.setAccount(account);
+
+        Boolean returned = Whitebox.invokeMethod(usersManage, "loggedInUserHasPermissionOnUserOrAccount");
+
+        assertFalse(returned);
+        verify(permissions).tryPermission(OpPerms.AllOperators);
+    }
+
+    @Test
+    public void testLoggedInUserHasPermissionOnUserOrAccount_IsCorporateRequiresManageCorporate() throws Exception {
+        doThrow(new NoRightsException("Test")).when(permissions).tryPermission(OpPerms.ManageCorporate);
+        when(account.isContractor()).thenReturn(false);
+        when(account.isOperator()).thenReturn(false);
+        when(account.isCorporate()).thenReturn(true);
+        usersManage.setUser(null);
+        usersManage.setAccount(account);
+
+        Boolean returned = Whitebox.invokeMethod(usersManage, "loggedInUserHasPermissionOnUserOrAccount");
+
+        assertFalse(returned);
+        verify(permissions).tryPermission(OpPerms.ManageCorporate);
+    }
+
+    @Test
+    public void testLoggedInUserHasPermissionOnUserOrAccount_IsAssessmentRequiresManageAssessment() throws Exception {
+        doThrow(new NoRightsException("Test")).when(permissions).tryPermission(OpPerms.ManageAssessment);
+        when(account.isContractor()).thenReturn(false);
+        when(account.isOperator()).thenReturn(false);
+        when(account.isCorporate()).thenReturn(false);
+        when(account.isAssessment()).thenReturn(true);
+        usersManage.setUser(null);
+        usersManage.setAccount(account);
+
+        Boolean returned = Whitebox.invokeMethod(usersManage, "loggedInUserHasPermissionOnUserOrAccount");
+
+        assertFalse(returned);
+        verify(permissions).tryPermission(OpPerms.ManageAssessment);
+    }
+
+    @Test
+    public void testLoggedInUserHasPermissionOnUserOrAccount_IsAdminRequiresEditUsersPics() throws Exception {
+        doThrow(new NoRightsException("Test")).when(permissions).tryPermission(OpPerms.EditUsersPics);
+        when(account.isContractor()).thenReturn(false);
+        when(account.isOperator()).thenReturn(false);
+        when(account.isCorporate()).thenReturn(false);
+        when(account.isAssessment()).thenReturn(false);
+        when(account.isAdmin()).thenReturn(true);
+        usersManage.setUser(null);
+        usersManage.setAccount(account);
+
+        Boolean returned = Whitebox.invokeMethod(usersManage, "loggedInUserHasPermissionOnUserOrAccount");
+
+        assertFalse(returned);
+        verify(permissions).tryPermission(OpPerms.EditUsersPics);
+    }
+
+    @Test
+    public void testAccountToCheckPermissionsOn_NullUserReturnsAccount() throws Exception {
+        usersManage.setUser(null);
+        usersManage.setAccount(account);
+
+        Account accountReturned = Whitebox.invokeMethod(usersManage, "accountToCheckPermissionsOn");
+
+        assertEquals(account, accountReturned);
+    }
+
+    @Test
+    public void testAccountToCheckPermissionsOn_NullUserAccountReturnsAccount() throws Exception {
+        when(user.getAccount()).thenReturn(null);
+        usersManage.setUser(user);
+        usersManage.setAccount(account);
+
+        Account accountReturned = Whitebox.invokeMethod(usersManage, "accountToCheckPermissionsOn");
+
+        assertEquals(account, accountReturned);
+    }
+
+    @Test
+    public void testAccountToCheckPermissionsOn_NullUserNullAccountReturnsNull() throws Exception {
+        usersManage.setUser(null);
+        usersManage.setAccount(null);
+
+        Account accountReturned = Whitebox.invokeMethod(usersManage, "accountToCheckPermissionsOn");
+
+        assertNull(accountReturned);
+    }
+
     private void setUpUserAndAccount() {
 		// Just seed some data so we don't get NPEs when calling functions
 		User user = new User(123);
@@ -594,6 +713,7 @@ public class UsersManageTest extends PicsActionTest {
 		user.setEmail("me@here.com");
 		Account account = new Account();
         account.setId(456);
+        account.setType("Contractor");
 		user.setAccount(account);
 		usersManage.setUser(user);
 		usersManage.setAccount(account);

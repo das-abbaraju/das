@@ -46,18 +46,11 @@ public abstract class SubscriptionBuilder {
 	    }
 
         if (queue != null) {
-                sender.sendNow(queue);
-        } else {
-            logger.error("SubscriptionBuilder.buildEmail returned null: " +
-                    subscription.getSubscription().toString() +
-                    " Subscription for " +
-                    subscription.getUser().getName() + "(" + subscription.getUser().getId() + ")" +
-                    " at " + subscription.getUser().getAccount().getName() + "(" + subscription.getUser().getAccount().getId() + ")"
-            );
+            sender.sendNow(queue);
+            subscription.setLastSent(new Date());
+            subscriptionDAO.save(subscription);
         }
 
-        subscription.setLastSent(new Date());
-        subscriptionDAO.save(subscription);
         tokens.clear();
     }
 

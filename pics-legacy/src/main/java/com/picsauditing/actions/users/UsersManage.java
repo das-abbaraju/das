@@ -501,22 +501,73 @@ public class UsersManage extends PicsActionSupport {
 	}
 
     private void checkPermissionToEditUserInAccount() throws NoRightsException, UnauthorizedException {
-        verifyAccountAccess();
-        verifyUserInAccount();
+        if (!loggedInUserHasPermissionOnUserOrAccount()) {
+            verifyAccountAccess();
+            verifyUserInAccount();
+        }
+    }
+
+    private boolean loggedInUserHasPermissionOnUserOrAccount() {
+        Account accountToCheck = accountToCheckPermissionsOn();
+        if (accountToCheck != null) {
+            try {
+                if (accountToCheck.isContractor()) {
+                    permissions.tryPermission(OpPerms.AllContractors);
+                    return true;
+                } else if (accountToCheck.isOperator()) {
+                    permissions.tryPermission(OpPerms.AllOperators);
+                    return true;
+                } else if (accountToCheck.isCorporate()) {
+                    permissions.tryPermission(OpPerms.ManageCorporate);
+                    return true;
+                } else if (accountToCheck.isAssessment()) {
+                    permissions.tryPermission(OpPerms.ManageAssessment);
+                    return true;
+                } else if (accountToCheck.isAdmin()) {
+                    permissions.tryPermission(OpPerms.EditUsersPics);
+                    return true;
+                }
+            } catch (NoRightsException doNotHaveFullAccess) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private Account accountToCheckPermissionsOn() {
+        if (user != null && user.getAccount() != null) {
+            return user.getAccount();
+        } else if (account != null) {
+            return account;
+        } else {
+            return null;
+        }
     }
 
     private void verifyUserInAccount() throws UnauthorizedException {
         if (user != null && user.getAccount() != null) {
             if (user.getAccount().getId() != account.getId()) {
-                throw new UnauthorizedException("Illegal access to page");
+                if (!userInAVisibleAccount()) {
+                    throw new UnauthorizedException("Illegal access to page");
+                }
             }
         }
     }
 
-    private void verifyAccountAccess() throws NoRightsException {
+    private boolean userInAVisibleAccount() {
+        for (Integer accountID : permissions.getVisibleAccounts()) {
+            Account account = accountDAO.find(accountID);
+            if (account.getUsers().contains(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void verifyAccountAccess() throws UnauthorizedException {
         if (permissions.getAccountId() != account.getId()) {
-            if (!permissions.getOperatorChildren().contains(account.getId())) {
-                permissions.tryPermission(OpPerms.AllOperators);
+            if (!permissions.getVisibleAccounts().contains(account.getId())) {
+                throw new UnauthorizedException("Illegal access to page");
             }
         }
     }

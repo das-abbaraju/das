@@ -86,7 +86,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private String phoneIndex;
 	private String fax;
 
-	private Date passwordChanged;
+	private Date passwordChanged = new Date();
 	private String resetHash;
 	private boolean forcePasswordReset;
 	private int failedAttempts = 0;

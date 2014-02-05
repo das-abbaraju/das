@@ -125,7 +125,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
         Map<FeeClass,ContractorFee> fees = contractor.getFees();
         for (FeeClass feeClass : fees.keySet()) {
             ContractorFee contractorFee = fees.get(feeClass);
-            if (!contractorFee.getNewLevel().isFree()) {
+            if (!contractorFee.getNewLevel().isFree() && contractorFee.getFeeClass() != FeeClass.ImportFee) {
                 total = total.add(contractorFee.getNewAmount());
             }
         }

@@ -38,7 +38,7 @@ public class AuditBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
 
 	private User systemUser = new User(User.SYSTEM);
-    private Date today = new Date();
+    private Date today;
 
 	HashSet<ContractorAuditOperator> caosToMoveToApprove = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
@@ -213,7 +213,7 @@ public class AuditBuilder {
 	}
 
 	private void addMonthlyQuarterlyYearly(ContractorAccount contractor, AuditType auditType) {
-        List<String> auditFors = auditPeriodService.getAuditForByDate(auditType, today);
+        List<String> auditFors = auditPeriodService.getAuditForByDate(auditType, getToday());
         List<AuditType> children = auditTypeDao.findWhere("t.parent.id = " + auditType.getId());
         AuditType childAuditType = null;
         if (children.size() > 0) {
@@ -308,7 +308,10 @@ public class AuditBuilder {
 	}
 
     public Date getToday() {
-        return today;
+        if (today == null)
+            return new Date();
+        else
+            return today;
     }
 
     public void setToday(Date today) {

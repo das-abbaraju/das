@@ -59,9 +59,16 @@
                 <s:if test="#incomplete_status > 0">
                     <s:set var="incomplete_class">danger</s:set>
                 </s:if>
+                <s:else>
+                    <s:set var="incomplete_class" value="" />
+                </s:else>
+
                 <s:if test="#expiring_status > 0">
                     <s:set var="expiring_class">warning</s:set>
                 </s:if>
+                <s:else>
+                    <s:set var="expiring_class" value="" />
+                </s:else>
 
                 <tr>
                     <td class="${incomplete_class} text-center">

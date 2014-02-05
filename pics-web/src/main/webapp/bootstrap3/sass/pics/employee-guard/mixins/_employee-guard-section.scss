@@ -27,6 +27,10 @@
         }
 
         &.info-toolbar {
+            .row {
+                line-height: 24px;
+            }
+
             a.btn {
                 margin-left: 5px;
                 margin-right: 0px;

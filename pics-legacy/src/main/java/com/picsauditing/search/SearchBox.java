@@ -228,6 +228,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 		} else {
 			queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
 			fullList = getFullResults(queryList);
+            totalRows = db.getAllRows();
 		}
 
 		if (fullList == null) {

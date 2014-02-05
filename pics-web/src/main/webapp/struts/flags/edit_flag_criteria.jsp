@@ -84,12 +84,19 @@
                         <s:include value="../who.jsp"/>
     				</s:if>
     			</li>
+    			<li><label><s:text name="FlagCriteria.category"/>:</label>
+    				<s:select list="criteriaCategory" name="criteria.category" headerValue="- Category -" label="Category"/>
+                    <pics:fieldhelp title="Category">
+                        <s:text name="FlagCriteria.category.fieldHelp"/>
+                    </pics:fieldhelp>
+                </li>
     			<li>
-    				<s:select list="criteriaCategory" name="criteria.category" headerValue="- Category -" label="Category" theme="formhelp" />
-    			</li>
-    			<li>
-    				<s:textfield name="criteria.displayOrder" theme="formhelp"/>
-    			</li>
+                    <li><label><s:text name="FlagCriteria.displayOrder"/>:</label>
+                    <s:textfield name="criteria.displayOrder" />
+                    <pics:fieldhelp title="Display Order">
+                        <s:text name="FlagCriteria.displayOrder.fieldHelp"/>
+                    </pics:fieldhelp>
+            </li>
     			<li>
     				<s:textfield name="criteria.label" value='%{(criteria.id > 0) ? criteria.label : ""}' theme="formhelp" maxlength="30"/>
                     
@@ -241,6 +248,8 @@
     				>
     					<s:param name="sort" value="'false'" />
     				</s:optiontransferselect>
+                    <pics:fieldhelp title="Required Languages">Languages this flag criteria should be translated.
+                    </pics:fieldhelp>
     			</li>
     		</ol>
     	</fieldset>

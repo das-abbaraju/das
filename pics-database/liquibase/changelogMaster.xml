@@ -135,8 +135,11 @@
 	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
 	<include file="./liquibase/mdo26_PICS-12788_updateAllNewUsersToV7.sql"/>
 	<include file="./liquibase/mdo40_PICs-14382_deleteAnyReportUsersToReport108.sql"/>
+	<include file="./liquibase/kchase22_PICS-14434_UpdatePeriodicAudit.sql"/>
 	
 	<!-- 7.1.4 -->
 	<include file="./liquibase/sshacter42_PICS-12791_ErrorSerchingWithChineseCharacters.sql"/>
+	<include file="./liquibase/mdo33_PICS-14211_changeEndDateForRevRec.sql"/>
+	<include file="./liquibase/kchase20_PICS-14080_UpdateCSRPhone_CSREmail_token.sql"/>
 
 </databaseChangeLog>

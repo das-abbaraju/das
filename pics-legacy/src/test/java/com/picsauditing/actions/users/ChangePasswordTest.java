@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import com.picsauditing.validator.PasswordValidator;
@@ -41,6 +42,8 @@ public class ChangePasswordTest extends PicsActionTest {
     private Account account;
     @Mock
     private PasswordValidator passwordValidator;
+    @Mock
+    private Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {
@@ -55,17 +58,35 @@ public class ChangePasswordTest extends PicsActionTest {
 		Whitebox.setInternalState(changePassword, "user", user);
 		Whitebox.setInternalState(changePassword, "u", user);
 		Whitebox.setInternalState(changePassword, "passwordValidator", passwordValidator);
+		Whitebox.setInternalState(changePassword, "permissions", permissions);
+        Whitebox.setInternalState(changePassword, "account", new Account());
 
 		when(userDAO1.find(anyInt())).thenReturn(user);
 		when(userDAO2.findName(anyString())).thenReturn(user);
 		when(user.getId()).thenReturn(1);
 		when(user.getAccount()).thenReturn(account);
 		when(account.getPasswordSecurityLevel()).thenReturn(PasswordSecurityLevel.Maximum);
-        when(translationService.hasKey(anyString(),any(Locale.class))).thenReturn(true);
+        when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
         when(passwordValidator.validatePassword(any(User.class), anyString())).thenReturn(errors);
+        when(permissions.isForcePasswordReset()).thenReturn(true);
 	}
 
-	@Test
+    @Test
+    public void testChangePassword() throws Exception {
+        User userObj = new User();
+        changePassword.setUser(userObj);
+        changePassword.setSource("ProfileEdit");
+        changePassword.setPassword1("ABCD1");
+        changePassword.setPassword2("ABCD1");
+        when(userDAO2.save((User)any())).thenReturn(userObj);
+        when(userDAO1.save((User)any())).thenReturn(userObj);
+
+        changePassword.changePassword();
+
+        assertNotNull(changePassword.getUser().getPasswordChanged());
+    }
+
+    @Test
 	public void testExecute_PasswordSecurityLevelShouldBeSet() throws Exception {
 		changePassword.execute();
 

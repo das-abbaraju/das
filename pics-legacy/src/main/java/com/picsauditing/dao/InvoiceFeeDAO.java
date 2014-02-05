@@ -3,6 +3,7 @@ package com.picsauditing.dao;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -40,18 +41,26 @@ public class InvoiceFeeDAO extends PicsDAO {
 	}
 
 	public InvoiceFee findByNumberOfOperatorsAndClass(FeeClass feeClass, int numPayingFacilities) {
-		Query query = em.createQuery("FROM InvoiceFee WHERE feeClass = :feeClass"
-				+ " AND :numPayingFacilities >= minFacilities AND :numPayingFacilities <= maxFacilities");
-
-		query.setParameter("feeClass", feeClass);
-		query.setParameter("numPayingFacilities", numPayingFacilities);
-
-		try {
-			return (InvoiceFee) query.getSingleResult();
-		} catch (EntityNotFoundException nre) {
-			return null;
-		}
+        return findDiscountByNumberOfOperatorsAndClass(feeClass, numPayingFacilities, 0);
 	}
+
+    public InvoiceFee findDiscountByNumberOfOperatorsAndClass(FeeClass feeClass, int numPayingFacilities, int discountOperatorId) {
+        Query query = em.createQuery("FROM InvoiceFee WHERE feeClass = :feeClass"
+                + " AND :numPayingFacilities >= minFacilities AND :numPayingFacilities <= maxFacilities" +
+                " AND discountOperatorID = :discountOperatorId"
+        );
+
+        query.setParameter("feeClass", feeClass);
+        query.setParameter("numPayingFacilities", numPayingFacilities);
+        query.setParameter("discountOperatorId", discountOperatorId);
+
+        try {
+            return (InvoiceFee) query.getSingleResult();
+        } catch (EntityNotFoundException | NoResultException nre) {
+            return null;
+        }
+    }
+
 
 	public List<InvoiceFee> findAll() {
 		Query query = em.createQuery("FROM InvoiceFee ORDER BY fee");
