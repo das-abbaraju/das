@@ -90,8 +90,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String unassign() {
 		try {
-//			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-//			roleService.unassignEmployeeFromRole(employee, roleId);
+			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
+			roleService.unassignEmployeeFromRole(employee, roleId, siteId);
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
 			LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
@@ -104,7 +104,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     public String unassignAll() throws Exception {
         try {
             Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-            roleService.unassignEmployeeFromSite(employee, siteId, permissions.getAppUserID());
+            roleService.unassignEmployeeFromSite(employee, siteId);
         } catch (Exception e) {
             LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
         }

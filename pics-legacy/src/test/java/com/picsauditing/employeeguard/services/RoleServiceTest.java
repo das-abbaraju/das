@@ -1,8 +1,10 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,6 +13,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,7 +26,6 @@ public class RoleServiceTest {
 	public static final int EMPLOYEE_ID = 3;
 	public static final int SITE_ID = 345;
 	public static final int USER_ID = 6;
-	public static final int APP_USER_ID = 12345;
 
 	private RoleService roleService;
 
@@ -51,6 +53,8 @@ public class RoleServiceTest {
 	private SiteSkillDAO siteSkillDAO;
 	@Mock
 	private SkillAssignmentHelper skillAssignmentHelper;
+	@Mock
+	private SkillUsageLocator skillUsageLocator;
 	// Entities
 	@Mock
 	private AccountSkillEmployee accountSkillEmployee;
@@ -70,6 +74,8 @@ public class RoleServiceTest {
 	private Role role;
 	@Mock
 	private RoleEmployee roleEmployee;
+	@Mock
+	private SkillUsage skillUsage;
 
 	@Before
 	public void setUp() {
@@ -89,6 +95,7 @@ public class RoleServiceTest {
 		Whitebox.setInternalState(roleService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 		Whitebox.setInternalState(roleService, "siteSkillDAO", siteSkillDAO);
 		Whitebox.setInternalState(roleService, "skillAssignmentHelper", skillAssignmentHelper);
+		Whitebox.setInternalState(roleService, "skillUsageLocator", skillUsageLocator);
 	}
 
 	@Test
@@ -113,7 +120,7 @@ public class RoleServiceTest {
 		when(accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(anyInt(), anyList())).thenReturn(accountSkillEmployees);
 		when(employee.getId()).thenReturn(EMPLOYEE_ID);
 
-		roleService.unassignEmployeeFromSite(employee, SITE_ID, APP_USER_ID);
+		roleService.unassignEmployeeFromSite(employee, SITE_ID);
 
 		verifyUnassign();
 		verify(accountSkillEmployeeDAO).delete(accountSkillEmployees);
@@ -123,10 +130,40 @@ public class RoleServiceTest {
 	public void testUnassignEmployeeFromSite_WithCorporateAndOtherSites() {
 		setUpUnassignEmployeeFromSite();
 
-		roleService.unassignEmployeeFromSite(employee, SITE_ID, APP_USER_ID);
+		roleService.unassignEmployeeFromSite(employee, SITE_ID);
 
 		verifyUnassign();
 		verify(accountSkillEmployeeDAO).delete(anyListOf(AccountSkillEmployee.class));
+	}
+
+	@Test
+	public void testUnassignEmployeeFromRole() {
+		List<AccountSkillEmployee> accountSkillEmployees = Arrays.asList(new AccountSkillEmployee());
+		Set<AccountSkill> accountSkills = new HashSet<>(Arrays.asList(new AccountSkill()));
+
+		Role corporateRole = new RoleBuilder().name("Corporate Role").build();
+		Role siteRole = new RoleBuilder().name("Site Role").build();
+
+		List<Integer> corporateIds = Arrays.asList(CORPORATE_ID);
+
+		HashMap<Role, Role> siteToCorporateRoles = new HashMap<>();
+		siteToCorporateRoles.put(siteRole, corporateRole);
+
+		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
+
+		when(accountService.getTopmostCorporateAccountIds(anyInt())).thenReturn(corporateIds);
+		when(accountSkillEmployeeDAO.findByAccountAndEmployee(employee)).thenReturn(accountSkillEmployees);
+		when(roleDAO.find(anyInt())).thenReturn(corporateRole);
+		when(roleDAO.findSiteToCorporateRoles(corporateIds, Arrays.asList(SITE_ID))).thenReturn(siteToCorporateRoles);
+		when(skillUsage.allSkills()).thenReturn(accountSkills);
+		when(skillUsageLocator.getSkillUsagesForEmployee(employee)).thenReturn(skillUsage);
+
+		verify(accountSkillEmployeeDAO).findByAccountAndEmployee(employee);
+		verify(roleAssignmentHelper).deleteProjectRolesFromEmployee(employee, corporateRole);
+		verify(roleAssignmentHelper).deleteSiteRoleFromEmployee(employee, corporateRole, corporateToSiteRoles);
+		verify(skillUsageLocator).getSkillUsagesForEmployee(employee);
+
+		fail("Not implemented");
 	}
 
 	private void setUpUnassignEmployeeFromSite() {
@@ -138,7 +175,7 @@ public class RoleServiceTest {
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
 		when(employee.getId()).thenReturn(EMPLOYEE_ID);
 		when(projectCompanyDAO.findByContractorExcludingSite(CONTRACTOR_ID, SITE_ID)).thenReturn(projectCompanies);
-		when(roleDAO.findSiteToCorporateRoles(anyListOf(Integer.class), anyInt())).thenReturn(siteToCorporateRoles);
+		when(roleDAO.findSiteToCorporateRoles(anyListOf(Integer.class), anyListOf(Integer.class))).thenReturn(siteToCorporateRoles);
 		when(skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(projectCompanies, employee, siteToCorporateRoles))
 				.thenReturn(accountSkills);
 		when(skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, CONTRACTOR_ID, accountSkills))
