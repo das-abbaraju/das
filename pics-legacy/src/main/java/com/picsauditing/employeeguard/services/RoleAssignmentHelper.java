@@ -16,8 +16,6 @@ public class RoleAssignmentHelper {
 
     @Autowired
     private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-	@Autowired
-	private RoleDAO roleDAO;
     @Autowired
     private RoleEmployeeDAO roleEmployeeDAO;
 

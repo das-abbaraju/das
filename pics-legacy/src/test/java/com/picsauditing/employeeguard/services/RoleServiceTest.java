@@ -160,7 +160,7 @@ public class RoleServiceTest {
 
 		roleService.unassignEmployeeFromRole(employee, CORPORATE_ROLE_ID, SITE_ID);
 
-		verify(accountSkillEmployeeDAO).delete(accountSkillEmployees);
+		verify(accountSkillEmployeeDAO).deleteByIds(anyListOf(Integer.class));
 		verify(roleAssignmentHelper).deleteProjectRolesFromEmployee(employee, corporateRole);
 		verify(roleAssignmentHelper).deleteSiteRoleFromEmployee(employee, corporateRole, corporateToSiteRoles);
 	}
