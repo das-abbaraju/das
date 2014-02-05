@@ -46,6 +46,8 @@ public class RoleService {
 	private SiteSkillDAO siteSkillDAO;
     @Autowired
     private SkillAssignmentHelper skillAssignmentHelper;
+	@Autowired
+	private SkillUsageLocator skillUsageLocator;
 
 	public Role getRole(final String id, final int accountId) {
 		return roleDAO.findRoleByAccount(NumberUtils.toInt(id), accountId);
@@ -291,11 +293,25 @@ public class RoleService {
 		return accountSkillEmployees;
 	}
 
-	public void unassignEmployeeFromRole(Employee employee, int roleId) {
+	public void unassignEmployeeFromRole(final Employee employee, final int roleId, final int siteId) {
+		Role corporateRole = roleDAO.find(roleId);
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+		Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
 
+		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee, corporateRole);
+		roleAssignmentHelper.deleteSiteRoleFromEmployee(employee, corporateRole, corporateToSiteRoles);
+
+		List<AccountSkillEmployee> employeeSkillsToRemove = new ArrayList<>(employee.getSkills());
+		SkillUsage skillUsage = skillUsageLocator.getSkillUsagesForEmployee(employee);
+
+		List<AccountSkillEmployee> employeeSkillsToKeep = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, new ArrayList<>(skillUsage.allSkills()));
+		employeeSkillsToRemove.removeAll(employeeSkillsToKeep);
+
+		accountSkillEmployeeDAO.delete(employeeSkillsToRemove);
 	}
 
-	public void unassignEmployeeFromSite(Employee employee, final int siteId, final int userId) {
+	public void unassignEmployeeFromSite(final Employee employee, final int siteId) {
 		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee.getId(), siteId);
 		roleAssignmentHelper.deleteSiteRolesFromEmployee(employee.getId(), siteId);
 
@@ -308,7 +324,7 @@ public class RoleService {
             // All of the projects the contractor has been assigned to that is not related to the site
 			List<ProjectCompany> projectCompanies = projectCompanyDAO.findByContractorExcludingSite(contractorId, siteId);
 
-            Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+			Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
 			Set<AccountSkill> requiredSkills = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(projectCompanies, employee, siteToCorporateRoles);
 			Set<AccountSkillEmployee> deletableSkills = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, contractorId, requiredSkills);
 

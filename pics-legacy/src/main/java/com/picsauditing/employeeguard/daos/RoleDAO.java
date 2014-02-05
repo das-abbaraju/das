@@ -38,7 +38,7 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 		return query.getResultList();
 	}
 
-	public List<Role> findByAccounts(List<Integer> accountIds) {
+	public List<Role> findByAccounts(Collection<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.emptyList();
 		}
@@ -74,31 +74,39 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 		return query.getResultList();
 	}
 
-	public Map<Role, Role> findSiteToCorporateRoles(final List<Integer> corporateIds, final int siteId) {
-		List<Role> siteRoles = findByAccounts(Arrays.asList(siteId));
+	public Map<Role, Role> findSiteToCorporateRoles(List<Integer> corporateIds, int siteId) {
+		return findSiteToCorporateRoles(corporateIds, Arrays.asList(siteId));
+	}
 
-		Query query = em.createNativeQuery("SELECT corp.* FROM account_group site " +
-				"JOIN account_group corp ON corp.name = site.name " +
-				"WHERE site.accountId = :siteId " +
-				"AND corp.accountId IN (:corporateIds) " +
-				"AND site.type = 'Role' " +
-				"AND corp.type = 'Role'", Role.class);
+	public Map<Role, Role> findSiteToCorporateRoles(final Collection<Integer> corporateIds, final Collection<Integer> siteIds) {
+		try {
+			List<Role> siteRoles = findByAccounts(siteIds);
 
-		query.setParameter("siteId", siteId);
-		query.setParameter("corporateIds", corporateIds);
+			Query query = em.createNativeQuery("SELECT corp.* FROM account_group site " +
+					"JOIN account_group corp ON corp.name = site.name " +
+					"WHERE site.accountId IN (:siteIds) " +
+					"AND corp.accountId IN (:corporateIds) " +
+					"AND site.type = 'Role' " +
+					"AND corp.type = 'Role'", Role.class);
 
-		List<Role> corporateRoles = query.getResultList();
+			query.setParameter("siteIds", siteIds);
+			query.setParameter("corporateIds", corporateIds);
 
-		Map<Role, Role> siteToCorporateRoles = new HashMap<>();
-		for (Role siteRole : siteRoles) {
-			for (Role corpRole : corporateRoles) {
-				if (siteRole.getName().equals(corpRole.getName())) {
-					siteToCorporateRoles.put(siteRole, corpRole);
+			List<Role> corporateRoles = query.getResultList();
+
+			Map<Role, Role> siteToCorporateRoles = new HashMap<>();
+			for (Role siteRole : siteRoles) {
+				for (Role corpRole : corporateRoles) {
+					if (siteRole.getName().equals(corpRole.getName())) {
+						siteToCorporateRoles.put(siteRole, corpRole);
+					}
 				}
 			}
-		}
 
-		return siteToCorporateRoles;
+			return siteToCorporateRoles;
+		} catch (Exception e) {
+			return Collections.emptyMap();
+		}
 	}
 
 	public Role findSiteRoleByCorporateRole(final List<Integer> corporateIds, final int siteId, final int corporateRoleId) {
@@ -121,5 +129,20 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 		}
 
 		return null;
+	}
+
+	public List<Role> findSiteRolesByCorporateRole(final Role corporateRole) {
+		Query query = em.createNativeQuery("SELECT site.* FROM account_group site " +
+				"JOIN account_group corp ON corp.name = site.name " +
+				"WHERE corp.accountId IN (:corporateId) " +
+				"AND site.type = 'Role' " +
+				"AND site.accountId != :corporateId " +
+				"AND corp.type = 'Role' " +
+				"AND corp.id = :roleId", Role.class);
+
+		query.setParameter("corporateId", corporateRole.getAccountId());
+		query.setParameter("roleId", corporateRole.getId());
+
+		return query.getResultList();
 	}
 }

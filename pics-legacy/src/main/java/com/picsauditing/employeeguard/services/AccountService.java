@@ -49,7 +49,7 @@ public class AccountService {
 			return Collections.emptyList();
 		}
 
-		List<OperatorAccount> employeeGUARDCorporates = getEmployeeGUARDCorporates(accountId);
+		List<OperatorAccount> employeeGUARDCorporates = getEmployeeGUARDCorporates(Arrays.asList(accountId));
 		// We don't have a need to modify accounts, so we'll map these corporate accounts to AccountModels
 		return mapAccountsToAccountModels(employeeGUARDCorporates);
 	}
@@ -64,25 +64,38 @@ public class AccountService {
 		});
 	}
 
+	public List<Integer> getTopmostCorporateAccountIds(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		return extractIdFromAccountModel(getEmployeeGUARDCorporates(accountIds));
+	}
+
 	public List<Integer> getTopmostCorporateAccountIds(final int accountId) {
 		if (accountId <= 0) {
 			return Collections.emptyList();
 		}
 
-		return extractIdFromAccountModel(getEmployeeGUARDCorporates(accountId));
+		return extractIdFromAccountModel(getEmployeeGUARDCorporates(Arrays.asList(accountId)));
 	}
 
-	private List<OperatorAccount> getEmployeeGUARDCorporates(int accountId) {
-		OperatorAccount operator = operatorDAO.find(accountId);
-		if (operator == null) {
+	private List<OperatorAccount> getEmployeeGUARDCorporates(Collection<Integer> accountIds) {
+		List<OperatorAccount> operators = operatorDAO.findOperators(new ArrayList<>(accountIds));
+		if (CollectionUtils.isEmpty(operators)) {
 			return Collections.emptyList();
 		}
 
 		ArrayList<OperatorAccount> topDogs = new ArrayList<>();
 		ArrayList<Integer> visited = new ArrayList<>();
 
-		List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, topDogs, visited);
-		return billingService.filterEmployeeGUARDAccounts(topmostCorporates);
+		Set<OperatorAccount> corporates = new HashSet<>();
+		for (OperatorAccount operator : operators) {
+			List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, topDogs, visited);
+			corporates.addAll(billingService.filterEmployeeGUARDAccounts(topmostCorporates));
+		}
+
+		return new ArrayList<>(corporates);
 	}
 
 	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<OperatorAccount> topDogs, List<Integer> visited) {

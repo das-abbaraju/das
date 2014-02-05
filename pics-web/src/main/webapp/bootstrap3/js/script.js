@@ -13812,12 +13812,13 @@ PICS.define('employee-guard.Assignment', {
         function onAssignIconClick(event) {
             var $element = $(event.target);
 
-            event.preventDefault();
-
-            $selected_row = $element.closest('tr');
+            $selected_row = $element.closest('tr'),
             is_assigned = $selected_row.hasClass('assigned');
-
-            requestEmployeeAssignment();
+     
+            if (!$selected_row.hasClass('site-level')){
+                event.preventDefault();
+                requestEmployeeAssignment();
+            }
         }
 
         function requestEmployeeAssignment() {
@@ -13883,6 +13884,7 @@ PICS.define('employee-guard.Assignment', {
         };
     }())
 });
+
 PICS.define('employee-guard.contractor.employee.EmployeeController', {
     methods: (function () {
         function init() {
