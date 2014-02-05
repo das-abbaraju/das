@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountEmployeeGuardDAO {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountEmployeeGuardDAO.class);
@@ -16,29 +14,31 @@ public class AccountEmployeeGuardDAO {
 	@PersistenceContext
 	protected EntityManager em;
 
-	public boolean isEmployeeGUARDEnabled(final int accountId) {
-		TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
-		query.setParameter("accountId", accountId);
+	public AccountEmployeeGuard find(int accountId) {
+		if (accountId == 0) {
+			return null;
+		}
+
+		AccountEmployeeGuard result = null;
 
 		try {
-			AccountEmployeeGuard accountEmployeeGuard = query.getSingleResult();
-			return accountEmployeeGuard != null;
-		} catch (Exception exception) {
-			LOG.debug("Account {} is not enabled for EmployeeGUARD", accountId);
+			TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
+			query.setParameter("accountId", accountId);
+			result = query.getSingleResult();
+		} catch (Exception e) {
+			LOG.error("Unable to find account {}", accountId, e);
 		}
 
-		return false;
+		return result;
 	}
 
-	public List<Integer> getEmployeeGUARDAccounts() {
-		TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg", AccountEmployeeGuard.class);
-		List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
+	public void save(AccountEmployeeGuard accountEmployeeGuard) {
+		em.persist(accountEmployeeGuard);
+		em.flush();
+	}
 
-		List<Integer> accounts = new ArrayList<>();
-		for (AccountEmployeeGuard accountEmployeeGuard : accountEmployeeGuards) {
-			accounts.add(accountEmployeeGuard.getAccountId());
-		}
-
-		return accounts;
+	public void remove(AccountEmployeeGuard accountEmployeeGuard) {
+		em.remove(accountEmployeeGuard);
+		em.flush();
 	}
 }
