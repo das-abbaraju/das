@@ -11683,19 +11683,26 @@ body {
   background-color: #fbcb43;
 }
 
-/* line 41, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 40, ../sass/pics/employee-guard/assignments/_assignments.scss */
+
+.table-assignment tr.assigned .assign-employee a {
+  font-weight: bold;
+  color: #ec8c00;
+}
+
+/* line 44, ../sass/pics/employee-guard/assignments/_assignments.scss */
 
 .table-assignment tr.assigned .assign-employee i {
   color: #ec8c00;
 }
 
-/* line 47, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 50, ../sass/pics/employee-guard/assignments/_assignments.scss */
 
 .table-assignment tr td a {
   display: inline;
 }
 
-/* line 54, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 57, ../sass/pics/employee-guard/assignments/_assignments.scss */
 
 .nav-assignment .site-status {
   margin-bottom: 20px;

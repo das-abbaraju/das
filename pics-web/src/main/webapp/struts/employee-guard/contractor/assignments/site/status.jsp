@@ -60,7 +60,7 @@
                                 ${employee_site_assignment.employeeId}
                             </s:param>
                         </s:url>
-                        <tr class="assign-employee-container assigned">
+                        <tr class="assign-employee-container assigned site-level">
                             <td class="assign-employee text-center">
                                 <a href="${employee_unassign_from_site}">
                                     <i class="icon-map-marker icon-large"></i> ${employee_site_assignment.numberOfRolesAssigned}
