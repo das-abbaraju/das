@@ -149,7 +149,7 @@ public class EmailBuilder {
 			}
 		}
 
-		String subject = convertPicsTagsToVelocity(templateSubject, template.isAllowsVelocity());
+		String subject = convertPicsTagsToVelocity(templateSubject, template.isAllowsVelocity(), userLocale);
 		try {
 			subject = velocityAdaptor.merge(subject, tokens);
 		} catch (TemplateParseException e) {
@@ -158,7 +158,7 @@ public class EmailBuilder {
 		}
 		email.setSubject(subject);
 
-		String body = convertPicsTagsToVelocity(templateBody, template.isAllowsVelocity());
+		String body = convertPicsTagsToVelocity(templateBody, template.isAllowsVelocity(), userLocale);
 		try {
 			body = velocityAdaptor.merge(body, tokens);
 		} catch (TemplateParseException e) {
@@ -256,11 +256,13 @@ public class EmailBuilder {
 	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags
 	 * like this ${token.name}
 	 * 
-	 * @param text
-	 * @param allowsVelocity
-	 * @return
+	 *
+     * @param text
+     * @param allowsVelocity
+     * @param userLocale
+     * @return
 	 */
-	private String convertPicsTagsToVelocity(String text, boolean allowsVelocity) {
+	private String convertPicsTagsToVelocity(String text, boolean allowsVelocity, Locale userLocale) {
 		if (!allowsVelocity) {
 			// Strip out the velocity tags
 			text = text.replace("${", "_");
@@ -274,7 +276,7 @@ public class EmailBuilder {
 			// Convert anything like this <Name> into something like this
 			// ${person.name}
 			String find = "<" + tag.getName().toString() + ">";
-			text = text.replace(find, tag.getVelocityCode().toString());
+			text = text.replace(find, tag.getVelocityCode(userLocale).toString());
 		}
 		return text;
 	}
@@ -316,37 +318,6 @@ public class EmailBuilder {
 	private boolean tokensContainsValueFor(String key) {
 		return tokens.containsKey(key) && tokens.get(key) != null;
 	}
-
-    /*
-    private String getUserTranslation(Locale locale, Collection<Translation>
-            translations) {
-        String english = I18nCache.DEFAULT_TRANSLATION;
-        String notVariantTranslation = I18nCache.DEFAULT_TRANSLATION;
-        for (Translation translation : translations) {
-            if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale())) {
-                english = translation.getValue();
-            }
-
-            if (locale.getLanguage().equals(translation.getLocale())
-                    && !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue())) {
-                notVariantTranslation = translation.getValue();
-            }
-
-            if (Strings.isNotEmpty(locale.getCountry())) {
-                if (translation.getLocale().equals(locale.getLanguage() + "_" +
-                        locale.getCountry())) {
-                    return translation.getValue();
-                }
-            }
-        }
-
-        if (!notVariantTranslation.equals(I18nCache.DEFAULT_TRANSLATION)) {
-            return notVariantTranslation;
-        }
-
-        return english;
-    }
-    */
 
     public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
