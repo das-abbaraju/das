@@ -142,4 +142,7 @@
 	<include file="./liquibase/mdo33_PICS-14211_changeEndDateForRevRec.sql"/>
 	<include file="./liquibase/kchase20_PICS-14080_UpdateCSRPhone_CSREmail_token.sql"/>
 
+	<!-- 7.1.5 -->
+	<include file="./liquibase/mdo43_PICs-14409_CleanUpCreditMemoRevReqDates.sql"/>
+
 </databaseChangeLog>
