@@ -145,5 +145,6 @@
 
 	<!-- 7.1.5 -->
 	<include file="./liquibase/mdo43_PICs-14409_CleanUpCreditMemoRevReqDates.sql"/>
+	<include file="./liquibase/mdo45_PICS-14043_BASFFavoriteCleanup.sql"/>
 
 </databaseChangeLog>
