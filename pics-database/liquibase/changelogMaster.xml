@@ -145,5 +145,12 @@
 
 	<!-- 7.1.5 -->
 	<include file="./liquibase/mdo43_PICs-14409_CleanUpCreditMemoRevReqDates.sql"/>
+    <include file="./liquibase/mdo44_PICs-14407_CorrectPaymentMethod.sql"/>
+    <include file="./liquibase/lkam4_PICS-13060_Remove_Contractor_Cron_Failure_Subscription.sql"/>
+	<include file="./liquibase/lkam5_US178_Add_Suncor_Discounts.sql"/>
+    <include file="./liquibase/kchase23_PICS-14445_IHGSubmitFix.sql"/>
+	<include file="./liquibase/kchase24_PICS-14406_FixAuditExpiration.sql"/>
+    <include file="./liquibase/dalvarado7_US318_SingleOperatorContactors.sql"/>
+
 
 </databaseChangeLog>
