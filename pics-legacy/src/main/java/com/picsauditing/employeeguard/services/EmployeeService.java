@@ -58,12 +58,20 @@ public class EmployeeService {
 		return employeeDAO.findEmployeeCount(accountId);
 	}
 
-	public List<Employee> getEmployeesForAccounts(final List<Integer> accountIds) {
+	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
 		return employeeDAO.findByAccounts(accountIds);
 	}
 
 	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
 		return employeeDAO.findByProjects(projects);
+	}
+
+	public List<Employee> getEmployeesAssignedToSite(final int accountId, final int siteId) {
+		return getEmployeesAssignedToSite(Arrays.asList(accountId), siteId);
+	}
+
+	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
+		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
 	public Employee save(Employee employee, final int accountId, final int appUserId) throws Exception {
@@ -321,9 +329,5 @@ public class EmployeeService {
 		employee.setProfile(profile);
 		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
 		softDeletedEmployeeDAO.save(employee);
-	}
-
-	public List<Employee> getEmployeesAssignedToSite(final int accountId, final int siteId) {
-		return employeeDAO.findEmployeesAssignedToSite(accountId, siteId);
 	}
 }
