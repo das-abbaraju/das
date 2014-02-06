@@ -262,4 +262,34 @@ public class AccountSkillEmployeeService {
 
 		return skillMap;
 	}
+
+	public Map<Employee, Set<AccountSkillEmployee>> getEmployeeSkillMapForContractorsAndSite(
+			final Set<Integer> contractorIds,
+			final int siteId,
+			final List<Integer> corporateIds,
+			final Map<Role, Role> siteToCorporateRoles) {
+		Collection<Role> corporateRoles = siteToCorporateRoles.values();
+		Set<Integer> siteAndCorporateIds = new HashSet<>(corporateIds);
+		siteAndCorporateIds.add(siteId);
+
+		Set<AccountSkillEmployee> allSiteSkills = getAllSiteSkills(contractorIds, siteId, corporateRoles, siteAndCorporateIds);
+
+		Map<Employee, Set<AccountSkillEmployee>> employeeSkills = new HashMap<>();
+		for (AccountSkillEmployee accountSkillEmployee : allSiteSkills) {
+			Utilities.addToMapOfKeyToSet(employeeSkills, accountSkillEmployee.getEmployee(), accountSkillEmployee);
+		}
+
+		return employeeSkills;
+	}
+
+	private Set<AccountSkillEmployee> getAllSiteSkills(Set<Integer> contractorIds, int siteId, Collection<Role> corporateRoles, Set<Integer> siteAndCorporateIds) {
+		Set<AccountSkillEmployee> allSiteSkills = new HashSet<>();
+
+		allSiteSkills.addAll(accountSkillEmployeeDAO.getProjectRoleSkillsForContractorsAndSite(contractorIds, siteId));
+		allSiteSkills.addAll(accountSkillEmployeeDAO.getProjectSkillsForContractorsAndSite(contractorIds, siteId));
+		allSiteSkills.addAll(accountSkillEmployeeDAO.getRoleSkillsForContractorsAndRoles(contractorIds, corporateRoles));
+		allSiteSkills.addAll(accountSkillEmployeeDAO.getSiteSkillsForContractorsAndSites(contractorIds, siteAndCorporateIds));
+
+		return allSiteSkills;
+	}
 }

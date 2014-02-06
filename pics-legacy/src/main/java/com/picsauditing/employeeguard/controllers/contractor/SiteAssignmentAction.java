@@ -56,7 +56,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
         Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
         AccountModel account = accountService.getAccountById(permissions.getAccountId());
-        return ViewModelFactory.getSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
+        return ViewModelFactory.getContractorSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
     }
 
     private Map<RoleInfo, Integer> getRoleEmployeeCounts(List<Employee> employees) {

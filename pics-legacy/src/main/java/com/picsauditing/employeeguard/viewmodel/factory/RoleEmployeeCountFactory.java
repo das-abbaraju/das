@@ -8,16 +8,13 @@ import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class RoleEmployeeCountFactory {
 
 	public Map<RoleInfo, Integer> create(final List<RoleInfo> corporateRoles,
 	                                     final Map<Role, Role> corporateToSiteRoles,
-	                                     final List<Employee> employees) {
+	                                     final Collection<Employee> employees) {
 		if (CollectionUtils.isEmpty(corporateRoles) || CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyMap();
 		}

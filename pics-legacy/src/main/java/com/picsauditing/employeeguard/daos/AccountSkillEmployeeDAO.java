@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillEmployee> {
 
@@ -119,20 +120,20 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 		return query.getResultList();
 	}
 
-    public List<AccountSkillEmployee> findByProjectAndContractor(Project project, int accountId) {
-        String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
-                "JOIN ase.skill s " +
-                "JOIN s.roles asr " +
-                "JOIN asr.role r " +
-                "JOIN r.projects pr " +
-                "JOIN pr.employees pre " +
-                "JOIN pre.employee e " +
-                "WHERE pr.project = :project AND e.accountId = :accountId";
-        TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
-        query.setParameter("project", project);
-        query.setParameter("accountId", accountId);
-        return query.getResultList();
-    }
+	public List<AccountSkillEmployee> findByProjectAndContractor(Project project, int accountId) {
+		String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
+				"JOIN ase.skill s " +
+				"JOIN s.roles asr " +
+				"JOIN asr.role r " +
+				"JOIN r.projects pr " +
+				"JOIN pr.employees pre " +
+				"JOIN pre.employee e " +
+				"WHERE pr.project = :project AND e.accountId = :accountId";
+		TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
+		query.setParameter("project", project);
+		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
 
 	public List<AccountSkillEmployee> findByContractorAndRole(final int contractorId, final int roleId) {
 		if (contractorId == 0 || roleId == 0) {
@@ -169,14 +170,78 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 		return query.getResultList();
 	}
 
-    @Transactional(propagation = Propagation.NESTED)
-    public void deleteByIds(Collection<Integer> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
-            return;
-        }
+	@Transactional(propagation = Propagation.NESTED)
+	public void deleteByIds(Collection<Integer> ids) {
+		if (CollectionUtils.isEmpty(ids)) {
+			return;
+		}
 
-        Query query = em.createQuery("DELETE FROM AccountSkillEmployee ase WHERE ase.id IN (:ids)");
-        query.setParameter("ids", ids);
-        query.executeUpdate();
-    }
+		Query query = em.createQuery("DELETE FROM AccountSkillEmployee ase WHERE ase.id IN (:ids)");
+		query.setParameter("ids", ids);
+		query.executeUpdate();
+	}
+
+	public List<AccountSkillEmployee> getProjectRoleSkillsForContractorsAndSite(final Set<Integer> contractorIds,
+	                                                                            final int siteId) {
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
+				"FROM AccountSkillEmployee ase " +
+				"JOIN ase.employee e " +
+				"JOIN ase.skill s " +
+				"JOIN s.roles asr " +
+				"JOIN asr.role r " +
+				"JOIN r.projects pr " +
+				"JOIN pr.project p " +
+				"WHERE e.accountId IN (:contractorIds) " +
+				"AND p.accountId = :siteId", AccountSkillEmployee.class);
+		query.setParameter("contractorIds", contractorIds);
+		query.setParameter("siteId", siteId);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> getProjectSkillsForContractorsAndSite(final Set<Integer> contractorIds,
+	                                                                        final int siteId) {
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
+				"FROM AccountSkillEmployee ase " +
+				"JOIN ase.employee e " +
+				"JOIN ase.skill s " +
+				"JOIN s.projects ps " +
+				"JOIN ps.project p " +
+				"WHERE e.accountId IN (:contractorIds) " +
+				"AND p.accountId = :siteId", AccountSkillEmployee.class);
+		query.setParameter("contractorIds", contractorIds);
+		query.setParameter("siteId", siteId);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> getRoleSkillsForContractorsAndRoles(final Set<Integer> contractorIds,
+	                                                                      final Collection<Role> roles) {
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
+				"FROM AccountSkillEmployee ase " +
+				"JOIN ase.employee e " +
+				"JOIN ase.skill s " +
+				"JOIN s.roles sr " +
+				"WHERE e.accountId IN (:contractorIds) " +
+				"AND sr.role IN (:roles)", AccountSkillEmployee.class);
+		query.setParameter("contractorIds", contractorIds);
+		query.setParameter("roles", roles);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> getSiteSkillsForContractorsAndSites(final Set<Integer> contractorIds,
+	                                                                      final Set<Integer> siteAndCorporateIds) {
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
+				"FROM AccountSkillEmployee ase " +
+				"JOIN ase.employee e " +
+				"JOIN ase.skill s " +
+				"JOIN s.sites ss " +
+				"WHERE e.accountId IN (:contractorIds) " +
+				"AND ss.siteId IN (:siteAndCorporateIds)", AccountSkillEmployee.class);
+		query.setParameter("contractorIds", contractorIds);
+		query.setParameter("siteAndCorporateIds", siteAndCorporateIds);
+
+		return query.getResultList();
+	}
 }
