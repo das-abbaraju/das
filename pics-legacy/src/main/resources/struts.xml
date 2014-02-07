@@ -279,6 +279,10 @@
 			<result>struts/contact_pics.jsp</result>
 		</action>
 
+		<action name="ContactUs" class="com.picsauditing.user.controller.ContactUs">
+			<result>struts/contact-us/contact-us.jsp</result>
+		</action>
+
 		<action name="About" class="com.picsauditing.actions.About">
 			<result>/struts/general/about.jsp</result>
 		</action>
