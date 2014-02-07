@@ -6,39 +6,49 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountEmployeeGuardDAO {
-    private static final Logger LOG = LoggerFactory.getLogger(AccountEmployeeGuardDAO.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AccountEmployeeGuardDAO.class);
 
 	@PersistenceContext
 	protected EntityManager em;
 
-	public AccountEmployeeGuard find(int accountId) {
-		if (accountId == 0) {
-			return null;
+	public boolean isEmployeeGUARDEnabled(final int accountId) {
+		TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
+		query.setParameter("accountId", accountId);
+
+		try {
+			AccountEmployeeGuard accountEmployeeGuard = query.getSingleResult();
+			return accountEmployeeGuard != null;
+		} catch (Exception exception) {
+			LOG.debug("Account {} is not enabled for EmployeeGUARD", accountId);
 		}
 
-        AccountEmployeeGuard result = null;
-
-        try {
-            TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
-            query.setParameter("accountId", accountId);
-            result = query.getSingleResult();
-        } catch (Exception e) {
-            LOG.error("Unable to find account {}", accountId, e);
-        }
-
-        return result;
+		return false;
 	}
 
-	public void save(AccountEmployeeGuard accountEmployeeGuard) {
-		em.persist(accountEmployeeGuard);
-		em.flush();
+	public List<Integer> getEmployeeGUARDAccounts() {
+		TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg", AccountEmployeeGuard.class);
+		List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
+
+		List<Integer> accounts = new ArrayList<>();
+		for (AccountEmployeeGuard accountEmployeeGuard : accountEmployeeGuards) {
+			accounts.add(accountEmployeeGuard.getAccountId());
+		}
+
+		return accounts;
 	}
 
-	public void remove(AccountEmployeeGuard accountEmployeeGuard) {
-		em.remove(accountEmployeeGuard);
-		em.flush();
-	}
+    public boolean hasEmployeeGUARDOperator(String accounts) {
+        Query query = em.createNativeQuery("select * from accountemployeeguard aeg WHERE aeg.accountId IN (:accounts)", AccountEmployeeGuard.class);
+        query.setParameter("accounts", accounts);
+
+        List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
+
+        return accountEmployeeGuards.size() > 0;
+    }
 }
