@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +41,4 @@ public class AccountEmployeeGuardDAO {
 
 		return accounts;
 	}
-
-    public boolean hasEmployeeGUARDOperator(String accounts) {
-        Query query = em.createNativeQuery("select * from accountemployeeguard aeg WHERE aeg.accountId IN (:accounts)", AccountEmployeeGuard.class);
-        query.setParameter("accounts", accounts);
-
-        List<AccountEmployeeGuard> accountEmployeeGuards = query.getResultList();
-
-        return accountEmployeeGuards.size() > 0;
-    }
 }
