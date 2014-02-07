@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 import com.picsauditing.employeeguard.forms.factory.ContractorEmployeeRoleAssignmentFactory;
 import com.picsauditing.employeeguard.forms.factory.ContractorProjectFormFactory;
 import com.picsauditing.employeeguard.forms.factory.RoleInfoFactory;
+import com.picsauditing.employeeguard.viewmodel.operator.factory.OperatorSiteAssignmentModelFactory;
 
 public class ViewModelFactory {
 
@@ -10,19 +11,20 @@ public class ViewModelFactory {
 			new ContractorEmployeeRoleAssignmentMatrixFactory();
 	private static ContractorEmployeeRoleAssignmentFactory contractorEmployeeRoleAssignmentFactory =
 			new ContractorEmployeeRoleAssignmentFactory();
-    private static ContractorProjectFormFactory contractorProjectFormFactory = new ContractorProjectFormFactory();
-    private static EmployeeAssignmentModelFactory employeeAssignmentModelFactory = new EmployeeAssignmentModelFactory();
-    private static EmployeeProjectAssignmentFactory employeeProjectAssignmentFactory = new EmployeeProjectAssignmentFactory();
-    private static EmployeeProjectRoleAssignmentFactory employeeProjectRoleAssignmentFactory = new EmployeeProjectRoleAssignmentFactory();
+	private static ContractorProjectFormFactory contractorProjectFormFactory = new ContractorProjectFormFactory();
+	private static EmployeeAssignmentModelFactory employeeAssignmentModelFactory = new EmployeeAssignmentModelFactory();
+	private static EmployeeProjectAssignmentFactory employeeProjectAssignmentFactory = new EmployeeProjectAssignmentFactory();
+	private static EmployeeProjectRoleAssignmentFactory employeeProjectRoleAssignmentFactory = new EmployeeProjectRoleAssignmentFactory();
 	private static EmployeeSiteAssignmentModelFactory employeeSiteAssignmentModelFactory = new EmployeeSiteAssignmentModelFactory();
 	private static OperatorProjectAssignmentFactory operatorProjectAssignmentFactory = new OperatorProjectAssignmentFactory();
 	private static OperatorProjectRoleAssignmentFactory operatorProjectRoleAssignmentFactory = new OperatorProjectRoleAssignmentFactory();
-    private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
+	private static OperatorSiteAssignmentModelFactory operatorSiteAssignmentModelFactory = new OperatorSiteAssignmentModelFactory();
+	private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
 	private static RoleInfoFactory roleInfoFactory = new RoleInfoFactory();
 	private static RoleEmployeeCountFactory roleEmployeeCountFactory = new RoleEmployeeCountFactory();
-    private static SkillModelFactory skillModelFactory = new SkillModelFactory();
-    private static SiteAssignmentModelFactory siteAssignmentModelFactory = new SiteAssignmentModelFactory();
-    private static SiteAssignmentsAndProjectsFactory siteAssignmentsAndProjectsFactory = new SiteAssignmentsAndProjectsFactory();
+	private static SkillModelFactory skillModelFactory = new SkillModelFactory();
+	private static SiteAssignmentModelFactory siteAssignmentModelFactory = new SiteAssignmentModelFactory();
+	private static SiteAssignmentsAndProjectsFactory siteAssignmentsAndProjectsFactory = new SiteAssignmentsAndProjectsFactory();
 
 	public static ContractorEmployeeRoleAssignmentMatrixFactory getContractorEmployeeRoleAssignmentMatrixFactory() {
 		return contractorEmployeeRoleAssignmentMatrixFactory;
@@ -60,6 +62,10 @@ public class ViewModelFactory {
 		return operatorProjectRoleAssignmentFactory;
 	}
 
+	public static OperatorSiteAssignmentModelFactory getOperatorSiteAssignmentModelFactory() {
+		return operatorSiteAssignmentModelFactory;
+	}
+
 	public static ProjectAssignmentBreakdownFactory getProjectAssignmentBreakdownFactory() {
 		return projectAssignmentBreakdownFactory;
 	}
@@ -76,7 +82,7 @@ public class ViewModelFactory {
 		return skillModelFactory;
 	}
 
-	public static SiteAssignmentModelFactory getSiteAssignmentModelFactory() {
+	public static SiteAssignmentModelFactory getContractorSiteAssignmentModelFactory() {
 		return siteAssignmentModelFactory;
 	}
 
