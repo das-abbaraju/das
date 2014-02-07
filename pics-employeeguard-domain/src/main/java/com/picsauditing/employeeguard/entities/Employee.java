@@ -369,6 +369,10 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		}
 
 		if (getFirstName().equalsIgnoreCase(that.getFirstName())) {
+			if (getLastName().equalsIgnoreCase(that.getLastName())) {
+				return getAccountId() - that.getAccountId();
+			}
+
 			return getLastName().compareToIgnoreCase(that.getLastName());
 		}
 

@@ -28,7 +28,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private SkillService skillService;
 
-	int roleId;
+	private int siteId;
+	private AccountModel site;
 
 	private SiteAssignmentModel siteAssignmentModel;
 	private List<ProjectRoleAssignment> projectRoleAssignments;
@@ -36,6 +37,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	public String status() {
 		if (permissions.isOperator()) {
 			int siteId = permissions.getAccountId();
+			site = accountService.getAccountById(siteId);
 
 			List<AccountModel> contractors = accountService.getContractors(siteId);
 			Set<Integer> contractorIds = Utilities.getIdsFromCollection(
@@ -59,12 +61,16 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		return "role";
 	}
 
-	public int getRoleId() {
-		return roleId;
+	public int getSiteId() {
+		return siteId;
 	}
 
-	public void setRoleId(int roleId) {
-		this.roleId = roleId;
+	public void setSiteId(int siteId) {
+		this.siteId = siteId;
+	}
+
+	public AccountModel getSite() {
+		return site;
 	}
 
 	public SiteAssignmentModel getSiteAssignmentModel() {

@@ -15,7 +15,7 @@ public class RoleEmployeeCountFactory {
 	public Map<RoleInfo, Integer> create(final List<RoleInfo> corporateRoles,
 	                                     final Map<Role, Role> corporateToSiteRoles,
 	                                     final Collection<Employee> employees) {
-		if (CollectionUtils.isEmpty(corporateRoles) || CollectionUtils.isEmpty(employees)) {
+		if (CollectionUtils.isEmpty(corporateRoles)) {
 			return Collections.emptyMap();
 		}
 
@@ -24,9 +24,11 @@ public class RoleEmployeeCountFactory {
 			int roleCount = 0;
 			Role siteRole = getSiteRole(corporateToSiteRoles, corporateRole);
 
-			for (Employee employee : employees) {
-				if (employeeHasRole(employee, corporateRole, siteRole)) {
-					roleCount++;
+			if (CollectionUtils.isNotEmpty(employees)) {
+				for (Employee employee : employees) {
+					if (employeeHasRole(employee, corporateRole, siteRole)) {
+						roleCount++;
+					}
 				}
 			}
 

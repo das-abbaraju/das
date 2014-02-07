@@ -45,8 +45,11 @@
         </action>
 
         <!-- Assignments -->
-        <action name="project/site-assignment" class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction">
-            <result name="list">/struts/employee-guard/operator/assignments/site/status.jsp</result>
+        <action name="project/site-assignment" class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction" method="status">
+            <result name="status">/struts/employee-guard/operator/assignments/site/status.jsp</result>
+        </action>
+        <action name="project/site-assignment/{siteId}/role/{id}" class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction" method="role">
+            <result name="role">/struts/employee-guard/operator/assignments/site/role.jsp</result>
         </action>
 
         <!-- Role -->

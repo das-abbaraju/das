@@ -4,8 +4,8 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments: ${site.name}</s:param>
-    <s:param name="breadcrumb_name">${site.name}</s:param>
+    <s:param name="title">Site Assignments</s:param>
+    <s:param name="breadcrumb_name">Site Assignments</s:param>
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
 
@@ -14,7 +14,7 @@
         <ul class="nav nav-pills nav-stacked nav-assignment ">
             <li class="active site-status">
                 <a href="#">
-                    <span class="badge pull-right">33</span>
+                    <span class="badge pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
                     Site Status
                 </a>
             </li>
