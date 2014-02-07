@@ -148,5 +148,6 @@
 	<include file="./liquibase/mdo45_PICS-14043_BASFFavoriteCleanup.sql"/>
 	<include file="./liquibase/kchase24_PICS-14406_FixAuditExpiration.sql"/>
 	<include file="./liquibase/kchase23_PICS-14445_IHGSubmitFix.sql"/>
+	<include file="./liquibase/mdo44_PICs-14407_CorrectPaymentMethod.sql"/>
 
 </databaseChangeLog>
