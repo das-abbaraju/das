@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.BillingNoteModel;
@@ -53,7 +54,12 @@ public class BillingDetail extends ContractorActionSupport {
 	}
 
 	public String execute() throws Exception {
-		this.findContractor();
+        this.findContractor();
+
+        if (!permissions.isAdmin() && !permissions.isContractor()) {
+            throw new NoRightsException("No Rights to View this page");
+        }
+
         feeService.calculateContractorInvoiceFees(contractor);
 
 		invoiceItems = billingService.createInvoiceItems(contractor, billingNoteModel.findUserForPaymentNote(permissions));

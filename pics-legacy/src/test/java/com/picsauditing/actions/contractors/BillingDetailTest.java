@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import org.junit.Before;
@@ -120,6 +121,7 @@ public class BillingDetailTest extends PicsActionTest {
 		when(billingService.createInvoiceItems(contractor, BillingStatus.Activation, user)).thenReturn(invoiceItems);
 		when(permissions.loginRequired((HttpServletResponse) any(), (HttpServletRequest) any())).thenReturn(true);
 		when(permissions.getUserId()).thenReturn(123);
+        when(permissions.isAdmin()).thenReturn(true);
 		when(contractorAccountDao.find(any(int.class))).thenReturn(contractor);
 		when(permissionToViewContractor.check(any(boolean.class))).thenReturn(true);
 		when(item.getAmount()).thenReturn(new BigDecimal(199.00));
@@ -223,7 +225,15 @@ public class BillingDetailTest extends PicsActionTest {
                 .thenReturn(invoice);
     }
 
-	@Test
+    @Test(expected = NoRightsException.class)
+    public void testExecute_noPermissions() throws Exception {
+        setupForCreate();
+        when(permissions.isAdmin()).thenReturn(false);
+
+        billingDetail.execute();
+    }
+
+    @Test
 	public void testExecute_Create_HappyPath_NewInvoiceIsAddedToContractorInvoices() throws Exception {
 		setupForCreate();
 
