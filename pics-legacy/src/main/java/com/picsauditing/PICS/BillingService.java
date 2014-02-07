@@ -329,7 +329,11 @@ public class BillingService {
 		addActivationFeeIfApplies(contractor, billingStatus, items);
         addProductItems(contractor, billingStatus, user, items);
         addSSIPDiscountIfApplies(contractor, items);
-        items.addAll(invoiceDiscountsService.applyDiscounts(contractor, items));
+
+        // TODO: Right now we're ignoring upgrades, but in the near future we need to pro-rate discounts
+        if (billingStatus(contractor) != BillingStatus.Upgrade) {
+            items.addAll(invoiceDiscountsService.applyDiscounts(contractor, items));
+        }
 
 		return items;
 	}
