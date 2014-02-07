@@ -13,6 +13,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 
 <%-- DO NOT MODIFY --%>
+<script src="v7/js/vendor/modernizr-2.6.1.min.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/core/core.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/widget/modal.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/widget/mibew.js?v=${version}"></script>

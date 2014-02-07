@@ -59,6 +59,7 @@
     .dropdown-menu .active > a:hover {
         @include background-image(linear-gradient($primary_light, $primary_med));
         background: $primary_med;
+        filter: none;
     }
 
     .dropdown-menu .divider {

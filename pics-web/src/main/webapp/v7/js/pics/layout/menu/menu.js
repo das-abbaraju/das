@@ -37,7 +37,9 @@
 
                 search_query_element.data('typeahead').render = function (items, total_results) {
                     var that = this,
-                        results = 0;
+                        results = 0,
+                        // Note: :odd and :even are 0-based, so the literal first element is even, not odd.
+                        odd = false;
 
                     //format items
                     if (!items.length) {
@@ -51,6 +53,7 @@
                             });
 
                             i.addClass(item.search + ' ' + item.status);
+                            i.addClass(odd ? 'odd' : 'even');
 
                             i.find('a').html([
                                 '<div class="clearfix">',
@@ -70,6 +73,8 @@
                                     '</div>',
                                 '</div>',
                             ].join(''));
+
+                            odd = !odd;
 
                             return i[0];
                         });

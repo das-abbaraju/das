@@ -4,10 +4,11 @@
             var SEARCH_RESULTS_LIMIT = 10,
                 ENTER_KEY = 13,
 
-                navbar_el = $('#primary_navigation'),
-                dropdown_toggle_el = navbar_el.find('.dropdown-toggle'),
-                search_query_el = navbar_el.find('.search-box'),
-                search_box_el = navbar_el.find('.search-box');
+                $navbar_el = $('#primary_navigation'),
+                $dropdown_toggle_el = $navbar_el.find('.dropdown-toggle'),
+                $search_query_el = $navbar_el.find('.search-box'),
+                $search_box_el = $navbar_el.find('.search-box'),
+                $icon_search = $('#primary_navigation .icon-search');
 
             function init() {
                 configureDropdown();
@@ -17,11 +18,11 @@
             }
 
             function configureDropdown() {
-                dropdown_toggle_el.dropdown();
+                $dropdown_toggle_el.dropdown();
             }
 
             function configureUserSearch() {
-                search_query_el.typeahead([{
+                $search_query_el.typeahead([{
                     name: 'primary-search',
                     remote: {
                         // url: '/v7/js/pics/layout/menu/typeahead.json?q=%QUERY',
@@ -38,11 +39,11 @@
             }
 
             function bindEvents() {
-                search_query_el.on('typeahead:selected', onSearchQuerySelected);
-                search_query_el.on('typeahead:suggestionsRendered', onSearchQuerySuggestionsRendered);
+                $search_query_el.on('typeahead:selected', onSearchQuerySelected);
+                $search_query_el.on('typeahead:suggestionsRendered', onSearchQuerySuggestionsRendered);
 
-                search_box_el.on('focus', onSearchElFocus);
-                search_box_el.on('blur', onSearchElBlur);
+                $search_box_el.on('focus', onSearchElFocus);
+                $search_box_el.on('blur', onSearchElBlur);
 
                 $(document).on('mouseover', '.more-results-link', onMoreResultsLinkMouseOver);
                 $(document).on('click', '.more-results-link', onMoreResultsLinkClick);
@@ -54,14 +55,15 @@
 
             function onSearchQuerySuggestionsRendered() {
                 addUnderCursorStateToFirstResult();
+                PICS.getClass('widget.TableStripe').init('.tt-suggestions .tt-suggestion');
             }
 
             function onSearchElFocus() {
-                toggleSearchIconSelected();
+                $icon_search.addClass('selected');
             }
 
             function onSearchElBlur() {
-                toggleSearchIconSelected();
+                $icon_search.removeClass('selected');
             }
 
             function onMoreResultsLinkClick() {
@@ -145,22 +147,12 @@
                 }
             }
 
-            function toggleSearchIconSelected() {
-                var $icon_search = $('#primary_navigation .icon-search');
-
-                if ($icon_search.hasClass('selected')) {
-                    $icon_search.removeClass('selected');
-                } else {
-                    $icon_search.addClass('selected');
-                }
-            }
-
             function removeUnderCursorStateFromAllResults() {
                 $('.tt-suggestions .tt-is-under-cursor').removeClass('tt-is-under-cursor');
             }
 
             function redirectToMoreResults(event) {
-                window.location.href = '/SearchBox.action?button=search&searchTerm=' + search_query_el.val();
+                window.location.href = '/SearchBox.action?button=search&searchTerm=' + $search_query_el.val();
             }
 
             return {

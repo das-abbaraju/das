@@ -67652,7 +67652,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
+        text: '<i class="icon-plus"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
     }],
     layout: {
         type: 'hbox',
@@ -87569,7 +87569,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
+        text: '<i class="icon-plus"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
     }],
 
     initComponent: function () {
@@ -96900,7 +96900,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
             xtype: 'textfield',
             emptyText: PICS.text('Report.execute.columnFilterModal.placeholderSearch'),
             enableKeyEvents: true,
-            fieldLabel: '<i class="icon-search icon-large"></i>',
+            fieldLabel: '<i class="icon-search"></i>',
             labelSeparator: '',
             name: 'search_box',
             labelWidth: 16,

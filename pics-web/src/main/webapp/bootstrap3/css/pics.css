@@ -127,24 +127,27 @@ body {
     display: inline;
   }
 }
-/* line 5, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
-#primary_navigation .dropdown-menu > li > a:hover,
+/* line 4, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-menu > li > a:focus,
 #primary_navigation .dropdown-submenu:hover > a,
 #primary_navigation .dropdown-submenu:focus > a {
-  color: #ffffff;
+  color: #454545;
   text-decoration: none;
   background-color: #e6e6e6;
 }
-/* line 11, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 10, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-menu > li > a:hover {
+  color: #ffffff;
+}
+/* line 14, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation fieldset[disabled] .btn-link:focus {
   margin-bottom: 1px;
 }
-/* line 15, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 18, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-submenu {
   position: relative;
 }
-/* line 19, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 22, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-submenu > .dropdown-menu {
   top: 0;
   left: 100%;
@@ -152,11 +155,11 @@ body {
   margin-left: -1px;
   border-top-left-radius: 0;
 }
-/* line 27, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 30, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-submenu:hover > .dropdown-menu {
   display: block;
 }
-/* line 31, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 34, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropup .dropdown-submenu > .dropdown-menu {
   top: auto;
   bottom: 0;
@@ -164,7 +167,7 @@ body {
   margin-bottom: -2px;
   border-bottom-left-radius: 0;
 }
-/* line 39, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 42, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-submenu > a:after {
   display: block;
   float: right;
@@ -178,15 +181,15 @@ body {
   border-width: 5px 0 5px 5px;
   content: " ";
 }
-/* line 53, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 56, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-submenu:hover > a:after {
   border-left-color: #ffffff;
 }
-/* line 57, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 60, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-submenu.pull-left {
   float: none;
 }
-/* line 61, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
+/* line 64, ../sass/pics/layout/menu/_bootstrap2-dropdowns.scss */
 #primary_navigation .dropdown-submenu.pull-left > .dropdown-menu {
   left: -100%;
   margin-left: 10px;
@@ -246,7 +249,7 @@ body {
 
 /* line 1, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation {
-  background: #eaeaea;
+  background: none;
   background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
   background-image: -webkit-linear-gradient(to bottom, #ffffff, #eaeaea);
   background-image: -moz-linear-gradient(to bottom, #ffffff, #eaeaea);
@@ -344,8 +347,10 @@ body {
   background-image: -moz-linear-gradient(#3498db, #2980b9);
   background-image: -o-linear-gradient(#3498db, #2980b9);
   background-image: linear-gradient(#3498db, #2980b9);
+  background: #2980b9;
+  filter: none;
 }
-/* line 86, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 88, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu .divider {
   background-color: #e6e6e6;
   border-bottom: 1px solid #ffffff;
@@ -353,7 +358,7 @@ body {
   margin: 9px 1px;
   overflow: hidden;
 }
-/* line 94, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 96, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu .nav-header {
   color: #cccccc;
   display: block;
@@ -364,11 +369,11 @@ body {
   padding: 3px 20px;
   text-transform: uppercase;
 }
-/* line 105, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 107, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li + .nav-header {
   margin-top: 9px;
 }
-/* line 113, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 115, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -381,7 +386,7 @@ body {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   color: #fff;
 }
-/* line 125, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 127, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a.dropdown-toggle {
   color: #fff;
   background-color: #3f93c0;
@@ -401,11 +406,11 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   padding: 6px 15px 7px;
 }
-/* line 141, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 143, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to.open a.dropdown-toggle {
   padding-top: 6px;
 }
-/* line 147, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 149, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:hover,
 #primary_navigation .nav .switch-to > a:focus {
   background-color: #3f93c0;
@@ -417,7 +422,7 @@ body {
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-/* line 156, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 158, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:active {
   background-color: #3f93c0;
   background-image: none;
@@ -426,7 +431,7 @@ body {
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 164, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 166, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account {
   display: inline-block;
   display: inline \9;
@@ -434,21 +439,26 @@ body {
   margin-right: 5px;
   text-align: right;
 }
-/* line 172, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 174, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account span {
   font-size: 10px;
 }
-/* line 178, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 180, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .icon-cog {
   vertical-align: 5px;
 }
 
 @media (max-width: 991px) {
-  /* line 185, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 187, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation {
     display: none;
   }
 }
+/* line 192, ../sass/pics/layout/menu/_primary-navigation.scss */
+body.has-contractor-menu #primary_navigation.navbar-inner {
+  border-bottom: none;
+}
+
 /* line 1, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation {
   top: 50px;
@@ -882,41 +892,42 @@ body {
 #primary_navigation .twitter-typeahead .tt-is-under-cursor,
 #primary_navigation .twitter-typeahead .tt-is-under-cursor:nth-child(even),
 #primary_navigation .twitter-typeahead .more-results-link:hover {
-  background-color: #2980b9;
+  background: #2980b9 !important;
   background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #3498db), color-stop(100%, #2980b9));
   background-image: -webkit-linear-gradient(to bottom, #3498db, #2980b9);
   background-image: -moz-linear-gradient(to bottom, #3498db, #2980b9);
   background-image: -o-linear-gradient(to bottom, #3498db, #2980b9);
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$primary_light', endColorstr='$primary_med', GradientType=0) !important;
   color: #fff;
 }
-/* line 47, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 48, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a {
   color: #454545;
 }
-/* line 51, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 52, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-deactivated, #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-inactive {
   color: #aeaeae;
 }
-/* line 56, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 57, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-deactivated:hover, #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-inactive:hover {
   color: #cccccc;
 }
-/* line 60, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 61, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-demo {
   font-style: italic;
 }
-/* line 64, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 65, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-deleted span {
   text-decoration: line-through;
 }
-/* line 71, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 72, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a,
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a,
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .more-results-link:hover {
   color: #fff;
 }
-/* line 75, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 76, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a.account-deactivated, #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a.account-inactive,
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a.account-deactivated,
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a.account-inactive,
@@ -924,38 +935,38 @@ body {
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .more-results-link:hover.account-inactive {
   color: #cccccc;
 }
-/* line 80, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 81, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead a {
   line-height: 15px;
   overflow: hidden;
   padding: 5px 15px;
   display: block;
 }
-/* line 88, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 89, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead a .name,
 #primary_navigation .twitter-typeahead a .location {
   float: left;
   width: 175px;
 }
-/* line 94, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 95, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead a .id {
   float: right;
 }
-/* line 99, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 100, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead a .type {
   float: right;
   font-style: italic;
 }
-/* line 105, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 106, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search {
   width: 275px;
   font-size: 13px;
 }
-/* line 110, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 111, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .total-results {
   padding: 5px 15px;
 }
-/* line 114, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
+/* line 115, ../sass/pics/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .no-results-msg {
   position: relative;
   top: 5px;

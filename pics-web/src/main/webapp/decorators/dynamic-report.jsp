@@ -6,7 +6,7 @@
 <s:set var="css_dir">v7/js/extjs/pics/resources/css</s:set>
 <s:set var="extjs_dir">v7/js/extjs/pics/extjs</s:set>
 
-<s:set var="is_development_mode" value="true" />
+<s:set var="is_development_mode" value="false" />
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -18,8 +18,6 @@
 
 		<title>PICS - <decorator:title default="PICS" /></title>
 
-        <style>
-        </style>
         <link rel="stylesheet" href="/bootstrap3/css/style.css?v=${version}">
         <!--[if lt IE 8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome-ie7.css"><![endif]-->
 

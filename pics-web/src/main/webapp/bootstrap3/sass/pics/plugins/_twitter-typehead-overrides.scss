@@ -39,8 +39,9 @@
       .tt-is-under-cursor,
       .tt-is-under-cursor:nth-child(even),
       .more-results-link:hover {
-        background-color: $primary_med;
+        background: $primary_med !important;
         @include background-image(linear-gradient(to bottom, $primary_light, $primary_med));
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$primary_light', endColorstr='$primary_med', GradientType=0) !important;
         color: #fff;
       }
 

@@ -4,7 +4,8 @@
 <s:set var="last_menu_index" value="menu.children.size() - 1"/>
 
 <div id="secondary_navigation" class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
+     <div id="ie8_secondary_navigation_background"></div>
+     <div class="navbar-inner">
         <nav class="container">
             <div class="nav-collapse collapse primary-navigation-items">
                 <ul class="nav pull-left">

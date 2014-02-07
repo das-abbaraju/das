@@ -157,8 +157,14 @@ module.exports = function(grunt) {
                 '<%= lint.files %>'
             ],
             dest: 'js/script.js'
+        },
+        options: {
+          beautify: {
+            ascii_only: true,
+            quote_keys: true
+          }
         }
-    }
+      }
   });
 
   grunt.loadNpmTasks('../../node_modules/grunt-contrib-jshint');

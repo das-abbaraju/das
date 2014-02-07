@@ -1,7 +1,7 @@
 #primary_navigation {
-    background: #eaeaea;
+    background: none;
     @include background-image(linear-gradient(to bottom, #ffffff, #eaeaea));
-    border-bottom: 2px solid $default_med;
+    border-bottom: 2px solid $default_silver;
     height: 50px;
     z-index: 200;
 
@@ -81,6 +81,8 @@
     .dropdown-menu .active > a,
     .dropdown-menu .active > a:hover {
         @include background-image(linear-gradient($primary_light, $primary_med));
+        background: $primary_med;
+        filter: none;
     }
 
     .dropdown-menu .divider {
@@ -185,4 +187,8 @@
     #primary_navigation {
         display: none;
     }
+}
+
+body.has-contractor-menu #primary_navigation.navbar-inner {
+    border-bottom: none;
 }

@@ -1,11 +1,14 @@
 #primary_navigation {
-  .dropdown-menu > li > a:hover,
   .dropdown-menu > li > a:focus,
   .dropdown-submenu:hover > a,
   .dropdown-submenu:focus > a {
-     color: #ffffff;
+     color: #454545;
      text-decoration: none;
      background-color: $default_light;
+  }
+
+  .dropdown-menu > li > a:hover {
+    color: #ffffff;
   }
 
   fieldset[disabled] .btn-link:focus {
