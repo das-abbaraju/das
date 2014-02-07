@@ -141,6 +141,17 @@ public abstract class ReportElement {
 	}
 
 	@Transient
+	public void setUrlOnFieldIfNecessary() {
+		if (field == null) {
+			throw new RuntimeException(name + " has a field that is null.");
+		}
+
+		if (sqlFunction != null && sqlFunction.isAggregate()) {
+			field.setUrl(null);
+		}
+	}
+
+	@Transient
 	public String getSql() {
 		if (field == null) {
 			throw new RuntimeException(name + " is missing from available fields");
