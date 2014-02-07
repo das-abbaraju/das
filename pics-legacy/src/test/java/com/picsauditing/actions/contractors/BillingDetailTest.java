@@ -226,6 +226,15 @@ public class BillingDetailTest extends PicsActionTest {
     }
 
     @Test(expected = NoRightsException.class)
+    public void testExecute_noPermissionsContractor() throws Exception {
+        setupForCreate();
+        when(permissions.isContractor()).thenReturn(false);
+        when(permissions.isAdmin()).thenReturn(false);
+
+        billingDetail.execute();
+    }
+
+    @Test(expected = NoRightsException.class)
     public void testExecute_noPermissions() throws Exception {
         setupForCreate();
         when(permissions.isAdmin()).thenReturn(false);
