@@ -3338,3 +3338,66 @@ ul.skill-nav a {
   background: #800a06;
   color: #ffffff;
 }
+
+/* line 4, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods i {
+  font-size: 50px;
+}
+/* line 7, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods i.icon-phone {
+  color: #33b679;
+}
+/* line 11, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods i.icon-comments {
+  color: #3498db;
+}
+/* line 15, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods i.icon-envelope-alt {
+  color: #cccccc;
+}
+/* line 19, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods i.icon-ok-sign {
+  font-size: 20px;
+  margin-right: 7px;
+}
+/* line 25, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods .method-icon {
+  margin-bottom: 30px;
+}
+/* line 29, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods .phone-number {
+  font-size: 21px;
+  margin-bottom: 20px;
+}
+/* line 34, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods .gray-block {
+  color: #999999;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+/* line 40, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods .chat-link {
+  margin-right: 0;
+}
+/* line 44, ../sass/pics/templates/contact/_contact-us.scss */
+#ContactUs__page .contact-methods .alert-success h3 {
+  display: inline;
+}
+
+@media (max-width: 991px) {
+  /* line 52, ../sass/pics/templates/contact/_contact-us.scss */
+  #ContactUs__page .chat-row {
+    margin-top: 30px;
+  }
+}
+/* line 3, ../sass/pics/templates/contact/_contact.scss */
+p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 991px) {
+  /* line 9, ../sass/pics/templates/contact/_contact.scss */
+  .Contact-page .nav-pills {
+    margin-bottom: 30px;
+  }
+}
