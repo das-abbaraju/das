@@ -16,6 +16,12 @@
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
 
+<%-- Unassign Confirmation --%>
+<s:include value="/struts/employee-guard/_unassign-employee-confirmation.jsp">
+    <s:param name="modal_title">Unassign Employee from Job Role</s:param>
+    <s:param name="modal_message">Unassigning this employee from this Job Role will also unassign them from this Job Role on any Projects that they may currently be assigned to.</s:param>
+</s:include>
+
 <div class="row">
     <div class="col-md-3">
         <ul class="nav nav-pills nav-stacked nav-assignment">
