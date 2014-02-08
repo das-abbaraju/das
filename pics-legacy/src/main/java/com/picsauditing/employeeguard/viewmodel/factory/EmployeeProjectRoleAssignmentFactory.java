@@ -17,6 +17,20 @@ import java.util.Set;
 public class EmployeeProjectRoleAssignmentFactory {
 
     public List<EmployeeProjectRoleAssignment> create(final Map<AccountModel, Set<Employee>> contractorEmployeeMap,
+                                                      final List<AccountSkill> orderedSkills,
+                                                      final Map<Employee, Set<AccountSkillEmployee>> employeeSkills) {
+        List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments = new ArrayList<>();
+        for (AccountModel accountModel : contractorEmployeeMap.keySet()) {
+            for (Employee employee : contractorEmployeeMap.get(accountModel)) {
+                employeeProjectRoleAssignments.add(buildEmployeeProjectRoleAssignment(accountModel, employee,
+                        orderedSkills, employeeSkills));
+            }
+        }
+
+        return employeeProjectRoleAssignments;
+    }
+
+    public List<EmployeeProjectRoleAssignment> create(final Map<AccountModel, Set<Employee>> contractorEmployeeMap,
                                                       final List<AccountSkill> orderedSkills) {
         List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments = new ArrayList<>();
         for (AccountModel accountModel : contractorEmployeeMap.keySet()) {
@@ -38,6 +52,22 @@ public class EmployeeProjectRoleAssignmentFactory {
     private EmployeeProjectRoleAssignment buildEmployeeProjectRoleAssignment(final AccountModel accountModel,
                                                                              final Employee employee,
                                                                              final List<AccountSkill> orderedSkills) {
+        Map<AccountSkill, AccountSkillEmployee> employeeSkillMap = buildEmployeeAccountSkillMap(employee.getSkills());
+
+        return new EmployeeProjectRoleAssignment.Builder()
+                .contractorId(accountModel.getId())
+                .contractorName(accountModel.getName())
+                .employeeId(employee.getId())
+                .employeeName(employee.getName())
+                .skillStatuses(getRoleSkillStatuses(employeeSkillMap, orderedSkills))
+                .build();
+    }
+
+    private EmployeeProjectRoleAssignment buildEmployeeProjectRoleAssignment(final AccountModel accountModel,
+                                                                             final Employee employee,
+                                                                             final List<AccountSkill> orderedSkills,
+                                                                             final Map<Employee, Set<AccountSkillEmployee>> employeeSkills
+                                                                             final Map<AccountSkill, >) {
         Map<AccountSkill, AccountSkillEmployee> employeeSkillMap = buildEmployeeAccountSkillMap(employee.getSkills());
 
         return new EmployeeProjectRoleAssignment.Builder()

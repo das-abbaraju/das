@@ -334,6 +334,30 @@ public class Utilities {
 		return map;
 	}
 
+    /**
+     * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
+     * from the implementation of MapConvertable<K, E>.
+     *
+     * @param entities
+     * @param mapConverter
+     * @param <K>          Object that represents the Key and must correctly implement the equals() and hashcode()
+     * @param <E>          Object that is some element/entity within the collection
+     * @return
+     */
+    public static <K, E> Map<K, Set<E>> convertToMapOfSets(Collection<E> entities, MapConvertable<K, E> mapConverter) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return Collections.emptyMap();
+        }
+
+        Map<K, Set<E>> map = new HashMap<>();
+        for (E entity : entities) {
+            K key = mapConverter.getKey(entity);
+            addToMapOfKeyToSet(map, key, entity);
+        }
+
+        return map;
+    }
+
 	public interface Identitifable<E, ID> {
 
 		ID getId(E element);

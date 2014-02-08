@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import org.apache.commons.collections.CollectionUtils;
@@ -10,6 +11,23 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.*;
 
 public class ContractorEmployeeRoleAssignmentFactory {
+
+    public List<ContractorEmployeeRoleAssignment> build(final List<Employee> employees,
+                                                        final Map<Employee, AccountModel> accountModels) {
+        if (CollectionUtils.isEmpty(employees)) {
+            return Collections.emptyList();
+        }
+
+        List<ContractorEmployeeRoleAssignment> contractorEmployeeRoleAssignments = new ArrayList<>();
+        for (Employee employee : employees) {
+            AccountModel accountModel = accountModels.get(employee);
+            contractorEmployeeRoleAssignments.add(new ContractorEmployeeRoleAssignment.Builder()
+                    .
+                    .build());
+        }
+
+        return contractorEmployeeRoleAssignments;
+    }
 
 	public List<ContractorEmployeeRoleAssignment> build(final List<Employee> contractorEmployees,
 	                                                    final Role role,

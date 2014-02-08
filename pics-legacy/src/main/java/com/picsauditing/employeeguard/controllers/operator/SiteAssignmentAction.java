@@ -3,9 +3,11 @@ package com.picsauditing.employeeguard.controllers.operator;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.ProjectRoleAssignment;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,11 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	private int siteId;
 	private AccountModel site;
+    private int roleId;
 
 	private SiteAssignmentModel siteAssignmentModel;
 	private List<ProjectRoleAssignment> projectRoleAssignments;
+    private ContractorEmployeeRoleAssignmentMatrix assignmentMatrix;
 
 	public String status() {
 		if (permissions.isOperator()) {
@@ -58,6 +62,10 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	public String role() {
+        Role role = roleService.getRole(id);
+        site = accountService.getAccountById(siteId);
+        assignmentMatrix = ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
+                .create(employeesAssignedToSite.size(), roleSkills, roleCounts, assignments);
 		return "role";
 	}
 
@@ -80,4 +88,16 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	public List<ProjectRoleAssignment> getProjectRoleAssignments() {
 		return projectRoleAssignments;
 	}
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
+    public ContractorEmployeeRoleAssignmentMatrix getAssignmentMatrix() {
+        return assignmentMatrix;
+    }
 }

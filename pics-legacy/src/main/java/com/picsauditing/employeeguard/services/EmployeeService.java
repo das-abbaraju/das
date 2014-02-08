@@ -2,8 +2,10 @@ package com.picsauditing.employeeguard.services;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -14,6 +16,7 @@ import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
@@ -37,6 +40,9 @@ public class EmployeeService {
 	private AccountGroupDAO accountGroupDAO;
 	@Autowired
 	private EmployeeDAO employeeDAO;
+    @Autowired
+    private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+    @Deprecated
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
@@ -313,10 +319,6 @@ public class EmployeeService {
 		employeeDAO.delete(employee);
 	}
 
-	public void hardDelete(final String id, final int accountId) {
-		employeeDAO.delete(NumberUtils.toInt(id), accountId);
-	}
-
 	public List<Employee> search(final String searchTerm, final int accountId) {
 		if (Strings.isNotEmpty(searchTerm)) {
 			return employeeDAO.search(searchTerm, accountId);
@@ -330,4 +332,23 @@ public class EmployeeService {
 		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
 		softDeletedEmployeeDAO.save(employee);
 	}
+
+    public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSpecificSkills(final List<Employee> employees,
+                                                              final List<AccountSkill> skills) {
+        List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+                .findByEmployeesAndSkills(employees, skills);
+
+        return Utilities.convertToMapOfSets(accountSkillEmployees,
+                new Utilities.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
+                    @Override
+                    public Employee getKey(final AccountSkillEmployee accountSkillEmployee) {
+                        return accountSkillEmployee.getEmployee();
+                    }
+
+                    @Override
+                    public AccountSkill getValue(final AccountSkillEmployee accountSkillEmployee) {
+                        return accountSkillEmployee.getSkill();
+                    }
+                });
+    }
 }
