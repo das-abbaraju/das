@@ -50,6 +50,7 @@
         <pattern>/employee-guard/*</pattern>
         <pattern>/ManageReports!getStarted.action</pattern>
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
+        <pattern>/ContractorPricing.action</pattern>
         <pattern>/ContactUs.action</pattern>
         <pattern>/ContractorPricing.action</pattern>
     </decorator>
@@ -91,6 +92,7 @@
         <pattern>/RefundPolicy.action</pattern>
         <pattern>/ContractorAgreement.action</pattern>
         <pattern>/contractor_agreement.jsp</pattern>
+        <pattern>/ContractorPricing.action</pattern>
         <pattern>/con_pricing.jsp</pattern>
         <pattern>/pricing_matrix.jsp</pattern>
     </decorator>

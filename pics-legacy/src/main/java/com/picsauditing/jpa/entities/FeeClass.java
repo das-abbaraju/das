@@ -120,6 +120,14 @@ public enum FeeClass implements Translatable {
 	}
 
 	public static Set<FeeClass> getContractorPriceTableFeeTypes() {
-        return CONTRACTOR_PRICE_TABLE_FEE_TYPES;
+		Set<FeeClass> feeTypes = new HashSet<FeeClass>();
+
+		feeTypes.add(DocuGUARD);
+		feeTypes.add(AuditGUARD);
+		feeTypes.add(EmployeeGUARD);
+		feeTypes.add(Activation);
+		feeTypes.add(InsureGUARD);
+
+		return feeTypes;
 	}
 }

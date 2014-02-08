@@ -29,7 +29,7 @@ public class PricingTiersBuilder {
         Set<FeeClass> feeTypes = FeeClass.getContractorPriceTableFeeTypes();
         List<InvoiceFeeCountry> countryFees = findRawInvoiceFees(country, feeTypes);
 
-        countryFees = filterOutAndRestructureRedundantInvoiceFees(countryFees);
+        filterOutAndRestructureRedundantInvoiceFees(countryFees);
 
         return buildPricingTiersFromInvoiceFees(countryFees, applicableFeeClasses, numberOfFacilities);
     }
@@ -83,6 +83,7 @@ public class PricingTiersBuilder {
                 && (invoiceFee.getMaxFacilities() >= numberOfFacilities);
     }
 
+    
     private List<InvoiceFeeCountry> filterOutAndRestructureRedundantInvoiceFees(List<InvoiceFeeCountry> countryFees) {
         /*
             2013 Pricing Tiers:

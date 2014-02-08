@@ -505,7 +505,7 @@
 
 		<action name="ContractorPricing"
 		        class="com.picsauditing.actions.contractors.ContractorPricing">
-			<result>con_pricing.jsp</result>
+			<result>/struts/contractors/contractor-pricing.jsp</result>
 		</action>
 
 		<action name="WatchListManager" class="com.picsauditing.actions.users.WatchListManager">
