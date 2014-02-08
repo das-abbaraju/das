@@ -5,6 +5,7 @@
 <s:set var="last_menu_index" value="menu.children.size() - 1" />
 
 <s:url action="Search" var="search_url" />
+<s:url namespace="/" action="ContactUs" var="contact_us_url" />
 
 <div id="primary_navigation" class= "navbar-fixed-top bootstrap3">
     <div id="ie8_primary_navigation_background"></div>
@@ -34,6 +35,7 @@
             </div>
         </form>
         </s:if>
+        <a class="contact-us-link" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
     </nav>
     </div>
 </div>

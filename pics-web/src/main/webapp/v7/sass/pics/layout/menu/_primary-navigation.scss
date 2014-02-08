@@ -93,6 +93,17 @@
 	    color: #fff;
     }
 
+    .contact-us-link {
+        color: $pics_link_blue;
+        display: inline-block;
+        float: right;
+        margin-top: 17px;
+
+        &:hover {
+            color: $pics_light_blue;
+        };
+    }
+
     .navbar-search
     {
         margin: 0;

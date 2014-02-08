@@ -1,3 +1,4 @@
+
 #primary_navigation {
     background: none;
     @include background-image(linear-gradient(to bottom, #ffffff, #eaeaea));
@@ -108,6 +109,17 @@
         margin-top: 9px;
     }
     /* END dropdown menu */
+
+    .contact-us-link {
+        color: $pics_link_blue;
+        display: inline-block;
+        float: right;
+        margin-top: 17px;
+
+        &:hover {
+            color: $pics_light_blue;
+        };
+    }
 
     .nav li.dropdown.switch-to.open > .dropdown-toggle,
     .nav li.dropdown.switch-to.active > .dropdown-toggle,

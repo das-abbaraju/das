@@ -7922,21 +7922,27 @@ body {
   margin-top: 10px;
   padding: 0 15px 10px 0; }
 
-/* line 18, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
-.x-body #primary_navigation .search-form .icon-search {
-  font-size: 14px;
-  left: 9px; }
+/* line 17, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+.x-body #primary_navigation {
+  font-size: 14px; }
+  /* line 20, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+  .x-body #primary_navigation .contact-us-link {
+    margin-right: 15px; }
+  /* line 24, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+  .x-body #primary_navigation .search-form .icon-search {
+    font-size: 14px;
+    left: 9px; }
 
 @media (max-width: 991px) {
-  /* line 25, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+  /* line 31, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
   #primary_navigation {
     display: block; }
-    /* line 28, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+    /* line 34, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
     #primary_navigation .navbar-brand {
       padding-left: 40px;
       padding-top: 7px;
       font-size: 18px; }
-    /* line 35, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+    /* line 41, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
     #primary_navigation ul,
     #primary_navigation form {
       display: none; } }
