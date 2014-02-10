@@ -1,14 +1,14 @@
 package com.picsauditing.menu.builder;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.actions.contractors.ContractorDocuments;
-import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.actions.contractors.ContractorDocuments;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SpringUtils;
@@ -334,8 +334,8 @@ public class AuditMenuBuilder {
 
 	private void addV3EGMenuItemToEGEnabledContractor() {
 		if (permissions.isContractor()) {
-			AccountService accountService = SpringUtils.getBean(SpringUtils.ACCOUNT_SERVICE);
-			if (accountService.isEmployeeGUARDEnabled(permissions.getAccountId())) {
+			ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
+			if (productSubscriptionService.hasEmployeeGUARD(permissions.getAccountId())) {
 				MenuComponent egV3 = new MenuComponent();
 				egV3.setUrl("/employee-guard/contractor/dashboard");
 				egV3.setTitle("Version 3");
