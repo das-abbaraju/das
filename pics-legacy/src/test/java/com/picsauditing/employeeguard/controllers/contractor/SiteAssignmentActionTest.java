@@ -76,21 +76,13 @@ public class SiteAssignmentActionTest extends PicsActionTest {
         verifyAssignmentSuccess(siteAssignmentAction.getJson());
     }
 
-    private void verifyAssignmentFailure(final JSONObject json) {
-        assertEquals("{\"status\":\"FAILURE\"}", json.toJSONString());
-    }
-
-    private void verifyAssignmentSuccess(final JSONObject json) {
-        assertEquals("{\"status\":\"SUCCESS\"}", json.toJSONString());
-    }
-
     @Test
-    public void testUnassignAll() throws Exception {
+    public void testUnassignAll_AssignmentSuccessful() throws Exception {
         setupUnassignAllTest();
 
         String result = siteAssignmentAction.unassignAll();
 
-        verifyUnassignAllTest(result);
+        verifyAssignmentSuccess(siteAssignmentAction.getJson());
     }
 
     private void setupUnassignAllTest() {
@@ -99,8 +91,20 @@ public class SiteAssignmentActionTest extends PicsActionTest {
         siteAssignmentAction.setSiteId(SITE_ID);
     }
 
-    private void verifyUnassignAllTest(String result) {
-        assertEquals(PicsActionSupport.REDIRECT, result);
-        assertEquals("/employee-guard/contractor/project/site-assignment/" + SITE_ID, siteAssignmentAction.getUrl());
+    @Test
+    public void testUnassignAll_AssignmentFailed() throws Exception {
+        when(employeeService.findEmployee(anyString(), anyInt())).thenThrow(new NoResultException());
+
+        String result = siteAssignmentAction.unassignAll();
+
+        verifyAssignmentFailure(siteAssignmentAction.getJson());
+    }
+
+    private void verifyAssignmentFailure(final JSONObject json) {
+        assertEquals("{\"status\":\"FAILURE\"}", json.toJSONString());
+    }
+
+    private void verifyAssignmentSuccess(final JSONObject json) {
+        assertEquals("{\"status\":\"SUCCESS\"}", json.toJSONString());
     }
 }

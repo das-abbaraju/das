@@ -13991,29 +13991,24 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 /* line 38, ../sass/pics/employee-guard/assignments/_assignments.scss */
 
 .table-assignment tr.assigned .assign-employee {
+  font-weight: bold;
+  color: #ec8c00;
   background-color: #fbcb43;
 }
 
-/* line 40, ../sass/pics/employee-guard/assignments/_assignments.scss */
-
-.table-assignment tr.assigned .assign-employee a {
-  font-weight: bold;
-  color: #ec8c00;
-}
-
-/* line 44, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 43, ../sass/pics/employee-guard/assignments/_assignments.scss */
 
 .table-assignment tr.assigned .assign-employee i {
   color: #ec8c00;
 }
 
-/* line 50, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 49, ../sass/pics/employee-guard/assignments/_assignments.scss */
 
 .table-assignment tr td a {
   display: inline;
 }
 
-/* line 57, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 56, ../sass/pics/employee-guard/assignments/_assignments.scss */
 
 .nav-assignment .site-status {
   margin-bottom: 20px;
