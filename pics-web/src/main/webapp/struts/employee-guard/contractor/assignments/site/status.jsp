@@ -76,7 +76,7 @@
                                         ${employee_site_assignment.employeeId}
                                     </s:param>
                                 </s:url>
-                                <a href="${employee_site_assignment_url}" class="disable-assignment">
+                                <a href="${employee_site_assignment_url}">
                                     ${employee_site_assignment.employeeName}
                                 </a>
                             </td>

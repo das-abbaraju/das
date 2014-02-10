@@ -5,7 +5,7 @@ PICS.define('employee-guard.Assignment', {
 
         function init() {
             $('.table-assignment').on('click', 'tr', onAssignmentRowClick);
-            $('.disable-assignment').on('click', function (event) {
+            $('.table-assignment a').on('click', function (event) {
                 event.stopPropagation();
             });
             $('body .modal-footer .unassign').on('click', requestEmployeeAssignment);
@@ -16,8 +16,6 @@ PICS.define('employee-guard.Assignment', {
 
             $selected_row = $element.closest('tr');
             is_assigned = $selected_row.hasClass('assigned');
-
-            event.preventDefault();
 
             toggleEmployeeAssignment();
         }
@@ -39,7 +37,6 @@ PICS.define('employee-guard.Assignment', {
                 request_url = unassign_url;
             }
 
-
             PICS.ajax({
                 url: request_url,
                 dataType: 'json',
@@ -49,7 +46,6 @@ PICS.define('employee-guard.Assignment', {
 
         function onEmployeeAssignmentRequestSuccess(data) {
             if (data.status == "SUCCESS") {
-
                 if ($selected_row.hasClass('site-level')){
                     location.reload();
                 } else {

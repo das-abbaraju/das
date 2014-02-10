@@ -117,7 +117,7 @@
                                         ${employee_site_assignment.employeeId}
                                     </s:param>
                                 </s:url>
-                                <a href="${employee_site_assignment_url}" class="disable-assignment">
+                                <a href="${employee_site_assignment_url}">
                                     ${employee_site_assignment.name}
                                 </a>
                             </td>
@@ -144,7 +144,7 @@
                                     <s:set var="skill_status_class" value="" />
                                 </s:if>
 
-                                <td class="${skill_status_class} text-center">
+                                <td class="${skill_status_class} skill-status-icon text-center">
                                     <i class="${skill_icon} icon-large"></i>
                                 </td>
                             </s:iterator>
