@@ -29,7 +29,7 @@ public class PricingTiersBuilder {
         Set<FeeClass> feeTypes = FeeClass.getContractorPriceTableFeeTypes();
         List<InvoiceFeeCountry> countryFees = findRawInvoiceFees(country, feeTypes);
 
-        filterOutAndRestructureRedundantInvoiceFees(countryFees);
+        countryFees = filterOutAndRestructureRedundantInvoiceFees(countryFees);
 
         return buildPricingTiersFromInvoiceFees(countryFees, applicableFeeClasses, numberOfFacilities);
     }
