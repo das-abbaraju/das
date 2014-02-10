@@ -1,3 +1,48 @@
+/* TODO: Replace extjs sass vars with bootstrap 3 vars */
+// site menu
+$site_menu_background_color: #eaeaea;
+$site_menu_box_shadow_color: #cccccc;
+$site_menu_gradient_color_top: #ffffff;
+$site_menu_gradient_color_bottom: #eaeaea;
+$site_menu_text_color: #002441;
+
+// site menu - over
+$site_menu_over_background_color: #eaeaea;
+$site_menu_over_box_shadow_color: #cccccc;
+$site_menu_over_gradient_color_top: #ffffff;
+$site_menu_over_gradient_color_bottom: #eaeaea;
+$site_menu_over_text_color: #c66603;
+
+// site menu - active
+$site_menu_active_background_color: #f1f1f2;
+$site_menu_active_border_color: #aeaeae;
+$site_menu_active_border_color_top: #999999;
+$site_menu_active_gradient_color_top: #eaeaea;
+$site_menu_active_gradient_color_bottom: #f1f1f2;
+$site_menu_active_text_color: #c66603;
+
+// site menu - separator
+$site_menu_separator_border_color_left: #e7e7e7;
+
+// site menu - search icon
+$site_menu_search_icon_search_text_color: #cccccc;
+$site_menu_search_icon_search_text_shadow_color: #bcbcbc;
+
+// site menu - search list
+$site_menu_search_list_border_color: #a7a7a7;
+
+// site menu - search item
+$site_menu_search_item_background_color: #a84d10;
+$site_menu_search_item_border_color_bottom: #a84d10;
+$site_menu_search_item_border_color_top: #c66603;
+$site_menu_search_item_even_background_color: #f1f1f2;
+$site_menu_search_item_gradient_color_bottom: #a84d10;
+$site_menu_search_item_gradient_color_top: #c66603;
+$site_menu_search_item_text_color: #fff;
+
+// site menu - search list - more results
+$site_menu_search_more_results_text_color: #333;
+
 #report_settings_modal
 {
 	background: #eaeaea;
@@ -17,9 +62,9 @@
 	.icon-info-sign
 	{
 		color: #999;
-		font-size: 20px;
 		position: relative;
 		left: -3px;
+		top: 3px;
 	}
 
 	#settings_modal_report_info_button
@@ -106,6 +151,7 @@
 	legend
 	{
 		padding-bottom: 10px;
+		font-size: 13px;
 	}
 
 	.subscription-info
@@ -120,7 +166,7 @@
 #report_share,
 #report_subscribe
 {
-	padding: 8px 10px 10px;
+	padding: 0 10px 10px;
 }
 
 #report_edit-body,
@@ -156,7 +202,6 @@
 	{
 		color: #ccc;
 		cursor: pointer;
-		font-size: 18px;
 		position: relative;
 		text-decoration: none;
 	}
@@ -255,7 +300,6 @@
 		label
 		{
 			line-height: 14px;
-			padding: 7px 0px 0px !important;
 		}
 
 		.icon-search

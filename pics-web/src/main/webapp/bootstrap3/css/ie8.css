@@ -1,0 +1,90 @@
+/* Workaround to fix input sizes */
+#primary_navigation.bootstrap3 .search-box {
+    width: 140px;
+    height: 30px;
+}
+
+/* Add border to dropdowns because ie8 doesn't support drop-shadows */
+#primary_navigation.bootstrap3 .dropdown-menu,
+#secondary_navigation .dropdown-menu,
+.tt-dropdown-menu {
+    border: 1px solid #cccccc !important;
+}
+
+#secondary_navigation {
+    color: #777777 !important;
+}
+
+/* Workaround for unable to apply filter property directly to the primary_navigation causes menu to break */
+#ie8_primary_navigation_background {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eaeaea', GradientType=0);
+    height: 48px;
+}
+
+#primary_navigation.bootstrap3 .container {
+    position: relative;
+    top: -48px;
+}
+
+/* Workaround for unable to apply backgound color directly to secondary_navigation without it break  */
+#ie8_secondary_navigation_background {
+    height: 30px;
+    background: #2c3f50;
+    width: 100%;
+    top: 5px;
+}
+
+#secondary_navigation nav {
+    position: relative;
+    top: -30px;
+}
+
+/* striping of search results b/c ie8 does not support :odd :even */
+#user_searchbox .odd,
+.tt-suggestion.odd {
+    background-color: #f1f1f2 !important;
+}
+
+
+/*
+
+May or may not be needed to fix ie8 issues with Employee Guard:
+
+fieldset {
+    width: 100%;
+    margin: 0 !important;
+}
+
+table {
+    margin: 0 !important;
+}
+
+.form-control {
+    height: auto;
+    padding: 6px 12px 10px 12px;
+}
+
+.breadcrumb > li {
+    display: inline;
+}
+
+.employee-guard-list li {
+    display: inline;
+}
+
+form.search-query {
+    margin-bottom: 0;
+}
+
+.form-group {
+    width: 100%;
+    display: block;
+}
+
+dl {
+    width: 100%;
+}
+
+dd {
+    display: block;
+}*/

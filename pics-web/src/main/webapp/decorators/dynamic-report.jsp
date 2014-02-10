@@ -18,6 +18,15 @@
 
 		<title>PICS - <decorator:title default="PICS" /></title>
 
+        <link rel="stylesheet" href="/bootstrap3/css/style.css?v=${version}">
+        <!--[if lt IE 8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome-ie7.css"><![endif]-->
+
+        <%--Make ie8 corrections asap--%>
+        <!--[if lt IE 9]>
+            <script src="/bootstrap3/js/vendor/respond.js?v=${version}"></script>
+            <link rel="stylesheet" href="/bootstrap3/css/ie8.css?v=${version}">
+        <![endif]-->
+
         <%-- include javascript translations --%>
         <s:action name="TranslateJS2" executeResult="true" />
 
@@ -56,12 +65,12 @@
             <link rel="stylesheet" type="text/css" href="${css_dir}/my-ext-theme.min.css?v=${version}" />
         </s:else>
 
-        <link rel="stylesheet" type="text/css" href="${css_dir}/font-awesome.css?v=${version}" />
-        <!--[if lt IE 8]><link rel="stylesheet" href="${css_dir}/font-awesome-ie7.css"><![endif]-->
-
 		<decorator:head />
 	</head>
-	<body id="${actionName}_${methodName}_page" class="${actionName}-page page">
-		<decorator:body />
+	<body id="${actionName}_${methodName}_page" class="${actionName}-page page" style="margin-top: 50px;">
+        <s:action name="Menu!bootstrap3Menu" executeResult="true" />
+        <decorator:body />
 	</body>
+
+    <script src="/bootstrap3/js/script.js?v=${version}"></script>
 </html>
