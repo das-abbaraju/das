@@ -47,6 +47,7 @@
         <pattern>/ManageReports!getStarted.action</pattern>
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ContactUs.action</pattern>
+        <pattern>/ContractorPricing.action</pattern>
     </decorator>
     <decorator name="bootstrap3-simple-layout" page="bootstrap3-simple-layout.jsp">
         <pattern>/employee-guard/welcome*</pattern>
@@ -86,7 +87,6 @@
         <pattern>/RefundPolicy.action</pattern>
         <pattern>/ContractorAgreement.action</pattern>
         <pattern>/contractor_agreement.jsp</pattern>
-        <pattern>/ContractorPricing.action</pattern>
         <pattern>/con_pricing.jsp</pattern>
         <pattern>/pricing_matrix.jsp</pattern>
     </decorator>

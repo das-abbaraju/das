@@ -28377,6 +28377,54 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
         }())
     });
 })(jQuery);
+(function ($) {
+    PICS.define('contractors.ContractorPricing', {
+        methods: (function () {
+            function init() {
+                if ($('#ContractorPricing__page').length > 0) {
+                    initPanelArrow();
+
+                    $('.show-more-link, .show-less-link').on('click', onPanelLinkClick);
+                }
+            }
+
+            // TODO: Move all of this panel logic to a separate class for use by all panel components,
+            // i.e., a directive, after converting to AngularJS
+
+            function initPanelArrow() {
+                showPanelArrow();
+            }
+
+            function showPanelArrow() {
+                var arrow_top = getClientListArrowTop(),
+                    contractor_tier_arrow = $('.contractor-tier-arrow');
+
+                contractor_tier_arrow.css('top', arrow_top);
+                contractor_tier_arrow.show();
+            }
+
+            function getClientListArrowTop() {
+                var arrow_target_element_top = $('.applies').offset().top,
+                    arrow_target_element_height = $('.applies').outerHeight(),
+                    arrow_panel_top = $('.client-list-panel').offset().top,
+                    arrow_height = parseInt($('.contractor-tier-arrow').css('height'));
+
+                return (arrow_target_element_top - arrow_panel_top) - (arrow_height / 2) + (arrow_target_element_height / 2) + 'px';
+            }
+
+            function onPanelLinkClick(event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                $('.client-list-panel').toggleClass('expanded');
+            }
+
+            return {
+                init: init
+            };
+        }())
+    });
+}(jQuery));
 PICS.define('employee-guard.AjaxFormEditing', {
     methods: (function () {
         function init() {
@@ -28523,20 +28571,26 @@ PICS.define('employee-guard.Assignment', {
             is_assigned;
 
         function init() {
-            $('.table-assignment').on('click', 'tr', onAssignIconClick);
-            $('.disable-assignment').on('click', function (event) {
+            $('.table-assignment').on('click', 'tr', onAssignmentRowClick);
+            $('.table-assignment a').on('click', function (event) {
                 event.stopPropagation();
             });
+            $('body .modal-footer .unassign').on('click', requestEmployeeAssignment);
         }
 
-        function onAssignIconClick(event) {
+        function onAssignmentRowClick(event) {
             var $element = $(event.target);
 
-            $selected_row = $element.closest('tr'),
+            $selected_row = $element.closest('tr');
             is_assigned = $selected_row.hasClass('assigned');
-     
-            if (!$selected_row.hasClass('site-level')){
-                event.preventDefault();
+
+            toggleEmployeeAssignment();
+        }
+
+        function toggleEmployeeAssignment() {
+            if (is_assigned) {
+                $('.unassignModal').modal('show');
+            } else {
                 requestEmployeeAssignment();
             }
         }
@@ -28546,6 +28600,7 @@ PICS.define('employee-guard.Assignment', {
                 unassign_url = $selected_row.attr('data-unassign-url');
 
             if (is_assigned) {
+                $('.unassignModal').modal('hide');
                 request_url = unassign_url;
             }
 
@@ -28558,19 +28613,23 @@ PICS.define('employee-guard.Assignment', {
 
         function onEmployeeAssignmentRequestSuccess(data) {
             if (data.status == "SUCCESS") {
-                toggleAssignedState();
+                if ($selected_row.hasClass('site-level')){
+                    location.reload();
+                } else {
+                    toggleAssignedStyle();
+                }
             }
         }
 
-        function toggleAssignedState() {
+        function toggleAssignedStyle() {
             if (is_assigned) {
-                removeAssignedState();
+                removeAssignedStyle();
             } else {
-                addAssignedState();
+                addAssignedStyle();
             }
         }
 
-        function removeAssignedState() {
+        function removeAssignedStyle() {
             var $skill_status_column = $selected_row.find('.skill-status-icon');
 
             $selected_row.removeClass('assigned');
@@ -28578,7 +28637,7 @@ PICS.define('employee-guard.Assignment', {
             $skill_status_column.removeClass('success danger warning');
         }
 
-        function addAssignedState() {
+        function addAssignedStyle() {
             $selected_row.addClass('assigned');
 
             updateSkillStatusIcon();

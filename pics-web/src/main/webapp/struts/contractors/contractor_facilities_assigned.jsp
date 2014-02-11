@@ -65,7 +65,7 @@
 				<tr>
 					<td class="left">
 						<s:if test="contractor.accountLevel.full">
-							<a href="${contractor_pricing}" rel="facebox" class="ext">
+							<a href="${contractor_pricing}" class="ext" target="_blank">
 								<s:text name="ContractorFacilities.ViewPricing" />
 							</a>
 						</s:if>
@@ -113,7 +113,7 @@
 				<tr>
 					<td class="left">
 						<s:if test="contractor.accountLevel.full">
-							<a href="${contractor_pricing}" rel="facebox" class="ext">
+							<a href="${contractor_pricing}" class="ext" target="_blank">
 								<s:text name="ContractorFacilities.ViewPricing" />
 							</a>
 						</s:if>

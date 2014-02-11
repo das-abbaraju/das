@@ -251,6 +251,7 @@
           scope="singleton"/>
     <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService"/>
     <bean id="ServiceRiskCalculator" class="com.picsauditing.actions.contractors.risk.ServiceRiskCalculator" />
+    <bean id="PricingTiersBuilder" class="com.picsauditing.service.contractor.PricingTiersBuilder" />
     <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService" />
 
     <!-- Autocompletes -->

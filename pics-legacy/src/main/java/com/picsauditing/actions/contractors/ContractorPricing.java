@@ -1,38 +1,26 @@
 package com.picsauditing.actions.contractors;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.contractor.PricingTier;
+import com.picsauditing.service.contractor.PricingTiersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.dao.InvoiceFeeCountryDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFeeCountry;
 
 @SuppressWarnings("serial")
 public class ContractorPricing extends ContractorActionSupport {
 
 	private ContractorAccount con;
 	private int id;
-	private int employeeGUARDNum;
-	private int docuGUARDNum;
-	private int insureGUARDNum;
-	private int auditGUARDNum;
 
 	@Autowired
-	private InvoiceFeeCountryDAO invoiceFeeCountryDAO;
+	private PricingTiersBuilder pricingTiersBuilder;
 
-	private Map<String, BigDecimal> prices = new HashMap<String, BigDecimal>();
+    private List<PricingTier> pricingTiers;
 
-	@Override
+    @Override
 	@Anonymous
 	public String execute() {
 		if (con == null) {
@@ -52,27 +40,35 @@ public class ContractorPricing extends ContractorActionSupport {
 			return ERROR;
 		}
 
-		docuGUARDNum = contractorFeeMap.get(FeeClass.DocuGUARD).getNewLevel().getMinFacilities();
-		insureGUARDNum = contractorFeeMap.get(FeeClass.InsureGUARD).getNewLevel().getMinFacilities();
-		auditGUARDNum = contractorFeeMap.get(FeeClass.AuditGUARD).getNewLevel().getMinFacilities();
-		employeeGUARDNum = contractorFeeMap.get(FeeClass.EmployeeGUARD).getNewLevel().getMinFacilities();
+        List<FeeClass> applicableFeeClasses = findApplicableFeeClasses(contractorFeeMap);
 
-		Set<FeeClass> feeTypes = FeeClass.getContractorPriceTableFeeTypes();
-
-		// Look for the specific country
-		List<InvoiceFeeCountry> countryFees = invoiceFeeCountryDAO.findVisibleByCountryAndFeeClassList(country, feeTypes);
-
-		// If that wasn't found, look up US as default
-		if (CollectionUtils.isEmpty(countryFees)) {
-			countryFees = invoiceFeeCountryDAO.findVisibleByCountryAndFeeClassList(new Country("US"), feeTypes);
-		}
-
-		for (InvoiceFeeCountry fee : countryFees) {
-			prices.put("" + fee.getInvoiceFee().getMinFacilities() + fee.getInvoiceFee().getFeeClass(), fee.getAmount());
-		}
+        pricingTiers = pricingTiersBuilder.buildPricingTiersForCountry(country, applicableFeeClasses, con.getOperatorAccounts().size());
 
 		return SUCCESS;
 	}
+
+    private List<FeeClass> findApplicableFeeClasses(Map<FeeClass, ContractorFee> contractorFeeMap) {
+        List<FeeClass> applicableFeeClasses = new ArrayList<>();
+
+        if (contractorFeeMap.get(FeeClass.DocuGUARD).getNewLevel().getMinFacilities() >= 1) {
+            applicableFeeClasses.add(FeeClass.DocuGUARD);
+        }
+        if (contractorFeeMap.get(FeeClass.InsureGUARD).getNewLevel().getMinFacilities() >= 1) {
+            applicableFeeClasses.add(FeeClass.InsureGUARD);
+        }
+        if (contractorFeeMap.get(FeeClass.AuditGUARD).getNewLevel().getMinFacilities() >= 1) {
+            applicableFeeClasses.add(FeeClass.AuditGUARD);
+        }
+        if (contractorFeeMap.get(FeeClass.EmployeeGUARD).getNewLevel().getMinFacilities() >= 1) {
+            applicableFeeClasses.add(FeeClass.EmployeeGUARD);
+        }
+
+        return applicableFeeClasses;
+    }
+
+    public List<OperatorAccount> getClients() {
+        return con.getOperatorAccounts();
+    }
 
 	public ContractorAccount getCon() {
 		return con;
@@ -86,37 +82,16 @@ public class ContractorPricing extends ContractorActionSupport {
 		return id;
 	}
 
-	public String getPrice(String priceId) {
-		BigDecimal amount = prices.get(priceId);
-		if (amount == null) {
-			amount = new BigDecimal(0);
-		}
-
-		return amount.toString();
-	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public int getEmployeeGUARDNum() {
-		return employeeGUARDNum;
-	}
+    public List<PricingTier> getPricingTiers() {
+        return pricingTiers;
+    }
 
-	public int getDocuGUARDNum() {
-		return docuGUARDNum;
-	}
-
-	public int getAuditGUARDNum() {
-		return auditGUARDNum;
-	}
-
-	public int getInsureGUARDNum() {
-		return insureGUARDNum;
-	}
-
-	public void setInsureGUARDNum(int insureGUARDNum) {
-		this.insureGUARDNum = insureGUARDNum;
-	}
+    public void setPricingTiers(List<PricingTier> pricingTiers) {
+        this.pricingTiers = pricingTiers;
+    }
 
 }
