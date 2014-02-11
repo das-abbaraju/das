@@ -150,4 +150,7 @@
 	<include file="./liquibase/kchase23_PICS-14445_IHGSubmitFix.sql"/>
 	<include file="./liquibase/mdo44_PICs-14407_CorrectPaymentMethod.sql"/>
 
+	<! -- 7.1.6 --> 
+	<include file="./liquibase/dalvarado7_us182_new_template_for_message_your_csr.sql"/>
+
 </databaseChangeLog>
