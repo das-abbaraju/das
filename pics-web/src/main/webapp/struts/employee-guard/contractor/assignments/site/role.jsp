@@ -27,11 +27,14 @@
         <ul class="nav nav-pills nav-stacked nav-assignment">
             <li class="site-status">
                 <a href="${contractor_site_assignments}">
-                    <span class="badge pull-right">${assignmentMatrix.totalNumberOfEmployeesAssignedToSite}</span>
+                    <span class="badge badge-info pull-right">${assignmentMatrix.totalNumberOfEmployeesAssignedToSite}</span>
                     Site Status
                 </a>
             </li>
             <li class="nav-divider"></li>
+            <li>
+                <span class="nav-title">Job Roles</span>
+            </li>
             <s:set var="selected_role" value="%{id}"/>
             <s:iterator value="assignmentMatrix.roleEmployee.keySet()" var="operator_job_role">
 
@@ -52,7 +55,7 @@
                         </s:param>
                     </s:url>
                     <a href="${operator_job_role_url}">
-                        <span class="badge pull-right">${assignmentMatrix.roleEmployee.get(operator_job_role)}</span>
+                        <span class="badge badge-info  pull-right">${assignmentMatrix.roleEmployee.get(operator_job_role)}</span>
                         ${operator_job_role.name}
                     </a>
                 </li>
