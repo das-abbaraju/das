@@ -228,7 +228,6 @@
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
     <bean id="EmailBuilderService" class="com.picsauditing.service.email.EmailBuilderService"/>
-    <bean id="EmailBuilder2" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>
     <bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener"

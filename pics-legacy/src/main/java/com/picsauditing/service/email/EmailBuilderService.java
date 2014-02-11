@@ -14,7 +14,6 @@ import java.util.Map;
 public class EmailBuilderService {
 
 	@Autowired
-	@Qualifier("EmailBuilder2")
 	EmailBuilder emailBuilder;
 
 	public EmailQueue buildEmail(EmailTemplate emailTemplate, User fromUser, String toEmail, Map<String, Object> tokenMap) throws IOException, EmailBuildErrorException {
