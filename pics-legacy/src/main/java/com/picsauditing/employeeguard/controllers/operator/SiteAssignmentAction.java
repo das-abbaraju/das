@@ -80,6 +80,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	public String role() {
+		List<Employee> employeesAssignedToRole = employeeService.getEmployeesAssignedToSiteRole(null, 0, null, null);
 		return "role";
 	}
 

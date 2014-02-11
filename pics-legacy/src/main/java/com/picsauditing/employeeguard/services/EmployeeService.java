@@ -80,6 +80,11 @@ public class EmployeeService {
 		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
+	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
+														 final Role siteRole, final Role corporateRole) {
+		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
+	}
+
 	public Employee save(Employee employee, final int accountId, final int appUserId) throws Exception {
 		Date now = new Date();
 
