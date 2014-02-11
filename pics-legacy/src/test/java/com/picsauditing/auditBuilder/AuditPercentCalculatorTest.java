@@ -45,7 +45,9 @@ public class AuditPercentCalculatorTest {
 	@Mock private AuditDataDAO auditDataDAO;
 	@Mock private AuditCatData catData;
 	@Mock private AuditCategory category;
+	@Mock private AuditType mockAuditType;
 	@Mock private ContractorAudit contractorAudit;
+	@Mock private ContractorAuditOperator contractorAuditOperator;
     @Mock
     private AuditDecisionTableDAO auditDecisionTableDAO;
 
@@ -714,7 +716,27 @@ public class AuditPercentCalculatorTest {
 
 	}
 
-	@Test
-	public void testUpdatePercentageCompleted() {
-	}
+    @Test
+    public void testPercentCalculateComplete_PolicySubmittedOrAfter()
+            throws Exception {
+        List<ContractorAuditOperator> caos = new ArrayList<>();
+        caos.add(contractorAuditOperator);
+        List<AuditCatData> auditCatDatas = new ArrayList<>();
+        auditCatDatas.add(catData);
+
+        when(contractorAudit.getContractorAccount()).thenReturn(contractor);
+        when(contractorAudit.getOperators()).thenReturn(caos);
+        when(contractorAudit.getAuditType()).thenReturn(mockAuditType);
+        when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+        when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Submitted);
+        when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+        when(catData.isOverride()).thenReturn(true);
+        when(catData.isApplies()).thenReturn(true);
+        when(catData.getNumRequired()).thenReturn(100);
+        when(catData.getRequiredCompleted()).thenReturn(50);
+
+        calculator.percentCalculateComplete(contractorAudit);
+
+        verify(contractorAuditOperator, never()).setPercentComplete(50);
+    }
 }

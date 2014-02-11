@@ -463,6 +463,10 @@ public class AuditPercentCalculator {
         Set<AuditCategory> auditCategories = builder.calculate(conAudit);
 
         for (ContractorAuditOperator cao : conAudit.getOperators()) {
+            if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && cao.getStatus().after(AuditStatus.Incomplete)) {
+                continue;
+            }
+
             int required = 0;
             int answered = 0;
             int verified = 0;
