@@ -24,7 +24,7 @@ public class OperatorSiteAssignmentModelFactoryTest {
 	public void testCreate() throws Exception {
 		List<Employee> employees = Arrays.asList(new Employee(), new Employee(), new Employee());
 
-		SiteAssignmentModel siteAssignmentModel = operatorSiteAssignmentModelFactory.create(employees);
+		SiteAssignmentModel siteAssignmentModel = operatorSiteAssignmentModelFactory.create(employees, null);
 
 		assertNotNull(siteAssignmentModel);
 		assertEquals(3, siteAssignmentModel.getTotalEmployeesAssignedToSite());

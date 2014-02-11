@@ -13,9 +13,10 @@ import java.util.Set;
 
 public class EmployeeSiteAssignmentModelFactory {
 
-	public List<EmployeeSiteAssignmentModel> create(Map<Employee, SkillStatus> employeeStatuses, Map<Employee, Set<Role>> roleAssignments, Map<Integer, AccountModel> accounts) {
+	public List<EmployeeSiteAssignmentModel> create(final Map<Employee, SkillStatus> employeeStatuses,
+													final Map<Employee, Set<Role>> roleAssignments,
+													final Map<Integer, AccountModel> accounts) {
 		List<EmployeeSiteAssignmentModel> models = new ArrayList<>();
-
 		for (Map.Entry<Employee, SkillStatus> entry : employeeStatuses.entrySet()) {
 			Employee employee = entry.getKey();
 			int assignments = roleAssignments.containsKey(employee) ? roleAssignments.get(employee).size() : 0;
@@ -27,7 +28,7 @@ public class EmployeeSiteAssignmentModelFactory {
 					.employeeId(employee.getId())
 					.employeeName(employee.getName())
 					.employeeTitle(employee.getPositionName())
-                    .numberOfRolesAssigned(roleAssignments.get(employee).size())
+                    .numberOfRolesAssigned(assignments)
 					.status(entry.getValue())
 					.build();
 

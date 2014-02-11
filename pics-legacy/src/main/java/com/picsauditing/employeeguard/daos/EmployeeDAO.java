@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.RoleEmployee;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
@@ -179,5 +180,9 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		employees.addAll(query.getResultList());
 
 		return ListUtil.removeDuplicatesAndSort(employees);
+	}
+
+	public List<RoleEmployee> findSiteRolesForEmployees(final List<Employee> employees, final int siteId) {
+		return null;  //To change body of created methods use File | Settings | File Templates.
 	}
 }

@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.viewmodel.model.Skill;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class EmployeeEntityService implements EntityService<Employee, Integer> {
@@ -29,8 +30,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer> {
 
     @Override
     public Employee update(final Employee employee) {
-        Employee employeeToUpdate = find(employee.getId());
-        EntityHelper.
+//        Employee employeeToUpdate = find(employee.getId());
+//        EntityHelper.
         return employeeDAO.save(employee);
     }
 
@@ -40,6 +41,6 @@ public class EmployeeEntityService implements EntityService<Employee, Integer> {
     }
 
     public Set<Skill> getSkillsForEmployee(final Employee employee) {
-
-    }
+		return Collections.emptySet();
+	}
 }

@@ -24,9 +24,10 @@
     <bean id="ProjectRoleEmployeeDAO" class="com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO"/>
     <bean id="ProjectSkillDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillDAO"/>
     <bean id="ProjectSkillRoleDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillRoleDAO"/>
-    <bean id="SiteSkillDAO" class="com.picsauditing.employeeguard.daos.SiteSkillDAO"/>
     <bean id="RoleDAO" class="com.picsauditing.employeeguard.daos.RoleDAO"/>
     <bean id="RoleEmployeeDAO" class="com.picsauditing.employeeguard.daos.RoleEmployeeDAO"/>
+    <bean id="SiteSkillDAO" class="com.picsauditing.employeeguard.daos.SiteSkillDAO"/>
+    <bean id="SkillCalculatorService" class="com.picsauditing.employeeguard.services.StatusCalculatorService"/>
     <bean id="SoftDeletedEmployeeDAO" class="com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO"/>
 
     <!-- Services -->

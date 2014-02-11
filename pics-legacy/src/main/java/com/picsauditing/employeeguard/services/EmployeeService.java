@@ -16,12 +16,12 @@ import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
-import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -40,9 +40,9 @@ public class EmployeeService {
 	private AccountGroupDAO accountGroupDAO;
 	@Autowired
 	private EmployeeDAO employeeDAO;
-    @Autowired
-    private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
-    @Deprecated
+	@Autowired
+	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	@Deprecated
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
@@ -333,22 +333,53 @@ public class EmployeeService {
 		softDeletedEmployeeDAO.save(employee);
 	}
 
-    public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSpecificSkills(final List<Employee> employees,
-                                                              final List<AccountSkill> skills) {
-        List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
-                .findByEmployeesAndSkills(employees, skills);
+	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSpecificSkills(final List<Employee> employees,
+																			   final List<AccountSkill> skills) {
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+				.findByEmployeesAndSkills(employees, skills);
 
-        return Utilities.convertToMapOfSets(accountSkillEmployees,
-                new Utilities.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
-                    @Override
-                    public Employee getKey(final AccountSkillEmployee accountSkillEmployee) {
-                        return accountSkillEmployee.getEmployee();
-                    }
+		return Utilities.convertToMapOfSets(accountSkillEmployees,
+				new Utilities.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
+					@Override
+					public Employee getKey(final AccountSkillEmployee accountSkillEmployee) {
+						return accountSkillEmployee.getEmployee();
+					}
 
-                    @Override
-                    public AccountSkill getValue(final AccountSkillEmployee accountSkillEmployee) {
-                        return accountSkillEmployee.getSkill();
-                    }
-                });
-    }
+					@Override
+					public AccountSkill getValue(final AccountSkillEmployee accountSkillEmployee) {
+						return accountSkillEmployee.getSkill();
+					}
+				});
+	}
+
+	public Map<Employee, Set<Role>> getCorporateRolesForEmployees(final List<Employee> employees,
+																  final int siteId,
+																  final Map<Role, Role> siteToCorporateRole) {
+		return getRolesForEmployees(employees, siteId, siteToCorporateRole);
+	}
+
+	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final List<Employee> employees, final int siteId) {
+		return getRolesForEmployees(employees, siteId, Collections.<Role, Role>emptyMap());
+	}
+
+	private Map<Employee, Set<Role>> getRolesForEmployees(final List<Employee> employees,
+														  final int siteId,
+														  final Map<Role, Role> siteToCorporateRole) {
+		return Utilities.convertToMapOfSets(employeeDAO.findSiteRolesForEmployees(employees, siteId),
+				new Utilities.EntityKeyValueConvertable<RoleEmployee, Employee, Role>() {
+					@Override
+					public Employee getKey(RoleEmployee roleEmployee) {
+						return roleEmployee.getEmployee();
+					}
+
+					@Override
+					public Role getValue(RoleEmployee roleEmployee) {
+						if (MapUtils.isEmpty(siteToCorporateRole)) {
+							return roleEmployee.getRole();
+						}
+
+						return siteToCorporateRole.get(roleEmployee.getRole());
+					}
+				});
+	}
 }

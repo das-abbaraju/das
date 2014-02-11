@@ -4,6 +4,8 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.EmployeeService;
+import com.picsauditing.employeeguard.services.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.junit.Before;
@@ -34,6 +36,8 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	private AccountService accountService;
 	@Mock
 	private EmployeeService employeeService;
+	@Mock
+	private StatusCalculatorService statusCalculatorService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -43,9 +47,10 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
 		siteAssignmentAction = new SiteAssignmentAction();
 
+		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
 		Whitebox.setInternalState(siteAssignmentAction, "accountService", accountService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
-		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
+		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
 	}
 
 	@Test

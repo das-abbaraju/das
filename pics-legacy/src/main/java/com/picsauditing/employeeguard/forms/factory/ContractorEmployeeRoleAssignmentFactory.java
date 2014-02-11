@@ -12,22 +12,22 @@ import java.util.*;
 
 public class ContractorEmployeeRoleAssignmentFactory {
 
-    public List<ContractorEmployeeRoleAssignment> build(final List<Employee> employees,
-                                                        final Map<Employee, AccountModel> accountModels) {
-        if (CollectionUtils.isEmpty(employees)) {
-            return Collections.emptyList();
-        }
-
-        List<ContractorEmployeeRoleAssignment> contractorEmployeeRoleAssignments = new ArrayList<>();
-        for (Employee employee : employees) {
-            AccountModel accountModel = accountModels.get(employee);
-            contractorEmployeeRoleAssignments.add(new ContractorEmployeeRoleAssignment.Builder()
-                    .
-                    .build());
-        }
-
-        return contractorEmployeeRoleAssignments;
-    }
+//    public List<ContractorEmployeeRoleAssignment> build(final List<Employee> employees,
+//                                                        final Map<Employee, AccountModel> accountModels) {
+//        if (CollectionUtils.isEmpty(employees)) {
+//            return Collections.emptyList();
+//        }
+//
+//        List<ContractorEmployeeRoleAssignment> contractorEmployeeRoleAssignments = new ArrayList<>();
+//        for (Employee employee : employees) {
+//            AccountModel accountModel = accountModels.get(employee);
+//            contractorEmployeeRoleAssignments.add(new ContractorEmployeeRoleAssignment.Builder()
+//                    .
+//                    .build());
+//        }
+//
+//        return contractorEmployeeRoleAssignments;
+//    }
 
 	public List<ContractorEmployeeRoleAssignment> build(final List<Employee> contractorEmployees,
 	                                                    final Role role,
