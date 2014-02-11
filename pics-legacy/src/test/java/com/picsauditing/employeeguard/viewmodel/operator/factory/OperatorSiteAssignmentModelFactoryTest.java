@@ -29,7 +29,7 @@ public class OperatorSiteAssignmentModelFactoryTest {
 		Map<RoleInfo, Integer> roleCounts = new HashMap<>();
 		roleCounts.put(new RoleInfo.Builder().name("Role").build(), 3);
 
-		SiteAssignmentModel siteAssignmentModel = operatorSiteAssignmentModelFactory.create(employees, roleCounts);
+		SiteAssignmentModel siteAssignmentModel = operatorSiteAssignmentModelFactory.create(employees, null, roleCounts);
 
 		assertNotNull(siteAssignmentModel);
 		assertEquals(3, siteAssignmentModel.getTotalEmployeesAssignedToSite());

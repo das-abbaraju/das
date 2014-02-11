@@ -2,8 +2,10 @@ package com.picsauditing.employeeguard.services;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -19,6 +21,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -37,6 +40,9 @@ public class EmployeeService {
 	private AccountGroupDAO accountGroupDAO;
 	@Autowired
 	private EmployeeDAO employeeDAO;
+	@Autowired
+	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	@Deprecated
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
@@ -311,10 +317,6 @@ public class EmployeeService {
 		Employee employee = findEmployee(id, accountId);
 		EntityHelper.softDelete(employee, appUserId);
 		employeeDAO.delete(employee);
-	}
-
-	public void hardDelete(final String id, final int accountId) {
-		employeeDAO.delete(NumberUtils.toInt(id), accountId);
 	}
 
 	public List<Employee> search(final String searchTerm, final int accountId) {

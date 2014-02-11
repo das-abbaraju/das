@@ -54,12 +54,11 @@
                 </thead>
 
                 <tbody>
-                    <s:iterator value="operatorProjectAssignmentMatrix.assignments" var="operator_project_employee">
-                        <s:if test="#operator_project_employee.hasRoles">
+                    <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="operator_project_employee">
                             <tr>
-                                <td>${operator_project_employee.companyName}</td>
+                                <td>${operator_project_employee.accountName}</td>
                                 <td>${operator_project_employee.employeeName}</td>
-                                <s:iterator value="#operator_project_employee.skillStatuses" var="employee_skill_status">
+                                <s:iterator value="#operator_project_employee.status" var="employee_skill_status">
                                     <s:if test="#employee_skill_status.expired" >
                                         <s:set var="skill_icon">icon-minus-sign-alt</s:set>
                                         <s:set var="skill_status_class">danger</s:set>
@@ -80,7 +79,6 @@
                                     <td class="${skill_status_class} text-center"><i class="${skill_icon} icon-large"></i></td>
                                 </s:iterator>
                             </tr>
-                        </s:if>
                     </s:iterator>
                 </tbody>
             </table>

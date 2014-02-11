@@ -12,9 +12,9 @@ import java.util.*;
 public class ContractorEmployeeRoleAssignmentFactory {
 
 	public List<ContractorEmployeeRoleAssignment> build(final List<Employee> contractorEmployees,
-	                                                    final Role role,
-	                                                    final Set<Employee> assignedEmployees,
-	                                                    final Map<Employee, Set<AccountSkillEmployee>> employeeSkills) {
+														final Role role,
+														final Set<Employee> assignedEmployees,
+														final Map<Employee, Set<AccountSkillEmployee>> employeeSkills) {
 		if (CollectionUtils.isEmpty(contractorEmployees) || role == null) {
 			return Collections.emptyList();
 		}
@@ -54,7 +54,7 @@ public class ContractorEmployeeRoleAssignmentFactory {
 	}
 
 	private List<SkillStatus> calculateSkillStatuses(List<AccountSkill> roleSkills,
-	                                                 Set<AccountSkillEmployee> accountSkillEmployees) {
+													 Set<AccountSkillEmployee> accountSkillEmployees) {
 		List<SkillStatus> statuses = new ArrayList<>();
 
 		for (AccountSkill skill : roleSkills) {

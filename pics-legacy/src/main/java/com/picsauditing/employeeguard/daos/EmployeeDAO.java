@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.RoleEmployee;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;

@@ -4,9 +4,12 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.RoleEmployee;
+import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.RoleEmployee;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.RoleService;
+import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.junit.Before;
@@ -21,6 +24,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
 
 public class SiteAssignmentActionTest extends PicsActionTest {
@@ -37,6 +41,8 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Mock
 	private EmployeeService employeeService;
 	@Mock
+	private StatusCalculatorService statusCalculatorService;
+	@Mock
 	private RoleService roleService;
 
 	@Before
@@ -47,8 +53,10 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
 		siteAssignmentAction = new SiteAssignmentAction();
 
+		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
 		Whitebox.setInternalState(siteAssignmentAction, "accountService", accountService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
+		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
 		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
 		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
 	}

@@ -4,7 +4,9 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.services.external.BillingService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,10 +18,12 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
 public class AccountServiceTest {
@@ -126,5 +130,58 @@ public class AccountServiceTest {
 		operator.setName(name);
 		operator.setType(type);
 		return operator;
+	}
+
+	@Test
+	public void testGetContractorMapForSite() {
+		setupTestGetContractors();
+
+		Map<Integer, AccountModel> results = accountService.getContractorMapForSite(312);
+
+		verifyTestGetContractorMapForSite(results);
+	}
+
+	private void verifyTestGetContractorMapForSite(Map<Integer, AccountModel> results) {
+		assertEquals(3, results.size());
+		for (Map.Entry<Integer, AccountModel> mapEntry : results.entrySet()) {
+			assertTrue(mapEntry.getKey() == mapEntry.getValue().getId());
+		}
+	}
+
+	@Test
+	public void testGetContractors() {
+		setupTestGetContractors();
+
+		List<AccountModel> results = accountService.getContractors(312);
+
+		verifyTestGetContractors(results);
+	}
+
+	private void setupTestGetContractors() {
+		when(operatorAccountDAO.find(312)).thenReturn(createCorporate(312, "Test Operator"));
+		when(billingService.filterEmployeeGUARDAccounts(anyListOf(ContractorAccount.class)))
+				.thenReturn(getFakeContractors());
+	}
+
+	private void verifyTestGetContractors(List<AccountModel> results) {
+		for (AccountModel accountModel : results) {
+			assertEquals(AccountType.CONTRACTOR, accountModel.getAccountType());
+			assertEquals("Test Contractor " + accountModel.getId(), accountModel.getName());
+		}
+	}
+
+	private List<ContractorAccount> getFakeContractors() {
+		return Arrays.asList(buildFakeContractor(1, "Test Contractor 1"),
+				buildFakeContractor(2, "Test Contractor 2"),
+				buildFakeContractor(3, "Test Contractor 3"));
+	}
+
+	private ContractorAccount buildFakeContractor(final int id,
+												  final String name) {
+		ContractorAccount contractor = new ContractorAccount();
+		contractor.setId(id);
+		contractor.setName(name);
+		contractor.setType("Contractor");
+		return contractor;
 	}
 }

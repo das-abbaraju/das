@@ -163,6 +163,15 @@ public class AccountService {
 		return getAccountById(accountDAO.findByUserID(userID));
 	}
 
+	public Map<Integer, AccountModel> getContractorMapForSite(final int siteId) {
+		return Utilities.convertToMap(getContractors(siteId), new Utilities.MapConvertable<Integer, AccountModel>() {
+			@Override
+			public Integer getKey(AccountModel accountModel) {
+				return accountModel.getId();
+			}
+		});
+	}
+
 	public List<AccountModel> getContractors(final int accountId) {
 		OperatorAccount operator = operatorDAO.find(accountId);
 		if (operator == null) {

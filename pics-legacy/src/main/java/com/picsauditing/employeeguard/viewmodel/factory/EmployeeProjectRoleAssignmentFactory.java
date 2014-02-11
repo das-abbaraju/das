@@ -16,62 +16,62 @@ import java.util.Set;
 
 public class EmployeeProjectRoleAssignmentFactory {
 
-    public List<EmployeeProjectRoleAssignment> create(final Map<AccountModel, Set<Employee>> contractorEmployeeMap,
-                                                      final List<AccountSkill> orderedSkills) {
-        List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments = new ArrayList<>();
-        for (AccountModel accountModel : contractorEmployeeMap.keySet()) {
-            for (Employee employee : contractorEmployeeMap.get(accountModel)) {
-                employeeProjectRoleAssignments.add(buildEmployeeProjectRoleAssignment(accountModel, employee,
-                        orderedSkills));
-            }
-        }
+	public List<EmployeeProjectRoleAssignment> create(final Map<AccountModel, Set<Employee>> contractorEmployeeMap,
+													  final List<AccountSkill> orderedSkills) {
+		List<EmployeeProjectRoleAssignment> employeeProjectRoleAssignments = new ArrayList<>();
+		for (AccountModel accountModel : contractorEmployeeMap.keySet()) {
+			for (Employee employee : contractorEmployeeMap.get(accountModel)) {
+				employeeProjectRoleAssignments.add(buildEmployeeProjectRoleAssignment(accountModel, employee,
+						orderedSkills));
+			}
+		}
 
-        return employeeProjectRoleAssignments;
-    }
+		return employeeProjectRoleAssignments;
+	}
 
-    public EmployeeProjectRoleAssignment create(final AccountModel accountModel,
-                                                final Employee employee,
-                                                final List<AccountSkill> orderedSkills) {
-        return buildEmployeeProjectRoleAssignment(accountModel, employee, orderedSkills);
-    }
+	public EmployeeProjectRoleAssignment create(final AccountModel accountModel,
+												final Employee employee,
+												final List<AccountSkill> orderedSkills) {
+		return buildEmployeeProjectRoleAssignment(accountModel, employee, orderedSkills);
+	}
 
-    private EmployeeProjectRoleAssignment buildEmployeeProjectRoleAssignment(final AccountModel accountModel,
-                                                                             final Employee employee,
-                                                                             final List<AccountSkill> orderedSkills) {
-        Map<AccountSkill, AccountSkillEmployee> employeeSkillMap = buildEmployeeAccountSkillMap(employee.getSkills());
+	private EmployeeProjectRoleAssignment buildEmployeeProjectRoleAssignment(final AccountModel accountModel,
+																			 final Employee employee,
+																			 final List<AccountSkill> orderedSkills) {
+		Map<AccountSkill, AccountSkillEmployee> employeeSkillMap = buildEmployeeAccountSkillMap(employee.getSkills());
 
-        return new EmployeeProjectRoleAssignment.Builder()
-                .contractorId(accountModel.getId())
-                .contractorName(accountModel.getName())
-                .employeeId(employee.getId())
-                .employeeName(employee.getName())
-                .skillStatuses(getRoleSkillStatuses(employeeSkillMap, orderedSkills))
-                .build();
-    }
+		return new EmployeeProjectRoleAssignment.Builder()
+				.contractorId(accountModel.getId())
+				.contractorName(accountModel.getName())
+				.employeeId(employee.getId())
+				.employeeName(employee.getName())
+				.skillStatuses(getRoleSkillStatuses(employeeSkillMap, orderedSkills))
+				.build();
+	}
 
-    private Map<AccountSkill, AccountSkillEmployee> buildEmployeeAccountSkillMap(List<AccountSkillEmployee> employeeSkills) {
-        return Utilities.convertToMap(employeeSkills,
-                new Utilities.MapConvertable<AccountSkill, AccountSkillEmployee>() {
+	private Map<AccountSkill, AccountSkillEmployee> buildEmployeeAccountSkillMap(List<AccountSkillEmployee> employeeSkills) {
+		return Utilities.convertToMap(employeeSkills,
+				new Utilities.MapConvertable<AccountSkill, AccountSkillEmployee>() {
 
-                    @Override
-                    public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
-                        return accountSkillEmployee.getSkill();
-                    }
-                });
-    }
+					@Override
+					public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
+						return accountSkillEmployee.getSkill();
+					}
+				});
+	}
 
-    private List<SkillStatus> getRoleSkillStatuses(final Map<AccountSkill, AccountSkillEmployee> employeeSkillMap,
-                                                   final List<AccountSkill> orderedSkills) {
-        List<SkillStatus> skillStatuses = new ArrayList<>();
-        for (AccountSkill skill : orderedSkills) {
-            AccountSkillEmployee accountSkillEmployee = employeeSkillMap.get(skill);
-            if (accountSkillEmployee == null) {
-                skillStatuses.add(SkillStatus.Expired);
-            } else {
-                skillStatuses.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
-            }
-        }
+	private List<SkillStatus> getRoleSkillStatuses(final Map<AccountSkill, AccountSkillEmployee> employeeSkillMap,
+												   final List<AccountSkill> orderedSkills) {
+		List<SkillStatus> skillStatuses = new ArrayList<>();
+		for (AccountSkill skill : orderedSkills) {
+			AccountSkillEmployee accountSkillEmployee = employeeSkillMap.get(skill);
+			if (accountSkillEmployee == null) {
+				skillStatuses.add(SkillStatus.Expired);
+			} else {
+				skillStatuses.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
+			}
+		}
 
-        return skillStatuses;
-    }
+		return skillStatuses;
+	}
 }
