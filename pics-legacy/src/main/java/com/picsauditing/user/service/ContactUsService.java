@@ -1,33 +1,51 @@
 package com.picsauditing.user.service;
 
+import com.picsauditing.PICS.MainPage;
+import com.picsauditing.access.UnauthorizedException;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.contractor.ContractorEmailService;
 import com.picsauditing.user.model.ContactUsInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ContactUsService {
 
-	public ContactUsInfo getContactUsInfo(User user) {
-		System.out.println("ContactUsService.getContactUsInfo");
-		System.out.println("user = " + user);
+	@Autowired
+	private ContractorEmailService contractorEmailService;
 
-		return bogusContactInfo();
-
+	public ContactUsInfo getContactUsInfo(User user) throws UnauthorizedException {
+		if (user.getAccount().isContractor()) {
+			ContractorAccount contractorAccount = (ContractorAccount) user.getAccount();
+			ContactUsInfo contactUsInfo = buildContactUsInfo(contractorAccount);
+			return contactUsInfo;
+		} else {
+			throw new UnauthorizedException();
+		}
 	}
 
-	public boolean sendMessageToCsr(String subject, String message, User sendingUser) {
-		System.out.println("ContactUsService.sendMessageToCsr");
-		System.out.println("subject = " + subject);
-		System.out.println("message = " + message);
-		System.out.println("sendingUser = " + sendingUser);
+	private ContactUsInfo buildContactUsInfo(ContractorAccount contractorAccount) {
+		User currentCsr = contractorAccount.getCurrentCsr();
 
-		return true;
-	}
-
-	private ContactUsInfo bogusContactInfo() {
 		ContactUsInfo contactUsInfo = new ContactUsInfo();
-		contactUsInfo.setCsrPhoneNumber("555-867-5309");
-		contactUsInfo.setCsrPhoneNumberExtension("9876");
-		contactUsInfo.setCsrName("Joe Sixpack");
+		contactUsInfo.setCsrName(currentCsr.getName());
+		String csrPhoneNumberForCountry = findCsrPhoneNumberForCountry(contractorAccount.getCountry());
+		contactUsInfo.setCsrPhoneNumber(csrPhoneNumberForCountry);
+		contactUsInfo.setCsrPhoneNumberExtension(currentCsr.getPhone());
 
 		return contactUsInfo;
 	}
+
+	public String findCsrPhoneNumberForCountry(Country country) {
+		if (country != null) {
+			return country.getCsrPhone();
+		} else {
+			return MainPage.PICS_PHONE_NUMBER;
+		}
+	}
+
+	public void sendMessageToCsr(String subject, String message, User fromContractorUser) throws Exception {
+		contractorEmailService.sendEmailToCsr(subject, message, fromContractorUser);
+	}
+
 }
