@@ -734,9 +734,11 @@ public class AuditPercentCalculatorTest {
         when(catData.isApplies()).thenReturn(true);
         when(catData.getNumRequired()).thenReturn(100);
         when(catData.getRequiredCompleted()).thenReturn(50);
+        when(catData.getNumVerified()).thenReturn(50);
 
         calculator.percentCalculateComplete(contractorAudit);
 
         verify(contractorAuditOperator, never()).setPercentComplete(50);
+        verify(contractorAuditOperator).setPercentVerified(50);
     }
 }

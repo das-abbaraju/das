@@ -463,10 +463,6 @@ public class AuditPercentCalculator {
         Set<AuditCategory> auditCategories = builder.calculate(conAudit);
 
         for (ContractorAuditOperator cao : conAudit.getOperators()) {
-            if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && cao.getStatus().after(AuditStatus.Incomplete)) {
-                continue;
-            }
-
             int required = 0;
             int answered = 0;
             int verified = 0;
@@ -525,9 +521,11 @@ public class AuditPercentCalculator {
             int percentComplete = 0;
             int percentVerified = 0;
             if (required > 0) {
-                percentComplete = (int) Math.floor(100 * answered / required);
-                if (percentComplete >= 100) {
-                    percentComplete = 100;
+                if (conAudit.getAuditType().getClassType() != AuditTypeClass.Policy || !cao.getStatus().after(AuditStatus.Incomplete)) {
+                    percentComplete = (int) Math.floor(100 * answered / required);
+                    if (percentComplete >= 100) {
+                        percentComplete = 100;
+                    }
                 }
                 percentVerified = (int) Math.floor(100 * verified / required);
                 if (percentVerified >= 100) {
