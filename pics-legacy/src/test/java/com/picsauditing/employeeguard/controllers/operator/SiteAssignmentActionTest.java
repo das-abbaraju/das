@@ -4,8 +4,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.RoleEmployee;
-import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.entities.RoleEmployee;
+import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.RoleService;
@@ -24,7 +23,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
 
 public class SiteAssignmentActionTest extends PicsActionTest {
@@ -41,9 +39,9 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Mock
 	private EmployeeService employeeService;
 	@Mock
-	private StatusCalculatorService statusCalculatorService;
-	@Mock
 	private RoleService roleService;
+	@Mock
+	private StatusCalculatorService statusCalculatorService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -53,12 +51,11 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
 		siteAssignmentAction = new SiteAssignmentAction();
 
-		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
 		Whitebox.setInternalState(siteAssignmentAction, "accountService", accountService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
-		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
 		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
 		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
+		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
 	}
 
 	@Test
@@ -77,7 +74,10 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 				new AccountModel.Builder().id(CONTRACTOR_ID_2).name("Contractor 2").build()
 		);
 
-		List<Employee> employees = Arrays.asList(new Employee(), new Employee(), new Employee());
+		List<Employee> employees = Arrays.asList(
+				new EmployeeBuilder().firstName("1").lastName("One").email("1@one").accountId(CONTRACTOR_ID_1).build(),
+				new EmployeeBuilder().firstName("2").lastName("Two").email("2@two").accountId(CONTRACTOR_ID_1).build(),
+				new EmployeeBuilder().firstName("3").lastName("Three").email("3@three").accountId(CONTRACTOR_ID_1).build());
 
 		setupPermissions();
 		when(accountService.getContractors(SITE_ID)).thenReturn(contractors);

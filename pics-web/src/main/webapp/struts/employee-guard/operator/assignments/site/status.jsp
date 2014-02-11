@@ -49,36 +49,36 @@
                     <tr>
                         <th>Company</th>
                         <th>Employee</th>
+                        <th>Title</th>
                         <th class="text-center">Site Status</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="operator_project_employee">
-                            <tr>
-                                <td>${operator_project_employee.accountName}</td>
-                                <td>${operator_project_employee.employeeName}</td>
-                                <s:iterator value="#operator_project_employee.status" var="employee_skill_status">
-                                    <s:if test="#employee_skill_status.expired" >
-                                        <s:set var="skill_icon">icon-minus-sign-alt</s:set>
-                                        <s:set var="skill_status_class">danger</s:set>
-                                    </s:if>
-                                    <s:elseif test="#employee_skill_status.expiring" >
-                                        <s:set var="skill_icon">icon-warning-sign</s:set>
-                                        <s:set var="skill_status_class">warning</s:set>
-                                    </s:elseif>
-                                    <s:elseif test="#employee_skill_status.pending" >
-                                        <s:set var="skill_icon">icon-ok-circle</s:set>
-                                        <s:set var="skill_status_class">success</s:set>
-                                    </s:elseif>
-                                    <s:else>
-                                        <s:set var="skill_icon">icon-ok-sign</s:set>
-                                        <s:set var="skill_status_class">success</s:set>
-                                    </s:else>
+                    <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="site_assignment_employee">
+                        <tr>
+                            <td>${site_assignment_employee.accountName}</td>
+                            <td>${site_assignment_employee.employeeName}</td>
+                            <s:if test="#site_assignment_employee.status.expired" >
+                                <s:set var="skill_icon">icon-minus-sign-alt</s:set>
+                                <s:set var="skill_status_class">danger</s:set>
+                            </s:if>
+                            <s:elseif test="#site_assignment_employee.status.expiring" >
+                                <s:set var="skill_icon">icon-warning-sign</s:set>
+                                <s:set var="skill_status_class">warning</s:set>
+                            </s:elseif>
+                            <s:elseif test="#site_assignment_employee.status.pending" >
+                                <s:set var="skill_icon">icon-ok-circle</s:set>
+                                <s:set var="skill_status_class">success</s:set>
+                            </s:elseif>
+                            <s:else>
+                                <s:set var="skill_icon">icon-ok-sign</s:set>
+                                <s:set var="skill_status_class">success</s:set>
+                            </s:else>
 
-                                    <td class="${skill_status_class} text-center"><i class="${skill_icon} icon-large"></i></td>
-                                </s:iterator>
-                            </tr>
+                            <td>${site_assignment_employee.employeeTitle}</td>
+                            <td class="${skill_status_class} text-center"><i class="${skill_icon} icon-large"></i></td>
+                        </tr>
                     </s:iterator>
                 </tbody>
             </table>

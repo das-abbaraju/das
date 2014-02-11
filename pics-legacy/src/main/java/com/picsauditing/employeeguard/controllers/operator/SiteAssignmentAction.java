@@ -2,13 +2,15 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
+import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.forms.operator.ProjectRoleAssignment;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
-import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.EmployeeService;
+import com.picsauditing.employeeguard.services.RoleService;
+import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
@@ -27,8 +29,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
-    @Autowired
-    private RoleService roleService;
+	@Autowired
+	private RoleService roleService;
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
@@ -54,11 +56,12 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 					});
 
 			List<Employee> employeesAtSite = employeeService.getEmployeesAssignedToSite(contractorIds, siteId);
+			Map<Employee, Set<AccountSkill>> employeeRequiredSkills = roleService.getEmployeeSkillsForSite(siteId, contractorIds);
 
 			List<EmployeeSiteAssignmentModel> employeeSiteAssignments = ViewModelFactory
 					.getEmployeeSiteAssignmentModelFactory()
 					.create(
-							statusCalculatorService.getEmployeeStatusRollUpForSkills(employeesAtSite, null),
+							statusCalculatorService.getEmployeeStatusRollUpForSkills(employeesAtSite, employeeRequiredSkills),
 							Collections.<Employee, Set<Role>>emptyMap(),
 							accountService.getContractorMapForSite(siteId));
 
@@ -70,10 +73,10 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 			List<RoleInfo> roleInfos = ViewModelFactory.getRoleInfoFactory().build(roles);
 
 			Map<RoleInfo, Integer> roleCounts = ViewModelFactory.getRoleEmployeeCountFactory()
-                    .create(roleInfos, corporateToSiteRoles, employeesAtSite);
+					.create(roleInfos, corporateToSiteRoles, employeesAtSite);
 
 			siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory()
-                    .create(employeesAtSite, employeeSiteAssignments, roleCounts);
+					.create(employeesAtSite, employeeSiteAssignments, roleCounts);
 		}
 
 		return "status";
