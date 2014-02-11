@@ -7,7 +7,8 @@ import com.picsauditing.report.fields.FieldType;
 
 public class AccountTable extends AbstractTable {
 	public static final String Operator = "Operator";
-	public static final String Contractor = "Contractor";
+    public static final String OperatorInfo = "OperatorInfo";
+    public static final String Contractor = "Contractor";
 	public static final String ContractorOperator = "ContractorOperator";
 	public static final String Contact = "Contact";
 	public static final String Naics = "Naics";
@@ -38,6 +39,8 @@ public class AccountTable extends AbstractTable {
 
 	protected void addJoins() {
 		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("id"))).setMinimumImportance(FieldImportance.Average);
+
+        addOptionalKey(new ReportForeignKey(OperatorInfo, new OperatorTable(), new ReportOnClause("id")));
         addJoinKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
 
 		ReportForeignKey contractorOperatorKey = addOptionalKey(new ReportForeignKey(ContractorOperator,

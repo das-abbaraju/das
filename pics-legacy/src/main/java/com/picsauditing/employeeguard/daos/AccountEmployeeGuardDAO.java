@@ -9,7 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 public class AccountEmployeeGuardDAO {
-    private static final Logger LOG = LoggerFactory.getLogger(AccountEmployeeGuardDAO.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AccountEmployeeGuardDAO.class);
 
 	@PersistenceContext
 	protected EntityManager em;
@@ -19,17 +19,17 @@ public class AccountEmployeeGuardDAO {
 			return null;
 		}
 
-        AccountEmployeeGuard result = null;
+		AccountEmployeeGuard result = null;
 
-        try {
-            TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
-            query.setParameter("accountId", accountId);
-            result = query.getSingleResult();
-        } catch (Exception e) {
-            LOG.error("Unable to find account {}", accountId, e);
-        }
+		try {
+			TypedQuery<AccountEmployeeGuard> query = em.createQuery("FROM AccountEmployeeGuard aeg WHERE aeg.accountId = :accountId", AccountEmployeeGuard.class);
+			query.setParameter("accountId", accountId);
+			result = query.getSingleResult();
+		} catch (Exception e) {
+			LOG.error("Unable to find account {}", accountId, e);
+		}
 
-        return result;
+		return result;
 	}
 
 	public void save(AccountEmployeeGuard accountEmployeeGuard) {

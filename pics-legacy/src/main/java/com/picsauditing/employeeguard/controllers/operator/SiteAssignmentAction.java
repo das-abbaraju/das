@@ -3,7 +3,9 @@ package com.picsauditing.employeeguard.controllers.operator;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.ProjectRoleAssignment;
+import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
@@ -13,6 +15,7 @@ import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SiteAssignmentAction extends PicsRestActionSupport {
@@ -23,6 +26,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
+    @Autowired
+    private RoleService roleService;
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
@@ -56,8 +61,18 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 							employeeService.getSiteRolesForEmployees(employeesAtSite, siteId),
 							accountService.getContractorMapForSite(siteId));
 
-			siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory().create(employeesAtSite,
-					employeeSiteAssignments);
+			List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+			List<Role> roles = roleService.getRolesForAccounts(corporateIds);
+			Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(siteId);
+			Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
+
+			List<RoleInfo> roleInfos = ViewModelFactory.getRoleInfoFactory().build(roles);
+
+			Map<RoleInfo, Integer> roleCounts = ViewModelFactory.getRoleEmployeeCountFactory()
+                    .create(roleInfos, corporateToSiteRoles, employeesAtSite);
+
+			siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory()
+                    .create(employeesAtSite, employeeSiteAssignments, roleCounts);
 		}
 
 		return "status";

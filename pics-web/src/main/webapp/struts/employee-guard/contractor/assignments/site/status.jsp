@@ -9,16 +9,25 @@
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
 
+<%-- Unassign Confirmation --%>
+<s:include value="/struts/employee-guard/_unassign-employee-confirmation.jsp">
+    <s:param name="modal_title">Unassign Employee from Site</s:param>
+    <s:param name="modal_message">Unassigning this employee from the site will unassign them from all Job Roles and Projects that they may currently be assigned to.</s:param>
+</s:include>
+
 <div class="row">
     <div class="col-md-3">
         <ul class="nav nav-pills nav-stacked nav-assignment">
             <li class="active site-status">
                 <a href="#">
-                    <span class="badge pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
+                    <span class="badge badge-info pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
                     Site Status
                 </a>
             </li>
             <li class="nav-divider"></li>
+            <li>
+                <span class="nav-title">Job Roles</span>
+            </li>
             <s:iterator value="siteAssignmentModel.roleEmployee.keySet()" var="operator_job_role">
                 <li>
                     <s:url var="operator_job_role_url" action="project/site-assignment/{siteId}/role/{id}">
@@ -30,7 +39,7 @@
                         </s:param>
                     </s:url>
                     <a href="${operator_job_role_url}">
-                        <span class="badge pull-right">${siteAssignmentModel.roleEmployee.get(operator_job_role)}</span>
+                        <span class="badge badge-info pull-right">${siteAssignmentModel.roleEmployee.get(operator_job_role)}</span>
                         ${operator_job_role.name}
                     </a>
                 </li>
@@ -60,11 +69,9 @@
                                 ${employee_site_assignment.employeeId}
                             </s:param>
                         </s:url>
-                        <tr class="assign-employee-container assigned site-level">
+                        <tr class="assign-employee-container assigned site-level" data-unassign-url="${employee_unassign_from_site}">
                             <td class="assign-employee text-center">
-                                <a href="${employee_unassign_from_site}">
-                                    <i class="icon-map-marker icon-large"></i> ${employee_site_assignment.numberOfRolesAssigned}
-                                </a>
+                                <i class="icon-map-marker icon-large"></i> ${employee_site_assignment.numberOfRolesAssigned}
                             </td>
                             <td>
                                 <s:url action="employee" var="employee_site_assignment_url">
@@ -72,7 +79,7 @@
                                         ${employee_site_assignment.employeeId}
                                     </s:param>
                                 </s:url>
-                                <a href="${employee_site_assignment_url}" class="disable-assignment">
+                                <a href="${employee_site_assignment_url}">
                                     ${employee_site_assignment.employeeName}
                                 </a>
                             </td>

@@ -1,28 +1,49 @@
-.nav-pills li {
-    .badge {
-        line-height: 18px;
-        background-color: $primary_light;
+.nav-pills {
+    li {
+        .badge {
+            line-height: 18px;
+        }
+
+        &.active {
+            .badge {
+                background-color: transparent;
+                color: #FFFFFF;
+            }
+
+            a {
+                background-color: $info_med;
+                color: #ffffff;
+
+                &:hover,
+                &:focus {
+                    background-color: $info_med;
+                    color: #ffffff;
+                }
+            }
+        }
+
     }
 
-    &.active {
-        .badge {
-            background-color: transparent;
-            color: #FFFFFF;
+    .nav-title {
+        color: $default_silver;
+        display: block;
+        font-size: 12px;
+        padding: 10px 15px 0px 15px;
+        text-transform: uppercase;
+    }
+
+    a {
+        color: $info_med;
+        font-size: 14px;
+
+        &:hover {
+            background-color: $pics_cool_grey;
         }
     }
 
-}
-.nav-pills a {
-    color: $primary_light;
-    font-size: 18px;
-
-    &:hover {
-        background-color: $pics_cool_grey;
+    i {
+        margin-right: 6px;
     }
-}
-
-.nav-pills i {
-    margin-right: 6px;
 }
 
 .nav .nav-header {

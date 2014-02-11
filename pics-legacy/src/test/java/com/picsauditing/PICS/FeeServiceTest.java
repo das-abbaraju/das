@@ -4,7 +4,7 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.provisioning.ProductSubscriptionService;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,9 @@ import org.powermock.reflect.Whitebox;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -53,8 +55,6 @@ public class FeeServiceTest extends PicsTranslationTest {
     private Country country;
     @Mock
     private PaymentAppliedToInvoice paymentAppliedToInvoice;
-    @Mock
-    private ProductSubscriptionService productSubscriptionService;
     @Mock
     private ContractorOperator contractorOperator1;
     @Mock
@@ -109,7 +109,6 @@ public class FeeServiceTest extends PicsTranslationTest {
         feeService = new FeeService();
         FeeService.ruleCache = ruleCache;
         Whitebox.setInternalState(feeService, "feeDAO", feeDAO);
-        Whitebox.setInternalState(feeService, "productSubscriptionService", productSubscriptionService);
         Whitebox.setInternalState(feeService, "billingService", billingService);
 
         setUpContractor();
@@ -261,7 +260,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceItem2.getPaymentExpires()).thenReturn(new Date());
 
         contractor.setFees(contractorFees);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,50)).thenReturn(invoiceFee2);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,100)).thenReturn(invoiceFee2);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee2.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -298,7 +297,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
         contractor.setFees(contractorFees);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 50)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 100)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -306,8 +305,8 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         assertEquals(contractor.getFees().get(FeeClass.BidOnly).getCurrentAmount(), BigDecimal.ZERO);
         assertEquals(contractor.getFees().get(FeeClass.BidOnly).getNewAmount(), BigDecimal.ZERO);
-        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getCurrentAmount(), BigDecimal.TEN);
-        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getNewAmount(), BigDecimal.TEN);
+        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getCurrentAmount(),BigDecimal.TEN);
+        assertEquals(contractor.getFees().get(FeeClass.ListOnly).getNewAmount(),BigDecimal.TEN);
         assertEquals(contractor.getFees().get(FeeClass.BidOnly).getCurrentFacilityCount(),0);
         assertEquals(contractor.getFees().get(FeeClass.BidOnly).getNewFacilityCount(), 0);
         assertEquals(contractor.getFees().get(FeeClass.ListOnly).getCurrentFacilityCount(),50);
@@ -351,8 +350,8 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee2.isMembership()).thenReturn(true);
         when(invoiceItem2.getPaymentExpires()).thenReturn(new Date());
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 50)).thenReturn(invoiceFee1);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 50)).thenReturn(invoiceFee2);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 100)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 100)).thenReturn(invoiceFee2);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
         when(invoiceFee2.getAmount()).thenReturn(new BigDecimal(20));
@@ -473,7 +472,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 50)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 100)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -516,7 +515,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee1.isMembership()).thenReturn(true);
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD,50)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD,100)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -557,7 +556,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceItem1.getInvoiceFee()).thenReturn(invoiceFee1);
         when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.ImportFee);
 
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee,50)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee,1)).thenReturn(invoiceFee1);
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -764,7 +763,7 @@ public class FeeServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void calcMembershipFees_contractorAuditGUARD() {
+    public void calcMembershipFees_contractorAuditGUARDDesktop() {
         Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
         contractorFees.put(FeeClass.AuditGUARD, new ContractorFee());
 
@@ -802,7 +801,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(operatorAccount.isOperator()).thenReturn(true);
         when(auditTypeRule.isMoreSpecific(any(AuditTypeRule.class))).thenReturn(true);
 
-        when(auditType.isAlwaysBilledForAuditGUARD()).thenReturn(true);
+        when(auditType.isDesktop()).thenReturn(true);
         when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
 
         when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD,1)).thenReturn(invoiceFee1);
@@ -821,7 +820,121 @@ public class FeeServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void calcMembershipFees_contractorAuditGUARDIecSuncor() {
+    public void calcMembershipFees_contractorAuditGUARDImplementation() {
+        Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
+        contractorFees.put(FeeClass.AuditGUARD, new ContractorFee());
+
+        List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
+        contractorOperators.add(contractorOperator1);
+
+        List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+        operators.add(operatorAccount);
+
+        Set<ContractorTrade> contractorTrades = new HashSet<ContractorTrade>();
+        contractorTrades.add(contractorTrade);
+
+        List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
+        rules.add(auditTypeRule);
+
+        contractor.setStatus(AccountStatus.Active);
+        contractor.setOperators(contractorOperators);
+        contractor.setFees(contractorFees);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 0)).thenReturn(invoiceFee1);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.AuditGUARD);
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operatorAccount);
+        when(operatorAccount.getStatus()).thenReturn(AccountStatus.Active);
+        when(operatorAccount.getDoContractorsPay()).thenReturn("Yes");
+        contractor.setTrades(contractorTrades);
+        when(contractorTrade.getTrade()).thenReturn(trade);
+        contractor.setOnsiteServices(true);
+        contractor.setAccountLevel(AccountLevel.Full);
+
+        when(ruleCache.getRules(contractor)).thenReturn(rules);
+        when(auditTypeRule.isInclude()).thenReturn(true);
+        when(auditTypeRule.getAuditType()).thenReturn(auditType);
+        when(auditTypeRule.isApplies(trade)).thenReturn(true);
+        when(auditTypeRule.isApplies(ContractorType.Onsite)).thenReturn(true);
+        when(auditTypeRule.isApplies(operatorAccount)).thenReturn(true);
+        when(operatorAccount.isOperator()).thenReturn(true);
+        when(auditTypeRule.isMoreSpecific(any(AuditTypeRule.class))).thenReturn(true);
+
+        when(auditType.isImplementation()).thenReturn(true);
+        when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD,1)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,1)).thenReturn(invoiceFee2);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
+        when(invoiceFee2.getAmount()).thenReturn(new BigDecimal(20));
+        when(invoiceFee2.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
+
+        feeService.calculateContractorInvoiceFees(contractor, true);
+
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(),new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.AuditGUARD).getCurrentAmount(),BigDecimal.ZERO);
+        assertEquals(contractor.getFees().get(FeeClass.AuditGUARD).getNewAmount(),BigDecimal.TEN);
+    }
+
+    @Test
+    public void calcMembershipFees_contractorAuditGUARDSSIP() {
+        Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
+        contractorFees.put(FeeClass.AuditGUARD, new ContractorFee());
+
+        List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
+        contractorOperators.add(contractorOperator1);
+
+        List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+        operators.add(operatorAccount);
+
+        Set<ContractorTrade> contractorTrades = new HashSet<ContractorTrade>();
+        contractorTrades.add(contractorTrade);
+
+        List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
+        rules.add(auditTypeRule);
+
+        contractor.setStatus(AccountStatus.Active);
+        contractor.setOperators(contractorOperators);
+        contractor.setFees(contractorFees);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 0)).thenReturn(invoiceFee1);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.AuditGUARD);
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operatorAccount);
+        when(operatorAccount.getStatus()).thenReturn(AccountStatus.Active);
+        when(operatorAccount.getDoContractorsPay()).thenReturn("Yes");
+        contractor.setTrades(contractorTrades);
+        when(contractorTrade.getTrade()).thenReturn(trade);
+        contractor.setOnsiteServices(true);
+        contractor.setAccountLevel(AccountLevel.Full);
+
+        when(ruleCache.getRules(contractor)).thenReturn(rules);
+        when(auditTypeRule.isInclude()).thenReturn(true);
+        when(auditTypeRule.getAuditType()).thenReturn(auditType);
+        when(auditTypeRule.isApplies(trade)).thenReturn(true);
+        when(auditTypeRule.isApplies(ContractorType.Onsite)).thenReturn(true);
+        when(auditTypeRule.isApplies(operatorAccount)).thenReturn(true);
+        when(operatorAccount.isOperator()).thenReturn(true);
+        when(auditTypeRule.isMoreSpecific(any(AuditTypeRule.class))).thenReturn(true);
+
+        when(auditType.isSsip()).thenReturn(true);
+        when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD,1)).thenReturn(invoiceFee1);
+        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,1)).thenReturn(invoiceFee2);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
+        when(invoiceFee2.getAmount()).thenReturn(new BigDecimal(20));
+        when(invoiceFee2.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
+
+        feeService.calculateContractorInvoiceFees(contractor, true);
+
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(),new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),new BigDecimal(20));
+        assertEquals(contractor.getFees().get(FeeClass.AuditGUARD).getCurrentAmount(),BigDecimal.ZERO);
+        assertEquals(contractor.getFees().get(FeeClass.AuditGUARD).getNewAmount(),BigDecimal.TEN);
+    }
+
+    @Test
+    public void calcMembershipFees_contractorAuditGUARDCor() {
         Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
         contractorFees.put(FeeClass.AuditGUARD, new ContractorFee());
 
@@ -861,7 +974,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(operatorAccount.isOperator()).thenReturn(true);
         when(auditTypeRule.isMoreSpecific(any(AuditTypeRule.class))).thenReturn(true);
 
-        when(auditType.isIec()).thenReturn(true);
+        when(auditType.isCorIec()).thenReturn(true);
         when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
 
         when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD,1)).thenReturn(invoiceFee1);
@@ -1018,7 +1131,6 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1077,7 +1189,6 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1193,7 +1304,6 @@ public class FeeServiceTest extends PicsTranslationTest {
         List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
         rules.add(auditTypeRule);
 
-        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(false);
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         contractor.setFees(contractorFees);
@@ -1223,55 +1333,6 @@ public class FeeServiceTest extends PicsTranslationTest {
         assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),new BigDecimal(20));
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getCurrentAmount(),BigDecimal.ZERO);
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getNewAmount(),BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP));
-    }
-
-    @Test
-    public void calcMembershipFees_contractorAccountEmployeeGUARD() {
-        Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
-        contractorFees.put(FeeClass.EmployeeGUARD, new ContractorFee());
-
-        List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
-        contractorOperators.add(contractorOperator1);
-
-        List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
-        operators.add(operatorAccount);
-
-        Set<ContractorTrade> contractorTrades = new HashSet<ContractorTrade>();
-        contractorTrades.add(contractorTrade);
-
-        List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
-        rules.add(auditTypeRule);
-
-        when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(true);
-        contractor.setStatus(AccountStatus.Active);
-        contractor.setOperators(contractorOperators);
-        contractor.setFees(contractorFees);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, 0)).thenReturn(invoiceFee1);
-        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
-        when(contractorOperator1.getOperatorAccount()).thenReturn(operatorAccount);
-        when(operatorAccount.getStatus()).thenReturn(AccountStatus.Active);
-        when(operatorAccount.getDoContractorsPay()).thenReturn("Yes");
-        contractor.setTrades(contractorTrades);
-        when(contractorTrade.getTrade()).thenReturn(trade);
-        contractor.setOnsiteServices(true);
-        contractor.setAccountLevel(AccountLevel.Full);
-
-        when(operatorAccount.isRequiresOQ()).thenReturn(true);
-
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, 1)).thenReturn(invoiceFee1);
-        when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 1)).thenReturn(invoiceFee2);
-        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
-        when(invoiceFee2.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
-        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
-        when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
-        when(invoiceFee2.getAmount()).thenReturn(new BigDecimal(20));
-
-        feeService.calculateContractorInvoiceFees(contractor, true);
-
-        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getCurrentAmount(),new BigDecimal(20));
-        assertEquals(contractor.getFees().get(FeeClass.DocuGUARD).getNewAmount(),new BigDecimal(20));
-        assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getCurrentAmount(),BigDecimal.ZERO);
-        assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getNewAmount(),BigDecimal.TEN);
     }
 
     @Test
@@ -1363,4 +1424,5 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         Whitebox.invokeMethod(feeService, "dropBlockSSManualAuditTagIfUpgrading", contractor, BillingStatus.Upgrade);
     }
+
 }

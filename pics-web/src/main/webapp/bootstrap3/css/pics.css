@@ -1238,22 +1238,19 @@ body {
 /* line 38, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr.assigned .assign-employee {
   background-color: #fbcb43;
-}
-/* line 40, ../sass/pics/employee-guard/assignments/_assignments.scss */
-.table-assignment tr.assigned .assign-employee a {
   color: #ec8c00;
   font-weight: bold;
 }
-/* line 44, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 43, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr.assigned .assign-employee i {
   color: #ec8c00;
 }
-/* line 50, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 49, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .table-assignment tr td a {
   display: inline;
 }
 
-/* line 57, ../sass/pics/employee-guard/assignments/_assignments.scss */
+/* line 56, ../sass/pics/employee-guard/assignments/_assignments.scss */
 .nav-assignment .site-status {
   margin-bottom: 20px;
 }
@@ -2168,6 +2165,42 @@ section.visible h1 {
   color: #800a06;
 }
 
+/* line 1, ../sass/pics/components/_badge.scss */
+.badge {
+  color: #ffffff;
+  font-weight: normal;
+}
+
+/* line 6, ../sass/pics/components/_badge.scss */
+.badge-default {
+  background-color: #b3b3b3;
+}
+
+/* line 10, ../sass/pics/components/_badge.scss */
+.badge-primary {
+  background-color: #2980b9;
+}
+
+/* line 14, ../sass/pics/components/_badge.scss */
+.badge-success {
+  background-color: #0f9d58;
+}
+
+/* line 18, ../sass/pics/components/_badge.scss */
+.badge-info {
+  background-color: #73bbe8;
+}
+
+/* line 22, ../sass/pics/components/_badge.scss */
+.badge-warning {
+  background-color: #f4b400;
+}
+
+/* line 26, ../sass/pics/components/_badge.scss */
+.badge-danger {
+  background-color: #c0392b;
+}
+
 /* line 1, ../sass/pics/components/_breadcrumb.scss */
 .breadcrumb {
   background: none;
@@ -2660,33 +2693,48 @@ body.modal-open,
   margin-right: 0px;
 }
 
-/* line 2, ../sass/pics/components/_navigation.scss */
+/* line 3, ../sass/pics/components/_navigation.scss */
 .nav-pills li .badge {
   line-height: 18px;
-  background-color: #3498db;
 }
 /* line 8, ../sass/pics/components/_navigation.scss */
 .nav-pills li.active .badge {
   background-color: transparent;
   color: #FFFFFF;
 }
-
-/* line 15, ../sass/pics/components/_navigation.scss */
-.nav-pills a {
-  color: #3498db;
-  font-size: 18px;
+/* line 13, ../sass/pics/components/_navigation.scss */
+.nav-pills li.active a {
+  background-color: #73bbe8;
+  color: #ffffff;
 }
-/* line 19, ../sass/pics/components/_navigation.scss */
+/* line 18, ../sass/pics/components/_navigation.scss */
+.nav-pills li.active a:hover, .nav-pills li.active a:focus {
+  background-color: #73bbe8;
+  color: #ffffff;
+}
+/* line 27, ../sass/pics/components/_navigation.scss */
+.nav-pills .nav-title {
+  color: #cccccc;
+  display: block;
+  font-size: 12px;
+  padding: 10px 15px 0px 15px;
+  text-transform: uppercase;
+}
+/* line 35, ../sass/pics/components/_navigation.scss */
+.nav-pills a {
+  color: #73bbe8;
+  font-size: 14px;
+}
+/* line 39, ../sass/pics/components/_navigation.scss */
 .nav-pills a:hover {
   background-color: #f1f1f2;
 }
-
-/* line 24, ../sass/pics/components/_navigation.scss */
+/* line 44, ../sass/pics/components/_navigation.scss */
 .nav-pills i {
   margin-right: 6px;
 }
 
-/* line 28, ../sass/pics/components/_navigation.scss */
+/* line 49, ../sass/pics/components/_navigation.scss */
 .nav .nav-header {
   color: #cccccc;
   display: block;
@@ -2696,13 +2744,13 @@ body.modal-open,
   padding: 3px 20px;
 }
 
-/* line 37, ../sass/pics/components/_navigation.scss */
+/* line 58, ../sass/pics/components/_navigation.scss */
 .nav .nav-divider {
   margin: 0px;
 }
 
 /* Skill Navigation */
-/* line 42, ../sass/pics/components/_navigation.scss */
+/* line 63, ../sass/pics/components/_navigation.scss */
 ul.skill-nav {
   background-color: #f1f1f2;
   -webkit-border-radius: 5px;
@@ -2712,22 +2760,22 @@ ul.skill-nav {
   border-radius: 5px;
   padding: 10px 0px;
 }
-/* line 47, ../sass/pics/components/_navigation.scss */
+/* line 68, ../sass/pics/components/_navigation.scss */
 ul.skill-nav .skill-nav {
   padding: 0px;
 }
-/* line 51, ../sass/pics/components/_navigation.scss */
+/* line 72, ../sass/pics/components/_navigation.scss */
 ul.skill-nav a:hover {
   background-color: #e6e6e6;
   color: #454545;
 }
-/* line 56, ../sass/pics/components/_navigation.scss */
+/* line 77, ../sass/pics/components/_navigation.scss */
 ul.skill-nav a.active {
   border-right: 2px inset #3498db;
   color: #3498db;
   font-weight: bold;
 }
-/* line 62, ../sass/pics/components/_navigation.scss */
+/* line 83, ../sass/pics/components/_navigation.scss */
 ul.skill-nav a {
   color: #454545;
   padding: 2px 0px 3px 40px;

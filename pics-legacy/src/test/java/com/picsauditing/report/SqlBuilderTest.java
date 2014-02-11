@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -287,21 +286,6 @@ public class SqlBuilderTest {
 		String expected = "JOIN contractor_operator AS ContractorFlag ON Contractor.id = ContractorFlag.conID AND ContractorFlag.opID = "
 				+ permissions.getAccountId();
 		assertContains(expected, sqlResult);
-	}
-
-    @Test
-    public void testClearURL() throws Exception {
-        Report report = mock(Report.class);
-        when(report.hasGroupBy()).thenReturn(true);
-        List<Column> columns = new ArrayList<>();
-        Column column = mock(Column.class);
-        Field field = mock(Field.class);
-        columns.add(column);
-        when(report.getColumns()).thenReturn(columns);
-        when(column.getField()).thenReturn(field);
-
-        Whitebox.invokeMethod(sqlBuilder, "clearUrlIfGroupBy", report);
-        verify(field).setUrl(null);
 	}
 
 	private Column addColumn(String fieldName, Report report) {

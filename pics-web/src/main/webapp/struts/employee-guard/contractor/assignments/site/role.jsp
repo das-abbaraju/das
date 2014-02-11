@@ -16,16 +16,25 @@
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
 
+<%-- Unassign Confirmation --%>
+<s:include value="/struts/employee-guard/_unassign-employee-confirmation.jsp">
+    <s:param name="modal_title">Unassign Employee from Job Role</s:param>
+    <s:param name="modal_message">Unassigning this employee from this Job Role will also unassign them from this Job Role on any Projects that they may currently be assigned to.</s:param>
+</s:include>
+
 <div class="row">
     <div class="col-md-3">
         <ul class="nav nav-pills nav-stacked nav-assignment">
             <li class="site-status">
                 <a href="${contractor_site_assignments}">
-                    <span class="badge pull-right">${assignmentMatrix.totalNumberOfEmployeesAssignedToSite}</span>
+                    <span class="badge badge-info pull-right">${assignmentMatrix.totalNumberOfEmployeesAssignedToSite}</span>
                     Site Status
                 </a>
             </li>
             <li class="nav-divider"></li>
+            <li>
+                <span class="nav-title">Job Roles</span>
+            </li>
             <s:set var="selected_role" value="%{id}"/>
             <s:iterator value="assignmentMatrix.roleEmployee.keySet()" var="operator_job_role">
 
@@ -46,7 +55,7 @@
                         </s:param>
                     </s:url>
                     <a href="${operator_job_role_url}">
-                        <span class="badge pull-right">${assignmentMatrix.roleEmployee.get(operator_job_role)}</span>
+                        <span class="badge badge-info  pull-right">${assignmentMatrix.roleEmployee.get(operator_job_role)}</span>
                         ${operator_job_role.name}
                     </a>
                 </li>
@@ -111,7 +120,7 @@
                                         ${employee_site_assignment.employeeId}
                                     </s:param>
                                 </s:url>
-                                <a href="${employee_site_assignment_url}" class="disable-assignment">
+                                <a href="${employee_site_assignment_url}">
                                     ${employee_site_assignment.name}
                                 </a>
                             </td>
@@ -138,7 +147,7 @@
                                     <s:set var="skill_status_class" value="" />
                                 </s:if>
 
-                                <td class="${skill_status_class} text-center">
+                                <td class="${skill_status_class} skill-status-icon text-center">
                                     <i class="${skill_icon} icon-large"></i>
                                 </td>
                             </s:iterator>

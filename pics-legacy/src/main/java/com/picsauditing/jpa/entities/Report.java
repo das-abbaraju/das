@@ -30,7 +30,6 @@ public class Report extends BaseTable {
 	private String sql;
 	private boolean deleted;
 	private boolean isPublic;
-    private boolean groupBy;
 
 	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
@@ -213,13 +212,4 @@ public class Report extends BaseTable {
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
-
-    @Transient
-    public boolean hasGroupBy() {
-        return groupBy;
-    }
-
-    public void setGroupBy(boolean groupBy) {
-        this.groupBy = groupBy;
-    }
 }

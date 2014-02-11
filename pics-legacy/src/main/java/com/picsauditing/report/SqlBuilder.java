@@ -30,23 +30,15 @@ public class SqlBuilder {
 	}
 
 	private Report initializeReport(Report report, Map<String, Field> availableFields, Permissions permissions) throws ReportValidationException {
-		setColumnProperties(report, availableFields);
+
+		setColumnProperties(report.getColumns(), availableFields);
 		setFilterProperties(report.getFilters(), availableFields, permissions);
 		setSortProperties(report, availableFields);
-        clearUrlIfGroupBy(report);
 
 		return report;
 	}
 
-    private void clearUrlIfGroupBy(Report report) {
-        if (report.hasGroupBy()) {
-            for(Column column : report.getColumns()) {
-                column.getField().setUrl(null);
-            }
-        }
-    }
-
-    private SelectSQL buildSelectSql(Report report, Map<String, Field> availableFields, AbstractModel model)	throws ReportValidationException {
+	private SelectSQL buildSelectSql(Report report, Map<String, Field> availableFields, AbstractModel model)	throws ReportValidationException {
 		SelectSQL selectSql = new SelectSQL();
 		selectSql.setFromTable(model.getStartingJoin().getTableClause());
 
@@ -74,20 +66,18 @@ public class SqlBuilder {
 		}
 	}
 
-	private void setColumnProperties(Report report, Map<String, Field> availableFields) {
-		for (Column column : report.getColumns()) {
+	private void setColumnProperties(List<Column> columns, Map<String, Field> availableFields) {
+		for (Column column : columns) {
 			column.appendSqlFunctionToName();
 			column.addFieldCopy(availableFields);
 
 			if (column.getField() == null) {
 				continue;
 			}
-            if (column.hasAggregateMethod()) {
-                report.setGroupBy(true);
-            }
-        }
-	}
 
+			column.setUrlOnFieldIfNecessary();
+		}
+	}
 	private void addFieldsAndGroupBy(List<Column> columns, SelectSQL selectSql, Map<String, Field> availableFields) {
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();

@@ -14,18 +14,18 @@
         <ul class="nav nav-pills nav-stacked nav-assignment ">
             <li class="active site-status">
                 <a href="#">
-                    <span class="badge pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
+                    <span class="badge badge-info pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
                     Site Status
                 </a>
             </li>
             <li class="nav-divider"></li>
-            <s:iterator value="operatorProjectAssignmentMatrix.roles" var="operator_project_role">
-                <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="operator_project_role_url">
-                    <s:param name="projectId">
-                        ${project.id}
-                    </s:param>
-                    <s:param name="assignmentId">
-                        ${project.accountId}
+            <li>
+                <span class="nav-title">Job Roles</span>
+            </li>
+            <s:iterator value="siteAssignmentModel.roleEmployee.keySet()" var="operator_project_role">
+                <s:url action="project/site-assignment/{siteId}/role/{id}" var="operator_project_role_url">
+                    <s:param name="siteId">
+                        ${site.id}
                     </s:param>
                     <s:param name="id">
                         ${operator_project_role.id}
@@ -33,7 +33,7 @@
                 </s:url>
                 <li>
                     <a href="${operator_project_role_url}">
-                        <span class="badge pull-right">11</span>
+                        <span class="badge badge-info pull-right">${siteAssignmentModel.roleEmployee.get(operator_project_role)}</span>
                         ${operator_project_role.name}
                     </a>
                 </li>

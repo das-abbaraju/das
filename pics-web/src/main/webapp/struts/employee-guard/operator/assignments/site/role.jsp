@@ -21,14 +21,17 @@
 
 <div class="row">
     <div class="col-md-3">
-        <ul class="nav nav-pills nav-stacked nav-assignment col-md-3">
+        <ul class="nav nav-pills nav-stacked nav-assignment">
             <li class="site-status">
                 <a href="${operator_project_assignments}">
-                    <span class="badge pull-right">33</span>
+                    <span class="badge badge-info pull-right">33</span>
                     Site Status
                 </a>
             </li>
             <li class="nav-divider"></li>
+            <li>
+                <span class="nav-title">Job Roles</span>
+            </li>
             <s:set var="selected_role" value="%{id}"/>
             <s:iterator value="operatorProjectAssignmentMatrix.roles" var="operator_project_role">
                 <s:if test="#selected_role == #operator_project_role.id">
@@ -51,7 +54,7 @@
                 </s:url>
                 <li class="${active_role}">
                     <a href="${operator_project_role_url}">
-                        <span class="badge pull-right">11</span>
+                        <span class="badge badge-info pull-right">11</span>
                         ${operator_project_role.name}
                     </a>
                 </li>

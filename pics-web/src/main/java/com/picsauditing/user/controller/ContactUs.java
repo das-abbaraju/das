@@ -1,5 +1,6 @@
 package com.picsauditing.user.controller;
 
+import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.user.model.ContactUsInfo;
@@ -15,7 +16,7 @@ public class ContactUs extends PicsActionSupport {
 	private String subject;
 	private String message;
 
-	public String execute() {
+	public String execute() throws Exception {
 
 		User user = getLoggedInUser();
 		if (user == null) {
@@ -27,7 +28,7 @@ public class ContactUs extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public String sendMessage() {
+	public String sendMessage() throws UnauthorizedException {
 
 		User user = getLoggedInUser();
 		if (user == null) {
@@ -35,10 +36,10 @@ public class ContactUs extends PicsActionSupport {
 		}
 
 		if (fieldsAreValid()) {
-			boolean success = contactUsService.sendMessageToCsr(subject, message, user);
-			if (success) {
+			try {
+				contactUsService.sendMessageToCsr(subject, message, user);
 				addActionMessage("Your email was sent successfully.");
-			} else {
+			} catch (Exception e) {
 				addActionError("There was an error when sending the email to the CSR.");
 			}
 		}
