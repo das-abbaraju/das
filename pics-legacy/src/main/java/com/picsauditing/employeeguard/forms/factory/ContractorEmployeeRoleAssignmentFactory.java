@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,27 +11,10 @@ import java.util.*;
 
 public class ContractorEmployeeRoleAssignmentFactory {
 
-//    public List<ContractorEmployeeRoleAssignment> build(final List<Employee> employees,
-//                                                        final Map<Employee, AccountModel> accountModels) {
-//        if (CollectionUtils.isEmpty(employees)) {
-//            return Collections.emptyList();
-//        }
-//
-//        List<ContractorEmployeeRoleAssignment> contractorEmployeeRoleAssignments = new ArrayList<>();
-//        for (Employee employee : employees) {
-//            AccountModel accountModel = accountModels.get(employee);
-//            contractorEmployeeRoleAssignments.add(new ContractorEmployeeRoleAssignment.Builder()
-//                    .
-//                    .build());
-//        }
-//
-//        return contractorEmployeeRoleAssignments;
-//    }
-
 	public List<ContractorEmployeeRoleAssignment> build(final List<Employee> contractorEmployees,
-	                                                    final Role role,
-	                                                    final Set<Employee> assignedEmployees,
-	                                                    final Map<Employee, Set<AccountSkillEmployee>> employeeSkills) {
+														final Role role,
+														final Set<Employee> assignedEmployees,
+														final Map<Employee, Set<AccountSkillEmployee>> employeeSkills) {
 		if (CollectionUtils.isEmpty(contractorEmployees) || role == null) {
 			return Collections.emptyList();
 		}
@@ -72,7 +54,7 @@ public class ContractorEmployeeRoleAssignmentFactory {
 	}
 
 	private List<SkillStatus> calculateSkillStatuses(List<AccountSkill> roleSkills,
-	                                                 Set<AccountSkillEmployee> accountSkillEmployees) {
+													 Set<AccountSkillEmployee> accountSkillEmployees) {
 		List<SkillStatus> statuses = new ArrayList<>();
 
 		for (AccountSkill skill : roleSkills) {

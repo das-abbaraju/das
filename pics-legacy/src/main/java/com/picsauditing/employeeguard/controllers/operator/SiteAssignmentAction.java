@@ -14,6 +14,7 @@ import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +59,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 					.getEmployeeSiteAssignmentModelFactory()
 					.create(
 							statusCalculatorService.getEmployeeStatusRollUpForSkills(employeesAtSite, null),
-							employeeService.getSiteRolesForEmployees(employeesAtSite, siteId),
+							Collections.<Employee, Set<Role>>emptyMap(),
 							accountService.getContractorMapForSite(siteId));
 
 			List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);

@@ -181,8 +181,4 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 
 		return ListUtil.removeDuplicatesAndSort(employees);
 	}
-
-	public List<RoleEmployee> findSiteRolesForEmployees(final List<Employee> employees, final int siteId) {
-		return null;  //To change body of created methods use File | Settings | File Templates.
-	}
 }
