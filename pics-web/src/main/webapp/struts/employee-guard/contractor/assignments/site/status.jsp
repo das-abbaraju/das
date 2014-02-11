@@ -20,11 +20,14 @@
         <ul class="nav nav-pills nav-stacked nav-assignment">
             <li class="active site-status">
                 <a href="#">
-                    <span class="badge pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
+                    <span class="badge badge-info pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
                     Site Status
                 </a>
             </li>
             <li class="nav-divider"></li>
+            <li>
+                <span class="nav-title">Job Roles</span>
+            </li>
             <s:iterator value="siteAssignmentModel.roleEmployee.keySet()" var="operator_job_role">
                 <li>
                     <s:url var="operator_job_role_url" action="project/site-assignment/{siteId}/role/{id}">
@@ -36,7 +39,7 @@
                         </s:param>
                     </s:url>
                     <a href="${operator_job_role_url}">
-                        <span class="badge pull-right">${siteAssignmentModel.roleEmployee.get(operator_job_role)}</span>
+                        <span class="badge badge-info pull-right">${siteAssignmentModel.roleEmployee.get(operator_job_role)}</span>
                         ${operator_job_role.name}
                     </a>
                 </li>
