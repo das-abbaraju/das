@@ -4,6 +4,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
@@ -14,8 +15,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -289,4 +292,21 @@ public class OperatorAccountDAO extends PicsDAO {
         query.setParameter("contractorId", contractorId);
         return query.getResultList();
     }
+
+	public List<ContractorAccount> findAllContractorsForOperator(final OperatorAccount operator) {
+		List<ContractorAccount> contractors = Collections.emptyList();
+		try {
+			Query query = em.createNativeQuery("select a.*, ci.* from contractor_info ci " +
+					"join accounts a on a.id = ci.id " +
+					"join contractor_operator co on co.conID = ci.id " +
+					"where co.opID = :operatorId", ContractorAccount.class);
+			query.setParameter("operatorId", operator.getId());
+			contractors = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Ignore
+		}
+
+		return contractors;
+	}
 }

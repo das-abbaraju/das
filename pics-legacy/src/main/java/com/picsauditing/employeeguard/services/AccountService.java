@@ -179,9 +179,9 @@ public class AccountService {
 		}
 
 		List<ContractorAccount> contractors = new ArrayList<>();
-		addContractorsFromOperator(operator, contractors);
-
-		if (operator.isCorporate()) {
+		if (!operator.isCorporate()) {
+			contractors = operatorDAO.findAllContractorsForOperator(operator);
+		} else {
 			for (OperatorAccount site : operator.getChildOperators()) {
 				addContractorsFromOperator(site, contractors);
 			}
