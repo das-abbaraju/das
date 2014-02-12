@@ -43,7 +43,7 @@
 
     <s:if test="!siteAssignmentModel.employeeSiteAssignmentModels.isEmpty()">
         <div class="table-responsive col-md-9">
-            <table class="table table-striped table-condensed table-hover table-assignment">
+            <table class="table table-striped table-condensed table-hover table-assignment view-only">
                 <thead>
                     <tr>
                         <th>Company</th>
