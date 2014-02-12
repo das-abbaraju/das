@@ -114,6 +114,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				siteId,
 				corporateToSiteRoles.get(corporateRole),
 				corporateRole);
+
 		List<AccountSkill> skills = skillService.getSkillsForRole(corporateRole);
 		Collections.sort(skills);
 
@@ -129,9 +130,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 		List<EntityInfo> skillInfos = ViewModelFactory.getEntityInfoFactory().create(skills);
 
-		int employeesAssignedToSite = employeeService.getCountOfEmployeesAssignedToSite(contractors.keySet(), siteId);
 		siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory().create(
-				employeesAssignedToSite,
+				employeesAtSite.size(),
 				employeeSiteAssignmentModels,
 				roleCounts,
 				skillInfos);

@@ -78,10 +78,6 @@ public class EmployeeService {
 		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
-	public int getCountOfEmployeesAssignedToSite(final Set<Integer> contractorIds, final int siteId) {
-		return employeeDAO.findTotalNumberOfEmployeesAssignedToSite(contractorIds, siteId);
-	}
-
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
 	                                                     final Role siteRole, final Role corporateRole) {
 		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
