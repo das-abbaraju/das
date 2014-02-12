@@ -1,15 +1,15 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.google.common.collect.Table;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.RoleService;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
@@ -28,61 +28,113 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
+	private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private SkillService skillService;
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
 	private int siteId;
 	private AccountModel site;
-	private int roleId;
 
 	private SiteAssignmentModel siteAssignmentModel;
 
 	public String status() {
-		if (permissions.isOperator()) {
-			int siteId = permissions.getAccountId();
-			site = accountService.getAccountById(siteId);
-
-			List<AccountModel> contractors = accountService.getContractors(siteId);
-			Set<Integer> contractorIds = Utilities.getIdsFromCollection(
-					contractors,
-					new Utilities.Identitifable<AccountModel, Integer>() {
-						@Override
-						public Integer getId(AccountModel element) {
-							return element.getId();
-						}
-					});
-
-			List<Employee> employeesAtSite = employeeService.getEmployeesAssignedToSite(contractorIds, siteId);
-			Map<Employee, Set<AccountSkill>> employeeRequiredSkills = roleService.getEmployeeSkillsForSite(siteId, contractorIds);
-
-			List<EmployeeSiteAssignmentModel> employeeSiteAssignments = ViewModelFactory
-					.getEmployeeSiteAssignmentModelFactory()
-					.create(
-							statusCalculatorService.getEmployeeStatusRollUpForSkills(employeesAtSite, employeeRequiredSkills),
-							Collections.<Employee, Set<Role>>emptyMap(),
-							accountService.getContractorMapForSite(siteId));
-
-			List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-			List<Role> roles = roleService.getRolesForAccounts(corporateIds);
-			Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(siteId);
-			Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
-
-			List<RoleInfo> roleInfos = ViewModelFactory.getRoleInfoFactory().build(roles);
-
-			Map<RoleInfo, Integer> roleCounts = ViewModelFactory.getRoleEmployeeCountFactory()
-					.create(roleInfos, corporateToSiteRoles, employeesAtSite);
-
-			siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory()
-					.create(employeesAtSite, employeeSiteAssignments, roleCounts);
+		if (!permissions.isOperatorCorporate()) {
+			return BLANK;
 		}
+
+		if (permissions.isCorporate()) {
+			// FIXME
+			return "status";
+		}
+
+		int siteId = permissions.getAccountId();
+		site = accountService.getAccountById(siteId);
+
+		List<AccountModel> contractors = accountService.getContractors(siteId);
+		Set<Integer> contractorIds = Utilities.getIdsFromCollection(
+				contractors,
+				new Utilities.Identitifable<AccountModel, Integer>() {
+					@Override
+					public Integer getId(AccountModel element) {
+						return element.getId();
+					}
+				});
+
+		List<Employee> employeesAtSite = employeeService.getEmployeesAssignedToSite(contractorIds, siteId);
+		Map<Employee, Set<AccountSkill>> employeeRequiredSkills = roleService.getEmployeeSkillsForSite(siteId, contractorIds);
+
+		List<EmployeeSiteAssignmentModel> employeeSiteAssignments = ViewModelFactory
+				.getEmployeeSiteAssignmentModelFactory()
+				.create(statusCalculatorService.getEmployeeStatusRollUpForSkills(employeesAtSite, employeeRequiredSkills),
+						Collections.<Employee, Set<Role>>emptyMap(),
+						accountService.getContractorMapForSite(siteId));
+
+		Map<RoleInfo, Integer> roleCounts = buildRoleCounts(siteId, employeesAtSite);
+
+		siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory()
+				.create(employeesAtSite, employeeSiteAssignments, roleCounts, Collections.<EntityInfo>emptyList());
 
 		return "status";
 	}
 
+	private Map<RoleInfo, Integer> buildRoleCounts(int siteId, List<Employee> employeesAtSite) {
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+		List<Role> roles = roleService.getRolesForAccounts(corporateIds);
+		Map<Role, Role> corporateToSiteRoles = roleService.getCorporateToSiteRoles(siteId);
+
+		List<RoleInfo> roleInfos = ViewModelFactory.getRoleInfoFactory().build(roles);
+		return ViewModelFactory.getRoleEmployeeCountFactory()
+				.create(roleInfos, corporateToSiteRoles, employeesAtSite);
+	}
+
 	public String role() {
+		if (!permissions.isOperatorCorporate()) {
+			return BLANK;
+		}
+
+		if (permissions.isCorporate()) {
+			// FIXME
+			return "status";
+		}
+
+		site = accountService.getAccountById(siteId);
+		Role corporateRole = roleService.getRole(id);
+		Map<Role, Role> corporateToSiteRoles = roleService.getCorporateToSiteRoles(siteId);
+
+		Map<Integer, AccountModel> contractors = accountService.getContractorMapForSite(siteId);
+
+		List<Employee> employeesAssignedToRole = employeeService.getEmployeesAssignedToSiteRole(
+				contractors.keySet(),
+				siteId,
+				corporateToSiteRoles.get(corporateRole),
+				corporateRole);
+		List<AccountSkill> skills = skillService.getSkillsForRole(corporateRole);
+		Collections.sort(skills);
+
+		Table<Employee, AccountSkill, AccountSkillEmployee> accountSkillEmployees =
+				accountSkillEmployeeService.buildTable(employeesAssignedToRole, skills);
+
+		List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels =
+				ViewModelFactory.getEmployeeSiteAssignmentModelFactory().create(
+						employeesAssignedToRole, skills, accountSkillEmployees, contractors);
+
+		List<Employee> employeesAtSite = employeeService.getEmployeesAssignedToSite(contractors.keySet(), siteId);
+		Map<RoleInfo, Integer> roleCounts = buildRoleCounts(siteId, employeesAtSite);
+
+		List<EntityInfo> skillInfos = ViewModelFactory.getEntityInfoFactory().create(skills);
+
+		siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory().create(
+				employeesAssignedToRole,
+				employeeSiteAssignmentModels,
+				roleCounts,
+				skillInfos);
+
 		return "role";
 	}
 
@@ -100,13 +152,5 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public SiteAssignmentModel getSiteAssignmentModel() {
 		return siteAssignmentModel;
-	}
-
-	public int getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(int roleId) {
-		this.roleId = roleId;
 	}
 }

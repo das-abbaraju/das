@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.SpringUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.springframework.util.CollectionUtils;
@@ -502,5 +503,21 @@ public class Utilities {
 		}
 
 		return values;
+	}
+
+	public static <E> List<E> unmodifiableList(List<E> elements) {
+		if (CollectionUtils.isEmpty(elements)) {
+			return Collections.emptyList();
+		}
+
+		return Collections.unmodifiableList(elements);
+	}
+
+	public static <K, V> Map<K, V> unmodifiableMap(Map<K, V> map) {
+		if (MapUtils.isEmpty(map)) {
+			return Collections.emptyMap();
+		}
+
+		return Collections.unmodifiableMap(map);
 	}
 }

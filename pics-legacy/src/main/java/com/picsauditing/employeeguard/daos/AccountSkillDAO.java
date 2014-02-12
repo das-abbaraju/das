@@ -110,7 +110,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
             return Collections.emptyList();
         }
 
-        TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT asr.skill FROM AccountSkillRole asr WHERE asr.group IN ( :roles ) ", AccountSkill.class);
+        TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT asr.skill FROM AccountSkillRole asr WHERE asr.role IN ( :roles ) ", AccountSkill.class);
         query.setParameter("roles", roles);
         return query.getResultList();
     }

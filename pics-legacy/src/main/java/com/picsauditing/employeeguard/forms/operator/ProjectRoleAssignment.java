@@ -1,19 +1,19 @@
 package com.picsauditing.employeeguard.forms.operator;
 
-import com.picsauditing.employeeguard.forms.IdentifierAndNameCompositeForm;
+import com.picsauditing.employeeguard.forms.EntityInfo;
 
 import java.util.List;
 
 public class ProjectRoleAssignment {
 
-    private IdentifierAndNameCompositeForm role;
+    private EntityInfo role;
     private List<ContractorRoleInfo> contractorRoleInfo;
 
-    public IdentifierAndNameCompositeForm getRole() {
+    public EntityInfo getRole() {
         return role;
     }
 
-    public void setRole(IdentifierAndNameCompositeForm role) {
+    public void setRole(EntityInfo role) {
         this.role = role;
     }
 

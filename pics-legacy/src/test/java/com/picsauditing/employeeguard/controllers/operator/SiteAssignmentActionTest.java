@@ -5,10 +5,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.RoleEmployee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.RoleService;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.junit.Before;
@@ -37,9 +34,13 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Mock
 	private AccountService accountService;
 	@Mock
+	private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Mock
 	private EmployeeService employeeService;
 	@Mock
 	private RoleService roleService;
+	@Mock
+	private SkillService skillService;
 	@Mock
 	private StatusCalculatorService statusCalculatorService;
 
@@ -51,10 +52,15 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
 		siteAssignmentAction = new SiteAssignmentAction();
 
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(permissions.isOperator()).thenReturn(true);
+
 		Whitebox.setInternalState(siteAssignmentAction, "accountService", accountService);
+		Whitebox.setInternalState(siteAssignmentAction, "accountSkillEmployeeService", accountSkillEmployeeService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
 		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
 		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
+		Whitebox.setInternalState(siteAssignmentAction, "skillService", skillService);
 		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
 	}
 
@@ -118,7 +124,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		assertTrue(siteAssignmentModel.getRoleEmployee().values().contains(1));
 
 		verify(roleService).getRolesForAccounts(corporateIds);
-		verify(roleService).getSiteToCorporateRoles(SITE_ID);
+		verify(roleService).getCorporateToSiteRoles(SITE_ID);
 	}
 
 	private List<Integer> setupMocksForClientSiteRoleInfoAndReturnCorporateIds() {
@@ -133,9 +139,9 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		List<Integer> corporateIds = Arrays.asList(CORPORATE_ID);
 		List<Role> roles = Arrays.asList(corporateRole1, corporateRole2);
 
-		Map<Role, Role> siteToCorporateRoles = new HashMap<>();
-		siteToCorporateRoles.put(siteRole1, corporateRole1);
-		siteToCorporateRoles.put(siteRole2, corporateRole2);
+		Map<Role, Role> corporateToSiteRoles = new HashMap<>();
+		corporateToSiteRoles.put(corporateRole1, siteRole1);
+		corporateToSiteRoles.put(corporateRole2, siteRole2);
 
 		setupPermissions();
 		when(accountService.getContractors(SITE_ID)).thenReturn(Collections.<AccountModel>emptyList());
@@ -147,7 +153,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		when(employee.getRoles()).thenReturn(Arrays.asList(roleEmployee));
 		when(roleEmployee.getRole()).thenReturn(siteRole1);
 		when(roleService.getRolesForAccounts(anyListOf(Integer.class))).thenReturn(roles);
-		when(roleService.getSiteToCorporateRoles(SITE_ID)).thenReturn(siteToCorporateRoles);
+		when(roleService.getCorporateToSiteRoles(SITE_ID)).thenReturn(corporateToSiteRoles);
 		when(siteRole1.getName()).thenReturn("Site Role 1");
 		when(siteRole2.getName()).thenReturn("Site Role 2");
 		return corporateIds;
