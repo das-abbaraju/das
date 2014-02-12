@@ -101,10 +101,6 @@
                                 <s:set var="skill_status_class">success</s:set>
                             </s:else>
 
-                            <s:if test="#employee_assigned_class != 'assigned'">
-                                <s:set var="skill_status_class" value="" />
-                            </s:if>
-
                             <td class="${skill_status_class} skill-status-icon text-center">
                                 <i class="${skill_icon} icon-large"></i>
                             </td>
