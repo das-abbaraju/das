@@ -185,6 +185,10 @@ public class RoleService {
 	}
 
 	private List<AccountSkill> getSkillsFromCorporateRole(Role corporateRole) {
+		if (corporateRole == null) {
+			return Collections.emptyList();
+		}
+
 		return ExtractorUtil.extractList(corporateRole.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
 	}
 
