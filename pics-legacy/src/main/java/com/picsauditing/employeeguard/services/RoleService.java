@@ -11,6 +11,7 @@ import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -134,54 +135,68 @@ public class RoleService {
 		Map<Role, Role> siteRoleToCorporateRole = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
 
 		List<Employee> employees = employeeDAO.findByAccounts(contractorIds);
+		List<AccountSkill> siteSkills = ExtractorUtil.extractList(siteSkillDAO.findByAccountId(siteId), SiteSkill.SKILL_EXTRACTOR);
+		List<AccountSkill> corporateSkills = ExtractorUtil.extractList(siteSkillDAO.findByAccountIds(corporateIds), SiteSkill.SKILL_EXTRACTOR);
 
 		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
 		for (Employee employee : employees) {
-			addSkillsFromSiteRoles(siteId, employeeSkills, employee, siteRoleToCorporateRole);
-			addSkillsFromSiteProjectRoles(siteId, employeeSkills, employee);
+			employeeSkills.put(employee, new HashSet<AccountSkill>());
+			employeeSkills.get(employee).addAll(getSkillsFromSiteRoles(siteId, employee, siteRoleToCorporateRole));
+			employeeSkills.get(employee).addAll(getSkillsFromSiteProjectRoles(siteId, employee));
+			employeeSkills.get(employee).addAll(siteSkills);
+			employeeSkills.get(employee).addAll(corporateSkills);
 		}
-
-		addSiteRequiredSkills(siteId, corporateIds, employeeSkills);
 
 		return employeeSkills;
 	}
 
-	private void addSkillsFromSiteRoles(int siteId, Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee, Map<Role, Role> siteRoleToCorporateRole) {
+	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSiteRole(final int corporateRoleId,
+	                                                                     final int siteId,
+	                                                                     final Collection<Employee> employees) {
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
+		List<SiteSkill> siteRequiredSiteSkills = siteSkillDAO.findByAccountId(siteId);
+		List<SiteSkill> corporateRequiredSiteSkills = siteSkillDAO.findByAccountIds(corporateIds);
+
+		List<AccountSkill> siteSkills = ExtractorUtil.extractList(siteRequiredSiteSkills, SiteSkill.SKILL_EXTRACTOR);
+		List<AccountSkill> corporateSkills = ExtractorUtil.extractList(corporateRequiredSiteSkills, SiteSkill.SKILL_EXTRACTOR);
+
+		Role corporateRole = getRole(String.valueOf(corporateRoleId));
+
+		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
+		for (Employee employee : employees) {
+			employeeSkills.put(employee, new HashSet<AccountSkill>());
+			employeeSkills.get(employee).addAll(getSkillsFromCorporateRole(corporateRole));
+			employeeSkills.get(employee).addAll(siteSkills);
+			employeeSkills.get(employee).addAll(corporateSkills);
+		}
+
+		return employeeSkills;
+	}
+
+	private Set<AccountSkill> getSkillsFromSiteRoles(int siteId, Employee employee, Map<Role, Role> siteRoleToCorporateRole) {
+		Set<AccountSkill> employeeRequiredSkills = new HashSet<>();
 		for (RoleEmployee roleEmployee : employee.getRoles()) {
 			if (roleEmployee.getRole().getAccountId() == siteId) {
 				Role corporateRole = siteRoleToCorporateRole.get(roleEmployee.getRole());
-				addRoleSkills(employeeSkills, employee, corporateRole.getSkills());
+				employeeRequiredSkills.addAll(getSkillsFromCorporateRole(corporateRole));
 			}
 		}
+		return employeeRequiredSkills;
 	}
 
-	private void addSkillsFromSiteProjectRoles(int siteId, Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee) {
+	private List<AccountSkill> getSkillsFromCorporateRole(Role corporateRole) {
+		return ExtractorUtil.extractList(corporateRole.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
+	}
+
+	private Set<AccountSkill> getSkillsFromSiteProjectRoles(int siteId, Employee employee) {
+		Set<AccountSkill> employeeRequiredSkills = new HashSet<>();
 		for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
 			if (projectRoleEmployee.getProjectRole().getProject().getAccountId() == siteId) {
-				addRoleSkills(employeeSkills, employee, projectRoleEmployee.getProjectRole().getRole().getSkills());
+				Role corporateRole = projectRoleEmployee.getProjectRole().getRole();
+				employeeRequiredSkills.addAll(getSkillsFromCorporateRole(corporateRole));
 			}
 		}
-	}
-
-	private void addRoleSkills(Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee, List<AccountSkillRole> roleSkills) {
-		for (AccountSkillRole accountSkillRole : roleSkills) {
-			Utilities.addToMapOfKeyToSet(employeeSkills, employee, accountSkillRole.getSkill());
-		}
-	}
-
-	private void addSiteRequiredSkills(int siteId, List<Integer> corporateIds, Map<Employee, Set<AccountSkill>> employeeSkills) {
-		List<SiteSkill> siteSkills = siteSkillDAO.findByAccountId(siteId);
-		List<SiteSkill> corporateSkills = siteSkillDAO.findByAccountIds(corporateIds);
-
-		for (Map.Entry<Employee, Set<AccountSkill>> employeeSkillSet : employeeSkills.entrySet()) {
-			for (SiteSkill siteSkill : siteSkills) {
-				Utilities.addToMapOfKeyToSet(employeeSkills, employeeSkillSet.getKey(), siteSkill.getSkill());
-			}
-
-			for (SiteSkill corporateSkill : corporateSkills) {
-				Utilities.addToMapOfKeyToSet(employeeSkills, employeeSkillSet.getKey(), corporateSkill.getSkill());
-			}
-		}
+		return employeeRequiredSkills;
 	}
 
 	public Map<Role, Set<Employee>> getRoleAssignments(final int contractorId, final int siteId) {
@@ -210,6 +225,10 @@ public class RoleService {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 
 		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+	}
+
+	public Map<Role, Role> getCorporateToSiteRoles(int siteId) {
+		return Utilities.invertMap(getSiteToCorporateRoles(siteId));
 	}
 
 	public void assignEmployeeToRole(final int siteId, final int corporateRoleId, final Employee employee,

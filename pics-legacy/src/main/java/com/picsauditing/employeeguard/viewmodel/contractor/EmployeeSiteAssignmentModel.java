@@ -63,6 +63,10 @@ public class EmployeeSiteAssignmentModel implements Comparable<EmployeeSiteAssig
 		return status;
 	}
 
+	public List<SkillStatus> getSkillStatuses() {
+		return skillStatuses;
+	}
+
 	@Override
 	public int compareTo(EmployeeSiteAssignmentModel that) {
 		return this.employeeName.compareToIgnoreCase(that.employeeName);

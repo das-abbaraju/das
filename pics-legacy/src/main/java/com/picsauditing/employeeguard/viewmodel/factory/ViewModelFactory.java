@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.forms.factory.ContractorEmployeeRoleAssignmentFactory;
 import com.picsauditing.employeeguard.forms.factory.ContractorProjectFormFactory;
+import com.picsauditing.employeeguard.forms.factory.EntityInfoFactory;
 import com.picsauditing.employeeguard.forms.factory.RoleInfoFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.factory.OperatorSiteAssignmentModelFactory;
 
@@ -16,6 +17,7 @@ public class ViewModelFactory {
 	private static EmployeeProjectAssignmentFactory employeeProjectAssignmentFactory = new EmployeeProjectAssignmentFactory();
 	private static EmployeeProjectRoleAssignmentFactory employeeProjectRoleAssignmentFactory = new EmployeeProjectRoleAssignmentFactory();
 	private static EmployeeSiteAssignmentModelFactory employeeSiteAssignmentModelFactory = new EmployeeSiteAssignmentModelFactory();
+	private static EntityInfoFactory entityInfoFactory = new EntityInfoFactory();
 	private static OperatorProjectAssignmentFactory operatorProjectAssignmentFactory = new OperatorProjectAssignmentFactory();
 	private static OperatorProjectRoleAssignmentFactory operatorProjectRoleAssignmentFactory = new OperatorProjectRoleAssignmentFactory();
 	private static OperatorSiteAssignmentModelFactory operatorSiteAssignmentModelFactory = new OperatorSiteAssignmentModelFactory();
@@ -52,6 +54,10 @@ public class ViewModelFactory {
 
 	public static EmployeeSiteAssignmentModelFactory getEmployeeSiteAssignmentModelFactory() {
 		return employeeSiteAssignmentModelFactory;
+	}
+
+	public static EntityInfoFactory getEntityInfoFactory() {
+		return entityInfoFactory;
 	}
 
 	public static OperatorProjectAssignmentFactory getOperatorProjectAssignmentFactory() {

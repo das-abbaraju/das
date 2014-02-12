@@ -1,15 +1,13 @@
 package com.picsauditing.employeeguard.viewmodel.operator.factory;
 
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,7 +27,8 @@ public class OperatorSiteAssignmentModelFactoryTest {
 		Map<RoleInfo, Integer> roleCounts = new HashMap<>();
 		roleCounts.put(new RoleInfo.Builder().name("Role").build(), 3);
 
-		SiteAssignmentModel siteAssignmentModel = operatorSiteAssignmentModelFactory.create(employees, null, roleCounts);
+		SiteAssignmentModel siteAssignmentModel = operatorSiteAssignmentModelFactory.create(
+				employees, null, roleCounts, Collections.<EntityInfo>emptyList());
 
 		assertNotNull(siteAssignmentModel);
 		assertEquals(3, siteAssignmentModel.getTotalEmployeesAssignedToSite());
