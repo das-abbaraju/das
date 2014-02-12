@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.services;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
@@ -21,7 +20,6 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -80,8 +78,12 @@ public class EmployeeService {
 		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
+	public int getCountOfEmployeesAssignedToSite(final Set<Integer> contractorIds, final int siteId) {
+		return employeeDAO.findTotalNumberOfEmployeesAssignedToSite(contractorIds, siteId);
+	}
+
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
-														 final Role siteRole, final Role corporateRole) {
+	                                                     final Role siteRole, final Role corporateRole) {
 		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
 	}
 

@@ -6,15 +6,16 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(EmployeeDAO.class);
 
 	public EmployeeDAO() {
 		this.type = Employee.class;
@@ -171,8 +172,43 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		return ListUtil.removeDuplicatesAndSort(employees);
 	}
 
+	public int findTotalNumberOfEmployeesAssignedToSite(final Collection<Integer> accountIds, final int siteId) {
+		long count = 0;
+
+		try {
+			Set<Integer> ids = new HashSet<>();
+
+			TypedQuery<Integer> query = em.createQuery("SELECT DISTINCT e.id FROM Employee e " +
+					"JOIN e.projectRoles pre " +
+					"JOIN pre.projectRole pr " +
+					"JOIN pr.project p " +
+					"WHERE e.accountId IN (:accountIds) " +
+					"AND p.accountId = :siteId", Integer.class);
+			query.setParameter("accountIds", accountIds);
+			query.setParameter("siteId", siteId);
+
+			ids.addAll(query.getResultList());
+
+			query = em.createQuery("SELECT DISTINCT e.id FROM Employee e " +
+					"JOIN e.roles re " +
+					"JOIN re.role r " +
+					"WHERE e.accountId IN (:accountIds) " +
+					"AND r.accountId = :siteId", Integer.class);
+			query.setParameter("accountIds", accountIds);
+			query.setParameter("siteId", siteId);
+
+			ids.addAll(query.getResultList());
+
+			count = ids.size();
+		} catch (Exception e) {
+			LOG.error("Exception finding count of employees at site: {}, {}", new Object[]{accountIds, siteId, e});
+		}
+
+		return (int) count;
+	}
+
 	public List<Employee> findEmployeesAssignedToSiteRole(final Collection<Integer> accountIds, final int siteId,
-														  final Role siteRole, final Role corporateRole) {
+	                                                      final Role siteRole, final Role corporateRole) {
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
 				"JOIN e.projectRoles pre " +
 				"JOIN pre.projectRole pr " +
