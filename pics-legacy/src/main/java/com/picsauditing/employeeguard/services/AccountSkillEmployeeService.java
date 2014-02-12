@@ -2,10 +2,12 @@ package com.picsauditing.employeeguard.services;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
@@ -315,6 +317,6 @@ public class AccountSkillEmployeeService {
 			}
 		}
 
-		return null;
+		return new AccountSkillEmployeeBuilder().endDate(DateBean.today()).build();
 	}
 }
