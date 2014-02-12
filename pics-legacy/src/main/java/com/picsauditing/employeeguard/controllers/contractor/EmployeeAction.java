@@ -96,8 +96,6 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private UrlBuilder urlBuilder;
 
 	/* Pages */
-	// FIXME: Add back in support for OR OpPerms logic?
-//	@RequiredPermission({OpPerms.EmployeeList, OpPerms.ContractorSafety})
 	public String index() {
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();

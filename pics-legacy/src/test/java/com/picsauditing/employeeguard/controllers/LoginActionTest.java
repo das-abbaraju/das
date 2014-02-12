@@ -6,21 +6,17 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.LoginForm;
-import com.picsauditing.employeeguard.services.EmailHashService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.LoginService;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
 import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.LoginServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
-import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.util.system.PicsEnvironment;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +42,7 @@ public class LoginActionTest extends PicsActionTest {
 	private ProfileService profileService;
 
 	@Mock
-	private AccountDAO accountDAO;
+	private AccountService accountService;
 	@Mock
 	private AppUserDAO appUserDAO;
 	@Mock
@@ -64,16 +60,15 @@ public class LoginActionTest extends PicsActionTest {
 
 		super.setUp(loginAction);
 
-		Whitebox.setInternalState(loginAction, "accountDAO", accountDAO);
+		Whitebox.setInternalState(loginAction, "accountService", accountService);
 		Whitebox.setInternalState(loginAction, "emailHashService", emailHashService);
 		Whitebox.setInternalState(loginAction, "employeeService", employeeService);
 		Whitebox.setInternalState(loginAction, "loginService", loginService);
 		Whitebox.setInternalState(loginAction, "picsEnvironment", picsEnvironment);
 		Whitebox.setInternalState(loginAction, "profileService", profileService);
 
-		Account account = new Account();
-		account.setName("PICS");
-		when(accountDAO.find(anyInt())).thenReturn(account);
+		AccountModel accountModel = new AccountModel.Builder().name("PICS").build();
+		when(accountService.getAccountById(anyInt())).thenReturn(accountModel);
 		when(picsEnvironment.isLocalhost()).thenReturn(true);
 	}
 
