@@ -78,39 +78,39 @@
                 </thead>
 
                 <tbody>
-                <%--<s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">--%>
-                    <%--<tr>--%>
-                        <%--<td>${employee_site_assignment.accountName}</td>--%>
-                        <%--<td>${employee_site_assignment.employeeName}</td>--%>
-                        <%--<td>${employee_site_assignment.employeeTitle}</td>--%>
-                        <%--<s:iterator value="#employee_site_assignment.skillStatuses" var="employee_skill_status">--%>
-                            <%--<s:if test="#employee_skill_status.expired">--%>
-                                <%--<s:set var="skill_icon">icon-minus-sign-alt</s:set>--%>
-                                <%--<s:set var="skill_status_class">danger</s:set>--%>
-                            <%--</s:if>--%>
-                            <%--<s:elseif test="#employee_skill_status.expiring">--%>
-                                <%--<s:set var="skill_icon">icon-warning-sign</s:set>--%>
-                                <%--<s:set var="skill_status_class">warning</s:set>--%>
-                            <%--</s:elseif>--%>
-                            <%--<s:elseif test="#employee_skill_status.pending">--%>
-                                <%--<s:set var="skill_icon">icon-ok-circle</s:set>--%>
-                                <%--<s:set var="skill_status_class">success</s:set>--%>
-                            <%--</s:elseif>--%>
-                            <%--<s:else>--%>
-                                <%--<s:set var="skill_icon">icon-ok-sign</s:set>--%>
-                                <%--<s:set var="skill_status_class">success</s:set>--%>
-                            <%--</s:else>--%>
+                <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">
+                    <tr>
+                        <td>${employee_site_assignment.accountName}</td>
+                        <td>${employee_site_assignment.employeeName}</td>
+                        <td>${employee_site_assignment.employeeTitle}</td>
+                        <s:iterator value="#employee_site_assignment.skillStatuses" var="employee_skill_status">
+                            <s:if test="#employee_skill_status.expired">
+                                <s:set var="skill_icon">icon-minus-sign-alt</s:set>
+                                <s:set var="skill_status_class">danger</s:set>
+                            </s:if>
+                            <s:elseif test="#employee_skill_status.expiring">
+                                <s:set var="skill_icon">icon-warning-sign</s:set>
+                                <s:set var="skill_status_class">warning</s:set>
+                            </s:elseif>
+                            <s:elseif test="#employee_skill_status.pending">
+                                <s:set var="skill_icon">icon-ok-circle</s:set>
+                                <s:set var="skill_status_class">success</s:set>
+                            </s:elseif>
+                            <s:else>
+                                <s:set var="skill_icon">icon-ok-sign</s:set>
+                                <s:set var="skill_status_class">success</s:set>
+                            </s:else>
 
-                            <%--<s:if test="#employee_assigned_class != 'assigned'">--%>
-                                <%--<s:set var="skill_status_class" value="" />--%>
-                            <%--</s:if>--%>
+                            <s:if test="#employee_assigned_class != 'assigned'">
+                                <s:set var="skill_status_class" value="" />
+                            </s:if>
 
-                            <%--<td class="${skill_status_class} skill-status-icon text-center">--%>
-                                <%--<i class="${skill_icon} icon-large"></i>--%>
-                            <%--</td>--%>
-                        <%--</s:iterator>--%>
-                    <%--</tr>--%>
-                <%--</s:iterator>--%>
+                            <td class="${skill_status_class} skill-status-icon text-center">
+                                <i class="${skill_icon} icon-large"></i>
+                            </td>
+                        </s:iterator>
+                    </tr>
+                </s:iterator>
                 </tbody>
             </table>
         </div>
