@@ -178,13 +178,20 @@ public class RoleService {
 		for (RoleEmployee roleEmployee : employee.getRoles()) {
 			if (roleEmployee.getRole().getAccountId() == siteId) {
 				Role corporateRole = siteRoleToCorporateRole.get(roleEmployee.getRole());
-				employeeRequiredSkills.addAll(getSkillsFromCorporateRole(corporateRole));
+
+				if (corporateRole != null) {
+					employeeRequiredSkills.addAll(getSkillsFromCorporateRole(corporateRole));
+				}
 			}
 		}
 		return employeeRequiredSkills;
 	}
 
 	private List<AccountSkill> getSkillsFromCorporateRole(Role corporateRole) {
+		if (corporateRole == null) {
+			return Collections.emptyList();
+		}
+
 		return ExtractorUtil.extractList(corporateRole.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
 	}
 

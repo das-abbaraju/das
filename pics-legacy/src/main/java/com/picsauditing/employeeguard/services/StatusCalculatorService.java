@@ -14,7 +14,7 @@ import java.util.*;
 public class StatusCalculatorService {
 
 	public Map<Employee, SkillStatus> getEmployeeStatusRollUpForSkills(final Collection<Employee> employees,
-	                                                                   final Map<Employee, Set<AccountSkill>> employeeRequiredSkills) {
+																	   final Map<Employee, Set<AccountSkill>> employeeRequiredSkills) {
 		if (CollectionUtils.isEmpty(employees) || MapUtils.isEmpty(employeeRequiredSkills)) {
 			return Collections.emptyMap();
 		}
@@ -31,7 +31,9 @@ public class StatusCalculatorService {
 					}
 				});
 
-				rollUp = SkillStatusCalculator.calculateStatusRollUp(employeeSkills);
+				if (CollectionUtils.isNotEmpty(employeeSkills)) {
+					rollUp = SkillStatusCalculator.calculateStatusRollUp(employeeSkills);
+				}
 			}
 
 			employeeStatuses.put(employee, rollUp);
