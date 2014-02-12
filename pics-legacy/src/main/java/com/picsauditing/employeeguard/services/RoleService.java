@@ -178,7 +178,10 @@ public class RoleService {
 		for (RoleEmployee roleEmployee : employee.getRoles()) {
 			if (roleEmployee.getRole().getAccountId() == siteId) {
 				Role corporateRole = siteRoleToCorporateRole.get(roleEmployee.getRole());
-				employeeRequiredSkills.addAll(getSkillsFromCorporateRole(corporateRole));
+
+				if (corporateRole != null) {
+					employeeRequiredSkills.addAll(getSkillsFromCorporateRole(corporateRole));
+				}
 			}
 		}
 		return employeeRequiredSkills;
