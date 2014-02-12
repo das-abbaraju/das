@@ -1,10 +1,13 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.entities.RoleEmployee;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
@@ -20,6 +23,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 public class SiteAssignmentActionTest extends PicsActionTest {
@@ -28,6 +32,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	public static final int CONTRACTOR_ID_2 = 2;
 	public static final int SITE_ID = 1234;
 	public static final int CORPORATE_ID = 10000;
+	public static final int ROLE_ID = 7890;
 
 	private SiteAssignmentAction siteAssignmentAction;
 
@@ -161,6 +166,47 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
 	@Test
 	public void testRole() throws Exception {
+		Role corporateRole = new RoleBuilder().accountId(CORPORATE_ID).name("Corporate Role").build();
+		AccountSkill skill = new AccountSkillBuilder().name("Corporate Skill").build();
+		Employee employee = new EmployeeBuilder()
+				.firstName("First")
+				.lastName("Last")
+				.email("Email")
+				.accountId(CONTRACTOR_ID_1)
+				.build();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_YEAR, 15);
+
+		Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
+		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder().endDate(calendar.getTime()).build();
+		table.put(employee, skill, accountSkillEmployee);
+
+		AccountModel accountModel = new AccountModel.Builder().id(CONTRACTOR_ID_1).name("Contractor").build();
+		Map<Integer, AccountModel> accountMap = new HashMap<>();
+		accountMap.put(CONTRACTOR_ID_1, accountModel);
+
+		when(accountService.getContractorMapForSite(SITE_ID)).thenReturn(accountMap);
+		when(accountSkillEmployeeService.buildTable(anyListOf(Employee.class), anyListOf(AccountSkill.class))).thenReturn(table);
+		when(employeeService.getEmployeesAssignedToSiteRole(anyListOf(Integer.class), eq(SITE_ID), any(Role.class), any(Role.class)))
+				.thenReturn(Arrays.asList(employee));
+		when(employeeService.getEmployeesAssignedToSite(anyListOf(Integer.class), eq(SITE_ID))).thenReturn(Arrays.asList(employee));
+		when(roleService.getRole(Integer.toString(ROLE_ID))).thenReturn(corporateRole);
+		when(skillService.getSkillsForRole(corporateRole)).thenReturn(Arrays.asList(skill));
+
+		siteAssignmentAction.setSiteId(SITE_ID);
+		siteAssignmentAction.setId(Integer.toString(ROLE_ID));
 		assertEquals("role", siteAssignmentAction.role());
+
+		SiteAssignmentModel siteAssignmentModel = siteAssignmentAction.getSiteAssignmentModel();
+		assertNotNull(siteAssignmentModel);
+		assertEquals(1, siteAssignmentModel.getTotalEmployeesAssignedToSite());
+		assertNotNull(siteAssignmentModel.getSkills());
+		assertFalse(siteAssignmentModel.getSkills().isEmpty());
+
+		verify(accountService).getAccountById(SITE_ID);
+		verify(accountService).getContractorMapForSite(SITE_ID);
+		verify(roleService, atLeastOnce()).getCorporateToSiteRoles(SITE_ID);
+		verify(skillService).getSkillsForRole(corporateRole);
 	}
 }

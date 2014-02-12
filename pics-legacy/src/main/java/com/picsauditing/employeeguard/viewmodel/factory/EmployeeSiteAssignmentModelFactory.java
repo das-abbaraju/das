@@ -61,6 +61,7 @@ public class EmployeeSiteAssignmentModelFactory {
 					.employeeId(employee.getId())
 					.employeeName(employee.getName())
 					.employeeTitle(employee.getPositionName())
+					.skillStatuses(skillStatuses)
 					.build();
 
 			models.add(model);

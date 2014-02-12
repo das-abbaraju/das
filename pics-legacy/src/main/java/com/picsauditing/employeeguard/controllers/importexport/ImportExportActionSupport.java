@@ -23,7 +23,6 @@ public abstract class ImportExportActionSupport extends PicsRestActionSupport {
 		return "import-export";
 	}
 
-	// TODO: i18n
 	public String upload() throws Exception {
 		if (uploadIsValid()) {
 			try {
@@ -33,7 +32,6 @@ public abstract class ImportExportActionSupport extends PicsRestActionSupport {
 				addActionError("Error parsing " + uploadFileName);
 			}
 		} else {
-			// TODO: I18n
 			addActionError("Missing file or non CSV file uploaded");
 			return invalidUploadRedirect();
 		}

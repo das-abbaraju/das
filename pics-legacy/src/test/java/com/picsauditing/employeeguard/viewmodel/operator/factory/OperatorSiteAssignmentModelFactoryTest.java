@@ -28,7 +28,7 @@ public class OperatorSiteAssignmentModelFactoryTest {
 		roleCounts.put(new RoleInfo.Builder().name("Role").build(), 3);
 
 		SiteAssignmentModel siteAssignmentModel = operatorSiteAssignmentModelFactory.create(
-				employees, null, roleCounts, Collections.<EntityInfo>emptyList());
+				employees.size(), null, roleCounts, Collections.<EntityInfo>emptyList());
 
 		assertNotNull(siteAssignmentModel);
 		assertEquals(3, siteAssignmentModel.getTotalEmployeesAssignedToSite());

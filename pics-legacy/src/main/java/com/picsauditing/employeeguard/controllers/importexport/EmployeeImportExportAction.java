@@ -27,7 +27,6 @@ public class EmployeeImportExportAction extends ImportExportActionSupport {
 		employeeService.importEmployees(upload, permissions.getAccountId(), permissions.getAppUserID());
 	}
 
-	// TODO: i18n
 	@Override
 	public String download() throws Exception {
 		byte[] output = null;

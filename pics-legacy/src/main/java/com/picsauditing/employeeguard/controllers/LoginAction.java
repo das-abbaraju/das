@@ -7,18 +7,14 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.LoginForm;
-import com.picsauditing.employeeguard.services.EmailHashService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.LoginService;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.validator.Validator;
@@ -28,9 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class LoginAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final long serialVersionUID = 3274071143261978073L;
 
-	// FIXME replace with rest call in the future?
 	@Autowired
-	private AccountDAO accountDAO;
+	private AccountService accountService;
 	@Autowired
 	private EmailHashService emailHashService;
 	@Autowired
@@ -65,7 +60,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 		prepareProfile(employee);
 
-		Account account = accountDAO.find(employee.getAccountId());
+		AccountModel account = accountService.getAccountById(employee.getAccountId());
 		if (account != null) {
 			companyName = account.getName();
 		}

@@ -78,7 +78,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		Map<RoleInfo, Integer> roleCounts = buildRoleCounts(siteId, employeesAtSite);
 
 		siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory()
-				.create(employeesAtSite, employeeSiteAssignments, roleCounts, Collections.<EntityInfo>emptyList());
+				.create(employeesAtSite.size(), employeeSiteAssignments, roleCounts, Collections.<EntityInfo>emptyList());
 
 		return "status";
 	}
@@ -114,6 +114,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				siteId,
 				corporateToSiteRoles.get(corporateRole),
 				corporateRole);
+
 		List<AccountSkill> skills = skillService.getSkillsForRole(corporateRole);
 		Collections.sort(skills);
 
@@ -130,7 +131,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		List<EntityInfo> skillInfos = ViewModelFactory.getEntityInfoFactory().create(skills);
 
 		siteAssignmentModel = ViewModelFactory.getOperatorSiteAssignmentModelFactory().create(
-				employeesAssignedToRole,
+				employeesAtSite.size(),
 				employeeSiteAssignmentModels,
 				roleCounts,
 				skillInfos);

@@ -6,6 +6,8 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -15,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 
 public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(EmployeeDAO.class);
 
 	public EmployeeDAO() {
 		this.type = Employee.class;
@@ -172,7 +176,7 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 	}
 
 	public List<Employee> findEmployeesAssignedToSiteRole(final Collection<Integer> accountIds, final int siteId,
-														  final Role siteRole, final Role corporateRole) {
+	                                                      final Role siteRole, final Role corporateRole) {
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
 				"JOIN e.projectRoles pre " +
 				"JOIN pre.projectRole pr " +
