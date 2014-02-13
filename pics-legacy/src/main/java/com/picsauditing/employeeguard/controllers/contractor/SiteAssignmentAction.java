@@ -119,7 +119,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     }
 
     public String role() {
-        role = roleService.getRole(id);       // corporate role id
+        role = roleService.getRole(id);
         site = accountService.getAccountById(siteId);
         assignmentMatrix = buildRoleAssignmentMatrix(role, site);
 
