@@ -27,8 +27,6 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private AccountSkillEmployeeService accountSkillEmployeeService;
-    @Autowired
     private EmployeeService employeeService;
 	@Autowired
 	private SkillService skillService;
@@ -163,7 +161,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				.getEmployeeStatusRollUpForSkills(employees, allSkillsForRole);
 
         return ViewModelFactory.getContractorEmployeeRoleAssignmentFactory()
-                .build(employees, corporateRole, employeesAssignedToRole.get(corporateRole), employeeSkillStatusMap);
+                .build(employees, employeesAssignedToRole.get(corporateRole), employeeSkillStatusMap);
     }
 
     public int getSiteId() {

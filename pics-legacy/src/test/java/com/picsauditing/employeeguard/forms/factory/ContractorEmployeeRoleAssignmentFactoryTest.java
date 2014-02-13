@@ -44,7 +44,7 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 
 	@Test
 	public void testBuild_Null() throws Exception {
-		List<ContractorEmployeeRoleAssignment> assignments = factory.build(null, null, null, null);
+		List<ContractorEmployeeRoleAssignment> assignments = factory.build(null, null, null);
 
 		assertNotNull(assignments);
 		assertTrue(assignments.isEmpty());
@@ -54,7 +54,6 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 	public void testBuild_Empty() throws Exception {
 		List<ContractorEmployeeRoleAssignment> assignments = factory.build(
 				Collections.<Employee>emptyList(),
-				new Role(),
 				Collections.<Employee>emptySet(),
 				Collections.<Employee, List<SkillStatus>>emptyMap());
 
@@ -68,10 +67,10 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 
 		Map<Employee, List<SkillStatus>> employeeSkills = new HashMap<>();
 		Utilities.addToMapOfKeyToList(employeeSkills, employee1, SkillStatus.Complete);
+		Utilities.addToMapOfKeyToList(employeeSkills, employee2, SkillStatus.Expired);
 
 		List<ContractorEmployeeRoleAssignment> assignments = factory.build(
 				Arrays.asList(employee1, employee2),
-				role,
 				new HashSet<>(Arrays.asList(employee1)),
 				employeeSkills);
 
