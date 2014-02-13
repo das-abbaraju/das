@@ -80,7 +80,7 @@
 						</s:else>
 					</td>
 					<td>
-						<s:if test="permissions.isCorporate()">
+						<s:if test="permissions.isCorporate() && permissions.hasPermission(OpPerms.AddContractors)">
 							<s:if test="#result.isContractor()">
 								<s:if test="checkCon(#result.id)">
 									<s:text name="MainSearch.AlreadyInSystem" />
