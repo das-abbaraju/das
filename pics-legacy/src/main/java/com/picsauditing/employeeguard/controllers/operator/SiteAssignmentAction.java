@@ -115,6 +115,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				corporateToSiteRoles.get(corporateRole),
 				corporateRole);
 
+		List<AccountSkill> corporateSkills = skillService.getRequiredSkills(corporateRole.getAccountId());
+		List<AccountSkill> siteSkills = skillService.getSiteRequiredSkills();
 		List<AccountSkill> skills = skillService.getSkillsForRole(corporateRole);
 		Collections.sort(skills);
 
