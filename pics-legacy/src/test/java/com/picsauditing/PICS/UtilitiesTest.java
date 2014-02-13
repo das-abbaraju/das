@@ -227,33 +227,57 @@ public class UtilitiesTest {
     }
 
 	@Test
-	public void testInvertMap() {
+	public void testInvertMapOfList() {
+		String key1 = "Test 1";
+		String key2 = "Test 2";
+
 		Map<String, List<Integer>> map = new HashMap<>();
-		map.put("Test 1", Arrays.asList(1, 2));
-		map.put("Test 2", Arrays.asList(2, 3));
+		map.put(key1, Arrays.asList(1, 2));
+		map.put(key2, Arrays.asList(2, 3));
 
 		Map<Integer, List<String>> invertedMap = Utilities.invertMapOfList(map);
 
-		assertTrue(invertedMap.get(1).contains("Test 1"));
-		assertTrue(invertedMap.get(2).contains("Test 1"));
-		assertFalse(invertedMap.get(3).contains("Test 1"));
+		assertTrue(invertedMap.get(1).contains(key1));
+		assertTrue(invertedMap.get(2).contains(key1));
+		assertFalse(invertedMap.get(3).contains(key1));
 
-		assertTrue(invertedMap.get(2).contains("Test 2"));
-		assertTrue(invertedMap.get(3).contains("Test 2"));
-		assertFalse(invertedMap.get(1).contains("Test 2"));
+		assertTrue(invertedMap.get(2).contains(key2));
+		assertTrue(invertedMap.get(3).contains(key2));
+		assertFalse(invertedMap.get(1).contains(key2));
+	}
+
+	@Test
+	public void testInvertMap() {
+		String key1 = "Test 10";
+		String key2 = "Test 20";
+
+		Map<String, Integer> map = new HashMap<>();
+		map.put(key1, 10);
+		map.put(key2, 20);
+
+		Map<Integer, String> invertedMap = Utilities.invertMap(map);
+
+		assertNotNull(invertedMap.get(10));
+		assertEquals(key1, invertedMap.get(10));
+		assertNotNull(invertedMap.get(20));
+		assertEquals(key2, invertedMap.get(20));
 	}
 
 	@Test
 	public void testFlattenCollectionOfCollection() {
-		Set<String> set1 = new HashSet<>(Arrays.asList("Test 1", "Test 2"));
-		Set<String> set2 = new HashSet<>(Arrays.asList("Test 3"));
+		String string1 = "Test 1";
+		String string2 = "Test 2";
+		String string3 = "Test 3";
+
+		Set<String> set1 = new HashSet<>(Arrays.asList(string1, string2));
+		Set<String> set2 = new HashSet<>(Arrays.asList(string3));
 
 		List<Set<String>> listOfSets = new ArrayList<>(Arrays.asList(set1, set2));
 		Set<String> results = Utilities.flattenCollectionOfCollection(listOfSets);
 
-		assertTrue(results.contains("Test 1"));
-		assertTrue(results.contains("Test 2"));
-		assertTrue(results.contains("Test 3"));
+		assertTrue(results.contains(string1));
+		assertTrue(results.contains(string2));
+		assertTrue(results.contains(string3));
 	}
 
     private void verifyCoalesceIntoMapOfLists(Map<Integer, List<SimpleObject>> result) {

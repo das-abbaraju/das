@@ -1,56 +1,32 @@
 package com.picsauditing.actions.operators;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.operators.FacilitiesEditModel;
 import com.picsauditing.model.operators.FacilitiesEditStatus;
+import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.validator.ValidationException;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.jpa.entities.UserAccountRole;
-import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.model.operators.FacilitiesEditModel;
-import com.picsauditing.toggle.FeatureToggle;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class FacilitiesEditTest extends PicsActionTest {
 	private int NON_ZERO_OPERATOR_ID = 123;
@@ -92,6 +68,7 @@ public class FacilitiesEditTest extends PicsActionTest {
 
         Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
         Whitebox.setInternalState(facilitiesEdit, "accountStatusChanges", accountStatusChanges);
+        Whitebox.setInternalState(facilitiesEdit, "operatorDao", operatorDAO);
         Whitebox.setInternalState(facilitiesEditModel, "featureToggle", featureToggle);
 
 		operator = new OperatorAccount();
@@ -160,6 +137,21 @@ public class FacilitiesEditTest extends PicsActionTest {
 		Whitebox.invokeMethod(facilitiesEdit, "addParentPrimaryOperatorContactUsers", primaryContactSet);
 		assertEquals(userList.size(), primaryContactSet.size());
 	}
+
+    @Test
+    public void testSave_RememberMe_NotEnable() {
+        facilitiesEdit.getOperator().setRememberMeTimeEnabled(false);
+        facilitiesEdit.getOperator().setRememberMeTimeInDays(1);
+        facilitiesEdit.setTimeoutDays("7");
+        facilitiesEdit.setSessionTimeout("60");
+        facilitiesEdit.getOperator().setName("Fake");
+        facilitiesEdit.getOperator().setCountry(new Country("US"));
+        facilitiesEdit.getOperator().setCountrySubdivision(new CountrySubdivision("US-CA"));
+        when(operatorDAO.save(operator)).thenReturn(operator);
+        facilitiesEdit.save();
+        assertEquals(1, operator.getRememberMeTimeInDays());
+    }
+
 
     @Test
     public void testSave_RememberMe_NonInteger() {

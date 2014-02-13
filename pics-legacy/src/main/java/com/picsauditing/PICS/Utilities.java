@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.SpringUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.springframework.util.CollectionUtils;
@@ -334,6 +335,30 @@ public class Utilities {
 		return map;
 	}
 
+    /**
+     * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
+     * from the implementation of MapConvertable<K, E>.
+     *
+     * @param entities
+     * @param mapConverter
+     * @param <K>          Object that represents the Key and must correctly implement the equals() and hashcode()
+     * @param <E>          Object that is some element/entity within the collection
+     * @return
+     */
+    public static <K, E> Map<K, Set<E>> convertToMapOfSets(Collection<E> entities, MapConvertable<K, E> mapConverter) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return Collections.emptyMap();
+        }
+
+        Map<K, Set<E>> map = new HashMap<>();
+        for (E entity : entities) {
+            K key = mapConverter.getKey(entity);
+            addToMapOfKeyToSet(map, key, entity);
+        }
+
+        return map;
+    }
+
 	public interface Identitifable<E, ID> {
 
 		ID getId(E element);
@@ -380,6 +405,23 @@ public class Utilities {
 		for (E entity : entities) {
 			K key = entityKeyValueConvertable.getKey(entity);
 			addToMapOfKeyToSet(map, key, entityKeyValueConvertable.getValue(entity));
+		}
+
+		return map;
+	}
+
+	public static <E, K, V> Map<K, V> convertToMap(final Collection<E> entities,
+	                                               final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, V> map = new HashMap<>();
+		for (E entity : entities) {
+			K key = entityKeyValueConvertable.getKey(entity);
+			V value = entityKeyValueConvertable.getValue(entity);
+
+			map.put(key, value);
 		}
 
 		return map;
@@ -433,6 +475,16 @@ public class Utilities {
         return invertedMap;
     }
 
+	public static <K, V> Map<V, K> invertMap(Map<K, V> map) {
+		Map<V, K> invertedMap = new HashMap<>();
+
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			invertedMap.put(entry.getValue(), entry.getKey());
+		}
+
+		return invertedMap;
+	}
+
 	public static <K, V> Set<V> extractAndFlattenValuesFromMap(final Map<K, ? extends Collection<V>> map) {
 		Set<V> values = new HashSet<>();
 
@@ -451,5 +503,21 @@ public class Utilities {
 		}
 
 		return values;
+	}
+
+	public static <E> List<E> unmodifiableList(List<E> elements) {
+		if (CollectionUtils.isEmpty(elements)) {
+			return Collections.emptyList();
+		}
+
+		return Collections.unmodifiableList(elements);
+	}
+
+	public static <K, V> Map<K, V> unmodifiableMap(Map<K, V> map) {
+		if (MapUtils.isEmpty(map)) {
+			return Collections.emptyMap();
+		}
+
+		return Collections.unmodifiableMap(map);
 	}
 }

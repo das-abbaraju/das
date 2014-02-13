@@ -37,6 +37,8 @@
         &.assigned {
             .assign-employee {
                 background-color: $assign_column_background_color;
+                color: $assigned_column_icon_color;
+                font-weight: bold;
 
                 i {
                     color: $assigned_column_icon_color;

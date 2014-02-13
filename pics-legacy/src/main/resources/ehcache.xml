@@ -31,7 +31,7 @@
         general.
     -->
     <cache name="audit_cache" maxElementsInMemory="15000" eternal="false"
-           timeToLiveSeconds="604800" timeToIdleSeconds="14400" overflowToDisk="false"
+           timeToLiveSeconds="604800" timeToIdleSeconds="172800" overflowToDisk="false"
            memoryStoreEvictionPolicy="LFU">
     </cache>
 

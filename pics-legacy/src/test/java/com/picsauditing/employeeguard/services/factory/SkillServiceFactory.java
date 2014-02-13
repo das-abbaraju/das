@@ -28,7 +28,7 @@ public class SkillServiceFactory {
 		when(skillService.getOptionalSkillsForAccount(anyInt())).thenReturn(accountSkills);
 		when(skillService.getSkill(anyString(), anyInt())).thenReturn(accountSkill);
 		when(skillService.getSkill("ID")).thenReturn(accountSkill);
-		when(skillService.getSkill("ID2")).thenReturn(accountSkill2);
+		when(skillService.getSkill("CORPORATE_ROLE_ID")).thenReturn(accountSkill2);
 		when(skillService.update(any(AccountSkill.class), anyString(), anyInt(), anyInt())).thenReturn(accountSkill);
 
 		return skillService;

@@ -108,7 +108,7 @@ public class SkillActionTest extends PicsActionTest {
 
 	@Test
 	public void testManage_NotCertification() throws Exception {
-		skillAction.setId("ID2");
+		skillAction.setId("CORPORATE_ROLE_ID");
 		assertEquals("manage", skillAction.manage());
 	}
 
@@ -125,10 +125,10 @@ public class SkillActionTest extends PicsActionTest {
 
 	@Test
 	public void testUpdate_NonCertificate() throws Exception {
-		skillAction.setId("ID2");
+		skillAction.setId("CORPORATE_ROLE_ID");
 		assertEquals(PicsActionSupport.REDIRECT, skillAction.update());
 		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
-		verify(skillService).getSkill("ID2");
+		verify(skillService).getSkill("CORPORATE_ROLE_ID");
 		verify(accountSkillEmployeeService).update(any(AccountSkillEmployee.class), any(SkillDocumentForm.class));
 	}
 }

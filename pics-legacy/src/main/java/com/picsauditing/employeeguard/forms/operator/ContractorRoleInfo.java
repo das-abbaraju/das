@@ -1,39 +1,66 @@
 package com.picsauditing.employeeguard.forms.operator;
 
-import com.picsauditing.employeeguard.forms.IdentifierAndNameCompositeForm;
-import com.picsauditing.employeeguard.viewmodel.model.Skill;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.IdNameTitleModel;
 
 import java.util.List;
 
-public class ContractorRoleInfo {
+public class ContractorRoleInfo implements Comparable<ContractorRoleInfo> {
 
-    private AccountModel accountModel;
-    private IdentifierAndNameCompositeForm employeeInfo;
-    private List<Skill> skillList;
+	private final AccountModel accountModel;
+	private final IdNameTitleModel employeeInfo;
+	private final List<SkillStatus> statuses;
 
-    public AccountModel getAccountModel() {
-        return accountModel;
-    }
+	public ContractorRoleInfo(Builder builder) {
+		this.accountModel = builder.accountModel;
+		this.employeeInfo = builder.employeeInfo;
+		this.statuses = builder.statuses;
+	}
 
-    public void setAccountModel(AccountModel accountModel) {
-        this.accountModel = accountModel;
-    }
+	public AccountModel getAccountModel() {
+		return accountModel;
+	}
 
-    public IdentifierAndNameCompositeForm getEmployeeInfo() {
-        return employeeInfo;
-    }
+	public IdNameTitleModel getEmployeeInfo() {
+		return employeeInfo;
+	}
 
-    public void setEmployeeInfo(IdentifierAndNameCompositeForm employeeInfo) {
-        this.employeeInfo = employeeInfo;
-    }
+	public List<SkillStatus> getStatuses() {
+		return statuses;
+	}
 
-    public List<Skill> getSkillList() {
-        return skillList;
-    }
+	@Override
+	public int compareTo(ContractorRoleInfo that) {
+		if (this.accountModel.equals(that.accountModel)) {
+			return this.employeeInfo.compareTo(that.employeeInfo);
+		}
 
-    public void setSkillList(List<Skill> skillInfoList) {
-        this.skillList = skillInfoList;
-    }
+		return this.accountModel.compareTo(that.accountModel);
+	}
+
+	public static class Builder {
+		private AccountModel accountModel;
+		private IdNameTitleModel employeeInfo;
+		private List<SkillStatus> statuses;
+
+		public Builder accountModel(AccountModel accountModel) {
+			this.accountModel = accountModel;
+			return this;
+		}
+
+		public Builder employeeInfo(IdNameTitleModel employeeInfo) {
+			this.employeeInfo = employeeInfo;
+			return this;
+		}
+
+		public Builder statuses(List<SkillStatus> statuses) {
+			this.statuses = statuses;
+			return this;
+		}
+
+		public ContractorRoleInfo build() {
+			return new ContractorRoleInfo(this);
+		}
+	}
 }

@@ -1,9 +1,9 @@
 package com.picsauditing.employeeguard.forms.operator;
 
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
 import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 

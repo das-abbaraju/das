@@ -4,7 +4,6 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
-import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 
 public class RoleFormValidator extends AbstractBasicAndDuplicateValidator<GroupNameSkillsForm> {
 

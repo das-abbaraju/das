@@ -13803,21 +13803,28 @@ PICS.define('employee-guard.Assignment', {
             is_assigned;
 
         function init() {
-            $('.table-assignment').on('click', 'tr', onAssignIconClick);
-            $('.disable-assignment').on('click', function (event) {
+            $('.table-assignment').on('click', 'tr', onAssignmentRowClick);
+            $('.table-assignment a').on('click', function (event) {
                 event.stopPropagation();
             });
+            $('body .modal-footer .unassign').on('click', requestEmployeeAssignment);
         }
 
-        function onAssignIconClick(event) {
+        function onAssignmentRowClick(event) {
             var $element = $(event.target);
-
-            event.preventDefault();
 
             $selected_row = $element.closest('tr');
             is_assigned = $selected_row.hasClass('assigned');
 
-            requestEmployeeAssignment();
+            toggleEmployeeAssignment();
+        }
+
+        function toggleEmployeeAssignment() {
+            if (is_assigned) {
+                $('.unassignModal').modal('show');
+            } else {
+                requestEmployeeAssignment();
+            }
         }
 
         function requestEmployeeAssignment() {
@@ -13825,6 +13832,7 @@ PICS.define('employee-guard.Assignment', {
                 unassign_url = $selected_row.attr('data-unassign-url');
 
             if (is_assigned) {
+                $('.unassignModal').modal('hide');
                 request_url = unassign_url;
             }
 
@@ -13837,19 +13845,23 @@ PICS.define('employee-guard.Assignment', {
 
         function onEmployeeAssignmentRequestSuccess(data) {
             if (data.status == "SUCCESS") {
-                toggleAssignedState();
+                if ($selected_row.hasClass('site-level')){
+                    location.reload();
+                } else {
+                    toggleAssignedStyle();
+                }
             }
         }
 
-        function toggleAssignedState() {
+        function toggleAssignedStyle() {
             if (is_assigned) {
-                removeAssignedState();
+                removeAssignedStyle();
             } else {
-                addAssignedState();
+                addAssignedStyle();
             }
         }
 
-        function removeAssignedState() {
+        function removeAssignedStyle() {
             var $skill_status_column = $selected_row.find('.skill-status-icon');
 
             $selected_row.removeClass('assigned');
@@ -13857,7 +13869,7 @@ PICS.define('employee-guard.Assignment', {
             $skill_status_column.removeClass('success danger warning');
         }
 
-        function addAssignedState() {
+        function addAssignedStyle() {
             $selected_row.addClass('assigned');
 
             updateSkillStatusIcon();
@@ -13883,6 +13895,7 @@ PICS.define('employee-guard.Assignment', {
         };
     }())
 });
+
 PICS.define('employee-guard.contractor.employee.EmployeeController', {
     methods: (function () {
         function init() {

@@ -1,36 +1,24 @@
 package com.picsauditing.actions.contractors;
 
-import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.billing.BrainTree;
-import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.billing.BillingNoteModel;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.InvoiceCreditMemo;
+import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.jpa.entities.RefundAppliedToCreditMemo;
 import com.picsauditing.util.SapAppPropertyUtil;
-import com.picsauditing.util.Strings;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
 
 public class RefundDetailTest extends PicsActionTest {
 	RefundDetail refundDetail;

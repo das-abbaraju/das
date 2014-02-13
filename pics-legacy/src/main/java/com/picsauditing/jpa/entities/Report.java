@@ -1,30 +1,19 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.models.ModelType;
+import com.picsauditing.report.tables.FieldImportance;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.models.ModelType;
-import com.picsauditing.report.tables.FieldImportance;
+import javax.persistence.*;
+import javax.persistence.Column;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -41,7 +30,6 @@ public class Report extends BaseTable {
 	private String sql;
 	private boolean deleted;
 	private boolean isPublic;
-    private boolean groupBy;
 
 	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
@@ -224,13 +212,4 @@ public class Report extends BaseTable {
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
-
-    @Transient
-    public boolean hasGroupBy() {
-        return groupBy;
-    }
-
-    public void setGroupBy(boolean groupBy) {
-        this.groupBy = groupBy;
-    }
 }

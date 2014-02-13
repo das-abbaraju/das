@@ -49,6 +49,7 @@
     <bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
     <bean id="AutocompleteDAO" class="com.picsauditing.dao.AutocompleteDAO"/>
     <bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
+    <bean id="ContactUsService" class="com.picsauditing.user.service.ContactUsService" scope="prototype"/>
     <bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
     <bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
     <bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
@@ -226,6 +227,7 @@
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
+    <bean id="EmailBuilderService" class="com.picsauditing.service.email.EmailBuilderService"/>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>
     <bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener"
@@ -250,6 +252,7 @@
           scope="singleton"/>
     <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService"/>
     <bean id="ServiceRiskCalculator" class="com.picsauditing.actions.contractors.risk.ServiceRiskCalculator" />
+    <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService" />
 
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"

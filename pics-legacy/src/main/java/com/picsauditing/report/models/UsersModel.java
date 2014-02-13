@@ -30,7 +30,7 @@ public class UsersModel extends AbstractModel {
         ModelSpec accountManager = accountUser.join(AccountUserTable.User);
         accountManager.alias = "AccountManagerUser";
 
-        ModelSpec operator = account.join(AccountTable.Operator);
+        ModelSpec operator = account.join(AccountTable.OperatorInfo);
         operator.alias = "Operator";
 
         ModelSpec reporting = operator.join(OperatorTable.Reporting);

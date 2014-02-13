@@ -135,13 +135,24 @@
 	<include file="./liquibase/mdo24_PICS-13071_updateVoidedLegitPaymentsToPaid.sql"/>
 	<include file="./liquibase/mdo26_PICS-12788_updateAllNewUsersToV7.sql"/>
 	<include file="./liquibase/mdo40_PICs-14382_deleteAnyReportUsersToReport108.sql"/>
-	<include file="./liquibase/kchase20_PICS-14080_UpdateCSRPhone_CSREmail_token.sql"/>
+	<include file="./liquibase/kchase22_PICS-14434_UpdatePeriodicAudit.sql"/>
 	
 	<!-- 7.1.4 -->
 	<include file="./liquibase/sshacter42_PICS-12791_ErrorSerchingWithChineseCharacters.sql"/>
 	<include file="./liquibase/mdo33_PICS-14211_changeEndDateForRevRec.sql"/>
+	<include file="./liquibase/kchase20_PICS-14080_UpdateCSRPhone_CSREmail_token.sql"/>
+	<include file="./liquibase/mdo39_PICS-11896_changeAURecords.sql"/>
 
 	<!-- 7.1.5 -->
-	<include file="./liquibase/kchase22_PICS-14434_UpdatePeriodicAudit.sql"/>
+	<include file="./liquibase/mdo43_PICs-14409_CleanUpCreditMemoRevReqDates.sql"/>
+	<include file="./liquibase/mdo45_PICS-14043_BASFFavoriteCleanup.sql"/>
+	<include file="./liquibase/kchase24_PICS-14406_FixAuditExpiration.sql"/>
+	<include file="./liquibase/kchase23_PICS-14445_IHGSubmitFix.sql"/>
+	<include file="./liquibase/mdo44_PICs-14407_CorrectPaymentMethod.sql"/>
+	<include file="./liquibase/lkam5_US178_Add_Suncor_Discounts.sql"/>
+
+	<!-- 7.1.6 --> 
+	<include file="./liquibase/dalvarado7_us182_new_template_for_message_your_csr.sql"/>
+    <include file="./liquibase/pschlesinger15_PICS12656_AddTempTablesForSapHistoricalBalances.sql"/>
 
 </databaseChangeLog>

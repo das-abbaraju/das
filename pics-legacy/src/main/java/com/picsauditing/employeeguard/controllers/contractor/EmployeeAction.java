@@ -24,9 +24,9 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator;
 import com.picsauditing.employeeguard.validators.employee.EmployeeFormValidator;
-import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
+import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
 import com.picsauditing.validator.Validator;
@@ -96,8 +96,6 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private UrlBuilder urlBuilder;
 
 	/* Pages */
-	// FIXME: Add back in support for OR OpPerms logic?
-//	@RequiredPermission({OpPerms.EmployeeList, OpPerms.ContractorSafety})
 	public String index() {
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();

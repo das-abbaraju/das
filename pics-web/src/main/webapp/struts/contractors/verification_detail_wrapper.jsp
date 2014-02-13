@@ -317,7 +317,7 @@
                 <ul>
                     <li>
                         <label>CSR:</label>
-                        <strong><s:property value="contractor.auditor.name" /></strong>
+                        <strong>${contractor.currentCsr.name}</strong>
                     </li>
                     <li>
                         <label>Safety Sensitive:</label>

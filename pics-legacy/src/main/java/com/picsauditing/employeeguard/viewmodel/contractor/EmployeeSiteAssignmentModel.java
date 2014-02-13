@@ -1,8 +1,12 @@
 package com.picsauditing.employeeguard.viewmodel.contractor;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import org.apache.commons.collections.CollectionUtils;
 
-public class EmployeeSiteAssignmentModel {
+import java.util.Collections;
+import java.util.List;
+
+public class EmployeeSiteAssignmentModel implements Comparable<EmployeeSiteAssignmentModel> {
 
 	private final int assignments;
 	private final int accountId;
@@ -10,8 +14,9 @@ public class EmployeeSiteAssignmentModel {
 	private final int employeeId;
 	private final String employeeName;
 	private final String employeeTitle;
-    private final int numberOfRolesAssigned;
+	private final int numberOfRolesAssigned;
 	private final SkillStatus status;
+	private final List<SkillStatus> skillStatuses;
 
 	public EmployeeSiteAssignmentModel(final Builder builder) {
 		this.assignments = builder.assignments;
@@ -20,8 +25,10 @@ public class EmployeeSiteAssignmentModel {
 		this.employeeId = builder.employeeId;
 		this.employeeName = builder.employeeName;
 		this.employeeTitle = builder.employeeTitle;
-        this.numberOfRolesAssigned = builder.numberOfRolesAssigned;
+		this.numberOfRolesAssigned = builder.numberOfRolesAssigned;
 		this.status = builder.status;
+		this.skillStatuses = CollectionUtils.isEmpty(builder.skillStatuses)
+				? Collections.<SkillStatus>emptyList() : Collections.unmodifiableList(builder.skillStatuses);
 	}
 
 	public int getAssignments() {
@@ -48,12 +55,21 @@ public class EmployeeSiteAssignmentModel {
 		return employeeTitle;
 	}
 
-    public int getNumberOfRolesAssigned() {
-        return numberOfRolesAssigned;
-    }
+	public int getNumberOfRolesAssigned() {
+		return numberOfRolesAssigned;
+	}
 
-    public SkillStatus getStatus() {
+	public SkillStatus getStatus() {
 		return status;
+	}
+
+	public List<SkillStatus> getSkillStatuses() {
+		return skillStatuses;
+	}
+
+	@Override
+	public int compareTo(EmployeeSiteAssignmentModel that) {
+		return this.employeeName.compareToIgnoreCase(that.employeeName);
 	}
 
 	public static class Builder {
@@ -63,10 +79,11 @@ public class EmployeeSiteAssignmentModel {
 		private int employeeId;
 		private String employeeName;
 		private String employeeTitle;
-        public int numberOfRolesAssigned;
+		private int numberOfRolesAssigned;
 		private SkillStatus status;
+		private List<SkillStatus> skillStatuses;
 
-        public Builder assignments(int assignments) {
+		public Builder assignments(int assignments) {
 			this.assignments = assignments;
 			return this;
 		}
@@ -96,13 +113,18 @@ public class EmployeeSiteAssignmentModel {
 			return this;
 		}
 
-        public Builder numberOfRolesAssigned(int numberOfRolesAssigned) {
-            this.numberOfRolesAssigned = numberOfRolesAssigned;
-            return this;
-        }
+		public Builder numberOfRolesAssigned(int numberOfRolesAssigned) {
+			this.numberOfRolesAssigned = numberOfRolesAssigned;
+			return this;
+		}
 
 		public Builder status(SkillStatus status) {
 			this.status = status;
+			return this;
+		}
+
+		public Builder skillStatuses(List<SkillStatus> skillStatuses) {
+			this.skillStatuses = skillStatuses;
 			return this;
 		}
 

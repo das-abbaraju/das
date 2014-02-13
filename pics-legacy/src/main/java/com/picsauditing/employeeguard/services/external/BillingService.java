@@ -31,15 +31,14 @@ public class BillingService {
 		return account.isRequiresCompetencyReview() || account.isRequiresOQ();
 	}
 
+	/**
+	 * Waiting on requirements for how to bill contractors with EmployeeGUARD operators
+	 *
+	 * @param account
+	 * @param <E>
+	 * @return
+	 */
 	private <E extends Account> boolean contractorHasEmployeeGUARD(E account) {
-//		ContractorAccount contractorAccount = (ContractorAccount) account;
-//
-//		if (contractorAccount.getFees().containsKey(FeeClass.EmployeeGUARD) && !contractorAccount.getFees().get(FeeClass.EmployeeGUARD).getNewAmount().equals(BigDecimal.ZERO.setScale(2))) {
-//			return true;
-//		}
-//
-//		return false;
-		// FIXME
 		return true;
 	}
 }

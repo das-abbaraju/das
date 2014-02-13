@@ -1,9 +1,8 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
 import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
 
 public class EmployeePersonalForm implements PersonalInformationForm {

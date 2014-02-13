@@ -1,5 +1,6 @@
-package com.picsauditing.employeeguard.forms.contractor;
+package com.picsauditing.employeeguard.viewmodel.contractor;
 
+import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProjectAssignment;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 
 import java.util.List;

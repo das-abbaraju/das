@@ -1,7 +1,7 @@
 package com.picsauditing.actions.cron;
 
 import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;

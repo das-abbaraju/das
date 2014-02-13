@@ -1,7 +1,6 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 

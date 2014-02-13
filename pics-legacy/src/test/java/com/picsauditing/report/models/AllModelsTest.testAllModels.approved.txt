@@ -1818,6 +1818,35 @@ ReportUserUserIsActive
 ReportUserUserName
 ReportUserViewCount
 
+Model: SingleOperatorContractors
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountAddress
+AccountAddress2
+AccountAddress3
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountFax
+AccountFullAddress
+AccountID
+AccountLegalName
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountPhone
+AccountRequiresCompetencyReview
+AccountRequiresOQ
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+AccountWebUrl
+AccountZip
+SingleOperatorContractorsViewlogo_account_id
+SingleOperatorContractorsViewlogo_account_name
+
 Model: Subscriptions
 Permission: Permissions{permissions=[]}
 ----------------------------------------

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.cron;
 
-import static com.picsauditing.util.Assert.assertContains;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -9,9 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.picsauditing.util.Assert.assertContains;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class CronTaskServiceTest {

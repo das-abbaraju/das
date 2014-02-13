@@ -1,22 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.util.Map;
-
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -24,6 +7,14 @@ import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.util.Map;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 @MappedSuperclass
 public abstract class ReportElement {
@@ -147,6 +138,17 @@ public abstract class ReportElement {
 		}
 
 		return sqlFunction.isAggregate();
+	}
+
+	@Transient
+	public void setUrlOnFieldIfNecessary() {
+		if (field == null) {
+			throw new RuntimeException(name + " has a field that is null.");
+		}
+
+		if (sqlFunction != null && sqlFunction.isAggregate()) {
+			field.setUrl(null);
+		}
 	}
 
 	@Transient

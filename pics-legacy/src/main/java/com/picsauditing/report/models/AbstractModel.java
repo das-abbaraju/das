@@ -57,7 +57,7 @@ public abstract class AbstractModel {
 	private ReportForeignKey getKey(AbstractTable toTable, String keyName) {
 		ReportForeignKey key = toTable.getKey(keyName);
 		if (key == null) {
-			throw new RuntimeException("key property is missing on a child join");
+			throw new RuntimeException("Key property is missing on a child join. toTable: " + toTable + ", keyName: " + keyName);
 		}
 		return key;
 	}

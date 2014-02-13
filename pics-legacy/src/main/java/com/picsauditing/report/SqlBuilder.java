@@ -1,10 +1,5 @@
 package com.picsauditing.report;
 
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -12,9 +7,13 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ReportJoin;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.search.SelectSQL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class SqlBuilder {
 
@@ -31,23 +30,15 @@ public class SqlBuilder {
 	}
 
 	private Report initializeReport(Report report, Map<String, Field> availableFields, Permissions permissions) throws ReportValidationException {
-		setColumnProperties(report, availableFields);
+
+		setColumnProperties(report.getColumns(), availableFields);
 		setFilterProperties(report.getFilters(), availableFields, permissions);
 		setSortProperties(report, availableFields);
-        clearUrlIfGroupBy(report);
 
 		return report;
 	}
 
-    private void clearUrlIfGroupBy(Report report) {
-        if (report.hasGroupBy()) {
-            for(Column column : report.getColumns()) {
-                column.getField().setUrl(null);
-            }
-        }
-    }
-
-    private SelectSQL buildSelectSql(Report report, Map<String, Field> availableFields, AbstractModel model)	throws ReportValidationException {
+	private SelectSQL buildSelectSql(Report report, Map<String, Field> availableFields, AbstractModel model)	throws ReportValidationException {
 		SelectSQL selectSql = new SelectSQL();
 		selectSql.setFromTable(model.getStartingJoin().getTableClause());
 
@@ -75,20 +66,18 @@ public class SqlBuilder {
 		}
 	}
 
-	private void setColumnProperties(Report report, Map<String, Field> availableFields) {
-		for (Column column : report.getColumns()) {
+	private void setColumnProperties(List<Column> columns, Map<String, Field> availableFields) {
+		for (Column column : columns) {
 			column.appendSqlFunctionToName();
 			column.addFieldCopy(availableFields);
 
 			if (column.getField() == null) {
 				continue;
 			}
-            if (column.hasAggregateMethod()) {
-                report.setGroupBy(true);
-            }
-        }
-	}
 
+			column.setUrlOnFieldIfNecessary();
+		}
+	}
 	private void addFieldsAndGroupBy(List<Column> columns, SelectSQL selectSql, Map<String, Field> availableFields) {
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();

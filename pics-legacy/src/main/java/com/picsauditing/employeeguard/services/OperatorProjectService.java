@@ -81,7 +81,7 @@ public class OperatorProjectService {
 		EntityHelper.softDelete(accountSkillEmployees, appUserId);
 		accountSkillEmployeeDAO.delete(accountSkillEmployees);
 
-		RoleEmployee roleEmployee = roleEmployeeDAO.findByGroupAndEmployee(employee, projectRole.getRole());
+		RoleEmployee roleEmployee = roleEmployeeDAO.findByEmployeeAndRole(employee, projectRole.getRole());
 		EntityHelper.softDelete(roleEmployee, appUserId);
 		roleEmployeeDAO.delete(roleEmployee);
 	}

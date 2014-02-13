@@ -1,51 +1,25 @@
 package com.picsauditing.actions.operators;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.naming.NoPermissionException;
-
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.operators.FacilitiesEditModel;
 import com.picsauditing.model.operators.FacilitiesEditStatus;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.service.contractor.ContractorOperatorService;
+import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.Strings;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.jpa.entities.UserAccountRole;
-import com.picsauditing.dao.AccountUserDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.FacilitiesDAO;
-import com.picsauditing.dao.OperatorFormDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.model.operators.FacilitiesEditModel;
-import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.util.Strings;
+import javax.naming.NoPermissionException;
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
@@ -199,11 +173,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
             operator.setType(getCreateType());
         }
 
-        try {
-            operator.setRememberMeTimeInDays(Integer.parseInt(timeoutDays));
-        } catch (NumberFormatException e) {
-            addActionError(getText("FacilitiesEdit.RememberMeInteger"));
-            return REDIRECT;
+        if (operator.isRememberMeTimeEnabled()) {
+            try {
+                operator.setRememberMeTimeInDays(Integer.parseInt(timeoutDays));
+            } catch (NumberFormatException e) {
+                addActionError(getText("FacilitiesEdit.RememberMeInteger"));
+                return REDIRECT;
+            }
         }
 
         try {

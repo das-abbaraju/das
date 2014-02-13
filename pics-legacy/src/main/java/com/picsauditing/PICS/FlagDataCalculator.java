@@ -1,25 +1,16 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.rbic.RulesRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class FlagDataCalculator {
 	private FlagCriteriaDAO flagCriteriaDao;

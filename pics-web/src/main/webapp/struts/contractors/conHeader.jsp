@@ -390,6 +390,9 @@ function loadStatus(caoID, addUserNote){
                                     <s:select  onchange="saveAuditor(this.value)"  cssClass="blueMain" list="safetyList"
                                            listValue="name" value="conAudit.auditor" headerKey="-1" headerValue="- Not Assigned -" />
                                 </s:if>
+                                <s:elseif test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy')">
+                                    <s:property value="contractor.currentCsr.name" />
+                                </s:elseif>
                                 <s:else>
                                     <s:if test="conAudit.auditor.id > 0">
 									    <s:property value="conAudit.auditor.name" />

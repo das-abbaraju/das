@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -38,6 +39,9 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
+	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	@Deprecated
+	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private PhotoUtil photoUtil;
@@ -58,12 +62,25 @@ public class EmployeeService {
 		return employeeDAO.findEmployeeCount(accountId);
 	}
 
-	public List<Employee> getEmployeesForAccounts(final List<Integer> accountIds) {
+	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
 		return employeeDAO.findByAccounts(accountIds);
 	}
 
 	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
 		return employeeDAO.findByProjects(projects);
+	}
+
+	public List<Employee> getEmployeesAssignedToSite(final int accountId, final int siteId) {
+		return getEmployeesAssignedToSite(Arrays.asList(accountId), siteId);
+	}
+
+	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
+		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
+	}
+
+	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
+	                                                     final Role siteRole, final Role corporateRole) {
+		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
 	}
 
 	public Employee save(Employee employee, final int accountId, final int appUserId) throws Exception {
@@ -305,10 +322,6 @@ public class EmployeeService {
 		employeeDAO.delete(employee);
 	}
 
-	public void hardDelete(final String id, final int accountId) {
-		employeeDAO.delete(NumberUtils.toInt(id), accountId);
-	}
-
 	public List<Employee> search(final String searchTerm, final int accountId) {
 		if (Strings.isNotEmpty(searchTerm)) {
 			return employeeDAO.search(searchTerm, accountId);
@@ -321,9 +334,5 @@ public class EmployeeService {
 		employee.setProfile(profile);
 		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
 		softDeletedEmployeeDAO.save(employee);
-	}
-
-	public List<Employee> getEmployeesAssignedToSite(final int accountId, final int siteId) {
-		return employeeDAO.findEmployeesAssignedToSite(accountId, siteId);
 	}
 }

@@ -1,14 +1,16 @@
 package com.picsauditing.search;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.collect.ArrayListMultimap;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.LinkBuilder;
+import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -18,23 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.LegacyEmployeeDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.AbstractIndexableTable;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.Indexable;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.LinkBuilder;
-import com.picsauditing.util.Strings;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This is a controller. It should not use any DAOs from its parent.

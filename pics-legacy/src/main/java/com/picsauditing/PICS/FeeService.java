@@ -4,7 +4,6 @@ import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.MapUtils;
@@ -17,12 +16,9 @@ public class FeeService {
     @Autowired
     private InvoiceFeeDAO feeDAO;
     @Autowired
-    private BillingService billingService;
-    @Autowired
-    private ProductSubscriptionService productSubscriptionService;
-
     protected static AuditTypeRuleCache ruleCache;
-    private boolean hasEmployeeGuardAccount = false;
+    @Autowired
+    private BillingService billingService;
 
     public AuditTypeRuleCache getRuleCache() {
         if (ruleCache == null) {
@@ -132,7 +128,7 @@ public class FeeService {
                 Map<InvoiceFee,BigDecimal> feeLevel = foundFeeClasses.get(feeClass);
                 InvoiceFee invoiceFee = feeLevel.keySet().iterator().next();
 
-                setFee(contractor, feeDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities), feeLevel.get(invoiceFee), payingFacilities, true);
+                setFee(contractor, invoiceFee, feeLevel.get(invoiceFee), payingFacilities, true);
             }
             else
                 clearFee(contractor, feeClass, true);
@@ -204,7 +200,6 @@ public class FeeService {
         else
             feeClasses.add(FeeClass.DocuGUARD);
 
-        hasEmployeeGuardAccount = productSubscriptionService.hasEmployeeGUARD(contractor.getId());
         AuditTypesBuilder builder = new AuditTypesBuilder(getRuleCache(), contractor);
         Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
         Set<AuditTypeDetail> auditTypeDetails = builder.calculate();
@@ -215,7 +210,7 @@ public class FeeService {
             if (auditType == null)
                 continue;
 
-            if (hasAuditGUARD(auditType, isLinkedToSuncor))
+            if (auditType.isDesktop() || auditType.isImplementation() || auditType.isSsip() || (auditType.isCorIec() && isLinkedToSuncor))
                 feeClasses.add(FeeClass.AuditGUARD);
 
             if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
@@ -232,7 +227,7 @@ public class FeeService {
                 hasHseCompetency = true;
         }
 
-        if (requiresOQ || hasHseCompetency || hasEmployeeAudits || hasEmployeeGuardAccount)
+        if (requiresOQ || hasHseCompetency || hasEmployeeAudits)
             feeClasses.add(FeeClass.EmployeeGUARD);
 
         for (ContractorAudit ca : contractor.getAudits()) {
@@ -245,10 +240,6 @@ public class FeeService {
         buildFeeNewLevels(contractor, payingFacilities, feeClasses, operatorsRequiringInsureGUARD);
 
         calculateUpgradeDate(contractor, currentBillingStatus);
-    }
-
-    private boolean hasAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
-        return auditType.isAlwaysBilledForAuditGUARD() || (auditType.isIec() && linkedToSuncor);
     }
 
     // TODO: THIS IS TO BE REMOVED BEFORE 2015
@@ -293,7 +284,7 @@ public class FeeService {
             }
             else if (feeClasses.contains(feeClass) && feeClass != FeeClass.ImportFee) {
                 InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities);
-                BigDecimal newAmount = FeeService.getAdjustedFeeAmountIfNecessary(contractor, newLevel, hasEmployeeGuardAccount);
+                BigDecimal newAmount = FeeService.getAdjustedFeeAmountIfNecessary(contractor, newLevel);
 
                 if (!feeClass.isExcludedFor(contractor, newLevel, operatorsRequiringInsureGUARD))
                     setFee(contractor, newLevel, newAmount, payingFacilities, false);
@@ -426,11 +417,7 @@ public class FeeService {
     }
 
     public static BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-        return getAdjustedFeeAmountIfNecessary(contractor, fee, false);
-    }
-
-    public static BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee, boolean hasEmployeeGuardAccount) {
-        if (fee.getFeeClass() == FeeClass.EmployeeGUARD && !hasEmployeeGuardAccount) {
+        if (fee.getFeeClass() == FeeClass.EmployeeGUARD) {
             AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
             boolean employeeAudits = false;

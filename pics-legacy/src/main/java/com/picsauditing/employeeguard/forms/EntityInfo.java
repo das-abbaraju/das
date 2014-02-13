@@ -1,14 +1,14 @@
 package com.picsauditing.employeeguard.forms;
 
-public class IdentifierAndNameCompositeForm implements PicsForm {
+public class EntityInfo implements Comparable<EntityInfo> {
 
     private int id;
     private String name;
 
-    public IdentifierAndNameCompositeForm() {
+    public EntityInfo() {
     }
 
-    public IdentifierAndNameCompositeForm(int id, String name) {
+    public EntityInfo(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -28,4 +28,9 @@ public class IdentifierAndNameCompositeForm implements PicsForm {
     public void setName(String name) {
         this.name = name;
     }
+
+	@Override
+	public int compareTo(EntityInfo that) {
+		return this.getName().compareToIgnoreCase(that.getName());
+	}
 }

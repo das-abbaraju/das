@@ -1,15 +1,13 @@
 package com.picsauditing.dao;
 
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
-
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -17,12 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectAccount;
-import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.PermissionQueryBuilder;
-import com.picsauditing.util.Strings;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
