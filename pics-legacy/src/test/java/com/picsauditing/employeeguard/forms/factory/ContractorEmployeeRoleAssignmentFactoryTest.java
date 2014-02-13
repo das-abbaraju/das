@@ -56,7 +56,7 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 				Collections.<Employee>emptyList(),
 				new Role(),
 				Collections.<Employee>emptySet(),
-				Collections.<Employee, Set<AccountSkillEmployee>>emptyMap());
+				Collections.<Employee, List<SkillStatus>>emptyMap());
 
 		assertNotNull(assignments);
 		assertTrue(assignments.isEmpty());
@@ -66,8 +66,8 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 	public void testBuild_Valid() throws Exception {
 		initializeMocks();
 
-		Map<Employee, Set<AccountSkillEmployee>> employeeSkills = new HashMap<>();
-		Utilities.addToMapOfKeyToSet(employeeSkills, employee1, accountSkillEmployee);
+		Map<Employee, List<SkillStatus>> employeeSkills = new HashMap<>();
+		Utilities.addToMapOfKeyToList(employeeSkills, employee1, SkillStatus.Complete);
 
 		List<ContractorEmployeeRoleAssignment> assignments = factory.build(
 				Arrays.asList(employee1, employee2),

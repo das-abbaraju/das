@@ -5,6 +5,7 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
@@ -35,6 +36,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     private SkillUsageLocator skillUsageLocator;
     @Autowired
     private RoleService roleService;
+	@Autowired
+	private StatusCalculatorService statusCalculatorService;
 
     private int siteId;
     private int roleId;
@@ -148,14 +151,19 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
     private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(final int contractorId,
 																						  final List<Employee> employees,
-																						  final Role role,
+																						  final Role corporateRole,
 																						  final AccountModel site) {
         Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
-        Map<Employee, Set<AccountSkillEmployee>> employeeSkills =
-                accountSkillEmployeeService.getSkillMapForAccountAndRole(contractorId, role.getId());
+		List<AccountSkill> allSkillsForRole = skillService.getSkillsForRole(corporateRole);
+		allSkillsForRole.addAll(skillService.getRequiredSkills(site.getId()));
+		allSkillsForRole.addAll(skillService.getRequiredSkills(corporateRole.getAccountId()));
+		allSkillsForRole = ListUtil.removeDuplicatesAndSort(allSkillsForRole);
+
+		Map<Employee, List<SkillStatus>> employeeSkillStatusMap = statusCalculatorService
+				.getEmployeeStatusRollUpForSkills(employees, allSkillsForRole);
 
         return ViewModelFactory.getContractorEmployeeRoleAssignmentFactory()
-                .build(employees, role, employeesAssignedToRole.get(role), employeeSkills);
+                .build(employees, corporateRole, employeesAssignedToRole.get(corporateRole), employeeSkillStatusMap);
     }
 
     public int getSiteId() {

@@ -192,7 +192,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 				.thenReturn(Arrays.asList(employee));
 		when(employeeService.getEmployeesAssignedToSite(anyListOf(Integer.class), eq(SITE_ID))).thenReturn(Arrays.asList(employee));
 		when(roleService.getRole(Integer.toString(ROLE_ID))).thenReturn(corporateRole);
-		when(skillService.getSkillsForRole(corporateRole)).thenReturn(Arrays.asList(skill));
+		when(skillService.getSkillsForRole(corporateRole)).thenReturn(new ArrayList<AccountSkill>(Arrays.asList(skill)));
 
 		siteAssignmentAction.setSiteId(SITE_ID);
 		siteAssignmentAction.setId(Integer.toString(ROLE_ID));

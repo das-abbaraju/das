@@ -14,7 +14,7 @@ public class ContractorEmployeeRoleAssignmentFactory {
 	public List<ContractorEmployeeRoleAssignment> build(final List<Employee> contractorEmployees,
 														final Role role,
 														final Set<Employee> assignedEmployees,
-														final Map<Employee, Set<AccountSkillEmployee>> employeeSkills) {
+														final Map<Employee, List<SkillStatus>> employeeSkills) {
 		if (CollectionUtils.isEmpty(contractorEmployees) || role == null) {
 			return Collections.emptyList();
 		}
@@ -28,7 +28,7 @@ public class ContractorEmployeeRoleAssignmentFactory {
 			List<SkillStatus> statuses = initializeSkillStatuses(roleSkills.size());
 
 			if (employeeSkills.containsKey(employee)) {
-				statuses = calculateSkillStatuses(roleSkills, employeeSkills.get(employee));
+				statuses = employeeSkills.get(employee);
 			}
 
 			assignments.add(new ContractorEmployeeRoleAssignment.Builder()
@@ -51,28 +51,5 @@ public class ContractorEmployeeRoleAssignmentFactory {
 		}
 
 		return skillStatuses;
-	}
-
-	private List<SkillStatus> calculateSkillStatuses(List<AccountSkill> roleSkills,
-													 Set<AccountSkillEmployee> accountSkillEmployees) {
-		List<SkillStatus> statuses = new ArrayList<>();
-
-		for (AccountSkill skill : roleSkills) {
-			AccountSkillEmployee accountSkillEmployee = findEmployeeSkill(skill, accountSkillEmployees);
-			statuses.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
-		}
-
-		return statuses;
-	}
-
-	private AccountSkillEmployee findEmployeeSkill(AccountSkill skill, Set<AccountSkillEmployee> accountSkillEmployees) {
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			if (accountSkillEmployee.getSkill().equals(skill)) {
-				accountSkillEmployees.remove(accountSkillEmployee);
-				return accountSkillEmployee;
-			}
-		}
-
-		return null;
 	}
 }
