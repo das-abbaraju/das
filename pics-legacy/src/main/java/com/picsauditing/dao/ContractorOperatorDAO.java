@@ -62,7 +62,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorOperator> findByContractor(int conID, Permissions permissions) {
+	public List<ContractorOperator> findActiveOperatorsByContractor(int conID, Permissions permissions) {
 
 		String where = "";
 		if (permissions.isCorporate()) {
@@ -73,7 +73,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 		}
 		Query query = em
 				.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? AND operatorAccount.type IN ('Operator')"
-						+ where + " AND operatorAccount.status NOT IN ('Deactivated','Deleted') ORDER BY operatorAccount.name");
+						+ where + " AND operatorAccount.status IN ('Active') ORDER BY operatorAccount.name");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
