@@ -43,7 +43,7 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 			return false;
 		}
 
-		return (isUserElligible(permissions) && permissions.getUsingVersion7MenusDate() == null && permissions.isUsingVersion7Menus());
+		return (isUserElligible(permissions) && permissions.isActive() && permissions.getUsingVersion7MenusDate() == null && permissions.isUsingVersion7Menus());
 	}
 
 	private boolean shouldRedirectToReportsManagerTutorial(Permissions permissions, ActionInvocation invocation) {
