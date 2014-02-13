@@ -84,7 +84,9 @@ public class ContractorsModel extends AbstractModel {
 		if (accountStatusFilter != null) {
 			for (String filterValue : accountStatusFilter.getValues()) {
 				AccountStatus filterStatus = AccountStatus.valueOf(filterValue);
-                permissionQueryBuilder.addVisibleStatus(filterStatus);
+				if (filterStatus.isVisibleTo(permissions)) {
+					permissionQueryBuilder.addVisibleStatus(filterStatus);
+				}
 			}
 		}
 
