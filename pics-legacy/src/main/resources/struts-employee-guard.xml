@@ -79,6 +79,11 @@
                 class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="assignments">
             <result name="project">/struts/employee-guard/operator/assignments/project/project.jsp</result>
         </action>
+
+        <!-- -->
+        <action name="contractor/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
+            <result name="show">/struts/blank.jsp</result>
+        </action>
     </package>
 
     <!-- Contractor -->
