@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
@@ -28,6 +29,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     private AccountSkillEmployeeService accountSkillEmployeeService;
     @Autowired
     private EmployeeService employeeService;
+	@Autowired
+	private SkillService skillService;
     @Autowired
     private SkillUsageLocator skillUsageLocator;
     @Autowired
@@ -115,32 +118,38 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
     }
 
     public String role() {
-        role = roleService.getRole(id);
+        role = roleService.getRole(id);       // corporate role id
         site = accountService.getAccountById(siteId);
         assignmentMatrix = buildRoleAssignmentMatrix(role, site);
 
         return "role";
     }
 
-    private ContractorEmployeeRoleAssignmentMatrix buildRoleAssignmentMatrix(final Role role, final AccountModel site) {
+    private ContractorEmployeeRoleAssignmentMatrix buildRoleAssignmentMatrix(final Role corporateRole, final AccountModel site) {
         int contractorId = permissions.getAccountId();
 
         List<Employee> employees = employeeService.getEmployeesForAccount(contractorId);
-        List<ContractorEmployeeRoleAssignment> assignments = buildContractorEmployeeRoleAssignments(contractorId, employees, role, site);
+        List<ContractorEmployeeRoleAssignment> assignments = buildContractorEmployeeRoleAssignments(contractorId,
+				employees, corporateRole, site);
         Collections.sort(assignments);
 
         List<Employee> employeesAssignedToSite = employeeService.getEmployeesAssignedToSite(contractorId, site.getId());
         Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
-        List<AccountSkill> roleSkills = ExtractorUtil.extractList(role.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
-        Collections.sort(roleSkills);
+        List<AccountSkill> roleSkills = ExtractorUtil.extractList(corporateRole.getSkills(),
+				AccountSkillRole.SKILL_EXTRACTOR);
+		roleSkills.addAll(skillService.getRequiredSkills(site.getId()));
+		roleSkills.addAll(skillService.getRequiredSkills(corporateRole.getAccountId()));
+		roleSkills = ListUtil.removeDuplicatesAndSort(roleSkills);
 
         return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
                 .create(employeesAssignedToSite.size(), roleSkills, roleCounts, assignments);
     }
 
-    private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(
-            final int contractorId, final List<Employee> employees, final Role role, final AccountModel site) {
+    private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(final int contractorId,
+																						  final List<Employee> employees,
+																						  final Role role,
+																						  final AccountModel site) {
         Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
         Map<Employee, Set<AccountSkillEmployee>> employeeSkills =
                 accountSkillEmployeeService.getSkillMapForAccountAndRole(contractorId, role.getId());
