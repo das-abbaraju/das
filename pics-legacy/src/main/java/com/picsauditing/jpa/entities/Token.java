@@ -16,6 +16,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.model.i18n.TranslatableString;
 
+import java.util.Locale;
+
 @Entity
 @Table(name = "token")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
@@ -46,12 +48,12 @@ public class Token implements Translatable {
 	}
 
 	@Transient
-	public String getVelocityCode() {
+	public String getVelocityCode(Locale locale) {
 		if (velocityCode != null) {
 			return velocityCode;
 		}
 
-		return new TranslatableString(getI18nKey("velocityCode")).toTranslatedString();
+		return new TranslatableString(getI18nKey("velocityCode")).toTranslatedString(locale);
 	}
 
 	public void setVelocityCode(String velocityCode) {

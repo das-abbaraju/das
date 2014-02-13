@@ -28,11 +28,16 @@ public class EmailBuilderTest {
 	private ContractorAccount contractorAccount;
 	@Mock
 	private User user;
+    @Mock
+    private Token token;
 
 	@Before
 	public void setUp() throws Exception {
 		builder = new EmailBuilder();
 		MockitoAnnotations.initMocks(this);
+        ArrayList<Token> picsTags = new ArrayList<>();
+        picsTags.add(token);
+        Whitebox.setInternalState(builder, "picsTags", picsTags);
 	}
 
 	@Test
@@ -157,7 +162,17 @@ public class EmailBuilderTest {
 		builder.build();
 	}
 
-	private EmailTemplate buildEmailTemplateWithABadSubject() {
+    @Test
+    public void testConvertPicsTagsToVelocity() throws Exception {
+        when(token.getName()).thenReturn("PicsSignature");
+        when(token.getVelocityCode(Locale.ENGLISH)).thenReturn("I am English");
+
+        String text = Whitebox.invokeMethod(builder, "convertPicsTagsToVelocity", "<PicsSignature>", true, Locale.ENGLISH);
+
+        assertEquals("I am English", text);
+    }
+
+    private EmailTemplate buildEmailTemplateWithABadSubject() {
 		EmailTemplate template = new EmailTemplate();
 		template.setId(10);
 		template.setSubject(VelocityAdaptorTest.EmailTemplate_107_translatedBody_sv);
