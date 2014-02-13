@@ -37,7 +37,6 @@ public class SiteAssignmentModelFactory {
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignments =
 				buildEmployeeSiteAssignments(employeeAccounts, employeeSkills, employeeRoles);
-		Collections.sort(employeeSiteAssignments);
 
 		return create(employeeSiteAssignments, roleCounts);
 	}
