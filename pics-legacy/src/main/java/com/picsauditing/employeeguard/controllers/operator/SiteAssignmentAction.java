@@ -11,6 +11,7 @@ import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
@@ -116,7 +117,9 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				corporateRole);
 
 		List<AccountSkill> skills = skillService.getSkillsForRole(corporateRole);
-		Collections.sort(skills);
+		skills.addAll(skillService.getRequiredSkills(siteId));
+		skills.addAll(skillService.getRequiredSkills(corporateRole.getAccountId()));
+		skills = ListUtil.removeDuplicatesAndSort(skills);
 
 		Table<Employee, AccountSkill, AccountSkillEmployee> accountSkillEmployees =
 				accountSkillEmployeeService.buildTable(employeesAssignedToRole, skills);
