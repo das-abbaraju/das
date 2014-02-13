@@ -210,7 +210,7 @@ public class FeeService {
             if (auditType == null)
                 continue;
 
-            if (hasAuditGUARD(auditType, isLinkedToSuncor))
+            if (isChargedForAuditGUARD(auditType, isLinkedToSuncor))
                 feeClasses.add(FeeClass.AuditGUARD);
 
             if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
@@ -242,8 +242,15 @@ public class FeeService {
         calculateUpgradeDate(contractor, currentBillingStatus);
     }
 
-    private boolean hasAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
-        return auditType.isAlwaysBilledForAuditGUARD() || (auditType.isIec() && linkedToSuncor);
+    private boolean isChargedForAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
+        if (auditType.isAlwaysBilledForAuditGUARD()) {
+            return true;
+        }
+
+        if (auditType.isIec() && linkedToSuncor) {
+            return true;
+        }
+        return false;
     }
 
     // TODO: THIS IS TO BE REMOVED BEFORE 2015
