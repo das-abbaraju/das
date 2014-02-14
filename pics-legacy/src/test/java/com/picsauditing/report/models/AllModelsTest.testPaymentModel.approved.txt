@@ -37,6 +37,7 @@ ContractorRenew
 ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
+ContractorTradeSafetyRisk
 ContractorTransportationRisk
 PaymentAmountApplied
 PaymentCcNumber

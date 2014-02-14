@@ -2,10 +2,7 @@ package com.picsauditing.actions.trades;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.TradeDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,6 +50,8 @@ public class ContractorTradeActionTest extends PicsActionTest {
         when(conTrade2.getTrade()).thenReturn(trade);
         when(trade.getId()).thenReturn(1111);
         when(trade.getContractorCount()).thenReturn(1);
+        when(trade.getSafetyRiskI()).thenReturn(LowMedHigh.High);
+        when(trade.getSafetySensitiveI()).thenReturn(YesNo.Yes);
         when(contractorAccount.getTrades()).thenReturn(contractorTrades);
 	}
 
@@ -67,6 +66,7 @@ public class ContractorTradeActionTest extends PicsActionTest {
     public void testSaveTradeAjax_NullTrade() {
         contractorTradeAction.setTrade(newConTrade);
 
+        when(contractorAccount.getTradeSafetyRisk()).thenReturn(LowMedHigh.None);
         when(trade.getSafetySensitiveI()).thenReturn(null);
 
         contractorTradeAction.saveTradeAjax();
@@ -76,6 +76,8 @@ public class ContractorTradeActionTest extends PicsActionTest {
     public void testSaveTradeAjax_UpdateSafetySensitivity() {
         contractorTradeAction.setTrade(newConTrade);
 
+        when(contractorAccount.getTradeSafetyRisk()).thenReturn(LowMedHigh.None);
+        when(contractorAccount.isTradeSafetySensitive()).thenReturn(true);
         when(trade.getSafetySensitiveI()).thenReturn(YesNo.Yes);
 
         contractorTradeAction.saveTradeAjax();

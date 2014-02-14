@@ -57,6 +57,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private int payingFacilities;
 	private User auditor;
 	private User recommendedCsr;
+    private boolean tradeSafetySensitive;
+    private LowMedHigh tradeSafetyRisk = LowMedHigh.None;
     private boolean safetySensitive;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
 	private Date safetyRiskVerified;
@@ -346,6 +348,26 @@ public class ContractorAccount extends Account implements JSONable {
 			setTransportationRisk(LowMedHigh.None);
 		}
 	}
+
+    @Column(name = "tradeSafetySensitive", nullable = false)
+    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Average, requiredPermissions = OpPerms.RiskRank)
+    public boolean isTradeSafetySensitive() {
+        return tradeSafetySensitive;
+    }
+
+    public void setTradeSafetySensitive(boolean tradeSafetySensitive) {
+        this.tradeSafetySensitive = tradeSafetySensitive;
+    }
+
+    @Column(name = "tradeSafetyRisk", nullable = false)
+    @ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllContractors)
+    public LowMedHigh getTradeSafetyRisk() {
+        return tradeSafetyRisk;
+    }
+
+    public void setTradeSafetyRisk(LowMedHigh tradeSafetyRisk) {
+        this.tradeSafetyRisk = tradeSafetyRisk;
+    }
 
     @Column(name = "safetySensitive", nullable = false)
     @ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
