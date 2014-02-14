@@ -16,6 +16,6 @@
     </p>
     
     <p>
-        If you believe this was caused by a bug on our website, then please <a href="/Contact.action" target="_blank">let us know</a>.
+        If you believe this was caused by a bug on our website, then please <a href="/ContactUs.action" target="_blank">let us know</a>.
     </p>
 </div>
