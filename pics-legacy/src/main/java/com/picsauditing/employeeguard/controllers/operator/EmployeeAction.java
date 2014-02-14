@@ -4,11 +4,11 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.RoleService;
-import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.viewmodel.employee.EmployeeModel;
 import com.picsauditing.employeeguard.viewmodel.employee.EmployeeProjectAndRoleStatus;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class EmployeeAction extends PicsRestActionSupport {
 
+	@Autowired
+	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -27,15 +29,19 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private int contractorId;
 
+	private EmployeeModel employee;
 	private EmployeeProjectAndRoleStatus employeeProjectAndRoleStatus;
 
 	public String show() {
-		Employee employee = employeeService.findEmployee(id, contractorId);
+		Employee employeeEntity = employeeService.findEmployee(id, contractorId);
 		Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(permissions.getAccountId());
 		List<AccountSkill> siteRequiredSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
 
 		employeeProjectAndRoleStatus = statusCalculatorService.getEmployeeStatusesForProjectsAndJobRoles(
-				employee, siteToCorporateRoles, siteRequiredSkills);
+				employeeEntity, siteToCorporateRoles, siteRequiredSkills);
+
+		Map<Integer, AccountModel> contractors = accountService.getContractorsForEmployee(employeeEntity);
+		employee = ViewModelFactory.getEmployeeModelFactory().create(employeeEntity, contractors);
 
 		return SHOW;
 	}
@@ -46,6 +52,10 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	public void setContractorId(int contractorId) {
 		this.contractorId = contractorId;
+	}
+
+	public EmployeeModel getEmployee() {
+		return employee;
 	}
 
 	public EmployeeProjectAndRoleStatus getEmployeeProjectAndRoleStatus() {

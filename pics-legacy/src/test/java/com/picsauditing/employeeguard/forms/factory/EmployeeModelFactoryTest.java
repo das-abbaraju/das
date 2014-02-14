@@ -41,9 +41,26 @@ public class EmployeeModelFactoryTest {
 
 	@Test
 	public void testCreate_NullEmployee() throws Exception {
-		EmployeeModel employeeModel = employeeModelFactory.create(null);
+		EmployeeModel employeeModel = employeeModelFactory.create(null, null);
 
 		assertNull(employeeModel);
+	}
+
+	@Test
+	public void testCreate_EmployeeAndAccountModel() throws Exception {
+		AccountModel contractor1 = new AccountModel.Builder().id(CONTRACTOR_ID_1).name(CONTRACTOR_NAME_1).build();
+		Map<Integer, AccountModel> contractorMap = new HashMap<>();
+		contractorMap.put(CONTRACTOR_ID_1, contractor1);
+
+		when(employee1.getAccountId()).thenReturn(CONTRACTOR_ID_1);
+		when(employee1.getName()).thenReturn(PROFILE_NAME);
+
+		EmployeeModel employeeModel = employeeModelFactory.create(employee1, contractorMap);
+
+		assertNotNull(employeeModel);
+		assertEquals(PROFILE_NAME, employeeModel.getName());
+		assertEquals(1, employeeModel.getCompanyNames().size());
+		assertTrue(employeeModel.getCompanyNames().contains(CONTRACTOR_NAME_1));
 	}
 
 	@Test
@@ -61,7 +78,7 @@ public class EmployeeModelFactoryTest {
 		when(profile.getEmployees()).thenReturn(Arrays.asList(employee1, employee2));
 		when(profile.getName()).thenReturn(PROFILE_NAME);
 
-		EmployeeModel employeeModel = employeeModelFactory.create(employee1);
+		EmployeeModel employeeModel = employeeModelFactory.create(employee1, contractorMap);
 
 		assertNotNull(employeeModel);
 		assertEquals(PROFILE_NAME, employeeModel.getName());
