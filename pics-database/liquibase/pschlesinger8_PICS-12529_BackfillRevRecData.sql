@@ -5,15 +5,14 @@
 --  --	Activation invoices
 --	startDate := invoice creation date
 --	endDate := startDate plus 1 year
-UPDATE	invoice_item
-,	invoice
-SET
-	invoice_item.revenueStartDate	= DATE(invoice.creationDate)
-,	invoice_item.revenueFinishDate	= DATE(DATE_ADD(invoice.creationDate, INTERVAL 1 YEAR))
-WHERE	1=1
-AND	invoice.invoiceType 	= "Activation"
-AND	invoice.id 	= invoice_item.invoiceID
-;
+UPDATE	invoice
+JOIN invoice_item ON invoice.id = invoice_item.invoiceID
+SET invoice_item.revenueStartDate	= DATE(invoice.creationDate)
+,	invoice_item.revenueFinishDate	= DATE(DATE_SUB(DATE_ADD(invoice.creationDate, INTERVAL 1 YEAR),INTERVAL 1 DAY))
+WHERE	invoice.invoiceType 	= "Activation"
+AND invoice.creationDate >= '2013-12-01';
+
+
 --	Renewal invoices
 --	startDate := invoice creation date plus 1 month
 --	endDate := startDate plus 1 year
@@ -34,36 +33,25 @@ AND	invoice.id 	= invoice_item.invoiceID
 DROP TEMPORARY TABLE IF EXISTS tmp;
 CREATE TEMPORARY TABLE tmp
 AS
-SELECT
-	invoice.id	invoiceID
+SELECT invoice.id	invoiceID
 ,	recentInvoice.invoiceID	recentInvoiceID
 ,	recentInvoice.itemID	recentItemID
 ,	DATE(Invoice.creationDate) 	startDate
 ,	DATE(MAX(recentInvoice.endDate))	endDate
-FROM
-	invoice
-JOIN
-(
-	SELECT
-		invoice.creationDate	startDate
+FROM invoice
+JOIN (SELECT invoice.creationDate	startDate
 	,	invoice_item.revenueFinishDate 	endDate
 	,	invoice_item.id	itemID
 	,	invoice.id	invoiceID
 	,	invoice.accountID
-	FROM
-		invoice
-	JOIN	invoice_item
-	ON	invoice_item.invoiceID	= invoice.id
-	WHERE	1=1
-	AND	invoice.invoiceType	IN ("Renewal","Activation")
-	ORDER BY
-		invoice.creationDate	DESC
-)	AS 	recentInvoice
-ON 	recentInvoice.accountID 	= invoice.accountID
-WHERE	1=1
-AND	invoice.invoiceType	IN ("Upgrade","LateFee","OtherFees")
-GROUP BY
-	invoice.id
+	FROM invoice
+	JOIN	invoice_item ON	invoice_item.invoiceID	= invoice.id
+	WHERE	invoice.invoiceType	IN ("Renewal","Activation")
+	AND invoice.status != 'Void'
+ORDER BY invoice.creationDate	DESC)	AS recentInvoice ON recentInvoice.accountID = invoice.accountID AND recentInvoice.startDate < invoice.creationDate
+WHERE	invoice.invoiceType	IN ("Upgrade","LateFee","OtherFees")
+AND invoice.creationDate >= '2013-12-01'
+GROUP BY invoice.id
 ;
 
 -- 	Update the start and end dates
@@ -77,4 +65,4 @@ WHERE	1=1
 AND	invoice.id 	= invoice_item.invoiceID
 AND 	invoice.id	= tmp.invoiceID
 AND	invoice.invoiceType	IN ("Upgrade","LateFee","OtherFees")	-- Technically not needed. Used here for clarity.
-;
+AND invoice.creationDate >= '2013-12-01';
