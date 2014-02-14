@@ -218,7 +218,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		tradeDAO.remove(trade);
 
 		if (contractor.getTrades().size() > 0) {
-			contractor.setTradesUpdated(new Date());
+            updateTradeSafetyRiskSensitive();
+            contractor.setTradesUpdated(new Date());
 			contractorAccountDao.save(contractor);
 		}
 
