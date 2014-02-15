@@ -12,7 +12,7 @@
 <h1>Page Not Found</h1>
 <div id="error">We could not find the page you were trying access.
 Please check the URL and try again. If you believe this was caused by a
-bug on our website, then please let <a href="/ContactUs.action">us
+bug on our website, then please let <a href="/Contact.action">us
 know</a>.</div>
 
 <p>

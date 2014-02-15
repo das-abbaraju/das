@@ -428,7 +428,7 @@ String help_link_text = translationService.getText("Header.HelpCenter", locale);
 		<div id="footercontent">
 			<a href="http://www.picsauditing.com/" class="footer"><%=translationService.getText("global.PICSCopyright", locale)%>
 			</a> |
-			<a href="ContactUs.action" class="footer"><%=translationService.getText("Footer.Contact", locale)%>
+			<a href="Contact.action" class="footer"><%=translationService.getText("Footer.Contact", locale)%>
 			</a> |
 			<a href="PrivacyPolicy.action" rel="facebox" class="footer"><%=translationService.getText("Footer.Privacy", locale)%>
 			</a>
