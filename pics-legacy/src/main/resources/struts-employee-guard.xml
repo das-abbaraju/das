@@ -82,7 +82,7 @@
 
         <!-- -->
         <action name="contractor/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
-            <result name="show">/struts/blank.jsp</result>
+            <result name="show">/struts/employee-guard/operator/employee/show.jsp</result>
         </action>
     </package>
 
