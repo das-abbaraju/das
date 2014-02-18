@@ -60,7 +60,17 @@
                 <s:iterator value="operatorProjectRoleAssignment.employeeProjectRoleAssignments" var="operator_project_employee">
                     <tr class="assigned">
                         <td>${operator_project_employee.contractorName}</td>
-                        <td>${operator_project_employee.employeeName}</td>
+                        <td>
+                            <s:url action="{siteId}/employee/{id}" var="employee_liveID">
+                                <s:param name="siteId">
+                                    ${permissions.accountId}
+                                </s:param>
+                                <s:param name="id">
+                                    ${operator_project_employee.employeeId}
+                                </s:param>
+                            </s:url>
+                            <a href="${employee_liveID}">${operator_project_employee.employeeName}</a>
+                        </td>
                         <s:iterator value="#operator_project_employee.skillStatuses" var="employee_skill_status">
                             <s:if test="#employee_skill_status.expired">
                                 <s:set var="skill_icon">icon-minus-sign-alt</s:set>

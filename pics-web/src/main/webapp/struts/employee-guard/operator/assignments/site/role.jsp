@@ -81,7 +81,17 @@
                 <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">
                     <tr>
                         <td>${employee_site_assignment.accountName}</td>
-                        <td>${employee_site_assignment.employeeName}</td>
+                        <td>
+                            <s:url action="{siteId}/employee/{id}" var="employee_liveID">
+                                <s:param name="siteId">
+                                    ${permissions.accountId}
+                                </s:param>
+                                <s:param name="id">
+                                    ${employee_site_assignment.employeeId}
+                                </s:param>
+                            </s:url>
+                            <a href="${employee_liveID}">${employee_site_assignment.employeeName}</a>
+                        </td>
                         <td>${employee_site_assignment.employeeTitle}</td>
                         <s:iterator value="#employee_site_assignment.skillStatuses" var="employee_skill_status">
                             <s:if test="#employee_skill_status.expired">
