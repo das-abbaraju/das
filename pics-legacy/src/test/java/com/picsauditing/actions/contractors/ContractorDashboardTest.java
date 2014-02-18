@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -39,6 +40,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 
+import javax.swing.text.EditorKit;
+
 public class ContractorDashboardTest extends PicsTranslationTest {
 	// NOTE: when you need Struts/Spring stuff do not use PowerMockRunner.
 	// Instead, extend PicsActionTest and take a look at any of its other
@@ -66,6 +69,10 @@ public class ContractorDashboardTest extends PicsTranslationTest {
 	private Permissions operatorPermissions1;
 	@Mock
 	private Permissions operatorPermissions2;
+    @Mock
+    private Permissions perm;
+    @Mock
+    private ContractorAudit audit;
 
 	@Before
 	public void setUp() throws Exception {
@@ -88,7 +95,71 @@ public class ContractorDashboardTest extends PicsTranslationTest {
 		permissions = EntityFactory.makePermission();
 	}
 
-	@Test
+    @Test
+    public void canSeeAudit_NoVisibleCaos() throws Exception {
+        when(audit.hasOnlyInvisibleCaos()).thenReturn(true);
+        Boolean result = Whitebox.invokeMethod(dashboard, "canSeeAudit", audit);
+        assertFalse(result);
+    }
+
+    @Test
+    public void canSeeAudit_CannotSeeAuditType() throws Exception {
+        Whitebox.setInternalState(dashboard, "permissions", perm);
+        AuditType auditType = EntityFactory.makeAuditType(100);
+        when(audit.getAuditType()).thenReturn(auditType);
+        when(audit.hasOnlyInvisibleCaos()).thenReturn(false);
+        when(perm.canSeeAudit(auditType)).thenReturn(false);
+        Boolean result = Whitebox.invokeMethod(dashboard, "canSeeAudit", audit);
+        assertFalse(result);
+    }
+
+    @Test
+    public void canSeeAudit_NonParticipatingOperator() throws Exception {
+        Whitebox.setInternalState(dashboard, "permissions", perm);
+        AuditType auditType = EntityFactory.makeAuditType(100);
+        when(audit.getAuditType()).thenReturn(auditType);
+        when(audit.hasOnlyInvisibleCaos()).thenReturn(false);
+        when(perm.canSeeAudit(auditType)).thenReturn(true);
+        when(perm.isOperatorCorporate()).thenReturn(true);
+        when(perm.getAccountId()).thenReturn(operator.getId());
+
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setOperator(EntityFactory.makeOperator());
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        caop.setOperator(EntityFactory.makeOperator());
+        cao.getCaoPermissions().add(caop);
+        List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+        operators.add(cao);
+        when(audit.getOperators()).thenReturn(operators);
+
+        Boolean result = Whitebox.invokeMethod(dashboard, "canSeeAudit", audit);
+        assertFalse(result);
+    }
+
+    @Test
+    public void canSeeAudit_ParticipatingOperator() throws Exception {
+        Whitebox.setInternalState(dashboard, "permissions", perm);
+        AuditType auditType = EntityFactory.makeAuditType(100);
+        when(audit.getAuditType()).thenReturn(auditType);
+        when(audit.hasOnlyInvisibleCaos()).thenReturn(false);
+        when(perm.canSeeAudit(auditType)).thenReturn(true);
+        when(perm.isOperatorCorporate()).thenReturn(true);
+        when(perm.getAccountId()).thenReturn(operator.getId());
+
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setOperator(operator);
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        caop.setOperator(operator);
+        cao.getCaoPermissions().add(caop);
+        List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+        operators.add(cao);
+        when(audit.getOperators()).thenReturn(operators);
+
+        Boolean result = Whitebox.invokeMethod(dashboard, "canSeeAudit", audit);
+        assertTrue(result);
+    }
+
+    @Test
 	public void testFindCorporateOverrides() throws Exception {
 		Calendar date = Calendar.getInstance();
 
