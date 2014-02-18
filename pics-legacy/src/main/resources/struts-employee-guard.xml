@@ -230,8 +230,15 @@
         <!-- Profile -->
         <action name="profile" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction">
             <result name="show">/struts/employee-guard/employee/employee/show.jsp</result>
-            <result name="photo" type="stream"></result>
             <result name="personal-form">/struts/employee-guard/employee/employee/_personal-form.jsp</result>
+        </action>
+
+        <action name="employee-photo" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="employeePhoto">
+            <result name="photo" type="stream"></result>
+        </action>
+
+        <action name="profile-photo" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="profilePhoto">
+            <result name="photo" type="stream"></result>
         </action>
 
         <action name="live-id" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction"
