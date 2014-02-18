@@ -29,12 +29,9 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Employee: Peter Venkman</s:param>
-    <s:param name="breadcrumb_id">
-        ${id}
-    </s:param>
-    <s:param name="breadcrumb_name">
-        Peter Venkman
+    <s:param name="title">Live ID</s:param>
+    <s:param name="breadcrumbs">
+        false
     </s:param>
 </s:include>
 
