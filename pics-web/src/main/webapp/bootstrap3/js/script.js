@@ -13803,7 +13803,7 @@ PICS.define('employee-guard.Assignment', {
             is_assigned;
 
         function init() {
-            $('.table-assignment').on('click', 'tr', onAssignmentRowClick);
+            $('.table-assignment:not(.view-only)').on('click', 'tr', onAssignmentRowClick);
             $('.table-assignment a').on('click', function (event) {
                 event.stopPropagation();
             });
