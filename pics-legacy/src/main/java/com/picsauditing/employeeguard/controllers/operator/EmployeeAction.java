@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
@@ -48,8 +49,9 @@ public class EmployeeAction extends PicsRestActionSupport {
 	}
 
 	private EmployeeNav getEmployeeNav(final Employee employeeEntity) {
-		Map<Role, SkillStatus> roleOverallStatusMap = getRoleSkillStatusMap(employeeEntity);
-		Map<Project, SkillStatus> projectOverallStatusMap = getProjectSkillStatusMap(employeeEntity);
+		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employeeEntity);
+		Map<Role, SkillStatus> roleOverallStatusMap = getRoleSkillStatusMap(employeeEntity, projectRoleMap);
+		Map<Project, SkillStatus> projectOverallStatusMap = getProjectSkillStatusMap(employeeEntity, projectRoleMap);
 		SkillStatus overallStatus = getOverallSkillStatus(roleOverallStatusMap, projectOverallStatusMap);
 
 		return ViewModelFactory.getEmployeeNavFactory().create(overallStatus,
@@ -57,8 +59,10 @@ public class EmployeeAction extends PicsRestActionSupport {
 				ViewModelFactory.getNavItemFactory().createForProjects(projectOverallStatusMap));
 	}
 
-	private Map<Role, SkillStatus> getRoleSkillStatusMap(final Employee employeeEntity) {
+	private Map<Role, SkillStatus> getRoleSkillStatusMap(final Employee employeeEntity,
+														 final Map<Project, Set<Role>> projectRoleMap) {
 		Set<Role> employeeRoles = roleService.getEmployeeRolesForSite(siteId, employeeEntity);
+		employeeRoles.addAll(Utilities.extractAndFlattenValuesFromMap(projectRoleMap));
 		Map<Role, List<AccountSkill>> roleSkillMap = skillService.getSkillsForRoles(siteId, employeeRoles);
 		Map<Role, List<SkillStatus>> roleSkillStatuses = statusCalculatorService
 				.getSkillStatusListPerEntity(employeeEntity, roleSkillMap);
@@ -66,8 +70,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 				.getOverallStatusPerEntity(roleSkillStatuses);
 	}
 
-	private Map<Project, SkillStatus> getProjectSkillStatusMap(final Employee employeeEntity) {
-		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employeeEntity);
+	private Map<Project, SkillStatus> getProjectSkillStatusMap(final Employee employeeEntity,
+															   final Map<Project, Set<Role>> projectRoleMap) {
 		Map<Project, List<AccountSkill>> projectSkillMap = skillService.getAllProjectSkillsForEmployee(siteId,
 				employeeEntity, projectRoleMap);
 		Map<Project, List<SkillStatus>> projectSkillStatuses = statusCalculatorService

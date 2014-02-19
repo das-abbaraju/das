@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.daos;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
 import java.util.Collection;
@@ -24,6 +25,10 @@ public class AccountSkillRoleDAO extends AbstractBaseEntityDAO<AccountSkillRole>
     }
 
 	public List<AccountSkillRole> findSkillsByRoles(final Collection<Role> roles) {
+		if (CollectionUtils.isEmpty(roles)) {
+			return Collections.emptyList();
+		}
+
 		TypedQuery query = em.createQuery("SELECT asr FROM AccountSkillRole asr " +
 				"JOIN asr.role AS r " +
 				"WHERE r IN (:roles)", AccountSkillRole.class);

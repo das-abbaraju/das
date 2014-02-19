@@ -18,7 +18,7 @@ public class EmployeeNav {
 		this.roles = CollectionUtils.isEmpty(builder.roles)
 				? Collections.<NavItem>emptyList() : builder.roles;
 
-		this.projects = CollectionUtils.isEmpty(builder.roles)
+		this.projects = CollectionUtils.isEmpty(builder.projects)
 				? Collections.<NavItem>emptyList() : builder.projects;
 	}
 

@@ -43,6 +43,7 @@ public class NavItemFactory {
 		return new NavItem.Builder()
 				.id(role.getId())
 				.name(role.getName())
+				.statusRollup(skillStatus)
 				.build();
 	}
 
@@ -50,6 +51,7 @@ public class NavItemFactory {
 		return new NavItem.Builder()
 				.id(project.getId())
 				.name(project.getName())
+				.statusRollup(skillStatus)
 				.build();
 	}
 }

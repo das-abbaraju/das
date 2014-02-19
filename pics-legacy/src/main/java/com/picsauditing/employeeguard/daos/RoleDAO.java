@@ -148,7 +148,7 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 	}
 
 	public List<Role> findSiteRolesForEmployee(final int siteId, final Employee employee) {
-		TypedQuery<Role> query = em.createQuery("FROM Role r " +
+		TypedQuery<Role> query = em.createQuery("SELECT r FROM Role r " +
 				"JOIN r.employees re " +
 				"JOIN re.employee e " +
 				"WHERE r.accountId = :siteId AND e = :employee", Role.class);
