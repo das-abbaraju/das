@@ -4,9 +4,13 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.external.BillingService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.util.Extractor;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -274,5 +278,32 @@ public class AccountService {
 
 	private boolean doesContractorStillNeedEmployeeGuard(final Account account) {
 		return productSubscriptionService.hasEmployeeGUARD(account);
+	}
+
+	public Map<Integer, AccountModel> getContractorsForEmployee(final Employee employee) {
+		if (employee == null) {
+			return Collections.emptyMap();
+		}
+
+		if (employee.getProfile() != null) {
+			return getContractorsForProfile(employee.getProfile());
+		}
+
+		return getIdToAccountModelMap(Arrays.asList(employee.getAccountId()));
+	}
+
+	public Map<Integer, AccountModel> getContractorsForProfile(final Profile profile) {
+		if (profile == null) {
+			return Collections.emptyMap();
+		}
+
+		List<Integer> contractorIds = ExtractorUtil.extractList(profile.getEmployees(), new Extractor<Employee, Integer>() {
+			@Override
+			public Integer extract(Employee employee) {
+				return employee.getAccountId();
+			}
+		});
+
+		return getIdToAccountModelMap(contractorIds);
 	}
 }

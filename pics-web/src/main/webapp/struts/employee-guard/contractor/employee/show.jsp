@@ -48,7 +48,10 @@
             <s:url action="employee" method="edit" var="photo_edit_url">
                 <s:param name="id">${employee.id}</s:param>
             </s:url>
-            <s:url action="employee" method="photo" var="image_url">
+            <s:url action="contractor/{contractorId}/employee-photo/{id}" namespace="/employee-guard/employee" var="image_url">
+                <s:param name="contractorId">
+                    ${employee.accountId}
+                </s:param>
                 <s:param name="id">
                     ${id}
                 </s:param>

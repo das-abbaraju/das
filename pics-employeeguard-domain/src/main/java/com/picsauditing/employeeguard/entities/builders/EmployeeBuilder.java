@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.entities.builders;
 
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.entities.GroupEmployee;
+import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -87,6 +84,11 @@ public class EmployeeBuilder {
 
 		employee.getSkills().clear();
 		employee.setSkills(accountSkillEmployees);
+		return this;
+	}
+
+	public EmployeeBuilder profile(final Profile profile) {
+		employee.setProfile(profile);
 		return this;
 	}
 

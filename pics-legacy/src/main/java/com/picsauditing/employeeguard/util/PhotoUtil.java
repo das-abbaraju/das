@@ -1,7 +1,9 @@
 package com.picsauditing.employeeguard.util;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.employeeguard.entities.DocumentType;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.util.FileSystemAccessor;
 import com.picsauditing.util.Strings;
@@ -125,5 +127,29 @@ public class PhotoUtil {
 		}
 
 		return null;
+	}
+
+	public boolean photoExistsForEmployee(final Employee employee, final int accountId, final String directory) {
+		if (employee == null) {
+			return false;
+		}
+
+		File file = getPhotoForEmployee(employee, accountId, directory);
+		return file != null && file.exists();
+	}
+
+	public boolean photoExistsForProfile(final Profile profile, final String directory) {
+		if (profile == null) {
+			return false;
+		}
+
+		for (ProfileDocument profileDocument : profile.getDocuments()) {
+			if (profileDocument.getDocumentType() == DocumentType.Photo) {
+				File file = getPhotoForProfile(profileDocument, directory);
+				return file != null && file.exists();
+			}
+		}
+
+		return false;
 	}
 }

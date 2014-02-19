@@ -20,7 +20,7 @@
             <s:url action="profile" method="edit" var="photo_edit_url">
                 <s:param name="id">${profile.id}</s:param>
             </s:url>
-            <s:url action="profile" method="photo" var="image_url">
+            <s:url action="profile-photo" namespace="/employee-guard/employee" var="image_url">
                 <s:param name="id">
                     ${profile.id}
                 </s:param>
