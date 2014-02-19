@@ -18,12 +18,12 @@ public class EmployeeAction extends PicsRestActionSupport {
 	@Autowired
 	private EmployeeService employeeService;
 
-	private int contractorId;
+	private int siteId;
 
 	private EmployeeModel employee;
 
 	public String show() {
-		Employee employeeEntity = employeeService.findEmployee(id, contractorId);
+		Employee employeeEntity = employeeService.findEmployee(id);
 
 		Map<Integer, AccountModel> contractors = accountService.getContractorsForEmployee(employeeEntity);
 		employee = ViewModelFactory.getEmployeeModelFactory().create(employeeEntity, contractors);
@@ -31,12 +31,12 @@ public class EmployeeAction extends PicsRestActionSupport {
 		return SHOW;
 	}
 
-	public int getContractorId() {
-		return contractorId;
+	public int getSiteId() {
+		return siteId;
 	}
 
-	public void setContractorId(int contractorId) {
-		this.contractorId = contractorId;
+	public void setSiteId(int siteId) {
+		this.siteId = siteId;
 	}
 
 	public EmployeeModel getEmployee() {
