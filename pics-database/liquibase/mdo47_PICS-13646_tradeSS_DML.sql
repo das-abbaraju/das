@@ -1,14 +1,8 @@
 --liquibase formatted sql
 
---changeset mdo:46
+--changeset mdo:47
 --preConditions onFail MARK_RAN
 --onUpdateSQL IGNORE
-DROP VIEW IF EXISTS vwaccounttradesafetysensitivity;
-
-ALTER TABLE contractor_info
-  ADD COLUMN tradeSafetySensitive TINYINT(4) DEFAULT 0  NOT NULL AFTER insideSalesPriority,
-  ADD COLUMN tradeSafetyRisk TINYINT(3) DEFAULT 2  NULL AFTER tradeSafetySensitive;
-
 DROP TABLE IF EXISTS temp_contractor_trade_ss;
 CREATE TABLE temp_contractor_trade_ss AS
 SELECT  contractor_trade.conID AS accountID, (CASE WHEN ISNULL(child.safetySensitive) THEN MAX(parent.safetySensitive) ELSE MAX(child.safetySensitive) END) AS tradeSafetySensitive, (CASE WHEN ISNULL(child.safetyRisk) THEN MAX(parent.safetyRisk) ELSE MAX(child.safetyRisk) END) AS tradeSafetyRisk
