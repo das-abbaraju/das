@@ -47,9 +47,10 @@ public abstract class SubscriptionBuilder {
 
         if (queue != null) {
             sender.sendNow(queue);
-            subscription.setLastSent(new Date());
-            subscriptionDAO.save(subscription);
         }
+        
+        subscription.setLastSent(new Date());
+        subscriptionDAO.save(subscription);
 
         tokens.clear();
     }
