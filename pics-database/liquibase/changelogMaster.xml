@@ -156,5 +156,6 @@
 	<include file="./liquibase/dalvarado7_us182_new_template_for_message_your_csr.sql"/>
     <include file="./liquibase/pschlesinger15_PICS12656_AddTempTablesForSapHistoricalBalances.sql"/>
     <include file="./liquibase/kchase25_PICS-14563_CleanUpSubscriptions.sql"/>
+    <include file="./liquibase/kchase26_PICS-14497_AMBestUpdate.sql"/>
 
 </databaseChangeLog>

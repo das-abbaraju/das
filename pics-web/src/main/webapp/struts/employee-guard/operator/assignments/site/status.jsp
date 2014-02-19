@@ -41,10 +41,9 @@
         </ul>
     </div>
 
-
     <s:if test="!siteAssignmentModel.employeeSiteAssignmentModels.isEmpty()">
         <div class="table-responsive col-md-9">
-            <table class="table table-striped table-condensed table-hover table-assignment">
+            <table class="table table-striped table-condensed table-hover table-assignment view-only">
                 <thead>
                     <tr>
                         <th>Company</th>
@@ -58,7 +57,17 @@
                     <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="site_assignment_employee">
                         <tr>
                             <td>${site_assignment_employee.accountName}</td>
-                            <td>${site_assignment_employee.employeeName}</td>
+                            <td>
+                                <s:url action="{siteId}/employee/{id}" var="employee_liveID">
+                                    <s:param name="siteId">
+                                        ${permissions.accountId}
+                                    </s:param>
+                                    <s:param name="id">
+                                        ${site_assignment_employee.employeeId}
+                                    </s:param>
+                                </s:url>
+                                <a href="${employee_liveID}">${site_assignment_employee.employeeName}</a>
+                            </td>
                             <s:if test="#site_assignment_employee.status.expired" >
                                 <s:set var="skill_icon">icon-minus-sign-alt</s:set>
                                 <s:set var="skill_status_class">danger</s:set>

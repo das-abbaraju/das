@@ -692,7 +692,7 @@ public class PicsMenu {
 	}
 
 	static public MenuComponent addSupportLink(MenuComponent menu) {
-		MenuComponent subMenu = menu.addChild(getText("menu.Support"), "ContactUs.action");
+		MenuComponent subMenu = menu.addChild(getText("menu.Support"), "Contact.action");
 		// We may want to add the Contact page as a child menu after we have
 		// more "Support" options
 		// subMenu.addChild(getTitle("Contact"), "Contact.action");

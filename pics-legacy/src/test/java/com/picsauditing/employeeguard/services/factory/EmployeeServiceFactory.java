@@ -2,6 +2,8 @@ package com.picsauditing.employeeguard.services.factory;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
+import com.picsauditing.employeeguard.entities.builders.ProfileDocumentBuilder;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
@@ -24,7 +26,19 @@ public class EmployeeServiceFactory {
 		Mockito.reset(employeeService);
 
 		Employee employee = new EmployeeBuilder().firstName("First").lastName("Last").slug("Slug").build();
-		List<Employee> employees = Arrays.asList(employee, new EmployeeBuilder().firstName("Second").lastName("Last").slug("Slug").build());
+		List<Employee> employees = Arrays.asList(employee,
+				new EmployeeBuilder()
+						.firstName("Second")
+						.lastName("Last")
+						.slug("Slug")
+						.profile(
+								new ProfileBuilder()
+										.id(1)
+										.documents(Arrays.asList(
+												new ProfileDocumentBuilder()
+														.build()))
+										.build())
+						.build());
 
 		when(employeeService.getEmployeesForAccount(anyInt())).thenReturn(employees);
 		when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(employee);

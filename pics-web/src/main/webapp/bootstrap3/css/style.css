@@ -12381,6 +12381,61 @@ body {
   background: transparent;
 }
 
+/* line 2, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page #side-navigation .nav > li > a {
+  padding-right: 15px;
+}
+
+/* line 7, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page #side-navigation .nav > li.active a {
+  padding-right: 14px;
+}
+
+/* line 13, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page .employee-info .name {
+  font-size: 40px;
+  font-weight: bold;
+  color: #454545;
+}
+
+/* line 19, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page .employee-info li {
+  line-height: 21px;
+}
+
+/* line 23, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page .employee-info .company {
+  font-size: 21px;
+  font-weight: bold;
+  color: #808285;
+}
+
+/* line 29, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page .employee-info .title {
+  font-size: 21px;
+  color: #808285;
+}
+
+/* line 34, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page .employee-info i {
+  font-size: 160px;
+}
+
+/* line 39, ../sass/pics/employee-guard/operator/employee/_employee.scss */
+
+.operator-employee-page .employee-info i.danger,
+.operator-employee-page .employee-info i.warning,
+.operator-employee-page .employee-info i.success {
+  background-color: transparent;
+}
+
 /* line 2, ../sass/pics/employee-guard/operator/role/_role.scss */
 
 .operator-role-projects dt {
@@ -13603,31 +13658,31 @@ body.modal-open,
 
 /* line 27, ../sass/pics/components/_navigation.scss */
 
-.nav-pills .nav-title {
-  display: block;
-  padding: 10px 15px 0 15px;
-  font-size: 12px;
-  color: #cccccc;
-  text-transform: uppercase;
-}
-
-/* line 35, ../sass/pics/components/_navigation.scss */
-
 .nav-pills a {
   font-size: 14px;
   color: #73bbe8;
 }
 
-/* line 39, ../sass/pics/components/_navigation.scss */
+/* line 31, ../sass/pics/components/_navigation.scss */
 
 .nav-pills a:hover {
   background-color: #f1f1f2;
 }
 
-/* line 44, ../sass/pics/components/_navigation.scss */
+/* line 36, ../sass/pics/components/_navigation.scss */
 
 .nav-pills i {
   margin-right: 6px;
+}
+
+/* line 41, ../sass/pics/components/_navigation.scss */
+
+.nav-title {
+  display: block;
+  padding: 10px 15px 0 15px;
+  font-size: 12px;
+  color: #cccccc;
+  text-transform: uppercase;
 }
 
 /* line 49, ../sass/pics/components/_navigation.scss */
@@ -13879,17 +13934,18 @@ ul.skill-nav a {
 #side-navigation .nav > li > a {
   display: block;
   padding: 5px 20px;
+  line-height: normal;
   color: #454545;
 }
 
-/* line 19, ../sass/pics/components/_side-navigation.scss */
+/* line 20, ../sass/pics/components/_side-navigation.scss */
 
 .sidenav .nav .nav,
 #side-navigation .nav .nav {
   display: none;
 }
 
-/* line 22, ../sass/pics/components/_side-navigation.scss */
+/* line 23, ../sass/pics/components/_side-navigation.scss */
 
 .sidenav .nav .nav li a,
 #side-navigation .nav .nav li a {
@@ -13899,7 +13955,7 @@ ul.skill-nav a {
   font-size: 90%;
 }
 
-/* line 30, ../sass/pics/components/_side-navigation.scss */
+/* line 31, ../sass/pics/components/_side-navigation.scss */
 
 .sidenav .nav > .active > ul,
 #side-navigation .nav > .active > ul {

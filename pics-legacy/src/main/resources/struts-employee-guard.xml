@@ -80,9 +80,9 @@
             <result name="project">/struts/employee-guard/operator/assignments/project/project.jsp</result>
         </action>
 
-        <!-- Operator view a Contractor Employee -->
+        <!-- Operator view of employee -->
         <action name="{siteId}/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
-            <result name="show">/struts/blank.jsp</result>
+            <result name="show">/struts/employee-guard/operator/employee/show.jsp</result>
         </action>
     </package>
 
@@ -230,8 +230,15 @@
         <!-- Profile -->
         <action name="profile" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction">
             <result name="show">/struts/employee-guard/employee/employee/show.jsp</result>
-            <result name="photo" type="stream"></result>
             <result name="personal-form">/struts/employee-guard/employee/employee/_personal-form.jsp</result>
+        </action>
+
+        <action name="contractor/{contractorId}/employee-photo/{id}" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="employeePhoto">
+            <result name="photo" type="stream"></result>
+        </action>
+
+        <action name="profile-photo" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="profilePhoto">
+            <result name="photo" type="stream"></result>
         </action>
 
         <action name="live-id" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction"

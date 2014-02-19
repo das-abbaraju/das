@@ -7,12 +7,25 @@ import java.util.List;
 public class EmployeeModel {
 
 	private final int id;
+	private final int accountId;
 	private final String name;
 	private final String title;
 	private final List<String> companyNames;
 
+	private EmployeeModel(Builder builder) {
+		this.id = builder.id;
+		this.accountId = builder.accountId;
+		this.name = builder.name;
+		this.title = builder.title;
+		this.companyNames = Utilities.unmodifiableList(builder.companyNames);
+	}
+
 	public int getId() {
 		return id;
+	}
+
+	public int getAccountId() {
+		return accountId;
 	}
 
 	public String getName() {
@@ -27,22 +40,21 @@ public class EmployeeModel {
 		return companyNames;
 	}
 
-	private EmployeeModel(Builder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
-		this.title = builder.title;
-		this.companyNames = Utilities.unmodifiableList(builder.companyNames);
-	}
-
 
 	public static class Builder {
 		private int id;
+		private int accountId;
 		private String name;
 		private String title;
 		private List<String> companyNames;
 
 		public Builder id(int id) {
 			this.id = id;
+			return this;
+		}
+
+		public Builder accountId(int accountId) {
+			this.accountId = accountId;
 			return this;
 		}
 

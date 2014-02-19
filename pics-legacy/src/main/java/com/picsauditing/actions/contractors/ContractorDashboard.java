@@ -260,8 +260,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		calculateEarliestIndividualFlagSummaries();
 
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
-			if (permissions.canSeeAudit(audit.getAuditType())
-					&& !audit.hasOnlyInvisibleCaos()) {
+			if (canSeeAudit(audit)) {
 				if (audit.getAuditType().getClassType().isPolicy() ||
 						audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE)
 					insureGUARD.add(audit);
@@ -283,7 +282,38 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	private void determineOshaTypesToDisplay() {
+    private boolean canSeeAudit(ContractorAudit audit) {
+        if (audit.hasOnlyInvisibleCaos()) {
+            return false;
+        }
+
+        if (!permissions.canSeeAudit(audit.getAuditType())) {
+            return false;
+        }
+
+        if (permissions.isOperatorCorporate()) {
+            Set<Integer> operators = permissions.getOperatorChildren();
+            operators.add(permissions.getAccountId());
+            operators.add(permissions.getTopAccountID());
+            operators.add(permissions.getPrimaryCorporateAccountID());
+
+            for (ContractorAuditOperator cao : audit.getOperators()) {
+                if (cao.isVisible()) {
+                    for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+                        if (operators.contains(caop.getOperator().getId())) {
+                            return true;
+                        }
+                    }
+                }
+
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    private void determineOshaTypesToDisplay() {
 		displayOsha = new HashMap<OshaType, Boolean>();
 
 		for (OshaType oshaType : OshaType.values()) {

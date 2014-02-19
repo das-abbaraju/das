@@ -48,7 +48,7 @@ public class EmployeeService {
 	@Autowired
 	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
-	public Employee find(final String id) {
+	public Employee findEmployee(final String id) {
 		return employeeDAO.find(NumberUtils.toInt(id));
 	}
 

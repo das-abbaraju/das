@@ -35,8 +35,9 @@ public class EmployeeAction extends PicsRestActionSupport {
 	private EmployeeModel employee;
 	private EmployeeNav employeeNav;
 
+
 	public String show() {
-		Employee employeeEntity = employeeService.find(id);
+		Employee employeeEntity = employeeService.findEmployee(id);
 
 		Map<Integer, AccountModel> contractors = accountService.getContractorsForEmployee(employeeEntity);
 		employee = ViewModelFactory.getEmployeeModelFactory().create(employeeEntity, contractors);

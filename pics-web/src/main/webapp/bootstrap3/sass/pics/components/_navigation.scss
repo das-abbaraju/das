@@ -24,14 +24,6 @@
 
     }
 
-    .nav-title {
-        color: $default_silver;
-        display: block;
-        font-size: 12px;
-        padding: 10px 15px 0px 15px;
-        text-transform: uppercase;
-    }
-
     a {
         color: $info_med;
         font-size: 14px;
@@ -44,6 +36,14 @@
     i {
         margin-right: 6px;
     }
+}
+
+.nav-title {
+    color: $default_silver;
+    display: block;
+    font-size: 12px;
+    padding: 10px 15px 0px 15px;
+    text-transform: uppercase;
 }
 
 .nav .nav-header {

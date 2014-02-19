@@ -65,23 +65,33 @@
 
     <s:if test="!siteAssignmentModel.employeeSiteAssignmentModels.isEmpty()">
         <div class="table-responsive col-md-9">
-            <table class="table table-striped table-condensed table-hover table-assignment">
+            <table class="table table-striped table-condensed table-hover table-assignment view-only">
                 <thead>
-                <tr>
-                    <th>Company</th>
-                    <th>Employee</th>
-                    <th>Title</th>
-                    <s:iterator value="siteAssignmentModel.skills" var="skill_info">
-                        <th class="text-center">${skill_info.name}</th>
-                    </s:iterator>
-                </tr>
+                    <tr>
+                        <th>Company</th>
+                        <th>Employee</th>
+                        <th>Title</th>
+                        <s:iterator value="siteAssignmentModel.skills" var="skill_info">
+                            <th class="text-center">${skill_info.name}</th>
+                        </s:iterator>
+                    </tr>
                 </thead>
 
                 <tbody>
                 <s:iterator value="siteAssignmentModel.employeeSiteAssignmentModels" var="employee_site_assignment">
                     <tr>
                         <td>${employee_site_assignment.accountName}</td>
-                        <td>${employee_site_assignment.employeeName}</td>
+                        <td>
+                            <s:url action="{siteId}/employee/{id}" var="employee_liveID">
+                                <s:param name="siteId">
+                                    ${permissions.accountId}
+                                </s:param>
+                                <s:param name="id">
+                                    ${employee_site_assignment.employeeId}
+                                </s:param>
+                            </s:url>
+                            <a href="${employee_liveID}">${employee_site_assignment.employeeName}</a>
+                        </td>
                         <td>${employee_site_assignment.employeeTitle}</td>
                         <s:iterator value="#employee_site_assignment.skillStatuses" var="employee_skill_status">
                             <s:if test="#employee_skill_status.expired">
@@ -101,7 +111,7 @@
                                 <s:set var="skill_status_class">success</s:set>
                             </s:else>
 
-                            <td class="${skill_status_class} skill-status-icon text-center">
+                            <td class="${skill_status_class} text-center">
                                 <i class="${skill_icon} icon-large"></i>
                             </td>
                         </s:iterator>

@@ -1,0 +1,27 @@
+#!/bin/bash
+cwd=`pwd`
+dirs="js v7 struts css images ie7 bootstrap3 decorators includes"
+if [[ -d $CATALINA_HOME/webapps/ROOT ]]; then
+	cd $CATALINA_HOME/webapps/ROOT/
+	for dir in $dirs
+		do
+			if [[ -L "$dir" ]] ;then 
+				echo "$dir is already set up"
+			elif [[ -d $dir ]] ;then
+				echo "$dir is directory, setting up symlink now"
+				rm -Rf $dir
+				ln -s ~/PICSORG/pics-web/src/main/webapp/${dir}
+				rm con_pricing.jsp
+				ln -s ~/PICSORG/pics-web/src/main/webapp/con_pricing.jsp
+			else
+				echo "$dir does not exist"
+				ln -s ~/PICSORG/pics-web/src/main/webapp/${dir}
+				rm con_pricing.jsp
+				ln -s ~/PICSORG/pics-web/src/main/webapp/con_pricing.jsp
+			fi
+		done
+	cd $cwd
+else
+	echo "There was a problem with Tomcat starting up and deploying the application,\n
+		please check the logs or use tcatStatus to see what's going on"
+fi
