@@ -107,13 +107,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				List<BasicDynaBean> queryList = db.select(query, true);
 				totalRows = db.getAllRows();
 
-				if (queryList != null && queryList.size() > 0)
-					fullList = getFullResults(queryList);
-				else {
-					queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
-					fullList = getFullResults(queryList);
-                    totalRows = db.getAllRows();
+				if (queryList == null || queryList.size() == 0) {
+                    String querySql = searchEngine.buildAccountSearch(permissions, terms);
+                    queryList = db.select(querySql, true);
 				}
+
+                fullList = getFullResults(queryList);
+                totalRows = fullList.size();
 
 				if (fullList == null)
 					return SUCCESS;
