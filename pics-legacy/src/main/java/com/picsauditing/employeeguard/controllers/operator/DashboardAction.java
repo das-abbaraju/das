@@ -35,7 +35,7 @@ public class DashboardAction extends PicsRestActionSupport {
 	/* pages */
 
 	public String index() {
-		requiredSkills = skillService.getRequiredSkills(permissions.getAccountId());
+		requiredSkills = skillService.getRequiredSkillsForSite(permissions.getAccountId());
 
 		if (permissions.isCorporate()) {
 			siteSkills = skillService.getSiteRequiredSkills(permissions.getAccountId());
@@ -49,7 +49,7 @@ public class DashboardAction extends PicsRestActionSupport {
 	public String editRequiredSkillsSection() {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
 		corporateSkills = skillService.getSkillsForAccounts(corporateIds);
-		requiredSkills = skillService.getRequiredSkills(permissions.getAccountId());
+		requiredSkills = skillService.getRequiredSkillsForSite(permissions.getAccountId());
 
 		Collections.sort(corporateSkills);
 		Collections.sort(requiredSkills);

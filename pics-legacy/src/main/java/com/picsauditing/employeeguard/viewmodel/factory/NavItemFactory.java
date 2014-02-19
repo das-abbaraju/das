@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.viewmodel.operator.factory;
+package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;

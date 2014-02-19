@@ -165,7 +165,7 @@ public class Utilities {
 	 * bottle neck when used on larger collections.
 	 */
 	public static <E> boolean collectionsAreEqual(Collection<E> collection1, Collection<E> collection2,
-	                                              Comparator<E> comparator) {
+												  Comparator<E> comparator) {
 		if (CollectionUtils.isEmpty(collection1) || CollectionUtils.isEmpty(collection2)) {
 			return false;
 		}
@@ -196,7 +196,7 @@ public class Utilities {
 	 * bottle neck when used on larger collections.
 	 */
 	public static <E extends Comparable<E>> boolean collectionsAreEqual(Collection<E> collection1,
-	                                                                    Collection<E> collection2) {
+																		Collection<E> collection2) {
 		Comparator<E> comparableComparator = new Comparator<E>() {
 
 			@Override
@@ -335,29 +335,29 @@ public class Utilities {
 		return map;
 	}
 
-    /**
-     * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
-     * from the implementation of MapConvertable<K, E>.
-     *
-     * @param entities
-     * @param mapConverter
-     * @param <K>          Object that represents the Key and must correctly implement the equals() and hashcode()
-     * @param <E>          Object that is some element/entity within the collection
-     * @return
-     */
-    public static <K, E> Map<K, Set<E>> convertToMapOfSets(Collection<E> entities, MapConvertable<K, E> mapConverter) {
-        if (CollectionUtils.isEmpty(entities)) {
-            return Collections.emptyMap();
-        }
+	/**
+	 * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
+	 * from the implementation of MapConvertable<K, E>.
+	 *
+	 * @param entities
+	 * @param mapConverter
+	 * @param <K>          Object that represents the Key and must correctly implement the equals() and hashcode()
+	 * @param <E>          Object that is some element/entity within the collection
+	 * @return
+	 */
+	public static <K, E> Map<K, Set<E>> convertToMapOfSets(Collection<E> entities, MapConvertable<K, E> mapConverter) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyMap();
+		}
 
-        Map<K, Set<E>> map = new HashMap<>();
-        for (E entity : entities) {
-            K key = mapConverter.getKey(entity);
-            addToMapOfKeyToSet(map, key, entity);
-        }
+		Map<K, Set<E>> map = new HashMap<>();
+		for (E entity : entities) {
+			K key = mapConverter.getKey(entity);
+			addToMapOfKeyToSet(map, key, entity);
+		}
 
-        return map;
-    }
+		return map;
+	}
 
 	public interface Identitifable<E, ID> {
 
@@ -396,7 +396,7 @@ public class Utilities {
 	 * @return
 	 */
 	public static <E, K, V> Map<K, Set<V>> convertToMapOfSets(final Collection<E> entities,
-	                                                          final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+															  final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -410,8 +410,33 @@ public class Utilities {
 		return map;
 	}
 
+	/**
+	 * Takes any collection of objects and returns a map of Key<K> -> List<E> where the Key is the value returned
+	 * from the implementation of MapConvertable<K, E>.
+	 *
+	 * @param entities
+	 * @param entityKeyValueConvertable
+	 * @param <K>                       Object that represents the Key and must correctly implement the equals() and hashcode()
+	 * @param <E>                       Object that is some element/entity within the collection
+	 * @return
+	 */
+	public static <E, K, V> Map<K, List<V>> convertToMapOfLists(final Collection<E> entities,
+																final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, List<V>> map = new HashMap<>();
+		for (E entity : entities) {
+			K key = entityKeyValueConvertable.getKey(entity);
+			addToMapOfKeyToList(map, key, entityKeyValueConvertable.getValue(entity));
+		}
+
+		return map;
+	}
+
 	public static <E, K, V> Map<K, V> convertToMap(final Collection<E> entities,
-	                                               final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+												   final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -451,6 +476,14 @@ public class Utilities {
 		map.get(key).addAll(value);
 	}
 
+	public static <K, V> void addAllToMapOfKeyToList(Map<K, List<V>> map, K key, Collection<V> value) {
+		if (!map.containsKey(key)) {
+			map.put(key, new ArrayList<V>());
+		}
+
+		map.get(key).addAll(value);
+	}
+
 	public static <K, V> Map<V, List<K>> invertMapOfList(Map<K, List<V>> map) {
 		Map<V, List<K>> invertedMap = new HashMap<>();
 
@@ -463,17 +496,17 @@ public class Utilities {
 		return invertedMap;
 	}
 
-    public static <K, V> Map<V, Set<K>> invertMapOfSet(Map<K, Set<V>> map) {
-        Map<V, Set<K>> invertedMap = new HashMap<>();
+	public static <K, V> Map<V, Set<K>> invertMapOfSet(Map<K, Set<V>> map) {
+		Map<V, Set<K>> invertedMap = new HashMap<>();
 
-        for (Map.Entry<K, Set<V>> entry : map.entrySet()) {
-            for (V value : entry.getValue()) {
-                addToMapOfKeyToSet(invertedMap, value, entry.getKey());
-            }
-        }
+		for (Map.Entry<K, Set<V>> entry : map.entrySet()) {
+			for (V value : entry.getValue()) {
+				addToMapOfKeyToSet(invertedMap, value, entry.getKey());
+			}
+		}
 
-        return invertedMap;
-    }
+		return invertedMap;
+	}
 
 	public static <K, V> Map<V, K> invertMap(Map<K, V> map) {
 		Map<V, K> invertedMap = new HashMap<>();

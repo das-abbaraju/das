@@ -1,10 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.employeeguard.forms.factory.ContractorEmployeeRoleAssignmentFactory;
-import com.picsauditing.employeeguard.forms.factory.ContractorProjectFormFactory;
-import com.picsauditing.employeeguard.forms.factory.EntityInfoFactory;
-import com.picsauditing.employeeguard.forms.factory.RoleInfoFactory;
-import com.picsauditing.employeeguard.viewmodel.operator.factory.OperatorSiteAssignmentModelFactory;
+import com.picsauditing.employeeguard.forms.factory.*;
 
 public class ViewModelFactory {
 
@@ -14,10 +10,13 @@ public class ViewModelFactory {
 			new ContractorEmployeeRoleAssignmentFactory();
 	private static ContractorProjectFormFactory contractorProjectFormFactory = new ContractorProjectFormFactory();
 	private static EmployeeAssignmentModelFactory employeeAssignmentModelFactory = new EmployeeAssignmentModelFactory();
+	private static EmployeeModelFactory employeeModelFactory = new EmployeeModelFactory();
+	private static EmployeeNavFactory employeeNavFactory = new EmployeeNavFactory();
 	private static EmployeeProjectAssignmentFactory employeeProjectAssignmentFactory = new EmployeeProjectAssignmentFactory();
 	private static EmployeeProjectRoleAssignmentFactory employeeProjectRoleAssignmentFactory = new EmployeeProjectRoleAssignmentFactory();
 	private static EmployeeSiteAssignmentModelFactory employeeSiteAssignmentModelFactory = new EmployeeSiteAssignmentModelFactory();
 	private static EntityInfoFactory entityInfoFactory = new EntityInfoFactory();
+	private static NavItemFactory navItemFactory = new NavItemFactory();
 	private static OperatorProjectAssignmentFactory operatorProjectAssignmentFactory = new OperatorProjectAssignmentFactory();
 	private static OperatorProjectRoleAssignmentFactory operatorProjectRoleAssignmentFactory = new OperatorProjectRoleAssignmentFactory();
 	private static OperatorSiteAssignmentModelFactory operatorSiteAssignmentModelFactory = new OperatorSiteAssignmentModelFactory();
@@ -44,6 +43,10 @@ public class ViewModelFactory {
 		return employeeAssignmentModelFactory;
 	}
 
+	public static EmployeeModelFactory getEmployeeModelFactory() {
+		return employeeModelFactory;
+	}
+
 	public static EmployeeProjectAssignmentFactory getEmployeeProjectAssignmentFactory() {
 		return employeeProjectAssignmentFactory;
 	}
@@ -52,12 +55,20 @@ public class ViewModelFactory {
 		return employeeProjectRoleAssignmentFactory;
 	}
 
+	public static EmployeeNavFactory getEmployeeNavFactory() {
+		return employeeNavFactory;
+	}
+
 	public static EmployeeSiteAssignmentModelFactory getEmployeeSiteAssignmentModelFactory() {
 		return employeeSiteAssignmentModelFactory;
 	}
 
 	public static EntityInfoFactory getEntityInfoFactory() {
 		return entityInfoFactory;
+	}
+
+	public static NavItemFactory getNavItemFactory() {
+		return navItemFactory;
 	}
 
 	public static OperatorProjectAssignmentFactory getOperatorProjectAssignmentFactory() {

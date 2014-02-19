@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.daos;
 
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
@@ -142,6 +143,18 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 
 		query.setParameter("corporateId", corporateRole.getAccountId());
 		query.setParameter("roleId", corporateRole.getId());
+
+		return query.getResultList();
+	}
+
+	public List<Role> findSiteRolesForEmployee(final int siteId, final Employee employee) {
+		TypedQuery<Role> query = em.createQuery("FROM Role r " +
+				"JOIN r.employees re " +
+				"JOIN re.employee e " +
+				"WHERE r.accountId = :siteId AND e = :employee", Role.class);
+
+		query.setParameter("siteId", siteId);
+		query.setParameter("employee", employee);
 
 		return query.getResultList();
 	}
