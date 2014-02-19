@@ -81,7 +81,7 @@
         </action>
 
         <!-- -->
-        <action name="{siteId}/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
+        <action name="contractor/{contractorId}/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
             <result name="show">/struts/employee-guard/operator/employee/show.jsp</result>
         </action>
     </package>
@@ -233,7 +233,7 @@
             <result name="personal-form">/struts/employee-guard/employee/employee/_personal-form.jsp</result>
         </action>
 
-        <action name="employee-photo" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="employeePhoto">
+        <action name="contractor/{contractorId}/employee-photo/{id}" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="employeePhoto">
             <result name="photo" type="stream"></result>
         </action>
 

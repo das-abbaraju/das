@@ -2,9 +2,12 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <%-- Url --%>
-<s:url action="employee" method="photo" var="image_url">
+<s:url action="contractor/{contractorId}/employee-photo/{id}" namespace="/employee-guard/employee" var="image_url">
+    <s:param name="contractorId">
+        ${employee.accountId}
+    </s:param>
     <s:param name="id">
-        ${id}
+        ${employee.id}
     </s:param>
 </s:url>
 
@@ -39,17 +42,18 @@
     <div class="row employee-info">
         <div class="col-md-3">
             <figure class="employee-image img-thumbnail">
-                <%-- <img src="${image_url}" class="img-responsive" alt="${alt_text}" width="250" height="250"/> --%>
-                <img src="http://media.screened.com/uploads/0/562/324177-ghostbusters_4_super.jpg" class="img-responsive" alt="${alt_text}" />
+                <img src="${image_url}" class="img-responsive" alt="${alt_text}" width="250" height="250"/>
             </figure>
         </div>
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-9">
-                    <p class="name">Peter Venkman</p>
+                    <p class="name">${employee.name}</p>
                     <ul class="list-unstyled">
-                        <li class="company">Ghostbusters Inc.</li>
-                        <li class="title">Public Relations</li>
+                        <s:iterator value="employee.companyNames" var="company_name">
+                            <li class="company">${company_name}</li>
+                        </s:iterator>
+                        <li class="title">${employee.title}</li>
                     </ul>
                 </div>
                 <div class="col-md-3">

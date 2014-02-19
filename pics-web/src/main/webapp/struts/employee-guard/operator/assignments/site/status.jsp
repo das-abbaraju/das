@@ -58,9 +58,9 @@
                         <tr>
                             <td>${site_assignment_employee.accountName}</td>
                             <td>
-                                <s:url action="{siteId}/employee/{id}" var="employee_liveID">
-                                    <s:param name="siteId">
-                                        ${permissions.accountId}
+                                <s:url action="contractor/{contractorId}/employee/{id}" var="employee_liveID">
+                                    <s:param name="contractorId">
+                                        ${site_assignment_employee.accountId}
                                     </s:param>
                                     <s:param name="id">
                                         ${site_assignment_employee.employeeId}

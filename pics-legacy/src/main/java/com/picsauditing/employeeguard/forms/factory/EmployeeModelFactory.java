@@ -33,6 +33,7 @@ public class EmployeeModelFactory {
 
 		return new EmployeeModel.Builder()
 				.id(employee.getId())
+				.accountId(employee.getAccountId())
 				.name(name)
 				.title(employee.getPositionName())
 				.companyNames(companyNames)
