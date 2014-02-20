@@ -63,7 +63,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 														 final Map<Project, Set<Role>> projectRoleMap) {
 		Set<Role> employeeRoles = roleService.getEmployeeRolesForSite(siteId, employeeEntity);
 		employeeRoles.addAll(Utilities.extractAndFlattenValuesFromMap(projectRoleMap));
-		Map<Role, List<AccountSkill>> roleSkillMap = skillService.getSkillsForRoles(siteId, employeeRoles);
+		Map<Role, Set<AccountSkill>> roleSkillMap = skillService.getSkillsForRoles(siteId, employeeRoles);
 		Map<Role, List<SkillStatus>> roleSkillStatuses = statusCalculatorService
 				.getSkillStatusListPerEntity(employeeEntity, roleSkillMap);
 		return statusCalculatorService
@@ -72,7 +72,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private Map<Project, SkillStatus> getProjectSkillStatusMap(final Employee employeeEntity,
 															   final Map<Project, Set<Role>> projectRoleMap) {
-		Map<Project, List<AccountSkill>> projectSkillMap = skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
+		Map<Project, Set<AccountSkill>> projectSkillMap = skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
 				projectRoleMap);
 		Map<Project, List<SkillStatus>> projectSkillStatuses = statusCalculatorService
 				.getSkillStatusListPerEntity(employeeEntity, projectSkillMap);

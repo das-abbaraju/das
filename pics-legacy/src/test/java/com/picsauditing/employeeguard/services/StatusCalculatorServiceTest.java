@@ -147,12 +147,14 @@ public class StatusCalculatorServiceTest {
 						.startDate(DateBean.today())
 						.endDate(DateBean.addDays(DateBean.today(), 45))
 						.build(),
+
 				new AccountSkillEmployeeBuilder()
 						.accountSkill(skills.get(1))
 						.employee(employees.get(1))
 						.startDate(DateBean.today())
 						.endDate(DateBean.addDays(DateBean.today(), 5))
 						.build(),
+
 				new AccountSkillEmployeeBuilder()
 						.accountSkill(skills.get(2))
 						.employee(employees.get(1))
@@ -161,37 +163,4 @@ public class StatusCalculatorServiceTest {
 						.build()
 		);
 	}
-
-//	public void testGetEmployeeStatusesForProjectsAndJobRoles() {
-//		Role corporateRole = mock(Role.class);
-//		Role roleOnProject = mock(Role.class);
-//
-//		Map<Role, Role> siteToCorporateRoles = new HashMap<>();
-//		siteToCorporateRoles.put(role, corporateRole);
-//		List<AccountSkillRole> accountSkillRoles = Arrays.asList(accountSkillRole);
-//
-//		when(accountSkillEmployee.getEndDate())
-//				.thenReturn(DateBean.addDays(DateBean.today(), 15))
-//				.thenReturn(DateBean.addYears(DateBean.today(), 3));
-//		when(accountSkillEmployee.getSkill()).thenReturn(skill);
-//		when(accountSkillRole.getSkill()).thenReturn(skill);
-//		when(corporateRole.getSkills()).thenReturn(accountSkillRoles);
-//		when(employee.getProjectRoles()).thenReturn(Arrays.asList(projectRoleEmployee));
-//		when(employee.getRoles()).thenReturn(Arrays.asList(roleEmployee));
-//		when(employee.getSkills()).thenReturn(Arrays.asList(accountSkillEmployee));
-//		when(projectRole.getRole()).thenReturn(roleOnProject);
-//		when(projectRole.getProject()).thenReturn(project);
-//		when(projectRoleEmployee.getProjectRole()).thenReturn(projectRole);
-//		when(roleEmployee.getRole()).thenReturn(role);
-//		when(roleOnProject.getSkills()).thenReturn(accountSkillRoles);
-//
-//		EmployeeProjectAndRoleStatus employeeProjectAndRoleStatus = service.getEmployeeStatusesForProjectsAndJobRoles(
-//				employee, siteToCorporateRoles, Collections.<AccountSkill>emptyList());
-//
-//		assertNotNull(employeeProjectAndRoleStatus);
-//		assertNotNull(employeeProjectAndRoleStatus.getProjectStatuses());
-//		assertNotNull(employeeProjectAndRoleStatus.getRoleStatuses());
-//		assertEquals(SkillStatus.Expiring, employeeProjectAndRoleStatus.getProjectStatuses().get(project));
-//		assertEquals(SkillStatus.Complete, employeeProjectAndRoleStatus.getRoleStatuses().get(corporateRole));
-//	}
 }

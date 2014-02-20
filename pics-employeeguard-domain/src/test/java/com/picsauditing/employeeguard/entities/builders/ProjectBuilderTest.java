@@ -12,7 +12,7 @@ public class ProjectBuilderTest {
 
     @Test
     public void testBuild() {
-        Project project = new ProjectBuilder().name(PROJECT_NAME).location(PROJECT_LOCATION).build();
+        Project project = new ProjectBuilder().createdBy(4).name(PROJECT_NAME).location(PROJECT_LOCATION).build();
 
         verifyProject(project);
     }
@@ -20,5 +20,6 @@ public class ProjectBuilderTest {
     private void verifyProject(Project project) {
         assertEquals(PROJECT_LOCATION, project.getLocation());
         assertEquals(PROJECT_NAME, project.getName());
+		assertEquals(4, project.getCreatedBy());
     }
 }

@@ -22,7 +22,8 @@ public class ProfileDocumentBuilderTest {
 
     @Test
     public void testBuild() {
-        ProfileDocument profileDocument = new ProfileDocumentBuilder().id(ID).profile(PROFILE).name(DOCUMENT_NAME).documentType(DOCUMENT_TYPE).startDate(START_DATE).endDate(END_DATE).build();
+        ProfileDocument profileDocument = new ProfileDocumentBuilder().id(ID).profile(PROFILE).name(DOCUMENT_NAME)
+				.documentType(DOCUMENT_TYPE).startDate(START_DATE).endDate(END_DATE).build();
 
         verifyProfileDocument(profileDocument);
     }

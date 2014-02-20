@@ -144,7 +144,7 @@ public class StatusCalculatorService {
 		return overallSkillStatusMap;
 	}
 
-	public <E> Map<E, List<SkillStatus>> getSkillStatusListPerEntity(final Employee employee, final Map<E, List<AccountSkill>> skillMap) {
+	public <E> Map<E, List<SkillStatus>> getSkillStatusListPerEntity(final Employee employee, final Map<E, Set<AccountSkill>> skillMap) {
 		if (employee == null || MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
 		}
@@ -158,13 +158,13 @@ public class StatusCalculatorService {
 		return buildMapOfSkillStatus(skillMap, accountSkillEmployeeMap);
 	}
 
-	private <E> Set<AccountSkill> getSkillsFromMap(final Map<E, List<AccountSkill>> skillMap) {
+	private <E> Set<AccountSkill> getSkillsFromMap(final Map<E, Set<AccountSkill>> skillMap) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptySet();
 		}
 
 		Set<AccountSkill> skills = new HashSet<>();
-		for (List<AccountSkill> accountSkills : skillMap.values()) {
+		for (Set<AccountSkill> accountSkills : skillMap.values()) {
 			skills.addAll(accountSkills);
 		}
 
@@ -183,7 +183,7 @@ public class StatusCalculatorService {
 				});
 	}
 
-	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, List<AccountSkill>> skillMap,
+	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
 																final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();

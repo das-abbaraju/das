@@ -3,41 +3,35 @@ package com.picsauditing.employeeguard.entities.builders;
 import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.lang.ArrayUtils;
 
-import java.util.Date;
 import java.util.List;
 
-public class RoleBuilder {
-
-	private Role role;
+public class RoleBuilder extends AbstractBaseEntityBuilder<Role, RoleBuilder> {
 
 	public RoleBuilder() {
-		role = new Role();
-	}
-
-	public RoleBuilder(int id, int accountId) {
-		role = new Role(id, accountId);
+		entity = new Role();
+		that = this;
 	}
 
 	public RoleBuilder name(String name) {
-		role.setName(name);
+		entity.setName(name);
 		return this;
 	}
 
 	public RoleBuilder description(String description) {
-		role.setDescription(description);
+		entity.setDescription(description);
 		return this;
 	}
 
 	public RoleBuilder skills(int[] skills) {
 		if (!ArrayUtils.isEmpty(skills)) {
-			role.getSkills().clear();
+			entity.getSkills().clear();
 
 			for (int skill : skills) {
 				AccountSkill accountSkill = new AccountSkill();
 				accountSkill.setId(skill);
 
-				AccountSkillRole accountSkillGroup = new AccountSkillRole(role, accountSkill);
-				role.getSkills().add(accountSkillGroup);
+				AccountSkillRole accountSkillGroup = new AccountSkillRole(entity, accountSkill);
+				entity.getSkills().add(accountSkillGroup);
 			}
 		}
 
@@ -46,14 +40,14 @@ public class RoleBuilder {
 
 	public RoleBuilder employees(int[] employees) {
 		if (!ArrayUtils.isEmpty(employees)) {
-			role.getEmployees().clear();
+			entity.getEmployees().clear();
 
 			for (int employeeId : employees) {
 				Employee employee = new Employee();
 				employee.setId(employeeId);
 
-				RoleEmployee groupEmployee = new RoleEmployee(employee, role);
-				role.getEmployees().add(groupEmployee);
+				RoleEmployee groupEmployee = new RoleEmployee(employee, entity);
+				entity.getEmployees().add(groupEmployee);
 			}
 		}
 
@@ -61,43 +55,33 @@ public class RoleBuilder {
 	}
 
 	public RoleBuilder skills(List<AccountSkill> skills) {
-		role.getSkills().clear();
+		entity.getSkills().clear();
 
 		for (AccountSkill accountSkill : skills) {
-			AccountSkillRole accountSkillRole = new AccountSkillRole(role, accountSkill);
-			role.getSkills().add(accountSkillRole);
+			AccountSkillRole accountSkillRole = new AccountSkillRole(entity, accountSkill);
+			entity.getSkills().add(accountSkillRole);
 		}
 
 		return this;
 	}
 
 	public RoleBuilder employees(List<Employee> employees) {
-		role.getEmployees().clear();
+		entity.getEmployees().clear();
 
 		for (Employee employee : employees) {
-			RoleEmployee groupEmployee = new RoleEmployee(employee, role);
-			role.getEmployees().add(groupEmployee);
+			RoleEmployee groupEmployee = new RoleEmployee(employee, entity);
+			entity.getEmployees().add(groupEmployee);
 		}
 
 		return this;
 	}
 
 	public RoleBuilder accountId(int accountId) {
-		role.setAccountId(accountId);
-		return this;
-	}
-
-	public RoleBuilder createdBy(int createdBy) {
-		role.setCreatedBy(createdBy);
-		return this;
-	}
-
-	public RoleBuilder createdDate(Date createdDate) {
-		role.setCreatedDate(createdDate);
+		entity.setAccountId(accountId);
 		return this;
 	}
 
 	public Role build() {
-		return role;
+		return entity;
 	}
 }
