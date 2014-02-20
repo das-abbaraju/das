@@ -24,6 +24,28 @@ public class SkillSection implements Comparable<SkillSection> {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SkillSection that = (SkillSection) o;
+
+		if (belongsToProject != that.belongsToProject) return false;
+		if (belongsToRole != that.belongsToRole) return false;
+		if (name != null ? !name.equals(that.name) : that.name != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + belongsToProject;
+		result = 31 * result + belongsToRole;
+		return result;
+	}
+
+	@Override
 	public int compareTo(SkillSection that) {
 		return this.name.compareToIgnoreCase(that.name);
 	}

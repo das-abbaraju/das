@@ -2,16 +2,15 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.viewmodel.employee.EmployeeSkillModel;
 import com.picsauditing.employeeguard.viewmodel.employee.EmployeeSkillsModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -139,6 +138,13 @@ public class EmployeeSkillsModelFactoryTest {
 		assertNotNull(model.getEmployeeSkills());
 		assertFalse(model.getEmployeeSkills().isEmpty());
 
-		fail("Not implemented");
+		List<String> skillSections = new ArrayList<>(model.getEmployeeSkills().keySet());
+		assertEquals("Project Required", skillSections.get(0));
+		assertEquals("Corporate Role", skillSections.get(1));
+		assertEquals("Project Role", skillSections.get(2));
+
+		EmployeeSkillModel employeeSkillModel = model.getEmployeeSkills().get(skillSections.get(0)).get(0);
+		assertEquals("Project Skill", employeeSkillModel.getSkillName());
+		assertEquals(SkillStatus.Complete, employeeSkillModel.getSkillStatus());
 	}
 }
