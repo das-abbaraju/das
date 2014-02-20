@@ -132,6 +132,8 @@ public final class MenuBuilder {
 		assessmentMenu.addChild(getText("menu.Assessment.CompanyMapping"), "ManageUnmappedCompanies.action",
 				"manage_unmapped_companies");
 
+        removeMenuIfEmpty(menubar, assessmentMenu);
+
 		addSupportMenu(menubar, permissions);
 	}
 
@@ -191,6 +193,8 @@ public final class MenuBuilder {
 
 			companyMenu.addChild(getText("menu.CompanyProfile"), "ContractorEdit.action", "contractor_edit");
 		}
+
+        removeMenuIfEmpty(menubar, companyMenu);
 	}
 
 	private static void addConfigureMenu(MenuComponent menubar, Permissions permissions) {
@@ -250,7 +254,9 @@ public final class MenuBuilder {
 			configureMenu.addChild(getText("menu.Configure.ContractorSimulator"), "ContractorSimulator.action",
 					"contractor_simulator");
 		}
-	}
+
+        removeMenuIfEmpty(menubar, configureMenu);
+    }
 
 	private static void addDevelopmentMenu(MenuComponent menubar, Permissions permissions) {
 		if (!permissions.isDeveloperEnvironment()) {
@@ -285,6 +291,8 @@ public final class MenuBuilder {
 		}
 
 		buildEmployeeGUARD(devMenu);
+
+        removeMenuIfEmpty(menubar, devMenu);
 	}
 
 	private static void buildEmployeeGUARD(MenuComponent devMenu) {
@@ -293,6 +301,8 @@ public final class MenuBuilder {
 		employeeGUARD.addChild("Operator Dashboard", "/employee-guard/operator/dashboard");
 		employeeGUARD.addChild("Contractor Dashboard", "/employee-guard/contractor/dashboard");
 		employeeGUARD.addChild("Employee Dashboard", "/employee-guard/employee/dashboard");
+
+        removeMenuIfEmpty(devMenu, employeeGUARD);
 	}
 
 	private static void buildCronSubmenu(MenuComponent devMenu) {
@@ -301,6 +311,8 @@ public final class MenuBuilder {
 		cronSubmenu.addChild(getText("menu.Mail"), "MailCron.action", "mail_cron");
 		cronSubmenu.addChild(getText("menu.Dev.AuditScheduleBuilder"), "AuditScheduleBuilderCron.action",
 				"audit_schedule_builder");
+
+        removeMenuIfEmpty(devMenu, cronSubmenu);
 	}
 
 	private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
@@ -405,7 +417,9 @@ public final class MenuBuilder {
 		if (permissions.isOperatorCorporate() && permissions.getAccountStatus().isDemo()) {
 			manageMenu.addChild("Request Company", "RequestNewContractorAccount.action", "RequestNewContractorAccount");
 		}
-	}
+
+        removeMenuIfEmpty(menubar, manageMenu);
+    }
 
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
@@ -439,6 +453,8 @@ public final class MenuBuilder {
 						"report_" + report.getId());
 			}
 		}
+
+        removeMenuIfEmpty(menubar, reportsMenu);
 	}
 
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
@@ -506,6 +522,8 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
 			legacyMenu.addChild("Sales Report", "ReportSalesReps.action", "SalesReport");
 		}
+
+        removeMenuIfEmpty(reportsMenu, legacyMenu);
 	}
 
 	private static void addSupportMenu(MenuComponent menubar, Permissions permissions) {
@@ -523,22 +541,30 @@ public final class MenuBuilder {
 		supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
 		supportMenu.addChild(getText("global.AboutPICS"), "About.action", "about_pics");
 
-		MenuComponent referenceMenu = supportMenu.addChild("Reference");
-		if (permissions.hasPermission(OpPerms.ManageTrades)) {
-			referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
-		}
+        addReferenceMenu(permissions, supportMenu);
 
-		referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
-		referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action",
-				"navigation_restructure");
-
-		if (!permissions.isContractor()) {
-			referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
-			referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
-		}
+        removeMenuIfEmpty(menubar, supportMenu);
 	}
 
-	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
+    private static void addReferenceMenu(Permissions permissions, MenuComponent supportMenu) {
+        MenuComponent referenceMenu = supportMenu.addChild("Reference");
+        if (permissions.hasPermission(OpPerms.ManageTrades)) {
+            referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
+        }
+
+        referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
+        referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action",
+                "navigation_restructure");
+
+        if (!permissions.isContractor()) {
+            referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
+            referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
+        }
+
+        removeMenuIfEmpty(supportMenu, referenceMenu);
+    }
+
+    private static void addUserMenu(MenuComponent menu, Permissions permissions) {
 		MenuComponent userMenu = menu.addChild(permissions.getName(), null, "user_menu");
 
 		if (permissions.hasPermission(OpPerms.EditProfile)) {
@@ -565,9 +591,21 @@ public final class MenuBuilder {
 		}
 
 		userMenu.addChild(getText("Header.Logout"), "Login.action?button=logout", "logout");
-	}
 
-	private static boolean isBothEGandPOUser(Permissions permissions) {
+        removeMenuIfEmpty(menu, userMenu);
+    }
+
+    public static void removeMenuIfEmpty(MenuComponent menu, MenuComponent submenu) {
+        if (!submenu.hasChildren()) {
+            boolean removed = menu.removeChild(submenu);
+
+            if (!removed) {
+                logger.warn("Unable to remove email menu with no children.");
+            }
+        }
+    }
+
+    private static boolean isBothEGandPOUser(Permissions permissions) {
 		int appUserID = permissions.getAppUserID();
 		return permissions.getUserId() > 0 && isEmployeeGUARDUser(appUserID);
 	}
@@ -627,13 +665,7 @@ public final class MenuBuilder {
 					"manage_audit_work_flow");
 		}
 
-		if (!auditsMenu.hasChildren()) {
-			boolean removed = parentMenu.removeChild(auditsMenu);
-
-			if (!removed) {
-				logger.warn("Unable to remove audit menu with no children.");
-			}
-		}
+        removeMenuIfEmpty(parentMenu, auditsMenu);
 	}
 
 	private static void addEmailSubmenu(MenuComponent parentMenu, Permissions permissions) {
@@ -666,14 +698,8 @@ public final class MenuBuilder {
 			emailMenu.addChild("New Year Mailer", "NewYearMailer.action", "NewYearMailer");
 		}
 
-		if (!emailMenu.hasChildren()) {
-			boolean removed = parentMenu.removeChild(emailMenu);
-
-			if (!removed) {
-				logger.warn("Unable to remove email menu with no children.");
-			}
-		}
-	}
+        removeMenuIfEmpty(parentMenu, emailMenu);
+    }
 
 	private static void handleSingleChildMenu(MenuComponent menu) {
 		if (menu.getChildren().size() == 1) {
