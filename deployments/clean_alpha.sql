@@ -2,6 +2,7 @@ UPDATE app_user SET PASSWORD = SHA1(CONCAT('Wait7Lib',hashSalt));
 update contractor_info set taxID = '123456789';
 update users set email = 'tester@picsauditing.com' where email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
+update accounts set email = 'tester@picsauditing.com' where email > '';
 update email_queue set toAddresses = 'tester@picsauditing.com', ccAddresses = null, bccAddresses = null, fromPassword = null, fromAddress = null;
 
 update contractor_operator set baselineFlag = flag, baselineFlagDetail = flagDetail;
