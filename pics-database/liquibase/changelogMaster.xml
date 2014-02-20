@@ -158,4 +158,8 @@
     <include file="./liquibase/kchase25_PICS-14563_CleanUpSubscriptions.sql"/>
     <include file="./liquibase/kchase26_PICS-14497_AMBestUpdate.sql"/>
 
+	<!-- 7.1.7 -->
+	<include file="./liquibase/mdo46_PICS-13646_tradeSS_DDL.sql"/>
+	<include file="./liquibase/mdo47_PICS-13646_tradeSS_DML.sql"/>
+
 </databaseChangeLog>
