@@ -8,6 +8,7 @@ AND	app_user.username	= users.username
 update contractor_info set taxID = '123456789';
 update users set email = 'tester@picsauditing.com' WHERE accountID != 1100 AND email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
+update accounts set email = 'tester@picsauditing.com' where email > '';
 update employee set ssn = '123456789' where ssn > '';
 update email_queue set toAddresses = 'tester@picsauditing.com', ccAddresses = null where status = 'Pending' and (toAddresses not like '%picsauditing.com' or ccAddresses not like '%picsauditing.com');
 update contractor_operator set baselineFlag = flag, baselineFlagDetail = flagDetail;
