@@ -64,6 +64,7 @@ public final class ContractorSubmenuBuilder {
 			for (MenuComponent item : menuItems) {
 				menuEntry.addChild(item);
 			}
+            MenuBuilder.removeMenuIfEmpty(menubar,menuEntry);
 		}
 
 		return menubar;
