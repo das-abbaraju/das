@@ -29,9 +29,4 @@ public class EmployeeSkillsModel {
 			return new EmployeeSkillsModel(this);
 		}
 	}
-
-	public class SkillSection {
-		private String name;
-		private int belongsToProject;
-	}
 }
