@@ -118,7 +118,12 @@ public class StatusCalculatorService {
 
 		SkillStatus worstStatus = SkillStatus.Complete;
 		for (SkillStatus skillStatus : skillStatuses) {
-			if (skillStatus.compareTo(worstStatus) > 0) {
+			// exit early if any status is "Expired", because we have already hit the lowest status
+			if (skillStatus.isExpired()) {
+				return SkillStatus.Expired;
+			}
+
+			if (skillStatus.compareTo(worstStatus) < 0) {
 				worstStatus = skillStatus;
 			}
 		}

@@ -72,8 +72,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private Map<Project, SkillStatus> getProjectSkillStatusMap(final Employee employeeEntity,
 															   final Map<Project, Set<Role>> projectRoleMap) {
-		Map<Project, List<AccountSkill>> projectSkillMap = skillService.getAllProjectSkillsForEmployee(siteId,
-				employeeEntity, projectRoleMap);
+		Map<Project, List<AccountSkill>> projectSkillMap = skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
+				projectRoleMap);
 		Map<Project, List<SkillStatus>> projectSkillStatuses = statusCalculatorService
 				.getSkillStatusListPerEntity(employeeEntity, projectSkillMap);
 		return statusCalculatorService

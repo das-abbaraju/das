@@ -13,15 +13,15 @@
 
 <%-- Employee Status --%>
 <s:set var="employee_status">${employeeNav.overallStatus}</s:set>
-<s:if test="#employee_status.expired">
+<s:if test="#employee_status == 'Expired'">
     <s:set var="employee_status_icon">icon-minus-sign-alt</s:set>
     <s:set var="employee_status_class">danger</s:set>
 </s:if>
-<s:elseif test="#employee_status.expiring">
+<s:elseif test="#employee_status == 'Expiring'">
     <s:set var="employee_status_icon">icon-warning-sign</s:set>
     <s:set var="employee_status_class">warning</s:set>
 </s:elseif>
-<s:elseif test="#employee_status.pending">
+<s:elseif test="#employee_status == 'Pending'">
     <s:set var="employee_status_icon">icon-ok-circle</s:set>
     <s:set var="employee_status_class">success</s:set>
 </s:elseif>
@@ -81,15 +81,15 @@
                         <%-- Iterate over job roles --%>
                         <s:iterator value="employeeNav.roles" var="employee_job_role">
                             <s:set var="employee_skill_status">${employee_job_role.statusRollup}</s:set>
-                            <s:if test="#employee_skill_status.expired">
+                            <s:if test="#employee_skill_status == 'Expired'">
                                 <s:set var="employee_skill_status_icon">icon-minus-sign-alt</s:set>
                                 <s:set var="employee_skill_status_class">danger</s:set>
                             </s:if>
-                            <s:elseif test="#employee_skill_status.expiring">
+                            <s:elseif test="#employee_skill_status == 'Expiring'">
                                 <s:set var="employee_skill_status_icon">icon-warning-sign</s:set>
                                 <s:set var="employee_skill_status_class">warning</s:set>
                             </s:elseif>
-                            <s:elseif test="#employee_skill_status.pending">
+                            <s:elseif test="#employee_skill_status == 'Pending'">
                                 <s:set var="employee_skill_status_icon">icon-ok-circle</s:set>
                                 <s:set var="employee_skill_status_class">success</s:set>
                             </s:elseif>
@@ -103,11 +103,6 @@
                                     <i class="${employee_skill_status_icon} ${employee_skill_status_class} pull-right"></i>
                                 </a>
                             </li>
-                            <%--<li>--%>
-                                <%--<a href="#" data-filter="section2">Ghostbuster--%>
-                                    <%--<i class="${employee_skill_status_icon} ${employee_skill_status_class} pull-right"></i>--%>
-                                <%--</a>--%>
-                            <%--</li>--%>
                         </s:iterator>
 
                         <li class="nav-divider"></li>
@@ -117,16 +112,16 @@
 
                         <%-- Iterate over projects --%>
                         <s:iterator value="employeeNav.projects" var="employee_project">
-                            <s:set var="employee_project_status">${employee_project}</s:set>
-                            <s:if test="#employee_project_status.expired">
+                            <s:set var="employee_project_status">${employee_project.statusRollup}</s:set>
+                            <s:if test="#employee_project_status == 'Expired'">
                                 <s:set var="employee_project_status_icon">icon-minus-sign-alt</s:set>
                                 <s:set var="employee_project_status_class">danger</s:set>
                             </s:if>
-                            <s:elseif test="#employee_project_status.expiring">
+                            <s:elseif test="#employee_project_status == 'Expiring'">
                                 <s:set var="employee_project_status_icon">icon-warning-sign</s:set>
                                 <s:set var="employee_project_status_class">warning</s:set>
                             </s:elseif>
-                            <s:elseif test="#employee_project_status.pending">
+                            <s:elseif test="#employee_project_status == 'Pending'">
                                 <s:set var="employee_project_status_icon">icon-ok-circle</s:set>
                                 <s:set var="employee_project_status_class">success</s:set>
                             </s:elseif>
@@ -140,11 +135,6 @@
                                     <i class="${employee_project_status_icon} ${employee_project_status_class} pull-right"></i>
                                 </a>
                             </li>
-                            <%--<li>--%>
-                                <%--<a href="#" data-filter="section4">Stay Pufft Marshmallow Man--%>
-                                    <%--<i class="${employee_project_status_icon} ${employee_project_status_class} pull-right"></i>--%>
-                                <%--</a>--%>
-                            <%--</li>--%>
                         </s:iterator>
                     </ul>
                 </nav>

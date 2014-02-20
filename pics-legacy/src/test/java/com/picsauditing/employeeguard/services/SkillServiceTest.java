@@ -1,8 +1,11 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillGroup;
+import com.picsauditing.employeeguard.daos.AccountSkillRoleDAO;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillRoleBuilder;
+import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -33,6 +35,8 @@ public class SkillServiceTest {
     private AccountSkillDAO accountSkillDAO;
     @Mock
     private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Mock
+	private AccountSkillRoleDAO accountSkillRoleDAO;
 
     @Before
     public void setup() {
@@ -42,6 +46,7 @@ public class SkillServiceTest {
 
         Whitebox.setInternalState(skillService, "accountSkillDAO", accountSkillDAO);
         Whitebox.setInternalState(skillService, "accountSkillEmployeeService", accountSkillEmployeeService);
+		Whitebox.setInternalState(skillService, "accountSkillRoleDAO", accountSkillRoleDAO);
     }
 
     @Test
@@ -100,4 +105,48 @@ public class SkillServiceTest {
 
         assertTrue(result.isEmpty());
     }
+
+	@Test
+	public void testGetAllProjectSkillsForEmployeeProjectRoles_EmptyProjectRoleMap() {
+		Map<Project, List<AccountSkill>> result = skillService.getAllProjectSkillsForEmployeeProjectRoles(ACCOUNT_ID,
+				Collections.<Project, Set<Role>>emptyMap());
+
+		assertNotNull(result);
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testGetSkillsForRoles_EmptyRoleSkillsMap() {
+		Map<Role, List<AccountSkill>> result = skillService.getSkillsForRoles(ACCOUNT_ID,
+				Collections.<Role>emptyList());
+
+		assertNotNull(result);
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testGetSkillsForRoles() {
+		when(accountSkillRoleDAO.findSkillsByRoles(anyCollectionOf(Role.class)))
+				.thenReturn(buildFakeAccountSkillRoles());
+
+		Map<Role, List<AccountSkill>> result = skillService.getSkillsForRoles(ACCOUNT_ID,
+				Collections.<Role>emptyList());
+
+		assertNotNull(result);
+		assertTrue(result.isEmpty());
+	}
+
+	public List<AccountSkillRole> buildFakeAccountSkillRoles() {
+		return Arrays.asList(
+				new AccountSkillRoleBuilder()
+						.skill(new AccountSkillBuilder(123, ACCOUNT_ID).name("Test Skill 1").skillType(SkillType.Training).build())
+						.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Test Role 1").build())
+						.build(),
+
+				new AccountSkillRoleBuilder()
+						.skill(new AccountSkillBuilder(145, ACCOUNT_ID).name("Test Skill 2").skillType(SkillType.Training).build())
+						.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Test Role 1").build())
+						.build()
+		);
+	}
 }

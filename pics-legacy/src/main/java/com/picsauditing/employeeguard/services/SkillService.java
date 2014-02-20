@@ -44,11 +44,11 @@ public class SkillService {
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
-	public AccountSkill getSkill(String id) {
+	public AccountSkill getSkill(final String id) {
 		return accountSkillDAO.find(NumberUtils.toInt(id));
 	}
 
-	public AccountSkill getSkill(String id, int accountId) {
+	public AccountSkill getSkill(final String id, final int accountId) {
 		return accountSkillDAO.findSkillByAccount(NumberUtils.toInt(id), accountId);
 	}
 
@@ -450,8 +450,8 @@ public class SkillService {
 		return accountSkillDAO.findByRoles(Arrays.asList(role));
 	}
 
-	public Map<Project, List<AccountSkill>> getAllProjectSkillsForEmployee(final int siteId, final Employee employee,
-																		   final Map<Project, Set<Role>> projectRoleMap) {
+	public Map<Project, List<AccountSkill>> getAllProjectSkillsForEmployeeProjectRoles(final int siteId,
+																					   final Map<Project, Set<Role>> projectRoleMap) {
 		if (MapUtils.isEmpty(projectRoleMap)) {
 			return Collections.emptyMap();
 		}
@@ -460,9 +460,16 @@ public class SkillService {
 				Utilities.extractAndFlattenValuesFromMap(projectRoleMap));
 
 		Map<Project, List<AccountSkill>> projectSkillMap = new HashMap<>();
+
 		for (Project project : projectRoleMap.keySet()) {
+			if (!projectSkillMap.containsKey(project)) {
+				projectSkillMap.put(project, new ArrayList<AccountSkill>());
+			}
+
 			for (Role role : projectRoleMap.get(project)) {
-				Utilities.addAllToMapOfKeyToList(projectSkillMap, project, roleSkillMap.get(role));
+				if (roleSkillMap.containsKey(role)) {
+					projectSkillMap.get(project).addAll(roleSkillMap.get(role));
+				}
 			}
 		}
 
@@ -490,7 +497,7 @@ public class SkillService {
 
 	private Map<Project, List<AccountSkill>> appendProjectRequiredSkills(final Map<Project, List<AccountSkill>> projectSkillMap,
 																		 final Map<Project, Set<AccountSkill>> projectRequiredSkillsMap) {
-		if (MapUtils.isEmpty(projectSkillMap) || MapUtils.isEmpty(projectSkillMap)) {
+		if (MapUtils.isEmpty(projectRequiredSkillsMap) || MapUtils.isEmpty(projectSkillMap)) {
 			return projectSkillMap;
 		}
 
@@ -511,6 +518,10 @@ public class SkillService {
 	 * @return
 	 */
 	public Map<Role, List<AccountSkill>> getSkillsForRoles(final int siteId, final Collection<Role> corporateRoles) {
+		if (CollectionUtils.isEmpty(corporateRoles)) {
+			return Collections.emptyMap();
+		}
+
 		Map<Role, List<AccountSkill>> roleSkillsMap = Utilities.convertToMapOfLists(accountSkillRoleDAO.findSkillsByRoles(corporateRoles),
 				new Utilities.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
 
@@ -525,17 +536,35 @@ public class SkillService {
 					}
 				});
 
+		roleSkillsMap = populateRoleSkillsMapIfEmpty(corporateRoles, roleSkillsMap);
+
 		return appendSiteAndCorporateSkills(roleSkillsMap, getRequiredSkillsForSiteAndCorporates(siteId));
+	}
+
+	private Map<Role, List<AccountSkill>> populateRoleSkillsMapIfEmpty(final Collection<Role> corporateRoles,
+																	   final Map<Role, List<AccountSkill>> roleSkillsMap) {
+		if (MapUtils.isNotEmpty(roleSkillsMap)) {
+			return roleSkillsMap;
+		}
+
+		Map<Role, List<AccountSkill>> newRoleSkillMap = new HashMap<>();
+		for (Role corporateRole : corporateRoles) {
+			newRoleSkillMap.put(corporateRole, new ArrayList<AccountSkill>());
+		}
+
+		return newRoleSkillMap;
 	}
 
 	private <E> Map<E, List<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, List<AccountSkill>> entitySkillMap,
 																		final List<AccountSkill> siteAndCorporateRequiredSkills) {
-		if (MapUtils.isEmpty(entitySkillMap)) {
+		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
 			return entitySkillMap;
 		}
 
 		for (E entity : entitySkillMap.keySet()) {
-			entitySkillMap.get(entity).addAll(siteAndCorporateRequiredSkills);
+			if (entitySkillMap.containsKey(entity)) {
+				entitySkillMap.get(entity).addAll(siteAndCorporateRequiredSkills);
+			}
 		}
 
 		return entitySkillMap;
