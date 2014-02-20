@@ -63,6 +63,7 @@ ContractorSafetyRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTagTagID
+ContractorTradeSafetyRisk
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
 CustomerServiceUserID

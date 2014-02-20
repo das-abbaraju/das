@@ -138,43 +138,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			noteDAO.save(note);
 		}
 
-		// If the risk level for either product or safety increases due to this
-		// new trade, reset the verified date on
-		// the contractor's answers
-		if (contractor.getSafetyRisk() != null && trade.getTrade().getSafetyRiskI() != null) {
-			if (contractor.getSafetyRisk().ordinal() < trade.getTrade().getSafetyRiskI().ordinal()) {
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().isPicsPqf()) {
-						for (AuditData data : audit.getData()) {
-							if (data.getQuestion().getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT
-									|| data.getQuestion().getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT) {
-								data.setDateVerified(null);
-								tradeDAO.save(data);
-							}
-						}
-					}
-				}
-			}
-		}
+        updateRiskData();
 
-		if (contractor.getProductRisk() != null && trade.getTrade().getProductRiskI() != null) {
-			if (contractor.getProductRisk().ordinal() < trade.getTrade().getProductRiskI().ordinal()) {
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().isPicsPqf()) {
-						for (AuditData data : audit.getData()) {
-							if (data.getQuestion().getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT) {
-								data.setDateVerified(null);
-								tradeDAO.save(data);
-							}
-						}
-					}
-				}
-			}
-		}
-
-        updateSafetySensitivity();
-
-		contractor.setTradesUpdated(new Date());
+        contractor.setTradesUpdated(new Date());
 		contractorAccountDao.save(contractor);
 
 		// Set the ajax mode to view after saving
@@ -183,15 +149,66 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return "trade";
 	}
 
+    private void updateRiskData() {
+        // If the risk level for either product or safety increases due to this
+        // new trade, reset the verified date on
+        // the contractor's answers
+        if (contractor.getSafetyRisk() != null && trade.getTrade().getSafetyRiskI() != null) {
+            if (contractor.getSafetyRisk().ordinal() < trade.getTrade().getSafetyRiskI().ordinal()) {
+                for (ContractorAudit audit : contractor.getAudits()) {
+                    if (audit.getAuditType().isPicsPqf()) {
+                        for (AuditData data : audit.getData()) {
+                            if (data.getQuestion().getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT
+                                    || data.getQuestion().getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT) {
+                                data.setDateVerified(null);
+                                tradeDAO.save(data);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (contractor.getProductRisk() != null && trade.getTrade().getProductRiskI() != null) {
+            if (contractor.getProductRisk().ordinal() < trade.getTrade().getProductRiskI().ordinal()) {
+                for (ContractorAudit audit : contractor.getAudits()) {
+                    if (audit.getAuditType().isPicsPqf()) {
+                        for (AuditData data : audit.getData()) {
+                            if (data.getQuestion().getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT) {
+                                data.setDateVerified(null);
+                                tradeDAO.save(data);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        updateTradeSafetyRiskSensitive();
+        updateSafetySensitivity();
+    }
+
+    private void updateTradeSafetyRiskSensitive() {
+        contractor.setTradeSafetyRisk(LowMedHigh.None);
+        contractor.setTradeSafetySensitive(false);
+
+        for (ContractorTrade contractorTrade : contractor.getTrades()) {
+            Trade trade = contractorTrade.getTrade();
+
+            if (contractor.getTradeSafetyRisk().isLessThan(trade.getSafetyRiskI())) {
+                contractor.setTradeSafetyRisk(trade.getSafetyRiskI());
+            }
+
+            if (!contractor.isTradeSafetySensitive() && trade.getSafetySensitiveI() == YesNo.Yes) {
+                contractor.setTradeSafetySensitive(true);
+            }
+        }
+    }
+
     private void updateSafetySensitivity() {
         if (!contractor.isSafetySensitive()) {
-            for (ContractorTrade contractorTrade : contractor.getTrades()) {
-                Trade trade = contractorTrade.getTrade();
-                if (trade != null && trade.getSafetySensitiveI() == YesNo.Yes) {
-                    contractor.setSafetySensitive(true);
-
-                    return;
-                }
+            if (contractor.isTradeSafetySensitive()) {
+                contractor.setSafetySensitive(true);
             }
         }
     }
@@ -201,7 +218,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		tradeDAO.remove(trade);
 
 		if (contractor.getTrades().size() > 0) {
-			contractor.setTradesUpdated(new Date());
+            updateTradeSafetyRiskSensitive();
+            contractor.setTradesUpdated(new Date());
 			contractorAccountDao.save(contractor);
 		}
 
