@@ -21,14 +21,21 @@ import static org.mockito.Mockito.*;
 
 public class SkillServiceTest {
 
-	private SkillService skillService;
-
+	public static final String PROJECT_SKILL_NAME = "Project Skill";
+	public static final String TEST_SKILL_NAME = "Test Skill";
+	public static final String TEST_PROJECT_NAME = "Test Project";
+	public static final String SITE_SKILL_NAME = "Site Skill";
+	public static final String TEST_ROLE_NAME = "Test Role";
+	public static final int SITE_ID = 90;
+	public static final int CORPORATE_ID = 91;
+	public static final int SITE_SKILL_ID = 67;
+	public static final int CORPORATE_SKILL_ID = 68;
 	private static final int DELETE_SKILL_ID = 2;
-
 	private static final int ACCOUNT_ID = 4567;
 	private static final int APP_USER_ID = 123;
-	private static final Date CREATED_DATE = new Date();
 	private static final int ACCOUNT_SKILL_GROUP_ID = 5678;
+
+	private SkillService skillService;
 
 	@Mock
 	private AccountService accountService;
@@ -121,10 +128,11 @@ public class SkillServiceTest {
 				projectRoleMap);
 
 		assertEquals(2, result.size());
-		verifySkillNames(result.get(fakeProjects.get(0)), "Test Skill 2", "Test Skill 1", "Test Skill 3", "Site Skill 1",
-				"Site Skill 2", "Project Skill 1", "Project Skill 2");
-		verifySkillNames(result.get(fakeProjects.get(1)), "Test Skill 1", "Test Skill 2", "Test Skill 3", "Site Skill 1",
-				"Site Skill 2", "Project Skill 3");
+		verifySkillNames(result.get(fakeProjects.get(0)), TEST_SKILL_NAME + " 2", TEST_SKILL_NAME + " 1",
+				TEST_SKILL_NAME + " 3", SITE_SKILL_NAME + " 1", SITE_SKILL_NAME + " 2", PROJECT_SKILL_NAME + " 1",
+				PROJECT_SKILL_NAME + " 2");
+		verifySkillNames(result.get(fakeProjects.get(1)), TEST_SKILL_NAME + " 1", TEST_SKILL_NAME + " 2",
+				TEST_SKILL_NAME + " 3", SITE_SKILL_NAME + " 1", SITE_SKILL_NAME + " 2", PROJECT_SKILL_NAME + " 3");
 	}
 
 	private void verifySkillNames(final Set<AccountSkill> accountSkills, final String... expectedSkillNames) {
@@ -137,8 +145,8 @@ public class SkillServiceTest {
 
 	private List<Project> buildFakeProjects() {
 		return new ArrayList<Project>() {{
-			add(new ProjectBuilder().accountId(ACCOUNT_ID).name("Test Project 1").build());
-			add(new ProjectBuilder().accountId(ACCOUNT_ID).name("Test Project 2").build());
+			add(new ProjectBuilder().accountId(ACCOUNT_ID).name(TEST_PROJECT_NAME + " 1").build());
+			add(new ProjectBuilder().accountId(ACCOUNT_ID).name(TEST_PROJECT_NAME + " 2").build());
 		}};
 	}
 
@@ -147,7 +155,7 @@ public class SkillServiceTest {
 			add(new ProjectSkillBuilder()
 					.project(fakeProjects.get(0))
 					.skill(new AccountSkillBuilder(732, ACCOUNT_ID)
-							.name("Project Skill 1")
+							.name(PROJECT_SKILL_NAME + " 1")
 							.skillType(SkillType.Training)
 							.build())
 					.build());
@@ -155,7 +163,7 @@ public class SkillServiceTest {
 			add(new ProjectSkillBuilder()
 					.project(fakeProjects.get(0))
 					.skill(new AccountSkillBuilder(735, ACCOUNT_ID)
-							.name("Project Skill 2")
+							.name(PROJECT_SKILL_NAME + " 2")
 							.skillType(SkillType.Training)
 							.build())
 					.build());
@@ -163,7 +171,7 @@ public class SkillServiceTest {
 			add(new ProjectSkillBuilder()
 					.project(fakeProjects.get(1))
 					.skill(new AccountSkillBuilder(935, ACCOUNT_ID)
-							.name("Project Skill 3")
+							.name(PROJECT_SKILL_NAME + " 3")
 							.skillType(SkillType.Training)
 							.build())
 					.build());
@@ -197,12 +205,13 @@ public class SkillServiceTest {
 	}
 
 	private void verifySkillsForRole(Map<Role, Set<AccountSkill>> result, Role role) {
-		if ("Test Role 1".equals(role.getName())) {
-			verifySkillNames(result.get(role), "Test Skill 1", "Test Skill 3", "Site Skill 1", "Site Skill 2");
+		if ((TEST_ROLE_NAME + " 1").equals(role.getName())) {
+			verifySkillNames(result.get(role), TEST_SKILL_NAME + " 1", TEST_SKILL_NAME + " 3", SITE_SKILL_NAME + " 1",
+					SITE_SKILL_NAME + " 2");
 		}
 
-		if ("Test Role 2".equals(role.getName())) {
-			verifySkillNames(result.get(role), "Test Skill 2", "Site Skill 1", "Site Skill 2");
+		if ((TEST_ROLE_NAME + " 2").equals(role.getName())) {
+			verifySkillNames(result.get(role), TEST_SKILL_NAME + " 2", SITE_SKILL_NAME + " 1", SITE_SKILL_NAME + " 2");
 		}
 	}
 
@@ -218,8 +227,8 @@ public class SkillServiceTest {
 
 	public List<Role> buildFakeCorporateRoles() {
 		return new ArrayList<Role>() {{
-			add(new RoleBuilder().accountId(ACCOUNT_ID).name("Test Role 1").build());
-			add(new RoleBuilder().accountId(ACCOUNT_ID).name("Test Role 2").build());
+			add(new RoleBuilder().accountId(ACCOUNT_ID).name(TEST_ROLE_NAME + " 1").build());
+			add(new RoleBuilder().accountId(ACCOUNT_ID).name(TEST_ROLE_NAME + " 2").build());
 		}};
 	}
 
@@ -227,7 +236,7 @@ public class SkillServiceTest {
 		return new ArrayList<AccountSkillRole>() {{
 			add(new AccountSkillRoleBuilder()
 					.skill(new AccountSkillBuilder(123, ACCOUNT_ID)
-							.name("Test Skill 1")
+							.name(TEST_SKILL_NAME + " 1")
 							.skillType(SkillType.Training)
 							.build())
 					.role(fakeCorporateSkills.get(0))
@@ -235,7 +244,7 @@ public class SkillServiceTest {
 
 			add(new AccountSkillRoleBuilder()
 					.skill(new AccountSkillBuilder(145, ACCOUNT_ID)
-							.name("Test Skill 2")
+							.name(TEST_SKILL_NAME + " 2")
 							.skillType(SkillType.Training)
 							.build())
 					.role(fakeCorporateSkills.get(1))
@@ -243,7 +252,7 @@ public class SkillServiceTest {
 
 			add(new AccountSkillRoleBuilder()
 					.skill(new AccountSkillBuilder(678, ACCOUNT_ID)
-							.name("Test Skill 3")
+							.name(TEST_SKILL_NAME + " 3")
 							.skillType(SkillType.Certification)
 							.build())
 					.role(fakeCorporateSkills.get(0))
@@ -254,17 +263,17 @@ public class SkillServiceTest {
 	public List<SiteSkill> buildFakeSiteSkills() {
 		return new ArrayList<SiteSkill>() {{
 			add(new SiteSkillBuilder()
-					.siteId(90)
-					.skill(new AccountSkillBuilder(67, 90)
-							.name("Site Skill 1")
+					.siteId(SITE_ID)
+					.skill(new AccountSkillBuilder(SITE_SKILL_ID, SITE_ID)
+							.name(SITE_SKILL_NAME + " 1")
 							.skillType(SkillType.Certification)
 							.build())
 					.build());
 
 			add(new SiteSkillBuilder()
-					.siteId(91)
-					.skill(new AccountSkillBuilder(68, 91)
-							.name("Site Skill 2")
+					.siteId(CORPORATE_ID)
+					.skill(new AccountSkillBuilder(CORPORATE_SKILL_ID, CORPORATE_ID)
+							.name(SITE_SKILL_NAME + " 2")
 							.skillType(SkillType.Training)
 							.build())
 					.build());
