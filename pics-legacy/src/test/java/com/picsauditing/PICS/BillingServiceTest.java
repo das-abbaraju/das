@@ -4,6 +4,7 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.Currency;
+import com.picsauditing.jpa.entities.builders.ContractorAccountBuilder;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.service.billing.InvoiceDiscountsService;
@@ -1036,6 +1037,28 @@ public class BillingServiceTest extends PicsTranslationTest {
 
         assertTrue(activated);
         verify(accountDAO).save(mockContractor);
+    }
+
+    @Test
+    public void createInvoiceItems_SuncorNormalDiscounts() {
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(mockContractor.getMembershipDate()).thenReturn(new Date());
+
+        billingService.createInvoiceItems(mockContractor, BillingStatus.Renewal, user);
+
+        verify(invoiceDiscountsService,  never()).applyProratedDiscounts(eq(mockContractor),anyListOf(ContractorFee.class), anyDouble());
+        verify(invoiceDiscountsService, times(1)).applyDiscounts(eq(mockContractor),anyListOf(InvoiceItem.class));
+    }
+
+    @Test
+         public void createInvoiceItems_SuncorProratedDiscounts() {
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(mockContractor.getMembershipDate()).thenReturn(new Date());
+
+        billingService.createInvoiceItems(mockContractor, BillingStatus.Upgrade, user);
+
+        verify(invoiceDiscountsService, times(1)).applyProratedDiscounts(eq(mockContractor),anyListOf(ContractorFee.class), anyDouble());
+        verify(invoiceDiscountsService, never()).applyDiscounts(eq(mockContractor),anyListOf(InvoiceItem.class));
     }
 
 }
