@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.viewmodel.employee;
 import com.google.gson.Gson;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.viewmodel.IdNameTitleModel;
 import com.picsauditing.employeeguard.viewmodel.RoleModel;
 import com.picsauditing.employeeguard.viewmodel.operator.OperatorEmployeeSkillModel;
 import com.picsauditing.jpa.entities.JSONable;
@@ -10,12 +11,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.List;
-import java.util.Map;
 
 public class OperatorEmployeeModel implements JSONable {
 	private final int id;
 	private final String name;
-	private final Map<String, String> companyInfoMap;
+	private final List<IdNameTitleModel> companies;
 	private final SkillStatus overallStatus;
 	private final List<ProjectDetailModel> projects;
 	private final List<RoleModel> roles;
@@ -24,7 +24,7 @@ public class OperatorEmployeeModel implements JSONable {
 	public OperatorEmployeeModel(Builder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
-		this.companyInfoMap = Utilities.unmodifiableMap(builder.companyInfoMap);
+		this.companies = Utilities.unmodifiableList(builder.companies);
 		this.overallStatus = builder.overallStatus;
 		this.projects = Utilities.unmodifiableList(builder.projects);
 		this.roles = Utilities.unmodifiableList(builder.roles);
@@ -39,8 +39,8 @@ public class OperatorEmployeeModel implements JSONable {
 		return name;
 	}
 
-	public Map<String, String> getCompanyInfoMap() {
-		return companyInfoMap;
+	public List<IdNameTitleModel> getCompanies() {
+		return companies;
 	}
 
 	public SkillStatus getOverallStatus() {
@@ -78,7 +78,7 @@ public class OperatorEmployeeModel implements JSONable {
 	public static class Builder {
 		private int id;
 		private String name;
-		private Map<String, String> companyInfoMap;
+		private List<IdNameTitleModel> companies;
 		private SkillStatus overallStatus;
 		private List<ProjectDetailModel> projects;
 		private List<RoleModel> roles;
@@ -94,8 +94,8 @@ public class OperatorEmployeeModel implements JSONable {
 			return this;
 		}
 
-		public Builder companyInfoMap(Map<String, String> companyInfoMap) {
-			this.companyInfoMap = companyInfoMap;
+		public Builder companies(List<IdNameTitleModel> companies) {
+			this.companies = companies;
 			return this;
 		}
 

@@ -15,6 +15,10 @@ public class OperatorEmployeeModelFactory {
 	                                    final Map<Role, SkillStatus> roleStatusMap,
 	                                    final Map<AccountSkill, SkillStatus> skillStatusMap,
 	                                    final SkillStatus overallStatus) {
-		return null;
+		return new OperatorEmployeeModel.Builder()
+				.id(employee.getId())
+				.name(employee.getName())
+				.overallStatus(overallStatus)
+				.build();
 	}
 }

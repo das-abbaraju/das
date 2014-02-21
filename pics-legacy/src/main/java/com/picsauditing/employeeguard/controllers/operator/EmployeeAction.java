@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.employee.OperatorEmployeeModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
@@ -17,8 +18,6 @@ import java.util.Set;
 
 public class EmployeeAction extends PicsRestActionSupport {
 
-	@Autowired
-	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -37,7 +36,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 	public String show() {
 		operatorEmployeeModel = buildOperatorEmployeeModel();
 
-//		json = operatorEmployeeModel.toJSON();
+		json = new JSONObject();
+		json.put("employee", operatorEmployeeModel.toJSON(true));
 
 		return JSON;
 	}
@@ -52,8 +52,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employeeEntity, projectSkillMap);
 		SkillStatus overallStatus = statusCalculatorService.calculateOverallStatus(Utilities.mergeCollections(roleStatusMap.values(), projectStatusMap.values()));
 
-		Set<AccountSkill> merged = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
-		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employeeEntity, merged);
+		Set<AccountSkill> skills = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
+		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employeeEntity, skills);
 
 		return ViewModelFactory.getOperatorEmployeeModelFactory().create(
 				employeeEntity, projectStatusMap, roleStatusMap, skillStatusMap, overallStatus);

@@ -568,9 +568,12 @@ public class Utilities {
 		Set<V> uniqueCollection = new HashSet<>();
 
 		for (Collection collection : collections) {
-			Iterator<V> collectionIterator = collection.iterator();
+			// Collection of collections
+			Iterator<Collection<V>> collectionIterator = collection.iterator();
 			while (collectionIterator.hasNext()) {
-				uniqueCollection.add(collectionIterator.next());
+				for (V value : collectionIterator.next()) {
+					uniqueCollection.add(value);
+				}
 			}
 		}
 
