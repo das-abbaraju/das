@@ -113,6 +113,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
         operator.setType(getCreateType());
         operator.setCountry(new Country(permissions.getCountry()));
 
+        timeoutDays = "" + operator.getRememberMeTimeInDays();
+        sessionTimeout = "" + operator.getSessionTimeout();
+
         return SUCCESS;
     }
 
