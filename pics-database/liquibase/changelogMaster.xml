@@ -161,5 +161,6 @@
 	<!-- 7.1.7 -->
 	<include file="./liquibase/mdo46_PICS-13646_tradeSS_DDL.sql"/>
 	<include file="./liquibase/mdo47_PICS-13646_tradeSS_DML.sql"/>
+	<include file="./liquibase/lkam6_US180_Suncor_2014_Prorated_Discounts.sql"/>
 
 </databaseChangeLog>
