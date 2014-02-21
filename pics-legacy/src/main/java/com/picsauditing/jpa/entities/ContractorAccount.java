@@ -138,8 +138,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private VATValidator vatValidator;
 	private CountryDAO countryDAO;
 
-    private OperatorAccount logoForSingleOperatorContractor;
-
 	private static Logger logger = LoggerFactory.getLogger(ContractorAccount.class);
 
 	public ContractorAccount() {
@@ -1952,14 +1950,4 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return false;
 	}
-
-    @ManyToOne
-    @JoinColumn(name="logoForSingleOperatorContractor", nullable = true)
-    public OperatorAccount getLogoForSingleOperatorContractor() {
-        return logoForSingleOperatorContractor;
-    }
-
-    public void setLogoForSingleOperatorContractor(OperatorAccount logoForSingleOperatorContractor) {
-        this.logoForSingleOperatorContractor = logoForSingleOperatorContractor;
-    }
 }
