@@ -3338,7 +3338,7 @@ body {
 }
 /* line 1, ../sass/_secondary-navigation.scss */
 #secondary_navigation {
-  top: 50px;
+  top: 49px;
   background: #2c3f50;
   background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #34495e), color-stop(100%, #2c3f50));
   background-image: -webkit-linear-gradient(to bottom, #34495e, #2c3f50);

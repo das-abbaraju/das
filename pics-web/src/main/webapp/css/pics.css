@@ -2572,3 +2572,15 @@ div.auditSubMenu a.current {
 	margin-left: 5px;
 	color: #ff0000;
 }
+
+#systemMessage {
+    margin-bottom: 20px;
+    margin-top: -23px;
+    width: 100%;
+}
+
+@media (max-width: 979px) {
+	#systemMessage {
+		margin-top: 0;		
+	}
+}

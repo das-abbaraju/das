@@ -55,7 +55,9 @@
                     </form>
                 </div>
             </s:if>
-            <a class="contact-us-link" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
+            <div class="nav-collapse collapse">
+                <a class="contact-us-link" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
+            </div>
         </nav>
     </div>
 </div>

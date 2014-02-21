@@ -171,20 +171,7 @@
 %>
 
 <%
-    if (mainPage.isDisplaySystemMessage()) {
-        if (useVersion7Menus) {
-%>
-<style>
-    body {
-        padding-top: 55px;
-    }
-
-    #systemMessage {
-        margin-bottom: 20px;
-    }
-</style>
-<%
-    }
+    if (true) {
 %>
 <jsp:include page="/struts/misc/main_system_message.jsp"/>
 <%
