@@ -32,7 +32,7 @@ public class ContractorFlagChanges extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		if (conID > 0) {
-			List<ContractorOperator> tempConOps = contractorOperatorDao.findByContractor(conID, permissions);
+			List<ContractorOperator> tempConOps = contractorOperatorDao.findActiveOperatorsByContractor(conID, permissions);
 			for (ContractorOperator co : tempConOps) {
 				if (co.getBaselineFlag()!=null && !co.getFlagColor().equals(co.getBaselineFlag()))
 					conOpList.add(co);

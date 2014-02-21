@@ -90,7 +90,7 @@ public class ContractorFacilities extends ContractorActionSupport {
             accountDao.save(contractor);
         }
 
-        currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
+        currentOperators = contractorOperatorDAO.findActiveOperatorsByContractor(id, permissions);
 
         return SUCCESS;
     }
@@ -176,7 +176,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
     public String load() throws Exception {
         findContractor();
-        currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
+        currentOperators = contractorOperatorDAO.findActiveOperatorsByContractor(id, permissions);
         return "load";
     }
 
@@ -253,7 +253,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	}
 
 	private void removeCurrentSitesFromSearchResults() {
-		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
+		currentOperators = contractorOperatorDAO.findActiveOperatorsByContractor(id, permissions);
 		Iterator<OperatorAccount> iterator = searchResults.iterator();
 		while (iterator.hasNext()) {
 		    OperatorAccount searchResult = iterator.next();
