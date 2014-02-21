@@ -13,6 +13,7 @@ import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,25 +21,28 @@ import static junit.framework.Assert.assertEquals;
 
 import static org.hamcrest.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static com.picsauditing.service.billing.InvoiceDiscountsService.SUNCOR;
 
 public class InvoiceDiscountsServiceTest {
-    public static final int TEST_MIN_FACILITIES = 5;
-    public static final BigDecimal TEST_AMOUNT = new BigDecimal(1);
-    public static final OperatorAccount NOT_SUNCOR = OperatorAccount.builder().id(5).build();
-    public static final BigDecimal ZERO = new BigDecimal(0);
     @Mock
     private InvoiceFeeDAO invoiceFeeDAO;
     @Mock
     private TopLevelOperatorFinder topLevelOperatorFinder;
 
+    public static final int TEST_MIN_FACILITIES = 5;
+    public static final BigDecimal TEST_AMOUNT = new BigDecimal(1);
+    public static final OperatorAccount NOT_SUNCOR = OperatorAccount.builder().id(5).build();
+    public static final BigDecimal ZERO = new BigDecimal(0);
+    
     private InvoiceDiscountsService invoiceDiscountsService;
+    private ContractorAccount contractor;
 
     @Test
     public void testApplyDiscounts_WorksForOnlySuncor() throws Exception {
-        ContractorAccount contractor = new ContractorAccount();
+        contractor = new ContractorAccount();
         List<InvoiceItem> invoiceItems = buildInvoiceItems();
 
 
@@ -56,7 +60,7 @@ public class InvoiceDiscountsServiceTest {
 
     @Test
     public void testApplyDiscounts_DoesNotWorkForSuncor() throws Exception {
-        ContractorAccount contractor = new ContractorAccount();
+        contractor = new ContractorAccount();
         List<InvoiceItem> invoiceItems = buildInvoiceItems();
 
 
@@ -69,7 +73,7 @@ public class InvoiceDiscountsServiceTest {
 
     @Test
     public void testApplyDiscounts_WorksForSuncorAndAnotherCompany() throws Exception {
-        ContractorAccount contractor = new ContractorAccount();
+        contractor = new ContractorAccount();
         List<InvoiceItem> invoiceItems = buildInvoiceItems();
 
 
@@ -78,6 +82,22 @@ public class InvoiceDiscountsServiceTest {
         List<InvoiceItem> discounts = invoiceDiscountsService.applyDiscounts(contractor, invoiceItems);
 
         assertEquals(0, discounts.size());
+    }
+
+    @Test
+    public void testApplyProratedDiscounts_AllFeeClassesWithADiscountThatProRatedToZero() throws Exception {
+        contractor = new ContractorAccount();
+        contractor.setLogoForSingleOperatorContractor(SUNCOR);
+        List<ContractorFee> upgradeFees = buildBasicContractorFees();
+
+        when(topLevelOperatorFinder.findAllTopLevelOperators(contractor)).thenReturn(Arrays.asList(SUNCOR, NOT_SUNCOR));
+
+        int daysUntilExpiration = 272;
+        List<InvoiceItem> discounts = invoiceDiscountsService.applyProratedDiscounts(contractor, upgradeFees, daysUntilExpiration);
+
+        assertEquals(2, discounts.size());
+        assertEquals(-60, discounts.get(0).getAmount().intValue());
+        assertEquals(-75, discounts.get(1).getAmount().intValue());
     }
 
     @Before
@@ -91,8 +111,8 @@ public class InvoiceDiscountsServiceTest {
             @Override
             public InvoiceFee answer(InvocationOnMock invocation) throws Throwable {
                 FeeClass feeClass = (FeeClass) invocation.getArguments()[0];
-                int minFacilities = (int) invocation.getArguments()[1];
-                int operatorId = (int) invocation.getArguments()[2];
+                int minFacilities = (Integer) invocation.getArguments()[1];
+                int operatorId = (Integer) invocation.getArguments()[2];
 
                 InvoiceFee invoiceFee = null;
 
@@ -103,6 +123,65 @@ public class InvoiceDiscountsServiceTest {
                 return invoiceFee;
             }
         }).when(invoiceFeeDAO).findDiscountByNumberOfOperatorsAndClass(Matchers.argThat(any(FeeClass.class)), anyInt(), anyInt());
+    }
+
+    private List<ContractorFee> buildBasicContractorFees() {
+        List<ContractorFee> upgradeFees = new ArrayList<>();
+
+        addUpgradeFee(upgradeFees,
+                InvoiceFee.builder()
+                        .feeClass(FeeClass.DocuGUARD)
+                        .minFacilities(1)
+                        .amount(new BigDecimal(100))
+                        .build(),
+                InvoiceFee.builder()
+                        .feeClass(FeeClass.DocuGUARD)
+                        .amount(new BigDecimal((100)))
+                        .minFacilities(2)
+                        .build()
+        );
+
+        addUpgradeFee(upgradeFees,
+                InvoiceFee.builder()
+                        .feeClass(FeeClass.InsureGUARD)
+                        .minFacilities(1)
+                        .amount(new BigDecimal(50))
+                        .build(),
+                InvoiceFee.builder()
+                        .feeClass(FeeClass.InsureGUARD)
+                        .amount(new BigDecimal((130)))
+                        .minFacilities(2)
+                        .build()
+        );
+
+        addUpgradeFee(upgradeFees,
+                InvoiceFee.builder()
+                        .feeClass(FeeClass.AuditGUARD)
+                        .minFacilities(1)
+                        .amount(new BigDecimal(100))
+                        .build(),
+                InvoiceFee.builder()
+                        .feeClass(FeeClass.AuditGUARD)
+                        .amount(new BigDecimal((200)))
+                        .minFacilities(2)
+                        .build()
+        );
+        return upgradeFees;
+    }
+
+    private void addUpgradeFee(List<ContractorFee> upgradeFees, InvoiceFee currentLevel, InvoiceFee newLevel) {
+        ContractorFee contractorFee = ContractorFee.builder()
+                .currentLevel(currentLevel)
+                .newLevel(newLevel)
+                .build();
+
+        when(invoiceFeeDAO.findDiscountByNumberOfOperatorsAndClass(eq(currentLevel.getFeeClass()),
+                eq(currentLevel.getMinFacilities()), anyInt())).thenReturn(currentLevel);
+
+        when(invoiceFeeDAO.findDiscountByNumberOfOperatorsAndClass(eq(newLevel.getFeeClass()),
+                eq(newLevel.getMinFacilities()), anyInt())).thenReturn(newLevel);
+
+        upgradeFees.add(contractorFee);
     }
 
     private List<InvoiceItem> buildInvoiceItems() {
