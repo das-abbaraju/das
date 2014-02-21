@@ -7,10 +7,7 @@ import com.picsauditing.employeeguard.viewmodel.employee.EmployeeSkillModel;
 import com.picsauditing.employeeguard.viewmodel.employee.EmployeeSkillsModel;
 import org.apache.commons.collections.map.ListOrderedMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmployeeSkillsModelFactory {
 
@@ -32,7 +29,7 @@ public class EmployeeSkillsModelFactory {
 		Map<AccountSkill, SkillStatus> skillStatuses = buildSkillStatusMap(employee);
 
 		Map<String, List<EmployeeSkillModel>> employeeSkillSections = new ListOrderedMap();
-		employeeSkillSections.put("Project Required", buildSkillSectionForProjectSkills(siteProjectRoles));
+		employeeSkillSections.put("Project Required", buildSkillSectionForProjectSkills(siteProjectRoles, skillStatuses));
 
 		for (Role siteRole : siteRoles) {
 			Role corporateRole = siteToCorporateRoles.get(siteRole);
@@ -49,8 +46,37 @@ public class EmployeeSkillsModelFactory {
 		return employeeSkillSections;
 	}
 
-	private List<EmployeeSkillModel> buildSkillSectionForProjectSkills(List<ProjectRole> siteProjectRoles) {
-		return null;
+	private Map<AccountSkill, SkillStatus> buildSkillStatusMap(Employee employee) {
+		Map<AccountSkill, SkillStatus> skillStatuses = new HashMap<>();
+		for (AccountSkillEmployee accountSkillEmployee : employee.getSkills()) {
+			skillStatuses.put(accountSkillEmployee.getSkill(), SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
+		}
+
+		return skillStatuses;
+	}
+
+	private List<EmployeeSkillModel> buildSkillSectionForProjectSkills(List<ProjectRole> siteProjectRoles,
+	                                                                   Map<AccountSkill, SkillStatus> skillStatuses) {
+		Set<Project> projects = new HashSet<>();
+		for (ProjectRole projectRole : siteProjectRoles) {
+			projects.add(projectRole.getProject());
+		}
+
+		List<EmployeeSkillModel> skillSectionForProjectSkills = new ArrayList<>();
+		for (Project project : projects) {
+			for (ProjectSkill projectSkill : project.getSkills()) {
+				AccountSkill skill = projectSkill.getSkill();
+				skillSectionForProjectSkills.add(new EmployeeSkillModel.Builder()
+						.belongsToProject(project.getId())
+						.belongsToRole(0)
+						.skillName(skill.getName())
+						.skillStatus(skillStatuses.get(skill))
+						.build());
+			}
+		}
+
+		Collections.sort(skillSectionForProjectSkills);
+		return skillSectionForProjectSkills;
 	}
 
 	private Map<String, List<EmployeeSkillModel>> buildSkillSectionMap(Project project,
@@ -64,15 +90,6 @@ public class EmployeeSkillsModelFactory {
 		return employeeSkillSections;
 	}
 
-	private Map<AccountSkill, SkillStatus> buildSkillStatusMap(Employee employee) {
-		Map<AccountSkill, SkillStatus> skillStatuses = new HashMap<>();
-		for (AccountSkillEmployee accountSkillEmployee : employee.getSkills()) {
-			skillStatuses.put(accountSkillEmployee.getSkill(), SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
-		}
-
-		return skillStatuses;
-	}
-
 	private List<EmployeeSkillModel> buildEmployeeSkillModels(Project project,
 	                                                          Role role,
 	                                                          List<AccountSkill> siteSkills,
@@ -82,16 +99,16 @@ public class EmployeeSkillsModelFactory {
 			AccountSkill skill = roleSkill.getSkill();
 			employeeSkills.add(new EmployeeSkillModel.Builder()
 					.skillName(skill.getName())
-					.skillStatus(skillStatuses.containsKey(skill) ? SkillStatus.Expired : skillStatuses.get(skill))
+					.skillStatus(skillStatuses.get(skill))
 					.belongsToProject(project == null ? 0 : project.getId())
-					.belongsToRole(roleSkill.getRole().getId())
+					.belongsToRole(role.getId())
 					.build());
 		}
 
 		for (AccountSkill skill : siteSkills) {
 			employeeSkills.add(new EmployeeSkillModel.Builder()
 					.skillName(skill.getName())
-					.skillStatus(skillStatuses.containsKey(skill) ? SkillStatus.Expired : skillStatuses.get(skill))
+					.skillStatus(skillStatuses.get(skill))
 					.belongsToProject(project == null ? 0 : project.getId())
 					.belongsToRole(role.getId())
 					.build());

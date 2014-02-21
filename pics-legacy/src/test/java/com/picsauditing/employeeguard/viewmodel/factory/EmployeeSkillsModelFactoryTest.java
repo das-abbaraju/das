@@ -126,7 +126,7 @@ public class EmployeeSkillsModelFactoryTest {
 		when(roleForCorporate.getName()).thenReturn("Corporate Role");
 		when(roleForProjectRole.getName()).thenReturn("Project Role");
 
-		when(skillForCorporateRequirement.getName()).thenReturn("Corporate Required Skill");
+		when(skillForCorporateRequirement.getName()).thenReturn("Corpora/te Required Skill");
 		when(skillForCorporateRole.getName()).thenReturn("Corporate Role Skill");
 		when(skillForProjectRole.getName()).thenReturn("Project Role Skill");
 		when(skillForProjectSkill.getName()).thenReturn("Project Skill");
