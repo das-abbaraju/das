@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.employee;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.RoleModel;
 import com.picsauditing.employeeguard.viewmodel.operator.OperatorEmployeeSkillModel;
@@ -19,11 +20,11 @@ public class OperatorEmployeeModel {
 	public OperatorEmployeeModel(Builder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
-		this.companyInfoMap = builder.companyInfoMap;
+		this.companyInfoMap = Utilities.unmodifiableMap(builder.companyInfoMap);
 		this.overallStatus = builder.overallStatus;
-		this.projects = builder.projects;
-		this.roles = builder.roles;
-		this.skills = builder.skills;
+		this.projects = Utilities.unmodifiableList(builder.projects);
+		this.roles = Utilities.unmodifiableList(builder.roles);
+		this.skills = Utilities.unmodifiableList(builder.skills);
 	}
 
 	public int getId() {

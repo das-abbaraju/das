@@ -8,13 +8,12 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.viewmodel.employee.EmployeeModel;
+import com.picsauditing.employeeguard.viewmodel.employee.OperatorEmployeeModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
-import com.picsauditing.employeeguard.viewmodel.operator.EmployeeNav;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 public class EmployeeAction extends PicsRestActionSupport {
 
@@ -33,59 +32,40 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private int siteId;
 
-	private EmployeeModel employee;
-	private EmployeeNav employeeNav;
-
+	private OperatorEmployeeModel operatorEmployeeModel;
 
 	public String show() {
-		Employee employeeEntity = employeeService.findEmployee(id);
-
-		Map<Integer, AccountModel> contractors = accountService.getContractorsForEmployee(employeeEntity);
-		employee = ViewModelFactory.getEmployeeModelFactory().create(employeeEntity, contractors);
-
-		employeeNav = getEmployeeNav(employeeEntity);
+		operatorEmployeeModel = buildOperatorEmployeeModel();
 
 		return SHOW;
 	}
 
-	private EmployeeNav getEmployeeNav(final Employee employeeEntity) {
-		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employeeEntity);
-		Map<Role, SkillStatus> roleOverallStatusMap = getRoleSkillStatusMap(employeeEntity, projectRoleMap);
-		Map<Project, SkillStatus> projectOverallStatusMap = getProjectSkillStatusMap(employeeEntity, projectRoleMap);
-		SkillStatus overallStatus = getOverallSkillStatus(roleOverallStatusMap, projectOverallStatusMap);
+	private OperatorEmployeeModel buildOperatorEmployeeModel() {
+		Employee employeeEntity = employeeService.findEmployee(id);
 
-		return ViewModelFactory.getEmployeeNavFactory().create(overallStatus,
-				ViewModelFactory.getNavItemFactory().createForRoles(roleOverallStatusMap),
-				ViewModelFactory.getNavItemFactory().createForProjects(projectOverallStatusMap));
+		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employeeEntity);
+		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(employeeEntity);
+
+		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employeeEntity, roleSkillMap);
+		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employeeEntity, projectSkillMap);
+		SkillStatus overallStatus = statusCalculatorService.calculateOverallStatus(Utilities.mergeCollections(roleStatusMap.values(), projectStatusMap.values()));
+
+		Set<AccountSkill> merged = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
+		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employeeEntity, merged);
+
+		return ViewModelFactory.getOperatorEmployeeModelFactory().create(
+				employeeEntity, projectStatusMap, roleStatusMap, skillStatusMap, overallStatus);
 	}
 
-	private Map<Role, SkillStatus> getRoleSkillStatusMap(final Employee employeeEntity,
-														 final Map<Project, Set<Role>> projectRoleMap) {
+	private Map<Role, Set<AccountSkill>> getRoleSkillMap(Employee employeeEntity) {
 		Set<Role> employeeRoles = roleService.getEmployeeRolesForSite(siteId, employeeEntity);
-		employeeRoles.addAll(Utilities.extractAndFlattenValuesFromMap(projectRoleMap));
-		Map<Role, Set<AccountSkill>> roleSkillMap = skillService.getSkillsForRoles(siteId, employeeRoles);
-		Map<Role, List<SkillStatus>> roleSkillStatuses = statusCalculatorService
-				.getSkillStatusListPerEntity(employeeEntity, roleSkillMap);
-		return statusCalculatorService
-				.getOverallStatusPerEntity(roleSkillStatuses);
+		return skillService.getSkillsForRoles(siteId, employeeRoles);
 	}
 
-	private Map<Project, SkillStatus> getProjectSkillStatusMap(final Employee employeeEntity,
-															   final Map<Project, Set<Role>> projectRoleMap) {
-		Map<Project, Set<AccountSkill>> projectSkillMap = skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
+	private Map<Project, Set<AccountSkill>> getProjectSkillMap(Employee employeeEntity) {
+		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employeeEntity);
+		return skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
 				projectRoleMap);
-		Map<Project, List<SkillStatus>> projectSkillStatuses = statusCalculatorService
-				.getSkillStatusListPerEntity(employeeEntity, projectSkillMap);
-		return statusCalculatorService
-				.getOverallStatusPerEntity(projectSkillStatuses);
-	}
-
-	private SkillStatus getOverallSkillStatus(final Map<Role, SkillStatus> roleOverallStatusMap,
-											  final Map<Project, SkillStatus> projectOverallStatusMap) {
-		Collection<SkillStatus> skillStatuses = new ArrayList<>();
-		skillStatuses.addAll(roleOverallStatusMap.values());
-		skillStatuses.addAll(projectOverallStatusMap.values());
-		return statusCalculatorService.calculateOverallStatus(skillStatuses);
 	}
 
 	public int getSiteId() {
@@ -96,11 +76,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 		this.siteId = siteId;
 	}
 
-	public EmployeeModel getEmployee() {
-		return employee;
-	}
-
-	public EmployeeNav getEmployeeNav() {
-		return employeeNav;
+	public OperatorEmployeeModel getOperatorEmployeeModel() {
+		return operatorEmployeeModel;
 	}
 }

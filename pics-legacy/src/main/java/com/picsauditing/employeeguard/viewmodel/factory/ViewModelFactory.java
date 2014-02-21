@@ -18,6 +18,7 @@ public class ViewModelFactory {
 	private static EmployeeSkillsModelFactory employeeSkillsModelFactory = new EmployeeSkillsModelFactory();
 	private static EntityInfoFactory entityInfoFactory = new EntityInfoFactory();
 	private static NavItemFactory navItemFactory = new NavItemFactory();
+	private static OperatorEmployeeModelFactory operatorEmployeeModelFactory = new OperatorEmployeeModelFactory();
 	private static OperatorProjectAssignmentFactory operatorProjectAssignmentFactory = new OperatorProjectAssignmentFactory();
 	private static OperatorProjectRoleAssignmentFactory operatorProjectRoleAssignmentFactory = new OperatorProjectRoleAssignmentFactory();
 	private static OperatorSiteAssignmentModelFactory operatorSiteAssignmentModelFactory = new OperatorSiteAssignmentModelFactory();
@@ -74,6 +75,10 @@ public class ViewModelFactory {
 
 	public static NavItemFactory getNavItemFactory() {
 		return navItemFactory;
+	}
+
+	public static OperatorEmployeeModelFactory getOperatorEmployeeModelFactory() {
+		return operatorEmployeeModelFactory;
 	}
 
 	public static OperatorProjectAssignmentFactory getOperatorProjectAssignmentFactory() {
