@@ -3,10 +3,7 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.SkillType;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
@@ -36,7 +33,19 @@ public class StatusCalculatorServiceTest {
 	@Mock
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 	@Mock
+	private AccountSkillRole accountSkillRole;
+	@Mock
 	private Employee employee;
+	@Mock
+	private Project project;
+	@Mock
+	private ProjectRole projectRole;
+	@Mock
+	private ProjectRoleEmployee projectRoleEmployee;
+	@Mock
+	private Role role;
+	@Mock
+	private RoleEmployee roleEmployee;
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,15 +58,9 @@ public class StatusCalculatorServiceTest {
 
 	@Test
 	public void testGetEmployeeStatusRollUpForSkills() throws Exception {
+		setupMocksForGetEmployeeStatusRollUpForSkills();
+
 		Set<Employee> accountEmployees = new HashSet<>();
-
-		when(accountSkillEmployee.getEmployee()).thenReturn(employee);
-		when(accountSkillEmployee.getEndDate()).thenReturn(DateBean.addDays(DateBean.today(), 15));
-		when(accountSkillEmployee.getSkill()).thenReturn(skill);
-		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
-		when(employee.getName()).thenReturn("Employee Name");
-		when(employee.getSkills()).thenReturn(Arrays.asList(accountSkillEmployee));
-
 		accountEmployees.add(employee);
 
 		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
@@ -65,6 +68,19 @@ public class StatusCalculatorServiceTest {
 
 		Map<Employee, SkillStatus> map = service.getEmployeeStatusRollUpForSkills(accountEmployees, employeeSkills);
 
+		performAssertionsOnGetEmployeeStatusRollUpForSkills(map);
+	}
+
+	private void setupMocksForGetEmployeeStatusRollUpForSkills() {
+		when(accountSkillEmployee.getEmployee()).thenReturn(employee);
+		when(accountSkillEmployee.getEndDate()).thenReturn(DateBean.addDays(DateBean.today(), 15));
+		when(accountSkillEmployee.getSkill()).thenReturn(skill);
+		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
+		when(employee.getName()).thenReturn("Employee Name");
+		when(employee.getSkills()).thenReturn(Arrays.asList(accountSkillEmployee));
+	}
+
+	private void performAssertionsOnGetEmployeeStatusRollUpForSkills(Map<Employee, SkillStatus> map) {
 		assertNotNull(map);
 		assertFalse(map.isEmpty());
 		assertEquals(1, map.size());
@@ -131,12 +147,14 @@ public class StatusCalculatorServiceTest {
 						.startDate(DateBean.today())
 						.endDate(DateBean.addDays(DateBean.today(), 45))
 						.build(),
+
 				new AccountSkillEmployeeBuilder()
 						.accountSkill(skills.get(1))
 						.employee(employees.get(1))
 						.startDate(DateBean.today())
 						.endDate(DateBean.addDays(DateBean.today(), 5))
 						.build(),
+
 				new AccountSkillEmployeeBuilder()
 						.accountSkill(skills.get(2))
 						.employee(employees.get(1))

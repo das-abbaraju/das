@@ -15,6 +15,7 @@ import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
 import com.picsauditing.service.billing.InvoiceDiscountsService;
+import com.picsauditing.service.billing.InvoiceFeeProRater;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 public class BillingService {
@@ -197,10 +197,16 @@ public class BillingService {
 			item.setAuditColumns(auditUser);
 		}
 
-		return invoice;
+        resetTemporaryBillingStatus(contractor);
+
+        return invoice;
 	}
 
-	private void syncInvoiceIfAppropriate(BigDecimal invoiceTotal, Invoice invoice) {
+    private void resetTemporaryBillingStatus(ContractorAccount contractor) {
+        contractor.setLogoForSingleOperatorContractor(null);
+    }
+
+    private void syncInvoiceIfAppropriate(BigDecimal invoiceTotal, Invoice invoice) {
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			AccountingSystemSynchronization.setToSynchronize(invoice);
 		}
@@ -330,8 +336,10 @@ public class BillingService {
         addProductItems(contractor, billingStatus, user, items);
         addSSIPDiscountIfApplies(contractor, items);
 
-        // TODO: Right now we're ignoring upgrades, but in the near future we need to pro-rate discounts
-        if (billingStatus(contractor) != BillingStatus.Upgrade) {
+        if (billingStatus.isUpgrade()) {
+            items.addAll(invoiceDiscountsService.applyProratedDiscounts(contractor,
+                    getUpgradedFees(contractor), determineDaysUntilExpiration(contractor)));
+        } else {
             items.addAll(invoiceDiscountsService.applyDiscounts(contractor, items));
         }
 
@@ -362,16 +370,10 @@ public class BillingService {
 
 		for (ContractorFee upgrade : upgrades) {
 			String description = "";
-			BigDecimal upgradeAmountDifference = upgrade.getNewAmount();
 
-			if (contractor.getAccountLevel().isFull()) {
-				upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentAmount());
-			}
-
-			// If membership fee prorate amount
 			if (upgrade.getFeeClass().isMembership()) {
-				upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
-						new BigDecimal(365), 0, RoundingMode.HALF_UP);
+                upgradeAmount = InvoiceFeeProRater.calculateProRatedInvoiceFees(upgrade.getCurrentAmount(), upgrade.getNewAmount(),
+                        daysUntilExpiration);
 
 				if (upgradeAmount.floatValue() > 0.0f) {
                     String currencyDisplay = contractor.getCountry().getCurrency().getDisplay();
@@ -421,7 +423,7 @@ public class BillingService {
     }
 
     private List<ContractorFee> getUpgradedFees(ContractorAccount contractor) {
-		List<ContractorFee> upgrades = new ArrayList<ContractorFee>();
+		List<ContractorFee> upgrades = new ArrayList<>();
 		for (FeeClass feeClass : contractor.getFees().keySet()) {
 			ContractorFee fee = contractor.getFees().get(feeClass);
 

@@ -63,7 +63,7 @@ public class AssignmentAction extends PicsRestActionSupport {
                         projectRoleService.getEmployeeProjectRoleAssignment(project),
                         projectRoleService.getRolesAndSkillsForProject(project),
                         getAccountSkillsFromProjectSkills(project.getSkills()),
-                        skillService.getRequiredSkills(project.getAccountId()),
+                        skillService.getRequiredSkillsForSite(project.getAccountId()),
                         skillService.getParentSiteRequiredSkills(project.getAccountId()));
     }
 
@@ -87,7 +87,7 @@ public class AssignmentAction extends PicsRestActionSupport {
                                 .createSortedOperatorProjectAssignmentSkillHeader(
                                         jobRoleSkills,
                                         getAccountSkillsFromProjectSkills(project.getSkills()),
-                                        skillService.getRequiredSkills(project.getAccountId()),
+                                        skillService.getRequiredSkillsForSite(project.getAccountId()),
                                         skillService.getParentSiteRequiredSkills(project.getAccountId())),
                         getEmployeeProjectRoleAssignmentList(project, role, jobRoleSkills));
 
@@ -118,7 +118,7 @@ public class AssignmentAction extends PicsRestActionSupport {
                                 .createSortedOperatorProjectAssignmentAccountSkillsHeader(
                                         jobRoleSkills,
                                         getAccountSkillsFromProjectSkills(project.getSkills()),
-                                        skillService.getRequiredSkills(project.getAccountId()),
+                                        skillService.getRequiredSkillsForSite(project.getAccountId()),
                                         skillService.getParentSiteRequiredSkills(project.getAccountId())));
     }
 

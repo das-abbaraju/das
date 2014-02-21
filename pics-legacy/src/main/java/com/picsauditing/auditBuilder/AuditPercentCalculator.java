@@ -521,9 +521,11 @@ public class AuditPercentCalculator {
             int percentComplete = 0;
             int percentVerified = 0;
             if (required > 0) {
-                percentComplete = (int) Math.floor(100 * answered / required);
-                if (percentComplete >= 100) {
-                    percentComplete = 100;
+                if (isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(conAudit, cao)) {
+                    percentComplete = (int) Math.floor(100 * answered / required);
+                    if (percentComplete >= 100) {
+                        percentComplete = 100;
+                    }
                 }
                 percentVerified = (int) Math.floor(100 * verified / required);
                 if (percentVerified >= 100) {
@@ -551,6 +553,18 @@ public class AuditPercentCalculator {
         if (conAudit.getAuditType().getScoreType() == ScoreType.Aggregate) {
             calculateStraightAggregate(conAudit);
         }
+    }
+
+    private boolean isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(ContractorAudit conAudit, ContractorAuditOperator cao) {
+        if (conAudit.getAuditType().getClassType() != AuditTypeClass.Policy) {
+            return true;
+        }
+
+        if (cao.getStatus().after(AuditStatus.Incomplete)) {
+            return false;
+        }
+
+        return true;
     }
 
     private void calculateStraightAggregate(ContractorAudit scoredAudit) {

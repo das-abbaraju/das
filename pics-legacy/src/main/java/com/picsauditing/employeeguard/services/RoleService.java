@@ -206,6 +206,18 @@ public class RoleService {
 		return employeeRequiredSkills;
 	}
 
+	public Set<Role> getEmployeeRolesForSite(final int siteId, final Employee employee) {
+		List<Role> siteRoles = roleDAO.findSiteRolesForEmployee(siteId, employee);
+		Map<Role, Role> siteToCorporateRoleMap = getSiteToCorporateRoles(siteId);
+
+		Set<Role> roles = new HashSet<>();
+		for (Role siteRole : siteRoles) {
+			roles.add(siteToCorporateRoleMap.get(siteRole));
+		}
+
+		return roles;
+	}
+
 	public Map<Role, Set<Employee>> getRoleAssignments(final int contractorId, final int siteId) {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 		Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);

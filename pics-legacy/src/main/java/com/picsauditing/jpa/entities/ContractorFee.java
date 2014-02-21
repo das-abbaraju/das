@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.ContractorAccountBuilder;
+import com.picsauditing.jpa.entities.builders.ContractorFeeBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -119,4 +121,8 @@ public class ContractorFee extends BaseTable {
 
 		return currentLevel.getMaxFacilities() < newFeeLevel.getMinFacilities();
 	}
+
+    public static ContractorFeeBuilder builder() {
+        return new ContractorFeeBuilder();
+    }
 }

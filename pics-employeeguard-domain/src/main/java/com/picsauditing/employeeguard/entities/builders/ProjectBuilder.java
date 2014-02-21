@@ -6,41 +6,41 @@ import com.picsauditing.employeeguard.entities.ProjectSkill;
 
 import java.util.List;
 
-public class ProjectBuilder {
-	private Project project;
+public class ProjectBuilder extends AbstractBaseEntityBuilder<Project, ProjectBuilder> {
 
 	public ProjectBuilder() {
-		this.project = new Project();
+		this.entity = new Project();
+		that = this;
 	}
 
 	public ProjectBuilder name(String name) {
-		project.setName(name);
+		entity.setName(name);
 
 		return this;
 	}
 
 	public ProjectBuilder location(String location) {
-		project.setLocation(location);
+		entity.setLocation(location);
 
 		return this;
 	}
 
-    public ProjectBuilder skills(List<ProjectSkill> projectSkills) {
-        project.setSkills(projectSkills);
-        return this;
-    }
+	public ProjectBuilder skills(List<ProjectSkill> projectSkills) {
+		entity.setSkills(projectSkills);
+		return this;
+	}
 
-    public ProjectBuilder roles(List<ProjectRole> projectRoles) {
-        project.setRoles(projectRoles);
-        return this;
-    }
+	public ProjectBuilder roles(List<ProjectRole> projectRoles) {
+		entity.setRoles(projectRoles);
+		return this;
+	}
 
 	public ProjectBuilder accountId(int accountId) {
-		project.setAccountId(accountId);
+		entity.setAccountId(accountId);
 		return this;
 	}
 
 	public Project build() {
-		return project;
+		return entity;
 	}
 }

@@ -14,4 +14,13 @@ public class TopLevelOperatorFinder {
     public List<OperatorAccount> findAllTopLevelOperators(ContractorAccount contractor) {
         return operatorAccountDAO.findAllTopLevelOperators(contractor.getId());
     }
+
+    public OperatorAccount findLogoForSingleOperatorContractor(ContractorAccount contractorAccount) {
+        List<OperatorAccount> allTopLevelOperators = findAllTopLevelOperators(contractorAccount);
+
+        if (allTopLevelOperators.size() == 1) {
+            return allTopLevelOperators.get(0);
+        }
+        return null;
+    }
 }

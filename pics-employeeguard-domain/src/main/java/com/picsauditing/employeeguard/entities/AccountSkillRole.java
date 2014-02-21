@@ -187,8 +187,8 @@ public class AccountSkillRole implements BaseEntity {
 
 	public static transient final Extractor<AccountSkillRole, AccountSkill> SKILL_EXTRACTOR = new Extractor<AccountSkillRole, AccountSkill>() {
 		@Override
-		public AccountSkill extract(AccountSkillRole accountSkillGroup) {
-			return accountSkillGroup.getSkill();
+		public AccountSkill extract(AccountSkillRole accountSkillRole) {
+			return accountSkillRole.getSkill();
 		}
 	};
 

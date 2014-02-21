@@ -8,65 +8,60 @@ import com.picsauditing.employeeguard.entities.ProfileDocument;
 import java.util.Date;
 import java.util.List;
 
-public class ProfileDocumentBuilder {
+public class ProfileDocumentBuilder extends AbstractBaseEntityBuilder<ProfileDocument, ProfileDocumentBuilder> {
 
-    private ProfileDocument profileDocument;
 
     public ProfileDocumentBuilder() {
-        profileDocument = new ProfileDocument();
-    }
-
-    public ProfileDocumentBuilder id(int id) {
-        profileDocument.setId(id);
-        return this;
+        entity = new ProfileDocument();
+		that = this;
     }
 
     public ProfileDocumentBuilder documentType(DocumentType documentType) {
-        profileDocument.setDocumentType(documentType);
+        entity.setDocumentType(documentType);
         return this;
     }
 
     public ProfileDocumentBuilder profile(Profile profile) {
-        profileDocument.setProfile(profile);
+        entity.setProfile(profile);
         return this;
     }
 
     public ProfileDocumentBuilder name(String name) {
-        profileDocument.setName(name);
+        entity.setName(name);
         return this;
     }
 
     public ProfileDocumentBuilder startDate(Date startDate) {
-        profileDocument.setStartDate(startDate);
+        entity.setStartDate(startDate);
         return this;
     }
 
     public ProfileDocumentBuilder endDate(Date endDate) {
-        profileDocument.setEndDate(endDate);
+        entity.setEndDate(endDate);
         return this;
     }
 
     public ProfileDocumentBuilder fileName(String filename) {
-        profileDocument.setFileName(filename);
+        entity.setFileName(filename);
         return this;
     }
 
     public ProfileDocumentBuilder fileType(String fileType) {
-        profileDocument.setFileType(fileType);
+        entity.setFileType(fileType);
         return this;
     }
 
     public ProfileDocumentBuilder fileSize(int fileSize) {
-        profileDocument.setFileSize(fileSize);
+        entity.setFileSize(fileSize);
         return this;
     }
 
     public ProfileDocumentBuilder employeeSkills(List<AccountSkillEmployee> employeeSkills) {
-        profileDocument.setEmployeeSkills(employeeSkills);
+        entity.setEmployeeSkills(employeeSkills);
         return this;
     }
 
     public ProfileDocument build() {
-        return profileDocument;
+        return entity;
     }
 }
