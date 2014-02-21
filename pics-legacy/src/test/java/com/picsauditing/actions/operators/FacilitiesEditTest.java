@@ -3,6 +3,8 @@ package com.picsauditing.actions.operators;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.CountrySubdivisionDAO;
@@ -76,7 +78,34 @@ public class FacilitiesEditTest extends PicsActionTest {
 		facilitiesEdit.setOperator(operator);
 	}
 
-	@Test
+    @Test
+    public void testCreate_Operator() throws Exception {
+        when(permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit)).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+
+        facilitiesEdit.setCreateType("operator");
+
+        String result = facilitiesEdit.create();
+        assertEquals("success", result);
+        assertNotNull(facilitiesEdit.getSessionTimeout());
+        assertNotNull(facilitiesEdit.getTimeoutDays());
+    }
+
+    @Test
+    public void testCreate_Corporate() throws Exception {
+        when(permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit)).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+
+        facilitiesEdit.setCreateType("Corporate");
+
+        String result = facilitiesEdit.create();
+        assertEquals("success", result);
+        assertNotNull(facilitiesEdit.getSessionTimeout());
+        assertNotNull(facilitiesEdit.getTimeoutDays());
+    }
+
+
+    @Test
 	public void testAddSalesRepresentative_NoErrorAddsActionMessage() throws Exception {
         status.isOkMessage = "OK MESSAGE";
         AccountUser rep = salesRep();
