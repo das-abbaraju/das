@@ -53,7 +53,7 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 		return Collections.emptyList();
 	}
 
-	public List<AccountSkillEmployee> findByEmployeeAndSkills(Employee employee, List<AccountSkill> skills) {
+	public List<AccountSkillEmployee> findByEmployeeAndSkills(Employee employee, Collection<AccountSkill> skills) {
 		if (CollectionUtils.isNotEmpty(skills) && employee != null) {
 			TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee = :employee AND ase.skill IN (:skills)", AccountSkillEmployee.class);
 			query.setParameter("employee", employee);

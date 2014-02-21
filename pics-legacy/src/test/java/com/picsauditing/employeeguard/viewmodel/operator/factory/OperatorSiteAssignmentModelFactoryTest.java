@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.viewmodel.operator.factory;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
+import com.picsauditing.employeeguard.viewmodel.factory.OperatorSiteAssignmentModelFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.junit.Before;
 import org.junit.Test;

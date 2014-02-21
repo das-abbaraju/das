@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.entities.ProjectSkill;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class ProjectSkillDAO extends AbstractBaseEntityDAO<ProjectSkill> {
 		this.type = ProjectSkill.class;
 	}
 
-	public List<ProjectSkill> findByProjects(final List<Project> projects) {
+	public List<ProjectSkill> findByProjects(final Collection<Project> projects) {
 		if (CollectionUtils.isEmpty(projects)) {
 			return Collections.emptyList();
 		}

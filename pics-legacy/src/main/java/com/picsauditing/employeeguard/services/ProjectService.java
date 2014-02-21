@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
@@ -37,8 +38,8 @@ public class ProjectService {
 	private ProjectRoleDAO projectRoleDAO;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-    @Autowired
-    private RoleDAO roleDAO;
+	@Autowired
+	private RoleDAO roleDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
@@ -320,12 +321,27 @@ public class ProjectService {
 		return projectDAO.findProjectByRoleAndAccount(NumberUtils.toInt(roleId), accountId);
 	}
 
-    public Set<Integer> getContractorIdsForProject(final Project project) {
-        Set<Integer> contractorIds = new HashSet<>();
-        for (ProjectCompany projectCompany : project.getCompanies()) {
-            contractorIds.add(projectCompany.getAccountId());
-        }
+	public Set<Integer> getContractorIdsForProject(final Project project) {
+		Set<Integer> contractorIds = new HashSet<>();
+		for (ProjectCompany projectCompany : project.getCompanies()) {
+			contractorIds.add(projectCompany.getAccountId());
+		}
 
-        return contractorIds;
-    }
+		return contractorIds;
+	}
+
+	public Map<Project, Set<Role>> getProjectRolesForEmployee(final int siteId, final Employee employee) {
+		return Utilities.convertToMapOfSets(projectRoleDAO.findBySiteAndEmployee(siteId, employee),
+				new Utilities.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
+					@Override
+					public Project getKey(ProjectRole projectRole) {
+						return projectRole.getProject();
+					}
+
+					@Override
+					public Role getValue(ProjectRole projectRole) {
+						return projectRole.getRole();
+					}
+				});
+	}
 }

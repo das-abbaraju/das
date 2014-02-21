@@ -139,8 +139,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
         List<AccountSkill> roleSkills = ExtractorUtil.extractList(corporateRole.getSkills(),
 				AccountSkillRole.SKILL_EXTRACTOR);
-		roleSkills.addAll(skillService.getRequiredSkills(site.getId()));
-		roleSkills.addAll(skillService.getRequiredSkills(corporateRole.getAccountId()));
+		roleSkills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(site.getId()));
 		roleSkills = ListUtil.removeDuplicatesAndSort(roleSkills);
 
         return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
@@ -153,8 +152,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 																						  final AccountModel site) {
         Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
 		List<AccountSkill> allSkillsForRole = skillService.getSkillsForRole(corporateRole);
-		allSkillsForRole.addAll(skillService.getRequiredSkills(site.getId()));
-		allSkillsForRole.addAll(skillService.getRequiredSkills(corporateRole.getAccountId()));
+		allSkillsForRole.addAll(skillService.getRequiredSkillsForSiteAndCorporates(site.getId()));
 		allSkillsForRole = ListUtil.removeDuplicatesAndSort(allSkillsForRole);
 
 		Map<Employee, List<SkillStatus>> employeeSkillStatusMap = statusCalculatorService

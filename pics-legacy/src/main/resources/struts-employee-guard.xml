@@ -80,7 +80,7 @@
             <result name="project">/struts/employee-guard/operator/assignments/project/project.jsp</result>
         </action>
 
-        <!-- -->
+        <!-- Operator view of employee -->
         <action name="{siteId}/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
             <result name="show">/struts/employee-guard/operator/employee/show.jsp</result>
         </action>

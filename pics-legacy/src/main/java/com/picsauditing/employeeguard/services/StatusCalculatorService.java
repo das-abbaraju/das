@@ -110,4 +110,95 @@ public class StatusCalculatorService {
 		Arrays.fill(skillStatusArray, SkillStatus.Expired);
 		return Arrays.asList(skillStatusArray);
 	}
+
+	public SkillStatus calculateOverallStatus(Collection<SkillStatus> skillStatuses) {
+		if (CollectionUtils.isEmpty(skillStatuses)) {
+			throw new IllegalArgumentException("skillStatuses should not be empty or null.");
+		}
+
+		SkillStatus worstStatus = SkillStatus.Complete;
+		for (SkillStatus skillStatus : skillStatuses) {
+			// exit early if any status is "Expired", because we have already hit the lowest status
+			if (skillStatus.isExpired()) {
+				return SkillStatus.Expired;
+			}
+
+			if (skillStatus.compareTo(worstStatus) < 0) {
+				worstStatus = skillStatus;
+			}
+		}
+
+		return worstStatus;
+	}
+
+	public <E> Map<E, SkillStatus> getOverallStatusPerEntity(final Map<E, List<SkillStatus>> entitySkillStatusMap) {
+		if (MapUtils.isEmpty(entitySkillStatusMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<E, SkillStatus> overallSkillStatusMap = new HashMap<>();
+		for (E entity : entitySkillStatusMap.keySet()) {
+			overallSkillStatusMap.put(entity, calculateOverallStatus(entitySkillStatusMap.get(entity)));
+		}
+
+		return overallSkillStatusMap;
+	}
+
+	public <E> Map<E, List<SkillStatus>> getSkillStatusListPerEntity(final Employee employee, final Map<E, Set<AccountSkill>> skillMap) {
+		if (employee == null || MapUtils.isEmpty(skillMap)) {
+			return Collections.emptyMap();
+		}
+
+		Set<AccountSkill> skills = getSkillsFromMap(skillMap);
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+				.findByEmployeeAndSkills(employee, skills);
+		Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap =
+				buildAccountSkillToAccountSkillEmployeeMap(accountSkillEmployees);
+
+		return buildMapOfSkillStatus(skillMap, accountSkillEmployeeMap);
+	}
+
+	private <E> Set<AccountSkill> getSkillsFromMap(final Map<E, Set<AccountSkill>> skillMap) {
+		if (MapUtils.isEmpty(skillMap)) {
+			return Collections.emptySet();
+		}
+
+		Set<AccountSkill> skills = new HashSet<>();
+		for (Set<AccountSkill> accountSkills : skillMap.values()) {
+			skills.addAll(accountSkills);
+		}
+
+		return skills;
+	}
+
+	private Map<AccountSkill, AccountSkillEmployee> buildAccountSkillToAccountSkillEmployeeMap(
+			final List<AccountSkillEmployee> accountSkillEmployees) {
+
+		return Utilities.convertToMap(accountSkillEmployees,
+				new Utilities.MapConvertable<AccountSkill, AccountSkillEmployee>() {
+					@Override
+					public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
+						return accountSkillEmployee.getSkill();
+					}
+				});
+	}
+
+	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
+																final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
+		if (MapUtils.isEmpty(skillMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<E, List<SkillStatus>> entityStatusMap = new HashMap<>();
+		for (E entity : skillMap.keySet()) {
+			List<SkillStatus> skillStatusList = new ArrayList<>();
+			for (AccountSkill accountSkill : skillMap.get(entity)) {
+				skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployeeMap.get(accountSkill)));
+			}
+
+			entityStatusMap.put(entity, skillStatusList);
+		}
+
+		return entityStatusMap;
+	}
 }

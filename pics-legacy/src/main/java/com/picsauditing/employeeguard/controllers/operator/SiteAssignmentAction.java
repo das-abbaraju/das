@@ -50,7 +50,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		}
 
 		if (permissions.isCorporate()) {
-			// FIXME
+			// TODO: Implement
 			return "status";
 		}
 
@@ -117,8 +117,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				corporateRole);
 
 		List<AccountSkill> skills = skillService.getSkillsForRole(corporateRole);
-		skills.addAll(skillService.getRequiredSkills(siteId));
-		skills.addAll(skillService.getRequiredSkills(corporateRole.getAccountId()));
+		skills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(siteId));
 		skills = ListUtil.removeDuplicatesAndSort(skills);
 
 		Table<Employee, AccountSkill, AccountSkillEmployee> accountSkillEmployees =
