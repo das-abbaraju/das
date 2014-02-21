@@ -151,6 +151,20 @@ public class InvoiceDetailTest extends PicsActionTest {
 	}
 
     @Test
+    public void testExecute_SaveButton() throws Exception {
+        invoiceDetail.setInvoice(invoice);
+        invoiceDetail.setButton("save");
+        commonSetupForExecuteTest();
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+
+        String actionResult = invoiceDetail.execute();
+
+        verify(billingService, times(1)).addRevRecInfoIfAppropriateToItems(invoice);
+        commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
+    }
+
+    @Test
     public void testExecute_RefundCreditMemo_AccountBalanceIsNotNegative() throws IOException, InvoiceValidationException, Exception {
         invoiceDetail.setCreditMemo(invoiceCreditMemo);
         invoiceDetail.setTransaction(invoiceCreditMemo);

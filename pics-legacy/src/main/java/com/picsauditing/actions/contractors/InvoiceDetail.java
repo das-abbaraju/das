@@ -133,7 +133,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
     private String processedCommand() throws Exception {
-		String urlForRedirect = "InvoiceDetail.action?invoice.id=" + transaction.getId() + "&edit=" + edit;
+        String urlForRedirect = "InvoiceDetail.action?invoice.id=" + transaction.getId() + "&edit=" + edit;
 		if (isTransactionIsCreditMemo() && !(button.equals(EMAIL_BUTTON) || button.equals(REFUND_BUTTON))) {
 			return this.setUrlForRedirect(urlForRedirect);
 		}
@@ -165,6 +165,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 
 		if (isTransactionIsInvoice()) {
+            billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			billingService.saveInvoice(invoice);
 		}
         if (!Strings.isEmpty(message)) {
@@ -175,6 +176,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
             notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
         }
 
+        urlForRedirect = "InvoiceDetail.action?invoice.id=" + transaction.getId() + "&edit=" + edit;
         return this.setUrlForRedirect(urlForRedirect);
     }
 
@@ -443,6 +445,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         AccountingSystemSynchronization.setToSynchronize(invoice);
         invoice.updateTotalAmount();
         invoice.updateAmountApplied();
+        billingService.addRevRecInfoIfAppropriateToItems(invoice);
         billingService.saveInvoice(invoice);
 
         addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
