@@ -15,7 +15,6 @@ public class ViewModelFactory {
 	private static EmployeeProjectAssignmentFactory employeeProjectAssignmentFactory = new EmployeeProjectAssignmentFactory();
 	private static EmployeeProjectRoleAssignmentFactory employeeProjectRoleAssignmentFactory = new EmployeeProjectRoleAssignmentFactory();
 	private static EmployeeSiteAssignmentModelFactory employeeSiteAssignmentModelFactory = new EmployeeSiteAssignmentModelFactory();
-	private static EmployeeSkillsModelFactory employeeSkillsModelFactory = new EmployeeSkillsModelFactory();
 	private static EntityInfoFactory entityInfoFactory = new EntityInfoFactory();
 	private static NavItemFactory navItemFactory = new NavItemFactory();
 	private static OperatorEmployeeModelFactory operatorEmployeeModelFactory = new OperatorEmployeeModelFactory();
@@ -63,10 +62,6 @@ public class ViewModelFactory {
 
 	public static EmployeeSiteAssignmentModelFactory getEmployeeSiteAssignmentModelFactory() {
 		return employeeSiteAssignmentModelFactory;
-	}
-
-	public static EmployeeSkillsModelFactory getEmployeeSkillsModelFactory() {
-		return employeeSkillsModelFactory;
 	}
 
 	public static EntityInfoFactory getEntityInfoFactory() {

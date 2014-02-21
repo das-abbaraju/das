@@ -13,6 +13,9 @@ import com.picsauditing.employeeguard.viewmodel.operator.OperatorEmployeeSkillMo
 import java.util.*;
 
 public class OperatorEmployeeModelFactory {
+
+	public static final String IMAGE_LINK = "/employee-guard/employee/contractor/%d/employee-photo/%d";
+
 	public OperatorEmployeeModel create(final Employee employee,
 	                                    final Map<Integer, AccountModel> accounts,
 	                                    final Map<Project, SkillStatus> projectStatusMap,
@@ -27,6 +30,7 @@ public class OperatorEmployeeModelFactory {
 		return new OperatorEmployeeModel.Builder()
 				.id(employee.getId())
 				.name(employee.getName())
+				.image(String.format(IMAGE_LINK, employee.getAccountId(), employee.getId()))
 				.companies(companies)
 				.projects(projects)
 				.roles(roles)

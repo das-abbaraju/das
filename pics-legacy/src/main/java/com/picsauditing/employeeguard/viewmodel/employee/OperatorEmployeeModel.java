@@ -41,6 +41,10 @@ public class OperatorEmployeeModel implements JSONable {
 		return name;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
 	public List<IdNameTitleModel> getCompanies() {
 		return companies;
 	}
