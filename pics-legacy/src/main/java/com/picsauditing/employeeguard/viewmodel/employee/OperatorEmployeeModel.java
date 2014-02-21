@@ -15,6 +15,7 @@ import java.util.List;
 public class OperatorEmployeeModel implements JSONable {
 	private final int id;
 	private final String name;
+	private final String image;
 	private final List<IdNameTitleModel> companies;
 	private final SkillStatus overallStatus;
 	private final List<ProjectDetailModel> projects;
@@ -24,6 +25,7 @@ public class OperatorEmployeeModel implements JSONable {
 	public OperatorEmployeeModel(Builder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
+		this.image = builder.image;
 		this.companies = Utilities.unmodifiableList(builder.companies);
 		this.overallStatus = builder.overallStatus;
 		this.projects = Utilities.unmodifiableList(builder.projects);
@@ -78,6 +80,7 @@ public class OperatorEmployeeModel implements JSONable {
 	public static class Builder {
 		private int id;
 		private String name;
+		private String image;
 		private List<IdNameTitleModel> companies;
 		private SkillStatus overallStatus;
 		private List<ProjectDetailModel> projects;
@@ -91,6 +94,11 @@ public class OperatorEmployeeModel implements JSONable {
 
 		public Builder name(String name) {
 			this.name = name;
+			return this;
+		}
+
+		public Builder image(String image) {
+			this.image = image;
 			return this;
 		}
 

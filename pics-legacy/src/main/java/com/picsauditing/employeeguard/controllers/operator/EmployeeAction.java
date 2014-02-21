@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.employee.OperatorEmployeeModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.json.simple.JSONObject;
@@ -18,6 +19,8 @@ import java.util.Set;
 
 public class EmployeeAction extends PicsRestActionSupport {
 
+	@Autowired
+	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -55,8 +58,10 @@ public class EmployeeAction extends PicsRestActionSupport {
 		Set<AccountSkill> skills = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
 		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employeeEntity, skills);
 
+		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployee(employeeEntity);
+
 		return ViewModelFactory.getOperatorEmployeeModelFactory().create(
-				employeeEntity, projectStatusMap, roleStatusMap, skillStatusMap, overallStatus);
+				employeeEntity, accounts, projectStatusMap, roleStatusMap, skillStatusMap, overallStatus);
 	}
 
 	private Map<Role, Set<AccountSkill>> getRoleSkillMap(Employee employeeEntity) {

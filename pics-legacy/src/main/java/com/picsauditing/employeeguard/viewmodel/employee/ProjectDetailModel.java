@@ -1,48 +1,49 @@
 package com.picsauditing.employeeguard.viewmodel.employee;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectModel;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public class ProjectDetailModel extends ProjectModel {
 	private final Map<String, String> companyInfoMap;
-	private final List<Integer> skills;
-	private final List<Integer> roles;
-	private final SkillStatus skillStatus;
+	private final Collection<Integer> skills;
+	private final Collection<Integer> roles;
+	private final SkillStatus status;
 
 	public ProjectDetailModel(Builder builder) {
 		super(builder.id, builder.name);
 		this.companyInfoMap = builder.companyInfoMap;
-		this.skills = builder.skills;
-		this.roles = builder.roles;
-		this.skillStatus = builder.skillStatus;
+		this.skills = Utilities.unmodifiableCollection(builder.skills);
+		this.roles = Utilities.unmodifiableCollection(builder.roles);
+		this.status = builder.status;
 	}
 
 	public Map<String, String> getCompanyInfoMap() {
 		return companyInfoMap;
 	}
 
-	public List<Integer> getSkills() {
+	public Collection<Integer> getSkills() {
 		return skills;
 	}
 
-	public List<Integer> getRoles() {
+	public Collection<Integer> getRoles() {
 		return roles;
 	}
 
-	public SkillStatus getSkillStatus() {
-		return skillStatus;
+	public SkillStatus getStatus() {
+		return status;
 	}
 
 	public static class Builder {
 		private int id;
 		private String name;
 		private Map<String, String> companyInfoMap;
-		private List<Integer> skills;
-		private List<Integer> roles;
-		private SkillStatus skillStatus;
+		private Collection<Integer> skills;
+		private Collection<Integer> roles;
+		private SkillStatus status;
 
 		public Builder id(int id) {
 			this.id = id;
@@ -59,18 +60,18 @@ public class ProjectDetailModel extends ProjectModel {
 			return this;
 		}
 
-		public Builder skills(List<Integer> skills) {
+		public Builder skills(Collection<Integer> skills) {
 			this.skills = skills;
 			return this;
 		}
 
-		public Builder roles(List<Integer> roles) {
+		public Builder roles(Collection<Integer> roles) {
 			this.roles = roles;
 			return this;
 		}
 
-		public Builder skillStatus(SkillStatus skillStatus) {
-			this.skillStatus = skillStatus;
+		public Builder status(SkillStatus status) {
+			this.status = status;
 			return this;
 		}
 

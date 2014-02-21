@@ -554,6 +554,14 @@ public class Utilities {
 		return Collections.unmodifiableMap(map);
 	}
 
+	public static <V> Collection<V> unmodifiableCollection(Collection<V> collection) {
+		if (CollectionUtils.isEmpty(collection)) {
+			return Collections.emptySet();
+		}
+
+		return Collections.unmodifiableCollection(collection);
+	}
+
 	public static <V> Set<V> mergeCollections(Collection<V>... collections) {
 		Set<V> uniqueCollection = new HashSet<>();
 

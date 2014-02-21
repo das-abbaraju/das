@@ -1,18 +1,19 @@
 package com.picsauditing.employeeguard.viewmodel;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-import java.util.List;
+import java.util.Collection;
 
 public class RoleModel {
 	private final int id;
-	private final List<Integer> skills;
+	private final Collection<Integer> skills;
 	private final String name;
 	private final SkillStatus status;
 
 	public RoleModel(Builder builder) {
 		this.id = builder.id;
-		this.skills = builder.skills;
+		this.skills = Utilities.unmodifiableCollection(builder.skills);
 		this.name = builder.name;
 		this.status = builder.status;
 	}
@@ -21,7 +22,7 @@ public class RoleModel {
 		return id;
 	}
 
-	public List<Integer> getSkills() {
+	public Collection<Integer> getSkills() {
 		return skills;
 	}
 
@@ -35,7 +36,7 @@ public class RoleModel {
 
 	public static class Builder {
 		private int id;
-		private List<Integer> skills;
+		private Collection<Integer> skills;
 		private String name;
 		private SkillStatus status;
 
@@ -44,7 +45,7 @@ public class RoleModel {
 			return this;
 		}
 
-		public Builder skills(List<Integer> skills) {
+		public Builder skills(Collection<Integer> skills) {
 			this.skills = skills;
 			return this;
 		}
