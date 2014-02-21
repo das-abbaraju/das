@@ -37,7 +37,9 @@ public class EmployeeAction extends PicsRestActionSupport {
 	public String show() {
 		operatorEmployeeModel = buildOperatorEmployeeModel();
 
-		return SHOW;
+//		json = operatorEmployeeModel.toJSON();
+
+		return JSON;
 	}
 
 	private OperatorEmployeeModel buildOperatorEmployeeModel() {
@@ -74,9 +76,5 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	public void setSiteId(int siteId) {
 		this.siteId = siteId;
-	}
-
-	public OperatorEmployeeModel getOperatorEmployeeModel() {
-		return operatorEmployeeModel;
 	}
 }

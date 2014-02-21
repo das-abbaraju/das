@@ -1,14 +1,18 @@
 package com.picsauditing.employeeguard.viewmodel.employee;
 
+import com.google.gson.Gson;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.RoleModel;
 import com.picsauditing.employeeguard.viewmodel.operator.OperatorEmployeeSkillModel;
+import com.picsauditing.jpa.entities.JSONable;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.util.List;
 import java.util.Map;
 
-public class OperatorEmployeeModel {
+public class OperatorEmployeeModel implements JSONable {
 	private final int id;
 	private final String name;
 	private final Map<String, String> companyInfoMap;
@@ -53,6 +57,22 @@ public class OperatorEmployeeModel {
 
 	public List<OperatorEmployeeSkillModel> getSkills() {
 		return skills;
+	}
+
+	@Override
+	public JSONObject toJSON(boolean full) {
+		try {
+			return (JSONObject) new JSONParser().parse(new Gson().toJson(this));
+		} catch (Exception e) {
+			// whatever
+		}
+
+		return new JSONObject();
+	}
+
+	@Override
+	public void fromJSON(JSONObject o) {
+
 	}
 
 	public static class Builder {
