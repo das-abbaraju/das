@@ -6,17 +6,17 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
-/* line 11, ../sass/pics/_defaults.scss */
+/* line 55, ../sass/pics/_defaults.scss */
 body {
   color: #454545;
 }
 
-/* line 16, ../sass/pics/_defaults.scss */
+/* line 60, ../sass/pics/_defaults.scss */
 a {
   color: #226396;
 }
 
-/* line 22, ../sass/pics/_defaults.scss */
+/* line 66, ../sass/pics/_defaults.scss */
 a:hover,
 a:focus {
   color: #73bbe8;
@@ -125,7 +125,32 @@ body {
 #primary_navigation {
   z-index: 9999;
 }
-/* line 6, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 8, ../sass/pics/layout/menu/_primary-navigation.scss */
+#primary_navigation .dropdown-menu > li > a:hover,
+#primary_navigation .dropdown-menu > li > a:focus,
+#primary_navigation .dropdown-submenu:hover > a,
+#primary_navigation .dropdown-submenu:focus > a {
+  color: #454545;
+  text-decoration: none;
+  background-color: #e6e6e6;
+  background-image: none;
+  filter: none;
+}
+/* line 16, ../sass/pics/layout/menu/_primary-navigation.scss */
+#primary_navigation .dropdown-menu .active > a {
+  filter: none;
+}
+/* line 20, ../sass/pics/layout/menu/_primary-navigation.scss */
+#primary_navigation .dropdown-menu > li > a:hover {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3498db), color-stop(100%, #2980b9));
+  background-image: -webkit-linear-gradient(#3498db, #2980b9);
+  background-image: -moz-linear-gradient(#3498db, #2980b9);
+  background-image: -o-linear-gradient(#3498db, #2980b9);
+  background-image: linear-gradient(#3498db, #2980b9);
+  background: #2980b9;
+  color: #ffffff;
+}
+/* line 27, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-inner {
   background: #eaeaea;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
@@ -133,18 +158,23 @@ body {
   background-image: -moz-linear-gradient(#ffffff, #eaeaea);
   background-image: -o-linear-gradient(#ffffff, #eaeaea);
   background-image: linear-gradient(#ffffff, #eaeaea);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eaeaea', GradientType=0);
+  border-bottom: 2px solid #cccccc;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
-/* line 12, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 36, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .brand {
-  background: url(../img/logo/logo-icon.png) no-repeat;
-  background: rgba(0, 0, 0, 0) url(../img/logo/logo-icon.svg) no-repeat;
+  background: url(/v7/img/logo/logo-icon.png) no-repeat;
+  background: rgba(0, 0, 0, 0) url(/v7/img/logo/logo-icon.svg) no-repeat;
   display: block;
   height: 32px;
   margin: 8px 10px 9px 0;
   padding: 0;
   width: 32px;
 }
-/* line 24, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 48, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation [data-toggle=collapse] {
   border: 0;
   background-color: transparent;
@@ -153,20 +183,21 @@ body {
   float: right;
   line-height: 50px;
 }
-/* line 34, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 58, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav > li > a {
   border: 1px solid transparent;
   border-bottom: 0;
-  color: #002441;
+  color: #226396;
   font-size: 13px;
   font-weight: bold;
   padding: 14px 10px;
+  text-shadow: none;
 }
-/* line 43, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 68, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav > li > a:hover {
-  color: #c66603;
+  color: #73bbe8;
 }
-/* line 51, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 76, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.active > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.open.active > .dropdown-toggle {
@@ -181,12 +212,10 @@ body {
   -ms-border-radius: 0;
   -o-border-radius: 0;
   border-radius: 0;
-  border: 1px solid #aeaeae;
-  border-top: 1px solid #999999;
   border-bottom: 0px;
-  color: #C66603;
+  color: #73bbe8;
 }
-/* line 64, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 87, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -199,33 +228,40 @@ body {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   color: #fff;
 }
-/* line 74, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 96, ../sass/pics/layout/menu/_primary-navigation.scss */
+#primary_navigation .contact-us-link {
+  color: #226396;
+  display: inline-block;
+  float: right;
+  margin-top: 17px;
+}
+/* line 102, ../sass/pics/layout/menu/_primary-navigation.scss */
+#primary_navigation .contact-us-link:hover {
+  color: #73bbe8;
+}
+/* line 108, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-search {
   margin: 0;
   line-height: 49px;
   padding: 0 15px;
 }
-/* line 80, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 114, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-search .icon-search {
   color: #ccc;
   left: 24px;
   position: absolute;
   top: 16px;
 }
-/* line 88, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 122, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-search .search-query {
   line-height: normal;
   padding: 4px 14px 4px 32px;
 }
-/* line 94, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 128, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-search .search-query:focus ~ .icon-search {
   color: #73bbe8;
 }
-/* line 100, ../sass/pics/layout/menu/_primary-navigation.scss */
-#primary_navigation #user_menu {
-  border-left: 1px solid #e7e7e7;
-}
-/* line 107, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 136, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a {
   color: #fff;
   background-color: #3f93c0;
@@ -245,7 +281,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   padding: 6px 15px 7px;
 }
-/* line 125, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 154, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:hover,
 #primary_navigation .nav .switch-to > a:focus {
   background-color: #3f93c0;
@@ -257,7 +293,7 @@ body {
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-/* line 134, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 163, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:active {
   background-color: #3f93c0 \9;
   background-color: #3f93c0;
@@ -267,7 +303,7 @@ body {
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 143, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 172, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account {
   display: inline-block;
   display: inline \9;
@@ -275,49 +311,49 @@ body {
   margin-right: 5px;
   text-align: right;
 }
-/* line 151, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 180, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account span {
   font-size: 10px;
 }
-/* line 157, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 186, ../sass/pics/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .icon-cog {
   vertical-align: 5px;
 }
 
-/* line 164, ../sass/pics/layout/menu/_primary-navigation.scss */
+/* line 193, ../sass/pics/layout/menu/_primary-navigation.scss */
 .lt-ie9 .nav > li > a {
   padding: 16px 10px;
 }
 
 @media (min-width: 1200px) {
-  /* line 172, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 201, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .brand {
     margin-right: 15px;
   }
-  /* line 177, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 206, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav > li > a {
     padding-left: 15px;
     padding-right: 15px;
   }
 }
 @media (max-width: 979px) {
-  /* line 186, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 215, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation {
     margin-bottom: 0;
   }
-  /* line 190, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 219, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .navbar-inner {
     background: #f1f1f2;
   }
-  /* line 195, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 224, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .brand {
     margin-left: 5px;
   }
-  /* line 200, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 229, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation [data-toggle=collapse] {
     display: block;
   }
-  /* line 205, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 234, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav > li > a {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
@@ -326,11 +362,11 @@ body {
     border-radius: 0;
     padding: 6px 5px;
   }
-  /* line 210, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 239, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav > li > a:hover {
     background-color: #f1f1f2;
   }
-  /* line 215, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 244, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav > li > a[data-toggle="dropdown"]:after {
     bottom: 1px;
     content: '\2304';
@@ -338,16 +374,16 @@ body {
     margin-left: 2px;
     position: relative;
   }
-  /* line 227, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 256, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .primary-navigation-items .nav > li > .dropdown-menu {
     background: #eaeaea;
     display: none;
   }
-  /* line 233, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 262, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .primary-navigation-items .nav > .open > .dropdown-menu {
     display: block;
   }
-  /* line 238, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 267, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .primary-navigation-items .dropdown-menu a {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
@@ -357,21 +393,22 @@ body {
     color: #454545;
     font-weight: normal;
   }
-  /* line 244, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 273, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .primary-navigation-items .dropdown-menu a:hover {
     background: #dcdcdc;
     color: #226396;
   }
-  /* line 251, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 280, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .primary-navigation-items .dropdown-submenu > a:after {
     margin: 0;
   }
-  /* line 257, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 286, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .primary-navigation-items .dropdown-submenu:hover > a,
   #primary_navigation .primary-navigation-items .dropdown-submenu:focus > a {
     background: #eaeaea;
+    filter: none;
   }
-  /* line 265, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 295, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav li.dropdown.open > .dropdown-toggle,
   #primary_navigation .nav li.dropdown.active > .dropdown-toggle,
   #primary_navigation .nav li.dropdown.open.active > .dropdown-toggle {
@@ -379,7 +416,7 @@ body {
     border: 1px solid transparent;
     border-bottom: 0;
   }
-  /* line 274, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 304, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
   #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
   #primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -388,113 +425,124 @@ body {
     -moz-box-shadow: none;
     box-shadow: none;
   }
-  /* line 282, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 312, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .navbar-search .icon-search {
     top: 6px;
   }
-  /* line 287, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 317, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .navbar-search .search-query {
     box-sizing: border-box;
     display: block;
     min-height: 30px;
     width: 100%;
   }
-  /* line 296, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 326, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation #user_menu {
     border: 0;
   }
-  /* line 305, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 335, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav .switch-to > a,
   #primary_navigation .nav .switch-to > a:hover,
   #primary_navigation .nav .switch-to > a:active {
     background: #3f93c0;
   }
-  /* line 312, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 342, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav .switch-to .account span {
     display: none;
   }
-  /* line 318, ../sass/pics/layout/menu/_primary-navigation.scss */
+  /* line 348, ../sass/pics/layout/menu/_primary-navigation.scss */
   #primary_navigation .nav .switch-to .icon-cog {
     vertical-align: 0;
   }
 }
-/* line 2, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 355, ../sass/pics/layout/menu/_primary-navigation.scss */
+body.has-contractor-menu .navbar-inner {
+  border-bottom: none !important;
+}
+
+/*Are we still using this file at all?  Didn't see it anywhere in the markup */
+/* line 4, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox {
   width: 275px;
+  /*TODO find a way NOT to do this*/
 }
-/* line 8, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 9, ../sass/pics/layout/menu/_user-search-list.scss */
+#user_searchbox li .even {
+  background-color: #f1f1f2;
+}
+/* line 14, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li a {
   font-size: 13px;
   white-space: normal;
 }
-/* line 14, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 20, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .name {
   float: left;
   font-weight: bold;
   width: 175px;
 }
-/* line 21, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 27, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .id {
   float: right;
   font-weight: bold;
 }
-/* line 27, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 33, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .location {
   float: left;
   width: 175px;
 }
-/* line 33, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 39, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox li .type {
   float: right;
   font-style: italic;
 }
-/* line 41, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 47, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-deactivated a,
 #user_searchbox .account-inactive a {
   color: #aeaeae;
 }
-/* line 47, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 53, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-deactivated a:hover,
 #user_searchbox .account-inactive a:hover {
   color: #cccccc;
 }
-/* line 53, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 59, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-demo {
   font-style: italic;
 }
-/* line 63, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 69, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .account-deleted .name,
 #user_searchbox .account-deleted .id,
 #user_searchbox .account-deleted .location,
 #user_searchbox .account-deleted .type {
   text-decoration: line-through;
 }
-/* line 70, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 76, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .no-results,
 #user_searchbox .total-results {
   padding: 5px 20px;
 }
-/* line 77, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 83, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .more-results a {
   font-weight: bold;
 }
-/* line 83, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 89, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .total-results {
   background-color: #ffffff;
 }
-/* line 87, ../sass/pics/layout/menu/_user-search-list.scss */
+/* line 93, ../sass/pics/layout/menu/_user-search-list.scss */
 #user_searchbox .total-results p {
-  color: #999;
+  color: #999999;
   font-size: 13px;
   margin: 0;
 }
 
 @media (max-width: 979px) {
-  /* line 97, ../sass/pics/layout/menu/_user-search-list.scss */
+  /* line 103, ../sass/pics/layout/menu/_user-search-list.scss */
   #user_searchbox {
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 5px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     border: 1px solid rgba(0, 0, 0, 0.2);
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -507,159 +555,179 @@ body {
     margin-top: 10px;
     width: 100%;
   }
-  /* line 108, ../sass/pics/layout/menu/_user-search-list.scss */
+  /* line 114, ../sass/pics/layout/menu/_user-search-list.scss */
   #user_searchbox .active a {
-    color: #fff;
+    color: #ffffff;
   }
 }
-/* line 2, ../sass/pics/layout/menu/_secondary-navigation.scss */
+/* line 1, ../sass/pics/layout/menu/_secondary-navigation.scss */
 #secondary_navigation {
   top: 50px;
+  background: #eaeaea;
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
+  background-image: -webkit-linear-gradient(to bottom, #ffffff, #eaeaea);
+  background-image: -moz-linear-gradient(to bottom, #ffffff, #eaeaea);
+  background-image: -o-linear-gradient(to bottom, #ffffff, #eaeaea);
+  background-image: linear-gradient(to bottom, #ffffff, #eaeaea);
+  border-bottom: 2px solid #cccccc;
+  height: 50px;
 }
-/* line 6, ../sass/pics/layout/menu/_secondary-navigation.scss */
-#secondary_navigation .navbar-inner {
-  background: #333;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
-  background-image: -webkit-linear-gradient(#252525, #333333);
-  background-image: -moz-linear-gradient(#252525, #333333);
-  background-image: -o-linear-gradient(#252525, #333333);
-  background-image: linear-gradient(#252525, #333333);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525',endColorstr='#ff333333',GradientType=0);
-  border-bottom: 0;
-  border-top: 1px solid #000;
-  color: #f1f1f2;
-  line-height: 29px;
-  min-height: 29px;
-  padding-bottom: 0;
-  padding-top: 0;
-}
-/* line 20, ../sass/pics/layout/menu/_secondary-navigation.scss */
-#secondary_navigation [data-toggle=collapse] {
-  background-color: transparent;
-  border: 0;
-  color: #f1f1f2;
-  display: none;
-  float: right;
-  line-height: 28px;
-}
-/* line 30, ../sass/pics/layout/menu/_secondary-navigation.scss */
-#secondary_navigation .nav > li > a {
-  border: 0;
-  color: #ccc;
-  padding: 4px 15px 5px;
-  text-shadow: none;
-}
-/* line 37, ../sass/pics/layout/menu/_secondary-navigation.scss */
-#secondary_navigation .nav > li > a:hover {
-  color: #f1f1f2;
-}
-/* line 45, ../sass/pics/layout/menu/_secondary-navigation.scss */
-#secondary_navigation .nav li.dropdown.open > .dropdown-toggle,
-#secondary_navigation .nav li.dropdown.active > .dropdown-toggle,
-#secondary_navigation .nav li.dropdown.open.active > .dropdown-toggle {
-  color: #73bbe8;
-  background: #252525;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #000000), color-stop(100%, #252525));
-  background-image: -webkit-linear-gradient(#000000, #252525);
-  background-image: -moz-linear-gradient(#000000, #252525);
-  background-image: -o-linear-gradient(#000000, #252525);
-  background-image: linear-gradient(#000000, #252525);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000',endColorstr='#ff252525',GradientType=0);
-}
-/* line 53, ../sass/pics/layout/menu/_secondary-navigation.scss */
-#secondary_navigation .nav.account span {
-  color: #73bbe8;
-  display: block;
-  font-size: 13px;
-  font-weight: bold;
-  padding: 4px 15px 5px;
+
+/*#secondary_navigation
+{
+    top: 50px;
+
+    .navbar-inner
+    {
+    	background: #333;
+    	@include background-image(linear-gradient(#252525, #333));
+	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525',endColorstr='#ff333333',GradientType=0);
+	    border-bottom: 0;
+	    border-top: 1px solid #000;
+	    color: $pics_cool_grey;
+	    line-height: 29px;
+	    min-height: 29px;
+	    padding-bottom: 0;
+	    padding-top: 0;
+    }
+
+    [data-toggle=collapse]
+	{
+	    background-color: transparent;
+	    border: 0;
+	    color: $pics_cool_grey;
+	    display: none;
+	    float: right;
+	    line-height: 28px;
+	}
+
+	.nav > li > a
+	{
+	    border: 0;
+	    color: #ccc;
+	    padding: 4px 15px 5px;
+	    text-shadow: none;
+
+	    &:hover
+	    {
+	    	color: $pics_cool_grey;
+	    }
+	}
+
+	.nav li.dropdown.open > .dropdown-toggle,
+    .nav li.dropdown.active > .dropdown-toggle,
+    .nav li.dropdown.open.active > .dropdown-toggle
+	{
+	    color: $pics_light_blue;
+	    background: #252525;
+	    @include background-image(linear-gradient(#000, #252525));
+	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000',endColorstr='#ff252525',GradientType=0);
+	}
+
+	.nav.account span
+	{
+	    color: #73bbe8;
+	    display: block;
+	    font-size: 13px;
+	    font-weight: bold;
+	    padding: 4px 15px 5px;
+	}
 }
 
 @media (max-width: 979px) {
-  /* line 64, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation {
-    margin-bottom: 0;
-  }
-  /* line 68, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .navbar-inner {
-    background: #252525;
-  }
-  /* line 73, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation [data-toggle=collapse] {
-    display: block;
-  }
-  /* line 78, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .nav > li > a {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    -ms-border-radius: 0;
-    -o-border-radius: 0;
-    border-radius: 0;
-    padding: 6px 5px;
-  }
-  /* line 83, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .nav > li > a:hover {
-    background-color: #252525;
-  }
-  /* line 88, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .nav > li > a[data-toggle="dropdown"]:after {
-    bottom: 1px;
-    content: '\2304';
-    font-size: 20px;
-    margin-left: 2px;
-    position: relative;
-  }
-  /* line 100, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .secondary-navigation-items .nav > li > .dropdown-menu {
-    background: #131313;
-    display: none;
-  }
-  /* line 106, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .secondary-navigation-items .nav > .open > .dropdown-menu {
-    display: block;
-  }
-  /* line 111, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .secondary-navigation-items .dropdown-menu a {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    -ms-border-radius: 0;
-    -o-border-radius: 0;
-    border-radius: 0;
-    color: #f1f1f2;
-    font-weight: normal;
-  }
-  /* line 117, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .secondary-navigation-items .dropdown-menu a:hover {
-    background: #000;
-    color: #fff;
-  }
-  /* line 124, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .secondary-navigation-items .dropdown-submenu > a:after {
-    margin: 0;
-  }
-  /* line 130, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .secondary-navigation-items .dropdown-submenu:hover > a,
-  #secondary_navigation .secondary-navigation-items .dropdown-submenu:focus > a {
-    background: #131313;
-  }
-  /* line 138, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .nav li.dropdown.open > .dropdown-toggle,
-  #secondary_navigation .nav li.dropdown.active > .dropdown-toggle,
-  #secondary_navigation .nav li.dropdown.open.active > .dropdown-toggle {
-    background: #252525;
-    border: 1px solid transparent;
-    border-bottom: 0;
-    color: #fff;
-  }
-  /* line 146, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .nav.account {
-    float: left;
-  }
-  /* line 150, ../sass/pics/layout/menu/_secondary-navigation.scss */
-  #secondary_navigation .nav.account span {
-    padding: 5px;
-  }
-}
+    #secondary_navigation
+    {
+        margin-bottom: 0;
+
+        .navbar-inner
+        {
+            background: #252525;
+        }
+
+        [data-toggle=collapse]
+        {
+            display: block;
+        }
+
+        .nav > li > a
+        {
+            @include border-radius(0);
+            padding: 6px 5px;
+
+            &:hover
+            {
+            	background-color: #252525;
+            }
+
+            &[data-toggle="dropdown"]:after
+            {
+				bottom: 1px;
+            	content: '\2304';
+				font-size: 20px;
+				margin-left: 2px;
+            	position: relative;
+            }
+        }
+
+        .secondary-navigation-items
+        {
+            .nav > li > .dropdown-menu
+            {
+                background: #131313;
+                display: none;
+            }
+
+            .nav > .open > .dropdown-menu
+            {
+                display: block;
+            }
+
+            .dropdown-menu a
+            {
+                @include border-radius(0);
+                color: $pics_cool_grey;
+                font-weight: normal;
+
+                &:hover
+                {
+                    background: #000;
+                    color: #fff;
+                }
+            }
+
+            .dropdown-submenu > a:after
+            {
+            	margin: 0;
+            }
+
+            .dropdown-submenu:hover > a,
+            .dropdown-submenu:focus > a
+            {
+                background: #131313;
+            }
+        }
+
+        .nav li.dropdown.open > .dropdown-toggle,
+        .nav li.dropdown.active > .dropdown-toggle,
+        .nav li.dropdown.open.active > .dropdown-toggle
+        {
+            background: #252525;
+            border: 1px solid transparent;
+            border-bottom: 0;
+            color: #fff;
+        }
+
+        .nav.account
+        {
+        	float: left;
+
+        	span
+        	{
+        		padding: 5px;
+        	}
+        }
+    }
+}*/
 /* line 4, ../sass/pics/layout/_page-header.scss */
 .page-header.pics {
   border: 0px;
@@ -1321,13 +1389,13 @@ dd {
 .dropdown-menu li > a:hover,
 .dropdown-menu .active > a,
 .dropdown-menu .active > a:hover {
-  background-color: #a84d10;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
-  background-image: -webkit-linear-gradient(#c66603, #a84d10);
-  background-image: -moz-linear-gradient(#c66603, #a84d10);
-  background-image: -o-linear-gradient(#c66603, #a84d10);
-  background-image: linear-gradient(#c66603, #a84d10);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c66603', endColorstr='#a84d10', GradientType=0);
+  background-color: #2980b9;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3498db), color-stop(100%, #2980b9));
+  background-image: -webkit-linear-gradient(#3498db, #2980b9);
+  background-image: -moz-linear-gradient(#3498db, #2980b9);
+  background-image: -o-linear-gradient(#3498db, #2980b9);
+  background-image: linear-gradient(#3498db, #2980b9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$primary_light", endColorstr="$primary_med", GradientType=0);
 }
 /* line 21, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 .dropdown-menu .nav-header {

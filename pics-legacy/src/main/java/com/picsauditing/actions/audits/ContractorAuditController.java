@@ -22,7 +22,7 @@ import com.picsauditing.service.audit.AuditPeriodService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.MenuComponent;
+import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;

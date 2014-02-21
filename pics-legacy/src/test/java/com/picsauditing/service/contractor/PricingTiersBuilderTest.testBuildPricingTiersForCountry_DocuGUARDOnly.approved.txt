@@ -1,0 +1,25 @@
+Pricing Tier: 1-1
+Pricing Amount: DocuGUARD 199 true
+Pricing Amount: InsureGUARD 99 false
+Pricing Amount: AuditGUARD 499 false
+Pricing Amount: EmployeeGUARD 199 false
+Pricing Tier: 2-4
+Pricing Amount: DocuGUARD 199 false
+Pricing Amount: InsureGUARD 199 false
+Pricing Amount: AuditGUARD 999 false
+Pricing Amount: EmployeeGUARD 399 false
+Pricing Tier: 5-19
+Pricing Amount: DocuGUARD 199 false
+Pricing Amount: InsureGUARD 399 false
+Pricing Amount: AuditGUARD 1999 false
+Pricing Amount: EmployeeGUARD 799 false
+Pricing Tier: 20-49
+Pricing Amount: DocuGUARD 199 false
+Pricing Amount: InsureGUARD 799 false
+Pricing Amount: AuditGUARD 3999 false
+Pricing Amount: EmployeeGUARD 1599 false
+Pricing Tier: 50-1000
+Pricing Amount: DocuGUARD 199 false
+Pricing Amount: InsureGUARD 799 false
+Pricing Amount: AuditGUARD 3999 false
+Pricing Amount: EmployeeGUARD 1599 false

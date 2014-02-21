@@ -3,6 +3,12 @@
 
 <s:set var="currency"><s:property value="invoice.currency.display"/></s:set>
 
+<s:url action="ContractorPricing" var="contractor_pricing">
+    <s:param name="con">
+        ${contractor.id}
+    </s:param>
+</s:url>
+
 <div class="registration-header">
 	<section>
 		<s:include value="/struts/contractors/registrationStep.jsp">
@@ -182,7 +188,9 @@
 	 		</table>
 
 	 		<div class="policy">
-                <s:a href="#" cssClass="view-pricing modal-link" data-url="ContractorPricing.action?con=${contractor.id}"><s:text name="RegistrationMakePayment.ViewPricing" /></s:a>
+                <a href="${contractor_pricing}" target="_blank">
+                    <s:text name="ContractorFacilities.ViewPricing" />
+                </a>
                 <p>
                     <s:text name="ContractorRegistration.title" />:
                     ${contractor.country.isrPhone}

@@ -12,7 +12,7 @@
                     this.configureDropdown(dropdown_toggle_element);
 
                 }
-                
+
                 // autocomplete user searchbox
                 if (search_query_element.length > 0) {
                     this.configureUserSearch(search_query_element);
@@ -31,14 +31,15 @@
                     item: '<li><a href="#"></a></li>'
                 });
 
-
                 search_query_element.data('typeahead').process = function (items, total_results) {
-                    return this.render(items.slice(0, this.options.items), total_results).show();                    
+                    return this.render(items.slice(0, this.options.items), total_results).show();
                 };
 
                 search_query_element.data('typeahead').render = function (items, total_results) {
                     var that = this,
-                        results = 0;
+                        results = 0,
+                        // Note: :odd and :even are 0-based, so the literal first element is even, not odd.
+                        odd = false;
 
                     //format items
                     if (!items.length) {
@@ -52,6 +53,7 @@
                             });
 
                             i.addClass(item.search + ' ' + item.status);
+                            i.addClass(odd ? 'odd' : 'even');
 
                             i.find('a').html([
                                 '<div class="clearfix">',
@@ -71,6 +73,8 @@
                                     '</div>',
                                 '</div>',
                             ].join(''));
+
+                            odd = !odd;
 
                             return i[0];
                         });
@@ -108,7 +112,7 @@
 
                     return this.hide();
                 };
-                
+
                 // fix for https://github.com/twitter/bootstrap/issues/2954
                 search_query_element.data('typeahead').move = function (e) {
                     if (!this.shown) return
@@ -119,21 +123,21 @@
                         case 27: // escape
                             e.preventDefault()
                             break
-                        
+
                         case 38: // up arrow
                             if (!e.charCode) {
                                 e.preventDefault()
                                 this.prev()
                             }
-                            
+
                             break
-                        
+
                         case 40: // down arrow
                             if (!e.charCode) {
                                 e.preventDefault()
                                 this.next()
                             }
-                            
+
                             break
                     }
 

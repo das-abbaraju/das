@@ -252,6 +252,7 @@
           scope="singleton"/>
     <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService"/>
     <bean id="ServiceRiskCalculator" class="com.picsauditing.actions.contractors.risk.ServiceRiskCalculator" />
+    <bean id="PricingTiersBuilder" class="com.picsauditing.service.contractor.PricingTiersBuilder" />
     <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService" />
 
     <!-- Autocompletes -->
@@ -309,7 +310,7 @@
     <bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
     <bean id="ReportPermissionInfoConverter" class="com.picsauditing.service.ReportPermissionInfoConverter"/>
-    <bean id="ContractorSubmenuBuilder" class="com.picsauditing.access.ContractorSubmenuBuilder"/>
+    <bean id="ContractorSubmenuBuilder" class="com.picsauditing.menu.builder.ContractorSubmenuBuilder"/>
     <bean id="ContractorActionSupport" class="com.picsauditing.actions.contractors.ContractorActionSupport" scope="prototype"/>
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
