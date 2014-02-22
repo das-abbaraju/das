@@ -1,7 +1,5 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-
 import java.util.List;
 
 public class ProjectModel extends AbstractJSONable implements Identifiable, Nameable {
