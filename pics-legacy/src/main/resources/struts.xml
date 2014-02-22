@@ -56,6 +56,8 @@
 			             class="com.picsauditing.strutsutil.FileResult"/>
             <result-type name="http-status"
                          class="com.picsauditing.strutsutil.HttpStatusCodeResult"/>
+            <result-type name="json-string"
+                         class="com.picsauditing.strutsutil.JSONStringResult"/>
 		</result-types>
 
 		<interceptors>
@@ -204,6 +206,7 @@
 			<result name="403">/struts/exception/403.jsp</result>
             <result name="404">/struts/exception/404-force.jsp</result>
             <result name="http-status" type="http-status"></result>
+            <result name="json-string" type="json-string"></result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception" result="Exception"/>
