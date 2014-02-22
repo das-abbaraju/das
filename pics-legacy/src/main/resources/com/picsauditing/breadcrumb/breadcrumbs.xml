@@ -7,54 +7,54 @@
             <breadcrumb>
                 <hint>operator</hint>
                 <label>EmployeeGUARD</label>
-                <uri>/employee-guard/operator/dashboard</uri>
+                <uri>/employee-guard/operators/dashboard</uri>
                 <children>
                     <breadcrumb>
                         <hint>project</hint>
                         <label>Assignments and Projects</label>
-                        <uri>/employee-guard/operator/project</uri>
+                        <uri>/employee-guard/operators/project</uri>
                         <children>
                             <breadcrumb>
                                 <hint>{projectId}</hint>
                                 <label>{name}</label>
-                                <uri>/employee-guard/operator/project/{id}</uri>
+                                <uri>/employee-guard/operators/project/{id}</uri>
                                 <children>
                                     <breadcrumb>
                                         <hint>assignments</hint>
                                         <label>Assign Employees</label>
-                                        <uri>/employee-guard/operator/project/{id}/assignments/{id}</uri>
+                                        <uri>/employee-guard/operators/project/{id}/assignments/{id}</uri>
                                     </breadcrumb>
                                     <breadcrumb>
                                         <hint>site-assignment</hint>
                                         <label>Site Assignments</label>
-                                        <uri>/employee-guard/operator/site-assignment/{id}</uri>
+                                        <uri>/employee-guard/operators/site-assignment/{id}</uri>
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>create</hint>
                                 <label>Add Project</label>
-                                <uri>/employee-guard/operator/project/create</uri>
+                                <uri>/employee-guard/operators/project/create</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>edit</hint>
                                 <label>Edit Project</label>
-                                <uri>/employee-guard/operator/project/{id}/edit</uri>
+                                <uri>/employee-guard/operators/project/{id}/edit</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>show</hint>
                                 <label>{name}</label>
-                                <uri>/employee-guard/operator/project/{id}</uri>
+                                <uri>/employee-guard/operators/project/{id}</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>site-assignment</hint>
                                 <label>Site Assignments</label>
-                                <uri>/employee-guard/operator/project/site-assignment</uri>
+                                <uri>/employee-guard/operators/project/site-assignment</uri>
                                 <children>
                                     <breadcrumb>
                                         <hint>show</hint>
                                         <label>{name}</label>
-                                        <uri>/employee-guard/operator/project/site-assignment/{id}</uri>
+                                        <uri>/employee-guard/operators/project/site-assignment/{id}</uri>
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>
@@ -63,34 +63,34 @@
                     <breadcrumb>
                         <hint>skill</hint>
                         <label>Skills</label>
-                        <uri>/employee-guard/operator/skill</uri>
+                        <uri>/employee-guard/operators/skill</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
                                 <label>Add Skill</label>
-                                <uri>/employee-guard/operator/skill/create</uri>
+                                <uri>/employee-guard/operators/skill/create</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>show</hint>
                                 <label>{name}</label>
-                                <uri>/employee-guard/operator/skill/{id}</uri>
+                                <uri>/employee-guard/operators/skill/{id}</uri>
                             </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>
                         <hint>role</hint>
                         <label>Job Roles</label>
-                        <uri>/employee-guard/operator/role</uri>
+                        <uri>/employee-guard/operators/role</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
                                 <label>Add Job Role</label>
-                                <uri>/employee-guard/operator/role/create</uri>
+                                <uri>/employee-guard/operators/role/create</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>show</hint>
                                 <label>{name}</label>
-                                <uri>/employee-guard/operator/role/{id}</uri>
+                                <uri>/employee-guard/operators/role/{id}</uri>
                             </breadcrumb>
                         </children>
                     </breadcrumb>

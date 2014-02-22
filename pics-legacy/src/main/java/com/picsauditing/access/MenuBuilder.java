@@ -298,7 +298,7 @@ public final class MenuBuilder {
 	private static void buildEmployeeGUARD(MenuComponent devMenu) {
 		MenuComponent employeeGUARD = devMenu.addChild("EmployeeGUARD");
 
-		employeeGUARD.addChild("Operator Dashboard", "/employee-guard/operator/dashboard");
+		employeeGUARD.addChild("Operator Dashboard", "/employee-guard/operators/dashboard");
 		employeeGUARD.addChild("Contractor Dashboard", "/employee-guard/contractor/dashboard");
 		employeeGUARD.addChild("Employee Dashboard", "/employee-guard/employee/dashboard");
 
@@ -409,7 +409,7 @@ public final class MenuBuilder {
 		if (permissions.isOperatorCorporate()) {
             ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
 			if (productSubscriptionService.hasEmployeeGUARD(permissions.getAccountId())) {
-				manageMenu.addChild("EmployeeGUARD", "/employee-guard/operator/dashboard");
+				manageMenu.addChild("EmployeeGUARD", "/employee-guard/operators/dashboard");
 			}
 		}
 

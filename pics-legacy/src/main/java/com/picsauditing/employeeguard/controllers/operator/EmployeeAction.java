@@ -41,6 +41,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 	public String show() {
 		operatorEmployeeModel = buildOperatorEmployeeModel();
 
+		// Screw you simple json!
 		jsonString = new Gson().toJson(operatorEmployeeModel);
 		return JSON_STRING;
 	}

@@ -749,6 +749,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		this.fileContainer = fileContainer;
 	}
 
+	public int getHttpStatusCode() {
+		return httpStatusCode;
+	}
+
+	public void setHttpStatusCode(int httpStatusCode) {
+		this.httpStatusCode = httpStatusCode;
+	}
+
+	public String getJsonString() {
+		return jsonString;
+	}
+
+	public void setJsonString(String jsonString) {
+		this.jsonString = jsonString;
+	}
+
 	protected int getParameter(String name) {
 		String[] ids = (String[]) ActionContext.getContext().getParameters().get(name);
 

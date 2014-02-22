@@ -62,7 +62,7 @@ public class DashboardAction extends PicsRestActionSupport {
 		List<AccountSkill> requiredSkills = requiredSiteSkillFormConverter.convert(requiredSiteSkillForm);
 		skillService.setRequiredSkillsForSite(requiredSkills, id, permissions.getAppUserID());
 
-		return setUrlForRedirect("/employee-guard/operator/dashboard");
+		return setUrlForRedirect("/employee-guard/operators/dashboard");
 	}
 
 	/* getter + setters */

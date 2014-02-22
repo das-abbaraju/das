@@ -8,11 +8,9 @@ public class HttpStatusCodeResult extends StreamResult {
 
 	@Override
 	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
-		int httpStatusCode = (int) invocation.getStack().findValue("httpStatusCode");
-
-		ServletActionContext.getResponse().setStatus(httpStatusCode);
-
 		super.doExecute(finalLocation, invocation);
+		int httpStatusCode = (int) invocation.getStack().findValue("httpStatusCode");
+		ServletActionContext.getResponse().setStatus(httpStatusCode);
 	}
 
 }

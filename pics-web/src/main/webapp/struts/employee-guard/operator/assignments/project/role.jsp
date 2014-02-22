@@ -61,7 +61,7 @@
                     <tr class="assigned">
                         <td>${operator_project_employee.contractorName}</td>
                         <td>
-                            <s:url action="{siteId}/employee/{id}" var="employee_liveID">
+                            <s:url action="{siteId}/skills/employees/{id}" var="employee_liveID">
                                 <s:param name="siteId">
                                     ${permissions.accountId}
                                 </s:param>

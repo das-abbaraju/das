@@ -25,7 +25,7 @@
 
     <!-- Operator -->
     <package name="com.picsauditing.employee-guard.operator" extends="com.picsauditing.employee-guard"
-             namespace="/employee-guard/operator">
+             namespace="/employee-guard/operators">
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <!-- Dashboard -->
@@ -81,7 +81,7 @@
         </action>
 
         <!-- Operator view of employee -->
-        <action name="{siteId}/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
+        <action name="{siteId}/skills/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
             <result name="show">/struts/employee-guard/operator/employee/show.jsp</result>
         </action>
     </package>
