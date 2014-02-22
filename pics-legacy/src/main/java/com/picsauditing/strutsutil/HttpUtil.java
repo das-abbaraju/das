@@ -16,6 +16,8 @@ public class HttpUtil {
     public static final String HTTP_EXPECT_HEADER = "Expect";
     public static final String HTTP_100_CONTINUE = "100-continue";
 
+	public static final int HTTP_OK = 200;
+
     public static boolean isGet(HttpServletRequest request) {
         return HTTP_GET_METHOD.equalsIgnoreCase(request.getMethod());
     }

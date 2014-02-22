@@ -8,21 +8,15 @@ import java.util.Collection;
 import java.util.Map;
 
 public class ProjectDetailModel extends ProjectModel {
-	private final Map<String, String> companyInfoMap;
 	private final Collection<Integer> skills;
 	private final Collection<Integer> roles;
 	private final SkillStatus status;
 
 	public ProjectDetailModel(Builder builder) {
 		super(builder.id, builder.name);
-		this.companyInfoMap = builder.companyInfoMap;
 		this.skills = Utilities.unmodifiableCollection(builder.skills);
 		this.roles = Utilities.unmodifiableCollection(builder.roles);
 		this.status = builder.status;
-	}
-
-	public Map<String, String> getCompanyInfoMap() {
-		return companyInfoMap;
 	}
 
 	public Collection<Integer> getSkills() {
@@ -40,7 +34,6 @@ public class ProjectDetailModel extends ProjectModel {
 	public static class Builder {
 		private int id;
 		private String name;
-		private Map<String, String> companyInfoMap;
 		private Collection<Integer> skills;
 		private Collection<Integer> roles;
 		private SkillStatus status;
@@ -52,11 +45,6 @@ public class ProjectDetailModel extends ProjectModel {
 
 		public Builder name(String name) {
 			this.name = name;
-			return this;
-		}
-
-		public Builder companyInfoMap(Map<String, String> companyInfoMap) {
-			this.companyInfoMap = companyInfoMap;
 			return this;
 		}
 

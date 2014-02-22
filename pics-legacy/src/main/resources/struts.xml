@@ -5,7 +5,7 @@
 	<constant name="struts.objectFactory" value="spring"/>
 	<constant name="struts.objectFactory.spring.autoWire" value="type"/>
 
-	<constant name="stru  ts.url.includeParams" value="none"/>
+	<constant name="struts.url.includeParams" value="none"/>
 	<constant name="struts.multipart.maxSize" value="524288000"/>
 	<constant name="struts.multipart.saveDir" value="/var/pics/www_files/tmp"/>
 
@@ -54,6 +54,8 @@
 			             class="com.picsauditing.strutsutil.XMLResult"/>
 			<result-type name="file"
 			             class="com.picsauditing.strutsutil.FileResult"/>
+            <result-type name="http-status"
+                         class="com.picsauditing.strutsutil.HttpStatusCodeResult"/>
 		</result-types>
 
 		<interceptors>
@@ -201,6 +203,7 @@
 			<result name="file" type="file"></result>
 			<result name="403">/struts/exception/403.jsp</result>
             <result name="404">/struts/exception/404-force.jsp</result>
+            <result name="http-status" type="http-status"></result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception" result="Exception"/>

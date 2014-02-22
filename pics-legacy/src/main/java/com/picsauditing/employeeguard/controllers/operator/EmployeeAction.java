@@ -14,6 +14,7 @@ import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,8 +49,10 @@ public class EmployeeAction extends PicsRestActionSupport {
 	private OperatorEmployeeModel buildOperatorEmployeeModel() {
 		Employee employeeEntity = employeeService.findEmployee(id);
 
-		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employeeEntity);
-		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(employeeEntity);
+		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employeeEntity);
+
+		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employeeEntity, projectRoleMap);
+		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(projectRoleMap);
 
 		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employeeEntity, roleSkillMap);
 		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employeeEntity, projectSkillMap);
@@ -60,17 +63,23 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployee(employeeEntity);
 
-		return ViewModelFactory.getOperatorEmployeeModelFactory().create(
-				employeeEntity, accounts, projectStatusMap, roleStatusMap, skillStatusMap, overallStatus);
+		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
+
+		return ViewModelFactory.getOperatorEmployeeModelFactory().create(employeeEntity,
+				ViewModelFactory.getIdNameTitleModelFactory().create(employeeEntity, accounts),
+				ViewModelFactory.getProjectDetailModelFactory().create(projectStatusMap),
+				ViewModelFactory.getRoleModelFactory().create(roleStatusMap),
+				ViewModelFactory.getOperatorEmployeeSkillModelFactory().create(skillStatusMap, siteSkills, roleSkillMap.keySet()),
+				overallStatus);
 	}
 
-	private Map<Role, Set<AccountSkill>> getRoleSkillMap(Employee employeeEntity) {
+	private Map<Role, Set<AccountSkill>> getRoleSkillMap(Employee employeeEntity, Map<Project, Set<Role>> projectRoleMap) {
 		Set<Role> employeeRoles = roleService.getEmployeeRolesForSite(siteId, employeeEntity);
+		employeeRoles.addAll(Utilities.flattenCollectionOfCollection(projectRoleMap.values()));
 		return skillService.getSkillsForRoles(siteId, employeeRoles);
 	}
 
-	private Map<Project, Set<AccountSkill>> getProjectSkillMap(Employee employeeEntity) {
-		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employeeEntity);
+	private Map<Project, Set<AccountSkill>> getProjectSkillMap(Map<Project, Set<Role>> projectRoleMap) {
 		return skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
 				projectRoleMap);
 	}
