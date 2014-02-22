@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
-public class SkillModel extends AbstractJSONable implements Identifiable, Nameable {
+public class SkillModel implements Identifiable, Nameable {
 
 	private int id;
 	private String name;

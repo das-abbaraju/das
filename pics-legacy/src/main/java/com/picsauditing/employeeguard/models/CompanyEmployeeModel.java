@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.models;
 
 import java.util.List;
 
-public class CompanyEmployeeModel extends AbstractJSONable implements Identifiable {
+public class CompanyEmployeeModel implements Identifiable {
 
 	private int id;
 	private String firstName;

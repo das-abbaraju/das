@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.google.gson.Gson;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
@@ -40,10 +41,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 	public String show() {
 		operatorEmployeeModel = buildOperatorEmployeeModel();
 
-		json = new JSONObject();
-		json.put("employee", operatorEmployeeModel.toJSON(true));
-
-		return JSON;
+		jsonString = new Gson().toJson(operatorEmployeeModel);
+		return JSON_STRING;
 	}
 
 	private OperatorEmployeeModel buildOperatorEmployeeModel() {
