@@ -1,9 +1,12 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.forms.factory.*;
+import com.picsauditing.employeeguard.models.factories.CompanyEmployeeModelFactory;
+import com.picsauditing.employeeguard.models.factories.ProjectModelFactory;
 
 public class ViewModelFactory {
 
+	private static CompanyEmployeeModelFactory companyEmployeeModelFactory = new CompanyEmployeeModelFactory();
 	private static ContractorEmployeeRoleAssignmentMatrixFactory contractorEmployeeRoleAssignmentMatrixFactory =
 			new ContractorEmployeeRoleAssignmentMatrixFactory();
 	private static ContractorEmployeeRoleAssignmentFactory contractorEmployeeRoleAssignmentFactory =
@@ -25,12 +28,17 @@ public class ViewModelFactory {
 	private static OperatorSiteAssignmentModelFactory operatorSiteAssignmentModelFactory = new OperatorSiteAssignmentModelFactory();
 	private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
 	private static ProjectDetailModelFactory projectDetailModelFactory = new ProjectDetailModelFactory();
+	private static ProjectModelFactory projectModelFactory = new ProjectModelFactory();
 	private static RoleInfoFactory roleInfoFactory = new RoleInfoFactory();
 	private static RoleEmployeeCountFactory roleEmployeeCountFactory = new RoleEmployeeCountFactory();
 	private static RoleModelFactory roleModelFactory = new RoleModelFactory();
 	private static SkillModelFactory skillModelFactory = new SkillModelFactory();
 	private static SiteAssignmentModelFactory siteAssignmentModelFactory = new SiteAssignmentModelFactory();
 	private static SiteAssignmentsAndProjectsFactory siteAssignmentsAndProjectsFactory = new SiteAssignmentsAndProjectsFactory();
+
+	public static CompanyEmployeeModelFactory getCompanyEmployeeModelFactory() {
+		return companyEmployeeModelFactory;
+	}
 
 	public static ContractorEmployeeRoleAssignmentMatrixFactory getContractorEmployeeRoleAssignmentMatrixFactory() {
 		return contractorEmployeeRoleAssignmentMatrixFactory;
@@ -106,6 +114,10 @@ public class ViewModelFactory {
 
 	public static ProjectDetailModelFactory getProjectDetailModelFactory() {
 		return projectDetailModelFactory;
+	}
+
+	public static ProjectModelFactory getProjectModelFactory() {
+		return projectModelFactory;
 	}
 
 	public static RoleInfoFactory getRoleInfoFactory() {

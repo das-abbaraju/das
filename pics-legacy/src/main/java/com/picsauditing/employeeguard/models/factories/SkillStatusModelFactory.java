@@ -52,7 +52,7 @@ public class SkillStatusModelFactory extends SkillModelFactory {
 	}
 
 	public List<SkillStatusModel> create(final List<AccountSkill> accountSkills,
-										 final Map<AccountSkill, SkillStatus> skillStatusMap) {
+	                                     final Map<AccountSkill, SkillStatus> skillStatusMap) {
 		if (CollectionUtils.isEmpty(accountSkills)) {
 			return Collections.emptyList();
 		}
