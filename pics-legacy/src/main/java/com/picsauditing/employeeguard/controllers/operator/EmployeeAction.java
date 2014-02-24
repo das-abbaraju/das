@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
@@ -47,26 +48,33 @@ public class EmployeeAction extends PicsRestActionSupport {
 	}
 
 	private OperatorEmployeeModel buildOperatorEmployeeModel() {
-		Employee employeeEntity = employeeService.findEmployee(id);
+		Employee employee = employeeService.findEmployee(id);
 
-		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employeeEntity);
+		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employee);
 
-		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employeeEntity, projectRoleMap);
+		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employee, projectRoleMap);
 		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(projectRoleMap);
 
-		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employeeEntity, roleSkillMap);
-		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employeeEntity, projectSkillMap);
+		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, roleSkillMap);
+		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, projectSkillMap);
 		SkillStatus overallStatus = statusCalculatorService.calculateOverallStatus(Utilities.mergeCollections(roleStatusMap.values(), projectStatusMap.values()));
 
 		Set<AccountSkill> skills = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
-		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employeeEntity, skills);
+		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employee, skills);
 
-		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployee(employeeEntity);
+		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployee(employee);
 
 		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
 
-		return ViewModelFactory.getOperatorEmployeeModelFactory().create(employeeEntity,
-				ViewModelFactory.getIdNameTitleModelFactory().create(employeeEntity, accounts),
+		ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee,
+				ModelFactory.getCompanyModelFactory().create(),
+				ModelFactory.getProjectStatusModelFactory().create(),
+				ModelFactory.getRoleStatusModelFactory().create(),
+				overallStatus
+				);
+
+		return ViewModelFactory.getOperatorEmployeeModelFactory().create(employee,
+				ViewModelFactory.getIdNameTitleModelFactory().create(employee, accounts),
 				ViewModelFactory.getProjectDetailModelFactory().create(projectStatusMap),
 				ViewModelFactory.getRoleModelFactory().create(roleStatusMap),
 				ViewModelFactory.getOperatorEmployeeSkillModelFactory().create(skillStatusMap, siteSkills, roleSkillMap.keySet()),

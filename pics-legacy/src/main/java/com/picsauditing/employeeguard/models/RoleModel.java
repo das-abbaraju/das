@@ -6,7 +6,7 @@ public class RoleModel implements Identifiable, Nameable {
 
 	private int id;
 	private String name;
-	private List<SkillModel> skills;
+	private List<? extends SkillModel> skills;
 
 	@Override
 	public int getId() {
@@ -28,11 +28,11 @@ public class RoleModel implements Identifiable, Nameable {
 		this.name = name;
 	}
 
-	public List<SkillModel> getSkills() {
+	public List<? extends SkillModel> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<SkillModel> skills) {
+	public void setSkills(List<? extends SkillModel> skills) {
 		this.skills = skills;
 	}
 }
