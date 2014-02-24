@@ -1,6 +1,8 @@
 package com.picsauditing.actions.report;
 
 import static org.junit.Assert.*;
+
+import com.picsauditing.service.PermissionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,8 +17,10 @@ import com.picsauditing.service.ReportService;
 
 public class ReportApiTest extends PicsActionTest {
 
-	private PicsActionSupport reportApi;
+	private ReportApi reportApi;
 
+    @Mock
+    private PermissionService permissionService;
 	@Mock
 	private ReportService reportService;
 	@Mock
@@ -31,6 +35,7 @@ public class ReportApiTest extends PicsActionTest {
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(reportApi, this);
 
 		Whitebox.setInternalState(reportApi, "reportService", reportService);
+		Whitebox.setInternalState(reportApi, "permissionService", permissionService);
 	}
 
 	@Test
@@ -40,17 +45,10 @@ public class ReportApiTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.JSON, strutsResult);
 	}
 
-//	@Test
-//	public void testReport_NullModelTypeFailsValidationSetsSuccessToFalse() throws Exception {
-//		when(report.getModelType()).thenReturn(null);
-//		when(reportService.createReport(any(ReportContext.class))).thenReturn(report);
-//		when(reportService.buildJsonResponse(any(ReportContext.class))).thenReturn(reponseJson);
-//
-//		String strutsResult = reportApi.execute();
-//
-//		assertEquals(PicsActionSupport.JSON, strutsResult);
-//		JSONObject json = reportApi.getJson();
-//		assertThat((Boolean) json.get(ReportJson.EXT_JS_SUCCESS), is(equalTo(Boolean.FALSE)));
-//	}
+    @Test
+    public void testSubscribe() throws Exception {
+        String strutsResult = reportApi.subscribe();
 
+        assertEquals(PicsActionSupport.PLAIN_TEXT, strutsResult);
+    }
 }

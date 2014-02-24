@@ -122,6 +122,7 @@ public class AddLateFees implements CronTask {
     }
 
     private Invoice saveLateFeeInvoiceAndRelated(Invoice invoiceWhichIsLate, InvoiceItem lateFeeItem, Invoice lateFeeInvoice) throws Exception {
+        billingService.addRevRecInfoIfAppropriateToItems(lateFeeInvoice);
         lateFeeInvoice = billingService.saveInvoice(lateFeeInvoice);
         lateFeeItem.setInvoice(lateFeeInvoice);
         invoiceItemDAO.save(lateFeeItem);
@@ -142,6 +143,7 @@ public class AddLateFees implements CronTask {
         lateFeeInvoice.setPayingFacilities(contractorAccount.getPayingFacilities());
         lateFeeInvoice.setAuditColumns(new User(User.SYSTEM));
         lateFeeInvoice.setDueDate(lateFeeInvoice.getCreationDate());
+
         return lateFeeInvoice;
     }
 

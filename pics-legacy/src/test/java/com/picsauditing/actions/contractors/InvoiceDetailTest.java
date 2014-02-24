@@ -9,10 +9,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
@@ -59,6 +56,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private NoteDAO noteDAO;
     @Mock
     private InvoiceDAO invoiceDAO;
+    @Mock
+    private PaymentDAO paymentDAO;
 	@Mock
 	private BillingNoteModel billingNoteModel;
 	@Mock
@@ -81,6 +80,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 		Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
 		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
         Whitebox.setInternalState(invoiceDetail,"invoiceDAO",invoiceDAO);
+        Whitebox.setInternalState(invoiceDetail,"paymentDAO",paymentDAO);
 		Whitebox.setInternalState(invoiceDetail, "billingNoteModel", billingNoteModel);
 		Whitebox.setInternalState(invoiceDetail,"appPropertyDAO",appPropertyDAO);
 		Whitebox.setInternalState(invoiceDetail,"sapAppPropertyUtil",sapAppPropertyUtil);
@@ -149,6 +149,44 @@ public class InvoiceDetailTest extends PicsActionTest {
 		verify(invoice, times(1)).setStatus(TransactionStatus.Void);
 		commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
 	}
+
+    @Test
+    public void testExecute_SaveButton() throws Exception {
+        invoiceDetail.setInvoice(invoice);
+        invoiceDetail.setButton("save");
+        commonSetupForExecuteTest();
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+
+        String actionResult = invoiceDetail.execute();
+
+        verify(billingService, times(1)).addRevRecInfoIfAppropriateToItems(invoice);
+        commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
+    }
+
+    @Test
+    public void testExecute_BadDebtButton() throws Exception {
+        Invoice invoiceObj = new Invoice();
+        invoiceObj.setAccount(contractor);
+        BigDecimal fourThousand = new BigDecimal(4000.00);
+        BigDecimal fifteenHundred = new BigDecimal(1500.00);
+        invoiceObj.setTotalAmount(fourThousand);
+        invoiceObj.setAmountApplied(fifteenHundred);
+
+        commonSetupForExecuteTest();
+        invoiceDetail.setInvoice(invoiceObj);
+        invoiceDetail.setTransaction(invoiceObj);
+        invoiceDetail.setButton("baddebt");
+        when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+        when(sapAppPropertyUtil.isSAPBusinessUnitEnabledForObject(invoiceObj)).thenReturn(true);
+
+        String actionResult = invoiceDetail.execute();
+
+        verify(paymentDAO).save((Payment) any());
+        assertEquals(new BigDecimal(2500.00), invoiceDetail.getInvoice().getPayments().get(0).getPayment().getTotalAmount());
+    }
 
     @Test
     public void testExecute_RefundCreditMemo_AccountBalanceIsNotNegative() throws IOException, InvoiceValidationException, Exception {
