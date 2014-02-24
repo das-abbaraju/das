@@ -1,8 +1,6 @@
 package com.picsauditing.employeeguard.models.factories;
 
-import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.ProjectBuilder;
 import com.picsauditing.employeeguard.models.ProjectModel;
 import com.picsauditing.employeeguard.models.RoleModel;

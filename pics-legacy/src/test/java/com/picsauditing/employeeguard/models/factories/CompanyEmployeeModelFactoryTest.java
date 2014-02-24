@@ -42,9 +42,9 @@ public class CompanyEmployeeModelFactoryTest {
 	}
 
 	protected void verifyTestCreate(final List<CompanyModel> fakeCompanies,
-								  final List<ProjectModel> fakeProjects,
-								  final List<RoleModel> fakeRoleModels,
-								  final CompanyEmployeeModel companyEmployeeModel) {
+									final List<ProjectModel> fakeProjects,
+									final List<RoleModel> fakeRoleModels,
+									final CompanyEmployeeModel companyEmployeeModel) {
 		assertEquals(EMPLOYEE_ID, companyEmployeeModel.getId());
 		assertEquals(EMPLOYEE_FIRST_NAME, companyEmployeeModel.getFirstName());
 		assertEquals(EMPLOYEE_LAST_NAME, companyEmployeeModel.getLastName());
