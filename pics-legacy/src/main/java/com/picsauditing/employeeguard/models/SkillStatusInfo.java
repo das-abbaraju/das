@@ -1,4 +1,11 @@
 package com.picsauditing.employeeguard.models;
 
-public class SkillStatusInfo {
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+
+public interface SkillStatusInfo {
+
+	SkillStatus getStatus();
+
+	void setStatus(final SkillStatus skillStatus);
+
 }

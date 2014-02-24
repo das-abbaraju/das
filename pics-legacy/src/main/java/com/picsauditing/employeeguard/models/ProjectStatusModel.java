@@ -2,15 +2,24 @@ package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-public class ProjectStatusModel extends ProjectModel {
+public class ProjectStatusModel extends ProjectModel implements SkillStatusInfo {
 
-	private SkillStatus skillStatus;
+	private SkillStatus status;
 
-	public SkillStatus getSkillStatus() {
-		return skillStatus;
+	public ProjectStatusModel(final ProjectModel projectModel) {
+		this.setId(projectModel.getId());
+		this.setName(projectModel.getName());
+		this.setRoles(projectModel.getRoles());
+		this.setSkills(projectModel.getSkills());
 	}
 
-	public void setSkillStatus(SkillStatus skillStatus) {
-		this.skillStatus = skillStatus;
+	@Override
+	public SkillStatus getStatus() {
+		return status;
+	}
+
+	@Override
+	public void setStatus(SkillStatus skillStatus) {
+		this.status = skillStatus;
 	}
 }
