@@ -241,7 +241,7 @@ public class ReportResources extends ReportActionSupport {
 			operatorId = Integer.parseInt(row.get("opID").toString());
 			operatorName = row.get("operator").toString();
 			formName = row.get("formName").toString();
-			clientSiteOnly = row.get("clientSiteOnly") == 1;
+			clientSiteOnly = row.get("clientSiteOnly").equals(1);
 			addLocale(createLocale(row.get("locale").toString()));
 		}
 
