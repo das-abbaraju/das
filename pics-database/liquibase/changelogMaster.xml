@@ -161,5 +161,6 @@
 	<!-- 7.1.7 -->
 	<include file="./liquibase/2014/Q1/mdo46_PICS-13646_tradeSS_DDL.sql"/>
 	<include file="./liquibase/2014/Q1/mdo47_PICS-13646_tradeSS_DML.sql"/>
+	<include file="./liquibase/2014/Q1/kchase28_PICS-13967_UpdateEmailContents.sql"/>
 
 </databaseChangeLog>
