@@ -125,7 +125,65 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	}
 
     @Test
+    public void testGetRollbackStatus_AdminChangingPolicySubmitted() throws Exception {
+        when(permissions.isAdmin()).thenReturn(true);
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setClassType(AuditTypeClass.Policy);
+        audit.setAuditType(auditType);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Submitted)
+                                .visible()
+                                .build()
+                )
+        );
+
+        assertEquals(AuditStatus.Resubmitted, Whitebox.invokeMethod(auditDataSave, "getRollbackStatus", audit, audit.getOperators().get(0)));
+    }
+
+    @Test
+    public void testGetRollbackStatus_AdminChangingPolicyComplete() throws Exception {
+        when(permissions.isAdmin()).thenReturn(true);
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setClassType(AuditTypeClass.Policy);
+        audit.setAuditType(auditType);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Approved)
+                                .visible()
+                                .build()
+                )
+        );
+
+        assertEquals(AuditStatus.Resubmitted, Whitebox.invokeMethod(auditDataSave, "getRollbackStatus", audit, audit.getOperators().get(0)));
+    }
+
+    @Test
+    public void testGetRollbackStatus_AdminChangingPolicyApproved() throws Exception {
+        when(permissions.isAdmin()).thenReturn(true);
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setClassType(AuditTypeClass.Policy);
+        audit.setAuditType(auditType);
+
+        audit.setOperators(
+                Arrays.asList(
+                        ContractorAuditOperator.builder()
+                                .status(AuditStatus.Approved)
+                                .visible()
+                                .build()
+                )
+        );
+
+        assertEquals(AuditStatus.Resubmitted, Whitebox.invokeMethod(auditDataSave, "getRollbackStatus", audit, audit.getOperators().get(0)));
+    }
+
+    @Test
     public void testGetRollbackStatus_PolicySubmitted() throws Exception {
+        when(permissions.isAdmin()).thenReturn(false);
         AuditType auditType = EntityFactory.makeAuditType();
         auditType.setClassType(AuditTypeClass.Policy);
         audit.setAuditType(auditType);
@@ -144,6 +202,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
     @Test
     public void testGetRollbackStatus_PolicyComplete() throws Exception {
+        when(permissions.isAdmin()).thenReturn(true);
         AuditType auditType = EntityFactory.makeAuditType();
         auditType.setClassType(AuditTypeClass.Policy);
         audit.setAuditType(auditType);
@@ -160,8 +219,10 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         assertEquals(AuditStatus.Resubmitted, Whitebox.invokeMethod(auditDataSave, "getRollbackStatus", audit, audit.getOperators().get(0)));
     }
 
+
     @Test
     public void testGetRollbackStatus_PolicyApproved() throws Exception {
+        when(permissions.isAdmin()).thenReturn(true);
         AuditType auditType = EntityFactory.makeAuditType();
         auditType.setClassType(AuditTypeClass.Policy);
         audit.setAuditType(auditType);
