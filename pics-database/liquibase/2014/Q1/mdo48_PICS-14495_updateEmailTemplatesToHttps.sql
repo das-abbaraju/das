@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset mdo:46
+--changeset mdo:48
 --preConditions onFail MARK_RAN
 --onUpdateSQL IGNORE
 UPDATE email_template

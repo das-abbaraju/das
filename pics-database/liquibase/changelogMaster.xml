@@ -70,13 +70,13 @@
     <include file="./liquibase/2013/kchase12_PICS-13079_EmailNotViewable.sql"/>
 
 	<!-- 7.0.0 -->
-    <include file="./liquibase/2013/lkam3_PICS-12981_Brazil_CNPJ.sql"/>
+	<include file="./liquibase/2013/lkam3_PICS-12981_Brazil_CNPJ.sql"/>
 
 	<!-- 7.0.1 -->
-    <include file="./liquibase/2013/mdo14_PICS-13660_Update_incorrect_currencies_on_late_fees.sql"/>
-    <include file="./liquibase/2013/mdo15_PICS-13692_correct_erroneous_invoice_type.sql"/>
-    <include file="./liquibase/2013/mdo17_PICS-13584_Bulk_approval_suncor_policies.sql"/>
-    <include file="./liquibase/2013/mdo23_PICS-13692_updateReactivationAndDeclinedAccounts.sql"/>
+	<include file="./liquibase/2013/mdo14_PICS-13660_Update_incorrect_currencies_on_late_fees.sql"/>
+	<include file="./liquibase/2013/mdo15_PICS-13692_correct_erroneous_invoice_type.sql"/>
+	<include file="./liquibase/2013/mdo17_PICS-13584_Bulk_approval_suncor_policies.sql"/>
+	<include file="./liquibase/2013/mdo23_PICS-13692_updateReactivationAndDeclinedAccounts.sql"/>
 
 	<!-- 7.0.2 -->
 	<include file="./liquibase/2014/Q1/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql"/>
@@ -155,13 +155,16 @@
 
 	<!-- 7.1.6 --> 
 	<include file="./liquibase/2014/Q1/dalvarado7_us182_new_template_for_message_your_csr.sql"/>
-    <include file="./liquibase/2014/Q1/pschlesinger15_PICS12656_AddTempTablesForSapHistoricalBalances.sql"/>
-    <include file="./liquibase/2014/Q1/kchase25_PICS-14563_CleanUpSubscriptions.sql"/>
-    <include file="./liquibase/2014/Q1/kchase26_PICS-14497_AMBestUpdate.sql"/>
+	<include file="./liquibase/2014/Q1/pschlesinger15_PICS12656_AddTempTablesForSapHistoricalBalances.sql"/>
+	<include file="./liquibase/2014/Q1/kchase25_PICS-14563_CleanUpSubscriptions.sql"/>
+	<include file="./liquibase/2014/Q1/kchase26_PICS-14497_AMBestUpdate.sql"/>
 
 	<!-- 7.1.7 -->
 	<include file="./liquibase/2014/Q1/mdo46_PICS-13646_tradeSS_DDL.sql"/>
 	<include file="./liquibase/2014/Q1/mdo47_PICS-13646_tradeSS_DML.sql"/>
 	<include file="./liquibase/2014/Q1/kchase28_PICS-13967_UpdateEmailContents.sql"/>
+
+	<!-- 7.1.8 -->
+	<include file="./liquibase/2014/Q1/mdo46_PICS-14495_updateEmailTemplatesToHttps.sql"/>
 
 </databaseChangeLog>
