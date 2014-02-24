@@ -169,9 +169,9 @@ public class InvoiceDetailTest extends PicsActionTest {
         Invoice invoiceObj = new Invoice();
         invoiceObj.setAccount(contractor);
         BigDecimal fourThousand = new BigDecimal(4000.00);
-        BigDecimal twoThousand = new BigDecimal(1500.00);
+        BigDecimal fifteenHundred = new BigDecimal(1500.00);
         invoiceObj.setTotalAmount(fourThousand);
-        invoiceObj.setAmountApplied(twoThousand);
+        invoiceObj.setAmountApplied(fifteenHundred);
 
         commonSetupForExecuteTest();
         invoiceDetail.setInvoice(invoiceObj);
@@ -185,7 +185,7 @@ public class InvoiceDetailTest extends PicsActionTest {
         String actionResult = invoiceDetail.execute();
 
         verify(paymentDAO).save((Payment) any());
-        assertEquals(new BigDecimal(2500.00),invoiceDetail.getInvoice().getPayments().get(0).getPayment().getTotalAmount());
+        assertEquals(new BigDecimal(2500.00), invoiceDetail.getInvoice().getPayments().get(0).getPayment().getTotalAmount());
     }
 
     @Test
