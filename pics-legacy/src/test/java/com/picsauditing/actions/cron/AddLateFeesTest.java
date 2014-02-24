@@ -9,11 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class AddLateFeesTest {
@@ -95,6 +97,13 @@ public class AddLateFeesTest {
         assertEquals(invoiceDueDate.getDay(), lateInvoice.getDueDate().getDay());
         assertEquals(invoiceDueDate.getMonth(), lateInvoice.getDueDate().getMonth());
         assertEquals(invoiceDueDate.getYear(), lateInvoice.getDueDate().getYear());
+    }
+
+    @Test
+    public void testSaveLateFeeInvoiceAndRelated() throws Exception {
+        Invoice invoice = Whitebox.invokeMethod(cron, "saveLateFeeInvoiceAndRelated", mockInvoice, mockInvoiceItem, mockInvoice);
+        verify(billingService).addRevRecInfoIfAppropriateToItems(mockInvoice);
+        verify(billingService).saveInvoice(mockInvoice);
     }
 
 }
