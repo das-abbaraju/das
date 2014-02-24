@@ -169,7 +169,7 @@ public class InvoiceDetailTest extends PicsActionTest {
         Invoice invoiceObj = new Invoice();
         invoiceObj.setAccount(contractor);
         BigDecimal fourThousand = new BigDecimal(4000.00);
-        BigDecimal twoThousand = new BigDecimal(2000.00);
+        BigDecimal twoThousand = new BigDecimal(2500.00);
         invoiceObj.setTotalAmount(fourThousand);
         invoiceObj.setAmountApplied(twoThousand);
 
