@@ -95,7 +95,7 @@ public class AllModelsTest {
         filter.setOperator(QueryFilterOperator.In);
         filter.setValue("Deactivated");
         filters.add(filter);
-        assertEquals("Account.status IN ('Deactivated','Active')",model.getWhereClause(filters));
+        assertEquals("Account.status IN ('Active','Deactivated')",model.getWhereClause(filters));
     }
 
     @Test
