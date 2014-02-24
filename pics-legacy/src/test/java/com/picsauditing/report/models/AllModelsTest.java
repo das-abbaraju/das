@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dr.domain.fields.QueryFilterOperator;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.SqlBuilder;
@@ -81,6 +82,20 @@ public class AllModelsTest {
         permissions.setAccountType("Corporate");
         model = new ContractorTradesModel(permissions);
         Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testContractorsModelWhereClause_ArchivedReportDeactivatedContractorsVisibleForOperator() throws Exception {
+        permissions.setAccountType("Corporate");
+        model = new ContractorsModel(permissions);
+        List<Filter> filters = new ArrayList<>();
+        Filter filter = new Filter();
+        filter.setField(new Field("AccountStatus"));
+        filter.setName("ACCOUNTSTATUS");
+        filter.setOperator(QueryFilterOperator.In);
+        filter.setValue("Deactivated");
+        filters.add(filter);
+        assertEquals("Account.status IN ('Deactivated','Active')",model.getWhereClause(filters));
     }
 
     @Test
