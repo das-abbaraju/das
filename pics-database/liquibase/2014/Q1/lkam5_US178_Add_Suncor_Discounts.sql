@@ -5,8 +5,11 @@
 
 ALTER TABLE invoice_fee ADD COLUMN discountOperatorID INT(11) DEFAULT 0 NULL AFTER commissionEligible;
 
+SET SQL_MODE='';
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
 
-INSERT INTO invoice_fee(fee, defaultAmount, visible, feeClass, minFacilities, maxFacilities, qbFullName,createdBy,updatedBy,creationDate,updateDate, discountOperatorID)
+REPLACE INTO invoice_fee(fee, defaultAmount, visible, feeClass, minFacilities, maxFacilities, qbFullName,createdBy,updatedBy,creationDate,updateDate, discountOperatorID)
 VALUES
 ('Suncor Discount DocuGUARD™ for 1 Operators', 100, 1, 'DocuGUARD', 1, 1, 'DISC-DGVEN1', 38586, 38586, NOW(), NOW(), 10566),
 ('Suncor Discount DocuGUARD™ for 2-4 Operators', 100, 1, 'DocuGUARD', 2, 4, 'DISC-DGVEN2', 38586, 38586, NOW(), NOW(), 10566),
