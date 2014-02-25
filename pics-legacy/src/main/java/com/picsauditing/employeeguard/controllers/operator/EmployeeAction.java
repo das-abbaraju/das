@@ -61,27 +61,56 @@ public class EmployeeAction extends PicsRestActionSupport {
 		Set<AccountSkill> skills = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
 		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employee, skills);
 
-		Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap =
-				ModelFactory.getSkillStatusModelFactory().createRoleIdToSkillStatusModelMap(roleSkillMap, skillStatusMap);
-		Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap =
-				ModelFactory.getSkillStatusModelFactory().createProjectIdToSkillStatusModelMap(projectSkillMap, skillStatusMap);
-		Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap =
-				ModelFactory.getRoleStatusModelFactory().createProjectIdToRoleModelMap(
-						projectRoleMap.keySet(),
-						projectRoleMap,
-						roleIdToSkillStatusModelMap,
-						roleStatusMap);
-		List<ProjectStatusModel> projectStatusModels = ModelFactory.getProjectStatusModelFactory().create(
+		Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap = getRoleIdToSkillStatusModelMap(roleSkillMap, skillStatusMap);
+		List<RoleStatusModel> roleStatusModels = getRoleStatusModels(roleSkillMap, roleStatusMap, roleIdToSkillStatusModelMap);
+
+		List<ProjectStatusModel> projectStatusModels = getProjectStatusModels(
+				projectRoleMap,
+				projectSkillMap,
+				roleStatusMap,
+				projectStatusMap,
+				skillStatusMap,
+				roleIdToSkillStatusModelMap);
+
+		List<CompanyModel> companyModels = ModelFactory.getCompanyModelFactory().create(accounts);
+		return ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee, companyModels, projectStatusModels, roleStatusModels, overallStatus);
+	}
+
+	private List<ProjectStatusModel> getProjectStatusModels(Map<Project, Set<Role>> projectRoleMap, Map<Project, Set<AccountSkill>> projectSkillMap, Map<Role, SkillStatus> roleStatusMap, Map<Project, SkillStatus> projectStatusMap, Map<AccountSkill, SkillStatus> skillStatusMap, Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap) {
+		Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap = getProjectIdToSkillStatusModelMap(projectSkillMap, skillStatusMap);
+		Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap = getProjectIdToRoleStatusModelMap(projectRoleMap, roleStatusMap, roleIdToSkillStatusModelMap);
+		return getProjectStatusModels(projectRoleMap, projectStatusMap, projectIdToSkillStatusModelMap, projectIdToRoleStatusModelMap);
+	}
+
+	private Map<Integer, List<SkillStatusModel>> getRoleIdToSkillStatusModelMap(Map<Role, Set<AccountSkill>> roleSkillMap, Map<AccountSkill, SkillStatus> skillStatusMap) {
+		return ModelFactory.getSkillStatusModelFactory().createRoleIdToSkillStatusModelMap(roleSkillMap, skillStatusMap);
+	}
+
+	private Map<Integer, List<SkillStatusModel>> getProjectIdToSkillStatusModelMap(Map<Project, Set<AccountSkill>> projectSkillMap, Map<AccountSkill, SkillStatus> skillStatusMap) {
+		return ModelFactory.getSkillStatusModelFactory().createProjectIdToSkillStatusModelMap(projectSkillMap, skillStatusMap);
+	}
+
+	private Map<Integer, List<RoleStatusModel>> getProjectIdToRoleStatusModelMap(Map<Project, Set<Role>> projectRoleMap, Map<Role, SkillStatus> roleStatusMap, Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap) {
+		return ModelFactory.getRoleStatusModelFactory().createProjectIdToRoleModelMap(
+				projectRoleMap.keySet(),
+				projectRoleMap,
+				roleIdToSkillStatusModelMap,
+				roleStatusMap);
+	}
+
+	private List<ProjectStatusModel> getProjectStatusModels(Map<Project, Set<Role>> projectRoleMap, Map<Project, SkillStatus> projectStatusMap, Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap, Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap) {
+		return ModelFactory.getProjectStatusModelFactory().create(
 				projectRoleMap.keySet(),
 				projectIdToRoleStatusModelMap,
 				projectIdToSkillStatusModelMap,
 				projectStatusMap);
-		List<RoleStatusModel> roleStatusModels = ModelFactory.getRoleStatusModelFactory().create(
-				roleSkillMap.keySet(),
-				roleIdToSkillStatusModelMap, roleStatusMap);
+	}
 
-		List<CompanyModel> companyModels = ModelFactory.getCompanyModelFactory().create(accounts);
-		return ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee, companyModels, projectStatusModels, roleStatusModels, overallStatus);
+	private List<RoleStatusModel> getRoleStatusModels(Map<Role, Set<AccountSkill>> roleSkillMap, Map<Role, SkillStatus> roleStatusMap, Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap) {
+		return ModelFactory.getRoleStatusModelFactory().create(
+				roleSkillMap.keySet(),
+				roleIdToSkillStatusModelMap,
+				roleStatusMap);
 	}
 
 	private Map<Role, Set<AccountSkill>> getRoleSkillMap(Employee employeeEntity, Map<Project, Set<Role>> projectRoleMap) {
