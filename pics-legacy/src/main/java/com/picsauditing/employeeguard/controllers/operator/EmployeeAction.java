@@ -11,8 +11,6 @@ import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.viewmodel.employee.OperatorEmployeeModel;
-import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -36,11 +34,8 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private int siteId;
 
-	private CompanyEmployeeStatusModel companyEmployeeStatusModel;
-	private OperatorEmployeeModel operatorEmployeeModel;
-
 	public String show() {
-		companyEmployeeStatusModel = buildCompanyEmployeeStatusModel();
+		CompanyEmployeeStatusModel companyEmployeeStatusModel = buildCompanyEmployeeStatusModel();
 
 		// Screw you simple json!
 		jsonString = new Gson().toJson(companyEmployeeStatusModel);
@@ -87,34 +82,6 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 		List<CompanyModel> companyModels = ModelFactory.getCompanyModelFactory().create(accounts);
 		return ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee, companyModels, projectStatusModels, roleStatusModels, overallStatus);
-	}
-
-	private OperatorEmployeeModel buildOperatorEmployeeModel() {
-		Employee employee = employeeService.findEmployee(id);
-
-		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employee);
-
-		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employee, projectRoleMap);
-		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(projectRoleMap);
-
-		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, roleSkillMap);
-		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, projectSkillMap);
-		SkillStatus overallStatus = statusCalculatorService.calculateOverallStatus(Utilities.mergeCollections(roleStatusMap.values(), projectStatusMap.values()));
-
-		Set<AccountSkill> skills = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
-		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employee, skills);
-
-		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployee(employee);
-
-		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
-
-
-		return ViewModelFactory.getOperatorEmployeeModelFactory().create(employee,
-				ViewModelFactory.getIdNameTitleModelFactory().create(employee, accounts),
-				ViewModelFactory.getProjectDetailModelFactory().create(projectStatusMap),
-				ViewModelFactory.getRoleModelFactory().create(roleStatusMap),
-				ViewModelFactory.getOperatorEmployeeSkillModelFactory().create(skillStatusMap, siteSkills, roleSkillMap.keySet()),
-				overallStatus);
 	}
 
 	private Map<Role, Set<AccountSkill>> getRoleSkillMap(Employee employeeEntity, Map<Project, Set<Role>> projectRoleMap) {
