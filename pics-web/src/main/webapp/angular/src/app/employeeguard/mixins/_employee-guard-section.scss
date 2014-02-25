@@ -1,0 +1,64 @@
+@mixin employee-guard-section {
+    .employee-guard-section
+    {
+        > h1 {
+            background-color: $default_platinum;
+            color: $pics_warm_grey;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 0px;
+
+            i {
+                margin-right: 5px;
+            }
+        }
+
+        .edit {
+            text-align: right;
+
+            i:hover {
+                color: $info_med;
+            }
+        }
+
+        .content {
+            padding: 20px 30px;
+        }
+
+        &.info-toolbar {
+            .row {
+                line-height: 24px;
+            }
+
+            a.btn {
+                margin-left: 5px;
+                margin-right: 0px;
+            }
+
+            ul {
+                margin-bottom: 0px;
+
+                li {
+                    &.success,
+                    &.warning,
+                    &.danger {
+                        background-color: transparent;
+                    }
+                }
+            }
+        }
+    }
+
+    .employee-guard-section:first-child > h1 {
+        margin-top: 0;
+    }
+
+    @media (max-width: 767px) {
+        .employee-guard-section {
+            .content {
+                padding: 20px 0px;
+            }
+        }
+    }
+}

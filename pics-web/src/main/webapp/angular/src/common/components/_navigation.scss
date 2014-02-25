@@ -1,0 +1,87 @@
+.nav-pills {
+    li {
+        .badge {
+            line-height: 18px;
+        }
+
+        &.active {
+            .badge {
+                background-color: transparent;
+                color: #FFFFFF;
+            }
+
+            a {
+                background-color: $info_med;
+                color: #ffffff;
+
+                &:hover,
+                &:focus {
+                    background-color: $info_med;
+                    color: #ffffff;
+                }
+            }
+        }
+
+    }
+
+    a {
+        color: $info_med;
+        font-size: 14px;
+
+        &:hover {
+            background-color: $pics_cool_grey;
+        }
+    }
+
+    i {
+        margin-right: 6px;
+    }
+}
+
+.nav-title {
+    color: $default_silver;
+    display: block;
+    font-size: 12px;
+    padding: 10px 15px 0px 15px;
+    text-transform: uppercase;
+}
+
+.nav .nav-header {
+    color: $default_silver;
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.428571429;
+    padding: 3px 20px;
+}
+
+.nav .nav-divider {
+    margin: 0px;
+}
+
+/* Skill Navigation */
+ul.skill-nav {
+    background-color: $default_platinum;
+    @include border-radius(5px);
+    padding: 10px 0px;
+
+    .skill-nav {
+        padding: 0px;
+    }
+
+    & a:hover {
+        background-color: $default_mercury;
+        color: $default_steel;
+    }
+
+    & a.active {
+        border-right: 2px inset $primary_light;
+        color: $primary_light;
+        font-weight: bold;
+    }
+
+    a {
+        color: $default_steel;
+        padding: 2px 0px 3px 40px;
+    }
+}

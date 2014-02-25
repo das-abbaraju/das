@@ -7,6 +7,6 @@ angular.module('PICS.employeeguard', [
 
     $routeProvider
         .when('/', {
-            templateUrl: '/src/app/employeeguard/operator_employee/operator_employee.tpl.html'
+            templateUrl: '/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         });
 });

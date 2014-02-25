@@ -1,0 +1,28 @@
+.badge {
+    color: #ffffff;
+    font-weight: normal;
+}
+
+.badge-default {
+    background-color: $default_pewter;
+}
+
+.badge-primary {
+    background-color: $primary_med;
+}
+
+.badge-success {
+    background-color: $success_med;
+}
+
+.badge-info {
+    background-color: $info_med;
+}
+
+.badge-warning {
+    background-color: $warning_med;
+}
+
+.badge-danger {
+    background-color: $danger_med;
+}

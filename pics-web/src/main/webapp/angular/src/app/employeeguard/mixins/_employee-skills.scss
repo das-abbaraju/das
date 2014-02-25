@@ -1,0 +1,73 @@
+@mixin employee-skills {
+
+	.skill-list {
+		.list-group-item {
+			@include border-radius(5px);
+			border: 0px;
+			color: #FFFFFF;
+			margin-bottom: 10px;
+			padding: 5px 10px;
+		}
+
+		.list-group-item:first-child {
+			@include border-radius(5px);
+		}
+
+		.list-group-item:hover {
+			color: #FFFFFF;
+		}
+
+		.list-group-item i {
+			margin-right: 10px;
+		}
+
+		.success {
+			background-color: $success_light;
+
+			&:hover {
+				background-image: linear-gradient(to top, $success_med, $success_light);
+			}
+
+			&:active {
+				background-image: none;
+				background-color: $success_med;
+			}
+		}
+
+		.warning {
+			background-color: $warning_med;
+
+			&:hover {
+				background-image: linear-gradient(to top, $warning_med, $warning_light);
+			}
+
+			&:active {
+				background-image: none;
+				background-color: $warning_dark;
+			}
+		}
+
+		.danger {
+			background-color: $danger_light;
+
+			&:hover {
+				background-image: linear-gradient(to top, $danger_med, $danger_light);
+			}
+
+			&:active {
+				background-image: none;
+				background-color: $danger_med;
+			}
+		}
+	}
+
+	.employee_guard_employee_skill-page {
+		.update {
+			margin-top: 20px;
+		}
+
+		.description {
+			margin-bottom: 20px;
+		}
+	}
+}
