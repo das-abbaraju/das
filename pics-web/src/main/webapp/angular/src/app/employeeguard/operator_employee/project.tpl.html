@@ -1,0 +1,6 @@
+<!-- <employeeskillsection title="Project Required" skills="employee.projects|filter: projectFilter"></employeeskillsection> -->
+<employeeskillsection title="{{ currentProject.name }}" skills="currentProject.skills"></employeeskillsection>
+
+<span ng-repeat="role in currentProject.roles">
+    <employeeskillsection title="{{ role.name }}" skills="role.skills"></employeeskillsection>
+</span>

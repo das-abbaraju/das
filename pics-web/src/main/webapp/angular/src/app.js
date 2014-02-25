@@ -1,3 +1,5 @@
-angular.module('MyApp', [
-    'MyApp.home'
+angular.module('PICSApp', [
+    'PICS.home',
+    'PICS.employeeguard',
+    'PICS.directives'
 ]);

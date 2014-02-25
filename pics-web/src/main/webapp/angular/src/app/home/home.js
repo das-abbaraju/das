@@ -1,12 +1,12 @@
-angular.module('MyApp.home', [
+angular.module('PICS.home', [
     'ngRoute'
 ])
 
 .config(function ($routeProvider) {
-    $routeProvider
-        .when('/', {
-            templateUrl: '/src/app/home/home.tpl.html'
-        });
+    // $routeProvider
+    //     .when('/', {
+    //         templateUrl: '/src/app/home/home.tpl.html'
+    //     });
 })
 
 .controller('homeCtrl', function ($scope) {
@@ -17,6 +17,6 @@ angular.module('MyApp.home', [
 .directive('test', function () {
     return {
         restrict: 'E',
-        template: '<div>This is a custom directive</div>'
+        templateUrl: 'home.tpl.html'
     };
 });

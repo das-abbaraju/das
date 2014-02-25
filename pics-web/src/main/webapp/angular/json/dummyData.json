@@ -1,0 +1,292 @@
+{
+   "id":1,
+   "projects":[
+      {
+         "id":1,
+         "skills":[
+            {
+               "id":14,
+               "projects":[
+
+               ],
+               "status":"Expired",
+               "roles":[
+                  1
+               ],
+               "name":"Site Orientation Expired"
+            },
+            {
+               "id":21,
+               "projects":[
+
+               ],
+               "status":"Complete",
+               "roles":[
+                  1
+               ],
+               "name":"Site Orientation Complete"
+            },
+            {
+               "id":34,
+               "projects":[
+
+               ],
+               "status":"Expiring",
+               "roles":[
+                  1
+               ],
+               "name":"Site Orientation Expiring"
+            },
+            {
+               "id":34,
+               "projects":[
+
+               ],
+               "status":"Pending",
+               "roles":[
+                  1
+               ],
+               "name":"Site Orientation Pending"
+            }
+         ],
+         "name":"Phase 3 Hermanos Building Construction Site",
+         "status":"Expiring",
+         "roles":[
+            {
+               "skills":[
+                  {
+                     "id":21,
+                     "projects":[
+
+                     ],
+                     "status":"Expired",
+                     "roles":[
+                        1
+                     ],
+                     "name":"Defensing Driving"
+                  }
+               ],
+               "id":1,
+               "status":"Expired",
+               "name":"Soccer Mom"
+            },
+            {
+               "skills":[
+                  {
+                     "id":22,
+                     "projects":[
+
+                     ],
+                     "status":"Expiring",
+                     "roles":[
+                        1
+                     ],
+                     "name":"Getaway Driving"
+                  }
+               ],
+               "id":1,
+               "status":"Expired",
+               "name":"Driver"
+            }
+         ]
+      },
+      {
+         "id":32,
+         "skills":[
+            {
+               "id":14,
+               "projects":[
+
+               ],
+               "status":"Expired",
+               "roles":[
+                  1
+               ],
+               "name":"This skill sucks"
+            },
+            {
+               "id":21,
+               "projects":[
+
+               ],
+               "status":"Complete",
+               "roles":[
+                  1
+               ],
+               "name":"Blow up building"
+            },
+            {
+               "id":34,
+               "projects":[
+
+               ],
+               "status":"Expiring",
+               "roles":[
+                  1
+               ],
+               "name":"Blow up buliding more"
+            },
+            {
+               "id":34,
+               "projects":[
+
+               ],
+               "status":"Pending",
+               "roles":[
+                  1
+               ],
+               "name":"Building go boom"
+            }
+         ],
+         "name":"Building Blow upping",
+         "status":"Complete",
+         "roles":[
+            {
+               "skills":[
+                  {
+                     "id":99,
+                     "projects":[
+
+                     ],
+                     "status":"Expired",
+                     "roles":[
+                        1
+                     ],
+                     "name":"Offensive Driving"
+                  }
+               ],
+               "id":1,
+               "status":"Expired",
+               "name":"Equipment Operator"
+            },
+            {
+               "skills":[
+                  {
+                     "id":51,
+                     "projects":[
+
+                     ],
+                     "status":"Complete",
+                     "roles":[
+                        1
+                     ],
+                     "name":"Wall Building"
+                  },
+                  {
+                     "id":23,
+                     "projects":[
+
+                     ],
+                     "status":"Expired",
+                     "roles":[
+                        1
+                     ],
+                     "name":"Bullseye hitting"
+                  }
+               ],
+               "id":1,
+               "status":"Expired",
+               "name":"Defensive Architect"
+            }
+         ]
+      }
+   ],
+   "overallStatus":"Expired",
+   "roles":[
+      {
+         "skills":[
+            {
+               "id":1,
+               "projects":[
+                  1,
+                  7,
+                  10
+               ],
+               "status":"Expiring",
+               "roles":[
+                  1,
+                  23
+               ],
+               "name":"Personal Driver's License"
+            },
+            {
+               "id":13,
+               "projects":[
+                  7
+               ],
+               "status":"Complete",
+               "roles":[
+                  1
+               ],
+               "name":"General Destruction Training"
+            },
+            {
+               "id":51,
+               "projects":[
+
+               ],
+               "status":"Expired",
+               "roles":[
+                  1
+               ],
+               "name":"Offensive Driving"
+            }
+         ],
+         "id":1,
+         "status":"Expired",
+         "name":"Equipment Operator"
+      },
+      {
+         "skills":[
+            {
+               "id":24,
+               "projects":[
+                  1,
+                  7,
+                  10
+               ],
+               "status":"Complete",
+               "roles":[
+                  1,
+                  23
+               ],
+               "name":"Commercial Driver's License"
+            },
+            {
+               "id":13,
+               "projects":[
+                  7
+               ],
+               "status":"Complete",
+               "roles":[
+                  1
+               ],
+               "name":"General Safety Training"
+            },
+            {
+               "id":51,
+               "projects":[
+
+               ],
+               "status":"Expired",
+               "roles":[
+                  1
+               ],
+               "name":"Defensing Driving"
+            }
+         ],
+         "id":24,
+         "status":"Expiring",
+         "name":"Destruction"
+      }
+   ],
+   "name":"Bob Roberts",
+   "companies":[
+      {
+         "id":"54578",
+         "title":"Forklift Operator",
+         "name":"ACME Co."
+      }
+   ],
+   "image":"http://www.i-mockery.com/minimocks/ghostbusters2/psychic3.gif"
+}
