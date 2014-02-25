@@ -494,7 +494,14 @@ public final class MenuBuilder {
 			legacyMenu.addChild("Contractor Risk Assessment", "ReportContractorRiskLevel.action", "ContractorRiskLevel");
 		}
 
-		if (permissions.hasPermission(OpPerms.ContractorApproval)) {
+        if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
+            legacyMenu.addChild(getText("GeneralContractorList.title"), "GeneralContractorsList.action",
+                    "GeneralContractorsList");
+            legacyMenu.addChild(getText("SubcontractorFlagMatrix.title"), "SubcontractorFlagMatrix.action",
+                    "SubcontractorFlagMatrix");
+        }
+
+        if (permissions.hasPermission(OpPerms.ContractorApproval)) {
 			legacyMenu.addChild(getText("ContractorApproval.title"), "ContractorApproval.action?filter.workStatus=P",
 					"subMenu_ApproveContractors");
 		}

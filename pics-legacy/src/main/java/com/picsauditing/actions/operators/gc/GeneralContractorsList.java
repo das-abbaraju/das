@@ -2,6 +2,7 @@ package com.picsauditing.actions.operators.gc;
 
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.jpa.entities.AccountStatus;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
@@ -80,9 +81,10 @@ public class GeneralContractorsList extends ReportActionSupport {
 	}
 
 	protected void buildQuery() {
-		sql.addJoin("JOIN accounts a ON a.id = f.opID AND a.status = 'Active' AND a.generalContractor = 1");
+
+		sql.addJoin("JOIN accounts a ON a.id = f.opID AND a.status IN ('Active'" + addDemoStatus() + ") AND a.generalContractor = 1");
 		sql.addJoin("JOIN contractor_operator co ON co.opID = a.id");
-		sql.addJoin("JOIN accounts con ON con.id = co.conID AND con.status = 'Active'");
+		sql.addJoin("JOIN accounts con ON con.id = co.conID AND con.status IN ('Active'" + addDemoStatus() + ")");
 
 		sql.addWhere("f.corporateID = " + permissions.getAccountId());
 		sql.addWhere("f.type = 'GeneralContractor'");
@@ -97,6 +99,13 @@ public class GeneralContractorsList extends ReportActionSupport {
 
 		addFilterToSQL();
 	}
+
+    private String addDemoStatus() {
+        if (permissions.getAccountStatus() == AccountStatus.Demo) {
+            return ",'Demo'";
+        }
+        return "";
+    }
 
 	protected void addFilterToSQL() {
 		if (filterOn(getFilter().getStartsWith())) {
