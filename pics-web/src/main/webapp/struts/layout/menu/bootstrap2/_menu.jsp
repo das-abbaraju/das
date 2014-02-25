@@ -13,16 +13,6 @@
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
-            <button type="button" data-toggle="collapse" data-target=".primary-navigation-items">
-                <i class="icon-reorder"></i>
-            </button>
-
-            <s:if test="!permissions.contractor">
-                <button type="button" data-toggle="collapse" data-target=".primary-navigation-search">
-                    <i class="icon-search"></i>
-                </button>
-            </s:if>
-
             <%-- FIXME clean up menu links --%>
             <s:if test="permissions.userId > 0">
                 <a class="brand" href="/"></a>
@@ -31,14 +21,14 @@
                 <a class="brand" href="/employee-guard/employee/dashboard"></a>
             </s:else>
 
-            <div class="nav-collapse collapse primary-navigation-items">
+            <div class="primary-navigation-items">
                 <ul class="nav pull-left">
                     <s:set var="menu_items" value="menu.children.subList(0, #last_menu_index)"/>
                     <s:include value="/struts/layout/menu/_menu-item.jsp"/>
                 </ul>
             </div>
 
-            <div class="nav-collapse collapse primary-navigation-items">
+            <div class="primary-navigation-items">
                 <ul class="nav pull-right">
                     <s:set var="menu_items" value="menu.children.subList(#last_menu_index, #menu_size)"/>
                     <s:include value="/struts/layout/menu/_menu-item.jsp"/>
@@ -46,7 +36,7 @@
             </div>
 
             <s:if test="!permissions.contractor">
-                <div class="nav-collapse collapse primary-navigation-search">
+                <div class="primary-navigation-search">
                     <form action="${search_url}" class="navbar-search pull-right">
                         <input type="hidden" name="button" value="search"/>
                         <input type="text" name="searchTerm" class="search-query span2" placeholder="Search"
@@ -55,7 +45,7 @@
                     </form>
                 </div>
             </s:if>
-            <div class="nav-collapse collapse">
+            <div>
                 <a class="contact-us-link" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
             </div>
         </nav>

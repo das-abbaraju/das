@@ -455,7 +455,13 @@ body {
     vertical-align: 0;
   }
 }
-/* line 355, ../sass/pics/layout/menu/_primary-navigation.scss */
+@media (max-width: 892px) {
+  /* line 356, ../sass/pics/layout/menu/_primary-navigation.scss */
+  #primary_navigation .contact-us-link {
+    margin-top: 7px;
+  }
+}
+/* line 361, ../sass/pics/layout/menu/_primary-navigation.scss */
 body.has-contractor-menu .navbar-inner {
   border-bottom: none !important;
 }

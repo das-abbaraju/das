@@ -101,6 +101,15 @@
     }
 }
 
+@media (max-width: 979px) {
+    #secondary_navigation {
+        height: auto;
+
+        ul.nav {
+            top: -5px;
+        }
+    }
+}
 @media (min-width: 992px) {
     body.has-contractor-menu {
         padding-top: 103px;

@@ -2523,7 +2523,13 @@ a:focus {
     vertical-align: 0;
   }
 }
-/* line 355, ../../../v7/sass/pics/layout/menu/_primary-navigation.scss */
+@media (max-width: 892px) {
+  /* line 356, ../../../v7/sass/pics/layout/menu/_primary-navigation.scss */
+  #primary_navigation .contact-us-link {
+    margin-top: 7px;
+  }
+}
+/* line 361, ../../../v7/sass/pics/layout/menu/_primary-navigation.scss */
 body.has-contractor-menu .navbar-inner {
   border-bottom: none !important;
 }
@@ -3455,12 +3461,22 @@ body {
   color: #fff;
 }
 
-@media (min-width: 992px) {
+@media (max-width: 979px) {
   /* line 105, ../sass/_secondary-navigation.scss */
+  #secondary_navigation {
+    height: auto;
+  }
+  /* line 108, ../sass/_secondary-navigation.scss */
+  #secondary_navigation ul.nav {
+    top: -5px;
+  }
+}
+@media (min-width: 992px) {
+  /* line 114, ../sass/_secondary-navigation.scss */
   body.has-contractor-menu {
     padding-top: 103px;
   }
-  /* line 108, ../sass/_secondary-navigation.scss */
+  /* line 117, ../sass/_secondary-navigation.scss */
   body.has-contractor-menu #primary_navigation {
     border-bottom: none;
     height: 50px;

@@ -352,6 +352,12 @@
     }
 }
 
+@media (max-width: 892px) {
+    #primary_navigation .contact-us-link {
+        margin-top: 7px;
+    }
+}
+
 body.has-contractor-menu .navbar-inner {
     border-bottom: none !important;
 }
