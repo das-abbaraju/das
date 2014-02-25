@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.models.CompanyEmployeeStatusModel;
+import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
@@ -63,6 +64,12 @@ public class EmployeeAction extends PicsRestActionSupport {
 		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployeesMap(employeesAssignedToSite);
 
 		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
+
+		ModelFactory.getCompanyEmployeeModelFactory().create(employee,
+				);
+
+		ModelFactory.getCompanyModelFactory().create(accounts, );
+		ModelFactory.getCompanyEmployeeModelFactory().
 
 //		ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee,
 //				ModelFactory.getCompanyModelFactory().create(),
