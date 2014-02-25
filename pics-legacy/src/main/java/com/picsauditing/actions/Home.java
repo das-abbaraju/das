@@ -35,7 +35,7 @@ public class Home extends ContractorActionSupport {
 		} else if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.Dashboard)) {
 			// Redirect operators/corporate accounts without the dashboard
 			// permission to the contractor list
-			return setUrlForRedirect("ContractorList.action?filter.performedBy=Self%20Performed");
+			return setUrlForRedirect("Report.action?report=100");
 		} else if (permissions.isGeneralContractor()) {
 			widgetsToShowForUser = wdao.findForGeneralContractor(permissions);
 		} else {
