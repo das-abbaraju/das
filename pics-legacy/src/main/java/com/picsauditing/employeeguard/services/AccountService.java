@@ -6,6 +6,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.services.external.BillingService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
@@ -176,8 +177,24 @@ public class AccountService {
 		});
 	}
 
-	public List<AccountModel> getContractors(final int accountId) {
-		OperatorAccount operator = operatorDAO.find(accountId);
+	/**
+	 * Retrieve the list of Contractor IDs that work under this Operator/Corporate hierarchy and have EmployeeGUARD.
+	 *
+	 * @param siteId The ID of the Operator Facility/Site or the ID of the Corporation
+	 * @return
+	 */
+	public List<Integer> getContractorIds(final int siteId) {
+		return extractIdFromAccountModel(getContractors(siteId).toArray(new AccountModel[0]));
+	}
+
+	/**
+	 * Retrieve the list of Contractors that work under this Operator/Corporate hierarchy and have EmployeeGUARD.
+	 *
+	 * @param siteId The ID of the Operator Facility/Site or the ID of the Corporation
+	 * @return
+	 */
+	public List<AccountModel> getContractors(final int siteId) {
+		OperatorAccount operator = operatorDAO.find(siteId);
 		if (operator == null) {
 			return Collections.emptyList();
 		}
@@ -194,10 +211,6 @@ public class AccountService {
 		List<ContractorAccount> accounts = billingService.filterEmployeeGUARDAccounts(contractors);
 
 		return mapAccountsToAccountModels(accounts);
-	}
-
-	public List<Integer> getContractorIds(final int accountId) {
-		return extractIdFromAccountModel(getContractors(accountId).toArray(new AccountModel[0]));
 	}
 
 	private void addContractorsFromOperator(OperatorAccount operator, List<ContractorAccount> contractors) {
@@ -297,13 +310,35 @@ public class AccountService {
 			return Collections.emptyMap();
 		}
 
-		List<Integer> contractorIds = ExtractorUtil.extractList(profile.getEmployees(), new Extractor<Employee, Integer>() {
-			@Override
-			public Integer extract(Employee employee) {
-				return employee.getAccountId();
-			}
-		});
+		List<Integer> contractorIds = ExtractorUtil.extractList(profile.getEmployees(),
+				new Extractor<Employee, Integer>() {
+					@Override
+					public Integer extract(Employee employee) {
+						return employee.getAccountId();
+					}
+				});
 
 		return getIdToAccountModelMap(contractorIds);
+	}
+
+	public Map<Integer, AccountModel> getContractorsForEmployeesMap(final List<Employee> employees) {
+		return getIdToAccountModelMap(getAccountIds(employees));
+	}
+
+	public List<AccountModel> getContractorsForEmployees(final List<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyList();
+		}
+
+		return getAccountsByIds(getAccountIds(employees));
+	}
+
+	private List<Integer> getAccountIds(final List<Employee> employees) {
+		List<Integer> accountIds = new ArrayList<>();
+		for (Employee employee : employees) {
+			accountIds.add(employee.getAccountId());
+		}
+
+		return accountIds;
 	}
 }

@@ -7,13 +7,12 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.models.ModelFactory;
+import com.picsauditing.employeeguard.models.CompanyEmployeeStatusModel;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.employee.OperatorEmployeeModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -47,6 +46,34 @@ public class EmployeeAction extends PicsRestActionSupport {
 		return JSON_STRING;
 	}
 
+	private CompanyEmployeeStatusModel buildModel() {
+		Employee employee = employeeService.findEmployee(id);
+
+		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employee);
+
+		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employee, projectRoleMap);
+		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(projectRoleMap);
+
+		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, roleSkillMap);
+		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, projectSkillMap);
+		SkillStatus overallStatus = statusCalculatorService.calculateOverallStatus(Utilities.mergeCollections(roleStatusMap.values(), projectStatusMap.values()));
+
+		List<Employee> employeesAssignedToSite = employeeService
+				.getEmployeesAssignedToSiteByEmployeeProfile(accountService.getContractorIds(siteId), siteId, employee);
+		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployeesMap(employeesAssignedToSite);
+
+		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
+
+//		ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee,
+//				ModelFactory.getCompanyModelFactory().create(),
+//				ModelFactory.getProjectStatusModelFactory().create(),
+//				ModelFactory.getRoleStatusModelFactory().create(),
+//				overallStatus
+//		);
+
+		return null;
+	}
+
 	private OperatorEmployeeModel buildOperatorEmployeeModel() {
 		Employee employee = employeeService.findEmployee(id);
 
@@ -66,12 +93,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
 
-		ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee,
-				ModelFactory.getCompanyModelFactory().create(),
-				ModelFactory.getProjectStatusModelFactory().create(),
-				ModelFactory.getRoleStatusModelFactory().create(),
-				overallStatus
-				);
+
 
 		return ViewModelFactory.getOperatorEmployeeModelFactory().create(employee,
 				ViewModelFactory.getIdNameTitleModelFactory().create(employee, accounts),

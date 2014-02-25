@@ -6,8 +6,8 @@ public class ProjectModel implements Identifiable, Nameable {
 
 	private int id;
 	private String name;
-	private List<RoleModel> roles;
-	private List<SkillModel> skills;
+	private List<? extends RoleModel> roles;
+	private List<? extends SkillModel> skills;
 
 	@Override
 	public int getId() {
@@ -29,19 +29,19 @@ public class ProjectModel implements Identifiable, Nameable {
 		this.name = name;
 	}
 
-	public List<RoleModel> getRoles() {
+	public List<? extends RoleModel> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<RoleModel> roles) {
+	public void setRoles(List<? extends RoleModel> roles) {
 		this.roles = roles;
 	}
 
-	public List<SkillModel> getSkills() {
+	public List<? extends SkillModel> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<SkillModel> skills) {
+	public void setSkills(List<? extends SkillModel> skills) {
 		this.skills = skills;
 	}
 }
