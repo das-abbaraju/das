@@ -36,7 +36,10 @@ public class ProjectModelFactoryTest {
 		verifyTestCreate(fakeRoleModels, fakeSkillModels, projectModel);
 	}
 
-	protected void verifyTestCreate(List<RoleModel> fakeRoleModels, List<SkillModel> fakeSkillModels, ProjectModel projectModel) {
+	protected void verifyTestCreate(List<? extends RoleModel> fakeRoleModels,
+	                                List<? extends SkillModel> fakeSkillModels,
+	                                ProjectModel projectModel) {
+
 		assertEquals(PROJECT_ID, projectModel.getId());
 		assertEquals(PROJECT_NAME, projectModel.getName());
 		assertEquals(fakeRoleModels, projectModel.getRoles());

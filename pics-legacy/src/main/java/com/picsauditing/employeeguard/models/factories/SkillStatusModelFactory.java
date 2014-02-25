@@ -14,26 +14,26 @@ import java.util.*;
 public class SkillStatusModelFactory extends SkillModelFactory {
 
 	public Map<Integer, List<SkillStatusModel>> createProjectIdToSkillStatusModelMap(
-			final Map<Project, List<AccountSkill>> projectSkillsMap,
+			final Map<Project, ? extends Collection<AccountSkill>> projectSkillsMap,
 			final Map<AccountSkill, SkillStatus> skillStatuses) {
 
 		if (MapUtils.isEmpty(projectSkillsMap)) {
 			return Collections.emptyMap();
 		}
 
-		Map<Integer, List<SkillStatusModel>> roleIdToSkillsMap = new HashMap<>();
+		Map<Integer, List<SkillStatusModel>> projectIdToSkillsMap = new HashMap<>();
 		for (Project project : projectSkillsMap.keySet()) {
-			roleIdToSkillsMap.put(project.getId(), new ArrayList<SkillStatusModel>());
+			projectIdToSkillsMap.put(project.getId(), new ArrayList<SkillStatusModel>());
 			for (AccountSkill accountSkill : projectSkillsMap.get(project)) {
-				roleIdToSkillsMap.get(project.getId()).add(create(accountSkill, skillStatuses.get(accountSkill)));
+				projectIdToSkillsMap.get(project.getId()).add(create(accountSkill, skillStatuses.get(accountSkill)));
 			}
 		}
 
-		return roleIdToSkillsMap;
+		return projectIdToSkillsMap;
 	}
 
 	public Map<Integer, List<SkillStatusModel>> createRoleIdToSkillStatusModelMap(
-			final Map<Role, List<AccountSkill>> roleSkillsMap,
+			final Map<Role, ? extends Collection<AccountSkill>> roleSkillsMap,
 			final Map<AccountSkill, SkillStatus> skillStatuses) {
 
 		if (MapUtils.isEmpty(roleSkillsMap)) {
@@ -51,7 +51,7 @@ public class SkillStatusModelFactory extends SkillModelFactory {
 		return roleIdToSkillsMap;
 	}
 
-	public List<SkillStatusModel> create(final List<AccountSkill> accountSkills,
+	public List<SkillStatusModel> create(final Collection<AccountSkill> accountSkills,
 	                                     final Map<AccountSkill, SkillStatus> skillStatusMap) {
 		if (CollectionUtils.isEmpty(accountSkills)) {
 			return Collections.emptyList();

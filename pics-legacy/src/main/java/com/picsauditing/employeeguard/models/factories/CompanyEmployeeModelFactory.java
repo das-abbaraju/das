@@ -31,8 +31,8 @@ public class CompanyEmployeeModelFactory {
 
 	public CompanyEmployeeModel create(final Employee employee,
 									   final List<CompanyModel> companies,
-									   final List<ProjectModel> projects,
-									   final List<RoleModel> roles) {
+									   final List<? extends ProjectModel> projects,
+									   final List<? extends RoleModel> roles) {
 		CompanyEmployeeModel companyEmployeeModel = new CompanyEmployeeModel();
 		companyEmployeeModel.setId(employee.getId());
 		companyEmployeeModel.setFirstName(employee.getFirstName());

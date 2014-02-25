@@ -9,8 +9,8 @@ public class CompanyEmployeeModel implements Identifiable {
 	private String lastName;
 	private String title;
 	private List<CompanyModel> companies;
-	private List<ProjectModel> projects;
-	private List<RoleModel> roles;
+	private List<? extends ProjectModel> projects;
+	private List<? extends RoleModel> roles;
 
 	@Override
 	public int getId() {
@@ -54,19 +54,19 @@ public class CompanyEmployeeModel implements Identifiable {
 		this.companies = companies;
 	}
 
-	public List<ProjectModel> getProjects() {
+	public List<? extends ProjectModel> getProjects() {
 		return projects;
 	}
 
-	public void setProjects(List<ProjectModel> projects) {
+	public void setProjects(List<? extends ProjectModel> projects) {
 		this.projects = projects;
 	}
 
-	public List<RoleModel> getRoles() {
+	public List<? extends RoleModel> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<RoleModel> roles) {
+	public void setRoles(List<? extends RoleModel> roles) {
 		this.roles = roles;
 	}
 }

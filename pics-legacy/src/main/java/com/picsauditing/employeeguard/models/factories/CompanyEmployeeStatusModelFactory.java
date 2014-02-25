@@ -13,8 +13,8 @@ public class CompanyEmployeeStatusModelFactory extends CompanyEmployeeModelFacto
 
 	public CompanyEmployeeStatusModel create(final Employee employee,
 											 final List<CompanyModel> companies,
-											 final List<ProjectModel> projects,
-											 final List<RoleModel> roles,
+											 final List<? extends ProjectModel> projects,
+											 final List<? extends RoleModel> roles,
 											 final SkillStatus status) {
 		CompanyEmployeeStatusModel companyEmployeeStatusModel =
 				new CompanyEmployeeStatusModel(super.create(employee, companies, projects, roles));

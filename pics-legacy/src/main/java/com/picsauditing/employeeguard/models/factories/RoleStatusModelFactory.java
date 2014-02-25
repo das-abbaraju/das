@@ -12,10 +12,10 @@ import java.util.*;
 
 public class RoleStatusModelFactory extends RoleModelFactory {
 
-	public Map<Integer, List<RoleStatusModel>> createProjectIdToRoleModelMap(final List<Project> projects,
-																			 final Map<Project, List<Role>> projectRoles,
-																			 final Map<Integer, List<SkillStatusModel>> roleIdToSkillModelMap,
-																			 final Map<Role, SkillStatus> roleStatuses) {
+	public Map<Integer, List<RoleStatusModel>> createProjectIdToRoleModelMap(final Collection<Project> projects,
+	                                                                         final Map<Project, ? extends Collection<Role>> projectRoles,
+	                                                                         final Map<Integer, List<SkillStatusModel>> roleIdToSkillModelMap,
+	                                                                         final Map<Role, SkillStatus> roleStatuses) {
 		if (CollectionUtils.isEmpty(projects)) {
 			return Collections.emptyMap();
 		}
@@ -29,21 +29,27 @@ public class RoleStatusModelFactory extends RoleModelFactory {
 		return projectIdToRoleModelMap;
 	}
 
-	private void addRolesToProject(final Map<Project, List<Role>> projectRoles,
-								   final Map<Integer, List<SkillStatusModel>> roleIdToSkillModelMap,
-								   final Map<Integer, List<RoleStatusModel>> projectIdToRoleModelMap,
-								   final Project project,
-								   final Map<Role, SkillStatus> roleStatuses) {
+	private void addRolesToProject(final Map<Project, ? extends Collection<Role>> projectRoles,
+	                               final Map<Integer, List<SkillStatusModel>> roleIdToSkillModelMap,
+	                               final Map<Integer, List<RoleStatusModel>> projectIdToRoleModelMap,
+	                               final Project project,
+	                               final Map<Role, SkillStatus> roleStatuses) {
 
 		if (CollectionUtils.isNotEmpty(projectRoles.get(project))) {
 			for (Role role : projectRoles.get(project)) {
-				projectIdToRoleModelMap.get(project).add(this.create(role, roleIdToSkillModelMap.get(role.getId()),
-						roleStatuses.get(role)));
+				projectIdToRoleModelMap.get(project.getId()).add(this.create(
+						role,
+						roleIdToSkillModelMap.get(role.getId()),
+						roleStatuses.get(role)
+				));
 			}
 		}
 	}
 
-	public List<RoleStatusModel> create(final List<Role> roles, final Map<Integer, List<SkillModel>> roleSkills, final Map<Integer, SkillStatus> roleStatuses) {
+	public List<RoleStatusModel> create(final Collection<Role> roles,
+	                                    final Map<Integer, List<SkillStatusModel>> roleSkills,
+	                                    final Map<Role, SkillStatus> roleStatuses) {
+
 		if (CollectionUtils.isEmpty(roles)) {
 			return Collections.emptyList();
 		}

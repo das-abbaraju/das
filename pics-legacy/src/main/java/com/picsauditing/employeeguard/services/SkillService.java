@@ -451,7 +451,7 @@ public class SkillService {
 	}
 
 	public Map<Project, Set<AccountSkill>> getAllProjectSkillsForEmployeeProjectRoles(final int siteId,
-																					   final Map<Project, Set<Role>> projectRoleMap) {
+	                                                                                  final Map<Project, Set<Role>> projectRoleMap) {
 		if (MapUtils.isEmpty(projectRoleMap)) {
 			return Collections.emptyMap();
 		}
@@ -496,7 +496,7 @@ public class SkillService {
 	}
 
 	private Map<Project, Set<AccountSkill>> appendProjectRequiredSkills(final Map<Project, Set<AccountSkill>> projectSkillMap,
-																		 final Map<Project, Set<AccountSkill>> projectRequiredSkillsMap) {
+	                                                                    final Map<Project, Set<AccountSkill>> projectRequiredSkillsMap) {
 		if (MapUtils.isEmpty(projectRequiredSkillsMap) || MapUtils.isEmpty(projectSkillMap)) {
 			return projectSkillMap;
 		}
@@ -542,7 +542,7 @@ public class SkillService {
 	}
 
 	private Map<Role, Set<AccountSkill>> populateRoleSkillsMapIfEmpty(final Collection<Role> corporateRoles,
-																	   final Map<Role, Set<AccountSkill>> roleSkillsMap) {
+	                                                                  final Map<Role, Set<AccountSkill>> roleSkillsMap) {
 		if (MapUtils.isNotEmpty(roleSkillsMap)) {
 			return roleSkillsMap;
 		}
@@ -556,7 +556,7 @@ public class SkillService {
 	}
 
 	private <E> Map<E, Set<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, Set<AccountSkill>> entitySkillMap,
-																		final List<AccountSkill> siteAndCorporateRequiredSkills) {
+	                                                                   final List<AccountSkill> siteAndCorporateRequiredSkills) {
 		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
 			return entitySkillMap;
 		}

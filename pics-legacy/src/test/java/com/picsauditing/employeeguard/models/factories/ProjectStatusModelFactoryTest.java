@@ -2,8 +2,8 @@ package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.models.ProjectStatusModel;
-import com.picsauditing.employeeguard.models.RoleModel;
-import com.picsauditing.employeeguard.models.SkillModel;
+import com.picsauditing.employeeguard.models.RoleStatusModel;
+import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,8 +27,8 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 	@Test
 	public void testCreate() {
 		Project fakeProject = super.buildFakeProject();
-		List<RoleModel> fakeRoleModels = new ArrayList<>();
-		List<SkillModel> fakeSkillModels = new ArrayList<>();
+		List<RoleStatusModel> fakeRoleModels = new ArrayList<>();
+		List<SkillStatusModel> fakeSkillModels = new ArrayList<>();
 
 		ProjectStatusModel projectStatusModel = projectStatusModelFactory.create(fakeProject, fakeRoleModels,
 				fakeSkillModels, SkillStatus.Expiring);

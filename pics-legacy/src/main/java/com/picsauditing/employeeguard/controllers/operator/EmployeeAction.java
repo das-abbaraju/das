@@ -7,8 +7,7 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.models.CompanyEmployeeStatusModel;
-import com.picsauditing.employeeguard.models.ModelFactory;
+import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
@@ -37,17 +36,18 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private int siteId;
 
+	private CompanyEmployeeStatusModel companyEmployeeStatusModel;
 	private OperatorEmployeeModel operatorEmployeeModel;
 
 	public String show() {
-		operatorEmployeeModel = buildOperatorEmployeeModel();
+		companyEmployeeStatusModel = buildCompanyEmployeeStatusModel();
 
 		// Screw you simple json!
-		jsonString = new Gson().toJson(operatorEmployeeModel);
+		jsonString = new Gson().toJson(companyEmployeeStatusModel);
 		return JSON_STRING;
 	}
 
-	private CompanyEmployeeStatusModel buildModel() {
+	private CompanyEmployeeStatusModel buildCompanyEmployeeStatusModel() {
 		Employee employee = employeeService.findEmployee(id);
 
 		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employee);
@@ -63,22 +63,30 @@ public class EmployeeAction extends PicsRestActionSupport {
 				.getEmployeesAssignedToSiteByEmployeeProfile(accountService.getContractorIds(siteId), siteId, employee);
 		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployeesMap(employeesAssignedToSite);
 
-		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
+		Set<AccountSkill> skills = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
+		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employee, skills);
 
-		ModelFactory.getCompanyEmployeeModelFactory().create(employee,
-				);
+		Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap =
+				ModelFactory.getSkillStatusModelFactory().createRoleIdToSkillStatusModelMap(roleSkillMap, skillStatusMap);
+		Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap =
+				ModelFactory.getSkillStatusModelFactory().createProjectIdToSkillStatusModelMap(projectSkillMap, skillStatusMap);
+		Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap =
+				ModelFactory.getRoleStatusModelFactory().createProjectIdToRoleModelMap(
+						projectRoleMap.keySet(),
+						projectRoleMap,
+						roleIdToSkillStatusModelMap,
+						roleStatusMap);
+		List<ProjectStatusModel> projectStatusModels = ModelFactory.getProjectStatusModelFactory().create(
+				projectRoleMap.keySet(),
+				projectIdToRoleStatusModelMap,
+				projectIdToSkillStatusModelMap,
+				projectStatusMap);
+		List<RoleStatusModel> roleStatusModels = ModelFactory.getRoleStatusModelFactory().create(
+				roleSkillMap.keySet(),
+				roleIdToSkillStatusModelMap, roleStatusMap);
 
-		ModelFactory.getCompanyModelFactory().create(accounts, );
-		ModelFactory.getCompanyEmployeeModelFactory().
-
-//		ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee,
-//				ModelFactory.getCompanyModelFactory().create(),
-//				ModelFactory.getProjectStatusModelFactory().create(),
-//				ModelFactory.getRoleStatusModelFactory().create(),
-//				overallStatus
-//		);
-
-		return null;
+		List<CompanyModel> companyModels = ModelFactory.getCompanyModelFactory().create(accounts);
+		return ModelFactory.getCompanyEmployeeStatusModelFactory().create(employee, companyModels, projectStatusModels, roleStatusModels, overallStatus);
 	}
 
 	private OperatorEmployeeModel buildOperatorEmployeeModel() {
@@ -99,7 +107,6 @@ public class EmployeeAction extends PicsRestActionSupport {
 		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployee(employee);
 
 		List<AccountSkill> siteSkills = skillService.getRequiredSkillsForSiteAndCorporates(permissions.getAccountId());
-
 
 
 		return ViewModelFactory.getOperatorEmployeeModelFactory().create(employee,
