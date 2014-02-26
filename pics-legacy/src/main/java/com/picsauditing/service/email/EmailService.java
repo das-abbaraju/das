@@ -16,7 +16,7 @@ public class EmailService {
         this.eventPublisher = publisher;
     }
 
-    public void publishEvent(Account account, User user, EmailTemplate template, EmailStatus status) {
-        eventPublisher.publish(account, user, template, status);
+    public void publishEvent(User user, EmailTemplate template, EmailStatus status, String reason) {
+        eventPublisher.publish(user, template, status, reason);
     }
 }
