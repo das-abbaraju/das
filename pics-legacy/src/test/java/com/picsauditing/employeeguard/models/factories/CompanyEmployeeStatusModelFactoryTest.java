@@ -18,8 +18,10 @@ public class CompanyEmployeeStatusModelFactoryTest extends CompanyEmployeeModelF
 
 	CompanyEmployeeStatusModelFactory companyEmployeeStatusModelFactory;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
+		super.setUp();
 		companyEmployeeStatusModelFactory = new CompanyEmployeeStatusModelFactory();
 	}
 
