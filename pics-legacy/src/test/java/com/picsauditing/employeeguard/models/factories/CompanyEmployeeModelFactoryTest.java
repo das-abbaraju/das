@@ -9,8 +9,7 @@ import com.picsauditing.employeeguard.models.RoleModel;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,7 +28,63 @@ public class CompanyEmployeeModelFactoryTest {
 	}
 
 	@Test
-	public void testCreate() throws Exception {
+	public void testCreate_ListOf_CompanyEmployeeModel() throws Exception {
+		List<Employee> fakeEmployees = buildFakeEmployees();
+		Map<Integer, List<CompanyModel>> companyModelMap = buildFakeCompanyModelMap();
+
+		List<CompanyEmployeeModel> companyEmployeeModels = companyEmployeeModelFactory.create(fakeEmployees,
+				companyModelMap);
+
+		verifyTestCreate_ListOf_CompanyEmployeeModel(fakeEmployees, companyModelMap, companyEmployeeModels);
+	}
+
+	private void verifyTestCreate_ListOf_CompanyEmployeeModel(final List<Employee> fakeEmployees,
+															  final Map<Integer, List<CompanyModel>> companyModelMap,
+															  final List<CompanyEmployeeModel> companyEmployeeModels) {
+		assertEquals(2, companyEmployeeModels.size());
+
+		int index = 0;
+		for (CompanyEmployeeModel companyEmployeeModel : companyEmployeeModels) {
+			assertEquals(fakeEmployees.get(index).getId(), companyEmployeeModel.getId());
+			assertEquals(fakeEmployees.get(index).getFirstName(), companyEmployeeModel.getFirstName());
+			assertEquals(fakeEmployees.get(index).getLastName(), companyEmployeeModel.getLastName());
+			assertEquals(companyModelMap.get(fakeEmployees.get(index).getId()), companyEmployeeModel.getCompanies());
+			index++;
+		}
+	}
+
+	private List<Employee> buildFakeEmployees() {
+		return new ArrayList<Employee>() {{
+			add(new EmployeeBuilder()
+					.id(1)
+					.firstName("Employee 1 First Name")
+					.lastName("Employee 1 Last Name")
+					.build());
+
+			add(new EmployeeBuilder()
+					.id(2)
+					.firstName("Employee 2 First Name")
+					.lastName("Employee 2 Last Name")
+					.build());
+		}};
+	}
+
+	private Map<Integer, List<CompanyModel>> buildFakeCompanyModelMap() {
+		return new HashMap<Integer, List<CompanyModel>>() {{
+			put(1, Arrays.asList(buildFakeCompanyModel(45, "Test Company 1")));
+			put(2, Arrays.asList(buildFakeCompanyModel(46, "Test Company 2")));
+		}};
+	}
+
+	private CompanyModel buildFakeCompanyModel(final int id, final String companyName) {
+		CompanyModel companyModel = new CompanyModel();
+		companyModel.setId(id);
+		companyModel.setName(companyName);
+		return companyModel;
+	}
+
+	@Test
+	public void testCreate_Single_CompanyEmployeeModel() throws Exception {
 		Employee fakeEmployee = buildFakeEmployee();
 		List<CompanyModel> fakeCompanies = new ArrayList<>();
 		List<ProjectModel> fakeProjects = new ArrayList<>();
@@ -49,6 +104,7 @@ public class CompanyEmployeeModelFactoryTest {
 		assertEquals(EMPLOYEE_FIRST_NAME, companyEmployeeModel.getFirstName());
 		assertEquals(EMPLOYEE_LAST_NAME, companyEmployeeModel.getLastName());
 		assertEquals(EMPLOYEE_TITLE, companyEmployeeModel.getTitle());
+
 		assertEquals(fakeCompanies, companyEmployeeModel.getCompanies());
 		assertEquals(fakeProjects, companyEmployeeModel.getProjects());
 		assertEquals(fakeRoleModels, companyEmployeeModel.getRoles());
