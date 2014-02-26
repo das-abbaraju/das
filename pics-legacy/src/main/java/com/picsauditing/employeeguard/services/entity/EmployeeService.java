@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class EmployeeService implements EntityService<Employee, Integer> {
+public class EmployeeService implements EntityService<Employee, Integer>, Searchable<Employee> {
 
 	@Autowired
 	private EmployeeDAO employeeDAO;

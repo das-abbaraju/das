@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class SkillService implements EntityService<AccountSkill, Integer> {
+public class SkillService implements EntityService<AccountSkill, Integer>, Searchable<AccountSkill> {
 
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
