@@ -2,11 +2,12 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class EmployeeService implements EntityService<Employee, Integer>, Searchable<Employee> {
@@ -39,17 +40,21 @@ public class EmployeeService implements EntityService<Employee, Integer>, Search
 	/* All Save Methods */
 
 	@Override
-	public Employee save(Employee employee, final int createdBy, final Date createdDate) {
+	public Employee save(Employee employee, final  EntityAuditInfo entityAuditInfo) {
+		employee = EntityHelper.setCreateAuditFields(employee, entityAuditInfo);
 		return employeeDAO.save(employee);
 	}
 
 	/* All Update Methods */
 
 	@Override
-	public Employee update(final Employee employee, final int updatedBy, final Date updatedDate) {
+	public Employee update(final Employee employee, final EntityAuditInfo entityAuditInfo) {
 		Employee employeeToUpdate = find(employee.getId());
 		employeeToUpdate = updatePersonalInformation(employeeToUpdate, employee);
 		employeeToUpdate = updateEmployeeEmploymentInformation(employeeToUpdate, employee);
+
+		employeeToUpdate = EntityHelper.setUpdateAuditFields(employeeToUpdate, entityAuditInfo);
+
 		return employeeDAO.save(employeeToUpdate);
 	}
 

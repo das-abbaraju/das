@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.employeeguard.daos.RoleDAO;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -75,7 +76,10 @@ public class RoleServiceTest {
 		Role fakeRole = buildFakeRole(ROLE_ID_1, ACCOUNT_ID, TEST_ROLE_NAME);
 		when(roleDAO.save(fakeRole)).thenReturn(fakeRole);
 
-		Role group = roleService.save(fakeRole, USER_ID, new Date());
+		Role group = roleService.save(fakeRole, new EntityAuditInfo.Builder()
+				.appUserId(USER_ID)
+				.timestamp(new Date())
+				.build());
 
 		assertEquals(1, group.getId());
 	}
@@ -84,7 +88,10 @@ public class RoleServiceTest {
 	public void testUpdate() throws Exception {
 		Role fakeRole = setupTestUpdate();
 
-		Role group = roleService.update(fakeRole, USER_ID, new Date());
+		Role group = roleService.update(fakeRole, new EntityAuditInfo.Builder()
+				.appUserId(USER_ID)
+				.timestamp(new Date())
+				.build());
 
 		verifyTestUpdate(group);
 	}

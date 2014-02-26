@@ -2,11 +2,12 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class SkillService implements EntityService<AccountSkill, Integer>, Searchable<AccountSkill> {
@@ -39,16 +40,15 @@ public class SkillService implements EntityService<AccountSkill, Integer>, Searc
 	/* All Save Operations */
 
 	@Override
-	public AccountSkill save(AccountSkill accountSkill, final int createdBy, final Date createdDate) {
-		accountSkill.setCreatedBy(createdBy);
-		accountSkill.setCreatedDate(createdDate);
+	public AccountSkill save(AccountSkill accountSkill, final EntityAuditInfo entityAuditInfo) {
+		accountSkill = EntityHelper.setCreateAuditFields(accountSkill, entityAuditInfo);
 		return accountSkillDAO.save(accountSkill);
 	}
 
 	/* All Update Operations */
 
 	@Override
-	public AccountSkill update(final AccountSkill accountSkill, final int updatedBy, final Date updatedDate) {
+	public AccountSkill update(final AccountSkill accountSkill, final EntityAuditInfo entityAuditInfo) {
 		AccountSkill accountSkillToUpdate = find(accountSkill.getId());
 
 		accountSkillToUpdate.setName(accountSkill.getName());
@@ -57,6 +57,8 @@ public class SkillService implements EntityService<AccountSkill, Integer>, Searc
 		accountSkillToUpdate.setIntervalType(accountSkill.getIntervalType());
 		accountSkillToUpdate.setIntervalPeriod(accountSkill.getIntervalPeriod());
 		accountSkillToUpdate.setRuleType(accountSkill.getRuleType());
+
+		accountSkillToUpdate = EntityHelper.setUpdateAuditFields(accountSkill, entityAuditInfo);
 
 		return accountSkillToUpdate;
 	}

@@ -2,11 +2,12 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.ProjectDAO;
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class ProjectService implements EntityService<Project, Integer>, Searchable<Project> {
@@ -39,16 +40,15 @@ public class ProjectService implements EntityService<Project, Integer>, Searchab
 	/* All Save Operations */
 
 	@Override
-	public Project save(final Project project, final int createdBy, final Date createdDate) {
-		project.setCreatedBy(createdBy);
-		project.setCreatedDate(createdDate);
+	public Project save(Project project, final EntityAuditInfo entityAuditInfo) {
+		project = EntityHelper.setCreateAuditFields(project, entityAuditInfo);
 		return projectDAO.save(project);
 	}
 
 	/* All Update Operations */
 
 	@Override
-	public Project update(final Project project, final int updatedBy, final Date updatedDate) {
+	public Project update(final Project project, final EntityAuditInfo entityAuditInfo) {
 		Project projectToUpdate = find(project.getId());
 
 		projectToUpdate.setAccountId(project.getAccountId());

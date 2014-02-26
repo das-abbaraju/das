@@ -2,11 +2,12 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class DocumentService implements EntityService<ProfileDocument, Integer>, Searchable<ProfileDocument> {
@@ -39,16 +40,15 @@ public class DocumentService implements EntityService<ProfileDocument, Integer>,
 	/* All Save Methods */
 
 	@Override
-	public ProfileDocument save(ProfileDocument profileDocument, final int createdBy, final Date createdDate) {
-		profileDocument.setCreatedBy(createdBy);
-		profileDocument.setCreatedDate(createdDate);
+	public ProfileDocument save(ProfileDocument profileDocument, final EntityAuditInfo entityAuditInfo) {
+		profileDocument = EntityHelper.setCreateAuditFields(profileDocument, entityAuditInfo);
 		return documentDAO.save(profileDocument);
 	}
 
 	/* All Update Methods */
 
 	@Override
-	public ProfileDocument update(ProfileDocument profileDocument, final int updatedBy, final Date updatedDate) {
+	public ProfileDocument update(ProfileDocument profileDocument, final EntityAuditInfo entityAuditInfo) {
 		ProfileDocument profileDocumentToUpdate = find(profileDocument.getId());
 
 		profileDocumentToUpdate.setName(profileDocument.getName());
@@ -58,10 +58,10 @@ public class DocumentService implements EntityService<ProfileDocument, Integer>,
 		profileDocumentToUpdate.setFileName(profileDocument.getFileName());
 		profileDocumentToUpdate.setFileSize(profileDocument.getFileSize());
 		profileDocumentToUpdate.setFileType(profileDocument.getFileType());
-		profileDocumentToUpdate.setUpdatedBy(updatedBy);
-		profileDocumentToUpdate.setUpdatedDate(updatedDate);
 
-		return profileDocumentToUpdate;
+		profileDocument = EntityHelper.setUpdateAuditFields(profileDocument, entityAuditInfo);
+
+		return documentDAO.save(profileDocument);
 	}
 
 	/* All Delete Methods */

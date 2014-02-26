@@ -3,11 +3,11 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class GroupService implements EntityService<Group, Integer>, Searchable<Group> {
@@ -40,20 +40,20 @@ public class GroupService implements EntityService<Group, Integer>, Searchable<G
 	/* All Save Methods */
 
 	@Override
-	public Group save(Group group, final int createdBy, final Date createdDate) {
-		group = EntityHelper.setCreateAuditFields(group, createdBy, createdDate);
+	public Group save(Group group, final EntityAuditInfo entityAuditInfo) {
+		group = EntityHelper.setCreateAuditFields(group, entityAuditInfo);
 		return accountGroupDAO.save(group);
 	}
 
 	/* All Update Methods */
 
 	@Override
-	public Group update(final Group group, final int updatedBy, final Date updatedDate) {
+	public Group update(final Group group, final EntityAuditInfo entityAuditInfo) {
 		Group groupToUpDate = find(group.getId());
 
 		groupToUpDate.setName(group.getName());
 		groupToUpDate.setDescription(group.getDescription());
-		groupToUpDate = EntityHelper.setUpdateAuditFields(group, updatedBy, updatedDate);
+		groupToUpDate = EntityHelper.setUpdateAuditFields(group, entityAuditInfo);
 
 		return accountGroupDAO.save(groupToUpDate);
 	}

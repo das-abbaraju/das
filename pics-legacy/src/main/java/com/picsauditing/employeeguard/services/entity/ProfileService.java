@@ -2,9 +2,9 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.ProfileDAO;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
 
 public class ProfileService implements EntityService<Profile, Integer> {
 
@@ -25,24 +25,23 @@ public class ProfileService implements EntityService<Profile, Integer> {
 	/* All Save Methods */
 
 	@Override
-	public Profile save(final Profile profile, final int createdBy, final Date createdDate) {
-		profile.setCreatedBy(createdBy);
-		profile.setCreatedDate(createdDate);
+	public Profile save(Profile profile, final EntityAuditInfo entityAuditInfo) {
+		profile = EntityHelper.setCreateAuditFields(profile, entityAuditInfo);
 		return profileDAO.save(profile);
 	}
 
 	/* All Update Methods */
 
 	@Override
-	public Profile update(final Profile profile, final int updatedBy, final Date updatedDate) {
+	public Profile update(final Profile profile, final EntityAuditInfo entityAuditInfo) {
 		Profile profileToUpdate = find(profile.getId());
 
 		profileToUpdate.setFirstName(profile.getFirstName());
 		profileToUpdate.setLastName(profile.getLastName());
 		profileToUpdate.setEmail(profile.getEmail());
 		profileToUpdate.setPhone(profile.getPhone());
-		profileToUpdate.setUpdatedBy(updatedBy);
-		profileToUpdate.setUpdatedDate(updatedDate);
+
+		profileToUpdate = EntityHelper.setUpdateAuditFields(profileToUpdate, entityAuditInfo);
 
 		return profileDAO.save(profileToUpdate);
 	}

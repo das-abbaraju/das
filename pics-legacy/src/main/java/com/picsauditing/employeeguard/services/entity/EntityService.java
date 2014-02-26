@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import java.util.Date;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 
 public interface EntityService<ENTITY, ID> {
 
@@ -16,24 +16,24 @@ public interface EntityService<ENTITY, ID> {
 	/**
 	 * Sets the createdBy and createdDate of the entity and returns the new persisted entity.
 	 *
+	 *
 	 * @param entity
-	 * @param createdBy
-	 * @param createdDate
+	 * @param entityAuditInfo
 	 * @return
 	 */
 
-	ENTITY save(ENTITY entity, int createdBy, Date createdDate);
+	ENTITY save(ENTITY entity, EntityAuditInfo entityAuditInfo);
 
 	/**
 	 * Sets the updatedBy and updatedDate of the entity and returns the updated version of previously persisted
 	 * entity.
 	 *
+	 *
 	 * @param entity
-	 * @param updatedBy
-	 * @param updatedDate
+	 * @param entityAuditInfo
 	 * @return
 	 */
-	ENTITY update(ENTITY entity, int updatedBy, Date updatedDate);
+	ENTITY update(ENTITY entity, EntityAuditInfo entityAuditInfo);
 
 	/**
 	 * Deletes the entity provided.

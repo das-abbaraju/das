@@ -1,6 +1,9 @@
 package com.picsauditing.employeeguard.entities.helper;
 
 import com.picsauditing.employeeguard.entities.BaseEntity;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.*;
@@ -91,4 +94,16 @@ public class EntityHelper {
 
         return ids;
     }
+
+	public static <E extends BaseEntity> E setCreateAuditFields(final E entity, final EntityAuditInfo entityAuditInfo) {
+		entity.setCreatedBy(entityAuditInfo.getAppUserId());
+		entity.setCreatedDate(entityAuditInfo.getTimestamp());
+		return entity;
+	}
+
+	public static <E extends BaseEntity> E setUpdateAuditFields(final E entity, final EntityAuditInfo entityAuditInfo) {
+		entity.setUpdatedBy(entityAuditInfo.getAppUserId());
+		entity.setUpdatedDate(entityAuditInfo.getTimestamp());
+		return entity;
+	}
 }

@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.models;
+package com.picsauditing.employeeguard.models;
 
 
 import java.util.Date;
@@ -31,17 +31,20 @@ public final class EntityAuditInfo {
 		private int appUserId;
 		private Date timestamp;
 
-		public void appUserId(int userId) {
+		public Builder appUserId(int userId) {
 			this.appUserId = userId;
+			return this;
 		}
 
-		public void timestamp(Date timestamp) {
+		public Builder timestamp(Date timestamp) {
 			this.timestamp = new Date(timestamp.getTime());
+			return this;
 		}
 
 		public EntityAuditInfo build() {
-			if (appUserId == 0) {
-				throw new IllegalStateException("Cannot build an EntityAuditInfo object without userId");
+			if (appUserId == 0 || timestamp == null) {
+				throw new IllegalStateException("Cannot build an EntityAuditInfo object " +
+						"without appUserId or timestamp");
 			}
 
 			return new EntityAuditInfo(this);

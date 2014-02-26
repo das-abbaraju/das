@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -75,7 +76,10 @@ public class GroupServiceTest {
 		Group fakeGroup = buildFakeGroup(GROUP_ID_1, ACCOUNT_ID, TEST_GROUP_NAME);
 		when(accountGroupDAO.save(fakeGroup)).thenReturn(fakeGroup);
 
-		Group group = groupService.save(fakeGroup, USER_ID, new Date());
+		Group group = groupService.save(fakeGroup, new EntityAuditInfo.Builder()
+				.appUserId(USER_ID)
+				.timestamp(new Date())
+				.build());
 
 		assertEquals(1, group.getId());
 	}
@@ -84,7 +88,10 @@ public class GroupServiceTest {
 	public void testUpdate() throws Exception {
 		Group fakeGroup = setupTestUpdate();
 
-		Group group = groupService.update(fakeGroup, USER_ID, new Date());
+		Group group = groupService.update(fakeGroup, new EntityAuditInfo.Builder()
+				.appUserId(USER_ID)
+				.timestamp(new Date())
+				.build());
 
 		verifyTestUpdate(group);
 	}
