@@ -7,41 +7,56 @@ import java.util.*;
 
 public class EntityHelper {
 
-    public static <E extends BaseEntity> void setCreateAuditFields(E entity, int createdBy, Date createdDate) {
+    public static <E extends BaseEntity> E setCreateAuditFields(final E entity,
+																final int createdBy,
+																final Date createdDate) {
         entity.setCreatedBy(createdBy);
         entity.setCreatedDate(createdDate);
+		return entity;
     }
 
-    public static <E extends BaseEntity> void setCreateAuditFields(Collection<E> entities, int createdBy, Date createdDate) {
+    public static <E extends BaseEntity> Collection<E> setCreateAuditFields(final Collection<E> entities,
+																			final int createdBy,
+																			final Date createdDate) {
         if (CollectionUtils.isEmpty(entities)) {
-            return;
+            return Collections.emptyList();
         }
 
         for (BaseEntity entity : entities) {
             setCreateAuditFields(entity, createdBy, createdDate);
         }
+
+		return entities;
     }
 
-    public static <E extends BaseEntity> void setUpdateAuditFields(E entity, int createdBy, Date createdDate) {
+    public static <E extends BaseEntity> E setUpdateAuditFields(final E entity,
+																   final int createdBy,
+																   final Date createdDate) {
         entity.setUpdatedBy(createdBy);
         entity.setUpdatedDate(createdDate);
+		return entity;
     }
 
-    public static <E extends BaseEntity> void setUpdateAuditFields(Collection<E> entities, int createdBy, Date createdDate) {
+    public static <E extends BaseEntity> Collection<E> setUpdateAuditFields(final Collection<E> entities,
+																   final int createdBy,
+																   final Date createdDate) {
         if (CollectionUtils.isEmpty(entities)) {
-            return;
+            return Collections.emptyList();
         }
 
         for (BaseEntity entity : entities) {
             setUpdateAuditFields(entity, createdBy, createdDate);
         }
+
+		return entities;
     }
 
-    public static <E extends BaseEntity> void softDelete(E entity, int deletedBy) {
+    public static <E extends BaseEntity> E softDelete(final E entity, final int deletedBy) {
         entity.setDeletedBy(deletedBy);
+		return entity;
     }
 
-    public static <E extends BaseEntity> void softDelete(Collection<E> entities, int deletedBy) {
+    public static <E extends BaseEntity> void softDelete(final Collection<E> entities, final int deletedBy) {
         if (CollectionUtils.isEmpty(entities)) {
             return;
         }
@@ -51,7 +66,7 @@ public class EntityHelper {
         }
     }
 
-    public static <E extends BaseEntity> List<Integer> getIdsForEntities(List<E> entities) {
+    public static <E extends BaseEntity> List<Integer> getIdsForEntities(final List<E> entities) {
         if (CollectionUtils.isEmpty(entities)) {
             return Collections.emptyList();
         }
@@ -64,7 +79,7 @@ public class EntityHelper {
         return ids;
     }
 
-    public static <E extends BaseEntity> Set<Integer> getUniqueIdsForEntities(List<E> entities) {
+    public static <E extends BaseEntity> Set<Integer> getUniqueIdsForEntities(final List<E> entities) {
         if (CollectionUtils.isEmpty(entities)) {
             return Collections.emptySet();
         }
