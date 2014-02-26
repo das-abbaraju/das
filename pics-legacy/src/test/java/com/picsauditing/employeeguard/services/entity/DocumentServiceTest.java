@@ -1,28 +1,29 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.fail;
 
-public class EmployeeServiceTest {
+public class DocumentServiceTest {
 
-	EmployeeService employeeService;
+	DocumentService documentService;
 
 	@Mock
-	private EmployeeDAO employeeDAO;
+	private ProfileDocumentDAO profileDocumentDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		employeeService = new EmployeeService();
+		documentService = new DocumentService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(employeeService, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(documentService, "documentDAO", profileDocumentDAO);
 	}
 
 	@Test

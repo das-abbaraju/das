@@ -34,9 +34,9 @@ public class GroupServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-
 		groupService = new GroupService();
+
+		MockitoAnnotations.initMocks(this);
 
 		Whitebox.setInternalState(groupService, "accountGroupDAO", accountGroupDAO);
 	}

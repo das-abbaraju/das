@@ -71,7 +71,7 @@ public class CertificateDAO extends PicsDAO {
 		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
 		query += permQuery.toString();
 		/*
-		 * if (permissions.isOperatorCorporate()) { query += " AND c.createdBy = " + permissions.getUserId(); }
+		 * if (permissions.isOperatorCorporate()) { query += " AND c.createdBy = " + permissions.getAppUserId(); }
 		 */
 		if (!showExpired) {
 			query += " AND (c.expirationDate > NOW() OR c.expirationDate IS NULL)";

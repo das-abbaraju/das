@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -9,49 +9,49 @@ import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.fail;
 
-public class EmployeeServiceTest {
+public class ProjectServiceTest {
 
-	EmployeeService employeeService;
+	ProjectService projectService;
 
 	@Mock
-	private EmployeeDAO employeeDAO;
+	ProjectDAO projectDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		employeeService = new EmployeeService();
+		projectService = new ProjectService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(employeeService, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(projectService, "projectDAO", projectDAO);
 	}
 
 	@Test
 	public void testFind() throws Exception {
-		fail("Not implemented.");
+		fail("Not implemented");
 	}
 
 	@Test
 	public void testSearch() throws Exception {
-		fail("Not implemented.");
+		fail("Not implemented");
 	}
 
 	@Test
 	public void testSave() throws Exception {
-		fail("Not implemented.");
+		fail("Not implemented");
 	}
 
 	@Test
 	public void testUpdate() throws Exception {
-		fail("Not implemented.");
+		fail("Not implemented");
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-		fail("Not implemented.");
+		fail("Not implemented");
 	}
 
 	@Test
 	public void testDeleteById() throws Exception {
-		fail("Not implemented.");
+		fail("Not implemented");
 	}
 }

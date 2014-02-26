@@ -35,7 +35,7 @@ public class GroupServiceEntityAuditInfo implements TestEntityService<Group, Int
 
 	@Override
 	public Group save(Group group, final EntityAuditInfo entityAuditInfo) {
-		group = EntityHelper.setCreateAuditFields(group, entityAuditInfo.getUserId(), entityAuditInfo.getTimestamp());
+		group = EntityHelper.setCreateAuditFields(group, entityAuditInfo.getAppUserId(), entityAuditInfo.getTimestamp());
 		return accountGroupDAO.save(group);
 	}
 
@@ -45,7 +45,7 @@ public class GroupServiceEntityAuditInfo implements TestEntityService<Group, Int
 
 		groupToUpDate.setName(group.getName());
 		groupToUpDate.setDescription(group.getDescription());
-		groupToUpDate = EntityHelper.setUpdateAuditFields(group, entityAuditInfo.getUserId(),
+		groupToUpDate = EntityHelper.setUpdateAuditFields(group, entityAuditInfo.getAppUserId(),
 				entityAuditInfo.getTimestamp());
 
 		return accountGroupDAO.save(groupToUpDate);

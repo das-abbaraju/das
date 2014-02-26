@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services.models;
 
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.Date;
 
@@ -10,11 +9,16 @@ public final class EntityAuditInfo {
 	private final Date timestamp;
 
 	public EntityAuditInfo(final Builder builder) {
-		this.userId = builder.userId;
+		this.userId = builder.appUserId;
 		this.timestamp = builder.timestamp;
 	}
 
-	public int getUserId() {
+	/**
+	 * This is the unique identifier for the user (for example, a user logged in through single-sign-on)
+	 *
+	 * @return
+	 */
+	public int getAppUserId() {
 		return userId;
 	}
 
@@ -24,20 +28,20 @@ public final class EntityAuditInfo {
 
 	public static class Builder {
 
-		private int userId;
+		private int appUserId;
 		private Date timestamp;
 
-		public void setUserId(int userId) {
-			this.userId = userId;
+		public void appUserId(int userId) {
+			this.appUserId = userId;
 		}
 
-		public void setTimestamp(Date timestamp) {
+		public void timestamp(Date timestamp) {
 			this.timestamp = new Date(timestamp.getTime());
 		}
 
 		public EntityAuditInfo build() {
-			if (userId == 0) {
-				throw new InvalidStateException("Cannot build an EntityAuditInfo object without userId");
+			if (appUserId == 0) {
+				throw new IllegalStateException("Cannot build an EntityAuditInfo object without userId");
 			}
 
 			return new EntityAuditInfo(this);

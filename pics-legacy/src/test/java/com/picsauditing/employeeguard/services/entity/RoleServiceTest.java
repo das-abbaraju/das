@@ -34,9 +34,9 @@ public class RoleServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-
 		roleService = new RoleService();
+
+		MockitoAnnotations.initMocks(this);
 
 		Whitebox.setInternalState(roleService, "roleDAO", roleDAO);
 	}
