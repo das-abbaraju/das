@@ -13,6 +13,9 @@ import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.service.account.AccountService;
+import com.picsauditing.service.account.events.ContractorEventType;
+import com.picsauditing.service.account.events.ContractorEventType.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.*;
 import com.picsauditing.validator.RegistrationValidator;
@@ -66,6 +69,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	private AppUserService appUserService;
 	@Autowired
 	private AppUserDAO appUserDAO;
+    @Autowired
+    private AccountService accountService;
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
@@ -189,6 +194,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 
 		addNoteThatRequestRegistered();
+        accountService.publishEvent(contractor, ContractorEventType.Registration);
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}

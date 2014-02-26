@@ -9,6 +9,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.service.account.events.ContractorEvent;
 import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.account.events.SpringContractorEvent;
+import com.picsauditing.service.email.logging.EmailLog;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import com.picsauditing.util.Strings;
@@ -26,6 +27,8 @@ public class AccountEventListener implements ApplicationListener<SpringContracto
     private EmailSender emailSender;
     @Autowired
     private FeatureToggleCheckerGroovy featureToggleChecker;
+    @Autowired
+    private EmailLog logger;
 
     public void onApplicationEvent(SpringContractorEvent event) {
         ContractorAccount account = event.account;
@@ -41,7 +44,7 @@ public class AccountEventListener implements ApplicationListener<SpringContracto
     }
 
     protected void sendWelcomeEmail(ContractorAccount contractor) throws EmailException, UnsupportedEncodingException, IOException {
-        User user = contractor.getPrimaryContact();
+        User user = contractor.getUsers().get(0);
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(EmailTemplate.WELCOME_EMAIL_TEMPLATE);
 		emailBuilder.setUser(user);
