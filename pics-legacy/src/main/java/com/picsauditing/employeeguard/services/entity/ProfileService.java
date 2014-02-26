@@ -22,21 +22,33 @@ public class ProfileService implements EntityService<Profile, Integer> {
 
 	@Override
 	public Profile save(Profile profile, int createdBy, Date createdDate) {
-		return null;
+		profile.setCreatedBy(createdBy);
+		profile.setCreatedDate(createdDate);
+		return profileDAO.save(profile);
 	}
 
 	@Override
 	public Profile update(Profile profile, int updatedBy, Date updatedDate) {
-		return null;
+		Profile profileToUpdate = find(profile.getId());
+
+		profileToUpdate.setFirstName(profile.getFirstName());
+		profileToUpdate.setLastName(profile.getLastName());
+		profileToUpdate.setEmail(profile.getEmail());
+		profileToUpdate.setPhone(profile.getPhone());
+		profileToUpdate.setUpdatedBy(updatedBy);
+		profileToUpdate.setUpdatedDate(updatedDate);
+
+		return profileDAO.save(profileToUpdate);
 	}
 
 	@Override
 	public void delete(Profile profile) {
-
+		profileDAO.delete(profile);
 	}
 
 	@Override
-	public void deleteById(Integer integer) {
-
+	public void deleteById(Integer id) {
+		Profile profile = find(id);
+		delete(profile);
 	}
 }

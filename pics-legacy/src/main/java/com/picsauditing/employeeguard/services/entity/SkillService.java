@@ -36,6 +36,8 @@ public class SkillService implements EntityService<AccountSkill, Integer>, Searc
 
 	@Override
 	public AccountSkill save(AccountSkill accountSkill, int createdBy, Date createdDate) {
+		accountSkill.setCreatedBy(createdBy);
+		accountSkill.setCreatedDate(createdDate);
 		return accountSkillDAO.save(accountSkill);
 	}
 
