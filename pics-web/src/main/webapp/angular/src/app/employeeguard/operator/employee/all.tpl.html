@@ -1,7 +1,7 @@
 <employeeskillsection title="Project Required" skills="projectSkills"></employeeskillsection>
 
-<span ng-repeat="blue in projectRoles">
-    <employeeskillsection title="{{ blue.name }}" skills="blue.skills"></employeeskillsection>
+<span ng-repeat="project in projectRoles">
+    <employeeskillsection title="{{ project.name }}" skills="project.skills"></employeeskillsection>
 </span>
 
 <span ng-repeat="role in employee.roles">

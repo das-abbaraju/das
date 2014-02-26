@@ -4,6 +4,7 @@ module.exports = function(grunt) {
     'vendor/angular/angular-loader.js',
     'vendor/angular/angular.js',
     'vendor/angular/angular-route.js',
+    'vendor/angular/angular-resource.js'
   ];
 
   grunt.initConfig({
@@ -90,8 +91,7 @@ module.exports = function(grunt) {
         tasks: [
           'jshint',
           'karma:unit',
-          'concat',
-          'ngmin'
+          'concat'
         ],
         options: {
           interrupt: true,

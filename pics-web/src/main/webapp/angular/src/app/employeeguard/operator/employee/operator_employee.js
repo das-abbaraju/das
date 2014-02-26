@@ -1,49 +1,27 @@
-var test;
-
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, $http, $filter) {
+.controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Model) {
     $scope.partialname = 'all';
 
-    $http.get('json/dummyData.json').success(function(data) {
-        $scope.employee = data;
+    $scope.employee = EmployeeSkills.get();
 
-        $scope.projectSkills = $scope.getAllProjectSkills($scope.employee.projects);
+    $scope.employee.$promise.then(function (result) {
+        var model = new Model(result);
 
-        $scope.projectRoles = $scope.getAllProjectRoles($scope.employee.projects);
+        $scope.projectSkills = model.getAllProjectSkills();
+        $scope.projectRoles = model.getAllProjectRoles();
 
         $scope.highlightedStatus = $scope.employee.overallStatus;
     });
-
-    $scope.getAllProjectSkills = function (projects) {
-        var projectSkills = [];
-        //loop over projects
-        for (var x in projects) {
-            //loop over project skills
-            for (var y in projects[x].skills) {
-                projectSkills.push(projects[x].skills[y]);
-            }
-        }
-
-        return projectSkills;
-    };
-
-    $scope.getAllProjectRoles = function (projects) {
-        var projectRoles = [];
-
-        for (var x in projects) {
-            for (var y in projects[x].roles) {
-                projectRoles.push(projects[x].roles[y]);
-            }
-        }
-
-        return projectRoles;
-    };
 
     $scope.updatePartial = function (view, role, project) {
         $scope.partialname = view;
         $scope.role = role;
         $scope.project = project;
+
+        if (view == 'all') {
+            $scope.highlightedStatus = $scope.employee.overallStatus;
+        }
 
         if (project) {
             $scope.currentProject = $scope.getProject();
@@ -63,7 +41,6 @@ angular.module('PICS.employeeguard')
         for (var x = 0; x < projects.length; x++) {
             if (projects[x].name == $scope.project) {
                 $scope.highlightedStatus = projects[x].status;
-                console.log(projects[x]);
                 return projects[x];
             }
         }

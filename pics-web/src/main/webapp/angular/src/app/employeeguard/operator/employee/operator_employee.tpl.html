@@ -30,40 +30,8 @@
 
         <div class="row">
             <div class="col-md-3">
-                <div class="bs-sidebar">
-                    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
-                        <ul class="nav" role="menu">
-                            <li class="active">
-                                <a href="#" ng-click="updatePartial('all')">All
-                                    <skillstatusicon status="{{employee.overallStatus}}"></skillstatusicon>
-                                </a>
-                            </li>
-                            <li class="nav-divider"></li>
-                            <li>
-                                <span class="nav-title">Job Roles</span>
-                            </li>
-
-                            <li ng-repeat="role in employee.roles">
-                                <a href="#" ng-click="updatePartial('role', role.name)">
-                                    {{ role.name }}
-                                    <skillstatusicon status="{{ role.status }}"></skillstatusicon>
-                                </a>
-                            </li>
-
-                            <li class="nav-divider"></li>
-                            <li>
-                                <span class="nav-title">Projects</span>
-                            </li>
-
-                            <li ng-repeat="project in employee.projects">
-                                <a href="#" ng-click="updatePartial('project', '', project.name)">
-                                    {{ project.name }}
-                                    <skillstatusicon status="{{ project.status }}"></skillstatusicon>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                <skillnavigationmenu employee="employee"></skillnavigationmenu>
+                <!-- <ng-include src="'/src/app/employeeguard/operator/employee/skill-navigation.tpl.html'"></ng-include> -->
             </div>
             <div class="col-md-9">
                 <ng-include src="'/src/app/employeeguard/operator/employee/' + partialname + '.tpl.html'"></ng-include>
