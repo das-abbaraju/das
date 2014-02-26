@@ -35,23 +35,22 @@ public class AccountEventListener implements ApplicationListener<SpringContracto
     public void onApplicationEvent(SpringContractorEvent event) {
         ContractorAccount account = event.account;
         if (event.event == ContractorEventType.Registration) {
+            User user = event.account.getUsers().get(0);
             if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SUPPRESS_WELCOME_EMAILS)) {
-                sendWelcomeEmail(account);
-                emailService.publishEvent(
-                        event.account.getUsers().get(0),
-                        EmailTemplate.WELCOME_EMAIL_TEMPLATE,
-                        EmailStatus.Sent,
-                        "Welcome Email Sent"
-                );
-//                addNote(contractor, "Welcome Email Sent");
+                try {
+                    emailService.send(welcomeEmailFor(account));
+                    emailService.publishEvent( user, EmailTemplate.WELCOME_EMAIL_TEMPLATE, EmailStatus.Sent, "Welcome Email Sent" );
+                } catch (Exception e) {
+                    logger.error("sendWelcomeEmail(): Failed to send build email for user with id: {}. {}", new Object[]{user.getId(), e.getMessage()});
+                }
             } else {
-                addNote(contractor, "Welcome Email NOT Sent");
+                emailService.publishEvent( user, EmailTemplate.WELCOME_EMAIL_TEMPLATE, null, "Welcome Email NOT Sent" );
             }
 
         }
     }
 
-    protected void sendWelcomeEmail(ContractorAccount contractor) throws EmailException, UnsupportedEncodingException, IOException {
+    protected EmailQueue welcomeEmailFor(ContractorAccount contractor) throws EmailException, IOException, EmailBuildErrorException {
         User user = contractor.getUsers().get(0);
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(EmailTemplate.WELCOME_EMAIL_TEMPLATE);
@@ -65,17 +64,11 @@ public class AccountEventListener implements ApplicationListener<SpringContracto
 		emailBuilder.addToken("contactName", user.getName());
 		emailBuilder.addToken("userName", user.getUsername());
 
-		EmailQueue emailQueue = null;
-		try {
-			emailQueue = emailBuilder.build();
-		} catch (EmailBuildErrorException e) {
-			logger.error("sendWelcomeEmail(): Failed to send build email for user with id: {}. {}",
-					new Object[]{user.getId(), e.getMessage()});
-		}
+		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setHtml(true);
 		emailQueue.setVeryHighPriority();
 		emailQueue.setSubjectViewableById(Account.EVERYONE);
 		emailQueue.setBodyViewableById(Account.EVERYONE);
-		emailService.send(emailQueue);
+        return emailQueue;
 	}
 }
