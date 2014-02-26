@@ -10,22 +10,26 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class RoleService implements EntityService<Role, Integer> {
+public class RoleService implements EntityService<Role, Integer>, Searchable<Role> {
 
 	@Autowired
 	private RoleDAO roleDAO;
 
+	/* All Find Methods */
+
 	@Override
-	public Role find(Integer id) {
+	public Role find(final Integer id) {
 		if (id == null) {
-			throw new NullPointerException("id cannot be null.");
+			throw new NullPointerException("id cannot be null");
 		}
 
 		return roleDAO.find(id);
 	}
 
+	/* All Search Methods */
+
 	@Override
-	public List<Role> search(String searchTerm, int accountId) {
+	public List<Role> search(final String searchTerm, final int accountId) {
 		if (Strings.isEmpty(searchTerm) || accountId == 0) {
 			return Collections.emptyList();
 		}
@@ -33,11 +37,15 @@ public class RoleService implements EntityService<Role, Integer> {
 		return roleDAO.search(searchTerm, accountId);
 	}
 
+	/* All Save Methods */
+
 	@Override
 	public Role save(Role role, final int createdBy, final Date createdDate) {
 		role = EntityHelper.setCreateAuditFields(role, createdBy, createdDate);
 		return roleDAO.save(role);
 	}
+
+	/* All Update Methods */
 
 	@Override
 	public Role update(final Role role, final int updatedBy, final Date updatedDate) {
@@ -50,17 +58,19 @@ public class RoleService implements EntityService<Role, Integer> {
 		return roleDAO.save(roleToUpdate);
 	}
 
+	/* All Delete Methods */
+
 	@Override
-	public void delete(Role role) {
+	public void delete(final Role role) {
 		if (role == null) {
-			throw new NullPointerException("role cannot be null.");
+			throw new NullPointerException("role cannot be null");
 		}
 
 		roleDAO.delete(role);
 	}
 
 	@Override
-	public void deleteById(Integer id) {
+	public void deleteById(final Integer id) {
 		if (id == null) {
 			throw new NullPointerException("id cannot be null");
 		}

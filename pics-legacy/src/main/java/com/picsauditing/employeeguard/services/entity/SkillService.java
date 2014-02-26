@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class SkillService implements EntityService<AccountSkill, Integer> {
+public class SkillService implements EntityService<AccountSkill, Integer>, Searchable<AccountSkill> {
 
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
@@ -17,14 +17,18 @@ public class SkillService implements EntityService<AccountSkill, Integer> {
 	/* All Find Methods */
 
 	@Override
-	public AccountSkill find(Integer id) {
+	public AccountSkill find(final Integer id) {
+		if (id == null) {
+			throw new NullPointerException("id cannot be null");
+		}
+
 		return accountSkillDAO.find(id);
 	}
 
 	/* All search related methods */
 
 	@Override
-	public List<AccountSkill> search(String searchTerm, int accountId) {
+	public List<AccountSkill> search(final String searchTerm, final int accountId) {
 		if (Strings.isNotEmpty(searchTerm)) {
 			return accountSkillDAO.search(searchTerm, accountId);
 		}
@@ -35,14 +39,16 @@ public class SkillService implements EntityService<AccountSkill, Integer> {
 	/* All Save Operations */
 
 	@Override
-	public AccountSkill save(AccountSkill accountSkill, int createdBy, Date createdDate) {
+	public AccountSkill save(AccountSkill accountSkill, final int createdBy, final Date createdDate) {
+		accountSkill.setCreatedBy(createdBy);
+		accountSkill.setCreatedDate(createdDate);
 		return accountSkillDAO.save(accountSkill);
 	}
 
 	/* All Update Operations */
 
 	@Override
-	public AccountSkill update(final AccountSkill accountSkill, int updatedBy, Date updatedDate) {
+	public AccountSkill update(final AccountSkill accountSkill, final int updatedBy, final Date updatedDate) {
 		AccountSkill accountSkillToUpdate = find(accountSkill.getId());
 
 		accountSkillToUpdate.setName(accountSkill.getName());
@@ -59,11 +65,19 @@ public class SkillService implements EntityService<AccountSkill, Integer> {
 
 	@Override
 	public void delete(final AccountSkill accountSkill) {
+		if (accountSkill == null) {
+			throw new NullPointerException("accountSkill cannot be null");
+		}
+
 		accountSkillDAO.delete(accountSkill);
 	}
 
 	@Override
-	public void deleteById(Integer id) {
+	public void deleteById(final Integer id) {
+		if (id == null) {
+			throw new NullPointerException("id cannot be null");
+		}
+
 		AccountSkill accountSkill = find(id);
 		delete(accountSkill);
 	}

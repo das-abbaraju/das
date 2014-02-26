@@ -10,10 +10,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class GroupService implements EntityService<Group, Integer> {
+public class GroupService implements EntityService<Group, Integer>, Searchable<Group> {
 
 	@Autowired
 	private AccountGroupDAO accountGroupDAO;
+
+	/* All Find Methods */
 
 	@Override
 	public Group find(final Integer id) {
@@ -24,6 +26,8 @@ public class GroupService implements EntityService<Group, Integer> {
 		return accountGroupDAO.find(id);
 	}
 
+	/* All Search Methods */
+
 	@Override
 	public List<Group> search(final String searchTerm, final int accountId) {
 		if (Strings.isEmpty(searchTerm) || accountId == 0) {
@@ -33,11 +37,15 @@ public class GroupService implements EntityService<Group, Integer> {
 		return accountGroupDAO.search(searchTerm, accountId);
 	}
 
+	/* All Save Methods */
+
 	@Override
 	public Group save(Group group, final int createdBy, final Date createdDate) {
 		group = EntityHelper.setCreateAuditFields(group, createdBy, createdDate);
 		return accountGroupDAO.save(group);
 	}
+
+	/* All Update Methods */
 
 	@Override
 	public Group update(final Group group, final int updatedBy, final Date updatedDate) {
@@ -50,10 +58,12 @@ public class GroupService implements EntityService<Group, Integer> {
 		return accountGroupDAO.save(groupToUpDate);
 	}
 
+	/* All Delete Methods */
+
 	@Override
 	public void delete(final Group group) {
 		if (group == null) {
-			throw new NullPointerException("group cannot be null.");
+			throw new NullPointerException("group cannot be null");
 		}
 
 		accountGroupDAO.delete(group);

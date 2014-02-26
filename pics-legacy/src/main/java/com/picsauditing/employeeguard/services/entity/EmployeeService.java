@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class EmployeeService implements EntityService<Employee, Integer> {
+public class EmployeeService implements EntityService<Employee, Integer>, Searchable<Employee> {
 
 	@Autowired
 	private EmployeeDAO employeeDAO;
@@ -17,15 +17,15 @@ public class EmployeeService implements EntityService<Employee, Integer> {
 	/* All Find Methods */
 
 	@Override
-	public Employee find(Integer id) {
+	public Employee find(final Integer id) {
 		if (id == null) {
-			throw new NullPointerException("id cannot be null.");
+			throw new NullPointerException("id cannot be null");
 		}
 
 		return employeeDAO.find(id);
 	}
 
-	/* All search related methods */
+	/* All Search Methods */
 
 	@Override
 	public List<Employee> search(final String searchTerm, final int accountId) {
@@ -36,14 +36,14 @@ public class EmployeeService implements EntityService<Employee, Integer> {
 		return Collections.emptyList();
 	}
 
-	/* All Save Operations */
+	/* All Save Methods */
 
 	@Override
 	public Employee save(Employee employee, final int createdBy, final Date createdDate) {
 		return employeeDAO.save(employee);
 	}
 
-	/* All Update Operations */
+	/* All Update Methods */
 
 	@Override
 	public Employee update(final Employee employee, final int updatedBy, final Date updatedDate) {
@@ -119,15 +119,23 @@ public class EmployeeService implements EntityService<Employee, Integer> {
 //		return employeeInDatabase;
 //	}
 
-	/* All Delete Operations */
+	/* All Delete Methods */
 
 	@Override
 	public void delete(final Employee employee) {
+		if (employee == null) {
+			throw new NullPointerException("employee cannot be null");
+		}
+
 		employeeDAO.delete(employee);
 	}
 
 	@Override
 	public void deleteById(final Integer id) {
+		if (id == null) {
+			throw new NullPointerException("id cannot be null");
+		}
+
 		Employee employee = find(id);
 		delete(employee);
 	}

@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import java.util.Date;
-import java.util.List;
 
 public interface EntityService<ENTITY, ID> {
 
@@ -15,17 +14,6 @@ public interface EntityService<ENTITY, ID> {
 	ENTITY find(ID id);
 
 	/**
-	 * Return a list of entities that match that search term, for that account.
-	 *
-	 * If the searchTerm is null or an Empty String, then an Empty List will be returned.
-	 *
-	 * @param searchTerm
-	 * @param accountId
-	 * @return
-	 */
-	List<ENTITY> search(String searchTerm, int accountId);
-
-	/**
 	 * Sets the createdBy and createdDate of the entity and returns the new persisted entity.
 	 *
 	 * @param entity
@@ -33,6 +21,7 @@ public interface EntityService<ENTITY, ID> {
 	 * @param createdDate
 	 * @return
 	 */
+
 	ENTITY save(ENTITY entity, int createdBy, Date createdDate);
 
 	/**
