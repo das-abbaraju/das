@@ -56,7 +56,7 @@ public class RoleStatusModelFactory extends RoleModelFactory {
 
 		List<RoleStatusModel> roleStatusModels = new ArrayList<>();
 		for (Role role : roles) {
-			roleStatusModels.add(create(role, roleSkills.get(role.getId()), roleStatuses.get(role.getId())));
+			roleStatusModels.add(create(role, roleSkills.get(role.getId()), roleStatuses.get(role)));
 		}
 
 		return roleStatusModels;

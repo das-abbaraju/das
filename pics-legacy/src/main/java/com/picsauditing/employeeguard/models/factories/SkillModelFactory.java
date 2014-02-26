@@ -16,12 +16,12 @@ public class SkillModelFactory {
 			return Collections.emptyMap();
 		}
 
-		Map<Integer, List<SkillModel>> roleIdToSkillsMap = new HashMap<>();
+		Map<Integer, List<SkillModel>> projectIdToSkillsMap = new HashMap<>();
 		for (Project project : projectSkillsMap.keySet()) {
-			roleIdToSkillsMap.put(project.getId(), create(projectSkillsMap.get(project)));
+			projectIdToSkillsMap.put(project.getId(), create(projectSkillsMap.get(project)));
 		}
 
-		return roleIdToSkillsMap;
+		return projectIdToSkillsMap;
 	}
 
 	public Map<Integer, List<SkillModel>> createRoleIdToSkillModelMap(final Map<Role, List<AccountSkill>> roleSkillsMap) {

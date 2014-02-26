@@ -9,9 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 
@@ -35,5 +37,36 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 
 		super.verifyTestCreate(fakeRoleModels, fakeSkillModels, projectStatusModel);
 		assertEquals(SkillStatus.Expiring, projectStatusModel.getStatus());
+	}
+
+	@Override
+	@Test
+	public void testCreate_List_NoData() {
+		List<ProjectStatusModel> projectStatusModels = projectStatusModelFactory.create((List<Project>) null, null, null, null);
+
+		assertNotNull(projectStatusModels);
+		assertTrue(projectStatusModels.isEmpty());
+	}
+
+	@Test
+	public void testCreate_List_WithData() {
+		final Project project = buildFakeProject();
+
+		List<ProjectStatusModel> projectStatusModels = projectStatusModelFactory.create(
+				Arrays.asList(project),
+				new HashMap<Integer, List<RoleStatusModel>>() {{
+					put(project.getId(), new ArrayList<RoleStatusModel>());
+				}},
+				new HashMap<Integer, List<SkillStatusModel>>() {{
+					put(project.getId(), new ArrayList<SkillStatusModel>());
+				}},
+				new HashMap<Project, SkillStatus>() {{
+					put(project, SkillStatus.Complete);
+				}}
+		);
+
+		verifyTestCreateList(project, projectStatusModels);
+
+		assertEquals(SkillStatus.Complete, projectStatusModels.get(0).getStatus());
 	}
 }

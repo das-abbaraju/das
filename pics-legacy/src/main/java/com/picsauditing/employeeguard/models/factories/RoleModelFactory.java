@@ -11,8 +11,8 @@ import java.util.*;
 public class RoleModelFactory {
 
 	public Map<Integer, List<RoleModel>> createProjectIdToRoleModelMap(final List<Project> projects,
-																	   final Map<Project, List<Role>> projectRoles,
-																	   final Map<Integer, List<SkillModel>> roleIdToSkillModelMap) {
+	                                                                   final Map<Project, List<Role>> projectRoles,
+	                                                                   final Map<Integer, List<SkillModel>> roleIdToSkillModelMap) {
 		if (CollectionUtils.isEmpty(projects)) {
 			return Collections.emptyMap();
 		}
@@ -27,12 +27,12 @@ public class RoleModelFactory {
 	}
 
 	private void addRolesToProject(final Map<Project, List<Role>> projectRoles,
-								   final Map<Integer, List<SkillModel>> roleIdToSkillModelMap,
-								   final Map<Integer, List<RoleModel>> projectIdToRoleModelMap,
-								   final Project project) {
+	                               final Map<Integer, List<SkillModel>> roleIdToSkillModelMap,
+	                               final Map<Integer, List<RoleModel>> projectIdToRoleModelMap,
+	                               final Project project) {
 		if (CollectionUtils.isNotEmpty(projectRoles.get(project))) {
 			for (Role role : projectRoles.get(project)) {
-				projectIdToRoleModelMap.get(project).add(create(role, roleIdToSkillModelMap.get(role.getId())));
+				projectIdToRoleModelMap.get(project.getId()).add(create(role, roleIdToSkillModelMap.get(role.getId())));
 			}
 		}
 	}
