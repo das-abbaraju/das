@@ -9,6 +9,8 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.service.account.events.ContractorEvent;
 import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.account.events.SpringContractorEvent;
+import com.picsauditing.service.email.EmailService;
+import com.picsauditing.service.email.events.publisher.EmailEventPublisher;
 import com.picsauditing.service.email.logging.EmailLog;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
@@ -24,7 +26,7 @@ import java.util.Date;
 public class AccountEventListener implements ApplicationListener<SpringContractorEvent> {
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
     @Autowired
     private FeatureToggleCheckerGroovy featureToggleChecker;
     @Autowired
@@ -35,7 +37,13 @@ public class AccountEventListener implements ApplicationListener<SpringContracto
         if (event.event == ContractorEventType.Registration) {
             if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SUPPRESS_WELCOME_EMAILS)) {
                 sendWelcomeEmail(account);
-                addNote(contractor, "Welcome Email Sent");
+                emailService.publishEvent(
+                        event.account.getUsers().get(0),
+                        EmailTemplate.WELCOME_EMAIL_TEMPLATE,
+                        EmailStatus.Sent,
+                        "Welcome Email Sent"
+                );
+//                addNote(contractor, "Welcome Email Sent");
             } else {
                 addNote(contractor, "Welcome Email NOT Sent");
             }
@@ -68,6 +76,6 @@ public class AccountEventListener implements ApplicationListener<SpringContracto
 		emailQueue.setVeryHighPriority();
 		emailQueue.setSubjectViewableById(Account.EVERYONE);
 		emailQueue.setBodyViewableById(Account.EVERYONE);
-		emailSender.send(emailQueue);
+		emailService.send(emailQueue);
 	}
 }

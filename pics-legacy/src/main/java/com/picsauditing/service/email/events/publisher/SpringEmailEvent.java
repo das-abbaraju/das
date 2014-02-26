@@ -1,20 +1,19 @@
 package com.picsauditing.service.email.events.publisher;
 
 import com.picsauditing.jpa.entities.EmailStatus;
-import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.User;
 import org.springframework.context.ApplicationEvent;
 
 public class SpringEmailEvent extends ApplicationEvent implements EmailEvent {
 
     public final User user;
-    public final EmailTemplate template;
+    public final int template;
     public final EmailStatus status;
     public final String reason;
 
     public SpringEmailEvent(
             User u,
-            EmailTemplate t,
+            int t,
             EmailStatus s,
             String r
     ) {
@@ -29,7 +28,7 @@ public class SpringEmailEvent extends ApplicationEvent implements EmailEvent {
         return user;
     }
 
-    public EmailTemplate getTemplate() {
+    public int getTemplate() {
         return template;
     }
 

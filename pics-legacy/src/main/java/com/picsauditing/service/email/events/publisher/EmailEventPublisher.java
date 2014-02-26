@@ -5,5 +5,5 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.User;
 
 public interface EmailEventPublisher {
-    void publish(User user, EmailTemplate template, EmailStatus status, String reason);
+    void publish(User user, int template, EmailStatus status, String reason);
 }
