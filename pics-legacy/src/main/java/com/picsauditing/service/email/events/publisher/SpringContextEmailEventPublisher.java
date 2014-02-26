@@ -13,7 +13,7 @@ public class SpringContextEmailEventPublisher implements ApplicationEventPublish
         publisher = applicationEventPublisher;
     }
 
-    public void publish(User user, EmailTemplate template, EmailStatus status, String reason) {
+    public void publish(User user, int template, EmailStatus status, String reason) {
         publisher.publishEvent(new SpringEmailEvent(user, template, status, reason));
     }
 }
