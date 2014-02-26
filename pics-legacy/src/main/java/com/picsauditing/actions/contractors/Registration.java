@@ -51,8 +51,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
-	private EmailSender emailSender;
-	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
@@ -87,48 +85,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
-		}
-
-		// check for basic rID...?
-		if (getParameter("rID") > 0) {
-			requestID = getParameter("rID");
-		}
-		// Check for new requestID
-		if (requestID == 0) {
-			requestID = getParameter("requestID");
-		}
-
-		if (requestID > 0) {
-			// Set the session variable
-			ActionContext.getContext().getSession().put("requestID", requestID);
-			ContractorRegistrationRequest crr = requestDAO.find(requestID);
-
-			if (crr.getContractor() == null) {
-				contractor = new ContractorAccount();
-				contractor.setName(crr.getName());
-				contractor.setPhone(crr.getPhone());
-				contractor.setTaxId(crr.getTaxID());
-				contractor.setAddress(crr.getAddress());
-				contractor.setCity(crr.getCity());
-				contractor.setZip(crr.getZip());
-				contractor.setCountry(crr.getCountry());
-				if (crr.getCountrySubdivision() != null) {
-					contractor.setCountrySubdivision(crr.getCountrySubdivision());
-				} else {
-					contractor.setCountrySubdivision(null);
-				}
-
-				contractor.setRequestedBy(crr.getRequestedBy());
-				contractor.setTaxId(crr.getTaxID());
-
-				user = new User();
-				user.setName(crr.getContact());
-				user.setEmail(EmailAddressUtils.validate(crr.getEmail()));
-				user.setPhone(crr.getPhone());
-			} else {
-				addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
-				return SUCCESS;
-			}
 		}
 
 		if (!Strings.isEmpty(registrationKey)) {
@@ -231,12 +187,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		// they don't have an account yet so they won't get this as a default
 		permissions.setSessionCookieTimeoutInSeconds(3600);
 
-		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SUPPRESS_WELCOME_EMAILS)) {
-			sendWelcomeEmail();
-			addNote(contractor, "Welcome Email Sent");
-		} else {
-			addNote(contractor, "Welcome Email NOT Sent");
-		}
 
 		addNoteThatRequestRegistered();
 
@@ -354,32 +304,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		return countrySubdivision;
 	}
 
-	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(EmailTemplate.WELCOME_EMAIL_TEMPLATE);
-		emailBuilder.setUser(user);
-		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-		// TODO move to EncodedKey
-		user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-		String confirmLink = "http://www.picsorganizer.com/Login.action?username="
-				+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
-		emailBuilder.addToken("confirmLink", confirmLink);
-		emailBuilder.addToken("contactName", user.getName());
-		emailBuilder.addToken("userName", user.getUsername());
 
-		EmailQueue emailQueue = null;
-		try {
-			emailQueue = emailBuilder.build();
-		} catch (EmailBuildErrorException e) {
-			logger.error("sendWelcomeEmail(): Failed to send build email for user with id: {}. {}",
-					new Object[]{user.getId(), e.getMessage()});
-		}
-		emailQueue.setHtml(true);
-		emailQueue.setVeryHighPriority();
-		emailQueue.setSubjectViewableById(Account.EVERYONE);
-		emailQueue.setBodyViewableById(Account.EVERYONE);
-		emailSender.send(emailQueue);
-	}
 
 	protected void setupContractorData() {
 		contractor.setType("Contractor");
