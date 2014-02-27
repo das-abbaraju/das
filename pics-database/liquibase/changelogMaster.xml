@@ -163,6 +163,7 @@
 	<include file="./liquibase/2014/Q1/mdo46_PICS-13646_tradeSS_DDL.sql"/>
 	<include file="./liquibase/2014/Q1/mdo47_PICS-13646_tradeSS_DML.sql"/>
 	<include file="./liquibase/2014/Q1/kchase28_PICS-13967_UpdateEmailContents.sql"/>
+	<include file="./liquibase/2014/Q1/kchase27_PICS-14541_Update2010AUExpiration.sql"/>
 
 	<!-- 7.1.8 -->
 	<include file="./liquibase/2014/Q1/mdo48_PICS-14495_updateEmailTemplatesToHttps.sql"/>
