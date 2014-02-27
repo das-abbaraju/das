@@ -3,20 +3,12 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
 import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditSubStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -143,13 +135,22 @@ public class AuditOverride extends ContractorDocuments {
 
 		auditDao.save(conAudit);
 
+        int accountId = getViewableByAccountId(conAudit.getAuditType().getAccount());
 		addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getName().toString() + " manually",
-				NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+				NoteCategory.Audits, accountId);
 
 		return conAudit;
 	}
 
-	private void updateAuditSubStatusForRejectedPolicy(ContractorAuditOperator cao) {
+    private int getViewableByAccountId(Account account) {
+        int id = getViewableByAccount(account);
+        if (id == Account.EVERYONE && permissions.isOperatorCorporate()) {
+            id = permissions.getAccountId();
+        }
+        return id;
+    }
+
+    private void updateAuditSubStatusForRejectedPolicy(ContractorAuditOperator cao) {
 		if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getStatus() == AuditStatus.Incomplete) {
 			cao.setAuditSubStatus(AuditSubStatus.Other);
 		}
