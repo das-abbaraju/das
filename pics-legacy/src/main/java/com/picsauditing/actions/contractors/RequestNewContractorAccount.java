@@ -380,9 +380,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
         requestNewContractorService.setPermissions(permissions);
-        contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
-        primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
-        requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
+        // contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
+        contractor = requestNewContractorService.populateRequestedContractor(contractor, requestRelationship.getOperatorAccount());
+
+        // primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
+        primaryContact = requestNewContractorService.populatePrimaryContact(contractor, primaryContact);
+
+        // requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
+        requestRelationship = requestNewContractorService.populateRelationship(contractor, requestRelationship);
+
+        requestRelationship= (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
 
 		if (contactType == RequestContactType.DECLINED) {
 			contractor.setStatus(AccountStatus.Declined);

@@ -39,6 +39,15 @@ public class RequestNewContractorService {
         return requestRelationship;
     }
 
+    public ContractorOperator populateRelationship(ContractorAccount contractor, ContractorOperator requestRelationship) throws Exception {
+        if (requestRelationship.getId() == 0) {
+            requestRelationship.setFlagColor(FlagColor.Clear);
+        }
+        requestRelationship.setContractorAccount(contractor);
+        requestRelationship.setAuditColumns(permissions);
+        return requestRelationship;
+    }
+
     public User savePrimaryContact(ContractorAccount contractor, User primaryContact) throws Exception {
         // Username and isGroup is required
         if (primaryContact.getId() == 0) {
@@ -64,6 +73,30 @@ public class RequestNewContractorService {
         return primaryContact;
     }
 
+    public User populatePrimaryContact(ContractorAccount contractor, User primaryContact) throws Exception {
+        // Username and isGroup is required
+        if (primaryContact.getId() == 0) {
+            primaryContact.setAccount(contractor);
+            primaryContact.setIsGroup(YesNo.No);
+
+            boolean usernameIsAlreadyTaken = userDAO.duplicateUsername(primaryContact.getEmail(), 0);
+            if (usernameIsAlreadyTaken) {
+                primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(), contractor.getId()));
+            } else {
+                primaryContact.setUsername(primaryContact.getEmail());
+            }
+            primaryContact.setName(primaryContact.getFirstName() + " " + primaryContact.getLastName());
+
+            primaryContact.setAuditColumns(permissions);
+
+            contractor.setPrimaryContact(primaryContact);
+            contractor.getUsers().add(primaryContact);
+        }
+
+        primaryContact.setPhoneIndex(Strings.stripPhoneNumber(primaryContact.getPhone()));
+        return primaryContact;
+    }
+
     public ContractorAccount saveRequestingContractor(ContractorAccount contractor, OperatorAccount requestingOperator) throws Exception {
         if (contractor.getId() == 0) {
             contractor.setNaics(new Naics());
@@ -80,6 +113,24 @@ public class RequestNewContractorService {
 
         contractor.setAuditColumns(permissions);
         contractor = (ContractorAccount) contractorAccountDAO.save(contractor);
+        return contractor;
+    }
+
+    public ContractorAccount populateRequestedContractor(ContractorAccount contractor, OperatorAccount requestingOperator) throws Exception {
+        if (contractor.getId() == 0) {
+            contractor.setNaics(new Naics());
+            contractor.getNaics().setCode("0");
+            contractor.setRequestedBy(requestingOperator);
+            contractor.generateRegistrationHash();
+            if (requestingOperator != null) {
+                if (requestingOperator.getStatus().isActive()
+                        && !"No".equals(requestingOperator.getDoContractorsPay())) {
+                    contractor.setPayingFacilities(1);
+                }
+            }
+        }
+
+        contractor.setAuditColumns(permissions);
         return contractor;
     }
 
