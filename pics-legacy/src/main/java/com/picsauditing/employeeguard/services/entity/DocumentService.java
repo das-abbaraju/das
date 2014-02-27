@@ -59,9 +59,9 @@ public class DocumentService implements EntityService<ProfileDocument, Integer>,
 		profileDocumentToUpdate.setFileSize(profileDocument.getFileSize());
 		profileDocumentToUpdate.setFileType(profileDocument.getFileType());
 
-		profileDocument = EntityHelper.setUpdateAuditFields(profileDocument, entityAuditInfo);
+		profileDocumentToUpdate = EntityHelper.setUpdateAuditFields(profileDocumentToUpdate, entityAuditInfo);
 
-		return documentDAO.save(profileDocument);
+		return documentDAO.save(profileDocumentToUpdate);
 	}
 
 	/* All Delete Methods */
