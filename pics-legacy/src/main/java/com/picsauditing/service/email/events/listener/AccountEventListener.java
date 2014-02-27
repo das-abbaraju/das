@@ -5,12 +5,9 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.service.account.events.ContractorEvent;
 import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.account.events.SpringContractorEvent;
 import com.picsauditing.service.email.EmailService;
-import com.picsauditing.service.email.events.publisher.EmailEventPublisher;
 import com.picsauditing.service.email.logging.EmailLog;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
@@ -19,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 
@@ -44,7 +40,7 @@ public class AccountEventListener implements ApplicationListener<SpringContracto
                     logger.error("sendWelcomeEmail(): Failed to send build email for user with id: {}. {}", new Object[]{user.getId(), e.getMessage()});
                 }
             } else {
-                emailService.publishEvent( user, EmailTemplate.WELCOME_EMAIL_TEMPLATE, null, "Welcome Email NOT Sent" );
+                emailService.publishEvent(user, EmailTemplate.WELCOME_EMAIL_TEMPLATE, null, "Welcome Email NOT Sent");
             }
 
         }
