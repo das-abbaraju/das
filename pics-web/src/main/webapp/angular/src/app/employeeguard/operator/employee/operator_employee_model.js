@@ -1,6 +1,6 @@
 angular.module('PICS.employeeguard')
 
-.factory('Model', function () {
+.factory('Employee', function () {
     var Model = function (data) {
         this.data = data;
     };

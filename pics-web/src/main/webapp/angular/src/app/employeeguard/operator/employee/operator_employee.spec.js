@@ -1,14 +1,9 @@
 describe('An Operator Employee', function() {
-    var scope, model, mockFactory, data;
+    var scope, $http, $httpBackend;
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller, Model) {
-        scope = $rootScope.$new();
-        $controller("operatorEmployeeCtrl", {
-            $scope: scope
-        });
-
+    beforeEach(inject(function($rootScope, $controller, $http, $httpBackend) {
         var result = {
             id: 24,
             projects:[
@@ -70,22 +65,19 @@ describe('An Operator Employee', function() {
             image:"http://www.i-mockery.com/minimocks/ghostbusters2/psychic3.gif"
         };
 
-        scope.model = new Model(result);
+        //This needs to come first!!
+        $httpBackend.when('GET', '/angular/json/dummyData.json').respond(result);
+
+        scope = $rootScope.$new();
+        $controller("operatorEmployeeCtrl", {
+            $scope: scope
+        });
+
+        //This needs to come after controller is loaded
+        $httpBackend.flush();
 
         scope.highlightedStatus = result.overallStatus;
     }));
-
-    describe('data model', function() {
-        it('should have an id', function() {
-            expect(scope.model.data.id).toBeDefined();
-            expect(scope.model.data.id).not.toEqual('');
-        });
-
-        it('should have an name', function() {
-            expect(scope.model.data.name).toBeDefined();
-            expect(scope.model.data.name).not.toEqual('');
-        });
-    });
 
     describe('sub view change', function() {
         it('should update the template name', function() {

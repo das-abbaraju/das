@@ -1,21 +1,26 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Model) {
+.controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Employee) {
+    var model;
+
     $scope.subview = 'all';
 
     $scope.employee = EmployeeSkills.get();
 
-    $scope.employee.$promise.then(function (result) {
-        $scope.model = new Model(result);
+    $scope.onSuccess = function (result) {
+        model = new Employee(result);
 
-        $scope.projectSkills = $scope.model.getAllProjectSkills();
-        console.log($scope.projectSkills);
-        $scope.projectRoles = $scope.model.getAllProjectRoles();
+        $scope.projectSkills = model.getAllProjectSkills();
+        $scope.projectRoles = model.getAllProjectRoles();
 
         $scope.highlightedStatus = $scope.employee.overallStatus;
-    }, function(error) {
+    };
+
+    $scope.onError = function (error) {
         console.log(error);
-    });
+    };
+
+    $scope.employee.$promise.then($scope.onSuccess, $scope.onError);
 
     $scope.changeSubView = function (template_name, subview_name) {
         $scope.subview = template_name;
@@ -23,11 +28,11 @@ angular.module('PICS.employeeguard')
 
         switch(template_name) {
             case 'project':
-                $scope.currentProject = $scope.model.getProjectByName(subview_name);
+                $scope.currentProject = model.getProjectByName(subview_name);
                 $scope.updateHighlightedStatus($scope.currentProject.status);
                 break;
             case 'role':
-                $scope.currentRole = $scope.model.getRoleByName(subview_name);
+                $scope.currentRole = model.getRoleByName(subview_name);
                 $scope.updateHighlightedStatus($scope.currentRole.status);
                 break;
             case 'all':
