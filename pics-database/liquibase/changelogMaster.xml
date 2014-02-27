@@ -167,5 +167,6 @@
 	<!-- 7.1.8 -->
 	<include file="./liquibase/2014/Q1/mdo48_PICS-14495_updateEmailTemplatesToHttps.sql"/>
 	<include file="./liquibase/2014/Q1/kchase30_PICS-14158_UpdateDataAnswers.sql"/>
+	<include file="./liquibase/2014/Q1/kchase29_PICS-14615_UpdateViewable.sql"/>
 
 </databaseChangeLog>
