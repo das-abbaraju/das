@@ -705,6 +705,14 @@ public class UsersManageTest extends PicsActionTest {
         assertNull(accountReturned);
     }
 
+    @Test
+    public void testValidUserForRoleExists() throws Exception {
+        usersManage.setSetPrimaryAccount(true);
+        boolean result = Whitebox.invokeMethod(usersManage, "validUserForRoleExists", user, OpPerms.ContractorAdmin);
+
+        assertTrue(result);
+    }
+
     private void setUpUserAndAccount() {
 		// Just seed some data so we don't get NPEs when calling functions
 		User user = new User(123);

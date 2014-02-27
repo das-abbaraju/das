@@ -668,7 +668,7 @@ public class UsersManage extends PicsActionSupport {
 			return true;
 		}
 
-		return false;
+		return setPrimaryAccount;
 	}
 
 	private boolean hasAtLeastOneActiveUserWithRole(Account account, OpPerms userRole) {
