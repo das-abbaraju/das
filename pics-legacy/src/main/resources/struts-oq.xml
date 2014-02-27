@@ -51,11 +51,6 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="ReportOQChanges"
-			class="com.picsauditing.actions.report.oq.ReportOQChanges">
-			<result>/struts/reports/report_oq_changes.jsp</result>
-		</action>
-		
 		<action name="ReportAssessmentTests"
 			class="com.picsauditing.actions.report.oq.ReportAssessmentTest">
 			<result>/struts/reports/oq/report_assessment_tests.jsp</result>

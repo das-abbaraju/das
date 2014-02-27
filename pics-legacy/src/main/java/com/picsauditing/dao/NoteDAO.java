@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,13 +22,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.notes.ActivityBean;
 import com.picsauditing.actions.notes.ActivityBeanAudit;
 import com.picsauditing.actions.notes.ActivityBeanNote;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
@@ -205,7 +199,7 @@ public class NoteDAO extends PicsDAO {
 		List<ContractorAuditOperatorWorkflow> caows = getCaowsInDateRange(accountID, permissions, whereForWorkflow,
 				earliestDate, latestDate);
 		// Convert the caow records to activity beans
-		accumulateWorkflowChanges(beans, caows, categoryFilter);
+		accumulateWorkflowChanges(beans, caows, categoryFilter, permissions);
 
 		// Feather in the caows
 		sortByDateDesc(beans);
@@ -265,12 +259,14 @@ public class NoteDAO extends PicsDAO {
 	}
 
 	private void accumulateWorkflowChanges(List<ActivityBean> beans, List<ContractorAuditOperatorWorkflow> caows,
-			NoteCategory[] filterCategory) {
+			NoteCategory[] filterCategory, Permissions permissions) {
 		ActivityBean bean;
 		for (ContractorAuditOperatorWorkflow caow : caows) {
 			bean = new ActivityBeanAudit();
 
 			ContractorAudit audit = caow.getCao().getAudit();
+            if (!isApplicableCao(permissions, caow.getCao()))
+                continue;
 			bean.setAuditId(audit.getId());
 			bean.setAuditType(audit.getAuditType());
 			bean.setAuditFor(audit.getAuditFor() == null ? "" : audit.getAuditFor());
@@ -295,7 +291,19 @@ public class NoteDAO extends PicsDAO {
 		}
 	}
 
-	private void sortByDateDesc(List<ActivityBean> beans) {
+    private boolean isApplicableCao(Permissions permissions, ContractorAuditOperator cao) {
+        if (permissions.isAdmin() || permissions.isContractor())
+            return true;
+
+        Set<Integer> operators = permissions.getOperatorChildren();
+        for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+            if (operators.contains(caop.getOperator().getId()))
+                return true;
+        }
+        return false;
+    }
+
+    private void sortByDateDesc(List<ActivityBean> beans) {
 		Collections.sort(beans, new Comparator<ActivityBean>() {
 			public int compare(ActivityBean bean1, ActivityBean bean2) {
 				if (bean1.getSortDate() != null && bean2.getSortDate() != null)
