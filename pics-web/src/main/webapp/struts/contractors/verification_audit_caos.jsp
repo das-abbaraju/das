@@ -1,11 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:if test="caos.keySet().size > 1">
-	<div>
-		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete','Reject All',<s:property value="allCaoIDs" />);">Reject All</button>
-		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Complete','Complete All',<s:property value="allCaoIDs" />);">Complete All</button>
-	</div>
-</s:if>
+
+<%@ include file="_reject_and_approve_all_cao_buttons.jsp" %>
+
 <s:if test="caos.keySet().size > 0">
 	<table class="report">
 		<thead>	
