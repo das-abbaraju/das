@@ -385,6 +385,10 @@ public class ReportApi extends PicsApiSupport {
     }
 
     public User getUser() {
+        if (user == null) {
+            loadPermissions();
+            user = getUser(permissions.getUserId());
+        }
         return user;
     }
 
