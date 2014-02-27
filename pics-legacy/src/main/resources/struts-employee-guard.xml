@@ -84,6 +84,10 @@
         <action name="{siteId}/employee/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
             <result name="show">/struts/employee-guard/operator/employee/show.jsp</result>
         </action>
+
+        <action name="employees" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+            <result>/struts/employee-guard/index.jsp</result>
+        </action>
     </package>
 
     <!-- Contractor -->

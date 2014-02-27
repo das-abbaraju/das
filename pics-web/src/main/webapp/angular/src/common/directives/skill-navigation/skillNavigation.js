@@ -4,14 +4,9 @@ angular.module('PICS.directives')
     return {
         restrict: 'E',
         scope: {
-            employee: '='
+            employee: '=',
+            onmenuitemclick: '='
         },
-        link: function(scope) {
-            if (!scope.$parent.updatePartial) {
-                throw 'No updatePartial method defined on parent controlller';
-            }
-            scope.onMenuItemClick = scope.$parent.updatePartial;
-        },
-        templateUrl: '/src/common/directives/skill-navigation/_skill-navigation.tpl.html'
+        templateUrl: '/angular/src/common/directives/skill-navigation/_skill-navigation.tpl.html'
     };
 });

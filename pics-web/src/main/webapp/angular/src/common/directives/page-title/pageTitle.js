@@ -7,6 +7,6 @@ angular.module('PICS.directives')
             title: '@title',
             subtitle: '@subtitle'
         },
-        templateUrl: '/src/common/directives/page-title/_page-title.tpl.html'
+        templateUrl: '/angular/src/common/directives/page-title/_page-title.tpl.html'
     };
 });

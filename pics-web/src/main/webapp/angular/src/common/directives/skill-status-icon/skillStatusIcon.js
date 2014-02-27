@@ -6,6 +6,6 @@ angular.module('PICS.directives')
         scope: {
             status: '@status'
         },
-        templateUrl: '/src/common/directives/skill-status-icon/_skill-status-icon.tpl.html'
+        templateUrl: '/angular/src/common/directives/skill-status-icon/_skill-status-icon.tpl.html'
     };
 });

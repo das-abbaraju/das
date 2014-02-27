@@ -39,5 +39,28 @@ angular.module('PICS.employeeguard')
         return projectRoles;
     };
 
+    Model.prototype.getRoleByName = function (name) {
+        var data = this.getData(),
+            roles = data.roles;
+
+        for (var i = 0; i < roles.length; i++) {
+            if (roles[i].name == name) {
+                return roles[i];
+            }
+        }
+    };
+
+    Model.prototype.getProjectByName = function (name) {
+        var data = this.getData(),
+            projects = data.projects;
+
+        for (var i = 0; i < projects.length; i++) {
+            if (projects[i].name == name) {
+                return projects[i];
+            }
+        }
+    };
+
+
     return Model;
 });

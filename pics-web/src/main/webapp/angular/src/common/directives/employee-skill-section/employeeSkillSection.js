@@ -7,6 +7,6 @@ angular.module('PICS.directives')
             title: '@',
             skills: '='
         },
-        templateUrl: '/src/common/directives/employee-skill-section/_employee-skill-section.tpl.html'
+        templateUrl: '/angular/src/common/directives/employee-skill-section/_employee-skill-section.tpl.html'
     };
 });

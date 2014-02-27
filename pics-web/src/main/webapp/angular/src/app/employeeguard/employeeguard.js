@@ -7,7 +7,7 @@ angular.module('PICS.employeeguard', [
     $locationProvider.html5Mode(true);
 
     $routeProvider
-        .when('/', {
-            templateUrl: '/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        .when('/employee-guard/operator/employees', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         });
 });

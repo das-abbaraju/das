@@ -22137,68 +22137,53 @@ angular.module('admin-projects', [])
     $locationProvider.html5Mode(true);
 
     $routeProvider
-        .when('/', {
-            templateUrl: '/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        .when('/employee-guard/operator/employees', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         });
 });
 ;angular.module('PICS.employeeguard')
 
-.controller('menuFilterCtrl', function ($scope) {
-    $scope.selected = 'All';
-
-    $scope.select = function(item) {
-        $scope.selected = item;
-    };
-
-    $scope.isSelected = function(item) {
-       return $scope.selected === item;
-    };
-});;angular.module('PICS.employeeguard')
-
 .controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Model) {
-    $scope.partialname = 'all';
+    var model;
+
+    $scope.subview = 'all';
 
     $scope.employee = EmployeeSkills.get();
 
     $scope.employee.$promise.then(function (result) {
-        var model = new Model(result);
+        model = new Model(result);
 
         $scope.projectSkills = model.getAllProjectSkills();
         $scope.projectRoles = model.getAllProjectRoles();
 
         $scope.highlightedStatus = $scope.employee.overallStatus;
+    }, function(error) {
+        console.log(error);
     });
 
-    $scope.updatePartial = function (view, role, project) {
-        $scope.partialname = view;
-        $scope.role = role;
-        $scope.project = project;
-
-        if (view == 'all') {
-            $scope.highlightedStatus = $scope.employee.overallStatus;
-        }
-
-        if (project) {
-            $scope.currentProject = $scope.getProject();
+    $scope.changeSubView = function (template_name, subview_name) {
+        $scope.subview = template_name;
+        $scope.subview_name = subview_name;
+        console.log('model in ctrl');
+        console.log(model);
+        switch(template_name) {
+            case 'project':
+                $scope.currentProject = model.getProjectByName(subview_name, $scope.employee.projects);
+                $scope.updateHighlightedStatus($scope.currentProject.status);
+                break;
+            case 'role':
+                $scope.currentRole = model.getRoleByName(subview_name, $scope.employee.roles);
+                $scope.updateHighlightedStatus($scope.currentRole.status);
+                break;
+            case 'all':
+                $scope.updateHighlightedStatus($scope.employee.overallStatus);
+                break;
+            default: break;
         }
     };
 
-    $scope.roleFilter = function (role) {
-        if (role.name == $scope.role) {
-            $scope.highlightedStatus = role.status;
-            return role;
-        }
-    };
-
-    $scope.getProject = function () {
-        var projects = $scope.employee.projects;
-
-        for (var x = 0; x < projects.length; x++) {
-            if (projects[x].name == $scope.project) {
-                $scope.highlightedStatus = projects[x].status;
-                return projects[x];
-            }
-        }
+    $scope.updateHighlightedStatus = function (status) {
+        $scope.highlightedStatus = status;
     };
 });;angular.module('PICS.employeeguard')
 
@@ -22241,11 +22226,46 @@ angular.module('admin-projects', [])
         return projectRoles;
     };
 
+    Model.prototype.getRoleByName = function (name) {
+        var data = this.getData(),
+            roles = data.roles;
+
+        for (var i = 0; i < roles.length; i++) {
+            if (roles[i].name == name) {
+                return roles[i];
+            }
+        }
+    };
+
+    Model.prototype.getProjectByName = function (name) {
+        var data = this.getData(),
+            projects = data.projects;
+
+        for (var i = 0; i < projects.length; i++) {
+            if (projects[i].name == name) {
+                return projects[i];
+            }
+        }
+    };
+
+
     return Model;
 });;angular.module('PICS.employeeguard')
 
 .factory('EmployeeSkills', function($resource) {
-    return $resource('json/dummyData.json');
+    return $resource('/angular/json/dummyData.json');
+});;angular.module('PICS.employeeguard')
+
+.controller('menuFilterCtrl', function ($scope) {
+    $scope.selected = 'All';
+
+    $scope.select = function(item) {
+        $scope.selected = item;
+    };
+
+    $scope.isSelected = function(item) {
+       return $scope.selected === item;
+    };
 });;angular.module('PICS.home', [
     'ngRoute'
 ])
@@ -22276,7 +22296,7 @@ angular.module('admin-projects', [])
             title: '@',
             skills: '='
         },
-        templateUrl: '/src/common/directives/employee-skill-section/_employee-skill-section.tpl.html'
+        templateUrl: '/angular/src/common/directives/employee-skill-section/_employee-skill-section.tpl.html'
     };
 });;angular.module('PICS.directives')
 
@@ -22287,7 +22307,7 @@ angular.module('admin-projects', [])
             title: '@title',
             subtitle: '@subtitle'
         },
-        templateUrl: '/src/common/directives/page-title/_page-title.tpl.html'
+        templateUrl: '/angular/src/common/directives/page-title/_page-title.tpl.html'
     };
 });;angular.module('PICS.directives')
 
@@ -22295,15 +22315,10 @@ angular.module('admin-projects', [])
     return {
         restrict: 'E',
         scope: {
-            employee: '='
+            employee: '=',
+            onmenuitemclick: '='
         },
-        link: function(scope) {
-            if (!scope.$parent.updatePartial) {
-                throw 'No updatePartial method defined on parent controlller';
-            }
-            scope.onMenuItemClick = scope.$parent.updatePartial;
-        },
-        templateUrl: '/src/common/directives/skill-navigation/_skill-navigation.tpl.html'
+        templateUrl: '/angular/src/common/directives/skill-navigation/_skill-navigation.tpl.html'
     };
 });;angular.module('PICS.directives')
 
@@ -22313,6 +22328,6 @@ angular.module('admin-projects', [])
         scope: {
             status: '@status'
         },
-        templateUrl: '/src/common/directives/skill-status-icon/_skill-status-icon.tpl.html'
+        templateUrl: '/angular/src/common/directives/skill-status-icon/_skill-status-icon.tpl.html'
     };
 });
