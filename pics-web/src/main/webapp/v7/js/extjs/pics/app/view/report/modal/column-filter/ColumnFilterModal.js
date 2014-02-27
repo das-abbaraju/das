@@ -19,7 +19,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
             xtype: 'textfield',
             emptyText: PICS.text('Report.execute.columnFilterModal.placeholderSearch'),
             enableKeyEvents: true,
-            fieldLabel: '<i class="icon-search icon-large"></i>',
+            fieldLabel: '<i class="icon-search"></i>',
             labelSeparator: '',
             name: 'search_box',
             labelWidth: 16,

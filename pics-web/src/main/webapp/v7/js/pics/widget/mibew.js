@@ -1,10 +1,10 @@
 PICS.define('widgets.Mibew', {
     methods: {
         init: function () {
-            $chat_links = $('.chat-link');
+            var $chat_links = $('.chat-link, #live_chat');
 
             if ($chat_links.length) {
-                $chat_links.on('click', this.openMibew);
+                $('body').on('click', '.chat-link, #live_chat', this.openMibew);
             }
         },
 

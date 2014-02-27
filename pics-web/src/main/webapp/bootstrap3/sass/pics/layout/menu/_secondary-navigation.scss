@@ -1,155 +1,117 @@
-#secondary_navigation
-{
-    top: 50px;
+#secondary_navigation {
+    top: 49px;
+    background: #2c3f50;
+    @include background-image(linear-gradient(to bottom, #34495e, #2c3f50));
+    border-bottom: 2px solid #1a1a1a;
+    height: 30px;
+    z-index: 100;
 
-    .navbar-inner
-    {
-    	background: $default_iron;
-    	@include background-image(linear-gradient(#252525, $default_iron));
-	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525',endColorstr='#ff333333',GradientType=0);
-	    border-bottom: 0;
-	    border-top: 1px solid #000;
-	    color: $pics_cool_grey;
-	    line-height: 29px;
-	    min-height: 29px;
-	    padding-bottom: 0;
-	    padding-top: 0;
+    .navbar {
+      background: none;
+      border: 0;
+      margin-bottom: 0;
     }
 
-    [data-toggle=collapse]
-	{
-	    background-color: transparent;
-	    border: 0;
-	    color: $pics_cool_grey;
-	    display: none;
-	    float: right;
-	    line-height: 28px;
-	}
+    .navbar-nav > li > {
+        a { 
+            padding-top: 5px;
+            padding-bottom: 5px;
+            color: $pics_cool_grey;
+        }
 
-	.nav > li > a
-	{
-	    border: 0;
-	    color: $default_silver;
-	    padding: 4px 15px 5px;
-	    text-shadow: none;
+        a:hover {
+            color: #ffffff;
+        }
+    }
 
-	    &:hover
-	    {
-	    	color: $pics_cool_grey;
-	    }
-	}
+    .nav li.dropdown.open > .dropdown-toggle {
+        background: #2c3f50;
+        border-top: 2px solid #bcbcbc;
+        color: #ffffff;
+        height: 30px;
+    }
 
-	.nav li.dropdown.open > .dropdown-toggle,
-    .nav li.dropdown.active > .dropdown-toggle,
-    .nav li.dropdown.open.active > .dropdown-toggle
-	{
-	    color: $pics_light_blue;
-	    background: #252525;
-	    @include background-image(linear-gradient(#000, #252525));
-	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000',endColorstr='#ff252525',GradientType=0);
-	}
+/* TODO: Customize the styles below */;
 
-	.nav.account span
-	{
-	    color: $info_med;
-	    display: block;
-	    font-size: 13px;
-	    font-weight: bold;
-	    padding: 4px 15px 5px;
-	}
+    .navbar .dropdown-menu li a:link,
+    .navbar .dropdown-menu li a:visited {
+        color: #454545;
+        text-decoration: none;
+    }
+
+    .navbar .dropdown-menu li a:hover {
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    .navbar a:hover {
+        color: $pics_light_blue;
+        text-decoration: none;
+    }
+
+    .dropdown-menu {
+        border: 0px;
+        @include border-radius(5px);
+        @include box-shadow(rgba(0, 0, 0, 0.2) 0 1px 6px);
+        top: 35px;
+    }
+
+    .dropdown-menu li > a:hover,
+    .dropdown-menu .active > a,
+    .dropdown-menu .active > a:hover {
+        @include background-image(linear-gradient($primary_light, $primary_med));
+    }
+
+    .dropdown-menu .divider {
+        background-color: $pics_cool_grey;
+        border-bottom: 1px solid #ffffff;
+        height: 2px;
+        margin: 9px 1px;
+        overflow: hidden;
+    }
+
+    .dropdown-menu .nav-header {
+        color: $default_silver;
+        display: block;
+        font-size: 11px;
+        font-weight: bold;
+        line-height: 20px;
+        margin-top: 9px;
+        padding: 3px 20px;
+        text-transform: uppercase;
+    }
+
+    .nav li + .nav-header {
+        margin-top: 9px;
+    }
+    /* END dropdown menu */
+
+    .nav li.dropdown.switch-to.open > .dropdown-toggle,
+    .nav li.dropdown.switch-to.active > .dropdown-toggle,
+    .nav li.dropdown.switch-to.open.active > .dropdown-toggle
+    {
+        background-color: #3f93c0 \9;
+        background-color: #3f93c0;
+        background-image: none;
+        outline: 0;
+        @include box-shadow(inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05));
+        color: #ffffff;
+    }
 }
 
-@media (max-width: 979px) {
-    #secondary_navigation
-    {
-        margin-bottom: 0;
+@media (min-width: 992px) {
+    body.has-contractor-menu {
+        padding-top: 80px;
 
-        .navbar-inner
-        {
-            background: #252525;
+        #primary_navigation {
+            border-bottom: none;
+            height: 50px;
         }
+    }
+}
 
-        [data-toggle=collapse]
-        {
-            display: block;
-        }
-
-        .nav > li > a
-        {
-            @include border-radius(0);
-            padding: 6px 5px;
-
-            &:hover
-            {
-            	background-color: #252525;
-            }
-
-            &[data-toggle="dropdown"]:after
-            {
-				bottom: 1px;
-            	content: '\2304';
-				font-size: 20px;
-				margin-left: 2px;
-            	position: relative;
-            }
-        }
-
-        .secondary-navigation-items
-        {
-            .nav > li > .dropdown-menu
-            {
-                background: #131313;
-                display: none;
-            }
-
-            .nav > .open > .dropdown-menu
-            {
-                display: block;
-            }
-
-            .dropdown-menu a
-            {
-                @include border-radius(0);
-                color: $pics_cool_grey;
-                font-weight: normal;
-
-                &:hover
-                {
-                    background: #000;
-                    color: #fff;
-                }
-            }
-
-            .dropdown-submenu > a:after
-            {
-            	margin: 0;
-            }
-
-            .dropdown-submenu:hover > a,
-            .dropdown-submenu:focus > a
-            {
-                background: #131313;
-            }
-        }
-
-        .nav li.dropdown.open > .dropdown-toggle,
-        .nav li.dropdown.active > .dropdown-toggle,
-        .nav li.dropdown.open.active > .dropdown-toggle
-        {
-            background: #252525;
-            border: 1px solid transparent;
-            border-bottom: 0;
-            color: #fff;
-        }
-
-        .nav.account
-        {
-        	float: left;
-
-        	span
-        	{
-        		padding: 5px;
-        	}
-        }
+@media (max-width: 991px) {
+    #secondary_navigation {
+        display: none;
     }
 }

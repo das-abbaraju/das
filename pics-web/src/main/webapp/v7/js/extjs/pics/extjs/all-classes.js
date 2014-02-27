@@ -67652,7 +67652,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
+        text: '<i class="icon-plus"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
     }],
     layout: {
         type: 'hbox',
@@ -87569,12 +87569,12 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
+        text: '<i class="icon-plus"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
     }],
-    
+
     initComponent: function () {
         this.addEvents('changepage');
-        
+
         this.callParent(arguments);
     },
 
@@ -87681,7 +87681,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
             height: 28
         }];
     },
-    
+
     // override Ext.toolbar.Paging.onPagingKeyDown to throw custom event
     onPagingKeyDown : function(field, e) {
         var me = this,
@@ -87698,7 +87698,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
                 if(me.fireEvent('beforechange', me, pageNum) !== false){
                     // prevent store from manually loading
                     // me.store.loadPage(pageNum);
-                    
+
                     me.fireEvent('changepage', me, pageNum);
                 }
             }
@@ -96394,6 +96394,8 @@ Ext.define('PICS.view.report.data-table.DataTable', {
 Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
+    renderTo: Ext.get('viewport'),
+
     requires: [
         'Ext.layout.container.Border',
         'Ext.resizer.Splitter',
@@ -96406,11 +96408,8 @@ Ext.define('PICS.view.report.Viewport', {
     ],
 
     items: [{
-    	xtype: 'layoutheader',
-        region: 'north'
-    }, {
         region: 'center',
-
+        margin: '50 0 0 0',
         border: 0,
         id: 'content',
         items: [{
@@ -96425,6 +96424,7 @@ Ext.define('PICS.view.report.Viewport', {
         }],
         layout: 'border'
     }],
+
     layout: 'border'
 });
 Ext.define('PICS.ux.grid.column.Column', {
@@ -96900,7 +96900,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
             xtype: 'textfield',
             emptyText: PICS.text('Report.execute.columnFilterModal.placeholderSearch'),
             enableKeyEvents: true,
-            fieldLabel: '<i class="icon-search icon-large"></i>',
+            fieldLabel: '<i class="icon-search"></i>',
             labelSeparator: '',
             name: 'search_box',
             labelWidth: 16,

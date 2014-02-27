@@ -3,6 +3,8 @@ package com.picsauditing.access;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.menu.MenuComponent;
+import com.picsauditing.menu.builder.MenuBuilder;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;

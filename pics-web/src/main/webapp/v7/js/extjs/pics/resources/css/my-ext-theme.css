@@ -7900,273 +7900,52 @@ textarea.x-form-invalid-field {
  * Start Custom
  * Author: Carey Hinoki
  */
-/* line 47, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_navigation {
-  height: 50px; }
+/* line 2, ../sass/my-ext-theme/layout/_layout.scss */
+html,
+body {
+  height: 100%;
+  overflow-y: hidden; }
 
-/* line 52, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu {
-  background: #eaeaea;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
-  background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
-  background-image: -moz-linear-gradient(#ffffff, #eaeaea);
-  background-image: -o-linear-gradient(#ffffff, #eaeaea);
-  background-image: linear-gradient(#ffffff, #eaeaea);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffeaeaea', GradientType=0);
-  -webkit-box-shadow: #cccccc 0px 2px 2px 0px;
-  -moz-box-shadow: #cccccc 0px 2px 2px 0px;
-  box-shadow: #cccccc 0px 2px 2px 0px; }
-  /* line 59, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu .x-btn-arrow {
-    background: none;
-    padding: 0px !important; }
-  /* line 65, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu .x-btn {
-    margin: 0px;
-    padding: 0px 10px;
-    top: 0px !important; }
-    /* line 71, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    #site_menu .x-btn .x-btn-inner {
-      color: #002441;
-      font-weight: bold; }
-  /* line 78, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu .x-btn.x-over {
-    background: #eaeaea;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
-    background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
-    background-image: -moz-linear-gradient(#ffffff, #eaeaea);
-    background-image: -o-linear-gradient(#ffffff, #eaeaea);
-    background-image: linear-gradient(#ffffff, #eaeaea);
-    border: 1px solid transparent;
-    border-bottom: 0px;
-    border-top: 1px solid transparent;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -ms-border-radius: 0px;
-    -o-border-radius: 0px;
-    border-radius: 0px; }
-    /* line 87, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    #site_menu .x-btn.x-over .x-btn-inner {
-      color: #c66603; }
-  /* line 94, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu .x-btn.x-menu-active,
-  #site_menu .x-btn.x-pressed {
-    background: #f1f1f2;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
-    background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
-    background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
-    background-image: -o-linear-gradient(#eaeaea, #f1f1f2);
-    background-image: linear-gradient(#eaeaea, #f1f1f2);
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -ms-border-radius: 0px;
-    -o-border-radius: 0px;
-    border-radius: 0px;
-    border: 1px solid #aeaeae;
-    border-top: 1px solid #eaeaea;
-    border-bottom: 0px; }
-    /* line 103, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    #site_menu .x-btn.x-menu-active .x-btn-inner,
-    #site_menu .x-btn.x-pressed .x-btn-inner {
-      color: #c66603; }
-  /* line 109, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu .x-toolbar-separator-horizontal {
-    border-left: 1px solid #e7e7e7;
-    border-right: 0px; }
+/* line 1, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+.x-reset div.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px; }
 
-/* line 116, ../sass/my-ext-theme/layout/menu/_menu.scss */
-.dashboard .x-btn-inner {
-  padding: 0px 0px 0px 50px; }
+/* line 8, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+.x-reset input.input-sm {
+  font-size: 12px; }
 
-/* line 123, ../sass/my-ext-theme/layout/menu/_menu.scss */
-.site-menu-search label {
-  line-height: 14px;
-  padding: 7px 0px 0px !important; }
-/* line 129, ../sass/my-ext-theme/layout/menu/_menu.scss */
-.site-menu-search .icon-search {
-  color: #cccccc;
-  font-size: 14px;
-  text-shadow: 0px -1px 0px #bcbcbc; }
-/* line 136, ../sass/my-ext-theme/layout/menu/_menu.scss */
-.site-menu-search .x-form-text {
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
-  border-radius: 15px;
-  height: 25px !important;
-  line-height: 20px;
-  padding: 0px 7px; }
+/* line 12, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+.x-reset form.navbar-form {
+  margin-top: 10px;
+  padding: 0 15px 10px 0; }
 
-/* line 145, ../sass/my-ext-theme/layout/menu/_menu.scss */
-.site-menu-search-list {
-  border: 1px solid #a7a7a7;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-  border-radius: 5px; }
-  /* line 150, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list li:first-child {
-    -moz-border-radius-topleft: 4px;
-    -webkit-border-top-left-radius: 4px;
-    border-top-left-radius: 4px;
-    -moz-border-radius-topright: 4px;
-    -webkit-border-top-right-radius: 4px;
-    border-top-right-radius: 4px; }
-  /* line 156, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list li:last-child {
-    -moz-border-radius-bottomleft: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-    -moz-border-radius-bottomright: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    border-bottom-right-radius: 4px; }
-  /* line 162, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .even {
-    background: #f1f1f2; }
-  /* line 167, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .x-boundlist-item {
-    border: 1px solid transparent; }
-  /* line 172, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .x-boundlist-item-over {
-    background: #a84d10;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
-    background-image: -webkit-linear-gradient(#c66603, #a84d10);
-    background-image: -moz-linear-gradient(#c66603, #a84d10);
-    background-image: -o-linear-gradient(#c66603, #a84d10);
-    background-image: linear-gradient(#c66603, #a84d10);
-    border: 0px;
-    border-bottom: 1px solid #a84d10;
-    border-top: 1px solid #c66603;
-    color: white; }
-  /* line 182, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .search-item {
-    line-height: 15px;
-    overflow: hidden;
-    padding: 5px 15px; }
-    /* line 188, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .search-item div {
-      clear: both; }
-    /* line 193, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .search-item em {
-      font-weight: bold; }
-    /* line 199, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .search-item .name,
-    .site-menu-search-list .search-item .location {
-      float: left;
-      width: 175px; }
-    /* line 205, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .search-item .id {
-      float: right; }
-    /* line 210, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .search-item .type {
-      float: right;
-      font-style: italic; }
-  /* line 217, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .account-demo {
-    font-style: italic; }
-    /* line 221, ../sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .account-demo em {
-      font-style: italic; }
-  /* line 228, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .account-deactivated,
-  .site-menu-search-list .account-inactive {
-    color: #aeaeae; }
-  /* line 234, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .account-deactivated.x-boundlist-item-over,
-  .site-menu-search-list .account-inactive.x-boundlist-item-over {
-    color: #cccccc; }
-  /* line 244, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .account-deleted .name,
-  .site-menu-search-list .account-deleted .id,
-  .site-menu-search-list .account-deleted .location,
-  .site-menu-search-list .account-deleted .type {
-    text-decoration: line-through; }
-  /* line 251, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .more-results,
-  .site-menu-search-list .no-results {
-    line-height: 15px;
-    overflow: hidden;
-    padding: 5px 15px; }
-  /* line 260, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .more-results a {
-    color: #226396;
-    display: block;
-    font-weight: bold;
-    padding: 3px 0px;
-    text-decoration: none; }
-  /* line 269, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .more-results a:hover {
-    color: #73bbe8; }
-  /* line 274, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .more-results p {
-    color: #999;
-    font-size: 13px;
-    margin: 0px; }
+/* line 17, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+.x-body #primary_navigation {
+  font-size: 14px; }
+  /* line 20, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+  .x-body #primary_navigation .contact-us-link {
+    margin-right: 15px; }
+  /* line 24, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+  .x-body #primary_navigation .search-form .icon-search {
+    font-size: 14px;
+    left: 9px; }
 
-/* line 283, ../sass/my-ext-theme/layout/menu/_menu.scss */
-.x-menu-overflow .icon-cog {
-  margin: 0px 0px 0px 5px; }
-
-/* line 14, ../sass/my-ext-theme/layout/menu/_menus.scss */
-.x-menu-body {
-  border: 1px solid gainsboro;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-  border-radius: 5px; }
-
-/* line 20, ../sass/my-ext-theme/layout/menu/_menus.scss */
-.menu-title {
-  color: #999999;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 8px 15px 4px 15px !important;
-  text-transform: uppercase; }
-
-/* line 29, ../sass/my-ext-theme/layout/menu/_menus.scss */
-.x-menu-item-text {
-  font-size: 13px; }
-
-/* line 34, ../sass/my-ext-theme/layout/menu/_menus.scss */
-.x-menu-item-active .x-menu-item-link {
-  background: #a84d10;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10)) !important;
-  background-image: -webkit-linear-gradient(#c66603, #a84d10) !important;
-  background-image: -moz-linear-gradient(#c66603, #a84d10) !important;
-  background-image: -o-linear-gradient(#c66603, #a84d10) !important;
-  background-image: linear-gradient(#c66603, #a84d10) !important;
-  border: 1px solid transparent !important;
-  -webkit-border-radius: 0px !important;
-  -moz-border-radius: 0px !important;
-  -ms-border-radius: 0px !important;
-  -o-border-radius: 0px !important;
-  border-radius: 0px !important; }
-
-/* line 42, ../sass/my-ext-theme/layout/menu/_menus.scss */
-.x-menu-item:first-child.x-menu-item-active .x-menu-item-link {
-  -moz-border-radius-topleft: 3px !important;
-  -webkit-border-top-left-radius: 3px !important;
-  border-top-left-radius: 3px !important;
-  -moz-border-radius-topright: 3px !important;
-  -webkit-border-top-right-radius: 3px !important;
-  border-top-right-radius: 3px !important; }
-
-/* line 48, ../sass/my-ext-theme/layout/menu/_menus.scss */
-.x-menu-item:last-child.x-menu-item-active .x-menu-item-link {
-  -moz-border-radius-bottomleft: 3px !important;
-  -webkit-border-bottom-left-radius: 3px !important;
-  border-bottom-left-radius: 3px !important;
-  -moz-border-radius-bottomright: 3px !important;
-  -webkit-border-bottom-right-radius: 3px !important;
-  border-bottom-right-radius: 3px !important; }
-
-/* line 54, ../sass/my-ext-theme/layout/menu/_menus.scss */
-.x-menu-item-active .x-menu-item-link span {
-  color: white; }
-
+@media (max-width: 991px) {
+  /* line 31, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+  #primary_navigation {
+    display: block; }
+    /* line 34, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+    #primary_navigation .navbar-brand {
+      padding-left: 40px;
+      padding-top: 7px;
+      font-size: 18px; }
+    /* line 41, ../sass/my-ext-theme/layout/menu/_primary-navigation.scss */
+    #primary_navigation ul,
+    #primary_navigation form {
+      display: none; } }
 /* line 36, ../sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_modal,
 #filter_modal {
@@ -8665,7 +8444,7 @@ textarea.x-form-invalid-field {
   /* line 88, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .remove-filter .icon-remove-sign {
     color: #ac030c;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 20px; }
 
 /* line 97, ../sass/my-ext-theme/report/filter/_filters.scss */
@@ -8719,23 +8498,184 @@ textarea.x-form-invalid-field {
 #report_filters .filter.negated input[name="operator"] {
   text-decoration: line-through; }
 
-/* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
-#loading_page {
-  height: 140px;
-  left: 50%;
-  margin: -70px 0 0 -90px;
-  position: absolute;
-  text-align: center;
-  top: 50%;
-  width: 180px; }
+@-webkit-keyframes loader {
+  /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
 
-/* line 13, ../sass/my-ext-theme/report/loading/_loading.scss */
-#loading_page h1 {
-  color: #333;
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  margin: 0px;
-  padding: 0px; }
+  /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
+  25% {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
+
+  /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
+  50% {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+
+  /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
+  75% {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
+
+  /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@-moz-keyframes loader {
+  /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
+  25% {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
+
+  /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
+  50% {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+
+  /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
+  75% {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
+
+  /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@-o-keyframes loader {
+  /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
+  25% {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
+
+  /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
+  50% {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+
+  /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
+  75% {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
+
+  /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes loader {
+  /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  /* line 3, ../sass/my-ext-theme/report/loading/_loading.scss */
+  25% {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg); }
+
+  /* line 4, ../sass/my-ext-theme/report/loading/_loading.scss */
+  50% {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+
+  /* line 5, ../sass/my-ext-theme/report/loading/_loading.scss */
+  75% {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg); }
+
+  /* line 6, ../sass/my-ext-theme/report/loading/_loading.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+/* line 9, ../sass/my-ext-theme/report/loading/_loading.scss */
+#loading_page {
+  height: 100px;
+  left: 50%;
+  margin: -150px 0 0 -50px;
+  position: absolute;
+  top: 50%;
+  width: 100px; }
+  /* line 17, ../sass/my-ext-theme/report/loading/_loading.scss */
+  #loading_page svg {
+    -webkit-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
+    -moz-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
+    -o-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
+    animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1); }
 
 /* line 2, ../sass/my-ext-theme/report/alert/_success.scss */
 #success_message {
@@ -8862,7 +8802,7 @@ textarea.x-form-invalid-field {
 /* line 63, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #data_table .paging-icon span {
   color: #f1f1f2;
-  font-size: 18px; }
+  font-size: 16px; }
 /* line 72, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #data_table .paging-icon.over span {
   color: white; }
@@ -9009,7 +8949,8 @@ textarea.x-form-invalid-field {
 #data_table .x-grid-cell-inner .icon-flag.amber {
   color: #F1A300; }
 
-/* line 2, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* TODO: Replace extjs sass vars with bootstrap 3 vars */
+/* line 47, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal {
   background: #eaeaea;
   border: 1px solid #333333;
@@ -9019,7 +8960,7 @@ textarea.x-form-invalid-field {
   -o-border-radius: 0px;
   border-radius: 0px; }
 
-/* line 9, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 54, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_header {
   background: #454545;
   border-bottom: 1px solid #333333 !important;
@@ -9033,106 +8974,107 @@ textarea.x-form-invalid-field {
   box-shadow: none;
   height: 45px;
   padding: 13px; }
-  /* line 18, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 63, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_settings_modal_header .icon-info-sign {
     color: #999;
-    font-size: 20px;
     position: relative;
-    left: -3px; }
-  /* line 26, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    left: -3px;
+    top: 3px; }
+  /* line 71, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_settings_modal_header #settings_modal_report_info_button {
     background-color: #454545;
     border-color: #454545; }
-  /* line 32, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 77, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_settings_modal_header .x-btn-over .icon-info-sign {
     color: #ccc; }
-  /* line 37, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 82, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_settings_modal_header .x-btn.active .icon-info-sign {
     color: #73BBE8; }
-  /* line 42, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 87, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_settings_modal_header #settings_modal_report_info_button-btnEl {
     background-color: #454545; }
 
-/* line 48, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 93, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_header span {
   color: #ffffff;
   font-size: 18px;
   font-weight: bold; }
 
-/* line 55, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 100, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal-body {
   border: 0px;
   background: #eaeaea; }
 
-/* line 61, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 106, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal-body .x-panel-body-default {
   background: #eaeaea;
   border: 0px !important; }
 
-/* line 68, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 113, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal-body .x-form-field,
 #report_settings_modal-body .x-form-display-field {
   margin-bottom: 7px; }
 
-/* line 73, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 118, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 .coming-soon {
   text-align: center; }
-  /* line 78, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 123, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .coming-soon i,
   .coming-soon p {
     color: #999; }
-  /* line 83, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 128, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .coming-soon i {
     display: block;
     font-size: 26px;
     margin: 60px 0px 10px; }
-  /* line 90, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 135, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .coming-soon p {
     font-size: 24px; }
 
 /***
  * Tab Content
  */
-/* line 102, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 147, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe .x-fieldset-body {
   margin-left: 27px; }
-/* line 107, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 152, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe legend {
-  padding-bottom: 10px; }
-/* line 112, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  padding-bottom: 10px;
+  font-size: 13px; }
+/* line 158, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe .subscription-info {
   color: #666;
   font-size: 12px; }
 
-/* line 122, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 168, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit,
 #report_copy,
 #report_share,
 #report_subscribe {
-  padding: 8px 10px 10px; }
+  padding: 0 10px 10px; }
 
-/* line 130, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 176, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit-body,
 #report_copy-body,
 #report_share-body,
 #report_subscribe-body {
   height: auto !important; }
 
-/* line 138, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 184, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit .x-toolbar,
 #report_copy .x-toolbar,
 #report_share .x-toolbar
 #report_subscribe .x-toolbar {
   top: auto !important; }
 
-/* line 146, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 192, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal .cancel button span,
 #report_settings_modal .edit button span,
 #report_settings_modal .copy button span,
 #report_settings_modal .share button span {
   padding: 0px 7px; }
 
-/* line 156, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 202, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit .favorite,
 #report_edit .private,
 #report_copy .favorite,
@@ -9141,53 +9083,52 @@ textarea.x-form-invalid-field {
 #report_edit_no_permission .private {
   color: #ccc;
   cursor: pointer;
-  font-size: 18px;
   position: relative;
   text-decoration: none; }
-/* line 165, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 210, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit .selected,
 #report_copy .selected,
 #report_edit_no_permission .selected {
   color: #A84D10; }
-/* line 170, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 215, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit strong,
 #report_copy strong,
 #report_edit_no_permission strong {
   font-weight: bold; }
-/* line 175, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 220, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit input[type="text"],
 #report_copy input[type="text"],
 #report_edit_no_permission input[type="text"] {
   padding: 1px 3px; }
 
-/* line 183, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 228, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 85%; }
-/* line 192, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 237, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
-/* line 199, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 244, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
 
-/* line 208, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 253, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share a {
   color: #226396;
   text-decoration: none; }
-/* line 214, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 259, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share a:hover {
   color: #73bbe8; }
-/* line 219, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 264, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share strong {
   font-weight: bold; }
-/* line 224, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 269, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .selected-account {
   background-color: #f1f1f2;
   border: 1px solid #ccc;
@@ -9196,31 +9137,30 @@ textarea.x-form-invalid-field {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px; }
-  /* line 230, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 275, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .selected-account .selected-account-id {
     display: none; }
-/* line 236, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 281, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .icon-edit {
   color: #ccc;
   cursor: pointer;
   font-size: 22px;
   margin-left: 10px; }
-/* line 244, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 289, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .icon-edit.selected {
   color: #35c13d; }
-/* line 249, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 294, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share p {
   margin-left: 10px; }
-/* line 256, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 301, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox label {
-  line-height: 14px;
-  padding: 7px 0px 0px !important; }
-/* line 262, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  line-height: 14px; }
+/* line 306, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox .icon-search {
   color: #cccccc;
   font-size: 14px;
   text-shadow: 0px -1px 0px #bcbcbc; }
-/* line 269, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 313, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox .x-form-text {
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
@@ -9229,7 +9169,7 @@ textarea.x-form-invalid-field {
   border-radius: 15px;
   height: 25px !important;
   padding: 0px 7px; }
-/* line 277, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 321, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .share-searchbox-list {
   border: 1px solid #a7a7a7;
   -webkit-border-radius: 5px;
@@ -9237,7 +9177,7 @@ textarea.x-form-invalid-field {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px; }
-  /* line 282, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 326, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list li:first-child {
     -moz-border-radius-topleft: 4px;
     -webkit-border-top-left-radius: 4px;
@@ -9245,7 +9185,7 @@ textarea.x-form-invalid-field {
     -moz-border-radius-topright: 4px;
     -webkit-border-top-right-radius: 4px;
     border-top-right-radius: 4px; }
-  /* line 288, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 332, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list li:last-child {
     -moz-border-radius-bottomleft: 4px;
     -webkit-border-bottom-left-radius: 4px;
@@ -9253,13 +9193,13 @@ textarea.x-form-invalid-field {
     -moz-border-radius-bottomright: 4px;
     -webkit-border-bottom-right-radius: 4px;
     border-bottom-right-radius: 4px; }
-  /* line 294, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 338, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .even {
     background: #f1f1f2; }
-  /* line 299, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 343, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .x-boundlist-item {
     border: 1px solid transparent; }
-  /* line 304, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 348, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .x-boundlist-item-over {
     background: #a84d10;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
@@ -9271,53 +9211,53 @@ textarea.x-form-invalid-field {
     border-bottom: 1px solid #a84d10;
     border-top: 1px solid #c66603;
     color: white; }
-  /* line 314, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 358, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .search-item {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-    /* line 320, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 364, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item div {
       clear: both; }
-    /* line 325, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 369, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item em {
       font-weight: bold; }
-    /* line 331, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 375, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item .name,
     #report_share .share-searchbox-list .search-item .location {
       float: left;
       width: 175px; }
-    /* line 337, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 381, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item .id {
       float: right; }
-    /* line 342, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    /* line 386, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
     #report_share .share-searchbox-list .search-item .type {
       float: right;
       font-style: italic; }
-  /* line 349, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 393, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_share .share-searchbox-list .more-results {
     color: #333333;
     font-weight: bold; }
-/* line 355, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 399, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .icon-wrench {
   margin-right: 5px; }
 
-/* line 363, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 407, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 90%; }
-/* line 372, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 416, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission strong {
   font-weight: bold; }
-/* line 377, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 421, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
-/* line 384, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 428, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
@@ -9325,75 +9265,75 @@ textarea.x-form-invalid-field {
 /***
  * Tabs
  */
-/* line 395, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 439, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar {
   background: #454545; }
 
-/* line 400, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 444, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab {
   border: 0px;
   border-right: 1px solid #333333;
   border-top: 1px solid #333333;
   padding: 5px; }
 
-/* line 408, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 452, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab-active:last-child {
   width: 72px; }
 
-/* line 413, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 457, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab button {
   background: #454545;
   border: 0px;
   cursor: pointer;
   padding: 0px; }
 
-/* line 421, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 465, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab span {
   color: #cccccc; }
 
-/* line 426, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 470, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-over span {
   color: #ffffff; }
 
-/* line 431, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 475, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-active {
   background: #eaeaea;
   border-top: 0px; }
 
-/* line 437, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 481, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-active button {
   background: #eaeaea;
   cursor: auto; }
 
-/* line 443, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 487, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-active span {
   color: #666666; }
 
-/* line 448, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 492, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_tabbar .x-tab button i.icon-large {
   display: block;
   font-size: 17px; }
 
-/* line 454, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 498, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_export .x-btn i {
   position: relative;
   top: 2px; }
 
-/* line 460, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 504, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_export .x-btn-inner span {
   margin-left: 10px; }
 
-/* line 465, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 509, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_export .export-message {
   color: #999;
   text-align: center; }
 
-/* line 471, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 515, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe .coming-soon {
   margin-top: 85px;
   font-size: 18px; }
 
-/* line 477, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 521, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 .report-info {
   background: #EAEAEA;
   height: 100%;
@@ -9402,21 +9342,21 @@ textarea.x-form-invalid-field {
   top: 0;
   width: 100%;
   z-index: 9999; }
-  /* line 487, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 531, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info ul {
     padding: 15px; }
-  /* line 492, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 536, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info li {
     margin-bottom: 10px; }
-  /* line 497, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 541, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info label {
     color: #999;
     font-weight: bold;
     margin-right: 5px; }
-  /* line 506, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 550, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info .update-info label {
     float: left; }
-  /* line 511, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 555, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info .update-info span {
     display: inline-block; }
 
@@ -9989,26 +9929,30 @@ a.x-tab-close-btn:hover {
 .x-grid-group-hd-collapsible.x-over .x-grid-group-title {
   background-position: 100% 0px !important; }
 
-/* line 2, ../sass/my-ext-theme/report/general/_general.scss */
+/* line 1, ../sass/my-ext-theme/report/general/_general.scss */
+button i {
+  margin: 0; }
+
+/* line 6, ../sass/my-ext-theme/report/general/_general.scss */
 .x-form-invalid-field,
 textarea.x-form-invalid-field {
   background-image: none;
   background-position: 0%;
   border-color: #c0392b; }
 
-/* line 95, ../sass/my-ext-theme.scss */
+/* line 96, ../sass/my-ext-theme.scss */
 .x-reset .x-tool img {
   background-image: url("../../app/resources/images/tool-sprites.gif"); }
 
-/* line 104, ../sass/my-ext-theme.scss */
+/* line 105, ../sass/my-ext-theme.scss */
 .x-nlg #site_menu,
 .x-nlg .x-menu-item-active .x-menu-item-link,
 .x-nlg .x-btn-default-small {
   background-image: none !important; }
-/* line 109, ../sass/my-ext-theme.scss */
+/* line 110, ../sass/my-ext-theme.scss */
 .x-nlg .x-menu-item-active .x-menu-item-link {
   background: #a84d10; }
-/* line 120, ../sass/my-ext-theme.scss */
+/* line 121, ../sass/my-ext-theme.scss */
 .x-nlg #report_toolbar,
 .x-nlg #paging_toolbar,
 .x-nlg .x-grid-header-ct,
@@ -10017,7 +9961,7 @@ textarea.x-form-invalid-field {
 .x-nlg .x-btn-default-small,
 .x-nlg #report_filter_actions {
   background-image: none !important; }
-/* line 127, ../sass/my-ext-theme.scss */
+/* line 128, ../sass/my-ext-theme.scss */
 .x-nlg .x-grid-header-ct,
 .x-nlg .x-column-header,
 .x-nlg .x-column-header-over {

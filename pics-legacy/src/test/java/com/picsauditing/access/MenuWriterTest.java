@@ -1,5 +1,7 @@
 package com.picsauditing.access;
 
+import com.picsauditing.menu.MenuComponent;
+import com.picsauditing.menu.MenuWriter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
