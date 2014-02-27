@@ -82,6 +82,16 @@ public class EmployeeService {
 		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
+	public List<Employee> getEmployeesAssignedToSiteByEmployeeProfile(final Collection<Integer> contractorIds,
+																	  final int siteId,
+																	  final Employee employee) {
+		if (employee.getProfile() == null) {
+			return Arrays.asList(employee);
+		}
+
+		return employeeDAO.findEmployeesAssignedToSiteByProfile(contractorIds, siteId, employee.getProfile().getId());
+	}
+
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
 	                                                     final Role siteRole, final Role corporateRole) {
 		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);

@@ -128,7 +128,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 		roleService.save(role, permissions.getAccountId(), permissions.getUserId());
 
 		if (addAnother(roleForm)) {
-			return setUrlForRedirect("/employee-guard/operator/role/create");
+			return setUrlForRedirect("/employee-guard/operators/role/create");
 		}
 
 		return redirectToList();
@@ -145,7 +145,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 			role = groupService.update(roleProjectsForm, role, permissions.getAccountId(), permissions.getAppUserID());
 		}
 
-		return setUrlForRedirect("/employee-guard/operator/role/" + role.getId());
+		return setUrlForRedirect("/employee-guard/operators/role/" + role.getId());
 	}
 
 	public String delete() throws Exception {

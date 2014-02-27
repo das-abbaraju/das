@@ -113,7 +113,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		skillService.save(skill, permissions.getAccountId(), permissions.getUserId());
 
 		if (addAnother(operatorSkillForm)) {
-			return setUrlForRedirect("/employee-guard/operator/skill/create");
+			return setUrlForRedirect("/employee-guard/operators/skill/create");
 		}
 
 		return redirectToList();
@@ -124,7 +124,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		skill = operatorSkillForm.buildAccountSkill(NumberUtils.toInt(id), accountId);
 		skill = skillService.update(skill, id, accountId, permissions.getUserId());
 
-		return setUrlForRedirect("/employee-guard/operator/skill/" + skill.getId());
+		return setUrlForRedirect("/employee-guard/operators/skill/" + skill.getId());
 	}
 
 	public String delete() throws Exception {

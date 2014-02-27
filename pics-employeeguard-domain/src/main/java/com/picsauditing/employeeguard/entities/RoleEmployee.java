@@ -183,7 +183,7 @@ public class RoleEmployee implements BaseEntity {
 		return result;
 	}
 
-	public static transient final Extractor<RoleEmployee, Role> ROLE_EMPLOYEE_EXTRACTOR = new Extractor<RoleEmployee, Role>() {
+	public static transient final Extractor<RoleEmployee, Role> ROLE_EXTRACTOR = new Extractor<RoleEmployee, Role>() {
 		@Override
 		public Role extract(RoleEmployee roleEmployee) {
 			return roleEmployee.getRole();
