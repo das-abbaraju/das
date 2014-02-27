@@ -9,14 +9,9 @@ import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.EmailBuildErrorException;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.service.account.AccountService;
 import com.picsauditing.service.account.events.ContractorEventType;
-import com.picsauditing.service.account.events.ContractorEventType.*;
-import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.util.*;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
@@ -28,10 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.*;
 
@@ -54,8 +46,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
-	private InvoiceFeeDAO invoiceFeeDAO;
-	@Autowired
 	private OperatorTagDAO operatorTagDAO;
 	@Autowired
 	private UserDAO userDAO;
@@ -71,6 +61,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	private AppUserDAO appUserDAO;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private RegistrationBillingBean billingBean;
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
@@ -183,6 +175,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		userDAO.refresh(user);
 
 		contractor.setAgreedBy(user);
+        contractor.setAgreementDate(contractor.getCreationDate());
 		contractor.setPrimaryContact(user);
 		contractorAccountDao.save(contractor);
 
@@ -340,23 +333,10 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		contractor.setNaics(new Naics());
 		contractor.getNaics().setCode("0");
 		contractor.setNaicsValid(false);
-		contractor.setAgreementDate(contractor.getCreationDate());
 		contractor.getUsers().add(user);
 
-		// Default their current membership to 0
-		List<FeeClass> feeClasses = Arrays.asList(FeeClass.BidOnly, FeeClass.ListOnly, FeeClass.DocuGUARD,
-				FeeClass.AuditGUARD, FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
-		for (FeeClass feeClass : feeClasses) {
-			ContractorFee newConFee = new ContractorFee();
-			newConFee.setAuditColumns(new User(User.CONTRACTOR));
-			newConFee.setContractor(contractor);
+        billingBean.assessInitialFees(contractor);
 
-			InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
-			newConFee.setCurrentLevel(currentFee);
-			newConFee.setNewLevel(currentFee);
-			newConFee.setFeeClass(feeClass);
-			contractor.getFees().put(feeClass, newConFee);
-		}
 
 		scrubContractorData(contractor);
 	}
