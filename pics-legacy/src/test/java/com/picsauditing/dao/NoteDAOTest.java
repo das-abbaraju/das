@@ -4,7 +4,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.notes.ActivityBean;
 import com.picsauditing.jpa.entities.*;
-import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
