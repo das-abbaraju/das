@@ -118,7 +118,6 @@ public class PicsMenu {
 						subMenu = menu.addChild(getText("global.OperatorQualification"));
 						subMenu.addChild(getTitle("ReportOQEmployees"),
 								"ReportOQEmployees.action?orderBy=e.lastName,e.firstName", "ReportQQEmployees");
-						subMenu.addChild(getTitle("ReportOQChanges"), "ReportOQChanges.action", "ReportQQChanges");
 						subMenu.addChild(getTitle("ReportNewProjects"), "ReportNewProjects.action", "ReportNewProjects");
 					}
 				}
