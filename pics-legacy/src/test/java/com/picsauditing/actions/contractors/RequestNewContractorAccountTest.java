@@ -14,6 +14,8 @@ import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.service.RequestNewContractorService;
 import org.junit.Before;
@@ -74,6 +76,10 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 	private UserManagementService userManagementService;
     @Mock
     private RequestNewContractorService requestNewContractorService;
+    @Mock
+    private ContractorAccountDAO contractorAccountDAO;
+    @Mock
+    private NoteDAO noteDao;
 
 	@Before
 	public void setUp() throws Exception {
@@ -560,7 +566,69 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
                 requestNewContractorAccount.getFieldErrors().get(RequestNewContractorAccount.DUPLICATE_CONTRACTOR_FIELD_NAME).get(0));
     }
 
-	private void setPermissionsAsOperator() {
+    @Test
+    public void testSaveRequestComponentsAndEmailIfNew_VerifyProxiesContractorPrimaryContactAndRelationshipSaves() throws Exception {
+        setupSaveRequestComponentsAndEmailIfNew();
+
+        Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
+
+        verify(requestNewContractorService).saveRequestingContractor(contractor, operator);
+        verify(requestNewContractorService).savePrimaryContact(contractor, user);
+        verify(requestNewContractorService).saveRelationship(contractor, relationship);
+    }
+
+    @Test
+    public void testSaveRequestComponentsAndEmailIfNew_IfContactTypeDeclinedSetsDeclinedStatusAndReason() throws Exception {
+        setupSaveRequestComponentsAndEmailIfNew();
+        Whitebox.setInternalState(requestNewContractorAccount, "contactType", RequestContactType.DECLINED);
+        Whitebox.setInternalState(requestNewContractorAccount, "contactNote", "Test Note");
+
+        Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
+
+        verify(contractor).setStatus(AccountStatus.Declined);
+        verify(contractor).setReason("Test Note");
+    }
+
+    @Test
+    public void testSaveRequestComponentsAndEmailIfNew_IfNotNewRequestNoEmailIsSent() throws Exception {
+        setupSaveRequestComponentsAndEmailIfNew();
+
+        Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", false);
+
+        verify(emailHelper, never()).sendInitialEmail(any(ContractorAccount.class), any(User.class), any(ContractorOperator.class), anyString());
+    }
+
+    @Test
+    public void testSaveRequestComponentsAndEmailIfNew_IfNewRequestEmailIsSent() throws Exception {
+        setupSaveRequestComponentsAndEmailIfNew();
+
+        Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
+
+        verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
+    }
+
+    @Test
+    public void testSaveRequestComponentsAndEmailIfNew_IfNewRequestContactPropertiesAreSetOnContractor() throws Exception {
+        setupSaveRequestComponentsAndEmailIfNew();
+
+        Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
+
+        verify(contractor).contactByEmail();
+        verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
+        verify(contractor).setLastContactedByAutomatedEmailDate(any(Date.class));
+    }
+
+    private void setupSaveRequestComponentsAndEmailIfNew() {
+        Whitebox.setInternalState(requestNewContractorAccount, "requestRelationship", relationship);
+        Whitebox.setInternalState(requestNewContractorAccount, "contractor", contractor);
+        Whitebox.setInternalState(requestNewContractorAccount, "primaryContact", user);
+        Whitebox.setInternalState(requestNewContractorAccount, "contractorAccountDAO", contractorAccountDAO);
+        Whitebox.setInternalState(requestNewContractorAccount, "noteDao", noteDao);
+        when(relationship.getOperatorAccount()).thenReturn(operator);
+        when(contractorAccountDAO.save(contractor)).thenReturn(contractor);
+    }
+
+    private void setPermissionsAsOperator() {
 		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
 		when(operator.getId()).thenReturn(1);
 		when(operator.getStatus()).thenReturn(AccountStatus.Active);
