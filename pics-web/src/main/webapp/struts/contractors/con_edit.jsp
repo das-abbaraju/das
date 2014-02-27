@@ -523,6 +523,17 @@
             </li>
         </pics:permission>
 
+        <s:set var="disabled" value="permissions.hasGroup(User.GROUP_MANAGER) ? '' : 'disabled'" />
+        <s:set var="salesforceIdHelpTextTitle"><s:text name="contractorEdit.salesforceIdHelpTextTitle" /></s:set>
+        <li>
+            <label><s:text name="contractorEdit.salesforceIdLabel" /></label>
+            <input type="text" name="contractor.salesRepId" value="${contractor.salesRepId}" ${disabled} size="15" maxlength="15" />
+            <pics:fieldhelp title="${salesForceIdHelpTextTitle}">
+                <h5><s:text name="contractorEdit.salesforceIdHelpTextHeader" /></h5>
+                <s:text name="contractorEdit.salesforceIdHelpTextBody" />
+                <br />
+            </pics:fieldhelp>
+        </li>
     </ol>
 </fieldset>
 
