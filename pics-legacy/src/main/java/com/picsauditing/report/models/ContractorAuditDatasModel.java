@@ -62,6 +62,9 @@ public class ContractorAuditDatasModel extends AbstractModel {
             questionName.setUrl("ManageQuestion.action?id={QuestionID}");
         }
 
+        Field questionOptionGroup = fields.get("AuditDataAnswerAsOptionGroup".toUpperCase());
+        questionOptionGroup.setTranslationPrefixAndSuffix("AuditOptionGroup","");
+
         return fields;
     }
 }
