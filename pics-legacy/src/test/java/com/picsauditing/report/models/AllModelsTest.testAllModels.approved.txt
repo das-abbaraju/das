@@ -181,6 +181,7 @@ AuditCreationDate
 AuditDataAnswer
 AuditDataAnswerAsCheckBox
 AuditDataAnswerAsDate
+AuditDataAnswerAsFile
 AuditDataAnswerAsNumber
 AuditDataAnswerAsOptionGroup
 AuditDataComment
