@@ -4,6 +4,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NetworkLevel;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.search.SelectCase;
 
 public class ContractorOperatorTable extends AbstractTable {
@@ -16,6 +17,10 @@ public class ContractorOperatorTable extends AbstractTable {
 	public ContractorOperatorTable() {
 		super("contractor_operator");
 		addFields(ContractorOperator.class);
+
+
+        Field approvalStatus = getField("WorkStatus");
+        approvalStatus.setDatabaseColumnName("(REPLACE(" + ReportOnClause.ToAlias + ".workStatus,'F',''))");
 
         Field creationDate = addCreationDate();
         creationDate.setImportance(FieldImportance.Average);
