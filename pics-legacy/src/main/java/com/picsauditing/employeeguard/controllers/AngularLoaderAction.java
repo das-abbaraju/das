@@ -1,7 +1,11 @@
 package com.picsauditing.employeeguard.controllers;
 
-/**
- * Created by joelbrownell on 2/26/14.
- */
-public class AngularLoaderAction {
+import com.picsauditing.controller.PicsRestActionSupport;
+
+public class AngularLoaderAction extends PicsRestActionSupport {
+
+    public String load() {
+        return SUCCESS;
+    }
+
 }
