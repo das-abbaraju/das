@@ -57,6 +57,8 @@ public class ProjectService implements EntityService<Project, Integer>, Searchab
 		projectToUpdate.setStartDate(project.getStartDate());
 		projectToUpdate.setEndDate(project.getEndDate());
 
+		projectToUpdate = EntityHelper.setUpdateAuditFields(projectToUpdate, entityAuditInfo);
+
 		return projectDAO.save(projectToUpdate);
 	}
 
