@@ -1,0 +1,56 @@
+#ContactUs__page {
+
+    .contact-methods {
+        i {
+            font-size: 50px;
+
+            &.icon-phone {
+                color: $success_light;
+            }
+
+            &.icon-comments {
+                color: $primary_light;
+            }
+
+            &.icon-envelope-alt {
+                color: $default_silver;
+            }
+
+            &.icon-ok-sign {
+                font-size: 20px;
+                margin-right: 7px;
+            }
+        }
+
+        .method-icon {
+            margin-bottom: 30px;
+        }
+
+        .phone-number {
+            font-size: 21px;
+            margin-bottom: 20px;
+        }
+
+        .gray-block {
+            color: $default_aluminum;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .chat-link {
+            margin-right: 0;
+        }
+
+        .alert-success h3 {
+            display: inline;
+        }
+    }
+}
+
+@media (max-width: 991px) {
+    #ContactUs__page {
+        .chat-row {
+            margin-top: 30px;
+        }
+    }
+}
