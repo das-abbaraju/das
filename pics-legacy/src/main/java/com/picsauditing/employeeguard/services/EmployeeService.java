@@ -2,9 +2,9 @@ package com.picsauditing.employeeguard.services;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
-import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -38,8 +38,6 @@ public class EmployeeService {
 	private AccountGroupDAO accountGroupDAO;
 	@Autowired
 	private EmployeeDAO employeeDAO;
-	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 	@Deprecated
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
@@ -82,6 +80,22 @@ public class EmployeeService {
 		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
+	public Map<Integer, Employee> getAccountToEmployeeMapForEmployeesAssignedToSiteByEmployeeProfile(
+			final Collection<Integer> contractorIds,
+			final int siteId,
+			final Employee employee) {
+
+		List<Employee> employees = getEmployeesAssignedToSiteByEmployeeProfile(contractorIds, siteId, employee);
+		return Utilities.convertToMap(employees,
+				new Utilities.MapConvertable<Integer, Employee>() {
+
+					@Override
+					public Integer getKey(Employee employee) {
+						return employee.getAccountId();
+					}
+				});
+	}
+
 	public List<Employee> getEmployeesAssignedToSiteByEmployeeProfile(final Collection<Integer> contractorIds,
 																	  final int siteId,
 																	  final Employee employee) {
@@ -93,7 +107,7 @@ public class EmployeeService {
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
-	                                                     final Role siteRole, final Role corporateRole) {
+														 final Role siteRole, final Role corporateRole) {
 		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
 	}
 

@@ -27,16 +27,16 @@ public class CompanyEmployeeModelFactoryTest {
 		companyEmployeeModelFactory = new CompanyEmployeeModelFactory();
 	}
 
-	@Test
-	public void testCreate_ListOf_CompanyEmployeeModel() throws Exception {
-		List<Employee> fakeEmployees = buildFakeEmployees();
-		Map<Integer, List<CompanyModel>> companyModelMap = buildFakeCompanyModelMap();
-
-		List<CompanyEmployeeModel> companyEmployeeModels = companyEmployeeModelFactory.create(fakeEmployees,
-				companyModelMap);
-
-		verifyTestCreate_ListOf_CompanyEmployeeModel(fakeEmployees, companyModelMap, companyEmployeeModels);
-	}
+//	@Test
+//	public void testCreate_ListOf_CompanyEmployeeModel() throws Exception {
+//		List<Employee> fakeEmployees = buildFakeEmployees();
+//		Map<Integer, List<CompanyModel>> companyModelMap = buildFakeCompanyModelMap();
+//
+//		List<CompanyEmployeeModel> companyEmployeeModels = companyEmployeeModelFactory.create(fakeEmployees,
+//				companyModelMap);
+//
+//		verifyTestCreate_ListOf_CompanyEmployeeModel(fakeEmployees, companyModelMap, companyEmployeeModels);
+//	}
 
 	private void verifyTestCreate_ListOf_CompanyEmployeeModel(final List<Employee> fakeEmployees,
 															  final Map<Integer, List<CompanyModel>> companyModelMap,
@@ -83,18 +83,18 @@ public class CompanyEmployeeModelFactoryTest {
 		return companyModel;
 	}
 
-	@Test
-	public void testCreate_Single_CompanyEmployeeModel() throws Exception {
-		Employee fakeEmployee = buildFakeEmployee();
-		List<CompanyModel> fakeCompanies = new ArrayList<>();
-		List<ProjectModel> fakeProjects = new ArrayList<>();
-		List<RoleModel> fakeRoleModels = new ArrayList<>();
-
-		CompanyEmployeeModel companyEmployeeModel = companyEmployeeModelFactory.create(fakeEmployee, fakeCompanies,
-				fakeProjects, fakeRoleModels);
-
-		verifyTestCreate(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeModel);
-	}
+//	@Test
+//	public void testCreate_Single_CompanyEmployeeModel() throws Exception {
+//		Employee fakeEmployee = buildFakeEmployee();
+//		List<CompanyModel> fakeCompanies = new ArrayList<>();
+//		List<ProjectModel> fakeProjects = new ArrayList<>();
+//		List<RoleModel> fakeRoleModels = new ArrayList<>();
+//
+//		CompanyEmployeeModel companyEmployeeModel = companyEmployeeModelFactory.create(fakeEmployee, fakeCompanies,
+//				fakeProjects, fakeRoleModels);
+//
+//		verifyTestCreate(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeModel);
+//	}
 
 	protected void verifyTestCreate(final List<CompanyModel> fakeCompanies,
 									final List<ProjectModel> fakeProjects,

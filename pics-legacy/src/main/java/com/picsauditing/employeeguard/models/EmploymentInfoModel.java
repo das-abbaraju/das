@@ -1,12 +1,10 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-
-public class SkillStatusModel implements SkillStatusInfo {
+public class EmploymentInfoModel implements Identifiable, Nameable {
 
 	private int id;
 	private String name;
-	private SkillStatus status;
+	private String title;
 
 	public int getId() {
 		return id;
@@ -24,11 +22,11 @@ public class SkillStatusModel implements SkillStatusInfo {
 		this.name = name;
 	}
 
-	public SkillStatus getStatus() {
-		return status;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setStatus(SkillStatus status) {
-		this.status = status;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

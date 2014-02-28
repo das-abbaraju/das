@@ -62,8 +62,11 @@ public class RoleStatusModelFactory extends RoleModelFactory {
 		return roleStatusModels;
 	}
 
-	public RoleStatusModel create(final Role role, final List<? extends SkillModel> skills, final SkillStatus status) {
-		RoleStatusModel roleStatusModel = new RoleStatusModel(super.create(role, skills));
+	public RoleStatusModel create(final Role role, final List<SkillStatusModel> skills, final SkillStatus status) {
+		RoleStatusModel roleStatusModel = new RoleStatusModel();
+		roleStatusModel.setId(role.getId());
+		roleStatusModel.setName(role.getName());
+		roleStatusModel.setSkills(skills);
 		roleStatusModel.setStatus(status);
 		return roleStatusModel;
 	}

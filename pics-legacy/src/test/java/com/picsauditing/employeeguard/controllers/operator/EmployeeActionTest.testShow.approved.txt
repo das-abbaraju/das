@@ -1,1 +1,1 @@
-{"status":"Expiring","id":7,"firstName":"Bob","lastName":"Smith","title":"Master Welder","companies":[],"projects":[],"roles":[]}
+{"id":7,"firstName":"Bob","lastName":"Smith","title":"Master Welder","image":"/employee-guard/employee/contractor/456/employee-photo/7","status":"Expiring","companies":[],"projects":[],"roles":[]}

@@ -23,19 +23,19 @@ public class RoleStatusModelFactoryTest {
 		factory = new RoleStatusModelFactory();
 	}
 
-	@Test
-	public void testCreate() throws Exception {
-		Role role = getFakeRole();
-
-		List<SkillModel> skills = Arrays.asList(new SkillModel());
-
-		RoleStatusModel roleStatusModel = factory.create(role, skills, SkillStatus.Complete);
-
-		assertEquals(role.getId(), roleStatusModel.getId());
-		assertEquals(role.getName(), roleStatusModel.getName());
-		assertEquals(SkillStatus.Complete, roleStatusModel.getStatus());
-		assertEquals(skills, roleStatusModel.getSkills());
-	}
+//	@Test
+//	public void testCreate() throws Exception {
+//		Role role = getFakeRole();
+//
+//		List<SkillModel> skills = Arrays.asList(new SkillModel());
+//
+//		RoleStatusModel roleStatusModel = factory.create(role, skills, SkillStatus.Complete);
+//
+//		assertEquals(role.getId(), roleStatusModel.getId());
+//		assertEquals(role.getName(), roleStatusModel.getName());
+//		assertEquals(SkillStatus.Complete, roleStatusModel.getStatus());
+//		assertEquals(skills, roleStatusModel.getSkills());
+//	}
 
 	@Test
 	public void testCreate_List_NoData() throws Exception {

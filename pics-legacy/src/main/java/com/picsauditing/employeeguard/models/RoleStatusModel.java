@@ -2,23 +2,44 @@ package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-public class RoleStatusModel extends RoleModel implements SkillStatusInfo {
+import java.util.List;
 
+public class RoleStatusModel implements SkillStatusInfo {
+
+	private int id;
+	private String name;
 	private SkillStatus status;
+	private List<SkillStatusModel> skills;
 
-	public RoleStatusModel(final RoleModel roleModel) {
-		this.setId(roleModel.getId());
-		this.setName(roleModel.getName());
-		this.setSkills(roleModel.getSkills());
+	public int getId() {
+		return id;
 	}
 
-	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public SkillStatus getStatus() {
 		return status;
 	}
 
-	@Override
-	public void setStatus(SkillStatus skillStatus) {
-		this.status = skillStatus;
+	public void setStatus(SkillStatus status) {
+		this.status = status;
+	}
+
+	public List<SkillStatusModel> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(List<SkillStatusModel> skills) {
+		this.skills = skills;
 	}
 }

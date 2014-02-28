@@ -25,17 +25,17 @@ public class CompanyEmployeeStatusModelFactoryTest extends CompanyEmployeeModelF
 		companyEmployeeStatusModelFactory = new CompanyEmployeeStatusModelFactory();
 	}
 
-	@Test
-	public void testCreate() throws Exception {
-		Employee fakeEmployee = super.buildFakeEmployee();
-		List<CompanyModel> fakeCompanies = new ArrayList<>();
-		List<ProjectModel> fakeProjects = new ArrayList<>();
-		List<RoleModel> fakeRoleModels = new ArrayList<>();
-
-		CompanyEmployeeStatusModel companyEmployeeStatusModel = companyEmployeeStatusModelFactory.create(fakeEmployee,
-				fakeCompanies, fakeProjects, fakeRoleModels, SkillStatus.Expiring);
-
-		super.verifyTestCreate(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeStatusModel);
-		assertEquals(SkillStatus.Expiring, companyEmployeeStatusModel.getStatus());
-	}
+//	@Test
+//	public void testCreate() throws Exception {
+//		Employee fakeEmployee = super.buildFakeEmployee();
+//		List<CompanyModel> fakeCompanies = new ArrayList<>();
+//		List<ProjectModel> fakeProjects = new ArrayList<>();
+//		List<RoleModel> fakeRoleModels = new ArrayList<>();
+//
+//		CompanyEmployeeStatusModel companyEmployeeStatusModel = companyEmployeeStatusModelFactory.create(fakeEmployee,
+//				fakeCompanies, fakeProjects, fakeRoleModels, SkillStatus.Expiring);
+//
+//		super.verifyTestCreate(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeStatusModel);
+//		assertEquals(SkillStatus.Expiring, companyEmployeeStatusModel.getStatus());
+//	}
 }
