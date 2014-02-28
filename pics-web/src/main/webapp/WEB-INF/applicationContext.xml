@@ -230,6 +230,10 @@
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
 
+    <bean id="IdentityProviderStrutsWebApp" class="com.picsauditing.security.IdentityProviderStrutsWebApp" scope="prototype"/>
+    <bean id="NoteService" class="com.picsauditing.service.notes.NoteService" scope="prototype">
+        <constructor-arg ref="IdentityProviderStrutsWebApp"/>
+    </bean>
     <bean id="EmailLog" class="com.picsauditing.service.email.logging.SimpleEmailLogger"/>
     <bean id="SpringContextEmailEventPublisher" class="com.picsauditing.service.email.events.publisher.SpringContextEmailEventPublisher"/>
     <bean id="SpringContextAccountEventPublisher" class="com.picsauditing.service.account.events.SpringContextAccountEventPublisher"/>

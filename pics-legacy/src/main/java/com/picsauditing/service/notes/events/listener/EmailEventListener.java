@@ -16,7 +16,7 @@ public class EmailEventListener  implements ApplicationListener<SpringEmailEvent
         User user = event.getUser();
 
         //TODO what if it's an operator user?!
-        noteService.create((ContractorAccount) user.getAccount(), "email sent to " + user.getName());
+        noteService.addNote((ContractorAccount) user.getAccount(), "email sent to " + user.getName());
 
     }
 }

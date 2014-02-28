@@ -16,7 +16,7 @@ public class ContractorEventListener implements ApplicationListener<SpringContra
 
         switch (event.getEvent()) {
             case Registration:
-                noteService.create(contractor, contractor.getName() + "registered.");
+                noteService.addNote(contractor, contractor.getName() + "registered.");
                 break;
         }
     }

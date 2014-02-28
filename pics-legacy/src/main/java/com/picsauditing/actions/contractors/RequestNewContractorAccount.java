@@ -9,10 +9,10 @@ import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.service.RequestNewContractorService;
 import com.picsauditing.service.account.ContractorOperatorService;
 import com.picsauditing.service.account.events.ContractorOperatorEventType;
+import com.picsauditing.service.notes.NoteService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
@@ -31,12 +31,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
     public static final String DUPLICATE_CONTRACTOR_FIELD_NAME = "duplicateContractor";
     public static final String DUPLICATE_ID_MISSING_ERROR_MESSAGE = "RequestNewContractor.error.DuplicatedContractorId";
     public static final String SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE = "RequestNewContractor.error.SameDuplicatedContractorId";
-    @Autowired
-	private ContractorAccountDAO contractorAccountDAO;
-	@Autowired
-	private ContractorOperatorDAO contractorOperatorDAO;
-	@Autowired
-	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
@@ -51,12 +45,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	private UserSwitchDAO userSwitchDAO;
 	@Autowired
 	private RequestNewContractorValidator validator;
-	@Autowired
-	private UserManagementService userManagementService;
     @Autowired
     private RequestNewContractorService requestNewContractorService;
     @Autowired
     private ContractorOperatorService contractorOperatorService;
+    @Autowired
+    private NoteService noteService;
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
@@ -395,8 +389,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
         requestRelationship = requestNewContractorService.saveRelationship(requestRelationship);
 
 		if (newRequest) {
-			contractorOperatorService.publishEvent(requestRelationship, ContractorOperatorEventType.RegistrationRequest, permissions.getUserId());
-			addNote("Sent initial contact email.", "");
+			contractorOperatorService.publishEvent(
+                    requestRelationship,
+                    ContractorOperatorEventType.RegistrationRequest,
+                    permissions.getUserId());
 		}
 
 		saveNoteIfContacted();
@@ -413,7 +409,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 		OperatorAccount clientSiteAccount = requestRelationship.getOperatorAccount();
 		int clientSiteId = (clientSiteAccount != null) ? clientSiteAccount.getId() : 1;
 
-		addNote(contractor, summary, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, clientSiteId);
+		noteService.addNote(contractor, summary, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, clientSiteId);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)

@@ -18,13 +18,13 @@ public class ContractorOperatorEventListener  implements ApplicationListener<Spr
 
         switch (event.getEvent()) {
             case RegistrationRequest:
-                noteService.create(contractor, "Registraion Request");
+                noteService.addNote(contractor, "Registration Request");
                 break;
             case addConnection:
-                noteService.create(contractor, "Added connection to " + operator.getName());
+                noteService.addNote(contractor, "Added connection to " + operator.getName());
                 break;
             case removeConnection:
-                noteService.create(contractor, "Removed connection from " + operator.getName());
+                noteService.addNote(contractor, "Removed connection from " + operator.getName());
                 break;
         }
     }
