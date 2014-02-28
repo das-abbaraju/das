@@ -18,12 +18,12 @@ public class SpringContractorOperatorEvent extends ApplicationEvent implements C
 
     @Override
     public ContractorOperatorEventType getEvent() {
-        return null;
+        return event;
     }
 
     @Override
     public ContractorOperator getContractorOperator() {
-        return null;
+        return contractorOperator;
     }
 
     @Override

@@ -230,9 +230,15 @@
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
 
-    <bean id="AccountEventListener" class="com.picsauditing.service.email.events.listener.AccountEventListener"/>
+    <bean id="EmailLog" class="com.picsauditing.service.email.logging.SimpleEmailLogger"/>
+    <bean id="SpringContextEmailEventPublisher" class="com.picsauditing.service.email.events.publisher.SpringContextEmailEventPublisher"/>
     <bean id="SpringContextAccountEventPublisher" class="com.picsauditing.service.account.events.SpringContextAccountEventPublisher"/>
-    <bean id="AccountService" class="com.picsauditing.service.account.AccountService">
+    <bean id="EmailEventService" class="com.picsauditing.service.email.EmailService">
+        <constructor-arg ref="SpringContextEmailEventPublisher"/>
+        <constructor-arg ref="EmailSender"/>
+    </bean>
+    <bean id="AccountEventListener" class="com.picsauditing.service.email.events.listener.AccountEventListener"/>
+    <bean id="ContractorAccountService" class="com.picsauditing.service.account.AccountService">
         <constructor-arg ref="SpringContextAccountEventPublisher"/>
     </bean>
     <bean id="ContractorOperatorEventListener" class="com.picsauditing.service.email.events.listener.ContractorOperatorEventListener"/>
