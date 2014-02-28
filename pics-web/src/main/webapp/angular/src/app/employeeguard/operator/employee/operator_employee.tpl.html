@@ -5,13 +5,13 @@
         <div class="row employee-info">
             <div class="col-md-3">
                 <figure class="employee-image img-thumbnail">
-                    <img src="{{ employee.image }}" class="img-responsive" alt="{{ employee.name }}" width="250" height="250"/>
+                    <img src="{{ employee.image }}" class="img-responsive" alt="{{ employee.firstName }} {{employee.lastName}}" width="250" height="250"/>
                 </figure>
             </div>
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-9">
-                        <p class="name">{{ employee.name }}</p>
+                        <p class="name">{{ employee.firstName }} {{employee.lastName}}</p>
                         <ul class="list-unstyled">
                             <li ng-repeat-start="company in employee.companies">
                                 {{ company.name }}

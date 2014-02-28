@@ -10,6 +10,10 @@
     }
 
     .employee-info {
+        .img-responsive {
+            max-height: 450px;
+        }
+
         .name {
             color: $default_steel;
             font-size: 40px;

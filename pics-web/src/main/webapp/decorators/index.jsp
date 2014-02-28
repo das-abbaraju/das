@@ -24,7 +24,8 @@
 </head>
 <body>
     <header>
-        <s:action name="Menu!menu" executeResult="true" />
+        <s:action name="Menu!bootstrap3Menu" executeResult="true" />
+        <s:action name="Menu!mobileMenu" executeResult="true" />
     </header>
     <div ng-view></div>
 </body>

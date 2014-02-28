@@ -28,6 +28,7 @@ public class CompanyModelFactory {
 		CompanyModel companyModel = new CompanyModel();
 		companyModel.setId(accountModel.getId());
 		companyModel.setName(accountModel.getName());
+        companyModel.setTitle(employees.get(0).getTitle());
 		companyModel.setEmployees(employees);
 		return companyModel;
 	}

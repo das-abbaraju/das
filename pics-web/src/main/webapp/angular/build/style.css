@@ -12035,6 +12035,765 @@ ul.skill-nav a {
   padding-left: 0px;
 }
 
+/* line 2, ../src/common/layout/_layout.scss */
+body {
+  padding-top: 50px;
+  padding-bottom: 26px;
+  position: relative;
+}
+
+/* line 9, ../src/common/layout/_layout.scss */
+[data-view="contractor"] {
+  padding-top: 80px;
+}
+
+@media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
+  /* line 16, ../src/common/layout/_layout.scss */
+  body,
+  [data-view="contractor"] {
+    padding-top: 0;
+  }
+}
+/* line 2, ../src/common/layout/_simple-layout.scss */
+.simple-layout {
+  background-color: #002441;
+}
+
+@media (max-width: 480px) {
+  /* line 9, ../src/common/layout/_simple-layout.scss */
+  .simple-layout {
+    background: #f1f1f2;
+  }
+}
+/* line 2, ../src/common/layout/_environment.scss */
+#environment {
+  background: #333333;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
+  background-image: -webkit-linear-gradient(#252525, #333333);
+  background-image: -moz-linear-gradient(#252525, #333333);
+  background-image: -o-linear-gradient(#252525, #333333);
+  background-image: linear-gradient(#252525, #333333);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525', endColorstr='#ff333333', GradientType=0);
+  color: #f1f1f2;
+  height: 26px;
+  line-height: 26px;
+  min-height: 26px;
+  padding: 0 10px;
+}
+/* line 13, ../src/common/layout/_environment.scss */
+#environment a {
+  color: #cccccc;
+  float: right;
+  padding: 0 10px;
+  text-decoration: none;
+}
+/* line 20, ../src/common/layout/_environment.scss */
+#environment a:hover {
+  color: #f1f1f2;
+}
+/* line 28, ../src/common/layout/_environment.scss */
+#environment .active.localhost {
+  color: #f6303c;
+}
+/* line 33, ../src/common/layout/_environment.scss */
+#environment .active.alpha {
+  color: #33c033;
+}
+/* line 38, ../src/common/layout/_environment.scss */
+#environment .active.config {
+  color: #fcc033;
+}
+/* line 43, ../src/common/layout/_environment.scss */
+#environment .active.beta {
+  color: #73bbe8;
+}
+/* line 48, ../src/common/layout/_environment.scss */
+#environment .active.qa-beta {
+  color: #ff6600;
+}
+/* line 53, ../src/common/layout/_environment.scss */
+#environment .active.qa-stable {
+  color: #996fff;
+}
+
+@media (max-width: 979px) {
+  /* line 61, ../src/common/layout/_environment.scss */
+  #environment.navbar-fixed-bottom {
+    margin: 0;
+    position: fixed;
+  }
+}
+@media (max-width: 767px) {
+  /* line 69, ../src/common/layout/_environment.scss */
+  #environment a {
+    display: none;
+  }
+
+  /* line 74, ../src/common/layout/_environment.scss */
+  #environment .active {
+    display: inline;
+  }
+}
+/* line 4, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-menu > li > a:focus,
+#primary_navigation .dropdown-submenu:hover > a,
+#primary_navigation .dropdown-submenu:focus > a {
+  color: #454545;
+  text-decoration: none;
+  background-color: #f1f1f2;
+}
+/* line 10, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-menu > li > a:hover {
+  color: #ffffff;
+}
+/* line 14, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation fieldset[disabled] .btn-link:focus {
+  margin-bottom: 1px;
+}
+/* line 18, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-submenu {
+  position: relative;
+}
+/* line 22, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-top-left-radius: 0;
+}
+/* line 30, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+/* line 34, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropup .dropdown-submenu > .dropdown-menu {
+  top: auto;
+  bottom: 0;
+  margin-top: 0;
+  margin-bottom: -2px;
+  border-bottom-left-radius: 0;
+}
+/* line 42, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-submenu > a:after {
+  display: block;
+  float: right;
+  width: 0;
+  height: 0;
+  margin-top: 5px;
+  margin-right: -10px;
+  border-color: transparent;
+  border-left-color: #cccccc;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  content: " ";
+}
+/* line 56, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-submenu:hover > a:after {
+  border-left-color: #ffffff;
+}
+/* line 60, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-submenu.pull-left {
+  float: none;
+}
+/* line 64, ../src/common/layout/menu/_bootstrap2-dropdowns.scss */
+#primary_navigation .dropdown-submenu.pull-left > .dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-top-right-radius: 0;
+}
+
+/* line 2, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form {
+  position: relative;
+}
+/* line 5, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input[type="text"] {
+  background-color: #FFFFFF !important;
+  /* override twitter typeahead style */
+  border-radius: 17px;
+  padding: 4px 14px 4px 32px;
+}
+/* line 10, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input[type="text"]:focus {
+  border: 1px solid #73bbe8;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px;
+  box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px;
+  outline: 0;
+}
+/* line 17, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form ::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #cccccc;
+}
+/* line 20, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form :-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #cccccc;
+}
+/* line 23, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form ::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #cccccc;
+}
+/* line 26, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form :-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #cccccc;
+}
+/* line 30, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form .icon-search {
+  color: #cccccc;
+  left: 24px;
+  position: absolute;
+  top: 5px;
+}
+/* line 37, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form .icon-search.selected {
+  color: #73bbe8;
+}
+
+/* line 2, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation {
+  background: none;
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
+  background-image: -webkit-linear-gradient(to bottom, #ffffff, #eaeaea);
+  background-image: -moz-linear-gradient(to bottom, #ffffff, #eaeaea);
+  background-image: -o-linear-gradient(to bottom, #ffffff, #eaeaea);
+  background-image: linear-gradient(to bottom, #ffffff, #eaeaea);
+  border-bottom: 2px solid #cccccc;
+  height: 50px;
+  z-index: 200;
+  /* main links */
+  /* logo */
+  /* dropdown menu */
+  /* END dropdown menu */
+}
+/* line 9, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar {
+  background: none;
+  border: 0;
+  margin-bottom: 0;
+}
+/* line 14, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar .navbar-form {
+  margin-top: 10px;
+}
+/* line 19, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar-brand {
+  font-size: 0;
+}
+/* line 24, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav > li > a {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  color: #226396;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 14px 10px;
+  text-decoration: none;
+}
+/* line 35, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar-brand {
+  background: url(/v7/img/logo/logo-icon.png) no-repeat;
+  background: rgba(0, 0, 0, 0) url(/v7/img/logo/logo-icon.svg) no-repeat;
+  display: block;
+  height: 32px;
+  margin: 8px 10px 9px 0;
+  padding: 0;
+  width: 32px;
+}
+/* line 46, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav li.dropdown.open > .dropdown-toggle {
+  background: #eaeaea;
+  border-top: 1px solid #b3b3b3;
+  color: #73bbe8;
+  padding-top: 15px;
+}
+/* line 53, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar a:link, #primary_navigation .navbar a:visited {
+  text-decoration: none;
+  color: #226396;
+}
+/* line 59, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar .dropdown-menu li a:link,
+#primary_navigation .navbar .dropdown-menu li a:visited {
+  color: #454545;
+  text-decoration: none;
+}
+/* line 64, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar .dropdown-menu li a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+/* line 69, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .navbar a:hover {
+  color: #73bbe8;
+  text-decoration: none;
+}
+/* line 74, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .dropdown-menu {
+  border: 0px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  top: 52px;
+}
+/* line 83, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .dropdown-menu li > a:hover,
+#primary_navigation .dropdown-menu .active > a,
+#primary_navigation .dropdown-menu .active > a:hover {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3498db), color-stop(100%, #2980b9));
+  background-image: -webkit-linear-gradient(#3498db, #2980b9);
+  background-image: -moz-linear-gradient(#3498db, #2980b9);
+  background-image: -o-linear-gradient(#3498db, #2980b9);
+  background-image: linear-gradient(#3498db, #2980b9);
+  background: #2980b9;
+  filter: none;
+}
+/* line 89, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .dropdown-menu .divider {
+  background-color: #f1f1f2;
+  border-bottom: 1px solid #ffffff;
+  height: 2px;
+  margin: 9px 1px;
+  overflow: hidden;
+}
+/* line 97, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .dropdown-menu .nav-header {
+  color: #cccccc;
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 20px;
+  margin-top: 9px;
+  padding: 3px 20px;
+  text-transform: uppercase;
+}
+/* line 108, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav li + .nav-header {
+  margin-top: 9px;
+}
+/* line 113, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .contact-us-link {
+  color: #226396;
+  display: inline-block;
+  float: right;
+  margin-top: 17px;
+}
+/* line 119, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .contact-us-link:hover {
+  color: #73bbe8;
+}
+/* line 127, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
+#primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
+#primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
+  background-color: #3f93c0 \9;
+  background-color: #3f93c0;
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #fff;
+}
+/* line 139, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav .switch-to > a.dropdown-toggle {
+  color: #fff;
+  background-color: #3f93c0;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #3f93c0));
+  background-image: -webkit-linear-gradient(#73bbe8, #3f93c0);
+  background-image: -moz-linear-gradient(#73bbe8, #3f93c0);
+  background-image: -o-linear-gradient(#73bbe8, #3f93c0);
+  background-image: linear-gradient(#73bbe8, #3f93c0);
+  background-repeat: repeat-x;
+  border-color: #3f93c0 #3f93c0 #336699;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  display: block;
+  /* Use sass functions for gradients */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73bbe8', endColorstr='#ff3f93c0', GradientType=0);
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  padding: 6px 15px 7px;
+}
+/* line 155, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav .switch-to.open a.dropdown-toggle {
+  padding-top: 6px;
+}
+/* line 161, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav .switch-to > a:hover,
+#primary_navigation .nav .switch-to > a:focus {
+  background-color: #3f93c0;
+  background-position: 0 -15px;
+  color: #ffffff;
+  text-decoration: none;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+}
+/* line 170, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav .switch-to > a:active {
+  background-color: #3f93c0;
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+/* line 178, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav .switch-to .account {
+  display: inline-block;
+  display: inline \9;
+  line-height: 16px;
+  margin-right: 5px;
+  text-align: right;
+}
+/* line 186, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav .switch-to .account span {
+  font-size: 10px;
+}
+/* line 192, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .nav .switch-to .icon-cog {
+  vertical-align: 5px;
+}
+
+@media (max-width: 991px) {
+  /* line 199, ../src/common/layout/menu/_primary-navigation.scss */
+  #primary_navigation {
+    display: none;
+  }
+}
+/* line 204, ../src/common/layout/menu/_primary-navigation.scss */
+body.has-contractor-menu #primary_navigation.navbar-inner {
+  border-bottom: none;
+}
+
+/* line 1, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation {
+  top: 49px;
+  background: #2c3f50;
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #34495e), color-stop(100%, #2c3f50));
+  background-image: -webkit-linear-gradient(to bottom, #34495e, #2c3f50);
+  background-image: -moz-linear-gradient(to bottom, #34495e, #2c3f50);
+  background-image: -o-linear-gradient(to bottom, #34495e, #2c3f50);
+  background-image: linear-gradient(to bottom, #34495e, #2c3f50);
+  border-bottom: 2px solid #1a1a1a;
+  height: 30px;
+  z-index: 100;
+  /* TODO: Customize the styles below */
+  /* END dropdown menu */
+}
+/* line 9, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .navbar {
+  background: none;
+  border: 0;
+  margin-bottom: 0;
+}
+/* line 16, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .navbar-nav > li > a {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  color: #f1f1f2;
+}
+/* line 22, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .navbar-nav > li > a:hover {
+  color: #ffffff;
+}
+/* line 27, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .nav li.dropdown.open > .dropdown-toggle {
+  background: #2c3f50;
+  border-top: 2px solid #bcbcbc;
+  color: #ffffff;
+  height: 30px;
+}
+/* line 37, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .navbar .dropdown-menu li a:link,
+#secondary_navigation .navbar .dropdown-menu li a:visited {
+  color: #454545;
+  text-decoration: none;
+}
+/* line 42, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .navbar .dropdown-menu li a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+/* line 47, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .navbar a:hover {
+  color: #73bbe8;
+  text-decoration: none;
+}
+/* line 52, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu {
+  border: 0px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  top: 35px;
+}
+/* line 61, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu li > a:hover,
+#secondary_navigation .dropdown-menu .active > a,
+#secondary_navigation .dropdown-menu .active > a:hover {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3498db), color-stop(100%, #2980b9));
+  background-image: -webkit-linear-gradient(#3498db, #2980b9);
+  background-image: -moz-linear-gradient(#3498db, #2980b9);
+  background-image: -o-linear-gradient(#3498db, #2980b9);
+  background-image: linear-gradient(#3498db, #2980b9);
+}
+/* line 65, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu .divider {
+  background-color: #f1f1f2;
+  border-bottom: 1px solid #ffffff;
+  height: 2px;
+  margin: 9px 1px;
+  overflow: hidden;
+}
+/* line 73, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .dropdown-menu .nav-header {
+  color: #cccccc;
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 20px;
+  margin-top: 9px;
+  padding: 3px 20px;
+  text-transform: uppercase;
+}
+/* line 84, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .nav li + .nav-header {
+  margin-top: 9px;
+}
+/* line 92, ../src/common/layout/menu/_secondary-navigation.scss */
+#secondary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
+#secondary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
+#secondary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
+  background-color: #3f93c0 \9;
+  background-color: #3f93c0;
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #ffffff;
+}
+
+@media (min-width: 992px) {
+  /* line 103, ../src/common/layout/menu/_secondary-navigation.scss */
+  body.has-contractor-menu {
+    padding-top: 80px;
+  }
+  /* line 106, ../src/common/layout/menu/_secondary-navigation.scss */
+  body.has-contractor-menu #primary_navigation {
+    border-bottom: none;
+    height: 50px;
+  }
+}
+@media (max-width: 991px) {
+  /* line 114, ../src/common/layout/menu/_secondary-navigation.scss */
+  #secondary_navigation {
+    display: none;
+  }
+}
+/* line 2, ../src/common/layout/menu/_mobile-menu.scss */
+#mobile_menu .header {
+  padding: 10px 15px;
+  color: #ffffff;
+  background-color: #f1f1f2;
+  background-image: url(/v7/img/logo/logo-icon.png), -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
+  background-image: url(/v7/img/logo/logo-icon.png), -webkit-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-icon.png), -moz-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-icon.png), -o-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-icon.png), linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-bottom: 2px solid #cccccc;
+}
+
+/* line 15, ../src/common/layout/menu/_mobile-menu.scss */
+#mobile_menu_search ul.mm-list {
+  padding-top: 50px;
+}
+/* line 19, ../src/common/layout/menu/_mobile-menu.scss */
+#mobile_menu_search .total-results {
+  margin-left: 20px;
+  padding: 10px 0;
+}
+
+/* line 25, ../src/common/layout/menu/_mobile-menu.scss */
+.mm-ismenu .mm-label span {
+  background: #333333;
+  font-size: 11px;
+  color: #999999;
+  text-transform: uppercase;
+  text-indent: 20px;
+  line-height: 30px;
+  padding: 0;
+}
+
+/* line 35, ../src/common/layout/menu/_mobile-menu.scss */
+.mm-menu a {
+  text-decoration: none;
+  color: #999999;
+  display: block;
+}
+
+/* line 41, ../src/common/layout/menu/_mobile-menu.scss */
+[href="#mobile_menu_search"] {
+  float: right;
+  display: block;
+}
+
+/* line 47, ../src/common/layout/menu/_mobile-menu.scss */
+#mobile_menu_navigation.loading,
+#mobile_menu_search.loading {
+  visibility: hidden;
+}
+
+/* line 51, ../src/common/layout/menu/_mobile-menu.scss */
+.mm-menu div.mm-search {
+  background: #333333;
+}
+
+/* line 55, ../src/common/layout/menu/_mobile-menu.scss */
+.mm-menu div.mm-search input {
+  background: #ffffff;
+  color: #454545;
+  line-height: 23px;
+}
+
+@media (min-width: 992px) {
+  /* line 64, ../src/common/layout/menu/_mobile-menu.scss */
+  #mobile_menu .header,
+  #mobile_menu_navigation,
+  #mobile_menu_search {
+    display: none;
+  }
+
+  /* line 68, ../src/common/layout/menu/_mobile-menu.scss */
+  html.mm-opened .mm-page {
+    box-shadow: none;
+    position: static;
+  }
+}
+@media (max-width: 991px) {
+  /* line 75, ../src/common/layout/menu/_mobile-menu.scss */
+  body {
+    padding-top: 0;
+  }
+}
+/* line 2, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search li {
+  padding: 5px 0;
+}
+/* line 10, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search li .account-deactivated .name,
+#mobile_menu_search li .account-deactivated .id,
+#mobile_menu_search li .account-deactivated .location,
+#mobile_menu_search li .account-deactivated .type,
+#mobile_menu_search li .account-inactive .name,
+#mobile_menu_search li .account-inactive .id,
+#mobile_menu_search li .account-inactive .location,
+#mobile_menu_search li .account-inactive .type {
+  color: #808285;
+}
+/* line 19, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search li .account-demo .name,
+#mobile_menu_search li .account-demo .id,
+#mobile_menu_search li .account-demo .location,
+#mobile_menu_search li .account-demo .type {
+  font-style: italic;
+}
+/* line 28, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search li .account-deleted .name,
+#mobile_menu_search li .account-deleted .id,
+#mobile_menu_search li .account-deleted .location,
+#mobile_menu_search li .account-deleted .type {
+  text-decoration: line-through;
+}
+/* line 34, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search li:first-child {
+  padding-top: 0;
+}
+/* line 38, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search li.selected {
+  background-color: #252525;
+}
+/* line 42, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search li.no-results-message {
+  padding-top: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+/* line 48, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search a {
+  text-decoration: none;
+  white-space: normal;
+  text-indent: 0;
+  font-size: 14px;
+  line-height: 1;
+}
+/* line 56, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search h1 {
+  color: #cccccc;
+  line-height: 1;
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+/* line 64, ../src/common/layout/menu/_mobile-search-result-item.scss */
+#mobile_menu_search p {
+  line-height: 1;
+  color: #808285;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* line 2, ../src/common/layout/_page-actions.scss */
+.page-actions {
+  text-align: right;
+}
+/* line 7, ../src/common/layout/_page-actions.scss */
+.page-actions a,
+.page-actions button {
+  margin-left: 10px;
+}
+
+/* line 2, ../src/common/layout/_page-header.scss */
+.page-header.pics {
+  border: 0px;
+  margin: 20px 0px;
+  padding: 0px;
+}
+/* line 7, ../src/common/layout/_page-header.scss */
+.page-header.pics .title {
+  color: #73bbe8;
+  font-size: 36px;
+  font-weight: normal;
+  margin-bottom: 0;
+}
+/* line 14, ../src/common/layout/_page-header.scss */
+.page-header.pics .subtitle {
+  color: #808285;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 20px;
+  margin: 0px;
+}
+
 /* line 2, ../src/app/home/_home.scss */
 #home .test {
   color: blue;
@@ -13004,31 +13763,35 @@ ul.skill-nav a {
   padding-right: 14px;
 }
 /* line 13, ../src/app/employeeguard/operator/employee/_employee.scss */
+.operator-employee-page .employee-info .img-responsive {
+  max-height: 450px;
+}
+/* line 17, ../src/app/employeeguard/operator/employee/_employee.scss */
 .operator-employee-page .employee-info .name {
   color: #454545;
   font-size: 40px;
   font-weight: bold;
 }
-/* line 19, ../src/app/employeeguard/operator/employee/_employee.scss */
+/* line 23, ../src/app/employeeguard/operator/employee/_employee.scss */
 .operator-employee-page .employee-info li {
   line-height: 21px;
 }
-/* line 23, ../src/app/employeeguard/operator/employee/_employee.scss */
+/* line 27, ../src/app/employeeguard/operator/employee/_employee.scss */
 .operator-employee-page .employee-info .company {
   color: #808285;
   font-size: 21px;
   font-weight: bold;
 }
-/* line 29, ../src/app/employeeguard/operator/employee/_employee.scss */
+/* line 33, ../src/app/employeeguard/operator/employee/_employee.scss */
 .operator-employee-page .employee-info .title {
   color: #808285;
   font-size: 21px;
 }
-/* line 34, ../src/app/employeeguard/operator/employee/_employee.scss */
+/* line 38, ../src/app/employeeguard/operator/employee/_employee.scss */
 .operator-employee-page .employee-info i {
   font-size: 160px;
 }
-/* line 39, ../src/app/employeeguard/operator/employee/_employee.scss */
+/* line 43, ../src/app/employeeguard/operator/employee/_employee.scss */
 .operator-employee-page .employee-info i.danger, .operator-employee-page .employee-info i.warning, .operator-employee-page .employee-info i.success {
   background-color: transparent;
 }

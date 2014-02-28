@@ -41,6 +41,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private CompanyEmployeeStatusModel buildCompanyEmployeeStatusModel() {
 		Employee employee = employeeService.findEmployee(id);
+
 		int siteId = permissions.getAccountId();
 
 		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employee);

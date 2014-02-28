@@ -66,7 +66,7 @@ describe('An Operator Employee', function() {
         };
 
         //This needs to come first!!
-        $httpBackend.when('GET', '/angular/json/dummyData.json').respond(result);
+        $httpBackend.when('GET', '/angular/json/newdata.json').respond(result);
 
         scope = $rootScope.$new();
         $controller("operatorEmployeeCtrl", {
