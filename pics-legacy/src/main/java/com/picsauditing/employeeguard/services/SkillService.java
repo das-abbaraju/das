@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+// TODO replace this class with the new entity service
+@Deprecated
 public class SkillService {
 
 	@Autowired
@@ -34,8 +37,6 @@ public class SkillService {
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
-	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-	@Autowired
 	private ProjectService projectService;
 	@Autowired
 	private ProjectSkillDAO projectSkillDAO;
@@ -44,8 +45,12 @@ public class SkillService {
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
+	@Autowired
+	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
+
+	@Deprecated
 	public AccountSkill getSkill(final String id) {
-		return accountSkillDAO.find(NumberUtils.toInt(id));
+		return skillEntityService.find(NumberUtils.toInt(id));
 	}
 
 	public AccountSkill getSkill(final String id, final int accountId) {
@@ -113,16 +118,17 @@ public class SkillService {
 		return accountSkillDAO.findByProfile(profile);
 	}
 
+	@Deprecated
 	public AccountSkill save(AccountSkill accountSkill, int accountId, int appUserId) {
 		accountSkill.setAccountId(accountId);
 
 		setPersistedEntitiesOnJoinTables(accountSkill, accountId);
 
-		Date createdDate = new Date();
-		EntityHelper.setCreateAuditFields(accountSkill, appUserId, createdDate);
-		EntityHelper.setCreateAuditFields(accountSkill.getGroups(), appUserId, createdDate);
+		EntityAuditInfo created = new EntityAuditInfo.Builder().appUserId(appUserId).timestamp(new Date()).build();
+		EntityHelper.setCreateAuditFields(accountSkill.getGroups(), created);
 
-		accountSkill = accountSkillDAO.save(accountSkill);
+		accountSkill = skillEntityService.save(accountSkill, created);
+		// FIXME Move this to SkillEngine
 		accountSkillEmployeeService.linkEmployeesToSkill(accountSkill, appUserId);
 		return accountSkill;
 	}
@@ -143,32 +149,27 @@ public class SkillService {
 		}
 	}
 
+	@Deprecated
 	public AccountSkill update(AccountSkill updatedAccountSkill, String id, int accountId, int appUserId) {
-		AccountSkill accountSkillInDatabase = getSkill(id, accountId);
+		updatedAccountSkill.setId(NumberUtils.toInt(id));
+		EntityAuditInfo updated = new EntityAuditInfo.Builder()
+				.appUserId(appUserId)
+				.timestamp(new Date())
+				.build();
 
-		updateAccountSkillInDatabase(accountSkillInDatabase, updatedAccountSkill, appUserId);
+		AccountSkill accountSkillInDatabase = skillEntityService.update(updatedAccountSkill, updated);
+		updateAccountSkillGroups(accountSkillInDatabase, updatedAccountSkill, appUserId);
 
+		// If we're making this skill required then we can't associate this skill with groups
 		if (accountSkillInDatabase.getRuleType().isRequired()) {
-			// If we're making this skill required then we can't associate this skill with groups
 			accountSkillInDatabase.getGroups().clear();
 		}
 
-		EntityHelper.setUpdateAuditFields(accountSkillInDatabase, appUserId, new Date());
+		EntityHelper.setUpdateAuditFields(accountSkillInDatabase, updated);
 
 		accountSkillEmployeeService.linkEmployeesToSkill(accountSkillInDatabase, appUserId);
 
 		return accountSkillDAO.save(accountSkillInDatabase);
-	}
-
-	private void updateAccountSkillInDatabase(AccountSkill accountSkillInDatabase, AccountSkill updatedAccountSkill, int appUserId) {
-		accountSkillInDatabase.setSkillType(updatedAccountSkill.getSkillType());
-		accountSkillInDatabase.setRuleType(updatedAccountSkill.getRuleType());
-		accountSkillInDatabase.setName(updatedAccountSkill.getName());
-		accountSkillInDatabase.setIntervalType(updatedAccountSkill.getIntervalType());
-		accountSkillInDatabase.setIntervalPeriod(updatedAccountSkill.getIntervalPeriod());
-		accountSkillInDatabase.setDescription(updatedAccountSkill.getDescription());
-
-		updateAccountSkillGroups(accountSkillInDatabase, updatedAccountSkill, appUserId);
 	}
 
 	private void updateAccountSkillGroups(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
@@ -240,22 +241,14 @@ public class SkillService {
 		return groupNames;
 	}
 
+	@Deprecated
 	public void delete(String id, int accountId, int appUserId) {
-		AccountSkill accountSkill = getSkill(id, accountId);
-
-		EntityHelper.softDelete(accountSkill, appUserId);
-		EntityHelper.softDelete(accountSkill.getGroups(), appUserId);
-		EntityHelper.softDelete(accountSkill.getEmployees(), appUserId);
-
-		accountSkillDAO.delete(accountSkill);
+		skillEntityService.deleteById(NumberUtils.toInt(id));
 	}
 
+	@Deprecated
 	public List<AccountSkill> search(String searchTerm, int accountId) {
-		if (Strings.isNotEmpty(searchTerm)) {
-			return accountSkillDAO.search(searchTerm, accountId);
-		}
-
-		return Collections.emptyList();
+		return skillEntityService.search(searchTerm, accountId);
 	}
 
 	public List<AccountSkill> search(String searchTerm, List<Integer> accountIds) {
@@ -264,54 +257,6 @@ public class SkillService {
 		}
 
 		return accountSkillDAO.search(searchTerm, accountIds);
-	}
-
-	public Set<AccountSkill> findAllSkillsRequiredForEmployee(final Employee employee) {
-		Set<AccountSkill> allRequiredSkills = new TreeSet<>();
-		allRequiredSkills.addAll(findSkillsByEmployeeGroups(employee.getGroups()));
-
-		findAndAddSkillsByEmployeeProjects(employee, allRequiredSkills);
-		allRequiredSkills.addAll(findByEmployeeAccount(employee));
-
-		List<SiteSkill> associatedAccountSkills = getSiteSkills(employee);
-		allRequiredSkills.addAll(ExtractorUtil.extractList(associatedAccountSkills, SiteSkill.SKILL_EXTRACTOR));
-
-		return allRequiredSkills;
-	}
-
-	private List<SiteSkill> getSiteSkills(Employee employee) {
-		List<Project> projects = projectService.getProjectsForEmployee(employee);
-		List<Integer> siteIds = ExtractorUtil.extractList(projects, Project.ACCOUNT_ID_EXTRACTOR);
-
-		Set<Integer> associatedAccounts = new HashSet<>();
-		associatedAccounts.addAll(siteIds);
-
-		for (int siteId : siteIds) {
-			associatedAccounts.addAll(accountService.getTopmostCorporateAccountIds(siteId));
-		}
-
-		return siteSkillDAO.findByAccountIds(new ArrayList<>(associatedAccounts));
-	}
-
-	private List<AccountSkill> findSkillsByEmployeeGroups(List<GroupEmployee> groupEmployees) {
-		return accountSkillDAO.findByGroups(ExtractorUtil.extractList(groupEmployees, GroupEmployee.GROUP_EXTRACTOR));
-	}
-
-	private void findAndAddSkillsByEmployeeProjects(Employee employee, Set<AccountSkill> allRequiredSkills) {
-		List<Project> projects = projectService.getProjectsForEmployee(employee);
-		for (Project project : projects) {
-			allRequiredSkills.addAll(projectService.getRequiredSkills(project));
-		}
-
-		for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
-			for (AccountSkillRole accountSkillRole : projectRoleEmployee.getProjectRole().getRole().getSkills()) {
-				allRequiredSkills.add(accountSkillRole.getSkill());
-			}
-		}
-	}
-
-	private List<AccountSkill> findByEmployeeAccount(Employee employee) {
-		return accountSkillDAO.findRequiredByAccount(employee.getAccountId());
 	}
 
 	public Map<AccountSkill, Set<Role>> getProjectRoleSkillsMap(final Employee employee) {
@@ -451,7 +396,7 @@ public class SkillService {
 	}
 
 	public Map<Project, Set<AccountSkill>> getAllProjectSkillsForEmployeeProjectRoles(final int siteId,
-																					   final Map<Project, Set<Role>> projectRoleMap) {
+	                                                                                  final Map<Project, Set<Role>> projectRoleMap) {
 		if (MapUtils.isEmpty(projectRoleMap)) {
 			return Collections.emptyMap();
 		}
@@ -496,7 +441,7 @@ public class SkillService {
 	}
 
 	private Map<Project, Set<AccountSkill>> appendProjectRequiredSkills(final Map<Project, Set<AccountSkill>> projectSkillMap,
-																		 final Map<Project, Set<AccountSkill>> projectRequiredSkillsMap) {
+	                                                                    final Map<Project, Set<AccountSkill>> projectRequiredSkillsMap) {
 		if (MapUtils.isEmpty(projectRequiredSkillsMap) || MapUtils.isEmpty(projectSkillMap)) {
 			return projectSkillMap;
 		}
@@ -542,7 +487,7 @@ public class SkillService {
 	}
 
 	private Map<Role, Set<AccountSkill>> populateRoleSkillsMapIfEmpty(final Collection<Role> corporateRoles,
-																	   final Map<Role, Set<AccountSkill>> roleSkillsMap) {
+	                                                                  final Map<Role, Set<AccountSkill>> roleSkillsMap) {
 		if (MapUtils.isNotEmpty(roleSkillsMap)) {
 			return roleSkillsMap;
 		}
@@ -556,7 +501,7 @@ public class SkillService {
 	}
 
 	private <E> Map<E, Set<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, Set<AccountSkill>> entitySkillMap,
-																		final List<AccountSkill> siteAndCorporateRequiredSkills) {
+	                                                                   final List<AccountSkill> siteAndCorporateRequiredSkills) {
 		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
 			return entitySkillMap;
 		}

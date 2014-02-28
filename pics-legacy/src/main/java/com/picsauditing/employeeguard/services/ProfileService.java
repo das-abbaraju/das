@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 public class ProfileService {
+
 	@Autowired
 	private ProfileDAO profileDAO;
 

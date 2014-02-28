@@ -283,7 +283,7 @@
             <scope>provided</scope>
         </dependency>
 
-		<!-- Scala -->
+        <!-- Scala -->
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
@@ -988,10 +988,10 @@
             </exclusions>
         </dependency>
         <dependency>
-			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-rest-plugin</artifactId>
-			<version>${struts.version}</version>
-		</dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-rest-plugin</artifactId>
+            <version>${struts.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -1013,6 +1013,12 @@
             <artifactId>togglz-junit</artifactId>
             <version>2.0.0.Final</version>
             <scope>test</scope>
+        </dependency>
+        <!-- GSON Library -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
         </dependency>
     </dependencies>
 

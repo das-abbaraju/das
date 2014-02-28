@@ -172,7 +172,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 		projectService.save(project, permissions.getAccountId(), permissions.getAppUserID());
 
 		if (projectForm.isAddAnother()) {
-			return setUrlForRedirect("/employee-guard/operator/project/create");
+			return setUrlForRedirect("/employee-guard/operators/project/create");
 		}
 
 		return redirectToList();
@@ -189,7 +189,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 			projectFromDatabase = projectService.update(projectFromDatabase, projectCompaniesForm, permissions.getAppUserID());
 		}
 
-		return setUrlForRedirect("/employee-guard/operator/project/" + projectFromDatabase.getId());
+		return setUrlForRedirect("/employee-guard/operators/project/" + projectFromDatabase.getId());
 	}
 
 	public String delete() throws Exception {
@@ -199,7 +199,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	private String redirectToList() throws Exception {
-		return setUrlForRedirect("/employee-guard/operator/project");
+		return setUrlForRedirect("/employee-guard/operators/project");
 	}
 
 	/* validation */

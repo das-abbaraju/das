@@ -39,8 +39,8 @@ import static org.mockito.Mockito.when;
 
 public class ProjectActionTest extends PicsActionTest {
 	public static final String ID = "id";
-	public static final String LIST_URL = "/employee-guard/operator/project";
-	public static final String CREATE_URL = "/employee-guard/operator/project/create";
+	public static final String LIST_URL = "/employee-guard/operators/project";
+	public static final String CREATE_URL = "/employee-guard/operators/project/create";
 	private ProjectAction projectAction;
 
 	private AccountService accountService;

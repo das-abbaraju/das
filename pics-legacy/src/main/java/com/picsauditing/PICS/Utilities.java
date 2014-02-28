@@ -165,7 +165,7 @@ public class Utilities {
 	 * bottle neck when used on larger collections.
 	 */
 	public static <E> boolean collectionsAreEqual(Collection<E> collection1, Collection<E> collection2,
-												  Comparator<E> comparator) {
+	                                              Comparator<E> comparator) {
 		if (CollectionUtils.isEmpty(collection1) || CollectionUtils.isEmpty(collection2)) {
 			return false;
 		}
@@ -196,7 +196,7 @@ public class Utilities {
 	 * bottle neck when used on larger collections.
 	 */
 	public static <E extends Comparable<E>> boolean collectionsAreEqual(Collection<E> collection1,
-																		Collection<E> collection2) {
+	                                                                    Collection<E> collection2) {
 		Comparator<E> comparableComparator = new Comparator<E>() {
 
 			@Override
@@ -396,7 +396,7 @@ public class Utilities {
 	 * @return
 	 */
 	public static <E, K, V> Map<K, Set<V>> convertToMapOfSets(final Collection<E> entities,
-															  final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+	                                                          final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -421,7 +421,7 @@ public class Utilities {
 	 * @return
 	 */
 	public static <E, K, V> Map<K, List<V>> convertToMapOfLists(final Collection<E> entities,
-																final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+	                                                            final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -436,7 +436,7 @@ public class Utilities {
 	}
 
 	public static <E, K, V> Map<K, V> convertToMap(final Collection<E> entities,
-												   final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+	                                               final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -552,5 +552,39 @@ public class Utilities {
 		}
 
 		return Collections.unmodifiableMap(map);
+	}
+
+	public static <V> Collection<V> unmodifiableCollection(Collection<V> collection) {
+		if (CollectionUtils.isEmpty(collection)) {
+			return Collections.emptySet();
+		}
+
+		return Collections.unmodifiableCollection(collection);
+	}
+
+	public static <V> Set<V> mergeCollections(Collection<V>... collections) {
+		Set<V> uniqueCollection = new HashSet<>();
+
+		for (Collection collection : collections) {
+			uniqueCollection.addAll(collection);
+		}
+
+		return uniqueCollection;
+	}
+
+	public static <V> Set<V> mergeCollectionOfCollections(Collection<? extends Collection<V>>... collections) {
+		Set<V> uniqueCollection = new HashSet<>();
+
+		for (Collection collection : collections) {
+			// Collection of collections
+			Iterator<Collection<V>> collectionIterator = collection.iterator();
+			while (collectionIterator.hasNext()) {
+				for (V value : collectionIterator.next()) {
+					uniqueCollection.add(value);
+				}
+			}
+		}
+
+		return uniqueCollection;
 	}
 }

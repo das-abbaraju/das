@@ -11,6 +11,18 @@ public class IdNameTitleModel implements Comparable<IdNameTitleModel> {
 		this.title = builder.title;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
 	@Override
 	public int compareTo(IdNameTitleModel that) {
 		return this.name.compareToIgnoreCase(that.name);

@@ -79,6 +79,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String CHART_XML = "chartXML";
 	public static final String REDIRECT = "redirect";
 	public static final String INPUT_ERROR = "inputError";
+	public static final String HTTP_STATUS = "http-status";
+	public static final String JSON_STRING = "json-string";
 	public static final String[] DATAFEED_FORMATS = { JSON, XML };
 
 	private static final ViewNamespaceAware namespaceAware = new ViewNamespace();
@@ -159,6 +161,20 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * @see com.picsauditing.strutsutil.FileResult
 	 */
 	protected FileDownloadContainer fileContainer = null;
+
+	/**
+	 * Contains the HTTP Status that is returned by the response.
+	 *
+	 * @see com.picsauditing.strutsutil.HttpStatusCodeResult
+	 */
+	protected int httpStatusCode = HttpUtil.HTTP_OK;
+
+	/**
+	 * Set this value as a correctly formatted JSON String to be returned as a response.
+	 *
+	 * @see com.picsauditing.strutsutil.JSONStringResult
+	 */
+	protected String jsonString = Strings.EMPTY_STRING;
 
 	/**
 	 * Current logged in user
@@ -731,6 +747,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public void setFileContainer(FileDownloadContainer fileContainer) {
 		this.fileContainer = fileContainer;
+	}
+
+	public int getHttpStatusCode() {
+		return httpStatusCode;
+	}
+
+	public void setHttpStatusCode(int httpStatusCode) {
+		this.httpStatusCode = httpStatusCode;
+	}
+
+	public String getJsonString() {
+		return jsonString;
+	}
+
+	public void setJsonString(String jsonString) {
+		this.jsonString = jsonString;
 	}
 
 	protected int getParameter(String name) {

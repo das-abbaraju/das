@@ -1,29 +1,34 @@
 package com.picsauditing.employeeguard.entities.builders;
 
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 
 import java.util.List;
 
-public class ProfileBuilder {
-
-	private final Profile profile;
+public class ProfileBuilder extends AbstractBaseEntityBuilder<Profile, ProfileBuilder> {
 
 	public ProfileBuilder() {
-		this.profile = new Profile();
+		this.entity = new Profile();
+		that = this;
 	}
 
 	public ProfileBuilder id(final int id) {
-		profile.setId(id);
+		entity.setId(id);
+		return this;
+	}
+
+	public ProfileBuilder employees(List<Employee> employees) {
+		entity.setEmployees(employees);
 		return this;
 	}
 
 	public ProfileBuilder documents(final List<ProfileDocument> documents) {
-		profile.setDocuments(documents);
+		entity.setDocuments(documents);
 		return this;
 	}
 
 	public Profile build() {
-		return profile;
+		return entity;
 	}
 }

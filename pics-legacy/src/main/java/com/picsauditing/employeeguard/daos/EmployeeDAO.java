@@ -175,6 +175,35 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		return ListUtil.removeDuplicatesAndSort(employees);
 	}
 
+	public List<Employee> findEmployeesAssignedToSiteByProfile(final Collection<Integer> accountIds, final int siteId, final int profileId) {
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.projectRoles pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE e.accountId IN (:accountIds) " +
+				"AND p.accountId = :siteId " +
+				"AND e.profile.id = :profileId", Employee.class);
+		query.setParameter("accountIds", accountIds);
+		query.setParameter("siteId", siteId);
+		query.setParameter("profileId", profileId);
+
+		List<Employee> employees = query.getResultList();
+
+		query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.roles re " +
+				"JOIN re.role r " +
+				"WHERE e.accountId IN (:accountIds) " +
+				"AND r.accountId = :siteId " +
+				"AND e.profile.id = :profileId", Employee.class);
+		query.setParameter("accountIds", accountIds);
+		query.setParameter("siteId", siteId);
+		query.setParameter("profileId", profileId);
+
+		employees.addAll(query.getResultList());
+
+		return ListUtil.removeDuplicatesAndSort(employees);
+	}
+
 	public List<Employee> findEmployeesAssignedToSiteRole(final Collection<Integer> accountIds, final int siteId,
 	                                                      final Role siteRole, final Role corporateRole) {
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
