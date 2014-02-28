@@ -49,6 +49,8 @@ public class SkillServiceTest {
 	private ProjectSkillDAO projectSkillDAO;
 	@Mock
 	private SiteSkillDAO siteSkillDAO;
+	@Mock
+	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
 
 	@Before
 	public void setup() {
@@ -62,6 +64,7 @@ public class SkillServiceTest {
 		Whitebox.setInternalState(skillService, "accountSkillRoleDAO", accountSkillRoleDAO);
 		Whitebox.setInternalState(skillService, "projectSkillDAO", projectSkillDAO);
 		Whitebox.setInternalState(skillService, "siteSkillDAO", siteSkillDAO);
+		Whitebox.setInternalState(skillService, "skillEntityService", skillEntityService);
 	}
 
 	private AccountSkill buildAccountSkill() {
@@ -78,18 +81,14 @@ public class SkillServiceTest {
 
 	@Test
 	public void testDelete() {
-		AccountSkill accountSkill = new AccountSkill();
-		when(accountSkillDAO.findSkillByAccount(DELETE_SKILL_ID, ACCOUNT_ID)).thenReturn(accountSkill);
-
 		skillService.delete(Integer.toString(DELETE_SKILL_ID), ACCOUNT_ID, APP_USER_ID);
 
-		assertEquals(APP_USER_ID, accountSkill.getDeletedBy());
-		verify(accountSkillDAO).delete(accountSkill);
+		verify(skillEntityService).deleteById(DELETE_SKILL_ID);
 	}
 
 	@Test
 	public void testSearch() {
-		when(accountSkillDAO.search("My Skill", ACCOUNT_ID)).thenReturn(Arrays.asList(new AccountSkill(), new AccountSkill()));
+		when(skillEntityService.search("My Skill", ACCOUNT_ID)).thenReturn(Arrays.asList(new AccountSkill(), new AccountSkill()));
 
 		List<AccountSkill> results = skillService.search("My Skill", ACCOUNT_ID);
 

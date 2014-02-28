@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class AbstractBaseEntityDAO<E extends BaseEntity> {
@@ -53,7 +54,7 @@ public abstract class AbstractBaseEntityDAO<E extends BaseEntity> {
 	}
 
 	@Transactional(propagation = Propagation.NESTED)
-	public void save(List<E> entities) {
+	public void save(Collection<E> entities) {
 		for (E entity : entities) {
 			persistOrMerge(entity);
 		}
@@ -62,7 +63,7 @@ public abstract class AbstractBaseEntityDAO<E extends BaseEntity> {
 	}
 
     @Transactional(propagation = Propagation.NESTED)
-    public void delete(List<E> entities) {
+    public void delete(Collection<E> entities) {
         for (E entity : entities) {
             em.remove(entity);
         }

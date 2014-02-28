@@ -872,8 +872,7 @@
             </result>
         </action>
 
-        <action name="ManageQuestionFunctionWatcher"
-                class="com.picsauditing.actions.auditType.ManageQuestionFunctionWatcher">
+        <action name="ManageQuestionFunctionWatcher" class="com.picsauditing.actions.auditType.ManageQuestionFunctionWatcher">
             <result>/struts/audits/manage_question_function_watcher.jsp</result>
             <result name="save" type="redirectAction">
                 <param name="actionName">ManageQuestion</param>

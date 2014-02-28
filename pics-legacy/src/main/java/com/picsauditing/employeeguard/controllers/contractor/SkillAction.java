@@ -40,6 +40,8 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	@Autowired
 	private SkillService skillService;
 	@Autowired
+	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
+	@Autowired
 	private SkillFormValidator skillFormValidator;
 
 	/* Forms */
@@ -63,7 +65,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		int accountId = permissions.getAccountId();
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();
-			skills = skillService.search(searchTerm, accountId);
+			skills = skillEntityService.search(searchTerm, accountId);
 		} else {
 			skills = skillService.getSkillsForAccount(accountId);
 		}
@@ -128,7 +130,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	}
 
 	public String delete() throws Exception {
-		skillService.delete(id, permissions.getAccountId(), permissions.getAppUserID());
+		skillEntityService.deleteById(NumberUtils.toInt(id));
 
 		return redirectToList();
 	}

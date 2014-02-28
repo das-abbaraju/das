@@ -21,13 +21,10 @@ public class ViewModelFactory {
 	private static EntityInfoFactory entityInfoFactory = new EntityInfoFactory();
 	private static IdNameTitleModelFactory idNameTitleModelFactory = new IdNameTitleModelFactory();
 	private static NavItemFactory navItemFactory = new NavItemFactory();
-	private static OperatorEmployeeModelFactory operatorEmployeeModelFactory = new OperatorEmployeeModelFactory();
-	private static OperatorEmployeeSkillModelFactory operatorEmployeeSkillModelFactory = new OperatorEmployeeSkillModelFactory();
 	private static OperatorProjectAssignmentFactory operatorProjectAssignmentFactory = new OperatorProjectAssignmentFactory();
 	private static OperatorProjectRoleAssignmentFactory operatorProjectRoleAssignmentFactory = new OperatorProjectRoleAssignmentFactory();
 	private static OperatorSiteAssignmentModelFactory operatorSiteAssignmentModelFactory = new OperatorSiteAssignmentModelFactory();
 	private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
-	private static ProjectDetailModelFactory projectDetailModelFactory = new ProjectDetailModelFactory();
 	private static ProjectModelFactory projectModelFactory = new ProjectModelFactory();
 	private static RoleInfoFactory roleInfoFactory = new RoleInfoFactory();
 	private static RoleEmployeeCountFactory roleEmployeeCountFactory = new RoleEmployeeCountFactory();
@@ -88,14 +85,6 @@ public class ViewModelFactory {
 		return navItemFactory;
 	}
 
-	public static OperatorEmployeeModelFactory getOperatorEmployeeModelFactory() {
-		return operatorEmployeeModelFactory;
-	}
-
-	public static OperatorEmployeeSkillModelFactory getOperatorEmployeeSkillModelFactory() {
-		return operatorEmployeeSkillModelFactory;
-	}
-
 	public static OperatorProjectAssignmentFactory getOperatorProjectAssignmentFactory() {
 		return operatorProjectAssignmentFactory;
 	}
@@ -110,10 +99,6 @@ public class ViewModelFactory {
 
 	public static ProjectAssignmentBreakdownFactory getProjectAssignmentBreakdownFactory() {
 		return projectAssignmentBreakdownFactory;
-	}
-
-	public static ProjectDetailModelFactory getProjectDetailModelFactory() {
-		return projectDetailModelFactory;
 	}
 
 	public static ProjectModelFactory getProjectModelFactory() {
