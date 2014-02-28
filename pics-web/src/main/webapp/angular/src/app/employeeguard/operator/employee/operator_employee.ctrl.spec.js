@@ -33,7 +33,7 @@ describe('An Operator Employee', function() {
                  ]
               }
             ],
-            overallStatus:"Expired",
+            status:"Expired",
             roles:[
               {
                  skills:[
@@ -78,7 +78,7 @@ describe('An Operator Employee', function() {
         //This needs to come after controller is loaded
         $httpBackend.flush();
 
-        scope.highlightedStatus = result.overallStatus;
+        scope.highlightedStatus = result.status;
     }));
 
     describe('sub view change', function() {

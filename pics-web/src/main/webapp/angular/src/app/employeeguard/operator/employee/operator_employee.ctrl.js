@@ -36,7 +36,7 @@ angular.module('PICS.employeeguard')
                 $scope.updateHighlightedStatus($scope.currentRole.status);
                 break;
             case 'all':
-                $scope.updateHighlightedStatus($scope.employee.overallStatus);
+                $scope.updateHighlightedStatus($scope.employee.status);
                 break;
             default:
                 break;

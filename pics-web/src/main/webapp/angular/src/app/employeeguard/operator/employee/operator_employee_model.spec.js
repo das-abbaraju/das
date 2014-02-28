@@ -197,7 +197,7 @@ describe('An Operator Employee Data Model', function() {
                      ]
                   }
                ],
-               "overallStatus":"Expired",
+               "status":"Expired",
                "roles":[{
                      "skills":[
                         {
