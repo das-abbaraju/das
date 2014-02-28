@@ -628,11 +628,11 @@
 										href="http://www.hostip.info/?spip=<s:property value="remoteAddress" />">
 											<s:property value="remoteAddress" />
 									</a></td>
-									<td>
-										<s:if test="permissions.isDeveloperEnvironment()">
-											<s:property value="serverAddress" />
-										</s:if>
-									</td>
+                                    <s:if test="permissions.isDeveloperEnvironment()">
+                                        <td>
+                                            <s:property value="serverAddress" />
+                                        </td>
+                                    </s:if>
 									<td>
 										<s:property value="browser" />
 									</td>
