@@ -10,6 +10,8 @@ target/
 *.log.1
 *.tmp
 *.bak
+*.jtl
+*.hprof
 rebel.xml
 rebel-remote.xml
 
