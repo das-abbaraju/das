@@ -11,7 +11,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.service.RequestNewContractorService;
-import com.picsauditing.service.account.ContractorOperatorEventService;
+import com.picsauditing.service.account.ContractorOperatorService;
 import com.picsauditing.service.account.events.ContractorOperatorEventType;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
@@ -56,7 +56,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
     @Autowired
     private RequestNewContractorService requestNewContractorService;
     @Autowired
-    private ContractorOperatorEventService contractorOperatorService;
+    private ContractorOperatorService contractorOperatorService;
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();

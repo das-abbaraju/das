@@ -3,10 +3,10 @@ package com.picsauditing.service.account;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.service.account.events.*;
 
-public class ContractorOperatorEventService {
+public class ContractorOperatorService {
     private final ContractorOperatorEventPublisher eventPublisher;
 
-    public ContractorOperatorEventService(ContractorOperatorEventPublisher publisher) {
+    public ContractorOperatorService(ContractorOperatorEventPublisher publisher) {
         this.eventPublisher = publisher;
     }
 
