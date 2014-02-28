@@ -56,6 +56,9 @@
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
     <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
 
+    <!-- Entity Services -->
+    <bean id="SkillEntityService" class="com.picsauditing.employeeguard.services.entity.SkillService"/>
+
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>
     <bean id="RoleAssignmentHelper" class="com.picsauditing.employeeguard.services.RoleAssignmentHelper"/>

@@ -58,9 +58,9 @@ public class SkillService implements EntityService<AccountSkill, Integer>, Searc
 		accountSkillToUpdate.setIntervalPeriod(accountSkill.getIntervalPeriod());
 		accountSkillToUpdate.setRuleType(accountSkill.getRuleType());
 
-		accountSkillToUpdate = EntityHelper.setUpdateAuditFields(accountSkill, entityAuditInfo);
+		accountSkillToUpdate = EntityHelper.setUpdateAuditFields(accountSkillToUpdate, entityAuditInfo);
 
-		return accountSkillToUpdate;
+		return accountSkillDAO.save(accountSkillToUpdate);
 	}
 
 	/* All Delete Operations */

@@ -67,12 +67,12 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
+	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT r.id FROM account_group r WHERE r.type = 'Group')")
 	@BatchSize(size = 5)
 	private List<AccountSkillGroup> groups = new ArrayList<>();
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
-	@Where(clause = "deletedDate IS NULL")
+	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT r.id FROM account_group r WHERE r.type = 'Role')")
 	@BatchSize(size = 5)
 	private List<AccountSkillRole> roles = new ArrayList<>();
 

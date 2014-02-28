@@ -38,6 +38,7 @@ public class BaseEntityCallback<E extends BaseEntity> implements IntersectionAnd
 	@Override
 	public void handleRemoval(E entity) {
 		EntityHelper.softDelete(entity, user);
+		entity.setDeletedDate(timestamp);
 		removedEntities.add(entity);
 	}
 

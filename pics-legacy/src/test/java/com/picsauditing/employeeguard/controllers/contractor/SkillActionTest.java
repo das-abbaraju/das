@@ -5,6 +5,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
 import com.picsauditing.employeeguard.services.EmployeeService;
@@ -19,6 +20,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -35,8 +38,10 @@ public class SkillActionTest extends PicsActionTest {
 
 	@Mock
 	private UrlBuilder urlBuilder;
-    @Mock
-    private EmployeeService employeeService;
+	@Mock
+	private EmployeeService employeeService;
+	@Mock
+	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -46,14 +51,16 @@ public class SkillActionTest extends PicsActionTest {
 		skillService = SkillServiceFactory.getSkillService();
 		super.setUp(skillAction);
 
-        Whitebox.setInternalState(skillAction, "employeeService", employeeService);
+		Whitebox.setInternalState(skillAction, "employeeService", employeeService);
 		Whitebox.setInternalState(skillAction, "skillService", skillService);
+		Whitebox.setInternalState(skillAction, "skillEntityService", skillEntityService);
 		Whitebox.setInternalState(skillAction, "groupService", GroupServiceFactory.getGroupService());
 		Whitebox.setInternalState(skillAction, "urlBuilder", urlBuilder);
 
 		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
-        when(employeeService.getNumberOfEmployeesForAccount(anyInt())).thenReturn(5l);
+		when(employeeService.getNumberOfEmployeesForAccount(anyInt())).thenReturn(5l);
+		when(skillEntityService.search(anyString(), anyInt())).thenReturn(Arrays.asList(new AccountSkillBuilder().build()));
 	}
 
 	@Test
@@ -73,7 +80,7 @@ public class SkillActionTest extends PicsActionTest {
 		String result = skillAction.index();
 		assertEquals(PicsRestActionSupport.LIST, result);
 		assertFalse(skillAction.getSkills().isEmpty());
-		verify(skillService).search(TEST, Account.PicsID);
+		verify(skillEntityService).search(TEST, Account.PicsID);
 	}
 
 	@Test
@@ -161,9 +168,7 @@ public class SkillActionTest extends PicsActionTest {
 		when(urlBuilder.build()).thenReturn(url);
 
 		assertEquals(PicsActionSupport.REDIRECT, skillAction.delete());
-		verify(permissions).getAccountId();
-		verify(permissions).getAppUserID();
-		verify(skillService).delete(anyString(), anyInt(), anyInt());
+		verify(skillEntityService).deleteById(anyInt());
 		assertEquals(url, skillAction.getUrl());
 	}
 }
