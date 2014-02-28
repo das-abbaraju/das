@@ -443,7 +443,7 @@ public final class MenuBuilder {
 
 		// FIXME Remove when no longer needed!
 		if (permissions.isOperatorCorporate() && permissions.getAccountStatus().isDemo()) {
-			manageMenu.addChild("Request Company", "RequestNewContractorAccount.action", "RequestNewContractorAccount");
+			manageMenu.addChild(getText("RequestCompany.title"), "RequestNewContractorAccount.action", "RequestNewContractorAccount");
 		}
 
         removeMenuIfEmpty(menubar, manageMenu);
@@ -582,18 +582,18 @@ public final class MenuBuilder {
 	}
 
     private static void addReferenceMenu(Permissions permissions, MenuComponent supportMenu) {
-        MenuComponent referenceMenu = supportMenu.addChild("Reference");
+        MenuComponent referenceMenu = supportMenu.addChild(getText("menu.Reference"));
         if (permissions.hasPermission(OpPerms.ManageTrades)) {
             referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
         }
 
-        referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
-        referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action",
+        referenceMenu.addChild(getText("NavigationMenu.title"), "Reference!navigationMenu.action", "navigation_menu");
+        referenceMenu.addChild(getText("NavigationRestructure.title"), "Reference!navigationRestructure.action",
                 "navigation_restructure");
 
         if (!permissions.isContractor()) {
-            referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
-            referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
+            referenceMenu.addChild(getText("DynamicReports.title"), "Reference!dynamicReport.action", "dynamic_report");
+            referenceMenu.addChild(getText("ReportsManager.title"), "Reference!reportsManager.action", "reports_manager");
         }
 
         removeMenuIfEmpty(supportMenu, referenceMenu);
@@ -622,7 +622,7 @@ public final class MenuBuilder {
 		}
 
 		if (switchedToAnotherUser(permissions)) {
-			userMenu.addChild("Switch Back", "Login.action?button=switchBack", "switch_back");
+			userMenu.addChild(getText("SwitchBack.title"), "Login.action?button=switchBack", "switch_back");
 		}
 
 		userMenu.addChild(getText("Header.Logout"), "Login.action?button=logout", "logout");
