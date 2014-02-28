@@ -183,7 +183,7 @@ public final class MenuBuilder {
 
 	public static MenuComponent getCompanyMenuFor(ContractorAccount contractor, Permissions permissions) {
 		MenuComponent companyMenu = new MenuComponent(getText("global.Company"));
-		addCompanyMenuLinksFor(contractor.getId(), contractor.getStatus().isDemo(), companyMenu, permissions);
+		addCompanyMenuLinksFor(contractor.getId(), !contractor.getStatus().isDemo(), companyMenu, permissions);
 		return companyMenu;
 	}
 
