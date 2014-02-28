@@ -297,7 +297,7 @@
 				=
 				<s:select
 					list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('Filters.status.Pending'),'C':getTextNullSafe('ApprovalStatus.C'),'D':getTextNullSafe('ApprovalStatus.D')}"
-					headerKey="" headerValue="Any" cssClass="forms" name="filter.workStatus" />
+					headerKey="" headerValue="%{getTextNullSafe('Filters.status.Any')}" cssClass="forms" name="filter.workStatus" />
 			</div>
 		</s:if>
 

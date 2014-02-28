@@ -37,23 +37,7 @@
 	<s:if test="permissions.operatorCorporate && ((insurance && !operator.equals(operator.inheritInsuranceCriteria)) || (!insurance && !operator.equals(operator.inheritFlagCriteria)))">
 		<div id="info">
 			<s:text name="ManageFlagCriteriaOperator.message.InheritedFrom">
-				<s:param>
-					<s:if test="insurance">
-						<s:text name="ManageFlagCriteriaOperator.header.Insurance" />
-					</s:if>
-					<s:else>
-						<s:text name="ManageFlagCriteriaOperator.header.Flag" />
-					</s:else>
-				</s:param>
-				
-				<s:param>
-					<s:if test="insurance && !operator.equals(operator.inheritInsuranceCriteria)">
-						<s:property value="operator.inheritInsuranceCriteria.name" />
-					</s:if>
-					<s:elseif test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
-						<s:property value="operator.inheritFlagCriteria.name" />
-					</s:elseif>
-				</s:param>
+				<s:param value="%{insurance ? getText('ManageFlagCriteriaOperator.header.Insurance') : getText('ManageFlagCriteriaOperator.header.Flag')}" />
 			</s:text>
 		</div>
 	</s:if>
@@ -122,14 +106,7 @@
 						<s:if test="permissions.admin && ((insurance && !operator.equals(operator.inheritInsuranceCriteria)) || (!insurance && !operator.equals(operator.inheritFlagCriteria)))">
 							<div style="clear: left;">
 								<s:text name="ManageFlagCriteriaOperator.message.InheritedFrom">
-									<s:param>
-										<s:if test="insurance">
-											<s:text name="ManageInsuranceCriteriaOperator.header.Insurance" />
-										</s:if>
-										<s:else>
-											<s:text name="global.Flag" />
-										</s:else>
-									</s:param>
+                                    <s:param value="%{insurance ? getText('ManageFlagCriteriaOperator.header.Insurance') : getText('global.Flag')}" />
 								</s:text>
 								
 								<s:set name="linkedOp" value="operator" />
