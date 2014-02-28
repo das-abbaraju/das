@@ -13,7 +13,7 @@ angular.module('PICS.employeeguard')
         $scope.projectSkills = model.getAllProjectSkills();
         $scope.projectRoles = model.getAllProjectRoles();
 
-        $scope.highlightedStatus = $scope.employee.overallStatus;
+        $scope.highlightedStatus = $scope.employee.status;
     };
 
     $scope.onError = function (error) {

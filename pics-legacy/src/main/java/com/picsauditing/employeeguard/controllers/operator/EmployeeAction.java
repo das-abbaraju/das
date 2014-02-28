@@ -32,8 +32,6 @@ public class EmployeeAction extends PicsRestActionSupport {
 	@Autowired
 	private SkillService skillService;
 
-	private int siteId;
-
 	public String show() {
 		CompanyEmployeeStatusModel companyEmployeeStatusModel = buildCompanyEmployeeStatusModel();
 
@@ -44,11 +42,12 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private CompanyEmployeeStatusModel buildCompanyEmployeeStatusModel() {
 		Employee employee = employeeService.findEmployee(id);
+        int siteId = permissions.getAccountId();
 
 		Map<Project, Set<Role>> projectRoleMap = projectService.getProjectRolesForEmployee(siteId, employee);
 
-		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(employee, projectRoleMap);
-		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(projectRoleMap);
+		Map<Role, Set<AccountSkill>> roleSkillMap = getRoleSkillMap(siteId, employee, projectRoleMap);
+		Map<Project, Set<AccountSkill>> projectSkillMap = getProjectSkillMap(siteId, projectRoleMap);
 
 		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, roleSkillMap);
 		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, projectSkillMap);
@@ -113,22 +112,14 @@ public class EmployeeAction extends PicsRestActionSupport {
 				roleStatusMap);
 	}
 
-	private Map<Role, Set<AccountSkill>> getRoleSkillMap(Employee employeeEntity, Map<Project, Set<Role>> projectRoleMap) {
+	private Map<Role, Set<AccountSkill>> getRoleSkillMap(int siteId, Employee employeeEntity, Map<Project, Set<Role>> projectRoleMap) {
 		Set<Role> employeeRoles = roleService.getEmployeeRolesForSite(siteId, employeeEntity);
 		employeeRoles.addAll(Utilities.flattenCollectionOfCollection(projectRoleMap.values()));
 		return skillService.getSkillsForRoles(siteId, employeeRoles);
 	}
 
-	private Map<Project, Set<AccountSkill>> getProjectSkillMap(Map<Project, Set<Role>> projectRoleMap) {
+	private Map<Project, Set<AccountSkill>> getProjectSkillMap(int siteId, Map<Project, Set<Role>> projectRoleMap) {
 		return skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
 				projectRoleMap);
-	}
-
-	public int getSiteId() {
-		return siteId;
-	}
-
-	public void setSiteId(int siteId) {
-		this.siteId = siteId;
 	}
 }
