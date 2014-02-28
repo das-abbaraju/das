@@ -3,8 +3,8 @@ package com.picsauditing.service.user;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.service.user.events.UserEvent;
 import com.picsauditing.service.user.events.publisher.UserEventPublisher;
+import com.picsauditing.service.user.events.publisher.UserEventType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserService {
@@ -19,14 +19,15 @@ public class UserService {
         //validate email
         //app user
 
-
+        //persist(user);
     }
 
     public void persist(User u) {
-
+        userDAO.save(u);
+        publish(u, UserEventType.Creation);
     }
 
-    private void publish(UserEvent event, User u) {
-        //userEventPublisher.publish(UserEvent.Creation, user);
+    private void publish(User u, UserEventType event) {
+        userEventPublisher.publish(u, event);
     }
 }

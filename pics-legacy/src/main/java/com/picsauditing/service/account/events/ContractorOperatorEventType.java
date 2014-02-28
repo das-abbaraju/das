@@ -1,5 +1,7 @@
 package com.picsauditing.service.account.events;
 
 public enum ContractorOperatorEventType {
-    RegistrationRequest
+    RegistrationRequest,
+    addConnection,
+    removeConnection
 }
