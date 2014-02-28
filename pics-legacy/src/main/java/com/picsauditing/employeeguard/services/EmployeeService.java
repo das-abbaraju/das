@@ -1,10 +1,9 @@
 package com.picsauditing.employeeguard.services;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
-import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -16,8 +15,6 @@ import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.util.PhotoUtil;
-import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -85,6 +82,22 @@ public class EmployeeService {
 		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
+	public Map<Integer, Employee> getAccountToEmployeeMapForEmployeesAssignedToSiteByEmployeeProfile(
+			final Collection<Integer> contractorIds,
+			final int siteId,
+			final Employee employee) {
+
+		List<Employee> employees = getEmployeesAssignedToSiteByEmployeeProfile(contractorIds, siteId, employee);
+		return Utilities.convertToMap(employees,
+				new Utilities.MapConvertable<Integer, Employee>() {
+
+					@Override
+					public Integer getKey(Employee employee) {
+						return employee.getAccountId();
+					}
+				});
+	}
+
 	public List<Employee> getEmployeesAssignedToSiteByEmployeeProfile(final Collection<Integer> contractorIds,
 																	  final int siteId,
 																	  final Employee employee) {
@@ -96,7 +109,7 @@ public class EmployeeService {
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
-	                                                     final Role siteRole, final Role corporateRole) {
+														 final Role siteRole, final Role corporateRole) {
 		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
 	}
 

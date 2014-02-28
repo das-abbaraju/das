@@ -42,6 +42,9 @@
         <pattern>/InvoiceRefund.action</pattern>
         <pattern>/Cron!*.action</pattern>
     </decorator>
+    <decorator name="index" page="index.jsp">
+        <pattern>/employee-guard/operators/employees/*</pattern>
+    </decorator>
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>
         <pattern>/ManageReports!getStarted.action</pattern>

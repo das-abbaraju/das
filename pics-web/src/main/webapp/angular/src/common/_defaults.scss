@@ -1,0 +1,79 @@
+// site colors
+$pics_burnt_orange: #a84d10;
+$pics_blue: #002441;
+$pics_light_blue: #73bbe8;
+$pics_link_blue: #226396;
+$pics_warm_grey: #808285;
+$pics_cool_grey: #f1f1f2;
+
+$default_platinum: #f1f1f2;
+$default_mercury: #e6e6e6;
+$default_silver: #cccccc;
+$default_pewter: #b3b3b3;
+$default_aluminum: #999999;
+$default_nickel: #808285;
+$default_tin: #666666;
+$default_steel: #454545;
+$default_iron: #333333;
+$default_tungsten: #252525;
+$default_lead: #1a1a1a;
+
+$primary_tint: #d6eaf8;
+$primary_light: #3498db;
+$primary_med: #2980b9;
+$primary_dark: #105093;
+
+$info_tint: #ebf5fe;
+$info_light: #9cccf9;
+$info_med: #73bbe8;
+$info_dark: #4496d8;
+
+$success_tint: #d6f0e4;
+$success_light: #33b679;
+$success_med: #0f9d58;
+$success_dark: #05702e;
+
+$warning_tint: #fef5d9;
+$warning_light: #fbcb43;
+$warning_med: #f4b400;
+$warning_dark: #ec8c00;
+
+$danger_tint: #fadbd8;
+$danger_light: #e74c3c;
+$danger_med: #c0392b;
+$danger_dark: #800a06;
+
+
+// default tag overrides
+body {
+    color: $default_steel;
+}
+
+figure {
+    margin: 0;
+}
+
+a {
+    color: $pics_link_blue;
+}
+
+a:hover,
+a:focus {
+    color: $pics_light_blue;
+    text-decoration: none;
+}
+
+.success {
+    background-color: $success_tint;
+    color: $success_light;
+}
+
+.warning {
+    background-color: $warning_tint;
+    color: $warning_med;
+}
+
+.danger {
+    background-color: $danger_tint;
+    color: $danger_light;
+}

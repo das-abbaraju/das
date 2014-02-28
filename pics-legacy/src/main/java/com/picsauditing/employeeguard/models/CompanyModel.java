@@ -6,6 +6,7 @@ public class CompanyModel implements Identifiable, Nameable {
 
 	private int id;
 	private String name;
+    private String title;
 	private List<CompanyEmployeeModel> employees;
 
 	@Override
@@ -28,7 +29,15 @@ public class CompanyModel implements Identifiable, Nameable {
 		this.name = name;
 	}
 
-	public List<CompanyEmployeeModel> getEmployees() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<CompanyEmployeeModel> getEmployees() {
 		return employees;
 	}
 

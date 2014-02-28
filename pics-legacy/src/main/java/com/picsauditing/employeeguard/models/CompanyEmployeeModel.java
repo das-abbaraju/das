@@ -8,7 +8,7 @@ public class CompanyEmployeeModel implements Identifiable {
 	private String firstName;
 	private String lastName;
 	private String title;
-	private List<CompanyModel> companies;
+	private List<EmploymentInfoModel> companies;
 	private List<? extends ProjectModel> projects;
 	private List<? extends RoleModel> roles;
 
@@ -46,11 +46,11 @@ public class CompanyEmployeeModel implements Identifiable {
 		this.title = title;
 	}
 
-	public List<CompanyModel> getCompanies() {
+	public List<EmploymentInfoModel> getCompanies() {
 		return companies;
 	}
 
-	public void setCompanies(List<CompanyModel> companies) {
+	public void setCompanies(List<EmploymentInfoModel> companies) {
 		this.companies = companies;
 	}
 

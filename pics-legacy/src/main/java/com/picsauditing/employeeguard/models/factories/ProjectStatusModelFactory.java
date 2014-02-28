@@ -37,7 +37,11 @@ public class ProjectStatusModelFactory extends ProjectModelFactory {
 	                                 final List<RoleStatusModel> roles,
 	                                 final List<SkillStatusModel> skills,
 	                                 final SkillStatus status) {
-		ProjectStatusModel projectStatusModel = new ProjectStatusModel(super.create(project, roles, skills));
+		ProjectStatusModel projectStatusModel = new ProjectStatusModel();
+		projectStatusModel.setId(project.getId());
+		projectStatusModel.setName(project.getName());
+		projectStatusModel.setRoles(roles);
+		projectStatusModel.setSkills(skills);
 		projectStatusModel.setStatus(status);
 		return projectStatusModel;
 	}

@@ -1,9 +1,7 @@
 package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.models.ProjectStatusModel;
-import com.picsauditing.employeeguard.models.RoleStatusModel;
-import com.picsauditing.employeeguard.models.SkillStatusModel;
+import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 
@@ -22,6 +21,7 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 	@Override
 	@Before
 	public void setUp() throws Exception {
+		super.setUp();
 		projectStatusModelFactory = new ProjectStatusModelFactory();
 	}
 
@@ -35,8 +35,18 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 		ProjectStatusModel projectStatusModel = projectStatusModelFactory.create(fakeProject, fakeRoleModels,
 				fakeSkillModels, SkillStatus.Expiring);
 
-		super.verifyTestCreate(fakeRoleModels, fakeSkillModels, projectStatusModel);
+		verifyTestCreate(fakeRoleModels, fakeSkillModels, projectStatusModel);
 		assertEquals(SkillStatus.Expiring, projectStatusModel.getStatus());
+	}
+
+	private void verifyTestCreate(List<RoleStatusModel> fakeRoleModels,
+									List<SkillStatusModel> fakeSkillModels,
+									ProjectStatusModel projectStatusModel) {
+
+		assertEquals(PROJECT_ID, projectStatusModel.getId());
+		assertEquals(PROJECT_NAME, projectStatusModel.getName());
+		assertEquals(fakeRoleModels, projectStatusModel.getRoles());
+		assertEquals(fakeSkillModels, projectStatusModel.getSkills());
 	}
 
 	@Override
@@ -68,5 +78,12 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 		verifyTestCreateList(project, projectStatusModels);
 
 		assertEquals(SkillStatus.Complete, projectStatusModels.get(0).getStatus());
+	}
+
+	protected void verifyTestCreateList(Project project, List<ProjectStatusModel> projectModels) {
+		assertNotNull(projectModels);
+		assertFalse(projectModels.isEmpty());
+		assertNotNull(projectModels.get(0));
+		assertEquals(project.getId(), projectModels.get(0).getId());
 	}
 }

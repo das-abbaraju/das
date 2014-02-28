@@ -1,0 +1,128 @@
+.table thead > tr > th {
+    background-color: $default_steel;
+    border: 0;
+    color: $pics_cool_grey;
+    font-weight: normal;
+
+    &.success {
+        background-color: $default_steel;
+
+        i {
+            color: $success_light;
+        }
+    }
+
+    &.warning {
+        background-color: $default_steel;
+
+        i {
+            color: $warning_light;
+        }
+    }
+
+    &.danger {
+        background-color: $default_steel;
+
+        i {
+            color: $danger_light;
+        }
+    }
+}
+
+.table-striped > tbody > tr:nth-child(odd) td {
+    background-color: $pics_cool_grey;
+}
+
+.table tbody > tr > td,
+.table-striped > tbody > tr:nth-child(odd) td,
+.table-striped > tbody > tr:nth-child(even) td {
+    border: 0;
+    vertical-align: middle;
+
+    i {
+        color: $default_pewter;
+    }
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+
+        i {
+            color: $success_light;
+        }
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+
+        i {
+            color: $warning_med;
+        }
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+
+        i {
+            color: $danger_light;
+        }
+    }
+}
+
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+
+.table-striped > tbody > tr.odd td {
+    background-color: $pics_cool_grey;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
+}
+
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+.table-striped > tbody > tr.even td {
+    background-color: none;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
+}
+
+
+
+
+.table-hover tbody tr:hover td {
+    background-color: $primary-tint;
+}
+
+.table td a {
+    display: block;
+}

@@ -27,7 +27,7 @@ public class RoleStatusModelFactoryTest {
 	public void testCreate() throws Exception {
 		Role role = getFakeRole();
 
-		List<SkillModel> skills = Arrays.asList(new SkillModel());
+		List<SkillStatusModel> skills = Arrays.asList(new SkillStatusModel());
 
 		RoleStatusModel roleStatusModel = factory.create(role, skills, SkillStatus.Complete);
 

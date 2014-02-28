@@ -1,0 +1,40 @@
+<div ng-controller="operatorEmployeeCtrl" class="operator-employee-page">
+    <div class="container">
+        <pagetitle title="Live ID"></pagetitle>
+
+        <div class="row employee-info">
+            <div class="col-md-3">
+                <figure class="employee-image img-thumbnail">
+                    <img src="{{ employee.image }}" class="img-responsive" alt="{{ employee.firstName }} {{employee.lastName}}" width="250" height="250"/>
+                </figure>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-9">
+                        <p class="name">{{ employee.firstName }} {{employee.lastName}}</p>
+                        <ul class="list-unstyled">
+                            <li ng-repeat-start="company in employee.companies">
+                                {{ company.name }}
+                            </li>
+                            <li ng-repeat-end>
+                                {{ company.title }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <skillstatusicon status="{{highlightedStatus}}"></skillstatusicon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <skillnavigationmenu employee="employee" onmenuitemclick="changeSubView"></skillnavigationmenu>
+            </div>
+            <div class="col-md-9">
+                <ng-include src="'/angular/src/app/employeeguard/operator/employee/' + subview + '.tpl.html'"></ng-include>
+            </div>
+        </div>
+    </div>
+</div>

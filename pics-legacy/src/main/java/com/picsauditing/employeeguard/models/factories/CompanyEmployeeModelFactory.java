@@ -1,10 +1,7 @@
 package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.models.CompanyEmployeeModel;
-import com.picsauditing.employeeguard.models.CompanyModel;
-import com.picsauditing.employeeguard.models.ProjectModel;
-import com.picsauditing.employeeguard.models.RoleModel;
+import com.picsauditing.employeeguard.models.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -15,7 +12,7 @@ import java.util.Map;
 public class CompanyEmployeeModelFactory {
 
 	public List<CompanyEmployeeModel> create(final List<Employee> employees,
-											 final Map<Integer, List<CompanyModel>> companies) {
+											 final Map<Integer, List<EmploymentInfoModel>> companies) {
 		if (CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyList();
 		}
@@ -30,7 +27,7 @@ public class CompanyEmployeeModelFactory {
 	}
 
 	public CompanyEmployeeModel create(final Employee employee,
-									   final List<CompanyModel> companies,
+									   final List<EmploymentInfoModel> companies,
 									   final List<? extends ProjectModel> projects,
 									   final List<? extends RoleModel> roles) {
 		CompanyEmployeeModel companyEmployeeModel = new CompanyEmployeeModel();

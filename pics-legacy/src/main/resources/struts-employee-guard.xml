@@ -81,8 +81,11 @@
         </action>
 
         <!-- Operator view of employee -->
-        <action name="{siteId}/skills/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
-            <result name="show">/struts/employee-guard/operator/employee/show.jsp</result>
+        <action name="skills/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
+        </action>
+
+        <action name="employees" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+            <result>/struts/employee-guard/index.jsp</result>
         </action>
     </package>
 
