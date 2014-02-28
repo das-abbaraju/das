@@ -2,9 +2,9 @@
 .*
 # except for .gitignore
 !.gitignore
-!pics-web/src/main/webapp/v7/js/extjs/pics/extjs/src/fx/target
 
 target/
+!pics-web/src/main/webapp/v7/js/extjs/pics/extjs/src/fx/target
 /bin
 *.iml
 *.log
