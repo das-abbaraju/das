@@ -87,7 +87,7 @@ public class MainSearchTest extends PicsActionTest {
         queryList.add(bdb1);
         queryList.add(bdb2);
         when(db.getAllRows()).thenReturn(100);
-        when(db.select(query1, true)).thenReturn(queryList);
+        when(db.selectReadOnly(query1, true)).thenReturn(queryList);
         when(bdb1.get("indexType")).thenReturn("CO");
         when(bdb1.get("foreignKey")).thenReturn("1100");
         when(bdb2.get("indexType")).thenReturn("CO");
