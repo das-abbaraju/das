@@ -10,10 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.billing.BrainTree;
@@ -116,7 +113,7 @@ public class PaymentDetailTest extends PicsActionTest {
 
 	@Test
 	public void testGetOverallInvoiceCurrency_InvoicesHaveDifferenceCurrencies() throws Exception {
-		when(contractor.getCountry()).thenReturn(new Country("US"));
+        when(contractor.getCountry()).thenReturn(new Country("US"));
 		List<Invoice> mockInvoices = buildMockInvoiceListNotSameCurrency();
 
 		Currency result = Whitebox.invokeMethod(paymentDetail, "getOverallInvoiceCurrency", contractor, mockInvoices);
@@ -202,7 +199,19 @@ public class PaymentDetailTest extends PicsActionTest {
 		assertTrue(paymentDetail.isHasUnpaidInvoices());
 	}
 
-	private List<Invoice> buildMockInvoiceListNotSameCurrency() {
+    @Test
+    public void testProcessSeeminglyNewPayment() throws Exception {
+        paymentDetail.setPayment(payment);
+        paymentDetail.setContractor(contractor);
+        when(contractor.getCountry()).thenReturn(new Country("US"));
+        when(payment.getTotalAmount()).thenReturn(BigDecimal.TEN.negate());
+        String status = Whitebox.invokeMethod(paymentDetail, "handleButton");
+
+        assertEquals("error", status);
+        assertEquals(1,paymentDetail.getActionErrors().size());
+    }
+
+    private List<Invoice> buildMockInvoiceListNotSameCurrency() {
 		List<Invoice> mockInvoices = new ArrayList<Invoice>();
 		mockInvoices.add(buildMockInvoice(123, BigDecimal.valueOf(450), TransactionStatus.Paid, Currency.EUR));
 		mockInvoices.add(buildMockInvoice(456, BigDecimal.valueOf(250), TransactionStatus.Unpaid, Currency.CAD));
