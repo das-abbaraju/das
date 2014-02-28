@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 
-public class EmployeeService implements EntityService<Employee, Integer>, Searchable<Employee> {
+public class EmployeeEntityService implements EntityService<Employee, Integer>, Searchable<Employee> {
 
 	@Autowired
 	private EmployeeDAO employeeDAO;
