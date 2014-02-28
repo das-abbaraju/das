@@ -85,7 +85,7 @@ public class FlagChangesEmailTask implements CronTask {
         query.append("where changes >= 10 and changes/total > .05 ");
         query.append("order by percent desc ");
 
-        List<BasicDynaBean> data = database.select(query.toString(), true);
+        List<BasicDynaBean> data = database.selectReadOnly(query.toString(), true);
         return data;
     }
 

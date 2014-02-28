@@ -132,7 +132,7 @@ public class SmartFacilitySuggest {
 			sql.setLimit(limit);
 
 		Database db = database();
-		return db.select(sql.toString(), false);
+		return db.selectReadOnly(sql.toString(), false);
 	}
 
 	private static void addFields(SelectSQL sql, String alias) {

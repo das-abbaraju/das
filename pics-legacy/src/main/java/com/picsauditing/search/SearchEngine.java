@@ -54,7 +54,7 @@ public class SearchEngine {
 			return results;
 		List<BasicDynaBean> temp;
 		try {
-			temp = db.select(conQuery, false);
+			temp = db.selectReadOnly(conQuery, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -397,7 +397,7 @@ public class SearchEngine {
 		if (onlyValid)
 			fullQuery.append(") AS termsTable\n WHERE termsTable.t IS NOT NULL");
 		try {
-			l = db.select(fullQuery.toString(), false);
+			l = db.selectReadOnly(fullQuery.toString(), false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

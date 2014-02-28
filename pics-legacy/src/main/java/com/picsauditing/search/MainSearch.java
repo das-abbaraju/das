@@ -104,12 +104,12 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				ht = searchEngine.getConIds(permissions);
 				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", startIndex,
 						50, false, true);
-				List<BasicDynaBean> queryList = db.select(query, true);
+				List<BasicDynaBean> queryList = db.selectReadOnly(query, true);
 				totalRows = db.getAllRows();
 
 				if (queryList == null || queryList.size() == 0) {
                     String querySql = searchEngine.buildAccountSearch(permissions, terms);
-                    queryList = db.select(querySql, true);
+                    queryList = db.selectReadOnly(querySql, true);
 				}
 
                 fullList = getFullResults(queryList);
@@ -144,12 +144,12 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			} else {
 				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", 0, 10,
 						false, false);
-				List<BasicDynaBean> queryList = db.select(query, true);
+				List<BasicDynaBean> queryList = db.selectReadOnly(query, true);
 				totalRows = db.getAllRows();
 				if (queryList != null && queryList.size() > 0)
 					getResults(queryList);
 				else {
-					queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
+					queryList = db.selectReadOnly(searchEngine.buildAccountSearch(permissions, terms), true);
 					getResults(queryList);
                     totalRows = db.getAllRows();
 				}

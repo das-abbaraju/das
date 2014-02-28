@@ -159,7 +159,7 @@ public class SeleniumDAO {
 			for (String column : resultColumns)
 				SQL.addField(column);
 			SQL.addWhere(whereColumn + " LIKE '" + TEST_ACCOUNT_NAME_DELIMITER + "%'");
-			return db.select(SQL.toString(), false);
+			return db.selectReadOnly(SQL.toString(), false);
 		} catch (SQLException e) {
 			System.out.println("Error in SeleniumDAO!!");
 			return new ArrayList<>();

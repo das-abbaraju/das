@@ -957,7 +957,7 @@ public class UsersManage extends PicsActionSupport {
 				sql.addWhere("status IN ('Active', 'Deactivated', 'Pending', 'Demo') AND name LIKE '" + like + "%'");
 				sql.addOrderBy("a.name");
 				Database db = new Database();
-				return db.select(sql.toString(), true);
+				return db.selectReadOnly(sql.toString(), true);
 			}
 		}
 

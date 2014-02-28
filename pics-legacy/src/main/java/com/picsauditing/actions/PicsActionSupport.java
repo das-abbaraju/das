@@ -637,7 +637,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		sql.addField("u.department");
 		sql.addOrderBy("u.department");
 		Database db = new Database();
-		return db.select(sql.toString(), true);
+		return db.selectReadOnly(sql.toString(), true);
 	}
 
 	public Set<User> getAuditorList() {

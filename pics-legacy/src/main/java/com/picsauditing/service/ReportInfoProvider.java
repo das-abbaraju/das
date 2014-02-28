@@ -68,7 +68,7 @@ public class ReportInfoProvider implements Paginatable<ReportInfo> {
             sql.addField("count(r.id) AS count");
 
             Database db = new Database();
-            List<BasicDynaBean> results = db.select(sql.toString(), false);
+            List<BasicDynaBean> results = db.selectReadOnly(sql.toString(), false);
 
             return Database.toInt(results.get(0), "count");
         } catch (Exception e) {
