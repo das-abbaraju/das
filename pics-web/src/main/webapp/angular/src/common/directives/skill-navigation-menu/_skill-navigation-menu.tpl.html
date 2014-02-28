@@ -3,7 +3,7 @@
         <ul class="nav" role="menu">
             <li ng-click="select('All')" ng-class="{active: isSelected('All')}">
                 <a href="#" ng-click="onmenuitemclick('all')">All
-                    <skillstatusicon status="{{employee.overallStatus}}"></skillstatusicon>
+                    <skillstatusicon status="{{ employee.status }}"></skillstatusicon>
                 </a>
             </li>
             <li class="nav-divider"></li>

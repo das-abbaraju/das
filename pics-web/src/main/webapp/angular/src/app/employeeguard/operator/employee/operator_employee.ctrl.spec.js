@@ -3,7 +3,7 @@ describe('An Operator Employee', function() {
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller, $http, $httpBackend) {
+    beforeEach(inject(function($rootScope, $controller, $http, $httpBackend, $routeParams) {
         var result = {
             id: 24,
             projects:[
@@ -65,8 +65,10 @@ describe('An Operator Employee', function() {
             image:"http://www.i-mockery.com/minimocks/ghostbusters2/psychic3.gif"
         };
 
+        $routeParams.id = Math.floor((Math.random()*1000)+1);
+
         //This needs to come first!!
-        $httpBackend.when('GET', '/angular/json/newdata.json').respond(result);
+        $httpBackend.when('GET', /\/employee-guard\/operators\/skills\/employees\/[0-9]+/).respond(result);
 
         scope = $rootScope.$new();
         $controller("operatorEmployeeCtrl", {
