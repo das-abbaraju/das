@@ -131,7 +131,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			try {
 				processSeeminglyNewPayment();
 			} catch (Exception e) {
-				addActionError("One or more of the invoices is already paid in full");
 				return ERROR;
 			}
 		}
@@ -183,6 +182,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		for (Integer invoiceID : amountApplyMap.keySet()) {
 			Invoice invoice = invoiceDAO.find(invoiceID);
 			if (invoice != null && invoice.isApplied() && !amountApplyMap.get(invoiceID).equals(BigDecimal.ZERO.setScale(2))) {
+                addActionError("One or more of the invoices is already paid in full");
 				throw new Exception();
 			}
 		}
