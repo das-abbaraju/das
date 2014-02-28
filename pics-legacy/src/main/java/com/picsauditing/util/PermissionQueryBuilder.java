@@ -5,8 +5,8 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.models.ModelType;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class PermissionQueryBuilder {
 	private static final String PERMISSION_DENIED = "1=0";
@@ -22,7 +22,7 @@ public class PermissionQueryBuilder {
     private boolean excludeWorkStatus;
     private boolean ignoreDefaultStatuses;
 
-	private Set<AccountStatus> visibleStatuses = new HashSet<AccountStatus>();
+	private Set<AccountStatus> visibleStatuses = new TreeSet<>();
 
 	public PermissionQueryBuilder(Permissions permissions) {
 		this(permissions, SQL);

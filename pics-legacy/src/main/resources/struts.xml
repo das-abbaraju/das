@@ -80,6 +80,7 @@
                          class="com.picsauditing.interceptors.PicsRestWorkflowInterceptor"/>
             <interceptor name="formBindingInterceptor"
                          class="com.picsauditing.interceptors.PicsFormBindingInterceptor"/>
+            <interceptor name="menuContextInterceptor" class="com.picsauditing.interceptors.MenuContextInterceptor"/>
 
 			<!-- Default Interceptor Stack for PICS Action Classes -->
 			<interceptor-stack name="picsStack">
@@ -120,6 +121,7 @@
 				</interceptor-ref>
 				<interceptor-ref name="redirectMessage"/>
 				<interceptor-ref name="annotationWorkflow"/>
+                <interceptor-ref name="menuContextInterceptor"/>
 			</interceptor-stack>
 
 			<!-- Default Interceptor Stack for PICS Action Classes -->
@@ -276,10 +278,12 @@
 			<result>struts/home.jsp</result>
 		</action>
 
-		<action name="Menu" class="com.picsauditing.access.Menu">
-			<result>/struts/layout/menu/_menu.jsp</result>
-			<result name="contractor-menu">/struts/layout/menu/_contractor-menu.jsp</result>
-		</action>
+        <action name="Menu" class="com.picsauditing.menu.controller.Menu">
+            <result>/struts/layout/menu/bootstrap2/_menu.jsp</result>
+            <result name="bootstrap3">/struts/layout/menu/bootstrap3/_menu.jsp</result>
+            <result name="contractor-menu">/struts/layout/menu/bootstrap2/_contractor-menu.jsp</result>
+            <result name="mobile-menu">/struts/layout/menu/mobile/_mobile-menu.jsp</result>
+        </action>
 
 		<action name="Contact" class="com.picsauditing.access.Contact">
 			<result>struts/contact_pics.jsp</result>

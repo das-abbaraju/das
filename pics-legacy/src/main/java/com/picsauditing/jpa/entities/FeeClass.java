@@ -41,13 +41,15 @@ public enum FeeClass implements Translatable {
 	},
 	AuditGUARD, EmployeeGUARD,Reviews, Activation,Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, CanadianTax, VAT, Misc, SSIPDiscountFee;
 
-	// after 2013-01-01, we can remove the insureGuard date-based pricing logic.
+    // after 2013-01-01, we can remove the insureGuard date-based pricing logic.
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
 	private static final Date Jan2013InsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
 	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-01");
+    protected static final Set<FeeClass> CONTRACTOR_PRICE_TABLE_FEE_TYPES = Collections
+            .unmodifiableSet(new TreeSet<>(Arrays.asList(DocuGUARD, AuditGUARD, EmployeeGUARD, Activation, InsureGUARD)));
 
-	public boolean isPaymentExpiresNeeded() {
+    public boolean isPaymentExpiresNeeded() {
 		return this == BidOnly || this == ListOnly || this == DocuGUARD || this == Activation || this == Reactivation;
 	}
 
@@ -118,14 +120,6 @@ public enum FeeClass implements Translatable {
 	}
 
 	public static Set<FeeClass> getContractorPriceTableFeeTypes() {
-		Set<FeeClass> feeTypes = new HashSet<FeeClass>();
-
-		feeTypes.add(DocuGUARD);
-		feeTypes.add(AuditGUARD);
-		feeTypes.add(EmployeeGUARD);
-		feeTypes.add(Activation);
-		feeTypes.add(InsureGUARD);
-
-		return feeTypes;
+        return CONTRACTOR_PRICE_TABLE_FEE_TYPES;
 	}
 }

@@ -320,6 +320,8 @@ public class AuditDataSave extends AuditActionSupport {
 
         if (tempAudit.getAuditType().getRollbackStatus() != null) {
             newStatus = tempAudit.getAuditType().getRollbackStatus();
+        } else if (tempAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin()) {
+            newStatus = AuditStatus.Resubmitted;
         } else if (tempAudit.getAuditType().getClassType().isPolicy() && cao.getStatus().after(AuditStatus.Submitted)) {
             newStatus = AuditStatus.Resubmitted;
         }

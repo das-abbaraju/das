@@ -179,6 +179,11 @@ AuditAuditorConfirm
 AuditContractorConfirm
 AuditCreationDate
 AuditDataAnswer
+AuditDataAnswerAsCheckBox
+AuditDataAnswerAsDate
+AuditDataAnswerAsFile
+AuditDataAnswerAsNumber
+AuditDataAnswerAsOptionGroup
 AuditDataComment
 AuditDataDateVerified
 AuditEffectiveDate

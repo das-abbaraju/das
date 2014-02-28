@@ -62,6 +62,10 @@ public class ContractorAuditDatasModel extends AbstractModel {
             questionName.setUrl("ManageQuestion.action?id={QuestionID}");
         }
 
+        Field questionFileDownload = fields.get("AuditDataAnswerAsFile".toUpperCase());
+        questionFileDownload.setDatabaseColumnName("'Download'");
+        questionFileDownload.setUrl("CertificateUpload.action?id={AccountID}&certID={AuditDataAnswer}&button=download");
+
         return fields;
     }
 }

@@ -1,8 +1,11 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.access.PermissionAware;
+import com.picsauditing.access.Permissions;
+
 import javax.persistence.Transient;
 
-public enum ApprovalStatus implements Translatable {
+public enum ApprovalStatus implements Translatable, PermissionAware {
 
 	/** Pending - "Pending Approval" **/
 	P,
@@ -65,4 +68,8 @@ public enum ApprovalStatus implements Translatable {
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
 	}
+
+    public boolean isVisibleTo(Permissions permissions) {
+        return (this != YF && this != NF);
+    }
 }

@@ -1,0 +1,83 @@
+#ContractorPricing__page {
+    /* BEGIN Pricing Table */
+    th,
+    td {
+        padding: 5px;
+        text-align: right;
+    }
+
+    .table-striped > tbody > tr:nth-child(even) > td:first-child,
+    .even td:first-child /* ie8 */ {
+        background: $pics_cool_grey;
+    }
+
+    .table-striped > tbody > tr:nth-child(odd) > td:first-child,
+    .odd td:first-child /* ie8 */ {
+        background: $default_mercury;
+    }
+
+    td.applies  {
+        background: $primary_tint;
+    }
+
+    table ~ p {
+        text-align: center;
+    }
+    /* END Pricing Table */
+
+    /* BEGIN Client List Panel */
+    .panel-default {
+        border: none;
+    }
+
+    .panel-heading {
+        background: $pics_cool_grey;
+    }
+
+    .panel-body {
+        background: $default_mercury;
+    }
+
+    ul {
+        margin-bottom: 0;
+    }
+
+    li {
+        white-space: nowrap;
+
+        &.more {
+            display: none;
+        }
+    }
+
+    .contractor-tier-arrow {
+        display: none;
+        left: 5px;
+        position: absolute;
+    }
+
+    .show-more-link {
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .show-less-link {
+        display: none;
+    }
+
+    .client-list-panel.expanded {
+        li.more {
+            display: block;
+        }
+
+        .show-more-link {
+            display: none;
+        }
+
+        .show-less-link {
+            display: inline-block;
+            margin-top: 20px;
+        }
+    }
+    /* END Client List Panel */
+}

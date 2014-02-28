@@ -1,6 +1,8 @@
 Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
+    renderTo: Ext.get('viewport'),
+
     requires: [
         'Ext.layout.container.Border',
         'Ext.resizer.Splitter',
@@ -13,11 +15,8 @@ Ext.define('PICS.view.report.Viewport', {
     ],
 
     items: [{
-    	xtype: 'layoutheader',
-        region: 'north'
-    }, {
         region: 'center',
-
+        margin: '50 0 0 0',
         border: 0,
         id: 'content',
         items: [{
@@ -32,5 +31,6 @@ Ext.define('PICS.view.report.Viewport', {
         }],
         layout: 'border'
     }],
+
     layout: 'border'
 });

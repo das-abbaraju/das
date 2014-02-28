@@ -11,6 +11,7 @@ import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.service.PermissionService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -40,6 +41,8 @@ public class ReportApi extends PicsApiSupport {
 
 	@Autowired
 	protected ReportService reportService;
+    @Autowired
+    protected PermissionService permissionService;
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
 	@Autowired
@@ -240,18 +243,20 @@ public class ReportApi extends PicsApiSupport {
         try {
             report = reportDao.findById(reportId);
 
-            List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(permissions.getUserId(), report.getId());
-            EmailSubscription reportSubscription;
+            if (permissionService.canUserViewReport(getUser(), report, permissions)) {
+                List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(permissions.getUserId(), report.getId());
+                EmailSubscription reportSubscription;
 
-            if (subscriptions.isEmpty())
-                reportSubscription = Subscription.DynamicReports.createEmailSubscription(new User(permissions.getUserId()));
-            else
-                reportSubscription = subscriptions.get(0);
+                if (subscriptions.isEmpty())
+                    reportSubscription = Subscription.DynamicReports.createEmailSubscription(new User(permissions.getUserId()));
+                else
+                    reportSubscription = subscriptions.get(0);
 
-            reportSubscription.setTimePeriod(frequency);
-            reportSubscription.setReport(report);
+                reportSubscription.setTimePeriod(frequency);
+                reportSubscription.setReport(report);
 
-            emailSubscriptionDAO.save(reportSubscription);
+                emailSubscriptionDAO.save(reportSubscription);
+            }
         } catch (Exception e) {
             logger.error("Error setting subscription", e);
         }
@@ -380,6 +385,10 @@ public class ReportApi extends PicsApiSupport {
     }
 
     public User getUser() {
+        if (user == null) {
+            loadPermissions();
+            user = getUser(permissions.getUserId());
+        }
         return user;
     }
 

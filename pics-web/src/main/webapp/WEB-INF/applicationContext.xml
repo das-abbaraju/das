@@ -50,7 +50,6 @@
     <bean id="AutocompleteDAO" class="com.picsauditing.dao.AutocompleteDAO"/>
     <bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
     <bean id="ContactUsService" class="com.picsauditing.user.service.ContactUsService" scope="prototype"/>
-    <bean id="ContractorFacilitiesService" class="com.picsauditing.contractor.service.ContractorFacilitiesService" scope="prototype"/>
     <bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
     <bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
     <bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
@@ -253,6 +252,7 @@
           scope="singleton"/>
     <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService"/>
     <bean id="ServiceRiskCalculator" class="com.picsauditing.actions.contractors.risk.ServiceRiskCalculator" />
+    <bean id="PricingTiersBuilder" class="com.picsauditing.service.contractor.PricingTiersBuilder" />
     <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService" />
 
     <!-- Autocompletes -->
@@ -310,7 +310,7 @@
     <bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
     <bean id="ReportPermissionInfoConverter" class="com.picsauditing.service.ReportPermissionInfoConverter"/>
-    <bean id="ContractorSubmenuBuilder" class="com.picsauditing.access.ContractorSubmenuBuilder"/>
+    <bean id="ContractorSubmenuBuilder" class="com.picsauditing.menu.builder.ContractorSubmenuBuilder"/>
     <bean id="ContractorActionSupport" class="com.picsauditing.actions.contractors.ContractorActionSupport" scope="prototype"/>
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>

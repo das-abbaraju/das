@@ -668,7 +668,7 @@ public class UsersManage extends PicsActionSupport {
 			return true;
 		}
 
-		return false;
+		return setPrimaryAccount;
 	}
 
 	private boolean hasAtLeastOneActiveUserWithRole(Account account, OpPerms userRole) {
@@ -1263,5 +1263,17 @@ public class UsersManage extends PicsActionSupport {
 
 		addActionMessage("Successfully removed country");
 		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+	}
+
+	public ContractorAccount getContractor() {
+		if (account != null && account.isContractor()) {
+			return (ContractorAccount) account;
+		}
+
+		return null;
+	}
+
+	public boolean isShowContractorSubmenu() {
+		return account != null && account.isContractor();
 	}
 }
