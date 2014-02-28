@@ -12,6 +12,9 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.account.AccountService;
 import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.billing.RegistrationBillingBean;
+import com.picsauditing.service.registration.RegistrationRequestService;
+import com.picsauditing.service.registration.RegistrationService;
+import com.picsauditing.service.registration.RegistrationSubmission;
 import com.picsauditing.util.*;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
@@ -63,6 +66,10 @@ public class Registration extends RegistrationAction implements AjaxValidator {
     private AccountService accountService;
     @Autowired
     private RegistrationBillingBean billingBean;
+    @Autowired
+    private RegistrationRequestService regReqService;
+    @Autowired
+    private RegistrationService registrationService;
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
@@ -75,59 +82,54 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		}
 	}
 
+    //TODO: Extract this logic to an Interceptor Annotation
+    private boolean loggedIn() {
+        loadPermissions(false);
+        return permissions.isLoggedIn() && !permissions.isDeveloperEnvironment();
+    }
+
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
-		loadPermissions(false);
-		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
+
+		if (loggedIn()) {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
-			return SUCCESS;
+            return SUCCESS;
 		}
 
-		if (!Strings.isEmpty(registrationKey)) {
-			List<ContractorAccount> requestsByHash = contractorAccountDao.findWhere("a.registrationHash = '"
-					+ registrationKey + "'");
+        setBaseLocaleFromRequestData();
 
-			if (requestsByHash != null && !requestsByHash.isEmpty()) {
-				ContractorAccount tempContractor = requestsByHash.get(0);
-				if (!tempContractor.getStatus().isRequested()) {
-					// Clear hash
-					tempContractor.setRegistrationHash(null);
-					contractorAccountDao.save(tempContractor);
-				} else {
-					// Fill out registration form based on registration request
-					contractor = tempContractor;
-					user = contractor.getPrimaryContact();
-					user.setUsername(user.getEmail());
-				}
+        if (!Strings.isEmpty(registrationKey)) {
+            contractor = regReqService.preRegistrationFromKey(registrationKey);
+            user = contractor.getPrimaryContact();
+            user.setUsername(user.getEmail());
+        }
 
-			}
-		}
-
-		if (Strings.isEmpty(language)) {
-			ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
-					.getVisibleLanguages());
-			Locale locale = languageUtility.getBrowserLocale();
-			language = languageUtility.getBrowserLanguage();
-			dialect = languageUtility.getBrowserDialect();
-
-			ActionContext context = ActionContext.getContext();
-			if (context != null) {
-				locale = context.getLocale();
-
-				if (locale != null) {
-					language = locale.getLanguage();
-					dialect = locale.getCountry();
-				}
-			}
-
-			ActionContext.getContext().setLocale(locale);
-		}
-
-		return SUCCESS;
+        return SUCCESS;
 	}
 
-	@Anonymous
+    private void setBaseLocaleFromRequestData() {
+        if (!Strings.isEmpty(language)) return;
+        ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
+                .getVisibleLanguages());
+        Locale locale = languageUtility.getBrowserLocale();
+        language = languageUtility.getBrowserLanguage();
+        dialect = languageUtility.getBrowserDialect();
+
+        ActionContext context = ActionContext.getContext();
+        if (context != null) {
+            locale = context.getLocale();
+
+            if (locale != null) {
+                language = locale.getLanguage();
+                dialect = locale.getCountry();
+            }
+        }
+
+        ActionContext.getContext().setLocale(locale);
+    }
+
+    @Anonymous
 	public String dialects() {
 		return SUCCESS;
 	}
@@ -155,13 +157,11 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 	@Anonymous
 	public String createAccount() throws Exception {
-		loadPermissions(false);
-		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
+
+		if (loggedIn()) {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
 		}
-
-		permissions = null;
 
 		setupUserData();
 		setupContractorData();

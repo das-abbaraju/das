@@ -24,7 +24,7 @@
 
 <s:set var="country_subdivision_iso_code" value="registrationKey ? contractor.countrySubdivision.isoCode : countrySubdivision.isoCode" />
 
-<s:set name="chat_url" value="%{chatUrl}"></s:set>
+<s:set name="chat_url" value="%{chatUrl}" />
 
 <s:if test="hasActionErrors()">
 	<s:actionerror cssClass="action-error alert-message error" />
