@@ -15,6 +15,7 @@ import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -32,6 +33,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -291,7 +294,7 @@ public class LoginController extends PicsActionSupport {
 
 		} catch (InvalidResetKeyException e) {
 			setActionErrorHeader(getText("Login.Failed"));
-			logAndMessageError(getTextParameterized("Login.ResetCodeExpired", e.getUsername()));
+			logAndMessageError(getTextParameterized("Login.ResetCodeHasExpired", getResendEmailAction(getRequestHost(), e.getUsername())));
 			return ERROR;
 		} catch (AccountNotFoundException e) {
 			setActionErrorHeader(getText("Login.Failed"));
@@ -302,7 +305,7 @@ public class LoginController extends PicsActionSupport {
 			logAndMessageError(getTextParameterized("Login.TooManyFailedAttempts"));
 			return ERROR;
 		} catch (AccountInactiveException e) {
-			logAndMessageError(getTextParameterized("Login.AccountNotActive", e.getUsername()));
+			logAndMessageError(getTextParameterized("Login.AccountNotActive", getRequestHost(), e.getUsername()));
 			return ERROR;
 		} catch (PasswordExpiredException e) {
 			logAndMessageError(getText("Login.PasswordExpired"));
@@ -313,6 +316,17 @@ public class LoginController extends PicsActionSupport {
 		// todo: Continue to move the rest of this method to services as needed.
 		return doLogin();
 	}
+
+    private String getResendEmailAction(String server, String userName) {
+        String serverName = server.replace("http://", "https://");
+
+        Map<String, Object> parameters = new TreeMap<>();
+        parameters.put("username", userName);
+
+        URLUtils urlUtils = new URLUtils();
+
+        return serverName + urlUtils.getActionUrl("AccountRecovery", parameters);
+    }
 
 	private String loginNormally() throws Exception {
 		if (!verifyCookiesAreEnabled()) {
