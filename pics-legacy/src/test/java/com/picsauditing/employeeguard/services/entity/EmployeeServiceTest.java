@@ -21,30 +21,30 @@ import static org.mockito.Mockito.*;
 
 public class EmployeeServiceTest {
 
-	private EmployeeService employeeService;
+	private EmployeeEntityService employeeEntityService;
 
 	@Mock
 	private EmployeeDAO employeeDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		employeeService = new EmployeeService();
+		employeeEntityService = new EmployeeEntityService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(employeeService, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(employeeEntityService, "employeeDAO", employeeDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
-		employeeService.find(null);
+		employeeEntityService.find(null);
 	}
 
 	@Test
 	public void testFind() throws Exception {
 		when(employeeDAO.find(ENTITY_ID)).thenReturn(buildFakeEmployee());
 
-		Employee employee = employeeService.find(ENTITY_ID);
+		Employee employee = employeeEntityService.find(ENTITY_ID);
 
 		assertNotNull(employee);
 		assertEquals(ENTITY_ID, employee.getId());
@@ -52,13 +52,13 @@ public class EmployeeServiceTest {
 
 	@Test
 	public void testSearch_NullOrEmpty() throws Exception {
-		List<Employee> employees = employeeService.search(null, ACCOUNT_ID);
+		List<Employee> employees = employeeEntityService.search(null, ACCOUNT_ID);
 
 		assertNotNull(employees);
 		assertTrue(employees.isEmpty());
 		verify(employeeDAO, never()).search(anyString(), anyInt());
 
-		employees = employeeService.search(Strings.EMPTY_STRING, ACCOUNT_ID);
+		employees = employeeEntityService.search(Strings.EMPTY_STRING, ACCOUNT_ID);
 
 		assertNotNull(employees);
 		assertTrue(employees.isEmpty());
@@ -69,7 +69,7 @@ public class EmployeeServiceTest {
 	public void testSearch() throws Exception {
 		when(employeeDAO.search(SEARCH_TERM, ACCOUNT_ID)).thenReturn(Arrays.asList(buildFakeEmployee()));
 
-		List<Employee> employees = employeeService.search(SEARCH_TERM, ACCOUNT_ID);
+		List<Employee> employees = employeeEntityService.search(SEARCH_TERM, ACCOUNT_ID);
 
 		verify(employeeDAO).search(SEARCH_TERM, ACCOUNT_ID);
 		assertNotNull(employees);
@@ -82,7 +82,7 @@ public class EmployeeServiceTest {
 
 		when(employeeDAO.save(fakeEmployee)).thenReturn(fakeEmployee);
 
-		Employee result = employeeService.save(fakeEmployee, CREATED);
+		Employee result = employeeEntityService.save(fakeEmployee, CREATED);
 
 		assertNotNull(result);
 		assertEquals(fakeEmployee.getId(), result.getId());
@@ -101,7 +101,7 @@ public class EmployeeServiceTest {
 		when(employeeDAO.find(fakeEmployee.getId())).thenReturn(fakeEmployee);
 		when(employeeDAO.save(fakeEmployee)).thenReturn(fakeEmployee);
 
-		Employee result = employeeService.update(updatedEmployee, UPDATED);
+		Employee result = employeeEntityService.update(updatedEmployee, UPDATED);
 
 		assertNotNull(result);
 		assertEquals(updatedEmployee.getId(), result.getId());
@@ -116,7 +116,7 @@ public class EmployeeServiceTest {
 	public void testDelete() throws Exception {
 		Employee fakeEmployee = buildFakeEmployee();
 
-		employeeService.delete(fakeEmployee);
+		employeeEntityService.delete(fakeEmployee);
 
 		verify(employeeDAO).delete(fakeEmployee);
 	}
@@ -127,7 +127,7 @@ public class EmployeeServiceTest {
 
 		when(employeeDAO.find(fakeEmployee.getId())).thenReturn(fakeEmployee);
 
-		employeeService.deleteById(fakeEmployee.getId());
+		employeeEntityService.deleteById(fakeEmployee.getId());
 
 		verify(employeeDAO).find(fakeEmployee.getId());
 		verify(employeeDAO).delete(fakeEmployee);

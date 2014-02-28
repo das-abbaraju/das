@@ -1,12 +1,19 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.util.PhotoUtil;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +21,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 	@Autowired
 	private EmployeeDAO employeeDAO;
+	@Autowired
+	private PhotoUtil photoUtil;
 
 	/* All Find Methods */
 
@@ -24,6 +33,26 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		}
 
 		return employeeDAO.find(id);
+	}
+
+	public Employee find(final int id, final int accountId) {
+		return employeeDAO.findEmployeeByAccount(id, accountId);
+	}
+
+	public List<Employee> getEmployeesForAccount(final int accountId) {
+		return employeeDAO.findByAccount(accountId);
+	}
+
+	public long getNumberOfEmployeesForAccount(final int accountId) {
+		return employeeDAO.findEmployeeCount(accountId);
+	}
+
+	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
+		return employeeDAO.findByAccounts(accountIds);
+	}
+
+	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
+		return employeeDAO.findByProjects(projects);
 	}
 
 	/* All Search Methods */
@@ -40,9 +69,14 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* All Save Methods */
 
 	@Override
-	public Employee save(Employee employee, final  EntityAuditInfo entityAuditInfo) {
+	public Employee save(Employee employee, final EntityAuditInfo entityAuditInfo) {
 		employee = EntityHelper.setCreateAuditFields(employee, entityAuditInfo);
 		return employeeDAO.save(employee);
+	}
+
+	public void save(final Collection<Employee> employees, final EntityAuditInfo entityAuditInfo) {
+		EntityHelper.setCreateAuditFields(employees, entityAuditInfo);
+		employeeDAO.save(employees);
 	}
 
 	/* All Update Methods */
@@ -82,48 +116,6 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return "EID-" + hash.substring(0, 8).toUpperCase();
 	}
 
-//	public Employee updatePersonal(PersonalInformationForm personalInformationForm, String employeeId, int accountId, int appUserId) {
-//		Employee employeeToUpdate = findEmployee(employeeId, accountId);
-//
-//		employeeToUpdate.setFirstName(personalInformationForm.getFirstName());
-//		employeeToUpdate.setLastName(personalInformationForm.getLastName());
-//		employeeToUpdate.setEmail(personalInformationForm.getEmail());
-//		employeeToUpdate.setPhone(personalInformationForm.getPhoneNumber());
-//
-//		EntityHelper.setUpdateAuditFields(employeeToUpdate, appUserId, new Date());
-//
-//		return employeeDAO.save(employeeToUpdate);
-//	}
-//
-//	public Employee updateEmployment(EmployeeEmploymentForm employeeEmploymentForm, final String employeeId, final int accountId, final int appUserId) {
-//		Employee employeeInDatabase = findEmployee(employeeId, accountId);
-//		Date timestamp = new Date();
-//		Employee updatedEmployee = buildEmployeeFromForm(employeeEmploymentForm, employeeInDatabase, accountId);
-//
-//		List<GroupEmployee> groupEmployees = IntersectionAndComplementProcess.intersection(
-//				updatedEmployee.getGroups(),
-//				employeeInDatabase.getGroups(),
-//				GroupEmployee.COMPARATOR,
-//				new BaseEntityCallback(appUserId, new Date()));
-//		employeeInDatabase.setGroups(groupEmployees);
-//
-//		if (Strings.isEmpty(updatedEmployee.getSlug())) {
-//			String hash = Strings.hashUrlSafe(employeeInDatabase.getAccountId() + employeeInDatabase.getEmail());
-//			employeeInDatabase.setSlug("EID-" + hash.substring(0, 8).toUpperCase());
-//		} else {
-//			employeeInDatabase.setSlug(updatedEmployee.getSlug());
-//		}
-//
-//		employeeInDatabase.setPositionName(updatedEmployee.getPositionName());
-//
-//		EntityHelper.setUpdateAuditFields(employeeInDatabase, appUserId, timestamp);
-//		employeeInDatabase = employeeDAO.save(employeeInDatabase);
-//
-//		accountSkillEmployeeService.linkEmployeeToSkills(employeeInDatabase, appUserId, timestamp);
-//
-//		return employeeInDatabase;
-//	}
-
 	/* All Delete Methods */
 
 	@Override
@@ -143,5 +135,27 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 		Employee employee = find(id);
 		delete(employee);
+	}
+
+	public void delete(final int id, final int accountId) {
+		Employee employee = find(id, accountId);
+		delete(employee);
+	}
+
+	/* Additional Methods */
+
+	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
+								final int accountId) throws Exception {
+
+		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
+
+		if (photoUtil.isValidExtension(extension)) {
+			String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
+			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, id, extension, filename);
+		} else {
+			throw new IllegalArgumentException("Invalid file format");
+		}
+
+		return find(id, accountId);
 	}
 }

@@ -15,6 +15,7 @@ import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
@@ -39,39 +40,41 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private EmployeeEntityService employeeEntityService;
 	@Deprecated
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
-	private PhotoUtil photoUtil;
-	@Autowired
 	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
+	@Deprecated
 	public Employee findEmployee(final String id) {
-		return employeeDAO.find(NumberUtils.toInt(id));
+		return employeeEntityService.find(NumberUtils.toInt(id));
 	}
 
+	@Deprecated
 	public Employee findEmployee(final String id, final int accountId) {
-		int employeeId = NumberUtils.toInt(id);
-
-		return employeeDAO.findEmployeeByAccount(employeeId, accountId);
+		return employeeEntityService.find(NumberUtils.toInt(id), accountId);
 	}
 
+	@Deprecated
 	public List<Employee> getEmployeesForAccount(final int accountId) {
-		return employeeDAO.findByAccount(accountId);
+		return employeeEntityService.getEmployeesForAccount(accountId);
 	}
 
+	@Deprecated
 	public long getNumberOfEmployeesForAccount(final int accountId) {
-		return employeeDAO.findEmployeeCount(accountId);
+		return employeeEntityService.getNumberOfEmployeesForAccount(accountId);
 	}
 
+	@Deprecated
 	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
-		return employeeDAO.findByAccounts(accountIds);
+		return employeeEntityService.getEmployeesForAccounts(accountIds);
 	}
 
+	@Deprecated
 	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
-		return employeeDAO.findByProjects(projects);
+		return employeeEntityService.getEmployeesByProjects(projects);
 	}
 
 	public List<Employee> getEmployeesAssignedToSite(final int accountId, final int siteId) {
@@ -264,18 +267,9 @@ public class EmployeeService {
 		return employeeInDatabase;
 	}
 
+	@Deprecated
 	public Employee updatePhoto(PhotoForm photoForm, String directory, String id, int accountId) throws Exception {
-		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
-
-		if (photoUtil.isValidExtension(extension)) {
-			int employeeId = NumberUtils.toInt(id);
-			String filename = PICSFileType.employee_photo.filename(employeeId) + "-" + accountId;
-			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, employeeId, extension, filename);
-		} else {
-			throw new IllegalArgumentException("Invalid file format");
-		}
-
-		return findEmployee(id, accountId);
+		return employeeEntityService.updatePhoto(photoForm, directory, NumberUtils.toInt(id), accountId);
 	}
 
 	private Employee buildEmployeeFromForm(EmployeeEmploymentForm employeeEmploymentForm, Employee employeeFromDatabase, int accountId) {
@@ -330,18 +324,14 @@ public class EmployeeService {
 		return groupNames;
 	}
 
+	@Deprecated
 	public void delete(final String id, final int accountId, final int appUserId) {
-		Employee employee = findEmployee(id, accountId);
-		EntityHelper.softDelete(employee, appUserId);
-		employeeDAO.delete(employee);
+		employeeEntityService.delete(NumberUtils.toInt(id), accountId);
 	}
 
+	@Deprecated
 	public List<Employee> search(final String searchTerm, final int accountId) {
-		if (Strings.isNotEmpty(searchTerm)) {
-			return employeeDAO.search(searchTerm, accountId);
-		}
-
-		return Collections.emptyList();
+		return employeeEntityService.search(searchTerm, accountId);
 	}
 
 	public void linkEmployeeToProfile(SoftDeletedEmployee employee, final Profile profile) {

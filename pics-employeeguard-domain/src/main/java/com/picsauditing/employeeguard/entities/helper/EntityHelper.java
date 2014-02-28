@@ -106,4 +106,30 @@ public class EntityHelper {
 		entity.setUpdatedDate(entityAuditInfo.getTimestamp());
 		return entity;
 	}
+
+	public static <E extends BaseEntity> Collection<E> setCreateAuditFields(final Collection<E> entities,
+																			final EntityAuditInfo entityAuditInfo) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return entities;
+		}
+
+		for (E entity : entities) {
+			setCreateAuditFields(entity, entityAuditInfo);
+		}
+
+		return entities;
+	}
+
+	public static <E extends BaseEntity> Collection<E> setUpdateAuditFields(final Collection<E> entities,
+																			final EntityAuditInfo entityAuditInfo) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return entities;
+		}
+
+		for (E entity : entities) {
+			setUpdateAuditFields(entity, entityAuditInfo);
+		}
+
+		return entities;
+	}
 }
