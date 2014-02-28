@@ -83,7 +83,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 		int acNum = 0, opNum = 0, coNum = 0, emNum = 0, inNum = 0, usNum = 0;
 		int sum = 0;
 		if(results.containsKey(SearchTables.Accounts)){
-			accountsList = db.select(results.get(SearchTables.Accounts), false);
+			accountsList = db.selectReadOnly(results.get(SearchTables.Accounts), false);
 			acNum = accountsList.size();
 			sum+=acNum;
 		}
@@ -108,7 +108,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 			sum+=inNum;
 		}*/
 		if(results.containsKey(SearchTables.Users)){
-			usersList = db.select(results.get(SearchTables.Users), false);
+			usersList = db.selectReadOnly(results.get(SearchTables.Users), false);
 			usNum = usersList.size();
 			sum+=usNum;
 		}

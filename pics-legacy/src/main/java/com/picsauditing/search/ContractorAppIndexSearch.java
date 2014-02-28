@@ -59,7 +59,7 @@ public class ContractorAppIndexSearch {
 					+ Strings.escapeQuotesAndSlashes(searchType) + "'"), null, 20, false, true);
 
 			try {
-				results = database.select(query, false);
+				results = database.selectReadOnly(query, false);
 			} catch (SQLException e) {
 				logger.error("Error running query", e.getStackTrace());
 				return null;
@@ -104,7 +104,7 @@ public class ContractorAppIndexSearch {
 	}
 
 	private void buildContractorMatches(String searchType, Set<SearchResult> matches, List<BasicDynaBean> results) throws SQLException {
-		List<BasicDynaBean> data = database.select(buildQuery(buildIDList(results), searchType), false);
+		List<BasicDynaBean> data = database.selectReadOnly(buildQuery(buildIDList(results), searchType), false);
 		Hashtable<Integer, Integer> workingForOperator = searchEngine.getConIds(permissions);
 
 		for (BasicDynaBean contractor : data) {
