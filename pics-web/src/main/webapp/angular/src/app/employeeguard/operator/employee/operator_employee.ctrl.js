@@ -26,7 +26,7 @@ angular.module('PICS.employeeguard')
         $scope.subview = template_name;
         $scope.subview_name = subview_name;
 
-        switch(template_name) {
+        switch (template_name) {
             case 'project':
                 $scope.currentProject = model.getProjectByName(subview_name);
                 $scope.updateHighlightedStatus($scope.currentProject.status);
@@ -38,7 +38,8 @@ angular.module('PICS.employeeguard')
             case 'all':
                 $scope.updateHighlightedStatus($scope.employee.overallStatus);
                 break;
-            default: break;
+            default:
+                break;
         }
     };
 
