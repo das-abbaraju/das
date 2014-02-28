@@ -7,6 +7,6 @@ angular.module('PICS.directives')
             employee: '=',
             onmenuitemclick: '='
         },
-        templateUrl: '/angular/src/common/directives/skill-navigation/_skill-navigation.tpl.html'
+        templateUrl: '/angular/src/common/directives/skill-navigation-menu/_skill-navigation-menu.tpl.html'
     };
 });

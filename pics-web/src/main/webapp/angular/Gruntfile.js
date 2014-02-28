@@ -1,10 +1,21 @@
 module.exports = function(grunt) {
 
   var vendor_js_files = [
-    'vendor/angular/angular-loader.js',
+    'vendor/jquery/jquery-1.9.1.js',
     'vendor/angular/angular.js',
     'vendor/angular/angular-route.js',
-    'vendor/angular/angular-resource.js'
+    'vendor/angular/angular-resource.js',
+    'vendor/jquery/jquery-ui.js',
+    'vendor/bootstrap/bootstrap.js',
+    'vendor/bootstrap/bootstrap.tooltip.js',
+    'vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
+    'vendor/hogan-2.0.0.js',
+    'vendor/typeahead.js',
+    'vendor/jquery.hammer.js',
+    'vendor/mmenu/jquery.mmenu.js',
+    'vendor/mmenu/jquery.mmenu.searchfield.js',
+    'vendor/mmenu/jquery.mmenu.dragopen.js',
+    'vendor/pics/core.js'
   ];
 
   grunt.initConfig({
