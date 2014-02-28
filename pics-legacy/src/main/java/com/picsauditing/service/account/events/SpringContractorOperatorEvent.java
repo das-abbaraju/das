@@ -7,11 +7,13 @@ public class SpringContractorOperatorEvent extends ApplicationEvent implements C
 
     private final ContractorOperator contractorOperator;
     private final ContractorOperatorEventType event;
+    private final Integer generatingEventUserID;
 
-    public SpringContractorOperatorEvent(ContractorOperator contractorOperator, ContractorOperatorEventType event) {
+    public SpringContractorOperatorEvent(ContractorOperator contractorOperator, ContractorOperatorEventType event, Integer generatingEventUserID) {
         super(contractorOperator);
         this.contractorOperator = contractorOperator;
         this.event = event;
+        this.generatingEventUserID = generatingEventUserID;
     }
 
     @Override
@@ -22,5 +24,10 @@ public class SpringContractorOperatorEvent extends ApplicationEvent implements C
     @Override
     public ContractorOperator getContractorOperator() {
         return null;
+    }
+
+    @Override
+    public Integer getGeneratingEventUserID() {
+        return generatingEventUserID;
     }
 }

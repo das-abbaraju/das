@@ -153,9 +153,10 @@ public class ReportNewReqConImport extends PicsActionSupport {
                     checkRelationshipForErrors(row.getRowNum(), requestRelationship);
 
 					if (getActionErrors().size() == 0 || forceUpload) {
-                        contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
-                        primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
-                        requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
+                        // TODO: FIXME: figure out what this is and what it does and fit to new service api
+//                        contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
+//                        primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
+//                        requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
                         requestNewContractorService.addTagsToContractor(contractor, operatorTags);
 
                         if (requestRelationship.getRequestedBy().getId() != OperatorAccount.SALES) {

@@ -56,7 +56,7 @@ public class RequestNewContractorServiceTest extends PicsTest {
         ContractorOperator relationship = new ContractorOperator();
         relationship.setOperatorAccount(operator);
 
-        service.saveRelationship(contractor, relationship);
+        service.saveRelationship(relationship);
         assertEquals(contractor, relationship.getContractorAccount());
     }
 
@@ -66,7 +66,7 @@ public class RequestNewContractorServiceTest extends PicsTest {
         User primaryContact = EntityFactory.makeUser();
         primaryContact.setId(0);
 
-        service.savePrimaryContact(contractor, primaryContact);
+        service.savePrimaryContact(primaryContact);
         assertEquals(contractor, primaryContact.getAccount());
     }
 
@@ -76,7 +76,7 @@ public class RequestNewContractorServiceTest extends PicsTest {
         contractor.setId(0);
         OperatorAccount operator = EntityFactory.makeOperator();
         when(contractorAccountDAO.save(contractor)).thenReturn(contractor);
-        service.saveRequestingContractor(contractor, operator);
+        service.saveRequestedContractor(contractor);
         assertEquals(operator, contractor.getRequestedBy());
         assertTrue(contractor.getRegistrationHash() != null);
         verify(contractorAccountDAO, times(1)).save(any(BaseTable.class));

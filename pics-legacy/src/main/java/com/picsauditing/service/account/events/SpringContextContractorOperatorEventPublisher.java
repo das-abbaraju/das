@@ -13,7 +13,7 @@ public class SpringContextContractorOperatorEventPublisher implements Applicatio
     }
 
     @Override
-    public void publishEvent(ContractorOperator contractorOperator, ContractorOperatorEventType type) {
-        context.publishEvent(new SpringContractorOperatorEvent(contractorOperator, type));
+    public void publishEvent(ContractorOperator contractorOperator, ContractorOperatorEventType type, Integer generatingEventUserID) {
+        context.publishEvent(new SpringContractorOperatorEvent(contractorOperator, type, generatingEventUserID));
     }
 }

@@ -229,6 +229,18 @@
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
+
+    <bean id="AccountEventListener" class="com.picsauditing.service.email.events.listener.AccountEventListener"/>
+    <bean id="SpringContextAccountEventPublisher" class="com.picsauditing.service.account.events.SpringContextAccountEventPublisher"/>
+    <bean id="AccountService" class="com.picsauditing.service.account.AccountService">
+        <constructor-arg ref="SpringContextAccountEventPublisher"/>
+    </bean>
+    <bean id="ContractorOperatorEventListener" class="com.picsauditing.service.email.events.listener.ContractorOperatorEventListener"/>
+    <bean id="SpringContextContractorOperatorEventPublisher" class="com.picsauditing.service.account.events.SpringContextContractorOperatorEventPublisher"/>
+    <bean id="ContractorOperatorEventService" class="com.picsauditing.service.account.ContractorOperatorEventService">
+        <constructor-arg ref="SpringContextContractorOperatorEventPublisher"/>
+    </bean>
+
     <bean id="EmailBuilderService" class="com.picsauditing.service.email.EmailBuilderService"/>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>

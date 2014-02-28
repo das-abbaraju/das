@@ -5,4 +5,5 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 public interface ContractorOperatorEvent {
     ContractorOperatorEventType getEvent();
     ContractorOperator getContractorOperator();
+    Integer getGeneratingEventUserID();
 }

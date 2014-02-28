@@ -97,9 +97,15 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 		when(urlUtil.getActionUrl(anyString(), any(HashMap.class))).thenReturn("URL");
 		when(userManagementService.saveWithAuditColumnsAndRefresh(any(User.class), any(Permissions.class))).thenReturn(user);
-        when(requestNewContractorService.saveRequestingContractor(contractor, operator)).thenReturn(contractor);
-        when(requestNewContractorService.savePrimaryContact(contractor, user)).thenReturn(user);
-        when(requestNewContractorService.saveRelationship(contractor, relationship)).thenReturn(relationship);
+
+        when(requestNewContractorService.populateRequestedContractor(eq(contractor), eq(operator), any(RequestContactType.class), anyString())).thenReturn(contractor);
+        when(requestNewContractorService.saveRequestedContractor(contractor)).thenReturn(contractor);
+
+        when(requestNewContractorService.populatePrimaryContact(contractor, user)).thenReturn(user);
+        when(requestNewContractorService.savePrimaryContact(user)).thenReturn(user);
+
+        when(requestNewContractorService.populateRelationship(contractor, relationship)).thenReturn(relationship);
+        when(requestNewContractorService.saveRelationship(relationship)).thenReturn(relationship);
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractorAccount, "featureToggle", featureToggle);
@@ -293,7 +299,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		when(query.getResultList()).thenReturn(requests);
 		when(request.getRequestedBy()).thenReturn(otherOperator);
 		when(user.getId()).thenReturn(1);
-        when(requestNewContractorService.saveRelationship(contractor, relationship)).thenReturn(relationship);
+        when(requestNewContractorService.saveRelationship(relationship)).thenReturn(relationship);
 
 		requestNewContractorAccount.setPrimaryContact(user);
 		requestNewContractorAccount.setContractor(contractor);
