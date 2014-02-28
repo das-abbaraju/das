@@ -2,10 +2,7 @@ package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
-import com.picsauditing.employeeguard.models.CompanyEmployeeModel;
-import com.picsauditing.employeeguard.models.CompanyModel;
-import com.picsauditing.employeeguard.models.ProjectModel;
-import com.picsauditing.employeeguard.models.RoleModel;
+import com.picsauditing.employeeguard.models.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,19 +24,18 @@ public class CompanyEmployeeModelFactoryTest {
 		companyEmployeeModelFactory = new CompanyEmployeeModelFactory();
 	}
 
-//	@Test
-//	public void testCreate_ListOf_CompanyEmployeeModel() throws Exception {
-//		List<Employee> fakeEmployees = buildFakeEmployees();
-//		Map<Integer, List<CompanyModel>> companyModelMap = buildFakeCompanyModelMap();
-//
-//		List<CompanyEmployeeModel> companyEmployeeModels = companyEmployeeModelFactory.create(fakeEmployees,
-//				companyModelMap);
-//
-//		verifyTestCreate_ListOf_CompanyEmployeeModel(fakeEmployees, companyModelMap, companyEmployeeModels);
-//	}
+	@Test
+	public void testCreate_ListOf_CompanyEmployeeModel() throws Exception {
+		List<Employee> fakeEmployees = buildFakeEmployees();
+		Map<Integer, List<EmploymentInfoModel>> companyModelMap = buildFakeCompanyModelMap();
+
+		List<CompanyEmployeeModel> companyEmployeeModels = companyEmployeeModelFactory.create(fakeEmployees,
+				companyModelMap);
+
+		verifyTestCreate_ListOf_CompanyEmployeeModel(fakeEmployees, companyEmployeeModels);
+	}
 
 	private void verifyTestCreate_ListOf_CompanyEmployeeModel(final List<Employee> fakeEmployees,
-															  final Map<Integer, List<CompanyModel>> companyModelMap,
 															  final List<CompanyEmployeeModel> companyEmployeeModels) {
 		assertEquals(2, companyEmployeeModels.size());
 
@@ -48,7 +44,6 @@ public class CompanyEmployeeModelFactoryTest {
 			assertEquals(fakeEmployees.get(index).getId(), companyEmployeeModel.getId());
 			assertEquals(fakeEmployees.get(index).getFirstName(), companyEmployeeModel.getFirstName());
 			assertEquals(fakeEmployees.get(index).getLastName(), companyEmployeeModel.getLastName());
-			assertEquals(companyModelMap.get(fakeEmployees.get(index).getId()), companyEmployeeModel.getCompanies());
 			index++;
 		}
 	}
@@ -69,34 +64,34 @@ public class CompanyEmployeeModelFactoryTest {
 		}};
 	}
 
-	private Map<Integer, List<CompanyModel>> buildFakeCompanyModelMap() {
-		return new HashMap<Integer, List<CompanyModel>>() {{
-			put(1, Arrays.asList(buildFakeCompanyModel(45, "Test Company 1")));
-			put(2, Arrays.asList(buildFakeCompanyModel(46, "Test Company 2")));
+	private Map<Integer, List<EmploymentInfoModel>> buildFakeCompanyModelMap() {
+		return new HashMap<Integer, List<EmploymentInfoModel>>() {{
+			put(1, Arrays.asList(buildFakeEmploymentInfoModel(45, "Test Company 1")));
+			put(2, Arrays.asList(buildFakeEmploymentInfoModel(46, "Test Company 2")));
 		}};
 	}
 
-	private CompanyModel buildFakeCompanyModel(final int id, final String companyName) {
-		CompanyModel companyModel = new CompanyModel();
+	private EmploymentInfoModel buildFakeEmploymentInfoModel(final int id, final String companyName) {
+		EmploymentInfoModel companyModel = new EmploymentInfoModel();
 		companyModel.setId(id);
 		companyModel.setName(companyName);
 		return companyModel;
 	}
 
-//	@Test
-//	public void testCreate_Single_CompanyEmployeeModel() throws Exception {
-//		Employee fakeEmployee = buildFakeEmployee();
-//		List<CompanyModel> fakeCompanies = new ArrayList<>();
-//		List<ProjectModel> fakeProjects = new ArrayList<>();
-//		List<RoleModel> fakeRoleModels = new ArrayList<>();
-//
-//		CompanyEmployeeModel companyEmployeeModel = companyEmployeeModelFactory.create(fakeEmployee, fakeCompanies,
-//				fakeProjects, fakeRoleModels);
-//
-//		verifyTestCreate(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeModel);
-//	}
+	@Test
+	public void testCreate_Single_CompanyEmployeeModel() throws Exception {
+		Employee fakeEmployee = buildFakeEmployee();
+		List<EmploymentInfoModel> fakeCompanies = new ArrayList<>();
+		List<ProjectModel> fakeProjects = new ArrayList<>();
+		List<RoleModel> fakeRoleModels = new ArrayList<>();
 
-	protected void verifyTestCreate(final List<CompanyModel> fakeCompanies,
+		CompanyEmployeeModel companyEmployeeModel = companyEmployeeModelFactory.create(fakeEmployee, fakeCompanies,
+				fakeProjects, fakeRoleModels);
+
+		verifyTestCreate(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeModel);
+	}
+
+	private void verifyTestCreate(final List<EmploymentInfoModel> fakeCompanies,
 									final List<ProjectModel> fakeProjects,
 									final List<RoleModel> fakeRoleModels,
 									final CompanyEmployeeModel companyEmployeeModel) {

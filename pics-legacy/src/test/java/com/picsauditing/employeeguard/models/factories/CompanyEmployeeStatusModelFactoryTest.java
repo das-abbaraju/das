@@ -1,10 +1,7 @@
 package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.models.CompanyEmployeeStatusModel;
-import com.picsauditing.employeeguard.models.CompanyModel;
-import com.picsauditing.employeeguard.models.ProjectModel;
-import com.picsauditing.employeeguard.models.RoleModel;
+import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,17 +22,31 @@ public class CompanyEmployeeStatusModelFactoryTest extends CompanyEmployeeModelF
 		companyEmployeeStatusModelFactory = new CompanyEmployeeStatusModelFactory();
 	}
 
-//	@Test
-//	public void testCreate() throws Exception {
-//		Employee fakeEmployee = super.buildFakeEmployee();
-//		List<CompanyModel> fakeCompanies = new ArrayList<>();
-//		List<ProjectModel> fakeProjects = new ArrayList<>();
-//		List<RoleModel> fakeRoleModels = new ArrayList<>();
-//
-//		CompanyEmployeeStatusModel companyEmployeeStatusModel = companyEmployeeStatusModelFactory.create(fakeEmployee,
-//				fakeCompanies, fakeProjects, fakeRoleModels, SkillStatus.Expiring);
-//
-//		super.verifyTestCreate(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeStatusModel);
-//		assertEquals(SkillStatus.Expiring, companyEmployeeStatusModel.getStatus());
-//	}
+	@Test
+	public void testCreate() throws Exception {
+		Employee fakeEmployee = super.buildFakeEmployee();
+		List<EmploymentInfoModel> fakeCompanies = new ArrayList<>();
+		List<ProjectStatusModel> fakeProjects = new ArrayList<>();
+		List<RoleStatusModel> fakeRoleModels = new ArrayList<>();
+
+		CompanyEmployeeStatusModel companyEmployeeStatusModel = companyEmployeeStatusModelFactory.create(fakeEmployee,
+				fakeCompanies, fakeProjects, fakeRoleModels, SkillStatus.Expiring);
+
+		verifyTestCreateStatus(fakeCompanies, fakeProjects, fakeRoleModels, companyEmployeeStatusModel);
+		assertEquals(SkillStatus.Expiring, companyEmployeeStatusModel.getStatus());
+	}
+
+	private void verifyTestCreateStatus(final List<EmploymentInfoModel> fakeCompanies,
+									final List<ProjectStatusModel> fakeProjects,
+									final List<RoleStatusModel> fakeRoleModels,
+									final CompanyEmployeeStatusModel companyEmployeeModel) {
+		assertEquals(EMPLOYEE_ID, companyEmployeeModel.getId());
+		assertEquals(EMPLOYEE_FIRST_NAME, companyEmployeeModel.getFirstName());
+		assertEquals(EMPLOYEE_LAST_NAME, companyEmployeeModel.getLastName());
+		assertEquals(EMPLOYEE_TITLE, companyEmployeeModel.getTitle());
+
+		assertEquals(fakeCompanies, companyEmployeeModel.getCompanies());
+		assertEquals(fakeProjects, companyEmployeeModel.getProjects());
+		assertEquals(fakeRoleModels, companyEmployeeModel.getRoles());
+	}
 }

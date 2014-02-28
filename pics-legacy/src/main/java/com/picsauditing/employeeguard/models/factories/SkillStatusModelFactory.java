@@ -66,7 +66,6 @@ public class SkillStatusModelFactory extends SkillModelFactory {
 	}
 
 	public SkillStatusModel create(final AccountSkill accountSkill, final SkillStatus skillStatus) {
-		SkillModel skillModel = super.create(accountSkill);
 		SkillStatusModel skillStatusModel = new SkillStatusModel();
 		skillStatusModel.setId(accountSkill.getId());
 		skillStatusModel.setName(accountSkill.getName());

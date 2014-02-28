@@ -63,8 +63,8 @@ public class ProjectModelFactoryTest {
 		verifyTestCreateList(project, projectModels);
 	}
 
-	protected void verifyTestCreate(List<? extends RoleModel> fakeRoleModels,
-	                                List<? extends SkillModel> fakeSkillModels,
+	private void verifyTestCreate(List<RoleModel> fakeRoleModels,
+	                                List<SkillModel> fakeSkillModels,
 	                                ProjectModel projectModel) {
 
 		assertEquals(PROJECT_ID, projectModel.getId());
@@ -73,7 +73,7 @@ public class ProjectModelFactoryTest {
 		assertEquals(fakeSkillModels, projectModel.getSkills());
 	}
 
-	protected void verifyTestCreateList(Project project, List<? extends ProjectModel> projectModels) {
+	private void verifyTestCreateList(Project project, List<ProjectModel> projectModels) {
 		assertNotNull(projectModels);
 		assertFalse(projectModels.isEmpty());
 		assertNotNull(projectModels.get(0));
