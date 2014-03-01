@@ -44,9 +44,14 @@
                         <i class="icon-search icon-large"></i>
                     </form>
                 </div>
+                <s:set var="has_search_box_class">has-search-box</s:set>
             </s:if>
+            <s:else>
+                <s:set var="has_search_box_class" value="''" />
+            </s:else>
+
             <div>
-                <a class="contact-us-link" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
+                <a class="contact-us-link ${has_search_box_class}" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
             </div>
         </nav>
     </div>
