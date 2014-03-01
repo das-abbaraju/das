@@ -7324,26 +7324,6 @@ Ext.define('Ext.ZIndexManager', {
     Ext.WindowManager = Ext.WindowMgr = new this();
 });
 
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.Target
 
@@ -19998,26 +19978,6 @@ Ext.define('Ext.toolbar.Fill', {
     isFill : true,
     flex: 1
 });
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.Element
  * 
@@ -20099,26 +20059,6 @@ Ext.define('Ext.fx.target.Element', {
     }
 });
 
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.ElementCSS
  * 
@@ -20196,26 +20136,6 @@ Ext.define('Ext.fx.target.ElementCSS', {
         }
     }
 });
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.CompositeElement
  * 
@@ -20292,26 +20212,6 @@ Ext.define('Ext.fx.target.CompositeElement', {
     }
 });
 
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.CompositeElementCSS
  * 
@@ -20334,26 +20234,6 @@ Ext.define('Ext.fx.target.CompositeElementCSS', {
         return Ext.fx.target.ElementCSS.prototype.setAttr.apply(this, arguments);
     }
 });
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.Sprite
 
@@ -20483,26 +20363,6 @@ Ext.define('Ext.fx.target.Sprite', {
     }
 });
 
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.CompositeSprite
 
@@ -20538,26 +20398,6 @@ Ext.define('Ext.fx.target.CompositeSprite', {
     }
 });
 
-/*
-This file is part of Ext JS 4.2
-
-Copyright (c) 2011-2013 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
-
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
-*/
 /**
  * @class Ext.fx.target.Component
  * 
@@ -20600,13 +20440,13 @@ Ext.define('Ext.fx.target.Component', {
         }
     },
 
-    setMethods: {
-        top:     'setPosition',
-        left:    'setPosition',
-        x:       'setPagePosition',
-        y:       'setPagePosition',
-        height:  'setSize',
-        width:   'setSize',
+    compMethod: {
+        top: 'setPosition',
+        left: 'setPosition',
+        x: 'setPagePosition',
+        y: 'setPagePosition',
+        height: 'setSize',
+        width: 'setSize',
         opacity: 'setOpacity'
     },
 
@@ -20617,60 +20457,61 @@ Ext.define('Ext.fx.target.Component', {
 
     setAttr: function(targetData, isFirstFrame, isLastFrame) {
         var me = this,
+            target = me.target,
             ln = targetData.length,
-            attrs, attr, o, i, j, targets, left, top, w, h,
-            methodsToCall = {},
-            methodProps;
-
+            attrs, attr, o, i, j, meth, targets, left, top, w, h;
         for (i = 0; i < ln; i++) {
             attrs = targetData[i].attrs;
             for (attr in attrs) {
                 targets = attrs[attr].length;
+                meth = {
+                    setPosition: {},
+                    setPagePosition: {},
+                    setSize: {},
+                    setOpacity: {}
+                };
                 for (j = 0; j < targets; j++) {
                     o = attrs[attr][j];
-                    methodProps = methodsToCall[me.setMethods[attr]] || (methodsToCall[me.setMethods[attr]] = {});
-                    methodProps.target = o[0];
-                    methodProps[attr] = o[1];
-                    // debugging code: Ext.log('Setting ' + o[0].id + "'s " + attr + ' to ' + o[1]);
+                    // We REALLY want a single function call, so push these down to merge them: eg
+                    // meth.setPagePosition.target = <targetComponent>
+                    // meth.setPagePosition['x'] = 100
+                    // meth.setPagePosition['y'] = 100
+                    meth[me.compMethod[attr]].target = o[0];
+                    meth[me.compMethod[attr]][attr] = o[1];
                 }
-            }
-            if (methodsToCall.setPosition) {
-                o = methodsToCall.setPosition;
-                left = (o.left === undefined) ? undefined : parseFloat(o.left);
-                top = (o.top === undefined) ? undefined : parseFloat(o.top);
-                o.target.setPosition(left, top);
-            }
-            if (methodsToCall.setPagePosition) {
-                o = methodsToCall.setPagePosition;
-                o.target.setPagePosition(o.x, o.y);
-            }
-            if (methodsToCall.setSize) {
-                o = methodsToCall.setSize;
-                // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
-                w = (o.width === undefined) ? o.target.getWidth() : parseFloat(o.width);
-                h = (o.height === undefined) ? o.target.getHeight() : parseFloat(o.height);
+                if (meth.setPosition.target) {
+                    o = meth.setPosition;
+                    left = (o.left === undefined) ? undefined : parseFloat(o.left);
+                    top = (o.top === undefined) ? undefined : parseFloat(o.top);
+                    o.target.setPosition(left, top);
+                }
+                if (meth.setPagePosition.target) {
+                    o = meth.setPagePosition;
+                    o.target.setPagePosition(o.x, o.y);
+                }
+                if (meth.setSize.target) {
+                    o = meth.setSize;
+                    // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
+                    w = (o.width === undefined) ? o.target.getWidth() : parseFloat(o.width);
+                    h = (o.height === undefined) ? o.target.getHeight() : parseFloat(o.height);
 
-                // Only set the size of the Component on the last frame, or if the animation was
-                // configured with dynamic: true.
-                // In other cases, we just set the target element size.
-                // This will result in either clipping if animating a reduction in size, or the revealing of
-                // the inner elements of the Component if animating an increase in size.
-                // Component's animate function initially resizes to the larger size before resizing the
-                // outer element to clip the contents.
-                o.target.el.setSize(w, h);
-                if (isLastFrame || me.dynamic) {
-                    // Defer the final sizing & layout until we are outside of this frame.
-                    // In case anything in the resulting layout calls animation.
-                    // If it does, *this* frame will fire again... recursively
-                    Ext.globalEvents.on({
-                        idle: Ext.Function.bind(o.target.setSize, o.target, [w, h]),
-                        single: true
-                    });
+                    // Only set the size of the Component on the last frame, or if the animation was
+                    // configured with dynamic: true.
+                    // In other cases, we just set the target element size.
+                    // This will result in either clipping if animating a reduction in size, or the revealing of
+                    // the inner elements of the Component if animating an increase in size.
+                    // Component's animate function initially resizes to the larger size before resizing the
+                    // outer element to clip the contents.
+                    if (isLastFrame || me.dynamic) {
+                        o.target.setSize(w, h);
+                    } else {
+                        o.target.el.setSize(w, h);
+                    }
                 }
-            }
-            if (methodsToCall.setOpacity) {
-                o = methodsToCall.setOpacity;
-                o.target.el.setStyle('opacity', o.opacity);
+                if (meth.setOpacity.target) {
+                    o = meth.setOpacity;
+                    o.target.el.setStyle('opacity', o.opacity);
+                }
             }
         }
     }
