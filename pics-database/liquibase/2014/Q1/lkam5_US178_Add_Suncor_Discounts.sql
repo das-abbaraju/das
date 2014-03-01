@@ -9,7 +9,7 @@ SET SQL_MODE='';
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
 
-REPLACE INTO invoice_fee(fee, defaultAmount, visible, feeClass, minFacilities, maxFacilities, qbFullName,createdBy,updatedBy,creationDate,updateDate, discountOperatorID)
+INSERT INTO invoice_fee(fee, defaultAmount, visible, feeClass, minFacilities, maxFacilities, qbFullName,createdBy,updatedBy,creationDate,updateDate, discountOperatorID)
 VALUES
 ('Suncor Discount DocuGUARD™ for 1 Operators', 100, 1, 'DocuGUARD', 1, 1, 'DISC-DGVEN1', 38586, 38586, NOW(), NOW(), 10566),
 ('Suncor Discount DocuGUARD™ for 2-4 Operators', 100, 1, 'DocuGUARD', 2, 4, 'DISC-DGVEN2', 38586, 38586, NOW(), NOW(), 10566),
@@ -24,4 +24,12 @@ VALUES
 ('Suncor Discount AuditGUARD™ for 1 Operators', 100, 1, 'AuditGUARD', 1, 1, 'DISC-AGVEN1', 38586, 38586, NOW(), NOW(), 10566),
 ('Suncor Discount AuditGUARD™ for 2-4 Operators', 200, 1, 'AuditGUARD', 2, 4, 'DISC-AGVEN2', 38586, 38586, NOW(), NOW(), 10566),
 ('Suncor Discount AuditGUARD™ for 5-8 Operators', 800, 1, 'AuditGUARD', 5, 8, 'DISC-AGVEN5', 38586, 38586, NOW(), NOW(), 10566),
-('Suncor Discount AuditGUARD™ for 9-12 Operators', 500, 1, 'AuditGUARD', 9, 12, 'DISC-AGVEN9', 38586, 38586, NOW(), NOW(), 10566);
+('Suncor Discount AuditGUARD™ for 9-12 Operators', 500, 1, 'AuditGUARD', 9, 12, 'DISC-AGVEN9', 38586, 38586, NOW(), NOW(), 10566)
+ON DUPLICATE KEY UPDATE fee = VALUES(fee),
+defaultAmount = VALUES(defaultAmount),
+visible = VALUES(visible),
+feeClass = VALUES(feeClass),
+minFacilities = VALUES(minFacilities),
+maxFacilities = VALUES(maxFacilities),
+qbFullName = VALUES(qbFullName),
+discountOperatorID = VALUES(discountOperatorID);
