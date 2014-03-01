@@ -349,7 +349,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public boolean isShowContractorSubmenu() {
-		if (permissions.isContractor()) {
+		if (permissions == null || permissions.isContractor()) {
 			return false;
 		}
 
