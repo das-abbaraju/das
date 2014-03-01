@@ -395,7 +395,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
                     permissions.getUserId());
 		}
 
+        /* This method does double duty, in that it will be called for newly created contractors (creating them and sending
+           email, but it is also called to log contact with the contractor who has already been created in a previous request.
+           For this reason, we need to save a contact note and update the contractor, and operator tags. This could potentially
+           be in an else statment from the newRequest as I do think this are probably mutually exclusive, but this has not yet
+           been fully investigated. */
 		saveNoteIfContacted();
+        updateLastContactedFieldsOnContractorIfContacted();
 		saveOperatorTags();
 	}
 
@@ -416,10 +422,27 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	private void saveNoteIfContacted() {
 		if (contactType != null) {
 			addNote(getText(contactType.getNote()) + ": ", contactNote);
-		}
+        }
 	}
 
-	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+    private void updateLastContactedFieldsOnContractorIfContacted() {
+        if (contactType != null) {
+            Date now = new Date();
+
+            if (RequestContactType.EMAIL == contactType) {
+                contractor.contactByEmail();
+            } else if (RequestContactType.PHONE == contactType) {
+                contractor.contactByPhone();
+            }
+
+            contractor.setLastContactedByInsideSales(permissions.getUserId());
+            contractor.setLastContactedByInsideSalesDate(now);
+            contractorAccountDao.save(contractor);
+        }
+    }
+
+    @Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveOperatorTags() {
 		List<ContractorTag> existing = getVisibleExistingTags();
 
