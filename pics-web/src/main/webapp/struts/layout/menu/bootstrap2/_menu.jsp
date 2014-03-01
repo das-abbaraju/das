@@ -8,7 +8,7 @@
 </s:set>
 
 <s:url action="Search" var="search_url"/>
-<s:url action="ContactUs" var="contact_us_url" />
+<s:url action="Contact" var="contact_us_url" />
 
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
