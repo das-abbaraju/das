@@ -600,6 +600,17 @@
 			<result>struts/audits/con_audit.jsp</result>
 		</action>
 
+        <action name="ContractorCertificate"
+                class="com.picsauditing.struts.controller.contractor.ContractorCertificateController">
+            <result>struts/audits/ssip_certificate.jsp</result>
+            <result name="inputError">struts/audits/ssip_certificate.jsp</result>
+            <result name="ssip">struts/contractor/ssip_certificate_template.jsp</result>
+        </action>
+
+        <action name="GeneratePdf"
+                class="com.picsauditing.struts.controller.pdf.GeneratePdf">
+        </action>
+
 		<action name="AuditCatPreview"
 		        class="com.picsauditing.actions.audits.ContractorAuditController">
 			<result>struts/audits/audit_cat_preview.jsp</result>

@@ -734,4 +734,8 @@ public class ContractorAuditController extends AuditActionSupport {
 		return InsuranceCriteriaDisplay.getInsuranceCriteriaMap(question, contractor);
 	}
 
+    public boolean isCanIssueCertificate() {
+        return permissions.isAuditor();
+    }
+
 }

@@ -12,6 +12,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.user.ContractorDashboardApprovalMessage;
 import com.picsauditing.oshadisplay.OshaDisplay;
+import com.picsauditing.service.contractor.ContractorCertificateService;
 import com.picsauditing.service.contractor.ContractorEmailService;
 import com.picsauditing.service.contractor.ContractorOperatorService;
 import com.picsauditing.util.EmailAddressUtils;
@@ -67,6 +68,8 @@ public class ContractorDashboard extends ContractorActionSupport {
     private ContractorEmailService contractorEmailService;
     @Autowired
     protected ContractorOperatorService contractorOperatorService;
+    @Autowired
+    protected ContractorCertificateService contractorCertificateService;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -1232,5 +1235,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 
     public boolean shouldShowFlagCriteriaCategory(FlagCriteriaCategory category) {
         return category != FlagCriteriaCategory.InsuranceCriteria;
+    }
+
+    public boolean isHasSsipCertificate() {
+        return contractorCertificateService.getSsipCertificate(contractor) != null;
     }
 }

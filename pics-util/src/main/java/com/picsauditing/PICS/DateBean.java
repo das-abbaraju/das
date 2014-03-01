@@ -864,6 +864,14 @@ public class DateBean {
         Days, Months
     }
 
+    public static Date buildDate(int day, int month, int year, boolean rangeCheck) {
+        if ((rangeCheck) && (day > 31 || day <= 0 || month > 11 || month < 0 || year < 0)) {
+            return null;
+        } else {
+            return buildDate(day, month, year);
+        }
+    }
+
     public static Date buildDate(int day, int month, int year) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DATE, day);

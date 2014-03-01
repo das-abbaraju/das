@@ -2,6 +2,11 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
+<%-- Url --%>
+<s:url action="ContractorCertificate" var="ssip_certificate_url" >
+    <s:param name="contractor"><s:property value="contractor.id" /></s:param>
+</s:url>
+
 <s:include value="/struts/audits/_audit_score_and_date.jsp" />
 
 <ul id="toolbar" class="vert-toolbar clearfix">
@@ -128,12 +133,20 @@
 	</li>
 
     <s:if test="permissions.admin">
-    <li>
-         <a class="excel" href="AuditTranslationDownload.action?contractor=<s:property value="contractor.id" />">
-             <s:text name="Audit.button.AuditTranslationDownload" />
-         </a>
-    </li>
+	    <li>
+	         <a class="excel" href="AuditTranslationDownload.action?contractor=<s:property value="contractor.id" />">
+	             <s:text name="Audit.button.AuditTranslationDownload" />
+	         </a>	
+	    </li>
     </s:if>
+
+    <s:if test="canIssueCertificate">
+    	<li>
+			<a class="certificate" href="${ssip_certificate_url}" />
+    			<s:text name="Audit.button.IssueCertificate" />
+    		</a>
+    	</li>
+    </s:if>	
 </ul>
 
 <div <s:if test="categories.keySet().size == 1"> style="display: none;"</s:if>>

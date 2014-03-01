@@ -86,13 +86,13 @@
 				<li>
 					<label> <s:text name="User.useDynamicReport"/></label>
 					<s:checkbox id="usingVersion7Menus" name="usingVersion7Menus" value="u.usingVersion7Menus"/>
-				</li>
-			</pics:toggle>
-		</ul>
-	</fieldset>
+    </li>
+</pics:toggle>
+</ul>
+</fieldset>
 
-	<fieldset class="form submit">
-		<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="save"/>
+<fieldset class="form submit">
+    <s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="save"/>
 
 		<a class="change-password btn" href="ChangePassword.action?source=profile&user=${user_id}"
 		   id="profile_edit_changePassword2">

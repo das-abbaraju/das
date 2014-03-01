@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.entities;
 public enum SkillType {
 
 	Certification("Certification", "Certification"),
-	Training("Training", "Training");
+    Training("Training", "Training");
 
 	private final String displayValue;
 	private final String dbValue;

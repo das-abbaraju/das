@@ -604,12 +604,12 @@ a.clearfield {
 }
 
 a.up-arrow {
-	background: url(../images/arrow-up.png) no-repeat left center;
+	background: url('../images/arrow-up.png') no-repeat left center;
 	padding-left: 20px;
 }
 
 a.down-arrow {
-	background: url(../images/arrow-down.png) no-repeat left center;
+	background: url('../images/arrow-down.png') no-repeat left center;
 	padding-left: 20px;
 }
 
@@ -618,6 +618,11 @@ a.top {
 	margin-left: 2px;
 	background: url('../images/arrow-up-top.png') no-repeat left center;
 	zoom: 1;
+}
+
+a.certificate {
+	background: url('../images/certificate.png') no-repeat left center;
+	margin-left: 5px;
 }
 
 a.processing {
@@ -2583,4 +2588,42 @@ div.auditSubMenu a.current {
 	#systemMessage {
 		margin-top: 0;		
 	}
+}}
+
+/* SSIP Certificate page */
+.ContractorCertificate-page legend,
+.ContractorCertificate-page .title {
+	color: #666666;
 }
+
+.ContractorCertificate-page label {
+	color: #454545;
+}
+
+.ContractorCertificate-page fieldset,
+.ContractorCertificate-page p {
+	margin-bottom: 20px;
+}
+
+.ContractorCertificate-page input[type="radio"] {
+	margin-left: 20px;
+}
+
+.ContractorCertificate-page input[type="radio"]:first-of-type {
+	margin-left: 0;
+}
+
+.ContractorCertificate-page input[type="text"] {
+    border: 1px solid #cccccc;
+	border-radius: 3px;
+    font-size: 13px;
+    padding: 5px 10px;
+    text-align: center;
+}
+
+.ContractorCertificate-page ul {
+	list-style-position: inside;
+	margin-left: 0;
+}
+/* End of SSIP Certificate page */
+
