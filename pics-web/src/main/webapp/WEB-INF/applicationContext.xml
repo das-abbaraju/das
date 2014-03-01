@@ -130,6 +130,7 @@
     <bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO"/>
     <bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
     <bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
+    <bean id="ContractorCertificateDao" class="com.picsauditing.dao.contractor.ContractorCertificateDao"/>
 
     <bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"/>
     <bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
@@ -254,6 +255,8 @@
     <bean id="ServiceRiskCalculator" class="com.picsauditing.actions.contractors.risk.ServiceRiskCalculator" />
     <bean id="PricingTiersBuilder" class="com.picsauditing.service.contractor.PricingTiersBuilder" />
     <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService" />
+    <bean id="ContractorCertificateService" class="com.picsauditing.service.contractor.ContractorCertificateService" />
+    <bean id="AuditFinderService" class="com.picsauditing.service.contractor.AuditFinderService" />
 
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"

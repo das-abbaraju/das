@@ -638,6 +638,14 @@
 				</a>
 			</p>
 
+            <s:if test="hasSsipCertificate">
+                <p>
+                    <a class="pdf" href="GeneratePdf!ssipCertificate.action?contractor=<s:property value="contractor.id" />">
+                        <s:text name="ContractorDashboard.DownloadSSIPCertificate"/>
+                    </a>
+                </p>
+            </s:if>
+
 			<p>
 				<s:text name="global.CSR"/>:
 				<strong>

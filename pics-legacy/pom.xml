@@ -756,6 +756,11 @@
             <version>1.46</version>
         </dependency>
         <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf</artifactId>
+            <version>9.0.4</version>
+        </dependency>
+        <dependency>
             <!-- Recaptcha -->
             <groupId>net.tanesha.recaptcha4j</groupId>
             <artifactId>recaptcha4j</artifactId>

@@ -543,4 +543,15 @@ public class ContractorAuditDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+
+    public List<ContractorAudit> findByContractorAndAuditType(ContractorAccount contractor, int auditTypeId) {
+        //SELECT * FROM contractor_audit ca WHERE ca.`conID` = 59901 AND ca.`auditTypeID` = 2;
+        Query query = em.createQuery("SELECT ca FROM ContractorAudit ca WHERE ca.contractorAccount = :contractor"
+                + " AND ca.auditType.id = :auditTypeId"
+                + " ORDER BY ca.creationDate DESC");
+        query.setParameter("contractor", contractor);
+        query.setParameter("auditTypeId", auditTypeId);
+
+        return query.getResultList();
+    }
 }

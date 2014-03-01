@@ -18,34 +18,34 @@
 	
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
 
-	<!-- BEGIN EG Rabbit Config -->
-	<rabbit:queue id="employeeguard-queue" name="employeeguard-queue" />
-	<rabbit:direct-exchange name="employeeguard-exchange" xmlns="http://www.springframework.org/schema/rabbit">
-		<rabbit:bindings>
-			<rabbit:binding queue="employeeguard-queue" key="employeeguard-queue" />
-		</rabbit:bindings>
-	</rabbit:direct-exchange>
+    <!-- BEGIN EG Rabbit Config -->
+    <rabbit:queue id="employeeguard-queue" name="employeeguard-queue" />
+    <rabbit:direct-exchange name="employeeguard-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+        <rabbit:bindings>
+            <rabbit:binding queue="employeeguard-queue" key="employeeguard-queue" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
 
-	<rabbit:template
-			id="employeeGuardTemplate"
-			message-converter="messageConverter"
-			connection-factory="connectionFactory"
-			exchange="employeeguard-exchange"
-			queue="employeeguard-queue"
-	/>
-	<beans:bean id="EmployeeGuardPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
-		<beans:property name="amqpTemplate" ref="employeeGuardTemplate" />
-	</beans:bean>
+    <rabbit:template
+            id="employeeGuardTemplate"
+            message-converter="messageConverter"
+            connection-factory="connectionFactory"
+            exchange="employeeguard-exchange"
+            queue="employeeguard-queue"
+            />
+    <beans:bean id="EmployeeGuardPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
+        <beans:property name="amqpTemplate" ref="employeeGuardTemplate" />
+    </beans:bean>
 
-	<beans:bean id="employeeGuardListener" class="com.picsauditing.employeeguard.messaging.EmployeeGuardListener" />
+    <beans:bean id="employeeGuardListener" class="com.picsauditing.employeeguard.messaging.EmployeeGuardListener" />
 
     <rabbit:listener-container id="employeeGuardListenerContainer" connection-factory="connectionFactory" concurrency="1">
-		<rabbit:listener queues="employeeguard-queue" ref="employeeGuardListener" method="onMessage" />
-	</rabbit:listener-container>
+        <rabbit:listener queues="employeeguard-queue" ref="employeeGuardListener" method="onMessage" />
+    </rabbit:listener-container>
 
-	<beans:bean id="employeeGuardHandler" class="com.picsauditing.employeeguard.messaging.EmployeeGuardHandler" autowire="byName" />
+    <beans:bean id="employeeGuardHandler" class="com.picsauditing.employeeguard.messaging.EmployeeGuardHandler" autowire="byName" />
 
-	<!-- END EG Rabbit Config -->
+    <!-- END EG Rabbit Config -->
 
     <queue id="flag-changes-dead" name="flag-changes-dead"/>
 
