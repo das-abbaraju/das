@@ -8,4 +8,6 @@
 	<svg width="100" height="100">
 		<image xlink:href="../v7/img/logo/logo-icon-no-gradient.svg" src="../v7/js/extjs/pics/app/resources/images/loading.gif" width="100" height="100" />
 	</svg>
+
+	<p class="loading"><s:text name="global.loading" /></p>
 </div>

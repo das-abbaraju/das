@@ -8676,6 +8676,12 @@ body {
     -moz-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
     -o-animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1);
     animation: loader 3s infinite cubic-bezier(0.5, 0, 0, 1); }
+  /* line 21, ../sass/my-ext-theme/report/loading/_loading.scss */
+  #loading_page .loading {
+    color: #b3b3b3;
+    font-size: 18px;
+    margin-top: 30px;
+    text-align: center; }
 
 /* line 2, ../sass/my-ext-theme/report/alert/_success.scss */
 #success_message {
