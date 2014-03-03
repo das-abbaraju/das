@@ -75,7 +75,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @param siteId
 	 * @return
 	 */
-	public Set<AccountSkill> getSiteRequiredSkills(final int siteId, final List<Integer> accountIdsInAccountHierarchy) {
+	public Set<AccountSkill> getSiteRequiredSkills(final int siteId, final Collection<Integer> accountIdsInAccountHierarchy) {
 		List<Integer> accountIds = new ArrayList<>(accountIdsInAccountHierarchy);
 		accountIds.add(siteId);
 

@@ -1,18 +1,22 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.google.gson.Gson;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter;
 import com.picsauditing.employeeguard.forms.operator.RequiredSiteSkillForm;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.forms.binding.FormBinding;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class DashboardAction extends PicsRestActionSupport {
@@ -20,9 +24,13 @@ public class DashboardAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
+	private AssignmentService assignmentService;
+	@Autowired
 	private RequiredSiteSkillFormConverter requiredSiteSkillFormConverter;
 	@Autowired
 	private SkillService skillService;
+	@Autowired
+	private StatusCalculatorService statusCalculatorService;
 
 	/* forms */
 	@FormBinding("operator_required_skill_edit")
@@ -35,15 +43,33 @@ public class DashboardAction extends PicsRestActionSupport {
 	/* pages */
 
 	public String index() {
-		requiredSkills = skillService.getRequiredSkillsForSite(permissions.getAccountId());
+		Map<Employee, Set<AccountSkill>> allEmployeeSkillsForSite = assignmentService.getEmployeeSkillsForSite(permissions.getAccountId());
+		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite.keySet(), allEmployeeSkillsForSite);
 
-		if (permissions.isCorporate()) {
-			siteSkills = skillService.getSiteRequiredSkills(permissions.getAccountId());
+		Map<SkillStatus, Integer> employeeStatusCount = getCount(employeeStatuses);
+
+		this.jsonString = new Gson().toJson(employeeStatusCount, HashMap.class);
+
+		return JSON_STRING;
+	}
+
+	private Map<SkillStatus, Integer> getCount(final Map<Employee, SkillStatus> employeeStatuses) {
+		Map<SkillStatus, Integer> statusCount = buildMapPrepopulatedWithKeys();
+		for (Employee employee : employeeStatuses.keySet()) {
+			SkillStatus skillStatus = employeeStatuses.get(employee);
+			int count = statusCount.get(skillStatus) + 1;
+			statusCount.put(skillStatus, count);
 		}
 
-		Collections.sort(requiredSkills);
+		return statusCount;
+	}
 
-		return "dashboard";
+	private Map<SkillStatus, Integer> buildMapPrepopulatedWithKeys() {
+		return new HashMap<SkillStatus, Integer>() {{
+			put(SkillStatus.Complete, 0);
+			put(SkillStatus.Expiring, 0);
+			put(SkillStatus.Expired, 0);
+		}};
 	}
 
 	public String editRequiredSkillsSection() {

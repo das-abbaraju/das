@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -27,20 +28,30 @@ public class AssignmentService {
 	private SkillEntityService skillEntityService;
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSite(final int siteId) {
-		List<Employee> employeesAssignedToSite = getSiteContractorEmployees(siteId);
+		Set<Employee> employeesAssignedToSite = getEmployeesAssignedToSite(siteId);
 
+		Map<Employee, Set<AccountSkill>> employeeSkillsForProjects = getEmployeeSkillsForProjects(siteId, employeesAssignedToSite);
+		Map<Employee, Set<AccountSkill>> employeeSkillsForRole = getEmployeeSkillsForRoles(siteId);
+
+		Map<Employee, Set<AccountSkill>> allEmployeeRequiredSkills = Utilities.mergeValuesOfMapOfSets(employeeSkillsForProjects, employeeSkillsForRole);
+		List<Integer> accountIdsInHierarchy = accountService.getTopmostCorporateAccountIds(siteId);
+
+		return appendSiteAndCorporateSkills(allEmployeeRequiredSkills,
+				skillEntityService.getSiteRequiredSkills(siteId, accountIdsInHierarchy));
+	}
+
+	private Map<Employee, Set<AccountSkill>> getEmployeeSkillsForProjects(int siteId, Set<Employee> employeesAssignedToSite) {
 		Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployees(employeesAssignedToSite, siteId);
 		Set<Project> allProjects = Utilities.extractAndFlattenValuesFromMap(employeeProjects);
 		Map<Project, Set<AccountSkill>> projectSkills = skillEntityService.getRequiredSkillsForProjects(allProjects);
+		return getKeyToSetOfValues(employeeProjects, projectSkills);
+	}
 
+	private Map<Employee, Set<AccountSkill>> getEmployeeSkillsForRoles(int siteId) {
 		Map<Employee, Set<Role>> employeeRoles = getAllEmployeeRolesForSite(siteId);
 		Set<Role> allRoles = Utilities.extractAndFlattenValuesFromMap(employeeRoles);
 		Map<Role, Set<AccountSkill>> roleSkills = skillEntityService.getSkillsForRoles(allRoles);
-
-		Map<Employee, Set<AccountSkill>> employeeSkillsForProjects = getKeyToSetOfValues(employeeProjects, projectSkills);
-		Map<Employee, Set<AccountSkill>> employeeSkillsForRole = getKeyToSetOfValues(employeeRoles, roleSkills);
-
-		return Utilities.mergeValuesOfMapOfSets(employeeSkillsForProjects, employeeSkillsForRole);
+		return getKeyToSetOfValues(employeeRoles, roleSkills);
 	}
 
 	private <KEY, ENTITY, VALUE> Map<KEY, Set<VALUE>> getKeyToSetOfValues(Map<KEY, Set<ENTITY>> keyToEntities, Map<ENTITY, Set<VALUE>> entityToValues) {
@@ -48,16 +59,31 @@ public class AssignmentService {
 		for (Map.Entry<KEY, Set<ENTITY>> keyEntityEntry : keyToEntities.entrySet()) {
 			KEY key = keyEntityEntry.getKey();
 
-			if (!keyValues.containsKey(key)) {
-				keyValues.put(key, new HashSet<VALUE>());
-			}
+			keyValues.put(key, new HashSet<VALUE>());
 
 			for (ENTITY entity : keyEntityEntry.getValue()) {
-				keyValues.get(key).addAll(entityToValues.get(entity));
+				if (entityToValues.containsKey(entity)) {
+					keyValues.get(key).addAll(entityToValues.get(entity));
+				}
 			}
 		}
 
 		return keyValues;
+	}
+
+	private <E> Map<E, Set<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, Set<AccountSkill>> entitySkillMap,
+																	   final Collection<AccountSkill> siteAndCorporateRequiredSkills) {
+		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
+			return entitySkillMap;
+		}
+
+		for (E entity : entitySkillMap.keySet()) {
+			if (entitySkillMap.containsKey(entity)) {
+				entitySkillMap.get(entity).addAll(siteAndCorporateRequiredSkills);
+			}
+		}
+
+		return entitySkillMap;
 	}
 
 	public Set<Employee> getEmployeesAssignedToSite(final int siteId) {
