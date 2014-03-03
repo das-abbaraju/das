@@ -10,7 +10,6 @@ import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -53,6 +52,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
 		return employeeDAO.findByProjects(projects);
+	}
+
+	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
+		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
 	/* All Search Methods */
