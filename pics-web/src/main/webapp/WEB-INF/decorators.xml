@@ -29,7 +29,7 @@
         <pattern>/PreviewEmail.action</pattern>
         <pattern>/ManageReports!allFavoriteReportsAjax.action</pattern>
         <pattern>/Cron!run.action</pattern>
-        <pattern>/ContractorCertificate!ssipCertificate.action</pattern>
+        <pattern>/ContractorCertification!ssipCertificate.action</pattern>
     </decorator>
     <decorator name="layout" page="layout.jsp">
         <pattern>/About.action</pattern>
