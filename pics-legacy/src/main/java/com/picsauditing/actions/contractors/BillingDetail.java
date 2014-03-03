@@ -72,8 +72,8 @@ public class BillingDetail extends ContractorActionSupport {
 			}
 
 			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()));
-			billingService.addRevRecInfoIfAppropriateToItems(invoice);
-			invoice = billingService.saveInvoice(invoice);
+			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            invoice = billingService.verifyAndSaveInvoice(invoice);
 
 
             if (invoice.getInvoiceType() == InvoiceType.Upgrade) {

@@ -79,7 +79,8 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 			invoice.updateTotalAmount();
 			AccountingSystemSynchronization.setToSynchronize(invoice);
-			billingService.saveInvoice(invoice);
+            billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+			billingService.verifyAndSaveInvoice(invoice);
 			addActionMessage(message);
 		}
 
@@ -106,7 +107,8 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 				invoice.updateTotalAmount();
 				AccountingSystemSynchronization.setToSynchronize(invoice);
-                billingService.saveInvoice(invoice);
+                billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+                billingService.verifyAndSaveInvoice(invoice);
 			}
 		}
 
