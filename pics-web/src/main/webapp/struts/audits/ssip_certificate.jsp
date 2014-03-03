@@ -61,7 +61,7 @@
         </fieldset>
 
         <p>
-            <span class="title"><s:text name="ContractorCertificate.SSIP.CertifiedBy" /></span><br/>
+            <span class="title"><s:text name="ContractorCertificate.SSIP.IssuedBy" /></span><br/>
             <s:property value="currentUserName" />
         </p>
 
