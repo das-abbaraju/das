@@ -33,8 +33,8 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return projectDAO.find(id);
 	}
 
-	public Map<Employee, Set<Project>> getProjectsForEmployees(final Collection<Employee> employees) {
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployees(employees),
+	public Map<Employee, Set<Project>> getProjectsForEmployees(final Collection<Employee> employees, final int siteId) {
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteId(employees, siteId),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
 					@Override
 					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
