@@ -15,7 +15,7 @@ public class GeneratePdf extends ContractorActionSupport {
 
 
     public String ssipCertificate() {
-        String url = getRequestHost() + "/ContractorCertificate!ssipCertificate.action?contractor=" + contractor.getId();
+        String url = getRequestHost() + "/ContractorCertification!ssipCertificate.action?contractor=" + contractor.getId();
         create(url, "SSIP Certificate.pdf");
         return SUCCESS;
     }

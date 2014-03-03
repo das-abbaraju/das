@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <%-- Url --%>
-<s:url action="ContractorCertificate" var="ssip_certificate_url" >
+<s:url action="ContractorCertification" var="ssip_certificate_url" >
     <s:param name="contractor"><s:property value="contractor.id" /></s:param>
 </s:url>
 

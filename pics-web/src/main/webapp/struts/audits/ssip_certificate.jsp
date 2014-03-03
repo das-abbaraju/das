@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <%-- Url --%>
-<s:url action="ContractorCertificate" method="issueSsipCertificate" var="issue_certificate_url" />
+<s:url action="ContractorCertification" method="issueSsipCertificate" var="issue_certificate_url" />
 
 <title>
     <s:text name="ContractorCertificate.SSIP.IssueCertificate.Title" />

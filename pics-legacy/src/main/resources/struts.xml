@@ -600,7 +600,7 @@
 			<result>struts/audits/con_audit.jsp</result>
 		</action>
 
-        <action name="ContractorCertificate"
+        <action name="ContractorCertification"
                 class="com.picsauditing.struts.controller.contractor.ContractorCertificateController">
             <result>struts/audits/ssip_certificate.jsp</result>
             <result name="inputError">struts/audits/ssip_certificate.jsp</result>
