@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 public class StatusCalculatorServiceTest {
 	public static final int CONTRACTOR_ID = 1234;
 	public static final int CORPORATE_ID = 45;
+	public static final int SITE_ID = 17;
 
 	private StatusCalculatorService service;
 
@@ -162,5 +163,13 @@ public class StatusCalculatorServiceTest {
 						.endDate(DateBean.addDays(DateBean.today(), 40))
 						.build()
 		);
+	}
+
+	@Test
+	public void testGetCountOfEmployeesOverallStatusesForSite() {
+		Map<SkillStatus, Integer> employeeOverallStatuses = service.getCountOfEmployeesOverallStatusesForSite(SITE_ID);
+
+		assertNotNull(employeeOverallStatuses);
+		assertFalse(employeeOverallStatuses.isEmpty());
 	}
 }

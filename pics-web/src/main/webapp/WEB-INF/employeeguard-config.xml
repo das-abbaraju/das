@@ -61,6 +61,9 @@
     <bean id="RoleEntityService" class="com.picsauditing.employeeguard.services.entity.RoleEntityService"/>
     <bean id="SkillEntityService" class="com.picsauditing.employeeguard.services.entity.SkillEntityService"/>
 
+    <!-- Business Services -->
+    <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
+
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>
     <bean id="RoleAssignmentHelper" class="com.picsauditing.employeeguard.services.RoleAssignmentHelper"/>

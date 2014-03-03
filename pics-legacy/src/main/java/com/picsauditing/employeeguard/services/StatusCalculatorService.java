@@ -223,4 +223,8 @@ public class StatusCalculatorService {
 					}
 				});
 	}
+
+	public Map<SkillStatus, Integer> getCountOfEmployeesOverallStatusesForSite(final int siteId) {
+		return Collections.emptyMap();
+	}
 }
