@@ -28,25 +28,25 @@ public class RoleServiceTest {
 	public static final int USER_ID = 78;
 	public static final int ROLE_ID_78 = 78;
 
-	RoleService roleService;
+	RoleEntityService roleEntityService;
 
 	@Mock
 	private RoleDAO roleDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		roleService = new RoleService();
+		roleEntityService = new RoleEntityService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(roleService, "roleDAO", roleDAO);
+		Whitebox.setInternalState(roleEntityService, "roleDAO", roleDAO);
 	}
 
 	@Test
 	public void testFind() throws Exception {
 		when(roleDAO.find(ROLE_ID_1)).thenReturn(buildFakeRole(ROLE_ID_1, ACCOUNT_ID, TEST_ROLE_NAME));
 
-		Role result = roleService.find(ROLE_ID_1);
+		Role result = roleEntityService.find(ROLE_ID_1);
 
 		assertEquals(ROLE_ID_1, result.getId());
 		assertEquals("Test Role", result.getName());
@@ -54,19 +54,19 @@ public class RoleServiceTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
-		roleService.find(null);
+		roleEntityService.find(null);
 	}
 
 	@Test
 	public void testSearch_NoSearchTermProvided() throws Exception {
-		List<Role> result = roleService.search(null, ACCOUNT_ID);
+		List<Role> result = roleEntityService.search(null, ACCOUNT_ID);
 
 		assertTrue(result.isEmpty());
 	}
 
 	@Test
 	public void testSearch() throws Exception {
-		List<Role> result = roleService.search(null, ACCOUNT_ID);
+		List<Role> result = roleEntityService.search(null, ACCOUNT_ID);
 
 		assertTrue(result.isEmpty());
 	}
@@ -76,7 +76,7 @@ public class RoleServiceTest {
 		Role fakeRole = buildFakeRole(ROLE_ID_1, ACCOUNT_ID, TEST_ROLE_NAME);
 		when(roleDAO.save(fakeRole)).thenReturn(fakeRole);
 
-		Role group = roleService.save(fakeRole, new EntityAuditInfo.Builder()
+		Role group = roleEntityService.save(fakeRole, new EntityAuditInfo.Builder()
 				.appUserId(USER_ID)
 				.timestamp(new Date())
 				.build());
@@ -88,7 +88,7 @@ public class RoleServiceTest {
 	public void testUpdate() throws Exception {
 		Role fakeRole = setupTestUpdate();
 
-		Role group = roleService.update(fakeRole, new EntityAuditInfo.Builder()
+		Role group = roleEntityService.update(fakeRole, new EntityAuditInfo.Builder()
 				.appUserId(USER_ID)
 				.timestamp(new Date())
 				.build());
@@ -118,19 +118,19 @@ public class RoleServiceTest {
 	public void testDelete() throws Exception {
 		Role fakeRole = buildFakeRole(ROLE_ID_78, ACCOUNT_ID, TEST_ROLE_NAME);
 
-		roleService.delete(fakeRole);
+		roleEntityService.delete(fakeRole);
 
 		verify(roleDAO).delete(fakeRole);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testDelete_NullEntity() throws Exception {
-		roleService.delete(null);
+		roleEntityService.delete(null);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testDeleteById_NullId() throws Exception {
-		roleService.deleteById(null);
+		roleEntityService.deleteById(null);
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class RoleServiceTest {
 		Role fakeRole = buildFakeRole(ROLE_ID_78, ACCOUNT_ID, TEST_ROLE_NAME);
 		when(roleDAO.find(ROLE_ID_78)).thenReturn(fakeRole);
 
-		roleService.deleteById(ROLE_ID_78);
+		roleEntityService.deleteById(ROLE_ID_78);
 
 		verify(roleDAO).delete(fakeRole);
 	}

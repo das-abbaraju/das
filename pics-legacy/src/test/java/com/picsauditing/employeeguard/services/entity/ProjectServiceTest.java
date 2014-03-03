@@ -19,23 +19,23 @@ import static org.mockito.Mockito.when;
 
 public class ProjectServiceTest {
 
-	private ProjectService projectService;
+	private ProjectEntityService projectEntityService;
 
 	@Mock
 	private ProjectDAO projectDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		projectService = new ProjectService();
+		projectEntityService = new ProjectEntityService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(projectService, "projectDAO", projectDAO);
+		Whitebox.setInternalState(projectEntityService, "projectDAO", projectDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
-		projectService.find(null);
+		projectEntityService.find(null);
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class ProjectServiceTest {
 
 		when(projectDAO.find(expected.getId())).thenReturn(expected);
 
-		Project result = projectService.find(expected.getId());
+		Project result = projectEntityService.find(expected.getId());
 
 		assertNotNull(result);
 		assertEquals(expected.getId(), result.getId());
@@ -52,11 +52,11 @@ public class ProjectServiceTest {
 
 	@Test
 	public void testSearch_NullEmpty() throws Exception {
-		List<Project> nullSearch = projectService.search(null, ACCOUNT_ID);
+		List<Project> nullSearch = projectEntityService.search(null, ACCOUNT_ID);
 		assertNotNull(nullSearch);
 		assertTrue(nullSearch.isEmpty());
 
-		List<Project> emptySearch = projectService.search(" ", ACCOUNT_ID);
+		List<Project> emptySearch = projectEntityService.search(" ", ACCOUNT_ID);
 		assertNotNull(emptySearch);
 		assertTrue(emptySearch.isEmpty());
 	}
@@ -65,7 +65,7 @@ public class ProjectServiceTest {
 	public void testSearch() throws Exception {
 		when(projectDAO.search(SEARCH_TERM, ACCOUNT_ID)).thenReturn(Arrays.asList(buildFakeProject()));
 
-		List<Project> result = projectService.search(SEARCH_TERM, ACCOUNT_ID);
+		List<Project> result = projectEntityService.search(SEARCH_TERM, ACCOUNT_ID);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
@@ -78,7 +78,7 @@ public class ProjectServiceTest {
 
 		when(projectDAO.save(fakeProject)).thenReturn(fakeProject);
 
-		Project result = projectService.save(fakeProject, CREATED);
+		Project result = projectEntityService.save(fakeProject, CREATED);
 
 		verify(projectDAO).save(fakeProject);
 		assertEquals(USER_ID, result.getCreatedBy());
@@ -97,7 +97,7 @@ public class ProjectServiceTest {
 		when(projectDAO.find(updatedProject.getId())).thenReturn(updatedProject);
 		when(projectDAO.save(updatedProject)).thenReturn(updatedProject);
 
-		Project result = projectService.update(fakeProject, UPDATED);
+		Project result = projectEntityService.update(fakeProject, UPDATED);
 
 		verify(projectDAO).find(updatedProject.getId());
 		verify(projectDAO).save(updatedProject);
@@ -112,7 +112,7 @@ public class ProjectServiceTest {
 	public void testDelete() throws Exception {
 		Project fakeProject = buildFakeProject();
 
-		projectService.delete(fakeProject);
+		projectEntityService.delete(fakeProject);
 
 		verify(projectDAO).delete(fakeProject);
 	}
@@ -123,7 +123,7 @@ public class ProjectServiceTest {
 
 		when(projectDAO.find(fakeProject.getId())).thenReturn(fakeProject);
 
-		projectService.deleteById(fakeProject.getId());
+		projectEntityService.deleteById(fakeProject.getId());
 
 		verify(projectDAO).delete(fakeProject);
 	}

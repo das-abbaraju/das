@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.RoleEmployee;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.List;
 
 public class RoleEmployeeDAO extends AbstractBaseEntityDAO<RoleEmployee> {
@@ -56,6 +57,15 @@ public class RoleEmployeeDAO extends AbstractBaseEntityDAO<RoleEmployee> {
 				"WHERE re.employee.id = :employeeId " +
 				"AND re.role.accountId = :siteId", RoleEmployee.class);
 		query.setParameter("employeeId", employeeId);
+		query.setParameter("siteId", siteId);
+		return query.getResultList();
+	}
+
+	public List<RoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees, final int siteId) {
+		TypedQuery<RoleEmployee> query = em.createQuery("SELECT re FROM RoleEmployee re " +
+				"WHERE re.employee IN (employees) " +
+				"AND re.role.accountId = :siteId", RoleEmployee.class);
+		query.setParameter("employees", employees);
 		query.setParameter("siteId", siteId);
 		return query.getResultList();
 	}

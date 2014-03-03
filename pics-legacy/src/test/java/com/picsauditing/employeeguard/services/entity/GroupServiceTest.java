@@ -28,25 +28,25 @@ public class GroupServiceTest {
 	public static final int USER_ID = 78;
 	public static final int GROUP_ID_78 = 78;
 
-	GroupService groupService;
+	GroupEntityService groupEntityService;
 
 	@Mock
 	private AccountGroupDAO accountGroupDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		groupService = new GroupService();
+		groupEntityService = new GroupEntityService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(groupService, "accountGroupDAO", accountGroupDAO);
+		Whitebox.setInternalState(groupEntityService, "accountGroupDAO", accountGroupDAO);
 	}
 
 	@Test
 	public void testFind() throws Exception {
 		when(accountGroupDAO.find(GROUP_ID_1)).thenReturn(buildFakeGroup(GROUP_ID_1, ACCOUNT_ID, TEST_GROUP_NAME));
 
-		Group result = groupService.find(GROUP_ID_1);
+		Group result = groupEntityService.find(GROUP_ID_1);
 
 		assertEquals(GROUP_ID_1, result.getId());
 		assertEquals("Test Group", result.getName());
@@ -54,19 +54,19 @@ public class GroupServiceTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
-		groupService.find(null);
+		groupEntityService.find(null);
 	}
 
 	@Test
 	public void testSearch_NoSearchTermProvided() throws Exception {
-		List<Group> result = groupService.search(null, ACCOUNT_ID);
+		List<Group> result = groupEntityService.search(null, ACCOUNT_ID);
 
 		assertTrue(result.isEmpty());
 	}
 
 	@Test
 	public void testSearch() throws Exception {
-		List<Group> result = groupService.search(null, ACCOUNT_ID);
+		List<Group> result = groupEntityService.search(null, ACCOUNT_ID);
 
 		assertTrue(result.isEmpty());
 	}
@@ -76,7 +76,7 @@ public class GroupServiceTest {
 		Group fakeGroup = buildFakeGroup(GROUP_ID_1, ACCOUNT_ID, TEST_GROUP_NAME);
 		when(accountGroupDAO.save(fakeGroup)).thenReturn(fakeGroup);
 
-		Group group = groupService.save(fakeGroup, new EntityAuditInfo.Builder()
+		Group group = groupEntityService.save(fakeGroup, new EntityAuditInfo.Builder()
 				.appUserId(USER_ID)
 				.timestamp(new Date())
 				.build());
@@ -88,7 +88,7 @@ public class GroupServiceTest {
 	public void testUpdate() throws Exception {
 		Group fakeGroup = setupTestUpdate();
 
-		Group group = groupService.update(fakeGroup, new EntityAuditInfo.Builder()
+		Group group = groupEntityService.update(fakeGroup, new EntityAuditInfo.Builder()
 				.appUserId(USER_ID)
 				.timestamp(new Date())
 				.build());
@@ -118,19 +118,19 @@ public class GroupServiceTest {
 	public void testDelete() throws Exception {
 		Group fakeGroup = buildFakeGroup(GROUP_ID_78, ACCOUNT_ID, TEST_GROUP_NAME);
 
-		groupService.delete(fakeGroup);
+		groupEntityService.delete(fakeGroup);
 
 		verify(accountGroupDAO).delete(fakeGroup);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testDelete_NullEntity() throws Exception {
-		groupService.delete(null);
+		groupEntityService.delete(null);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testDeleteById_NullId() throws Exception {
-		groupService.deleteById(null);
+		groupEntityService.deleteById(null);
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class GroupServiceTest {
 		Group fakeGroup = buildFakeGroup(GROUP_ID_78, ACCOUNT_ID, TEST_GROUP_NAME);
 		when(accountGroupDAO.find(GROUP_ID_78)).thenReturn(fakeGroup);
 
-		groupService.deleteById(GROUP_ID_78);
+		groupEntityService.deleteById(GROUP_ID_78);
 
 		verify(accountGroupDAO).delete(fakeGroup);
 	}

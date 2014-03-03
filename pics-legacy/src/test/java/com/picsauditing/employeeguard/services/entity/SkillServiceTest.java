@@ -21,30 +21,30 @@ import static org.mockito.Mockito.*;
 
 public class SkillServiceTest {
 
-	private SkillService skillService;
+	private SkillEntityService skillEntityService;
 
 	@Mock
 	private AccountSkillDAO accountSkillDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		skillService = new SkillService();
+		skillEntityService = new SkillEntityService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(skillService, "accountSkillDAO", accountSkillDAO);
+		Whitebox.setInternalState(skillEntityService, "accountSkillDAO", accountSkillDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
-		skillService.find(null);
+		skillEntityService.find(null);
 	}
 
 	@Test
 	public void testFind() throws Exception {
 		when(accountSkillDAO.find(ENTITY_ID)).thenReturn(buildFakeAccountSkill());
 
-		AccountSkill skill = skillService.find(ENTITY_ID);
+		AccountSkill skill = skillEntityService.find(ENTITY_ID);
 
 		assertNotNull(skill);
 		assertEquals(ENTITY_ID, skill.getId());
@@ -52,13 +52,13 @@ public class SkillServiceTest {
 
 	@Test
 	public void testSearch_NullOrEmpty() throws Exception {
-		List<AccountSkill> skills = skillService.search(null, ACCOUNT_ID);
+		List<AccountSkill> skills = skillEntityService.search(null, ACCOUNT_ID);
 
 		assertNotNull(skills);
 		assertTrue(skills.isEmpty());
 		verify(accountSkillDAO, never()).search(anyString(), anyInt());
 
-		skills = skillService.search(Strings.EMPTY_STRING, ACCOUNT_ID);
+		skills = skillEntityService.search(Strings.EMPTY_STRING, ACCOUNT_ID);
 
 		assertNotNull(skills);
 		assertTrue(skills.isEmpty());
@@ -69,7 +69,7 @@ public class SkillServiceTest {
 	public void testSearch() throws Exception {
 		when(accountSkillDAO.search(SEARCH_TERM, ACCOUNT_ID)).thenReturn(Arrays.asList(buildFakeAccountSkill()));
 
-		List<AccountSkill> skills = skillService.search(SEARCH_TERM, ACCOUNT_ID);
+		List<AccountSkill> skills = skillEntityService.search(SEARCH_TERM, ACCOUNT_ID);
 
 		verify(accountSkillDAO).search(SEARCH_TERM, ACCOUNT_ID);
 		assertNotNull(skills);
@@ -82,7 +82,7 @@ public class SkillServiceTest {
 
 		when(accountSkillDAO.save(fakeAccountSkill)).thenReturn(fakeAccountSkill);
 
-		AccountSkill result = skillService.save(fakeAccountSkill, CREATED);
+		AccountSkill result = skillEntityService.save(fakeAccountSkill, CREATED);
 
 		assertNotNull(result);
 		assertEquals(fakeAccountSkill.getId(), result.getId());
@@ -102,7 +102,7 @@ public class SkillServiceTest {
 		when(accountSkillDAO.find(fakeAccountSkill.getId())).thenReturn(fakeAccountSkill);
 		when(accountSkillDAO.save(fakeAccountSkill)).thenReturn(fakeAccountSkill);
 
-		AccountSkill result = skillService.update(updatedAccountSkill, UPDATED);
+		AccountSkill result = skillEntityService.update(updatedAccountSkill, UPDATED);
 
 		assertNotNull(result);
 		assertEquals(updatedAccountSkill.getId(), result.getId());
@@ -115,7 +115,7 @@ public class SkillServiceTest {
 	public void testDelete() throws Exception {
 		AccountSkill fakeAccountSkill = buildFakeAccountSkill();
 
-		skillService.delete(fakeAccountSkill);
+		skillEntityService.delete(fakeAccountSkill);
 
 		verify(accountSkillDAO).delete(fakeAccountSkill);
 	}
@@ -126,7 +126,7 @@ public class SkillServiceTest {
 
 		when(accountSkillDAO.find(fakeAccountSkill.getId())).thenReturn(fakeAccountSkill);
 
-		skillService.deleteById(fakeAccountSkill.getId());
+		skillEntityService.deleteById(fakeAccountSkill.getId());
 
 		verify(accountSkillDAO).find(fakeAccountSkill.getId());
 		verify(accountSkillDAO).delete(fakeAccountSkill);

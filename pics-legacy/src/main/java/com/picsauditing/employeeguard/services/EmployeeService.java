@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.*;
 
+@Deprecated
 public class EmployeeService {
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 

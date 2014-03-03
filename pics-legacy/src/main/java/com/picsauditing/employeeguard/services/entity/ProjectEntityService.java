@@ -1,19 +1,26 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.ProjectDAO;
+import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.ProjectCompany;
+import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-public class ProjectService implements EntityService<Project, Integer>, Searchable<Project> {
+public class ProjectEntityService implements EntityService<Project, Integer>, Searchable<Project> {
 
 	@Autowired
 	private ProjectDAO projectDAO;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
 	/* All Find Methods */
 
@@ -24,6 +31,38 @@ public class ProjectService implements EntityService<Project, Integer>, Searchab
 		}
 
 		return projectDAO.find(id);
+	}
+
+	public Map<Employee, Set<Project>> getProjectsForEmployees(final Collection<Employee> employees) {
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployees(employees),
+				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
+					@Override
+					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getEmployee();
+					}
+
+					@Override
+					public Project getValue(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getProjectRole().getProject();
+					}
+				});
+	}
+
+	public List<Project> getProjectsForEmployee(final Employee employee) {
+		return projectDAO.findByEmployee(employee);
+	}
+
+	public Project getProjectByRoleAndAccount(final String roleId, final int accountId) {
+		return projectDAO.findProjectByRoleAndAccount(NumberUtils.toInt(roleId), accountId);
+	}
+
+	public Set<Integer> getContractorIdsForProject(final Project project) {
+		Set<Integer> contractorIds = new HashSet<>();
+		for (ProjectCompany projectCompany : project.getCompanies()) {
+			contractorIds.add(projectCompany.getAccountId());
+		}
+
+		return contractorIds;
 	}
 
 	/* All search related methods */

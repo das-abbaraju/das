@@ -16,23 +16,23 @@ import static org.mockito.Mockito.when;
 
 public class ProfileServiceTest {
 
-	private ProfileService profileService;
+	private ProfileEntityService profileEntityService;
 
 	@Mock
 	private ProfileDAO profileDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		profileService = new ProfileService();
+		profileEntityService = new ProfileEntityService();
 
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(profileService, "profileDAO", profileDAO);
+		Whitebox.setInternalState(profileEntityService, "profileDAO", profileDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
-		profileService.find(null);
+		profileEntityService.find(null);
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class ProfileServiceTest {
 
 		when(profileDAO.find(expected.getId())).thenReturn(expected);
 
-		Profile result = profileService.find(expected.getId());
+		Profile result = profileEntityService.find(expected.getId());
 
 		assertNotNull(result);
 		assertEquals(expected.getId(), result.getId());
@@ -53,7 +53,7 @@ public class ProfileServiceTest {
 
 		when(profileDAO.save(fakeProfile)).thenReturn(fakeProfile);
 
-		Profile result = profileService.save(fakeProfile, CREATED);
+		Profile result = profileEntityService.save(fakeProfile, CREATED);
 
 		verify(profileDAO).save(fakeProfile);
 		assertEquals(USER_ID, result.getCreatedBy());
@@ -72,7 +72,7 @@ public class ProfileServiceTest {
 		when(profileDAO.find(updatedProfile.getId())).thenReturn(updatedProfile);
 		when(profileDAO.save(updatedProfile)).thenReturn(updatedProfile);
 
-		Profile result = profileService.update(fakeProfile, UPDATED);
+		Profile result = profileEntityService.update(fakeProfile, UPDATED);
 
 		verify(profileDAO).find(updatedProfile.getId());
 		verify(profileDAO).save(updatedProfile);
@@ -86,7 +86,7 @@ public class ProfileServiceTest {
 	public void testDelete() throws Exception {
 		Profile fakeProfile = buildFakeProfile();
 
-		profileService.delete(fakeProfile);
+		profileEntityService.delete(fakeProfile);
 
 		verify(profileDAO).delete(fakeProfile);
 	}
@@ -97,7 +97,7 @@ public class ProfileServiceTest {
 
 		when(profileDAO.find(fakeProfile.getId())).thenReturn(fakeProfile);
 
-		profileService.deleteById(fakeProfile.getId());
+		profileEntityService.deleteById(fakeProfile.getId());
 
 		verify(profileDAO).delete(fakeProfile);
 	}

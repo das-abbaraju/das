@@ -1,19 +1,30 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
-import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.daos.AccountSkillRoleDAO;
+import com.picsauditing.employeeguard.daos.ProjectSkillDAO;
+import com.picsauditing.employeeguard.daos.SiteSkillDAO;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.util.Extractor;
+import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-public class SkillService implements EntityService<AccountSkill, Integer>, Searchable<AccountSkill> {
+public class SkillEntityService implements EntityService<AccountSkill, Integer>, Searchable<AccountSkill> {
 
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
+	@Autowired
+	private AccountSkillRoleDAO accountSkillRoleDAO;
+	@Autowired
+	private ProjectSkillDAO projectSkillDAO;
+	@Autowired
+	private SiteSkillDAO siteSkillDAO;
 
 	/* All Find Methods */
 
@@ -24,6 +35,56 @@ public class SkillService implements EntityService<AccountSkill, Integer>, Searc
 		}
 
 		return accountSkillDAO.find(id);
+	}
+
+	public Map<Project, Set<AccountSkill>> getRequiredSkillsForProjects(final Collection<Project> projects) {
+		return Utilities.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
+				new Utilities.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
+
+					@Override
+					public Project getKey(ProjectSkill projectSkill) {
+						return projectSkill.getProject();
+					}
+
+					@Override
+					public AccountSkill getValue(ProjectSkill projectSkill) {
+						return projectSkill.getSkill();
+					}
+				});
+	}
+
+	public Map<Role, Set<AccountSkill>> getSkillsForRoles(final Collection<Role> roles) {
+		return Utilities.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(roles),
+				new Utilities.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
+
+					@Override
+					public Role getKey(AccountSkillRole accountSkillRole) {
+						return accountSkillRole.getRole();
+					}
+
+					@Override
+					public AccountSkill getValue(AccountSkillRole accountSkillRole) {
+						return accountSkillRole.getSkill();
+					}
+				});
+	}
+
+	/**
+	 * This will return the Corporate and Site required skills.
+	 *
+	 * @param siteId
+	 * @return
+	 */
+	public Set<AccountSkill> getSiteRequiredSkills(final int siteId, final List<Integer> accountIdsInAccountHierarchy) {
+		List<Integer> accountIds = new ArrayList<>(accountIdsInAccountHierarchy);
+		accountIds.add(siteId);
+
+		return ExtractorUtil.extractSet(siteSkillDAO.findByAccountIds(accountIds), new Extractor<SiteSkill, AccountSkill>() {
+			@Override
+			public AccountSkill extract(SiteSkill siteSkill) {
+				return siteSkill.getSkill();
+			}
+		});
 	}
 
 	/* All search related methods */
