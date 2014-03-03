@@ -1,28 +1,24 @@
 angular.module('PICS.employeeguard')
 
 .controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Employee) {
-    var model;
+    var subview = 'all',
+        employee = EmployeeSkills.get(),
+        model;
 
-    $scope.subview = 'all';
-
-    $scope.employee = EmployeeSkills.get();
-
-    $scope.onSuccess = function (result) {
+    function onSuccess(result) {
         model = new Employee(result);
 
         $scope.projectSkills = model.getAllProjectSkills();
         $scope.projectRoles = model.getAllProjectRoles();
 
         $scope.highlightedStatus = $scope.employee.status;
-    };
+    }
 
-    $scope.onError = function (error) {
+    function onError(error) {
         console.log(error);
-    };
+    }
 
-    $scope.employee.$promise.then($scope.onSuccess, $scope.onError);
-
-    $scope.changeSubView = function (template_name, subview_name) {
+    function changeSubView(template_name, subview_name) {
         $scope.subview = template_name;
         $scope.subview_name = subview_name;
 
@@ -41,9 +37,20 @@ angular.module('PICS.employeeguard')
             default:
                 break;
         }
-    };
+    }
 
-    $scope.updateHighlightedStatus = function (status) {
-        $scope.highlightedStatus = status;
-    };
+    function updateHighlightedStatus(status) {
+        $scope.highlightedStatus = status;        
+    }
+
+    employee.$promise.then(onSuccess, onError);
+
+    angular.extend($scope, {
+        subview: subview,
+        employee: employee,
+        onSuccess: onSuccess,
+        onError: onError,
+        changeSubView: changeSubView,
+        updateHighlightedStatus: updateHighlightedStatus
+    });
 });
