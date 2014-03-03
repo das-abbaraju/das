@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ProjectServiceTest {
+public class ProjectEntityServiceTest {
 
 	private ProjectEntityService projectEntityService;
 

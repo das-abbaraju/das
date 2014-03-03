@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class RoleServiceTest {
+public class RoleEntityServiceTest {
 
 	public static final String TEST_ROLE_NAME = "Test Role";
 

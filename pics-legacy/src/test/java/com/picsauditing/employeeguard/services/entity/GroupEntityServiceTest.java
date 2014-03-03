@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class GroupServiceTest {
+public class GroupEntityServiceTest {
 
 	public static final String TEST_GROUP_NAME = "Test Group";
 
