@@ -20,6 +20,11 @@ public class AccountSkillBuilder {
 		return this;
 	}
 
+	public AccountSkillBuilder accountId(int accountId) {
+		accountSkill.setAccountId(accountId);
+		return this;
+	}
+
 	public AccountSkillBuilder name(String name) {
 		accountSkill.setName(name);
 		return this;
