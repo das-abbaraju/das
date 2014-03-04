@@ -285,6 +285,10 @@
             <result name="mobile-menu">/struts/layout/menu/mobile/_mobile-menu.jsp</result>
         </action>
 
+        <action name="Contact" class="com.picsauditing.access.Contact">
+        	<result>struts/contact_pics.jsp</result>
+        </action>
+
 		<action name="ContactUs" class="com.picsauditing.user.controller.ContactUs">
 			<result>struts/contact-us/contact-us.jsp</result>
 		</action>
