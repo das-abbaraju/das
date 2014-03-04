@@ -117,17 +117,21 @@ public class Menu extends PicsActionSupport {
 	public boolean isShowContractorSubmenu() {
 		loadPermissions();
 
-		if (permissions.isContractor() || !permissions.isUsingVersion7Menus() || !visibleToOperator()) {
+		if (permissions.isContractor() || !permissions.isUsingVersion7Menus()) {
 			return false;
-		}
-
-		if (permissions.isOnlyAuditor()) {
-			return auditorCanViewAnAudit();
 		}
 
 		contractor = findContractor();
 		if (contractor == null) {
 			return false;
+		}
+
+		if (!visibleToOperator()) {
+			return false;
+		}
+
+		if (permissions.isOnlyAuditor()) {
+			return auditorCanViewAnAudit();
 		}
 
 		return true;
@@ -186,7 +190,7 @@ public class Menu extends PicsActionSupport {
 		}
 
 		if (permissions.isOperatorCorporate()) {
-			return !contractorIsVisibleToOperator();
+			return contractorIsVisibleToOperator();
 		}
 
 		return true;
