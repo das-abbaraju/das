@@ -26,6 +26,7 @@ public class GeneratePdf extends ContractorActionSupport {
             ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + filename);
 
             final ITextRenderer iTextRenderer = new ITextRenderer();
+            System.out.println("DE377: GeneratePdf.create(): Calling setDocument with url = " + url);
             iTextRenderer.setDocument(url);
             iTextRenderer.layout();
 

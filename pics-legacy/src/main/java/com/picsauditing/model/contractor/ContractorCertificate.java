@@ -92,6 +92,18 @@ public class ContractorCertificate {
         return DateBean.format(expirationDate, "yyyy-MM-dd");
     }
 
+    @Override
+    public String toString() {
+        return "ContractorCertificate{" +
+                "id=" + id +
+                ", contractor=" + contractor +
+                ", issueDate=" + issueDate +
+                ", expirationDate=" + expirationDate +
+                ", certificateType=" + certificateType +
+                ", certificationMethod=" + certificationMethod +
+                '}';
+    }
+
     public static ContractorCertificateBuilder builder() {
         return new ContractorCertificateBuilder();
     }
