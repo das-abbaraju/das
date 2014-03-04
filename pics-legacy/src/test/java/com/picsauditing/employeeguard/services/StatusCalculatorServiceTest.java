@@ -140,7 +140,7 @@ public class StatusCalculatorServiceTest {
 	}
 
 	private List<AccountSkillEmployee> buildFakeAccountSkillEmployees(final List<Employee> employees,
-																	  final List<AccountSkill> skills) {
+	                                                                  final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillEmployeeBuilder()
 						.accountSkill(skills.get(0))
@@ -163,13 +163,5 @@ public class StatusCalculatorServiceTest {
 						.endDate(DateBean.addDays(DateBean.today(), 40))
 						.build()
 		);
-	}
-
-	@Test
-	public void testGetCountOfEmployeesOverallStatusesForSite() {
-		Map<SkillStatus, Integer> employeeOverallStatuses = service.getCountOfEmployeesOverallStatusesForSite(SITE_ID);
-
-		assertNotNull(employeeOverallStatuses);
-		assertFalse(employeeOverallStatuses.isEmpty());
 	}
 }
