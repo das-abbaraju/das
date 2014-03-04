@@ -34,6 +34,10 @@
             <result name="required-skills">/struts/employee-guard/operator/_required-skills-form.jsp</result>
         </action>
 
+        <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+            <result>/struts/employee-guard/index.jsp</result>
+        </action>
+
         <!-- Project -->
         <action name="project" class="com.picsauditing.employeeguard.controllers.operator.ProjectAction">
             <result name="create">/struts/employee-guard/operator/project/create.jsp</result>
