@@ -20,7 +20,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title"><s:text name="Contact.title" /></s:param>
+    <s:param name="title"><s:text name="ContactUs.Title" /></s:param>
 </s:include>
 
 <div class="row contact-methods">
@@ -36,11 +36,11 @@
                 </div>
 
                 <div class="gray-block">
-                    <p><s:text name="Contact.YourCSRIs" /></p>
+                    <p><s:text name="ContactUs.YourCSRIs" /></p>
                     <p>${contactUsInfo.csrName}</p>
                 </div>
 
-                <a href="${website_contact_page_url}" target="_blank"><s:text name="Contact.AdditionalNumbers" /></a>
+                <a href="${website_contact_page_url}" target="_blank"><s:text name="ContactUs.AdditionalNumbers" /></a>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@
                 <i class="icon-comments" data-toggle="tooltip" data-placement="top" title="" data-original-title="${chat_tooltip}" data-container="body"></i>
             </div>
             <div class="col-xs-9 col-sm-9 col-md-12">
-                <a href="${mibew_href}" class="btn btn-primary btn-lg chat-link" target="_blank" role="button"><s:text name="Contact.ChatNow" /></a>
+                <a href="${mibew_href}" class="btn btn-primary btn-lg chat-link" target="_blank" role="button"><s:text name="ContactUs.ChatNow" /></a>
             </div>
         </div>
     </div>
@@ -60,24 +60,31 @@
                 <i class="icon-envelope-alt" data-toggle="tooltip" data-placement="top" title="" data-original-title="${message_tooltip}" data-container="body"></i>
             </div>
             <div class="col-xs-9 col-sm-9 col-md-12 message-container">
-                <div class="gray-block"><s:text name="Contact.MessageYourCSR" /></div>
-                <form action="${send_message_url}" method="post" class="message-form text-left" role="form">
-                    <div class="form-group">
-                        <label name="subject" class="control-label"><s:text name="Contact.Subject" /></label>
-                        <input name="subject" class="form-control" type="text" tabindex="1">
-                    </div>
-                    <div class="form-group">
-                        <label name="message" class="control-label"><s:text name="Contact.Message" /></label>
-                        <div>
-                            <textarea name="message" class="form-control" tabindex="2"></textarea>
+                <s:if test="!messageSent">
+                    <div class="gray-block"><s:text name="ContactUs.MessageYourCSR" /></div>
+                </s:if>
+
+                <s:include value="../actionMessages.jsp" />
+
+                <s:if test="!messageSent">
+                    <form action="${send_message_url}" method="post" class="message-form text-left" role="form">
+                        <div class="form-group">
+                            <label name="subject" class="control-label"><s:text name="ContactUs.Subject" /></label>
+                            <input name="subject" class="form-control" type="text" tabindex="1" value="${subject}">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-actions">
-                            <button name="send" type="submit" class="btn btn-default" tabindex="3"><s:text name="Contact.SendMessage" /></button>
+                        <div class="form-group">
+                            <label name="message" class="control-label"><s:text name="ContactUs.Message" /></label>
+                            <div>
+                                <textarea name="message" class="form-control" tabindex="2">${message}</textarea>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <div class="form-actions">
+                                <button name="send" type="submit" class="btn btn-default" tabindex="3"><s:text name="ContactUs.SendMessage" /></button>
+                            </div>
+                        </div>
+                    </form>
+                </s:if>
             </div>
         </div>
     </div>

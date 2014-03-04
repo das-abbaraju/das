@@ -1,4 +1,4 @@
-#ContactUs__page {
+.ContactUs-page {
 
     .contact-methods {
         i {
@@ -45,10 +45,38 @@
             display: inline;
         }
     }
+
+    div.info {
+        background: $success_tint;
+        border-radius: 4px;
+        color: $success_med;
+        margin-bottom: 20px;
+        padding: 15px;
+        text-align: left;
+        width: 100%;
+
+        strong {
+            color: $success_dark;
+        }
+    }
+
+    div.error {
+        background: $danger_tint;
+        border-radius: 4px;
+        color: $danger_med;
+        margin-bottom: 20px;
+        padding: 15px;
+        text-align: left;
+        width: 100%;
+
+        strong {
+            color: $danger_dark;
+        }
+    }
 }
 
 @media (max-width: 991px) {
-    #ContactUs__page {
+    .ContactUs-page {
         .chat-row {
             margin-top: 30px;
         }
