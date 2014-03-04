@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class OperatorSiteAssignmentStatusFactoryTest {
 
@@ -24,7 +24,7 @@ public class OperatorSiteAssignmentStatusFactoryTest {
 
 	@Test
 	public void testCreate() throws Exception {
-		List<OperatorSiteAssignmentStatus> sites = factory.create(
+		OperatorSiteAssignmentStatus site = factory.create(
 				123,
 				"Site Name",
 				new HashMap<Employee, SkillStatus>() {{
@@ -54,14 +54,10 @@ public class OperatorSiteAssignmentStatusFactoryTest {
 							SkillStatus.Expired);
 				}});
 
-		assertNotNull(sites);
-		assertFalse(sites.isEmpty());
-
-		OperatorSiteAssignmentStatus operatorSiteAssignmentStatus = sites.get(0);
-
-		assertEquals(1, operatorSiteAssignmentStatus.getCompleted());
-		assertEquals(1, operatorSiteAssignmentStatus.getExpiring());
-		assertEquals(1, operatorSiteAssignmentStatus.getExpired());
-		assertEquals(3, operatorSiteAssignmentStatus.getEmployees());
+		assertNotNull(site);
+		assertEquals(1, site.getCompleted());
+		assertEquals(1, site.getExpiring());
+		assertEquals(1, site.getExpired());
+		assertEquals(3, site.getEmployees());
 	}
 }

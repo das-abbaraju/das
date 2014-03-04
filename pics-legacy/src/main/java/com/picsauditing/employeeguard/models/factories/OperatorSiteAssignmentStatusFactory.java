@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class OperatorSiteAssignmentStatusFactory {
 
-	public List<OperatorSiteAssignmentStatus> create(final int siteId,
+	public OperatorSiteAssignmentStatus create(final int siteId,
 	                                                 final String siteName,
 	                                                 final Map<Employee, SkillStatus> employeeStatuses) {
 
@@ -30,7 +30,7 @@ public class OperatorSiteAssignmentStatusFactory {
 				.expired(expired)
 				.build();
 
-		return Arrays.asList(status);
+		return status;
 	}
 
 	private Map<SkillStatus, Integer> getCount(final Map<Employee, SkillStatus> employeeStatuses) {

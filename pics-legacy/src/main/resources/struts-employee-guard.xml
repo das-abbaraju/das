@@ -29,7 +29,7 @@
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <!-- Dashboard -->
-        <action name="summary" class="com.picsauditing.employeeguard.controllers.operator.DashboardAction">
+        <action name="summary" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction">
         </action>
 
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
