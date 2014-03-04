@@ -12794,6 +12794,136 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   margin: 0px;
 }
 
+/* line 4, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-query,
+#primary_navigation .twitter-typeahead .tt-hint {
+  margin-bottom: 0;
+}
+/* line 8, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-hint {
+  display: none;
+}
+/* line 12, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu {
+  min-width: 160px;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: #fff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
+  -webkit-background-clip: padding;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+}
+/* line 22, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-suggestion {
+  display: block;
+  padding: 0;
+}
+/* line 27, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-suggestion p {
+  margin: 0;
+}
+/* line 31, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-suggestion:nth-child(even) {
+  background: #f1f1f2;
+}
+/* line 35, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .more-results-link {
+  font-weight: bold;
+}
+/* line 41, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-is-under-cursor,
+#primary_navigation .twitter-typeahead .tt-is-under-cursor:nth-child(even),
+#primary_navigation .twitter-typeahead .more-results-link:hover {
+  background: #2980b9 !important;
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #3498db), color-stop(100%, #2980b9));
+  background-image: -webkit-linear-gradient(to bottom, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(to bottom, #3498db, #2980b9);
+  background-image: -o-linear-gradient(to bottom, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$primary_light', endColorstr='$primary_med', GradientType=0) !important;
+  color: #fff;
+}
+/* line 48, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a {
+  color: #454545;
+}
+/* line 52, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-deactivated, #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-inactive {
+  color: #aeaeae;
+}
+/* line 57, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-deactivated:hover, #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-inactive:hover {
+  color: #cccccc;
+}
+/* line 61, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-demo {
+  font-style: italic;
+}
+/* line 65, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search a.account-deleted span {
+  text-decoration: line-through;
+}
+/* line 72, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a,
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a,
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .more-results-link:hover {
+  color: #fff;
+}
+/* line 76, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a.account-deactivated, #primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor a.account-inactive,
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a.account-deactivated,
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .tt-is-under-cursor:nth-child(even) a.account-inactive,
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .more-results-link:hover.account-deactivated,
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search .more-results-link:hover.account-inactive {
+  color: #cccccc;
+}
+/* line 81, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead a {
+  line-height: 15px;
+  overflow: hidden;
+  padding: 5px 15px;
+  display: block;
+}
+/* line 89, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead a .name,
+#primary_navigation .twitter-typeahead a .location {
+  float: left;
+  width: 175px;
+}
+/* line 95, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead a .id {
+  float: right;
+}
+/* line 100, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead a .type {
+  float: right;
+  font-style: italic;
+}
+/* line 106, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .tt-dropdown-menu .tt-dataset-primary-search {
+  width: 275px;
+  font-size: 13px;
+}
+/* line 111, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .total-results {
+  padding: 5px 15px;
+}
+/* line 115, ../src/common/plugins/_twitter-typehead-overrides.scss */
+#primary_navigation .twitter-typeahead .no-results-msg {
+  position: relative;
+  top: 5px;
+  padding-left: 20px;
+  color: #777;
+}
+
 /* line 2, ../src/app/home/_home.scss */
 #home .test {
   color: blue;
