@@ -121,7 +121,7 @@ public class BillingService {
 
     private void validateRevRec(Invoice invoice) throws Exception {
         for (InvoiceItem item : invoice.getItems()) {
-            if (!FeeService.isRevRecDeferred(item.getInvoiceFee()) && item.getRevenueFinishDate() == null && item.getRevenueStartDate() == null) {
+            if (FeeService.isRevRecDeferred(item.getInvoiceFee()) && item.getRevenueFinishDate() == null && item.getRevenueStartDate() == null) {
                 throw new Exception(invoice.getInvoiceType() + " Invoice #" + invoice.getId() + " was created " + invoice.getCreationDate() + " and was not stamped for revenue recognition.");
             }
         }
