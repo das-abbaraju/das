@@ -107,19 +107,20 @@ public class ContractorCertificateController extends PicsActionSupport  {
     }
 
     public String ssipCertificate() throws UnauthorizedException, PageNotFoundException {
-        System.out.println("DE377: In ContractorCertificateController.ssipCertificate...");
+        logger.info("DE377: In ContractorCertificateController.ssipCertificate...");
         if (!permissions.isAuditor()) {
-            System.out.println("DE377: User is not Auditor. Throwing UnauthorizedException... ");
+            logger.error("DE377: User is not Auditor. Throwing UnauthorizedException... ");
             throw new UnauthorizedException();
         }
 
         contractorCertificate = contractorCertificateService.getSsipCertificate(contractor);
         if (contractorCertificate == null) {
-            System.out.println("DE377: No certificate found for contractor: " + contractor.getId() + ". Throwing PageNotFoundException...");
+            logger.error("DE377: No certificate found for contractor: " + contractor.getId() + ". Throwing PageNotFoundException...");
+            throw new PageNotFoundException();
         }
 
-        System.out.println("DE377: Loaded contractorCertificate = " + contractorCertificate.toString());
-        System.out.println("DE377: Returning ssip result...");
+        logger.info("DE377: Loaded contractorCertificate = " + contractorCertificate.toString());
+        logger.info("DE377: Returning ssip result...");
 
         return "ssip";
     }

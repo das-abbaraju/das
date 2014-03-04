@@ -129,4 +129,12 @@
         <appender-ref ref="FILE"/>
     </logger>
 
+    <logger name="com.picsauditing.struts.controller.contractor.ContractorCertificateController">
+        <level value="info" />
+    </logger>
+
+    <logger name="com.picsauditing.struts.controller.pdf.GeneratePdf">
+        <level value="info" />
+    </logger>
+
 </configuration>
