@@ -8,6 +8,9 @@ import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
+import com.picsauditing.forms.RegistrationForm;
+import com.picsauditing.forms.RegistrationLocaleForm;
+import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.account.AccountService;
 import com.picsauditing.service.account.events.ContractorEventType;
@@ -43,6 +46,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	private int requestID;
 	private CountrySubdivision countrySubdivision;
 	private Locale locale;
+    private RegistrationForm registrationForm = new RegistrationForm();
+    private RegistrationLocaleForm localeForm = new RegistrationLocaleForm();
 
 	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;
@@ -100,10 +105,12 @@ public class Registration extends RegistrationAction implements AjaxValidator {
         setBaseLocaleFromRequestData();
 
         if (!Strings.isEmpty(registrationKey)) {
-            contractor = regReqService.preRegistrationFromKey(registrationKey);
-            user = contractor.getPrimaryContact();
-            user.setUsername(user.getEmail());
+            registrationForm = RegistrationForm.fromContractor(regReqService.preRegistrationFromKey(registrationKey));
+//            contractor = regReqService.preRegistrationFromKey(registrationKey);
+//            user = contractor.getPrimaryContact();
+//            user.setUsername(user.getEmail());
         }
+
 
         return SUCCESS;
 	}
@@ -512,4 +519,20 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	public void setSapAppPropertyUtil(SapAppPropertyUtil sapAppPropertyUtil) {
 		this.sapAppPropertyUtil = sapAppPropertyUtil;
 	}
+
+    public RegistrationForm getRegistrationForm() {
+        return registrationForm;
+    }
+
+    public void setRegistrationForm(RegistrationForm registrationForm) {
+        this.registrationForm = registrationForm;
+    }
+
+    public RegistrationLocaleForm getLocaleForm() {
+        return localeForm;
+    }
+
+    public void setLocaleForm(RegistrationLocaleForm localeForm) {
+        this.localeForm = localeForm;
+    }
 }
