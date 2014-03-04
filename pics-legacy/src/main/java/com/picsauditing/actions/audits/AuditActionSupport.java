@@ -1,50 +1,34 @@
 package com.picsauditing.actions.audits;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.picsauditing.access.OpType;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.models.audits.AuditEditModel;
-import com.picsauditing.util.EmailAddressUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.ContractorAuditCategories;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
-import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.models.audits.AuditEditModel;
 import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-
 import edu.emory.mathcs.backport.java.util.Collections;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
 
 @SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
-    @Autowired
+	@Autowired
 	protected AuditCategoryDataDAO catDataDao;
 	@Autowired
 	protected CertificateDAO certificateDao;
@@ -217,7 +201,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
 				List<OperatorAccount> contractorOperators = new ArrayList<OperatorAccount>();
-				for (ContractorOperator co:conAudit.getContractorAccount().getOperators()) {
+				for (ContractorOperator co : conAudit.getContractorAccount().getOperators()) {
 					contractorOperators.add(co.getOperatorAccount());
 				}
 				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
@@ -329,7 +313,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		if (!actionStatus.isEmpty()) {
 			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en
-					.hasNext();) {
+					.hasNext(); ) {
 				if (!(en.next().getValue().size() > 1)) {
 					en.remove();
 				}
@@ -370,17 +354,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (type.getEditPermission() != null) {
 				return permissions.hasPermission(type.getEditPermission());
 			} else if (type.getEditAudit() != null) {
-                Set<Integer> groupIds = permissions.getAllInheritedGroupIds();
-                return groupIds.contains(type.getEditAudit().getId());
-            }
+				Set<Integer> groupIds = permissions.getAllInheritedGroupIds();
+				return groupIds.contains(type.getEditAudit().getId());
+			}
 		}
 		// contractor can perform only submits and complete for pqf specific's
 		// if they can edit that audit
 		if (permissions.isContractor() && type.isCanContractorEdit()) {
-            if (type.getWorkFlow().isUseStateForEdit()) {
-                AuditEditModel model = new AuditEditModel();
-                return model.isCanEditAudit(conAudit, permissions);
-            }
+			if (type.getWorkFlow().isUseStateForEdit()) {
+				AuditEditModel model = new AuditEditModel();
+				return model.isCanEditAudit(conAudit, permissions);
+			}
 			if (newStatus.isSubmitted()) {
 				return true;
 			}
@@ -409,12 +393,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean displayMultiStatusDropDown() {
-        if (!permissions.hasGroup(User.GROUP_CSR))
-            return false;
-        if (CollectionUtils.isEmpty(contractor.getTrades()))
-            return false;
-        return (actionStatus.size() > 0);
-    }
+		if (!permissions.hasGroup(User.GROUP_CSR))
+			return false;
+		if (CollectionUtils.isEmpty(contractor.getTrades()))
+			return false;
+		return (actionStatus.size() > 0);
+	}
 
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
 		if (cao != null && step != null) {
@@ -886,19 +870,18 @@ public class AuditActionSupport extends ContractorActionSupport {
 	 * category.
 	 *
 	 * @param category
-	 *
 	 * @return
 	 */
 	public boolean isCanEditCategory(AuditCategory category) throws RecordNotFoundException, NoRightsException {
-        if (conAudit == null) {
-            findConAudit();
-        }
+		if (conAudit == null) {
+			findConAudit();
+		}
 
-        if (conAudit == null) {
-            return false;
-        }
+		if (conAudit == null) {
+			return false;
+		}
 
-        return auditEditModel.isCanEditCategory(category, conAudit, permissions, auditCategoryRuleCache);
+		return auditEditModel.isCanEditCategory(category, conAudit, permissions, auditCategoryRuleCache);
 	}
 
 	public boolean isHasClosingAuditor() {
@@ -908,10 +891,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		return conAudit.getAuditType().isHasAuditor();
 	}
-	
+
 	public String getScoreLastUpdated() {
 		List<AuditData> sortedList = conAudit.getData();
-		Collections.sort(sortedList, new Comparator<AuditData>(){
+		Collections.sort(sortedList, new Comparator<AuditData>() {
 			@Override
 			public int compare(AuditData a1, AuditData a2) {
 				return a2.getUpdateDate().compareTo(a1.getUpdateDate());
@@ -923,4 +906,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return new SimpleDateFormat("yyyy-MM-dd").format(lastUpdate);
 	}
 
+	@Override
+	public boolean isShowHeader() {
+		if (conAudit == null) {
+			try {
+				findConAudit();
+				contractor = conAudit.getContractorAccount();
+			} catch (Exception e) {
+				return false;
+			}
+		}
+
+		return super.isShowHeader();
+	}
 }

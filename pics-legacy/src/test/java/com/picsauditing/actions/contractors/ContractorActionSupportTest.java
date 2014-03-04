@@ -4,12 +4,12 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.menu.builder.AuditMenuBuilder;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
@@ -205,37 +205,46 @@ public class ContractorActionSupportTest extends PicsTest {
 		assertTrue(contractorActionSupport.isShowHeader());
 	}
 
-    @Test
-    public void testShowContractorSubmenu_HasContractorDetailsPermission() {
-        when(permissions.isContractor()).thenReturn(false);
-        when(permissions.isUsingVersion7Menus()).thenReturn(true);
-        when(permissions.hasPermission(OpPerms.ContractorDetails)).thenReturn(true);
+	@Test
+	public void testShowContractorSubmenu_HasContractorDetailsPermission() {
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		OperatorAccount operator = mock(OperatorAccount.class);
 
-        assertTrue(contractorActionSupport.isShowContractorSubmenu());
-    }
+		when(contractorAccountDAO.findOperators(contractor, permissions, " AND operatorAccount.type IN ('Operator')"))
+				.thenReturn(Arrays.asList(contractorOperator));
+		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
+		when(operator.getId()).thenReturn(123);
+		when(permissions.isContractor()).thenReturn(false);
+		when(permissions.isOperator()).thenReturn(true);
+		when(permissions.isUsingVersion7Menus()).thenReturn(true);
+		when(permissions.hasPermission(OpPerms.ContractorDetails)).thenReturn(true);
+		when(permissions.getAccountId()).thenReturn(123);
 
-    @Test
-    public void testShowContractorSubmenu_NullPermissions() {
-        when(permissions.isContractor()).thenReturn(false);
-        permissions = null;
+		assertTrue(contractorActionSupport.isShowContractorSubmenu());
+	}
 
-        assertFalse(contractorActionSupport.isShowContractorSubmenu());
-    }
+	@Test
+	public void testShowContractorSubmenu_NullPermissions() {
+		when(permissions.isContractor()).thenReturn(false);
+		permissions = null;
 
-    @Test
-    public void testShowContractorSubmenu_UserIsContractor() {
-        when(permissions.isContractor()).thenReturn(true);
+		assertFalse(contractorActionSupport.isShowContractorSubmenu());
+	}
 
-        assertFalse(contractorActionSupport.isShowContractorSubmenu());
-    }
+	@Test
+	public void testShowContractorSubmenu_UserIsContractor() {
+		when(permissions.isContractor()).thenReturn(true);
 
-    @Test
-    public void testShowContractorSubmenu_DoesNotHaveV7Menus() {
-        when(permissions.isContractor()).thenReturn(false);
-        when(permissions.isUsingVersion7Menus()).thenReturn(false);
+		assertFalse(contractorActionSupport.isShowContractorSubmenu());
+	}
 
-        assertFalse(contractorActionSupport.isShowContractorSubmenu());
-    }
+	@Test
+	public void testShowContractorSubmenu_DoesNotHaveV7Menus() {
+		when(permissions.isContractor()).thenReturn(false);
+		when(permissions.isUsingVersion7Menus()).thenReturn(false);
+
+		assertFalse(contractorActionSupport.isShowContractorSubmenu());
+	}
 
 	private void testMenu(AuditMenuBuilder.Service service, String translationKey, String displayText) throws Exception {
 		MenuComponent header = mock(MenuComponent.class);
