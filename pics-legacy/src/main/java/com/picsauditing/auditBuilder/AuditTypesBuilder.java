@@ -3,9 +3,7 @@ package com.picsauditing.auditBuilder;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -188,6 +186,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 			if (auditQuestion != null) {
 				List<AuditData> answers = findAnswersByContractorAndQuestion(contractor, auditQuestion);
                 filterNonVisibleAnswers(answers);
+                filterNonApplicableCategoryAnswers(answers);
 				questionAnswers.put(auditQuestion.getId(), answers);
 			}
 		}
@@ -206,6 +205,24 @@ public class AuditTypesBuilder extends AuditBuilderBase {
                 }
             }
         }
+    }
+
+    private void filterNonApplicableCategoryAnswers(List<AuditData> answers) {
+        Iterator<AuditData> iterator = answers.iterator();
+        while (iterator.hasNext()) {
+            AuditData data = iterator.next();
+            boolean remove = false;
+            for (AuditCatData acd:data.getAudit().getCategories()) {
+                if (acd.getCategory().getId() == data.getQuestion().getCategory().getId() && !acd.isApplies()) {
+                    remove = true;
+                    break;
+                }
+            }
+            if (remove) {
+                iterator.remove();
+            }
+        }
+
     }
 
     private List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
