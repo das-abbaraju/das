@@ -35,9 +35,7 @@ describe('The Operator Dashboard', function() {
         $routeParams.id = Math.floor((Math.random()*1000)+1);
 
         //This needs to come first!!
-        // $httpBackend.when('GET', /\/employee-guard\/operators\/skills\/employees\/[0-9]+/).respond(result);
-
-        // $httpBackend.when('GET', /\/angular\/json\/dashboard.json/).respond(result);
+        $httpBackend.when('GET', /\/employee-guard\/operators\/summary/).respond(result);
 
         scope = $rootScope.$new();
         $controller("operatorDashboardCtrl", {
@@ -45,7 +43,7 @@ describe('The Operator Dashboard', function() {
         });
 
         //This needs to come after controller is loaded
-        // $httpBackend.flush();
+        $httpBackend.flush();
 
         scope.site = result;
 
