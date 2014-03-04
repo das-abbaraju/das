@@ -96,7 +96,7 @@
 
                     <tr class="assign-employee-container ${employee_assigned}" data-assign-url="${assign_contractor}" data-unassign-url="${unassign_contractor}">
                         <td class="assign-employee text-center">
-                            <a href="#"><i class="icon-map-marker icon-large"></i></a>
+                            <i class="icon-map-marker icon-large"></i>
                         </td>
                         <td>
                             <s:url action="employee" var="contractor_project_employee_url">
