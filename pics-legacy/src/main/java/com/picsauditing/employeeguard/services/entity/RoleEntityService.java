@@ -67,6 +67,7 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
 																final int siteId) {
+
 		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteId(employees, siteId),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
 
