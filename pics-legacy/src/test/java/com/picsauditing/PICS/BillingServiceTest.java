@@ -129,6 +129,8 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(invoiceItem.getAmount()).thenReturn(new BigDecimal(199.00));
         when(invoiceItem.getOriginalAmount()).thenReturn(new BigDecimal(199.00));
 		when(invoiceItem.getInvoiceFee()).thenReturn(invoiceFee);
+        when(invoiceItem.getRevenueFinishDate()).thenReturn(new Date());
+        when(invoiceItem.getRevenueStartDate()).thenReturn(new Date());
 	}
 
 	private void setupStandardFees(boolean bidOnlyIsFree, boolean listOnlyIsFree) {
@@ -1036,6 +1038,17 @@ public class BillingServiceTest extends PicsTranslationTest {
 
         assertTrue(activated);
         verify(accountDAO).save(mockContractor);
+    }
+
+    @Test
+    public void testValidateRevRec() throws Exception {
+        setupInvoiceAndItems();
+        invoiceItems.add(previousInvoiceItem);
+        when(previousInvoiceItem.getInvoiceFee()).thenReturn(invoiceFee);
+        when(invoiceFee.isTax()).thenReturn(true);
+        when(invoiceFee.isFree()).thenReturn(false);
+        when(invoice.getItems()).thenReturn(invoiceItems);
+        Whitebox.invokeMethod(billingService, "validateRevRec", invoice);
     }
 
 }
