@@ -72,7 +72,7 @@ public class EmployeeService {
 
 	@Deprecated
 	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
-		return employeeEntityService.getEmployeesByProjects(projects);
+		return employeeEntityService.getEmployeesForProjects(projects);
 	}
 
 	@Deprecated

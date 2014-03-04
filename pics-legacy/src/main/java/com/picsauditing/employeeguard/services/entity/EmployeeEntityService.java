@@ -1,9 +1,12 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
@@ -12,9 +15,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class EmployeeEntityService implements EntityService<Employee, Integer>, Searchable<Employee> {
 
@@ -22,6 +23,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private PhotoUtil photoUtil;
+	@Autowired
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
 	/* All Find Methods */
 
@@ -50,8 +53,24 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return employeeDAO.findByAccounts(accountIds);
 	}
 
-	public List<Employee> getEmployeesByProjects(final List<Project> projects) {
+	public List<Employee> getEmployeesForProjects(final List<Project> projects) {
 		return employeeDAO.findByProjects(projects);
+	}
+
+	public Map<Project, Set<Employee>> getEmployeesByProject(final List<Project> projects) {
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByProjects(projects),
+				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Project, Employee>() {
+
+					@Override
+					public Project getKey(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getProjectRole().getProject();
+					}
+
+					@Override
+					public Employee getValue(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getEmployee();
+					}
+				});
 	}
 
 	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {

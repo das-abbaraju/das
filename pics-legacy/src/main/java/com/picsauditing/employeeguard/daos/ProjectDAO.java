@@ -1,11 +1,14 @@
 package com.picsauditing.employeeguard.daos;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import org.apache.commons.collections.CollectionUtils;
 
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
@@ -79,6 +82,19 @@ public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
 	public List<Project> findByContractorAccount(final int accountId) {
 		TypedQuery<Project> query = em.createQuery("SELECT p FROM ProjectCompany pc INNER JOIN pc.project p WHERE pc.accountId = :accountId", Project.class);
 		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
+	public List<Project> findProjectWithinDateRange(final int siteId, final Date startDate, final Date endDate) {
+		TypedQuery<Project> query = em.createQuery("SELECT p FROM Project p " +
+				"WHERE p.accountId = :siteId " +
+				"AND p.startDate > :startDate " +
+				"AND p.endDate < :endDate", Project.class);
+
+		query.setParameter("siteId", siteId);
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+
 		return query.getResultList();
 	}
 

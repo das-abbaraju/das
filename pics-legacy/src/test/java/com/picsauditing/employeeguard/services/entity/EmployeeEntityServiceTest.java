@@ -1,7 +1,10 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.util.Strings;
 import org.junit.Before;
@@ -10,8 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.*;
 import static org.junit.Assert.*;
@@ -25,6 +27,8 @@ public class EmployeeEntityServiceTest {
 
 	@Mock
 	private EmployeeDAO employeeDAO;
+	@Mock
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,6 +37,7 @@ public class EmployeeEntityServiceTest {
 		MockitoAnnotations.initMocks(this);
 
 		Whitebox.setInternalState(employeeEntityService, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(employeeEntityService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -48,6 +53,25 @@ public class EmployeeEntityServiceTest {
 
 		assertNotNull(employee);
 		assertEquals(ENTITY_ID, employee.getId());
+	}
+
+	@Test
+	public void testGetEmployeesByProject() {
+		List<ProjectRoleEmployee> fakeProjectRoleEmployees = buildFakeProjectRoleEmployees();
+		when(projectRoleEmployeeDAO.findByProjects(anyCollectionOf(Project.class))).thenReturn(fakeProjectRoleEmployees);
+
+		Map<Project, Set<Employee>> result = employeeEntityService.getEmployeesByProject(new ArrayList<Project>());
+
+		verifyTestGetEmployeesByProject();
+	}
+
+	private void verifyTestGetEmployeesByProject() {
+		fail("Not implemented");
+	}
+
+	private List<ProjectRoleEmployee> buildFakeProjectRoleEmployees() {
+
+		return null;
 	}
 
 	@Test
