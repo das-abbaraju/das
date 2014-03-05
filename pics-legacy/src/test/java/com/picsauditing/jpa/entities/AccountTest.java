@@ -1,13 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.EntityFactory;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import sun.tools.jstat.Operator;
 import java.util.ArrayList;
 
 import java.util.*;
