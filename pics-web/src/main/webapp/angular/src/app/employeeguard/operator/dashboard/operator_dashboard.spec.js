@@ -7,25 +7,25 @@ describe('The Operator Dashboard', function() {
         var result = {
             "id": 1,
             "employees": 852,
-            "complete": 714,
+            "completed": 714,
             "pending": 0,
             "expiring": 24,
             "expired": 114,
             "projects": [{
                     "name": "Test Project",
-                    "start_date": "01-01-2013",
-                    "end_date": "01-02-2015",
+                    "startDate": "01-01-2013",
+                    "endDate": "01-02-2015",
                     "location": "Main Building",
-                    "complete": 3,
+                    "completed": 3,
                     "pending": 2,
                     "expiring": 4,
                     "expired": 2
                 }, {
                     "name": "Red Dwarf",
-                    "start_date": "02-28-2013",
-                    "end_date": "03-02-2015",
+                    "startDate": "02-28-2013",
+                    "endDate": "03-02-2015",
                     "location": "Offsite",
-                    "complete": 1078,
+                    "completed": 1078,
                     "pending": 2,
                     "expiring": 345,
                     "expired": 992
@@ -57,10 +57,10 @@ describe('The Operator Dashboard', function() {
         it('should return a progress bar object', function() {
             var project = {
                 "name": "Red Dwarf",
-                "start_date": "02-28-2013",
-                "end_date": "03-02-2015",
+                "startDate": "02-28-2013",
+                "endDate": "03-02-2015",
                 "location": "Offsite",
-                "complete": 18,
+                "completed": 18,
                 "pending": 2,
                 "expiring": 40,
                 "expired": 20
