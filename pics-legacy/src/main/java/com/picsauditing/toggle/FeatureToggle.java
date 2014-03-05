@@ -39,6 +39,7 @@ public interface FeatureToggle {
     String SAP_BIZ_UNITS_SET_SYNC_TRUE_ENABLED = "SAP.BusinessUnits.SetSyncTrue.Enabled";
     String TOGGLE_DISABLE_TRANSLATION_SERVICE_CACHE_WARMING = "Toggle.DisableTranslationServiceCacheWarming";
     String TOGGLE_STRIKE_IRON = "Toggle.StrikeIron";
+    String TOGGLE_USE_MOCK_PAYMENT_SERVICE = "Toggle.UseMockPaymentService";
 
 	boolean isFeatureEnabled(String toggleName);
 

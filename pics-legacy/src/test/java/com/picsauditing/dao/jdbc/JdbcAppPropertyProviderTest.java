@@ -69,7 +69,7 @@ public class JdbcAppPropertyProviderTest {
         Cache cache = CacheManager.getInstance().getCache(cacheName);
         cache.put(new Element(TEST_APP_PROPERTY_NAME, TEST_APP_PROPERTY_VALUE));
 
-        jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         verify(dataSource, never()).getConnection();
     }
@@ -80,7 +80,7 @@ public class JdbcAppPropertyProviderTest {
         // set this to null so we use a real cache. ehcache.Cache is not mockable b/c of final methods
         Whitebox.setInternalState(jdbcAppPropertyProvider, "cacheManager", (CacheManager)null);
 
-        jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         String result = (String)(CacheManager.getInstance().getCache(cacheName).get(TEST_APP_PROPERTY_NAME).getObjectValue());
 
@@ -92,7 +92,7 @@ public class JdbcAppPropertyProviderTest {
         when(resultSet.next()).thenReturn(false);
         when(cacheManager.getCache(cacheName)).thenReturn(null);
 
-        String result = jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        String result = jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         assertNull(result);
     }
@@ -101,7 +101,7 @@ public class JdbcAppPropertyProviderTest {
     public void testFindAppProperty_ReturnedFromDatabase_CorrectProperty() throws Exception {
         when(cacheManager.getCache(cacheName)).thenReturn(null);
 
-        String result = jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        String result = jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         assertEquals(TEST_APP_PROPERTY_VALUE, result);
     }

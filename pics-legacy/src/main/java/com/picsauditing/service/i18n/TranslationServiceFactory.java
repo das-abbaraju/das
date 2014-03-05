@@ -5,7 +5,6 @@ import java.util.*;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.jdbc.JdbcAppPropertyProvider;
 import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
-import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.i18n.model.logging.TranslationKeyDoNothingLogger;
 import com.picsauditing.i18n.model.strategies.EmptyTranslationStrategy;
 import com.picsauditing.i18n.model.strategies.ReturnKeyTranslationStrategy;
@@ -150,7 +149,7 @@ public class TranslationServiceFactory {
 
     protected static TranslationStrategy translationTransformStrategy() {
         AppPropertyProvider appPropertyProvider = appPropertyProvider();
-        String translationStrategyName = appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME);
+        String translationStrategyName = appPropertyProvider.getPropertyString(APP_PROPERTY_TRANSLATION_STRATEGY_NAME);
         if (STRATEGY_RETURN_KEY.equalsIgnoreCase(translationStrategyName)) {
             return new ReturnKeyTranslationStrategy();
         } else {

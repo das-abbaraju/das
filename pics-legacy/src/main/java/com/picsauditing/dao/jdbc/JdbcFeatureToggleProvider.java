@@ -14,7 +14,7 @@ public class JdbcFeatureToggleProvider extends JdbcAppPropertyProvider implement
 		if (!toggleName.startsWith("Toggle")) {
 			toggleName = "Toggle." + toggleName;
 		}
-        String toggle = findAppProperty(toggleName);
+        String toggle = getPropertyString(toggleName);
         if (toggle == null) {
             logger.error("Error finding toggle {}", toggleName);
             return null;

@@ -8,12 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.opensymphony.xwork2.interceptor.annotations.After;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.audits.OpenAuditsMailer;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.util.Assert;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,7 +26,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.model.billing.BillingNoteModel;
-import com.picsauditing.util.Strings;
+import org.springframework.context.ApplicationContext;
 
 public class RegistrationMakePaymentTest extends PicsActionTest {
 	private RegistrationMakePayment registrationMakePayment;
@@ -36,19 +40,39 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 	private BillingNoteModel billingNoteModel;
     @Mock
     private ContractorAccountDAO contractorAccountDao;
+    @Mock
+    private ApplicationContext applicationContext;
+    @Mock
+    private BrainTree brainTreePaymentService;
+    @Mock
+    private FeatureToggle featureToggle;
 
 	@Before
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		registrationMakePayment = new RegistrationMakePayment();
-		super.setUp(registrationMakePayment);
+        // setting up app context, feature toggle and payment service must be done before RegistrationMakePayment
+        // is instantiated.
+        SpringUtils springUtils = new SpringUtils();
+        springUtils.setApplicationContext(applicationContext);
+        Whitebox.setInternalState(PaymentServiceFactory.class, "featureToggle", featureToggle);
+        when(applicationContext.getBean(SpringUtils.BrainTree)).thenReturn(brainTreePaymentService);
 
-		nonCorporateOperators = new ArrayList<ContractorOperator>();
-		when(contractor.getId()).thenReturn(1);
+        registrationMakePayment = new RegistrationMakePayment();
+        super.setUp(registrationMakePayment);
+
+        nonCorporateOperators = new ArrayList<>();
+        when(contractor.getId()).thenReturn(1);
 
         Whitebox.setInternalState(registrationMakePayment, "contractorAccountDao", contractorAccountDao);
-		Whitebox.setInternalState(registrationMakePayment, "billingNoteModel", billingNoteModel);
+        Whitebox.setInternalState(registrationMakePayment, "billingNoteModel", billingNoteModel);
 	}
+
+    @After
+    public void tearDown() throws Exception {
+        Whitebox.setInternalState(PaymentServiceFactory.class, "featureToggle", null);
+        SpringUtils springUtils = new SpringUtils();
+        springUtils.setApplicationContext(null);
+    }
 
     @Test
     public void testSetWorkingStatusOfAutoApprovesRelationship() throws Exception {
@@ -161,5 +185,12 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
         String creditCards = Strings.implode(creditcardTypes);
 
         Assert.assertNotContains("American Express", creditCards);
+    }
+
+    @Test
+    public void testGetPaymentUrl_TestProxiesToPaymentServiceForProperUrl() throws Exception {
+        registrationMakePayment.getPaymentUrl();
+
+        verify(brainTreePaymentService).getPaymentUrl();
     }
 }

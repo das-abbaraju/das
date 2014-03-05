@@ -10,7 +10,6 @@ import com.picsauditing.i18n.model.strategies.TranslationStrategy;
 import com.picsauditing.i18n.service.*;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.model.i18n.*;
-import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.*;
 import org.mockito.Mock;
@@ -113,7 +112,7 @@ public class TranslationServiceFactoryTest {
 
     @Test
     public void testNoPropertyReturnsEmptyTranslationStrategy() throws Exception {
-        when(appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn(null);
+        when(appPropertyProvider.getPropertyString(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn(null);
 
         TranslationStrategy strategy = Whitebox.invokeMethod(TranslationServiceFactory.class, "translationTransformStrategy");
 
@@ -122,7 +121,7 @@ public class TranslationServiceFactoryTest {
 
     @Test
     public void testNotEmptyKeyPropertyReturnsEmptyTranslationStrategy() throws Exception {
-        when(appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn("SomethingElse");
+        when(appPropertyProvider.getPropertyString(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn("SomethingElse");
 
         TranslationStrategy strategy = Whitebox.invokeMethod(TranslationServiceFactory.class, "translationTransformStrategy");
 
@@ -131,7 +130,7 @@ public class TranslationServiceFactoryTest {
 
     @Test
     public void testKeyOnEmptyTranslationPropertyReturnsReturnKeyTranslationStrategy() throws Exception {
-        when(appPropertyProvider.findAppProperty(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn(STRATEGY_RETURN_KEY);
+        when(appPropertyProvider.getPropertyString(APP_PROPERTY_TRANSLATION_STRATEGY_NAME)).thenReturn(STRATEGY_RETURN_KEY);
 
         TranslationStrategy strategy = Whitebox.invokeMethod(TranslationServiceFactory.class, "translationTransformStrategy");
 

@@ -21,7 +21,7 @@ public class JdbcAppPropertyProvider implements AppPropertyProvider {
     public JdbcAppPropertyProvider() {
     }
 
-    public String findAppProperty(String appPropertyName) {
+    public String getPropertyString(String appPropertyName) {
         String property = propertyFromCache(appPropertyName);
         if (property == null) {
             property = findAppPropertyFromDatabase(appPropertyName);
