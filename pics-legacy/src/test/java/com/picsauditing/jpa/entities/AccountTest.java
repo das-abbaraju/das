@@ -63,8 +63,8 @@ public class AccountTest {
 
     @Test
     public void testSort() throws Exception {
-        Account everyone = makeAccount("Admin", 1, "EVERYONE");
-        Account priv = makeAccount("Admin", 2, "PRIVATE");
+        Account everyone = makeAccount("Admin", Account.EVERYONE, "EVERYONE");
+        Account priv = makeAccount("Admin", Account.PRIVATE, "PRIVATE");
         Account contractor = makeAccount("Contractor", 100, "Able");
         Account contractor2 = makeAccount("Contractor", 101, "Able2");
         Account operator = makeAccount("Operator", 102, "Alice");;
