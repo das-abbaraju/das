@@ -67,6 +67,10 @@ public class AuditDataSave extends AuditActionSupport {
 
 
     public String execute() throws Exception {
+        if (auditData == null) {
+            addActionError(getText("Missing Audit Data"));
+            return BLANK;
+        }
 
 		AuditCatData catData;
 		try {
@@ -267,7 +271,6 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			addActionError(e.getMessage());
 			return BLANK;
 		}
@@ -355,9 +358,9 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditData loadAuditData(AuditData auditData) throws Exception {
 		if (auditData != null && auditData.getId() > 0) {
 			return auditDataService.findAuditData(auditData.getId());
-		} else {
-			return auditDataService.findAuditDataByAuditAndQuestion(auditData);
 		}
+
+        return null;
 	}
 
 	private AuditData loadAuditDataQuestion(AuditData auditData) {
