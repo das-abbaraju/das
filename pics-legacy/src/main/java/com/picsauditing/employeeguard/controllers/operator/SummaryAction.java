@@ -11,12 +11,11 @@ import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("serial")
-public class DashboardAction extends PicsRestActionSupport {
+public class SummaryAction extends PicsRestActionSupport {
 
 	@Autowired
 	private AssignmentService assignmentService;
@@ -29,25 +28,13 @@ public class DashboardAction extends PicsRestActionSupport {
 		Map<Employee, Set<AccountSkill>> allEmployeeSkillsForSite = assignmentService.getEmployeeSkillsForSite(permissions.getAccountId());
 		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite.keySet(), allEmployeeSkillsForSite);
 
-		final List<OperatorSiteAssignmentStatus> statuses = ModelFactory.getOperatorSiteAssignmentStatusFactory().create(
+		OperatorSiteAssignmentStatus siteStatus = ModelFactory.getOperatorSiteAssignmentStatusFactory().create(
 				permissions.getAccountId(),
 				permissions.getAccountName(),
 				employeeStatuses);
 
-		jsonString = new Gson().toJson(new Dashboard(statuses));
+		jsonString = new Gson().toJson(siteStatus);
 
 		return JSON_STRING;
-	}
-
-	private class Dashboard {
-		private final List<OperatorSiteAssignmentStatus> sites;
-
-		public Dashboard(final List<OperatorSiteAssignmentStatus> sites) {
-			this.sites = sites;
-		}
-
-		public List<OperatorSiteAssignmentStatus> getSites() {
-			return sites;
-		}
 	}
 }

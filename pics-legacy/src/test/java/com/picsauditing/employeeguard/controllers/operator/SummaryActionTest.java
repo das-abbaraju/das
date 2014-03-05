@@ -27,11 +27,11 @@ import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Mockito.when;
 
 @UseReporter(DiffReporter.class)
-public class DashboardActionTest extends PicsActionTest {
+public class SummaryActionTest extends PicsActionTest {
 	public static final int CONTRACTOR_ID = 234;
 	public static final int SITE_ID = 123;
 
-	private DashboardAction dashboard;
+	private SummaryAction summaryAction;
 
 	@Mock
 	private AssignmentService assignmentService;
@@ -42,14 +42,14 @@ public class DashboardActionTest extends PicsActionTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		dashboard = new DashboardAction();
-		super.setUp(dashboard);
+		summaryAction = new SummaryAction();
+		super.setUp(summaryAction);
 
 		when(permissions.getAccountId()).thenReturn(SITE_ID);
 		when(permissions.getAccountName()).thenReturn("Site Name");
 
-		Whitebox.setInternalState(dashboard, "assignmentService", assignmentService);
-		Whitebox.setInternalState(dashboard, "statusCalculatorService", statusCalculatorService);
+		Whitebox.setInternalState(summaryAction, "assignmentService", assignmentService);
+		Whitebox.setInternalState(summaryAction, "statusCalculatorService", statusCalculatorService);
 	}
 
 	@Test
@@ -75,8 +75,8 @@ public class DashboardActionTest extends PicsActionTest {
 							SkillStatus.Expired);
 				}});
 
-		assertEquals(PicsActionSupport.JSON_STRING, dashboard.index());
-		assertNotNull(dashboard.getJsonString());
-		Approvals.verify(dashboard.getJsonString());
+		assertEquals(PicsActionSupport.JSON_STRING, summaryAction.index());
+		assertNotNull(summaryAction.getJsonString());
+		Approvals.verify(summaryAction.getJsonString());
 	}
 }

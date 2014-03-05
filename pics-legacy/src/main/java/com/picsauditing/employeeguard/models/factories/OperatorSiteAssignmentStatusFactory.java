@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class OperatorSiteAssignmentStatusFactory {
 
-	public List<OperatorSiteAssignmentStatus> create(final int siteId,
-													 final String siteName,
-													 final Map<Employee, SkillStatus> employeeStatuses) {
+	public OperatorSiteAssignmentStatus create(final int siteId,
+	                                                 final String siteName,
+	                                                 final Map<Employee, SkillStatus> employeeStatuses) {
 
 		Map<SkillStatus, Integer> statusCounts = getCount(employeeStatuses);
 
@@ -21,15 +21,16 @@ public class OperatorSiteAssignmentStatusFactory {
 		int expiring = statusCounts.get(SkillStatus.Expiring);
 		int expired = statusCounts.get(SkillStatus.Expired);
 
-		OperatorSiteAssignmentStatus status = new OperatorSiteAssignmentStatus();
-		status.setId(siteId);
-		status.setName(siteName);
-		status.setEmployees(completed + expiring + expired);
-		status.setCompleted(completed);
-		status.setExpiring(expiring);
-		status.setExpired(expired);
+		OperatorSiteAssignmentStatus status = new OperatorSiteAssignmentStatus.Builder()
+				.id(siteId)
+				.name(siteName)
+				.employees(completed + expiring + expired)
+				.completed(completed)
+				.expiring(expiring)
+				.expired(expired)
+				.build();
 
-		return Arrays.asList(status);
+		return status;
 	}
 
 	private Map<SkillStatus, Integer> getCount(final Map<Employee, SkillStatus> employeeStatuses) {
