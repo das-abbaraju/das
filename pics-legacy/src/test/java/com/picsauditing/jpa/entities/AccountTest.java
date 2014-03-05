@@ -1,11 +1,14 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.EntityFactory;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import sun.tools.jstat.Operator;
+import java.util.ArrayList;
 
 import java.util.*;
 
@@ -56,6 +59,49 @@ public class AccountTest {
     @After
     public void tearDown() throws Exception {
         account = null;
+    }
+
+    @Test
+    public void testSort() throws Exception {
+        Account everyone = makeAccount("Admin", 1, "EVERYONE");
+        Account priv = makeAccount("Admin", 2, "PRIVATE");
+        Account contractor = makeAccount("Contractor", 100, "Able");
+        Account contractor2 = makeAccount("Contractor", 101, "Able2");
+        Account operator = makeAccount("Operator", 102, "Alice");;
+        Account operator2 = makeAccount("Operator", 103, "Alice2");;
+        Account corporate  = makeAccount("Corporate", 104, "Andy");
+        Account corporate2  = makeAccount("Corporate", 105, "Andy2");
+        Account admin = makeAccount("Admin", Account.PicsID, "PICS Auditing, LLC");
+
+        List<Account> list = new ArrayList<>();
+        list.add(contractor2);
+        list.add(contractor);
+        list.add(operator2);
+        list.add(operator);
+        list.add(corporate2);
+        list.add(corporate);
+        list.add(everyone);
+        list.add(priv);
+        list.add(admin);
+
+        Collections.sort(list);
+        assertEquals(everyone, list.get(0));
+        assertEquals(admin, list.get(1));
+        assertEquals(priv, list.get(2));
+        assertEquals(corporate, list.get(3));
+        assertEquals(corporate2, list.get(4));
+        assertEquals(operator, list.get(5));
+        assertEquals(operator2, list.get(6));
+        assertEquals(contractor, list.get(7));
+        assertEquals(contractor2, list.get(8));
+    }
+
+    private Account makeAccount(String accountType, int id, String name) {
+        Account account = new Account();
+        account.setType(accountType);
+        account.setId(id);
+        account.setName(name);
+        return account;
     }
 
     @Test
