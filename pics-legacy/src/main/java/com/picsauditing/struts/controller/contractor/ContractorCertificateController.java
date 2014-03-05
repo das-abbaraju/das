@@ -1,5 +1,6 @@
 package com.picsauditing.struts.controller.contractor;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.actions.PicsActionSupport;
@@ -106,12 +107,9 @@ public class ContractorCertificateController extends PicsActionSupport  {
         }
     }
 
+    @Anonymous
     public String ssipCertificate() throws UnauthorizedException, PageNotFoundException {
         logger.info("DE377: In ContractorCertificateController.ssipCertificate...");
-        if (!permissions.isAuditor()) {
-            logger.error("DE377: User is not Auditor. Throwing UnauthorizedException... ");
-            throw new UnauthorizedException();
-        }
 
         contractorCertificate = contractorCertificateService.getSsipCertificate(contractor);
         if (contractorCertificate == null) {
