@@ -18,12 +18,14 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anySetOf;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @UseReporter(DiffReporter.class)
@@ -54,7 +56,10 @@ public class SummaryActionTest extends PicsActionTest {
 
 	@Test
 	public void testIndex() throws Exception {
-		when(assignmentService.getEmployeeSkillsForSite(SITE_ID)).thenReturn(new HashMap<Employee, Set<AccountSkill>>());
+		Map<Employee, Set<AccountSkill>> map = mock(HashMap.class);
+
+		when(assignmentService.getEmployeeSkillsForSite(SITE_ID)).thenReturn(map);
+		when(map.size()).thenReturn(2);
 		when(statusCalculatorService.getEmployeeStatusRollUpForSkills(anySetOf(Employee.class), anyMap())).thenReturn(
 				new HashMap<Employee, SkillStatus>() {{
 					put(new EmployeeBuilder()
