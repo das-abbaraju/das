@@ -39,7 +39,6 @@ public enum SkillStatus implements JSONable {
         return displayValue;
     }
 
-
 	@Override
 	public JSONObject toJSON(boolean full) {
 		return new JSONObject();

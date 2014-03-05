@@ -58,7 +58,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return employeeDAO.findByProjects(projects);
 	}
 
-	public Map<Project, Set<Employee>> getEmployeesByProject(final List<Project> projects) {
+	public Map<Project, Set<Employee>> getEmployeesByProject(final Collection<Project> projects) {
 		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByProjects(projects),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Project, Employee>() {
 
@@ -74,27 +74,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 				});
 	}
 
-	/**
-	 * Retrieves a map of employees to both site and project roles for the specific site
-	 *
-	 * @param siteId
-	 * @param contractorIds
-	 * @param projects
-	 * @param siteToContractorRoles
-	 * @return
-	 */
-	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId,
-	                                                   final List<Integer> contractorIds,
-	                                                   final List<Project> projects,
-	                                                   final Map<Role, Role> siteToContractorRoles) {
-
-		Map<Role, Set<Employee>> projectEmployees = getEmployeesByProjectRoles(projects);
-		Map<Role, Set<Employee>> siteRoleEmployees = getEmployeesBySiteRoles(siteId, contractorIds, siteToContractorRoles);
-
-		return Utilities.mergeValuesOfMapOfSets(projectEmployees, siteRoleEmployees);
-	}
-
-	private Map<Role, Set<Employee>> getEmployeesByProjectRoles(List<Project> projects) {
+	public Map<Role, Set<Employee>> getEmployeesByProjectRoles(final Collection<Project> projects) {
 		return Utilities.convertToMapOfSets(
 				projectRoleEmployeeDAO.findByProjects(projects),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Role, Employee>() {
@@ -111,14 +91,14 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		);
 	}
 
-	private Map<Role, Set<Employee>> getEmployeesBySiteRoles(int siteId, List<Integer> contractorIds, final Map<Role, Role> siteToContractorRoles) {
-		List<Employee> employeesAssignedToSite = employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
+	public Map<Role, Set<Employee>> getEmployeesBySiteRoles(final int siteId) {
+		List<Employee> employeesAssignedToSite = employeeDAO.findEmployeesAssignedToSite(siteId);
 		return Utilities.convertToMapOfSets(
 				roleEmployeeDAO.findByEmployeesAndSiteId(employeesAssignedToSite, siteId),
 				new Utilities.EntityKeyValueConvertable<RoleEmployee, Role, Employee>() {
 					@Override
 					public Role getKey(RoleEmployee entity) {
-						return siteToContractorRoles.get(entity.getRole());
+						return entity.getRole();
 					}
 
 					@Override
@@ -130,7 +110,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
-		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
+		return employeeDAO.findEmployeesAssignedToSiteForContractors(contractorIds, siteId);
 	}
 
 	/* All Search Methods */
@@ -223,7 +203,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-	                            final int accountId) throws Exception {
+								final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 

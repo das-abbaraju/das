@@ -29,8 +29,9 @@ public class SummaryAction extends PicsRestActionSupport {
 
 	public String index() {
 		Map<Employee, Set<AccountSkill>> allEmployeeSkillsForSite = assignmentService.getEmployeeSkillsForSite(permissions.getAccountId());
-		Map<Project, Set<Employee>> projectEmployees = assignmentService.getEmployeesAssignedToProjects(permissions.getAccountId());
 		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite.keySet(), allEmployeeSkillsForSite);
+
+		Map<Project, Set<Employee>> projectEmployees = assignmentService.getEmployeesAssignedToProjects(permissions.getAccountId());
 
 		List<ProjectAssignmentModel> projectAssignments = ModelFactory.getProjectAssignmentModelFactory().createList(projectEmployees, employeeStatuses);
 

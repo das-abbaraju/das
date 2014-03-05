@@ -32,7 +32,10 @@ public class ProjectAssignmentModelFactory {
 
 		List<ProjectAssignmentModel> models = new ArrayList<>();
 		for (Project project : projectEmployees.keySet()) {
-			models.add(create(project, employeeStatuses));
+			Map<Employee, SkillStatus> projectEmployeeStatuses = new HashMap<>(employeeStatuses);
+			projectEmployeeStatuses.keySet().retainAll(projectEmployees.get(project));
+
+			models.add(create(project, projectEmployeeStatuses));
 		}
 
 		return models;
