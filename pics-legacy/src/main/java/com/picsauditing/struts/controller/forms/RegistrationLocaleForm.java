@@ -1,4 +1,4 @@
-package com.picsauditing.forms;
+package com.picsauditing.struts.controller.forms;
 
 public class RegistrationLocaleForm {
 

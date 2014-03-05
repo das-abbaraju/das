@@ -1,4 +1,4 @@
-package com.picsauditing.forms;
+package com.picsauditing.struts.controller.forms;
 
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;

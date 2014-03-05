@@ -1,23 +1,22 @@
-package com.picsauditing.actions.contractors;
+package com.picsauditing.struts.controller;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.*;
+import com.picsauditing.actions.contractors.RegistrationAction;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.*;
-import com.picsauditing.forms.RegistrationForm;
-import com.picsauditing.forms.RegistrationLocaleForm;
-import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.struts.controller.forms.RegistrationForm;
+import com.picsauditing.struts.controller.forms.RegistrationLocaleForm;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.account.AccountService;
 import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.service.registration.RegistrationRequestService;
 import com.picsauditing.service.registration.RegistrationService;
-import com.picsauditing.service.registration.RegistrationSubmission;
 import com.picsauditing.util.*;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;

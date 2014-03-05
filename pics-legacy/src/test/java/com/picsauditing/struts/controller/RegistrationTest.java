@@ -1,4 +1,4 @@
-package com.picsauditing.actions.contractors;
+package com.picsauditing.struts.controller;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;

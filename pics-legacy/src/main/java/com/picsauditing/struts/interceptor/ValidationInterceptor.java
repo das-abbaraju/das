@@ -1,10 +1,11 @@
-package com.picsauditing.interceptors;
+package com.picsauditing.struts.interceptor;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.interceptors.PicsFormBindingInterceptor;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.json.JSONValidationInterceptor;
 
@@ -18,7 +19,7 @@ import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.validator.Validator;
 
-public class PicsValidationInterceptor extends JSONValidationInterceptor {
+public class ValidationInterceptor extends JSONValidationInterceptor {
 
 	// These are request parameters that would be present if the
 	private static final String VALIDATE_ONLY_PARAM = "struts.validateOnly";
