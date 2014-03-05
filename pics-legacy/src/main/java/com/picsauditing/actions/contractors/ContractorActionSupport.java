@@ -326,6 +326,15 @@ public class ContractorActionSupport extends AccountActionSupport {
 			return true;
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
+
+		try {
+			if (contractor == null) {
+				findContractor();
+			}
+		} catch (Exception e) {
+			return false;
+		}
+
 		if (permissions.isOperator())
 			return isCheckPermissionForOperator();
 		if (permissions.isCorporate())
@@ -402,8 +411,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	/**
 	 * @return a list of the certificates, if the user is an operator/corporate
-	 *         then this does the appropriate checking to remove the certs that
-	 *         they shouldn't be able to see
+	 * then this does the appropriate checking to remove the certs that
+	 * they shouldn't be able to see
 	 */
 	public List<Certificate> getCertificates() {
 		if (certificates == null) {
@@ -516,7 +525,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * contractor registration.
 	 *
 	 * @return Previous ContractorRegistrationStep, according to the
-	 *         ContractorRegistrationStep enum order
+	 * ContractorRegistrationStep enum order
 	 */
 	public ContractorRegistrationStep getPreviousRegistrationStep() {
 		if (currentStep != null && currentStep.isHasPrevious())
@@ -527,7 +536,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	/**
 	 * @return Next ContractorRegistrationStep, according to the
-	 *         ContractorRegistrationStep enum order
+	 * ContractorRegistrationStep enum order
 	 */
 	public ContractorRegistrationStep getNextRegistrationStep() {
 		if (currentStep != null && currentStep.isHasNext())

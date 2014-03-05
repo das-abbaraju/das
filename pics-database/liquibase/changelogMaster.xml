@@ -165,9 +165,11 @@
 	<include file="./liquibase/2014/Q1/kchase28_PICS-13967_UpdateEmailContents.sql"/>
 	<include file="./liquibase/2014/Q1/kchase27_PICS-14541_Update2010AUExpiration.sql"/>
 
-	<!-- 7.1.8 -->
+	<!-- 7.2.0 -->
 	<include file="./liquibase/2014/Q1/mdo48_PICS-14495_updateEmailTemplatesToHttps.sql"/>
 	<include file="./liquibase/2014/Q1/kchase30_PICS-14158_UpdateDataAnswers.sql"/>
 	<include file="./liquibase/2014/Q1/kchase29_PICS-14615_UpdateViewable.sql"/>
+	<include file="./liquibase/2014/Q1/dalvarado_US351_recreate_contactor_certificate_table.sql"/>
+	<include file="./liquibase/2014/Q1/lkam6_US284_Update_PQF_Workflow.sql"/>
 
 </databaseChangeLog>

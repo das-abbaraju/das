@@ -715,9 +715,9 @@ public class RegistrationMakePayment extends RegistrationAction {
 		if (invoice == null) {
             // TODO: refactor this method to get the billing status within
 			invoice = billingService.createInvoice(contractor, getUser());
-			billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			contractor.getInvoices().add(invoice);
-			billingService.saveInvoice(invoice);
+			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            billingService.verifyAndSaveInvoice(invoice);
             billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
@@ -729,11 +729,12 @@ public class RegistrationMakePayment extends RegistrationAction {
 		if (contractor.isHasUpgrade()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
-			billingService.addRevRecInfoIfAppropriateToItems(newInvoice);
             billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.UPDATE));
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
+            billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            billingService.verifyAndSaveInvoice(invoice);
 			return true;
 		}
 

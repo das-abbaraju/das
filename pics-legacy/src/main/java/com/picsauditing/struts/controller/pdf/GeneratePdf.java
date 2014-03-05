@@ -4,6 +4,8 @@ import com.lowagie.text.DocumentException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import javax.servlet.ServletOutputStream;
@@ -12,11 +14,11 @@ import java.io.IOException;
 public class GeneratePdf extends ContractorActionSupport {
 
     private ContractorAccount contractor;
-
+    private final Logger logger = LoggerFactory.getLogger(GeneratePdf.class);
 
     public String ssipCertificate() {
-        String url = getRequestHost() + "/ContractorCertificate!ssipCertificate.action?contractor=" + contractor.getId();
-        create(url, "SSIP Certificate.pdf");
+        String url = getRequestHost() + "/ContractorCertification!ssipCertificate.action?contractor=" + contractor.getId();
+        create(url, "SSIPCertificate.pdf");
         return SUCCESS;
     }
 
@@ -26,6 +28,7 @@ public class GeneratePdf extends ContractorActionSupport {
             ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + filename);
 
             final ITextRenderer iTextRenderer = new ITextRenderer();
+            logger.info("DE377: GeneratePdf.create(): Calling setDocument with url = " + url);
             iTextRenderer.setDocument(url);
             iTextRenderer.layout();
 

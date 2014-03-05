@@ -1,17 +1,12 @@
 package com.picsauditing.actions.audits;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.AuditDataService;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 public class VerifyAudit extends AuditActionSupport {
 
@@ -25,7 +20,7 @@ public class VerifyAudit extends AuditActionSupport {
     private AuditDataService auditDataService;
 
     static {
-		EMR_PROBLEMS = new ArrayList<String>();
+		EMR_PROBLEMS = new ArrayList<>();
 		EMR_PROBLEMS.add("");
 		EMR_PROBLEMS.add("Need EMR");
 		EMR_PROBLEMS.add("Need Loss Run");
@@ -33,12 +28,12 @@ public class VerifyAudit extends AuditActionSupport {
 		EMR_PROBLEMS.add("Incorrect Upload");
 		EMR_PROBLEMS.add("Incorrect Year");
 		
-		EMR_EXEMPTION_REASONS = new ArrayList<String>();
+		EMR_EXEMPTION_REASONS = new ArrayList<>();
 		EMR_EXEMPTION_REASONS.add("Insurance premium too small");
 		EMR_EXEMPTION_REASONS.add("Does not carry workers comp");
 		EMR_EXEMPTION_REASONS.add("Less than 3 years old");
 		
-		OSHA_PROBLEMS = new ArrayList<String>();
+		OSHA_PROBLEMS = new ArrayList<>();
 		OSHA_PROBLEMS.add("");
 		OSHA_PROBLEMS.add("Contradicting Data");
 		OSHA_PROBLEMS.add("Missing 300");
@@ -47,7 +42,7 @@ public class VerifyAudit extends AuditActionSupport {
 		OSHA_PROBLEMS.add("Incorrect Form");
 		OSHA_PROBLEMS.add("Incorrect Year");
 		
-		OSHA_EXEMPTION_REASONS = new ArrayList<String>();
+		OSHA_EXEMPTION_REASONS = new ArrayList<>();
 		OSHA_EXEMPTION_REASONS.add("SIC code");
 		OSHA_EXEMPTION_REASONS.add("Number of Employees (10 or less)");
 	}
@@ -206,8 +201,8 @@ public class VerifyAudit extends AuditActionSupport {
 
 	public Map<OperatorAccount, ContractorAuditOperator> getCaos() {
 		if (caos == null) {
-			allCaoIDs = new ArrayList<Integer>();
-			caos = new HashMap<OperatorAccount, ContractorAuditOperator>();
+			allCaoIDs = new ArrayList<>();
+			caos = new HashMap<>();
 
 			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
 				// TODO Should we ignore incomplete and pending statuses, unless
@@ -222,6 +217,15 @@ public class VerifyAudit extends AuditActionSupport {
 
 		return caos;
 	}
+
+    public boolean allCaosAre(AuditStatus status) {
+        for (ContractorAuditOperator cao: caos.values()) {
+            if (cao.getStatus() != status) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	public String getAllCaoIDs() {
 		if (allCaoIDs == null)

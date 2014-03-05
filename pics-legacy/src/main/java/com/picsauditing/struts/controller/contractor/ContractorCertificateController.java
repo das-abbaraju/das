@@ -11,6 +11,8 @@ import com.picsauditing.model.contractor.ContractorCertificate;
 import com.picsauditing.service.contractor.AuditFinderService;
 import com.picsauditing.service.contractor.ContractorCertificateService;
 import com.picsauditing.validator.InputValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -48,6 +50,9 @@ public class ContractorCertificateController extends PicsActionSupport  {
     @Autowired
     private InputValidator inputValidator;
     private String manualAuditUrl;
+
+    private final Logger logger = LoggerFactory.getLogger(ContractorCertificateController.class);
+
 
     public String execute() throws UnauthorizedException {
         if (!permissions.isAuditor()) {
@@ -102,15 +107,22 @@ public class ContractorCertificateController extends PicsActionSupport  {
     }
 
     public String ssipCertificate() throws UnauthorizedException, PageNotFoundException {
+        logger.info("DE377: In ContractorCertificateController.ssipCertificate...");
         if (!permissions.isAuditor()) {
+            logger.error("DE377: User is not Auditor. Throwing UnauthorizedException... ");
             throw new UnauthorizedException();
         }
 
         contractorCertificate = contractorCertificateService.getSsipCertificate(contractor);
-        if (contractorCertificate != null) {
-            return "ssip";
+        if (contractorCertificate == null) {
+            logger.error("DE377: No certificate found for contractor: " + contractor.getId() + ". Throwing PageNotFoundException...");
+            throw new PageNotFoundException();
         }
-        throw new PageNotFoundException();
+
+        logger.info("DE377: Loaded contractorCertificate = " + contractorCertificate.toString());
+        logger.info("DE377: Returning ssip result...");
+
+        return "ssip";
     }
 
     private void validateInput(Date issueDate, Date expirationDate) {

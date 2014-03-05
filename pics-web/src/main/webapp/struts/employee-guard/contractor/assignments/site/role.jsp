@@ -111,7 +111,7 @@
 
                         <tr class="assign-employee-container ${employee_assigned_class}" data-assign-url="${assign_contractor}" data-unassign-url="${unassign_contractor}">
                             <td class="assign-employee text-center">
-                                <a href="#"><i class="icon-map-marker icon-large"></i></a>
+                                <i class="icon-map-marker icon-large"></i>
                             </td>
 
                             <td>
