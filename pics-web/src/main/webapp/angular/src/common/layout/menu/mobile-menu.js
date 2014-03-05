@@ -17,18 +17,26 @@
                         HIGHLIGHT: '#252525',
                         BORDER_BOTTOM: '#1a1a1a'
                     }
-                },
+                };
 
-                current_menu_level = 0,
+            var current_menu_level = 0;
 
-                $header = $('#mobile_menu').find('.header'),
-                $navigation_el = $('#mobile_menu_navigation'),
-                $search_el = $('#mobile_menu_search'),
-                $results_container = $search_el.children('ul');
+            var $header,
+                $navigation_el,
+                $search_el,
+                $results_container;
 
             function init() {
+                initializeEls();
                 configureMobileMenu();
                 bindEvents();
+            }
+
+            function initializeEls() {
+                $header = $('#mobile_menu').find('.header');
+                $navigation_el = $('#mobile_menu_navigation');
+                $search_el = $('#mobile_menu_search');
+                $results_container = $search_el.children('ul');
             }
 
             function configureMobileMenu() {

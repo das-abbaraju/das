@@ -23,12 +23,14 @@
 
 </head>
 <body>
-    <header>
-        <s:action name="Menu!bootstrap3Menu" executeResult="true" />
-        <s:action name="Menu!mobileMenu" executeResult="true" />
-    </header>
-    <div ng-app="PICSApp">
-        <div ng-view></div>
+    <div id="main">
+        <header>
+            <s:action name="Menu!bootstrap3Menu" executeResult="true" />
+            <s:action name="Menu!mobileMenu" executeResult="true" />
+        </header>
+        <div ng-app="PICSApp">
+            <div ng-view></div>
+        </div>
     </div>
 </body>
 </html>

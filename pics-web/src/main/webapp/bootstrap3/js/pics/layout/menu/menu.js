@@ -2,19 +2,27 @@
     PICS.define('layout.menu.Menu', {
         methods: (function () {
             var SEARCH_RESULTS_LIMIT = 10,
-                ENTER_KEY = 13,
+                ENTER_KEY = 13;
 
-                $navbar_el = $('#primary_navigation'),
-                $dropdown_toggle_el = $navbar_el.find('.dropdown-toggle'),
-                $search_query_el = $navbar_el.find('.search-box'),
-                $search_box_el = $navbar_el.find('.search-box'),
-                $icon_search = $('#primary_navigation .icon-search');
+            var $navbar_el,
+                $dropdown_toggle_el,
+                $search_query_el,
+                $icon_search;
 
             function init() {
+                initializeEls();
+
                 configureDropdown();
                 configureUserSearch();
 
                 bindEvents();
+            }
+
+            function initializeEls() {
+                $navbar_el = $('#primary_navigation');
+                $dropdown_toggle_el = $navbar_el.find('.dropdown-toggle');
+                $search_query_el = $navbar_el.find('.search-box');
+                $icon_search = $('#primary_navigation .icon-search');
             }
 
             function configureDropdown() {
@@ -23,27 +31,25 @@
 
             function configureUserSearch() {
                 $search_query_el.typeahead([{
-                    name: 'primary-search',
-                    remote: {
-                        // url: '/v7/js/pics/layout/menu/typeahead.json?q=%QUERY',
-                        url: '/SearchBox!json.action?q=%QUERY&',
-                        filter: filterResponse,
-                        cache: false
-                },
-                valueKey: 'result_name',
-                limit: SEARCH_RESULTS_LIMIT,
-                template: getResultItemTemplate(),
-                footer: getFooterTemplate(),
-                engine: Hogan
+                        name: 'primary-search',
+                        remote: {
+                            url: '/SearchBox!json.action?q=%QUERY&',
+                            filter: filterResponse,
+                            cache: false
+                    },
+                    valueKey: 'result_name',
+                    limit: SEARCH_RESULTS_LIMIT,
+                    template: getResultItemTemplate(),
+                    footer: getFooterTemplate(),
+                    engine: Hogan
                 }]);
             }
 
             function bindEvents() {
                 $search_query_el.on('typeahead:selected', onSearchQuerySelected);
                 $search_query_el.on('typeahead:suggestionsRendered', onSearchQuerySuggestionsRendered);
-
-                $search_box_el.on('focus', onSearchElFocus);
-                $search_box_el.on('blur', onSearchElBlur);
+                $search_query_el.on('focus', onSearchElFocus);
+                $search_query_el.on('blur', onSearchElBlur);
 
                 $(document).on('mouseover', '.more-results-link', onMoreResultsLinkMouseOver);
                 $(document).on('click', '.more-results-link', onMoreResultsLinkClick);
@@ -104,7 +110,7 @@
             function filterResponse(data) {
                 // Insert empty datum to force rendering of dropdown,
                 // even when there are no results
-                if (data.total_results == 0) {
+                if (data.total_results === 0) {
                     data.results = [{}];
                 }
 
@@ -157,7 +163,7 @@
 
             return {
                 init: init
-            }
+            };
         }())
     });
 }(jQuery));
