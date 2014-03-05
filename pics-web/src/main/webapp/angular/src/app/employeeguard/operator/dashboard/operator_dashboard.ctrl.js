@@ -20,11 +20,11 @@ angular.module('PICS.employeeguard')
 
     $scope.getProjectStatus = function (project) {
         var progress_bar = {},
-            total = project.complete + project.pending + project.expiring + project.expired;
+            total = project.completed + project.pending + project.expiring + project.expired;
 
         progress_bar.success = {
-            amount: (project.pending + project.complete),
-            width: $scope.calculateStatusPercentage((project.pending + project.complete), total)
+            amount: (project.pending + project.completed),
+            width: $scope.calculateStatusPercentage((project.pending + project.completed), total)
         };
 
         progress_bar.warning = {

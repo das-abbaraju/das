@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
+import java.util.Date;
 import java.util.List;
 
 public class ProjectModel implements Identifiable, Nameable {
@@ -8,6 +9,9 @@ public class ProjectModel implements Identifiable, Nameable {
 	private String name;
 	private List<? extends RoleModel> roles;
 	private List<? extends SkillModel> skills;
+	private String location;
+	private Date startDate;
+	private Date endDate;
 
 	@Override
 	public int getId() {
@@ -43,5 +47,29 @@ public class ProjectModel implements Identifiable, Nameable {
 
 	public void setSkills(List<? extends SkillModel> skills) {
 		this.skills = skills;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 }

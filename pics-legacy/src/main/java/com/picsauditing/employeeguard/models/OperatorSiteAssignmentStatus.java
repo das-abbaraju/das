@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.models;
 
 import java.util.List;
 
-public class OperatorSiteAssignmentStatus {
+public class OperatorSiteAssignmentStatus implements StatusSummary {
 
 	private int id;
 	private String name;
@@ -11,7 +11,7 @@ public class OperatorSiteAssignmentStatus {
 	private int pending;
 	private int expiring;
 	private int expired;
-	private List<ProjectStatusModel> projects;
+	private List<ProjectAssignmentModel> projects;
 
 	public int getId() {
 		return id;
@@ -37,43 +37,51 @@ public class OperatorSiteAssignmentStatus {
 		this.employees = employees;
 	}
 
+	@Override
 	public int getCompleted() {
 		return completed;
 	}
 
+	@Override
 	public void setCompleted(int completed) {
 		this.completed = completed;
 	}
 
+	@Override
 	public int getPending() {
 		return pending;
 	}
 
+	@Override
 	public void setPending(int pending) {
 		this.pending = pending;
 	}
 
+	@Override
 	public int getExpiring() {
 		return expiring;
 	}
 
+	@Override
 	public void setExpiring(int expiring) {
 		this.expiring = expiring;
 	}
 
+	@Override
 	public int getExpired() {
 		return expired;
 	}
 
+	@Override
 	public void setExpired(int expired) {
 		this.expired = expired;
 	}
 
-	public List<ProjectStatusModel> getProjects() {
+	public List<ProjectAssignmentModel> getProjects() {
 		return projects;
 	}
 
-	public void setProjects(List<ProjectStatusModel> projects) {
+	public void setProjects(List<ProjectAssignmentModel> projects) {
 		this.projects = projects;
 	}
 }
