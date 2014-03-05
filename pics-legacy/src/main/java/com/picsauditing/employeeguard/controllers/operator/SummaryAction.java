@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.OperatorSiteAssignmentStatus;
 import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
 import com.picsauditing.employeeguard.services.AssignmentService;
+import com.picsauditing.employeeguard.services.ProjectAssignmentService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class SummaryAction extends PicsRestActionSupport {
 	@Autowired
 	private AssignmentService assignmentService;
 	@Autowired
+	private ProjectAssignmentService projectAssignmentService;
+	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
 	/* pages */
@@ -32,6 +35,7 @@ public class SummaryAction extends PicsRestActionSupport {
 		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite.keySet(), allEmployeeSkillsForSite);
 
 		Map<Project, Set<Employee>> projectEmployees = assignmentService.getEmployeesAssignedToProjects(permissions.getAccountId());
+		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills = projectAssignmentService.getEmployeeSkillsForProjectsUnderSite(permissions.getAccountId());
 
 		List<ProjectAssignmentModel> projectAssignments = ModelFactory.getProjectAssignmentModelFactory().createList(projectEmployees, employeeStatuses);
 

@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.google.common.collect.Table;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
@@ -28,27 +27,17 @@ public class ProjectAssignmentService {
 	@Autowired
 	private SkillEntityService skillEntityService;
 
-	public Table<Project, Employee, Set<AccountSkill>> getEmployeeSkillsForProjectsUnderSite(final int siteId) {
+	public Map<Project, Map<Employee, Set<AccountSkill>>> getEmployeeSkillsForProjectsUnderSite(final int siteId) {
 		List<Project> siteProjects = projectEntityService.getAllProjectsForSite(siteId);
 		Map<Project, Set<Employee>> projectEmployees = employeeEntityService.getEmployeesByProject(siteProjects);
+		Map<Role, Set<Employee>> roleEmployees = getEmployeesByRole(siteId, siteProjects);
 
-
-
-//		List<Integer> contractorIds = accountService.getContractorIds(siteId);
-//		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-//		Map<Role, Role> siteToCorporateRoles = roleEntityService.getSiteToCorporateRoles(siteId, corporateIds);
-//		Map<Role, Set<Employee>> roleEmployees = getEmployeesByRole(siteId, siteProjects);
-//
-//		Map<Project, Set<Role>> projectRoles = roleEntityService.getRolesForProjects(siteProjects);
-//
-//		Map<Role, Set<AccountSkill>> roleSkills = skillEntityService.getSkillsForRoles(roleEmployees.keySet());
-
-		return null;
+		return getProjectSkillsForEmployees(siteId, projectEmployees, roleEmployees);
 	}
 
-	private Map<Employee, Set<AccountSkill>> getProjectSkillsForEmployees(final Collection<Employee> employees,
-																		  final int siteId,
-																		  final Map<Role, Set<Employee>> roleEmployees) {
+	private Map<Project, Map<Employee, Set<AccountSkill>>> getProjectSkillsForEmployees(final int siteId,
+	                                                                                    final Map<Project, Set<Employee>> projectEmployees,
+	                                                                                    final Map<Role, Set<Employee>> roleEmployees) {
 		// Project Required Skills
 		// Project Role Skills
 		// Site + Corporate Role Skills
@@ -56,16 +45,11 @@ public class ProjectAssignmentService {
 		Map<Project, Set<AccountSkill>> projectRequiredSkill = skillEntityService.getRequiredSkillsForProjects(projects);
 		Map<Project, Set<Role>> projectRoles = roleEntityService.getRolesForProjects(projects);
 		Map<Role, Set<AccountSkill>> projectRoleSkills = skillEntityService.getSkillsForRoles(Utilities.mergeCollectionOfCollections(projectRoles.values()));
-
-		Map<Employee, Set<AccountSkill>> projectSkillsForEmployee = new HashMap<>();
-
 		Set<AccountSkill> siteAndCorporateRequiredSkills = skillEntityService.getSiteRequiredSkills(siteId, accountService.getTopmostCorporateAccountIds(siteId));
-		for (Employee employee : employees) {
-			projectSkillsForEmployee.put(employee, new HashSet<>(siteAndCorporateRequiredSkills));
-		}
 
+		Map<Project, Map<Employee, Set<AccountSkill>>> projectSkillsForEmployee = new HashMap<>();
 		for (Project project : projects) {
-			Set<AccountSkill> projectSkills = new HashSet<>();
+			final Set<AccountSkill> projectSkills = new HashSet<>(siteAndCorporateRequiredSkills);
 
 			if (projectRequiredSkill.containsKey(project)) {
 				projectSkills.addAll(projectRequiredSkill.get(project));
@@ -78,8 +62,12 @@ public class ProjectAssignmentService {
 					}
 
 					if (roleEmployees.containsKey(role)) {
-						for (Employee employee : roleEmployees.get(role)) {
-							projectSkillsForEmployee.get(employee).addAll(projectSkills);
+						for (final Employee employee : roleEmployees.get(role)) {
+							if (employeeBelongsToProject(projectEmployees, project, employee)) {
+								projectSkillsForEmployee.put(project, new HashMap<Employee, Set<AccountSkill>>() {{
+									put(employee, projectSkills);
+								}});
+							}
 						}
 					}
 				}
@@ -88,21 +76,10 @@ public class ProjectAssignmentService {
 
 
 		return projectSkillsForEmployee;
+	}
 
-
-//		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
-//		for (Employee employee : employeesToRole.keySet()) {
-//			/*
-//				if employee is in a project then all required project skills belong to the employee
-//
-//				always get the site and corporate required skills
-//
-//				always get all the skills for the role
-//
-//			 */
-//		}
-//
-//		return employeeSkills;
+	private boolean employeeBelongsToProject(Map<Project, Set<Employee>> projectEmployees, Project project, Employee employee) {
+		return projectEmployees.containsKey(project) && projectEmployees.get(project).contains(employee);
 	}
 
 	/**
