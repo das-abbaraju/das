@@ -211,18 +211,21 @@ public class AuditTypesBuilder extends AuditBuilderBase {
         Iterator<AuditData> iterator = answers.iterator();
         while (iterator.hasNext()) {
             AuditData data = iterator.next();
-            boolean remove = false;
-            for (AuditCatData acd:data.getAudit().getCategories()) {
-                if (acd.getCategory().getId() == data.getQuestion().getCategory().getId() && !acd.isApplies()) {
-                    remove = true;
-                    break;
-                }
-            }
-            if (remove) {
+
+            if (!isCategoryApplicable(data)) {
                 iterator.remove();
             }
         }
 
+    }
+
+    private boolean isCategoryApplicable(AuditData data) {
+        for (AuditCatData acd:data.getAudit().getCategories()) {
+            if (acd.getCategory().getId() == data.getQuestion().getCategory().getId())
+                return acd.isApplies();
+        }
+
+        return true;
     }
 
     private List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
