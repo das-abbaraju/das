@@ -5,7 +5,9 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
+import org.hibernate.validator.constraints.Email;
 
+import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
 
@@ -27,6 +29,8 @@ public class RegistrationForm {
     private String countryISOCode;
     private String zip;
     private String vatID;
+    @NotNull
+    @Email
     private String email;
 
     public AccountStatus getStatus() {
