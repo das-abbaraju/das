@@ -4,16 +4,14 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.models.OperatorSiteAssignmentStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class OperatorSiteAssignmentStatusFactory {
 
 	public OperatorSiteAssignmentStatus create(final int siteId,
-	                                                 final String siteName,
-	                                                 final Map<Employee, SkillStatus> employeeStatuses) {
+											   final String siteName,
+											   final Map<Employee, SkillStatus> employeeStatuses) {
 
 		Map<SkillStatus, Integer> statusCounts = getCount(employeeStatuses);
 
@@ -21,14 +19,13 @@ public class OperatorSiteAssignmentStatusFactory {
 		int expiring = statusCounts.get(SkillStatus.Expiring);
 		int expired = statusCounts.get(SkillStatus.Expired);
 
-		OperatorSiteAssignmentStatus status = new OperatorSiteAssignmentStatus.Builder()
-				.id(siteId)
-				.name(siteName)
-				.employees(completed + expiring + expired)
-				.completed(completed)
-				.expiring(expiring)
-				.expired(expired)
-				.build();
+		OperatorSiteAssignmentStatus status = new OperatorSiteAssignmentStatus();
+		status.setId(siteId);
+		status.setName(siteName);
+		status.setEmployees(completed + expiring + expired);
+		status.setCompleted(completed);
+		status.setExpiring(expiring);
+		status.setExpired(expired);
 
 		return status;
 	}
