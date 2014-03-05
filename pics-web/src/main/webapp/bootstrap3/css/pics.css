@@ -3180,7 +3180,7 @@ ul.skill-nav a {
 
 /* line 35, ../sass/pics/components/_arrow.scss */
 .arrow-left.arrow-default {
-  border-right-color: #f1f1f2;
+  border-right-color: #e6e6e6;
 }
 
 /* line 1, ../sass/pics/style-guide/_style-guide.scss */
@@ -3467,7 +3467,7 @@ ul.skill-nav a {
 /* line 10, ../sass/pics/contractors/_contractor-pricing.scss */
 #ContractorPricing__page .table-striped > tbody > tr:nth-child(even) > td:first-child,
 #ContractorPricing__page .even td:first-child {
-  background: #e6e6e6;
+  background: #f1f1f2;
 }
 /* line 15, ../sass/pics/contractors/_contractor-pricing.scss */
 #ContractorPricing__page .table-striped > tbody > tr:nth-child(odd) > td:first-child,
@@ -3488,7 +3488,7 @@ ul.skill-nav a {
 }
 /* line 33, ../sass/pics/contractors/_contractor-pricing.scss */
 #ContractorPricing__page .panel-heading {
-  background: #e6e6e6;
+  background: #f1f1f2;
 }
 /* line 37, ../sass/pics/contractors/_contractor-pricing.scss */
 #ContractorPricing__page .panel-body {
