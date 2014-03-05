@@ -2,6 +2,7 @@ package com.picsauditing.user.controller;
 
 import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.user.model.ContactUsInfo;
 import com.picsauditing.user.service.ContactUsService;
@@ -10,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ContactUs extends PicsActionSupport {
 
-	@Autowired
+    public static final String CONTACT_ACTION_URL = "/Contact.action";
+    @Autowired
 	private ContactUsService contactUsService;
 	private ContactUsInfo contactUsInfo;
 	private String subject;
@@ -24,6 +26,19 @@ public class ContactUs extends PicsActionSupport {
 		if (user == null) {
 			return LOGIN_AJAX;
 		}
+
+        if (permissions.isContractor()) {
+            ContractorAccount contractor = (ContractorAccount) user.getAccount();
+            if (contractor.getCurrentCsr() == null) {
+                setUrlForRedirect(CONTACT_ACTION_URL);
+
+                return REDIRECT;
+            }
+        } else {
+            setUrlForRedirect(CONTACT_ACTION_URL);
+
+            return REDIRECT;
+        }
 
 		contactUsInfo = contactUsService.getContactUsInfo(user);
 
