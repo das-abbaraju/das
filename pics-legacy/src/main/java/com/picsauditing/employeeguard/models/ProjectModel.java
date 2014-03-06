@@ -3,15 +3,15 @@ package com.picsauditing.employeeguard.models;
 import java.util.Date;
 import java.util.List;
 
-public class ProjectModel implements Identifiable, Nameable {
+public class ProjectModel implements Identifiable, Nameable, Comparable<ProjectModel> {
 
 	private int id;
 	private String name;
 	private List<? extends RoleModel> roles;
 	private List<? extends SkillModel> skills;
 	private String location;
-	private Date startDate;
-	private Date endDate;
+	private Long startDate;
+	private Long endDate;
 
 	@Override
 	public int getId() {
@@ -57,19 +57,24 @@ public class ProjectModel implements Identifiable, Nameable {
 		this.location = location;
 	}
 
-	public Date getStartDate() {
+	public Long getStartDate() {
 		return startDate;
 	}
 
 	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+		this.startDate = startDate != null ? startDate.getTime() : null;
 	}
 
-	public Date getEndDate() {
+	public Long getEndDate() {
 		return endDate;
 	}
 
 	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+		this.endDate = endDate != null ? endDate.getTime() : null;
+	}
+
+	@Override
+	public int compareTo(ProjectModel that) {
+		return this.name.compareToIgnoreCase(that.name);
 	}
 }

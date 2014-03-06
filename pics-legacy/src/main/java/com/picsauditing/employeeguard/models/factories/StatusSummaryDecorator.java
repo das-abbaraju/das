@@ -3,14 +3,35 @@ package com.picsauditing.employeeguard.models.factories;
 import com.picsauditing.employeeguard.models.StatusSummary;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 class StatusSummaryDecorator {
 
+	public static <M extends StatusSummary> M addStatusSummaryRollup(final M model, final Collection<SkillStatus> statuses) {
+		Map<SkillStatus, Integer> statusCountMap = getCountOfRollup(statuses);
+
+		return addStatusSummaryFromCounts(model, statusCountMap);
+	}
+
+	private static Map<SkillStatus, Integer> getCountOfRollup(final Collection<SkillStatus> statuses) {
+		Map<SkillStatus, Integer> statusCount = buildMapPrepopulatedWithKeys();
+		for (SkillStatus skillStatus : statuses) {
+			int count = statusCount.get(skillStatus) + 1;
+			statusCount.put(skillStatus, count);
+		}
+
+		return statusCount;
+	}
+
 	public static <M extends StatusSummary, T> M addStatusSummary(final M model, final Map<T, SkillStatus> statusMap) {
 		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
 
+		return addStatusSummaryFromCounts(model, statusCountMap);
+	}
+
+	private static <M extends StatusSummary> M addStatusSummaryFromCounts(final M model, final Map<SkillStatus, Integer> statusCountMap) {
 		model.setCompleted(statusCountMap.get(SkillStatus.Complete));
 		model.setPending(statusCountMap.get(SkillStatus.Pending));
 		model.setExpiring(statusCountMap.get(SkillStatus.Expiring));

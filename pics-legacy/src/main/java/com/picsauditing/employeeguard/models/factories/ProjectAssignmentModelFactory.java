@@ -11,6 +11,14 @@ import java.util.*;
 public class ProjectAssignmentModelFactory {
 
 	public ProjectAssignmentModel create(final Project project, final Map<Employee, SkillStatus> employeeStatuses) {
+		ProjectAssignmentModel projectAssignmentModel = createProjectAssignmentModel(project);
+
+		StatusSummaryDecorator.addStatusSummary(projectAssignmentModel, employeeStatuses);
+
+		return projectAssignmentModel;
+	}
+
+	private ProjectAssignmentModel createProjectAssignmentModel(Project project) {
 		ProjectAssignmentModel projectAssignmentModel = new ProjectAssignmentModel();
 
 		projectAssignmentModel.setId(project.getId());
@@ -18,8 +26,6 @@ public class ProjectAssignmentModelFactory {
 		projectAssignmentModel.setLocation(project.getLocation());
 		projectAssignmentModel.setStartDate(project.getStartDate());
 		projectAssignmentModel.setEndDate(project.getEndDate());
-
-		StatusSummaryDecorator.addStatusSummary(projectAssignmentModel, employeeStatuses);
 
 		return projectAssignmentModel;
 	}
@@ -41,4 +47,19 @@ public class ProjectAssignmentModelFactory {
 		return models;
 	}
 
+	public List<ProjectAssignmentModel> createList(Map<Project, List<SkillStatus>> projectSkillStatuses) {
+		if (MapUtils.isEmpty(projectSkillStatuses)) {
+			return Collections.emptyList();
+		}
+
+		List<ProjectAssignmentModel> models = new ArrayList<>();
+		for (Project project : projectSkillStatuses.keySet()) {
+			ProjectAssignmentModel model = createProjectAssignmentModel(project);
+
+			models.add(StatusSummaryDecorator.addStatusSummaryRollup(model, projectSkillStatuses.get(project)));
+		}
+
+		Collections.sort(models);
+		return models;
+	}
 }

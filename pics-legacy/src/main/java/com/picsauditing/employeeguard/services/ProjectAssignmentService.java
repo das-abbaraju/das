@@ -64,9 +64,15 @@ public class ProjectAssignmentService {
 					if (roleEmployees.containsKey(role)) {
 						for (final Employee employee : roleEmployees.get(role)) {
 							if (employeeBelongsToProject(projectEmployees, project, employee)) {
-								projectSkillsForEmployee.put(project, new HashMap<Employee, Set<AccountSkill>>() {{
-									put(employee, projectSkills);
-								}});
+								if (!projectSkillsForEmployee.containsKey(project)) {
+									projectSkillsForEmployee.put(project, new HashMap<Employee, Set<AccountSkill>>());
+								}
+
+								if (!projectSkillsForEmployee.get(project).containsKey(employee)) {
+									projectSkillsForEmployee.get(project).put(employee, new HashSet<AccountSkill>());
+								}
+
+								projectSkillsForEmployee.get(project).get(employee).addAll(projectSkills);
 							}
 						}
 					}
