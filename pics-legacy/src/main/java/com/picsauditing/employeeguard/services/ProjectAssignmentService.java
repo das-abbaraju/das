@@ -36,8 +36,8 @@ public class ProjectAssignmentService {
 	}
 
 	private Map<Project, Map<Employee, Set<AccountSkill>>> getProjectSkillsForEmployees(final int siteId,
-	                                                                                    final Map<Project, Set<Employee>> projectEmployees,
-	                                                                                    final Map<Role, Set<Employee>> roleEmployees) {
+																						final Map<Project, Set<Employee>> projectEmployees,
+																						final Map<Role, Set<Employee>> roleEmployees) {
 		// Project Required Skills
 		// Project Role Skills
 		// Site + Corporate Role Skills
@@ -53,17 +53,17 @@ public class ProjectAssignmentService {
 				for (Role role : projectRoles.get(project)) {
 					if (roleEmployees.containsKey(role)) {
 						for (final Employee employee : roleEmployees.get(role)) {
-							final Set<AccountSkill> projectSkills = new HashSet<>(siteAndCorporateRequiredSkills);
-
-							if (projectRequiredSkill.containsKey(project)) {
-								projectSkills.addAll(projectRequiredSkill.get(project));
-							}
-
-							if (projectRoleSkills.containsKey(role)) {
-								projectSkills.addAll(projectRoleSkills.get(role));
-							}
-
 							if (employeeBelongsToProject(projectEmployees, project, employee)) {
+								final Set<AccountSkill> projectSkills = new HashSet<>(siteAndCorporateRequiredSkills);
+
+								if (projectRequiredSkill.containsKey(project)) {
+									projectSkills.addAll(projectRequiredSkill.get(project));
+								}
+
+								if (projectRoleSkills.containsKey(role)) {
+									projectSkills.addAll(projectRoleSkills.get(role));
+								}
+
 								if (!projectSkillsForEmployee.containsKey(project)) {
 									projectSkillsForEmployee.put(project, new HashMap<Employee, Set<AccountSkill>>());
 								}
