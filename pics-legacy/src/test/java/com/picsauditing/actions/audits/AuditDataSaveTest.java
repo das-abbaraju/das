@@ -127,6 +127,21 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	}
 
     @Test
+    public void testRecalculateAuditCatData_NonScoringAudit() throws Exception {
+        AuditCatData catData = EntityFactory.makeAuditCatData();
+        Whitebox.invokeMethod(auditDataSave, "recalculateAuditCatData", catData);
+        verify(auditPercentCalculatior).updatePercentageCompleted(catData);
+    }
+
+    @Test
+    public void testRecalculateAuditCatData_ScoringAudit() throws Exception {
+        AuditCatData catData = EntityFactory.makeAuditCatData();
+        audit.getAuditType().setScoreType(ScoreType.Actual);
+        Whitebox.invokeMethod(auditDataSave, "recalculateAuditCatData", catData);
+        verify(auditPercentCalculatior).percentCalculateComplete(audit, true);
+    }
+
+    @Test
     public void testGetRollbackStatus_AdminChangingPolicySubmitted() throws Exception {
         when(permissions.isAdmin()).thenReturn(true);
         AuditType auditType = EntityFactory.makeAuditType();

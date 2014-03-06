@@ -302,21 +302,28 @@ public class AuditDataSave extends AuditActionSupport {
 			AuditQuestion auditDataQuestion = questionDao.find(auditData.getQuestion().getId());
 			auditData.setQuestion(auditDataQuestion);
 
-			if (checkDependentQuestions() || checkOtherRules()) {
-				auditBuilder.recalculateCategories(conAudit);
-				auditPercentCalculator.percentCalculateComplete(conAudit, true);
-				auditDao.save(conAudit);
-			} else if (catData != null) {
-				auditPercentCalculator.updatePercentageCompleted(catData);
-				catData.setAuditColumns();
-				auditDao.save(catData);
-			} else {
-				addActionError("Error saving answer, please try again.");
-			}
-		}
+            recalculateAuditCatData(catData);
+        }
 		autoFillRelatedOshaIncidentsQuestions(auditData);
 		return SUCCESS;
 	}
+
+    private void recalculateAuditCatData(AuditCatData catData) {
+        if (checkDependentQuestions() || checkOtherRules()) {
+            auditBuilder.recalculateCategories(conAudit);
+            auditPercentCalculator.percentCalculateComplete(conAudit, true);
+            auditDao.save(conAudit);
+        } else if (catData != null) {
+            if (conAudit.getAuditType().isScoreable())
+                auditPercentCalculator.percentCalculateComplete(conAudit, true);
+            else
+                auditPercentCalculator.updatePercentageCompleted(catData);
+            catData.setAuditColumns();
+            auditDao.save(catData);
+        } else {
+            addActionError("Error saving answer, please try again.");
+        }
+    }
 
     private AuditStatus getRollbackStatus(ContractorAudit tempAudit, ContractorAuditOperator cao) {
         AuditStatus newStatus = AuditStatus.Incomplete;

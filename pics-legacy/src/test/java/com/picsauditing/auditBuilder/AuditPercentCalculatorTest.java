@@ -14,9 +14,11 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
@@ -78,7 +80,64 @@ public class AuditPercentCalculatorTest {
 		audit = EntityFactory.makeContractorAudit(auditType, contractor);
 	}
 
-	@Test
+    @Test
+    public void testIsVisibleToRecalculate_NoAnswerYet() throws Exception {
+        AuditData data = null;
+        List<AuditData> responses = new ArrayList<>();
+        AnswerMap map = new AnswerMap(responses);
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertTrue(visible);
+    }
+
+    @Test
+    public void testIsVisibleToRecalculate_AnsweredNoVisibleRequirements() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditData data = EntityFactory.makeAuditData("Yes", question);
+        List<AuditData> responses = new ArrayList<>();
+        AnswerMap map = new AnswerMap(responses);
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertTrue(visible);
+    }
+
+    @Test
+    public void testIsVisibleToRecalculate_AnsweredVisibleRequirements_Yes() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditQuestion visQuestion = EntityFactory.makeAuditQuestion();
+        question.setVisibleQuestion(visQuestion);
+        question.setVisibleAnswer("Yes");
+        AuditData data = EntityFactory.makeAuditData("Yes", question);
+        AuditData visData = EntityFactory.makeAuditData("Yes", visQuestion);
+
+        List<AuditData> responses = new ArrayList<>();
+        responses.add(visData);
+        AnswerMap map = new AnswerMap(responses);
+
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertTrue(visible);
+    }
+
+    @Test
+    public void testIsVisibleToRecalculate_AnsweredVisibleRequirements_No() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditQuestion visQuestion = EntityFactory.makeAuditQuestion();
+        question.setVisibleQuestion(visQuestion);
+        question.setVisibleAnswer("Yes");
+        AuditData data = EntityFactory.makeAuditData("Yes", question);
+        AuditData visData = EntityFactory.makeAuditData("No", visQuestion);
+
+        List<AuditData> responses = new ArrayList<>();
+        responses.add(visData);
+        AnswerMap map = new AnswerMap(responses);
+
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertFalse(visible);
+    }
+
+    @Test
 	public void testChainedFunctions() throws Exception {
 		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
 		cao.setStatus(AuditStatus.Pending);
