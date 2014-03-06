@@ -6,15 +6,6 @@
 <s:set var="has_contractor_menu">
     ${has_contractor_menu}
 </s:set>
-<s:set var="isContractor" value="permissions.contractor" />
-
-<s:url action="Search" var="search_url"/>
-<s:if test="#isContractor && contractor.hasCurrentCsr()">
-    <s:url action="ContactUs" var="contact_us_url" />
-</s:if>
-<s:else>
-    <s:url action="Contact" var="contact_us_url" />
-</s:else>
 
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">

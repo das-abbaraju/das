@@ -6,12 +6,6 @@
 <s:set var="isContractor" value="permissions.contractor" />
 
 <s:url action="Search" var="search_url" />
-<s:if test="#isContractor && contractor.hasCurrentCsr()">
-    <s:url namespace="/" action="ContactUs" var="contact_us_url" />
-</s:if>
-<s:else>
-    <s:url namespace="/" action="Contact" var="contact_us_url" />
-</s:else>
 
 <div id="primary_navigation" class= "navbar-fixed-top bootstrap3">
     <div id="ie8_primary_navigation_background"></div>
