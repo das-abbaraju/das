@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.models.factories;
 
+import com.picsauditing.employeeguard.models.StatusSummarizable;
 import com.picsauditing.employeeguard.models.StatusSummary;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 
 class StatusSummaryDecorator {
 
-	public static <M extends StatusSummary> M addStatusSummaryRollup(final M model, final Collection<SkillStatus> statuses) {
+	public static <M extends StatusSummarizable> M addStatusSummaryRollup(final M model, final Collection<SkillStatus> statuses) {
 		Map<SkillStatus, Integer> statusCountMap = getCountOfRollup(statuses);
 
 		return addStatusSummaryFromCounts(model, statusCountMap);
@@ -25,17 +26,21 @@ class StatusSummaryDecorator {
 		return statusCount;
 	}
 
-	public static <M extends StatusSummary, T> M addStatusSummary(final M model, final Map<T, SkillStatus> statusMap) {
+	public static <M extends StatusSummarizable, T> M addStatusSummary(final M model, final Map<T, SkillStatus> statusMap) {
 		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
 
 		return addStatusSummaryFromCounts(model, statusCountMap);
 	}
 
-	private static <M extends StatusSummary> M addStatusSummaryFromCounts(final M model, final Map<SkillStatus, Integer> statusCountMap) {
-		model.setCompleted(statusCountMap.get(SkillStatus.Complete));
-		model.setPending(statusCountMap.get(SkillStatus.Pending));
-		model.setExpiring(statusCountMap.get(SkillStatus.Expiring));
-		model.setExpired(statusCountMap.get(SkillStatus.Expired));
+	private static <M extends StatusSummarizable> M addStatusSummaryFromCounts(final M model, final Map<SkillStatus, Integer> statusCountMap) {
+		StatusSummary statusSummary = new StatusSummary();
+
+		statusSummary.setCompleted(statusCountMap.get(SkillStatus.Complete));
+		statusSummary.setPending(statusCountMap.get(SkillStatus.Pending));
+		statusSummary.setExpiring(statusCountMap.get(SkillStatus.Expiring));
+		statusSummary.setExpired(statusCountMap.get(SkillStatus.Expired));
+
+		model.setStatus(statusSummary);
 
 		return model;
 	}

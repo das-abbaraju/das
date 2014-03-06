@@ -2,15 +2,12 @@ package com.picsauditing.employeeguard.models;
 
 import java.util.List;
 
-public class OperatorSiteAssignmentStatus implements StatusSummary {
+public class OperatorSiteAssignmentStatus implements StatusSummarizable {
 
 	private int id;
 	private String name;
 	private int employees;
-	private int completed;
-	private int pending;
-	private int expiring;
-	private int expired;
+	private StatusSummary status;
 	private List<ProjectAssignmentModel> projects;
 
 	public int getId() {
@@ -38,43 +35,13 @@ public class OperatorSiteAssignmentStatus implements StatusSummary {
 	}
 
 	@Override
-	public int getCompleted() {
-		return completed;
+	public StatusSummary getStatus() {
+		return status;
 	}
 
 	@Override
-	public void setCompleted(int completed) {
-		this.completed = completed;
-	}
-
-	@Override
-	public int getPending() {
-		return pending;
-	}
-
-	@Override
-	public void setPending(int pending) {
-		this.pending = pending;
-	}
-
-	@Override
-	public int getExpiring() {
-		return expiring;
-	}
-
-	@Override
-	public void setExpiring(int expiring) {
-		this.expiring = expiring;
-	}
-
-	@Override
-	public int getExpired() {
-		return expired;
-	}
-
-	@Override
-	public void setExpired(int expired) {
-		this.expired = expired;
+	public void setStatus(StatusSummary status) {
+		this.status = status;
 	}
 
 	public List<ProjectAssignmentModel> getProjects() {
