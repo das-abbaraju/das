@@ -1,8 +1,9 @@
 package com.picsauditing.struts.controller.contractor;
 
+import com.picsauditing.access.ApiRequired;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.access.UnauthorizedException;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.model.contractor.CertificateType;
@@ -20,7 +21,7 @@ import java.util.Date;
 
 import static com.picsauditing.PICS.DateBean.buildDate;
 
-public class ContractorCertificateController extends PicsActionSupport  {
+public class ContractorCertificateController extends PicsApiSupport {
 
     public static final int ZERO_BASED_OFFSET = 1;
     public static final String URL_FOR_MANUAL_AUDIT = "/Audit.action?auditID=";
@@ -106,21 +107,18 @@ public class ContractorCertificateController extends PicsActionSupport  {
         }
     }
 
+    @ApiRequired
     public String ssipCertificate() throws UnauthorizedException, PageNotFoundException {
-        logger.info("DE377: In ContractorCertificateController.ssipCertificate...");
-        if (!permissions.isAuditor()) {
-            logger.error("DE377: User is not Auditor. Throwing UnauthorizedException... ");
-            throw new UnauthorizedException();
-        }
+        logger.info("In ContractorCertificateController.ssipCertificate...");
 
         contractorCertificate = contractorCertificateService.getSsipCertificate(contractor);
         if (contractorCertificate == null) {
-            logger.error("DE377: No certificate found for contractor: " + contractor.getId() + ". Throwing PageNotFoundException...");
+            logger.error("No certificate found for contractor: " + contractor.getId() + ". Throwing PageNotFoundException...");
             throw new PageNotFoundException();
         }
 
-        logger.info("DE377: Loaded contractorCertificate = " + contractorCertificate.toString());
-        logger.info("DE377: Returning ssip result...");
+        logger.info("Loaded contractorCertificate = " + contractorCertificate.toString());
+        logger.info("Returning ssip result...");
 
         return "ssip";
     }

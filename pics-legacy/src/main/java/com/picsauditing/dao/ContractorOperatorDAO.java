@@ -39,7 +39,13 @@ public class ContractorOperatorDAO extends PicsDAO {
 		}
 	}
 
-	public List<ContractorOperator> findNewContractorOperators(int opID, int limit) {
+    public boolean isUnifiedWorkStatus(Integer opId) {
+        String sql = "select * from contractor_operator co where opid=" + opId + " group by workStatus";
+        Query query = em.createNativeQuery(sql);
+        return query.getResultList().size() == 1;
+    }
+
+    public List<ContractorOperator> findNewContractorOperators(int opID, int limit) {
 		if (limit < 0)
 			limit = 1;
 		/*

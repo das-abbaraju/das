@@ -138,18 +138,20 @@ public class ReportContractorApproval extends ReportAccount {
                 if (cOperator.getWorkStatus() != workStatus) {
 				    if (operator.isOperator()) {
                         cOperator.setWorkStatus(workStatus);
-                        contractorOperatorService.cascadeWorkStatusToParent(cOperator);
                     } else {
                         cOperator.setForcedWorkStatus(workStatus);
-                   }
+                    }
 
-                   if (operator.isCorporate()) {
+                    cOperator.setAuditColumns(permissions);
+                    contractorOperatorDAO.save(cOperator);
+
+                    if (operator.isCorporate()) {
                         for (OperatorAccount childAccount: operator.getChildOperators()) {
                              approveContractor(cAccount, childAccount.getId(), workStatus);
                         }
-                   }
-                    cOperator.setAuditColumns(permissions);
-                    contractorOperatorDAO.save(cOperator);
+                    } else if (operator.isOperatorCorporate()) {
+                        contractorOperatorService.cascadeWorkStatusToParent(cOperator);
+                    }
                     break;
                  }
 			}

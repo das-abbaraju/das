@@ -573,7 +573,7 @@ public final class MenuBuilder {
 		}
 
 		supportMenu.addChild(getText("Registration.Error.LiveChat"), mibewUrl, "live_chat").setTarget("_blank");
-		supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
+		supportMenu.addChild(getText("global.ContactPICS"), "ContactUs.action", "contact_action");
 		supportMenu.addChild(getText("global.AboutPICS"), "About.action", "about_pics");
 
         addReferenceMenu(permissions, supportMenu);

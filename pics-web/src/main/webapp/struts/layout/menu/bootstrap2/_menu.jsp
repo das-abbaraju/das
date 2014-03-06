@@ -7,9 +7,6 @@
     ${has_contractor_menu}
 </s:set>
 
-<s:url action="Search" var="search_url"/>
-<s:url action="Contact" var="contact_us_url" />
-
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">

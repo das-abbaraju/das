@@ -25,20 +25,6 @@ public class AuditDataService {
 	@Autowired
 	private AuditQuestionDAO questionDao;
 
-	public AuditData findAuditDataByAuditAndQuestion(AuditData auditData) throws Exception {
-		AuditData databaseCopy;
-
-		if (auditData.getAudit() == null) {
-			throw new Exception("Missing Audit");
-		}
-		if (auditData.getQuestion() == null) {
-			throw new Exception("Missing Question");
-		}
-
-		databaseCopy = auditDataDAO.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion().getId());
-		return databaseCopy;
-	}
-
 	public AuditData findAuditData(int auditDataId) {
 		return auditDataDAO.find(auditDataId);
 	}

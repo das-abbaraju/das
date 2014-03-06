@@ -82,7 +82,7 @@ public final class ContractorSubmenuBuilder {
 
 			supportMenu.addChild(getText("Header.HelpCenter"), "HelpCenter.action", "help_center");
 			supportMenu.addChild(getText("Registration.Error.LiveChat"), "#", "live_chat");
-			supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
+			supportMenu.addChild(getText("global.ContactPICS"), "ContactUs.action", "contact_action");
 			supportMenu.addChild(getText("global.AboutPICS"), "About.action", "about_pics");
 
 			MenuComponent referenceMenu = supportMenu.addChild("Reference");

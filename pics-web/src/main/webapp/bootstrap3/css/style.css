@@ -16573,3 +16573,129 @@ ul.skill-nav a {
   display: inline-block;
   margin-top: 20px;
 }
+
+/* line 4, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods i {
+  font-size: 50px;
+}
+
+/* line 7, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods i.icon-phone {
+  color: #33b679;
+}
+
+/* line 11, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods i.icon-comments {
+  color: #3498db;
+}
+
+/* line 15, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods i.icon-envelope-alt {
+  color: #cccccc;
+}
+
+/* line 19, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods i.icon-ok-sign {
+  margin-right: 7px;
+  font-size: 20px;
+}
+
+/* line 25, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods .method-icon {
+  margin-bottom: 30px;
+}
+
+/* line 29, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods .phone-number {
+  margin-bottom: 20px;
+  font-size: 21px;
+}
+
+/* line 34, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods .gray-block {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #999999;
+}
+
+/* line 40, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods .chat-link {
+  margin-right: 0;
+}
+
+/* line 44, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page .contact-methods .alert-success h3 {
+  display: inline;
+}
+
+/* line 49, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page div.info {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #0f9d58;
+  text-align: left;
+  background: #d6f0e4;
+  border-radius: 4px;
+}
+
+/* line 58, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page div.info strong {
+  color: #05702e;
+}
+
+/* line 63, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page div.error {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #c0392b;
+  text-align: left;
+  background: #fadbd8;
+  border-radius: 4px;
+}
+
+/* line 72, ../sass/pics/templates/contact/_contact-us.scss */
+
+.ContactUs-page div.error strong {
+  color: #800a06;
+}
+
+@media (max-width: 991px) {
+  {
+    /* line 80, ../sass/pics/templates/contact/_contact-us.scss */
+  
+  }
+  .ContactUs-page .chat-row {
+    margin-top: 30px;
+  }
+}
+
+/* line 3, ../sass/pics/templates/contact/_contact.scss */
+
+p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 991px) {
+  {
+    /* line 9, ../sass/pics/templates/contact/_contact.scss */
+  
+  }
+  .Contact-page .nav-pills {
+    margin-bottom: 30px;
+  }
+}
