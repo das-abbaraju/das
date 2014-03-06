@@ -5,12 +5,6 @@
 # to go.  This script also assumes that your personal user or root
 # user is either passwordless or you have the creditials for your 
 # personal account set up in ~/.my.cnf 
-#
-#
-#
-#
-#
-#
 ####################################################################
 
 # Command Vars
@@ -72,12 +66,12 @@ function create_users {
 }
 
 function load_databases {
-	$ECHO -e "Loading $archive_db $DATE  \n"
+	$ECHO -e "Loading $archive_db $(date +"%b %d %H:%M:%S")  \n"
 	$MYSQL $archive_db < $archive_dump
-	$ECHO -e "Done loading $archive_db $DATE \n"
-	$ECHO -e "Loading $bootstrap_db $DATE \n"
+	$ECHO -e "Done loading $archive_db $(date +"%b %d %H:%M:%S") \n"
+	$ECHO -e "Loading $bootstrap_db $(date +"%b %d %H:%M:%S") \n"
 	$MYSQL $bootstrap_db < $bootstrap_dump
-	$ECHO -e "Done loading $bootstrap_db $DATE \n"
+	$ECHO -e "Done loading $bootstrap_db $(date +"%b %d %H:%M:%S") \n"
 }
 
 case "$1" in
