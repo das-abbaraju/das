@@ -5,6 +5,8 @@ import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 
 import com.picsauditing.PICS.TaxService;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +26,8 @@ import java.util.HashMap;
 
 public class ContractorPaymentOptionsTest extends PicsActionTest {
 	private ContractorPaymentOptions contractorPaymentOptions;
-	
+	private static final String TEST_CREDIT_CARD_NUMBER = "4111111111111111";
+
 	@Mock
 	private ContractorAccountDAO contractorAccountDao;
 	@Mock
@@ -35,8 +38,10 @@ public class ContractorPaymentOptionsTest extends PicsActionTest {
 	private PermissionToViewContractor permissionToViewContractor;
     @Mock
     private TaxService taxService;
+    @Mock
+    private BrainTree paymentService;
 
-	@Before
+    @Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		setupMocks();
@@ -51,9 +56,11 @@ public class ContractorPaymentOptionsTest extends PicsActionTest {
 		when(permissionToViewContractor.check(anyBoolean())).thenReturn(true);
 		when(appPropDao.find("brainTree.key")).thenReturn(new AppProperty("key", "key"));
 		when(appPropDao.find("brainTree.key_id")).thenReturn(new AppProperty("key_id", "key_id"));
+        when(paymentService.getCreditCard(contractor)).thenReturn(new CreditCard(TEST_CREDIT_CARD_NUMBER));
 
 		Whitebox.setInternalState(contractorPaymentOptions, "permissionToViewContractor", permissionToViewContractor);
         Whitebox.setInternalState(contractorPaymentOptions, "taxService", taxService);
+        Whitebox.setInternalState(contractorPaymentOptions, "paymentService", paymentService);
 	}
 
 	@Test
@@ -74,7 +81,7 @@ public class ContractorPaymentOptionsTest extends PicsActionTest {
 		String actionResult = contractorPaymentOptions.changePaymentToCheck();
 
 		verify(contractor).setPaymentMethod(PaymentMethod.Check);
-		verify(contractorAccountDao).save(contractor);
+		verify(contractorAccountDao, times(2)).save(contractor);
 		assertThat(actionResult, is(equalTo(Action.SUCCESS)));
 	}
 
@@ -109,6 +116,13 @@ public class ContractorPaymentOptionsTest extends PicsActionTest {
 
         verify(mockInvoiceFee).getTax(BigDecimal.TEN.setScale(2));
 
+    }
+
+    @Test
+    public void testGetPaymentUrl_TestProxiesToPaymentServiceForProperUrl() throws Exception {
+        contractorPaymentOptions.getPaymentUrl();
+
+        verify(paymentService).getPaymentUrl();
     }
 
 }

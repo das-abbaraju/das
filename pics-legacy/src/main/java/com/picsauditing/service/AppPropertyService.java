@@ -2,13 +2,15 @@ package com.picsauditing.service;
 
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.model.general.AppPropertyProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AppPropertyService {
-
+public class AppPropertyService implements AppPropertyProvider {
+    private static final String DEFAULT_STRING = "";
     private static final Logger logger = LoggerFactory.getLogger(AppPropertyService.class);
+
     @Autowired
     AppPropertyDAO appPropertyDao;
 
@@ -31,6 +33,10 @@ public class AppPropertyService {
         }
 
         return appProperty.getValue();
+    }
+
+    public String getPropertyString(String property) {
+        return getPropertyString(property, DEFAULT_STRING);
     }
 
     public int getPropertyInt(String property, int defaultInteger) {
