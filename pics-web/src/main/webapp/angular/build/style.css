@@ -16040,63 +16040,84 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   background-color: transparent;
 }
 
-/* line 3, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 2, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .nav-stacked {
   margin-bottom: 20px;
 }
-/* line 7, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 6, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .current-assignments {
-  font-size: 24px;
+  font-size: 36px;
   font-weight: bold;
   text-align: left;
 }
-/* line 12, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 11, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .current-assignments .row {
   margin-bottom: 20px;
 }
-/* line 16, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 15, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .current-assignments .icon-user {
   color: #73bbe8;
 }
-/* line 22, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 21, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .current-assignments .success,
 .operator-dashboard .current-assignments .warning,
 .operator-dashboard .current-assignments .danger {
   background: transparent;
 }
-/* line 28, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 26, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .chart-container {
+  position: relative;
+}
+/* line 30, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .chart-container .assignment-chart path {
+  stroke: #ffffff;
+  stroke-width: 5px;
+}
+/* line 36, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .chart-container .number-of-employees {
+  font-size: 36px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+}
+/* line 42, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .chart-container .number-of-employees .icon-user {
+  color: #73bbe8;
+  display: block;
+}
+/* line 50, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .name {
   font-weight: bold;
 }
-/* line 32, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 54, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .date {
   color: #b3b3b3;
   font-size: 12px;
   margin-left: 20px;
 }
-/* line 38, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 60, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .location {
   color: #808285;
 }
-/* line 42, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 64, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .row {
   margin-bottom: 15px;
 }
-/* line 46, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 68, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .list-inline {
   font-size: 18px;
   font-weight: bold;
   text-align: right;
 }
-/* line 51, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 73, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .list-inline li {
   margin-right: 10px;
 }
-/* line 56, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 78, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .list-inline li.success, .operator-dashboard .project-assignments .list-inline li.warning, .operator-dashboard .project-assignments .list-inline li.danger {
   background: transparent;
 }
-/* line 60, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+/* line 82, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
 .operator-dashboard .project-assignments .list-inline li i {
   margin-right: 10px;
 }
