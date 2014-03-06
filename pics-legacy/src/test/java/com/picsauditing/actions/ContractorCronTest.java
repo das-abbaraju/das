@@ -76,6 +76,51 @@ public class ContractorCronTest extends PicsActionTest {
 	}
 
     @Test
+    public void testRunWaitingOn_Operator_No() throws Exception {
+        setupStep(ContractorCronStep.WaitingOn);
+        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
+        ContractorAccount contractor = EntityFactory.makeContractor();
+        OperatorAccount operator = EntityFactory.makeOperator();
+        ContractorOperator co = EntityFactory.addContractorOperator(contractor, operator);
+
+        co.setWorkStatus(ApprovalStatus.N);
+        co.setWaitingOn(WaitingOn.Contractor);
+
+        when(flagDataCalculator.calculateWaitingOn(co)).thenReturn(WaitingOn.Operator);
+
+        Whitebox.invokeMethod(contractorCron, "runWaitingOn", co);
+        assertTrue(co.getWorkStatus().isNo());
+        assertTrue(co.getWaitingOn().equals(WaitingOn.Contractor));
+
+    }
+
+    @Test
+    public void testRunWaitingOn_Contractor_Yes() throws Exception {
+        setupStep(ContractorCronStep.WaitingOn);
+        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
+        ContractorAccount contractor = EntityFactory.makeContractor();
+        OperatorAccount operator = EntityFactory.makeOperator();
+        ContractorOperator co = EntityFactory.addContractorOperator(contractor, operator);
+
+        co.setWorkStatus(ApprovalStatus.Y);
+        co.setWaitingOn(WaitingOn.Contractor);
+
+        when(flagDataCalculator.calculateWaitingOn(co)).thenReturn(WaitingOn.Contractor);
+
+        Whitebox.invokeMethod(contractorCron, "runWaitingOn", co);
+        assertTrue(co.getWorkStatus().isYes());
+        assertTrue(co.getWaitingOn().equals(WaitingOn.Contractor));
+
+    }
+
+    private void setupStep(ContractorCronStep step) {
+        ContractorCronStep[] steps = new ContractorCronStep[1];
+        steps[0] = step;
+        Whitebox.setInternalState(contractorCron, "steps", steps);
+
+    }
+
+    @Test
     public void testRunAssignAudit_ManualAudit() throws Exception {
         ContractorCronStep[] steps = new ContractorCronStep[1];
         steps[0] = ContractorCronStep.AssignAudit;

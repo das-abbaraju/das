@@ -856,7 +856,7 @@ public class ContractorCron extends PicsActionSupport {
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagAuditCriteriaInherited());
 		waitingOn = flagDataCalculator.calculateWaitingOn(co);
 
-		if (!waitingOn.equals(co.getWaitingOn())) {
+		if (!waitingOn.equals(co.getWaitingOn()) && !co.getWorkStatus().isNo()) {
 			OperatorAccount operator = co.getOperatorAccount();
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
