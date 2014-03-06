@@ -1,5 +1,6 @@
 package com.picsauditing.forms;
 
+import com.picsauditing.struts.controller.forms.RegistrationForm;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,11 +23,38 @@ public class RegistrationFormTest {
     }
 
     @Test
+    public void cityIsBlank() {
+        RegistrationForm rForm = new RegistrationForm();
+        rForm.setCity("");
+        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "city");
+
+        assertEquals(2, constraintViolations.size());
+    }
+
+    @Test
+    public void cityTooLong() {
+        RegistrationForm rForm = new RegistrationForm();
+        rForm.setCity("aslkjflskjflksjlfkjslkjflasjflkasjlfkjaslkjflskjdflaksjdlfkjasldjflak");
+        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "city");
+
+        assertEquals(2, constraintViolations.size());
+    }
+
+    @Test
+    public void citySpecialCharacter() {
+        RegistrationForm rForm = new RegistrationForm();
+        rForm.setCity("ƒ©∆¥∫");
+        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "city");
+
+        assertEquals(1, constraintViolations.size());
+    }
+
+    @Test
     public void emailIsNotNull() {
         RegistrationForm rForm = new RegistrationForm();
         //rForm.setEmail("blah");
 
-        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validate(rForm);
+        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "email");
 
         assertEquals(1, constraintViolations.size());
     }

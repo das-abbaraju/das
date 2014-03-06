@@ -6,29 +6,84 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Locale;
 
 
 public class RegistrationForm {
+    private static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>`\"].*";
+    public static final String USERNAME_REGEX = "[\\w+._@-]+";
+    private static final int MAX_STRING_LENGTH_50 = 50;
+    public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
+
 
     private AccountStatus status = AccountStatus.Pending;
     private Locale locale;
+
+    @NotBlank
+    @Length(max = MAX_STRING_LENGTH_50)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX)
     private String city;
+
+    //TODO Custom Validation Constraint for countrySubdivision
     private String countrySubdivision;
+
+
     private String businessName;
+
+    @NotBlank
+    @Length(max = MAX_STRING_LENGTH_50)
+    @Pattern(regexp = USERNAME_REGEX)
+    //TODO - isUserNameTake - appUserDAO.duplicateUsername(username, appUserID)
     private String username;
+
+    @NotBlank
+    @Length(max = MAX_STRING_LENGTH_50)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX)
     private String address;
+
+    @NotBlank
+    @Length(max = MAX_STRING_LENGTH_50)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX)
     private String firstName;
+
+    @NotNull
     private String timeZone;
+
+    @NotBlank
+    @Length(max = MAX_STRING_LENGTH_50)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX)
     private String lastName;
+
+    //TODO - custom validator -
+    // cannot be username
+    // must contain letters & numbers
+    // cannot be current password
     private String password;
+
+    //TODO - check that it matches entered password
     private String passwordConfirmation;
+
+    @Pattern(regexp = PHONE_NUMBER_REGEX_WITH_ASTERISK)
     private String phone;
+
+    @NotBlank
+    @Length(max = MAX_STRING_LENGTH_50)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX)
     private String countryISOCode;
+
+    @NotBlank
+    @Length(max = MAX_STRING_LENGTH_50)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX)
     private String zip;
+
+    //TODO - tax validator
     private String vatID;
+
     @NotNull
     @Email
     private String email;
