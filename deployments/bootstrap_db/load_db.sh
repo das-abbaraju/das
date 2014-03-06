@@ -17,6 +17,7 @@
 MYSQL=`which mysql`
 ECHO=`which echo`
 GREP=`which grep`
+DATE="/bin/date"
 
 ## Sanity check commands
 check_bootstrap=`$MYSQL -e "show databases"|$GREP pics_bootstrap`
@@ -71,12 +72,12 @@ function create_users {
 }
 
 function load_databases {
-	$ECHO -e "Loading $archive_db $(date +"%b %d %H:$M:$S") \n"
+	$ECHO -e "Loading $archive_db $DATE  \n"
 	$MYSQL $archive_db < $archive_dump
-	$ECHO -e "Done loading $archive_db $(date +"%b %d %H:$M:$S") \n"
-	$ECHO -e "Loading $bootstrap_db $(date +"%b %d %H:$M:$S") \n"
+	$ECHO -e "Done loading $archive_db $DATE \n"
+	$ECHO -e "Loading $bootstrap_db $DATE \n"
 	$MYSQL $bootstrap_db < $bootstrap_dump
-	$ECHO -e "Done loading $bootstrap_db $(date +"%b %d %H:$M:$S") \n"
+	$ECHO -e "Done loading $bootstrap_db $DATE \n"
 }
 
 case "$1" in
