@@ -11,4 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ContractorNameNotTakenConstraintValidator.class)
 public @interface UniqueContractorName {
+    String message() default "";
 }

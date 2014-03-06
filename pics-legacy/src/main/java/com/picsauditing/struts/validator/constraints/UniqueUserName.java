@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UserNotTakenConstraintValidator.class)
 public @interface UniqueUserName {
+    String message() default "";
 }

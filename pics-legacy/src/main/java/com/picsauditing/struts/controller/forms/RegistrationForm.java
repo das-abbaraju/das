@@ -7,6 +7,7 @@ import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
 import com.picsauditing.struts.validator.constraints.UniqueContractorName;
 import com.picsauditing.struts.validator.constraints.UniqueUserName;
+import com.sun.mail.handlers.message_rfc822;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -21,46 +22,59 @@ public class RegistrationForm {
     private static final String USERNAME_REGEX = "[\\w+._@-]+";
     private static final int MAX_STRING_LENGTH_50 = 50;
     private static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
-
+    private static final String REQUIRED_KEY = "JS.Validation.Required";
+    private static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
+    private static final String MAX_50_CHARS_KEY = "JS.Validation.Maximum50Characters";
+    private static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
+    private static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
+    private static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
+    private static final String INVALID_TAX_ID_KEY = "JS.Validation.InvalidTaxID";
+    private static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
+    private static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
+    private static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
+    private static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
+    private static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
+    private static final String INVALID_UK_POST_CODE_KEY = "JS.Validation.InvalidPostcode";
+    private static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
 
     private AccountStatus status = AccountStatus.Pending;
     private Locale locale;
 
-    @NotBlank
-    @Length(max = MAX_STRING_LENGTH_50)
-    @Pattern(regexp = SPECIAL_CHAR_REGEX)
+    @NotBlank(message = REQUIRED_KEY)
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String city;
 
     //TODO Custom Validation Constraint for countrySubdivision
     private String countrySubdivision;
 
 
-    @NotBlank
-    @UniqueContractorName
+    @NotBlank(message = REQUIRED_KEY)
+    @UniqueContractorName(message = COMPANY_NAME_EXISTS_KEY)
     private String businessName;
 
-    @NotBlank
-    @Length(max = MAX_STRING_LENGTH_50)
-    @Pattern(regexp = USERNAME_REGEX)
-    @UniqueUserName
+    @NotBlank(message = REQUIRED_KEY)
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = USERNAME_REGEX, message = INVALID_USERNAME_KEY)
+    @UniqueUserName(message = USERNAME_TAKEN_KEY)
     private String username;
 
-    @NotBlank
-    @Length(max = MAX_STRING_LENGTH_50)
-    @Pattern(regexp = SPECIAL_CHAR_REGEX)
+    @NotBlank(message = REQUIRED_KEY)
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String address;
 
-    @NotBlank
-    @Length(max = MAX_STRING_LENGTH_50)
-    @Pattern(regexp = SPECIAL_CHAR_REGEX)
+    @NotBlank(message = REQUIRED_KEY)
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String firstName;
 
-    @NotNull
+    @NotNull(message = REQUIRED_KEY)
     private String timeZone;
 
-    @NotBlank
-    @Length(max = MAX_STRING_LENGTH_50)
-    @Pattern(regexp = SPECIAL_CHAR_REGEX)
+    @NotBlank(message = REQUIRED_KEY)
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String lastName;
 
     //TODO - custom validator -
@@ -72,17 +86,17 @@ public class RegistrationForm {
     //TODO - check that it matches entered password
     private String passwordConfirmation;
 
-    @Pattern(regexp = PHONE_NUMBER_REGEX_WITH_ASTERISK)
+    @Pattern(regexp = PHONE_NUMBER_REGEX_WITH_ASTERISK, message = INVALID_PHONE_FORMAT_KEY)
     private String phone;
 
-    @NotBlank
-    @Length(max = MAX_STRING_LENGTH_50)
-    @Pattern(regexp = SPECIAL_CHAR_REGEX)
+    @NotBlank(message = REQUIRED_KEY)
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String countryISOCode;
 
-    @NotBlank
-    @Length(max = MAX_STRING_LENGTH_50)
-    @Pattern(regexp = SPECIAL_CHAR_REGEX)
+    @NotBlank(message = REQUIRED_KEY)
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String zip;
 
     //TODO - tax validator
