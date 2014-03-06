@@ -30,10 +30,12 @@ check_picsro_user=`$MYSQL -D mysql -e "select user from user"|$GREP picsro`
 check_pics_admin_user=`$MYSQL -D mysql -e "select user from user"|$GREP pics_admin`
 
 # File variables
-bootstrap="pics_bootstrap.sql"
-archive="log_archive_schema.sql"
+bootstrap_dump="pics_bootstrap.sql"
+archive_dump="log_archive_schema.sql"
 users="local_users_and_permissions.sql"
 dbs="create_databases.sql"
+archive_db="log_archive"
+bootstrap_db="pics_bootstrap"
 # Command Vars
 
 
@@ -69,8 +71,8 @@ function create_users {
 }
 
 function load_databases {
-	$MYSQL < $archive
-	$MYSQL < $bootstrap
+	$MYSQL $archive_db < $archive_dump
+	$MYSQL $bootstrap_db < $bootstrap_dump
 }
 
 case "$1" in
