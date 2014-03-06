@@ -173,6 +173,6 @@
 	<include file="./liquibase/2014/Q1/lkam6_US284_Update_PQF_Workflow.sql"/>
 	
 	<!-- 7.2.1 --> 
-	<include file="./liquibase/2014/Q1/gmeurer4_US494TA707_MakeBrainTreeUrlConfigurable.sql"/>
+	<include file="./liquibase/2014/Q1/gmeurer4_US494-TA707_MakeBrainTreeUrlConfigurable.sql"/>
 
 </databaseChangeLog>
