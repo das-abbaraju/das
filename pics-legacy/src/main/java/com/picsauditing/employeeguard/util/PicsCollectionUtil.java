@@ -28,13 +28,11 @@ public class PicsCollectionUtil {
 			R row = converter.getRow(value);
 			C column = converter.getColumn(value);
 
-			if (result.containsKey(row)) {
-				result.get(row).put(column, value);
+			if (!result.containsKey(row)) {
+				result.put(row, new HashMap<C, V>());
 			}
 
-			Map<C, V> innerMap = new HashMap<>();
-			innerMap.put(column, value);
-			result.put(row, innerMap);
+			result.get(row).put(column, value);
 		}
 
 		return result;
