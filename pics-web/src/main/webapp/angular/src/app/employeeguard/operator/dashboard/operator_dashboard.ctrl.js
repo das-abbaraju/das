@@ -1,13 +1,11 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteDashboard) {
-    var model;
-
+.controller('operatorDashboardCtrl', function ($scope, SiteDashboard, AnimatedArcChart) {
     SiteDashboard.get().$promise.then(onSuccess, onError);
 
     function onSuccess(result) {
         $scope.site = result;
-        $scope.loadAssignmentChart();
+        $scope.formatChartData(result);
     }
 
     function onError(error) {
@@ -40,17 +38,7 @@ angular.module('PICS.employeeguard')
         return progress_bar;
     };
 
-    $scope.redrawChart = function () {
-        d3.select('.assignment-chart').html('');
-        $scope.loadAssignmentChart();
-    };
-
-    $scope.loadAssignmentChart = function () {
-        var height = 200,
-            width = 420,
-            arcStartAngle = -0.5 * Math.PI,
-            arcEndAngle = 0.5 * Math.PI;
-
+    $scope.formatChartData = function (result) {
         var data = [{
                         amount: $scope.site.completed + $scope.site.pending,
                         color: '#33b679'
@@ -61,38 +49,8 @@ angular.module('PICS.employeeguard')
                         amount: $scope.site.expired,
                         color: '#e74c3c'
                     }];
+        var chart = new AnimatedArcChart(data);
 
-        var createArc = d3.svg.arc()
-            .outerRadius(height)
-            .innerRadius(height - 80);
-
-        var pie = d3.layout.pie()
-            .sort(null)
-            .startAngle(arcStartAngle)
-            .endAngle(arcEndAngle)
-            .value(function(d) { return d.amount; });
-
-
-        var chart = d3.select('.assignment-chart')
-                        .append('svg')
-                        .attr('height', height)
-                        .attr('width', width)
-                        .append('g')
-                        .attr('transform', 'translate(' + width/2 + ',' + height + ')');
-
-        chart.selectAll('.arc')
-            .data(pie(data))
-            .enter()
-            .append('g')
-            .append('path')
-            .attr('fill', function(d, i) { return d.data.color; })
-            .transition()
-            .duration(1500)
-            .attrTween('d', animatePie);
-
-        function animatePie(d) {
-            var i = d3.interpolate({startAngle: arcStartAngle, endAngle: arcStartAngle}, d);
-            return function(time) { return createArc(i(time)); };
-        }
+        chart.drawChart('.assignment-chart', 420, 200);
     };
 });
