@@ -12,6 +12,7 @@ import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -59,6 +60,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public Map<Project, Set<Employee>> getEmployeesByProject(final Collection<Project> projects) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
 		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByProjects(projects),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Project, Employee>() {
 

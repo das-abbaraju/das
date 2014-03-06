@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.services.AssignmentService;
+import com.picsauditing.employeeguard.services.ProjectAssignmentService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.approvaltests.Approvals;
@@ -38,6 +39,8 @@ public class SummaryActionTest extends PicsActionTest {
 	@Mock
 	private AssignmentService assignmentService;
 	@Mock
+	private ProjectAssignmentService projectAssignmentService;
+	@Mock
 	private StatusCalculatorService statusCalculatorService;
 
 	@Before
@@ -51,6 +54,7 @@ public class SummaryActionTest extends PicsActionTest {
 		when(permissions.getAccountName()).thenReturn("Site Name");
 
 		Whitebox.setInternalState(summaryAction, "assignmentService", assignmentService);
+		Whitebox.setInternalState(summaryAction, "projectAssignmentService", projectAssignmentService);
 		Whitebox.setInternalState(summaryAction, "statusCalculatorService", statusCalculatorService);
 	}
 
