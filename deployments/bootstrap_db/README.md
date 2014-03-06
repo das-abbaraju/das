@@ -2,7 +2,7 @@ This directory contains everything you need to load and refresh a bootstrap (ske
 
 The scripts in here assume 2 things.
 
-1.  You have MySQL 5.5 installed and do not need to specify a user & pass to log into your MySQL server.  Either because you not securied your server installation or you have specified your user & password in ~/.my.cnf
+1.  You have MySQL 5.5 installed and do not need to specify a user & pass to log into your MySQL server.  Either because you have not secured your server installation or you have specified your user & password in ~/.my.cnf
 
 2.  That your MySQL server is actually running.  While there are some sanity checks to make sure you have the databases set up and users set up, it's not verifying that mysql is running, though I guess it would technically error out with a "cannot connect to localhost" error.
 
