@@ -64,6 +64,6 @@ public class RegistrationFormValidationWrapper implements Validator {
     }
 
     private String getText(String key, Locale locale) {
-        return TranslationServiceFactory.getNonLoggingTranslationService().getText(key, locale);
+        return TranslationServiceFactory.getTranslationService().getText(key, locale);
     }
 }
