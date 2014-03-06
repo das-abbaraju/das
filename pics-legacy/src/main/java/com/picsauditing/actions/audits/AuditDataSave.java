@@ -358,7 +358,9 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditData loadAuditData(AuditData auditData) throws Exception {
 		if (auditData != null && auditData.getId() > 0) {
 			return auditDataService.findAuditData(auditData.getId());
-		}
+        } else if (auditData != null) {
+            return auditDataService.findAuditDataByAuditAndQuestion(auditData);
+        }
 
         return null;
 	}
