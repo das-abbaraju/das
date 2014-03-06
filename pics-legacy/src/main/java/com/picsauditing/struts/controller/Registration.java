@@ -17,6 +17,7 @@ import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.service.registration.RegistrationRequestService;
 import com.picsauditing.service.registration.RegistrationService;
+import com.picsauditing.struts.validator.RegistrationFormValidationWrapper;
 import com.picsauditing.util.*;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.ValidatorFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -61,8 +63,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	@Autowired
 	protected PermissionBuilder permissionBuilder;
 	@Autowired
-	private RegistrationValidator registrationValidator;
-	@Autowired
 	private AppUserService appUserService;
 	@Autowired
 	private AppUserDAO appUserDAO;
@@ -74,6 +74,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
     private RegistrationRequestService regReqService;
     @Autowired
     private RegistrationService registrationService;
+    @Autowired
+    private ValidatorFactory validatorFactory;
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
@@ -473,13 +475,16 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 	// For the Ajax Validation
 	public Validator getCustomValidator() {
-		return registrationValidator;
+		return new RegistrationFormValidationWrapper(this, validatorFactory.getValidator());
 	}
 
 	// For server-side validation
 	@Override
 	public void validate() {
-		registrationValidator.validate(ActionContext.getContext().getValueStack(), new DelegatingValidatorContext(this));
+        new RegistrationFormValidationWrapper(this, validatorFactory.getValidator()).validate(
+                ActionContext.getContext().getValueStack(),
+                new DelegatingValidatorContext(this)
+        );
 	}
 
 	public Map<String, String> getTimezones() {
