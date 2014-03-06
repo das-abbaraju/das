@@ -7,3 +7,5 @@ The only script that you need to be concerned with is the load_db.sh.
 Make sure that you have added the options that are in my.cnf file to your machine's my.cnf file and that the options are being picked up by the server.
 
 Currently, this script has only been tested on Linux and MacOSX.  Theoretically since it's a simple bash script, it *should* work if you have git bash installed on your Windows machine.
+
+For more information on what to do and what's going on, please read through the Bootstrap documentation page here: http://intranet.picsauditing.com/display/it/Bootstrap+Database
