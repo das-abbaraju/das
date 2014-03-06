@@ -92,6 +92,7 @@ public class AuditPercentCalculator {
 				boolean isRequired = questionBeingReviewed.isRequired();
 
 				AuditData answer = answers.get(questionBeingReviewed.getId());
+                boolean isVisibleToRecalculate = isVisibleToRecalculate(answers.get(question.getId()), answers);
 
 				circularRequiredQuestionIds.clear();
 				while (questionBeingReviewed != null) {
@@ -137,8 +138,10 @@ public class AuditPercentCalculator {
 							if (questionVisibilityParent.getVisibleQuestion() != null
 									&& questionVisibilityParent.getVisibleAnswer() != null) {
 								if (!questionVisibilityParent.isVisible(answers.get(questionVisibilityParent
-										.getVisibleQuestion().getId())))
+										.getVisibleQuestion().getId()))) {
 									isRequired = false;
+                                    isVisibleToRecalculate = false;
+                                }
 							}
 
 							if (circularVisualQuestionIds.contains(questionVisibilityParent.getId())) {
@@ -170,7 +173,7 @@ public class AuditPercentCalculator {
 				if (answer != null) {
 					if (answer.isAnswered()) {
 						if (catData.getAudit().getAuditType().isScoreable()) {
-							if (answer.isScoreApplies()) {
+							if (answer.isScoreApplies() && isVisibleToRecalculate) {
 								score += answer.getScoreValue();
 								scoreWeight += question.getScoreWeight();
 							}
@@ -199,8 +202,23 @@ public class AuditPercentCalculator {
 		catData.setNumVerified(verifiedCount);
 		catData.setScore(score);
 		catData.setScorePossible(scoreWeight);
-		// categoryDataDAO.save(catData);
 	}
+
+    private boolean isVisibleToRecalculate(AuditData data, AnswerMap answers) {
+        boolean visible = true;
+
+        if (data == null)
+            return true;
+
+        if (data.getQuestion().getVisibleQuestion() != null) {
+            AuditData answer = answers.get(data.getQuestion().getVisibleQuestion().getId());
+            if (answer == null || !data.getQuestion().isVisible(answer))
+                return false;
+
+        }
+
+        return visible;
+    }
 
     private void runCalculationFunctions(AuditCatData catData, Date validDate, AnswerMap currentWatcherAnswers) {
         for (AuditQuestion question : catData.getCategory().getQuestions())
@@ -511,12 +529,12 @@ public class AuditPercentCalculator {
                 }
             }
 
-            if (scoreWeight > 0) {
+//            if (scoreWeight > 0) {
                 if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
                     conAudit.setScore((int) Math.min(Math.round(score), 100L));
                 else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
                     conAudit.setScore((int) Math.round(score));
-            }
+//            }
 
             int percentComplete = 0;
             int percentVerified = 0;
