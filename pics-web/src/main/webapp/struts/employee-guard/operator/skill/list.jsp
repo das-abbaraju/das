@@ -5,6 +5,12 @@
 <%-- Url --%>
 <s:url action="skill" var="operator_skill_list_url"/>
 <s:url action="skill" method="create" var="operator_skill_create_url"/>
+<s:url action="skills/site/{id}" method="editCorporateSection" var="corporate_skill_edit_url">
+    <s:param name="id">${permissions.accountId}</s:param>
+</s:url>
+<s:url action="skills/site/{id}" method="editRequiredSkillsSection" var="site_skill_edit_url">
+    <s:param name="id">${permissions.accountId}</s:param>
+</s:url>
 
 <%-- Page title --%>
 <s:if test="permissions.corporate">
@@ -19,6 +25,85 @@
     <s:include value="/struts/employee-guard/_page-header.jsp">
         <s:param name="title">Skills</s:param>
     </s:include>
+</s:else>
+
+<s:if test="permissions.corporate">
+    <section class="employee-guard-section edit-container" data-url="${site_skill_edit_url}">
+        <h1>
+            <div class="row">
+                <div class="col-md-9 col-xs-9">Corporate Skills</div>
+                <s:if test="permissions.corporate">
+                    <div class="col-md-3 col-xs-3 edit">
+                        <i class="icon-edit icon-large edit-toggle"></i>
+                    </div>
+                </s:if>
+            </div>
+        </h1>
+
+        <div class="content">
+            <s:if test="requiredSkills.isEmpty()">
+                <div class="col-md-9 col-md-offset-3 no-value edit-display-values">
+                    No Required Skills
+                </div>
+            </s:if>
+            <s:else>
+                <dl class="employee-guard-information edit-display-values">
+                    <dt class="col-md-3">Required Skills</dt>
+                    <dd class="col-md-9">
+                        <ul class="employee-guard-list skills">
+                            <s:iterator value="requiredSkills" var="operator_skill">
+                                <s:url action="skill" var="operator_skill_show_url">
+                                    <s:param name="id">${operator_skill.id}</s:param>
+                                </s:url>
+
+                                <li>
+                                    <a href="${operator_skill_show_url}"><span class="label label-pics">${operator_skill.name}</span></a>
+                                </li>
+                            </s:iterator>
+                        </ul>
+                    </dd>
+                </dl>
+            </s:else>
+        </div>
+    </section>
+</s:if>
+<s:else>
+    <section class="employee-guard-section edit-container" data-url="${site_skill_edit_url}">
+        <h1>
+            <div class="row">
+                <div class="col-md-9 col-xs-9">Site Skills</div>
+                <div class="col-md-3 col-xs-3 edit">
+                    <i class="icon-edit icon-large edit-toggle"></i>
+                </div>
+            </div>
+        </h1>
+
+        <div class="content">
+            <s:if test="requiredSkills.isEmpty()">
+                <div class="col-md-9 col-md-offset-3 no-value edit-display-values">
+                    No Required Skills
+                </div>
+            </s:if>
+            <s:else>
+                <dl class="employee-guard-information edit-display-values">
+                    <dt class="col-md-3">Required Skills</dt>
+                    <dd class="col-md-9">
+                        <ul class="employee-guard-list skills">
+                            <s:iterator value="requiredSkills" var="operator_skill">
+                                <s:url action="skill" var="operator_skill_show_url">
+                                    <s:param name="id">${operator_skill.id}</s:param>
+                                </s:url>
+
+                                <li>
+                                    <a href="${operator_skill_show_url}"><span class="label label-pics">${operator_skill.name}</span></a>
+                                </li>
+                            </s:iterator>
+                        </ul>
+                    </dd>
+                </dl>
+            </s:else>
+        </div>
+    </section>
 </s:else>
 
 <%-- Pagination --%>

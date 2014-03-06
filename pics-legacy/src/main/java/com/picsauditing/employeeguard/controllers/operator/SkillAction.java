@@ -10,10 +10,13 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.IntervalType;
 import com.picsauditing.employeeguard.forms.SearchForm;
+import com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
+import com.picsauditing.employeeguard.forms.operator.RequiredSiteSkillForm;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.validators.skill.OperatorSkillFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -25,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class SkillAction extends PicsRestActionSupport implements AjaxValidator {
 
@@ -38,10 +42,14 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	private SkillService skillService;
 	@Autowired
 	private OperatorSkillFormValidator operatorSkillFormValidator;
+	@Autowired
+	private RequiredSiteSkillFormConverter requiredSiteSkillFormConverter;
 
 	/* Forms */
 	@FormBinding({"operator_skill_create", "operator_skill_edit"})
 	private OperatorSkillForm operatorSkillForm;
+	@FormBinding("operator_required_skill_edit")
+	private RequiredSiteSkillForm requiredSiteSkillForm;
 	@FormBinding("operator_skill_search")
 	private SearchForm searchForm;
 
@@ -49,6 +57,10 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	private AccountSkill skill;
 	private List<AccountSkill> skills;
 	private List<Group> roles;
+
+	private List<AccountSkill> requiredSkills;
+	private Map<AccountModel, List<AccountSkill>> siteSkills;
+	private List<AccountSkill> corporateSkills;
 
 	/* Pages */
 	public String index() {
@@ -61,6 +73,13 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 			skills = skillService.getSkillsForAccounts(accountIds);
 		}
 
+		requiredSkills = skillService.getRequiredSkillsForSite(permissions.getAccountId());
+
+		if (permissions.isCorporate()) {
+			siteSkills = skillService.getSiteRequiredSkills(permissions.getAccountId());
+		}
+
+		Collections.sort(requiredSkills);
 		Collections.sort(skills);
 
 		return LIST;
@@ -119,12 +138,30 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		return redirectToList();
 	}
 
+	public String editRequiredSkillsSection() {
+		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
+		corporateSkills = skillService.getSkillsForAccounts(corporateIds);
+		requiredSkills = skillService.getRequiredSkillsForSite(permissions.getAccountId());
+
+		Collections.sort(corporateSkills);
+		Collections.sort(requiredSkills);
+
+		return "required-skills";
+	}
+
 	public String update() throws Exception {
 		int accountId = permissions.getAccountId();
 		skill = operatorSkillForm.buildAccountSkill(NumberUtils.toInt(id), accountId);
 		skill = skillService.update(skill, id, accountId, permissions.getUserId());
 
 		return setUrlForRedirect("/employee-guard/operators/skill/" + skill.getId());
+	}
+
+	public String updateRequiredSkills() throws Exception {
+		List<AccountSkill> requiredSkills = requiredSiteSkillFormConverter.convert(requiredSiteSkillForm);
+		skillService.setRequiredSkillsForSite(requiredSkills, id, permissions.getAppUserID());
+
+		return setUrlForRedirect("/employee-guard/operators/skill");
 	}
 
 	public String delete() throws Exception {
@@ -161,6 +198,14 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		this.operatorSkillForm = operatorSkillForm;
 	}
 
+	public RequiredSiteSkillForm getRequiredSiteSkillForm() {
+		return requiredSiteSkillForm;
+	}
+
+	public void setRequiredSiteSkillForm(RequiredSiteSkillForm requiredSiteSkillForm) {
+		this.requiredSiteSkillForm = requiredSiteSkillForm;
+	}
+
 	public SearchForm getSearchForm() {
 		return searchForm;
 	}
@@ -183,7 +228,22 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		return roles;
 	}
 
+	/* Site / Corporate required skills */
+
+	public List<AccountSkill> getRequiredSkills() {
+		return requiredSkills;
+	}
+
+	public Map<AccountModel, List<AccountSkill>> getSiteSkills() {
+		return siteSkills;
+	}
+
+	public List<AccountSkill> getCorporateSkills() {
+		return corporateSkills;
+	}
+
 	public IntervalType[] getIntervalTypes() {
 		return IntervalType.getDisplayableOptions();
 	}
+
 }

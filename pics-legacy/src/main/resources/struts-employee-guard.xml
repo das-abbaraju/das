@@ -63,6 +63,10 @@
         </action>
 
         <!-- Skill -->
+        <action name="skills/site/{id}" class="com.picsauditing.employeeguard.controllers.operator.SkillAction">
+            <result name="required-skills">/struts/employee-guard/operator/_required-skills-form.jsp</result>
+        </action>
+
         <action name="skill" class="com.picsauditing.employeeguard.controllers.operator.SkillAction">
             <result name="create">/struts/employee-guard/operator/skill/create.jsp</result>
             <result name="create-form">/struts/employee-guard/operator/skill/_create-form.jsp</result>
