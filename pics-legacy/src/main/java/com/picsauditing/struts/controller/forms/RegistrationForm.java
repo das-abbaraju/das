@@ -5,6 +5,8 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
+import com.picsauditing.struts.validator.constraints.UniqueContractorName;
+import com.picsauditing.struts.validator.constraints.UniqueUserName;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -16,9 +18,9 @@ import java.util.Locale;
 
 public class RegistrationForm {
     private static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>`\"].*";
-    public static final String USERNAME_REGEX = "[\\w+._@-]+";
+    private static final String USERNAME_REGEX = "[\\w+._@-]+";
     private static final int MAX_STRING_LENGTH_50 = 50;
-    public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
+    private static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
 
 
     private AccountStatus status = AccountStatus.Pending;
@@ -33,12 +35,14 @@ public class RegistrationForm {
     private String countrySubdivision;
 
 
+    @NotBlank
+    @UniqueContractorName
     private String businessName;
 
     @NotBlank
     @Length(max = MAX_STRING_LENGTH_50)
     @Pattern(regexp = USERNAME_REGEX)
-    //TODO - isUserNameTake - appUserDAO.duplicateUsername(username, appUserID)
+    @UniqueUserName
     private String username;
 
     @NotBlank
