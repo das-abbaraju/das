@@ -86,6 +86,6 @@ case "$1" in
 		load_databases
 	;;
 	*)
-		$ECHO "Please enter an argument $0 { create_database | create_users | load_databases }"
+		$ECHO "Please enter an argument $0 { create_databases | create_users | load_databases }"
 esac
 exit $?
