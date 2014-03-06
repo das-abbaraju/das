@@ -64620,16 +64620,29 @@ angular.module('admin-projects', [])
 });
 ;angular.module('PICS.employeeguard')
 
-.factory('SiteDashboard', function($resource, $routeParams) {
+.factory('SiteResource', function($resource, $routeParams) {
     return $resource('/employee-guard/operators/summary');
 });;angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteDashboard, AnimatedArcChart) {
-    SiteDashboard.get().$promise.then(onSuccess, onError);
+.factory('Site', function () {
+    var Model = function (data) {
+        this.data = data;
+    };
 
-    function onSuccess(result) {
-        $scope.site = result;
-        $scope.formatChartData(result);
+    Model.prototype.getData = function () {
+        return this.data;
+    };
+
+    return Model;
+});;angular.module('PICS.employeeguard')
+
+.controller('operatorDashboardCtrl', function ($scope, SiteResource, Site) {
+    $scope.dataSrc = SiteResource.get().$promise;
+
+    SiteResource.get().$promise.then(onSuccess, onError);
+
+    function onSuccess(data) {
+        $scope.site = data;
     }
 
     function onError(error) {
@@ -64660,22 +64673,6 @@ angular.module('admin-projects', [])
         };
 
         return progress_bar;
-    };
-
-    $scope.formatChartData = function (result) {
-        var data = [{
-                        amount: $scope.site.completed + $scope.site.pending,
-                        color: '#33b679'
-                    },{
-                        amount: $scope.site.expiring,
-                        color: '#f4b400'
-                    },{
-                        amount: $scope.site.expired,
-                        color: '#e74c3c'
-                    }];
-        var chart = new AnimatedArcChart(data);
-
-        chart.drawChart('.assignment-chart', 420, 200);
     };
 });;angular.module('PICS.employeeguard')
 
@@ -64894,6 +64891,33 @@ angular.module('admin-projects', [])
             scope.progress = scope.values();
         },
         templateUrl: '/angular/src/common/directives/stacked-progress-bar/_stacked-progress-bar.tpl.html'
+    };
+});;angular.module('PICS.directives')
+
+.directive('chart', function (AnimatedArcChart) {
+    return {
+        restrict: 'E',
+        scope: {
+            datasrc: '=',
+            width: '@',
+            height: '@',
+            colors: "="
+        },
+        link: function (scope, element) {
+            scope.datasrc.then(onSuccess, onError);
+
+            function onSuccess(data) {
+                var chartData = [data.completed + data.pending, data.expiring, data.expired],
+                    chart = new AnimatedArcChart(chartData);
+
+                chart.draw(element[0], scope.width, scope.height, scope.colors);
+            }
+
+            function onError(error) {
+                console.log(error);
+            }
+
+        }
     };
 });;(function ($) {
     PICS.define('layout.menu.Menu', {
@@ -65342,9 +65366,10 @@ PICS.define('widget.TableStripe', {
         return this.data;
     };
 
-    chart.prototype.drawChart = function (element, width, height) {
+    chart.prototype.draw = function (element, width, height, colors) {
         var arcStartAngle = -0.5 * Math.PI,
-            arcEndAngle = 0.5 * Math.PI;
+            arcEndAngle = 0.5 * Math.PI,
+            data = this.getData();
 
         var createArc = d3.svg.arc()
             .outerRadius(height)
@@ -65354,7 +65379,7 @@ PICS.define('widget.TableStripe', {
             .sort(null)
             .startAngle(arcStartAngle)
             .endAngle(arcEndAngle)
-            .value(function(d) { return d.amount; });
+            .value(function(d) { return d; });
 
 
         var chart = d3.select(element)
@@ -65365,11 +65390,11 @@ PICS.define('widget.TableStripe', {
                         .attr('transform', 'translate(' + width/2 + ',' + height + ')');
 
         chart.selectAll('.arc')
-            .data(pie(this.data))
+            .data(pie(data))
             .enter()
             .append('g')
             .append('path')
-            .attr('fill', function(d, i) { return d.data.color; })
+            .attr('fill', function(d, i) { return colors[i]; })
             .transition()
             .duration(1500)
             .attrTween('d', animatePie);

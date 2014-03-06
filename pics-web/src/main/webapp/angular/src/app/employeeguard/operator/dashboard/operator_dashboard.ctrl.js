@@ -1,11 +1,12 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteDashboard, AnimatedArcChart) {
-    SiteDashboard.get().$promise.then(onSuccess, onError);
+.controller('operatorDashboardCtrl', function ($scope, SiteResource, Site) {
+    $scope.dataSrc = SiteResource.get().$promise;
 
-    function onSuccess(result) {
-        $scope.site = result;
-        $scope.formatChartData(result);
+    SiteResource.get().$promise.then(onSuccess, onError);
+
+    function onSuccess(data) {
+        $scope.site = data;
     }
 
     function onError(error) {
@@ -36,21 +37,5 @@ angular.module('PICS.employeeguard')
         };
 
         return progress_bar;
-    };
-
-    $scope.formatChartData = function (result) {
-        var data = [{
-                        amount: $scope.site.completed + $scope.site.pending,
-                        color: '#33b679'
-                    },{
-                        amount: $scope.site.expiring,
-                        color: '#f4b400'
-                    },{
-                        amount: $scope.site.expired,
-                        color: '#e74c3c'
-                    }];
-        var chart = new AnimatedArcChart(data);
-
-        chart.drawChart('.assignment-chart', 420, 200);
     };
 });

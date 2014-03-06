@@ -9,9 +9,10 @@ angular.module('PICS.charts', [])
         return this.data;
     };
 
-    chart.prototype.drawChart = function (element, width, height) {
+    chart.prototype.draw = function (element, width, height, colors) {
         var arcStartAngle = -0.5 * Math.PI,
-            arcEndAngle = 0.5 * Math.PI;
+            arcEndAngle = 0.5 * Math.PI,
+            data = this.getData();
 
         var createArc = d3.svg.arc()
             .outerRadius(height)
@@ -21,7 +22,7 @@ angular.module('PICS.charts', [])
             .sort(null)
             .startAngle(arcStartAngle)
             .endAngle(arcEndAngle)
-            .value(function(d) { return d.amount; });
+            .value(function(d) { return d; });
 
 
         var chart = d3.select(element)
@@ -32,11 +33,11 @@ angular.module('PICS.charts', [])
                         .attr('transform', 'translate(' + width/2 + ',' + height + ')');
 
         chart.selectAll('.arc')
-            .data(pie(this.data))
+            .data(pie(data))
             .enter()
             .append('g')
             .append('path')
-            .attr('fill', function(d, i) { return d.data.color; })
+            .attr('fill', function(d, i) { return colors[i]; })
             .transition()
             .duration(1500)
             .attrTween('d', animatePie);
