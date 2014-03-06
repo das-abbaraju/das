@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ProfileService implements EntityService<Profile, Integer> {
+public class ProfileEntityService implements EntityService<Profile, Integer> {
 
 	@Autowired
 	private ProfileDAO profileDAO;

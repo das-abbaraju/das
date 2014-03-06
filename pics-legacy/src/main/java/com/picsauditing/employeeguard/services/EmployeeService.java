@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.*;
 
+@Deprecated
 public class EmployeeService {
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 
@@ -74,12 +75,14 @@ public class EmployeeService {
 		return employeeEntityService.getEmployeesByProjects(projects);
 	}
 
+	@Deprecated
 	public List<Employee> getEmployeesAssignedToSite(final int accountId, final int siteId) {
 		return getEmployeesAssignedToSite(Arrays.asList(accountId), siteId);
 	}
 
+	@Deprecated
 	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
-		return employeeDAO.findEmployeesAssignedToSite(contractorIds, siteId);
+		return employeeEntityService.getEmployeesAssignedToSite(contractorIds, siteId);
 	}
 
 	public Map<Integer, Employee> getAccountToEmployeeMapForEmployeesAssignedToSiteByEmployeeProfile(
@@ -99,8 +102,8 @@ public class EmployeeService {
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteByEmployeeProfile(final Collection<Integer> contractorIds,
-																	  final int siteId,
-																	  final Employee employee) {
+	                                                                  final int siteId,
+	                                                                  final Employee employee) {
 		if (employee.getProfile() == null) {
 			return Arrays.asList(employee);
 		}
@@ -109,7 +112,7 @@ public class EmployeeService {
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
-														 final Role siteRole, final Role corporateRole) {
+	                                                     final Role siteRole, final Role corporateRole) {
 		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
 	}
 

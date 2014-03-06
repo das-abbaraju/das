@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 
-public class GroupService implements EntityService<Group, Integer>, Searchable<Group> {
+public class GroupEntityService implements EntityService<Group, Integer>, Searchable<Group> {
 
 	@Autowired
 	private AccountGroupDAO accountGroupDAO;

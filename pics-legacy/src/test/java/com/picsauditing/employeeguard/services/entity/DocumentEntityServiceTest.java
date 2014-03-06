@@ -16,25 +16,25 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DocumentServiceTest {
+public class DocumentEntityServiceTest {
 
-	private DocumentService documentService;
+	private DocumentEntityService documentEntityService;
 
 	@Mock
 	private ProfileDocumentDAO documentDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		documentService = new DocumentService();
+		documentEntityService = new DocumentEntityService();
 
 		MockitoAnnotations.initMocks(this);
 
-		org.mockito.internal.util.reflection.Whitebox.setInternalState(documentService, "documentDAO", documentDAO);
+		org.mockito.internal.util.reflection.Whitebox.setInternalState(documentEntityService, "documentDAO", documentDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
-		documentService.find(null);
+		documentEntityService.find(null);
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class DocumentServiceTest {
 
 		when(documentDAO.find(expected.getId())).thenReturn(expected);
 
-		ProfileDocument result = documentService.find(expected.getId());
+		ProfileDocument result = documentEntityService.find(expected.getId());
 
 		assertNotNull(result);
 		assertEquals(expected.getId(), result.getId());
@@ -51,11 +51,11 @@ public class DocumentServiceTest {
 
 	@Test
 	public void testSearch_NullEmpty() throws Exception {
-		List<ProfileDocument> nullSearch = documentService.search(null, ACCOUNT_ID);
+		List<ProfileDocument> nullSearch = documentEntityService.search(null, ACCOUNT_ID);
 		assertNotNull(nullSearch);
 		assertTrue(nullSearch.isEmpty());
 
-		List<ProfileDocument> emptySearch = documentService.search(" ", ACCOUNT_ID);
+		List<ProfileDocument> emptySearch = documentEntityService.search(" ", ACCOUNT_ID);
 		assertNotNull(emptySearch);
 		assertTrue(emptySearch.isEmpty());
 	}
@@ -64,7 +64,7 @@ public class DocumentServiceTest {
 	public void testSearch() throws Exception {
 		when(documentDAO.search(SEARCH_TERM, ACCOUNT_ID)).thenReturn(Arrays.asList(buildFakeProfileDocument()));
 
-		List<ProfileDocument> result = documentService.search(SEARCH_TERM, ACCOUNT_ID);
+		List<ProfileDocument> result = documentEntityService.search(SEARCH_TERM, ACCOUNT_ID);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
@@ -77,7 +77,7 @@ public class DocumentServiceTest {
 
 		when(documentDAO.save(fakeDocument)).thenReturn(fakeDocument);
 
-		ProfileDocument result = documentService.save(fakeDocument, CREATED);
+		ProfileDocument result = documentEntityService.save(fakeDocument, CREATED);
 
 		verify(documentDAO).save(fakeDocument);
 		assertEquals(USER_ID, result.getCreatedBy());
@@ -95,7 +95,7 @@ public class DocumentServiceTest {
 		when(documentDAO.find(updatedDocument.getId())).thenReturn(updatedDocument);
 		when(documentDAO.save(updatedDocument)).thenReturn(updatedDocument);
 
-		ProfileDocument result = documentService.update(fakeDocument, UPDATED);
+		ProfileDocument result = documentEntityService.update(fakeDocument, UPDATED);
 
 		verify(documentDAO).find(updatedDocument.getId());
 		verify(documentDAO).save(updatedDocument);
@@ -109,7 +109,7 @@ public class DocumentServiceTest {
 	public void testDelete() throws Exception {
 		ProfileDocument fakeDocument = buildFakeProfileDocument();
 
-		documentService.delete(fakeDocument);
+		documentEntityService.delete(fakeDocument);
 
 		verify(documentDAO).delete(fakeDocument);
 	}
@@ -120,7 +120,7 @@ public class DocumentServiceTest {
 
 		when(documentDAO.find(fakeDocument.getId())).thenReturn(fakeDocument);
 
-		documentService.deleteById(fakeDocument.getId());
+		documentEntityService.deleteById(fakeDocument.getId());
 
 		verify(documentDAO).delete(fakeDocument);
 	}

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.entities.builders;
 
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.entities.ProjectRole;
 import com.picsauditing.employeeguard.entities.ProjectSkill;
 
@@ -11,6 +12,11 @@ public class ProjectBuilder extends AbstractBaseEntityBuilder<Project, ProjectBu
 	public ProjectBuilder() {
 		this.entity = new Project();
 		that = this;
+	}
+
+	public ProjectBuilder accountId(int accountId) {
+		entity.setAccountId(accountId);
+		return this;
 	}
 
 	public ProjectBuilder name(String name) {
@@ -35,8 +41,8 @@ public class ProjectBuilder extends AbstractBaseEntityBuilder<Project, ProjectBu
 		return this;
 	}
 
-	public ProjectBuilder accountId(int accountId) {
-		entity.setAccountId(accountId);
+	public ProjectBuilder companies(List<ProjectCompany> companies) {
+		entity.setCompanies(companies);
 		return this;
 	}
 

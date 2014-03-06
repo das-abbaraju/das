@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
@@ -44,9 +45,8 @@ public class SkillService {
 	private RoleDAO roleDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
-
 	@Autowired
-	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
+	private SkillEntityService skillEntityService;
 
 	@Deprecated
 	public AccountSkill getSkill(final String id) {

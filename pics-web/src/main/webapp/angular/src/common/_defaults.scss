@@ -77,3 +77,35 @@ a:focus {
     background-color: $danger_tint;
     color: $danger_light;
 }
+
+.progress-bar-success {
+    background-color: $success_light;
+    color: $success_tint;
+}
+
+.progress-bar-warning {
+    background-color: $warning_med;
+    color: $warning_tint;
+}
+
+.progress-bar-danger {
+    background-color: $danger_light;
+    color: $danger_tint;
+}
+
+/*.progress-bar {
+    &.success {
+        background-color: $success_light;
+        color: $success_tint;
+    }
+
+    &.warning {
+        background-color: $warning_med;
+        color: $warning_tint;
+    }
+
+    &.danger {
+        background-color: $danger_light;
+        color: $danger_tint;
+    }
+}*/

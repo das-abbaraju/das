@@ -13093,6 +13093,40 @@ a:focus {
   color: #e74c3c;
 }
 
+/* line 81, ../src/common/_defaults.scss */
+.progress-bar-success {
+  background-color: #33b679;
+  color: #d6f0e4;
+}
+
+/* line 86, ../src/common/_defaults.scss */
+.progress-bar-warning {
+  background-color: #f4b400;
+  color: #fef5d9;
+}
+
+/* line 91, ../src/common/_defaults.scss */
+.progress-bar-danger {
+  background-color: #e74c3c;
+  color: #fadbd8;
+}
+
+/*.progress-bar {
+    &.success {
+        background-color: $success_light;
+        color: $success_tint;
+    }
+
+    &.warning {
+        background-color: $warning_med;
+        color: $warning_tint;
+    }
+
+    &.danger {
+        background-color: $danger_light;
+        color: $danger_tint;
+    }
+}*/
 /* line 1, ../src/common/components/_alert.scss */
 .alert {
   border: none;
@@ -16004,6 +16038,67 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 /* line 43, ../src/app/employeeguard/operator/employee/_employee.scss */
 .operator-employee-page .employee-info i.danger, .operator-employee-page .employee-info i.warning, .operator-employee-page .employee-info i.success {
   background-color: transparent;
+}
+
+/* line 3, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .nav-stacked {
+  margin-bottom: 20px;
+}
+/* line 7, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .current-assignments {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: left;
+}
+/* line 12, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .current-assignments .row {
+  margin-bottom: 20px;
+}
+/* line 16, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .current-assignments .icon-user {
+  color: #73bbe8;
+}
+/* line 22, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .current-assignments .success,
+.operator-dashboard .current-assignments .warning,
+.operator-dashboard .current-assignments .danger {
+  background: transparent;
+}
+/* line 28, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .name {
+  font-weight: bold;
+}
+/* line 32, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .date {
+  color: #b3b3b3;
+  font-size: 12px;
+  margin-left: 20px;
+}
+/* line 38, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .location {
+  color: #808285;
+}
+/* line 42, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .row {
+  margin-bottom: 15px;
+}
+/* line 46, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .list-inline {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: right;
+}
+/* line 51, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .list-inline li {
+  margin-right: 10px;
+}
+/* line 56, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .list-inline li.success, .operator-dashboard .project-assignments .list-inline li.warning, .operator-dashboard .project-assignments .list-inline li.danger {
+  background: transparent;
+}
+/* line 60, ../src/app/employeeguard/operator/dashboard/_dashboard.scss */
+.operator-dashboard .project-assignments .list-inline li i {
+  margin-right: 10px;
 }
 
 /* line 2, ../src/app/employeeguard/operator/role/_role.scss */

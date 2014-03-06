@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 
-public class DocumentService implements EntityService<ProfileDocument, Integer>, Searchable<ProfileDocument> {
+public class DocumentEntityService implements EntityService<ProfileDocument, Integer>, Searchable<ProfileDocument> {
 
 	@Autowired
 	private ProfileDocumentDAO documentDAO;

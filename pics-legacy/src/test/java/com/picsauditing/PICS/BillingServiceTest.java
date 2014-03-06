@@ -1,7 +1,10 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.*;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;

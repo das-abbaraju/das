@@ -9,5 +9,8 @@ angular.module('PICS.employeeguard', [
     $routeProvider
         .when('/employee-guard/operators/employees/:id', {
             templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
         });
 });

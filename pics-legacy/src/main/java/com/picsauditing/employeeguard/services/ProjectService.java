@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.operator.ProjectCompaniesForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
@@ -34,6 +35,8 @@ public class ProjectService {
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private ProjectDAO projectDAO;
+	@Autowired
+	private ProjectEntityService projectEntityService;
 	@Autowired
 	private ProjectRoleDAO projectRoleDAO;
 	@Autowired
@@ -313,21 +316,19 @@ public class ProjectService {
 		return ListUtil.removeDuplicatesAndSort(requiredSkills);
 	}
 
+	@Deprecated
 	public List<Project> getProjectsForEmployee(final Employee employee) {
-		return projectDAO.findByEmployee(employee);
+		return projectEntityService.getProjectsForEmployee(employee);
 	}
 
+	@Deprecated
 	public Project getProjectByRoleAndAccount(final String roleId, final int accountId) {
-		return projectDAO.findProjectByRoleAndAccount(NumberUtils.toInt(roleId), accountId);
+		return projectEntityService.getProjectByRoleAndAccount(roleId, accountId);
 	}
 
+	@Deprecated
 	public Set<Integer> getContractorIdsForProject(final Project project) {
-		Set<Integer> contractorIds = new HashSet<>();
-		for (ProjectCompany projectCompany : project.getCompanies()) {
-			contractorIds.add(projectCompany.getAccountId());
-		}
-
-		return contractorIds;
+		return projectEntityService.getContractorIdsForProject(project);
 	}
 
 	public Map<Project, Set<Role>> getProjectRolesForEmployee(final int siteId, final Employee employee) {

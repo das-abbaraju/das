@@ -1,16 +1,7 @@
 package com.picsauditing.actions.report;
 
-import java.util.List;
-
+import com.intuit.developer.adaptors.*;
 import com.picsauditing.PICS.BillingService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.intuit.developer.adaptors.GetContractorsForUpdate;
-import com.intuit.developer.adaptors.GetInvoicesForUpdate;
-import com.intuit.developer.adaptors.GetPaymentsForUpdate;
-import com.intuit.developer.adaptors.InsertContractors;
-import com.intuit.developer.adaptors.InsertInvoices;
-import com.intuit.developer.adaptors.InsertPayments;
 import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -18,11 +9,10 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportQBSyncList extends PicsActionSupport {

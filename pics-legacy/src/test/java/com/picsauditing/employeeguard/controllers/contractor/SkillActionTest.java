@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
 import com.picsauditing.jpa.entities.Account;
@@ -41,7 +42,7 @@ public class SkillActionTest extends PicsActionTest {
 	@Mock
 	private EmployeeService employeeService;
 	@Mock
-	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
+	private SkillEntityService skillEntityService;
 
 	@Before
 	public void setUp() throws Exception {

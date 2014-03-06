@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 public class StatusCalculatorServiceTest {
 	public static final int CONTRACTOR_ID = 1234;
 	public static final int CORPORATE_ID = 45;
+	public static final int SITE_ID = 17;
 
 	private StatusCalculatorService service;
 
@@ -139,7 +140,7 @@ public class StatusCalculatorServiceTest {
 	}
 
 	private List<AccountSkillEmployee> buildFakeAccountSkillEmployees(final List<Employee> employees,
-																	  final List<AccountSkill> skills) {
+	                                                                  final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillEmployeeBuilder()
 						.accountSkill(skills.get(0))
