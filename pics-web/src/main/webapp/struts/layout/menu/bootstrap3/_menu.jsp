@@ -3,9 +3,9 @@
 
 <s:set var="menu_size" value="menu.children.size()" />
 <s:set var="last_menu_index" value="menu.children.size() - 1" />
+<s:set var="isContractor" value="permissions.contractor" />
 
 <s:url action="Search" var="search_url" />
-<s:url namespace="/" action="ContactUs" var="contact_us_url" />
 
 <div id="primary_navigation" class= "navbar-fixed-top bootstrap3">
     <div id="ie8_primary_navigation_background"></div>

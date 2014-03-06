@@ -8,6 +8,8 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.service.email.EmailBuilderService;
 import com.picsauditing.util.EmailAddressUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
@@ -23,6 +25,7 @@ public class ContractorEmailService {
 	private EmailSender emailSender;
 	@Autowired
 	private EmailBuilderService emailBuilderService;
+    private Logger logger = LoggerFactory.getLogger(ContractorEmailService.class);
 
 	public EmailQueue generateContractorNotificationEmail(ContractorAccount contractor, User user, Permissions permissions) throws Exception {
         EmailBuilder emailBuilder = new EmailBuilder();
@@ -60,6 +63,10 @@ public class ContractorEmailService {
 
 	private EmailQueue buildContactYourCSREmail(String subject, String message, User fromContractorUser, String toCsrEmail) throws IOException, EmailBuildErrorException, MessagingException {
 		EmailTemplate emailTemplate = templateDAO.find(EmailTemplate.CONTACT_YOUR_CSR_EMAIL_TEMPLATE);
+
+        if (emailTemplate == null) {
+            logger.error("Unable to find template ID: {}", EmailTemplate.CONTACT_YOUR_CSR_EMAIL_TEMPLATE);
+        }
 
 	    Map<String, Object> tokenMap = new HashMap<>();
 		tokenMap.put("contractor", fromContractorUser.getAccount());
