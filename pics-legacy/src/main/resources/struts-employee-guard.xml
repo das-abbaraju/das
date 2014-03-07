@@ -93,6 +93,14 @@
         </action>
     </package>
 
+    <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard" namespace="/employee-guard/corporates">
+        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="summary">
+        </action>
+
+        <action name="sites" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="list">
+        </action>
+    </package>
+
     <!-- Contractor -->
     <package name="com.picsauditing.employee-guard.contractor" extends="com.picsauditing.employee-guard"
              namespace="/employee-guard/contractor">

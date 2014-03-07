@@ -1,31 +1,15 @@
 package com.picsauditing.employeeguard.viewmodel;
 
-public class IdNameTitleModel implements Comparable<IdNameTitleModel> {
-	private final String id;
-	private final String name;
+public class IdNameTitleModel extends IdNameModel {
 	private final String title;
 
 	public IdNameTitleModel(Builder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
+		super(builder.id, builder.name);
 		this.title = builder.title;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String getTitle() {
 		return title;
-	}
-
-	@Override
-	public int compareTo(IdNameTitleModel that) {
-		return this.name.compareToIgnoreCase(that.name);
 	}
 
 	public static class Builder {

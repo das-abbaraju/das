@@ -134,13 +134,13 @@ public class AccountService {
 	}
 
 	public List<AccountModel> getChildOperators(final List<Integer> accountIds) {
-		List<OperatorAccount> operators = operatorDAO.findOperators(accountIds);
-		if (CollectionUtils.isEmpty(operators)) {
+		List<OperatorAccount> corporates = operatorDAO.findOperators(accountIds);
+		if (CollectionUtils.isEmpty(corporates)) {
 			return Collections.emptyList();
 		}
 
 		Set<OperatorAccount> childAccounts = new HashSet<>();
-		for (OperatorAccount corporate : operators) {
+		for (OperatorAccount corporate : corporates) {
 			List<OperatorAccount> childOperators = new ArrayList<>(corporate.getChildOperators());
 			childAccounts.addAll(billingService.filterEmployeeGUARDAccounts(childOperators));
 		}
