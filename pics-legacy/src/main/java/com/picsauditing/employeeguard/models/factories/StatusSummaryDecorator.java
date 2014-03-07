@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.models.StatusSummarizable;
-import com.picsauditing.employeeguard.models.StatusSummary;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
 import java.util.Collection;
@@ -33,14 +32,10 @@ class StatusSummaryDecorator {
 	}
 
 	private static <M extends StatusSummarizable> M addStatusSummaryFromCounts(final M model, final Map<SkillStatus, Integer> statusCountMap) {
-		StatusSummary statusSummary = new StatusSummary();
-
-		statusSummary.setCompleted(statusCountMap.get(SkillStatus.Complete));
-		statusSummary.setPending(statusCountMap.get(SkillStatus.Pending));
-		statusSummary.setExpiring(statusCountMap.get(SkillStatus.Expiring));
-		statusSummary.setExpired(statusCountMap.get(SkillStatus.Expired));
-
-		model.setStatus(statusSummary);
+		model.setCompleted(statusCountMap.get(SkillStatus.Complete));
+		model.setPending(statusCountMap.get(SkillStatus.Pending));
+		model.setExpiring(statusCountMap.get(SkillStatus.Expiring));
+		model.setExpired(statusCountMap.get(SkillStatus.Expired));
 
 		return model;
 	}
