@@ -41,8 +41,10 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDate;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 

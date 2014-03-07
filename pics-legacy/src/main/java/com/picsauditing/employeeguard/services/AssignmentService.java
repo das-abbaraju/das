@@ -112,4 +112,9 @@ public class AssignmentService {
 		return Utilities.mergeValuesOfMapOfSets(employeeProjectRoles, employeeRoles);
 	}
 
+	public Map<Project, Set<Employee>> getEmployeesAssignedToProjects(final int siteId) {
+		List<Project> projects = projectEntityService.getAllProjectsForSite(siteId);
+		return employeeEntityService.getEmployeesByProject(projects);
+	}
+
 }

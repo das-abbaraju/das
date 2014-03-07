@@ -1,43 +1,12 @@
 package com.picsauditing.employeeguard.models;
 
-import java.util.List;
+public class ProjectAssignmentModel extends ProjectModel implements StatusSummarizable {
 
-public class OperatorSiteAssignmentStatus implements StatusSummarizable {
-
-	private int id;
-	private String name;
-	private int employees;
-
+	// private StatusSummary status;
 	private int completed;
 	private int pending;
 	private int expiring;
 	private int expired;
-
-	private List<ProjectAssignmentModel> projects;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getEmployees() {
-		return employees;
-	}
-
-	public void setEmployees(int employees) {
-		this.employees = employees;
-	}
 
 	@Override
 	public int getCompleted() {
@@ -77,13 +46,5 @@ public class OperatorSiteAssignmentStatus implements StatusSummarizable {
 	@Override
 	public void setExpired(int expired) {
 		this.expired = expired;
-	}
-
-	public List<ProjectAssignmentModel> getProjects() {
-		return projects;
-	}
-
-	public void setProjects(List<ProjectAssignmentModel> projects) {
-		this.projects = projects;
 	}
 }

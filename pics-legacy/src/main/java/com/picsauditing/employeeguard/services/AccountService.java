@@ -6,7 +6,6 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.services.external.BillingService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
@@ -51,7 +50,7 @@ public class AccountService {
 
 	public List<AccountModel> getTopmostCorporateAccounts(final int accountId) {
 		if (accountId <= 0) {
-			return Collections.emptyList();
+			throw new IllegalArgumentException("Invalid account ID: " + accountId);
 		}
 
 		List<OperatorAccount> employeeGUARDCorporates = getEmployeeGUARDCorporates(Arrays.asList(accountId));
@@ -79,7 +78,7 @@ public class AccountService {
 
 	public List<Integer> getTopmostCorporateAccountIds(final int accountId) {
 		if (accountId <= 0) {
-			return Collections.emptyList();
+			throw new IllegalArgumentException("Invalid account ID: " + accountId);
 		}
 
 		return extractIdFromAccountModel(getEmployeeGUARDCorporates(Arrays.asList(accountId)));
@@ -87,36 +86,33 @@ public class AccountService {
 
 	private List<OperatorAccount> getEmployeeGUARDCorporates(Collection<Integer> accountIds) {
 		List<OperatorAccount> operators = operatorDAO.findOperators(new ArrayList<>(accountIds));
-		if (CollectionUtils.isEmpty(operators)) {
-			return Collections.emptyList();
-		}
 
-		ArrayList<OperatorAccount> topDogs = new ArrayList<>();
 		ArrayList<Integer> visited = new ArrayList<>();
 
 		Set<OperatorAccount> corporates = new HashSet<>();
 		for (OperatorAccount operator : operators) {
-			List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, topDogs, visited);
+			List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, visited);
 			corporates.addAll(billingService.filterEmployeeGUARDAccounts(topmostCorporates));
 		}
 
 		return new ArrayList<>(corporates);
 	}
 
-	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<OperatorAccount> topDogs, List<Integer> visited) {
+	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<Integer> visited) {
+		List<OperatorAccount> corporates = new ArrayList<>();
 		if (onlyHasPicsConsortiumOrNoParents(operator)) {
 			visited.add(operator.getId());
-			topDogs.add(operator);
+			corporates.add(operator);
 		} else {
 			for (OperatorAccount parent : operator.getParentOperators()) {
 				if (!parent.isInPicsConsortium() && !visited.contains(parent.getId())) {
 					visited.add(parent.getId());
-					getTopmostCorporates(parent, topDogs, visited);
+					corporates.addAll(getTopmostCorporates(parent, visited));
 				}
 			}
 		}
 
-		return topDogs;
+		return corporates;
 	}
 
 	private boolean onlyHasPicsConsortiumOrNoParents(OperatorAccount operator) {

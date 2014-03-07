@@ -83,6 +83,10 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Map<Role, Role> getSiteToCorporateRoles(final int siteId, final List<Integer> corporateIds) {
+		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+	}
+
 	/* All Search Methods */
 
 	@Override
