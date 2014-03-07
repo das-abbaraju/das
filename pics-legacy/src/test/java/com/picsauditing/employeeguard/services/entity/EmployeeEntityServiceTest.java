@@ -1,8 +1,9 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +11,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.*;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -25,6 +26,8 @@ public class EmployeeEntityServiceTest {
 
 	@Mock
 	private EmployeeDAO employeeDAO;
+	@Mock
+	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,6 +36,7 @@ public class EmployeeEntityServiceTest {
 		MockitoAnnotations.initMocks(this);
 
 		Whitebox.setInternalState(employeeEntityService, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(employeeEntityService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -48,6 +52,46 @@ public class EmployeeEntityServiceTest {
 
 		assertNotNull(employee);
 		assertEquals(ENTITY_ID, employee.getId());
+	}
+
+	@Test
+	public void testGetEmployeesByProject_NullArgument() {
+		Map<Project, Set<Employee>> result = employeeEntityService.getEmployeesByProject(null);
+
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testGetEmployeesByProject() {
+		List<ProjectRoleEmployee> fakeProjectRoleEmployees = buildFakeProjectRoleEmployees();
+		when(projectRoleEmployeeDAO.findByProjects(anyCollectionOf(Project.class))).thenReturn(fakeProjectRoleEmployees);
+
+		Map<Project, Set<Employee>> result = employeeEntityService.getEmployeesByProject(Arrays.asList(new Project()));
+
+		verifyTestGetEmployeesByProject(result);
+	}
+
+	private List<ProjectRoleEmployee> buildFakeProjectRoleEmployees() {
+		return Arrays.asList(
+				new ProjectRoleEmployeeBuilder()
+						.projectRole(new ProjectRoleBuilder()
+								.project(new ProjectBuilder().accountId(ACCOUNT_ID).name("Test Project").build())
+								.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Test Role").build())
+								.build())
+						.employee(new EmployeeBuilder().accountId(923).email("Tester@Test.com").build())
+						.build()
+		);
+	}
+
+	private void verifyTestGetEmployeesByProject(final Map<Project, Set<Employee>> result) {
+		assertEquals(1, result.size());
+
+		for (Project project : result.keySet()) {
+			assertEquals("Test Project", project.getName());
+			for (Employee employee : result.get(project)) {
+				assertEquals("Tester@Test.com", employee.getEmail());
+			}
+		}
 	}
 
 	@Test

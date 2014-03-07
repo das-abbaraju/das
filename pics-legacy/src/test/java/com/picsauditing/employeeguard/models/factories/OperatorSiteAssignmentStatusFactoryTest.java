@@ -1,12 +1,13 @@
 package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.models.OperatorSiteAssignmentStatus;
+import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -15,6 +16,9 @@ import static org.junit.Assert.assertNotNull;
 public class OperatorSiteAssignmentStatusFactoryTest {
 
 	public static final int ACCOUNT_ID = 234;
+	public static final int SITE_ID = 123;
+	public static final String SITE_NAME = "Site Name";
+
 	private OperatorSiteAssignmentStatusFactory factory;
 
 	@Before
@@ -24,40 +28,12 @@ public class OperatorSiteAssignmentStatusFactoryTest {
 
 	@Test
 	public void testCreate() throws Exception {
-		OperatorSiteAssignmentStatus site = factory.create(
-				123,
-				"Site Name",
-				new HashMap<Employee, SkillStatus>() {{
-					put(new EmployeeBuilder()
-							.firstName("1")
-							.lastName("Test")
-							.accountId(ACCOUNT_ID)
-							.email("1@test.com")
-							.slug("1")
-							.build(),
-							SkillStatus.Complete);
-					put(new EmployeeBuilder()
-							.firstName("2")
-							.lastName("Test")
-							.accountId(ACCOUNT_ID)
-							.email("2@test.com")
-							.slug("2")
-							.build(),
-							SkillStatus.Expiring);
-					put(new EmployeeBuilder()
-							.firstName("3")
-							.lastName("Test")
-							.accountId(ACCOUNT_ID)
-							.email("3@test.com")
-							.slug("3")
-							.build(),
-							SkillStatus.Expired);
-				}});
+		OperatorSiteAssignmentStatus site = factory.create(123, "Site Name", 4, new ArrayList<ProjectAssignmentModel>(),
+				new HashMap<Employee, SkillStatus>());
 
 		assertNotNull(site);
-		assertEquals(1, site.getCompleted());
-		assertEquals(1, site.getExpiring());
-		assertEquals(1, site.getExpired());
-		assertEquals(3, site.getEmployees());
+		assertEquals(SITE_ID, site.getId());
+		assertEquals(SITE_NAME, site.getName());
+		assertEquals(4, site.getEmployees());
 	}
 }

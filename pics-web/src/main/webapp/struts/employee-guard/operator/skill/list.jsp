@@ -142,7 +142,7 @@
                         <label class="label label-default">All Employees</label>
                     </s:if>
                     <s:else>
-                        <s:set name="operator_roles" value="#operatorSkill.groups"/>
+                        <s:set name="operator_roles" value="#operatorSkill.roles"/>
                         <s:include value="/struts/employee-guard/operator/role/_list.jsp"/>
                     </s:else>
                 </td>

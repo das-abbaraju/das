@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.ProjectDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
@@ -63,6 +64,10 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		}
 
 		return contractorIds;
+	}
+
+	public List<Project> getAllProjectsForSite(final int siteId) {
+		return projectDAO.findByAccount(siteId);
 	}
 
 	/* All search related methods */
