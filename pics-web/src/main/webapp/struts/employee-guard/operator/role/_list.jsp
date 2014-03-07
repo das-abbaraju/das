@@ -5,12 +5,12 @@
     <ul class="employee-guard-list roles">
         <s:iterator value="#operator_roles" var="operator_role">
             <s:url action="role" var="operator_role_show_url">
-                <s:param name="id">${operator_role.group.id}</s:param>
+                <s:param name="id">${operator_role.role.id}</s:param>
             </s:url>
 
             <li>
                 <a href="${operator_role_show_url}">
-                    <span class="label label-pics">${operator_role.group.name}</span>
+                    <span class="label label-pics">${operator_role.role.name}</span>
                 </a>
             </li>
         </s:iterator>
