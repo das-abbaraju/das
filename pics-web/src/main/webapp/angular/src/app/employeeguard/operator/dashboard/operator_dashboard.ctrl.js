@@ -1,6 +1,8 @@
 angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($rootScope, $scope, SiteResource, SiteList, SiteDetails) {
+    $scope.dataSrc = SiteResource.get().$promise;
+
     $scope.siteList = SiteList.query();
 
     $scope.siteList.$promise.then(checkForCorporateSites);
@@ -27,7 +29,6 @@ angular.module('PICS.employeeguard')
 
     $scope.getSiteInfo = function () {
         $scope.site = SiteDetails.get({id: $scope.operator_site});
-        // $rootScope.$broadcast('handleBroadcast');
         $scope.dataSrc = SiteDetails.get({id: $scope.operator_site}).$promise;
 
     };

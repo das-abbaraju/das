@@ -64621,6 +64621,8 @@ angular.module('admin-projects', [])
 ;angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($rootScope, $scope, SiteResource, SiteList, SiteDetails) {
+    $scope.dataSrc = SiteResource.get().$promise;
+
     $scope.siteList = SiteList.query();
 
     $scope.siteList.$promise.then(checkForCorporateSites);
@@ -64647,7 +64649,6 @@ angular.module('admin-projects', [])
 
     $scope.getSiteInfo = function () {
         $scope.site = SiteDetails.get({id: $scope.operator_site});
-        // $rootScope.$broadcast('handleBroadcast');
         $scope.dataSrc = SiteDetails.get({id: $scope.operator_site}).$promise;
 
     };
@@ -64684,13 +64685,11 @@ angular.module('admin-projects', [])
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteDetails', function($resource, $routeParams) {
-    // return $resource('/employee-guard/corporates/sites/:id');
-    return $resource('/angular/json/sites/:id.json');
+    return $resource('/employee-guard/corporates/sites/:id');
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteList', function($resource, $routeParams) {
-    // return $resource('/employee-guard/operators/sites');
-    return $resource('/angular/json/corp_dashboard_sites.json');
+    return $resource('/employee-guard/corporates/sites');
 });;angular.module('PICS.employeeguard')
 
 .controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Employee) {
