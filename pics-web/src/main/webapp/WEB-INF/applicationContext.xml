@@ -194,6 +194,7 @@
 	<bean id="RegistrationValidator" class="com.picsauditing.validator.RegistrationValidator" scope="prototype"/>
 	<bean id="RequestNewContractorValidator" class="com.picsauditing.validator.RequestNewContractorValidator" scope="prototype"/>
     <bean id="TaxIdValidatorFactory" class="com.picsauditing.validator.TaxIdValidatorFactory" />
+    <bean id="ValidatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
     <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
           scope="prototype"/>
