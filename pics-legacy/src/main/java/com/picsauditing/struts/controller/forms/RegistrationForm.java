@@ -7,7 +7,6 @@ import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
 import com.picsauditing.struts.validator.constraints.UniqueContractorName;
 import com.picsauditing.struts.validator.constraints.UniqueUserName;
-import com.sun.mail.handlers.message_rfc822;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -15,6 +14,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Locale;
+import java.util.TimeZone;
 
 
 public class RegistrationForm {
@@ -70,7 +70,7 @@ public class RegistrationForm {
     private String firstName;
 
     @NotNull(message = REQUIRED_KEY)
-    private String timeZone;
+    private TimeZone timeZone;
 
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
@@ -174,11 +174,11 @@ public class RegistrationForm {
         this.firstName = firstName;
     }
 
-    public String getTimeZone() {
+    public TimeZone getTimeZone() {
         return timeZone;
     }
 
-    public void setTimeZone(String timeZone) {
+    public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
 
@@ -272,18 +272,19 @@ public class RegistrationForm {
     public RegistrationSubmission createSubmission(RegistrationService service) {
         final RegistrationSubmission submission = service.newRegistration();
 
-        submission.setContractorName(this.getBusinessName());
-        submission.setUserName(this.getUsername());
-        submission.setPassword(this.getPassword());
-        submission.setUserFirstName(this.getFirstName());
-        submission.setUserLastName(this.getLastName());
-        submission.setEmail(this.getEmail());
-        submission.setAddress(this.getAddress());
-        submission.setZip(this.getZip());
-        submission.setCountryISO(this.getCountryISOCode());
-        submission.setPhoneNumber(this.getPhone());
-        submission.setTimeZone(this.getTimeZone());
-        submission.setVatID(this.getVatID());
+        submission.setContractorName(this.getBusinessName())
+            .setUserName(this.getUsername())
+            .setPassword(this.getPassword())
+            .setUserFirstName(this.getFirstName())
+            .setUserLastName(this.getLastName())
+            .setEmail(this.getEmail())
+            .setAddress(this.getAddress())
+            .setZip(this.getZip())
+            .setCountryISO(this.getCountryISOCode())
+            .setPhoneNumber(this.getPhone())
+            .setTimeZone(this.getTimeZone())
+            .setVatID(this.getVatID())
+            .setCountrySubdivision(this.getCountrySubdivision());
 
         return submission;
     }

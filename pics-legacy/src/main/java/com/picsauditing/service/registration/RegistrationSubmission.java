@@ -1,6 +1,9 @@
 package com.picsauditing.service.registration;
 
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 public class RegistrationSubmission {
     private final RegistrationService parentService;
     private String contractorName;
@@ -13,8 +16,10 @@ public class RegistrationSubmission {
     private String phoneNumber;
     private String zip;
     private String countryISO;
-    private String timeZone;
+    private TimeZone timeZone;
     private String vatID;
+    private String countrySubdivision;
+    private Locale locale;
 
     RegistrationSubmission (
             RegistrationService s
@@ -27,99 +32,130 @@ public class RegistrationSubmission {
     }
 
 
-    public void setContractorName(String contractorName) {
+    public RegistrationSubmission setContractorName(String contractorName) {
         this.contractorName = contractorName;
+        return this;
     }
 
     public String getContractorName() {
         return contractorName;
     }
 
-    public void setUserName(String userName) {
+    public RegistrationSubmission setUserName(String userName) {
         this.userName = userName;
+        return this;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setPassword(String password) {
+    public RegistrationSubmission setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setEmail(String email) {
+    public RegistrationSubmission setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setUserFirstName(String userFirstName) {
+    public RegistrationSubmission setUserFirstName(String userFirstName) {
         this.userFirstName = userFirstName;
+        return this;
     }
 
     public String getUserFirstName() {
         return userFirstName;
     }
 
-    public void setUserLastName(String userLastName) {
+    public RegistrationSubmission setUserLastName(String userLastName) {
         this.userLastName = userLastName;
+        return this;
     }
 
     public String getUserLastName() {
         return userLastName;
     }
 
-    public void setAddress(String address) {
+    public RegistrationSubmission setAddress(String address) {
         this.address = address;
+        return this;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public RegistrationSubmission setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
     }
 
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setZip(String zip) {
+    public RegistrationSubmission setZip(String zip) {
         this.zip = zip;
+        return this;
     }
 
     public String getZip() {
         return zip;
     }
 
-    public void setCountryISO(String countryISO) {
+    public RegistrationSubmission setCountryISO(String countryISO) {
         this.countryISO = countryISO;
+        return this;
     }
 
     public String getCountryISO() {
         return countryISO;
     }
 
-    public void setTimeZone(String timeZone) {
+    public RegistrationSubmission setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+        return this;
     }
 
-    public String getTimeZone() {
+    public TimeZone getTimeZone() {
         return timeZone;
     }
 
-    public void setVatID(String vatID) {
+    public RegistrationSubmission setVatID(String vatID) {
         this.vatID = vatID;
+        return this;
     }
 
     public String getVatID() {
         return vatID;
     }
+
+    public RegistrationSubmission setCountrySubdivision(String countrySubdivision) {
+        this.countrySubdivision = countrySubdivision;
+        return this;
+    }
+
+    public String getCountrySubdivision() {
+        return countrySubdivision;
+    }
+
+    public RegistrationSubmission setLocale(Locale locale) {
+        this.locale = locale;
+        return this;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
 }

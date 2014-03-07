@@ -171,6 +171,11 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			return SUCCESS;
 		}
 
+        //TODO: This is the syntax it's going to be:
+//        registrationForm.createSubmission(registrationService)
+//                .setLocale(localeForm.getLocale())
+//                .submit();
+
 		setupUserData();
 		setupContractorData();
 		contractorAccountDao.save(contractor);
