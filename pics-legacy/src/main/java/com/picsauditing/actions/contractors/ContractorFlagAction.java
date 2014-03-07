@@ -763,7 +763,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				note.setAccount(co.getContractorAccount());
 				note.setAuditColumns(permissions);
 				note.setNoteCategory(NoteCategory.Flags);
-				note.setViewableByOperator(permissions);
+				note.setViewableById(permissions.getAccountId());
 				note.setCanContractorView(true);
 				note.setPriority(LowMedHigh.High);
 
