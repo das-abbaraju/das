@@ -175,6 +175,19 @@ public class ProjectAssignmentProcessTest {
 
 	private Map<Project, Map<Employee, Set<String>>> getExpectedResults() {
 		return new HashMap<Project, Map<Employee, Set<String>>>() {{
+			put(FAKE_PROJECTS.get(0),
+					new HashMap<Employee, Set<String>>() {{
+						put(FAKE_EMPLOYEES.get(0), new HashSet<String>() {{
+							addAll(Arrays.asList("Project 1 Welder",
+									"Project 1 Driller",
+									"Site Skill",
+									"Corporate Skill",
+									"Role 1 Manager",
+									"Role 1 Architect",
+									"Role 2 Driller"));
+						}});
+					}});
+
 			put(FAKE_PROJECTS.get(1),
 					new HashMap<Employee, Set<String>>() {{
 						put(FAKE_EMPLOYEES.get(0), new HashSet<String>() {{
@@ -187,19 +200,6 @@ public class ProjectAssignmentProcessTest {
 							add("Site Skill");
 							add("Corporate Skill");
 							add("Role 2 Driller");
-						}});
-					}});
-
-			put(FAKE_PROJECTS.get(0),
-					new HashMap<Employee, Set<String>>() {{
-						put(FAKE_EMPLOYEES.get(0), new HashSet<String>() {{
-							addAll(Arrays.asList("Project 1 Welder",
-									"Project 1 Driller",
-									"Site Skill",
-									"Corporate Skill",
-									"Role 1 Manager",
-									"Role 1 Architect",
-									"Role 2 Driller"));
 						}});
 					}});
 		}};
