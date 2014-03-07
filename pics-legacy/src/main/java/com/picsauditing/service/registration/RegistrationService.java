@@ -32,7 +32,7 @@ public class RegistrationService {
     private ContractorAccount createContractorAccountFrom(RegistrationSubmission form) {
         ContractorAccount registrant = new ContractorAccount();
         registrant.setType("Contractor");
-        registrant.setCountrySubdivision(form.getCountrySubdivision()); // TODO: Work this out.
+        registrant.setCountrySubdivision(new CountrySubdivision(form.getCountrySubdivision()));
         registrant.setStatus(AccountStatus.Pending);
         registrant.setLocale(form.getLocale());
         registrant.setPhone(form.getPhoneNumber());
