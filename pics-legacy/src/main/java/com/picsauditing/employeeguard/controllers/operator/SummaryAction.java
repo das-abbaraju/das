@@ -64,10 +64,23 @@ public class SummaryAction extends PicsRestActionSupport {
 	}
 
 	public String list() throws NoRightsException {
+		if (permissions.isOperator()) {
+			jsonString = "[]";
+			return JSON_STRING;
+		}
+
 		if (!permissions.isCorporate()) {
 			throw new NoRightsException("You must be a corporate user");
 		}
 
+		List<IdNameModel> idNameModels = getIdNameModels();
+
+		jsonString = new Gson().toJson(idNameModels);
+
+		return JSON_STRING;
+	}
+
+	private List<IdNameModel> getIdNameModels() {
 		List<AccountModel> childOperators = accountService.getChildOperators(permissions.getAccountId());
 
 		List<IdNameModel> idNameModels = new ArrayList<>();
@@ -77,10 +90,7 @@ public class SummaryAction extends PicsRestActionSupport {
 					.name(childOperator.getName())
 					.build());
 		}
-
-		jsonString = new Gson().toJson(idNameModels);
-
-		return JSON_STRING;
+		return idNameModels;
 	}
 
 	public String summary() throws NoRightsException {
