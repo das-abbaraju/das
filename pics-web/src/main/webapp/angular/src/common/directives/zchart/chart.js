@@ -10,7 +10,14 @@ angular.module('PICS.directives')
             colors: "="
         },
         link: function (scope, element) {
-            scope.datasrc.then(onSuccess, onError);
+            if (scope.datasrc) {
+                scope.datasrc.then(onSuccess, onError);
+            }
+
+            scope.$on('handleBroadcast', function() {
+                scope.datasrc.then(onSuccess, onError);
+            });
+
 
             function onSuccess(data) {
                 var chartData = [data.completed + data.pending, data.expiring, data.expired],

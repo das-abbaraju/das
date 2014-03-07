@@ -64620,34 +64620,37 @@ angular.module('admin-projects', [])
 });
 ;angular.module('PICS.employeeguard')
 
-.factory('SiteResource', function($resource, $routeParams) {
-    return $resource('/employee-guard/operators/summary');
-});;angular.module('PICS.employeeguard')
+.controller('operatorDashboardCtrl', function ($rootScope, $scope, SiteResource, SiteList, SiteDetails) {
+    $scope.siteList = SiteList.query();
 
-.factory('Site', function () {
-    var Model = function (data) {
-        this.data = data;
-    };
+    $scope.siteList.$promise.then(checkForCorporateSites);
 
-    Model.prototype.getData = function () {
-        return this.data;
-    };
-
-    return Model;
-});;angular.module('PICS.employeeguard')
-
-.controller('operatorDashboardCtrl', function ($scope, SiteResource, Site) {
-    $scope.dataSrc = SiteResource.get().$promise;
-
-    SiteResource.get().$promise.then(onSuccess, onError);
-
-    function onSuccess(data) {
-        $scope.site = data;
+    function checkForCorporateSites(data) {
+        if (data.length > 0) {
+            requestCorporateSiteData(data);
+        } else {
+            requestOperatorSiteData();
+        }
     }
 
-    function onError(error) {
-        console.log(error);
+    function requestCorporateSiteData(data) {
+        $scope.site = SiteDetails.get({id: data[0].id});
+        $scope.operator_site = data[0].id;
+        $scope.dataSrc = SiteDetails.get({id: data[0].id}).$promise;
     }
+
+    function requestOperatorSiteData() {
+        $scope.site = SiteResource.get();
+        $scope.dataSrc = SiteResource.get().$promise;
+    }
+
+
+    $scope.getSiteInfo = function () {
+        $scope.site = SiteDetails.get({id: $scope.operator_site});
+        // $rootScope.$broadcast('handleBroadcast');
+        $scope.dataSrc = SiteDetails.get({id: $scope.operator_site}).$promise;
+
+    };
 
     $scope.calculateStatusPercentage = function (amount, total) {
         return (amount / total) * 100;
@@ -64674,6 +64677,20 @@ angular.module('admin-projects', [])
 
         return progress_bar;
     };
+});;angular.module('PICS.employeeguard')
+
+.factory('SiteResource', function($resource, $routeParams) {
+    return $resource('/employee-guard/operators/summary');
+});;angular.module('PICS.employeeguard')
+
+.factory('SiteDetails', function($resource, $routeParams) {
+    // return $resource('/employee-guard/corporates/sites/:id');
+    return $resource('/angular/json/sites/:id.json');
+});;angular.module('PICS.employeeguard')
+
+.factory('SiteList', function($resource, $routeParams) {
+    // return $resource('/employee-guard/operators/sites');
+    return $resource('/angular/json/corp_dashboard_sites.json');
 });;angular.module('PICS.employeeguard')
 
 .controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Employee) {
@@ -64904,7 +64921,14 @@ angular.module('admin-projects', [])
             colors: "="
         },
         link: function (scope, element) {
-            scope.datasrc.then(onSuccess, onError);
+            if (scope.datasrc) {
+                scope.datasrc.then(onSuccess, onError);
+            }
+
+            scope.$on('handleBroadcast', function() {
+                scope.datasrc.then(onSuccess, onError);
+            });
+
 
             function onSuccess(data) {
                 var chartData = [data.completed + data.pending, data.expiring, data.expired],
@@ -65381,6 +65405,7 @@ PICS.define('widget.TableStripe', {
             .endAngle(arcEndAngle)
             .value(function(d) { return d; });
 
+        d3.select('chart').html('');
 
         var chart = d3.select(element)
                         .append('svg')

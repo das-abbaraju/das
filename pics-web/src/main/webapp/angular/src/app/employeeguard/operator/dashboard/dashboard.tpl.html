@@ -32,6 +32,8 @@
                 </ul>
             </div>
             <div class="col-md-9">
+                <select ng-show="siteList.length > 0" ng-model="operator_site" ng-options="item.id as item.name for item in siteList | orderBy:'name'" ng-change="getSiteInfo()"></select>
+
                 <ng-include src="'/angular/src/app/employeeguard/operator/dashboard/_site-status.tpl.html'"></ng-include>
             </div>
         </div>

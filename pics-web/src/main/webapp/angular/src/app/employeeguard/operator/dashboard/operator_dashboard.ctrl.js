@@ -1,17 +1,36 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteResource, Site) {
-    $scope.dataSrc = SiteResource.get().$promise;
+.controller('operatorDashboardCtrl', function ($rootScope, $scope, SiteResource, SiteList, SiteDetails) {
+    $scope.siteList = SiteList.query();
 
-    SiteResource.get().$promise.then(onSuccess, onError);
+    $scope.siteList.$promise.then(checkForCorporateSites);
 
-    function onSuccess(data) {
-        $scope.site = data;
+    function checkForCorporateSites(data) {
+        if (data.length > 0) {
+            requestCorporateSiteData(data);
+        } else {
+            requestOperatorSiteData();
+        }
     }
 
-    function onError(error) {
-        console.log(error);
+    function requestCorporateSiteData(data) {
+        $scope.site = SiteDetails.get({id: data[0].id});
+        $scope.operator_site = data[0].id;
+        $scope.dataSrc = SiteDetails.get({id: data[0].id}).$promise;
     }
+
+    function requestOperatorSiteData() {
+        $scope.site = SiteResource.get();
+        $scope.dataSrc = SiteResource.get().$promise;
+    }
+
+
+    $scope.getSiteInfo = function () {
+        $scope.site = SiteDetails.get({id: $scope.operator_site});
+        // $rootScope.$broadcast('handleBroadcast');
+        $scope.dataSrc = SiteDetails.get({id: $scope.operator_site}).$promise;
+
+    };
 
     $scope.calculateStatusPercentage = function (amount, total) {
         return (amount / total) * 100;

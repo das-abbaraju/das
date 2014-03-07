@@ -1,0 +1,27 @@
+{
+"id": 2,
+"employees": 50,
+"completed": 0,
+"pending": 30,
+"expiring": 10,
+"expired": 10,
+"projects": [{
+        "name": "Bloomers Test Project",
+        "start_date": "01-02-2013",
+        "end_date": "01-02-2015",
+        "location": "Main Building",
+        "complete": 5,
+        "pending": 0,
+        "expiring": 0,
+        "expired": 1
+    }, {
+        "name": "Blue Nile",
+        "start_date": "02-28-2013",
+        "end_date": "03-02-2015",
+        "location": "Offsite",
+        "complete": 1078,
+        "pending": 2,
+        "expiring": 345,
+        "expired": 992
+    }]
+}
