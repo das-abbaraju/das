@@ -102,8 +102,8 @@ public class RegistrationForm {
     //TODO - tax validator
     private String vatID;
 
-    @NotNull
-    @Email
+    @NotNull(message = REQUIRED_KEY)
+    @Email(message = INVALID_EMAIL_FORMAT_KEY)
     private String email;
 
     public AccountStatus getStatus() {
