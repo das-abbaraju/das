@@ -10,11 +10,13 @@ import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.service.billing.InvoiceDiscountsService;
+import com.picsauditing.service.contractor.TopLevelOperatorFinder;
 import com.picsauditing.util.SapAppPropertyUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -98,6 +100,8 @@ public class BillingServiceTest extends PicsTranslationTest {
     private InvoiceFee upgradeinvoiceFee;
     @Mock
     private InvoiceDiscountsService invoiceDiscountsService;
+    @Mock
+    private TopLevelOperatorFinder topLevelOperatorFinder;
 
 	@Before
 	public void setUp() {
@@ -112,6 +116,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
 		Whitebox.setInternalState(billingService, "invoiceItemDAO", invoiceItemDAO);
         Whitebox.setInternalState(billingService, "invoiceDiscountsService", invoiceDiscountsService);
+        Whitebox.setInternalState(billingService, "topLevelOperatorFinder", topLevelOperatorFinder);
 		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
 		assert (OAMocksSet.isEmpty());
 
@@ -123,6 +128,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		when(businessUnit.getId()).thenReturn(2);
         when(invoiceDiscountsService.applyDiscounts(eq(mockContractor), anyListOf(InvoiceItem.class)))
                 .thenReturn(Collections.<InvoiceItem>emptyList());
+        when(topLevelOperatorFinder.findAllTopLevelOperators(mockContractor)).thenReturn(null);
 	}
 
 	private void setupInvoiceAndItems() {
@@ -1041,6 +1047,68 @@ public class BillingServiceTest extends PicsTranslationTest {
 
         assertTrue(activated);
         verify(accountDAO).save(mockContractor);
+    }
+
+    @Test
+    public void createInvoiceItems_SuncorNormalDiscounts() {
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(mockContractor.getMembershipDate()).thenReturn(new Date());
+
+        billingService.createInvoiceItems(mockContractor, BillingStatus.Renewal, user);
+
+        verify(invoiceDiscountsService,  never()).applyProratedDiscounts(eq(mockContractor),anyListOf(ContractorFee.class), anyDouble());
+        verify(invoiceDiscountsService, times(1)).applyDiscounts(eq(mockContractor),anyListOf(InvoiceItem.class));
+    }
+
+    @Test
+    public void createInvoiceItems_SuncorProratedDiscounts() {
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(mockContractor.getMembershipDate()).thenReturn(new Date());
+
+        billingService.createInvoiceItems(mockContractor, BillingStatus.Upgrade, user);
+
+        verify(invoiceDiscountsService, times(1)).applyProratedDiscounts(eq(mockContractor),anyListOf(ContractorFee.class), anyDouble());
+        verify(invoiceDiscountsService, never()).applyDiscounts(eq(mockContractor),anyListOf(InvoiceItem.class));
+    }
+
+    @Test
+    public void testShouldUpgrade_NotSuncorOnlyContractor() throws Exception {
+        ContractorFee contractorFee = setupTestForShouldUpgrade(0, 0, null);
+
+        Whitebox.invokeMethod(billingService, "shouldUpgrade", contractorFee);
+
+        verify(contractorFee, times(1)).isUpgrade();
+    }
+
+    @Test
+    public void testShouldUpgrade_SuncorOnlyContractor_NewFacilitiesDoesNotExceedCurrentLevel() throws Exception {
+        ContractorFee contractorFee = setupTestForShouldUpgrade(4, 2, InvoiceDiscountsService.SUNCOR);
+
+        assertFalse((Boolean) Whitebox.invokeMethod(billingService, "shouldUpgrade", contractorFee));
+
+        verify(contractorFee, never()).isUpgrade();
+    }
+    @Test
+    public void testShouldUpgrade_SuncorOnlyContractor_NewFacilitiesExceedsCurrentLevel() throws Exception {
+        ContractorFee contractorFee = setupTestForShouldUpgrade(4, 5, InvoiceDiscountsService.SUNCOR);
+
+        assertTrue((Boolean) Whitebox.invokeMethod(billingService, "shouldUpgrade", contractorFee));
+
+        verify(contractorFee, never()).isUpgrade();
+    }
+
+    private ContractorFee setupTestForShouldUpgrade(int maxFacilities, int newFacilityCount, OperatorAccount operatorAccount) {
+        ContractorFee contractorFee = Mockito.mock(ContractorFee.class);
+        when(contractorFee.getContractor()).thenReturn(mockContractor);
+        when(topLevelOperatorFinder.findLogoForSingleOperatorContractor(mockContractor)).thenReturn(
+                operatorAccount
+        );
+        when(contractorFee.getCurrentLevel()).thenReturn(
+                InvoiceFee.builder().maxFacilities(maxFacilities).build()
+        );
+        when(contractorFee.getNewFacilityCount()).thenReturn(newFacilityCount);
+
+        return contractorFee;
     }
 
     @Test
