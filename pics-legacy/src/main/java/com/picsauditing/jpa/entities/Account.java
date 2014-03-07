@@ -728,14 +728,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			return 0;
 		}
 		if (!o.getType().equals(type)) {
-			if (this.isAdmin()) {
+			if (this.getType().equals(Account.ADMIN_ACCOUNT_TYPE)) {
 				return -1;
 			}
 			if (this.isContractor()) {
 				return 1;
 			}
 			if (this.isCorporate()) {
-				if (o.isAdmin()) {
+				if (o.getType().equals(Account.ADMIN_ACCOUNT_TYPE)) {
 					return 1;
 				} else {
 					return -1;

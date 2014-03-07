@@ -102,8 +102,8 @@ public class AddLateFeesTest {
     @Test
     public void testSaveLateFeeInvoiceAndRelated() throws Exception {
         Invoice invoice = Whitebox.invokeMethod(cron, "saveLateFeeInvoiceAndRelated", mockInvoice, mockInvoiceItem, mockInvoice);
-        verify(billingService).addRevRecInfoIfAppropriateToItems(mockInvoice);
-        verify(billingService).saveInvoice(mockInvoice);
+        verify(billingService).doFinalFinancialCalculationsBeforeSaving(mockInvoice);
+        verify(billingService).verifyAndSaveInvoice(mockInvoice);
     }
 
 }

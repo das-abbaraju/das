@@ -9,7 +9,6 @@ import com.picsauditing.util.SapAppPropertyUtil;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -29,18 +28,17 @@ public class TaxService {
         add(FeeClass.VAT);
     }};
 
-    public boolean validate(Invoice invoice) throws InvoiceValidationException {
+    public void verifyTaxIsAtMostOneLineItem(Invoice invoice) throws InvoiceValidationException {
         int duplicateCount = 0;
 
         for (InvoiceItem invoiceItem : invoice.getItems()) {
             if (TAX_FEE_CLASSES.contains(invoiceItem.getInvoiceFee().getFeeClass())) {
                 duplicateCount += 1;
                 if (duplicateCount > 1) {
-                    return false;
+                    throw new InvoiceValidationException("Invoice "+invoice.getId()+" has more than one tax line item");
                 }
             }
         }
-        return true;
     }
 
     public void applyTax(Transaction transaction) throws Exception {

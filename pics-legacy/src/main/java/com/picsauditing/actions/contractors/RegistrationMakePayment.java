@@ -10,7 +10,7 @@ import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.billing.BrainTree;
+import com.picsauditing.billing.*;
 import com.picsauditing.braintree.BrainTreeHash;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.BrainTreeServiceErrorResponseException;
@@ -48,12 +48,12 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationMakePayment.class);
 
+    private PaymentService paymentService = PaymentServiceFactory.paymentService();
+
     @Autowired
     private BillingService billingService;
     @Autowired
     private FeeService feeService;
-    @Autowired
-    private BrainTree paymentService;
     @Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
     @Autowired
@@ -715,9 +715,9 @@ public class RegistrationMakePayment extends RegistrationAction {
 		if (invoice == null) {
             // TODO: refactor this method to get the billing status within
 			invoice = billingService.createInvoice(contractor, getUser());
-			billingService.addRevRecInfoIfAppropriateToItems(invoice);
 			contractor.getInvoices().add(invoice);
-			billingService.saveInvoice(invoice);
+			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            billingService.verifyAndSaveInvoice(invoice);
             billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
@@ -729,11 +729,12 @@ public class RegistrationMakePayment extends RegistrationAction {
 		if (contractor.isHasUpgrade()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
-			billingService.addRevRecInfoIfAppropriateToItems(newInvoice);
             billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.UPDATE));
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
+            billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            billingService.verifyAndSaveInvoice(invoice);
 			return true;
 		}
 
@@ -759,4 +760,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 			dao.save(request);
 		}
 	}
+
+    public String getPaymentUrl() {
+        return paymentService.getPaymentUrl();
+    }
 }

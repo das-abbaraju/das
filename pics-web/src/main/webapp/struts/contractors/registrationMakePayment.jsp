@@ -229,9 +229,8 @@
 		<div id='payment-method-wrapper'>
 
 		<!-- Credit Card Payment Method -->
-
 		<div id='credit-card-payment-method'>
-			<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics" autocomplete="off">
+			<s:form action="%{paymentUrl}" cssClass="make-payment-form" theme="pics" autocomplete="off">
 				<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
 				<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
 				<%-- We must do it this way, or we are not PCI compliant --%>

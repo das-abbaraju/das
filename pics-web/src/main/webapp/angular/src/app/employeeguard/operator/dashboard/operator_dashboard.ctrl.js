@@ -1,12 +1,12 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteDashboard) {
-    var model;
+.controller('operatorDashboardCtrl', function ($scope, SiteResource, Site) {
+    $scope.dataSrc = SiteResource.get().$promise;
 
-    SiteDashboard.get().$promise.then(onSuccess, onError);
+    SiteResource.get().$promise.then(onSuccess, onError);
 
-    function onSuccess(result) {
-        $scope.site = result;
+    function onSuccess(data) {
+        $scope.site = data;
     }
 
     function onError(error) {
@@ -16,7 +16,6 @@ angular.module('PICS.employeeguard')
     $scope.calculateStatusPercentage = function (amount, total) {
         return (amount / total) * 100;
     };
-
 
     $scope.getProjectStatus = function (project) {
         var progress_bar = {},

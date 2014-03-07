@@ -285,9 +285,9 @@
             <result name="mobile-menu">/struts/layout/menu/mobile/_mobile-menu.jsp</result>
         </action>
 
-		<action name="Contact" class="com.picsauditing.access.Contact">
-			<result>struts/contact_pics.jsp</result>
-		</action>
+        <action name="Contact" class="com.picsauditing.access.Contact">
+        	<result>struts/contact_pics.jsp</result>
+        </action>
 
 		<action name="ContactUs" class="com.picsauditing.user.controller.ContactUs">
 			<result>struts/contact-us/contact-us.jsp</result>
@@ -505,7 +505,7 @@
 
 		<action name="ContractorPricing"
 		        class="com.picsauditing.actions.contractors.ContractorPricing">
-			<result>con_pricing.jsp</result>
+			<result>/struts/contractors/contractor-pricing.jsp</result>
 		</action>
 
 		<action name="WatchListManager" class="com.picsauditing.actions.users.WatchListManager">
@@ -600,7 +600,7 @@
 			<result>struts/audits/con_audit.jsp</result>
 		</action>
 
-        <action name="ContractorCertificate"
+        <action name="ContractorCertification"
                 class="com.picsauditing.struts.controller.contractor.ContractorCertificateController">
             <result>struts/audits/ssip_certificate.jsp</result>
             <result name="inputError">struts/audits/ssip_certificate.jsp</result>

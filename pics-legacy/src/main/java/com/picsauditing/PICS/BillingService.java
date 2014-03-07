@@ -20,7 +20,6 @@ import com.picsauditing.util.PicsDateFormat;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -107,12 +106,24 @@ public class BillingService {
         return currentBalance;
     }
 
-    public Invoice saveInvoice(Invoice invoice) throws Exception {
+    public void doFinalFinancialCalculationsBeforeSaving(Invoice invoice) throws Exception {
         taxService.applyTax(invoice);
-        if (taxService.validate(invoice)) {
-            invoice = invoiceDAO.save(invoice);
-        }
+        addRevRecInfoIfAppropriateToItems(invoice);
+    }
+
+    public Invoice verifyAndSaveInvoice(Invoice invoice) throws Exception {
+        taxService.verifyTaxIsAtMostOneLineItem(invoice);
+        validateRevRec(invoice);
+        invoice = invoiceDAO.save(invoice);
         return invoice;
+    }
+
+    private void validateRevRec(Invoice invoice) throws Exception {
+        for (InvoiceItem item : invoice.getItems()) {
+            if (FeeService.isRevRecDeferred(item.getInvoiceFee()) && item.getRevenueFinishDate() == null && item.getRevenueStartDate() == null) {
+                throw new Exception(invoice.getInvoiceType() + " Invoice #" + invoice.getId() + " was created " + invoice.getCreationDate() + " and was not stamped for revenue recognition.");
+            }
+        }
     }
 
 	public void updateInvoice(Invoice toUpdate, Invoice updateWith, User user) throws Exception {
@@ -152,7 +163,8 @@ public class BillingService {
         toUpdate.setCommissionableAmount(updateWith.getCommissionableAmount());
 		AccountingSystemSynchronization.setToSynchronize(toUpdate);
 
-        saveInvoice(toUpdate);
+        doFinalFinancialCalculationsBeforeSaving(toUpdate);
+        verifyAndSaveInvoice(toUpdate);
 
 		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency
                 + " to " + updateWith.getTotalAmount() + updateWith.getCurrency(), NoteCategory.Billing,
@@ -843,5 +855,9 @@ public class BillingService {
         }
 
         return BillingStatus.Current;
+    }
+
+    public void setTaxService(TaxService taxService) {
+        this.taxService = taxService;
     }
 }

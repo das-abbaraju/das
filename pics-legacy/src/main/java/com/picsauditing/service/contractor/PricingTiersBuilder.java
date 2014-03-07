@@ -83,6 +83,7 @@ public class PricingTiersBuilder {
                 && (invoiceFee.getMaxFacilities() >= numberOfFacilities);
     }
 
+    
     private List<InvoiceFeeCountry> filterOutAndRestructureRedundantInvoiceFees(List<InvoiceFeeCountry> countryFees) {
         /*
             2013 Pricing Tiers:

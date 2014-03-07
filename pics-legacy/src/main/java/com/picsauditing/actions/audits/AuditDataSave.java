@@ -67,6 +67,10 @@ public class AuditDataSave extends AuditActionSupport {
 
 
     public String execute() throws Exception {
+        if (auditData == null) {
+            addActionError(getText("Missing Audit Data"));
+            return BLANK;
+        }
 
 		AuditCatData catData;
 		try {
@@ -267,7 +271,6 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			addActionError(e.getMessage());
 			return BLANK;
 		}
@@ -299,21 +302,28 @@ public class AuditDataSave extends AuditActionSupport {
 			AuditQuestion auditDataQuestion = questionDao.find(auditData.getQuestion().getId());
 			auditData.setQuestion(auditDataQuestion);
 
-			if (checkDependentQuestions() || checkOtherRules()) {
-				auditBuilder.recalculateCategories(conAudit);
-				auditPercentCalculator.percentCalculateComplete(conAudit, true);
-				auditDao.save(conAudit);
-			} else if (catData != null) {
-				auditPercentCalculator.updatePercentageCompleted(catData);
-				catData.setAuditColumns();
-				auditDao.save(catData);
-			} else {
-				addActionError("Error saving answer, please try again.");
-			}
-		}
+            recalculateAuditCatData(catData);
+        }
 		autoFillRelatedOshaIncidentsQuestions(auditData);
 		return SUCCESS;
 	}
+
+    private void recalculateAuditCatData(AuditCatData catData) {
+        if (checkDependentQuestions() || checkOtherRules()) {
+            auditBuilder.recalculateCategories(conAudit);
+            auditPercentCalculator.percentCalculateComplete(conAudit, true);
+            auditDao.save(conAudit);
+        } else if (catData != null) {
+            if (conAudit.getAuditType().isScoreable())
+                auditPercentCalculator.percentCalculateComplete(conAudit, true);
+            else
+                auditPercentCalculator.updatePercentageCompleted(catData);
+            catData.setAuditColumns();
+            auditDao.save(catData);
+        } else {
+            addActionError("Error saving answer, please try again.");
+        }
+    }
 
     private AuditStatus getRollbackStatus(ContractorAudit tempAudit, ContractorAuditOperator cao) {
         AuditStatus newStatus = AuditStatus.Incomplete;
@@ -355,9 +365,11 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditData loadAuditData(AuditData auditData) throws Exception {
 		if (auditData != null && auditData.getId() > 0) {
 			return auditDataService.findAuditData(auditData.getId());
-		} else {
-			return auditDataService.findAuditDataByAuditAndQuestion(auditData);
-		}
+        } else if (auditData != null) {
+            return auditDataService.findAuditDataByAuditAndQuestion(auditData);
+        }
+
+        return null;
 	}
 
 	private AuditData loadAuditDataQuestion(AuditData auditData) {

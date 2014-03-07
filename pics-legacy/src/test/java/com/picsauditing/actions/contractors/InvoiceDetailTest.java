@@ -160,7 +160,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 
         String actionResult = invoiceDetail.execute();
 
-        verify(billingService, times(1)).addRevRecInfoIfAppropriateToItems(invoice);
+        verify(billingService,times(1)).doFinalFinancialCalculationsBeforeSaving(invoice);
+        verify(billingService, times(1)).verifyAndSaveInvoice(invoice);
         commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
     }
 

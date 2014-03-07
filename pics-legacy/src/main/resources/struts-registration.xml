@@ -56,5 +56,11 @@
 			<result name="print">struts/contractors/registrationMakePaymentPrint.jsp</result>
 			<result name="blank">/struts/blank.jsp</result>
 		</action>
-	</package>
+
+        <action name="MockBrainTreeTransact" class="com.picsauditing.actions.billing.MockBrainTreeTransact">
+            <result>struts/blank.jsp</result>
+            <result name="input">struts/blank.jsp</result>
+        </action>
+
+    </package>
 </struts>

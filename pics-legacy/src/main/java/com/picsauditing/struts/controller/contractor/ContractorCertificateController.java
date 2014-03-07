@@ -1,8 +1,9 @@
 package com.picsauditing.struts.controller.contractor;
 
+import com.picsauditing.access.ApiRequired;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.access.UnauthorizedException;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.model.contractor.CertificateType;
@@ -11,6 +12,8 @@ import com.picsauditing.model.contractor.ContractorCertificate;
 import com.picsauditing.service.contractor.AuditFinderService;
 import com.picsauditing.service.contractor.ContractorCertificateService;
 import com.picsauditing.validator.InputValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -18,7 +21,7 @@ import java.util.Date;
 
 import static com.picsauditing.PICS.DateBean.buildDate;
 
-public class ContractorCertificateController extends PicsActionSupport  {
+public class ContractorCertificateController extends PicsApiSupport {
 
     public static final int ZERO_BASED_OFFSET = 1;
     public static final String URL_FOR_MANUAL_AUDIT = "/Audit.action?auditID=";
@@ -48,6 +51,9 @@ public class ContractorCertificateController extends PicsActionSupport  {
     @Autowired
     private InputValidator inputValidator;
     private String manualAuditUrl;
+
+    private final Logger logger = LoggerFactory.getLogger(ContractorCertificateController.class);
+
 
     public String execute() throws UnauthorizedException {
         if (!permissions.isAuditor()) {
@@ -101,16 +107,20 @@ public class ContractorCertificateController extends PicsActionSupport  {
         }
     }
 
+    @ApiRequired
     public String ssipCertificate() throws UnauthorizedException, PageNotFoundException {
-        if (!permissions.isAuditor()) {
-            throw new UnauthorizedException();
-        }
+        logger.info("In ContractorCertificateController.ssipCertificate...");
 
         contractorCertificate = contractorCertificateService.getSsipCertificate(contractor);
-        if (contractorCertificate != null) {
-            return "ssip";
+        if (contractorCertificate == null) {
+            logger.error("No certificate found for contractor: " + contractor.getId() + ". Throwing PageNotFoundException...");
+            throw new PageNotFoundException();
         }
-        throw new PageNotFoundException();
+
+        logger.info("Loaded contractorCertificate = " + contractorCertificate.toString());
+        logger.info("Returning ssip result...");
+
+        return "ssip";
     }
 
     private void validateInput(Date issueDate, Date expirationDate) {

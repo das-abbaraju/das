@@ -51,6 +51,20 @@
 		</timeBasedFileNamingAndTriggeringPolicy>
 	</appender>
 
+	<appender name="PdfGenerationAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${destination}_pdf_generation.log</file>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss},%msg%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${destination}_pdf_generation_%d{yyyy-MM-dd}.log</FileNamePattern>
+		</rollingPolicy>
+		<maxHistory>10</maxHistory>
+		<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+			<maxFileSize>100MB</maxFileSize>
+		</timeBasedFileNamingAndTriggeringPolicy>
+	</appender>
+
 	<!-- Perf4J appenders -->
 
 	<appender name="graphExecutionTimes" class="org.perf4j.logback.GraphingStatisticsAppender">
@@ -127,6 +141,16 @@
 
     <logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" level="${loglevel_hqlsql:-off}">
         <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="com.picsauditing.struts.controller.contractor.ContractorCertificateController">
+        <appender-ref ref="PdfGenerationAppender"/>
+        <level value="info" />
+    </logger>
+
+    <logger name="com.picsauditing.struts.controller.pdf.GeneratePdf">
+        <appender-ref ref="PdfGenerationAppender"/>
+        <level value="info" />
     </logger>
 
 </configuration>

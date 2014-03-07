@@ -74,6 +74,7 @@ public class ContractorOperatorServiceTest extends PicsTest {
         ContractorOperator conParentOp = makeContractorOperator(contractor, parentOperator, ApprovalStatus.Y);
 
         when(contractorOperatorDAO.find(contractor.getId(), parentOperator.getId())).thenReturn(conParentOp);
+        when(contractorOperatorDAO.isUnifiedWorkStatus(conParentOp.getOperatorAccount().getId())).thenReturn(true);
         when(operator.isAutoApproveRelationships()).thenReturn(false);
         conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
         conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
@@ -89,6 +90,7 @@ public class ContractorOperatorServiceTest extends PicsTest {
         ContractorOperator conParentOp = makeContractorOperator(contractor, parentOperator, ApprovalStatus.Y);
 
         when(contractorOperatorDAO.find(contractor.getId(), parentOperator.getId())).thenReturn(conParentOp);
+        when(contractorOperatorDAO.isUnifiedWorkStatus(conParentOp.getOperatorAccount().getId())).thenReturn(false);
         when(operator.isAutoApproveRelationships()).thenReturn(false);
         conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.Y));
         conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.Y));
@@ -110,19 +112,13 @@ public class ContractorOperatorServiceTest extends PicsTest {
     @Test
     public void testAreAllContractorRelationshipsUniform_DoesNotApprovesRelations() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(true);
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
-
         assertTrue(service.areAllContractorRelationshipsUniform(operator));
     }
 
     @Test
     public void testAreAllContractorRelationshipsUniform_Uniform() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(false);
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
+        when(contractorOperatorDAO.isUnifiedWorkStatus(operator.getId())).thenReturn(true);
 
         assertTrue(service.areAllContractorRelationshipsUniform(operator));
     }
@@ -131,36 +127,8 @@ public class ContractorOperatorServiceTest extends PicsTest {
     @Test
     public void testAreAllContractorRelationshipsUniform_NonUniform() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(false);
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.Y));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.P));
+        when(contractorOperatorDAO.isUnifiedWorkStatus(operator.getId())).thenReturn(false);
 
         assertFalse(service.areAllContractorRelationshipsUniform(operator));
-    }
-
-    @Test
-    public void testAreAllContractorRelationshipsUniform_NonUniformRejected() throws Exception {
-        when(operator.isAutoApproveRelationships()).thenReturn(false);
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.Y));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.N));
-
-        assertFalse(service.areAllContractorRelationshipsUniform(operator));
-    }
-
-    @Test
-    public void testAreAllContractorRelationshipsUniform_UniformRejected() throws Exception {
-        when(operator.isAutoApproveRelationships()).thenReturn(false);
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.N));
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.N));
-
-        assertTrue(service.areAllContractorRelationshipsUniform(operator));
-    }
-
-    @Test
-    public void testAreAllContractorRelationshipsUniform_UniformSingle() throws Exception {
-        when(operator.isAutoApproveRelationships()).thenReturn(false);
-        conOps.add(makeContractorOperator(contractor, operator, ApprovalStatus.Y));
-
-        assertTrue(service.areAllContractorRelationshipsUniform(operator));
     }
 }

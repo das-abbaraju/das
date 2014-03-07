@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.TaxService;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.NoRightsException;
@@ -70,6 +71,8 @@ public class ScheduleAuditTest extends PicsActionTest {
 	private BusinessUnit businessUnit;
 	@Mock
 	private SapAppPropertyUtil sapAppPropertyUtil;
+    @Mock
+    private TaxService mockTaxService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -105,7 +108,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		when(contractor.getCountry()).thenReturn(country);
 		when(country.getCurrency()).thenReturn(Currency.USD);
 		Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
-		when(billingService.saveInvoice(org.mockito.Matchers.any(Invoice.class))).thenReturn(new Invoice());
+		when(billingService.verifyAndSaveInvoice(org.mockito.Matchers.any(Invoice.class))).thenReturn(new Invoice());
 
 		String strutsAction = scheduleAudit.cancelAudit();
 
@@ -226,7 +229,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setScheduledDate((Date) any());
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
-		verify(billingService).saveInvoice((Invoice) any());
+		verify(billingService).verifyAndSaveInvoice((Invoice) any());
 		verify(dao).save((Note) any());
 		verify(response).sendRedirect(anyString());
 	}
@@ -252,7 +255,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setScheduledDate((Date) any());
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
-		verify(billingService).saveInvoice((Invoice) any());
+		verify(billingService).verifyAndSaveInvoice((Invoice) any());
 		verify(dao).save((Note) any());
 		verify(response).sendRedirect(anyString());
 	}
@@ -281,18 +284,20 @@ public class ScheduleAuditTest extends PicsActionTest {
 		when(auditType.getI18nKey("name")).thenReturn("test");
 		Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
 		when(contractor.getCountry()).thenReturn(country);
-		when(billingService.saveInvoice((Invoice) any())).thenReturn(invoice);
+		when(billingService.verifyAndSaveInvoice((Invoice) any())).thenReturn(invoice);
 	}
 
     @Test
     public void testCreateInvoice_withPayingFacilitiesAndOriginalAmount_itemAddedToItemsOnInvoiceForCascade() throws Exception {
         FakeBillingService fakeBillingService = new FakeBillingService();
+        fakeBillingService.setTaxService(mockTaxService);
         Whitebox.setInternalState(scheduleAudit, "billingService", fakeBillingService);
         Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
         when(contractor.getCountry()).thenReturn(country);
         when(contractor.getPayingFacilities()).thenReturn(20);
         when(expedite.getAmount()).thenReturn(BigDecimal.TEN);
         when(conAudit.getAuditType()).thenReturn(auditType);
+
 
         Whitebox.invokeMethod(scheduleAudit, "createInvoice", expedite, "");
         Invoice invoice = fakeBillingService.getInvoice();
@@ -325,7 +330,7 @@ public class ScheduleAuditTest extends PicsActionTest {
         private Invoice invoice;
 
         @Override
-        public Invoice saveInvoice(Invoice invoice) {
+        public Invoice verifyAndSaveInvoice(Invoice invoice) {
             this.invoice = invoice;
 
             return invoice;

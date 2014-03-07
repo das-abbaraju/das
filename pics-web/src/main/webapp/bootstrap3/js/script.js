@@ -28530,7 +28530,8 @@ PICS.define('employee-guard.Assignment', {
             $('.table-assignment a').on('click', function (event) {
                 event.stopPropagation();
             });
-            $('body .modal-footer .unassign').on('click', requestEmployeeAssignment);
+
+            $('body .modal-footer .unassign').on('click', unassignEmployee);
         }
 
         function onAssignmentRowClick(event) {
@@ -28544,23 +28545,35 @@ PICS.define('employee-guard.Assignment', {
 
         function toggleEmployeeAssignment() {
             if (is_assigned) {
-                $('.unassignModal').modal('show');
+                if ($('.unassignModal').length) {
+                    $('.unassignModal').modal('show');
+                } else {
+                    unassignEmployee();
+                }
             } else {
-                requestEmployeeAssignment();
+                assignEmployee();
             }
         }
 
-        function requestEmployeeAssignment() {
-            var request_url = $selected_row.attr('data-assign-url'),
-                unassign_url = $selected_row.attr('data-unassign-url');
+        function assignEmployee() {
+            var assign_url = $selected_row.attr('data-assign-url');
 
-            if (is_assigned) {
+            PICS.ajax({
+                url: assign_url,
+                dataType: 'json',
+                success: onEmployeeAssignmentRequestSuccess
+            });
+        }
+
+        function unassignEmployee() {
+            var unassign_url = $selected_row.attr('data-unassign-url');
+
+            if ($('.unassignModal').length) {
                 $('.unassignModal').modal('hide');
-                request_url = unassign_url;
             }
 
             PICS.ajax({
-                url: request_url,
+                url: unassign_url,
                 dataType: 'json',
                 success: onEmployeeAssignmentRequestSuccess
             });
@@ -29322,19 +29335,27 @@ PICS.define('sample.Test', {
     PICS.define('layout.menu.Menu', {
         methods: (function () {
             var SEARCH_RESULTS_LIMIT = 10,
-                ENTER_KEY = 13,
+                ENTER_KEY = 13;
 
-                $navbar_el = $('#primary_navigation'),
-                $dropdown_toggle_el = $navbar_el.find('.dropdown-toggle'),
-                $search_query_el = $navbar_el.find('.search-box'),
-                $search_box_el = $navbar_el.find('.search-box'),
-                $icon_search = $('#primary_navigation .icon-search');
+            var $navbar_el,
+                $dropdown_toggle_el,
+                $search_query_el,
+                $icon_search;
 
             function init() {
+                initializeEls();
+
                 configureDropdown();
                 configureUserSearch();
 
                 bindEvents();
+            }
+
+            function initializeEls() {
+                $navbar_el = $('#primary_navigation');
+                $dropdown_toggle_el = $navbar_el.find('.dropdown-toggle');
+                $search_query_el = $navbar_el.find('.search-box');
+                $icon_search = $('#primary_navigation .icon-search');
             }
 
             function configureDropdown() {
@@ -29343,27 +29364,25 @@ PICS.define('sample.Test', {
 
             function configureUserSearch() {
                 $search_query_el.typeahead([{
-                    name: 'primary-search',
-                    remote: {
-                        // url: '/v7/js/pics/layout/menu/typeahead.json?q=%QUERY',
-                        url: '/SearchBox!json.action?q=%QUERY&',
-                        filter: filterResponse,
-                        cache: false
-                },
-                valueKey: 'result_name',
-                limit: SEARCH_RESULTS_LIMIT,
-                template: getResultItemTemplate(),
-                footer: getFooterTemplate(),
-                engine: Hogan
+                        name: 'primary-search',
+                        remote: {
+                            url: '/SearchBox!json.action?q=%QUERY&',
+                            filter: filterResponse,
+                            cache: false
+                    },
+                    valueKey: 'result_name',
+                    limit: SEARCH_RESULTS_LIMIT,
+                    template: getResultItemTemplate(),
+                    footer: getFooterTemplate(),
+                    engine: Hogan
                 }]);
             }
 
             function bindEvents() {
                 $search_query_el.on('typeahead:selected', onSearchQuerySelected);
                 $search_query_el.on('typeahead:suggestionsRendered', onSearchQuerySuggestionsRendered);
-
-                $search_box_el.on('focus', onSearchElFocus);
-                $search_box_el.on('blur', onSearchElBlur);
+                $search_query_el.on('focus', onSearchElFocus);
+                $search_query_el.on('blur', onSearchElBlur);
 
                 $(document).on('mouseover', '.more-results-link', onMoreResultsLinkMouseOver);
                 $(document).on('click', '.more-results-link', onMoreResultsLinkClick);
@@ -29424,7 +29443,7 @@ PICS.define('sample.Test', {
             function filterResponse(data) {
                 // Insert empty datum to force rendering of dropdown,
                 // even when there are no results
-                if (data.total_results == 0) {
+                if (data.total_results === 0) {
                     data.results = [{}];
                 }
 
@@ -29477,7 +29496,7 @@ PICS.define('sample.Test', {
 
             return {
                 init: init
-            }
+            };
         }())
     });
 }(jQuery));
@@ -30490,6 +30509,35 @@ PICS.define('widget.TableStripe', {
         }
     });
 }(jQuery));
+PICS.define('widgets.Mibew', {
+    methods: {
+        init: function () {
+            var $chat_links = $('.chat-link');
+
+            if ($chat_links.length) {
+                $chat_links.on('click', this.openMibew);
+            }
+        },
+
+        openMibew: function (event) {
+            var $chat_link = $(this),
+                mibew_url = $chat_link.attr('href'),
+                url_param = escape(document.location.href),
+                referrer_param = escape(document.referrer),
+                url = mibew_url + '&url=' + url_param + '&referrer=' + referrer_param;
+
+            if (navigator.userAgent.toLowerCase().indexOf('opera') != -1 && window.event.preventDefault) {
+                window.event.preventDefault();
+            }
+
+            this.newWindow = window.open(url, 'webim', 'toolbar=0, scrollbars=0, location=0, status=1, menubar=0, width=640, height=480, resizable=1');
+            this.newWindow.focus();
+            this.newWindow.opener = window;
+
+            return false;
+        }
+    }
+});
 /**
  * Modal
  *

@@ -1,13 +1,19 @@
 angular.module('PICS.employeeguard')
 
 .controller('menuFilterCtrl', function ($scope) {
-    $scope.selected = 'All';
+    var selected = 'All';
 
-    $scope.select = function(item) {
+    function select(item) {
         $scope.selected = item;
-    };
+    }
 
-    $scope.isSelected = function(item) {
+    function isSelected(item) {
        return $scope.selected === item;
-    };
+    }
+
+    angular.extend($scope, {
+		selected: selected,
+		select: select,
+		isSelected: isSelected
+	});
 });

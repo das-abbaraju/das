@@ -165,8 +165,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 
 		if (isTransactionIsInvoice()) {
-            billingService.addRevRecInfoIfAppropriateToItems(invoice);
-			billingService.saveInvoice(invoice);
+			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            billingService.verifyAndSaveInvoice(invoice);
 		}
         if (!Strings.isEmpty(message)) {
             addActionMessage(message);
@@ -445,8 +445,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         AccountingSystemSynchronization.setToSynchronize(invoice);
         invoice.updateTotalAmount();
         invoice.updateAmountApplied();
-        billingService.addRevRecInfoIfAppropriateToItems(invoice);
-        billingService.saveInvoice(invoice);
+        billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+        billingService.verifyAndSaveInvoice(invoice);
 
         addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
 				+ " to " + Strings.implode(createdItemNames, ", "), billingNoteModel.findUserForPaymentNote(permissions));

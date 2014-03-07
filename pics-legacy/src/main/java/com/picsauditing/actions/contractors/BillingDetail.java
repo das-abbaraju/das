@@ -1,28 +1,24 @@
 package com.picsauditing.actions.contractors;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FeeService;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.model.billing.BillingNoteModel;
-
-import org.apache.commons.lang.time.DateUtils;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.BillingNoteModel;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class BillingDetail extends ContractorActionSupport {
@@ -72,8 +68,8 @@ public class BillingDetail extends ContractorActionSupport {
 			}
 
 			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()));
-			billingService.addRevRecInfoIfAppropriateToItems(invoice);
-			invoice = billingService.saveInvoice(invoice);
+			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            invoice = billingService.verifyAndSaveInvoice(invoice);
 
 
             if (invoice.getInvoiceType() == InvoiceType.Upgrade) {

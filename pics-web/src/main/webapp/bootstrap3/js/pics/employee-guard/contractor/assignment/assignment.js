@@ -8,7 +8,8 @@ PICS.define('employee-guard.Assignment', {
             $('.table-assignment a').on('click', function (event) {
                 event.stopPropagation();
             });
-            $('body .modal-footer .unassign').on('click', requestEmployeeAssignment);
+
+            $('body .modal-footer .unassign').on('click', unassignEmployee);
         }
 
         function onAssignmentRowClick(event) {
@@ -22,23 +23,35 @@ PICS.define('employee-guard.Assignment', {
 
         function toggleEmployeeAssignment() {
             if (is_assigned) {
-                $('.unassignModal').modal('show');
+                if ($('.unassignModal').length) {
+                    $('.unassignModal').modal('show');
+                } else {
+                    unassignEmployee();
+                }
             } else {
-                requestEmployeeAssignment();
+                assignEmployee();
             }
         }
 
-        function requestEmployeeAssignment() {
-            var request_url = $selected_row.attr('data-assign-url'),
-                unassign_url = $selected_row.attr('data-unassign-url');
+        function assignEmployee() {
+            var assign_url = $selected_row.attr('data-assign-url');
 
-            if (is_assigned) {
+            PICS.ajax({
+                url: assign_url,
+                dataType: 'json',
+                success: onEmployeeAssignmentRequestSuccess
+            });
+        }
+
+        function unassignEmployee() {
+            var unassign_url = $selected_row.attr('data-unassign-url');
+
+            if ($('.unassignModal').length) {
                 $('.unassignModal').modal('hide');
-                request_url = unassign_url;
             }
 
             PICS.ajax({
-                url: request_url,
+                url: unassign_url,
                 dataType: 'json',
                 success: onEmployeeAssignmentRequestSuccess
             });

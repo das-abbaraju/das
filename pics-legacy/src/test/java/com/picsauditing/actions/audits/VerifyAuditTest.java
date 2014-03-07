@@ -1,14 +1,9 @@
 package com.picsauditing.actions.audits;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.AuditDataService;
 import com.picsauditing.util.AnswerMap;
@@ -17,11 +12,16 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.AuditDataDAO;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 public class VerifyAuditTest extends PicsTranslationTest {
 	private VerifyAudit verifyAudit;
@@ -211,6 +211,31 @@ public class VerifyAuditTest extends PicsTranslationTest {
         annual.getData().add(oshaKept);
         assertTrue(verifyAudit.showOsha(OshaType.COHS));
         ;
+    }
+
+    @Test
+    public void testAllCaosAre_submitted_True() {
+        Whitebox.setInternalState(verifyAudit, "caos", createCaoMap(AuditStatus.Submitted, AuditStatus.Submitted));
+
+        assertTrue(verifyAudit.allCaosAre(AuditStatus.Submitted));
+    }
+
+    @Test
+    public void testAllCaosAre_submitted_False() {
+        Whitebox.setInternalState(verifyAudit, "caos", createCaoMap(AuditStatus.Submitted, AuditStatus.Resubmitted));
+
+        assertFalse(verifyAudit.allCaosAre(AuditStatus.Submitted));
+    }
+
+    public Map<OperatorAccount, ContractorAuditOperator> createCaoMap(AuditStatus... statuses){
+        OperatorAccount someOperator = OperatorAccount.builder().build();
+        Map<OperatorAccount, ContractorAuditOperator> caos = new HashMap<>();
+
+        for (AuditStatus status: statuses) {
+            caos.put(someOperator, ContractorAuditOperator.builder().status(status).build());
+        }
+
+        return caos;
     }
 
 }

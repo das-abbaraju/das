@@ -559,4 +559,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	public String getCanadianTaxFeeMsgKey() {
 		return canadianTaxFeeMsgKey;
 	}
+
+    public String getPaymentUrl() {
+        return paymentService.getPaymentUrl();
+    }
 }

@@ -5,20 +5,33 @@ import com.picsauditing.braintree.BrainTreeService;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.PaymentData;
 import com.picsauditing.currency.Currency;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.model.general.AppPropertyProvider;
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
-public class BrainTree {
+public class BrainTree implements PaymentService {
+    private final static String DEFAULT_PAYMENT_URL = "https://secure.braintreepaymentgateway.com/api/transact.php";
+    private final static String PAYMENT_URL_APP_PROPERTY = "brainTree.payment_url";
 
     @Autowired
-    AppPropertyDAO propertyDAO;
+    AppPropertyProvider propertyProvider;
 
     BrainTreeService service;
+
+    @Override
+    public String getPaymentUrl() {
+        String url = propertyProvider.getPropertyString(PAYMENT_URL_APP_PROPERTY);
+        if (Strings.isEmpty(url)) {
+            return DEFAULT_PAYMENT_URL;
+        } else {
+            return url;
+        }
+    }
 
     public CreditCard getCreditCard(ContractorAccount account) throws Exception {
         return getCreditCardService().getCreditCard(account.getId());
@@ -79,7 +92,7 @@ public class BrainTree {
     }
 
     private String property(String key) {
-        return propertyDAO.getProperty(key);
+        return propertyProvider.getPropertyString(key);
     }
 
     private static final String USERNAME = "brainTree.username";

@@ -1,11 +1,10 @@
 .operator-dashboard {
-
     .nav-stacked {
         margin-bottom: 20px;
     }
 
     .current-assignments {
-        font-size: 24px;
+        font-size: 36px;
         font-weight: bold;
         text-align: left;
 
@@ -21,6 +20,29 @@
         .warning,
         .danger {
             background: transparent;
+        }
+    }
+
+    .chart-container {
+        position:relative;
+
+        .assignment-chart {
+            path {
+                stroke: #ffffff;
+                stroke-width: 5px;
+            }
+        }
+
+        .number-of-employees {
+            font-size: 36px;
+            font-weight: bold;
+            position:absolute;
+            top: 50%;
+
+            .icon-user {
+                color: $info_med;
+                display: block;
+            }
         }
     }
 
