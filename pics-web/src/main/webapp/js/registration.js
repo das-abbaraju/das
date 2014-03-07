@@ -299,8 +299,6 @@
 
                     $country_select.on('change', $.proxy(this.updateCountryFields, this));
 
-                    this.updateCountryFields();
-
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
                     $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
                 } else if ($('.RegistrationMakePayment-page').length) {
@@ -408,7 +406,6 @@
                         var pics_address = $('span.pics_address').html();
 
                         var country = $('#Registration_contractor_country_isoCode').select2('val');
-//                        console.log(country)
 
                         var modal = PICS.modal({
                             height: 550,
