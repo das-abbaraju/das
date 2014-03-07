@@ -98,7 +98,8 @@ public class SummaryActionTest extends PicsActionTest {
 
 	@Test(expected = NoRightsException.class)
 	public void testList_Site() throws Exception {
-		when(permissions.isOperator()).thenReturn(true);
+		when(permissions.isContractor()).thenReturn(true);
+
 		summaryAction.list();
 	}
 
