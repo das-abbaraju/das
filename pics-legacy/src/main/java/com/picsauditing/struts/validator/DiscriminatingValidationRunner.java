@@ -9,14 +9,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-class ValidationRunner {
+class DiscriminatingValidationRunner {
 
     private final ValidatorContext errorOutput;
     private final Locale errorLanguage;
     private final Set<String> requestParameters;
     private final javax.validation.Validator validator;
 
-    ValidationRunner(ValidatorContext context, Locale locale, Set<String> requestParams, javax.validation.Validator validator) {
+    DiscriminatingValidationRunner(ValidatorContext context, Locale locale, Set<String> requestParams, javax.validation.Validator validator) {
         this.errorOutput = context;
         this.errorLanguage = locale;
         this.requestParameters = requestParams;
