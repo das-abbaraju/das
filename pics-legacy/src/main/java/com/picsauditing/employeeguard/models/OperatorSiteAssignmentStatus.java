@@ -2,15 +2,17 @@ package com.picsauditing.employeeguard.models;
 
 import java.util.List;
 
-public class OperatorSiteAssignmentStatus implements StatusSummary {
+public class OperatorSiteAssignmentStatus implements StatusSummarizable {
 
 	private int id;
 	private String name;
 	private int employees;
+
 	private int completed;
 	private int pending;
 	private int expiring;
 	private int expired;
+
 	private List<ProjectAssignmentModel> projects;
 
 	public int getId() {

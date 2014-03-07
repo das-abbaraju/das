@@ -1,7 +1,8 @@
 package com.picsauditing.employeeguard.models;
 
-public class ProjectAssignmentModel extends ProjectModel implements StatusSummary {
+public class ProjectAssignmentModel extends ProjectModel implements StatusSummarizable {
 
+	// private StatusSummary status;
 	private int completed;
 	private int pending;
 	private int expiring;

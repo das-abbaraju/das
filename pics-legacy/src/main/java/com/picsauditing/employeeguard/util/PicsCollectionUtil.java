@@ -19,7 +19,7 @@ public class PicsCollectionUtil {
 
 	public static <R, C, V> Map<R, Map<C, V>> convertToMapOfMaps(final Collection<V> values,
 																 final CollectionToMapConverter<R, C, V> converter) {
-		if (CollectionUtils.isEmpty(values)) {
+		if (CollectionUtils.isEmpty(values) || converter == null) {
 			return Collections.emptyMap();
 		}
 
