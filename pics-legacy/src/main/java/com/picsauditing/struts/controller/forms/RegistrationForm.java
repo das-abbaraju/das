@@ -272,7 +272,18 @@ public class RegistrationForm {
     public RegistrationSubmission createSubmission(RegistrationService service) {
         final RegistrationSubmission submission = service.newRegistration();
 
-        //TODO
+        submission.setContractorName(this.getBusinessName());
+        submission.setUserName(this.getUsername());
+        submission.setPassword(this.getPassword());
+        submission.setUserFirstName(this.getFirstName());
+        submission.setUserLastName(this.getLastName());
+        submission.setEmail(this.getEmail());
+        submission.setAddress(this.getAddress());
+        submission.setZip(this.getZip());
+        submission.setCountryISO(this.getCountryISOCode());
+        submission.setPhoneNumber(this.getPhone());
+        submission.setTimeZone(this.getTimeZone());
+        submission.setVatID(this.getVatID());
 
         return submission;
     }
