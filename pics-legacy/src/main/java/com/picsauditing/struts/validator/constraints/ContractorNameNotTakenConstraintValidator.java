@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ContractorNameNotTakenConstraintValidator extends ConstraintValidator<UniqueContractorName, String> {
+public class ContractorNameNotTakenConstraintValidator implements ConstraintValidator<UniqueContractorName, String> {
+
     @Autowired
     private ContractorAccountDAO dao;
 
