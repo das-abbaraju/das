@@ -7,10 +7,12 @@ import com.picsauditing.employeeguard.daos.ProjectSkillDAO;
 import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.exceptions.NoCorporateForOperatorException;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -38,6 +40,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	}
 
 	public Map<Project, Set<AccountSkill>> getRequiredSkillsForProjects(final Collection<Project> projects) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
 		return Utilities.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
 				new Utilities.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
 
@@ -54,6 +60,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	}
 
 	public Map<Role, Set<AccountSkill>> getSkillsForRoles(final Collection<Role> roles) {
+		if (CollectionUtils.isEmpty(roles)) {
+			return Collections.emptyMap();
+		}
+
 		return Utilities.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(roles),
 				new Utilities.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
 
@@ -76,6 +86,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @return
 	 */
 	public Set<AccountSkill> getSiteRequiredSkills(final int siteId, final Collection<Integer> accountIdsInAccountHierarchy) {
+		if (CollectionUtils.isEmpty(accountIdsInAccountHierarchy)) {
+			throw new NoCorporateForOperatorException(siteId + " client site does not have a corporate");
+		}
+
 		List<Integer> accountIds = new ArrayList<>(accountIdsInAccountHierarchy);
 		accountIds.add(siteId);
 

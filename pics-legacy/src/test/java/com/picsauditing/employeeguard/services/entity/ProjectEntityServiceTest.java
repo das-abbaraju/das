@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.builders.*;
+import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -139,12 +140,22 @@ public class ProjectEntityServiceTest {
 	}
 
 	@Test
+	public void testGetAllProjectsForSite() {
+		List<Project> fakeProjects = buildFakeProjects();
+		when(projectDAO.findByAccount(ACCOUNT_ID)).thenReturn(fakeProjects);
+
+		List<Project> result = projectEntityService.getAllProjectsForSite(ACCOUNT_ID);
+
+		assertTrue(Utilities.collectionsAreEqual(buildFakeProjects(), result));
+	}
+
+	@Test
 	public void testSearch_NullEmpty() throws Exception {
 		List<Project> nullSearch = projectEntityService.search(null, ACCOUNT_ID);
 		assertNotNull(nullSearch);
 		assertTrue(nullSearch.isEmpty());
 
-		List<Project> emptySearch = projectEntityService.search(" ", ACCOUNT_ID);
+		List<Project> emptySearch = projectEntityService.search(Strings.SINGLE_SPACE, ACCOUNT_ID);
 		assertNotNull(emptySearch);
 		assertTrue(emptySearch.isEmpty());
 	}

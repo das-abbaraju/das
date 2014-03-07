@@ -1,12 +1,12 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteDashboard) {
-    var model;
+.controller('operatorDashboardCtrl', function ($scope, SiteResource, Site) {
+    $scope.dataSrc = SiteResource.get().$promise;
 
-    SiteDashboard.get().$promise.then(onSuccess, onError);
+    SiteResource.get().$promise.then(onSuccess, onError);
 
-    function onSuccess(result) {
-        $scope.site = result;
+    function onSuccess(data) {
+        $scope.site = data;
     }
 
     function onError(error) {
@@ -17,14 +17,13 @@ angular.module('PICS.employeeguard')
         return (amount / total) * 100;
     };
 
-
     $scope.getProjectStatus = function (project) {
         var progress_bar = {},
-            total = project.complete + project.pending + project.expiring + project.expired;
+            total = project.completed + project.pending + project.expiring + project.expired;
 
         progress_bar.success = {
-            amount: (project.pending + project.complete),
-            width: $scope.calculateStatusPercentage((project.pending + project.complete), total)
+            amount: (project.pending + project.completed),
+            width: $scope.calculateStatusPercentage((project.pending + project.completed), total)
         };
 
         progress_bar.warning = {

@@ -9,12 +9,14 @@ public class ModelFactory {
 	private static CompanyModelFactory companyModelFactory = new CompanyModelFactory();
 	private static EmploymentInfoModelFactory employmentInfoModelFactory = new EmploymentInfoModelFactory();
 	private static OperatorSiteAssignmentStatusFactory operatorSiteAssignmentStatusFactory = new OperatorSiteAssignmentStatusFactory();
+	private static ProjectAssignmentModelFactory projectAssignmentModelFactory = new ProjectAssignmentModelFactory();
 	private static ProjectModelFactory projectModelFactory = new ProjectModelFactory();
 	private static ProjectStatusModelFactory projectStatusModelFactory = new ProjectStatusModelFactory();
 	private static RoleModelFactory roleModelFactory = new RoleModelFactory();
 	private static RoleStatusModelFactory roleStatusModelFactory = new RoleStatusModelFactory();
 	private static SkillModelFactory skillModelFactory = new SkillModelFactory();
 	private static SkillStatusModelFactory skillStatusModelFactory = new SkillStatusModelFactory();
+	private static StatusSummaryFactory statusSummaryFactory = new StatusSummaryFactory();
 
 	public static CompanyEmployeeModelFactory getCompanyEmployeeModelFactory() {
 		return companyEmployeeModelFactory;
@@ -34,6 +36,10 @@ public class ModelFactory {
 
 	public static OperatorSiteAssignmentStatusFactory getOperatorSiteAssignmentStatusFactory() {
 		return operatorSiteAssignmentStatusFactory;
+	}
+
+	public static ProjectAssignmentModelFactory getProjectAssignmentModelFactory() {
+		return projectAssignmentModelFactory;
 	}
 
 	public static ProjectModelFactory getProjectModelFactory() {
@@ -58,5 +64,9 @@ public class ModelFactory {
 
 	public static SkillStatusModelFactory getSkillStatusModelFactory() {
 		return skillStatusModelFactory;
+	}
+
+	public static StatusSummaryFactory getStatusSummaryFactory() {
+		return statusSummaryFactory;
 	}
 }

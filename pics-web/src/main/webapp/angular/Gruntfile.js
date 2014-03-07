@@ -7,6 +7,7 @@ module.exports = function(grunt) {
     'vendor/angular/angular-resource.js',
     'vendor/jquery/jquery-ui.js',
     'vendor/bootstrap/bootstrap.js',
+    'vendor/d3/d3.js',
     'vendor/bootstrap/bootstrap.tooltip.js',
     'vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
     'vendor/hogan-2.0.0.js',
@@ -15,7 +16,7 @@ module.exports = function(grunt) {
     'vendor/mmenu/jquery.mmenu.js',
     'vendor/mmenu/jquery.mmenu.searchfield.js',
     'vendor/mmenu/jquery.mmenu.dragopen.js',
-    'vendor/pics/core.js'
+    'vendor/pics/core.js',
   ];
 
   grunt.initConfig({

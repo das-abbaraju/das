@@ -150,7 +150,7 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		return query.getResultList();
 	}
 
-	public List<Employee> findEmployeesAssignedToSite(final Collection<Integer> accountIds, final int siteId) {
+	public List<Employee> findEmployeesAssignedToSiteForContractors(final Collection<Integer> accountIds, final int siteId) {
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
 				"JOIN e.projectRoles pre " +
 				"JOIN pre.projectRole pr " +
@@ -168,6 +168,27 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 				"WHERE e.accountId IN (:accountIds) " +
 				"AND r.accountId = :siteId", Employee.class);
 		query.setParameter("accountIds", accountIds);
+		query.setParameter("siteId", siteId);
+
+		employees.addAll(query.getResultList());
+
+		return ListUtil.removeDuplicatesAndSort(employees);
+	}
+
+	public List<Employee> findEmployeesAssignedToSite(final int siteId) {
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.projectRoles pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE p.accountId = :siteId", Employee.class);
+		query.setParameter("siteId", siteId);
+
+		List<Employee> employees = query.getResultList();
+
+		query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.roles re " +
+				"JOIN re.role r " +
+				"WHERE r.accountId = :siteId", Employee.class);
 		query.setParameter("siteId", siteId);
 
 		employees.addAll(query.getResultList());
@@ -205,7 +226,7 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 	}
 
 	public List<Employee> findEmployeesAssignedToSiteRole(final Collection<Integer> accountIds, final int siteId,
-	                                                      final Role siteRole, final Role corporateRole) {
+														  final Role siteRole, final Role corporateRole) {
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
 				"JOIN e.projectRoles pre " +
 				"JOIN pre.projectRole pr " +
