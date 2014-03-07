@@ -118,7 +118,7 @@
 		                    list="supportedLanguages.visibleLanguagesSansDialect"
 		                    listKey="key"
 		                    listValue="value"
-		                    name="language"
+		                    name="localeForm.language"
 		                    value="language"
 		                    id="registration_language"
 		                    cssClass="select2Min"
@@ -138,11 +138,11 @@
 		            </li>
 		            <li class="timezone">
 		                <label for="contractor_timezone"><s:text name="global.timezone" /></label>
-		                <input class="timezone_input" name="contractor.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
+		                <input class="timezone_input" name="registrationForm.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
 		                <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
 		            </li>
 		            <li>
-						<s:textfield name="contractor.name" />
+						<s:textfield name="registrationForm.name" />
 					</li>
 		            <li class="contractor-name-duplicate">
 		            	<div class="alert-message warning">
@@ -201,16 +201,16 @@
 
 				<ul>
                     <li>
-                        <s:textfield name="user.firstName" />
+                        <s:textfield name="registrationForm.firstName" />
                     </li>
                     <li>
-                        <s:textfield name="user.lastName" />
+                        <s:textfield name="registrationForm.lastName" />
 					</li>
 					<li>
-						<s:textfield name="user.email" />
+						<s:textfield name="registrationForm.email" />
 					</li>
 					<li>
-						<s:textfield name="user.phone" />
+						<s:textfield name="registrationForm.phone" />
 					</li>
 				</ul>
 			</section>
@@ -225,13 +225,13 @@
 
 				<ul>
 					<li>
-						<s:textfield name="user.username" label="global.Username" autocomplete="off" />
+						<s:textfield name="registrationForm.username" label="global.Username" autocomplete="off" />
 				 	</li>
 					<li>
-						<s:password name="user.password" label="global.Password" autocomplete="off"  />
+						<s:password name="registrationForm.password" label="global.Password" autocomplete="off"  />
 					</li>
 					<li>
-						<s:password name="confirmPassword" label="global.ConfirmPassword" autocomplete="off" />
+						<s:password name="registrationForm.passwordConfirmation" label="global.ConfirmPassword" autocomplete="off" />
 					</li>
 				</ul>
 			</section>

@@ -6,7 +6,7 @@
         <s:text name="Registration.dialect" />
     </label>
 
-    <select class="select2Min" name="dialect" id="dialect_selection">
+    <select class="select2Min" name="localeForm.dialect" id="dialect_selection">
         <option value="">
             - <s:text name="Registration.dialectSelection" /> -
         </option>
