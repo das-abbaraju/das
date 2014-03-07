@@ -1,7 +1,6 @@
 package com.picsauditing.util;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Map;
 import java.util.Properties;
 
@@ -14,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class VelocityAdaptor {
 	private VelocityEngine velocityEngine;
+    Logger logger = LoggerFactory.getLogger(VelocityAdaptor.class);
 
 	public VelocityAdaptor() {
 		Properties props = new Properties();
@@ -22,15 +22,21 @@ public class VelocityAdaptor {
 		try {
 			velocityEngine = new VelocityEngine(props);
 		} catch (Exception e) {
-			Logger logger = LoggerFactory.getLogger(VelocityAdaptor.class);
+			logger.error("failed to create VelocityAdaptor");
+		}
+	}
+
+	public VelocityAdaptor(Properties properties) {
+		try {
+			velocityEngine = new VelocityEngine(properties);
+		} catch (Exception e) {
 			logger.error("failed to create VelocityAdaptor");
 		}
 	}
 
 	public String merge(String template, Map<String, Object> data) throws IOException, TemplateParseException {
 		StringWriter result = new StringWriter();
-		VelocityContext velocityContext = new VelocityContext(data);
-		velocityEngine.setProperty(VelocityEngine.SET_NULL_ALLOWED, true);
+		VelocityContext velocityContext = getVelocityContext(data);
 		data.put("pics_dateTool", new DateTool());
 		try {
 			velocityEngine.evaluate(velocityContext, result, "pics-template-engine", template);
@@ -52,4 +58,30 @@ public class VelocityAdaptor {
 		}
 		return value;
 	}
+
+    public String mergeTemplateAndData(String templateName, Map<String, Object> data, String templateFolderPath) throws IOException, TemplateParseException {
+        StringWriter writer = new StringWriter();
+
+        InputStreamReader reader = getInputStreamReaderForTemplatePath(templateFolderPath + "/" + templateName);
+        VelocityContext velocityContext = getVelocityContext(data);
+
+        velocityEngine.evaluate(velocityContext, writer, templateName, reader);
+
+        return writer.toString();
+    }
+
+    private VelocityContext getVelocityContext(Map<String, Object> data) {
+        VelocityContext velocityContext = new VelocityContext(data);
+        velocityEngine.setProperty(VelocityEngine.SET_NULL_ALLOWED, true);
+        return velocityContext;
+    }
+
+    private InputStreamReader getInputStreamReaderForTemplatePath(String fullPathToTemplate) throws IOException {
+        InputStream input = new FileInputStream(fullPathToTemplate);
+        if (input == null) {
+            throw new IOException("Template file not found at: " + fullPathToTemplate);
+        }
+        return new InputStreamReader(input);
+    }
+
 }
