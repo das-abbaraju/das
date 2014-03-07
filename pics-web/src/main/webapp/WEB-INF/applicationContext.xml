@@ -158,10 +158,7 @@
           scope="prototype"/>
     <bean id="RegistrationBillingBean" class="com.picsauditing.service.billing.RegistrationBillingBean" />
     <bean id="RegistrationRequestService" class="com.picsauditing.service.registration.RegistrationRequestService" />
-    <bean id="newRegistrationValidator" class="com.picsauditing.service.registration.validator.ConcreteRegistrationValidator" />
-    <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService" >
-        <constructor-arg ref="newRegistrationValidator" />
-    </bean>
+    <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService" />
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
