@@ -142,7 +142,7 @@
 		                <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
 		            </li>
 		            <li>
-						<s:textfield name="registrationForm.name" />
+						<s:textfield name="registrationForm.name" label="ContractorAccount.name"/>
 					</li>
 		            <li class="contractor-name-duplicate">
 		            	<div class="alert-message warning">
@@ -201,16 +201,16 @@
 
 				<ul>
                     <li>
-                        <s:textfield name="registrationForm.firstName" />
+                        <s:textfield name="registrationForm.firstName" label="User.firstName"/>
                     </li>
                     <li>
-                        <s:textfield name="registrationForm.lastName" />
+                        <s:textfield name="registrationForm.lastName" label="User.lastName"/>
 					</li>
 					<li>
-						<s:textfield name="registrationForm.email" />
+						<s:textfield name="registrationForm.email" label="User.email"/>
 					</li>
 					<li>
-						<s:textfield name="registrationForm.phone" />
+						<s:textfield name="registrationForm.phone" label="User.phone"/>
 					</li>
 				</ul>
 			</section>

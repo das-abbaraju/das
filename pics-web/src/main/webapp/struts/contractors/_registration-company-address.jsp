@@ -12,10 +12,10 @@
 <s:set name="theme" value="'pics'" scope="page" />
 
 <li class="address">
-	<s:textfield name="registrationForm.address" />
+	<s:textfield name="registrationForm.address" label="ContractorAccount.address"/>
 </li>
 <li class="city">
-	<s:textfield name="registrationForm.city" />
+	<s:textfield name="registrationForm.city" label="ContractorAccount.city"/>
 </li>
 <li class="countrySubdivision">
     <s:include value="/struts/contractors/_country_subdivision_select.jsp">
