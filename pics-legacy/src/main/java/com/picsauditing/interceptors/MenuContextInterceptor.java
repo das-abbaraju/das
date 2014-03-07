@@ -5,6 +5,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
+import com.picsauditing.actions.users.ProfileEdit;
 import com.picsauditing.actions.users.UsersManage;
 
 import java.util.Map;
@@ -39,32 +40,33 @@ public class MenuContextInterceptor extends AbstractInterceptor {
 	}
 
 	private boolean contractorPage(Object action) {
+        boolean actionIsAContractorPage = false;
 		if (action instanceof ContractorActionSupport) {
 			ContractorActionSupport contractorActionSupport = (ContractorActionSupport) action;
 
 			if (contractorActionSupport.getContractor() != null && contractorActionSupport.getContractor().getId() == 0) {
-				return false;
-			}
-
-			return contractorActionSupport.isShowContractorSubmenu();
-		}
-
-		if (action instanceof UsersManage) {
+				actionIsAContractorPage = false;
+			} else {
+                actionIsAContractorPage = contractorActionSupport.isShowContractorSubmenu();
+            }
+		} else if (action instanceof UsersManage) {
+            // This seems unnecessary since UsersManage is a child of PicsActionSupport and
+            // the logic is exactly the same
 			UsersManage usersManage = (UsersManage) action;
 			if (usersManage.getAccount() != null && usersManage.getAccount().isContractor()) {
-				return true;
+                actionIsAContractorPage = true;
 			}
-		}
-
-		if (action instanceof PicsActionSupport) {
+		} else if (action instanceof ProfileEdit) {
+            actionIsAContractorPage = false;
+        } else if (action instanceof PicsActionSupport) {
 			// Try to find if there's an account set
 			PicsActionSupport picsAction = (PicsActionSupport) action;
 			if (picsAction.getAccount() != null && picsAction.getAccount().isContractor()) {
-				return true;
+                actionIsAContractorPage = true;
 			}
 		}
 
-		return false;
+		return actionIsAContractorPage;
 	}
 
 	/**
