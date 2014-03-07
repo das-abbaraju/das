@@ -6,22 +6,12 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="current-assignments">
-                    <div class="row">
-                        <div class="col-xs-6 text-right">
-                            <i class="icon-user icon-large"></i>
-                        </div>
-                        <div class="col-xs-6">
-                            <a href="#" class="employees">
-                                {{ site.employees }}
-                            </a>
-                        </div>
-                    </div>
                     <div class="row success">
                         <div class="col-xs-6 text-right">
                             <i class="icon-ok-sign icon-large"></i>
                         </div>
                         <div class="col-xs-6">
-                            {{ site.complete + site.pending }}
+                            {{ site.completed + site.pending }}
                         </div>
                     </div>
                     <div class="row warning">
@@ -42,12 +32,20 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8"></div>
+            <div class="col-md-8">
+                <div class="chart-container text-center">
+                    <chart datasrc="dataSrc" width="420" height="200" colors="['#33b679', '#f4b400', '#e74c3c']"></chart>
+                    <div class="col-xs-6 col-xs-offset-3 number-of-employees">
+                        <i class="icon-user icon-large"></i>
+                        <a href="#" class="employees">
+                            {{ site.employees }}
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
-
-
 
 <section class="employee-guard-section project-assignments">
     <h1>
@@ -57,7 +55,7 @@
         <div class="row" ng-repeat="project in site.projects">
             <div class="col-md-6">
                 <a href="#" class="name" target-"_self">{{ project.name }}</a>
-                <em class="date">{{ project.start_date}} <i class="icon-long-arrow-right" ></i> {{ project.end_date}}</em>
+                <em class="date">{{ project.startDate | date: 'MM/dd/yyyy' }} <i class="icon-long-arrow-right" ></i> {{ project.endDate | date: 'MM/dd/yyyy' }}</em>
                 <p class="location">{{ project.location }}</p>
             </div>
             <div class="col-md-6">
