@@ -173,10 +173,13 @@
                         <s:elseif test="#country_iso_code == 'AU'">
                             <s:include value="/struts/contractors/australia/_registration-company-address.jsp">
                                 <s:param name="country_iso_code" value="#country_iso_code" />
+                                <s:param name="country_subdivision_iso_code" value="countrySubdivision.isoCode" />
                             </s:include>
                         </s:elseif>
 						<s:else>
-                            <s:include value="/struts/contractors/_registration-company-address.jsp" />
+                            <s:include value="/struts/contractors/_registration-company-address.jsp">
+                            	<s:param name="country_subdivision_iso_code" value="countrySubdivision.isoCode" />
+                            </s:include>
 						</s:else>
 					</div>
 					<%-- End hack --%>

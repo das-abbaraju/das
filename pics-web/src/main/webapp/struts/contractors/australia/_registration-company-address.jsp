@@ -5,8 +5,11 @@
     <s:set name="country_iso_code">${param.country_iso_code}</s:set>
 <% } %>
 
+<% if (request.getParameter("country_subdivision_iso_code") != null) { %>
+    <s:set name="country_subdivision_iso_code">${param.country_subdivision_iso_code}</s:set>
+<% } %>
+
 <s:set name="theme" value="'pics'" scope="page" />
-<s:set var="country_subdivision_list_item" value="getCountrySubdivisionList()" />
 
 <li class="address">
 	<s:textfield name="contractor.address" />
@@ -22,6 +25,7 @@
     <s:include value="/struts/contractors/_country_subdivision_select.jsp">
         <s:param name="country_iso_code">${country_iso_code}</s:param>
         <s:param name="subdivision_id">Registration_contractor_countrySubdivision</s:param>
+        <s:param name="selected_subdivision_iso_code">${country_subdivision_iso_code}</s:param>
         <s:param name="select_name">countrySubdivision</s:param>
         <s:param name="select_theme">pics</s:param>
         <s:param name="select_css">select2</s:param>
