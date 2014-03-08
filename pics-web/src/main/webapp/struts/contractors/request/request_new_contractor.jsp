@@ -213,7 +213,7 @@
 								theme="formhelp"
 							/>
 						</li>
-						<li class="address-zip">
+						<li>
 							<s:textfield
 								name="contractor.address"
 								size="35"
@@ -221,7 +221,7 @@
 								theme="formhelp"
 							/>
 						</li>
-						<li class="address-zip">
+						<li>
 							<s:textfield
 								name="contractor.zip"
 								size="7"

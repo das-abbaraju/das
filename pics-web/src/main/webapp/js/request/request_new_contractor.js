@@ -5,7 +5,6 @@
                 var $element = $('.RequestNewContractorAccount-page');
 
                 if ($element.length) {
-                    $element.on('keyup', '#city', this.toggleAddressZip);
                     $element.on('change', '#country', this.loadCountrySubdivision);
                     $element.on('click', '#email_preview', this.previewEmail);
                     $element.on('change', '#operator_list', this.loadOperatorUsersAndTags);
@@ -194,16 +193,6 @@
                         }
                     }
                 });
-            },
-            
-            toggleAddressZip: function(event) {
-                var city = $(event.target).val();
-                
-                if (city) {
-                    $('.address-zip').show();
-                } else {
-                    $('.address-zip').hide();
-                }
             },
             
             toggleOtherTextfield: function(event) {
