@@ -51,7 +51,7 @@ public class RegistrationForm {
 
     @NotBlank(message = REQUIRED_KEY)
     @UniqueContractorName(message = COMPANY_NAME_EXISTS_KEY)
-    private String businessName;
+    private String legalName;
 
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
@@ -70,7 +70,7 @@ public class RegistrationForm {
     private String firstName;
 
     @NotNull(message = REQUIRED_KEY)
-    private TimeZone timeZone;
+    private TimeZone timezone;
 
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
@@ -142,12 +142,12 @@ public class RegistrationForm {
         this.countrySubdivision = countrySubdivision;
     }
 
-    public String getBusinessName() {
-        return businessName;
+    public String getLegalName() {
+        return legalName;
     }
 
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
+    public void setLegalName(String legalName) {
+        this.legalName = legalName;
     }
 
     public String getUsername() {
@@ -174,12 +174,12 @@ public class RegistrationForm {
         this.firstName = firstName;
     }
 
-    public TimeZone getTimeZone() {
-        return timeZone;
+    public TimeZone getTimezone() {
+        return timezone;
     }
 
-    public void setTimeZone(TimeZone timeZone) {
-        this.timeZone = timeZone;
+    public void setTimezone(TimeZone timezone) {
+        this.timezone = timezone;
     }
 
     public String getLastName() {
@@ -252,7 +252,7 @@ public class RegistrationForm {
 
         form.status = input.getStatus();
         form.address = input.getAddress();
-        form.businessName = input.getName();
+        form.legalName = input.getName();
         form.city = input.getCity();
         form.countryISOCode = (input.getCountry() != null)
                 ? input.getCountry().getIsoCode()
@@ -272,7 +272,7 @@ public class RegistrationForm {
     public RegistrationSubmission createSubmission(RegistrationService service) {
         final RegistrationSubmission submission = service.newRegistration();
 
-        submission.setContractorName(this.getBusinessName())
+        submission.setContractorName(this.getLegalName())
             .setUserName(this.getUsername())
             .setPassword(this.getPassword())
             .setUserFirstName(this.getFirstName())
@@ -282,7 +282,7 @@ public class RegistrationForm {
             .setZip(this.getZip())
             .setCountryISO(this.getCountryISOCode())
             .setPhoneNumber(this.getPhone())
-            .setTimeZone(this.getTimeZone())
+            .setTimeZone(this.getTimezone())
             .setVatID(this.getVatID())
             .setCountrySubdivision(this.getCountrySubdivision());
 

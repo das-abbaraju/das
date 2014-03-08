@@ -315,7 +315,7 @@
                 $('[name="localeForm.dialect"]').children().last().attr('selected','selected');
                 $('[name="contractor.country.isoCode"]').children().first().attr('selected','selected');
                 $('[name="registrationForm.timezone"]').select2('val', 'America/Los_Angeles')
-                $('[name="registrationForm.name"]').val("My Company" +  new Date().getTime() );
+                $('[name="registrationForm.legalName"]').val("My Company" +  new Date().getTime() );
                 $('[name="registrationForm.address"]').val("123 Anywhere St");
                 $('[name="registrationForm.city"]').val("Springfield");
                 $('[name="registrationForm.countrySubdivision"]').select2('val', 'US-CA')

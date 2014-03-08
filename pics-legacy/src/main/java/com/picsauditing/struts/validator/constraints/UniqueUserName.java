@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = UserNotTakenConstraintValidator.class)
 public @interface UniqueUserName {
     String message() default "";
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};
 }

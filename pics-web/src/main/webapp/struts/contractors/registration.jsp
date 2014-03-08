@@ -142,7 +142,7 @@
 		                <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
 		            </li>
 		            <li>
-						<s:textfield name="registrationForm.name" label="ContractorAccount.name"/>
+						<s:textfield name="registrationForm.legalName" label="ContractorAccount.name"/>
 					</li>
 		            <li class="contractor-name-duplicate">
 		            	<div class="alert-message warning">

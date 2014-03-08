@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ContractorNameNotTakenConstraintValidator.class)
 public @interface UniqueContractorName {
     String message() default "";
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};
 }
