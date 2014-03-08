@@ -28,7 +28,7 @@ public class RegistrationFormTest {
         rForm.setCity("");
         Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "city");
 
-        assertEquals(2, constraintViolations.size());
+        assertEquals(1, constraintViolations.size());
     }
 
     @Test
@@ -37,14 +37,41 @@ public class RegistrationFormTest {
         rForm.setCity("aslkjflskjflksjlfkjslkjflasjflkasjlfkjaslkjflskjdflaksjdlfkjasldjflak");
         Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "city");
 
-        assertEquals(2, constraintViolations.size());
+        assertEquals(1, constraintViolations.size());
     }
 
     @Test
     public void citySpecialCharacter() {
         RegistrationForm rForm = new RegistrationForm();
-        rForm.setCity("ƒ©∆¥∫");
+        rForm.setCity("!@#");
         Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "city");
+
+        assertEquals(1, constraintViolations.size());
+    }
+
+    @Test
+    public void firstName() {
+        RegistrationForm rForm = new RegistrationForm();
+        rForm.setFirstName("John Michael-Claude o'malley");
+        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "firstName");
+
+        assertEquals(0, constraintViolations.size());
+    }
+
+    @Test
+    public void firstNameSpecialCharacter() {
+        RegistrationForm rForm = new RegistrationForm();
+        rForm.setFirstName("John!");
+        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "firstName");
+
+        assertEquals(1, constraintViolations.size());
+    }
+
+    @Test
+    public void firstNameOnlySpecialCharacter() {
+        RegistrationForm rForm = new RegistrationForm();
+        rForm.setFirstName("!&*%");
+        Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "firstName");
 
         assertEquals(1, constraintViolations.size());
     }

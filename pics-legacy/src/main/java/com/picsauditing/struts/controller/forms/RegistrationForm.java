@@ -18,7 +18,7 @@ import java.util.TimeZone;
 
 
 public class RegistrationForm {
-    private static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>`\"].*";
+    private static final String SPECIAL_CHAR_REGEX = "[^~!@#$%^&*():;<>`!\"]*";
     private static final String USERNAME_REGEX = "[\\w+._@-]+";
     private static final int MAX_STRING_LENGTH_50 = 50;
     private static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
@@ -66,7 +66,7 @@ public class RegistrationForm {
 
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
-    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, flags = Pattern.Flag.CASE_INSENSITIVE, message = NO_SPECIAL_CHARS_KEY)
     private String firstName;
 
     @NotNull(message = REQUIRED_KEY)
