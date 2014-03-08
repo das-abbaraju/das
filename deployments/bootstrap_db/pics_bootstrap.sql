@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.34, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.35, for Linux (x86_64)
 --
 -- Host: localhost    Database: pics_bootstrap
 -- ------------------------------------------------------
--- Server version	5.5.34-32.0-log
+-- Server version	5.5.35-33.0-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -288,7 +288,7 @@ CREATE TABLE `account_user` (
   KEY `FK_account_user_user` (`userID`),
   CONSTRAINT `FK_account_user` FOREIGN KEY (`accountID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_account_user_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +398,7 @@ CREATE TABLE `accounts` (
   KEY `type` (`type`,`status`),
   KEY `fk1_accounts` (`contactID`),
   CONSTRAINT `fk1_accounts` FOREIGN KEY (`contactID`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1101 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1102 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -413,6 +413,7 @@ INSERT INTO `accounts` VALUES (14,'Contractor','Contractor Basic 1',1000,'2003-1
 INSERT INTO `accounts` VALUES (100,'Contractor','Contractor Basic 2',1000,'2014-02-13 18:28:42',1,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'CON',NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0);
 INSERT INTO `accounts` VALUES (500,'Operator','Operator Basic 1',1000,NULL,1,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,NULL,NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,NULL,NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0);
 INSERT INTO `accounts` VALUES (1100,'Admin','PICS Auditing, LLC',1,'2006-04-21 00:00:00',1,'2009-02-02 11:33:50',NULL,NULL,'Active','',NULL,NULL,'','US-CA','','US','','','',NULL,'','',NULL,NULL,NULL,'0',0,NULL,'PICS',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_1100','NOLOAD_1100',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0);
+INSERT INTO `accounts` VALUES (1101,'Operator','Skyscraper Buildings',1000,'2014-03-07 12:00:39',1000,'2014-03-07 12:00:39',NULL,NULL,'Active','1234 Main Street ','Ste 100',NULL,'Big City','US-NJ','01234','US','(555) 555-5555',NULL,'',98471,NULL,'skyline.example.com',NULL,NULL,NULL,'0',0,'The Skyscraper Building Manufacturing Company','SKYSCRAPERBUILDINGS',NULL,1,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Eastern',7,60,1,0);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6128,6 +6129,21 @@ INSERT INTO `app_index` VALUES ('U',1000,'PICSADMIN1',6);
 INSERT INTO `app_index` VALUES ('U',1000,'PICSAUDITINGCOM',5);
 INSERT INTO `app_index` VALUES ('U',1000,'TESTER',5);
 INSERT INTO `app_index` VALUES ('U',1000,'USER',2);
+INSERT INTO `app_index` VALUES ('O',1101,'01234',3);
+INSERT INTO `app_index` VALUES ('O',1101,'1101',10);
+INSERT INTO `app_index` VALUES ('O',1101,'5555555555',2);
+INSERT INTO `app_index` VALUES ('O',1101,'BIG CITY',3);
+INSERT INTO `app_index` VALUES ('O',1101,'BUILDING',7);
+INSERT INTO `app_index` VALUES ('O',1101,'BUILDINGS',7);
+INSERT INTO `app_index` VALUES ('O',1101,'COMPANY',7);
+INSERT INTO `app_index` VALUES ('O',1101,'MANUFACTURING',7);
+INSERT INTO `app_index` VALUES ('O',1101,'OPERATOR',2);
+INSERT INTO `app_index` VALUES ('O',1101,'SKYLINEEXAMPLECOM',4);
+INSERT INTO `app_index` VALUES ('O',1101,'SKYSCRAPER',7);
+INSERT INTO `app_index` VALUES ('O',1101,'THE',7);
+INSERT INTO `app_index` VALUES ('O',1101,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('O',1101,'US',3);
+INSERT INTO `app_index` VALUES ('O',1101,'US-NJ',4);
 INSERT INTO `app_index` VALUES ('U',82286,'82286',4);
 INSERT INTO `app_index` VALUES ('U',82286,'PICS',7);
 INSERT INTO `app_index` VALUES ('U',82286,'PICSAUDITINGCOM',5);
@@ -6161,6 +6177,13 @@ INSERT INTO `app_index` VALUES ('U',98461,'MICHAEL',7);
 INSERT INTO `app_index` VALUES ('U',98461,'PICSAUDITINGCOM',5);
 INSERT INTO `app_index` VALUES ('U',98461,'TESTER',5);
 INSERT INTO `app_index` VALUES ('U',98461,'USER',2);
+INSERT INTO `app_index` VALUES ('U',98471,'5555555555',7);
+INSERT INTO `app_index` VALUES ('U',98471,'98471',4);
+INSERT INTO `app_index` VALUES ('U',98471,'BIGGS',5);
+INSERT INTO `app_index` VALUES ('U',98471,'EXAMPLECOM',5);
+INSERT INTO `app_index` VALUES ('U',98471,'RBIGGS',6);
+INSERT INTO `app_index` VALUES ('U',98471,'ROBERT',7);
+INSERT INTO `app_index` VALUES ('U',98471,'USER',2);
 /*!40000 ALTER TABLE `app_index` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6233,6 +6256,27 @@ INSERT INTO `app_index_stats` VALUES ('U','DO',1);
 INSERT INTO `app_index_stats` VALUES ('U','MDO',1);
 INSERT INTO `app_index_stats` VALUES ('U','9495559584',1);
 INSERT INTO `app_index_stats` VALUES ('U','98461',1);
+INSERT INTO `app_index_stats` VALUES ('O','5555555555',1);
+INSERT INTO `app_index_stats` VALUES ('O','US-NJ',1);
+INSERT INTO `app_index_stats` VALUES ('O','01234',1);
+INSERT INTO `app_index_stats` VALUES ('O','BIG CITY',1);
+INSERT INTO `app_index_stats` VALUES ('O','THE',1);
+INSERT INTO `app_index_stats` VALUES ('O','SKYSCRAPER',1);
+INSERT INTO `app_index_stats` VALUES ('O','BUILDING',1);
+INSERT INTO `app_index_stats` VALUES ('O','MANUFACTURING',1);
+INSERT INTO `app_index_stats` VALUES ('O','COMPANY',1);
+INSERT INTO `app_index_stats` VALUES ('O','SKYLINEEXAMPLECOM',1);
+INSERT INTO `app_index_stats` VALUES ('O','BUILDINGS',1);
+INSERT INTO `app_index_stats` VALUES ('O','OPERATOR',1);
+INSERT INTO `app_index_stats` VALUES ('O','US',1);
+INSERT INTO `app_index_stats` VALUES ('O','1101',1);
+INSERT INTO `app_index_stats` VALUES ('U','BIGGS',1);
+INSERT INTO `app_index_stats` VALUES ('U','EXAMPLECOM',1);
+INSERT INTO `app_index_stats` VALUES ('U','5555555555',1);
+INSERT INTO `app_index_stats` VALUES ('U','ROBERT',1);
+INSERT INTO `app_index_stats` VALUES ('U','RBIGGS',1);
+INSERT INTO `app_index_stats` VALUES ('U','98471',1);
+INSERT INTO `app_index_stats` VALUES ('O','UNITED STATES',1);
 /*!40000 ALTER TABLE `app_index_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6370,7 +6414,7 @@ CREATE TABLE `app_translation` (
   `js` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 indicates translation applies to javascript',
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyLocale` (`msgKey`,`locale`)
-) ENGINE=InnoDB AUTO_INCREMENT=531 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=522 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6451,7 +6495,7 @@ CREATE TABLE `app_user` (
   `lastLogin` datetime DEFAULT NULL COMMENT 'The last date and time this user logged in',
   PRIMARY KEY (`id`),
   UNIQUE KEY `akApp_User` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=41111 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41112 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6466,6 +6510,7 @@ INSERT INTO `app_user` VALUES (181,'pics-auditor1','ff06c33770f1ab6c7f300fc43740
 INSERT INTO `app_user` VALUES (41081,'GROUP1100PICS Group1','',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41091,'contractor1','4d2ad9eab5440b47b2c8a292ceb07cf32e88b71d',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41101,'pics-noperm1','401114cfa3f40a93926d72d1ef64a28bbaf596ac',NULL,NULL,NULL);
+INSERT INTO `app_user` VALUES (41111,'rbiggs','',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `app_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -7153,7 +7198,7 @@ CREATE TABLE `audit_type_rule` (
   CONSTRAINT `FK_audit_type_rule_question` FOREIGN KEY (`questionID`) REFERENCES `audit_question` (`id`),
   CONSTRAINT `FK_audit_type_rule_tag` FOREIGN KEY (`tagID`) REFERENCES `operator_tag` (`id`),
   CONSTRAINT `FK_audit_type_rule_trade` FOREIGN KEY (`tradeID`) REFERENCES `ref_trade` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7754,7 +7799,7 @@ CREATE TABLE `contractor_operator` (
   KEY `opID` (`opID`),
   CONSTRAINT `FK_contractor_operator_con` FOREIGN KEY (`conID`) REFERENCES `accounts` (`id`),
   CONSTRAINT `FK_contractor_operator_op` FOREIGN KEY (`opID`) REFERENCES `accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8627,7 +8672,7 @@ CREATE TABLE `email_subscription` (
   UNIQUE KEY `secondaryKey` (`userID`,`subscription`,`reportID`),
   KEY `lastPeriod` (`timePeriod`,`lastSent`),
   CONSTRAINT `fk1_email_subscription` FOREIGN KEY (`userID`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10207,7 +10252,7 @@ CREATE TABLE `invoice_fee` (
   `discountOperatorID` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee` (`fee`)
-) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=172 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10988,7 +11033,7 @@ CREATE TABLE `invoice_item` (
   KEY `FK_invoice_item_fee` (`feeID`),
   CONSTRAINT `FK_invoice_item` FOREIGN KEY (`invoiceID`) REFERENCES `invoice` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_invoice_item_fee` FOREIGN KEY (`feeID`) REFERENCES `invoice_fee` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1105666 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12209,7 +12254,7 @@ CREATE TABLE `note` (
   KEY `creationDate` (`creationDate`,`accountID`),
   KEY `employee` (`employeeID`),
   CONSTRAINT `FK_note` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12477,6 +12522,7 @@ CREATE TABLE `operators` (
 LOCK TABLES `operators` WRITE;
 /*!40000 ALTER TABLE `operators` DISABLE KEYS */;
 INSERT INTO `operators` VALUES (500,'No','No','No','No',NULL,'No',0,NULL,NULL,NULL,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,NULL);
+INSERT INTO `operators` VALUES (1101,'No','Yes','No','No',NULL,'No',1,NULL,1101,1101,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,'');
 /*!40000 ALTER TABLE `operators` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -12881,7 +12927,7 @@ CREATE TABLE `project` (
   UNIQUE KEY `ak1_Project` (`id`,`accountID`),
   KEY `fk1_project` (`accountID`),
   CONSTRAINT `fk1_project` FOREIGN KEY (`accountID`) REFERENCES `accountemployeeguard` (`accountID`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13555,7 +13601,7 @@ CREATE TABLE `ref_sap_currency_general_ledger_account` (
   `accountNumber` varchar(12) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `isoCurrencyCode` (`isoCurrencyCode`,`accountType`)
-) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=172 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13816,7 +13862,7 @@ CREATE TABLE `report` (
   PRIMARY KEY (`id`),
   KEY `FK_report_owner` (`ownerID`),
   CONSTRAINT `FK_report_owner` FOREIGN KEY (`ownerID`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13848,7 +13894,7 @@ CREATE TABLE `report_column` (
   PRIMARY KEY (`id`),
   KEY `FK_report_column` (`reportID`),
   CONSTRAINT `FK_report_column` FOREIGN KEY (`reportID`) REFERENCES `report` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13981,7 +14027,7 @@ CREATE TABLE `report_permission_user` (
   KEY `user_report_user` (`userID`),
   CONSTRAINT `FK_report_permission_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_report_permission_user_report` FOREIGN KEY (`reportID`) REFERENCES `report` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14086,7 +14132,7 @@ CREATE TABLE `report_user` (
   KEY `user_report_user` (`userID`),
   CONSTRAINT `FK_report_user` FOREIGN KEY (`reportID`) REFERENCES `report` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_report_user_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14396,7 +14442,7 @@ CREATE TABLE `useraccess` (
   PRIMARY KEY (`accessID`),
   UNIQUE KEY `user_type` (`userID`,`accessType`),
   KEY `access_type` (`accessType`)
-) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14448,7 +14494,7 @@ CREATE TABLE `usergroup` (
   KEY `roleID` (`groupID`),
   CONSTRAINT `FK_usergroup_group` FOREIGN KEY (`groupID`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_usergroup_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14526,7 +14572,7 @@ CREATE TABLE `users` (
   KEY `fk1_Users` (`appUserID`),
   CONSTRAINT `fk1_Users` FOREIGN KEY (`appUserID`) REFERENCES `app_user` (`id`),
   CONSTRAINT `FK_userAccount` FOREIGN KEY (`accountID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=98471 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=98472 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14539,12 +14585,13 @@ INSERT INTO `users` VALUES (1,NULL,NULL,'No',NULL,'PICS','System','PICS System',
 INSERT INTO `users` VALUES (9,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Super User','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,10976,10976,'2008-09-11 18:05:06','2010-04-06 11:33:22',NULL,'America/Chicago',0,0,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (10,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Employee Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,27160,38048,'2008-01-11 00:00:00','2013-03-04 11:01:36',NULL,'America/Chicago',0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (12,NULL,NULL,'Yes',NULL,NULL,NULL,'Contractor Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,'en',NULL,NULL,1,NULL,1,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
-INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-02-24 09:43:02',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
+INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-03-07 11:53:41',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
 INSERT INTO `users` VALUES (1001,NULL,NULL,'No','tester@picsauditing.com','PICS','CSR','PICS CSR','Yes',NULL,1100,NULL,2,NULL,NULL,NULL,NULL,'',NULL,37951,23157,'2012-11-19 18:58:25','2013-04-12 10:50:56',NULL,NULL,0,0,'en','PICS',NULL,1,'2013-05-13 19:20:34',1,'2013-05-13 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,171);
 INSERT INTO `users` VALUES (1002,NULL,NULL,'No','tester@picsauditing.com','PICS','Auditor','PICS Auditor','Yes','2014-02-13 16:54:58',1100,NULL,0,NULL,'',NULL,NULL,NULL,NULL,941,90574,'2013-02-19 16:32:06','2013-09-09 12:02:45',NULL,'America/Los_Angeles',0,0,'en_US','Technology',NULL,1,'2013-02-19 00:00:00',1,'2013-02-19 00:00:00','2013-08-06 00:00:00',0,8,16,'xMTWTFx',0,NULL,181);
 INSERT INTO `users` VALUES (98431,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Group1','Yes',NULL,1100,NULL,0,NULL,NULL,'123-456-7890','123-456-7890','1234567890','2014-02-14',1000,1000,'2014-02-14 10:15:43','2014-02-14 10:15:43',NULL,NULL,0,1,'en',NULL,NULL,1,'2014-02-14 10:15:43',1,'2014-02-14 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41081);
 INSERT INTO `users` VALUES (98441,NULL,NULL,'No','tester@picsauditing.com','Jeffrey','Stewart','Jeffrey Stewart','Yes','2014-02-14 11:32:50',14,NULL,0,NULL,NULL,NULL,NULL,NULL,'2014-02-14',1000,1000,'2014-02-14 11:25:26','2014-02-14 11:25:26',NULL,'US/Arizona',0,1,'en_US',NULL,NULL,1,'2014-02-14 11:25:25',1,'2014-02-14 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41091);
 INSERT INTO `users` VALUES (98461,NULL,NULL,'No','tester@picsauditing.com','PICS','No Permissions','PICS No Permissions','Yes','2014-02-19 21:02:45',1100,NULL,0,NULL,NULL,'9495559584',NULL,'9495559584','2014-02-19',1000,1000,'2014-02-19 18:40:03','2014-02-19 18:40:03',NULL,'US/Pacific',0,1,'en_US','Technology',NULL,1,'2014-02-19 18:40:01',1,'2014-02-19 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41101);
+INSERT INTO `users` VALUES (98471,NULL,NULL,'No','biggs@example.com','Robert','Biggs','Robert Biggs','Yes',NULL,1101,NULL,0,NULL,NULL,'(555) 555-5555',NULL,'5555555555','2014-03-07',1000,1000,'2014-03-07 12:04:14','2014-03-07 12:04:14',NULL,'US/Eastern',0,1,'en_US','Project Management',NULL,0,'2014-03-07 12:04:13',0,'2014-03-07 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41111);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
