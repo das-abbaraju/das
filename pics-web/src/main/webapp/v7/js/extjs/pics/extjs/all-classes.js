@@ -99185,7 +99185,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reportcopysetting button[action=copy]':  {
-                click: this.copyReport
+                click: this.copyReportFromCopySetting
             },
 
             'reportsettingsmodal reportfavoritetoggle': {
@@ -99220,7 +99220,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportalertconfirm button[action=copy]':  {
-                click: this.copyReport
+                click: this.copyReportFromEditSetting
             },
 
             'reportalertconfirm button[action=cancel]': {
@@ -99336,16 +99336,29 @@ Ext.define('PICS.controller.report.SettingsModal', {
         settings_modal_view.setTitle(title);
     },
 
-    copyReport: function (cmp, e, eOpts) {
+    copyReportFromCopySetting: function (cmp, e, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             copy_setting_view = this.getCopySetting(),
             copy_setting_form = copy_setting_view.getForm();
 
-        this.closeConfirmEdit();
-
         if (copy_setting_form.isValid()) {
             copy_setting_form.updateRecord(report);
+        }
+
+        PICS.data.ServerCommunication.copyReport();
+    },
+
+    copyReportFromEditSetting: function (cmp, e, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm();
+
+        this.closeConfirmEdit();
+
+        if (edit_setting_form.isValid()) {
+            edit_setting_form.updateRecord(report);
         }
 
         PICS.data.ServerCommunication.copyReport();
