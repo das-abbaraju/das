@@ -175,4 +175,7 @@
 	<!-- 7.2.1 --> 
 	<include file="./liquibase/2014/Q1/gmeurer4_US494-TA707_MakeBrainTreeUrlConfigurable.sql"/>
 
+	<!-- 7.2.2 --> 
+	<include file="./liquibase/2014/Q1/lkam7_US285_AddedSalesForceId.sql"/>
+
 </databaseChangeLog>
