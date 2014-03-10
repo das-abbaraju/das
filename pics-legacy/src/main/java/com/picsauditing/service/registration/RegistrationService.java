@@ -1,9 +1,14 @@
 package com.picsauditing.service.registration;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.util.DataScrubber;
+import org.apache.commons.lang.math.NumberUtils;
+import org.json.simple.JSONObject;
 
 import java.util.Date;
 
@@ -12,9 +17,17 @@ public class RegistrationService {
     private static final String DEMO_CONTRACTOR_NAME_MARKER = "^^^";
 
     private final RegistrationBillingBean billingBean;
+    private final AppUserService appUserService;
+    private final AppUserDAO appUserDAO;
 
-    public RegistrationService(RegistrationBillingBean bean) {
+    public RegistrationService(
+            RegistrationBillingBean bean,
+            AppUserService service,
+            AppUserDAO appUserDAO
+    ) {
         this.billingBean = bean;
+        this.appUserService = service;
+        this.appUserDAO = appUserDAO;
     }
 
     public RegistrationSubmission newRegistration() {
@@ -24,7 +37,9 @@ public class RegistrationService {
     void doRegistration(RegistrationSubmission registrationSubmission) {
         User newUser = createUserFrom(registrationSubmission);
         ContractorAccount newAccount = createContractorAccountFrom(registrationSubmission);
-        // TODO: Set up AppUser
+        AppUser appUser = createAppUserFrom(newUser);
+
+        
         // TODO: Link Entities
         // TODO: Persist Entities
     }
@@ -32,6 +47,9 @@ public class RegistrationService {
     private ContractorAccount createContractorAccountFrom(RegistrationSubmission form) {
         ContractorAccount registrant = new ContractorAccount();
         registrant.setType("Contractor");
+        registrant.setAddress(form.getAddress());
+        registrant.setAddress2(form.getAddress2());
+        registrant.setVatId(form.getVatID());
         registrant.setCountrySubdivision(new CountrySubdivision(form.getCountrySubdivision()));
         registrant.setStatus(AccountStatus.Pending);
         registrant.setLocale(form.getLocale());
@@ -84,5 +102,17 @@ public class RegistrationService {
         registrant.setLastLogin(new Date());
 
         return registrant;
+    }
+
+    private AppUser createAppUserFrom(User user) {
+        String username = user.getUsername();
+        JSONObject appUserResponse = appUserService.createNewAppUser(username, user.getPassword());
+        if (appUserResponse != null && "SUCCESS".equals(appUserResponse.get("status").toString())) {
+            int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
+            return appUserDAO.findByAppUserID(appUserID);
+        } else {
+            throw new RuntimeException("App User Service is Down.");
+            // TODO: Find a better way to deal with a non-success.
+        }
     }
 }

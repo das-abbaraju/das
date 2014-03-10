@@ -103,13 +103,12 @@ public class Registration extends RegistrationAction implements AjaxValidator {
             return SUCCESS;
 		}
 
-        setBaseLocaleFromRequestData();
+        ActionContext.getContext().setLocale((
+                localeForm = getLocaleFromRequestData()
+        ).getLocale());
 
         if (!Strings.isEmpty(registrationKey)) {
             registrationForm = RegistrationForm.fromContractor(regReqService.preRegistrationFromKey(registrationKey));
-//            contractor = regReqService.preRegistrationFromKey(registrationKey);
-//            user = contractor.getPrimaryContact();
-//            user.setUsername(user.getEmail());
         }
 
 
@@ -135,6 +134,27 @@ public class Registration extends RegistrationAction implements AjaxValidator {
         }
 
         ActionContext.getContext().setLocale(locale);
+    }
+
+    private RegistrationLocaleForm getLocaleFromRequestData() {
+        if (Strings.isNotEmpty(localeForm.getLanguage())) return localeForm;
+
+        final RegistrationLocaleForm newForm = new RegistrationLocaleForm();
+        final ActionContext context = ActionContext.getContext();
+
+        if (context.getLocale() != null) {
+            final Locale preExistingLocale = context.getLocale();
+            newForm.setLocale(preExistingLocale);
+            newForm.setLanguage(preExistingLocale.getLanguage());
+            newForm.setDialect(preExistingLocale.getCountry());
+        } else {
+            ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages.getVisibleLanguages());
+            newForm.setLocale(languageUtility.getBrowserLocale());
+            newForm.setLanguage(languageUtility.getBrowserLanguage());
+            newForm.setDialect(languageUtility.getBrowserDialect());
+        }
+
+        return newForm;
     }
 
     @Anonymous
