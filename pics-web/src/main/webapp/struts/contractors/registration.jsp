@@ -22,6 +22,8 @@
 	<s:set var="country_iso_code" value="'US'" />
 </s:else>
 
+<s:set var="country_subdivision_iso_code" value="registrationKey ? contractor.countrySubdivision.isoCode : countrySubdivision.isoCode" />
+
 <s:set name="chat_url" value="%{chatUrl}"></s:set>
 
 <s:if test="hasActionErrors()">
@@ -173,12 +175,12 @@
                         <s:elseif test="#country_iso_code == 'AU'">
                             <s:include value="/struts/contractors/australia/_registration-company-address.jsp">
                                 <s:param name="country_iso_code" value="#country_iso_code" />
-                                <s:param name="country_subdivision_iso_code" value="countrySubdivision.isoCode" />
+                                <s:param name="country_subdivision_iso_code" value="#country_subdivision_iso_code" />
                             </s:include>
                         </s:elseif>
 						<s:else>
                             <s:include value="/struts/contractors/_registration-company-address.jsp">
-                            	<s:param name="country_subdivision_iso_code" value="countrySubdivision.isoCode" />
+                            	<s:param name="country_subdivision_iso_code" value="#country_subdivision_iso_code" />
                             </s:include>
 						</s:else>
 					</div>
