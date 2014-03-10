@@ -22,12 +22,7 @@
 	<s:set var="country_iso_code" value="'US'" />
 </s:else>
 
-<s:if test="!registrationKey">
-	<s:set var="country_subdivision_iso_code" value="countrySubdivision.isoCode" />
-</s:if>
-<s:else>
-	<s:set var="country_subdivision_iso_code" value="contractor.countrySubdivision.isoCode" />
-</s:else>
+<s:set var="country_subdivision_iso_code" value="registrationKey ? contractor.countrySubdivision.isoCode : countrySubdivision.isoCode" />
 
 <s:set name="chat_url" value="%{chatUrl}"></s:set>
 
