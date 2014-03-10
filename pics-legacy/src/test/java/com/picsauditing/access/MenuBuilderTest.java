@@ -3,22 +3,27 @@ package com.picsauditing.access;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.billing.PaymentServiceFactory;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.menu.builder.MenuBuilder;
+import com.picsauditing.provisioning.ProductSubscriptionService;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.URLUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 public class MenuBuilderTest extends PicsActionTest {
@@ -27,13 +32,21 @@ public class MenuBuilderTest extends PicsActionTest {
 
 	@Mock
 	private Permissions permissions;
+    @Mock
+    private URLUtils urlUtils;
+    @Mock
+    private ApplicationContext applicationContext;
+    @Mock
+    private ProductSubscriptionService productSubscriptionService;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
         setupMocks();
 
-        PicsTestUtil.setSpringUtilsBeans(new HashMap<String, Object>());
+        Map<String, Object> beans = new HashMap<>();
+        beans.put(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE, productSubscriptionService);
+        PicsTestUtil.setSpringUtilsBeans(beans);
 
         when(translationService.getText(anyString(),(Locale)any())).thenReturn("");
         when(permissions.isLoggedIn()).thenReturn(true);
@@ -112,6 +125,28 @@ public class MenuBuilderTest extends PicsActionTest {
         String mbewURL = MenuBuilder.getMibewURL(Locale.ENGLISH, permissions);
 
         assert(expectedURL.equals(mbewURL));
+    }
+
+    @Test
+    public void testBuildMenubar_OperatorClientSitesActivityWatch() throws Exception {
+        MenuBuilder.setUrlUtils(urlUtils);
+        when(urlUtils.getActionUrl(anyString(),anyString(),anyInt())).thenReturn("ActionLink");
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
+        when(permissions.isShowClientSitesLink()).thenReturn(true);
+        when(permissions.isAdmin()).thenReturn(true);
+
+        when(translationService.getText(eq("global.Company"), any(Locale.class))).thenReturn("Company");
+        when(translationService.getText(eq("global.Facilities"), any(Locale.class))).thenReturn("Client Sites");
+        when(translationService.getText(eq("ReportActivityWatch.title"), any(Locale.class))).thenReturn("Activity Watch");
+        MenuComponent menu = MenuBuilder.buildMenubar(permissions);
+        assertTrue(menu.getChildren().size() == 5);
+        MenuComponent companyMenu = menu.getChildren().get(0);
+        assertEquals("Company",companyMenu.getName());
+        MenuComponent activityWatch = companyMenu.getChildren().get(3);
+        assertEquals("Activity Watch",activityWatch.getName());
+        MenuComponent clientSites = companyMenu.getChildren().get(6);
+        assertEquals("Client Sites",clientSites.getName());
     }
 
     private void setupPermissionsForMibew() {
