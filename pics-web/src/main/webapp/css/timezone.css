@@ -42,6 +42,11 @@
 .timezone .select2-choice .select2-arrow {
     top: 7px;
 }
+
+.timezone .select2-default {
+    color: #444444 !important;
+}
+
 .timezone .select2-default .select2-arrow {
     top: 0px;
 }
