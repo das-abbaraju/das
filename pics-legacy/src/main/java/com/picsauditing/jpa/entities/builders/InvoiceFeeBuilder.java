@@ -26,4 +26,9 @@ public class InvoiceFeeBuilder {
         invoiceFee.setAmount(amount);
         return this;
     }
+
+    public InvoiceFeeBuilder maxFacilities(int maxFacilities) {
+        invoiceFee.setMaxFacilities(maxFacilities);
+        return this;
+    }
 }

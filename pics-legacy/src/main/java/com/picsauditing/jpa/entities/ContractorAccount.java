@@ -137,7 +137,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private InputValidator inputValidator;
 	private VATValidator vatValidator;
 	private CountryDAO countryDAO;
-
 	private static Logger logger = LoggerFactory.getLogger(ContractorAccount.class);
 
 	public ContractorAccount() {
