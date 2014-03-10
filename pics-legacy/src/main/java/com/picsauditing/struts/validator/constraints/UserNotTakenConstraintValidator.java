@@ -16,6 +16,6 @@ public class UserNotTakenConstraintValidator implements ConstraintValidator<Uniq
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return dao.duplicateUsername(s, 0);
+        return !dao.duplicateUsername(s, 0);
     }
 }

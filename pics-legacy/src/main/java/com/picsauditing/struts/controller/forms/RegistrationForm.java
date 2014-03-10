@@ -18,7 +18,7 @@ import java.util.TimeZone;
 
 
 public class RegistrationForm {
-    private static final String SPECIAL_CHAR_REGEX = "[^~!@#$%^&*():;<>`!\"]*";
+    private static final String SPECIAL_CHAR_REGEX = "[^~!@#?$%^&*():;<>`!\"]*";
     private static final String USERNAME_REGEX = "[\\w+._@-]+";
     private static final int MAX_STRING_LENGTH_50 = 50;
     private static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
