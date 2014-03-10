@@ -187,19 +187,19 @@ public class ContractorEditTest extends PicsActionTest {
 	public void testSave_AddNote_StatusChanged() throws Exception {
 		classUnderTest.setContactID(0);
 		save_justGetThroughTheMethod();
-		when(request.getParameter(anyString())).thenReturn(AccountStatus.Deactivated.toString());
+		when(request.getParameter("currentStatus")).thenReturn(AccountStatus.Deactivated.toString());
 		when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
 
 		classUnderTest.save();
 
-		verify(mockNoteDao).save(any(Note.class));
+		verify(mockNoteDao, times(1)).save(any(Note.class));
 	}
 
 	@Test
 	public void testSave_DoNotAddNote_NoStatusChange() throws Exception {
 		classUnderTest.setContactID(0);
 		save_justGetThroughTheMethod();
-		when(request.getParameter(anyString())).thenReturn(AccountStatus.Active.toString());
+		when(request.getParameter("currentStatus")).thenReturn(AccountStatus.Active.toString());
 		when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
 
 		classUnderTest.save();
