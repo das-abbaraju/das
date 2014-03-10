@@ -173,8 +173,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				return SUCCESS;
 			}
 
-			addNoteWhenStatusChange();
-			// auditBuilder.buildAudits(contractor);
+            addNotesForSavedContractor();
+            // auditBuilder.buildAudits(contractor);
             if (!contractor.isDemo()) {
                 contractor.setQbSync(true);
 				if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(contractor)) {
@@ -215,7 +215,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-	protected void checkListOnlyAcceptability() {
+    protected void checkListOnlyAcceptability() {
 		if (AccountLevel.ListOnly == contractor.getAccountLevel()) {
 			// Now check if they have a product risk level
 			if (!contractor.isListOnlyEligible()) {
@@ -316,15 +316,32 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 	}
 
+    private void addNotesForSavedContractor() {
+        addNoteWhenStatusChange();
+        addNoteWhenSalesRepSalesForceIdChange();
+    }
+
 	private void addNoteWhenStatusChange() {
 		request = ServletActionContext.getRequest();
 		if (request.getParameter("currentStatus") != null) {
 			if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
-				this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
-						+ contractor.getStatus().toString());
+				this.addNote(contractor, "Account Status changed from" + contractor.getStatus().toString() + " to "
+						+ request.getParameter("currentStatus"));
 			}
 		}
 	}
+
+    private void addNoteWhenSalesRepSalesForceIdChange() {
+        request = ServletActionContext.getRequest();
+        String salesRepSalesForceIDParameter = request.getParameter("salesRepSalesForceID");
+        if (salesRepSalesForceIDParameter != null) {
+            if (!salesRepSalesForceIDParameter.equals(contractor.getSalesRepSalesForceID())) {
+                this.addNote(contractor, "Sales Rep SalesForce ID changed from " + contractor.getSalesRepSalesForceID() + " to "
+                        + salesRepSalesForceIDParameter);
+            }
+            contractor.setSalesRepSalesForceID(salesRepSalesForceIDParameter);
+        }
+    }
 
 	private void stampContractorNoteAboutOfficeLocationChange() {
 		User system = new User();
