@@ -15,8 +15,8 @@
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
-<s:if test="contractor.country.isoCode != ''">
-	<s:set var="country_iso_code" value="contractor.country.isoCode" />
+<s:if test="regForm.countryISOCode != ''">
+	<s:set var="country_iso_code" value="registrationForm.countryISOCode" />
 </s:if>
 <s:else>
 	<s:set var="country_iso_code" value="'US'" />
@@ -98,7 +98,7 @@
 
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
-		<s:if test="contractor.status.requested">
+		<s:if test="registrationForm.status.requested">
 			<s:hidden name="contractor" id="requested_contractor" />
 			<s:hidden name="user" />
 			<s:hidden name="registrationKey" />
@@ -131,7 +131,7 @@
 		                <s:select
 		                    list="countryList"
 		                    cssClass="select2 contractor-country"
-		                    name="contractor.country.isoCode"
+		                    name="registrationForm.countryISOCode"
 		                    listKey="isoCode"
 		                    listValue="name"
 		                />
@@ -187,7 +187,7 @@
 					<%-- End hack --%>
 
 					<li id="tax_id" class="${tax_id_class}">
-						<s:textfield label="taxIdLabel" name="contractor.vatId" />
+						<s:textfield label="taxIdLabel" name="registrationForm.vatId" />
 					</li>
  		        </ul>
 			</section>

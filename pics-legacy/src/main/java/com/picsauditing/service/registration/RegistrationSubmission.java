@@ -20,6 +20,7 @@ public class RegistrationSubmission {
     private String vatID;
     private String countrySubdivision;
     private Locale locale;
+    private String address2;
 
     RegistrationSubmission (
             RegistrationService s
@@ -158,4 +159,12 @@ public class RegistrationSubmission {
         return locale;
     }
 
+    public RegistrationSubmission setAddress2(String address2) {
+        this.address2 = address2;
+        return this;
+    }
+
+    public String getAddress2() {
+        return address2;
+    }
 }

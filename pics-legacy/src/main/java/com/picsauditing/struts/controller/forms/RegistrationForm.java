@@ -64,6 +64,10 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String address;
 
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
+    private String address2;
+
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
     @Pattern(regexp = SPECIAL_CHAR_REGEX, flags = Pattern.Flag.CASE_INSENSITIVE, message = NO_SPECIAL_CHARS_KEY)
@@ -252,6 +256,7 @@ public class RegistrationForm {
 
         form.status = input.getStatus();
         form.address = input.getAddress();
+        form.address2 = input.getAddress2();
         form.legalName = input.getName();
         form.city = input.getCity();
         form.countryISOCode = (input.getCountry() != null)
@@ -279,6 +284,7 @@ public class RegistrationForm {
             .setUserLastName(this.getLastName())
             .setEmail(this.getEmail())
             .setAddress(this.getAddress())
+            .setAddress2(this.getAddress2())
             .setZip(this.getZip())
             .setCountryISO(this.getCountryISOCode())
             .setPhoneNumber(this.getPhone())
@@ -287,5 +293,13 @@ public class RegistrationForm {
             .setCountrySubdivision(this.getCountrySubdivision());
 
         return submission;
+    }
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
     }
 }
