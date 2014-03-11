@@ -130,6 +130,14 @@ module.exports = function(grunt) {
     'watch'
   ]);
 
+grunt.registerTask('builddev', [
+    'jshint',
+    'karma:unit',
+    'concat',
+    'ngmin',
+    'compass'
+  ]);
+
   grunt.registerTask('prod', [
     'jshint',
     'karma:unit',

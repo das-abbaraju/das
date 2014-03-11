@@ -1,36 +1,33 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($rootScope, $scope, SiteResource, SiteList, SiteDetails) {
-    $scope.dataSrc = SiteResource.get().$promise;
-
-    $scope.siteList = SiteList.query();
-
-    $scope.siteList.$promise.then(checkForCorporateSites);
-
-    function checkForCorporateSites(data) {
-        if (data.length > 0) {
-            requestCorporateSiteData(data);
+.controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
+    $scope.siteList = SiteList.query(function(site_list) {
+        if ($scope.isCorporateSiteList(site_list)) {
+            $scope.selected_site = site_list[0];
+            $scope.updateSelectedSite();
         } else {
-            requestOperatorSiteData();
+            $scope.selected_site_details = requestSiteDetailsForSiteOperator().then(function(site_details) {
+               $scope.selected_site_details = site_details;
+            });
         }
+    });
+
+    $scope.isCorporateSiteList = function(site_list) {
+        return site_list.length > 0;
+    };
+
+    $scope.requestSiteDetailsById = function(site_id) {
+        return SiteDetails.get({id: site_id}).$promise;
+    };
+
+    function requestSiteDetailsForSiteOperator() {
+        return SiteResource.get().$promise;
     }
 
-    function requestCorporateSiteData(data) {
-        $scope.site = SiteDetails.get({id: data[0].id});
-        $scope.operator_site = data[0].id;
-        $scope.dataSrc = SiteDetails.get({id: data[0].id}).$promise;
-    }
-
-    function requestOperatorSiteData() {
-        $scope.site = SiteResource.get();
-        $scope.dataSrc = SiteResource.get().$promise;
-    }
-
-
-    $scope.getSiteInfo = function () {
-        $scope.site = SiteDetails.get({id: $scope.operator_site});
-        $scope.dataSrc = SiteDetails.get({id: $scope.operator_site}).$promise;
-
+    $scope.updateSelectedSite = function() {
+        $scope.requestSiteDetailsById($scope.selected_site.id).then(function(site_details) {
+            $scope.selected_site_details = site_details;
+        });
     };
 
     $scope.calculateStatusPercentage = function (amount, total) {

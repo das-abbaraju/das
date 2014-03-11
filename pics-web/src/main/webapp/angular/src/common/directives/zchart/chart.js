@@ -4,32 +4,24 @@ angular.module('PICS.directives')
     return {
         restrict: 'E',
         scope: {
-            datasrc: '=',
+            data: '=',
             width: '@',
             height: '@',
-            colors: "="
+            colors: "=",
         },
-        link: function (scope, element) {
-            if (scope.datasrc) {
-                scope.datasrc.then(onSuccess, onError);
-            }
+        link: function (scope, element, attrs) {
+            scope.$watch('data', function(newValue) {
+                if (newValue) {
+                    var chartData = extractChartData(newValue),
+                        chart = new AnimatedArcChart(chartData);
 
-            scope.$on('handleBroadcast', function() {
-                scope.datasrc.then(onSuccess, onError);
+                    chart.draw(element[0], scope.width, scope.height, scope.colors);
+                }
             });
 
-
-            function onSuccess(data) {
-                var chartData = [data.completed + data.pending, data.expiring, data.expired],
-                    chart = new AnimatedArcChart(chartData);
-
-                chart.draw(element[0], scope.width, scope.height, scope.colors);
+            function extractChartData(data) {
+                return [data.completed + data.pending, data.expiring, data.expired];
             }
-
-            function onError(error) {
-                console.log(error);
-            }
-
         }
     };
 });

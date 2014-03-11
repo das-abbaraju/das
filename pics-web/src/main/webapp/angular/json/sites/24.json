@@ -1,27 +1,27 @@
 {
 "id": 24,
 "employees": 54,
-"completed": 1,
-"pending": 3,
+"completed": 0,
+"pending": 0,
 "expiring": 76,
 "expired": 23,
 "projects": [{
-        "name": "Barnes Test Project",
-        "start_date": "01-01-2013",
-        "end_date": "01-02-2015",
+        "name": "Fish Warehouse Test Project",
+        "startDate": "01-01-2013",
+        "endDate": "01-02-2015",
         "location": "Main Building",
-        "complete": 3,
+        "completed": 3,
         "pending": 2,
         "expiring": 4,
         "expired": 2
     }, {
-        "name": "Blue Buffalo",
-        "start_date": "02-28-2013",
-        "end_date": "03-02-2015",
+        "name": "Red Fish Blue Fish",
+        "startDate": "02-28-2013",
+        "endDate": "",
         "location": "Offsite",
-        "complete": 1078,
-        "pending": 2,
-        "expiring": 345,
+        "completed": 1,
+        "pending": 3,
+        "expiring": 0,
         "expired": 992
     }]
 }
