@@ -65,6 +65,8 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	}
 
 	protected void load(AuditQuestion o) {
+        if (o == null)
+            return;
 		this.question = o;
 		AuditExtractOption extractOption = auditExtractOptionForAuditQuestion();
 		if (question.getRequiredQuestion() != null) {

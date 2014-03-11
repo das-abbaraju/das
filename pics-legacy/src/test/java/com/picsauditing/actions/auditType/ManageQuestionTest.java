@@ -79,7 +79,13 @@ public class ManageQuestionTest extends PicsActionTest {
         auditQuestionLanguages.add("en");
 	}
 
-	@Test
+    @Test
+    public void testLoad_NullQuestion() throws Exception {
+        manageQuestion.load((AuditQuestion) null);
+        verify(auditQuestionDAO, never()).findAuditExtractOptionByQuestionId(anyInt());
+    }
+
+    @Test
 	public void testLoad_NullExtractOption() throws Exception {
 		when(auditQuestionDAO.findAuditExtractOptionByQuestionId(anyInt())).thenReturn(null);
 
