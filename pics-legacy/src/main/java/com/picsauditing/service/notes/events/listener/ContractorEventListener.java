@@ -18,7 +18,7 @@ public class ContractorEventListener implements ApplicationListener<SpringContra
 
         switch (event.getEvent()) {
             case Registration:
-                if (Strings.isEmpty(contractor.getRegistrationHash())) {
+                if (Strings.isNotEmpty(contractor.getRegistrationHash())) {
                     noteService.addNote(contractor,
                             "Contractor '" + contractor.getName() + "' requested by "
                             + contractor.getRequestedBy().getName() + " has registered.");

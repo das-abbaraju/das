@@ -17,7 +17,7 @@ public class UserEventListener  implements ApplicationListener<SpringUserEvent> 
 
         switch (event.getUserEventType()) {
             case Creation:
-                noteService.addNote((ContractorAccount) user.getAccount(), "user created for " + user.getName());
+                noteService.addNote(user.getAccount(), "user created for " + user.getName());
                 break;
         }
 

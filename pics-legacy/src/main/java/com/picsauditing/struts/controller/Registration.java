@@ -23,8 +23,6 @@ import com.picsauditing.validator.Validator;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ValidatorFactory;
@@ -51,8 +49,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
     private ValidatorFactory validatorFactory;
 
 
-
-	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
     //TODO: Extract this logic to an Interceptor Annotation
     private boolean loggedIn() {
