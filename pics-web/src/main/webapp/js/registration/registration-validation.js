@@ -8,10 +8,12 @@
                 init: function () {
                     if ($('.Registration-page').length) {
                         var form_fields = '.registration-form input[type=text], .registration-form input[type=password]',
+                            form_selects = '.registration-form select',
                             threshold = 250;
 
                         $('body').on('focusout', form_fields, $.proxy(this.validate, this));
                         $('body').on('keypress', form_fields, $.proxy(PICS.debounce(this.validate, threshold), this));
+                        $('body').on('change', form_selects, $.proxy(this.validate, this));
                     }
                 },
 
