@@ -788,16 +788,18 @@ public class AuditPercentCalculatorTest {
         when(contractorAudit.getAuditType()).thenReturn(mockAuditType);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
         when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Submitted);
+        when(contractorAuditOperator.getPercentComplete()).thenReturn(100);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
         when(catData.isOverride()).thenReturn(true);
         when(catData.isApplies()).thenReturn(true);
         when(catData.getNumRequired()).thenReturn(100);
         when(catData.getRequiredCompleted()).thenReturn(50);
         when(catData.getNumVerified()).thenReturn(50);
+        when(catData.getNumAnswered()).thenReturn(50);
 
         calculator.percentCalculateComplete(contractorAudit);
 
-        verify(contractorAuditOperator, never()).setPercentComplete(50);
+        verify(contractorAuditOperator).setPercentComplete(100);
         verify(contractorAuditOperator).setPercentVerified(50);
     }
 }
