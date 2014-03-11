@@ -1,4 +1,4 @@
- --liquibase formatted sql
+--liquibase formatted sql
 
 --changeset lkam:7
 --preConditions onFail MARK_RAN
