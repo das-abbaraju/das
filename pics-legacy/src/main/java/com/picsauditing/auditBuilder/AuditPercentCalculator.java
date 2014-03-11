@@ -529,12 +529,10 @@ public class AuditPercentCalculator {
                 }
             }
 
-//            if (scoreWeight > 0) {
-                if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
-                    conAudit.setScore((int) Math.min(Math.round(score), 100L));
-                else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
-                    conAudit.setScore((int) Math.round(score));
-//            }
+            if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
+                conAudit.setScore((int) Math.min(Math.round(score), 100L));
+            else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
+                conAudit.setScore((int) Math.round(score));
 
             int percentComplete = 0;
             int percentVerified = 0;
@@ -544,6 +542,9 @@ public class AuditPercentCalculator {
                     if (percentComplete >= 100) {
                         percentComplete = 100;
                     }
+
+                } else {
+                    percentComplete = cao.getPercentComplete();
                 }
                 percentVerified = (int) Math.floor(100 * verified / required);
                 if (percentVerified >= 100) {
