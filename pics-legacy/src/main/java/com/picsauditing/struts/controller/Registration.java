@@ -2,19 +2,25 @@ package com.picsauditing.struts.controller;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+
 import com.picsauditing.access.*;
 import com.picsauditing.actions.contractors.RegistrationAction;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.struts.controller.forms.RegistrationForm;
 import com.picsauditing.struts.controller.forms.RegistrationLocaleForm;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.service.registration.RegistrationRequestService;
 import com.picsauditing.service.registration.RegistrationService;
+import com.picsauditing.service.registration.RegistrationResult;
+import com.picsauditing.service.registration.RegistrationResult.*;
 import com.picsauditing.struts.validator.RegistrationFormValidationWrapper;
 import com.picsauditing.util.*;
 import com.picsauditing.validator.Validator;
+
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
@@ -30,19 +36,9 @@ import java.util.*;
 public class Registration extends RegistrationAction implements AjaxValidator {
 
 	private String registrationKey;
-	private String language;
-	private String dialect;
-	private int requestID;
-	private Locale locale;
-    private RegistrationForm registrationForm = new RegistrationForm();
-    private RegistrationLocaleForm localeForm = new RegistrationLocaleForm();
+    private RegistrationForm registrationForm;
+    private RegistrationLocaleForm localeForm;
 
-	@Autowired
-	private ContractorRegistrationRequestDAO requestDAO;
-	@Autowired
-	private ContractorTagDAO contractorTagDAO;
-	@Autowired
-	private OperatorTagDAO operatorTagDAO;
 	@Autowired
 	private UserLoginLogDAO userLoginLogDAO;
 	@Autowired
@@ -77,9 +73,9 @@ public class Registration extends RegistrationAction implements AjaxValidator {
                 localeForm = getLocaleFromRequestData()
         ).getLocale());
 
-        if (!Strings.isEmpty(registrationKey)) {
-            registrationForm = RegistrationForm.fromContractor(regReqService.preRegistrationFromKey(registrationKey));
-        }
+        registrationForm = (Strings.isNotEmpty(registrationKey))
+            ? RegistrationForm.fromContractor(regReqService.preRegistrationFromKey(registrationKey))
+            : new RegistrationForm();
 
 
         return SUCCESS;
@@ -140,21 +136,29 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 			return SUCCESS;
 		}
 
-        registrationForm.createSubmission(registrationService)
+        final RegistrationResult result = registrationForm.createSubmission(registrationService)
                 .setLocale(localeForm.getLocale())
                 .setRegistrationRequestHash(registrationKey)
                 .submit();
 
-		permissions = logInUser();
-		addClientSessionCookieToResponse();
-		setLoginLog(permissions);
-		// they don't have an account yet so they won't get this as a default
-		permissions.setSessionCookieTimeoutInSeconds(3600);
+        if (result instanceof RegistrationSuccess) {
 
+            final RegistrationSuccess success = (RegistrationSuccess) result;
+            contractor = success.getContractor();
+            user = success.getUser();
+            permissions = logInUser();
+            addClientSessionCookieToResponse();
+            setLoginLog(permissions);
+            // they don't have an account yet so they won't get this as a default
+            permissions.setSessionCookieTimeoutInSeconds(3600);
 
-		addNoteThatRequestRegistered();
+            return setUrlForRedirect(getRegistrationStep().getUrl());
 
-		return setUrlForRedirect(getRegistrationStep().getUrl());
+        } else {
+            //FIXME: Find a better way to deal with this.
+            throw new Exception(((RegistrationFailure) result).getProblem());
+        }
+
 	}
 
 	public String getRegistrationKey() {
@@ -194,24 +198,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	}
 
 
-
-
-
-
-	private void addNoteThatRequestRegistered() {
-
-		if (contractor.getStatus().isRequested()) {
-			Note note = addNote(contractor, "Requested Contractor Registered");
-			note.setBody("Contractor '" + contractor.getName() + "' requested by "
-					+ contractor.getRequestedBy().getName() + " has registered.");
-			dao.save(note);
-
-			contractor.setStatus(AccountStatus.Pending);
-			contractor.setRegistrationHash(null);
-			contractorAccountDao.save(contractor);
-		}
-	}
-
 	private void setLoginLog(Permissions permissions) {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
@@ -224,6 +210,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 				serverName = InetAddress.getLocalHost().getHostName();
 			}
 		} catch (UnknownHostException justUseRequestServerName) {
+            //FIXME: Error swallowing.
 		}
 
 		loginLog.setServerAddress(serverName);

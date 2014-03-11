@@ -4,8 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.service.account.AccountService;
@@ -35,15 +33,14 @@ public class RegistrationService {
 
     public RegistrationService(
             RegistrationBillingBean bean,
-
-            //FIXME: Remove the dao in favor of a service call.
-            AppUserDAO appUserDAO,
-            AppUserService service,
-
             AccountService accountService,
             LanguageModel supportedLanguages,
             UserService userService,
-            RegistrationRequestService regReqService
+            RegistrationRequestService regReqService,
+
+            //FIXME: Remove the dao in favor of a service call.
+            AppUserDAO appUserDAO,
+            AppUserService service
     ) {
         this.billingBean = bean;
         this.appUserService = service;
@@ -58,7 +55,15 @@ public class RegistrationService {
         return new RegistrationSubmission(this);
     }
 
-    void doRegistration(RegistrationSubmission registrationSubmission) {
+    RegistrationResult doRegistration(RegistrationSubmission registrationSubmission) {
+        try {
+            return attemptRegistration(registrationSubmission);
+        } catch (Exception e) {
+            return new RegistrationResult.RegistrationFailure(e);
+        }
+    }
+
+    private RegistrationResult.RegistrationSuccess attemptRegistration(RegistrationSubmission registrationSubmission) {
         //Create the entities.
         User newUser = createUserFrom(registrationSubmission);
         ContractorAccount newAccount = createContractorAccountFrom(registrationSubmission);
@@ -87,6 +92,8 @@ public class RegistrationService {
 
         //Propagate the registration events.
         publishCreation(newAccount);
+
+        return new RegistrationResult.RegistrationSuccess(newAccount, newUser);
     }
 
     private void publishCreation(ContractorAccount newAccount) {
@@ -179,4 +186,5 @@ public class RegistrationService {
             throw new RuntimeException("App User Service is Down.");
         }
     }
+
 }

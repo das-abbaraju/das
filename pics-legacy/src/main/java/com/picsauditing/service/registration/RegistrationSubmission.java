@@ -25,8 +25,8 @@ public class RegistrationSubmission {
 
     RegistrationSubmission ( RegistrationService s ) { this.parentService = s; }
 
-    public void submit() {
-        parentService.doRegistration(this);
+    public RegistrationResult submit() {
+        return parentService.doRegistration(this);
     }
 
 
