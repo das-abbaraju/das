@@ -234,11 +234,11 @@ public class RegistrationForm {
         this.zip = zip;
     }
 
-    public String getVatID() {
+    public String getVatId() {
         return vatID;
     }
 
-    public void setVatID(String vatID) {
+    public void setVatId(String vatID) {
         this.vatID = vatID;
     }
 
@@ -289,7 +289,7 @@ public class RegistrationForm {
             .setCountryISO(this.getCountryISOCode())
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
-            .setVatID(this.getVatID())
+            .setVatID(this.getVatId())
             .setCountrySubdivision(this.getCountrySubdivision());
 
         return submission;

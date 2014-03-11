@@ -78,7 +78,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	}
 
     private RegistrationLocaleForm getLocaleFromRequestData() {
-        if (Strings.isNotEmpty(localeForm.getLanguage())) return localeForm;
+        if (localeForm != null && Strings.isNotEmpty(localeForm.getLanguage())) return localeForm;
 
         final RegistrationLocaleForm newForm = new RegistrationLocaleForm();
         final ActionContext context = ActionContext.getContext();

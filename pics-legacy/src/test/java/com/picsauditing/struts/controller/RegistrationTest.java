@@ -78,14 +78,12 @@ public class RegistrationTest extends PicsTranslationTest {
 		setInternalState(classUnderTest, "invoiceFeeDAO", feeDAO);
 		setInternalState(classUnderTest, "operatorTagDAO", operatorTagDAO);
 		classUnderTest.setContractor(contractor);
-		classUnderTest.setUser(mockUser);
 		when(contractor.getFees()).thenReturn(contractorFees);
 		when(contractor.getCountry()).thenReturn(country);
 		when(contractor.getNaics()).thenReturn(new Naics());
 		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
         when(country.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
-		classUnderTest.setSapAppPropertyUtil(sapAppPropertyUtil);
 	}
 
 	@Test
@@ -93,8 +91,6 @@ public class RegistrationTest extends PicsTranslationTest {
 		when(contractor.getName()).thenReturn(DEMO_NAME);
 		when(country.isHasCountrySubdivisions()).thenReturn(false);
 		when(contractor.getUsers()).thenReturn(new ArrayList<User>());
-
-		classUnderTest.setupContractorData();
 
 		verify(contractor).setName(anyString());
 		verify(contractor).setStatus(AccountStatus.Demo);
@@ -107,12 +103,10 @@ public class RegistrationTest extends PicsTranslationTest {
 	@Ignore("Expediting fix of PICS-8975")
 	@Test
 	public void testSetupContractorData_noDemo_HasSubdivisions_matchedInput() {
-		classUnderTest.setCountrySubdivision(countrySubdivision);
 		when(contractor.getName()).thenReturn(REAL_NAME);
 		when(country.isHasCountrySubdivisions()).thenReturn(true);
 		when(contractor.getCountrySubdivision()).thenReturn(countrySubdivision);
 
-		classUnderTest.setupContractorData();
 
 		verify(contractor, never()).setName(anyString());
 		verify(contractor, never()).setStatus(any(AccountStatus.class));
@@ -124,12 +118,10 @@ public class RegistrationTest extends PicsTranslationTest {
 	@Ignore("Expediting fix of PICS-8975")
 	@Test
 	public void testSetupContractorData_noDemo_HasSubdivisions_unMatchedInput() {
-		classUnderTest.setCountrySubdivision(new CountrySubdivision("XX"));
 		when(contractor.getName()).thenReturn(REAL_NAME);
 		when(country.isHasCountrySubdivisions()).thenReturn(true);
 		when(contractor.getCountrySubdivision()).thenReturn(countrySubdivision);
 
-		classUnderTest.setupContractorData();
 
 		verify(contractor, never()).setName(anyString());
 		verify(contractor, never()).setStatus(any(AccountStatus.class));

@@ -158,7 +158,16 @@
           scope="prototype"/>
     <bean id="RegistrationBillingBean" class="com.picsauditing.service.billing.RegistrationBillingBean" />
     <bean id="RegistrationRequestService" class="com.picsauditing.service.registration.RegistrationRequestService" />
-    <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService" />
+    <bean id="AltUserService" class="com.picsauditing.service.user.UserService" />
+    <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService">
+        <constructor-arg ref="RegistrationBillingBean" />
+        <constructor-arg ref="ContractorAccountService" />
+        <constructor-arg ref="AppUserService" />
+        <constructor-arg ref="AppUserDAO" />
+        <constructor-arg ref="LanguageModel" />
+        <constructor-arg ref="AltUserService" />
+        <constructor-arg ref="RegistrationRequestService" />
+    </bean>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
@@ -241,6 +250,7 @@
     <bean id="EmailLog" class="com.picsauditing.service.email.logging.SimpleEmailLogger"/>
     <bean id="SpringContextEmailEventPublisher" class="com.picsauditing.service.email.events.publisher.SpringContextEmailEventPublisher"/>
     <bean id="SpringContextAccountEventPublisher" class="com.picsauditing.service.account.events.SpringContextAccountEventPublisher"/>
+    <bean id="UserEventPublisher" class="com.picsauditing.service.user.events.publisher.SpringContextUserEventPublisher" />
     <bean id="EmailEventService" class="com.picsauditing.service.email.EmailService">
         <constructor-arg ref="SpringContextEmailEventPublisher"/>
         <constructor-arg ref="EmailSender"/>
