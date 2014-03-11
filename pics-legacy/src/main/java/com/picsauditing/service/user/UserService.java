@@ -14,17 +14,14 @@ public class UserService {
     private UserEventPublisher userEventPublisher;
 
 
-    public void createUserFor(ContractorAccount contractor, User user) {
-        //set up default data
-        //validate email
-        //app user
-
-        //persist(user);
-    }
-
     public void persist(User u) {
         userDAO.save(u);
-        publish(u, UserEventType.Creation);
+
+        if (u.getId() == 0) {
+            userDAO.refresh(u);
+            publish(u, UserEventType.Creation);
+        }
+
     }
 
     private void publish(User u, UserEventType event) {

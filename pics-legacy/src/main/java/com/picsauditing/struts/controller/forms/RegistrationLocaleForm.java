@@ -1,5 +1,7 @@
 package com.picsauditing.struts.controller.forms;
 
+import com.picsauditing.util.Strings;
+
 import java.util.Locale;
 
 public class RegistrationLocaleForm {
@@ -9,7 +11,13 @@ public class RegistrationLocaleForm {
     private String language;
 
     public Locale getLocale() {
-        return locale;
+        if (locale != null) {
+            return locale;
+        } else if (Strings.isNotEmpty(language)) {
+            return new Locale(language, Strings.isEmpty(dialect) ? null : dialect);
+        } else {
+            return Locale.US;
+        }
     }
 
     public void setLocale(String locale) {

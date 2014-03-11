@@ -13,20 +13,17 @@ public class RegistrationSubmission {
     private String userFirstName;
     private String userLastName;
     private String address;
-    private String phoneNumber;
+    private String address2;
+    private String countrySubdivision;
     private String zip;
     private String countryISO;
+    private String phoneNumber;
     private TimeZone timeZone;
     private String vatID;
-    private String countrySubdivision;
     private Locale locale;
-    private String address2;
+    private String registrationRequestHash;
 
-    RegistrationSubmission (
-            RegistrationService s
-    ) {
-        this.parentService = s;
-    }
+    RegistrationSubmission ( RegistrationService s ) { this.parentService = s; }
 
     public void submit() {
         parentService.doRegistration(this);
@@ -166,5 +163,14 @@ public class RegistrationSubmission {
 
     public String getAddress2() {
         return address2;
+    }
+
+    public String getRegistrationRequestHash() {
+        return registrationRequestHash;
+    }
+
+    public RegistrationSubmission setRegistrationRequestHash(String registrationRequestHash) {
+        this.registrationRequestHash = registrationRequestHash;
+        return this;
     }
 }

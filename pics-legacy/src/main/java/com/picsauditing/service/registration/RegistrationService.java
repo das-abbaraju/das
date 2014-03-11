@@ -4,30 +4,54 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.service.account.AccountService;
+import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.billing.RegistrationBillingBean;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.DataScrubber;
+import com.picsauditing.util.Strings;
 import org.apache.commons.lang.math.NumberUtils;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
+import java.util.Locale;
 
+// Logic extracted from Registration.java
 public class RegistrationService {
 
     private static final String DEMO_CONTRACTOR_NAME_MARKER = "^^^";
 
     private final RegistrationBillingBean billingBean;
+    private final AccountService accountService;
     private final AppUserService appUserService;
     private final AppUserDAO appUserDAO;
+    private final LanguageModel supportedLanguages;
+    private final UserService userService;
+    private final RegistrationRequestService regReqService;
 
     public RegistrationService(
             RegistrationBillingBean bean,
+
+            //FIXME: Remove the dao in favor of a service call.
+            AppUserDAO appUserDAO,
             AppUserService service,
-            AppUserDAO appUserDAO
+
+            AccountService accountService,
+            LanguageModel supportedLanguages,
+            UserService userService,
+            RegistrationRequestService regReqService
     ) {
         this.billingBean = bean;
         this.appUserService = service;
         this.appUserDAO = appUserDAO;
+        this.accountService = accountService;
+        this.supportedLanguages = supportedLanguages;
+        this.userService = userService;
+        this.regReqService = regReqService;
     }
 
     public RegistrationSubmission newRegistration() {
@@ -35,17 +59,42 @@ public class RegistrationService {
     }
 
     void doRegistration(RegistrationSubmission registrationSubmission) {
+        //Create the entities.
         User newUser = createUserFrom(registrationSubmission);
         ContractorAccount newAccount = createContractorAccountFrom(registrationSubmission);
         AppUser appUser = createAppUserFrom(newUser);
 
-        
-        // TODO: Link Entities
-        // TODO: Persist Entities
+        // Persist the account to get an ID.
+        accountService.persist(newAccount);
+
+        //Make connections requiring the ID.
+        newUser.setAccount(newAccount);
+        newAccount.getUsers().add(newUser);
+        newAccount.setPrimaryContact(newUser);
+
+        //FIXME: What does this mean? Agree to what?? This is poorly named.
+        newAccount.setAgreedBy(newUser);
+        newAccount.setAgreementDate(new Date());
+
+        //Persist the user to get the user ID back.
+        userService.persist(newUser);
+        //Re-persist the contractor, because we added the user.
+        //I'm not actually sure this is necessary. Does the User save cascade?
+        accountService.persist(newAccount);
+
+        //This probably doesn't need to be done syncrhonously.
+        appUserDAO.save(appUser);
+
+        //Propagate the registration events.
+        publishCreation(newAccount);
+    }
+
+    private void publishCreation(ContractorAccount newAccount) {
+        accountService.publishEvent(newAccount, ContractorEventType.Registration);
     }
 
     private ContractorAccount createContractorAccountFrom(RegistrationSubmission form) {
-        ContractorAccount registrant = new ContractorAccount();
+        ContractorAccount registrant = checkForPreExistingSubmission(form);
         registrant.setType("Contractor");
         registrant.setAddress(form.getAddress());
         registrant.setAddress2(form.getAddress2());
@@ -59,18 +108,25 @@ public class RegistrationService {
         registrant.setNameIndex();
 
 
-        //TODO: Extract NAICS logic into it's own class / service.
+        //FIXME: Extract NAICS logic into it's own class / service.
         registrant.setNaics(new Naics());
         registrant.getNaics().setCode("0");
         registrant.setNaicsValid(false);
 
-        //TODO: Put this logic somewhere else.
+        //FIXME: Put this logic somewhere else. Maybe another listener? Does this need to be synchronous?
         billingBean.assessInitialFees(registrant);
 
         if (registrant.getCountry().isUK())
             registrant.setZip(DataScrubber.cleanUKPostcode(registrant.getZip()));
 
         return checkForDemo(registrant);
+    }
+
+    private ContractorAccount checkForPreExistingSubmission(RegistrationSubmission form) {
+        if (Strings.isNotEmpty(form.getRegistrationRequestHash()))
+            return regReqService.preRegistrationFromKey(form.getRegistrationRequestHash());
+        else
+            return new ContractorAccount();
     }
 
     private ContractorAccount checkForDemo(ContractorAccount registrant) {
@@ -86,7 +142,7 @@ public class RegistrationService {
         registrant.setEmail(form.getEmail());
         registrant.setFirstName(form.getUserFirstName());
         registrant.setLastName(form.getUserLastName());
-        registrant.setName(form.getUserFirstName() + " " + form.getUserLastName());
+        registrant.updateDisplayNameBasedOnFirstAndLastName();
         registrant.setPhone(form.getPhoneNumber());
         registrant.setPassword(form.getPassword());
         registrant.setUsername(form.getUserName());
@@ -101,9 +157,17 @@ public class RegistrationService {
         registrant.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
         registrant.setLastLogin(new Date());
 
+        registrant.setLocale(closestAvailableLanguage(form.getLocale()));
+
         return registrant;
     }
 
+    private Locale closestAvailableLanguage(Locale locale) {
+        return supportedLanguages.getClosestVisibleLocale(locale);
+    }
+
+    //FIXME: JSON parsing from an internal service? Are you kidding me?
+    // This can probably be done asynchronously, too.
     private AppUser createAppUserFrom(User user) {
         String username = user.getUsername();
         JSONObject appUserResponse = appUserService.createNewAppUser(username, user.getPassword());
@@ -111,8 +175,8 @@ public class RegistrationService {
             int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
             return appUserDAO.findByAppUserID(appUserID);
         } else {
+            // FIXME: Find a better way to deal with a non-success.
             throw new RuntimeException("App User Service is Down.");
-            // TODO: Find a better way to deal with a non-success.
         }
     }
 }
