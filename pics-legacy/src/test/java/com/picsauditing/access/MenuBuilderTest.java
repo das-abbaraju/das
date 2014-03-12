@@ -65,9 +65,9 @@ public class MenuBuilderTest extends PicsActionTest {
         PicsTestUtil.resetSpringUtilsBeans();
     }
 
-    @Ignore
     @Test
     public void testBuildMenubar_noPermissions() throws Exception {
+        MenuBuilder.setUrlUtils(urlUtils);
         when(translationService.getText("global.Company",Locale.ENGLISH)).thenReturn("Company");
         when(translationService.getText("menu.Reports",Locale.ENGLISH)).thenReturn("Reports");
         when(translationService.getText("menu.Manage",Locale.ENGLISH)).thenReturn("Manage");
