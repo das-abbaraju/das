@@ -24,6 +24,7 @@ angular.module('PICS.charts', [])
             .endAngle(arcEndAngle)
             .value(function(d) { return d; });
 
+        d3.select('chart').html('');
 
         var chart = d3.select(element)
                         .append('svg')
