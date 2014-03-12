@@ -1,15 +1,15 @@
 package com.picsauditing.util;
 
+import com.picsauditing.security.EncodedMessage;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.picsauditing.security.EncodedMessage;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Strings {
 
@@ -453,13 +453,6 @@ public class Strings {
 			number = number.substring(0, number.length() - 1);
 		}
 		return number;
-	}
-
-	public static String maskSSN(String ssn) {
-		if (Strings.isEmpty(ssn))
-			return null;
-		ssn.replaceFirst("^(\\d{3})(\\d{2})(\\d{4})$", "XXX-XX-$3");
-		return "XXX-XX-" + ssn.substring(ssn.length() - 4);
 	}
 
 	/**
