@@ -7,9 +7,9 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
+import com.picsauditing.dao.LegacyEmployeeDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -36,7 +36,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public static final String LOAD = "load";
 
 	protected Employee employee;
-	protected String ssn;
 
 	protected ContractorAudit audit;
 	protected int[] initialClients;
@@ -147,8 +146,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (employee.getAccount() == null) {
 			employee.setAccount(account);
 		}
-
-		checkSsn();
 
 		if (!Strings.isEmpty(employee.getEmail()) && employee.getEmail().length() > 0) {
 			employee.setEmail(EmailAddressUtils.validate(employee.getEmail()));
@@ -282,13 +279,13 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		errorMessageKey = inputValidator.validateEmail(employee.getEmail(), false);
 		addFieldErrorIfMessage("employee.email", errorMessageKey);
 
-        if (permissions.hasGroup(User.GROUP_CSR)) {
-            errorMessageKey = inputValidator.validatePicsCSRPhoneNumber(employee.getPhone(), false);
-            addFieldErrorIfMessage("user.phone", errorMessageKey);
-        } else {
-            errorMessageKey = inputValidator.validatePhoneNumber(employee.getPhone(), false);
-            addFieldErrorIfMessage("user.phone", errorMessageKey);
-        }
+		if (permissions.hasGroup(User.GROUP_CSR)) {
+			errorMessageKey = inputValidator.validatePicsCSRPhoneNumber(employee.getPhone(), false);
+			addFieldErrorIfMessage("user.phone", errorMessageKey);
+		} else {
+			errorMessageKey = inputValidator.validatePhoneNumber(employee.getPhone(), false);
+			addFieldErrorIfMessage("user.phone", errorMessageKey);
+		}
 
 		errorMessageKey = inputValidator.validatePhoneNumber(employee.getPhone(), false);
 		addFieldErrorIfMessage("employee.phone", errorMessageKey);
@@ -316,16 +313,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
-	}
-
-	public String getSsn() {
-		return Strings.maskSSN(employee.getSsn());
-	}
-
-	public void setSsn(String ssn) {
-		ssn = ssn.replaceAll("[^X0-9]", "");
-		if (ssn.length() <= 9)
-			this.ssn = ssn;
 	}
 
 	public ContractorAudit getAudit() {
@@ -658,16 +645,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	private void loadActiveEmployees() {
 		activeEmployees = legacyEmployeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
-	}
-
-	private void checkSsn() {
-		if (!Strings.isEmpty(ssn)) {
-			if (ssn.length() == 9) {
-				employee.setSsn(ssn);
-			} else if (!ssn.matches("X{5}\\d{4}")) {
-				addActionError("Invalid social security number entered.");
-			}
-		}
 	}
 
 	private void addInitialSites() {

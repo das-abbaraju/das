@@ -1,21 +1,12 @@
 package com.picsauditing.util;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.JobRoleDAO;
-import com.picsauditing.dao.JobSiteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.JobRole;
-import com.picsauditing.jpa.entities.JobSite;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportFilterEmployee extends ReportFilter {
@@ -26,7 +17,6 @@ public class ReportFilterEmployee extends ReportFilter {
 	private boolean showFirstName = true;
 	private boolean showLastName = true;
 	private boolean showEmail = true;
-	private boolean showSsn = true;
 	private boolean showLimitEmployees = false;
 	private boolean showProjects = false;
 	private boolean showAssessmentCenter = false;
@@ -38,7 +28,6 @@ public class ReportFilterEmployee extends ReportFilter {
 	private String firstName;
 	private String lastName;
 	private String email;
-	private String ssn;
 	private boolean limitEmployees = true;
 	private int[] projects;
 	private int[] assessmentCenters;
@@ -86,14 +75,6 @@ public class ReportFilterEmployee extends ReportFilter {
 
 	public void setShowEmail(boolean showEmail) {
 		this.showEmail = showEmail;
-	}
-
-	public boolean isShowSsn() {
-		return showSsn;
-	}
-
-	public void setShowSsn(boolean showSsn) {
-		this.showSsn = showSsn;
 	}
 
 	public boolean isShowLimitEmployees() {
@@ -178,16 +159,6 @@ public class ReportFilterEmployee extends ReportFilter {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getSsn() {
-		return ssn;
-	}
-
-	public void setSsn(String ssn) {
-		ssn = ssn.replaceAll("[^X0-9]", "");
-		if (ssn.length() <= 9)
-			this.ssn = ssn;
 	}
 
 	public boolean isLimitEmployees() {
