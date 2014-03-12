@@ -14499,13 +14499,18 @@ body {
   color: #226396;
   display: inline-block;
   float: right;
+  margin-right: 15px;
   margin-top: 17px;
 }
-/* line 119, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 120, ../src/common/layout/menu/_primary-navigation.scss */
+#primary_navigation .contact-us-link.has-search-box {
+  margin-right: 0;
+}
+/* line 124, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .contact-us-link:hover {
   color: #73bbe8;
 }
-/* line 127, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 132, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -14518,7 +14523,7 @@ body {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   color: #fff;
 }
-/* line 139, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 144, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a.dropdown-toggle {
   color: #fff;
   background-color: #3f93c0;
@@ -14538,11 +14543,11 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   padding: 6px 15px 7px;
 }
-/* line 155, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 160, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to.open a.dropdown-toggle {
   padding-top: 6px;
 }
-/* line 161, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 166, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:hover,
 #primary_navigation .nav .switch-to > a:focus {
   background-color: #3f93c0;
@@ -14554,7 +14559,7 @@ body {
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-/* line 170, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 175, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:active {
   background-color: #3f93c0;
   background-image: none;
@@ -14563,7 +14568,7 @@ body {
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 178, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 183, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account {
   display: inline-block;
   display: inline \9;
@@ -14571,22 +14576,22 @@ body {
   margin-right: 5px;
   text-align: right;
 }
-/* line 186, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 191, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account span {
   font-size: 10px;
 }
-/* line 192, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 197, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .icon-cog {
   vertical-align: 5px;
 }
 
 @media (max-width: 991px) {
-  /* line 199, ../src/common/layout/menu/_primary-navigation.scss */
+  /* line 204, ../src/common/layout/menu/_primary-navigation.scss */
   #primary_navigation {
     display: none;
   }
 }
-/* line 204, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 209, ../src/common/layout/menu/_primary-navigation.scss */
 body.has-contractor-menu #primary_navigation.navbar-inner {
   border-bottom: none;
 }
