@@ -14,7 +14,7 @@ public class RegistrationLocaleForm {
         if (locale != null) {
             return locale;
         } else if (Strings.isNotEmpty(language)) {
-            return new Locale(language, Strings.isEmpty(dialect) ? null : dialect);
+            return new Locale(language, Strings.isEmpty(dialect) ? "" : dialect);
         } else {
             return Locale.US;
         }

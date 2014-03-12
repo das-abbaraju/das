@@ -70,7 +70,7 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 
     @After
     public void tearDown() throws Exception {
-        Whitebox.setInternalState(PaymentServiceFactory.class, "featureToggle", null);
+        Whitebox.setInternalState(PaymentServiceFactory.class, "featureToggle", (Object) null);
         SpringUtils springUtils = new SpringUtils();
         springUtils.setApplicationContext(null);
     }

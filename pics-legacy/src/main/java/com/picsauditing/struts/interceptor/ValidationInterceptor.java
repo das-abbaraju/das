@@ -54,7 +54,8 @@ public class ValidationInterceptor extends JSONValidationInterceptor {
             PicsFormBindingInterceptor.ErrorPreResultListener errorPreResultListener =
                     (PicsFormBindingInterceptor.ErrorPreResultListener) ActionContext.getContext().getValueStack()
                     .getContext().get(PicsFormBindingInterceptor.ERROR_PRE_RESULT_LISTENER);
-            errorPreResultListener.beforeResult(invocation, Action.NONE);
+            if (errorPreResultListener != null)
+                errorPreResultListener.beforeResult(invocation, Action.NONE);
             response.getWriter().print(super.buildResponse((ValidationAware) invocation.getAction()));
         } else {
             response.getWriter().print("{}");
