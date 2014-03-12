@@ -74,6 +74,7 @@ public class RegistrationService {
 
         //Make connections requiring the ID.
         newUser.setAccount(newAccount);
+        newUser.setAppUser(appUser);
         newAccount.getUsers().add(newUser);
         newAccount.setPrimaryContact(newUser);
 
@@ -102,10 +103,12 @@ public class RegistrationService {
 
     private ContractorAccount createContractorAccountFrom(RegistrationSubmission form) {
         ContractorAccount registrant = checkForPreExistingSubmission(form);
+        registrant.setName(form.getContractorName());
         registrant.setType("Contractor");
         registrant.setAddress(form.getAddress());
         registrant.setAddress2(form.getAddress2());
         registrant.setVatId(form.getVatID());
+        registrant.setCountry(new Country(form.getCountryISO()));
         registrant.setCountrySubdivision(new CountrySubdivision(form.getCountrySubdivision()));
         registrant.setStatus(AccountStatus.Pending);
         registrant.setLocale(form.getLocale());
@@ -123,7 +126,7 @@ public class RegistrationService {
         //FIXME: Put this logic somewhere else. Maybe another listener? Does this need to be synchronous?
         billingBean.assessInitialFees(registrant);
 
-        if (registrant.getCountry().isUK())
+        if (registrant.getCountry() != null && registrant.getCountry().isUK())
             registrant.setZip(DataScrubber.cleanUKPostcode(registrant.getZip()));
 
         return checkForDemo(registrant);

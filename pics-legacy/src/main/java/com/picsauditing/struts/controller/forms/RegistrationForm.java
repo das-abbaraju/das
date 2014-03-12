@@ -290,7 +290,8 @@ public class RegistrationForm {
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
             .setVatID(this.getVatId())
-            .setCountrySubdivision(this.getCountrySubdivision());
+            .setCountrySubdivision(this.getCountrySubdivision())
+            .setCountryISO(this.getCountryISOCode());
 
         return submission;
     }
