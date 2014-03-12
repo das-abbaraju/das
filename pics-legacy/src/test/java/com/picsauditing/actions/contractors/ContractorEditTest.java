@@ -16,7 +16,6 @@ import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.validator.ContractorValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -28,9 +27,9 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
-import static org.mockito.Mockito.verify;
 
 public class ContractorEditTest extends PicsActionTest {
 	private ContractorEdit classUnderTest;
@@ -187,19 +186,19 @@ public class ContractorEditTest extends PicsActionTest {
 	public void testSave_AddNote_StatusChanged() throws Exception {
 		classUnderTest.setContactID(0);
 		save_justGetThroughTheMethod();
-		when(request.getParameter(anyString())).thenReturn(AccountStatus.Deactivated.toString());
+		when(request.getParameter("currentStatus")).thenReturn(AccountStatus.Deactivated.toString());
 		when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
 
 		classUnderTest.save();
 
-		verify(mockNoteDao).save(any(Note.class));
+		verify(mockNoteDao, times(1)).save(any(Note.class));
 	}
 
 	@Test
 	public void testSave_DoNotAddNote_NoStatusChange() throws Exception {
 		classUnderTest.setContactID(0);
 		save_justGetThroughTheMethod();
-		when(request.getParameter(anyString())).thenReturn(AccountStatus.Active.toString());
+		when(request.getParameter("currentStatus")).thenReturn(AccountStatus.Active.toString());
 		when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
 
 		classUnderTest.save();

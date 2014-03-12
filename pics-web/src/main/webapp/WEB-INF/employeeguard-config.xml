@@ -45,7 +45,6 @@
           class="com.picsauditing.employeeguard.services.EmployeeGuardServiceDisabler"/>
     <bean id="EmployeeLoginService" class="com.picsauditing.employeeguard.services.LoginService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
-    <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.EmployeeEntityService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
     <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>
     <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
@@ -57,7 +56,14 @@
     <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
 
     <!-- Entity Services -->
-    <bean id="SkillEntityService" class="com.picsauditing.employeeguard.services.entity.SkillService"/>
+    <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.EmployeeEntityService"/>
+    <bean id="ProjectEntityService" class="com.picsauditing.employeeguard.services.entity.ProjectEntityService"/>
+    <bean id="RoleEntityService" class="com.picsauditing.employeeguard.services.entity.RoleEntityService"/>
+    <bean id="SkillEntityService" class="com.picsauditing.employeeguard.services.entity.SkillEntityService"/>
+
+    <!-- Business Services -->
+    <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
+    <bean id="ProjectAssignmentService" class="com.picsauditing.employeeguard.services.ProjectAssignmentService"/>
 
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>

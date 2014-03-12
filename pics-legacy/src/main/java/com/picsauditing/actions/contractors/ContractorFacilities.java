@@ -5,12 +5,14 @@ import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.PICS.SmartFacilitySuggest;
+import com.picsauditing.contractor.service.ContractorFacilitiesService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.service.contractor.TopLevelOperatorFinder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.NoteFactory;
@@ -40,6 +42,10 @@ public class ContractorFacilities extends ContractorActionSupport {
     private BillingService billingService;
     @Autowired
     private FeeService feeService;
+    @Autowired
+    private TopLevelOperatorFinder topLevelOperatorFinder;
+    @Autowired
+    private ContractorFacilitiesService contractorFacilitiesService;
 
     public Boolean competitorAnswer;
     private ContractorType type = null;
@@ -54,6 +60,7 @@ public class ContractorFacilities extends ContractorActionSupport {
     private List<OperatorAccount> searchResults = null;
 
     private Database database; // for injecting for unit tests
+
 
     public ContractorFacilities() {
         this.noteCategory = NoteCategory.OperatorChanges;
@@ -100,14 +107,16 @@ public class ContractorFacilities extends ContractorActionSupport {
         prepareFacilityChanger();
 
         if (contractor.meetsOperatorRequirements(operator)) {
-            contractor.setRenew(true);
-            facilityChanger.add();
+            contractorFacilitiesService.addContractorFacilityForQualifiedContractor(contractor, operator, facilityChanger);
+	        // todo: Try to move the rest of this method into contractorFacilitiesService.
+
 	        sendRequestResponse(322);
 
             reviewCategories(EventType.Locations);
 
-            if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
+            if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending()) {
                 contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
+            }
 
             feeService.calculateContractorInvoiceFees(contractor);
             billingService.syncBalance(contractor);

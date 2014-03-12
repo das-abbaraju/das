@@ -114,7 +114,12 @@
         color: $pics_link_blue;
         display: inline-block;
         float: right;
+        margin-right: 15px;
         margin-top: 17px;
+
+        &.has-search-box {
+            margin-right: 0;
+        }
 
         &:hover {
             color: $pics_light_blue;

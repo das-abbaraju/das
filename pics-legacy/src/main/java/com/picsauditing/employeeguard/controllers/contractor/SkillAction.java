@@ -14,6 +14,7 @@ import com.picsauditing.employeeguard.forms.contractor.SkillForm;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.validators.skill.SkillFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.SkillModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
@@ -40,7 +41,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	@Autowired
 	private SkillService skillService;
 	@Autowired
-	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
+	private SkillEntityService skillEntityService;
 	@Autowired
 	private SkillFormValidator skillFormValidator;
 

@@ -9,7 +9,6 @@ import com.picsauditing.util.SapAppPropertyUtil;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.*;
 

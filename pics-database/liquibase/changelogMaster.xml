@@ -171,5 +171,12 @@
 	<include file="./liquibase/2014/Q1/kchase29_PICS-14615_UpdateViewable.sql"/>
 	<include file="./liquibase/2014/Q1/dalvarado_US351_recreate_contactor_certificate_table.sql"/>
 	<include file="./liquibase/2014/Q1/lkam6_US284_Update_PQF_Workflow.sql"/>
+	
+	<!-- 7.2.1 --> 
+	<include file="./liquibase/2014/Q1/gmeurer4_US494-TA707_MakeBrainTreeUrlConfigurable.sql"/>
+
+	<!-- 7.2.2 --> 
+	<include file="./liquibase/2014/Q1/lkam7_US285_AddedSalesForceId.sql"/>
+	<include file="./liquibase/2014/Q1/kchase31_PICS-14720_UpdateNotesViewableBy.sql"/>
 
 </databaseChangeLog>

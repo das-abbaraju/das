@@ -3,9 +3,9 @@
 
 <s:set var="menu_size" value="menu.children.size()" />
 <s:set var="last_menu_index" value="menu.children.size() - 1" />
+<s:set var="isContractor" value="permissions.contractor" />
 
 <s:url action="Search" var="search_url" />
-<s:url namespace="/" action="ContactUs" var="contact_us_url" />
 
 <div id="primary_navigation" class= "navbar-fixed-top bootstrap3">
     <div id="ie8_primary_navigation_background"></div>
@@ -33,9 +33,13 @@
                     <input type="text" class="input-sm typeahead form-control search-box" placeholder="Search">
                     <i class="icon-search icon-large"></i>
                 </div>
+                <s:set var="has_search_box_class">has-search-box</s:set>
             </form>
             </s:if>
-            <a class="contact-us-link" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
+            <s:else>
+                <s:set var="has_search_box_class" value="''" />
+            </s:else>
+            <a class="contact-us-link ${has_search_box_class}" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
         </nav>
     </div>
 </div>

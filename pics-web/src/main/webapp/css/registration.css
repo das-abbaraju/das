@@ -1153,7 +1153,8 @@ footer .footer-menu a {
 	box-shadow: inset 0px 2px 3px -1px #878787;
 }
 
-.registration-form input {
+.registration-form input,
+.registration-form .select2-container {
 	float: left;
 }
 

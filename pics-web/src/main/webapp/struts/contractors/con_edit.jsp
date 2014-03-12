@@ -42,7 +42,7 @@
     </div>
 </s:if>
 
-<s:form id="save" method="POST" enctype="multipart/form-data">
+<s:form id="save" method="POST">
 <br clear="all"/>
 
 <s:hidden name="id"/>
@@ -523,6 +523,17 @@
             </li>
         </pics:permission>
 
+        <s:set var="disabled" value="permissions.hasGroup(@com.picsauditing.jpa.entities.User@GROUP_MANAGER) ? '' : 'disabled'" />
+        <s:set var="salesforceIdHelpTextTitle"><s:text name="contractorEdit.salesforceIdHelpTextTitle" /></s:set>
+        <li>
+            <label><s:text name="contractorEdit.salesRepSalesForceIDLabel" /></label>
+            <input type="text" name="salesRepSalesForceID" value="${contractor.salesRepSalesForceID}" ${disabled} size="15" maxlength="15" />
+            <pics:fieldhelp title="${salesForceIdHelpTextTitle}">
+                <h5><s:text name="contractorEdit.salesRepSalesForceIDHelpTextHeader" /></h5>
+                <s:text name="contractorEdit.salesRepSalesForceIDHelpTextBody" />
+                <br />
+            </pics:fieldhelp>
+        </li>
     </ol>
 </fieldset>
 

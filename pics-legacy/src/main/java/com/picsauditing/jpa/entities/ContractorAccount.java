@@ -128,6 +128,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date registrationRequestExpiresOn;
 	private LowMedHigh insideSalesPriority = LowMedHigh.None;
 	private String registrationHash;
+    private String salesRepSalesForceID;
 
 	// Agreement Changed on Release date 6/3/2010
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
@@ -137,7 +138,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private InputValidator inputValidator;
 	private VATValidator vatValidator;
 	private CountryDAO countryDAO;
-
 	private static Logger logger = LoggerFactory.getLogger(ContractorAccount.class);
 
 	public ContractorAccount() {
@@ -1856,7 +1856,15 @@ public class ContractorAccount extends Account implements JSONable {
 		this.insideSalesPriority = insideSalesPriority;
 	}
 
-	public String getRegistrationHash() {
+    public String getSalesRepSalesForceID() {
+        return salesRepSalesForceID;
+    }
+
+    public void setSalesRepSalesForceID(String salesRepSalesForceID) {
+        this.salesRepSalesForceID = salesRepSalesForceID;
+    }
+
+    public String getRegistrationHash() {
 		return registrationHash;
 	}
 

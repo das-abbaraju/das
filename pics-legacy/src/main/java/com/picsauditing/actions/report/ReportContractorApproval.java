@@ -1,11 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.List;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.service.contractor.ContractorOperatorService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
@@ -13,9 +7,14 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportContractorApproval extends ReportAccount {
@@ -138,18 +137,20 @@ public class ReportContractorApproval extends ReportAccount {
                 if (cOperator.getWorkStatus() != workStatus) {
 				    if (operator.isOperator()) {
                         cOperator.setWorkStatus(workStatus);
-                        contractorOperatorService.cascadeWorkStatusToParent(cOperator);
                     } else {
                         cOperator.setForcedWorkStatus(workStatus);
-                   }
+                    }
 
-                   if (operator.isCorporate()) {
+                    cOperator.setAuditColumns(permissions);
+                    contractorOperatorDAO.save(cOperator);
+
+                    if (operator.isCorporate()) {
                         for (OperatorAccount childAccount: operator.getChildOperators()) {
                              approveContractor(cAccount, childAccount.getId(), workStatus);
                         }
-                   }
-                    cOperator.setAuditColumns(permissions);
-                    contractorOperatorDAO.save(cOperator);
+                    } else if (operator.isOperatorCorporate()) {
+                        contractorOperatorService.cascadeWorkStatusToParent(cOperator);
+                    }
                     break;
                  }
 			}

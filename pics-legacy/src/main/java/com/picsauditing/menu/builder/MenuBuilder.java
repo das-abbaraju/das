@@ -35,6 +35,7 @@ public final class MenuBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
 
 	public static ReportUserDAO reportUserDAO;
+	public static URLUtils urlUtils;
 
 	private MenuBuilder() {
 	}
@@ -152,7 +153,7 @@ public final class MenuBuilder {
 
 	private static void addCompanyMenu(MenuComponent menubar, Permissions permissions) {
 		MenuComponent companyMenu = menubar.addChild(getText("global.Company"));
-		URLUtils urlUtils = new URLUtils();
+		URLUtils urlUtils = urlUtils();
 
 		if (!permissions.isContractor()) {
 			companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), "Home.action", "dashboard");
@@ -176,7 +177,7 @@ public final class MenuBuilder {
 			}
 		}
 
-		if (permissions.isContractor() && !permissions.isInsuranceOnlyContractorUser()) {
+		if (!permissions.isOperator() && !permissions.isInsuranceOnlyContractorUser()) {
 			addCompanyMenuLinksFor(permissions.getAccountId(), !permissions.getAccountStatus().isDemo(), companyMenu, permissions);
 		}
 	}
@@ -188,22 +189,29 @@ public final class MenuBuilder {
 	}
 
 	private static void addCompanyMenuLinksFor(int accountId, boolean showBillingMenu, MenuComponent companyMenu, Permissions permissions) {
-		URLUtils urlUtils = new URLUtils();
+		URLUtils urlUtils = urlUtils();
 
 		String contractorTrades = urlUtils.getActionUrl("ContractorTrades", "id", accountId);
 		String contractorView = urlUtils.getActionUrl("ContractorView", "id", accountId);
 		String contractorNotes = urlUtils.getActionUrl("ContractorNotes", "id", accountId);
 
 		companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), contractorView, "contractor_dashboard");
+
+        if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorWatch)) {
+            String activityWatch = urlUtils.getActionUrl("ReportActivityWatch", "contractor", accountId);
+
+            companyMenu.addChild(getText("ReportActivityWatch.title"), activityWatch, "activity_watch");
+        }
+
 		companyMenu.addChild(getText("global.Notes"), contractorNotes, "contractor_notes");
 		companyMenu.addChild(getText("ContractorTrades.title"), contractorTrades, "contractor_trades");
 
-		if (permissions.isContractor() || permissions.isPicsEmployee()) {
-			if (permissions.isShowClientSitesLink()) {
-				String contractorFacilities = urlUtils.getActionUrl("ContractorFacilities", "id", accountId);
-				companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
-			}
+        if (permissions.isShowClientSitesLink()) {
+            String contractorFacilities = urlUtils.getActionUrl("ContractorFacilities", "id", accountId);
+            companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
+        }
 
+		if (permissions.isContractor() || permissions.isPicsEmployee()) {
 			String contractorEdit = urlUtils.getActionUrl("ContractorEdit", "id", accountId);
 			String contractorUsers = urlUtils.getActionUrl("UsersManage", "account", accountId);
 
@@ -488,13 +496,6 @@ public final class MenuBuilder {
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
 		MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
 
-		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
-			legacyMenu.addChild(getText("GeneralContractorList.title"), "GeneralContractorsList.action",
-					"GeneralContractorsList");
-			legacyMenu.addChild(getText("SubcontractorFlagMatrix.title"), "SubcontractorFlagMatrix.action",
-					"SubcontractorFlagMatrix");
-		}
-
 		// CONTRACTORS
 		FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
 		if (featureToggleChecker != null
@@ -573,7 +574,7 @@ public final class MenuBuilder {
 		}
 
 		supportMenu.addChild(getText("Registration.Error.LiveChat"), mibewUrl, "live_chat").setTarget("_blank");
-		supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
+		supportMenu.addChild(getText("global.ContactPICS"), "ContactUs.action", "contact_action");
 		supportMenu.addChild(getText("global.AboutPICS"), "About.action", "about_pics");
 
         addReferenceMenu(permissions, supportMenu);
@@ -809,4 +810,15 @@ public final class MenuBuilder {
 		}
 		return mibewURL.toString();
 	}
+
+    public static URLUtils urlUtils() {
+        if (urlUtils == null)
+            return new URLUtils();
+        else
+            return urlUtils;
+    }
+
+    public static void setUrlUtils(URLUtils urlUtils) {
+        MenuBuilder.urlUtils = urlUtils;
+    }
 }

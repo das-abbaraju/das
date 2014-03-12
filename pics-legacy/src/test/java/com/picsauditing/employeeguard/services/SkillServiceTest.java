@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.daos.ProjectSkillDAO;
 import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.*;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
@@ -50,7 +51,7 @@ public class SkillServiceTest {
 	@Mock
 	private SiteSkillDAO siteSkillDAO;
 	@Mock
-	private com.picsauditing.employeeguard.services.entity.SkillService skillEntityService;
+	private SkillEntityService skillEntityService;
 
 	@Before
 	public void setup() {

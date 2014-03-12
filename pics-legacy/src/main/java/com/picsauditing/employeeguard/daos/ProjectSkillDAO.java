@@ -15,7 +15,7 @@ public class ProjectSkillDAO extends AbstractBaseEntityDAO<ProjectSkill> {
 	}
 
 	public List<ProjectSkill> findByProjects(final Collection<Project> projects) {
-		if (CollectionUtils.isEmpty(projects)) {
+		if (CollectionUtils.isEmpty(projects)) { // TODO: Refactor and move this into the services
 			return Collections.emptyList();
 		}
 

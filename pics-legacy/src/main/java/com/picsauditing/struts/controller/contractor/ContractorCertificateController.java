@@ -1,6 +1,5 @@
 package com.picsauditing.struts.controller.contractor;
 
-import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -20,7 +19,7 @@ import java.util.Date;
 
 import static com.picsauditing.PICS.DateBean.buildDate;
 
-public class ContractorCertificateController extends PicsActionSupport  {
+public class ContractorCertificateController extends PicsActionSupport {
 
     public static final int ZERO_BASED_OFFSET = 1;
     public static final String URL_FOR_MANUAL_AUDIT = "/Audit.action?auditID=";
@@ -104,25 +103,6 @@ public class ContractorCertificateController extends PicsActionSupport  {
         } else {
             return URL_FOR_CONTRACTOR_SUMMARY + contractor.getId();
         }
-    }
-
-    public String ssipCertificate() throws UnauthorizedException, PageNotFoundException {
-        logger.info("DE377: In ContractorCertificateController.ssipCertificate...");
-        if (!permissions.isAuditor()) {
-            logger.error("DE377: User is not Auditor. Throwing UnauthorizedException... ");
-            throw new UnauthorizedException();
-        }
-
-        contractorCertificate = contractorCertificateService.getSsipCertificate(contractor);
-        if (contractorCertificate == null) {
-            logger.error("DE377: No certificate found for contractor: " + contractor.getId() + ". Throwing PageNotFoundException...");
-            throw new PageNotFoundException();
-        }
-
-        logger.info("DE377: Loaded contractorCertificate = " + contractorCertificate.toString());
-        logger.info("DE377: Returning ssip result...");
-
-        return "ssip";
     }
 
     private void validateInput(Date issueDate, Date expirationDate) {

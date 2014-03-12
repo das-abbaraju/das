@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:set var="last_menu_index" value="menu.children.size() - 1"/>
+<s:set var="last_menu_index" value="menu.children.size()"/>
 
 <div id="secondary_navigation" class="navbar navbar-fixed-top">
      <div id="ie8_secondary_navigation_background"></div>

@@ -86,7 +86,7 @@
 									</span>
 
 									<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">
-										<input type="text" value="<s:property value="getFormatted(criteriaValue())" />" name="newHurdle" size="10" class="editable" onkeyup="wait(<s:property value="id" />, <s:property value="account.id" />, this.value, 500);" <s:if test="criteria.dataType == 'date'">class="datepicker"</s:if> />
+										<input type="text" value="<s:property value="getFormatted(criteriaValue())" />" name="newHurdle" size="10" class="editable" onkeyup="wait(<s:property value="id" />, <s:property value="operator.id" />, this.value, 500);" <s:if test="criteria.dataType == 'date'">class="datepicker"</s:if> />
 									</s:if>
 									<s:elseif test="criteria.dataType == 'string'">
 										<span class="editable">

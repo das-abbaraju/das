@@ -1,18 +1,15 @@
 package com.picsauditing.dao;
 
-import java.util.*;
-
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.util.Strings;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class ContractorOperatorDAO extends PicsDAO {
@@ -39,7 +36,13 @@ public class ContractorOperatorDAO extends PicsDAO {
 		}
 	}
 
-	public List<ContractorOperator> findNewContractorOperators(int opID, int limit) {
+    public boolean isUnifiedWorkStatus(Integer opId) {
+        String sql = "select * from contractor_operator co where opid=" + opId + " group by workStatus";
+        Query query = em.createNativeQuery(sql);
+        return query.getResultList().size() == 1;
+    }
+
+    public List<ContractorOperator> findNewContractorOperators(int opID, int limit) {
 		if (limit < 0)
 			limit = 1;
 		/*

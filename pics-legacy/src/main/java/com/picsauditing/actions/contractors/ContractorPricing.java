@@ -1,13 +1,14 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.*;
-
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.contractor.PricingTier;
 import com.picsauditing.service.contractor.PricingTiersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Anonymous;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ContractorPricing extends ContractorActionSupport {

@@ -1,29 +1,27 @@
 package com.picsauditing.actions.contractors;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.FeeService;
+import com.picsauditing.PICS.TaxService;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.BrainTreeHash;
+import com.picsauditing.braintree.CreditCard;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.picsauditing.PICS.FeeService;
-import com.picsauditing.PICS.TaxService;
-import com.picsauditing.billing.BrainTree;
-import com.picsauditing.braintree.BrainTreeHash;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.RecordNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
-import com.picsauditing.braintree.CreditCard;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport implements Preparable {
@@ -559,4 +557,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	public String getCanadianTaxFeeMsgKey() {
 		return canadianTaxFeeMsgKey;
 	}
+
+    public String getPaymentUrl() {
+        return paymentService.getPaymentUrl();
+    }
 }

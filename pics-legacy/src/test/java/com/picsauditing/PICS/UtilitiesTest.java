@@ -180,51 +180,51 @@ public class UtilitiesTest {
 		return map;
 	}
 
-    private static final Utilities.MapConvertable<Integer, SimpleObject> SIMPLE_OBJECTMAP_CONVERTABLE = new Utilities.MapConvertable<Integer, SimpleObject>() {
+	private static final Utilities.MapConvertable<Integer, SimpleObject> SIMPLE_OBJECTMAP_CONVERTABLE = new Utilities.MapConvertable<Integer, SimpleObject>() {
 
-        @Override
-        public Integer getKey(SimpleObject entity) {
-            return entity.getId();
-        }
-    };
+		@Override
+		public Integer getKey(SimpleObject entity) {
+			return entity.getId();
+		}
+	};
 
-    @Test
-    public void testCoalesceIntoMap_EmptyCollection() {
-        Map<Integer, SimpleObject> result = Utilities.convertToMap(null, SIMPLE_OBJECTMAP_CONVERTABLE);
+	@Test
+	public void testCoalesceIntoMap_EmptyCollection() {
+		Map<Integer, SimpleObject> result = Utilities.convertToMap(null, SIMPLE_OBJECTMAP_CONVERTABLE);
 
-        assertTrue(result.isEmpty());
-    }
+		assertTrue(result.isEmpty());
+	}
 
-    @Test
-    public void testCoalesceIntoMap() {
-        Map<Integer, SimpleObject> result = Utilities.convertToMap(getSimpleObjects(), SIMPLE_OBJECTMAP_CONVERTABLE);
+	@Test
+	public void testCoalesceIntoMap() {
+		Map<Integer, SimpleObject> result = Utilities.convertToMap(getSimpleObjects(), SIMPLE_OBJECTMAP_CONVERTABLE);
 
-        verifyCoalesceIntoMapResult(result);
-    }
+		verifyCoalesceIntoMapResult(result);
+	}
 
-    private void verifyCoalesceIntoMapResult(Map<Integer, SimpleObject> result) {
-        Map<Integer, SimpleObject> correctResult = new HashMap<Integer, SimpleObject>() {{
-            put(1, new SimpleObject(1, "John"));
-            put(2, new SimpleObject(2, "Bob"));
-            put(3, new SimpleObject(3, "Mary"));
-        }};
+	private void verifyCoalesceIntoMapResult(Map<Integer, SimpleObject> result) {
+		Map<Integer, SimpleObject> correctResult = new HashMap<Integer, SimpleObject>() {{
+			put(1, new SimpleObject(1, "John"));
+			put(2, new SimpleObject(2, "Bob"));
+			put(3, new SimpleObject(3, "Mary"));
+		}};
 
-        assertTrue(Utilities.mapsAreEqual(correctResult, result));
-    }
+		assertTrue(Utilities.mapsAreEqual(correctResult, result));
+	}
 
-    @Test
-    public void testCoalesceIntoMapOfLists_EmptyCollection() {
-        Map<Integer, List<SimpleObject>> result = Utilities.convertToMapOfLists(null, SIMPLE_OBJECTMAP_CONVERTABLE);
+	@Test
+	public void testCoalesceIntoMapOfLists_EmptyCollection() {
+		Map<Integer, List<SimpleObject>> result = Utilities.convertToMapOfLists(null, SIMPLE_OBJECTMAP_CONVERTABLE);
 
-        assertTrue(result.isEmpty());
-    }
+		assertTrue(result.isEmpty());
+	}
 
-    @Test
-    public void testCoalesceIntoMapOfLists() {
-        Map<Integer, List<SimpleObject>> result = Utilities.convertToMapOfLists(getSimpleObjects(), SIMPLE_OBJECTMAP_CONVERTABLE);
+	@Test
+	public void testCoalesceIntoMapOfLists() {
+		Map<Integer, List<SimpleObject>> result = Utilities.convertToMapOfLists(getSimpleObjects(), SIMPLE_OBJECTMAP_CONVERTABLE);
 
-        verifyCoalesceIntoMapOfLists(result);
-    }
+		verifyCoalesceIntoMapOfLists(result);
+	}
 
 	@Test
 	public void testInvertMapOfList() {
@@ -280,61 +280,92 @@ public class UtilitiesTest {
 		assertTrue(results.contains(string3));
 	}
 
-    private void verifyCoalesceIntoMapOfLists(Map<Integer, List<SimpleObject>> result) {
-        Map<Integer, List<SimpleObject>> correctResult = new HashMap<Integer, List<SimpleObject>>() {{
-            put(1, Arrays.asList(new SimpleObject(1, "John")));
-            put(2, Arrays.asList(new SimpleObject(2, "Allen"), new SimpleObject(2, "Bob")));
-            put(3, Arrays.asList(new SimpleObject(3, "Mary")));
-        }};
+	@Test
+	public void testMergeValuesOfMapOfSets() {
+		Map<Integer, Set<String>> map1 = new HashMap<>();
+		map1.put(1, new HashSet<>(Arrays.asList("Test 1", "Test 2")));
+		map1.put(2, new HashSet<>(Arrays.asList("Test 3")));
 
-        assertTrue(Utilities.mapsAreEqual(correctResult, result));
-    }
+		Map<Integer, Set<String>> map2 = new HashMap<>();
+		map2.put(2, new HashSet<>(Arrays.asList("Test 4")));
+		map2.put(3, new HashSet<>(Arrays.asList("Test 5")));
 
-    private List<SimpleObject> getSimpleObjects() {
-        List<SimpleObject> simpleObjects = new ArrayList<>();
-        simpleObjects.add(new SimpleObject(1, "John"));
-        simpleObjects.add(new SimpleObject(2, "Allen"));
-        simpleObjects.add(new SimpleObject(2, "Bob"));
-        simpleObjects.add(new SimpleObject(3, "Mary"));
-        return simpleObjects;
-    }
+		Map<Integer, Set<String>> mergedValues = Utilities.mergeValuesOfMapOfSets(map1, map2);
 
-    private class SimpleObject {
+		performAssertionsOnTestMergeValuesOfMapOfSets(mergedValues);
+	}
 
-        private int id;
-        private String name;
+	private void performAssertionsOnTestMergeValuesOfMapOfSets(Map<Integer, Set<String>> mergedValues) {
+		assertNotNull(mergedValues);
+		assertFalse(mergedValues.isEmpty());
+		assertTrue(mergedValues.containsKey(1));
+		assertTrue(mergedValues.containsKey(2));
+		assertTrue(mergedValues.containsKey(3));
+		assertEquals(2, mergedValues.get(1).size());
+		assertEquals(2, mergedValues.get(2).size());
+		assertEquals(1, mergedValues.get(3).size());
+		assertTrue(mergedValues.get(1).contains("Test 1"));
+		assertTrue(mergedValues.get(1).contains("Test 2"));
+		assertTrue(mergedValues.get(2).contains("Test 3"));
+		assertTrue(mergedValues.get(2).contains("Test 4"));
+		assertTrue(mergedValues.get(3).contains("Test 5"));
+	}
 
-        public SimpleObject(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
+	private void verifyCoalesceIntoMapOfLists(Map<Integer, List<SimpleObject>> result) {
+		Map<Integer, List<SimpleObject>> correctResult = new HashMap<Integer, List<SimpleObject>>() {{
+			put(1, Arrays.asList(new SimpleObject(1, "John")));
+			put(2, Arrays.asList(new SimpleObject(2, "Allen"), new SimpleObject(2, "Bob")));
+			put(3, Arrays.asList(new SimpleObject(3, "Mary")));
+		}};
 
-        private int getId() {
-            return id;
-        }
+		assertTrue(Utilities.mapsAreEqual(correctResult, result));
+	}
 
-        private String getName() {
-            return name;
-        }
+	private List<SimpleObject> getSimpleObjects() {
+		List<SimpleObject> simpleObjects = new ArrayList<>();
+		simpleObjects.add(new SimpleObject(1, "John"));
+		simpleObjects.add(new SimpleObject(2, "Allen"));
+		simpleObjects.add(new SimpleObject(2, "Bob"));
+		simpleObjects.add(new SimpleObject(3, "Mary"));
+		return simpleObjects;
+	}
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+	private class SimpleObject {
 
-            SimpleObject that = (SimpleObject) o;
+		private int id;
+		private String name;
 
-            if (id != that.id) return false;
-            if (name != null ? !name.equals(that.name) : that.name != null) return false;
+		public SimpleObject(int id, String name) {
+			this.id = id;
+			this.name = name;
+		}
 
-            return true;
-        }
+		private int getId() {
+			return id;
+		}
 
-        @Override
-        public int hashCode() {
-            int result = id;
-            result = 31 * result + (name != null ? name.hashCode() : 0);
-            return result;
-        }
-    }
+		private String getName() {
+			return name;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			SimpleObject that = (SimpleObject) o;
+
+			if (id != that.id) return false;
+			if (name != null ? !name.equals(that.name) : that.name != null) return false;
+
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = id;
+			result = 31 * result + (name != null ? name.hashCode() : 0);
+			return result;
+		}
+	}
 }

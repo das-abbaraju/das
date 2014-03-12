@@ -59,6 +59,8 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	private AuditDataService auditDataService;
 	@Mock
 	private ContractorAuditService contractorAuditService;
+    @Mock
+    private AuditData mockAuditData;
 
 	private ContractorAccount contractor;
 	private AuditData auditData;
@@ -123,6 +125,21 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 				.thenReturn(new ArrayList<AuditCategoryRule>());
 		doNothing().when(auditPercentCalculatior).updatePercentageCompleted(catData);
 	}
+
+    @Test
+    public void testRecalculateAuditCatData_NonScoringAudit() throws Exception {
+        AuditCatData catData = EntityFactory.makeAuditCatData();
+        Whitebox.invokeMethod(auditDataSave, "recalculateAuditCatData", catData);
+        verify(auditPercentCalculatior).updatePercentageCompleted(catData);
+    }
+
+    @Test
+    public void testRecalculateAuditCatData_ScoringAudit() throws Exception {
+        AuditCatData catData = EntityFactory.makeAuditCatData();
+        audit.getAuditType().setScoreType(ScoreType.Actual);
+        Whitebox.invokeMethod(auditDataSave, "recalculateAuditCatData", catData);
+        verify(auditPercentCalculatior).percentCalculateComplete(audit, true);
+    }
 
     @Test
     public void testGetRollbackStatus_AdminChangingPolicySubmitted() throws Exception {
@@ -408,12 +425,23 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		assertEquals("ABC", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("  ABC  "));
 	}
 
-	// @Test
+	@Test
 	public void testExecute_SimpleAnswer() throws Exception {
+        when(auditDataDao.find(anyInt())).thenReturn(auditData);
 		assertEquals("success", auditDataSave.execute());
 	}
 
-	@Test
+    @Test
+    public void testExecute_SimpleAnswerResubmit() throws Exception {
+        auditData.setId(0);
+        when(auditDataService.findAuditDataByAuditAndQuestion(auditData)).thenReturn(mockAuditData);
+        when(mockAuditData.getQuestion()).thenReturn(auditData.getQuestion());
+        when(mockAuditData.getAudit()).thenReturn(auditData.getAudit());
+        when(auditDataDao.find(anyInt())).thenReturn(auditData);
+        assertEquals("success", auditDataSave.execute());
+    }
+
+    @Test
 	public void testExecute_BadNumberAnswer() throws Exception {
 		auditData.getQuestion().setQuestionType("Number");
 		auditData.setAnswer("12-345"); // the '-' in the middle will cause a

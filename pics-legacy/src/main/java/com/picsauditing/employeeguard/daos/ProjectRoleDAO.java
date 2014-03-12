@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -72,6 +73,13 @@ public class ProjectRoleDAO extends AbstractBaseEntityDAO<ProjectRole> {
         query.setParameter("project", project);
         return query.getResultList();
     }
+
+	public List<ProjectRole> findByProjects(final Collection<Project> projects) {
+		TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
+				"WHERE pr.project IN (:projects)", ProjectRole.class);
+		query.setParameter("projects", projects);
+		return query.getResultList();
+	}
 
     public List<ProjectRole> findBySiteId(int siteId) {
         TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +

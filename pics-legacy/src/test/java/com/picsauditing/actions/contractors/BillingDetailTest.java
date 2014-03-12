@@ -1,30 +1,26 @@
 package com.picsauditing.actions.contractors;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionSupport;
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.BillingNoteModel;
+import com.picsauditing.model.billing.InvoiceModel;
+import com.picsauditing.util.PermissionToViewContractor;
+import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -34,22 +30,17 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.BillingService;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.model.billing.BillingNoteModel;
-import com.picsauditing.model.billing.InvoiceModel;
-import com.picsauditing.util.PermissionToViewContractor;
-import com.picsauditing.util.Strings;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class BillingDetailTest extends PicsActionTest {
 	private BillingDetail billingDetail;

@@ -28,6 +28,10 @@ public class Home extends PicsActionSupport {
 		} else if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.Dashboard)) {
 			// Redirect operators/corporate accounts without the dashboard
 			// permission to the contractor list
+            if (permissions.isUsingVersion7Menus()) {
+                return setUrlForRedirect("Report.action?report=100");
+            }
+
 			return setUrlForRedirect("ContractorList.action?filter.performedBy=Self%20Performed");
 		} else if (permissions.isGeneralContractor()) {
 			widgetsToShowForUser = wdao.findForGeneralContractor(permissions);

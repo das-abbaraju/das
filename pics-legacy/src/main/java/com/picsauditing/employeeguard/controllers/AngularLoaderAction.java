@@ -5,7 +5,7 @@ import com.picsauditing.controller.PicsRestActionSupport;
 public class AngularLoaderAction extends PicsRestActionSupport {
 
     public String load() {
-        return SUCCESS;
+        return BLANK;
     }
 
 }

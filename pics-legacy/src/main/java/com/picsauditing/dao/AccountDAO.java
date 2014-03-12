@@ -68,10 +68,9 @@ public class AccountDAO extends PicsDAO {
 			where += ")";
 
 		Query query;
-		
-		query = em.createQuery("FROM Account a WHERE (type IN ('Admin','Corporate') OR (type='Operator' AND (parent.id is NULL OR parent.id IN ("
-						+ Strings.implode(Account.PICS_CORPORATE, ",") + ")))) AND a.id!=10403 " + where + " ORDER BY a.name");
-		
+
+		query = em.createQuery("FROM Account a WHERE type IN ('Admin','Corporate', 'Operator') AND a.id!=10403 " + where + " ORDER BY a.name");
+
 		return query.getResultList();
 	}
 	

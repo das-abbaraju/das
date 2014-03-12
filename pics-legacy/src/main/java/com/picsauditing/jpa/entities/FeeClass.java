@@ -119,7 +119,7 @@ public enum FeeClass implements Translatable {
 		return exclusions;
 	}
 
-	public static Set<FeeClass> getContractorPriceTableFeeTypes() {
+    public static Set<FeeClass> getContractorPriceTableFeeTypes() {
         return CONTRACTOR_PRICE_TABLE_FEE_TYPES;
-	}
+    }
 }

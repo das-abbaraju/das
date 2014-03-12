@@ -27,6 +27,7 @@ public class SpringUtils implements ApplicationContextAware {
 	public static final String ACCOUNT_DAO = "AccountDAO";
 	public static final String AM_BEST_DAO = "AmBestDAO";
 	public static final String APP_PROPERTY_DAO = "AppPropertyDAO";
+	public static final String APP_PROPERTY_SERVICE = "AppPropertyService";
 	public static final String AUDIT_TYPE_DAO = "AuditTypeDAO";
 	public static final String BASIC_DAO = "BasicDAO";
 	public static final String CONTRACTOR_ACCOUNT_DAO = "ContractorAccountDAO";

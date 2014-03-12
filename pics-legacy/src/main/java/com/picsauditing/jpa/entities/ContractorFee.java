@@ -1,18 +1,12 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.ContractorFeeBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -119,4 +113,8 @@ public class ContractorFee extends BaseTable {
 
 		return currentLevel.getMaxFacilities() < newFeeLevel.getMinFacilities();
 	}
+
+    public static ContractorFeeBuilder builder() {
+        return new ContractorFeeBuilder();
+    }
 }

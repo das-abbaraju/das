@@ -1,26 +1,18 @@
 package com.picsauditing.actions.contractors;
 
+import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.picsauditing.PICS.BillingService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.model.billing.AccountingSystemSynchronization;
 
 /**
  * Class used to edit a Invoice and Invoice Item record with virtually no restrictions

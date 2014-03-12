@@ -16,8 +16,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyInt;
@@ -78,7 +77,64 @@ public class AuditPercentCalculatorTest {
 		audit = EntityFactory.makeContractorAudit(auditType, contractor);
 	}
 
-	@Test
+    @Test
+    public void testIsVisibleToRecalculate_NoAnswerYet() throws Exception {
+        AuditData data = null;
+        List<AuditData> responses = new ArrayList<>();
+        AnswerMap map = new AnswerMap(responses);
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertTrue(visible);
+    }
+
+    @Test
+    public void testIsVisibleToRecalculate_AnsweredNoVisibleRequirements() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditData data = EntityFactory.makeAuditData("Yes", question);
+        List<AuditData> responses = new ArrayList<>();
+        AnswerMap map = new AnswerMap(responses);
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertTrue(visible);
+    }
+
+    @Test
+    public void testIsVisibleToRecalculate_AnsweredVisibleRequirements_Yes() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditQuestion visQuestion = EntityFactory.makeAuditQuestion();
+        question.setVisibleQuestion(visQuestion);
+        question.setVisibleAnswer("Yes");
+        AuditData data = EntityFactory.makeAuditData("Yes", question);
+        AuditData visData = EntityFactory.makeAuditData("Yes", visQuestion);
+
+        List<AuditData> responses = new ArrayList<>();
+        responses.add(visData);
+        AnswerMap map = new AnswerMap(responses);
+
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertTrue(visible);
+    }
+
+    @Test
+    public void testIsVisibleToRecalculate_AnsweredVisibleRequirements_No() throws Exception {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditQuestion visQuestion = EntityFactory.makeAuditQuestion();
+        question.setVisibleQuestion(visQuestion);
+        question.setVisibleAnswer("Yes");
+        AuditData data = EntityFactory.makeAuditData("Yes", question);
+        AuditData visData = EntityFactory.makeAuditData("No", visQuestion);
+
+        List<AuditData> responses = new ArrayList<>();
+        responses.add(visData);
+        AnswerMap map = new AnswerMap(responses);
+
+
+        Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
+        assertFalse(visible);
+    }
+
+    @Test
 	public void testChainedFunctions() throws Exception {
 		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
 		cao.setStatus(AuditStatus.Pending);
@@ -729,16 +785,18 @@ public class AuditPercentCalculatorTest {
         when(contractorAudit.getAuditType()).thenReturn(mockAuditType);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
         when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Submitted);
+        when(contractorAuditOperator.getPercentComplete()).thenReturn(100);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
         when(catData.isOverride()).thenReturn(true);
         when(catData.isApplies()).thenReturn(true);
         when(catData.getNumRequired()).thenReturn(100);
         when(catData.getRequiredCompleted()).thenReturn(50);
         when(catData.getNumVerified()).thenReturn(50);
+        when(catData.getNumAnswered()).thenReturn(50);
 
         calculator.percentCalculateComplete(contractorAudit);
 
-        verify(contractorAuditOperator, never()).setPercentComplete(50);
+        verify(contractorAuditOperator).setPercentComplete(100);
         verify(contractorAuditOperator).setPercentVerified(50);
     }
 }

@@ -20,6 +20,7 @@ public class Project implements BaseEntity, Comparable<Project> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "accountID")
     private int accountId;
     private String name;

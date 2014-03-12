@@ -48,6 +48,116 @@ public class AuditTypesBuilderTest {
 	}
 
     @Test
+    public void testBuildQuestionAnswersMap_NoAnswer() throws Exception {
+        AuditTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
+        AuditQuestion otherQuestion = createQuestion(otherTypeRule, 100);
+
+
+        AuditTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        manualTypeRule.setQuestion(otherQuestion);
+        manualTypeRule.setQuestionAnswer("Yes");
+
+        List<AuditData> auditDataList = new ArrayList<>();
+
+        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(auditDataList);
+
+        List<AuditTypeRule> rules = new ArrayList<>();
+        rules.add(manualTypeRule);
+        rules.add(otherTypeRule);
+
+        Map<Integer, List<AuditData>> map;
+        map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
+        assertEquals(0, map.get(otherQuestion.getId()).size());
+    }
+
+    @Test
+    public void testBuildQuestionAnswersMap_NonApplicableCategory() throws Exception {
+        AuditTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
+        AuditQuestion otherQuestion = createQuestion(otherTypeRule, 100);
+
+        ContractorAudit audit = EntityFactory.makeContractorAudit(otherTypeRule.getAuditType(), contractor);
+        List<ContractorAudit> audits = new ArrayList<>();
+        audits.add(audit);
+        when(contractor.getAudits()).thenReturn(audits);
+
+        AuditTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        manualTypeRule.setQuestion(otherQuestion);
+        manualTypeRule.setQuestionAnswer("Yes");
+
+        List<AuditData> auditDataList = new ArrayList<>();
+        AuditData auditData = new AuditData();
+        auditData.setQuestion(otherQuestion);
+        auditData.setAnswer("No");
+        auditData.setAudit(audit);
+        auditDataList.add(auditData);
+
+        AuditCatData auditCatData = new AuditCatData();
+        auditCatData.setAudit(audit);
+        auditCatData.setCategory(otherQuestion.getCategory());
+        auditCatData.setApplies(false);
+        audit.getCategories().add(auditCatData);
+
+        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(auditDataList);
+
+        List<AuditTypeRule> rules = new ArrayList<>();
+        rules.add(manualTypeRule);
+        rules.add(otherTypeRule);
+
+        Map<Integer, List<AuditData>> map;
+        map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
+        assertEquals(0, map.get(otherQuestion.getId()).size());
+    }
+
+    @Test
+    public void testBuildQuestionAnswersMap_ApplicableCategory() throws Exception {
+        AuditTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
+        AuditQuestion otherQuestion = createQuestion(otherTypeRule, 100);
+
+        ContractorAudit audit = EntityFactory.makeContractorAudit(otherTypeRule.getAuditType(), contractor);
+        List<ContractorAudit> audits = new ArrayList<>();
+        audits.add(audit);
+        when(contractor.getAudits()).thenReturn(audits);
+
+        AuditTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        manualTypeRule.setQuestion(otherQuestion);
+        manualTypeRule.setQuestionAnswer("Yes");
+
+        List<AuditData> auditDataList = new ArrayList<>();
+        AuditData auditData = new AuditData();
+        auditData.setQuestion(otherQuestion);
+        auditData.setAnswer("No");
+        auditData.setAudit(audit);
+        auditDataList.add(auditData);
+
+        AuditCatData auditCatData = new AuditCatData();
+        auditCatData.setAudit(audit);
+        auditCatData.setCategory(otherQuestion.getCategory());
+        auditCatData.setApplies(true);
+        audit.getCategories().add(auditCatData);
+
+        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(auditDataList);
+
+        List<AuditTypeRule> rules = new ArrayList<>();
+        rules.add(manualTypeRule);
+        rules.add(otherTypeRule);
+
+        Map<Integer, List<AuditData>> map;
+        map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
+        assertEquals(1, map.get(otherQuestion.getId()).size());
+    }
+
+    private AuditQuestion createQuestion(AuditTypeRule typeRule, int categoryId) {
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        for (AuditCategory category:typeRule.getAuditType().getCategories()) {
+            if (category.getId() == categoryId) {
+                question.setCategory(category);
+
+            }
+        }
+        return question;
+    }
+
+    @Test
     public void testRulePruningForDependentAuditTypes() throws Exception {
         AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
         auditTypeRule.setDependentAuditType(EntityFactory.makeAuditType(200));

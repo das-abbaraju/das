@@ -1,22 +1,25 @@
 package com.picsauditing.dao.jdbc;
 
 import com.picsauditing.PICS.DBBean;
-import net.sf.ehcache.*;
-import org.junit.*;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import javax.sql.DataSource;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class JdbcAppPropertyProviderTest {
     private static final String TEST_APP_PROPERTY_NAME = "TestAppProperty";
@@ -69,7 +72,7 @@ public class JdbcAppPropertyProviderTest {
         Cache cache = CacheManager.getInstance().getCache(cacheName);
         cache.put(new Element(TEST_APP_PROPERTY_NAME, TEST_APP_PROPERTY_VALUE));
 
-        jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         verify(dataSource, never()).getConnection();
     }
@@ -80,7 +83,7 @@ public class JdbcAppPropertyProviderTest {
         // set this to null so we use a real cache. ehcache.Cache is not mockable b/c of final methods
         Whitebox.setInternalState(jdbcAppPropertyProvider, "cacheManager", (CacheManager)null);
 
-        jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         String result = (String)(CacheManager.getInstance().getCache(cacheName).get(TEST_APP_PROPERTY_NAME).getObjectValue());
 
@@ -92,7 +95,7 @@ public class JdbcAppPropertyProviderTest {
         when(resultSet.next()).thenReturn(false);
         when(cacheManager.getCache(cacheName)).thenReturn(null);
 
-        String result = jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        String result = jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         assertNull(result);
     }
@@ -101,7 +104,7 @@ public class JdbcAppPropertyProviderTest {
     public void testFindAppProperty_ReturnedFromDatabase_CorrectProperty() throws Exception {
         when(cacheManager.getCache(cacheName)).thenReturn(null);
 
-        String result = jdbcAppPropertyProvider.findAppProperty(TEST_APP_PROPERTY_NAME);
+        String result = jdbcAppPropertyProvider.getPropertyString(TEST_APP_PROPERTY_NAME);
 
         assertEquals(TEST_APP_PROPERTY_VALUE, result);
     }

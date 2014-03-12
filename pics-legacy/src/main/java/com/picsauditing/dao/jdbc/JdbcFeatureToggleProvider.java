@@ -1,9 +1,8 @@
 package com.picsauditing.dao.jdbc;
 
+import com.picsauditing.toggle.FeatureToggleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.picsauditing.toggle.FeatureToggleProvider;
 
 public class JdbcFeatureToggleProvider extends JdbcAppPropertyProvider implements FeatureToggleProvider {
 
@@ -14,7 +13,7 @@ public class JdbcFeatureToggleProvider extends JdbcAppPropertyProvider implement
 		if (!toggleName.startsWith("Toggle")) {
 			toggleName = "Toggle." + toggleName;
 		}
-        String toggle = findAppProperty(toggleName);
+        String toggle = getPropertyString(toggleName);
         if (toggle == null) {
             logger.error("Error finding toggle {}", toggleName);
             return null;

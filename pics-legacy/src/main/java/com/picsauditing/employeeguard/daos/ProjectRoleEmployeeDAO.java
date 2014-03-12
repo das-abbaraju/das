@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		return query.getResultList();
 	}
 
-	public List<ProjectRoleEmployee> findByEmployees(final List<Employee> employees) {
+	public List<ProjectRoleEmployee> findByEmployees(final Collection<Employee> employees) {
 		if (CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyList();
 		}
@@ -136,6 +137,30 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 				"WHERE p IN (:projects) and pre.employee = :employee", ProjectRoleEmployee.class);
 
 		query.setParameter("employee", employee);
+		query.setParameter("projects", projects);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees,
+															  final int siteId) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE p.accountId = :siteId and pre.employee in (:employees)", ProjectRoleEmployee.class);
+
+		query.setParameter("employees", employees);
+		query.setParameter("siteId", siteId);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByProjects(final Collection<Project> projects) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE p IN (:projects)", ProjectRoleEmployee.class);
+
 		query.setParameter("projects", projects);
 
 		return query.getResultList();

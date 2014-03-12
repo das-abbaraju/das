@@ -1,12 +1,9 @@
 package com.picsauditing.service.contractor;
 
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public class ContractorOperatorService {
     @Autowired
@@ -34,18 +31,8 @@ public class ContractorOperatorService {
     }
 
     public boolean areAllContractorRelationshipsUniform(OperatorAccount operator) {
-        ApprovalStatus workStatus = null;
-        List<ContractorOperator> conOps = contractorOperatorDAO.findWhere("operatorAccount.id = " + operator.getId());
-        for (ContractorOperator contractorOperator : conOps) {
-            if (contractorOperator.getOperatorAccount().isAutoApproveRelationships()) {
-                continue;
-            }
-            if (workStatus == null) {
-                workStatus = contractorOperator.getWorkStatus();
-            } else if (workStatus != contractorOperator.getWorkStatus()) {
-                return false;
-            }
-        }
-        return true;
+        if (operator.isAutoApproveRelationships())
+            return true;
+        return contractorOperatorDAO.isUnifiedWorkStatus(operator.getId());
     }
 }

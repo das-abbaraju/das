@@ -1,19 +1,10 @@
 package com.picsauditing.actions.auditType;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.picsauditing.*;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.importpqf.ImportStopAt;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SlugService;
@@ -23,9 +14,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.importpqf.ImportStopAt;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
 
 public class ManageQuestionTest extends PicsActionTest {
     private static final String QUESTION_NAME = "Test Question Name";
@@ -79,7 +76,13 @@ public class ManageQuestionTest extends PicsActionTest {
         auditQuestionLanguages.add("en");
 	}
 
-	@Test
+    @Test
+    public void testLoad_NullQuestion() throws Exception {
+        manageQuestion.load((AuditQuestion) null);
+        verify(auditQuestionDAO, never()).findAuditExtractOptionByQuestionId(anyInt());
+    }
+
+    @Test
 	public void testLoad_NullExtractOption() throws Exception {
 		when(auditQuestionDAO.findAuditExtractOptionByQuestionId(anyInt())).thenReturn(null);
 

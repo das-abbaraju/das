@@ -1,16 +1,9 @@
 package com.picsauditing.actions.audits;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.AuditDataService;
 import com.picsauditing.util.AnswerMap;
@@ -19,12 +12,16 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.AuditDataDAO;
 import org.powermock.reflect.Whitebox;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 public class VerifyAuditTest extends PicsTranslationTest {
 	private VerifyAudit verifyAudit;

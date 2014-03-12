@@ -10,7 +10,8 @@ import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.billing.BrainTree;
+import com.picsauditing.billing.PaymentService;
+import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.braintree.BrainTreeHash;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.BrainTreeServiceErrorResponseException;
@@ -48,12 +49,12 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationMakePayment.class);
 
+    private PaymentService paymentService = PaymentServiceFactory.paymentService();
+
     @Autowired
     private BillingService billingService;
     @Autowired
     private FeeService feeService;
-    @Autowired
-    private BrainTree paymentService;
     @Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
     @Autowired
@@ -760,4 +761,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 			dao.save(request);
 		}
 	}
+
+    public String getPaymentUrl() {
+        return paymentService.getPaymentUrl();
+    }
 }

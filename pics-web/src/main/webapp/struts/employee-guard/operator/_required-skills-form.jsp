@@ -3,7 +3,7 @@
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
 <%-- Url --%>
-<s:url action="dashboard" method="edit" var="operator_required_skill_edit_url">
+<s:url action="skills/site/{id}" method="updateRequiredSkills" var="operator_required_skill_edit_url">
     <s:param name="id">
         ${permissions.accountId}
     </s:param>

@@ -15,14 +15,14 @@ import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
 import com.picsauditing.service.billing.InvoiceDiscountsService;
+import com.picsauditing.service.billing.InvoiceFeeProRater;
+import com.picsauditing.service.contractor.TopLevelOperatorFinder;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 public class BillingService {
@@ -66,6 +66,8 @@ public class BillingService {
     private InvoiceDiscountsService invoiceDiscountsService;
 
 	private final TranslationService translationService = TranslationServiceFactory.getTranslationService();
+    @Autowired
+    private TopLevelOperatorFinder topLevelOperatorFinder;
 
     public void initService() {
         salesCommissionDataObservable.addObserver(invoiceObserver);
@@ -210,10 +212,10 @@ public class BillingService {
 			item.setAuditColumns(auditUser);
 		}
 
-		return invoice;
+        return invoice;
 	}
 
-	private void syncInvoiceIfAppropriate(BigDecimal invoiceTotal, Invoice invoice) {
+    private void syncInvoiceIfAppropriate(BigDecimal invoiceTotal, Invoice invoice) {
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			AccountingSystemSynchronization.setToSynchronize(invoice);
 		}
@@ -343,8 +345,10 @@ public class BillingService {
         addProductItems(contractor, billingStatus, user, items);
         addSSIPDiscountIfApplies(contractor, items);
 
-        // TODO: Right now we're ignoring upgrades, but in the near future we need to pro-rate discounts
-        if (billingStatus(contractor) != BillingStatus.Upgrade) {
+        if (billingStatus.isUpgrade()) {
+            items.addAll(invoiceDiscountsService.applyProratedDiscounts(contractor,
+                    getUpgradedFees(contractor), determineDaysUntilExpiration(contractor)));
+        } else {
             items.addAll(invoiceDiscountsService.applyDiscounts(contractor, items));
         }
 
@@ -352,12 +356,13 @@ public class BillingService {
 	}
 
     private void addProductItems(ContractorAccount contractor, BillingStatus billingStatus, User user, List<InvoiceItem> items) {
+        List<ContractorFee> upgrades = getUpgradedFees(contractor);
+
         if (billingStatus.isActivation() || billingStatus.isReactivation() || billingStatus.isCancelled()) {
             addYearlyItems(items, contractor, DateBean.addMonths(new Date(), 12), billingStatus);
         } else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
             addYearlyItems(items, contractor, getRenewalDate(contractor), billingStatus);
         } else if (billingStatus.isUpgrade()) {
-            List<ContractorFee> upgrades = getUpgradedFees(contractor);
 
             if (!upgrades.isEmpty()) {
                 addProratedUpgradeItems(contractor, items, upgrades, user);
@@ -365,7 +370,14 @@ public class BillingService {
         }
     }
 
-	@SuppressWarnings("deprecation")
+
+
+    private boolean suncorSingleOperatorContractor(ContractorAccount contractor) {
+        OperatorAccount logoForSingleOperatorContractor = topLevelOperatorFinder.findLogoForSingleOperatorContractor(contractor);
+        return (logoForSingleOperatorContractor != null && logoForSingleOperatorContractor.equals(InvoiceDiscountsService.SUNCOR));
+    }
+
+    @SuppressWarnings("deprecation")
 	private void addProratedUpgradeItems(ContractorAccount contractor, List<InvoiceItem> items,
 			List<ContractorFee> upgrades, User user) {
 		BigDecimal upgradeAmount;
@@ -375,16 +387,10 @@ public class BillingService {
 
 		for (ContractorFee upgrade : upgrades) {
 			String description = "";
-			BigDecimal upgradeAmountDifference = upgrade.getNewAmount();
 
-			if (contractor.getAccountLevel().isFull()) {
-				upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentAmount());
-			}
-
-			// If membership fee prorate amount
 			if (upgrade.getFeeClass().isMembership()) {
-				upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
-						new BigDecimal(365), 0, RoundingMode.HALF_UP);
+                upgradeAmount = InvoiceFeeProRater.calculateProRatedInvoiceFees(upgrade.getCurrentAmount(), upgrade.getNewAmount(),
+                        daysUntilExpiration);
 
 				if (upgradeAmount.floatValue() > 0.0f) {
                     String currencyDisplay = contractor.getCountry().getCurrency().getDisplay();
@@ -434,12 +440,12 @@ public class BillingService {
     }
 
     private List<ContractorFee> getUpgradedFees(ContractorAccount contractor) {
-		List<ContractorFee> upgrades = new ArrayList<ContractorFee>();
+		List<ContractorFee> upgrades = new ArrayList<>();
 		for (FeeClass feeClass : contractor.getFees().keySet()) {
 			ContractorFee fee = contractor.getFees().get(feeClass);
 
             InvoiceFee newLevel = fee.getNewLevel();
-            if (fee.isUpgrade() && !newLevel.isFree() && (!newLevel.isBidonly() || !newLevel.isListonly())) {
+            if (shouldUpgrade(fee) && !newLevel.isFree() && (!newLevel.isBidonly() || !newLevel.isListonly())) {
 				upgrades.add(fee);
 			}
 		}
@@ -822,9 +828,11 @@ public class BillingService {
         boolean upgrade = false;
         boolean currentListOrBidOnly = false;
         Map<FeeClass, ContractorFee> fees = contractor.getFees();
+
         for (FeeClass feeClass : fees.keySet()) {
             ContractorFee contractorFee = fees.get(feeClass);
-            if (!upgrade && contractorFee.isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
+
+            if (!upgrade && shouldUpgrade(contractorFee) && !feeClass.equals(FeeClass.BidOnly)
                     && !feeClass.equals(FeeClass.ListOnly)) {
                 upgrade = true;
             }
@@ -856,6 +864,15 @@ public class BillingService {
         }
 
         return BillingStatus.Current;
+    }
+
+    private boolean shouldUpgrade(ContractorFee contractorFee) {
+        if (suncorSingleOperatorContractor(contractorFee.getContractor())) {
+            int currentLevelMaxFacilities = contractorFee.getCurrentLevel().getMaxFacilities();
+            return contractorFee.getNewFacilityCount() > currentLevelMaxFacilities ;
+        } else {
+            return contractorFee.isUpgrade();
+        }
     }
 
     public void setTaxService(TaxService taxService) {
