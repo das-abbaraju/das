@@ -34,7 +34,6 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	private String location;
 	private String email;
 	private String phone;
-	private String ssn;
 	private Date birthDate;
 	private String photo;
 	private Date twicExpiration;
@@ -201,15 +200,6 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		this.phone = phone;
 	}
 
-	@Column(length = 9)
-	public String getSsn() {
-		return ssn;
-	}
-
-	public void setSsn(String ssn) {
-		this.ssn = ssn;
-	}
-
 	@Temporal(TemporalType.DATE)
 	@ReportField(type = FieldType.Date)
 	public Date getBirthDate() {
@@ -352,7 +342,6 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		json.put("location", location);
 		json.put("email", email);
 		json.put("phone", phone);
-		json.put("ssn", Strings.maskSSN(ssn));
 		json.put("birthDate", birthDate == null ? null : birthDate.getTime());
 		json.put("photo", photo);
 		json.put("twicExpiration", twicExpiration == null ? null : twicExpiration.getTime());
@@ -495,7 +484,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		Employee employee = (Employee) o;
 
 		if (account != null ? !account.equals(employee.account) : employee.account != null) return false;
-		if (firstName != null ? !firstName.equalsIgnoreCase(employee.firstName) : employee.firstName != null) return false;
+		if (firstName != null ? !firstName.equalsIgnoreCase(employee.firstName) : employee.firstName != null)
+			return false;
 		if (lastName != null ? !lastName.equalsIgnoreCase(employee.lastName) : employee.lastName != null) return false;
 		if (title != null ? !title.equalsIgnoreCase(employee.title) : employee.title != null) return false;
 

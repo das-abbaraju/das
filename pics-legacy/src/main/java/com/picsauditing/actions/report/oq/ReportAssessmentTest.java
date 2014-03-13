@@ -15,8 +15,6 @@ public class ReportAssessmentTest extends ReportEmployee {
 			throw new NoRightsException("Operator, Corporate or PICS Administrator");
 
 		orderByDefault = "test.qualificationType,test.qualificationMethod,a.name,e.lastName";
-		// Do we need to look up employees by SSN?
-		getFilter().setShowSsn(false);
 		getFilter().setShowLimitEmployees(true);
 		getFilter().setShowAssessmentCenter(true);
 		getFilter().setPermissions(permissions);

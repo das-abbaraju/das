@@ -1,11 +1,9 @@
 package com.picsauditing.employeeguard.models.factories;
 
-import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
 import com.picsauditing.employeeguard.models.StatusSummary;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class StatusSummaryFactory {

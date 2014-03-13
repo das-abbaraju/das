@@ -1,24 +1,16 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.service.audit.CaoAutoAdvancer;
 import com.picsauditing.service.audit.AuditPeriodService;
+import com.picsauditing.service.audit.CaoAutoAdvancer;
+import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.Strings;
+import java.util.*;
 
 public class AuditPercentCalculator {
 	@Autowired

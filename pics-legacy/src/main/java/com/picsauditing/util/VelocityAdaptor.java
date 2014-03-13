@@ -1,15 +1,15 @@
 package com.picsauditing.util;
 
-import java.io.*;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.tools.generic.DateTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.Map;
+import java.util.Properties;
 
 public class VelocityAdaptor {
 	private VelocityEngine velocityEngine;

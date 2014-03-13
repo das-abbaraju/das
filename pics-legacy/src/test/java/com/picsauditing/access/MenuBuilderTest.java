@@ -2,8 +2,6 @@ package com.picsauditing.access;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.menu.builder.MenuBuilder;
@@ -12,7 +10,6 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

@@ -1,8 +1,6 @@
 package com.picsauditing.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -11,7 +9,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class StringsTest {
 
@@ -76,12 +74,12 @@ public class StringsTest {
 		assertEquals("QWERTYASDFZXCV", oldIndexName("QWERTYASDFZXCV"));
 	}
 
-    @Test
-    public void testIndexName__Chinese() {
-        assertEquals("山东", Strings.indexName("山东"));
-    }
+	@Test
+	public void testIndexName__Chinese() {
+		assertEquals("山东", Strings.indexName("山东"));
+	}
 
-    private String oldIndexName(String name) {
+	private String oldIndexName(String name) {
 		if (name == null) {
 			return null;
 		}
@@ -217,13 +215,6 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testMaskSSN() throws Exception {
-		String ssnMask = Strings.maskSSN("999999999");
-
-		assertEquals("XXX-XX-9999", ssnMask);
-	}
-
-	@Test
 	public void testEqualNullSafe() {
 		assertTrue(Strings.isEqualNullSafe(null, null));
 		assertFalse(Strings.isEqualNullSafe(null, "foobar"));
@@ -251,39 +242,39 @@ public class StringsTest {
 				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
 	}
 
-    @Test
-    public void testNoSlash() {
-        assertEquals("abc", Strings.escapeSlashes("abc"));
-    }
+	@Test
+	public void testNoSlash() {
+		assertEquals("abc", Strings.escapeSlashes("abc"));
+	}
 
-    @Test
-    public void testSingleSlash() {
-        assertEquals("ab" + backSlash + backSlash, Strings.escapeSlashes("ab" + backSlash));
-    }
+	@Test
+	public void testSingleSlash() {
+		assertEquals("ab" + backSlash + backSlash, Strings.escapeSlashes("ab" + backSlash));
+	}
 
-    @Test
-    public void testDoubleSingleSlash() {
-        assertEquals("ab" + backSlash + backSlash + backSlash + backSlash,
-                Strings.escapeSlashes("ab" + backSlash + backSlash));
-    }
+	@Test
+	public void testDoubleSingleSlash() {
+		assertEquals("ab" + backSlash + backSlash + backSlash + backSlash,
+				Strings.escapeSlashes("ab" + backSlash + backSlash));
+	}
 
-    @Test
-    public void testNoSlashOrQuote() {
-        assertEquals("abc", Strings.escapeQuotesAndSlashes("abc"));
-    }
+	@Test
+	public void testNoSlashOrQuote() {
+		assertEquals("abc", Strings.escapeQuotesAndSlashes("abc"));
+	}
 
-    @Test
-    public void testSingleSlashAndSingleQuote() {
-        assertEquals("ab" + backSlash + backSlash + singleQuote + singleQuote, Strings.escapeQuotesAndSlashes("ab" + backSlash + singleQuote));
-    }
+	@Test
+	public void testSingleSlashAndSingleQuote() {
+		assertEquals("ab" + backSlash + backSlash + singleQuote + singleQuote, Strings.escapeQuotesAndSlashes("ab" + backSlash + singleQuote));
+	}
 
-    @Test
-    public void testDoubleSingleSlashAndDoubleSingleQuote() {
-        assertEquals("ab" + backSlash + backSlash + backSlash + backSlash + singleQuote + singleQuote + singleQuote + singleQuote,
-                Strings.escapeQuotesAndSlashes("ab" + backSlash + backSlash + singleQuote + singleQuote));
-    }
+	@Test
+	public void testDoubleSingleSlashAndDoubleSingleQuote() {
+		assertEquals("ab" + backSlash + backSlash + backSlash + backSlash + singleQuote + singleQuote + singleQuote + singleQuote,
+				Strings.escapeQuotesAndSlashes("ab" + backSlash + backSlash + singleQuote + singleQuote));
+	}
 
-    @Test
+	@Test
 	public void nullToBlank() {
 		assertEquals("", Strings.nullToBlank(null));
 		assertEquals("", Strings.nullToBlank(""));
@@ -323,66 +314,66 @@ public class StringsTest {
 		assertEquals("", Strings.toString(null));
 	}
 
-    @Test
-    public void testExplodeCommaDelimitedStringOfIds() {
-        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1,2,3,4,5");
-        assertEquals(5, result.size());
-        assertEquals(1, (int) result.get(0));
-        assertEquals(2, (int) result.get(1));
-        assertEquals(3, (int) result.get(2));
-        assertEquals(4, (int) result.get(3));
-        assertEquals(5, (int) result.get(4));
-    }
+	@Test
+	public void testExplodeCommaDelimitedStringOfIds() {
+		List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1,2,3,4,5");
+		assertEquals(5, result.size());
+		assertEquals(1, (int) result.get(0));
+		assertEquals(2, (int) result.get(1));
+		assertEquals(3, (int) result.get(2));
+		assertEquals(4, (int) result.get(3));
+		assertEquals(5, (int) result.get(4));
+	}
 
-    @Test
-    public void testExplodeCommaDelimitedStringOfIds_WithWhiteSpaces() {
-        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1 ,2\r,3\n,4\t,    5       ");
-        assertEquals(5, result.size());
-        assertEquals(1, (int) result.get(0));
-        assertEquals(2, (int) result.get(1));
-        assertEquals(3, (int) result.get(2));
-        assertEquals(4, (int) result.get(3));
-        assertEquals(5, (int) result.get(4));
-    }
+	@Test
+	public void testExplodeCommaDelimitedStringOfIds_WithWhiteSpaces() {
+		List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1 ,2\r,3\n,4\t,    5       ");
+		assertEquals(5, result.size());
+		assertEquals(1, (int) result.get(0));
+		assertEquals(2, (int) result.get(1));
+		assertEquals(3, (int) result.get(2));
+		assertEquals(4, (int) result.get(3));
+		assertEquals(5, (int) result.get(4));
+	}
 
-    @Test(expected = NumberFormatException.class)
-    public void testExplodeCommaDelimitedStringOfIds_NotANumber() {
-        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1, 5cheeseburgers, 3");
-    }
+	@Test(expected = NumberFormatException.class)
+	public void testExplodeCommaDelimitedStringOfIds_NotANumber() {
+		List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1, 5cheeseburgers, 3");
+	}
 
-    @Test(expected = NumberFormatException.class)
-    public void testExplodeCommaDelimitedStringOfIds_Decimal() {
-        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1, 5,3.14");
-    }
+	@Test(expected = NumberFormatException.class)
+	public void testExplodeCommaDelimitedStringOfIds_Decimal() {
+		List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1, 5,3.14");
+	}
 
-    @Test
-    public void testzeroPadDelimitedString_TwoPartsThreePadPeriodDelimited() {
-        String toZeroPad = "1.2";
-        String expected = "001.002";
+	@Test
+	public void testzeroPadDelimitedString_TwoPartsThreePadPeriodDelimited() {
+		String toZeroPad = "1.2";
+		String expected = "001.002";
 
-        String result = Strings.zeroPadDelimitedString(toZeroPad, "\\.", ".", 3);
+		String result = Strings.zeroPadDelimitedString(toZeroPad, "\\.", ".", 3);
 
-        assertTrue(result.equals(expected));
-    }
+		assertTrue(result.equals(expected));
+	}
 
-    @Test
-    public void testzeroPadDelimitedString_ThreePartsThreePadPeriodDelimited() {
-        String toZeroPad = "1.2.65";
-        String expected = "001.002.065";
+	@Test
+	public void testzeroPadDelimitedString_ThreePartsThreePadPeriodDelimited() {
+		String toZeroPad = "1.2.65";
+		String expected = "001.002.065";
 
-        String result = Strings.zeroPadDelimitedString(toZeroPad, "\\.", ".", 3);
+		String result = Strings.zeroPadDelimitedString(toZeroPad, "\\.", ".", 3);
 
-        assertTrue(result.equals(expected));
-    }
+		assertTrue(result.equals(expected));
+	}
 
-    @Test
-    public void testzeroPadDelimitedString_FourPartsThreePadColonDelimited() {
-        String toZeroPad = "1:2:65:987";
-        String expected = "001:002:065:987";
+	@Test
+	public void testzeroPadDelimitedString_FourPartsThreePadColonDelimited() {
+		String toZeroPad = "1:2:65:987";
+		String expected = "001:002:065:987";
 
-        String result = Strings.zeroPadDelimitedString(toZeroPad, ":", ":", 3);
+		String result = Strings.zeroPadDelimitedString(toZeroPad, ":", ":", 3);
 
-        assertTrue(result.equals(expected));
-    }
+		assertTrue(result.equals(expected));
+	}
 
 }

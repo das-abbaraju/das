@@ -1,9 +1,8 @@
 package com.picsauditing.dao.jdbc;
 
+import com.picsauditing.toggle.FeatureToggleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.picsauditing.toggle.FeatureToggleProvider;
 
 public class JdbcFeatureToggleProvider extends JdbcAppPropertyProvider implements FeatureToggleProvider {
 

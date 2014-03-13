@@ -1,7 +1,9 @@
 package com.picsauditing.billing;
 
 import com.picsauditing.braintree.CreditCard;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Payment;
 
 import java.math.BigDecimal;
 

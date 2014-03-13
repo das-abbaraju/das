@@ -9,7 +9,6 @@ update contractor_info set taxID = '123456789';
 update users set email = 'tester@picsauditing.com' WHERE accountID != 1100 AND email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
 update accounts set email = 'tester@picsauditing.com' where email > '';
-update employee set ssn = '123456789' where ssn > '';
 update assessment_result_stage set email = 'tester@picsauditing.com' where email > '';
 update contractor_registration_request set email = 'tester@picsauditing.com' where email > '';
 update email_exclusion set email = 'tester@picsauditing.com' where email > '';

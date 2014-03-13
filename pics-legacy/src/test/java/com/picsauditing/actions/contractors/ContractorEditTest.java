@@ -16,7 +16,6 @@ import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.validator.ContractorValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -28,9 +27,9 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
-import static org.mockito.Mockito.verify;
 
 public class ContractorEditTest extends PicsActionTest {
 	private ContractorEdit classUnderTest;

@@ -6,7 +6,8 @@ import com.picsauditing.service.contractor.TopLevelOperatorFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InvoiceDiscountsService {
 

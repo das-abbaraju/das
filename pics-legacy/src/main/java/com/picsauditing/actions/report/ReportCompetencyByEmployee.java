@@ -79,7 +79,6 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 	}
 
 	public String execute() throws Exception {
-		getFilter().setShowSsn(false);
 		getFilter().setShowOperators(true);
 
 		buildQuery();

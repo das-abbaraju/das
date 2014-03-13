@@ -1,42 +1,24 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import com.picsauditing.jpa.entities.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.FacilitiesDAO;
-import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.dao.FlagDataDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
-import com.picsauditing.dao.NaicsDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.models.contractors.ContractorFlagAnswerDisplay;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 import com.picsauditing.util.log.PicsLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {

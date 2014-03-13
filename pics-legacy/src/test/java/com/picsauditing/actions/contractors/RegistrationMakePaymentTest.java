@@ -1,32 +1,33 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.startsWith;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import com.opensymphony.xwork2.interceptor.annotations.After;
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.audits.OpenAuditsMailer;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.*;
+import com.picsauditing.util.Assert;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.model.billing.BillingNoteModel;
 import org.springframework.context.ApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RegistrationMakePaymentTest extends PicsActionTest {
 	private RegistrationMakePayment registrationMakePayment;

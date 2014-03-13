@@ -1,11 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.List;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.service.contractor.ContractorOperatorService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
@@ -13,9 +7,14 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.contractor.ContractorOperatorService;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportContractorApproval extends ReportAccount {

@@ -1,22 +1,17 @@
 package com.picsauditing.actions.auditType;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-
-import com.picsauditing.jpa.entities.*;
-import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.importpqf.ImportStopAt;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageCategory implements Preparable {

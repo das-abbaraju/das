@@ -4,13 +4,6 @@
 <head>
 <title>Competency Detail Report</title>
 <s:include value="reportHeader.jsp" />
-<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js?v=${version}"></script>
-<script type="text/javascript">
-$(function() {
-$.mask.definitions['S']='[X0-9]';
-$('input.ssn').mask('SSS-SS-SSSS');
-});
-</script>
 </head>
 <body>
 <h1>Competency Detail Report</h1>

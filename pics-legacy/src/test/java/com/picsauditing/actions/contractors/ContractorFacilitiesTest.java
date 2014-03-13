@@ -1,38 +1,20 @@
 package com.picsauditing.actions.contractors;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.naming.NoPermissionException;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FeeService;
-import com.picsauditing.service.contractor.TopLevelOperatorFinder;
+import com.picsauditing.PICS.SmartFacilitySuggest;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.contractor.service.ContractorFacilitiesService;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.search.Database;
+import com.picsauditing.service.contractor.TopLevelOperatorFinder;
+import com.picsauditing.util.PermissionToViewContractor;
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,23 +23,21 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.BillingService;
-import com.picsauditing.PICS.FacilityChanger;
-import com.picsauditing.PICS.SmartFacilitySuggest;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.search.Database;
-import com.picsauditing.util.PermissionToViewContractor;
+import javax.naming.NoPermissionException;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("deprecation")
 public class ContractorFacilitiesTest extends PicsActionTest {

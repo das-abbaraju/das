@@ -3,14 +3,11 @@ package com.picsauditing.contractor.service;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.service.contractor.TopLevelOperatorFinder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ContractorFacilitiesServiceTest {

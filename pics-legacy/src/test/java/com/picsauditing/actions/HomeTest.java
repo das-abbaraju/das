@@ -1,21 +1,12 @@
 package com.picsauditing.actions;
 
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
-import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 public class HomeTest extends PicsActionTest {
