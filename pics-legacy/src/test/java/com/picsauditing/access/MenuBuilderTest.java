@@ -66,12 +66,14 @@ public class MenuBuilderTest extends PicsActionTest {
 
     @Test
     public void testBuildMenubar_noPermissions() throws Exception {
+        MenuBuilder.setUrlUtils(urlUtils);
         when(translationService.getText("global.Company",Locale.ENGLISH)).thenReturn("Company");
         when(translationService.getText("menu.Reports",Locale.ENGLISH)).thenReturn("Reports");
         when(translationService.getText("menu.Manage",Locale.ENGLISH)).thenReturn("Manage");
         when(translationService.getText("menu.Configure",Locale.ENGLISH)).thenReturn("Configure");
         when(translationService.getText("menu.Dev",Locale.ENGLISH)).thenReturn("Dev");
         when(translationService.getText("menu.Support",Locale.ENGLISH)).thenReturn("Support");
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 
         MenuComponent menu = MenuBuilder.buildMenubar(permissions);
         assertTrue(menu.getChildren().size() == 4);
