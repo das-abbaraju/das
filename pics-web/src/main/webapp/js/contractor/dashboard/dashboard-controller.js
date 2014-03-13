@@ -5,7 +5,7 @@
                 if ($('#ContractorView__page').length > 0) {
                     var that = this;
 
-                    $('#status_alert').delegate('.contractor-status-buttons button', 'click', function (event) {
+                    $('#contractor_dashboard').delegate('.contractor-status-buttons button', 'click', function (event) {
                         that.saveContractorStatus.apply(that, [event]);
                     });
 

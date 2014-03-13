@@ -195,7 +195,7 @@ public final class MenuBuilder {
 		String contractorView = urlUtils.getActionUrl("ContractorView", "id", accountId);
 		String contractorNotes = urlUtils.getActionUrl("ContractorNotes", "id", accountId);
 
-		companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), contractorView, "contractor_dashboard");
+		companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), contractorView, "contractor_dashboard_menu");
 
         if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorWatch)) {
             String activityWatch = urlUtils.getActionUrl("ReportActivityWatch", "contractor", accountId);
