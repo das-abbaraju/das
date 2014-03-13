@@ -19,6 +19,11 @@ public class AuditBuilderDebugger extends ContractorActionSupport {
 	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	public String execute() throws Exception {
+        if (id == -1) {
+            addActionMessage("Change the '-1' in the web address to the contractor ID.");
+            return SUCCESS;
+        }
+
 		findContractor();
 		AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
 		auditTypeDetails = builder.calculate();
