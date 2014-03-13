@@ -74,6 +74,7 @@ public class MenuBuilderTest extends PicsActionTest {
         when(translationService.getText("menu.Configure",Locale.ENGLISH)).thenReturn("Configure");
         when(translationService.getText("menu.Dev",Locale.ENGLISH)).thenReturn("Dev");
         when(translationService.getText("menu.Support",Locale.ENGLISH)).thenReturn("Support");
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 
         when(permissions.getAccountStatus()).thenReturn(AccountStatus.Demo);
 

@@ -206,7 +206,7 @@ public final class MenuBuilder {
 		companyMenu.addChild(getText("global.Notes"), contractorNotes, "contractor_notes");
 		companyMenu.addChild(getText("ContractorTrades.title"), contractorTrades, "contractor_trades");
 
-        if (permissions.isShowClientSitesLink()) {
+        if (!permissions.isOperator() && !permissions.isInsuranceOnlyContractorUser() && permissions.isShowClientSitesLink()) {
             String contractorFacilities = urlUtils.getActionUrl("ContractorFacilities", "id", accountId);
             companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
         }
