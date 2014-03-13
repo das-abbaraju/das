@@ -25,6 +25,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidatorFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -49,13 +50,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
     private ValidatorFactory validatorFactory;
 
 
-
-    //TODO: Extract this logic to an Interceptor Annotation
-    private boolean loggedIn() {
-        loadPermissions(false);
-        return permissions.isLoggedIn() && !permissions.isDeveloperEnvironment();
-    }
-
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
@@ -65,7 +59,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
             return SUCCESS;
 		}
 
-        ActionContext.getContext().setLocale((
+        getActionContext().setLocale((
                 localeForm = getLocaleFromRequestData()
         ).getLocale());
 
@@ -77,11 +71,51 @@ public class Registration extends RegistrationAction implements AjaxValidator {
         return SUCCESS;
 	}
 
+    @Anonymous
+    public String createAccount() throws Exception {
+
+        if (loggedIn()) {
+            addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
+            return SUCCESS;
+        }
+
+        final RegistrationResult result = registrationForm.createSubmission(registrationService)
+                .setLocale(localeForm.getLocale())
+                .setRegistrationRequestHash(registrationKey)
+                .submit();
+
+        if (result instanceof RegistrationSuccess) {
+
+            final RegistrationSuccess success = (RegistrationSuccess) result;
+            contractor = success.getContractor();
+            user = success.getUser();
+            permissions = logInUser();
+            addClientSessionCookieToResponse();
+            setLoginLog(permissions);
+            // they don't have an account yet so they won't get this as a default
+            permissions.setSessionCookieTimeoutInSeconds(3600);
+
+            return setUrlForRedirect(getRegistrationStep().getUrl());
+
+        } else {
+            //FIXME: Find a better way to deal with this.
+            throw new Exception(((RegistrationFailure) result).getProblem());
+        }
+
+    }
+
+    //TODO: Extract this logic to an Interceptor Annotation
+    protected boolean loggedIn() {
+        loadPermissions(false);
+        return permissions.isLoggedIn() && !permissions.isDeveloperEnvironment();
+    }
+
+
     private RegistrationLocaleForm getLocaleFromRequestData() {
         if (localeForm != null && Strings.isNotEmpty(localeForm.getLanguage())) return localeForm;
 
         final RegistrationLocaleForm newForm = new RegistrationLocaleForm();
-        final ActionContext context = ActionContext.getContext();
+        final ActionContext context = getActionContext();
 
         if (context.getLocale() != null) {
             final Locale preExistingLocale = context.getLocale();
@@ -117,89 +151,19 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	}
 
 	private boolean isAUContractor() {
-		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isAustralia();
+        return registrationForm != null && registrationForm.getCountryISOCode().equals(Country.AUSTRALIA_ISO_CODE);
 	}
 
 	private boolean isUKContractor() {
-		return contractor != null && contractor.getCountry() != null && contractor.getCountry().isUK();
+        return registrationForm != null && registrationForm.getCountryISOCode().equals(Country.UK_ISO_CODE);
 	}
-
-	@Anonymous
-	public String createAccount() throws Exception {
-
-		if (loggedIn()) {
-			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
-			return SUCCESS;
-		}
-
-        final RegistrationResult result = registrationForm.createSubmission(registrationService)
-                .setLocale(localeForm.getLocale())
-                .setRegistrationRequestHash(registrationKey)
-                .submit();
-
-        if (result instanceof RegistrationSuccess) {
-
-            final RegistrationSuccess success = (RegistrationSuccess) result;
-            contractor = success.getContractor();
-            user = success.getUser();
-            permissions = logInUser();
-            addClientSessionCookieToResponse();
-            setLoginLog(permissions);
-            // they don't have an account yet so they won't get this as a default
-            permissions.setSessionCookieTimeoutInSeconds(3600);
-
-            return setUrlForRedirect(getRegistrationStep().getUrl());
-
-        } else {
-            //FIXME: Find a better way to deal with this.
-            throw new Exception(((RegistrationFailure) result).getProblem());
-        }
-
-	}
-
-	public String getRegistrationKey() {
-		return registrationKey;
-	}
-
-	public void setRegistrationKey(String registrationKey) {
-		this.registrationKey = registrationKey;
-	}
-
-	@Override
-	public ContractorRegistrationStep getPreviousRegistrationStep() {
-		return null;
-	}
-
-	@Override
-	public ContractorRegistrationStep getNextRegistrationStep() {
-		return null;
-	}
-
-	/**
-	 * This shouldn't be getting called
-	 */
-	@Override
-	public String previousStep() throws Exception {
-		return SUCCESS;
-	}
-
-	/**
-	 * This shouldn't be getting called either. After the first step of
-	 * registration the Contractor account is created and this should redirect
-	 * to ConEdit
-	 */
-	@Override
-	public String nextStep() throws Exception {
-		return SUCCESS;
-	}
-
 
 	private void setLoginLog(Permissions permissions) {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
-		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
+		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
 
-		String serverName = ServletActionContext.getRequest().getLocalName();
+		String serverName = getRequest().getLocalName();
 		try {
 			if (isLiveEnvironment()) {
 				// Need computer name instead of www
@@ -218,7 +182,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 	private Permissions logInUser() throws Exception {
 		Permissions permissions = permissionBuilder.login(user);
-		ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
+		getActionContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 		return permissions;
 	}
 
@@ -231,7 +195,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	@Override
 	public void validate() {
         new RegistrationFormValidationWrapper(this, validatorFactory.getValidator()).validate(
-                ActionContext.getContext().getValueStack(),
+                getActionContext().getValueStack(),
                 new DelegatingValidatorContext(this)
         );
 	}
@@ -250,20 +214,26 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 
 	@Override
 	public List<CountrySubdivision> getCountrySubdivisionList() {
-		if (contractor == null || contractor.getCountry() == null) {
+		if (registrationForm == null || Strings.isEmpty(registrationForm.getCountryISOCode()))
 			return getCountrySubdivisionList(Country.US_ISO_CODE);
-		}
-
-		return getCountrySubdivisionList(contractor.getCountry().getIsoCode());
+		else
+            return getCountrySubdivisionList(registrationForm.getCountryISOCode());
 	}
 
 	public String getCountrySubdivisionLabelFor() {
-		if (contractor == null || contractor.getCountry() == null) {
+		if (registrationForm == null || Strings.isEmpty(registrationForm.getCountryISOCode()))
 			return getCountrySubdivisionLabelFor(Country.US_ISO_CODE);
-		}
-
-		return getCountrySubdivisionLabelFor(contractor.getCountry().getIsoCode());
+		else
+            return getCountrySubdivisionLabelFor(registrationForm.getCountryISOCode());
 	}
+
+    protected ActionContext getActionContext() {
+        return ActionContext.getContext();
+    }
+
+    protected HttpServletRequest getRequest() {
+        return ServletActionContext.getRequest();
+    }
 
     public RegistrationForm getRegistrationForm() {
         return registrationForm;
@@ -280,4 +250,42 @@ public class Registration extends RegistrationAction implements AjaxValidator {
     public void setLocaleForm(RegistrationLocaleForm localeForm) {
         this.localeForm = localeForm;
     }
+
+    public String getRegistrationKey() {
+        return registrationKey;
+    }
+
+    public void setRegistrationKey(String registrationKey) {
+        this.registrationKey = registrationKey;
+    }
+
+    @Override
+    public ContractorRegistrationStep getPreviousRegistrationStep() {
+        return null;
+    }
+
+    @Override
+    public ContractorRegistrationStep getNextRegistrationStep() {
+        return null;
+    }
+
+    /**
+     * This shouldn't be getting called
+     */
+    @Override
+    public String previousStep() throws Exception {
+        return SUCCESS;
+    }
+
+    /**
+     * This shouldn't be getting called either. After the first step of
+     * registration the Contractor account is created and this should redirect
+     * to ConEdit
+     */
+    @Override
+    public String nextStep() throws Exception {
+        return SUCCESS;
+    }
+
+
 }
