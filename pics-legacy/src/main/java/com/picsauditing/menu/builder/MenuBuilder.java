@@ -177,7 +177,7 @@ public final class MenuBuilder {
 			}
 		}
 
-		if (!permissions.isOperator() && !permissions.isInsuranceOnlyContractorUser()) {
+        if (permissions.isContractor() && !permissions.isInsuranceOnlyContractorUser()) {
 			addCompanyMenuLinksFor(permissions.getAccountId(), !permissions.getAccountStatus().isDemo(), companyMenu, permissions);
 		}
 	}
