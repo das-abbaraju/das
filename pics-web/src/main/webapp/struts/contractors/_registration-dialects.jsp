@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:if test="supportedLanguages.getCountriesBasedOn(language).size() > 0">
+<s:if test="supportedLanguages.getCountriesBasedOn(localeForm.language).size() > 0">
     <label for="dialect_selection" data-content="Help text for dialect">
         <s:text name="Registration.dialect" />
     </label>

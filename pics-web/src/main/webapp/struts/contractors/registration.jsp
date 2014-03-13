@@ -15,7 +15,7 @@
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
-<s:if test="regForm.countryISOCode != ''">
+<s:if test="registrationForm.countryISOCode != ''">
 	<s:set var="country_iso_code" value="registrationForm.countryISOCode" />
 </s:if>
 <s:else>
