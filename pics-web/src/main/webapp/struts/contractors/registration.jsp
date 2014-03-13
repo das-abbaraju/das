@@ -132,6 +132,7 @@
 		                    list="countryList"
 		                    cssClass="select2 contractor-country"
 		                    name="registrationForm.countryISOCode"
+                            label="global.country"
 		                    listKey="isoCode"
 		                    listValue="name"
 		                />

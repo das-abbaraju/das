@@ -84,7 +84,7 @@ public class RegistrationForm {
     //TODO - custom validator -
     // cannot be username
     // must contain letters & numbers
-    // cannot be current password
+    // cannot be current password -- (hopefully) impossible during registration
     private String password;
 
     //TODO - check that it matches entered password

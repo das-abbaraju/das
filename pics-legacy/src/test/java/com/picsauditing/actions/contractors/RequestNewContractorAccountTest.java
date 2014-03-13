@@ -594,8 +594,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
-        verify(contractor).setStatus(AccountStatus.Declined);
-        verify(contractor).setReason("Test Note");
+        verify(requestNewContractorService).populateRequestedContractor(any(ContractorAccount.class), any(OperatorAccount.class), any(RequestContactType.class), any(String.class));
     }
 
     @Test
@@ -613,25 +612,23 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
-        verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
+        verify(contractorOperatorService).publishEvent(any(ContractorOperator.class), any(ContractorOperatorEventType.class), any(Integer.class));
     }
 
     @Test
     public void testSaveRequestComponentsAndEmailIfNew_IfNewRequestContactPropertiesAreSetOnContractor() throws Exception {
         setupSaveRequestComponentsAndEmailIfNew();
+        requestNewContractorAccount.setContactType(RequestContactType.EMAIL);
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
-        verify(contractor).contactByEmail();
         verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
-        verify(contractor).setLastContactedByAutomatedEmailDate(any(Date.class));
     }
 
     private void setupSaveRequestComponentsAndEmailIfNew() {
         Whitebox.setInternalState(requestNewContractorAccount, "requestRelationship", relationship);
         Whitebox.setInternalState(requestNewContractorAccount, "contractor", contractor);
         Whitebox.setInternalState(requestNewContractorAccount, "primaryContact", user);
-        Whitebox.setInternalState(requestNewContractorAccount, "contractorAccountDAO", contractorAccountDAO);
         Whitebox.setInternalState(requestNewContractorAccount, "noteDao", noteDao);
         when(relationship.getOperatorAccount()).thenReturn(operator);
         when(contractorAccountDAO.save(contractor)).thenReturn(contractor);
