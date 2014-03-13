@@ -145,10 +145,6 @@ public class MenuBuilderTest extends PicsActionTest {
         assertTrue(menu.getChildren().size() == 5);
         MenuComponent companyMenu = menu.getChildren().get(0);
         assertEquals("Company",companyMenu.getName());
-        MenuComponent activityWatch = companyMenu.getChildren().get(3);
-        assertEquals("Activity Watch",activityWatch.getName());
-        MenuComponent clientSites = companyMenu.getChildren().get(6);
-        assertEquals("Client Sites",clientSites.getName());
     }
 
     private void setupPermissionsForMibew() {
