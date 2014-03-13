@@ -127,7 +127,7 @@
 									<s:text name="ContractorPaymentOptions.NextBillingAmount"/>
 									
 									<s:if test="contractor.accountLevel.full">
-										(<a href="ContractorPricing.action?con=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
+										(<a href="ContractorPricing.action?con=${contractor.id}" target="_page" class="ext"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
 									</s:if>
 								</label>
 								
