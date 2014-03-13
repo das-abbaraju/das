@@ -62,7 +62,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 				if (obj.getQbListID() == null) {
 					obj.setQbListID("NOLOAD" + id);
 				}
-                billingService.doFinalFinancialCalculationsBeforeSaving(obj);
+                billingService.applyFinancialCalculationsAndType(obj);
                 billingService.verifyAndSaveInvoice(obj);
 			}
 

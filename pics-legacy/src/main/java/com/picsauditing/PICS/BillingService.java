@@ -109,9 +109,10 @@ public class BillingService {
         return currentBalance;
     }
 
-    public void doFinalFinancialCalculationsBeforeSaving(Invoice invoice) throws Exception {
+    public void applyFinancialCalculationsAndType(Invoice invoice) throws Exception {
         taxService.applyTax(invoice);
         addRevRecInfoIfAppropriateToItems(invoice);
+        invoice.setInvoiceType(convertBillingStatusToInvoiceType(invoice, billingStatus((ContractorAccount)invoice.getAccount())));
     }
 
     public Invoice verifyAndSaveInvoice(Invoice invoice) throws Exception {
@@ -166,7 +167,7 @@ public class BillingService {
         toUpdate.setCommissionableAmount(updateWith.getCommissionableAmount());
 		AccountingSystemSynchronization.setToSynchronize(toUpdate);
 
-        doFinalFinancialCalculationsBeforeSaving(toUpdate);
+        applyFinancialCalculationsAndType(toUpdate);
         verifyAndSaveInvoice(toUpdate);
 
 		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency

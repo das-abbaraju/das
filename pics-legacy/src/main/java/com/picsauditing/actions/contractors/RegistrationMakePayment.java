@@ -717,7 +717,7 @@ public class RegistrationMakePayment extends RegistrationAction {
             // TODO: refactor this method to get the billing status within
 			invoice = billingService.createInvoice(contractor, getUser());
 			contractor.getInvoices().add(invoice);
-			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+			billingService.applyFinancialCalculationsAndType(invoice);
             billingService.verifyAndSaveInvoice(invoice);
             billingService.syncBalance(contractor);
 			contractorAccountDao.save(contractor);
@@ -734,7 +734,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.UPDATE));
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
-            billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+            billingService.applyFinancialCalculationsAndType(invoice);
             billingService.verifyAndSaveInvoice(invoice);
 			return true;
 		}

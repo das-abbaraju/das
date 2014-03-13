@@ -577,7 +577,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		invoice.getItems().add(item);
 
-        billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+        billingService.applyFinancialCalculationsAndType(invoice);
         invoice = billingService.verifyAndSaveInvoice(invoice);
 
 		contractor.getInvoices().add(invoice);
