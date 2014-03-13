@@ -7,7 +7,8 @@
 <s:set name="unapproved_sites" value="getUnapprovedSites('ContractorApproval')"/>
 
 <s:if test="#result.showButtons">
-    <div class="alert">
+    <!-- Added id here because contractor_dashboard ID is both in con_dashboard.jsp and MenuBuilder.java -->
+    <div id="status_alert" class="alert">
         <p>
             <s:property value="contractor.name"/> <s:text
                 name="ContractorView.ContractorDashboard.PendingApproval"/> <s:property
