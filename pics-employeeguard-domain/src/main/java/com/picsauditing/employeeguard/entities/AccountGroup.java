@@ -1,10 +1,13 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "account_group")
+@Where(clause = "deletedDate IS NULL")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class AccountGroup implements BaseEntity {

@@ -35,6 +35,14 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		return roleDAO.find(id);
 	}
 
+	public Role findByIdAndAccountId(final Integer id, final int accountId) {
+		if (id == null || accountId <= 0) {
+			throw new IllegalArgumentException("Invalid id and/or accountId=");
+		}
+
+		return roleDAO.findRoleByAccount(id, accountId);
+	}
+
 	public Map<Project, Set<Role>> getRolesForProjects(final Collection<Project> projects) {
 		return Utilities.convertToMapOfSets(projectRoleDAO.findByProjects(projects),
 				new Utilities.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
@@ -137,6 +145,15 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		}
 
 		Role role = find(id);
+		delete(role);
+	}
+
+	public void deleteByIdAndAccountId(final Integer id, final int accountId) {
+		if (id == null || accountId <= 0) {
+			throw new NullPointerException("Invalid id and/or accountId");
+		}
+
+		Role role = findByIdAndAccountId(id, accountId);
 		delete(role);
 	}
 }
