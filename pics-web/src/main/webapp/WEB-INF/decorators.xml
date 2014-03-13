@@ -21,7 +21,6 @@
         <pattern>/exception_handler.jsp</pattern>
         <pattern>/reasons.html</pattern>
         <pattern>/ChartXML*</pattern>
-        <pattern>/con_pricing.jsp</pattern>
         <pattern>/AuditFileUpload.action</pattern>
         <pattern>/*External.action</pattern>
         <pattern>/Liveagent.action</pattern>
@@ -52,11 +51,11 @@
         <pattern>/ManageReports!getStarted.action</pattern>
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ContactUs*.action</pattern>
-        <pattern>/ContractorPricing.action</pattern>
     </decorator>
     <decorator name="bootstrap3-simple-layout" page="bootstrap3-simple-layout.jsp">
         <pattern>/employee-guard/welcome*</pattern>
         <pattern>/employee-guard/sign-up*</pattern>
+        <pattern>/ContractorPricing.action</pattern>
     </decorator>
     <decorator name="contractor-layout" page="contractor-layout.jsp">
     	<pattern>/Temp*.action</pattern>
