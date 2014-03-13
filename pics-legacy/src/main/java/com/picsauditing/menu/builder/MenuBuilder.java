@@ -299,6 +299,8 @@ public final class MenuBuilder {
 			return;
 		}
 
+        URLUtils urlUtils = urlUtils();
+
 		MenuComponent devMenu = menubar.addChild(getText("menu.Dev"));
 		devMenu.addChild(getText("menu.Dev.AppProperties"), "ManageAppProperty.action", "manage_app_properties");
 
@@ -325,6 +327,9 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			devMenu.addChild("Process QB XML", "ProcessQBResponseXML.action", "process_qb_response_xml");
 		}
+
+        String auditBuilder = urlUtils.getActionUrl("AuditBuilder", "id", -1);
+        devMenu.addChild(getText("AuditBuilder.header"), auditBuilder, "audit_builder");
 
 		buildEmployeeGUARD(devMenu);
 
