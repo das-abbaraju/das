@@ -1,71 +1,131 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <%-- Url --%>
 <s:url action="ContractorCertification" method="issueSsipCertificate" var="issue_certificate_url" />
+
+<%-- Page title --%>
+<s:include value="/struts/employee-guard/_page-header.jsp">
+    <s:param name="title"><s:text name="ContractorCertificate.SSIP.IssueCertificate.Title" /></s:param>
+    <s:param name="subtitle"><s:property value="contractor.name" /></s:param>
+</s:include>
 
 <title>
     <s:text name="ContractorCertificate.SSIP.IssueCertificate.Title" />
 </title>
 
-<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
-
-    <h1>
-        <s:text name="ContractorCertificate.SSIP.IssueCertificate.Title" />
-
-        <span class="sub">
-            <s:property value="contractor.name" />
-        </span>
-    </h1>
-
-    <s:if test="hasFieldErrors()">
-        <div class="error">
+<s:if test="hasFieldErrors()">
+    <div class="col-md-8">
+        <div class="alert alert-danger">
             <s:text name="JS.Validation.Contractor.Certificate.Error" />
             <s:fielderror />
         </div>
-    </s:if>
+    </div>
+</s:if>
 
-    <form action="${issue_certificate_url}" method="post">
+<div class="col-md-8">
+    <form action="${issue_certificate_url}" method="post" class="form-horizontal" role="form">
+
         <s:set value="%{@com.picsauditing.model.contractor.CertificationMethod@INTERNAL}" var="ssip_certified"/>
         <s:set value="%{@com.picsauditing.model.contractor.CertificationMethod@DEEMS_TO_SATISFY}" var="deems_to_satisfy"/>
         <s:set 
             var="deems_to_satisfy_checked"
-            value="(certificationMethod == null || certificationMethod == 'DEEMS_TO_SATISFY') ? 'checked' : ''"
+            value="(certificationMethod == null || certificationMethod == 'DEEMS_TO_SATISFY') ? 'selected' : ''"
         />
         <s:set 
             var="ssip_certified_checked"
-            value="(certificationMethod == 'INTERNAL') ? 'checked' : ''"
+            value="(certificationMethod == 'INTERNAL') ? 'selected' : ''"
         />
+        <s:set var="available_scopes" value="{'Principle Contractor', 'CDM Coordinator', 'Designer', 'Contractor'}" />
+        <s:set var="selected_scopes" value="{'Designer', 'Contractor'}" />
 
         <input value="${contractor.id}" hidden name="contractor" />
 
         <fieldset>
-            <legend><s:text name="ContractorCertificate.SSIP.certificateType" /></legend> 
-            <input id="deems_to_satisfy" type="radio" name="certificationMethod" value="${deems_to_satisfy}" ${deems_to_satisfy_checked} />
-            <label for="deems_to_satisfy"><s:text name="ContractorCertificate.SSIP.DeemsToSatisfy" /></label>
-            <input id="ssip_certified" type="radio" name="certificationMethod" value="${ssip_certified}" ${ssip_certified_checked} />
-            <label for="ssip_certified"><s:text name="ContractorCertificate.SSIP.SSIPCertified" /></label>
-        </fieldset>
-        <fieldset>
-            <legend><s:text name="ContractorCertificate.SSIP.IssueDate" /></legend>
-            <input type="text" name="issueYear" placeholder="YYYY" size="4" maxlength="4" value="${issueYear}" />
-            <input type="text" name="issueMonth" placeholder="MM" size="2" maxlength="2" value="${issueMonth}" />
-            <input type="text" name="issueDay" placeholder="DD" size="2" maxlength="2" value="${issueDay}" />
-        </fieldset>
-        <fieldset>
-            <legend><s:text name="ContractorCertificate.SSIP.ExpirationDate" /></legend>
-            <input type="text" name="expirationYear" placeholder="YYYY" size="4" maxlength="4" value="${expirationYear}" />
-            <input type="text" name="expirationMonth" placeholder="MM" size="2" maxlength="2" value="${expirationMonth}" />
-            <input type="text" name="expirationDay" placeholder="DD" size="2" maxlength="2" value="${expirationDay}" />
-        </fieldset>
+            <div class="form-group">
+                <label class="col-md-3 control-label"><strong><s:text name="ContractorCertificate.SSIP.certificateType" /></strong></label>
+                <div class="col-md-4 col-xs-11">
+                    <select name="certificationMethod" class="form-control select2Min" tabindex="1">
+                        <option value="${deems_to_satisfy}" ${deems_to_satisfy_checked}><s:text name="ContractorCertificate.SSIP.DeemsToSatisfy" /></option>
+                        <option value="${ssip_certified}" ${ssip_certified_checked}><s:text name="ContractorCertificate.SSIP.SSIPCertified" /></option>
+                    </select>
+                </div>
+            </div>
 
-        <p>
-            <span class="title"><s:text name="ContractorCertificate.SSIP.IssuedBy" /></span><br/>
-            <s:property value="currentUserName" />
-        </p>
+            <div class="form-group">
+                <label class="col-md-3 control-label"><s:text name="ContractorCertificate.SSIP.cdmScope" /></label>
+                <div class="col-md-4 col-xs-11">
+                    <select name="cdm_scopes" multiple="true" class="form-control select2"tabindex="2">
+                        <s:iterator value="#available_scopes" var="available_scope">
+                            <s:set var="is_selected" value="''" />
+                            <s:iterator value="#selected_scopes" var="selected_scope">
+                                <s:if test="#available_scope == #selected_scope">
+                                    <s:set var="is_selected" value="'selected'" />
+                                </s:if>
+                            </s:iterator>
+                            <option ${is_selected}>${available_scope}</option>
+                        </s:iterator>
+                    </select>
+                </div>
+            </div>
 
-        <button type="submit" class="picsbutton positive"><s:text name="ContractorCertificate.SSIP.IssueCertificate" /></button>
-        <a href="${manualAuditUrl}" class="picsbutton"><s:text name="ContractorCertificate.SSIP.Cancel" /></a>
+            <div class="form-group">
+                <label class="col-md-3 control-label"><strong><s:text name="ContractorCertificate.SSIP.issueDate" /></strong></label>
+                <div class="col-md-4">
+                    <fieldset>
+                        <div class="row date">
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <input name="issueYear" type="text" placeholder="YYYY" maxlength="4" class="form-control year" value="${issueYear > 0 ? issueYear : ''}" tabindex="3" />
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <input name="issueMonth" type="text" placeholder="MM" maxlength="2" class="form-control month" value="${issueMonth > 0 ? issueMonth : ''}" tabindex="4" />
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <input name="issueDay" type="text" placeholder="DD" maxlength="2" class="form-control day" value="${issueDay > 0 ? issueDay : ''}" tabindex="5" />
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-12">
+                                <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd" tabindex="6"><i class="icon-calendar"></i></a>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 control-label"><strong><s:text name="ContractorCertificate.SSIP.expirationDate" /></strong></label>
+                <div class="col-md-4">
+                    <fieldset>
+                        <div class="row date">
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <input name="expirationYear" type="text" placeholder="YYYY" maxlength="4" class="form-control year" value="${expirationYear > 0 ? expirationYear : ''}" tabindex="7" />
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <input name="expirationMonth" type="text" placeholder="MM" maxlength="2" class="form-control month" value="${expirationMonth > 0 ? expirationMonth : ''}" tabindex="8" />
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <input name="expirationDay" type="text" placeholder="DD" maxlength="2" class="form-control day" value="${expirationDay > 0 ? expirationDay : ''}" tabindex="9" />
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-12">
+                                <a href="#" class="btn btn-link date-picker" data-date-format="yyyy-mm-dd" tabindex="10"><i class="icon-calendar"></i></a>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label labelName="employees" class="col-md-3 control-label"><s:text name="ContractorCertificate.SSIP.IssuedBy" /></label>
+                <div class="col-md-4">
+                    <p style="padding-top:7px;"><s:property value="currentUserName" /></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3 form-actions">
+                    <button type="submit" class="btn btn-success" tabindex="11"><s:text name="ContractorCertificate.SSIP.IssueCertificate" /></button>
+                    <a href="${manualAuditUrl}" class="btn btn-default" tabindex="12"><s:text name="ContractorCertificate.SSIP.Cancel" /></a>
+                </div>
+            </div>
+        </fieldset>
     </form>
 </div>

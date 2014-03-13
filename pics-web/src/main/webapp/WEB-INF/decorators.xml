@@ -51,6 +51,8 @@
         <pattern>/ManageReports!getStarted.action</pattern>
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ContactUs*.action</pattern>
+        <pattern>/ContractorCertification.action*</pattern>
+        <pattern>/ContractorCertification!issueSsipCertificate.action</pattern>
     </decorator>
     <decorator name="bootstrap3-simple-layout" page="bootstrap3-simple-layout.jsp">
         <pattern>/employee-guard/welcome*</pattern>
