@@ -382,6 +382,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
         requestNewContractorService.setPermissions(permissions);
         contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
         primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
+        if (requestRelationship.getOperatorAccount().isAutoApproveRelationships())
+            requestRelationship.setWorkStatus(ApprovalStatus.Y);
         requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
 
 		if (contactType == RequestContactType.DECLINED) {
