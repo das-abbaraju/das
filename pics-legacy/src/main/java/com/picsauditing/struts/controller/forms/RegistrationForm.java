@@ -286,7 +286,6 @@ public class RegistrationForm {
             .setAddress(this.getAddress())
             .setAddress2(this.getAddress2())
             .setZip(this.getZip())
-            .setCountryISO(this.getCountryISOCode())
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
             .setVatID(this.getVatId())
