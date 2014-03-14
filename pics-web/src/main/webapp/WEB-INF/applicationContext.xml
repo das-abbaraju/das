@@ -156,6 +156,18 @@
           class="com.picsauditing.provisioning.ProductSubscriptionServiceImpl"/>
     <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
           scope="prototype"/>
+    <bean id="RegistrationBillingBean" class="com.picsauditing.service.billing.RegistrationBillingBean" />
+    <bean id="RegistrationRequestService" class="com.picsauditing.service.registration.RegistrationRequestService" />
+    <bean id="AltUserService" class="com.picsauditing.service.user.UserService" />
+    <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService">
+        <constructor-arg ref="RegistrationBillingBean" />
+        <constructor-arg ref="ContractorAccountService" />
+        <constructor-arg ref="AppUserService" />
+        <constructor-arg ref="AppUserDAO" />
+        <constructor-arg ref="LanguageModel" />
+        <constructor-arg ref="AltUserService" />
+        <constructor-arg ref="RegistrationRequestService" />
+    </bean>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
@@ -188,9 +200,9 @@
     <bean id="ContractorValidator" class="com.picsauditing.validator.ContractorValidator" scope="prototype"/>
     <bean id="InputValidator" class="com.picsauditing.validator.InputValidator" scope="prototype"/>
     <bean id="PasswordValidator" class="com.picsauditing.validator.PasswordValidator" scope="prototype"/>
-	<bean id="RegistrationValidator" class="com.picsauditing.validator.RegistrationValidator" scope="prototype"/>
 	<bean id="RequestNewContractorValidator" class="com.picsauditing.validator.RequestNewContractorValidator" scope="prototype"/>
     <bean id="TaxIdValidatorFactory" class="com.picsauditing.validator.TaxIdValidatorFactory" />
+    <bean id="ValidatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
     <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
           scope="prototype"/>
@@ -229,6 +241,29 @@
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
+
+    <bean id="IdentityProviderStrutsWebApp" class="com.picsauditing.security.IdentityProviderStrutsWebApp" scope="prototype"/>
+    <bean id="NoteService" class="com.picsauditing.service.notes.NoteService" scope="prototype">
+        <constructor-arg ref="IdentityProviderStrutsWebApp"/>
+    </bean>
+    <bean id="EmailLog" class="com.picsauditing.service.email.logging.SimpleEmailLogger"/>
+    <bean id="SpringContextEmailEventPublisher" class="com.picsauditing.service.email.events.publisher.SpringContextEmailEventPublisher"/>
+    <bean id="SpringContextAccountEventPublisher" class="com.picsauditing.service.account.events.SpringContextAccountEventPublisher"/>
+    <bean id="UserEventPublisher" class="com.picsauditing.service.user.events.publisher.SpringContextUserEventPublisher" />
+    <bean id="EmailEventService" class="com.picsauditing.service.email.EmailService">
+        <constructor-arg ref="SpringContextEmailEventPublisher"/>
+        <constructor-arg ref="EmailSender"/>
+    </bean>
+    <bean id="AccountEventListener" class="com.picsauditing.service.email.events.listener.AccountEventListener"/>
+    <bean id="ContractorAccountService" class="com.picsauditing.service.account.AccountService">
+        <constructor-arg ref="SpringContextAccountEventPublisher"/>
+    </bean>
+    <bean id="ContractorOperatorEventListener" class="com.picsauditing.service.email.events.listener.ContractorOperatorEventListener"/>
+    <bean id="SpringContextContractorOperatorEventPublisher" class="com.picsauditing.service.account.events.SpringContextContractorOperatorEventPublisher"/>
+    <bean id="ContractorOperatorEventService" class="com.picsauditing.service.account.ContractorOperatorService">
+        <constructor-arg ref="SpringContextContractorOperatorEventPublisher"/>
+    </bean>
+
     <bean id="EmailBuilderService" class="com.picsauditing.service.email.EmailBuilderService"/>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>

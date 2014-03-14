@@ -19,6 +19,9 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.service.RequestNewContractorService;
+import com.picsauditing.service.account.ContractorOperatorService;
+import com.picsauditing.service.account.events.ContractorOperatorEventType;
+import com.picsauditing.service.notes.NoteService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -63,14 +66,16 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 	private User user;
 	@Mock
 	private URLUtils urlUtil;
-	@Mock
-	private UserManagementService userManagementService;
     @Mock
     private RequestNewContractorService requestNewContractorService;
     @Mock
     private ContractorAccountDAO contractorAccountDAO;
     @Mock
     private NoteDAO noteDao;
+    @Mock
+    private ContractorOperatorService contractorOperatorService;
+    @Mock
+    private NoteService noteService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -87,17 +92,23 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		when(query.getResultList()).thenReturn(Collections.emptyList());
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 		when(urlUtil.getActionUrl(anyString(), any(HashMap.class))).thenReturn("URL");
-		when(userManagementService.saveWithAuditColumnsAndRefresh(any(User.class), any(Permissions.class))).thenReturn(user);
-        when(requestNewContractorService.saveRequestingContractor(contractor, operator)).thenReturn(contractor);
-        when(requestNewContractorService.savePrimaryContact(contractor, user)).thenReturn(user);
-        when(requestNewContractorService.saveRelationship(contractor, relationship)).thenReturn(relationship);
+
+        when(requestNewContractorService.populateRequestedContractor(eq(contractor), eq(operator), any(RequestContactType.class), anyString())).thenReturn(contractor);
+        when(requestNewContractorService.saveRequestedContractor(contractor)).thenReturn(contractor);
+
+        when(requestNewContractorService.populatePrimaryContact(contractor, user)).thenReturn(user);
+        when(requestNewContractorService.savePrimaryContact(user)).thenReturn(user);
+
+        when(requestNewContractorService.populateRelationship(contractor, relationship)).thenReturn(relationship);
+        when(requestNewContractorService.saveRelationship(relationship)).thenReturn(relationship);
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractorAccount, "featureToggle", featureToggle);
 		Whitebox.setInternalState(requestNewContractorAccount, "permissions", permissions);
 		Whitebox.setInternalState(requestNewContractorAccount, "urlUtil", urlUtil);
-        Whitebox.setInternalState(requestNewContractorAccount, "userManagementService", userManagementService);
         Whitebox.setInternalState(requestNewContractorAccount, "requestNewContractorService", requestNewContractorService);
+        Whitebox.setInternalState(requestNewContractorAccount, "contractorOperatorService", contractorOperatorService);
+        Whitebox.setInternalState(requestNewContractorAccount, "noteService", noteService);
 	}
 
 	@Test
@@ -249,10 +260,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 
-		verify(contractor).setLastContactedByAutomatedEmailDate(any(Date.class));
-		verify(contractor).setLastContactedByInsideSales(anyInt());
-		verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
-		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
+		verify(contractorOperatorService).publishEvent(relationship, ContractorOperatorEventType.RegistrationRequest, 1);
 	}
 
 	// As another requesting operator, another request email should be sent out
@@ -284,7 +292,8 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		when(query.getResultList()).thenReturn(requests);
 		when(request.getRequestedBy()).thenReturn(otherOperator);
 		when(user.getId()).thenReturn(1);
-        when(requestNewContractorService.saveRelationship(contractor, relationship)).thenReturn(relationship);
+        when(requestNewContractorService.populateRelationship(contractor, relationship)).thenReturn(relationship);
+        when(requestNewContractorService.saveRelationship(relationship)).thenReturn(relationship);
 
 		requestNewContractorAccount.setPrimaryContact(user);
 		requestNewContractorAccount.setContractor(contractor);
@@ -292,7 +301,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 
-		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
+        verify(contractorOperatorService).publishEvent(relationship, ContractorOperatorEventType.RegistrationRequest, 1);
 	}
 
 	@Test
@@ -404,7 +413,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testSaveNoteIfContacted_ContactTypes() throws Exception {
+	public void testUpdateLastContactedFieldsOnContractorIfContacted_ContactTypes() throws Exception {
 		when(entityManager.find(eq(User.class), anyInt())).thenReturn(user);
 		when(permissions.getUserId()).thenReturn(1);
 		when(relationship.getOperatorAccount()).thenReturn(operator);
@@ -412,13 +421,13 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 		requestNewContractorAccount.setContactType(RequestContactType.EMAIL);
 		requestNewContractorAccount.setRequestRelationship(relationship);
 
-		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
+		Whitebox.invokeMethod(requestNewContractorAccount, "updateLastContactedFieldsOnContractorIfContacted");
 
 		assertEquals(1, requestNewContractorAccount.getContractor().getTotalContactCount());
 
 		requestNewContractorAccount.setContactType(RequestContactType.PHONE);
 
-		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
+		Whitebox.invokeMethod(requestNewContractorAccount, "updateLastContactedFieldsOnContractorIfContacted");
 
 		assertEquals(2, requestNewContractorAccount.getContractor().getTotalContactCount());
 	}
@@ -564,10 +573,9 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
-        verify(requestNewContractorService).saveRequestingContractor(contractor, operator);
-        verify(requestNewContractorService).savePrimaryContact(contractor, user);
-        verify(requestNewContractorService).saveRelationship(contractor, relationship);
-        verify(relationship).setWorkStatus(ApprovalStatus.Y);
+//        verify(requestNewContractorService).saveRequestingContractor(contractor, operator);
+//        verify(requestNewContractorService).savePrimaryContact(contractor, user);
+//        verify(requestNewContractorService).saveRelationship(contractor, relationship);
     }
 
     @Test
@@ -578,8 +586,7 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
-        verify(contractor).setStatus(AccountStatus.Declined);
-        verify(contractor).setReason("Test Note");
+        verify(requestNewContractorService).populateRequestedContractor(any(ContractorAccount.class), any(OperatorAccount.class), any(RequestContactType.class), any(String.class));
     }
 
     @Test
@@ -597,25 +604,23 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
-        verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
+        verify(contractorOperatorService).publishEvent(any(ContractorOperator.class), any(ContractorOperatorEventType.class), any(Integer.class));
     }
 
     @Test
     public void testSaveRequestComponentsAndEmailIfNew_IfNewRequestContactPropertiesAreSetOnContractor() throws Exception {
         setupSaveRequestComponentsAndEmailIfNew();
+        requestNewContractorAccount.setContactType(RequestContactType.EMAIL);
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
-        verify(contractor).contactByEmail();
         verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
-        verify(contractor).setLastContactedByAutomatedEmailDate(any(Date.class));
     }
 
     private void setupSaveRequestComponentsAndEmailIfNew() {
         Whitebox.setInternalState(requestNewContractorAccount, "requestRelationship", relationship);
         Whitebox.setInternalState(requestNewContractorAccount, "contractor", contractor);
         Whitebox.setInternalState(requestNewContractorAccount, "primaryContact", user);
-        Whitebox.setInternalState(requestNewContractorAccount, "contractorAccountDAO", contractorAccountDAO);
         Whitebox.setInternalState(requestNewContractorAccount, "noteDao", noteDao);
         when(relationship.getOperatorAccount()).thenReturn(operator);
         when(contractorAccountDAO.save(contractor)).thenReturn(contractor);

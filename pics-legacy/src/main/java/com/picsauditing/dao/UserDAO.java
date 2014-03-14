@@ -265,6 +265,7 @@ public class UserDAO extends PicsDAO {
 		try {
 			return (User) query.getSingleResult();
 		} catch (Exception e) {
+            System.out.println(e.getStackTrace());
 		}
 
 		return null;

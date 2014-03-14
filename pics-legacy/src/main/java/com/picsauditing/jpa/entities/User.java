@@ -1083,6 +1083,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	// FIXME: This needs to move into the UserManagementService
+    // -- BLatner: This should be automatically done by the object.
+    // Keeping the internal integrity of self-referencing fields  is
+    // the responsibility of the object, not an external service.
 	@Transient
 	public void updateDisplayNameBasedOnFirstAndLastName() {
 		this.name = (firstName + " " + lastName).trim();

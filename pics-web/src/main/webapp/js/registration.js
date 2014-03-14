@@ -101,7 +101,7 @@
             PICS.ajax({
                 url: 'RegistrationAjax.action',
                 data: {
-                    language: language
+                    "localeForm.language": language
                 },
                 success: function (data, textStatus, jqXHR) {
                     var dialect_dropdown = $.trim(data),  //trim carriage returns
@@ -124,6 +124,8 @@
             var language = $('[name=language]').val(),
                 dialect = $('[name=dialect]').val();
 
+            console.log(language);
+            console.log(dialect);
             return dialect ? language + '_' + dialect : language;
         },
 
@@ -311,26 +313,26 @@
                 var email = 'my.email' + new Date().getTime() + '@test.com';
 
                 // Company Info
-                $('[name=language]').children().first().attr('selected','selected');
-                $('[name=dialect]').children().last().attr('selected','selected');
+                $('[name="localeForm.language"]').children().first().attr('selected','selected');
+                $('[name="localeForm.dialect"]').children().last().attr('selected','selected');
                 $('[name="contractor.country.isoCode"]').children().first().attr('selected','selected');
-                $('[name="contractor.timezone"]').select2('val', 'America/Los_Angeles')
-                $('[name="contractor.name"]').val("My Company" +  new Date().getTime() );
-                $('[name="contractor.address"]').val("123 Anywhere St");
-                $('[name="contractor.city"]').val("Springfield");
-                $('[name="countrySubdivision"]').select2('val', 'US-CA')
-                $('[name="contractor.zip"]').val("12345");
+                $('[name="registrationForm.timezone"]').select2('val', 'America/Los_Angeles')
+                $('[name="registrationForm.legalName"]').val("My Company" +  new Date().getTime() );
+                $('[name="registrationForm.address"]').val("123 Anywhere St");
+                $('[name="registrationForm.city"]').val("Springfield");
+                $('[name="registrationForm.countrySubdivision"]').select2('val', 'US-CA')
+                $('[name="registrationForm.zip"]').val("12345");
 
                 // Contact Info
-                $('[name="user.firstName"]').val('John');
-                $('[name="user.lastName"]').val('Doe');
-                $('[name="user.email"]').val(email);
-                $('[name="user.phone"]').val('555-555-5555');
+                $('[name="registrationForm.firstName"]').val('John');
+                $('[name="registrationForm.lastName"]').val('Doe');
+                $('[name="registrationForm.email"]').val(email);
+                $('[name="registrationForm.phone"]').val('555-555-5555');
 
                 // Account Info
-                $('[name="user.username"]').val(email);
-                $('[name="user.password"]').val('password1');
-                $('[name="confirmPassword"]').val('password1');
+                $('[name="registrationForm.username"]').val(email);
+                $('[name="registrationForm.password"]').val('password1');
+                $('[name="registrationForm.passwordConfirmation"]').val('password1');
             },
 
             autofillRegistrationServiceEvaluationFormForDev: function (event) {
@@ -481,7 +483,7 @@
                 PICS.ajax({
                     url: 'Registration!getCompanyAddressFields.action',
                     data: {
-                        'contractor.country.isoCode': selected_country,
+                        'registrationForm.countryISOcode': selected_country,
                         country_iso_code: selected_country
                     },
                     success: function (data, textStatus, jqXHR) {

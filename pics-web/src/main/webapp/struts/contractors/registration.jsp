@@ -15,16 +15,21 @@
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
-<s:if test="contractor.country.isoCode != ''">
-	<s:set var="country_iso_code" value="contractor.country.isoCode" />
+<s:if test="registrationForm.countryISOCode != null">
+	<s:set var="country_iso_code" value="registrationForm.countryISOCode" />
 </s:if>
 <s:else>
 	<s:set var="country_iso_code" value="'US'" />
 </s:else>
 
-<s:set var="country_subdivision_iso_code" value="registrationKey ? contractor.countrySubdivision.isoCode : countrySubdivision.isoCode" />
+<s:if test="registrationForm.countrySubdivision != null">
+    <s:set var="country_subdivision_iso_code" value="registrationForm.countrySubdivision" />
+</s:if>
+<s:else>
+    <s:set var="country_subdivision_iso_code" value="" />
+</s:else>
 
-<s:set name="chat_url" value="%{chatUrl}"></s:set>
+<s:set name="chat_url" value="%{chatUrl}" />
 
 <s:if test="hasActionErrors()">
 	<s:actionerror cssClass="action-error alert-message error" />
@@ -98,7 +103,7 @@
 
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
-		<s:if test="contractor.status.requested">
+		<s:if test="registrationForm.status.requested">
 			<s:hidden name="contractor" id="requested_contractor" />
 			<s:hidden name="user" />
 			<s:hidden name="registrationKey" />
@@ -119,7 +124,7 @@
 		                    listKey="key"
 		                    listValue="value"
 		                    name="language"
-		                    value="language"
+		                    value="localeForm.language"
 		                    id="registration_language"
 		                    cssClass="select2Min"
 		                />
@@ -131,18 +136,19 @@
 		                <s:select
 		                    list="countryList"
 		                    cssClass="select2 contractor-country"
-		                    name="contractor.country.isoCode"
+		                    name="registrationForm.countryISOCode"
+                            label="global.country"
 		                    listKey="isoCode"
 		                    listValue="name"
 		                />
 		            </li>
 		            <li class="timezone">
 		                <label for="contractor_timezone"><s:text name="global.timezone" /></label>
-		                <input class="timezone_input" name="contractor.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
-		                <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
+		                <input class="timezone_input" name="registrationForm.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
+		                <s:hidden id="registration_requested_timezone" name="registrationForm.timezone" />
 		            </li>
 		            <li>
-						<s:textfield name="contractor.name" />
+						<s:textfield name="registrationForm.legalName" label="ContractorAccount.name"/>
 					</li>
 		            <li class="contractor-name-duplicate">
 		            	<div class="alert-message warning">
@@ -187,7 +193,7 @@
 					<%-- End hack --%>
 
 					<li id="tax_id" class="${tax_id_class}">
-						<s:textfield label="taxIdLabel" name="contractor.vatId" />
+						<s:textfield label="taxIdLabel" name="registrationForm.vatId" />
 					</li>
  		        </ul>
 			</section>
@@ -201,16 +207,16 @@
 
 				<ul>
                     <li>
-                        <s:textfield name="user.firstName" />
+                        <s:textfield name="registrationForm.firstName" label="User.firstName"/>
                     </li>
                     <li>
-                        <s:textfield name="user.lastName" />
+                        <s:textfield name="registrationForm.lastName" label="User.lastName"/>
 					</li>
 					<li>
-						<s:textfield name="user.email" />
+						<s:textfield name="registrationForm.email" label="User.email"/>
 					</li>
 					<li>
-						<s:textfield name="user.phone" />
+						<s:textfield name="registrationForm.phone" label="User.phone"/>
 					</li>
 				</ul>
 			</section>
@@ -225,13 +231,13 @@
 
 				<ul>
 					<li>
-						<s:textfield name="user.username" label="global.Username" autocomplete="off" />
+						<s:textfield name="registrationForm.username" label="global.Username" autocomplete="off" />
 				 	</li>
 					<li>
-						<s:password name="user.password" label="global.Password" autocomplete="off"  />
+						<s:password name="registrationForm.password" label="global.Password" autocomplete="off"  />
 					</li>
 					<li>
-						<s:password name="confirmPassword" label="global.ConfirmPassword" autocomplete="off" />
+						<s:password name="registrationForm.passwordConfirmation" label="global.ConfirmPassword" autocomplete="off" />
 					</li>
 				</ul>
 			</section>
