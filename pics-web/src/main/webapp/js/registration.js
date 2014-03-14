@@ -124,6 +124,8 @@
             var language = $('[name=language]').val(),
                 dialect = $('[name=dialect]').val();
 
+            console.log(language);
+            console.log(dialect);
             return dialect ? language + '_' + dialect : language;
         },
 
@@ -481,7 +483,7 @@
                 PICS.ajax({
                     url: 'Registration!getCompanyAddressFields.action',
                     data: {
-                        'contractor.country.isoCode': selected_country,
+                        'registrationForm.countryISOcode': selected_country,
                         country_iso_code: selected_country
                     },
                     success: function (data, textStatus, jqXHR) {

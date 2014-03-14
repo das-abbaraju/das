@@ -32,10 +32,5 @@
     </s:include>
 </li>
 <li class="zipcode" style="${zip_display}">
-<<<<<<< HEAD
-	<s:textfield name="contractor.zip" label="ContractorAccount.zip" />
-</li>
-=======
 	<s:textfield name="registrationForm.zip" label="ContractorAccount.zip" />
 </li>
->>>>>>> (Continued) Move registration.jsp form elements to new form object namespace.

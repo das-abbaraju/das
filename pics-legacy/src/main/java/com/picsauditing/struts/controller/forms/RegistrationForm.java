@@ -46,7 +46,7 @@ public class RegistrationForm {
     private String city;
 
     //TODO Custom Validation Constraint for countrySubdivision
-    private String countrySubdivision;
+    private String countrySubdivision = "";
 
 
     @NotBlank(message = REQUIRED_KEY)

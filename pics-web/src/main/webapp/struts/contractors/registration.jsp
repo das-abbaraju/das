@@ -15,14 +15,19 @@
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
-<s:if test="registrationForm.countryISOCode != ''">
+<s:if test="registrationForm.countryISOCode != null">
 	<s:set var="country_iso_code" value="registrationForm.countryISOCode" />
 </s:if>
 <s:else>
 	<s:set var="country_iso_code" value="'US'" />
 </s:else>
 
-<s:set var="country_subdivision_iso_code" value="registrationKey ? contractor.countrySubdivision.isoCode : countrySubdivision.isoCode" />
+<s:if test="registrationForm.countrySubdivision != null">
+    <s:set var="country_subdivision_iso_code" value="registrationForm.countrySubdivision" />
+</s:if>
+<s:else>
+    <s:set var="country_subdivision_iso_code" value="" />
+</s:else>
 
 <s:set name="chat_url" value="%{chatUrl}" />
 
@@ -118,7 +123,7 @@
 		                    list="supportedLanguages.visibleLanguagesSansDialect"
 		                    listKey="key"
 		                    listValue="value"
-		                    name="localeForm.language"
+		                    name="language"
 		                    value="localeForm.language"
 		                    id="registration_language"
 		                    cssClass="select2Min"

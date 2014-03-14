@@ -1,6 +1,7 @@
 package com.picsauditing.struts.controller;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 
 import com.picsauditing.access.*;
@@ -32,11 +33,11 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 @SuppressWarnings({"deprecation", "serial"})
-public class Registration extends RegistrationAction implements AjaxValidator {
+public class Registration extends RegistrationAction implements AjaxValidator, Preparable {
 
 	private String registrationKey;
-    private RegistrationForm registrationForm;
-    private RegistrationLocaleForm localeForm;
+    private RegistrationForm registrationForm = new RegistrationForm();
+    private RegistrationLocaleForm localeForm = new RegistrationLocaleForm();
 
 	@Autowired
 	private UserLoginLogDAO userLoginLogDAO;
@@ -59,9 +60,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
             return SUCCESS;
 		}
 
-        getActionContext().setLocale((
-                localeForm = getLocaleFromRequestData()
-        ).getLocale());
+        getActionContext().setLocale(localeForm.getLocale());
 
         registrationForm = (Strings.isNotEmpty(registrationKey))
             ? RegistrationForm.fromContractor(regReqService.preRegistrationFromKey(registrationKey))
@@ -151,11 +150,11 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	}
 
 	private boolean isAUContractor() {
-        return registrationForm != null && registrationForm.getCountryISOCode().equals(Country.AUSTRALIA_ISO_CODE);
+        return registrationForm != null && registrationForm.getCountryISOCode() != null && registrationForm.getCountryISOCode().equals(Country.AUSTRALIA_ISO_CODE);
 	}
 
 	private boolean isUKContractor() {
-        return registrationForm != null && registrationForm.getCountryISOCode().equals(Country.UK_ISO_CODE);
+        return registrationForm != null && registrationForm.getCountryISOCode() != null && registrationForm.getCountryISOCode().equals(Country.UK_ISO_CODE);
 	}
 
 	private void setLoginLog(Permissions permissions) {
@@ -288,4 +287,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
     }
 
 
+    @Override
+    public void prepare() throws Exception {
+        localeForm = getLocaleFromRequestData();
+    }
 }
