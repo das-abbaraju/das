@@ -386,6 +386,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
         primaryContact = requestNewContractorService.savePrimaryContact(primaryContact);
 
         requestRelationship = requestNewContractorService.populateRelationship(contractor, requestRelationship);
+        if (requestRelationship.getOperatorAccount().isAutoApproveRelationships())
+            requestRelationship.setWorkStatus(ApprovalStatus.Y);
         requestRelationship = requestNewContractorService.saveRelationship(requestRelationship);
 
 		if (newRequest) {
