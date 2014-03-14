@@ -50,7 +50,6 @@
     <bean id="AutocompleteDAO" class="com.picsauditing.dao.AutocompleteDAO"/>
     <bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
     <bean id="ContactUsService" class="com.picsauditing.user.service.ContactUsService" scope="prototype"/>
-    <bean id="ContractorFacilitiesService" class="com.picsauditing.contractor.service.ContractorFacilitiesService" scope="prototype"/>
     <bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
     <bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
     <bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>

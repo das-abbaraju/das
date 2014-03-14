@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -10,6 +11,7 @@ import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
+@Table(name = "naics")
 public class Naics implements java.io.Serializable {
 	private String code;
 	private float trir;
