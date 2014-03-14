@@ -4,11 +4,13 @@ import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.model.contractor.CdmScopeItem;
 import com.picsauditing.model.contractor.CertificateType;
 import com.picsauditing.model.contractor.CertificationMethod;
 import com.picsauditing.model.contractor.ContractorCertificate;
 import com.picsauditing.service.contractor.AuditFinderService;
 import com.picsauditing.service.contractor.ContractorCertificateService;
+import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ public class ContractorCertificateController extends PicsActionSupport {
     private ContractorAccount contractor;
 
     private String certificationMethod;
+    private String cdmScope;
 
     private Integer issueYear;
     private Integer issueMonth;
@@ -92,6 +95,7 @@ public class ContractorCertificateController extends PicsActionSupport {
                     .expirationDate(expirationDate)
                     .certificateType(CertificateType.SSIP)
                     .certificationMethod(CertificationMethod.valueOf(certificationMethod))
+                    .cdmScope(cdmScope)
                     .build();
     }
 
@@ -178,6 +182,14 @@ public class ContractorCertificateController extends PicsActionSupport {
         this.certificationMethod = certificationMethod;
     }
 
+    public CdmScopeItem[] getCdmScopeItems() {
+        return CdmScopeItem.values();
+    }
+
+    public void setCdmScopes(String cdmScopes) {
+        this.cdmScope = removeSpacesInBetweenValues(cdmScopes);
+    }
+
     public int getIssueYear() {
         return issueYear;
     }
@@ -232,5 +244,12 @@ public class ContractorCertificateController extends PicsActionSupport {
 
     public void setContractorCertificate(ContractorCertificate contractorCertificate) {
         this.contractorCertificate = contractorCertificate;
+    }
+
+    private String removeSpacesInBetweenValues(String cdmScopes) {
+        if(Strings.isNotEmpty(cdmScopes)) {
+            return cdmScopes.replaceAll(", ", ",");
+        }
+        return cdmScopes;
     }
 }
