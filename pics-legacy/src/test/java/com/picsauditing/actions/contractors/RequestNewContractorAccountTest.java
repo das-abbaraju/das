@@ -16,6 +16,7 @@ import javax.persistence.Query;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.service.RequestNewContractorService;
 import org.junit.Before;
@@ -32,16 +33,6 @@ import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.RequestNewContractorAccount.RequestContactType;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.URLUtils;
 
@@ -569,12 +560,14 @@ public class RequestNewContractorAccountTest extends PicsTranslationTest {
     @Test
     public void testSaveRequestComponentsAndEmailIfNew_VerifyProxiesContractorPrimaryContactAndRelationshipSaves() throws Exception {
         setupSaveRequestComponentsAndEmailIfNew();
+        when(operator.isAutoApproveRelationships()).thenReturn(true);
 
         Whitebox.invokeMethod(requestNewContractorAccount, "saveRequestComponentsAndEmailIfNew", true);
 
         verify(requestNewContractorService).saveRequestingContractor(contractor, operator);
         verify(requestNewContractorService).savePrimaryContact(contractor, user);
         verify(requestNewContractorService).saveRelationship(contractor, relationship);
+        verify(relationship).setWorkStatus(ApprovalStatus.Y);
     }
 
     @Test
