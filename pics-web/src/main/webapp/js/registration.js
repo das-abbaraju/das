@@ -101,7 +101,7 @@
             PICS.ajax({
                 url: 'RegistrationAjax.action',
                 data: {
-                    language: language
+                    "localeForm.language": language
                 },
                 success: function (data, textStatus, jqXHR) {
                     var dialect_dropdown = $.trim(data),  //trim carriage returns
