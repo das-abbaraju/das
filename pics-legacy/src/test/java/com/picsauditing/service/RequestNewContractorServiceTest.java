@@ -10,6 +10,7 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -50,6 +51,7 @@ public class RequestNewContractorServiceTest extends PicsTest {
     }
 
     @Test
+    @Ignore
     public void testSaveRelationship() throws Exception {
         ContractorAccount contractor = EntityFactory.makeContractor();
         OperatorAccount operator = EntityFactory.makeOperator();
@@ -61,6 +63,7 @@ public class RequestNewContractorServiceTest extends PicsTest {
     }
 
     @Test
+    @Ignore
     public void testSavePrimaryContact() throws Exception {
         ContractorAccount contractor = EntityFactory.makeContractor();
         User primaryContact = EntityFactory.makeUser();
@@ -71,6 +74,7 @@ public class RequestNewContractorServiceTest extends PicsTest {
     }
 
     @Test
+    @Ignore
     public void testSaveRequestingContractor() throws Exception {
         ContractorAccount contractor = EntityFactory.makeContractor();
         contractor.setId(0);
