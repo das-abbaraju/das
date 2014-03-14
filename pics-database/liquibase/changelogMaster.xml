@@ -178,5 +178,6 @@
 	<!-- 7.2.2 --> 
 	<include file="./liquibase/2014/Q1/lkam7_US285_AddedSalesForceId.sql"/>
 	<include file="./liquibase/2014/Q1/kchase31_PICS-14720_UpdateNotesViewableBy.sql"/>
+	<include file="./liquibase/2014/Q1/kchase32_PICS-14766_UpdateFlagDataOverrides.sql"/>
 
 </databaseChangeLog>
