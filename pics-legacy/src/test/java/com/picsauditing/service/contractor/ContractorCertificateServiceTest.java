@@ -47,5 +47,17 @@ public class ContractorCertificateServiceTest {
         assertEquals("Principal Contractor/CDM Coordinator/Designer/Contractor", ssipCertificate.getFormattedCdmScope());
     }
 
+    @Test
+    public void testGetSsipCertificate_cdmScopesShouldBeFormattedCorrectly_noCdmScopes() throws Exception {
+        ContractorCertificate contractorCertificate = ContractorCertificate.builder()
+                .cdmScope(null)
+                .build();
+        when(contractorCertificateDao.findMostRecentByContractor(contractor, CertificateType.SSIP)).thenReturn(contractorCertificate);
+
+        ContractorCertificate ssipCertificate = contractorCertificateService.getSsipCertificate(contractor);
+
+        assertEquals("", ssipCertificate.getFormattedCdmScope());
+    }
+
 
 }
