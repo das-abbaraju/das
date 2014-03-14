@@ -11,7 +11,6 @@ import java.util.List;
 public class RegistrationRequestService {
 
     private final ContractorAccountDAO contractorAccountDAO;
-    private final static String hashWhereClause = "a.registrationHash = '%s'";
 
     public RegistrationRequestService(
             ContractorAccountDAO dao
@@ -36,7 +35,7 @@ public class RegistrationRequestService {
     }
 
     private List<ContractorAccount> findByHash(String key) {
-        final List<ContractorAccount> results = contractorAccountDAO.findWhere(hashWhereClause.format(key));
+        final List<ContractorAccount> results = contractorAccountDAO.findWhere("a.registrationHash = '" + key + "'");
         return (results == null)
                 ? new ArrayList<ContractorAccount>(0)
                 : results;
