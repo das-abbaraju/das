@@ -18,6 +18,7 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.service.ReportService;
 
 @SuppressWarnings("serial")
 @Entity
@@ -97,8 +98,12 @@ public class EmailSubscription extends BaseTable {
 	}
 
     @ManyToOne
-    @JoinColumn(name = "reportID", nullable = true)
+    @JoinColumn(name = "reportID")
     public Report getReport() {
+        if (report == null) {
+            report = new Report();
+            report.setId(ReportService.CONTRACTOR_IST_REPORT_ID);
+        }
         return report;
     }
 

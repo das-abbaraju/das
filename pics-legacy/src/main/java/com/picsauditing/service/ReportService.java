@@ -65,6 +65,8 @@ public class ReportService {
     @Autowired
     private EmailSubscriptionDAO emailSubscriptionDAO;
 
+    public static final int CONTRACTOR_IST_REPORT_ID = 1;
+
     private TranslationService translationService;
     private static final int EXPORT_LIMIT = 65535;
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
