@@ -186,8 +186,12 @@ public class ContractorCertificateController extends PicsActionSupport {
         return CdmScopeItem.values();
     }
 
-    public void setCdmScopes(String cdmScopes) {
-        this.cdmScope = removeSpacesInBetweenValues(cdmScopes);
+    public String getCdmScope() {
+        return cdmScope;
+    }
+
+    public void setCdmScope(String cdmScope) {
+        this.cdmScope = removeSpacesInBetweenValues(cdmScope);
     }
 
     public int getIssueYear() {
@@ -246,10 +250,10 @@ public class ContractorCertificateController extends PicsActionSupport {
         this.contractorCertificate = contractorCertificate;
     }
 
-    private String removeSpacesInBetweenValues(String cdmScopes) {
-        if(Strings.isNotEmpty(cdmScopes)) {
-            return cdmScopes.replaceAll(", ", ",");
+    private String removeSpacesInBetweenValues(String cdmScope) {
+        if(Strings.isNotEmpty(cdmScope)) {
+            return cdmScope.replaceAll(", ", ",");
         }
-        return cdmScopes;
+        return cdmScope;
     }
 }
