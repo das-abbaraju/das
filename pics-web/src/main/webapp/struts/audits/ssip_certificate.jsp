@@ -56,7 +56,7 @@
             <div class="form-group">
                 <label class="col-md-3 control-label"><s:text name="ContractorCertificate.SSIP.cdmScope" /></label>
                 <div class="col-md-4 col-xs-11">
-                    <select name="cdmScope" multiple="true" class="form-control select2"tabindex="2">
+                    <select name="cdmScope" multiple="true" class="form-control select2" tabindex="2">
                         <s:iterator value="#available_scopes" var="available_scope">
 
                             <s:set var="is_selected" value="''" />
