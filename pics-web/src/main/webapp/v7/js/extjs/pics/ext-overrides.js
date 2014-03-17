@@ -22,6 +22,28 @@ Ext.define('PICS.Overrides', {
         timeout: Ext.Ajax.timeout
     });
 
+    /*
+     * Fix for bug in ExtJS selection model causing it to return random results
+     * http://www.sencha.com/forum/showthread.php?208453-4.0.2-Selection-model-returns-wrong-record-when-Grouping-feature-is-enabled
+     */
+    Ext.override(Ext.data.Store, {
+      sort:function(){
+         var me = this, groups, g;
+
+         me.callOverridden(arguments);
+         groups = me.getGroups();
+
+         me.data.clear();
+
+         Ext.Array.each(groups, function (group) {
+            Ext.Array.each(group.children, function (child) {
+               me.data.add(child.internalId, child);
+            });
+         });
+         me.fireGroupChange();
+      }
+   });
+
     /**
      * Override of BoxSelect's override of the same method
      * The additional conditional check prevents emptying of the boxselect store if no actual records were selected.
