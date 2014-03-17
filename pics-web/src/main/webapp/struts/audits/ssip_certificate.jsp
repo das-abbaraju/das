@@ -36,11 +36,8 @@
             var="ssip_certified_checked"
             value="(certificationMethod == 'INTERNAL') ? 'selected' : ''"
         />
-<%--
-        <s:set var="available_scopes" value="{'Principal Contractor', 'CDM Coordinator', 'Designer', 'Contractor'}" />
---%>
+
         <s:set var="available_scopes" value="cdmScopeItems" />
-        <s:set var="selected_scopes" value="{'Designer', 'Contractor'}" />
 
         <input value="${contractor.id}" hidden name="contractor" />
 
@@ -60,14 +57,14 @@
                 <div class="col-md-4 col-xs-11">
                     <select name="cdmScopes" multiple="true" class="form-control select2"tabindex="2">
                         <s:iterator value="#available_scopes" var="available_scope">
-<%--
+
                             <s:set var="is_selected" value="''" />
                             <s:iterator value="#selected_scopes" var="selected_scope">
                                 <s:if test="#available_scope == #selected_scope">
                                     <s:set var="is_selected" value="'selected'" />
                                 </s:if>
                             </s:iterator>
---%>
+
                             <option value="${available_scope.dbValue}" ${is_selected}>${available_scope.displayValue}</option>
                         </s:iterator>
                     </select>
