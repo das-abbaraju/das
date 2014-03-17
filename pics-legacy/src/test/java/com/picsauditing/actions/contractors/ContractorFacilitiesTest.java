@@ -29,10 +29,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.picsauditing.PICS.FeeService;
-import com.picsauditing.service.contractor.TopLevelOperatorFinder;
-import com.picsauditing.contractor.service.ContractorFacilitiesService;
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,10 +76,6 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 	private Query query;
 	@Mock
 	private Database database;
-    @Mock
-    private TopLevelOperatorFinder topLevelOperatorFinder;
-    @Mock
-    private ContractorFacilitiesService contractorFacilitiesService;
 
 	@AfterClass
 	public static void tearDown() throws Exception {
@@ -105,15 +98,12 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorFacilities, "facilityChanger", facilityChanger);
 		Whitebox.setInternalState(contractorFacilities, "permissionToViewContractor", permissionToViewContractor);
 		Whitebox.setInternalState(contractorFacilities, "database", database);
-        Whitebox.setInternalState(contractorFacilities, "topLevelOperatorFinder", topLevelOperatorFinder);
-		Whitebox.setInternalState(contractorFacilities, "contractorFacilitiesService", contractorFacilitiesService);
 
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissionToViewContractor.check(anyBoolean())).thenReturn(true);
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(database.select(anyString(), anyBoolean())).thenReturn(new ArrayList<BasicDynaBean>());
-        when(topLevelOperatorFinder.findAllTopLevelOperators(any(ContractorAccount.class))).thenReturn(null);
 	}
 
 	@Test

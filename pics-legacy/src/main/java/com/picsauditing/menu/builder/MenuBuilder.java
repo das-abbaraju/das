@@ -177,7 +177,7 @@ public final class MenuBuilder {
 			}
 		}
 
-		if (!permissions.isOperator() && !permissions.isInsuranceOnlyContractorUser()) {
+        if (permissions.isContractor() && !permissions.isInsuranceOnlyContractorUser()) {
 			addCompanyMenuLinksFor(permissions.getAccountId(), !permissions.getAccountStatus().isDemo(), companyMenu, permissions);
 		}
 	}
@@ -195,7 +195,7 @@ public final class MenuBuilder {
 		String contractorView = urlUtils.getActionUrl("ContractorView", "id", accountId);
 		String contractorNotes = urlUtils.getActionUrl("ContractorNotes", "id", accountId);
 
-		companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), contractorView, "contractor_dashboard");
+		companyMenu.addChild(getText("ContractorSubmenu.MenuItem.Dashboard"), contractorView, "contractor_dashboard_menu");
 
         if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorWatch)) {
             String activityWatch = urlUtils.getActionUrl("ReportActivityWatch", "contractor", accountId);
@@ -206,7 +206,7 @@ public final class MenuBuilder {
 		companyMenu.addChild(getText("global.Notes"), contractorNotes, "contractor_notes");
 		companyMenu.addChild(getText("ContractorTrades.title"), contractorTrades, "contractor_trades");
 
-        if (permissions.isShowClientSitesLink()) {
+        if (!permissions.isOperator() && !permissions.isInsuranceOnlyContractorUser() && permissions.isShowClientSitesLink()) {
             String contractorFacilities = urlUtils.getActionUrl("ContractorFacilities", "id", accountId);
             companyMenu.addChild(getText("global.Facilities"), contractorFacilities, "contractor_facilities");
         }
@@ -299,6 +299,8 @@ public final class MenuBuilder {
 			return;
 		}
 
+        URLUtils urlUtils = urlUtils();
+
 		MenuComponent devMenu = menubar.addChild(getText("menu.Dev"));
 		devMenu.addChild(getText("menu.Dev.AppProperties"), "ManageAppProperty.action", "manage_app_properties");
 
@@ -325,6 +327,9 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			devMenu.addChild("Process QB XML", "ProcessQBResponseXML.action", "process_qb_response_xml");
 		}
+
+        String auditBuilder = urlUtils.getActionUrl("AuditBuilder", "id", -1);
+        devMenu.addChild(getText("AuditBuilder.header"), auditBuilder, "audit_builder");
 
 		buildEmployeeGUARD(devMenu);
 
@@ -495,13 +500,6 @@ public final class MenuBuilder {
 
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
 		MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
-
-		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
-			legacyMenu.addChild(getText("GeneralContractorList.title"), "GeneralContractorsList.action",
-					"GeneralContractorsList");
-			legacyMenu.addChild(getText("SubcontractorFlagMatrix.title"), "SubcontractorFlagMatrix.action",
-					"SubcontractorFlagMatrix");
-		}
 
 		// CONTRACTORS
 		FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);

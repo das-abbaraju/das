@@ -1,15 +1,18 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.*;
-
+import com.google.common.collect.Lists;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.Publisher;
+import com.picsauditing.search.Database;
+import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,15 +21,12 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.google.common.collect.Lists;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.search.Database;
-import com.picsauditing.toggle.FeatureToggle;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 public class ContractorCronTest extends PicsActionTest {
 

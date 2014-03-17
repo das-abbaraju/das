@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import scala.Int;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -35,7 +36,6 @@ public class FacilitiesEditTest extends PicsActionTest {
 
 	private FacilitiesEdit facilitiesEdit;
 	private User user;
-	private OperatorAccount operator;
     private FacilitiesEditStatus status;
 
 	@Mock
@@ -50,6 +50,12 @@ public class FacilitiesEditTest extends PicsActionTest {
 	private FeatureToggle featureToggle;
 	@Mock
 	private AccountStatusChanges accountStatusChanges;
+    @Mock
+    private OperatorAccount operator;
+    @Mock
+    private Country country;
+    @Mock
+    private CountrySubdivision countrySubdivision;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,8 +79,8 @@ public class FacilitiesEditTest extends PicsActionTest {
         Whitebox.setInternalState(facilitiesEdit, "operatorDao", operatorDAO);
         Whitebox.setInternalState(facilitiesEditModel, "featureToggle", featureToggle);
 
-		operator = new OperatorAccount();
-		operator.setId(NON_ZERO_OPERATOR_ID);
+		when(operator.getId()).thenReturn(NON_ZERO_OPERATOR_ID);
+
 		facilitiesEdit.setOperator(operator);
 	}
 
@@ -167,84 +173,6 @@ public class FacilitiesEditTest extends PicsActionTest {
 		assertEquals(userList.size(), primaryContactSet.size());
 	}
 
-    @Test
-    public void testSave_RememberMe_NotEnable() {
-        facilitiesEdit.getOperator().setRememberMeTimeEnabled(false);
-        facilitiesEdit.getOperator().setRememberMeTimeInDays(1);
-        facilitiesEdit.setTimeoutDays("7");
-        facilitiesEdit.setSessionTimeout("60");
-        facilitiesEdit.getOperator().setName("Fake");
-        facilitiesEdit.getOperator().setCountry(new Country("US"));
-        facilitiesEdit.getOperator().setCountrySubdivision(new CountrySubdivision("US-CA"));
-        when(operatorDAO.save(operator)).thenReturn(operator);
-        facilitiesEdit.save();
-        assertEquals(1, operator.getRememberMeTimeInDays());
-    }
-
-
-    @Test
-    public void testSave_RememberMe_NonInteger() {
-        facilitiesEdit.setTimeoutDays("7.5");
-        facilitiesEdit.setSessionTimeout("60");
-        facilitiesEdit.save();
-        assertTrue(facilitiesEdit.hasActionErrors());
-    }
-
-    @Test
-    public void testSave() {
-        Country country = mock(Country.class);
-        CountrySubdivision countrySubdivision = mock(CountrySubdivision.class);
-
-        when(countrySubdivision.getCountry()).thenReturn(country);
-        when(operatorDAO.save(operator)).thenReturn(operator);
-
-        operator.setCountry(country);
-        operator.setCountrySubdivision(countrySubdivision);
-        operator.setDiscountPercent(BigDecimal.ZERO);
-        operator.setParent(operator);
-        operator.setName("Operator");
-
-        facilitiesEdit.setTimeoutDays("7");
-        facilitiesEdit.setSessionTimeout("60");
-        facilitiesEdit.setOperator(operator);
-        facilitiesEdit.save();
-        assertFalse(facilitiesEdit.hasActionErrors());
-        assertEquals(7, operator.getRememberMeTimeInDays());
-    }
-
-    @Test
-    public void testSave_SessionTimeout_NonInteger() {
-        facilitiesEdit.setTimeoutDays("7");
-        facilitiesEdit.setSessionTimeout("60.5");
-        facilitiesEdit.save();
-        assertTrue(facilitiesEdit.hasActionErrors());
-    }
-
-    @Test
-	public void testSave_PreventSettingSelfAsParent() {
-		Country country = mock(Country.class);
-		CountrySubdivision countrySubdivision = mock(CountrySubdivision.class);
-
-		when(countrySubdivision.getCountry()).thenReturn(country);
-
-		operator.setCountry(country);
-		operator.setCountrySubdivision(countrySubdivision);
-		operator.setDiscountPercent(BigDecimal.ZERO);
-		operator.setParent(operator);
-		operator.setName("Operator");
-
-		List<Integer> facilities = new ArrayList<Integer>();
-		facilities.add(NON_ZERO_OPERATOR_ID);
-
-		facilitiesEdit.setOperator(operator);
-		facilitiesEdit.setFacilities(facilities);
-
-		assertEquals(PicsActionSupport.REDIRECT, facilitiesEdit.save());
-		assertFalse(facilitiesEdit.hasActionMessages());
-		assertTrue(facilitiesEdit.hasActionErrors());
-
-		verify(operatorDAO, never()).save(any(OperatorAccount.class));
-	}
 
 	private AccountUser accountRep() {
 		AccountUser accountRep = accountUser();

@@ -1,24 +1,16 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.service.audit.CaoAutoAdvancer;
 import com.picsauditing.service.audit.AuditPeriodService;
+import com.picsauditing.service.audit.CaoAutoAdvancer;
+import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.Strings;
+import java.util.*;
 
 public class AuditPercentCalculator {
 	@Autowired
@@ -529,12 +521,10 @@ public class AuditPercentCalculator {
                 }
             }
 
-//            if (scoreWeight > 0) {
-                if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
-                    conAudit.setScore((int) Math.min(Math.round(score), 100L));
-                else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
-                    conAudit.setScore((int) Math.round(score));
-//            }
+            if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
+                conAudit.setScore((int) Math.min(Math.round(score), 100L));
+            else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
+                conAudit.setScore((int) Math.round(score));
 
             int percentComplete = 0;
             int percentVerified = 0;
@@ -544,6 +534,9 @@ public class AuditPercentCalculator {
                     if (percentComplete >= 100) {
                         percentComplete = 100;
                     }
+
+                } else {
+                    percentComplete = cao.getPercentComplete();
                 }
                 percentVerified = (int) Math.floor(100 * verified / required);
                 if (percentVerified >= 100) {

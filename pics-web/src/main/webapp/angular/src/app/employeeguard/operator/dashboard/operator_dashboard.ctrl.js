@@ -1,17 +1,34 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteResource, Site) {
-    $scope.dataSrc = SiteResource.get().$promise;
+.controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
+    $scope.siteList = SiteList.query(function(site_list) {
+        if ($scope.isCorporateSiteList(site_list)) {
+            $scope.selected_site = site_list[0];
+            $scope.updateSelectedSite();
+        } else {
+            $scope.selected_site_details = requestSiteDetailsForSiteOperator().then(function(site_details) {
+               $scope.selected_site_details = site_details;
+            });
+        }
+    });
 
-    SiteResource.get().$promise.then(onSuccess, onError);
+    $scope.isCorporateSiteList = function(site_list) {
+        return site_list.length > 0;
+    };
 
-    function onSuccess(data) {
-        $scope.site = data;
+    $scope.requestSiteDetailsById = function(site_id) {
+        return SiteDetails.get({id: site_id}).$promise;
+    };
+
+    function requestSiteDetailsForSiteOperator() {
+        return SiteResource.get().$promise;
     }
 
-    function onError(error) {
-        console.log(error);
-    }
+    $scope.updateSelectedSite = function() {
+        $scope.requestSiteDetailsById($scope.selected_site.id).then(function(site_details) {
+            $scope.selected_site_details = site_details;
+        });
+    };
 
     $scope.calculateStatusPercentage = function (amount, total) {
         return (amount / total) * 100;

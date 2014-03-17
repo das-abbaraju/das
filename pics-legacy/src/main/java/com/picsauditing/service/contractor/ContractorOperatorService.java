@@ -1,13 +1,9 @@
 package com.picsauditing.service.contractor;
 
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import org.antlr.grammar.v3.ANTLRv3Parser;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public class ContractorOperatorService {
     @Autowired

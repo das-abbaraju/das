@@ -1,0 +1,27 @@
+{
+"id": 24,
+"employees": 54,
+"completed": 0,
+"pending": 0,
+"expiring": 76,
+"expired": 23,
+"projects": [{
+        "name": "Fish Warehouse Test Project",
+        "startDate": "01-01-2013",
+        "endDate": "01-02-2015",
+        "location": "Main Building",
+        "completed": 3,
+        "pending": 2,
+        "expiring": 4,
+        "expired": 2
+    }, {
+        "name": "Red Fish Blue Fish",
+        "startDate": "02-28-2013",
+        "endDate": "",
+        "location": "Offsite",
+        "completed": 1,
+        "pending": 3,
+        "expiring": 0,
+        "expired": 992
+    }]
+}

@@ -2,8 +2,6 @@ package com.picsauditing.access;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.menu.builder.MenuBuilder;
@@ -66,12 +64,16 @@ public class MenuBuilderTest extends PicsActionTest {
 
     @Test
     public void testBuildMenubar_noPermissions() throws Exception {
+        MenuBuilder.setUrlUtils(urlUtils);
         when(translationService.getText("global.Company",Locale.ENGLISH)).thenReturn("Company");
         when(translationService.getText("menu.Reports",Locale.ENGLISH)).thenReturn("Reports");
         when(translationService.getText("menu.Manage",Locale.ENGLISH)).thenReturn("Manage");
         when(translationService.getText("menu.Configure",Locale.ENGLISH)).thenReturn("Configure");
         when(translationService.getText("menu.Dev",Locale.ENGLISH)).thenReturn("Dev");
         when(translationService.getText("menu.Support",Locale.ENGLISH)).thenReturn("Support");
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
+
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Demo);
 
         MenuComponent menu = MenuBuilder.buildMenubar(permissions);
         assertTrue(menu.getChildren().size() == 4);
@@ -143,10 +145,6 @@ public class MenuBuilderTest extends PicsActionTest {
         assertTrue(menu.getChildren().size() == 5);
         MenuComponent companyMenu = menu.getChildren().get(0);
         assertEquals("Company",companyMenu.getName());
-        MenuComponent activityWatch = companyMenu.getChildren().get(3);
-        assertEquals("Activity Watch",activityWatch.getName());
-        MenuComponent clientSites = companyMenu.getChildren().get(6);
-        assertEquals("Client Sites",clientSites.getName());
     }
 
     private void setupPermissionsForMibew() {

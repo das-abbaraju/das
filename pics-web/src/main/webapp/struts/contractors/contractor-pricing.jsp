@@ -4,6 +4,8 @@
 <s:set var="pricingAmounts" value="pricingTiers.get(0).pricingAmounts" />
 <s:set var="num_client_sites" value="clients.size()" />
 
+<img src="v7/img/logo/logo-large.png" class="logo" alt="PICS"/>
+
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title"><s:text name="ContractorPricing.title" /></s:param>
@@ -44,7 +46,9 @@
          <div class="client-list-panel panel panel-default">
             <div class="contractor-tier-arrow arrow-left arrow-default"></div>
             <div class="panel-heading">
-                <h3 class="panel-title">${num_client_sites} <s:text name="ContractorPricing.ClientsList.title" /></h3>
+                <s:set var="clients_list_title" value="(#num_client_sites == 1) ? 'ContractorPricing.ClientsListSingle.title' : 'ContractorPricing.ClientsList.title'" />
+
+                <h3 class="panel-title">${num_client_sites} <s:text name="%{clients_list_title}" /></h3>
             </div>
             <div class="panel-body">
                 <ul class="list-unstyled">

@@ -1,39 +1,20 @@
 package com.picsauditing.actions.report.oq;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.util.CellRangeAddress;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.report.ReportEmployee;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AssessmentResult;
-import com.picsauditing.jpa.entities.AssessmentTest;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.JobSite;
-import com.picsauditing.jpa.entities.JobSiteTask;
-import com.picsauditing.jpa.entities.JobTask;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.util.CellRangeAddress;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ReportOQEmployees extends ReportEmployee {
@@ -49,7 +30,6 @@ public class ReportOQEmployees extends ReportEmployee {
 		if (!permissions.isRequiresOQ())
 			throw new NoRightsException("Operator Qualification");
 
-		getFilter().setShowSsn(false);
 		getFilter().setShowLimitEmployees(true);
 		getFilter().setShowProjects(true);
 		getFilter().setPermissions(permissions);

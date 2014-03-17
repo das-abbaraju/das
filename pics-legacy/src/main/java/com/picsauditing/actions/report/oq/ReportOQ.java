@@ -17,7 +17,6 @@ public class ReportOQ extends ReportEmployee {
 		getFilter().setShowFirstName(false);
 		getFilter().setShowLastName(false);
 		getFilter().setShowEmail(false);
-		getFilter().setShowSsn(false);
 		getFilter().setShowProjects(true);
 		getFilter().setPermissions(permissions);
 

@@ -5,7 +5,9 @@ import com.picsauditing.dao.mapper.GenericQueryMapper;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.model.general.AppPropertyProvider;
 import com.picsauditing.search.Database;
-import net.sf.ehcache.*;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,28 +1,28 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
-
+import com.opensymphony.xwork2.Action;
 import com.picsauditing.PICS.TaxService;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.PermissionToViewContractor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.Action;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.util.PermissionToViewContractor;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 public class ContractorPaymentOptionsTest extends PicsActionTest {
 	private ContractorPaymentOptions contractorPaymentOptions;

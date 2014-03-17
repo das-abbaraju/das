@@ -26,7 +26,6 @@ public class ReportEmployeeDocumentation extends ReportActionSupport {
 	@Override
 	public String execute() throws Exception {
 		getFilter().setShowEmail(false);
-		getFilter().setShowSsn(false);
 
 		buildQuery();
 		run(sql);

@@ -14,12 +14,9 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyInt;
@@ -788,16 +785,18 @@ public class AuditPercentCalculatorTest {
         when(contractorAudit.getAuditType()).thenReturn(mockAuditType);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
         when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Submitted);
+        when(contractorAuditOperator.getPercentComplete()).thenReturn(100);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
         when(catData.isOverride()).thenReturn(true);
         when(catData.isApplies()).thenReturn(true);
         when(catData.getNumRequired()).thenReturn(100);
         when(catData.getRequiredCompleted()).thenReturn(50);
         when(catData.getNumVerified()).thenReturn(50);
+        when(catData.getNumAnswered()).thenReturn(50);
 
         calculator.percentCalculateComplete(contractorAudit);
 
-        verify(contractorAuditOperator, never()).setPercentComplete(50);
+        verify(contractorAuditOperator).setPercentComplete(100);
         verify(contractorAuditOperator).setPercentVerified(50);
     }
 }

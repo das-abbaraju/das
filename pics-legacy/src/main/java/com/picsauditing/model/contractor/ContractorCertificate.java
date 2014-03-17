@@ -17,6 +17,8 @@ public class ContractorCertificate {
     private Date expirationDate;
     private CertificateType certificateType;
     private CertificationMethod certificationMethod;
+    private String cdmScope;
+    private String formattedCdmScope;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -80,9 +82,26 @@ public class ContractorCertificate {
         this.certificationMethod = certificationMethod;
     }
 
+    public String getCdmScope() {
+        return cdmScope;
+    }
+
+    public void setCdmScope(String cdmScope) {
+        this.cdmScope = cdmScope;
+    }
+
+    @Transient
+    public String getFormattedCdmScope() {
+        return formattedCdmScope;
+    }
+
+    public void setFormattedCdmScope(String formattedCdmScope) {
+        this.formattedCdmScope = formattedCdmScope;
+    }
+
     @Transient
     public String getIssueDateString() {
-        return DateBean.format(issueDate, "yyyy-MM-dd");    // jstl date format doesn't work with iText
+        return DateBean.format(issueDate, "yyyy-MM-dd");
     }
 
     @Transient
@@ -135,6 +154,11 @@ public class ContractorCertificate {
 
         public ContractorCertificateBuilder certificationMethod(CertificationMethod certificationMethod) {
             contractorCertificate.setCertificationMethod(certificationMethod);
+            return this;
+        }
+
+        public ContractorCertificateBuilder cdmScope(String cdmScope) {
+            contractorCertificate.setCdmScope(cdmScope);
             return this;
         }
     }

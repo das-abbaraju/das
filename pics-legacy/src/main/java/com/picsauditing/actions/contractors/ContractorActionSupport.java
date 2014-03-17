@@ -547,7 +547,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public String previousStep() throws Exception {
 		findContractor();
-		setUrlForRedirect(getPreviousRegistrationStep().getUrl());
+        if (getPreviousRegistrationStep() != null)
+            return setUrlForRedirect(getPreviousRegistrationStep().getUrl());
 		return SUCCESS;
 	}
 

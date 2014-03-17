@@ -1,43 +1,23 @@
 package com.picsauditing.actions.employees;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.JobRoleDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.EmployeeCompetency;
-import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.JobCompetency;
-import com.picsauditing.jpa.entities.JobRole;
-import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class EmployeeCompetencies extends ReportEmployee {
@@ -327,7 +307,6 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 		getFilter().setShowJobRoles(true);
 		getFilter().setShowCompetencies(true);
-		getFilter().setShowSsn(false);
 
 		if (permissions.isContractor()) {
 			getFilter().setShowAccountName(false);

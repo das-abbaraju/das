@@ -1,11 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.picsauditing.jpa.entities.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
@@ -14,6 +8,7 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectSQL;
@@ -21,6 +16,10 @@ import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @SuppressWarnings("serial")
 public class ReportCompetencyByAccount extends ReportEmployee {
@@ -152,7 +151,6 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		getFilter().setShowFirstName(false);
 		getFilter().setShowLastName(false);
 		getFilter().setShowEmail(false);
-		getFilter().setShowSsn(false);
 		getFilter().setShowOperators(true);
 	}
 

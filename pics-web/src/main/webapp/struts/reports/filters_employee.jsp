@@ -49,12 +49,6 @@
 			</div>
 		</s:if>
 		
-		<s:if test="filter.showSsn">
-			<div class="filterOption">
-				<s:text name="Employee.ssn" />: <s:textfield name="filter.ssn" cssClass="ssn"/>
-			</div>
-		</s:if>
-		
 		<div class="clear"></div>
 		
 		<s:if test="filter.showOperators">

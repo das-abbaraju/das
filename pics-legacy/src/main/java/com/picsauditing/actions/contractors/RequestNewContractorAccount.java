@@ -9,8 +9,10 @@ import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.service.RequestNewContractorService;
+import com.picsauditing.service.account.ContractorOperatorService;
+import com.picsauditing.service.account.events.ContractorOperatorEventType;
+import com.picsauditing.service.notes.NoteService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
@@ -29,12 +31,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
     public static final String DUPLICATE_CONTRACTOR_FIELD_NAME = "duplicateContractor";
     public static final String DUPLICATE_ID_MISSING_ERROR_MESSAGE = "RequestNewContractor.error.DuplicatedContractorId";
     public static final String SAME_DUPLICATED_CONTRACTOR_ID_ERROR_MESSAGE = "RequestNewContractor.error.SameDuplicatedContractorId";
-    @Autowired
-	private ContractorAccountDAO contractorAccountDAO;
-	@Autowired
-	private ContractorOperatorDAO contractorOperatorDAO;
-	@Autowired
-	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
@@ -49,10 +45,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	private UserSwitchDAO userSwitchDAO;
 	@Autowired
 	private RequestNewContractorValidator validator;
-	@Autowired
-	private UserManagementService userManagementService;
     @Autowired
     private RequestNewContractorService requestNewContractorService;
+    @Autowired
+    private ContractorOperatorService contractorOperatorService;
+    @Autowired
+    private NoteService noteService;
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
@@ -380,88 +378,33 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
         requestNewContractorService.setPermissions(permissions);
-        contractor = requestNewContractorService.saveRequestingContractor(contractor, requestRelationship.getOperatorAccount());
-        primaryContact = requestNewContractorService.savePrimaryContact(contractor, primaryContact);
-        requestRelationship = requestNewContractorService.saveRelationship(contractor, requestRelationship);
 
-		if (contactType == RequestContactType.DECLINED) {
-			contractor.setStatus(AccountStatus.Declined);
-			contractor.setReason(contactNote);
-		}
+        contractor = requestNewContractorService.populateRequestedContractor(contractor, requestRelationship.getOperatorAccount(), contactType, contactNote);
+        contractor = requestNewContractorService.saveRequestedContractor(contractor);
+
+        primaryContact = requestNewContractorService.populatePrimaryContact(contractor, primaryContact);
+        primaryContact = requestNewContractorService.savePrimaryContact(primaryContact);
+
+        requestRelationship = requestNewContractorService.populateRelationship(contractor, requestRelationship);
+        if (requestRelationship.getOperatorAccount().isAutoApproveRelationships())
+            requestRelationship.setWorkStatus(ApprovalStatus.Y);
+        requestRelationship = requestNewContractorService.saveRelationship(requestRelationship);
 
 		if (newRequest) {
-			emailHelper.sendInitialEmail(contractor, primaryContact, requestRelationship, getFtpDir());
-
-			if (requestRelationship.getRequestedBy() != null) {
-				contractor.setLastContactedByInsideSales(requestRelationship.getRequestedBy());
-			} else {
-				contractor.setLastContactedByInsideSales(permissions.getUserId());
-			}
-
-			Date now = new Date();
-
-			contractor.contactByEmail();
-			contractor.setLastContactedByInsideSalesDate(now);
-			contractor.setLastContactedByAutomatedEmailDate(now);
-
-			addNote("Sent initial contact email.","");
+			contractorOperatorService.publishEvent(
+                    requestRelationship,
+                    ContractorOperatorEventType.RegistrationRequest,
+                    permissions.getUserId());
 		}
 
+        /* This method does double duty, in that it will be called for newly created contractors (creating them and sending
+           email, but it is also called to log contact with the contractor who has already been created in a previous request.
+           For this reason, we need to save a contact note and update the contractor, and operator tags. This could potentially
+           be in an else statment from the newRequest as I do think this are probably mutually exclusive, but this has not yet
+           been fully investigated. */
 		saveNoteIfContacted();
+        updateLastContactedFieldsOnContractorIfContacted();
 		saveOperatorTags();
-
-		contractor = (ContractorAccount) contractorAccountDAO.save(contractor);
-	}
-
-	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
-	private void saveRequiredFieldsAndSaveEntities() throws Exception {
-		// NAICS is required for accounts
-		if (contractor.getId() == 0) {
-			contractor.setNaics(new Naics());
-			contractor.getNaics().setCode("0");
-			contractor.setRequestedBy(requestRelationship.getOperatorAccount());
-			contractor.generateRegistrationHash();
-			if (requestRelationship.getOperatorAccount() != null) {
-				if (requestRelationship.getOperatorAccount().getStatus().isActive()
-						&& !"No".equals(requestRelationship.getOperatorAccount().getDoContractorsPay())) {
-					contractor.setPayingFacilities(1);
-				}
-			}
-		}
-
-		contractor.setAuditColumns(permissions);
-		contractor = (ContractorAccount) contractorAccountDAO.save(contractor);
-
-		// Username and isGroup is required
-		if (primaryContact.getId() == 0) {
-			primaryContact.setAccount(contractor);
-			primaryContact.setIsGroup(YesNo.No);
-
-			boolean usernameIsAlreadyTaken = userDAO.duplicateUsername(primaryContact.getEmail(), 0);
-			if (usernameIsAlreadyTaken) {
-				primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(), contractor.getId()));
-			} else {
-				primaryContact.setUsername(primaryContact.getEmail());
-			}
-			primaryContact.setName(primaryContact.getFirstName() + " " + primaryContact.getLastName());
-
-			primaryContact.setAuditColumns(permissions);
-
-			contractor.setPrimaryContact(primaryContact);
-			contractor.getUsers().add(primaryContact);
-		}
-
-		primaryContact.setPhoneIndex(Strings.stripPhoneNumber(primaryContact.getPhone()));
-		primaryContact = userManagementService.saveWithAuditColumnsAndRefresh(primaryContact, permissions);
-
-		// Flag is required for contractorOperator
-		if (requestRelationship.getId() == 0) {
-			requestRelationship.setFlagColor(FlagColor.Clear);
-		}
-
-		requestRelationship.setContractorAccount(contractor);
-		requestRelationship.setAuditColumns(permissions);
-		requestRelationship = (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
 	}
 
 	private EmailQueue buildEmail() throws Exception {
@@ -474,28 +417,34 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 		OperatorAccount clientSiteAccount = requestRelationship.getOperatorAccount();
 		int clientSiteId = (clientSiteAccount != null) ? clientSiteAccount.getId() : 1;
 
-		addNote(contractor, summary, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, clientSiteId);
+		noteService.addNote(contractor, summary, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, clientSiteId);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveNoteIfContacted() {
 		if (contactType != null) {
 			addNote(getText(contactType.getNote()) + ": ", contactNote);
-
-			Date now = new Date();
-
-			if (RequestContactType.EMAIL == contactType) {
-				contractor.contactByEmail();
-			} else if (RequestContactType.PHONE == contactType) {
-				contractor.contactByPhone();
-			}
-
-			contractor.setLastContactedByInsideSales(permissions.getUserId());
-			contractor.setLastContactedByInsideSalesDate(now);
-		}
+        }
 	}
 
-	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+    private void updateLastContactedFieldsOnContractorIfContacted() {
+        if (contactType != null) {
+            Date now = new Date();
+
+            if (RequestContactType.EMAIL == contactType) {
+                contractor.contactByEmail();
+            } else if (RequestContactType.PHONE == contactType) {
+                contractor.contactByPhone();
+            }
+
+            contractor.setLastContactedByInsideSales(permissions.getUserId());
+            contractor.setLastContactedByInsideSalesDate(now);
+            contractorAccountDao.save(contractor);
+        }
+    }
+
+    @Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveOperatorTags() {
 		List<ContractorTag> existing = getVisibleExistingTags();
 

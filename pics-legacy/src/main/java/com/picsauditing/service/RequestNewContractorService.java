@@ -1,7 +1,7 @@
 package com.picsauditing.service;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.contractors.RequestNewContractorAccount;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
@@ -11,6 +11,7 @@ import com.picsauditing.model.user.UserManagementService;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 public class RequestNewContractorService {
@@ -27,19 +28,24 @@ public class RequestNewContractorService {
 
     Permissions permissions = null;
 
-    public ContractorOperator saveRelationship(ContractorAccount contractor, ContractorOperator requestRelationship) throws Exception {
+    public ContractorOperator saveRelationship(ContractorOperator requestRelationship) throws Exception {
+        return (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
+    }
+
+    public ContractorOperator populateRelationship(ContractorAccount contractor, ContractorOperator requestRelationship) throws Exception {
         if (requestRelationship.getId() == 0) {
             requestRelationship.setFlagColor(FlagColor.Clear);
         }
-
         requestRelationship.setContractorAccount(contractor);
         requestRelationship.setAuditColumns(permissions);
-        requestRelationship= (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
-
         return requestRelationship;
     }
 
-    public User savePrimaryContact(ContractorAccount contractor, User primaryContact) throws Exception {
+    public User savePrimaryContact(User primaryContact) throws Exception {
+        return userManagementService.saveWithAuditColumnsAndRefresh(primaryContact, permissions);
+    }
+
+    public User populatePrimaryContact(ContractorAccount contractor, User primaryContact) throws Exception {
         // Username and isGroup is required
         if (primaryContact.getId() == 0) {
             primaryContact.setAccount(contractor);
@@ -60,11 +66,19 @@ public class RequestNewContractorService {
         }
 
         primaryContact.setPhoneIndex(Strings.stripPhoneNumber(primaryContact.getPhone()));
-        primaryContact = userManagementService.saveWithAuditColumnsAndRefresh(primaryContact, permissions);
         return primaryContact;
     }
 
-    public ContractorAccount saveRequestingContractor(ContractorAccount contractor, OperatorAccount requestingOperator) throws Exception {
+    public ContractorAccount saveRequestedContractor(ContractorAccount contractor) throws Exception {
+        return (ContractorAccount) contractorAccountDAO.save(contractor);
+    }
+
+    public ContractorAccount populateRequestedContractor(
+            ContractorAccount contractor,
+            OperatorAccount requestingOperator,
+            RequestNewContractorAccount.RequestContactType contactType,
+            String contactNote
+    ) throws Exception {
         if (contractor.getId() == 0) {
             contractor.setNaics(new Naics());
             contractor.getNaics().setCode("0");
@@ -78,8 +92,20 @@ public class RequestNewContractorService {
             }
         }
 
+        if (contactType != null) {
+            if (RequestNewContractorAccount.RequestContactType.DECLINED == contactType) {
+                contractor.setStatus(AccountStatus.Declined);
+                contractor.setReason(contactNote);
+            } else if (RequestNewContractorAccount.RequestContactType.EMAIL == contactType) {
+                contractor.contactByEmail();
+            } else if (RequestNewContractorAccount.RequestContactType.PHONE == contactType) {
+                contractor.contactByPhone();
+            }
+            contractor.setLastContactedByInsideSales(permissions.getUserId());
+            contractor.setLastContactedByInsideSalesDate(new Date());
+        }
+
         contractor.setAuditColumns(permissions);
-        contractor = (ContractorAccount) contractorAccountDAO.save(contractor);
         return contractor;
     }
 

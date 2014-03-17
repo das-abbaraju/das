@@ -14,7 +14,6 @@ import java.util.*;
 
 @Entity
 @DiscriminatorValue("Group")
-@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, type, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, 'Group', ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE account_group SET deletedDate = NOW() WHERE id = ?")
 public class Group extends AccountGroup implements Comparable<Group> {

@@ -13,6 +13,7 @@ import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
 import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
@@ -20,6 +21,7 @@ import com.picsauditing.employeeguard.validators.group.RoleFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
 import com.picsauditing.validator.Validator;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,6 +46,8 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	private ProjectService projectService;
 	@Autowired
 	private RoleFormValidator roleFormValidator;
+	@Autowired
+	private RoleEntityService roleEntityService;
 
 	/* Forms */
 	@FormBinding("operator_role_create")
@@ -149,7 +153,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	}
 
 	public String delete() throws Exception {
-		groupService.delete(id, permissions.getAccountId(), permissions.getUserId());
+		roleEntityService.deleteByIdAndAccountId(NumberUtils.toInt(id), permissions.getAccountId());
 
 		return redirectToList();
 	}

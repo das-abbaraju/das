@@ -1,13 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.LegacyEmployeeDAO;
@@ -16,6 +8,13 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.report.RecordNotFoundException;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportEmployeeTraining extends ReportEmployee {
@@ -41,7 +40,6 @@ public class ReportEmployeeTraining extends ReportEmployee {
 		if (operator == null)
 			throw new RecordNotFoundException("Operator");
 
-		getFilter().setShowSsn(false);
 		getFilter().setShowEmail(false);
 
 		buildQuery();

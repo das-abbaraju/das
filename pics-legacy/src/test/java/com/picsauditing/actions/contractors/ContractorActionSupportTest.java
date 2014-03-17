@@ -5,6 +5,7 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.*;
@@ -91,7 +92,40 @@ public class ContractorActionSupportTest extends PicsTest {
 
 	}
 
-	@Test
+    @Test
+    public void testPreviousStep_Clients() throws Exception {
+        when(permissions.isContractor()).thenReturn(true);
+        when(permissions.getAccountId()).thenReturn(contractor.getId());
+        when(contractorAccountDAO.find(contractor.getId())).thenReturn(contractor);
+
+        contractorActionSupport.setCurrentStep(ContractorRegistrationStep.Clients);
+        String result = contractorActionSupport.previousStep();
+        assertEquals(PicsActionSupport.SUCCESS, result);
+    }
+
+    @Test
+    public void testPreviousStep_Risk() throws Exception {
+        when(permissions.isContractor()).thenReturn(true);
+        when(permissions.getAccountId()).thenReturn(contractor.getId());
+        when(contractorAccountDAO.find(contractor.getId())).thenReturn(contractor);
+
+        contractorActionSupport.setCurrentStep(ContractorRegistrationStep.Risk);
+        String result = contractorActionSupport.previousStep();
+        assertEquals(PicsActionSupport.REDIRECT, result);
+    }
+
+    @Test
+    public void testPreviousStep_Payment() throws Exception {
+        when(permissions.isContractor()).thenReturn(true);
+        when(permissions.getAccountId()).thenReturn(contractor.getId());
+        when(contractorAccountDAO.find(contractor.getId())).thenReturn(contractor);
+
+        contractorActionSupport.setCurrentStep(ContractorRegistrationStep.Payment);
+        String result = contractorActionSupport.previousStep();
+        assertEquals(PicsActionSupport.REDIRECT, result);
+    }
+
+    @Test
 	public void testGetCertificates() {
 		initCertificates();
 

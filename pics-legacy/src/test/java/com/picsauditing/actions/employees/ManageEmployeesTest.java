@@ -218,31 +218,6 @@ public class ManageEmployeesTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testSave_SSNCheck9Characters() throws Exception {
-		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
-		manageEmployees = manageEmployeesSpy;
-		manageEmployees.setSsn("999999999");
-
-		saveCommonBehaviors(employee);
-
-		verify(employee).setSsn("999999999");
-		verify(manageEmployees).validateInput();
-	}
-
-	@Test
-	public void testSave_SSNCheckInvalidFormat() throws Exception {
-		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
-		manageEmployees = manageEmployeesSpy;
-		manageEmployees.setSsn("Hello1 World9");
-
-		saveCommonBehaviors(employee);
-
-		assertTrue(manageEmployees.hasActionErrors());
-		verify(employee, never()).setSsn(anyString());
-		verify(manageEmployees).validateInput();
-	}
-
-	@Test
 	public void testSave_EmailInvalidFormat() throws Exception {
 		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
 		manageEmployees = manageEmployeesSpy;
