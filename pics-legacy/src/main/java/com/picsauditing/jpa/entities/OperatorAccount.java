@@ -59,6 +59,7 @@ public class OperatorAccount extends Account {
 	private Date discountExpiration;
 	private boolean inPicsConsortium = false;
 	private String salesForceID;
+    private boolean requiresEmployeeGuard;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
@@ -687,7 +688,15 @@ public class OperatorAccount extends Account {
 		this.salesForceID = salesForceID;
 	}
 
-	@Transient
+    public boolean isRequiresEmployeeGuard() {
+        return requiresEmployeeGuard;
+    }
+
+    public void setRequiresEmployeeGuard(boolean requiresEmployeeGuard) {
+        this.requiresEmployeeGuard = requiresEmployeeGuard;
+    }
+
+    @Transient
 	@Override
 	public String getAutocompleteItem() {
 		return "[" + id + "] " + name;

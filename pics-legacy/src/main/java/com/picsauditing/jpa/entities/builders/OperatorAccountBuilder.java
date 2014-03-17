@@ -91,4 +91,14 @@ public class OperatorAccountBuilder {
 
         return this;
     }
+
+    public OperatorAccountBuilder requiresEmployeeGuard() {
+        operator.setRequiresEmployeeGuard(true);
+        return this;
+    }
+
+    public OperatorAccountBuilder doesNotRequireEmployeeGuard() {
+        operator.setRequiresEmployeeGuard(false);
+        return this;
+    }
 }
