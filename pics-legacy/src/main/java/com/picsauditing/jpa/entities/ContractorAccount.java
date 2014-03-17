@@ -129,6 +129,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private LowMedHigh insideSalesPriority = LowMedHigh.None;
 	private String registrationHash;
     private String salesRepSalesForceID;
+    private boolean hasEmployeeGuard;
 
 	// Agreement Changed on Release date 6/3/2010
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
@@ -1272,6 +1273,14 @@ public class ContractorAccount extends Account implements JSONable {
     public boolean pendingOrActive() {
 		return status.isPending() || status.isActive();
 	}
+
+    public boolean isHasEmployeeGuard() {
+        return hasEmployeeGuard;
+    }
+
+    public void setHasEmployeeGuard(boolean hasEmployeeGuard) {
+        this.hasEmployeeGuard = hasEmployeeGuard;
+    }
 
 	@Transient
 	public Boolean hasPastDueInvoice() {

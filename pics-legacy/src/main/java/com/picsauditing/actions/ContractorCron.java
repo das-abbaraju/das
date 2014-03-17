@@ -16,6 +16,7 @@ import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -65,6 +66,8 @@ public class ContractorCron extends PicsActionSupport {
 	private Publisher csrAssignmentSinglePublisher;
     @Autowired
     private RulesRunner rulesRunner;
+    @Autowired
+    private EmployeeGuardRulesService employeeGuardRulesService;
 
 	// this is @Autowired at the setter because we need @Qualifier which does
 	// NOT work
@@ -72,7 +75,7 @@ public class ContractorCron extends PicsActionSupport {
 	// bug)
 	private Publisher flagChangePublisher;
 
-	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
+	static private Set<ContractorCron> manager = new HashSet<>();
 
 	private FlagDataCalculator flagDataCalculator;
 	private int conID = 0;
@@ -159,6 +162,7 @@ public class ContractorCron extends PicsActionSupport {
 			runContractorETL(contractor);
 			runCSRAssignment(contractor);
             runRulesBasedInsuranceCriteria(contractor);
+            runEmployeeGuardRules(contractor);
 
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
@@ -211,6 +215,14 @@ public class ContractorCron extends PicsActionSupport {
 			runPolicies(contractor);
 	}
 
+    private void runEmployeeGuardRules(ContractorAccount contractor) {
+        if (!runStep(ContractorCronStep.EmployeeGuardRules)) {
+            return;
+        }
+
+        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+    }
+
     private void runRulesBasedInsuranceCriteria(ContractorAccount contractor) {
         if (!runStep(ContractorCronStep.RulesBasedInsurance)) {
             return;
@@ -222,13 +234,6 @@ public class ContractorCron extends PicsActionSupport {
 
         for (ContractorOperator contractorOperator : contractor.getOperators()) {
             OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
-
-
-
-
-
-
-
             try {
                 rulesRunner.runInsuranceCriteriaRulesForOperator(operatorAccount);
             } catch (RuntimeException e) {

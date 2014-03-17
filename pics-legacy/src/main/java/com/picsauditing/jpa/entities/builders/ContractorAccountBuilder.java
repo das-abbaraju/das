@@ -67,4 +67,9 @@ public class ContractorAccountBuilder {
         contractor.setPrimaryContact(user);
         return this;
     }
+
+    public ContractorAccountBuilder doesNotPerformOnSiteServices() {
+        contractor.setOnsiteServices(false);
+        return this;
+    }
 }

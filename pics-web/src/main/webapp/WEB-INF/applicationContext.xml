@@ -292,6 +292,7 @@
     <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService" />
     <bean id="ContractorCertificateService" class="com.picsauditing.service.contractor.ContractorCertificateService" />
     <bean id="AuditFinderService" class="com.picsauditing.service.contractor.AuditFinderService" />
+    <bean id="EmployeeGuardRulesService" class="com.picsauditing.service.employeeGuard.EmployeeGuardRulesService" />
 
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
