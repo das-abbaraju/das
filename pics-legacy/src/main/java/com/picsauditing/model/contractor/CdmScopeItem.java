@@ -3,7 +3,7 @@ package com.picsauditing.model.contractor;
 public enum CdmScopeItem {
 
 	PrincipalContractor("Principal Contractor", "PrincipalContractor"),
-    Training("CDM Coordinator", "CDMCoordinator"),
+    CDMCoordinator("CDM Coordinator", "CDMCoordinator"),
     Designer("Designer", "Designer"),
     Contractor("Contractor", "Contractor");
 
