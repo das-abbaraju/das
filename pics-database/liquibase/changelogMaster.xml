@@ -181,6 +181,7 @@
 	<include file="./liquibase/2014/Q1/kchase32_PICS-14766_UpdateFlagDataOverrides.sql"/>
 	<include file="./liquibase/2014/Q1/kchase33_PICS-14757_UpdateAddress.sql"/>
 	<include file="./liquibase/2014/Q1/lkam8_US580_Add_EmployeeGUARD_Rules.sql"/>
+	<include file="./liquibase/2014/Q1/dalvarado_US351_recreate_contactor_certificate_table.sql"/>
 	<include file="./liquibase/2014/Q1/dalvarado10_US572_add_cdmScope.sql"/>
 
 </databaseChangeLog>
