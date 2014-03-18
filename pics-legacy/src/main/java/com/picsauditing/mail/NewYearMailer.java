@@ -1,6 +1,6 @@
 package com.picsauditing.mail;
 
-import com.picsauditing.messaging.EmailRequestPublisher;
+import com.picsauditing.messaging.MessagePublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -12,9 +12,8 @@ public class NewYearMailer extends PicsActionSupport {
 
 	@Autowired
 	private EmailReportRunner runner;
-
-	@Autowired
-	private EmailRequestPublisher emailRequestPublisher;
+    @Autowired
+    private MessagePublisherService messageService;
 
 	private final int ANNUAL_UPDATE_REPORT_ID = 163;
 	private final int ANNUAL_UPDATE_TEMPLATE_ID = 37;
@@ -36,7 +35,7 @@ public class NewYearMailer extends PicsActionSupport {
 		request.templateID = ANNUAL_UPDATE_TEMPLATE_ID;
 		request.userTypes.add(OpPerms.ContractorAdmin);
 		try {
-			emailRequestPublisher.publish(request);
+            messageService.getEmailRequestPublisher().publish(request);
 			addActionMessage("Successfully added " + request.contractorIDs.size() + " contractors to the email queue");
 		} catch (Exception e) {
 			addActionError("Failed to add to message queue");

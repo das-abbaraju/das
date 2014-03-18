@@ -10,7 +10,8 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.messaging.FlagChangePublisher;
+import com.picsauditing.messaging.MessagePublisherService;
+import com.picsauditing.messaging.Publisher;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
@@ -57,9 +58,11 @@ public class ContractorCronTest extends PicsActionTest {
     @Mock
     private FlagDataCalculator flagDataCalculator;
     @Mock
-    private FlagChangePublisher flagChangePublisher;
+    private Publisher flagChangePublisher;
     @Mock
     private UserAssignmentDAO userAssignmentDAO;
+    @Mock
+    private MessagePublisherService messageService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,6 +76,9 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
 		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
         Whitebox.setInternalState(contractorCron, "userAssignmentDAO", userAssignmentDAO);
+        Whitebox.setInternalState(contractorCron, "messageService", messageService);
+
+        when(messageService.getFlagChangePublisher()).thenReturn(flagChangePublisher);
 	}
 
     @Test
@@ -173,7 +179,6 @@ public class ContractorCronTest extends PicsActionTest {
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
         Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
-        Whitebox.setInternalState(contractorCron, "flagChangePublisher", flagChangePublisher);
         when(flagDataCalculator.calculate()).thenReturn(changes);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Active);
@@ -200,7 +205,6 @@ public class ContractorCronTest extends PicsActionTest {
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
         Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
-        Whitebox.setInternalState(contractorCron, "flagChangePublisher", flagChangePublisher);
         when(flagDataCalculator.calculate()).thenReturn(changes);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Declined);

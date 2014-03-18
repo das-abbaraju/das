@@ -3,7 +3,7 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
-	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd"
 	default-autowire="byName">
 
@@ -33,7 +33,7 @@
             exchange="employeeguard-exchange"
             queue="employeeguard-queue"
             />
-    <beans:bean id="EmployeeGuardPublisher" class="com.picsauditing.messaging.EmployeeGuardPublisher" scope="prototype">
+    <beans:bean id="EmployeeGuardPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
         <beans:property name="amqpTemplate" ref="employeeGuardTemplate" />
     </beans:bean>
 
@@ -104,7 +104,7 @@
 	</direct-exchange>
 	
 	<template message-converter="messageConverter" id="FlagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
-	<beans:bean id="FlagChangePublisher" class="com.picsauditing.messaging.FlagChangePublisher" scope="prototype">
+	<beans:bean id="FlagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
 		<beans:property name="amqpTemplate" ref="FlagChangeTemplate" />
 		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.FlagChanges" />
@@ -112,12 +112,12 @@
 
     <template message-converter="messageConverter" id="CsrAssignmentSingleTemplate" connection-factory="connectionFactory" exchange="csr-assignments-single-exchange" queue="csr-assignments-single"/>
 
-    <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.CsrAssignmentSinglePublisher" scope="prototype">
+    <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
         <beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
     </beans:bean>
 
 	<template message-converter="messageConverter" id="EmailRequestTemplate" connection-factory="connectionFactory" exchange="email-requests-exchange" queue="email-requests"/>
-	<beans:bean id="EmailRequestPublisher" class="com.picsauditing.messaging.EmailRequestPublisher" scope="prototype">
+	<beans:bean id="EmailRequestPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
 		<beans:property name="amqpTemplate" ref="EmailRequestTemplate" />
 	</beans:bean>
 

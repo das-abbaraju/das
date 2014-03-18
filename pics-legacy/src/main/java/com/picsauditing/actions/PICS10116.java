@@ -1,7 +1,7 @@
 package com.picsauditing.actions;
 
 import com.picsauditing.mail.EmailRequestDTO;
-import com.picsauditing.messaging.EmailRequestPublisher;
+import com.picsauditing.messaging.Publisher;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -44,7 +44,7 @@ public class PICS10116 extends PicsActionSupport {
 						StringUtils.isNotEmpty(getInvoiceId())
 				) {
 
-			EmailRequestPublisher emailRequestPublisher = SpringUtils.getBean(SpringUtils.EMAIL_REQUEST_PUBLISHER);
+			Publisher emailRequestPublisher = SpringUtils.getBean(SpringUtils.EMAIL_REQUEST_PUBLISHER);
 
 			EmailRequestDTO request = new EmailRequestDTO();
 			if (StringUtils.isNotEmpty(getTemplateId())) {

@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
     <context:property-placeholder location="classpath:amqp_connection.properties"/>
     <import resource="rabbit-config.xml"/>
     <import resource="employeeguard-config.xml"/>
+
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>
-    <bean id="AsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+
+    <bean id="AsyncTaskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="10"/>
         <property name="maxPoolSize" value="100"/>
         <property name="queueCapacity" value="0"/>
         <property name="waitForTasksToCompleteOnShutdown" value="false"/>
     </bean>
+
     <bean id="SpringUtils" class="com.picsauditing.util.SpringUtils"/>
     <bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
+
     <bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
     <bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
     <bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
@@ -46,7 +60,7 @@
     <bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>
     <bean id="CountrySubdivisionDAO" class="com.picsauditing.dao.CountrySubdivisionDAO"/>
     <bean id="CronDAO" class="com.picsauditing.dao.CronDAO"/>
-    <bean id="CreditMemoDAO" class="com.picsauditing.dao.CreditMemoDAO"/>
+    <bean id="CreditMemoDAO" class="com.picsauditing.dao.CreditMemoDAO" />
     <bean id="DynamicReportsSubscription" class="com.picsauditing.mail.subscription.DynamicReportsSubscription"/>
     <bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
     <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
@@ -67,8 +81,10 @@
     <bean id="FlagDataDAO" class="com.picsauditing.dao.FlagDataDAO"/>
     <bean id="FlagDataOverrideDAO" class="com.picsauditing.dao.FlagDataOverrideDAO"/>
     <bean id="IndexableDAO" class="com.picsauditing.dao.IndexableDAO"/>
-    <bean id="InsuranceCriteriaContractorOperatorDAO" class="com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO"/>
-    <bean id="InsuranceRejectedNoUpdateSubscription" class="com.picsauditing.mail.subscription.InsuranceRejectedNoUpdateSubscription"/>
+    <bean id="InsuranceCriteriaContractorOperatorDAO"
+          class="com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO"/>
+    <bean id="InsuranceRejectedNoUpdateSubscription"
+          class="com.picsauditing.mail.subscription.InsuranceRejectedNoUpdateSubscription"/>
     <bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
     <bean id="InvoiceCommissionDAO" class="com.picsauditing.dao.InvoiceCommissionDAO"/>
     <bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
@@ -114,13 +130,21 @@
     <bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
     <bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
     <bean id="ContractorCertificateDao" class="com.picsauditing.dao.contractor.ContractorCertificateDao"/>
+
     <bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"/>
     <bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
     <bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache"/>
     <bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
     <bean id="CorruptionPerceptionIndexMap" class="com.picsauditing.util.CorruptionPerceptionIndexMap"/>
+
     <bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
-    <bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
+    <bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype">
+        <constructor-arg ref="AuditorAvailabilityDAO"/>
+        <constructor-arg ref="AuditorScheduleDAO"/>
+        <constructor-arg ref="AuditorVacationDAO"/>
+        <constructor-arg ref="ContractorAuditDAO"/>
+        <constructor-arg ref="AppPropertyDAO"/>
+    </bean>
     <bean id="BillingService" class="com.picsauditing.PICS.BillingService" init-method="initService"/>
     <bean id="brainTree" class="com.picsauditing.billing.BrainTree"/>
     <bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
@@ -132,30 +156,34 @@
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
     <bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
-    <bean id="ProductSubscriptionService" class="com.picsauditing.provisioning.ProductSubscriptionServiceImpl"/>
-    <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper" scope="prototype"/>
+    <bean id="ProductSubscriptionService"
+          class="com.picsauditing.provisioning.ProductSubscriptionServiceImpl"/>
+    <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
+          scope="prototype"/>
     <bean id="RegistrationBillingBean" class="com.picsauditing.service.billing.RegistrationBillingBean">
         <constructor-arg ref="InvoiceFeeDAO"/>
     </bean>
     <bean id="RegistrationRequestService" class="com.picsauditing.service.registration.RegistrationRequestService">
         <constructor-arg ref="ContractorAccountDAO"/>
     </bean>
-    <bean id="AltUserService" class="com.picsauditing.service.user.UserService"/>
+
+    <bean id="AltUserService" class="com.picsauditing.service.user.UserService" />
     <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService">
-        <constructor-arg ref="RegistrationBillingBean"/>
-        <constructor-arg ref="ContractorAccountService"/>
-        <constructor-arg ref="AppUserService"/>
-        <constructor-arg ref="AppUserDAO"/>
-        <constructor-arg ref="LanguageModel"/>
-        <constructor-arg ref="AltUserService"/>
-        <constructor-arg ref="RegistrationRequestService"/>
+        <constructor-arg ref="RegistrationBillingBean" />
+        <constructor-arg ref="ContractorAccountService" />
+        <constructor-arg ref="AppUserService" />
+        <constructor-arg ref="AppUserDAO" />
+        <constructor-arg ref="LanguageModel" />
+        <constructor-arg ref="AltUserService" />
+        <constructor-arg ref="RegistrationRequestService" />
     </bean>
-    <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService"/>
+    <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
-    <!--  CronTasks  -->
+
+    <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>
     <bean id="AuditBuilderAddAuditRenewalsTask" class="com.picsauditing.actions.cron.AuditBuilderAddAuditRenewalsTask" scope="prototype"/>
     <bean id="ClearForcedFlagsTask" class="com.picsauditing.actions.cron.ClearForcedFlagsTask" scope="prototype"/>
@@ -164,7 +192,11 @@
     <bean id="EbixLoader" class="com.picsauditing.util.EbixLoader" scope="prototype"/>
     <bean id="EmailDelinquentContractors" class="com.picsauditing.actions.cron.EmailDelinquentContractors" scope="prototype"/>
     <bean id="EmailPendingContractorsTask" class="com.picsauditing.actions.cron.EmailPendingContractorsTask" scope="prototype"/>
-    <bean id="EmailDuplicateContractors" class="com.picsauditing.actions.cron.EmailDuplicateContractors" scope="prototype"/>
+    <bean id="EmailDuplicateContractors" class="com.picsauditing.actions.cron.EmailDuplicateContractors" scope="prototype">
+        <constructor-arg ref="ContractorAccountDAO"/>
+        <constructor-arg ref="EmailQueueDAO"/>
+    </bean>
+
     <bean id="EmailRegistrationRequestsTask" class="com.picsauditing.actions.cron.EmailRegistrationRequestsTask" scope="prototype"/>
     <bean id="EmailUpcomingImplementationAudits" class="com.picsauditing.actions.cron.EmailUpcomingImplementationAudits" scope="prototype"/>
     <bean id="ExpireFlagChangesTask" class="com.picsauditing.actions.cron.ExpireFlagChangesTask" scope="prototype"/>
@@ -174,39 +206,55 @@
     <bean id="ReportSuggestionsTask" class="com.picsauditing.actions.cron.ReportSuggestionsTask" scope="prototype"/>
     <bean id="RunConCronForOldAccountsWithBalances" class="com.picsauditing.actions.cron.RunConCronForOldAccountsWithBalances" scope="prototype"/>
     <bean id="SendEmailToBidOnlyAccounts" class="com.picsauditing.actions.cron.SendEmailToBidOnlyAccounts" scope="prototype"/>
-    <bean id="SetSapSync" class="com.picsauditing.actions.cron.SetSapSync"/>
+    <bean id="SetSapSync" class="com.picsauditing.actions.cron.SetSapSync" />
     <bean id="TestTask" class="com.picsauditing.actions.cron.TestTask" scope="prototype"/>
-    <!--  Validators  -->
+
+    <!-- Validators -->
     <bean id="ContractorValidator" class="com.picsauditing.validator.ContractorValidator" scope="prototype"/>
     <bean id="InputValidator" class="com.picsauditing.validator.InputValidator" scope="prototype"/>
     <bean id="PasswordValidator" class="com.picsauditing.validator.PasswordValidator" scope="prototype"/>
     <bean id="RequestNewContractorValidator" class="com.picsauditing.validator.RequestNewContractorValidator" scope="prototype"/>
-    <bean id="TaxIdValidatorFactory" class="com.picsauditing.validator.TaxIdValidatorFactory"/>
-    <bean id="ValidatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-    <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
-    <bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
-    <bean id="FlagChangesSubscription" class="com.picsauditing.mail.subscription.FlagChangesSubscription" scope="prototype"/>
-    <bean id="FlagColorSubscription" class="com.picsauditing.mail.subscription.FlagColorSubscription" scope="prototype"/>
-    <bean id="ForcedFlagsSubscription" class="com.picsauditing.mail.subscription.ForcedFlagsSubscription" scope="prototype"/>
-    <bean id="InsuranceCertificateSubscription" class="com.picsauditing.mail.subscription.InsuranceCertificateSubscription" scope="prototype"/>
-    <bean id="OpenTasksSubscription" class="com.picsauditing.mail.subscription.OpenTasksSubscription" scope="prototype"/>
-    <bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription" scope="prototype"/>
-    <bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
-    <bean id="CancelledScheduledAudits" class="com.picsauditing.mail.subscription.CancelledScheduledAuditsSubscription" scope="prototype"/>
-    <bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
+    <bean id="TaxIdValidatorFactory" class="com.picsauditing.validator.TaxIdValidatorFactory" />
+    <bean id="ValidatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+    <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
+          scope="prototype"/>
+    <bean id="ContractorRegistrationSubscription"
+          class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
+    <bean id="FlagChangesSubscription" class="com.picsauditing.mail.subscription.FlagChangesSubscription"
+          scope="prototype"/>
+    <bean id="FlagColorSubscription" class="com.picsauditing.mail.subscription.FlagColorSubscription"
+          scope="prototype"/>
+    <bean id="ForcedFlagsSubscription" class="com.picsauditing.mail.subscription.ForcedFlagsSubscription"
+          scope="prototype"/>
+    <bean id="InsuranceCertificateSubscription"
+          class="com.picsauditing.mail.subscription.InsuranceCertificateSubscription" scope="prototype"/>
+    <bean id="OpenTasksSubscription" class="com.picsauditing.mail.subscription.OpenTasksSubscription"
+          scope="prototype"/>
+    <bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription"
+          scope="prototype"/>
+    <bean id="TrialContractorAccountsSubscription"
+          class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
+    <bean id="CancelledScheduledAudits" class="com.picsauditing.mail.subscription.CancelledScheduledAuditsSubscription"
+          scope="prototype"/>
+    <bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory"
+          scope="prototype"/>
+
     <bean id="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium" scope="prototype"/>
     <bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype"/>
-    <!--  Beans for service layers  -->
+
+    <!-- Beans for service layers -->
     <bean id="AuditDataService" class="com.picsauditing.service.AuditDataService"/>
     <bean id="AppPropertyService" class="com.picsauditing.service.AppPropertyService"/>
     <bean id="MailCronService" class="com.picsauditing.service.mail.MailCronService"/>
     <bean id="ContractorAuditService" class="com.picsauditing.service.ContractorAuditService"/>
-    <bean id="ContractorOperatorService" class="com.picsauditing.service.contractor.ContractorOperatorService"/>
+    <bean id="ContractorOperatorService" class="com.picsauditing.service.contractor.ContractorOperatorService" />
     <bean id="FacilitiesEditModel" class="com.picsauditing.model.operators.FacilitiesEditModel"/>
     <bean id="AuditEditModel" class="com.picsauditing.models.audits.AuditEditModel"/>
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
+
     <bean id="IdentityProviderStrutsWebApp" class="com.picsauditing.security.IdentityProviderStrutsWebApp" scope="prototype"/>
     <bean id="NoteService" class="com.picsauditing.service.notes.NoteService" scope="prototype">
         <constructor-arg ref="IdentityProviderStrutsWebApp"/>
@@ -214,7 +262,7 @@
     <bean id="EmailLog" class="com.picsauditing.service.email.logging.SimpleEmailLogger"/>
     <bean id="SpringContextEmailEventPublisher" class="com.picsauditing.service.email.events.publisher.SpringContextEmailEventPublisher"/>
     <bean id="SpringContextAccountEventPublisher" class="com.picsauditing.service.account.events.SpringContextAccountEventPublisher"/>
-    <bean id="UserEventPublisher" class="com.picsauditing.service.user.events.publisher.SpringContextUserEventPublisher"/>
+    <bean id="UserEventPublisher" class="com.picsauditing.service.user.events.publisher.SpringContextUserEventPublisher" />
     <bean id="EmailEventService" class="com.picsauditing.service.email.EmailService">
         <constructor-arg ref="SpringContextEmailEventPublisher"/>
         <constructor-arg ref="EmailSender"/>
@@ -229,46 +277,71 @@
     <bean id="ContractorOperatorEventService" class="com.picsauditing.service.account.ContractorOperatorService">
         <constructor-arg ref="SpringContextContractorOperatorEventPublisher"/>
     </bean>
+
     <bean id="EmailBuilderService" class="com.picsauditing.service.email.EmailBuilderService"/>
-    <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay" scope="prototype"/>
-    <bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener" scope="prototype"/>
-    <bean id="ContractorOperatorWaitingOnChangedListener" class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
-    <bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator" scope="prototype"/>
+    <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
+          scope="prototype"/>
+    <bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener"
+          scope="prototype"/>
+    <bean id="ContractorOperatorWaitingOnChangedListener"
+          class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
+    <bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"
+          scope="prototype"/>
     <bean id="ContractorDashboardApprovalMessage" class="com.picsauditing.model.user.ContractorDashboardApprovalMessage"/>
     <bean id="FileSystemAccessor" class="com.picsauditing.util.FileSystemAccessor"/>
     <bean id="TopLevelOperatorFinder" class="com.picsauditing.service.contractor.TopLevelOperatorFinder"/>
+
     <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder" scope="prototype"/>
     <bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel"/>
     <bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel"/>
-    <bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype" init-method="reloadListOfLanguagesToEmailInvoicesViaBPROCS"/>
+    <bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"
+          init-method="reloadListOfLanguagesToEmailInvoicesViaBPROCS"/>
     <bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges"/>
     <bean id="PermissionService" class="com.picsauditing.service.PermissionService"/>
     <bean id="RulesRunner" class="com.picsauditing.rbic.RulesRunner" scope="prototype"/>
-    <bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
+    <bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator"
+          scope="singleton"/>
     <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService"/>
-    <bean id="ServiceRiskCalculator" class="com.picsauditing.actions.contractors.risk.ServiceRiskCalculator"/>
-    <bean id="PricingTiersBuilder" class="com.picsauditing.service.contractor.PricingTiersBuilder"/>
-    <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService"/>
-    <bean id="ContractorCertificateService" class="com.picsauditing.service.contractor.ContractorCertificateService"/>
-    <bean id="AuditFinderService" class="com.picsauditing.service.contractor.AuditFinderService"/>
-    <!--  Autocompletes  -->
-    <bean id="AccountUserAutocompleteService" class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>
-    <bean id="AuditCategoryAutocompleteService" class="com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService"/>
-    <bean id="AuditQuestionAutocompleteService" class="com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService"/>
-    <bean id="AuditTypeAutocompleteService" class="com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService"/>
+    <bean id="ServiceRiskCalculator" class="com.picsauditing.actions.contractors.risk.ServiceRiskCalculator" />
+    <bean id="PricingTiersBuilder" class="com.picsauditing.service.contractor.PricingTiersBuilder" />
+    <bean id="InvoiceDiscountsService" class="com.picsauditing.service.billing.InvoiceDiscountsService" />
+    <bean id="ContractorCertificateService" class="com.picsauditing.service.contractor.ContractorCertificateService" />
+    <bean id="AuditFinderService" class="com.picsauditing.service.contractor.AuditFinderService" />
+    <bean id="EmployeeGuardRulesService" class="com.picsauditing.service.employeeGuard.EmployeeGuardRulesService" />
+    <bean id="MessageService" class="com.picsauditing.messaging.MessagePublisherService">
+        <property name="csrAssignmentSinglePublisher" ref="CsrAssignmentSinglePublisher"/>
+        <property name="flagChangePublisher" ref="FlagChangePublisher"/>
+        <property name="employeeGuardPublisher" ref="EmployeeGuardPublisher"/>
+        <property name="emailRequestPublisher" ref="EmailRequestPublisher"/>
+    </bean>
+
+    <!-- Autocompletes -->
+    <bean id="AccountUserAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>
+    <bean id="AuditCategoryAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService"/>
+    <bean id="AuditQuestionAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService"/>
+    <bean id="AuditTypeAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService"/>
     <bean id="AutocompleteSharing" class="com.picsauditing.model.general.AutocompleteSharing"/>
-    <bean id="ContractorAutocompleteService" class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
+    <bean id="ContractorAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
     <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService"/>
     <bean id="LocationAutocompleteService" class="com.picsauditing.actions.autocomplete.LocationAutocompleteService"/>
     <bean id="OperatorAutocompleteService" class="com.picsauditing.actions.autocomplete.OperatorAutocompleteService"/>
-    <bean id="OperatorTagAutocompleteService" class="com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService"/>
-    <bean id="OptionGroupAutocompleteService" class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
-    <bean id="OptionValueAutocompleteService" class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
+    <bean id="OperatorTagAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService"/>
+    <bean id="OptionGroupAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
+    <bean id="OptionValueAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
     <bean id="ReportService" class="com.picsauditing.service.ReportService"/>
     <bean id="ManageReportsService" class="com.picsauditing.service.ManageReportsService"/>
     <bean id="ReportPreferencesService" class="com.picsauditing.service.ReportPreferencesService"/>
     <bean id="SqlBuilder" class="com.picsauditing.report.SqlBuilder"/>
-    <bean id="CountrySubdivisionAutocompleteService" class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
+    <bean id="CountrySubdivisionAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
     <bean id="UserGroupAutocompleteService" class="com.picsauditing.actions.autocomplete.UserGroupAutocompleteService"/>
     <bean id="UserService" class="com.picsauditing.access.UserService"/>
@@ -276,31 +349,40 @@
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
     <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel"/>
-    <bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider"/>
-    <bean id="ReportInfoConverter" class="com.picsauditing.service.ReportInfoConverter"/>
-    <bean id="ReportFavoriteInfoConverter" class="com.picsauditing.service.ReportFavoriteInfoConverter"/>
+    <bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider" />
+    <bean id="ReportInfoConverter" class="com.picsauditing.service.ReportInfoConverter" />
+    <bean id="ReportFavoriteInfoConverter" class="com.picsauditing.service.ReportFavoriteInfoConverter" />
+
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>
     <bean id="PaymentObserver" class="com.picsauditing.salecommission.PaymentObserver"/>
     <bean id="InvoiceStrategy" class="com.picsauditing.salecommission.invoice.strategy.InvoiceStrategy"/>
     <bean id="UpdateInvoiceStrategy" class="com.picsauditing.salecommission.invoice.strategy.UpdateInvoiceStrategy"/>
-    <bean id="VoidInvoiceCommissionStrategy" class="com.picsauditing.salecommission.invoice.strategy.VoidInvoiceCommissionStrategy"/>
+    <bean id="VoidInvoiceCommissionStrategy"
+          class="com.picsauditing.salecommission.invoice.strategy.VoidInvoiceCommissionStrategy"/>
     <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy"/>
     <bean id="PaymentStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentStrategy"/>
+
     <bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
     <bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder"/>
     <bean id="PermissionBuilder" class="com.picsauditing.access.PermissionBuilder"/>
+
     <bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
+
     <bean id="ReportPermissionInfoConverter" class="com.picsauditing.service.ReportPermissionInfoConverter"/>
     <bean id="ContractorSubmenuBuilder" class="com.picsauditing.menu.builder.ContractorSubmenuBuilder"/>
     <bean id="ContractorActionSupport" class="com.picsauditing.actions.contractors.ContractorActionSupport" scope="prototype"/>
+
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
     <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationUsageLogSynchronizer"/>
     <bean id="translateRestClient" class="com.picsauditing.i18n.service.TranslateRestClient"/>
     <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.TranslationUsageDAO" scope="prototype"/>
-    <!--   JPA implementation  -->
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+
+    <!--  JPA implementation -->
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="jndiDataSource"/>
         <property name="persistenceUnitName" value="punit"/>
         <property name="jpaVendorAdapter">
@@ -310,12 +392,15 @@
             </bean>
         </property>
     </bean>
+
     <bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/pics"/>
         <property name="resourceRef" value="false"/>
-        <property name="defaultObject" value="dummy"/>
+        <property name="defaultObject" value="dummy"></property>
     </bean>
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" lazy-init="false">
+    <bean
+            class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+            lazy-init="false">
         <property name="targetObject" ref="jndiDataSource"/>
         <property name="targetMethod" value="addConnectionProperty"/>
         <property name="arguments">
@@ -325,29 +410,25 @@
             </list>
         </property>
     </bean>
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <bean id="transactionManager"
+          class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
-    <!--
-     The 'proxy-target-class="true"' is to correctly autowire classes that implement interfaces.
-         e.g ReportUserDAO. All it means is that Spring will inject the concrete class instead of an
-         auto-proxied object that only implements the interface.
-    -->
+
+    <!-- The 'proxy-target-class="true"' is to correctly autowire classes that implement interfaces.
+     e.g ReportUserDAO. All it means is that Spring will inject the concrete class instead of an
+     auto-proxied object that only implements the interface. -->
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
-    <!--
-     the transactional advice (i.e. what 'happens'; see the <aop:advisor/> bean below)
-    -->
+
+    <!-- the transactional advice (i.e. what 'happens'; see the <aop:advisor/> bean below) -->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
-        <!--  the transactional semantics...  -->
+        <!-- the transactional semantics... -->
         <tx:attributes>
-            <!--
-             all methods starting with 'get' are read-only (optimization)
-            -->
+            <!-- all methods starting with 'get' are read-only (optimization) -->
             <tx:method name="get*" read-only="true"/>
-            <!--
-             other methods use the default transaction settings (see below)
-            -->
+            <!-- other methods use the default transaction settings (see below) -->
             <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
+
 </beans>
