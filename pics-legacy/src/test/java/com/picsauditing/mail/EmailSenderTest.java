@@ -21,8 +21,6 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.messaging.Publisher;
-import com.picsauditing.toggle.FeatureToggle;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

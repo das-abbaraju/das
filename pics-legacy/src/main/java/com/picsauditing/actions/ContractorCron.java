@@ -9,8 +9,9 @@ import com.picsauditing.dao.*;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
+import com.picsauditing.messaging.CsrAssignmentSinglePublisher;
 import com.picsauditing.messaging.FlagChange;
-import com.picsauditing.messaging.Publisher;
+import com.picsauditing.messaging.FlagChangePublisher;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.rbic.RulesRunner;
@@ -26,7 +27,6 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -62,18 +62,14 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private FeatureToggle featureToggleChecker;
 	@Autowired
-	@Qualifier("CsrAssignmentSinglePublisher")
-	private Publisher csrAssignmentSinglePublisher;
+	private CsrAssignmentSinglePublisher csrAssignmentSinglePublisher;
     @Autowired
     private RulesRunner rulesRunner;
     @Autowired
     private EmployeeGuardRulesService employeeGuardRulesService;
 
-	// this is @Autowired at the setter because we need @Qualifier which does
-	// NOT work
-	// on the variable declaration; only on the method (I think this is a Spring
-	// bug)
-	private Publisher flagChangePublisher;
+    @Autowired
+	private FlagChangePublisher flagChangePublisher;
 
 	static private Set<ContractorCron> manager = new HashSet<>();
 
@@ -925,7 +921,7 @@ public class ContractorCron extends PicsActionSupport {
 			throws NoUsersDefinedException {
 		Set<EmailSubscription> unsentWeeklyInsuranceSubscriptions = new HashSet<EmailSubscription>();
 		List<EmailSubscription> contractorInsuranceSubscriptions = subscriptionDAO.find(
-				Subscription.InsuranceExpiration, contractor.getId());
+                Subscription.InsuranceExpiration, contractor.getId());
 
 		if (contractorInsuranceSubscriptions.isEmpty()) {
 			EmailSubscription defaultUserSubscription = contractor
@@ -1411,11 +1407,5 @@ public class ContractorCron extends PicsActionSupport {
 
 	public void setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
-	}
-
-	@Autowired
-	@Qualifier("FlagChangePublisher")
-	public void setFlagChangePublisher(Publisher flagChangePublisher) {
-		this.flagChangePublisher = flagChangePublisher;
 	}
 }
