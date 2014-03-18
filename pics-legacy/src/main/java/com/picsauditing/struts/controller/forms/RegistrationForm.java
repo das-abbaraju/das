@@ -263,7 +263,7 @@ public class RegistrationForm {
                 ? input.getCountry().getIsoCode()
                 : null;
         form.countrySubdivision = (input.getCountrySubdivision() != null)
-                ? input.getCountrySubdivision().getSimpleName()
+                ? input.getCountrySubdivision().getIsoCode()
                 : null;
         form.email = user.getEmail();
         form.firstName = user.getFirstName();
