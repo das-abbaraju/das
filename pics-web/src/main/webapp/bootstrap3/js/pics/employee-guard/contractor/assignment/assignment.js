@@ -86,22 +86,26 @@ PICS.define('employee-guard.Assignment', {
         function addAssignedStyle() {
             $selected_row.addClass('assigned');
 
-            updateSkillStatusIcon();
+            updateSkillStatusIconClass();
         }
 
-        function updateSkillStatusIcon() {
-            var $skill_status_column = $selected_row.find('.skill-status-icon'),
-                $icon = $skill_status_column.find('i');
+        function updateSkillStatusIconClass() {
+            var $skill_status_column = $selected_row.find('.skill-status-icon');
 
-            if ($icon.hasClass('icon-minus-sign-alt')) {
-                $skill_status_column.addClass('danger');
-            } else if ($icon.hasClass('icon-warning-sign')) {
-                $skill_status_column.addClass('warning');
-            } else if ($icon.hasClass('icon-ok-circle')) {
-                $skill_status_column.addClass('success');
-            } else if ($icon.hasClass('icon-ok-sign')) {
-                $skill_status_column.addClass('success');
-            }
+            $skill_status_column.each(function(index,element) {
+                var $element = $(element),
+                    $icon = $element.find('i');
+
+                if ($icon.hasClass('icon-minus-sign-alt')) {
+                    $element.addClass('danger');
+                } else if ($icon.hasClass('icon-warning-sign')) {
+                    $element.addClass('warning');
+                } else if ($icon.hasClass('icon-ok-circle')) {
+                    $element.addClass('success');
+                } else if ($icon.hasClass('icon-ok-sign')) {
+                    $element.addClass('success');
+                }
+            });
         }
 
         return {

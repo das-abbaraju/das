@@ -59,10 +59,13 @@
 
             <tbody>
                 <s:iterator value="contractorProjectAssignmentMatrix.assignments" var="contractor_project_employee">
-                    <s:set var="employee_assigned" value="''"/>
+
                     <s:if test="#contractor_project_employee.assigned">
-                        <s:set var="employee_assigned" value="'assigned'"/>
+                        <s:set var="employee_assigned_class">assigned</s:set>
                     </s:if>
+                    <s:else>
+                        <s:set var="employee_assigned_class" value="" />
+                    </s:else>
 
                     <s:url action="project/{projectId}/assignments/{assignmentId}/role/{roleId}/employee/{id}" method="assign" var="assign_contractor">
                         <s:param name="projectId">
@@ -94,7 +97,7 @@
                         </s:param>
                     </s:url>
 
-                    <tr class="assign-employee-container ${employee_assigned}" data-assign-url="${assign_contractor}" data-unassign-url="${unassign_contractor}">
+                    <tr class="assign-employee-container ${employee_assigned_class}" data-assign-url="${assign_contractor}" data-unassign-url="${unassign_contractor}">
                         <td class="assign-employee text-center">
                             <i class="icon-map-marker icon-large"></i>
                         </td>
@@ -125,7 +128,11 @@
                                 <s:set var="skill_status_class">success</s:set>
                             </s:else>
 
-                            <td class="${skill_status_class} text-center">
+                            <s:if test="#employee_assigned_class != 'assigned'">
+                                <s:set var="skill_status_class" value="" />
+                            </s:if>
+
+                            <td class="${skill_status_class} skill-status-icon text-center">
                                 <i class="${skill_icon} icon-large"></i>
                             </td>
                         </s:iterator>
