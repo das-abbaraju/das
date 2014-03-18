@@ -9,9 +9,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
-import com.picsauditing.messaging.CsrAssignmentSinglePublisher;
-import com.picsauditing.messaging.FlagChange;
-import com.picsauditing.messaging.FlagChangePublisher;
+import com.picsauditing.messaging.*;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.rbic.RulesRunner;
@@ -61,15 +59,12 @@ public class ContractorCron extends PicsActionSupport {
     private FeeService feeService;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
-	@Autowired
-	private CsrAssignmentSinglePublisher csrAssignmentSinglePublisher;
     @Autowired
     private RulesRunner rulesRunner;
     @Autowired
     private EmployeeGuardRulesService employeeGuardRulesService;
-
     @Autowired
-	private FlagChangePublisher flagChangePublisher;
+    private MessagePublisherService messageService;
 
 	static private Set<ContractorCron> manager = new HashSet<>();
 
@@ -783,7 +778,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		} else if (!overallColor.equals(co.getFlagColor())) {
 			FlagChange flagChange = getFlagChange(co, overallColor);
-			flagChangePublisher.publish(flagChange);
+			messageService.getFlagChangePublisher().publish(flagChange);
 
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
@@ -1231,7 +1226,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		if (contractor.getStatus().isActive() && contractor.getCurrentCsr() == null) {
 			logger.trace("ContractorCron starting CsrAssignment");
-			csrAssignmentSinglePublisher.publish(contractor.getId());
+			messageService.getCsrAssignmentSinglePublisher().publish(contractor.getId());
 		}
 
 	}

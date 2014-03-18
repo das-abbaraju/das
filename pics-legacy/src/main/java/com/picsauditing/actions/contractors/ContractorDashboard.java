@@ -9,7 +9,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.messaging.CsrAssignmentSinglePublisher;
+import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.model.user.ContractorDashboardApprovalMessage;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.service.contractor.ContractorCertificateService;
@@ -59,7 +59,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	@Autowired
 	private PermissionBuilder permissionBuilder;
     @Autowired
-    private CsrAssignmentSinglePublisher csrAssignmentSinglePublisher;
+    private MessagePublisherService messageService;
     @Autowired
     private ContractorDashboardApprovalMessage contractorDashboardApprovalMessage;
     @Autowired
@@ -1216,7 +1216,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
     public String autoAssignCsr() throws Exception {
         findContractor();
-        csrAssignmentSinglePublisher.publish(contractor.getId());
+        messageService.getCsrAssignmentSinglePublisher().publish(contractor.getId());
         return setUrlForRedirect("ContractorView.action?id=" + contractor.getId());
     }
 

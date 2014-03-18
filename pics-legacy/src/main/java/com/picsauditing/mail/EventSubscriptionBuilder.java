@@ -5,7 +5,7 @@ import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.messaging.EmailRequestPublisher;
+import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
@@ -20,7 +20,7 @@ import java.util.*;
 public class EventSubscriptionBuilder {
 
     private static LanguageModel languageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
-	private static EmailRequestPublisher emailRequestPublisher = SpringUtils.getBean(SpringUtils.EMAIL_REQUEST_PUBLISHER);
+	private static Publisher emailRequestPublisher = SpringUtils.getBean(SpringUtils.EMAIL_REQUEST_PUBLISHER);
 	private static EmailReportRunner runner = SpringUtils.getBean(SpringUtils.EMAIL_REPORT_RUNNER);
 	private static FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
 	private static EmailSubscriptionDAO subscriptionDAO = SpringUtils.getBean(SpringUtils.EMAIL_SUBSCRIPTION_DAO);
