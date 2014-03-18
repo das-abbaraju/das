@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
-import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.ProjectSkill;
 
 import java.util.Date;
 import java.util.List;
@@ -14,7 +14,7 @@ public class ContractorDetailProjectForm {
 	private String location;
 	private Date startDate;
 	private Date endDate;
-	private List<AccountSkill> skills;
+	private List<ProjectSkill> skills;
 	private List<JobRoleInfo> jobRoles;
 
 	public int getSiteId() {
@@ -73,11 +73,11 @@ public class ContractorDetailProjectForm {
 		this.endDate = endDate;
 	}
 
-	public List<AccountSkill> getSkills() {
+	public List<ProjectSkill> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<AccountSkill> skills) {
+	public void setSkills(List<ProjectSkill> skills) {
 		this.skills = skills;
 	}
 
