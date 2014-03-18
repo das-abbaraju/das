@@ -766,6 +766,9 @@ public class ContractorAccount extends Account implements JSONable {
 		List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
 
 		for (ContractorTrade trade : getTradesSorted()) {
+            if (!trade.isSelfPerformed())
+                continue;
+
 			if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
 				topTrade = trade;
 				listOfSameTradeActivity.clear();
