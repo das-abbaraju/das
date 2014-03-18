@@ -2,11 +2,11 @@ package com.picsauditing.struts.controller.forms;
 
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
-import com.picsauditing.struts.validator.constraints.UniqueContractorName;
-import com.picsauditing.struts.validator.constraints.UniqueUserName;
+import com.picsauditing.struts.validator.constraints.*;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -36,6 +36,7 @@ public class RegistrationForm {
     private static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
     private static final String INVALID_UK_POST_CODE_KEY = "JS.Validation.InvalidPostcode";
     private static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
+    private static final String PASSWORD_CANNOT_BE_USERNAME = "JS.Validation.CannotBeUsername";
 
     private AccountStatus status = AccountStatus.Pending;
     private Locale locale;
@@ -82,12 +83,15 @@ public class RegistrationForm {
     private String lastName;
 
     //TODO - custom validator -
-    // cannot be username
     // must contain letters & numbers
-    // cannot be current password -- (hopefully) impossible during registration
+    // Min & Max Length
+    // Currently, these messages do not exist in the DB, so there's no point in looking for them.
+    @NotNull(message = REQUIRED_KEY)
+    @NotBlank(message = REQUIRED_KEY)
     private String password;
 
-    //TODO - check that it matches entered password
+    @NotNull(message = REQUIRED_KEY)
+    @NotBlank(message = REQUIRED_KEY)
     private String passwordConfirmation;
 
     @Pattern(regexp = PHONE_NUMBER_REGEX_WITH_ASTERISK, message = INVALID_PHONE_FORMAT_KEY)
@@ -103,7 +107,7 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String zip;
 
-    //TODO - tax validator
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String vatID;
 
     @NotNull(message = REQUIRED_KEY)
@@ -250,6 +254,14 @@ public class RegistrationForm {
         this.email = email;
     }
 
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
     public static RegistrationForm fromContractor(final ContractorAccount input) {
         final User user = (input.getPrimaryContact() == null) ? new User() : input.getPrimaryContact();
         final RegistrationForm form = new RegistrationForm();
@@ -296,11 +308,68 @@ public class RegistrationForm {
         return submission;
     }
 
-    public String getAddress2() {
-        return address2;
+
+
+
+
+
+
+    /*
+        What follows is logic and classes specifically for form validation.
+     */
+
+    @PasswordsMatch(message = "registrationForm.passwordConfirmation::" + PASSWORDS_MUST_MATCH_KEY)
+    @PasswordNotSameAsUserName(message =  "registrationForm.password::" + PASSWORD_CANNOT_BE_USERNAME)
+    public PasswordPair getPasswordPair() {
+        return new PasswordPair(getPassword(), getPasswordConfirmation(), getUsername());
     }
 
-    public void setAddress2(String address2) {
-        this.address2 = address2;
+    @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_ID_KEY)
+    public VATPair getVATPairing() {
+        return new VATPair(getCountryISOCode(), getVatId());
+    }
+
+    public static final class PasswordPair {
+
+        private final String first;
+        private final String second;
+        private final String username;
+
+        private PasswordPair(String first, String second, String username) {
+            this.first = first;
+            this.second = second;
+            this.username = username;
+        }
+
+
+        public String getFirstPassword() {
+            return first;
+        }
+
+        public String getSecondPassword() {
+            return second;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+    }
+
+    public static final class VATPair {
+        private final String country;
+        private final String vatCode;
+
+        private VATPair(String country, String vat) {
+            this.country = country;
+            this.vatCode = vat;
+        }
+
+        public String getVatCode() {
+            return vatCode;
+        }
+
+        public String getCountry() {
+            return country;
+        }
     }
 }

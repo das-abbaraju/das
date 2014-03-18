@@ -1,9 +1,11 @@
 package com.picsauditing.struts.controller.forms;
 
+import com.picsauditing.struts.validator.constraints.ValidateLocale;
 import com.picsauditing.util.Strings;
 
 import java.util.Locale;
 
+@ValidateLocale
 public class RegistrationLocaleForm {
 
     private Locale locale;

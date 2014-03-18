@@ -23,12 +23,18 @@ class DiscriminatingValidationRunner {
         this.validator = validator;
     }
 
-    <T> void process(String formParameterHeading, T validatable) {
-        processErrors(checkObject(formParameterHeading, validatable));
+    <T> void processWholeObject(T validatable) {
+        processErrors(checkByObject(validatable));
+
     }
 
-    private <T> Map<String, Set<ConstraintViolation<T>>> checkObject(String formParameter, T validatable) {
-        Map<String, Set<ConstraintViolation<T>>> violations = new HashMap<>();
+    <T> void processByField(String formParameterHeading, T validatable) {
+        processErrors(checkByField(formParameterHeading, validatable));
+
+    }
+
+    private <T> Map<String, Set<ConstraintViolation<T>>> checkByField(String formParameter, T validatable) {
+        final Map<String, Set<ConstraintViolation<T>>> violations = new HashMap<>();
         for (String param: requestParameters) {
             if (param.startsWith(formParameter)) {
                 final String formEntry = param.substring(param.indexOf(".") + 1);
@@ -38,10 +44,22 @@ class DiscriminatingValidationRunner {
         return violations;
     }
 
+    private <T> Map<String, Set<ConstraintViolation<T>>> checkByObject(T validatable) {
+        final Map<String, Set<ConstraintViolation<T>>> violations = new HashMap<>(1);
+        violations.put("violations", validator.validate(validatable));
+        return violations;
+    }
+
     private <T> void processErrors(Map<String, Set<ConstraintViolation<T>>> errors) {
         for (String key : errors.keySet()) {
             for (ConstraintViolation violation : errors.get(key)) {
-                errorOutput.addFieldError(key, getText(violation.getMessage(), errorLanguage));
+                String message = violation.getMessage();
+                if (message.contains("::")) {
+                    String[] splitMessage = message.split("::");
+                    errorOutput.addFieldError(splitMessage[0], getText(splitMessage[1], errorLanguage));
+                } else {
+                    errorOutput.addFieldError(key, getText(message, errorLanguage));
+                }
             }
         }
     }
