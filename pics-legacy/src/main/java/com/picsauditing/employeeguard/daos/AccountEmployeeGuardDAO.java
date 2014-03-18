@@ -26,7 +26,7 @@ public class AccountEmployeeGuardDAO {
 			query.setParameter("accountId", accountId);
 			result = query.getSingleResult();
 		} catch (Exception e) {
-			LOG.error("Unable to find account {}", accountId, e);
+			LOG.info("Unable to find account {}", accountId, e);
 		}
 
 		return result;
