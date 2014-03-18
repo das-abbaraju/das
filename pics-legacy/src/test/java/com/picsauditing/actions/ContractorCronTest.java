@@ -10,7 +10,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.messaging.Publisher;
+import com.picsauditing.messaging.FlagChangePublisher;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
@@ -57,7 +57,7 @@ public class ContractorCronTest extends PicsActionTest {
     @Mock
     private FlagDataCalculator flagDataCalculator;
     @Mock
-    private Publisher flagChangePublisher;
+    private FlagChangePublisher flagChangePublisher;
     @Mock
     private UserAssignmentDAO userAssignmentDAO;
 

@@ -9,7 +9,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.messaging.Publisher;
+import com.picsauditing.messaging.CsrAssignmentSinglePublisher;
 import com.picsauditing.model.user.ContractorDashboardApprovalMessage;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.service.contractor.ContractorCertificateService;
@@ -25,7 +25,6 @@ import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.File;
 import java.util.*;
@@ -60,8 +59,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	@Autowired
 	private PermissionBuilder permissionBuilder;
     @Autowired
-    @Qualifier("CsrAssignmentSinglePublisher")
-    private Publisher csrAssignmentSinglePublisher;
+    private CsrAssignmentSinglePublisher csrAssignmentSinglePublisher;
     @Autowired
     private ContractorDashboardApprovalMessage contractorDashboardApprovalMessage;
     @Autowired
