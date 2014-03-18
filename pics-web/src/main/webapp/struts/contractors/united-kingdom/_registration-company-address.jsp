@@ -4,12 +4,12 @@
 <s:set name="theme" value="'pics'" scope="page" />
 
 <li class="address">
-	<s:textfield name="registrationForm.address" />
+	<s:textfield name="registrationForm.address" label="ContractorAccount.address"/>
 </li>
 
 <li class="address">
 	<%-- unspecified label overrides strut's assignment of the element's name value as the label--%>
-    <s:textfield name="registrationForm.address2" label="" cssClass="no-label"/>
+    <s:textfield name="registrationForm.address" label="ContractorAccount.address"/>
 </li>
 
 <li class="city">
