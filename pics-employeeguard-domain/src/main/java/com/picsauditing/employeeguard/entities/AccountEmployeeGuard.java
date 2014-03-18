@@ -1,9 +1,13 @@
 package com.picsauditing.employeeguard.entities;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "accountemployeeguard")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AccountEmployeeGuard {
 
 	public AccountEmployeeGuard() {

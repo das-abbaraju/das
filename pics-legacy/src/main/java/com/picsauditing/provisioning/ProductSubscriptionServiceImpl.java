@@ -5,12 +5,21 @@ import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProductSubscriptionServiceImpl implements ProductSubscriptionService {
+	private Logger LOG = LoggerFactory.getLogger(ProductSubscriptionServiceImpl.class);
+
+	final static String CACHE_NAME = "product_subscription";
 
 	@Autowired
 	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
+	private CacheManager cacheManager;
 
 	@Override
 	public boolean hasEmployeeGUARD(final Account account) {
@@ -25,22 +34,22 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		return false;
 	}
 
-    @Override
-    public boolean hasEmployeeGUARD(int accountId) {
-        return accountEmployeeGuardDAO.find(accountId) != null;
-    }
+	@Override
+	public boolean hasEmployeeGUARD(final int accountId) {
+		return isEmployeeGUARDEnabled(accountId);
+	}
 
-    private boolean contractorHasEmployeeGUARD(ContractorAccount contractor) {
+	private boolean contractorHasEmployeeGUARD(ContractorAccount contractor) {
 		return contractorHasEmployeeGUARDOperator(contractor);
 	}
 
-	public boolean operatorHasEmployeeGUARD(OperatorAccount operator) {
+	public boolean operatorHasEmployeeGUARD(final OperatorAccount operator) {
 		return isEmployeeGUARDEnabled(operator.getId());
 	}
 
 	private boolean contractorHasEmployeeGUARDOperator(ContractorAccount contractor) {
-        return isEmployeeGUARDEnabled(contractor.getId());
-        // FIXME Find out what is needed for a contractor
+		return isEmployeeGUARDEnabled(contractor.getId());
+		// FIXME Find out what is needed for a contractor
 //		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
 //			if (operatorHasEmployeeGUARD(operator)) {
 //				return true;
@@ -61,7 +70,43 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		accountEmployeeGuardDAO.remove(accountEmployeeGuard);
 	}
 
-    private boolean isEmployeeGUARDEnabled(final int accountId) {
-        return accountEmployeeGuardDAO.find(accountId) != null;
-    }
+	private boolean isEmployeeGUARDEnabled(final int accountId) {
+		Cache cache = cache();
+		if (cache != null) {
+			Element element = cache.get(accountId);
+			if (element != null) {
+				return false;
+			}
+		}
+
+		AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
+		if (accountEmployeeGuard == null) {
+			cacheItem(accountId);
+		}
+
+		return accountEmployeeGuard != null;
+	}
+
+	private void cacheItem(final int accountId) {
+		Cache cache = cache();
+		if (cache != null) {
+			cache.put(new Element(accountId, accountId));
+		} else {
+			LOG.info("Missing cache for product subscription service");
+		}
+	}
+
+	private Cache cache() {
+		CacheManager cacheManager = cacheManager();
+		Cache cache = cacheManager.getCache(CACHE_NAME);
+		return cache;
+	}
+
+	private CacheManager cacheManager() {
+		if (cacheManager == null) {
+			return CacheManager.getInstance();
+		} else {
+			return cacheManager;
+		}
+	}
 }
