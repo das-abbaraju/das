@@ -180,5 +180,6 @@
 	<include file="./liquibase/2014/Q1/kchase31_PICS-14720_UpdateNotesViewableBy.sql"/>
 	<include file="./liquibase/2014/Q1/kchase32_PICS-14766_UpdateFlagDataOverrides.sql"/>
 	<include file="./liquibase/2014/Q1/kchase33_PICS-14757_UpdateAddress.sql"/>
+	<include file="./liquibase/2014/Q1/lkam8_US580_Add_EmployeeGUARD_Rules.sql"/>
 
 </databaseChangeLog>
