@@ -164,8 +164,6 @@
 <%
     if (useVersion7Menus) {
 %>
-<link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap-menu.css?v=${version}"/>
-<link rel="stylesheet" type="text/css" href="v7/css/vendor/bootstrap-responsive.css?v=${version}"/>
 <script type="text/javascript" src="v7/js/vendor/bootstrap.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/layout/menu/menu.js?v=${version}"></script>
 
