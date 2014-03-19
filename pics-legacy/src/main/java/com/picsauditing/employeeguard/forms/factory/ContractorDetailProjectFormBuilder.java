@@ -16,7 +16,7 @@ public class ContractorDetailProjectFormBuilder {
 		ContractorDetailProjectForm projectDetailForm = new ContractorDetailProjectForm();
 		projectDetailForm = addProjectInformation(accountModel, project, projectDetailForm);
 		projectDetailForm.setJobRoles(buildJobRoles(project));
-		projectDetailForm.setSkills(buildSkills(project));
+		projectDetailForm.setSkills(project.getSkills());
 
 		return projectDetailForm;
 	}
@@ -64,14 +64,5 @@ public class ContractorDetailProjectFormBuilder {
 		jobRoleInfo.setId(role.getId());
 		jobRoleInfo.setName(role.getName());
 		return jobRoleInfo;
-	}
-
-	private List<AccountSkill> buildSkills(Project project) {
-		List<AccountSkill> skills = new ArrayList<>();
-		for (ProjectSkill projectSkill : project.getSkills()) {
-			skills.add(projectSkill.getSkill());
-		}
-
-		return skills;
 	}
 }

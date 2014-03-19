@@ -313,17 +313,6 @@ public class AuditMenuBuilder {
 					addToServiceMenu(Service.EMPLOYEEGUARD, createNewAudit);
 				}
 
-				if (permissions.isContractor()) {
-					ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
-					if (productSubscriptionService.hasEmployeeGUARD(permissions.getAccountId())) {
-						MenuComponent egV3 = new MenuComponent();
-						egV3.setUrl("/employee-guard/contractor/dashboard");
-						egV3.setTitle("Version 3");
-						egV3.setName("Version 3");
-						addToServiceMenu(Service.EMPLOYEEGUARD, egV3);
-					}
-				}
-
 				addV3EGMenuItemToEGEnabledContractor();
 				addToStartOfServiceMenu(Service.EMPLOYEEGUARD, summary);
 			}
