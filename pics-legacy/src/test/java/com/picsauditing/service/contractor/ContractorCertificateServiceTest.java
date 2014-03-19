@@ -44,7 +44,7 @@ public class ContractorCertificateServiceTest {
 
         ContractorCertificate ssipCertificate = contractorCertificateService.getSsipCertificate(contractor);
 
-        assertEquals("Principal Contractor/CDM Coordinator/Designer/Contractor", ssipCertificate.getFormattedCdmScope());
+        assertEquals("CDM Scope: Principal Contractor / CDM Coordinator / Designer / Contractor", ssipCertificate.getFormattedCdmScope());
     }
 
     @Test

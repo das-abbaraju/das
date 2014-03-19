@@ -38,7 +38,10 @@ public class ContractorCertificateService {
     private String formatCdmString(String cdmScope) {
         ArrayList<CdmScopeItem> cdmScopeItems = convertDbValuesToEnumList(cdmScope);
         ArrayList<String> displayNameArray = convertEnumsToDisplayNameArray(cdmScopeItems);
-        String formattedCdmString = Strings.implode(displayNameArray, "/");
+        String formattedCdmString = Strings.implode(displayNameArray, " / ");
+        if (!Strings.isEmpty(formattedCdmString)) {
+            formattedCdmString = "CDM Scope: " + formattedCdmString;
+        }
         return formattedCdmString;
     }
 

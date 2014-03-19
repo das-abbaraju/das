@@ -186,6 +186,10 @@ public class ContractorCertificateController extends PicsActionSupport {
         return CdmScopeItem.values();
     }
 
+    public String[] getCdmScopeDbValues() {
+        return cdmScope.split(",");
+    }
+
     public String getCdmScope() {
         return cdmScope;
     }

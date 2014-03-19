@@ -1,25 +1,42 @@
 @mixin employee-guard-information {
     @media (min-width: 992px) {
-        .employee-guard-information {
+        .employee-guard-information,
+        .non-editable-form-field {
             @include clearfix;
             margin: 0px;
 
             dt {
                 clear: left;
-                color: $default_aluminum;
                 font-weight: normal;
                 margin: 0 0px 5px 0;
                 text-align: right;
+            }
+        }
+
+        .employee-guard-information {
+            dt {
+                color: $default_aluminum;
             }
 
             dd {
                 margin-bottom: 5px;
             }
         }
+
+        .non-editable-form-field {
+            dt {
+                color: $default_steel;
+            }
+
+            dd {
+                margin-bottom: 15px;
+            }
+        }
     }
 
     @media (max-width: 991px) {
-        .employee-guard-information {
+        .employee-guard-information,
+        .non-editable-form-field {
             dt {
                 margin: 0;
             }
