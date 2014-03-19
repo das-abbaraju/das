@@ -6405,6 +6405,7 @@ CREATE TABLE `app_properties` (
 LOCK TABLES `app_properties` WRITE;
 /*!40000 ALTER TABLE `app_properties` DISABLE KEYS */;
 INSERT INTO `app_properties` VALUES ('AuthServiceHost','localhost','location of auth rest service, eventually moving to api.piscorganizer',NULL);
+INSERT INTO `app_properties` VALUES ('brainTree.payment_url','https://secure.braintreepaymentgateway.com/api/transact.php','The url to our braintree payment gateway',NULL);
 INSERT INTO `app_properties` VALUES ('Toggle.TranslationServiceAdapter','true',NULL,NULL);
 /*!40000 ALTER TABLE `app_properties` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -9508,6 +9509,34 @@ LOCK TABLES `contractor_audit_operator_workflow` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `contractor_certificate`
+--
+
+DROP TABLE IF EXISTS `contractor_certificate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `contractor_certificate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `contractorId` int(11) NOT NULL,
+  `expirationDate` datetime NOT NULL,
+  `issueDate` datetime NOT NULL,
+  `certificateType` varchar(20) COLLATE utf8_bin NOT NULL,
+  `certificationMethod` varchar(20) COLLATE utf8_bin NOT NULL,
+  `cdmScope` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contractor_certificate`
+--
+
+LOCK TABLES `contractor_certificate` WRITE;
+/*!40000 ALTER TABLE `contractor_certificate` DISABLE KEYS */;
+/*!40000 ALTER TABLE `contractor_certificate` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `contractor_cron_log`
 --
 
@@ -9655,6 +9684,8 @@ CREATE TABLE `contractor_info` (
   `recommendedCsrID` int(10) unsigned DEFAULT NULL,
   `dontReassign` tinyint(4) NOT NULL DEFAULT '0',
   `autoAddClientSite` tinyint(4) NOT NULL DEFAULT '1',
+  `salesRepSalesForceID` varchar(50) DEFAULT NULL,
+  `hasEmployeeGuard` tinyint(4) NOT NULL DEFAULT '0',
   `logoForSingleOperatorContractor` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `taxID` (`taxID`),
@@ -9670,8 +9701,8 @@ CREATE TABLE `contractor_info` (
 
 LOCK TABLES `contractor_info` WRITE;
 /*!40000 ALTER TABLE `contractor_info` DISABLE KEYS */;
-INSERT INTO `contractor_info` VALUES (14,'123456789','Environmental Management/Remediation','logo_14.gif',NULL,'Ecology  Control  Industries, Inc. (ECI) is a turnkey environmental services company   with proven environmental projects experience and a solid reputation  for  customer  service.  ECI was founded in 1977, providing transportation and  industrial services  \r\nto  commercial  clients  in  Southern California.  Through  recent  acquisitions  and  internal  growth,  ECI  has expanded services  throughout  the  western  United  States.  This expansion  has  provided   ECI  the  opportunity  to  strengthen  its   position   in  the environmental industry because of a large array of service capabilities.  \r\nECI  understands the issues that face our customers and our goal is to provide  the  most efficient and cost-effective environmental services available by demonstrating   business  oriented  recommendations  and  environmentally  responsible  solutions. \r\nECI\'s  client  list includes  Fortune 500 customers  from  the aerospace,  chemical, petroleum, manufacturing, and pharmaceutical industries as   well  as  major  prime  contractors  to United States Government Agencies.  \r\n\r\n','Yes','2003-12-17',500,'Sal Fernandez','310-354-9999','sfernandez@ecologycontrol.com','Jeanne Delperdang','310-354-9999','jdelperdang@ecologycontrol.com','','',NULL,'',NULL,NULL,0,NULL,NULL,0,0,1,3,NULL,0,NULL,0,NULL,3,'2014-02-14 11:26:20','Check','Missing',7,7,1,'2012-09-13',NULL,NULL,NULL,NULL,0,0,NULL,0.00,0,'2014-02-15 11:37:59',0,NULL,NULL,0.900,1.004,0.787,'Cleaning (Industrial);Demolition contractor;Environmental engineering;Environmental remediation services;Excavation contractors;Field Maintenance;Hazardous waste collection services;Hydroblasting;Rental and Leasing Services;Specialized Freight (except Used Goods) Trucking, Long-Distance;Tank cleaning and disposal services, commercial or industrial;Waste collection services, nonhazardous liquid;Waste management program administration','','2010-09-09 10:54:17',NULL,860,'2011-08-05 11:15:42',0,NULL,'Full',NULL,1,0,NULL,NULL,'',NULL,1001,0,1,NULL);
-INSERT INTO `contractor_info` VALUES (100,NULL,NULL,NULL,NULL,NULL,'Yes',NULL,500,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,2,NULL,2,NULL,2,NULL,2,NULL,'CreditCard',NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0,0,NULL,0.00,1,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'Full',NULL,1,0,NULL,NULL,NULL,NULL,1001,0,1,NULL);
+INSERT INTO `contractor_info` VALUES (14,'123456789','Environmental Management/Remediation','logo_14.gif',NULL,'Ecology  Control  Industries, Inc. (ECI) is a turnkey environmental services company   with proven environmental projects experience and a solid reputation  for  customer  service.  ECI was founded in 1977, providing transportation and  industrial services  \r\nto  commercial  clients  in  Southern California.  Through  recent  acquisitions  and  internal  growth,  ECI  has expanded services  throughout  the  western  United  States.  This expansion  has  provided   ECI  the  opportunity  to  strengthen  its   position   in  the environmental industry because of a large array of service capabilities.  \r\nECI  understands the issues that face our customers and our goal is to provide  the  most efficient and cost-effective environmental services available by demonstrating   business  oriented  recommendations  and  environmentally  responsible  solutions. \r\nECI\'s  client  list includes  Fortune 500 customers  from  the aerospace,  chemical, petroleum, manufacturing, and pharmaceutical industries as   well  as  major  prime  contractors  to United States Government Agencies.  \r\n\r\n','Yes','2003-12-17',500,'Sal Fernandez','310-354-9999','sfernandez@ecologycontrol.com','Jeanne Delperdang','310-354-9999','jdelperdang@ecologycontrol.com','','',NULL,'',NULL,NULL,0,NULL,NULL,0,0,1,3,NULL,0,NULL,0,NULL,3,'2014-02-14 11:26:20','Check','Missing',7,7,1,'2012-09-13',NULL,NULL,NULL,NULL,0,0,NULL,0.00,0,'2014-02-15 11:37:59',0,NULL,NULL,0.900,1.004,0.787,'Cleaning (Industrial);Demolition contractor;Environmental engineering;Environmental remediation services;Excavation contractors;Field Maintenance;Hazardous waste collection services;Hydroblasting;Rental and Leasing Services;Specialized Freight (except Used Goods) Trucking, Long-Distance;Tank cleaning and disposal services, commercial or industrial;Waste collection services, nonhazardous liquid;Waste management program administration','','2010-09-09 10:54:17',NULL,860,'2011-08-05 11:15:42',0,NULL,'Full',NULL,1,0,NULL,NULL,'',NULL,1001,0,1,NULL,0,NULL);
+INSERT INTO `contractor_info` VALUES (100,NULL,NULL,NULL,NULL,NULL,'Yes',NULL,500,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,2,NULL,2,NULL,2,NULL,2,NULL,'CreditCard',NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0,0,NULL,0.00,1,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'Full',NULL,1,0,NULL,NULL,NULL,NULL,1001,0,1,NULL,0,NULL);
 /*!40000 ALTER TABLE `contractor_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -10031,6 +10062,7 @@ INSERT INTO `databasechangelog` VALUES ('1','rbeaini','./liquibase/2013/rbeaini1
 INSERT INTO `databasechangelog` VALUES ('1','sshacter','./liquibase/2013/2013/sshacter1_PICS-00000_ExampleChangeSetDDL.sql','2014-02-24 11:03:40',183,'EXECUTED','3:344dd2164773831d7330586bfe648069','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','sshacter','./liquibase/2013/sshacter1_PICS-00000_ExampleChangeSetDDL.sql','2013-10-22 13:42:00',2,'EXECUTED','3:344dd2164773831d7330586bfe648069','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','uaung','./liquibase/2013/uaung1_PICS-13398_AlterEmployeeGUARDTables.sql','2013-11-15 18:21:25',40,'EXECUTED','3:56649f7bf17a02a1113f5ef39d11dcc6','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('10','dalvarado','./liquibase/2014/Q1/dalvarado10_US572_add_cdmScope.sql','2014-03-18 16:38:13',205,'EXECUTED','3:917acc9285b3f1a9a9d91418f1485382','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','kchase','./liquibase/2013/kchase10_PICS-13610_SSForAuditRules.sql','2013-11-26 13:57:30',48,'EXECUTED','3:ca7e437ee89709c4f7d3682795990bae','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','mdo','./liquibase/2013/mdo10_PICS-13606_SS_populate.sql','2013-11-26 13:57:36',50,'EXECUTED','3:30d890e68a5bea6987d1270521fe5298','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','pschlesinger','./liquibase/2014/Q1/pschlesinger10_PICS-14106_ChangeNameOfEmeaBusinessUnit.sql','2014-01-08 14:13:48',144,'EXECUTED','3:e742b2e49d2ae49b526a617303c55dfc','Custom SQL','',NULL,'2.0.1');
@@ -10048,9 +10080,10 @@ INSERT INTO `databasechangelog` VALUES ('15','mdo','./liquibase/2013/mdo15_PICS-
 INSERT INTO `databasechangelog` VALUES ('15','pschlesinger','./liquibase/2014/Q1/pschlesinger15_PICS12656_AddTempTablesForSapHistoricalBalances.sql','2014-02-12 16:02:57',176,'EXECUTED','3:c557c293ef763505e54bbe896f5f9f5c','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('16','kchase','./liquibase/2014/Q1/kchase16_PICS-13674_DupSafetyManual.sql','2014-01-23 16:33:29',154,'EXECUTED','3:5d9fbbbbfdd9a395870ef21a9221dea4','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('17','mdo','./liquibase/2013/mdo17_PICS-13584_Bulk_approval_suncor_policies.sql','2013-12-19 10:48:28',96,'EXECUTED','3:2a027b0990f8c79b837eb2d74a8e2856','Custom SQL','',NULL,'2.0.1');
-INSERT INTO `databasechangelog` VALUES ('17','mdo','./liquibase/2014/Q1/dalvarado_US351_recreate_contactor_certificate_table.sql','2014-03-03 11:10:15',195,'EXECUTED','3:eb32e0a7f620a60a9757886f41966897','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('17','mdo','./liquibase/2014/Q1/dalvarado_US351_recreate_contactor_certificate_table.sql','2014-03-18 16:38:13',204,'EXECUTED','3:eb32e0a7f620a60a9757886f41966897','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('19','mdo','./liquibase/2014/Q1/mdo19_PICS-14016_invoicePayingFacilities.sql','2013-12-28 11:11:51',99,'EXECUTED','3:aab385cccb11f8f3101f712f9cab86eb','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','gmeurer','./liquibase/2014/Q1/gmeurer2_PICS-13851_add_usage_colum_sortOrder.sql','2014-01-07 12:18:03',141,'EXECUTED','3:1f7836d12f96ed51a75868d792fbbdeb','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('2','jgriffith','./liquibase/2014/Q1/jgriffith2_TA774_DDL_Remove_SSN_Column.sql','2014-03-18 17:19:42',206,'EXECUTED','3:bd1057d8216f847416958ca5cd841d0c','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','kchase','./liquibase/2013/PICS-12919_updateTokens.sql','2013-10-25 21:43:15',16,'EXECUTED','3:c585846a8539aa98bcab5cb568b92d9a','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','kchase','./liquibase/2013/kchase2_PICS-12919_updateTokens.sql','2013-11-13 15:08:37',18,'EXECUTED','3:9c32fbf8012310dc403ed15ab719b886','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','mdo','./liquibase/2013/mdo2_PICS-13370_AddedEditTagsPermission.sql','2013-11-20 10:47:36',43,'EXECUTED','3:e1b58044b0e0e4e168faf0f79236fa28','Custom SQL','',NULL,'2.0.1');
@@ -10103,12 +10136,15 @@ INSERT INTO `databasechangelog` VALUES ('30','kchase','./liquibase/2014/Q1/kchas
 INSERT INTO `databasechangelog` VALUES ('30','mdo','./liquibase/2014/Q1/mdo30_PICS-14111_correct_erroneous_invoice_type.sql','2014-01-22 18:24:58',149,'EXECUTED','3:04954880d7b831ace229cac084b4c4bc','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('30CREATE','sshacter','./liquibase/2014/Q1/sshacter30_PICS13868_InvoiceFeeCountryInsertTrigger.sql','2013-12-28 11:13:36',121,'EXECUTED','3:cabf03687cd98016807237e5e24dcaf9','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('30DROP','sshacter','./liquibase/2014/Q1/sshacter30_PICS13868_InvoiceFeeCountryInsertTrigger.sql','2013-12-28 11:13:36',120,'EXECUTED','3:e7d8b1c970be65aefa285c6c1607bc17','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('31','kchase','./liquibase/2014/Q1/kchase31_PICS-14720_UpdateNotesViewableBy.sql','2014-03-18 12:01:26',200,'EXECUTED','3:a99bf9219b8c4f1465b357ef3df03608','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('31','mdo','./liquibase/2014/Q1/mdo31_PICS-14262_fixTradeSS.sql','2014-01-22 18:25:01',150,'EXECUTED','3:e7e8dc15bf311ce9deb6fc45051bd52b','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('31CREATE','sshacter','./liquibase/2014/Q1/sshacter31_PICS13868_InvoiceFeeCountryUpdateTrigger.sql','2013-12-28 11:13:37',123,'EXECUTED','3:e53b272b6c899b9b5e336e4e8f410ec1','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('31DROP','sshacter','./liquibase/2014/Q1/sshacter31_PICS13868_InvoiceFeeCountryUpdateTrigger.sql','2013-12-28 11:13:36',122,'EXECUTED','3:91699bc03cece21079d9ec3d1e63080d','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('32','kchase','./liquibase/2014/Q1/kchase32_PICS-14766_UpdateFlagDataOverrides.sql','2014-03-18 12:01:26',201,'EXECUTED','3:5bad03fece732edcd21d67271829d343','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('32','mdo','./liquibase/2014/Q1/mdo32_PICS-14250_deleteRefundAndPayment.sql','2014-01-29 19:01:11',159,'EXECUTED','3:c989aac566e1de34ed7d9dcb5a8077d4','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('32CREATE','sshacter','./liquibase/2014/Q1/sshacter32_PICS13868_InvoiceFeeCountryDeleteTrigger.sql','2013-12-28 11:13:37',125,'EXECUTED','3:d459eb267e6c9cbd96b84e148a1928e5','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('32DROP','sshacter','./liquibase/2014/Q1/sshacter32_PICS13868_InvoiceFeeCountryDeleteTrigger.sql','2013-12-28 11:13:37',124,'EXECUTED','3:955346490663731b6d891fa5f23f77c2','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('33','kchase','./liquibase/2014/Q1/kchase33_PICS-14757_UpdateAddress.sql','2014-03-18 12:01:27',202,'EXECUTED','3:4c817ee37c2e36ec8d96c60b43f68a38','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('33','mdo','./liquibase/2014/Q1/mdo33_PICS-14211_changeEndDateForRevRec.sql','2014-02-05 17:56:35',166,'EXECUTED','3:f72f8d00bcb6b133b1bad73d3a775e2b','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('33CREATE','sshacter','./liquibase/2014/Q1/sshacter33_PICS13868_InvoiceItemInsertTrigger.sql','2013-12-28 11:13:38',127,'EXECUTED','3:6d8526ca49b78dd0f7da7e63ccbd9cda','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('33DROP','sshacter','./liquibase/2014/Q1/sshacter33_PICS13868_InvoiceItemInsertTrigger.sql','2013-12-28 11:13:37',126,'EXECUTED','3:40184f6d617d6620d3ab6d4aed4cd61b','Custom SQL','',NULL,'2.0.1');
@@ -10129,6 +10165,7 @@ INSERT INTO `databasechangelog` VALUES ('39','mdo','./liquibase/2014/Q1/mdo39_PI
 INSERT INTO `databasechangelog` VALUES ('3a','gmeurer','./liquibase/2014/Q1/gmeurer3_etlTranslationUsage.sql','2014-01-07 12:18:04',142,'EXECUTED','3:e9a021f476071ba0282cf8bb12ad0b9d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('3b','gmeurer','./liquibase/2014/Q1/gmeurer3_etlTranslationUsage.sql','2014-01-07 12:18:04',143,'EXECUTED','3:bacccd9d8c44983b3ac1d7c391c55949','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','dalvarado','./liquibase/2013/dalvarado4_PICS-12464_Add_audit_type_rule.yearToCheck.sql','2013-11-13 15:10:01',19,'EXECUTED','3:1e51a4dac1b76cf0810c36da80fd951d','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('4','gmeurer','./liquibase/2014/Q1/gmeurer4_US494-TA707_MakeBrainTreeUrlConfigurable.sql','2014-03-18 12:01:26',198,'EXECUTED','3:b0cd6ade15ebc614d2049799e7236651','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','kchase','./liquibase/2013/kchase4_PICS-13049_CSRShiftHours.sql','2013-10-23 15:22:24',14,'EXECUTED','3:d467b39e162b43b8eb255e1b6470d6e0','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','lkam','./liquibase/2014/Q1/lkam4_PICS-13060_Remove_Contractor_Cron_Failure_Subscription.sql','2014-02-13 18:34:20',177,'EXECUTED','3:2f0caa382731fbbd712e30afebb03d41','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','mdo','./liquibase/2013/mdo4_PICS-12878_change_all_users_to_allow_switch_to_v7_except_BASF.sql','2013-10-22 13:42:00',4,'EXECUTED','3:3088204d40d822e909fd40248c3cb859','Custom SQL','',NULL,'2.0.1');
@@ -10146,6 +10183,7 @@ INSERT INTO `databasechangelog` VALUES ('45','mdo','./liquibase/2014/Q1/mdo45_PI
 INSERT INTO `databasechangelog` VALUES ('46','mdo','./liquibase/2014/Q1/mdo46_PICS-13646_tradeSS_DDL.sql','2014-02-27 11:25:16',187,'EXECUTED','3:64c302bdb5a445638b0cb0f28a90eb24','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('47','mdo','./liquibase/2014/Q1/mdo47_PICS-13646_tradeSS_DML.sql','2014-02-27 11:26:35',188,'EXECUTED','3:c8ece23924bf322c0de01204569c1719','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('48','mdo','./liquibase/2014/Q1/mdo48_PICS-14495_updateEmailTemplatesToHttps.sql','2014-03-03 08:35:02',192,'EXECUTED','3:d9f718a4992ab9a35fc40323ebbfa0e9','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('5','lkam','./liquibase/2014/Q1/lkam5_US178_Add_Suncor_Discounts.sql','2014-03-18 12:01:26',197,'EXECUTED','3:ac5c59119df537d997d9c33c04e83cb1','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','mdo','./liquibase/2013/mdo5_PICS-12874_add_columns_to_ref_country.sql','2013-10-22 13:42:01',5,'EXECUTED','3:2ea7aea3f99ed0003c3f74a91561e676','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','pschlesinger','./liquibase/2013/pschlesinger5_PICS-12529_AddStartAndEndDateColumnsToInvoiceItem.sql','2013-11-13 15:10:21',23,'EXECUTED','3:7385ee7d5cc3d49e1bdf44329505ceee','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','sshacter','./liquibase/2013/sshacter5_PICS-12402_EmployeeGUARDTables.sql','2013-11-13 15:11:36',33,'EXECUTED','3:2b2fea049fd8c7fff34ae079f7b62c62','Custom SQL','',NULL,'2.0.1');
@@ -10157,10 +10195,12 @@ INSERT INTO `databasechangelog` VALUES ('6','pschlesinger','./liquibase/2013/psc
 INSERT INTO `databasechangelog` VALUES ('6','sshacter','./liquibase/2013/sshacter6_PICS-13255_EmployeeGUARDProjectTables.sql','2013-11-15 18:21:25',38,'EXECUTED','3:789e69bedc5e5adeb3bb518239f9859b','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('7','dalvarado','./liquibase/2014/Q1/dalvarado7_us182_new_template_for_message_your_csr.sql','2014-02-12 16:02:54',175,'EXECUTED','3:5a6779c686e0e9b944f4d5c40bf1ce6d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('7','kchase','./liquibase/2013/kchase7_PICS-13328_RemoveForceFlag.sql','2013-11-13 15:11:38',35,'EXECUTED','3:120c7786516479833aad729fc569b231','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('7','lkam','./liquibase/2014/Q1/lkam7_US285_AddedSalesForceId.sql','2014-03-18 12:01:26',199,'EXECUTED','3:0540298a041af892f222370d0714e323','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('7','mdo','./liquibase/2013/mdo7_PICS-13106_defaultAuditSlugs.sql','2013-11-13 15:11:03',28,'EXECUTED','3:d8866548893c6866849c6a08f38df9e1','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('7','pschlesinger','./liquibase/2013/pschlesinger7_PICS-12529_ModifyInvoiceItemRenameRevRecColumns.sql','2013-11-13 15:10:37',25,'EXECUTED','3:def9240fa9231d23a03b5ae17687e565','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('7','sshacter','./liquibase/2013/sshacter7_PICS-13246_InvoicePaymentArchiveTables.sql','2013-11-22 14:09:01',44,'EXECUTED','3:7a2aba3b2aa1d7c981a22170c1277c7c','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('8','kchase','./liquibase/2013/kchase8_PICS-12896_ClearBadAnswers.sql','2013-11-13 15:11:38',36,'EXECUTED','3:325191c213b4c669ed9119f1111035bf','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('8','lkam','./liquibase/2014/Q1/lkam8_US580_Add_EmployeeGUARD_Rules.sql','2014-03-18 12:01:27',203,'EXECUTED','3:d20fb4d87ae00a8e0b40e900cc7b3838','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('8','mdo','./liquibase/2013/mdo8_PICS-13106_uniqueAuditSlugs.sql','2013-11-13 15:11:03',29,'EXECUTED','3:b9633e9554804685f2f060c1a26de7fc','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('8','pschlesinger','./liquibase/2013/pschlesinger8_PICS-12529_BackfillRevRecData.sql','2014-02-19 16:47:56',178,'EXECUTED','3:21642d18031966e9d41c65f1930a6b27','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('8a','sshacter','./liquibase/2013/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql','2013-12-03 12:45:08',53,'EXECUTED','3:1a85915492c27c1fbde191663978adb2','Custom SQL','',NULL,'2.0.1');
@@ -10702,7 +10742,6 @@ CREATE TABLE `employee` (
   `email` varchar(100) DEFAULT NULL,
   `birthDate` date DEFAULT NULL,
   `photo` char(4) CHARACTER SET latin1 DEFAULT NULL,
-  `ssn` char(9) CHARACTER SET latin1 DEFAULT NULL,
   `phone` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
   `twicExpiration` date DEFAULT NULL,
   `needsRecalculation` tinyint(4) NOT NULL DEFAULT '0',
@@ -12203,7 +12242,7 @@ CREATE TABLE `invoice_fee` (
   `discountOperatorID` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee` (`fee`)
-) ENGINE=InnoDB AUTO_INCREMENT=841 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=981 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -21919,6 +21958,7 @@ CREATE TABLE `operators` (
   `discountExpiration` date DEFAULT NULL,
   `inPicsConsortium` tinyint(4) DEFAULT '0',
   `salesForceID` varchar(50) DEFAULT NULL,
+  `requiresEmployeeGuard` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `insuranceAuditor_id` (`insuranceAuditor_id`),
   CONSTRAINT `FK_operators` FOREIGN KEY (`id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
@@ -21931,9 +21971,9 @@ CREATE TABLE `operators` (
 
 LOCK TABLES `operators` WRITE;
 /*!40000 ALTER TABLE `operators` DISABLE KEYS */;
-INSERT INTO `operators` VALUES (500,'No','No','No','No',NULL,'No',0,NULL,NULL,NULL,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,NULL);
-INSERT INTO `operators` VALUES (1101,'No','Yes','No','No',NULL,'No',1,NULL,1101,1101,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,'');
-INSERT INTO `operators` VALUES (2723,'No','Yes','No','No',NULL,'No',0,NULL,2723,2723,'OSHA',0,0,199,0.00,'',4,NULL,0,'0017000000uswWSAAY');
+INSERT INTO `operators` VALUES (500,'No','No','No','No',NULL,'No',0,NULL,NULL,NULL,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,NULL,0);
+INSERT INTO `operators` VALUES (1101,'No','Yes','No','No',NULL,'No',1,NULL,1101,1101,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,'',0);
+INSERT INTO `operators` VALUES (2723,'No','Yes','No','No',NULL,'No',0,NULL,2723,2723,'OSHA',0,0,199,0.00,'',4,NULL,0,'0017000000uswWSAAY',0);
 /*!40000 ALTER TABLE `operators` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -22993,8 +23033,8 @@ CREATE TABLE `ref_sap_business_unit` (
 
 LOCK TABLES `ref_sap_business_unit` WRITE;
 /*!40000 ALTER TABLE `ref_sap_business_unit` DISABLE KEYS */;
-INSERT INTO `ref_sap_business_unit` VALUES (1,'Undefined','PICS Auditing, LLC','PO Box 51387\\nIrvine, CA  92619-1387\\nUnited States of America');
-INSERT INTO `ref_sap_business_unit` VALUES (2,'US','PICS Auditing, LLC','PO Box 51387\\nIrvine, CA  92619-1387\\nUnited States of America');
+INSERT INTO `ref_sap_business_unit` VALUES (1,'Undefined','PICS Auditing, LLC','PO Box 51387 | Irvine, CA  92619-1387 | United States of America');
+INSERT INTO `ref_sap_business_unit` VALUES (2,'US','PICS Auditing, LLC','PO Box 51387 | Irvine, CA  92619-1387 | United States of America');
 /*!40000 ALTER TABLE `ref_sap_business_unit` ENABLE KEYS */;
 UNLOCK TABLES;
 
