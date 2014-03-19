@@ -163,71 +163,54 @@ public class FeeService {
     }
 
     public void calculateContractorInvoiceFees(ContractorAccount contractor, boolean skipRequested) {
-        if (skipRequested && contractor.getStatus().isRequested())
+        if (skipRequested && contractor.getStatus().isRequested()) {
             return;
+        }
 
-        int payingFacilities = setPayingFacilities(contractor);
+        setPayingFacilities(contractor);
 
-        if (payingFacilities == 0) {
+        if (contractor.getPayingFacilities() == 0) {
             clearAllFees(contractor);
-
             return;
         }
 
         BillingStatus currentBillingStatus = billingService.billingStatus(contractor);
-        boolean hasEmployeeAudits = false;
-        boolean hasHseCompetency = false;
-        boolean requiresOQ = false;
-        boolean isLinkedToSuncor = false;
-        Set<FeeClass> feeClasses = new HashSet<FeeClass>();
 
-        for (ContractorOperator co : contractor.getOperators()) {
-            if (!requiresOQ && co.getOperatorAccount().isRequiresOQ())
-                requiresOQ = true;
+        FeeClassParameters feeClassParameters = new FeeClassParameters(contractor).build();
+        Set<FeeClass> feeClasses = buildFeeClasses(contractor, feeClassParameters);
+        buildFeeNewLevels(contractor, feeClassParameters.getPayingFacilities(), feeClasses, feeClassParameters.getOperatorsRequiringInsureGUARD());
 
-            if (!isLinkedToSuncor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
-                isLinkedToSuncor = true;
-        }
+        calculateUpgradeDate(contractor, currentBillingStatus);
+    }
+
+    private Set<FeeClass> buildFeeClasses(ContractorAccount contractor, FeeClassParameters feeClassParameters) {
+        Set<FeeClass> feeClasses = new HashSet<>();
 
         if (contractor.getAccountLevel().isListOnly()) {
             feeClasses.add(FeeClass.ListOnly);
-            payingFacilities = 1;
-        }
-        else if (contractor.getAccountLevel().isBidOnly()) {
+        } else if (contractor.getAccountLevel().isBidOnly()) {
             feeClasses.add(FeeClass.BidOnly);
-            payingFacilities = 1;
-        }
-        else
+        } else {
             feeClasses.add(FeeClass.DocuGUARD);
+        }
 
-        AuditTypesBuilder builder = new AuditTypesBuilder(getRuleCache(), contractor);
-        Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
-        Set<AuditTypeDetail> auditTypeDetails = builder.calculate();
-
-        for (AuditTypeDetail detail : auditTypeDetails) {
+        for (AuditTypeDetail detail : feeClassParameters.getAuditTypeDetails()) {
             AuditType auditType = detail.rule.getAuditType();
 
             if (auditType == null)
                 continue;
 
-            if (isChargedForAuditGUARD(auditType, isLinkedToSuncor))
+            if (isChargedForAuditGUARD(auditType, feeClassParameters.isLinkedToSuncor()))
                 feeClasses.add(FeeClass.AuditGUARD);
 
             if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
-                operatorsRequiringInsureGUARD.addAll(detail.operators);
-
-                if (qualifiesForInsureGuard(operatorsRequiringInsureGUARD))
+                if (qualifiesForInsureGuard(feeClassParameters.getOperatorsRequiringInsureGUARD()))
                     feeClasses.add(FeeClass.InsureGUARD);
             }
 
-            if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee())
-                hasEmployeeAudits = true;
-
-            if (auditType.getId() == AuditType.HSE_COMPETENCY)
-                hasHseCompetency = true;
         }
 
-        if (requiresOQ || hasHseCompetency || hasEmployeeAudits)
+        if (feeClassParameters.isRequiresOQ() || feeClassParameters.isHasHseCompetency() || feeClassParameters.isHasEmployeeAudits())
             feeClasses.add(FeeClass.EmployeeGUARD);
 
         for (ContractorAudit ca : contractor.getAudits()) {
@@ -236,10 +219,7 @@ public class FeeService {
                 break;
             }
         }
-
-        buildFeeNewLevels(contractor, payingFacilities, feeClasses, operatorsRequiringInsureGUARD);
-
-        calculateUpgradeDate(contractor, currentBillingStatus);
+        return feeClasses;
     }
 
     private boolean isChargedForAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
@@ -404,16 +384,17 @@ public class FeeService {
         return contractorFee;
     }
 
-    private int setPayingFacilities(ContractorAccount contractor) {
+    private void setPayingFacilities(ContractorAccount contractor) {
         List<OperatorAccount> payingOperators = calculatePayingFacilitiesCount(contractor);
 
         if (payingOperators.size() == 1) {
             if (payingOperators.get(0).getDoContractorsPay().equals("Multiple")) {
-                return contractor.setPayingFacilities(0);
+                contractor.setPayingFacilities(0);
+                return;
             }
         }
 
-        return contractor.setPayingFacilities(payingOperators.size());
+        contractor.setPayingFacilities(payingOperators.size());
     }
 
     private List<OperatorAccount> calculatePayingFacilitiesCount(ContractorAccount contractor) {
@@ -499,4 +480,89 @@ public class FeeService {
 	public static boolean isRevRecDeferred(InvoiceFee fee) {
 		return !fee.isTax() && !fee.isFree();
 	}
+
+    public class FeeClassParameters {
+        private ContractorAccount contractor;
+        private int payingFacilities;
+        private boolean hasEmployeeAudits;
+        private boolean hasHseCompetency;
+        private boolean requiresOQ;
+        private boolean isLinkedToSuncor;
+        private Set<OperatorAccount> operatorsRequiringInsureGUARD;
+        private Set<AuditTypeDetail> auditTypeDetails;
+
+        public FeeClassParameters(ContractorAccount contractor) {
+            this.contractor = contractor;
+            this.payingFacilities = contractor.getPayingFacilities();
+        }
+
+        public int getPayingFacilities() {
+            return payingFacilities;
+        }
+
+        public boolean isHasEmployeeAudits() {
+            return hasEmployeeAudits;
+        }
+
+        public boolean isHasHseCompetency() {
+            return hasHseCompetency;
+        }
+
+        public boolean isRequiresOQ() {
+            return requiresOQ;
+        }
+
+        public boolean isLinkedToSuncor() {
+            return isLinkedToSuncor;
+        }
+
+        public Set<OperatorAccount> getOperatorsRequiringInsureGUARD() {
+            return operatorsRequiringInsureGUARD;
+        }
+
+        public Set<AuditTypeDetail> getAuditTypeDetails() {
+            return auditTypeDetails;
+        }
+
+        public FeeClassParameters build() {
+            hasEmployeeAudits = false;
+            hasHseCompetency = false;
+            requiresOQ = false;
+            isLinkedToSuncor = false;
+
+            for (ContractorOperator co : contractor.getOperators()) {
+                if (!requiresOQ && co.getOperatorAccount().isRequiresOQ())
+                    requiresOQ = true;
+
+                if (!isLinkedToSuncor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
+                    isLinkedToSuncor = true;
+            }
+
+            if (contractor.getAccountLevel().isListOnly() || contractor.getAccountLevel().isBidOnly()) {
+                payingFacilities = 1;
+            }
+
+            AuditTypesBuilder builder = new AuditTypesBuilder(getRuleCache(), contractor);
+            operatorsRequiringInsureGUARD = new HashSet<>();
+            auditTypeDetails = builder.calculate();
+
+            for (AuditTypeDetail detail : auditTypeDetails) {
+                AuditType auditType = detail.rule.getAuditType();
+
+                if (auditType == null)
+                    continue;
+
+                if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
+                    operatorsRequiringInsureGUARD.addAll(detail.operators);
+                }
+
+                if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee())
+                    hasEmployeeAudits = true;
+
+                if (auditType.getId() == AuditType.HSE_COMPETENCY)
+                    hasHseCompetency = true;
+            }
+            return this;
+        }
+    }
 }

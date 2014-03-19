@@ -512,9 +512,8 @@ public class ContractorAccount extends Account implements JSONable {
 		return this.payingFacilities;
 	}
 
-	public int setPayingFacilities(int payingFacilities) {
+	public void setPayingFacilities(int payingFacilities) {
 		this.payingFacilities = payingFacilities;
-        return payingFacilities;
 	}
 
 	@Transient
