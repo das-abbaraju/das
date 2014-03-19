@@ -88,7 +88,6 @@
                             <s:set var="skill_status_class">success</s:set>
                         </s:elseif>
 
-                        <s:set var="skill_url" value="'#'" />
                         <s:if test="permissions.accountId == #skill_info.accountId">
                             <s:set var="skill_url">
                                 <s:url action="skill">
@@ -97,11 +96,23 @@
                                     </s:param>
                                 </s:url>
                             </s:set>
+                            <a href="${skill_url}" class="list-group-item ${skill_status_class}">
+                                <i class="${skill_icon}"></i>${skill_info.name}
+                            </a>
                         </s:if>
+                        <s:else>
+                            <div class="list-group-item ${skill_status_class} operator-skill">
+                                <div class="row">
+                                    <div class="col-xs-10 col-sm-11 col-md-10">
+                                        <i class="${skill_icon}"></i>${skill_info.name}
+                                    </div>
+                                    <div class="col-xs-2 col-sm-1 col-md-2 text-center">
+                                        <i class="icon-map-marker" data-toggle="tooltip" data-placement="top" title="" data-original-title="Skill required due to assignment." data-container="body"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </s:else>
 
-                        <a href="${skill_url}" class="list-group-item ${skill_status_class}">
-                            <i class="${skill_icon}"></i>${skill_info.name}
-                        </a>
                     </s:iterator>
                 </div>
             </div>

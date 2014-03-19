@@ -2,6 +2,41 @@
 {
 	@include employee-image;
 	@include employee-skills;
-}
 
+    .skill-list .operator-skill {
+        @include border-radius(0px);
+
+        &:first-child {
+            @include border-radius(0px);
+        }
+
+        .row div {
+            padding-right: 0px;
+        }
+
+        &.success {
+            background-color: $success_light;
+            background-image: none;
+            .icon-map-marker {
+                color: $success_dark;
+            }
+        }
+
+        &.warning {
+            background-color: $warning_light;
+            background-image: none;
+            .icon-map-marker {
+                color: $warning_dark;
+            }
+        }
+
+        &.danger {
+            background-color: $danger_light;
+            background-image: none;
+            .icon-map-marker {
+                color: $danger_dark;
+            }
+        }
+    }
+}
 @import 'import-export';
