@@ -43,6 +43,8 @@ public class RegistrationFormValidationWrapper implements Validator {
         processor.processByField("registrationForm", regform);
         processor.processWholeObject(localeForm);
         processor.processWholeObject(regform.getPasswordPair());
+        processor.processWholeObject(regform.getVATPairing());
+        processor.processWholeObject(regform.getCountrySubdivisionPairing());
 
     }
 

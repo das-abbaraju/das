@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LocaleValidation.class)
-public @interface ValidateLocale {
-    String message() default "";
+@Constraint(validatedBy = LanguageValidationConstraint.class)
+public @interface ValidateLanguage {
+    public String message() default "";
 }

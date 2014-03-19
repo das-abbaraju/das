@@ -1,11 +1,13 @@
 package com.picsauditing.struts.controller.forms;
 
-import com.picsauditing.struts.validator.constraints.ValidateLocale;
+import com.picsauditing.struts.validator.constraints.ValidateDialect;
+import com.picsauditing.struts.validator.constraints.ValidateLanguage;
 import com.picsauditing.util.Strings;
 
 import java.util.Locale;
 
-@ValidateLocale(message = "???")
+@ValidateDialect(message = "localeForm.dialect::" + RegistrationForm.REQUIRED_KEY)
+@ValidateLanguage(message = "localeForm.language::" + RegistrationForm.REQUIRED_KEY)
 public class RegistrationLocaleForm {
 
     private Locale locale;

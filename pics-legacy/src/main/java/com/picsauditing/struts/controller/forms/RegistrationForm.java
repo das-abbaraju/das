@@ -18,26 +18,26 @@ import java.util.TimeZone;
 
 
 public class RegistrationForm {
-    private static final String SPECIAL_CHAR_REGEX = "[^~!@#?$%^&*():;<>`!\"]*";
-    private static final String USERNAME_REGEX = "[\\w+._@-]+";
-    private static final int MAX_STRING_LENGTH_50 = 50;
-    private static final int MIN_STRING_LENGTH_2 = 2;
-    private static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
-    private static final String REQUIRED_KEY = "JS.Validation.Required";
-    private static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
-    private static final String MAX_50_CHARS_KEY = "JS.Validation.Maximum50Characters";
-    private static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
-    private static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
-    private static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
-    private static final String INVALID_TAX_ID_KEY = "JS.Validation.InvalidTaxID";
-    private static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
-    private static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
-    private static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
-    private static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
-    private static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
-    private static final String INVALID_UK_POST_CODE_KEY = "JS.Validation.InvalidPostcode";
-    private static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
-    private static final String PASSWORD_CANNOT_BE_USERNAME = "JS.Validation.CannotBeUsername";
+    public static final String SPECIAL_CHAR_REGEX = "[^~!@#?$%^&*():;<>`!\"]*";
+    public static final String USERNAME_REGEX = "[\\w+._@-]+";
+    public static final int MAX_STRING_LENGTH_50 = 50;
+    public static final int MIN_STRING_LENGTH_2 = 2;
+    public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
+    public static final String REQUIRED_KEY = "JS.Validation.Required";
+    public static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
+    public static final String MAX_50_CHARS_KEY = "JS.Validation.Maximum50Characters";
+    public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
+    public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
+    public static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
+    public static final String INVALID_TAX_ID_KEY = "JS.Validation.InvalidTaxID";
+    public static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
+    public static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
+    public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
+    public static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
+    public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
+    public static final String INVALID_UK_POST_CODE_KEY = "JS.Validation.InvalidPostcode";
+    public static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
+    public static final String PASSWORD_CANNOT_BE_USERNAME = "JS.Validation.CannotBeUsername";
 
     private AccountStatus status = AccountStatus.Pending;
     private Locale locale;
@@ -83,8 +83,10 @@ public class RegistrationForm {
 
     //TODO - custom validator -
     // must contain letters & numbers
-    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
-    @Length(min = MIN_STRING_LENGTH_2, message = MIN_2_CHARS_KEY)
+    @Length.List({
+            @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY),
+            @Length(min = MIN_STRING_LENGTH_2, message = MIN_2_CHARS_KEY)
+    })
     @NotNull(message = REQUIRED_KEY)
     @NotBlank(message = REQUIRED_KEY)
     private String password;
