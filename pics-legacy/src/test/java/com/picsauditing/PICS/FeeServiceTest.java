@@ -4,12 +4,12 @@ import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
@@ -1057,6 +1057,54 @@ public class FeeServiceTest extends PicsTranslationTest {
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getCurrentAmount(),BigDecimal.ZERO);
         assertEquals(contractor.getFees().get(FeeClass.EmployeeGUARD).getNewAmount(),BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP));
     }
+
+    @Test
+    public void calcMembershipFees_ContractorEmployeeGUARDRulesService_HasEmployeeGuard() {
+        setupForEmployeeGuardRulesService(true);
+
+        feeService.calculateContractorInvoiceFees(contractor, true);
+
+        assertEquals(new BigDecimal(10), contractor.getFees().get(FeeClass.EmployeeGUARD).getCurrentAmount());
+        assertEquals(new BigDecimal(10), contractor.getFees().get(FeeClass.EmployeeGUARD).getNewAmount());
+    }
+
+    @Test
+    public void calcMembershipFees_ContractorEmployeeGUARDRulesService_DoesNotHaveEmployeeGuard() {
+        setupForEmployeeGuardRulesService(false);
+
+        feeService.calculateContractorInvoiceFees(contractor, true);
+
+        assertEquals(new BigDecimal(0), contractor.getFees().get(FeeClass.EmployeeGUARD).getCurrentAmount());
+        assertEquals(new BigDecimal(0), contractor.getFees().get(FeeClass.EmployeeGUARD).getNewAmount());
+    }
+
+    private void setupForEmployeeGuardRulesService(boolean hasEmployeeGuard) {
+        contractor = ContractorAccount.builder()
+                .operator(OperatorAccount.builder()
+                        .operator()
+                        .status(AccountStatus.Active)
+                        .build())
+                .hasEmployeeGuard(hasEmployeeGuard)
+                .country(country)
+                .build();
+        doAnswer(INVOICE_FEE_ANSWER).when(feeDAO).findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt());
+        when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Upgrade);
+    }
+
+    public static final Answer<InvoiceFee> INVOICE_FEE_ANSWER = new Answer<InvoiceFee>() {
+        @Override
+        public InvoiceFee answer(InvocationOnMock invocation) throws Throwable {
+            FeeClass feeClass = (FeeClass) invocation.getArguments()[0];
+            int minFacilities = (Integer) invocation.getArguments()[1];
+            InvoiceFee invoiceFee = InvoiceFee.builder()
+                    .feeClass(feeClass)
+                    .minFacilities(minFacilities)
+                    .amount(new BigDecimal(10))
+                    .build();
+
+            return invoiceFee;
+        }
+    };
 
     @Test
     public void calcMembershipFees_contractorEmployeeGUARDEmployeeAudits() {

@@ -311,7 +311,7 @@
 							<s:text name="BillingDetail.CreateInvoice" />
 						</h2>
 
-						<s:form id="save" method="POST" enctype="multipart/form-data">
+						<s:form id="save" method="POST" >
 							<s:hidden name="id" />
 
 							<ol>

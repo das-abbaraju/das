@@ -72,4 +72,14 @@ public class ContractorAccountBuilder {
         contractor.setOnsiteServices(false);
         return this;
     }
+
+    public ContractorAccountBuilder hasEmployeeGuard(boolean hasEmployeeGuard) {
+        contractor.setHasEmployeeGuard(hasEmployeeGuard);
+        return this;
+    }
+
+    public ContractorAccountBuilder country(Country country) {
+        contractor.setCountry(country);
+        return this;
+    }
 }
