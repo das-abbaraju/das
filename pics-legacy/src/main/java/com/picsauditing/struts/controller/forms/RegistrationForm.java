@@ -2,11 +2,11 @@ package com.picsauditing.struts.controller.forms;
 
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
 import com.picsauditing.struts.validator.constraints.*;
+import com.picsauditing.util.DataScrubber;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -21,6 +21,7 @@ public class RegistrationForm {
     private static final String SPECIAL_CHAR_REGEX = "[^~!@#?$%^&*():;<>`!\"]*";
     private static final String USERNAME_REGEX = "[\\w+._@-]+";
     private static final int MAX_STRING_LENGTH_50 = 50;
+    private static final int MIN_STRING_LENGTH_2 = 2;
     private static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
     private static final String REQUIRED_KEY = "JS.Validation.Required";
     private static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
@@ -46,9 +47,7 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String city;
 
-    //TODO Custom Validation Constraint for countrySubdivision
     private String countrySubdivision = "";
-
 
     @NotBlank(message = REQUIRED_KEY)
     @UniqueContractorName(message = COMPANY_NAME_EXISTS_KEY)
@@ -84,8 +83,8 @@ public class RegistrationForm {
 
     //TODO - custom validator -
     // must contain letters & numbers
-    // Min & Max Length
-    // Currently, these messages do not exist in the DB, so there's no point in looking for them.
+    @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
+    @Length(min = MIN_STRING_LENGTH_2, message = MIN_2_CHARS_KEY)
     @NotNull(message = REQUIRED_KEY)
     @NotBlank(message = REQUIRED_KEY)
     private String password;
@@ -329,6 +328,11 @@ public class RegistrationForm {
         return new VATPair(getCountryISOCode(), getVatId());
     }
 
+    @ValidateSubdivision(message = "registrationForm.countrySubdivision::" + REQUIRED_KEY)
+    public CountrySubdivisionPair getCountrySubdivisionPairing() {
+        return new CountrySubdivisionPair(getCountryISOCode(), getCountrySubdivision(), getZip());
+    }
+
     public static final class PasswordPair {
 
         private final String first;
@@ -370,6 +374,30 @@ public class RegistrationForm {
 
         public String getCountry() {
             return country;
+        }
+    }
+
+    public static final class CountrySubdivisionPair {
+        private final String country;
+        private final String subdivision;
+        private final String zip;
+
+        private CountrySubdivisionPair(String country, String subdivision, String zip) {
+            this.country = country;
+            this.subdivision = subdivision;
+            this.zip = zip;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public String getSubdivision() {
+            return subdivision;
+        }
+
+        public String getZip() {
+            return zip;
         }
     }
 }

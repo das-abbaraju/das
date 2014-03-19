@@ -5,7 +5,7 @@ import com.picsauditing.util.Strings;
 
 import java.util.Locale;
 
-@ValidateLocale
+@ValidateLocale(message = "???")
 public class RegistrationLocaleForm {
 
     private Locale locale;
