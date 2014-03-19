@@ -270,6 +270,7 @@ public class RegistrationForm {
         form.lastName = user.getLastName();
         form.locale = input.getLocale();
         form.phone = input.getPhone();
+        form.zip = input.getZip();
 
         return form;
     }
