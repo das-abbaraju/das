@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = LanguageValidationConstraint.class)
 public @interface ValidateLanguage {
     public String message() default "";
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};
 }

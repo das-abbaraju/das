@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = VATValidationConstraint.class)
 public @interface VatValidation {
     String message() default "";
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};
 }

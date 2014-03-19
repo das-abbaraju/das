@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = LocaleValidation.class)
 public @interface ValidateDialect {
     String message() default "";
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};
 }

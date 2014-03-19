@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = PasswordUsernameComparison.class)
 public @interface PasswordNotSameAsUserName {
     String message() default "";
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};
 }

@@ -11,4 +11,5 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = PasswordMatch.class)
 public @interface PasswordsMatch {
     String message() default "";
-}
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};}

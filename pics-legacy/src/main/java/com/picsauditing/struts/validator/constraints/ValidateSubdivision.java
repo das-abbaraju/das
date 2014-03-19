@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = CountrySubdivisionValidation.class)
 public @interface ValidateSubdivision {
     String message() default "";
+    Class<?>[] groups() default {};
+    Class<?>[] payload() default {};
 }
