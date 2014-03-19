@@ -8,6 +8,7 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,7 +32,8 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
     private FeeService feeService;
     @Autowired
     private ServiceRiskCalculator serviceRiskCalculator;
-
+    @Autowired
+    private EmployeeGuardRulesService employeeGuardRulesService;
 
     private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
@@ -196,6 +198,8 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
+
+        employeeGuardRulesService.runEmployeeGuardRules(contractor);
 
         billingService.syncBalance(contractor);
 		feeService.calculateContractorInvoiceFees(contractor, false);

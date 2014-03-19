@@ -95,4 +95,21 @@ public class EmployeeGuardRulesServiceTest {
 
         assertFalse(contractor.isHasEmployeeGuard());
     }
+
+    @Test
+    public void testRunEmployeeGuardRules_OnsiteServices_ParentOperatorRequiresEmployeeGuard() {
+        contractor = ContractorAccount.builder()
+                .onSiteServices()
+                .operator(OperatorAccount.builder()
+                        .doesNotRequireEmployeeGuard()
+                        .parentAccount(OperatorAccount.builder()
+                                .requiresEmployeeGuard()
+                                .build())
+                        .build())
+                .build();
+
+        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+
+        assertTrue(contractor.isHasEmployeeGuard());
+    }
 }

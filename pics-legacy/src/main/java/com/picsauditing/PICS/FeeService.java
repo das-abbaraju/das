@@ -210,8 +210,9 @@ public class FeeService {
 
         }
 
-        if (feeClassParameters.isRequiresOQ() || feeClassParameters.isHasHseCompetency() || feeClassParameters.isHasEmployeeAudits())
+        if (contractorNeedsEmployeeGuard(feeClassParameters)) {
             feeClasses.add(FeeClass.EmployeeGUARD);
+        }
 
         for (ContractorAudit ca : contractor.getAudits()) {
             if (ca.getAuditType().getId() == AuditType.IMPORT_PQF && !ca.isExpired()) {
@@ -220,6 +221,13 @@ public class FeeService {
             }
         }
         return feeClasses;
+    }
+
+    private boolean contractorNeedsEmployeeGuard(FeeClassParameters feeClassParameters) {
+        return feeClassParameters.isRequiresOQ()
+                || feeClassParameters.isHasHseCompetency()
+                || feeClassParameters.isHasEmployeeAudits()
+                || feeClassParameters.isHasEmployeeGuardVersion3();
     }
 
     private boolean isChargedForAuditGUARD(AuditType auditType, boolean linkedToSuncor) {
@@ -522,6 +530,10 @@ public class FeeService {
 
         public Set<AuditTypeDetail> getAuditTypeDetails() {
             return auditTypeDetails;
+        }
+
+        public boolean isHasEmployeeGuardVersion3() {
+            return contractor.isHasEmployeeGuard();
         }
 
         public FeeClassParameters build() {
