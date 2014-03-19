@@ -1107,47 +1107,69 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 
 @media (min-width: 992px) {
-  /* line 3, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
-  .employee-guard-information {
+  /* line 4, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .employee-guard-information,
+  .non-editable-form-field {
     margin: 0px;
   }
   /* line 3, ../sass/pics/mixins/_clearfix.scss */
-  .employee-guard-information:after, .employee-guard-information:before {
+  .employee-guard-information:after, .employee-guard-information:before,
+  .non-editable-form-field:after,
+  .non-editable-form-field:before {
     content: "";
     display: table;
   }
   /* line 8, ../sass/pics/mixins/_clearfix.scss */
-  .employee-guard-information:after {
+  .employee-guard-information:after,
+  .non-editable-form-field:after {
     clear: both;
   }
   /* line 12, ../sass/pics/mixins/_clearfix.scss */
-  .employee-guard-information {
+  .employee-guard-information,
+  .non-editable-form-field {
     *zoom: 1;
   }
-  /* line 7, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
-  .employee-guard-information dt {
+  /* line 8, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .employee-guard-information dt,
+  .non-editable-form-field dt {
     clear: left;
-    color: #999999;
     font-weight: normal;
     margin: 0 0px 5px 0;
     text-align: right;
   }
-  /* line 15, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+
+  /* line 17, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .employee-guard-information dt {
+    color: #999999;
+  }
+  /* line 21, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dd {
     margin-bottom: 5px;
+  }
+
+  /* line 27, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .non-editable-form-field dt {
+    color: #454545;
+  }
+  /* line 31, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .non-editable-form-field dd {
+    margin-bottom: 15px;
   }
 }
 @media (max-width: 991px) {
-  /* line 23, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
-  .employee-guard-information dt {
+  /* line 40, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .employee-guard-information dt,
+  .non-editable-form-field dt {
     margin: 0;
   }
-  /* line 27, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
-  .employee-guard-information dd {
+  /* line 44, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .employee-guard-information dd,
+  .non-editable-form-field dd {
     margin-bottom: 5px;
   }
-  /* line 30, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
-  .employee-guard-information dd ul.inline li:first-child {
+  /* line 47, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  .employee-guard-information dd ul.inline li:first-child,
+  .non-editable-form-field dd ul.inline li:first-child {
     padding-left: 0;
   }
 }

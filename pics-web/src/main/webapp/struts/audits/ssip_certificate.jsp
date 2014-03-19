@@ -45,7 +45,7 @@
         <fieldset>
             <div class="form-group">
                 <label class="col-md-3 control-label"><strong><s:text name="ContractorCertificate.SSIP.certificateType" /></strong></label>
-                <div class="col-md-4 col-xs-11">
+                <div class="col-md-4">
                     <select name="certificationMethod" class="form-control select2Min" tabindex="1">
                         <option value="${deems_to_satisfy}" ${deems_to_satisfy_checked}><s:text name="ContractorCertificate.SSIP.DeemsToSatisfy" /></option>
                         <option value="${ssip_certified}" ${ssip_certified_checked}><s:text name="ContractorCertificate.SSIP.SSIPCertified" /></option>
@@ -116,12 +116,12 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label labelName="employees" class="col-md-3 control-label"><s:text name="ContractorCertificate.SSIP.IssuedBy" /></label>
-                <div class="col-md-4">
-                    <p style="padding-top:7px;"><s:property value="currentUserName" /></p>
-                </div>
-            </div>
+            <dl class="form-group non-editable-form-field">
+                <dt class="col-md-3"><label><s:text name="ContractorCertificate.SSIP.IssuedBy" /></label></dt>
+                <dd class="col-md-4">
+                    <s:property value="currentUserName" />
+                </dd>
+            </dl>
 
             <div class="form-group">
                 <div class="col-md-9 col-md-offset-3 form-actions">
