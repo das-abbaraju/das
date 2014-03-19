@@ -119,6 +119,7 @@ function loadPreview() {
 							event.title = json.calEvent.title;
 							event.className = json.calEvent.className;
 							event.owner = json.calEvent.owner;
+							event.allDay = json.calEvent.allDay;
 							$calendar.fullCalendar('updateEvent', event);
 						} else {
 							$calendar.fullCalendar('renderEvent', json.calEvent);
