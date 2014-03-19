@@ -319,22 +319,20 @@ public class RegistrationForm {
         What follows is logic and classes specifically for form validation.
      */
 
-    @PasswordsMatch(message = "registrationForm.passwordConfirmation::" + PASSWORDS_MUST_MATCH_KEY)
-    @PasswordNotSameAsUserName(message =  "registrationForm.password::" + PASSWORD_CANNOT_BE_USERNAME)
     public PasswordPair getPasswordPair() {
         return new PasswordPair(getPassword(), getPasswordConfirmation(), getUsername());
     }
 
-    @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_ID_KEY)
     public VATPair getVATPairing() {
         return new VATPair(getCountryISOCode(), getVatId());
     }
 
-    @ValidateSubdivision(message = "registrationForm.countrySubdivision::" + REQUIRED_KEY)
     public CountrySubdivisionPair getCountrySubdivisionPairing() {
         return new CountrySubdivisionPair(getCountryISOCode(), getCountrySubdivision(), getZip());
     }
 
+    @PasswordsMatch(message = "registrationForm.passwordConfirmation::" + PASSWORDS_MUST_MATCH_KEY)
+    @PasswordNotSameAsUserName(message =  "registrationForm.password::" + PASSWORD_CANNOT_BE_USERNAME)
     public static final class PasswordPair {
 
         private final String first;
@@ -361,6 +359,7 @@ public class RegistrationForm {
         }
     }
 
+    @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_ID_KEY)
     public static final class VATPair {
         private final String country;
         private final String vatCode;
@@ -379,6 +378,7 @@ public class RegistrationForm {
         }
     }
 
+    @ValidateSubdivision(message = "registrationForm.countrySubdivision::" + REQUIRED_KEY)
     public static final class CountrySubdivisionPair {
         private final String country;
         private final String subdivision;
