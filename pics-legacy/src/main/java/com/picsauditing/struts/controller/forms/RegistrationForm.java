@@ -5,8 +5,8 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
-import com.picsauditing.struts.validator.constraints.UniqueContractorName;
-import com.picsauditing.struts.validator.constraints.UniqueUserName;
+import com.picsauditing.struts.validator.constraints.*;
+import com.picsauditing.util.DataScrubber;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -18,24 +18,26 @@ import java.util.TimeZone;
 
 
 public class RegistrationForm {
-    private static final String SPECIAL_CHAR_REGEX = "[^~!@#?$%^&*():;<>`!\"]*";
-    private static final String USERNAME_REGEX = "[\\w+._@-]+";
-    private static final int MAX_STRING_LENGTH_50 = 50;
-    private static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
-    private static final String REQUIRED_KEY = "JS.Validation.Required";
-    private static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
-    private static final String MAX_50_CHARS_KEY = "JS.Validation.Maximum50Characters";
-    private static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
-    private static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
-    private static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
-    private static final String INVALID_TAX_ID_KEY = "JS.Validation.InvalidTaxID";
-    private static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
-    private static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
-    private static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
-    private static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
-    private static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
-    private static final String INVALID_UK_POST_CODE_KEY = "JS.Validation.InvalidPostcode";
-    private static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
+    public static final String SPECIAL_CHAR_REGEX = "[^~!@#?$%^&*():;<>`!\"]*";
+    public static final String USERNAME_REGEX = "[\\w+._@-]+";
+    public static final int MAX_STRING_LENGTH_50 = 50;
+    public static final int MIN_STRING_LENGTH_2 = 2;
+    public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
+    public static final String REQUIRED_KEY = "JS.Validation.Required";
+    public static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
+    public static final String MAX_50_CHARS_KEY = "JS.Validation.Maximum50Characters";
+    public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
+    public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
+    public static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
+    public static final String INVALID_TAX_ID_KEY = "JS.Validation.InvalidTaxID";
+    public static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
+    public static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
+    public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
+    public static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
+    public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
+    public static final String INVALID_UK_POST_CODE_KEY = "JS.Validation.InvalidPostcode";
+    public static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
+    public static final String PASSWORD_CANNOT_BE_USERNAME = "JS.Validation.CannotBeUsername";
 
     private AccountStatus status = AccountStatus.Pending;
     private Locale locale;
@@ -45,9 +47,7 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String city;
 
-    //TODO Custom Validation Constraint for countrySubdivision
     private String countrySubdivision = "";
-
 
     @NotBlank(message = REQUIRED_KEY)
     @UniqueContractorName(message = COMPANY_NAME_EXISTS_KEY)
@@ -82,12 +82,17 @@ public class RegistrationForm {
     private String lastName;
 
     //TODO - custom validator -
-    // cannot be username
     // must contain letters & numbers
-    // cannot be current password -- (hopefully) impossible during registration
+    @Length.List({
+            @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY),
+            @Length(min = MIN_STRING_LENGTH_2, message = MIN_2_CHARS_KEY)
+    })
+    @NotNull(message = REQUIRED_KEY)
+    @NotBlank(message = REQUIRED_KEY)
     private String password;
 
-    //TODO - check that it matches entered password
+    @NotNull(message = REQUIRED_KEY)
+    @NotBlank(message = REQUIRED_KEY)
     private String passwordConfirmation;
 
     @Pattern(regexp = PHONE_NUMBER_REGEX_WITH_ASTERISK, message = INVALID_PHONE_FORMAT_KEY)
@@ -103,7 +108,7 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String zip;
 
-    //TODO - tax validator
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String vatID;
 
     @NotNull(message = REQUIRED_KEY)
@@ -250,6 +255,14 @@ public class RegistrationForm {
         this.email = email;
     }
 
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
     public static RegistrationForm fromContractor(final ContractorAccount input) {
         final User user = (input.getPrimaryContact() == null) ? new User() : input.getPrimaryContact();
         final RegistrationForm form = new RegistrationForm();
@@ -296,11 +309,97 @@ public class RegistrationForm {
         return submission;
     }
 
-    public String getAddress2() {
-        return address2;
+
+
+
+
+
+
+    /*
+        What follows is logic and classes specifically for form validation.
+     */
+
+    public PasswordPair getPasswordPair() {
+        return new PasswordPair(getPassword(), getPasswordConfirmation(), getUsername());
     }
 
-    public void setAddress2(String address2) {
-        this.address2 = address2;
+    public VATPair getVATPairing() {
+        return new VATPair(getCountryISOCode(), getVatId());
+    }
+
+    public CountrySubdivisionPair getCountrySubdivisionPairing() {
+        return new CountrySubdivisionPair(getCountryISOCode(), getCountrySubdivision(), getZip());
+    }
+
+    @PasswordsMatch(message = "registrationForm.passwordConfirmation::" + PASSWORDS_MUST_MATCH_KEY)
+    @PasswordNotSameAsUserName(message =  "registrationForm.password::" + PASSWORD_CANNOT_BE_USERNAME)
+    public static final class PasswordPair {
+
+        private final String first;
+        private final String second;
+        private final String username;
+
+        private PasswordPair(String first, String second, String username) {
+            this.first = first;
+            this.second = second;
+            this.username = username;
+        }
+
+
+        public String getFirstPassword() {
+            return first;
+        }
+
+        public String getSecondPassword() {
+            return second;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+    }
+
+    @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_ID_KEY)
+    public static final class VATPair {
+        private final String country;
+        private final String vatCode;
+
+        private VATPair(String country, String vat) {
+            this.country = country;
+            this.vatCode = vat;
+        }
+
+        public String getVatCode() {
+            return vatCode;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+    }
+
+    @ValidateSubdivision(message = "registrationForm.countrySubdivision::" + REQUIRED_KEY)
+    public static final class CountrySubdivisionPair {
+        private final String country;
+        private final String subdivision;
+        private final String zip;
+
+        private CountrySubdivisionPair(String country, String subdivision, String zip) {
+            this.country = country;
+            this.subdivision = subdivision;
+            this.zip = zip;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public String getSubdivision() {
+            return subdivision;
+        }
+
+        public String getZip() {
+            return zip;
+        }
     }
 }

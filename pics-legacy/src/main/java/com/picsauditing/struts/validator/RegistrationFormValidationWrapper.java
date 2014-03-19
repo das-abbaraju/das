@@ -40,8 +40,11 @@ public class RegistrationFormValidationWrapper implements Validator {
         final Locale locale = validatorContext.getLocale();
 
         final DiscriminatingValidationRunner processor = new DiscriminatingValidationRunner(validatorContext, locale, params, validator);
-        processor.process("registrationForm", regform);
-        processor.process("localeForm", localeForm);
+        processor.processByField("registrationForm", regform);
+        processor.processWholeObject(localeForm);
+        processor.processWholeObject(regform.getPasswordPair());
+        processor.processWholeObject(regform.getVATPairing());
+        processor.processWholeObject(regform.getCountrySubdivisionPairing());
 
     }
 
