@@ -159,7 +159,7 @@
                     <additionalClasspathElements>
                         <additionalClasspathElement>tests/</additionalClasspathElement>
                     </additionalClasspathElements>
-                    <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:-UseSplitVerifier ${argLine}</argLine>
+                    <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m </argLine>
                     <excludes>
                         <exclude>**/*ITest.java</exclude>
                         <exclude>**/I18nCacheThreadTest.java</exclude>
