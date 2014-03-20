@@ -13,24 +13,8 @@ import java.util.Set;
 public final class RoleAssignmentProcess {
 
 	public Map<Role, Set<Employee>> getCorporateRoleEmployees(final Map<Role, Set<Employee>> projectEmployees,
-															  final Map<Role, Set<Employee>> siteRoleEmployees,
-															  final Map<Role, Role> siteToCorporateRoles) {
-		Map<Role, Set<Employee>> corporateRoleToEmployees = mapSiteRolesToCorporateRoles(siteRoleEmployees, siteToCorporateRoles);
-		return Utilities.mergeValuesOfMapOfSets(projectEmployees, corporateRoleToEmployees);
-	}
-
-	private Map<Role, Set<Employee>> mapSiteRolesToCorporateRoles(final Map<Role, Set<Employee>> siteRoleEmployees,
-																  final Map<Role, Role> siteToCorporateRoles) {
-		if (MapUtils.isEmpty(siteRoleEmployees)) {
-			return Collections.emptyMap();
-		}
-
-		Map<Role, Set<Employee>> corporateRoleEmployees = new HashMap<>();
-		for (Role role : siteRoleEmployees.keySet()) {
-			corporateRoleEmployees.put(siteToCorporateRoles.get(role), siteRoleEmployees.get(role));
-		}
-
-		return corporateRoleEmployees;
+															  final Map<Role, Set<Employee>> siteRoleEmployees) {
+		return Utilities.mergeValuesOfMapOfSets(projectEmployees, siteRoleEmployees);
 	}
 
 }

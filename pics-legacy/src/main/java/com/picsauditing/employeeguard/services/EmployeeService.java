@@ -112,8 +112,8 @@ public class EmployeeService {
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
-	                                                     final Role siteRole, final Role corporateRole) {
-		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, siteRole, corporateRole);
+														 final Role role) {
+		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, role);
 	}
 
 	public Employee save(Employee employee, final int accountId, final int appUserId) throws Exception {

@@ -106,7 +106,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 		site = accountService.getAccountById(siteId);
 		Role corporateRole = roleService.getRole(id);
-		Map<Role, Role> corporateToSiteRoles = roleService.getCorporateToSiteRoles(siteId);
+//		Map<Role, Role> corporateToSiteRoles = roleService.getCorporateToSiteRoles(siteId);
 
 		Map<Integer, AccountModel> contractors = accountService.getContractorMapForSite(siteId);
 

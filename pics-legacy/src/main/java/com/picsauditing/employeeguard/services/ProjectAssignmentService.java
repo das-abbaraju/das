@@ -68,7 +68,6 @@ public class ProjectAssignmentService {
 	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId, final Collection<Project> projects) {
 		return new RoleAssignmentProcess().getCorporateRoleEmployees(
 				employeeEntityService.getEmployeesByProjectRoles(projects),
-				employeeEntityService.getEmployeesBySiteRoles(siteId),
-				roleEntityService.getSiteToCorporateRoles(siteId, accountService.getTopmostCorporateAccountIds(siteId)));
+				employeeEntityService.getEmployeesBySiteRoles(siteId));
 	}
 }

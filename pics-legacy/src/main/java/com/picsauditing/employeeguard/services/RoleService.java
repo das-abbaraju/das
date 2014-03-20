@@ -5,12 +5,13 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
-import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
@@ -32,11 +33,7 @@ public class RoleService {
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
-	private EmployeeDAO employeeDAO;
-	@Autowired
-	private ProjectCompanyDAO projectCompanyDAO;
-	@Autowired
-	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired
 	private RoleAssignmentHelper roleAssignmentHelper;
 	@Autowired
@@ -46,7 +43,9 @@ public class RoleService {
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 	@Autowired
-	private SkillAssignmentHelper skillAssignmentHelper;
+	private SkillEngine skillEngine;
+	@Autowired
+	private SiteAssignmentDAO siteAssignmentDAO;
 	@Autowired
 	private SkillUsageLocator skillUsageLocator;
 
@@ -130,29 +129,51 @@ public class RoleService {
 	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSite(final int siteId, final Collection<Integer> contractorIds) {
-		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-		// find roles by this site that duplicate roles with the above corporate ids
-		Map<Role, Role> siteRoleToCorporateRole = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findBySiteIdAndContractorIds(siteId, contractorIds);
+		Map<Employee, Set<Role>> employeeSiteRoles = Utilities.convertToMapOfSets(siteAssignments, new Utilities.EntityKeyValueConvertable<SiteAssignment, Employee, Role>() {
+			@Override
+			public Employee getKey(SiteAssignment siteAssignment) {
+				return siteAssignment.getEmployee();
+			}
 
-		List<Employee> employees = employeeDAO.findByAccounts(contractorIds);
-		List<AccountSkill> siteSkills = ExtractorUtil.extractList(siteSkillDAO.findByAccountId(siteId), SiteSkill.SKILL_EXTRACTOR);
-		List<AccountSkill> corporateSkills = ExtractorUtil.extractList(siteSkillDAO.findByAccountIds(corporateIds), SiteSkill.SKILL_EXTRACTOR);
+			@Override
+			public Role getValue(SiteAssignment siteAssignment) {
+				return siteAssignment.getRole();
+			}
+		});
+
+		Map<Role, Set<AccountSkill>> roleSkills = Utilities.convertToMapOfSets(accountSkillRoleDAO
+				.findSkillsByRoles(Utilities.flattenCollectionOfCollection(employeeSiteRoles.values())),
+
+				new Utilities.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
+					@Override
+					public Role getKey(AccountSkillRole accountSkillRole) {
+						return accountSkillRole.getRole();
+					}
+
+					@Override
+					public AccountSkill getValue(AccountSkillRole accountSkillRole) {
+						return accountSkillRole.getSkill();
+					}
+				});
 
 		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
-		for (Employee employee : employees) {
-			employeeSkills.put(employee, new HashSet<AccountSkill>());
-			employeeSkills.get(employee).addAll(getSkillsFromSiteRoles(siteId, employee, siteRoleToCorporateRole));
-			employeeSkills.get(employee).addAll(getSkillsFromSiteProjectRoles(siteId, employee));
-			employeeSkills.get(employee).addAll(siteSkills);
-			employeeSkills.get(employee).addAll(corporateSkills);
+		for (Employee employee : employeeSiteRoles.keySet()) {
+			if (!employeeSkills.containsKey(employee)) {
+				employeeSkills.put(employee, new HashSet<AccountSkill>());
+			}
+
+			for (Role role : employeeSiteRoles.get(employee)) {
+				employeeSkills.get(employee).addAll(roleSkills.get(role));
+			}
 		}
 
 		return employeeSkills;
 	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSiteRole(final int corporateRoleId,
-	                                                                     final int siteId,
-	                                                                     final Collection<Employee> employees) {
+																		 final int siteId,
+																		 final Collection<Employee> employees) {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 		List<SiteSkill> siteRequiredSiteSkills = siteSkillDAO.findByAccountId(siteId);
 		List<SiteSkill> corporateRequiredSiteSkills = siteSkillDAO.findByAccountIds(corporateIds);
@@ -207,79 +228,43 @@ public class RoleService {
 	}
 
 	public Set<Role> getEmployeeRolesForSite(final int siteId, final Employee employee) {
-		List<Role> siteRoles = roleDAO.findSiteRolesForEmployee(siteId, employee);
-		Map<Role, Role> siteToCorporateRoleMap = getSiteToCorporateRoles(siteId);
-
-		Set<Role> roles = new HashSet<>();
-		for (Role siteRole : siteRoles) {
-			roles.add(siteToCorporateRoleMap.get(siteRole));
-		}
-
-		return roles;
+		return new HashSet<>(roleDAO.findSiteRolesForEmployee(siteId, employee));
 	}
 
 	public Map<Role, Set<Employee>> getRoleAssignments(final int contractorId, final int siteId) {
-		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-		Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+		return Utilities.convertToMapOfSets(siteAssignmentDAO.findBySiteIdAndContractorId(siteId, contractorId),
+				new Utilities.EntityKeyValueConvertable<SiteAssignment, Role, Employee>() {
+					@Override
+					public Role getKey(SiteAssignment siteAssignment) {
+						return siteAssignment.getRole();
+					}
 
-		List<RoleEmployee> roleEmployees = roleEmployeeDAO.findByContractorAndSiteId(contractorId, siteId);
-		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByCorporateAndContractor(corporateIds, contractorId);
-
-		Map<Role, Set<Employee>> roleAssignments = new HashMap<>();
-		for (RoleEmployee roleEmployee : roleEmployees) {
-			Role corporateRole = siteToCorporateRoles.get(roleEmployee.getRole());
-
-			Utilities.addToMapOfKeyToSet(roleAssignments, corporateRole, roleEmployee.getEmployee());
-		}
-
-		for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
-			Role role = projectRoleEmployee.getProjectRole().getRole();
-			Utilities.addToMapOfKeyToSet(roleAssignments, role, projectRoleEmployee.getEmployee());
-		}
-
-		return roleAssignments;
+					@Override
+					public Employee getValue(SiteAssignment siteAssignment) {
+						return siteAssignment.getEmployee();
+					}
+				});
 	}
 
-	public Map<Role, Role> getSiteToCorporateRoles(int siteId) {
-		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-
-		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
-	}
-
-	public Map<Role, Role> getCorporateToSiteRoles(int siteId) {
-		return Utilities.invertMap(getSiteToCorporateRoles(siteId));
-	}
-
-	public void assignEmployeeToRole(final int siteId, final int corporateRoleId, final Employee employee,
-	                                 final int userId) {
+	public void assignEmployeeToRole(final int siteId, final int corporateRoleId, final Employee employee, final EntityAuditInfo auditInfo) {
+		createSiteAssignment(siteId, corporateRoleId, employee, auditInfo);
 		List<Integer> corporateIds = Collections.unmodifiableList(accountService.getTopmostCorporateAccountIds(siteId));
-		assignEmployeeToRole(siteId, corporateIds, corporateRoleId, employee, userId);
-		updateEmployeeSkillsForRole(siteId, corporateIds, corporateRoleId, employee, userId);
+		updateEmployeeSkillsForRole(siteId, corporateIds, corporateRoleId, employee, auditInfo);
 	}
 
-	private void assignEmployeeToRole(final int siteId, final List<Integer> corporateIds, final int roleId,
-	                                  final Employee employee, final int userId) {
-		Role siteRole = roleDAO.findSiteRoleByCorporateRole(corporateIds, siteId, roleId);
+	private void createSiteAssignment(final int siteId, final int roleId, final Employee employee, final EntityAuditInfo auditInfo) {
 
-		if (siteRole == null) {
-			Role corporateRole = roleDAO.find(roleId);
-			siteRole = new RoleBuilder()
-					.accountId(siteId)
-					.description(corporateRole.getDescription())
-					.name(corporateRole.getName())
-					.createdBy(userId)
-					.createdDate(new Date())
-					.build();
+		SiteAssignment siteAssignment = new SiteAssignment();
+		siteAssignment.setEmployee(employee);
+		siteAssignment.setRole(roleDAO.find(roleId));
+		siteAssignment.setSiteId(siteId);
+		EntityHelper.setCreateAuditFields(siteAssignment, auditInfo);
 
-			roleDAO.save(siteRole);
-		}
-
-		RoleEmployee roleEmployee = buildRoleEmployee(siteRole, employee, userId);
-		roleEmployeeDAO.save(roleEmployee);
+		siteAssignmentDAO.save(siteAssignment);
 	}
 
 	private void updateEmployeeSkillsForRole(final int siteId, final List<Integer> corporateIds,
-	                                         final int corporateRoleId, final Employee employee, final int userId) {
+											 final int corporateRoleId, final Employee employee, final EntityAuditInfo auditInfo) {
 		Set<AccountSkill> allSkillsForJobRole = new HashSet<>();
 		allSkillsForJobRole.addAll(accountSkillDAO.findByCorporateRoleId(corporateRoleId));
 		allSkillsForJobRole.addAll(accountSkillDAO.findRequiredByAccounts(corporateIds));
@@ -287,7 +272,7 @@ public class RoleService {
 
 		List<AccountSkill> employeeSkills = accountSkillDAO.findByEmployee(employee);
 		List<AccountSkillEmployee> accountSkillEmployees = buildAccountSkillEmployee(employee, allSkillsForJobRole,
-				employeeSkills, userId);
+				employeeSkills, auditInfo);
 		accountSkillEmployeeService.save(accountSkillEmployees);
 	}
 
@@ -307,23 +292,22 @@ public class RoleService {
 	}
 
 	private List<AccountSkillEmployee> buildAccountSkillEmployee(final Employee employee,
-	                                                             final Set<AccountSkill> allSkillsForJobRole,
-	                                                             final List<AccountSkill> employeeSkills,
-	                                                             final int userId) {
+																 final Set<AccountSkill> allSkillsForJobRole,
+																 final List<AccountSkill> employeeSkills,
+																 final EntityAuditInfo auditInfo) {
 		if (CollectionUtils.isEmpty(allSkillsForJobRole)) {
 			return Collections.emptyList();
 		}
 
-		Date createdDate = DateBean.today();
 		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
 		for (AccountSkill accountSkill : allSkillsForJobRole) {
 			if (!employeeSkills.contains(accountSkill)) {
 				accountSkillEmployees.add(new AccountSkillEmployeeBuilder()
 						.accountSkill(accountSkill)
 						.employee(employee)
-						.createdBy(userId)
-						.createdDate(createdDate)
-						.startDate(createdDate)
+						.createdBy(auditInfo.getAppUserId())
+						.createdDate(auditInfo.getTimestamp())
+						.startDate(auditInfo.getTimestamp())
 						.build());
 			}
 		}
@@ -333,12 +317,9 @@ public class RoleService {
 
 	public void unassignEmployeeFromRole(final Employee employee, final int roleId, final int siteId) {
 		Role corporateRole = roleDAO.find(roleId);
-		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-		Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
-		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
 
 		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee, corporateRole);
-		roleAssignmentHelper.deleteSiteRoleFromEmployee(employee, corporateRole, corporateToSiteRoles);
+		roleAssignmentHelper.deleteSiteRoleFromEmployee(employee, corporateRole, siteId);
 
 		List<AccountSkillEmployee> employeeSkillsToRemove = new ArrayList<>(employee.getSkills());
 		SkillUsage skillUsage = skillUsageLocator.getSkillUsagesForEmployee(employee);
@@ -359,29 +340,7 @@ public class RoleService {
 		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee.getId(), siteId);
 		roleAssignmentHelper.deleteSiteRolesFromEmployee(employee.getId(), siteId);
 
-		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
-		List<Integer> childSiteIds = accountService.getChildOperatorIds(corporateIds);
-		Set<Integer> otherEmployeeAssignedSiteIds = getOtherEmployeeAssignedSiteIds(childSiteIds, siteId, employee);
-
-		if (CollectionUtils.isEmpty(otherEmployeeAssignedSiteIds)) {
-			removeRequiredCorporateSkillsFromEmployee(employee, corporateIds);
-		} else {
-			final int contractorId = employee.getAccountId();
-			// All of the projects the contractor has been assigned to that is not related to the site
-			List<ProjectCompany> projectCompanies = projectCompanyDAO.findByContractorExcludingSite(contractorId, siteId);
-
-			Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
-			Set<AccountSkill> requiredSkills = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(projectCompanies, employee, siteToCorporateRoles);
-			Set<AccountSkillEmployee> deletableSkills = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, contractorId, requiredSkills);
-
-			accountSkillEmployeeDAO.deleteByIds(Utilities.getIdsFromCollection(deletableSkills,
-					new Utilities.Identitifable<AccountSkillEmployee, Integer>() {
-						@Override
-						public Integer getId(AccountSkillEmployee accountSkillEmployee) {
-							return accountSkillEmployee.getId();
-						}
-					}));
-		}
+		skillEngine.updateSiteSkillsForEmployee(employee, siteId);
 	}
 
 	private void removeRequiredCorporateSkillsFromEmployee(Employee employee, List<Integer> corporateIds) {
