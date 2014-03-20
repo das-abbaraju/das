@@ -25,7 +25,7 @@
 			background-color: $success_light;
 
 			&:hover {
-				background-image: linear-gradient(to top, $success_med, $success_light);
+				@include background-image(linear-gradient(to top, $success_med, $success_light));
 			}
 
 			&:active {
@@ -38,7 +38,7 @@
 			background-color: $warning_med;
 
 			&:hover {
-				background-image: linear-gradient(to top, $warning_med, $warning_light);
+				@include background-image(linear-gradient(to top, $warning_med, $warning_light));
 			}
 
 			&:active {
@@ -51,7 +51,7 @@
 			background-color: $danger_light;
 
 			&:hover {
-				background-image: linear-gradient(to top, $danger_med, $danger_light);
+				@include background-image(linear-gradient(to top, $danger_med, $danger_light));
 			}
 
 			&:active {

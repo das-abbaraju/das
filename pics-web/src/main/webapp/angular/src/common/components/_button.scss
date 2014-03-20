@@ -32,7 +32,7 @@
 /*end pseudo element*/
 
 .btn-default {
-  background-image: linear-gradient(to bottom, $default_mercury, $default_silver);
+  @include background-image(linear-gradient(to bottom, $default_mercury, $default_silver));
   background: -webkit-linear-gradient($default_mercury, $default_silver);
   @include box-shadow(0px 2px 0px $default_pewter);
   text-shadow: none;
