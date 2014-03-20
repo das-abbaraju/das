@@ -1706,6 +1706,53 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 .employee_guard_contractor_employee-page .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
 }
+/* line 6, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+}
+/* line 9, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill:first-child {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+}
+/* line 13, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill .row div {
+  padding-right: 0px;
+}
+/* line 17, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill.success {
+  background-color: #33b679;
+  background-image: none;
+}
+/* line 20, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill.success .icon-map-marker {
+  color: #05702e;
+}
+/* line 25, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill.warning {
+  background-color: #fbcb43;
+  background-image: none;
+}
+/* line 28, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill.warning .icon-map-marker {
+  color: #ec8c00;
+}
+/* line 33, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill.danger {
+  background-color: #e74c3c;
+  background-image: none;
+}
+/* line 36, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+.employee_guard_contractor_employee-page .skill-list .operator-skill.danger .icon-map-marker {
+  color: #800a06;
+}
 
 /* line 1, ../sass/pics/employee-guard/contractor/employee/_import-export.scss */
 .alert-info .btn-info {
