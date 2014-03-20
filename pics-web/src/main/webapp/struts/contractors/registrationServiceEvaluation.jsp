@@ -40,16 +40,22 @@
                 <h1><s:text name="RegistrationServiceEvaluation.ssip.evaluationHeading" /></h1>
                 <ul>
                     <li>
+                    	<s:set var="question_id" value="%{@com.picsauditing.actions.contractors.RegistrationServiceEvaluation@QUESTION_ID_REGISTERED_WITH_SSIP}" />
+
+                    	<s:set var="yes_checked" value="answerMap[#question_id].answer == 'Yes' ? 'checked' : ''" />
+                        <s:set var="no_checked" value="answerMap[#question_id].answer == 'No' ? 'checked' : ''" />
+
                         <label><s:text name="RegistrationServiceEvaluation.ssip.registeredWithMemberScheme" /></label>
                         <ul class="radio registered-with-ssip-member-scheme-input inline">
                             <li>
-                                <input type="radio" id="registeredWithSsipMemberScheme" name="answerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP%>].answer" value="Yes" />
+                                <input type="radio" id="registeredWithSsipMemberScheme" name="answerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP%>].answer" value="Yes" ${yes_checked}/>
                                 <label>
-                                    <s:text name="YesNo.Yes" />
+                                	<s:text name="YesNo.Yes" />
                                 </label>
                             </li>
+
                             <li>
-                                <input type="radio" name="answerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP%>].answer" value="No" />
+                                <input type="radio" name="answerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP%>].answer" value="No" ${no_checked}/>
                                 <label>
                                     <s:text name="YesNo.No" />
                                 </label>
@@ -57,16 +63,19 @@
                         </ul>
                     </li>
                     <li class="request-to-provide-ssip-details-container">
+                        <s:set var="yes_checked" value="readyToProvideSsipDetails == 'Yes' ? 'checked' : ''" />
+                    	<s:set var="no_checked" value="readyToProvideSsipDetails == 'No' ? 'checked' : ''" />
+
                         <label><s:text name="RegistrationServiceEvaluation.ssip.requestToProvideSsipDetails" /></label>
                         <ul class="radio request-to-provide-ssip-details-input inline">
                             <li>
-                                <input type="radio" name="readyToProvideSsipDetails" value="Yes" />
+                            	<input type="radio" id="readyToProvideDetails" name="readyToProvideSsipDetails" value="Yes" ${yes_checked}/>
                                 <label>
                                     <s:text name="YesNo.Yes" />
                                 </label>
                             </li>
                             <li>
-                                <input type="radio" name="readyToProvideSsipDetails" value="No" />
+                                <input type="radio" name="readyToProvideSsipDetails" value="No" ${no_checked}/>
                                 <label>
                                     <s:text name="YesNo.No" />
                                 </label>
@@ -84,13 +93,13 @@
                                 <label><s:text name="RegistrationServiceEvaluation.ssip.dateOfLastAudit" /></label>
                                 <ul class="text-input-list">
                                     <li>
-                                        <input type="text" name="yearOfLastSsipMemberAudit" placeholder="YYYY" maxlength="4" class="year">
+                                        <input type="text" name="yearOfLastSsipMemberAudit" value="${yearOfLastSsipMemberAudit > 0 ? yearOfLastSsipMemberAudit : ''}" placeholder="YYYY" maxlength="4" class="year">
                                     </li>
                                     <li>
-                                        <input type="text" name="monthOfLastSsipMemberAudit" placeholder="MM" maxlength="2" class="month">
+                                        <input type="text" name="monthOfLastSsipMemberAudit" value="${monthOfLastSsipMemberAudit > 0 ? monthOfLastSsipMemberAudit : ''}" placeholder="MM" maxlength="2" class="month">
                                     </li>
                                     <li>
-                                        <input type="text" name="dayOfLastSsipMemberAudit" placeholder="DD" maxlength="2" class="day">
+                                        <input type="text" name="dayOfLastSsipMemberAudit" value="${dayOfLastSsipMemberAudit > 0 ? dayOfLastSsipMemberAudit : ''}" placeholder="DD" maxlength="2" class="day">
                                     </li>
                                 </ul>
                             </li>
@@ -98,17 +107,19 @@
                                 <label><s:text name="RegistrationServiceEvaluation.ssip.dateOfMembershipExpiration" /></label>
                                 <ul class="text-input-list">
                                     <li>
-                                        <input type="text" name="yearOfSsipMembershipExpiration" placeholder="YYYY" maxlength="4" class="year">
+                                        <input type="text" name="yearOfSsipMembershipExpiration" value="${yearOfSsipMembershipExpiration > 0 ? yearOfSsipMembershipExpiration : ''}" placeholder="YYYY" maxlength="4" class="year">
                                     </li>
                                     <li>
-                                        <input type="text" name="monthOfSsipMembershipExpiration" placeholder="MM" maxlength="2" class="month">
+                                        <input type="text" name="monthOfSsipMembershipExpiration" value="${monthOfSsipMembershipExpiration > 0 ? monthOfSsipMembershipExpiration : ''}" placeholder="MM" maxlength="2" class="month">
                                     </li>
                                     <li>
-                                        <input type="text" name="dayOfSsipMembershipExpiration" placeholder="DD" maxlength="2" class="day">
+                                        <input type="text" name="dayOfSsipMembershipExpiration" value="${dayOfSsipMembershipExpiration > 0 ? dayOfSsipMembershipExpiration : ''}" placeholder="DD" maxlength="2" class="day">
                                     </li>
                                 </ul>
                             </li>
                             <li>
+                            	<s:set var="question_id" value="%{@com.picsauditing.actions.contractors.RegistrationServiceEvaluation@QUESTION_ID_SSIP_SCHEME}" />
+
                                 <label><s:text name="RegistrationServiceEvaluation.ssip.whichMemberScheme" /></label>
                                 <div class="right-column">
                                     <select name="ssipAnswerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_SSIP_SCHEME%>].answer">
@@ -116,7 +127,9 @@
                                             - <s:text name="RegistrationServiceEvaluation.ssip.selectYourScheme" /> -
                                         </option>
                                         <s:iterator var="member_scheme" value="ssipMemberSchemes">
-                                            <option value="${member_scheme.id}">
+                                        	<s:set var="is_selected" value="#member_scheme.id == ssipAnswerMap[#question_id].answer ? 'selected' : ''" />
+
+                                            <option value="${member_scheme.id}" ${is_selected}>
                                                 ${member_scheme.name}
                                             </option>
                                         </s:iterator>

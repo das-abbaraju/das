@@ -334,6 +334,14 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		return catIds;
 	}
 
+	private String addLeadingZeroIfNeccessary(int number) {
+        String result = String.valueOf(number);
+        if (number < 10 && number > 0) {
+            result = "0" + result;
+        }
+        return result;
+    }
+
 	public Map<Integer, AuditData> getAnswerMap() {
 		return answerMap;
 	}
@@ -482,16 +490,16 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
         return hasTransportationQuestions;
     }
 
-	public int getDayOfSsipMembershipExpiration() {
-		return dayOfSsipMembershipExpiration;
+	public String getDayOfSsipMembershipExpiration() {
+		return addLeadingZeroIfNeccessary(dayOfSsipMembershipExpiration);
 	}
 
 	public void setDayOfSsipMembershipExpiration(int dayOfSsipMembershipExpiration) {
 		this.dayOfSsipMembershipExpiration = dayOfSsipMembershipExpiration;
 	}
 
-	public int getMonthOfSsipMembershipExpiration() {
-		return monthOfSsipMembershipExpiration;
+	public String getMonthOfSsipMembershipExpiration() {
+		return addLeadingZeroIfNeccessary(monthOfSsipMembershipExpiration);
 	}
 
 	public void setMonthOfSsipMembershipExpiration(int monthOfSsipMembershipExpiration) {
@@ -506,16 +514,16 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		this.yearOfSsipMembershipExpiration = yearOfSsipMembershipExpiration;
 	}
 
-	public int getDayOfLastSsipMemberAudit() {
-		return dayOfLastSsipMemberAudit;
+	public String getDayOfLastSsipMemberAudit() {
+		return addLeadingZeroIfNeccessary(dayOfLastSsipMemberAudit);
 	}
 
 	public void setDayOfLastSsipMemberAudit(int dayOfLastSsipMemberAudit) {
 		this.dayOfLastSsipMemberAudit = dayOfLastSsipMemberAudit;
 	}
 
-	public int getMonthOfLastSsipMemberAudit() {
-		return monthOfLastSsipMemberAudit;
+	public String getMonthOfLastSsipMemberAudit() {
+		return addLeadingZeroIfNeccessary(monthOfLastSsipMemberAudit);
 	}
 
 	public void setMonthOfLastSsipMemberAudit(int monthOfLastSsipMemberAudit) {
