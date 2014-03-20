@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.generic.GenericPredicate;
@@ -21,7 +20,8 @@ public class SkillAssignmentHelper {
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
-	public Set<AccountSkill> getRequiredSkillsFromProjectsAndSiteRoles(final Collection<ProjectCompany> projectCompanies, final Employee employee) {
+	public Set<AccountSkill> getRequiredSkillsFromProjectsAndSiteRoles(final Collection<ProjectCompany> projectCompanies,
+	                                                                   final Employee employee) {
 		if (CollectionUtils.isEmpty(projectCompanies)) {
 			return Collections.emptySet();
 		}

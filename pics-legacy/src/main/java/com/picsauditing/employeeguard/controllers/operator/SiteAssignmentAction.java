@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
@@ -30,6 +31,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private AccountService accountService;
 	@Autowired
 	private AccountSkillEmployeeService accountSkillEmployeeService;
+	@Autowired
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
@@ -84,14 +87,15 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		return "status";
 	}
 
-	private Map<RoleInfo, Integer> buildRoleCounts(int siteId, List<Employee> employeesAtSite) {
+	private Map<RoleInfo, Integer> buildRoleCounts(final int siteId, final List<Employee> employeesAtSite) {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 		List<Role> roles = roleService.getRolesForAccounts(corporateIds);
-		Map<Role, Role> corporateToSiteRoles = roleService.getCorporateToSiteRoles(siteId);
+
+		Map<Role, Set<Employee>> roleEmployees = employeeEntityService.getEmployeesBySiteRoles(siteId);
 
 		List<RoleInfo> roleInfos = ViewModelFactory.getRoleInfoFactory().build(roles);
 		return ViewModelFactory.getRoleEmployeeCountFactory()
-				.create(roleInfos, corporateToSiteRoles, employeesAtSite);
+				.create(roleInfos, employeesAtSite, roleEmployees);
 	}
 
 	public String role() {
@@ -105,18 +109,16 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		}
 
 		site = accountService.getAccountById(siteId);
-		Role corporateRole = roleService.getRole(id);
-//		Map<Role, Role> corporateToSiteRoles = roleService.getCorporateToSiteRoles(siteId);
+		Role role = roleService.getRole(id);
 
 		Map<Integer, AccountModel> contractors = accountService.getContractorMapForSite(siteId);
 
 		List<Employee> employeesAssignedToRole = employeeService.getEmployeesAssignedToSiteRole(
 				contractors.keySet(),
 				siteId,
-				corporateToSiteRoles.get(corporateRole),
-				corporateRole);
+				role);
 
-		List<AccountSkill> skills = skillService.getSkillsForRole(corporateRole);
+		List<AccountSkill> skills = skillService.getSkillsForRole(role);
 		skills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(siteId));
 		skills = ListUtil.removeDuplicatesAndSort(skills);
 

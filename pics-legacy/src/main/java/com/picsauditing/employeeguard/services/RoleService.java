@@ -246,10 +246,10 @@ public class RoleService {
 				});
 	}
 
-	public void assignEmployeeToRole(final int siteId, final int corporateRoleId, final Employee employee, final EntityAuditInfo auditInfo) {
-		createSiteAssignment(siteId, corporateRoleId, employee, auditInfo);
+	public void assignEmployeeToRole(final int siteId, final int roleId, final Employee employee, final EntityAuditInfo auditInfo) {
+		createSiteAssignment(siteId, roleId, employee, auditInfo);
 		List<Integer> corporateIds = Collections.unmodifiableList(accountService.getTopmostCorporateAccountIds(siteId));
-		updateEmployeeSkillsForRole(siteId, corporateIds, corporateRoleId, employee, auditInfo);
+		updateEmployeeSkillsForRole(siteId, corporateIds, roleId, employee, auditInfo);
 	}
 
 	private void createSiteAssignment(final int siteId, final int roleId, final Employee employee, final EntityAuditInfo auditInfo) {

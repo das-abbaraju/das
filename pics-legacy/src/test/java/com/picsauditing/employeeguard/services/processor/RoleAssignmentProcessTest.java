@@ -21,8 +21,7 @@ public class RoleAssignmentProcessTest {
 	public void testGetCorporateRoleEmployees() {
 		Map<Role, Set<Employee>> result = new RoleAssignmentProcess().getCorporateRoleEmployees(
 				getProjectEmployeeRoles(),
-				getSiteRoleEmployees(),
-				getSiteToCorporateRoleMap()
+				getSiteRoleEmployees()
 		);
 
 		verifyResult(result);

@@ -101,6 +101,5 @@ public class ProjectAssignmentServiceTest {
 	private void verifyCommonServiceCalls(final List<Project> projects) {
 		verify(employeeEntityService).getEmployeesByProjectRoles(projects);
 		verify(employeeEntityService).getEmployeesBySiteRoles(SITE_ID);
-		verify(roleEntityService).getSiteToCorporateRoles(anyInt(), anyListOf(Integer.class));
 	}
 }

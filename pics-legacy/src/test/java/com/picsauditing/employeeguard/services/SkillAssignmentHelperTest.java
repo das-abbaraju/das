@@ -10,7 +10,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
@@ -45,7 +48,7 @@ public class SkillAssignmentHelperTest {
 
 	@Test
 	public void testGetRequiredSkillsFromProjectsAndSiteRoles_NoProjectCompanies() throws Exception {
-		Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(null, null, null);
+		Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(null, null);
 		assertTrue(result.isEmpty());
 	}
 
@@ -114,30 +117,12 @@ public class SkillAssignmentHelperTest {
 
 		when(roleEmployeeDAO.findByEmployeeAndSiteIds(anyInt(), anyListOf(Integer.class))).thenReturn(Arrays.asList(roleEmployee));
 
-		Map<Role, Role> siteToCorporateRoles = initializeSiteToCorporateRoles(siteRole);
 		Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(
 				getFakeProjectCompanies(),
-				new EmployeeBuilder().build(),
-				siteToCorporateRoles);
+				new EmployeeBuilder().build());
 
 		assertFalse(result.isEmpty());
 		assertEquals(4, result.size());
-	}
-
-	private Map<Role, Role> initializeSiteToCorporateRoles(Role siteRole) {
-		Role corporateRole = new RoleBuilder()
-				.accountId(CORPORATE_ID)
-				.name("Corporate Role")
-				.skills(Arrays.asList(
-						new AccountSkillBuilder()
-								.name("Corporate Role Skill")
-								.build()))
-				.build();
-
-		Map<Role, Role> siteToCorporateRoles = new HashMap<>();
-		siteToCorporateRoles.put(siteRole, corporateRole);
-
-		return siteToCorporateRoles;
 	}
 
 	@Test
