@@ -57,6 +57,7 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
+ContractorOriginalMemberSince
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk

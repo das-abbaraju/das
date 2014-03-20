@@ -70,6 +70,7 @@ ContractorLcCorPhase
 ContractorMembershipDate
 ContractorNumberOfEmployees
 ContractorOfficeIn
+ContractorOriginalMemberSince
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities

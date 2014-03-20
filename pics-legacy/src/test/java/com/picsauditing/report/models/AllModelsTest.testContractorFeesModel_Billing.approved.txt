@@ -29,6 +29,7 @@ ContractorInsureGUARD
 ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
+ContractorOriginalMemberSince
 ContractorProductRisk
 ContractorSafetySensitive
 ContractorSoleProprietor

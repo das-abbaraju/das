@@ -69,6 +69,7 @@ ContractorMembershipDate
 ContractorMustPay
 ContractorNumberOfEmployees
 ContractorOfficeIn
+ContractorOriginalMemberSince
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPaymentMethod
