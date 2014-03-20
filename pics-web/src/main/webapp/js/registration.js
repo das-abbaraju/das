@@ -7,14 +7,14 @@
 	REGISTRATION.autofill_username = {
 		init: function () {
 			if ($('.Registration-page').length) {
-				$('#Registration_user_email').bind('blur', this.events.autofill);
+				$('#contact_email').bind('blur', this.events.autofill);
 			}
 		},
 
 		events: {
 			autofill: function (event) {
 				var element = $(this);
-				var target = $('#Registration_user_username');
+				var target = $('#account_username');
 
 				if (!target.val()) {
 					target.val(element.val());
