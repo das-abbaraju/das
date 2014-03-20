@@ -14,6 +14,8 @@ public class PasswordUsernameComparison implements ConstraintValidator<PasswordN
 
     @Override
     public boolean isValid(RegistrationForm.PasswordPair value, ConstraintValidatorContext context) {
-        return !value.getFirstPassword().equals(value.getUsername());
+        if (value.getFirstPassword() == null || value.getUsername() == null)
+            return true;
+        else return !value.getFirstPassword().equals(value.getUsername());
     }
 }

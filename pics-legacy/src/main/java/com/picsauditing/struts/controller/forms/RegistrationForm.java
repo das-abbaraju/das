@@ -111,6 +111,7 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String vatID;
 
+    @NotBlank(message = REQUIRED_KEY)
     @NotNull(message = REQUIRED_KEY)
     @Email(message = INVALID_EMAIL_FORMAT_KEY)
     private String email;
@@ -333,7 +334,7 @@ public class RegistrationForm {
 
     @PasswordsMatch(message = "registrationForm.passwordConfirmation::" + PASSWORDS_MUST_MATCH_KEY)
     @PasswordNotSameAsUserName(message =  "registrationForm.password::" + PASSWORD_CANNOT_BE_USERNAME)
-    public static final class PasswordPair {
+    public static class PasswordPair {
 
         private final String first;
         private final String second;
@@ -360,7 +361,7 @@ public class RegistrationForm {
     }
 
     @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_ID_KEY)
-    public static final class VATPair {
+    public static class VATPair {
         private final String country;
         private final String vatCode;
 
@@ -379,7 +380,7 @@ public class RegistrationForm {
     }
 
     @ValidateSubdivision(message = "registrationForm.countrySubdivision::" + REQUIRED_KEY)
-    public static final class CountrySubdivisionPair {
+    public static class CountrySubdivisionPair {
         private final String country;
         private final String subdivision;
         private final String zip;
