@@ -68,7 +68,7 @@ public class BillingDetail extends ContractorActionSupport {
 			}
 
 			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId()));
-			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+			billingService.applyFinancialCalculationsAndType(invoice);
             invoice = billingService.verifyAndSaveInvoice(invoice);
 
 

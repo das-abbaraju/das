@@ -1054,4 +1054,15 @@ public class BillingServiceTest extends PicsTranslationTest {
         Whitebox.invokeMethod(billingService, "validateRevRec", invoice);
     }
 
+    @Test
+    public void testApplyFinancialCalculationsAndType() throws Exception {
+        setupInvoiceAndItems();
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+        Invoice invoice = new Invoice();
+        invoice.setAccount(mockContractor);
+        invoice.setItems(invoiceItems);
+        invoice.setInvoiceType(InvoiceType.OtherFees);
+        billingService.applyFinancialCalculationsAndType(invoice);
+        assertEquals(InvoiceType.Activation, invoice.getInvoiceType());
+    }
 }
