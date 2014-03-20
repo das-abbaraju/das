@@ -83,7 +83,7 @@ public class RegistrationFormTest {
 
         Set<ConstraintViolation<RegistrationForm>> constraintViolations = validator.validateProperty(rForm, "email");
 
-        assertEquals(1, constraintViolations.size());
+        assertEquals(2, constraintViolations.size());
     }
 
     @After
