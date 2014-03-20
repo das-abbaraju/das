@@ -101,7 +101,7 @@ public class RegistrationForm {
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
-    @CountryExists
+    @CountryExists(message = REQUIRED_KEY)
     private String countryISOCode;
 
     @NotBlank(message = REQUIRED_KEY)
