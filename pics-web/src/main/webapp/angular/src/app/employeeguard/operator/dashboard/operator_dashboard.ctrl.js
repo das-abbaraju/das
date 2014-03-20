@@ -3,7 +3,7 @@ angular.module('PICS.employeeguard')
 .controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
     $scope.siteList = SiteList.query(function(site_list) {
         if ($scope.isCorporateSiteList(site_list)) {
-            $scope.selected_site = site_list[0];
+            $scope.site_list_select = site_list[0].id;
             $scope.updateSelectedSite();
         } else {
             $scope.selected_site_details = requestSiteDetailsForSiteOperator().then(function(site_details) {
@@ -25,7 +25,7 @@ angular.module('PICS.employeeguard')
     }
 
     $scope.updateSelectedSite = function() {
-        $scope.requestSiteDetailsById($scope.selected_site.id).then(function(site_details) {
+        $scope.requestSiteDetailsById($scope.site_list_select).then(function(site_details) {
             $scope.selected_site_details = site_details;
         });
     };
