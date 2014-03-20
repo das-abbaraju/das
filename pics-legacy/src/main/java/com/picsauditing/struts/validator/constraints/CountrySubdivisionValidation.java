@@ -31,12 +31,9 @@ public class CountrySubdivisionValidation implements ConstraintValidator<Validat
 
         return !country.isHasCountrySubdivisions() || isAppropriateSubdivision(country, subdivisionISO);
 
-//        if (requiresZipCode(country) && ! validZipCode(country, zipCode)) return false;
-//
-//        return true;
     }
 
-    // FIXME: This too.
+    // FIXME: This should probably be moved to the Country object logic.
     private boolean isAppropriateSubdivision(Country c, String subdivision) {
         if (Strings.isEmpty(subdivision)) return false;
 
