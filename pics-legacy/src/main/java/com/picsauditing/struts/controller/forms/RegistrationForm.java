@@ -101,6 +101,7 @@ public class RegistrationForm {
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
+    @CountryExists
     private String countryISOCode;
 
     @NotBlank(message = REQUIRED_KEY)
@@ -380,6 +381,7 @@ public class RegistrationForm {
     }
 
     @ValidateSubdivision(message = "registrationForm.countrySubdivision::" + REQUIRED_KEY)
+    @ValidateZipCode(message = "registrationForm.zip::" + INVALID_UK_POST_CODE_KEY)
     public static class CountrySubdivisionPair {
         private final String country;
         private final String subdivision;

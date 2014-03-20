@@ -216,6 +216,9 @@
     <bean id="RequestNewContractorValidator" class="com.picsauditing.validator.RequestNewContractorValidator" scope="prototype"/>
     <bean id="TaxIdValidatorFactory" class="com.picsauditing.validator.TaxIdValidatorFactory" />
     <bean id="ValidatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+    <bean id="CountrySubdivisionValidation" class="com.picsauditing.struts.validator.constraints.CountrySubdivisionValidation" />
+    <bean id="CountryISOValidation" class="com.picsauditing.struts.validator.constraints.CountryISOValidation" />
+    <bean id="CountryZipCodeValidation" class="com.picsauditing.struts.validator.constraints.CountryZipCodeValidator" />
 
     <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
           scope="prototype"/>

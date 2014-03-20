@@ -13,9 +13,6 @@ import javax.validation.ConstraintValidatorContext;
 
 public class CountrySubdivisionValidation implements ConstraintValidator<ValidateSubdivision, RegistrationForm.CountrySubdivisionPair> {
 
-    public static final String UK_POST_CODE_REGEX = "(GIR 0AA|STHL 1ZZ|ASCN 1ZZ|AI-2640|TDCU 1ZZ|BBND 1ZZ|BIQQ 1ZZ|FIQQ 1ZZ|GX11 1AA|PCRN 1ZZ|SIQQ 1ZZ|TKCA 1ZZ)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})";
-    public static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>`\"].*";
-
     @Autowired
     private CountryDAO dao;
 
@@ -25,36 +22,18 @@ public class CountrySubdivisionValidation implements ConstraintValidator<Validat
     @Override
     public boolean isValid(RegistrationForm.CountrySubdivisionPair value, ConstraintValidatorContext context) {
 
-        if (value == null || Strings.isEmpty(value.getCountry())) return false;
-
+        if (value == null || Strings.isEmpty(value.getCountry())) return true;
         final Country country = dao.findbyISO(value.getCountry());
-        if (country == null) return false;
+        if (country == null) return true;
 
         final String subdivisionISO = value.getSubdivision();
         final String zipCode = value.getZip();
 
-        if (country.isHasCountrySubdivisions() && ! isAppropriateSubdivision(country, subdivisionISO)) return false;
+        return !country.isHasCountrySubdivisions() || isAppropriateSubdivision(country, subdivisionISO);
 
-        if (requiresZipCode(country) && ! validZipCode(country, zipCode)) return false;
-
-        return true;
-    }
-
-    private boolean validZipCode(Country country, String zipCode) {
-        if (Strings.isEmpty(zipCode)) return false;
-
-        if (country.isUK()) {
-            zipCode = DataScrubber.cleanUKPostcode(zipCode).toUpperCase();
-            return zipCode.matches(UK_POST_CODE_REGEX) && ! zipCode.matches(SPECIAL_CHAR_REGEX);
-        } else {
-            return ! zipCode.matches(SPECIAL_CHAR_REGEX);
-        }
-
-    }
-
-    // FIXME: This should probably be moved to the country object logic.
-    private boolean requiresZipCode(Country country) {
-        return ! country.isUAE();
+//        if (requiresZipCode(country) && ! validZipCode(country, zipCode)) return false;
+//
+//        return true;
     }
 
     // FIXME: This too.
