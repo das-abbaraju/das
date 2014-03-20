@@ -111,6 +111,7 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String vatID;
 
+    @NotBlank(message = REQUIRED_KEY)
     @NotNull(message = REQUIRED_KEY)
     @Email(message = INVALID_EMAIL_FORMAT_KEY)
     private String email;

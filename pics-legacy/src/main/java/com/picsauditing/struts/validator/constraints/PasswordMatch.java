@@ -13,6 +13,9 @@ public class PasswordMatch implements ConstraintValidator<PasswordsMatch, Regist
 
     @Override
     public boolean isValid(RegistrationForm.PasswordPair value, ConstraintValidatorContext context) {
-        return value.getFirstPassword().equals(value.getSecondPassword());
+        if (value.getFirstPassword() == null || value.getSecondPassword() == null)
+            return true;
+        else
+            return value.getFirstPassword().equals(value.getSecondPassword());
     }
 }
