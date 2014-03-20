@@ -21,7 +21,6 @@
                 }
             }
         }
-
     }
 
     a {
@@ -29,7 +28,8 @@
         font-size: 14px;
 
         &:hover {
-            background-color: $pics_cool_grey;
+            background-color: $default_platinum;
+            color: $info_dark;
         }
     }
 
@@ -38,11 +38,15 @@
     }
 }
 
+.nav .nav-divider {
+    color: $default_mercury;
+}
+
 .nav-title {
-    color: $default_silver;
+    color: $default_pewter;
     display: block;
     font-size: 12px;
-    padding: 10px 15px 0px 15px;
+    padding: 0px 15px 0px 15px;
     text-transform: uppercase;
 }
 
@@ -53,10 +57,6 @@
     font-weight: bold;
     line-height: 1.428571429;
     padding: 3px 20px;
-}
-
-.nav .nav-divider {
-    margin: 0px;
 }
 
 /* Skill Navigation */
