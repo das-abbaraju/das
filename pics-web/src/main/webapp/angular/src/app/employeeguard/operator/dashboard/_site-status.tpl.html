@@ -55,7 +55,7 @@
     <div class="content">
         <div class="row" ng-repeat="project in selected_site_details.projects">
             <div class="col-md-6">
-                <a href="#" class="name" target-"_self">{{ project.name }}</a>
+                <a href="/employee-guard/operators/project/{{ project.id }}" class="name" target="_self">{{ project.name }}</a>
                 <em class="date">{{ project.startDate | date: 'MM/dd/yyyy' }} <i ng-show="project.startDate && project.endDate" class="icon-long-arrow-right" ></i> {{ project.endDate | date: 'MM/dd/yyyy' }}</em>
                 <p class="location">{{ project.location }}</p>
             </div>
