@@ -1575,11 +1575,6 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   display: inline;
 }
 
-/* line 56, ../sass/pics/employee-guard/assignments/_assignments.scss */
-.nav-assignment .site-status {
-  margin-bottom: 20px;
-}
-
 /* line 2, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image {
   position: relative;
@@ -2806,14 +2801,15 @@ body.modal-open,
   background-color: #73bbe8;
   color: #ffffff;
 }
-/* line 27, ../sass/pics/components/_navigation.scss */
+/* line 26, ../sass/pics/components/_navigation.scss */
 .nav-pills a {
   color: #73bbe8;
   font-size: 14px;
 }
-/* line 31, ../sass/pics/components/_navigation.scss */
+/* line 30, ../sass/pics/components/_navigation.scss */
 .nav-pills a:hover {
   background-color: #f1f1f2;
+  color: #4496d8;
 }
 /* line 36, ../sass/pics/components/_navigation.scss */
 .nav-pills i {
@@ -2821,15 +2817,20 @@ body.modal-open,
 }
 
 /* line 41, ../sass/pics/components/_navigation.scss */
+.nav .nav-divider {
+  color: #e6e6e6;
+}
+
+/* line 45, ../sass/pics/components/_navigation.scss */
 .nav-title {
-  color: #cccccc;
+  color: #b3b3b3;
   display: block;
   font-size: 12px;
-  padding: 10px 15px 0px 15px;
+  padding: 0px 15px 0px 15px;
   text-transform: uppercase;
 }
 
-/* line 49, ../sass/pics/components/_navigation.scss */
+/* line 53, ../sass/pics/components/_navigation.scss */
 .nav .nav-header {
   color: #cccccc;
   display: block;
@@ -2837,11 +2838,6 @@ body.modal-open,
   font-weight: bold;
   line-height: 1.428571429;
   padding: 3px 20px;
-}
-
-/* line 58, ../sass/pics/components/_navigation.scss */
-.nav .nav-divider {
-  margin: 0px;
 }
 
 /* Skill Navigation */
