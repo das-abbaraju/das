@@ -1,24 +1,18 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.daos.RoleDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.entities.RoleEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Map;
 
 public class RoleAssignmentHelper {
 
     @Autowired
     private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-    @Autowired
-    private RoleEmployeeDAO roleEmployeeDAO;
 	@Autowired
 	private SiteAssignmentDAO siteAssignmentDAO;
 

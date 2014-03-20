@@ -122,7 +122,7 @@ public class SkillAssignmentHelperTest {
 				new EmployeeBuilder().build());
 
 		assertFalse(result.isEmpty());
-		assertEquals(4, result.size());
+		assertEquals(3, result.size());
 	}
 
 	@Test

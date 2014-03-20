@@ -20,10 +20,9 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ProjectAssignmentServiceTest {
 
@@ -76,7 +75,7 @@ public class ProjectAssignmentServiceTest {
 		verify(roleEntityService).getRolesForProjects(projects);
 		verify(skillEntityService).getSkillsForRoles(anyCollectionOf(Role.class));
 		verify(skillEntityService).getSiteRequiredSkills(anyInt(), anyListOf(Integer.class));
-		verify(accountService, times(2)).getTopmostCorporateAccountIds(SITE_ID);
+		verify(accountService).getTopmostCorporateAccountIds(SITE_ID);
 
 		verifyCommonServiceCalls(projects);
 	}
@@ -92,8 +91,6 @@ public class ProjectAssignmentServiceTest {
 
 	private void verifyTestGetEmployeesByRole(final List<Project> projects, final Map<Role, Set<Employee>> result) {
 		assertNotNull(result);
-
-		verify(accountService).getTopmostCorporateAccountIds(SITE_ID);
 
 		verifyCommonServiceCalls(projects);
 	}

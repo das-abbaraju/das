@@ -1,9 +1,8 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
-import com.picsauditing.employeeguard.entities.RoleEmployee;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -25,7 +24,7 @@ public class RoleAssignmentHelperTest {
 	@Mock
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Mock
-	private RoleEmployeeDAO roleEmployeeDAO;
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -34,7 +33,7 @@ public class RoleAssignmentHelperTest {
 		roleAssignmentHelper = new RoleAssignmentHelper();
 
 		Whitebox.setInternalState(roleAssignmentHelper, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
-		Whitebox.setInternalState(roleAssignmentHelper, "roleEmployeeDAO", roleEmployeeDAO);
+		Whitebox.setInternalState(roleAssignmentHelper, "siteAssignmentDAO", siteAssignmentDAO);
 	}
 
 	@Test
@@ -49,11 +48,8 @@ public class RoleAssignmentHelperTest {
 
 	@Test
 	public void testDeleteSiteRolesFromEmployee() throws Exception {
-		List<RoleEmployee> roleEmployees = Arrays.asList(new RoleEmployee());
-		when(roleEmployeeDAO.findByEmployeeAndSiteId(EMPLOYEE_ID, SITE_ID)).thenReturn(roleEmployees);
-
 		roleAssignmentHelper.deleteSiteRolesFromEmployee(EMPLOYEE_ID, SITE_ID);
 
-		verify(roleEmployeeDAO).delete(roleEmployees);
+		verify(siteAssignmentDAO).deleteByEmployeeIdAndSiteId(EMPLOYEE_ID, SITE_ID);
 	}
 }
