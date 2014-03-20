@@ -116,6 +116,7 @@ public class RegistrationService {
         registrant.setPaymentExpires(new Date());
         registrant.setAuditColumns(new User(User.CONTRACTOR));
         registrant.setNameIndex();
+        registrant.setZip(form.getZip());
 
 
         //FIXME: Extract NAICS logic into it's own class / service.
