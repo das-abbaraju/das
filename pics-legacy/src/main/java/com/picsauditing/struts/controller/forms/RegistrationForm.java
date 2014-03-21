@@ -95,6 +95,8 @@ public class RegistrationForm {
     @NotBlank(message = REQUIRED_KEY)
     private String passwordConfirmation;
 
+    @NotNull(message = REQUIRED_KEY)
+    @NotBlank(message = REQUIRED_KEY)
     @Pattern(regexp = PHONE_NUMBER_REGEX_WITH_ASTERISK, message = INVALID_PHONE_FORMAT_KEY)
     private String phone;
 
@@ -301,6 +303,7 @@ public class RegistrationForm {
             .setEmail(this.getEmail())
             .setAddress(this.getAddress())
             .setAddress2(this.getAddress2())
+            .setCity(this.getCity())
             .setZip(this.getZip())
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
