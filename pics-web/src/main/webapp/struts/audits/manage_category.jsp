@@ -251,6 +251,7 @@
 			</fieldset>
 			
 			<fieldset class="form submit">
+                <pics:permission perm="ManageAudits" type="Edit" >
 				<div>
 					<input type="submit" class="picsbutton positive" name="button" value="Save" id="save"/>
 					
@@ -260,7 +261,8 @@
 					
 					<input type="submit" class="picsbutton" name="button" value="UpdateAllAuditsCategories" id="updateAllAuditsCategories"/>	
 				</div>
-			</fieldset>
+                </pics:permission >
+            </fieldset>
 		</s:form>
 		
 		<s:if test="id != 0">
@@ -275,9 +277,11 @@
 						</li>
 					</s:iterator>
 				</ul>
-				
-				<a id="addNewSubCategory" class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.parentAuditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
-				
+
+                <pics:permission perm="ManageAudits" type="Edit" >
+				    <a id="addNewSubCategory" class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.parentAuditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
+                </pics:permission >
+
 				<div id="list-info"></div>
 			</div>
 			
@@ -292,10 +296,12 @@
 					    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.toString().length()>100 ? name.toString().substring(0,97) + '...' : name"/></s:if><s:else>EMPTY</s:else></a></li>
 					</s:iterator>
 				</ul>
-				
-				<a id="addNewQuestion" class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
-				
-				<div id="listQ-info"></div>
+
+                <pics:permission perm="ManageAudits" type="Edit" >
+				    <a id="addNewQuestion" class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
+                </pics:permission >
+
+                <div id="listQ-info"></div>
 			</div>
 			<br/>
 			
