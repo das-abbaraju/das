@@ -303,7 +303,7 @@
                     $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
                     $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
 
-                    this.populateSsipAnswers();
+                    this.displaySsipFieldsBasedOnValues();
 
                 } else if ($('.RegistrationMakePayment-page').length) {
                     $('.modal-link:not(.contractor-agreement)').on('click', this.showBasicModal);
@@ -311,17 +311,18 @@
                 }
 	        },
 
-            populateSsipAnswers: function() {
-                var $registeredWithSsip = $('#registeredWithSsipMemberScheme:checked').val(),
-                    $readyToProvideDetails = $('#readyToProvideDetails:checked').val();
+            displaySsipFieldsBasedOnValues: function() {
+                var registeredWithSsip = $('#registeredWithSsipMemberScheme:checked').val(),
+                    readyToProvideDetails = $('#readyToProvideDetails:checked').val();
 
-                if ($registeredWithSsip == 'Yes') {
+                if (registeredWithSsip == 'Yes') {
                     $('.request-to-provide-ssip-details-container').show();
 
-                    if ($readyToProvideDetails == 'Yes') {
+                    if (readyToProvideDetails == 'Yes') {
                         $('.ssip-details-container').show();
-                    } else if ($readyToProvideDetails == 'No') {
+                    } else if (readyToProvideDetails == 'No') {
                         $('.provide-ssip-details-later-message').show();
+
                     }
                 }
             },

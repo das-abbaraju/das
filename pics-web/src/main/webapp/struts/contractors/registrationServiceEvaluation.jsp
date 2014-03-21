@@ -93,13 +93,16 @@
                                 <label><s:text name="RegistrationServiceEvaluation.ssip.dateOfLastAudit" /></label>
                                 <ul class="text-input-list">
                                     <li>
-                                        <input type="text" name="yearOfLastSsipMemberAudit" value="${yearOfLastSsipMemberAudit > 0 ? yearOfLastSsipMemberAudit : ''}" placeholder="YYYY" maxlength="4" class="year">
+                                        <s:set var="year" value="yearOfLastSsipMemberAudit > 0 ? yearOfLastSsipMemberAudit : ''" />
+                                        <input type="text" name="yearOfLastSsipMemberAudit" value="${year}" placeholder="YYYY" maxlength="4" class="year">
                                     </li>
                                     <li>
-                                        <input type="text" name="monthOfLastSsipMemberAudit" value="${monthOfLastSsipMemberAudit > 0 ? monthOfLastSsipMemberAudit : ''}" placeholder="MM" maxlength="2" class="month">
+                                        <s:set var="month" value="monthOfLastSsipMemberAudit > 0 ? monthOfLastSsipMemberAudit : ''" />
+                                        <input type="text" name="monthOfLastSsipMemberAudit" value="${month}" placeholder="MM" maxlength="2" class="month">
                                     </li>
                                     <li>
-                                        <input type="text" name="dayOfLastSsipMemberAudit" value="${dayOfLastSsipMemberAudit > 0 ? dayOfLastSsipMemberAudit : ''}" placeholder="DD" maxlength="2" class="day">
+                                        <s:set var="day" value="dayOfLastSsipMemberAudit > 0 ? dayOfLastSsipMemberAudit : ''" />
+                                        <input type="text" name="dayOfLastSsipMemberAudit" value="${day}" placeholder="DD" maxlength="2" class="day">
                                     </li>
                                 </ul>
                             </li>
@@ -107,13 +110,16 @@
                                 <label><s:text name="RegistrationServiceEvaluation.ssip.dateOfMembershipExpiration" /></label>
                                 <ul class="text-input-list">
                                     <li>
-                                        <input type="text" name="yearOfSsipMembershipExpiration" value="${yearOfSsipMembershipExpiration > 0 ? yearOfSsipMembershipExpiration : ''}" placeholder="YYYY" maxlength="4" class="year">
+                                        <s:set var="year" value="yearOfSsipMembershipExpiration > 0 ? yearOfSsipMembershipExpiration : ''" />
+                                        <input type="text" name="yearOfSsipMembershipExpiration" value="${year}" placeholder="YYYY" maxlength="4" class="year">
                                     </li>
                                     <li>
-                                        <input type="text" name="monthOfSsipMembershipExpiration" value="${monthOfSsipMembershipExpiration > 0 ? monthOfSsipMembershipExpiration : ''}" placeholder="MM" maxlength="2" class="month">
+                                        <s:set var="month" value="monthOfSsipMembershipExpiration > 0 ? monthOfSsipMembershipExpiration : ''" />
+                                        <input type="text" name="monthOfSsipMembershipExpiration" value="${month}" placeholder="MM" maxlength="2" class="month">
                                     </li>
                                     <li>
-                                        <input type="text" name="dayOfSsipMembershipExpiration" value="${dayOfSsipMembershipExpiration > 0 ? dayOfSsipMembershipExpiration : ''}" placeholder="DD" maxlength="2" class="day">
+                                        <s:set var="day" value="dayOfSsipMembershipExpiration > 0 ? dayOfSsipMembershipExpiration : ''" />
+                                        <input type="text" name="dayOfSsipMembershipExpiration" value="${day}" placeholder="DD" maxlength="2" class="day">
                                     </li>
                                 </ul>
                             </li>
