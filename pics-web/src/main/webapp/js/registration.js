@@ -320,7 +320,7 @@
 
                     if (readyToProvideDetails == 'Yes') {
                         $('.ssip-details-container').show();
-                    } else if (readyToProvideDetails == 'No') {
+                    } else {
                         $('.provide-ssip-details-later-message').show();
 
                     }
