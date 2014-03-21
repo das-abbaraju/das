@@ -182,4 +182,25 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
+	public List<AccountSkill> findSiteAndCorporateRequiredSkills(final Collection<Integer> siteAndCorporateIds) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT skill FROM SiteSkill siteSkill " +
+				"JOIN siteSkill.skill skill " +
+				"WHERE siteSkill.siteId IN (:siteAndCorporateIds)", AccountSkill.class);
+
+		query.setParameter("siteAndCorporateIds", siteAndCorporateIds);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> findProjectRequiredSkills(final Collection<Project> projects) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT skill FROM ProjectSkill projectSkill " +
+				"JOIN projectSkill.project project " +
+				"JOIN projectSkill.skill skill " +
+				"WHERE project IN (:projects)", AccountSkill.class);
+
+		query.setParameter("projects", projects);
+
+		return query.getResultList();
+	}
+
 }

@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
-import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.daos.RoleDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
@@ -41,6 +38,8 @@ public class RoleEntityServiceTest {
 	private RoleDAO roleDAO;
 	@Mock
 	private RoleEmployeeDAO roleEmployeeDAO;
+	@Mock
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -51,7 +50,7 @@ public class RoleEntityServiceTest {
 		Whitebox.setInternalState(roleEntityService, "projectRoleDAO", projectRoleDAO);
 		Whitebox.setInternalState(roleEntityService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 		Whitebox.setInternalState(roleEntityService, "roleDAO", roleDAO);
-		Whitebox.setInternalState(roleEntityService, "roleEmployeeDAO", roleEmployeeDAO);
+		Whitebox.setInternalState(roleEntityService, "siteAssignmentDAO", siteAssignmentDAO);
 	}
 
 	@Test
@@ -74,7 +73,7 @@ public class RoleEntityServiceTest {
 		List<ProjectRole> fakeProjectRoles = buildFakeProjectRoles();
 		when(projectRoleDAO.findByProjects(anyListOf(Project.class))).thenReturn(fakeProjectRoles);
 
-		Map<Project, Set<Role>> results = roleEntityService.getRolesForProjects(Collections.<Project>emptyList());
+		Map<Project, Set<Role>> results = roleEntityService.getRolesForProjects(Arrays.asList(new Project()));
 
 		verifyTestGetRolesForProjects(results);
 	}
@@ -101,16 +100,17 @@ public class RoleEntityServiceTest {
 
 	@Test
 	public void testGetSiteRolesForEmployees() {
-		List<RoleEmployee> fakeRoleEmployees = buildFakeRoleEmployees();
+		when(siteAssignmentDAO.findByEmployeesAndSiteId(anyCollectionOf(Employee.class), anyInt()))
+				.thenReturn(buildFakeSiteAssignments());
 
-		Map<Employee, Set<Role>> result = roleEntityService.getSiteRolesForEmployees(null, 0);
+		Map<Employee, Set<Role>> result = roleEntityService.getSiteRolesForEmployees(Arrays.asList(new Employee()), 0);
 
 		verifyTestGetSiteRolesForEmployees(result);
 	}
 
-	private List<RoleEmployee> buildFakeRoleEmployees() {
+	private List<SiteAssignment> buildFakeSiteAssignments() {
 		return Arrays.asList(
-				new RoleEmployeeBuilder()
+				new SiteAssignmentBuilder()
 						.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Test RoleEmployee").build())
 						.employee(new EmployeeBuilder().accountId(456).email("test.employee@test.com").build())
 						.build()
@@ -130,11 +130,10 @@ public class RoleEntityServiceTest {
 
 	@Test
 	public void testGetProjectRolesForEmployees() {
-		List<ProjectRoleEmployee> fakeProjectRoleEmployees = buildFakeProjectRoleEmployees();
 		when(projectRoleEmployeeDAO.findByEmployeesAndSiteId(anyCollectionOf(Employee.class), anyInt()))
-				.thenReturn(fakeProjectRoleEmployees);
+				.thenReturn(buildFakeProjectRoleEmployees());
 
-		Map<Employee, Set<Role>> results = roleEntityService.getProjectRolesForEmployees(Collections.<Employee>emptyList(), 0);
+		Map<Employee, Set<Role>> results = roleEntityService.getProjectRolesForEmployees(Arrays.asList(new Employee()), 0);
 
 		verifyTestGetProjectRolesForEmployees(results);
 	}
