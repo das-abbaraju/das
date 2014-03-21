@@ -2,6 +2,7 @@ package com.picsauditing.struts.controller.contractor;
 
 import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.model.contractor.CdmScopeItem;
@@ -21,7 +22,7 @@ import java.util.Date;
 
 import static com.picsauditing.PICS.DateBean.buildDate;
 
-public class ContractorCertificateController extends PicsActionSupport {
+public class ContractorCertificateController extends ContractorActionSupport {
 
     public static final int ZERO_BASED_OFFSET = 1;
     public static final String URL_FOR_MANUAL_AUDIT = "/Audit.action?auditID=";
@@ -30,7 +31,6 @@ public class ContractorCertificateController extends PicsActionSupport {
     public static final String EXPIRATION_DATE_MUST_BE_AFTER_ISSUE_DATE_KEY = "JS.Validation.Contractor.Certificate.ExpirationDateMustBeAfterIssueDate";
     public static final String INVALID_ISSUE_DATE_KEY = "JS.Validation.Contractor.Certificate.InvalidIssueDate";
     public static final String INVALID_EXPIRATION_DATE_KEY = "JS.Validation.Contractor.Certificate.ExpirationDate";
-    private ContractorAccount contractor;
 
     private String certificationMethod;
     private String cdmScope;
@@ -156,14 +156,6 @@ public class ContractorCertificateController extends PicsActionSupport {
                 "<p>" + getText("Audit.CertificateDownload.PleaseVisit") +
                 " <a href=\"/ContractorView.action?id=" + contractor.getId() + "\">" + getText("Audit.CertificateDownload.ContractorDashboard") + "</a> " +
                 getText("Audit.CertificateDownload.Download") + "</p>";
-    }
-
-    public ContractorAccount getContractor() {
-        return contractor;
-    }
-
-    public void setContractor(ContractorAccount contractor) {
-        this.contractor = contractor;
     }
 
     public String getCurrentUserName() {

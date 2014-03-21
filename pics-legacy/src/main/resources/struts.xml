@@ -282,6 +282,7 @@
             <result>/struts/layout/menu/bootstrap2/_menu.jsp</result>
             <result name="bootstrap3">/struts/layout/menu/bootstrap3/_menu.jsp</result>
             <result name="contractor-menu">/struts/layout/menu/bootstrap2/_contractor-menu.jsp</result>
+            <result name="contractor-menu-bootstrap3">/struts/layout/menu/bootstrap3/_contractor-menu.jsp</result>
             <result name="mobile-menu">/struts/layout/menu/mobile/_mobile-menu.jsp</result>
         </action>
 
