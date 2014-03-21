@@ -287,9 +287,6 @@
                 var company_information = $('.company-information'),
                     $country_select = $('.country select');
 
-                $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
-                $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
-
                 if ($('.Registration-page').length) {
                     $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
 
@@ -303,11 +300,32 @@
 
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
                     $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
+                    $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
+                    $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
+
+                    this.displaySsipFieldsBasedOnValues();
+
                 } else if ($('.RegistrationMakePayment-page').length) {
                     $('.modal-link:not(.contractor-agreement)').on('click', this.showBasicModal);
                     $('.contractor-agreement.modal-link').on('click', this.showContractorAgreementModal);
                 }
 	        },
+
+            displaySsipFieldsBasedOnValues: function() {
+                var registeredWithSsip = $('#registeredWithSsipMemberScheme:checked').val(),
+                    readyToProvideDetails = $('#readyToProvideDetails:checked').val();
+
+                if (registeredWithSsip == 'Yes') {
+                    $('.request-to-provide-ssip-details-container').show();
+
+                    if (readyToProvideDetails == 'Yes') {
+                        $('.ssip-details-container').show();
+                    } else if (readyToProvideDetails == 'No') {
+                        $('.provide-ssip-details-later-message').show();
+
+                    }
+                }
+            },
 
             autofillRegistrationFormForDev: function (event) {
                 var email = 'my.email' + new Date().getTime() + '@test.com';

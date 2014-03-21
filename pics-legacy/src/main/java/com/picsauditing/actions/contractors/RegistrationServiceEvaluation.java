@@ -26,16 +26,16 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
-    @Autowired
-    private BillingService billingService;
-    @Autowired
-    private FeeService feeService;
-    @Autowired
-    private ServiceRiskCalculator serviceRiskCalculator;
-    @Autowired
-    private EmployeeGuardRulesService employeeGuardRulesService;
+	@Autowired
+	private BillingService billingService;
+	@Autowired
+	private FeeService feeService;
+	@Autowired
+	private ServiceRiskCalculator serviceRiskCalculator;
+	@Autowired
+	private EmployeeGuardRulesService employeeGuardRulesService;
 
-    private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
+	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
 	private Map<Integer, AuditData> answerMap = new HashMap<>();
 	private Map<Integer, AuditData> ssipAnswerMap = new HashMap<>();
@@ -71,9 +71,9 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	public static final int QUESTION_ID_SSIP_EXPIRATION_DATE = 16916;
 	public static final int QUESTION_ID_SSIP_SCHEME = 16948;
 
-    private final Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
+	private final Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
 
-    public RegistrationServiceEvaluation() {
+	public RegistrationServiceEvaluation() {
 		this.subHeading = getText("ContractorRegistrationServices.title");
 		this.currentStep = ContractorRegistrationStep.Risk;
 	}
@@ -180,28 +180,28 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		saveAnswersForPqfAudit();
 		loadPqfAnswers();
 
-        if (shouldShowSsip()) {
-            saveAnswersForSsipAudit();
-            loadSsipAnswers();
-        }
-        else {
-            auditDao.remove(ssipAudit);
-            for (AuditData data : ssipAnswerMap.values()) {
-                auditDataDAO.remove(data);
+		if (shouldShowSsip()) {
+			saveAnswersForSsipAudit();
+			loadSsipAnswers();
+		}
+		else {
+			auditDao.remove(ssipAudit);
+			for (AuditData data : ssipAnswerMap.values()) {
+				auditDataDAO.remove(data);
 
 
 
-            }
-        }
+			}
+		}
 
 		recalculateAuditPercentages();
 
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
 
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+		employeeGuardRulesService.runEmployeeGuardRules(contractor);
 
-        billingService.syncBalance(contractor);
+		billingService.syncBalance(contractor);
 		feeService.calculateContractorInvoiceFees(contractor, false);
 		contractorAccountDao.save(contractor);
 
@@ -209,7 +209,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingRequestedOrDeactivated()) {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
-            contractor.setMembershipDate(new Date());
+			contractor.setMembershipDate(new Date());
 
 			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);
@@ -334,6 +334,16 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		return catIds;
 	}
 
+	private String formatDateDayOrMonth(int number) {
+		String preformattedNumber = String.valueOf(number);
+
+		if (0 < number && number < 10) {
+			return "0" + preformattedNumber;
+		}
+
+		return preformattedNumber;
+	}
+
 	public Map<Integer, AuditData> getAnswerMap() {
 		return answerMap;
 	}
@@ -371,7 +381,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	public List<AuditQuestion> getInfoQuestions() {
 		if (infoQuestions == null || infoQuestions.size() == 0) {
 			loadPqfQuestionsAndAudit();
-        }
+		}
 
 		return infoQuestions;
 	}
@@ -380,7 +390,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		this.infoQuestions = infoQuestions;
 	}
 
-    public void setAnswerMap(Map<Integer, AuditData> answerMap) {
+	public void setAnswerMap(Map<Integer, AuditData> answerMap) {
 		this.answerMap = answerMap;
 	}
 
@@ -478,20 +488,20 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		this.isBidOnly = isBidOnly;
 	}
 
-    public boolean isHasTransportationQuestions() {
-        return hasTransportationQuestions;
-    }
+	public boolean isHasTransportationQuestions() {
+		return hasTransportationQuestions;
+	}
 
-	public int getDayOfSsipMembershipExpiration() {
-		return dayOfSsipMembershipExpiration;
+	public String getDayOfSsipMembershipExpiration() {
+		return formatDateDayOrMonth(dayOfSsipMembershipExpiration);
 	}
 
 	public void setDayOfSsipMembershipExpiration(int dayOfSsipMembershipExpiration) {
 		this.dayOfSsipMembershipExpiration = dayOfSsipMembershipExpiration;
 	}
 
-	public int getMonthOfSsipMembershipExpiration() {
-		return monthOfSsipMembershipExpiration;
+	public String getMonthOfSsipMembershipExpiration() {
+		return formatDateDayOrMonth(monthOfSsipMembershipExpiration);
 	}
 
 	public void setMonthOfSsipMembershipExpiration(int monthOfSsipMembershipExpiration) {
@@ -506,16 +516,16 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		this.yearOfSsipMembershipExpiration = yearOfSsipMembershipExpiration;
 	}
 
-	public int getDayOfLastSsipMemberAudit() {
-		return dayOfLastSsipMemberAudit;
+	public String getDayOfLastSsipMemberAudit() {
+		return formatDateDayOrMonth(dayOfLastSsipMemberAudit);
 	}
 
 	public void setDayOfLastSsipMemberAudit(int dayOfLastSsipMemberAudit) {
 		this.dayOfLastSsipMemberAudit = dayOfLastSsipMemberAudit;
 	}
 
-	public int getMonthOfLastSsipMemberAudit() {
-		return monthOfLastSsipMemberAudit;
+	public String getMonthOfLastSsipMemberAudit() {
+		return formatDateDayOrMonth(monthOfLastSsipMemberAudit);
 	}
 
 	public void setMonthOfLastSsipMemberAudit(int monthOfLastSsipMemberAudit) {
@@ -597,11 +607,11 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		for (AuditCategory category : pqfCategories.keySet()) {
 			for (AuditQuestion question : category.getQuestions()) {
 				if (question.isValidQuestion(new Date())) {
-                    infoQuestions.add(question);
+					infoQuestions.add(question);
 
-                    if (question.getCategory().getId() == AuditCategory.TRANSPORTATION_SAFETY_EVAL) {
-                        hasTransportationQuestions = true;
-                    }
+					if (question.getCategory().getId() == AuditCategory.TRANSPORTATION_SAFETY_EVAL) {
+						hasTransportationQuestions = true;
+					}
 				}
 			}
 		}
@@ -684,7 +694,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 				auditData.setQuestion(questionDao.find(qid));
 				auditData.setAuditColumns(permissions);
 				auditDataDAO.save(auditData);
- 			}
+			}
 		}
 	}
 
@@ -781,7 +791,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	}
 
 	private void calculateRiskLevels() {
-        serviceRiskCalculator.calculateContractorsRiskLevels(contractor, answerMap);
+		serviceRiskCalculator.calculateContractorsRiskLevels(contractor, answerMap);
 
 		contractor.setAuditColumns(permissions);
 		contractorAccountDao.save(contractor);
@@ -914,14 +924,14 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		audit.getCategories().add(catData);
 	}
 
-    public boolean shouldShowSsip() {
-        for (AuditTypeRule rule : auditTypeRuleCache.getRules(contractor)) {
-            if (rule.isInclude() && rule.getAuditType().getId() == AuditType.SSIP) {
-                return true;
-            }
-        }
-       return false;
-    }
+	public boolean shouldShowSsip() {
+		for (AuditTypeRule rule : auditTypeRuleCache.getRules(contractor)) {
+			if (rule.isInclude() && rule.getAuditType().getId() == AuditType.SSIP) {
+				return true;
+			}
+		}
+	   return false;
+	}
 
 	public List<AuditOptionValue> getSsipMemberSchemes() {
 		AuditQuestion question = questionDao.find(QUESTION_ID_SSIP_SCHEME);
