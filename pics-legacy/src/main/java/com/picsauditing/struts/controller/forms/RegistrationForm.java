@@ -269,10 +269,10 @@ public class RegistrationForm {
         final RegistrationForm form = new RegistrationForm();
 
         form.status = input.getStatus();
+        form.city = input.getCity();
         form.address = input.getAddress();
         form.address2 = input.getAddress2();
         form.legalName = input.getName();
-        form.city = input.getCity();
         form.countryISOCode = (input.getCountry() != null)
                 ? input.getCountry().getIsoCode()
                 : null;
@@ -283,8 +283,9 @@ public class RegistrationForm {
         form.firstName = user.getFirstName();
         form.lastName = user.getLastName();
         form.locale = input.getLocale();
-        form.phone = input.getPhone();
         form.zip = input.getZip();
+        form.phone = user.getPhone();
+
 
         return form;
     }
