@@ -246,22 +246,45 @@ public class BillingService {
 	private InvoiceType convertBillingStatusToInvoiceType(Invoice invoice, BillingStatus billingStatus) {
         Set<FeeClass> invoiceFeeClasses = getInvoiceFeeClasses(invoice);
 
-        if (invoiceFeeClasses.contains(FeeClass.Activation) || invoiceFeeClasses.contains(FeeClass.Reactivation)) {
+        if (invoiceFeeClasses.contains(FeeClass.Activation)) {
             return InvoiceType.Activation;
+        }
+        if (invoiceFeeClasses.contains(FeeClass.Reactivation)) {
+            return InvoiceType.Reactivation;
         }
 
         switch (billingStatus) {
             case Upgrade:
-                return InvoiceType.Upgrade;
+                return setUpgradeType((ContractorAccount)invoice.getAccount(),invoiceFeeClasses);
             case Renewal:
             case RenewalOverdue:
                 return InvoiceType.Renewal;
             case Activation:
-            case Reactivation:
                 return InvoiceType.Activation;
+            case Reactivation:
+                return InvoiceType.Reactivation;
             default:
                 return InvoiceType.OtherFees;
         }
+    }
+
+    private InvoiceType setUpgradeType(ContractorAccount contractorAccount, Set<FeeClass> feeClasses) {
+        InvoiceType returnType = InvoiceType.Upgrade;
+
+        for (FeeClass feeClass : feeClasses) {
+            ContractorFee fee = contractorAccount.getFees().get(feeClass);
+            if (fee == null)
+                continue;
+
+            if (fee.getCurrentFacilityCount() == 0 && fee.getNewFacilityCount() > 0) {
+                returnType = InvoiceType.Upgrade_Service;
+            }
+            else if (fee.getCurrentFacilityCount() > 0 && fee.getNewFacilityCount() > fee.getCurrentFacilityCount()) {
+                return InvoiceType.Upgrade_Tier;
+            }
+        }
+
+        return returnType;
     }
 
     private static Set<FeeClass> getInvoiceFeeClasses(Invoice invoice) {

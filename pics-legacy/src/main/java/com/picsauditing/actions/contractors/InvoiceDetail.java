@@ -200,8 +200,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         contractor.setBalance(BigDecimal.ZERO);
         contractorAccountDao.save(contractor);
 
-        notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.REMOVE));
-
         addNote("Invoice marked as 'Bad Debt'.", billingNoteModel.findUserForPaymentNote(permissions));
     }
 

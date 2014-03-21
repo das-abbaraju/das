@@ -592,7 +592,7 @@ public class BillingServiceTest extends PicsTranslationTest {
         when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Reactivation);
         InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", mockInvoice, BillingStatus.Renewal);
 
-        assertEquals(InvoiceType.Activation, invoiceType);
+        assertEquals(InvoiceType.Reactivation, invoiceType);
     }
 
     @Test
@@ -1052,6 +1052,66 @@ public class BillingServiceTest extends PicsTranslationTest {
         when(invoiceFee.isFree()).thenReturn(false);
         when(invoice.getItems()).thenReturn(invoiceItems);
         Whitebox.invokeMethod(billingService, "validateRevRec", invoice);
+    }
+
+    @Test
+    public void testInvoiceTypeSetUpgradeType_ServiceUpgrade() throws Exception {
+        setupStandardFees(false,false);
+        fees.put(FeeClass.AuditGUARD,contractorFee);
+
+        Set<FeeClass> feeClasses = new HashSet<>();
+        feeClasses.add(FeeClass.Activation);
+        feeClasses.add(FeeClass.DocuGUARD);
+        feeClasses.add(FeeClass.InsureGUARD);
+        feeClasses.add(FeeClass.AuditGUARD);
+        when(mockContractor.getFees()).thenReturn(fees);
+        when(contractorFee.getCurrentFacilityCount()).thenReturn(0);
+        when(contractorFee.getNewFacilityCount()).thenReturn(1);
+
+        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockContractor, feeClasses);
+        assertNotSame(InvoiceType.Upgrade, type);
+        assertEquals(InvoiceType.Upgrade_Service, type);
+    }
+
+    @Test
+    public void testInvoiceTypeSetUpgradeType_ServiceTierUpgrade() throws Exception {
+        setupStandardFees(false,false);
+        fees.put(FeeClass.AuditGUARD,contractorFee);
+
+        Set<FeeClass> feeClasses = new HashSet<>();
+        feeClasses.add(FeeClass.Activation);
+        feeClasses.add(FeeClass.DocuGUARD);
+        feeClasses.add(FeeClass.InsureGUARD);
+        feeClasses.add(FeeClass.AuditGUARD);
+        when(mockContractor.getFees()).thenReturn(fees);
+        when(contractorFee.getCurrentFacilityCount()).thenReturn(1);
+        when(contractorFee.getNewFacilityCount()).thenReturn(2);
+
+        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockContractor, feeClasses);
+        assertNotSame(InvoiceType.Upgrade, type);
+        assertEquals(InvoiceType.Upgrade_Tier, type);
+    }
+
+    @Test
+    public void testInvoiceTypeSetUpgradeType_TierUpgrade() throws Exception {
+        setupStandardFees(false,false);
+        fees.put(FeeClass.AuditGUARD,upgradeFee);
+        fees.put(FeeClass.DocuGUARD,contractorFee);
+
+        Set<FeeClass> feeClasses = new HashSet<>();
+        feeClasses.add(FeeClass.Activation);
+        feeClasses.add(FeeClass.DocuGUARD);
+        feeClasses.add(FeeClass.InsureGUARD);
+        feeClasses.add(FeeClass.AuditGUARD);
+        when(mockContractor.getFees()).thenReturn(fees);
+        when(contractorFee.getCurrentFacilityCount()).thenReturn(0);
+        when(contractorFee.getNewFacilityCount()).thenReturn(1);
+        when(contractorFee.getCurrentFacilityCount()).thenReturn(1);
+        when(contractorFee.getNewFacilityCount()).thenReturn(2);
+
+        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockContractor, feeClasses);
+        assertNotSame(InvoiceType.Upgrade, type);
+        assertEquals(InvoiceType.Upgrade_Tier, type);
     }
 
 }

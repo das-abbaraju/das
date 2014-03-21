@@ -22,7 +22,6 @@ import com.picsauditing.PICS.data.InvoiceDataEvent.InvoiceEventType;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.dao.InvoiceCommissionDAO;
-import com.picsauditing.dao.PaymentCommissionDAO;
 import com.picsauditing.salecommission.invoice.strategy.CommissionAudit;
 import com.picsauditing.util.Strings;
 
@@ -34,8 +33,6 @@ public class CommissionModel {
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private InvoiceCommissionDAO invoiceCommissionDAO;
-	@Autowired
-	private PaymentCommissionDAO paymentCommissionDAO;
 
 	public void processPaymentCommissionForInvoice(int invoiceId) {
 		Invoice invoice = findInvoice(invoiceId);
@@ -63,16 +60,16 @@ public class CommissionModel {
 	}
 
 	private void deleteExistingPaymentCommissions(int invoiceId) {
-		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoiceId);
+		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findInvoiceCommissionsByInvoiceId(invoiceId);
 		if (CollectionUtils.isEmpty(invoiceCommissions)) {
 			return;
 		}
 
-		paymentCommissionDAO.deleteData("t.invoiceCommission.id IN (" + StringUtil.implodeIDs(invoiceCommissions) + ")");
+        invoiceCommissionDAO.deleteData(PaymentCommission.class, "t.invoiceCommission.id IN (" + StringUtil.implodeIDs(invoiceCommissions) + ")");
 	}
 
 	private void deleteExistingInvoiceCommissions(int invoiceId) {
-		invoiceCommissionDAO.deleteData("t.invoice.id = " + invoiceId);
+		invoiceCommissionDAO.deleteData(InvoiceCommission.class, "t.invoice.id = " + invoiceId);
 	}
 
 	private void processInvoiceCommission(Invoice invoice) {
