@@ -1,14 +1,4 @@
-@import 'mixins';
-
-@include employee-guard-delete-confirmation;
-@include employee-guard-information;
-@include employee-guard-list;
-@include employee-guard-pagination;
-@include employee-guard-section;
-@include employee-guard-section-full;
-@include employee-image;
-@include employee-skills;
-
+@import 'mixins/mixins';
 @import 'account/account';
 @import 'assignments/assignments';
 @import 'contractor/contractor';
