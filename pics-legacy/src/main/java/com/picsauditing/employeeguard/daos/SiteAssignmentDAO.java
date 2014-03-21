@@ -23,10 +23,10 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 	}
 
 	public List<SiteAssignment> findBySiteIdAndContractorIds(final int siteId, final Collection<Integer> contractorIds) {
-		TypedQuery<SiteAssignment> query = em.createQuery("FROM SiteAssignment sa " +
+		TypedQuery<SiteAssignment> query = em.createQuery("SELECT sa FROM SiteAssignment sa " +
 				"JOIN sa.employee e " +
 				"WHERE sa.siteId = :siteId " +
-				"AND e.accountID IN (:contractorIds)", SiteAssignment.class);
+				"AND e.accountId IN (:contractorIds)", SiteAssignment.class);
 		query.setParameter("siteId", siteId);
 		query.setParameter("contractorIds", contractorIds);
 
@@ -56,10 +56,28 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 		query.executeUpdate();
 	}
 
+	public List<SiteAssignment> findByEmployeesAndSiteId(final Collection<Employee> employees, final int siteId) {
+		TypedQuery<SiteAssignment> query = em.createQuery("FROM SiteAssignment sa " +
+				"WHERE sa.siteId = :siteId " +
+				"AND sa.employee IN (:employees)", SiteAssignment.class);
+		query.setParameter("siteId", siteId);
+		query.setParameter("employees", employees);
+
+		return query.getResultList();
+	}
+
 	public List<SiteAssignment> findByEmployee(final Employee employee) {
 		TypedQuery<SiteAssignment> query = em.createQuery("FROM SiteAssignment sa " +
 				"WHERE sa.employee = :employee", SiteAssignment.class);
 		query.setParameter("employee", employee);
+
+		return query.getResultList();
+	}
+
+	public List<SiteAssignment> findBySiteId(final int siteId) {
+		TypedQuery<SiteAssignment> query = em.createQuery("FROM SiteAssignment sa " +
+				"WHERE sa.siteId = :siteId", SiteAssignment.class);
+		query.setParameter("siteId", siteId);
 
 		return query.getResultList();
 	}

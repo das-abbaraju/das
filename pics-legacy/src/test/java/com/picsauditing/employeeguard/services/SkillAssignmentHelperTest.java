@@ -1,8 +1,11 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.SiteSkillDAO;
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.entities.builders.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
 public class SkillAssignmentHelperTest {
@@ -31,7 +32,7 @@ public class SkillAssignmentHelperTest {
 	@Mock
 	private AccountService accountService;
 	@Mock
-	private RoleEmployeeDAO roleEmployeeDAO;
+	private AccountSkillDAO accountSkillDAO;
 	@Mock
 	private SiteSkillDAO siteSkillDAO;
 
@@ -42,7 +43,7 @@ public class SkillAssignmentHelperTest {
 		skillAssignmentHelper = new SkillAssignmentHelper();
 
 		Whitebox.setInternalState(skillAssignmentHelper, "accountService", accountService);
-		Whitebox.setInternalState(skillAssignmentHelper, "roleEmployeeDAO", roleEmployeeDAO);
+		Whitebox.setInternalState(skillAssignmentHelper, "accountSkillDAO", accountSkillDAO);
 		Whitebox.setInternalState(skillAssignmentHelper, "siteSkillDAO", siteSkillDAO);
 	}
 
@@ -99,23 +100,9 @@ public class SkillAssignmentHelperTest {
 	public void testGetRequiredSkillsFromProjectsAndSiteRoles_WithSiteRolesAndSkillsToRemove() throws Exception {
 		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(Arrays.asList(CORPORATE_ID, 45));
 
-		SiteSkill siteSkill = new SiteSkill();
-		siteSkill.setSkill(
-				new AccountSkillBuilder()
-						.name("Site Skill")
-						.build());
-
-		when(siteSkillDAO.findByAccountIds(anyListOf(Integer.class))).thenReturn(Arrays.asList(siteSkill));
-
-		Role siteRole = new RoleBuilder()
-				.accountId(OTHER_SITE_ID)
-				.name("Other Site Role")
+		AccountSkill skill = new AccountSkillBuilder()
+				.name("Site Skill")
 				.build();
-
-		RoleEmployee roleEmployee = new RoleEmployee();
-		roleEmployee.setRole(siteRole);
-
-		when(roleEmployeeDAO.findByEmployeeAndSiteIds(anyInt(), anyListOf(Integer.class))).thenReturn(Arrays.asList(roleEmployee));
 
 		Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(
 				getFakeProjectCompanies(),

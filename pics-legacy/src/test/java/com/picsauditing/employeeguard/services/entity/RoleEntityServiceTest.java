@@ -102,8 +102,6 @@ public class RoleEntityServiceTest {
 	@Test
 	public void testGetSiteRolesForEmployees() {
 		List<RoleEmployee> fakeRoleEmployees = buildFakeRoleEmployees();
-		when(roleEmployeeDAO.findByEmployeesAndSiteId(anyCollectionOf(Employee.class), anyInt()))
-				.thenReturn(fakeRoleEmployees);
 
 		Map<Employee, Set<Role>> result = roleEntityService.getSiteRolesForEmployees(null, 0);
 

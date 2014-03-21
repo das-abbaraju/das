@@ -5,6 +5,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.PhotoForm;
@@ -27,6 +28,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private RoleEmployeeDAO roleEmployeeDAO;
+	@Autowired
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	/* All Find Methods */
 
@@ -97,17 +100,16 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public Map<Role, Set<Employee>> getEmployeesBySiteRoles(final int siteId) {
-		List<Employee> employeesAssignedToSite = employeeDAO.findEmployeesAssignedToSite(siteId);
 		return Utilities.convertToMapOfSets(
-				roleEmployeeDAO.findByEmployeesAndSiteId(employeesAssignedToSite, siteId),
-				new Utilities.EntityKeyValueConvertable<RoleEmployee, Role, Employee>() {
+				siteAssignmentDAO.findBySiteId(siteId),
+				new Utilities.EntityKeyValueConvertable<SiteAssignment, Role, Employee>() {
 					@Override
-					public Role getKey(RoleEmployee entity) {
+					public Role getKey(SiteAssignment entity) {
 						return entity.getRole();
 					}
 
 					@Override
-					public Employee getValue(RoleEmployee entity) {
+					public Employee getValue(SiteAssignment entity) {
 						return entity.getEmployee();
 					}
 				}
@@ -208,7 +210,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-								final int accountId) throws Exception {
+	                            final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.util.Extractor;
@@ -16,7 +17,9 @@ public class SkillAssignmentHelper {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private RoleEmployeeDAO roleEmployeeDAO;
+	private AccountSkillDAO accountSkillDAO;
+	@Autowired
+	private SiteAssignmentDAO siteAssignmentDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
@@ -91,21 +94,12 @@ public class SkillAssignmentHelper {
 		return requiredSkills;
 	}
 
-	private Set<AccountSkill> getSiteRoleSkills(Employee employee, List<Integer> siteIds) {
-//		Set<AccountSkill> requiredSkills = new HashSet<>();
-//		List<RoleEmployee> siteRoles = roleEmployeeDAO.findByEmployeeAndSiteIds(employee.getId(), siteIds);
-//
-//		for (RoleEmployee roleEmployee : siteRoles) {
-//			Role corporateRole = siteToCorporateRoles.get(roleEmployee.getRole());
-//
-//			for (AccountSkillRole accountSkillRole : corporateRole.getSkills()) {
-//				requiredSkills.add(accountSkillRole.getSkill());
-//			}
-//		}
-//
-//		return requiredSkills;
+	private List<AccountSkill> getSiteRoleSkills(final Employee employee, final List<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyList();
+		}
 
-		return Collections.emptySet();
+		return accountSkillDAO.findBySiteAssignments(siteIds, employee);
 	}
 
 	public Set<AccountSkillEmployee> filterNoLongerNeededEmployeeSkills(Employee employee,
