@@ -18,6 +18,13 @@ module.exports = function(grunt) {
         'vendor/pics/core.js',
     ];
 
+    var modules = [
+        'src/common/directives/directives.js',
+        'src/app/employeeguard/employeeguard.js'
+    ];
+
+    var dependencies = vendor_js_files.concat(modules);
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
@@ -31,7 +38,7 @@ module.exports = function(grunt) {
         karma: {
             unit: {
                 options: {
-                    files: vendor_js_files.concat([
+                    files: dependencies.concat([
                         'vendor/angular/jasmine/*.js',
                         'src/**/*.js'
                     ]),
@@ -60,11 +67,11 @@ module.exports = function(grunt) {
                 separator: ';',
             },
             dist: {
-                src: vendor_js_files.concat([
+                src: dependencies.concat([
                     'src/**/*.js',
                     '!src/**/*.spec.js'
                 ]),
-                dest: 'build/script.js',
+                dest: 'build/script.js'
             }
         },
 
@@ -116,17 +123,16 @@ module.exports = function(grunt) {
                     'concat'
                 ],
                 options: {
-                    interrupt: true,
+                    interrupt: true
                 },
             },
 
             styles: {
                 files: [
-                    'src/common/**/*.scss',
-                    'src/app/**/*.scss'
+                    'src/**/*.scss'
                 ],
                 tasks: [
-                    'compass'
+                    'compass:dist'
                 ],
                 options: {
                     interrupt: true
@@ -138,15 +144,10 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.registerTask('dev', [
-        'watch'
-    ]);
-
-    grunt.registerTask('builddev', [
         'jshint',
         'karma:unit',
         'concat',
-        'ngmin',
-        'compass'
+        'compass:dist'
     ]);
 
     grunt.registerTask('prod', [
