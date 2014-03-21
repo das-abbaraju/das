@@ -312,17 +312,17 @@
 	        },
 
             displaySsipFieldsBasedOnValues: function() {
-                var registeredWithSsip = $('#registeredWithSsipMemberScheme:checked').val(),
-                    readyToProvideDetails = $('#readyToProvideDetails:checked').val();
+                var isRegisteredWithSsip = $('#registeredWithSsipMemberScheme').is(':checked'),
+                    isReadyToProvideDetails = $('#readyToProvideDetails').is(':checked'),
+                    isNotReadyToProvideDetails = $('#notReadyToProvideDetails').is(':checked');
 
-                if (registeredWithSsip == 'Yes') {
+                if (isRegisteredWithSsip) {
                     $('.request-to-provide-ssip-details-container').show();
 
-                    if (readyToProvideDetails == 'Yes') {
+                    if (isReadyToProvideDetails) {
                         $('.ssip-details-container').show();
-                    } else {
+                    } else if (isNotReadyToProvideDetails) {
                         $('.provide-ssip-details-later-message').show();
-
                     }
                 }
             },
@@ -451,9 +451,9 @@
 	        },
 
             toggleReadyToProvideSsipDetailsDisplay: function (event) {
-                var val = $('#registeredWithSsipMemberScheme:checked').val();
+                var isRegisteredWithSsip = $('#registeredWithSsipMemberScheme').is(':checked');
 
-                if (val == "Yes") {
+                if (isRegisteredWithSsip) {
                     $('.request-to-provide-ssip-details-container').slideDown(400);
                 } else {
                     $('.request-to-provide-ssip-details-container').slideUp(400, function () {
@@ -468,9 +468,9 @@
             },
 
             toggleSsipDetailsDisplay: function (event) {
-                var val = $('input[name=readyToProvideSsipDetails]:checked').val();
+                var isReadyToProvideDetails = $('#readyToProvideDetails').is(':checked');
 
-                if (val == "Yes") {
+                if (isReadyToProvideDetails) {
                     $('.provide-ssip-details-later-message').slideUp(400);
                     $('.ssip-details-container').slideDown(400);
                 } else {

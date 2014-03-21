@@ -75,7 +75,7 @@
                                 </label>
                             </li>
                             <li>
-                                <input type="radio" name="readyToProvideSsipDetails" value="No" ${no_checked}/>
+                                <input type="radio" id="notReadyToProvideDetails" name="readyToProvideSsipDetails" value="No" ${no_checked}/>
                                 <label>
                                     <s:text name="YesNo.No" />
                                 </label>
