@@ -84,6 +84,16 @@ public class Menu extends PicsActionSupport {
 		return "contractor-menu";
 	}
 
+	public String contractorSubmenuBootstrap3() throws RecordNotFoundException {
+		contractor = findContractor();
+
+		if (contractor != null) {
+			menu = buildContractorSubmenu(false);
+		}
+
+		return "contractor-menu-bootstrap3";
+	}
+
 	public String operatorSubmenu() throws RecordNotFoundException {
 		menu = buildContractorSubmenu(false);
 		jsonArray = MenuWriter.convertMenuToJSON(menu);
