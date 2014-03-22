@@ -125,7 +125,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
 
     onEditSettingEditButtonClick: function (cmp) {
-        this.confirmEdit();
+        this.confirmEdit(cmp);
     },
 
     addHideReportInfoEvent: function (cmp, eOpts) {
@@ -254,7 +254,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.copyReport();
     },
 
-    confirmEdit: function () {
+    confirmEdit: function (cmp) {
         var edit_setting_view = this.getEditSetting(),
             edit_setting_form = edit_setting_view.getForm(),
             edit_setting_form_values = edit_setting_form.getValues(),
@@ -267,6 +267,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (new_report_name != old_report_name) {
             confirm_box = Ext.create('PICS.view.report.alert.Confirm');
             confirm_box.show();
+        } else {
+            this.editReport();
         }
     },
 
