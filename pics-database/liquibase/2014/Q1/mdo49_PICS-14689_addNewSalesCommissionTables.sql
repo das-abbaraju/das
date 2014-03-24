@@ -11,9 +11,9 @@ CREATE TABLE invoice_operator_commission(
 	UNIQUE KEY invoiceOpID(invoiceID,opID) ,
 	KEY operator(opID) ,
 	CONSTRAINT invoice
-	FOREIGN KEY (invoiceID) REFERENCES invoice (id) ON DELETE CASCADE ON UPDATE CASCADE ,
+	FOREIGN KEY (invoiceID) REFERENCES invoice (id) ON DELETE RESTRICT ON UPDATE RESTRICT ,
 	CONSTRAINT operator
-	FOREIGN KEY (opID) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (opID) REFERENCES accounts (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 CREATE TABLE payment_operator_commission(
@@ -29,7 +29,7 @@ CREATE TABLE payment_operator_commission(
 	UNIQUE KEY payment_commission(paymentID,invoiceOperatorCommissionID) ,
 	KEY invoiceOperatorCommission(invoiceOperatorCommissionID) ,
 	CONSTRAINT payment
-	FOREIGN KEY (paymentID) REFERENCES invoice (id) ON DELETE CASCADE ON UPDATE CASCADE ,
+	FOREIGN KEY (paymentID) REFERENCES invoice (id) ON DELETE RESTRICT ON UPDATE RESTRICT ,
 	CONSTRAINT invoiceOperatorCommission
-	FOREIGN KEY (invoiceOperatorCommissionID) REFERENCES invoice_operator_commission (id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (invoiceOperatorCommissionID) REFERENCES invoice_operator_commission (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
