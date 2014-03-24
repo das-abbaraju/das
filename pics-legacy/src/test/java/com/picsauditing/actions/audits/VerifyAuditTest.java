@@ -21,6 +21,8 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class VerifyAuditTest extends PicsTranslationTest {
@@ -37,6 +39,8 @@ public class VerifyAuditTest extends PicsTranslationTest {
     private OshaAudit oshaAudit;
     @Mock
     private SafetyStatistics safetyStat;
+    @Mock
+    private AuditQuestion question;
 
     @Before
 	public void setUp() throws Exception {
@@ -53,6 +57,38 @@ public class VerifyAuditTest extends PicsTranslationTest {
         PicsTestUtil.forceSetPrivateField(verifyAudit, "oshaAudit", oshaAudit);
         PicsTestUtil.forceSetPrivateField(verifyAudit, "auditDataService", auditDataService);
 	}
+
+    @Test
+    public void testGetVisibleOshaQuestions_IsVisible() {
+        List<AuditData> answerList = new ArrayList<>();
+        AuditData visibleAnswer = createAnswerMithMockQuestions("yes", 1);
+        AuditData notVisibleAnswer = createAnswerMithMockQuestions("yes", 2);
+
+        answerList.add(visibleAnswer);
+        answerList.add(notVisibleAnswer);
+
+        AnswerMap map = new AnswerMap(answerList);
+
+        when(oshaAudit.getQuestionsToVerify(OshaType.OSHA)).thenReturn(answerList);
+        when(auditDataService.loadAnswerMap(visibleAnswer)).thenReturn(map);
+        when(auditDataService.loadAnswerMap(notVisibleAnswer)).thenReturn(map);
+        when(visibleAnswer.getQuestion().isVisible(map)).thenReturn(true);
+        when(notVisibleAnswer.getQuestion().isVisible(map)).thenReturn(false);
+
+        List<AuditData> visibleList = verifyAudit.getVisibleOshaQuestions(OshaType.OSHA);
+        assertEquals(1, visibleList.size());
+    }
+
+    private AuditData createAnswerMithMockQuestions(String answer, int questionId) {
+        AuditQuestion question = mock(AuditQuestion.class);
+        when(question.getId()).thenReturn(questionId);
+
+        AuditData data = new AuditData();
+        data.setAnswer(answer);
+        data.setQuestion(question);
+
+        return data;
+    }
 
     @Test
     public void testGetVisibleOShaQuestions_NoOshaLog() {

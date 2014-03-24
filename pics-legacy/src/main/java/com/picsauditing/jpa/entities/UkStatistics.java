@@ -41,6 +41,7 @@ public class UkStatistics extends SafetyStatistics{
             }
 			if (answer.getQuestion().getId() == 9099 && categoryApplies) {
 				answerMap.put(OshaRateType.Hours, answer);
+                hoursWorked = answer;
 			}
 			if (answer.getQuestion().getId() == 8867 && categoryApplies) {
 				answerMap.put(OshaRateType.Fatalities, answer);
