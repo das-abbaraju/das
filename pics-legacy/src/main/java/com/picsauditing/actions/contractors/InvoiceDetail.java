@@ -165,7 +165,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 
 		if (isTransactionIsInvoice()) {
-			billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+			billingService.applyFinancialCalculationsAndType(invoice);
             billingService.verifyAndSaveInvoice(invoice);
 		}
         if (!Strings.isEmpty(message)) {
@@ -443,7 +443,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         AccountingSystemSynchronization.setToSynchronize(invoice);
         invoice.updateTotalAmount();
         invoice.updateAmountApplied();
-        billingService.doFinalFinancialCalculationsBeforeSaving(invoice);
+        billingService.applyFinancialCalculationsAndType(invoice);
         billingService.verifyAndSaveInvoice(invoice);
 
         addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")

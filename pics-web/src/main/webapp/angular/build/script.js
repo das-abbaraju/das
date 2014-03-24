@@ -64583,7 +64583,7 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     }()));
 
     PICS._init();
-}(jQuery, window, document));;angular.module('PICSApp', [
+}(jQuery, window, document));;angular.module('PICS.directives', []);;angular.module('PICSApp', [
     'PICS.home',
     'PICS.employeeguard',
     'PICS.directives',
@@ -64832,7 +64832,33 @@ angular.module('admin-projects', [])
         restrict: 'E',
         templateUrl: 'home.tpl.html'
     };
-});;angular.module('PICS.directives', []);;angular.module('PICS.directives')
+});;angular.module('PICS.directives')
+
+.directive('chart', function (AnimatedArcChart) {
+    return {
+        restrict: 'E',
+        scope: {
+            data: '=',
+            width: '@',
+            height: '@',
+            colors: "=",
+        },
+        link: function (scope, element, attrs) {
+            scope.$watch('data', function(newValue) {
+                if (newValue) {
+                    var chartData = extractChartData(newValue),
+                        chart = new AnimatedArcChart(chartData);
+
+                    chart.draw(element[0], scope.width, scope.height, scope.colors);
+                }
+            });
+
+            function extractChartData(data) {
+                return [data.completed + data.pending, data.expiring, data.expired];
+            }
+        }
+    };
+});;angular.module('PICS.directives')
 
 .directive('employeeskillsection', function () {
     return {
@@ -64904,32 +64930,6 @@ angular.module('admin-projects', [])
             scope.progress = scope.values();
         },
         templateUrl: '/angular/src/common/directives/stacked-progress-bar/_stacked-progress-bar.tpl.html'
-    };
-});;angular.module('PICS.directives')
-
-.directive('chart', function (AnimatedArcChart) {
-    return {
-        restrict: 'E',
-        scope: {
-            data: '=',
-            width: '@',
-            height: '@',
-            colors: "=",
-        },
-        link: function (scope, element, attrs) {
-            scope.$watch('data', function(newValue) {
-                if (newValue) {
-                    var chartData = extractChartData(newValue),
-                        chart = new AnimatedArcChart(chartData);
-
-                    chart.draw(element[0], scope.width, scope.height, scope.colors);
-                }
-            });
-
-            function extractChartData(data) {
-                return [data.completed + data.pending, data.expiring, data.expired];
-            }
-        }
     };
 });;(function ($) {
     PICS.define('layout.menu.Menu', {

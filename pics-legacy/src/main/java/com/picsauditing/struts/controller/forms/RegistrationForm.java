@@ -22,9 +22,11 @@ public class RegistrationForm {
     public static final String USERNAME_REGEX = "[\\w+._@-]+";
     public static final int MAX_STRING_LENGTH_50 = 50;
     public static final int MIN_STRING_LENGTH_2 = 2;
+    public static final int MIN_STRING_LENGTH_5 = 5;
     public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
     public static final String REQUIRED_KEY = "JS.Validation.Required";
     public static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
+    public static final String MIN_5_CHARS_KEY = "JS.Validation.Minimum5Characters";
     public static final String MAX_50_CHARS_KEY = "JS.Validation.Maximum50Characters";
     public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
     public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
@@ -85,7 +87,7 @@ public class RegistrationForm {
     // must contain letters & numbers
     @Length.List({
             @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY),
-            @Length(min = MIN_STRING_LENGTH_2, message = MIN_2_CHARS_KEY)
+            @Length(min = MIN_STRING_LENGTH_5, message = MIN_5_CHARS_KEY)
     })
     @NotNull(message = REQUIRED_KEY)
     @NotBlank(message = REQUIRED_KEY)
@@ -95,12 +97,15 @@ public class RegistrationForm {
     @NotBlank(message = REQUIRED_KEY)
     private String passwordConfirmation;
 
+    @NotNull(message = REQUIRED_KEY)
+    @NotBlank(message = REQUIRED_KEY)
     @Pattern(regexp = PHONE_NUMBER_REGEX_WITH_ASTERISK, message = INVALID_PHONE_FORMAT_KEY)
     private String phone;
 
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
+    @CountryExists(message = REQUIRED_KEY)
     private String countryISOCode;
 
     @NotBlank(message = REQUIRED_KEY)
@@ -111,6 +116,7 @@ public class RegistrationForm {
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String vatID;
 
+    @NotBlank(message = REQUIRED_KEY)
     @NotNull(message = REQUIRED_KEY)
     @Email(message = INVALID_EMAIL_FORMAT_KEY)
     private String email;
@@ -268,10 +274,10 @@ public class RegistrationForm {
         final RegistrationForm form = new RegistrationForm();
 
         form.status = input.getStatus();
+        form.city = input.getCity();
         form.address = input.getAddress();
         form.address2 = input.getAddress2();
         form.legalName = input.getName();
-        form.city = input.getCity();
         form.countryISOCode = (input.getCountry() != null)
                 ? input.getCountry().getIsoCode()
                 : null;
@@ -282,8 +288,9 @@ public class RegistrationForm {
         form.firstName = user.getFirstName();
         form.lastName = user.getLastName();
         form.locale = input.getLocale();
-        form.phone = input.getPhone();
         form.zip = input.getZip();
+        form.phone = user.getPhone();
+
 
         return form;
     }
@@ -299,6 +306,7 @@ public class RegistrationForm {
             .setEmail(this.getEmail())
             .setAddress(this.getAddress())
             .setAddress2(this.getAddress2())
+            .setCity(this.getCity())
             .setZip(this.getZip())
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
@@ -333,7 +341,7 @@ public class RegistrationForm {
 
     @PasswordsMatch(message = "registrationForm.passwordConfirmation::" + PASSWORDS_MUST_MATCH_KEY)
     @PasswordNotSameAsUserName(message =  "registrationForm.password::" + PASSWORD_CANNOT_BE_USERNAME)
-    public static final class PasswordPair {
+    public static class PasswordPair {
 
         private final String first;
         private final String second;
@@ -360,7 +368,7 @@ public class RegistrationForm {
     }
 
     @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_ID_KEY)
-    public static final class VATPair {
+    public static class VATPair {
         private final String country;
         private final String vatCode;
 
@@ -379,7 +387,8 @@ public class RegistrationForm {
     }
 
     @ValidateSubdivision(message = "registrationForm.countrySubdivision::" + REQUIRED_KEY)
-    public static final class CountrySubdivisionPair {
+    @ValidateZipCode(message = "registrationForm.zip::" + INVALID_UK_POST_CODE_KEY)
+    public static class CountrySubdivisionPair {
         private final String country;
         private final String subdivision;
         private final String zip;

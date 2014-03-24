@@ -16,6 +16,7 @@ public class RegistrationSubmission {
     private String address2;
     private String countrySubdivision;
     private String zip;
+    private String city;
     private String countryISO;
     private String phoneNumber;
     private TimeZone timeZone;
@@ -167,6 +168,15 @@ public class RegistrationSubmission {
 
     public String getRegistrationRequestHash() {
         return registrationRequestHash;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public RegistrationSubmission setCity(String city) {
+        this.city = city;
+        return this;
     }
 
     public RegistrationSubmission setRegistrationRequestHash(String registrationRequestHash) {

@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:set var="menu_size" value="menu.children.size()"/>
-<s:set var="last_menu_index" value="menu.children.size() - 1"/>
+<s:set var="last_menu_index" value="menu.children.size() - 1"/> <%--fixme: don't make another unnecessary call--%>
 <s:set var="has_contractor_menu">
     ${has_contractor_menu}
 </s:set>

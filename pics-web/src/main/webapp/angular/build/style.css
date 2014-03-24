@@ -13053,59 +13053,59 @@ html.mm-zoom-panels .mm-panel.mm-opened.mm-subopened {
   padding-top: 0;
 }
 
-/* line 48, ../src/common/_defaults.scss */
+/* line 48, ../src/common/defaults/_defaults.scss */
 body {
   color: #454545;
 }
 
-/* line 52, ../src/common/_defaults.scss */
+/* line 52, ../src/common/defaults/_defaults.scss */
 figure {
   margin: 0;
 }
 
-/* line 56, ../src/common/_defaults.scss */
+/* line 56, ../src/common/defaults/_defaults.scss */
 a {
   color: #226396;
 }
 
-/* line 61, ../src/common/_defaults.scss */
+/* line 61, ../src/common/defaults/_defaults.scss */
 a:hover,
 a:focus {
   color: #73bbe8;
   text-decoration: none;
 }
 
-/* line 66, ../src/common/_defaults.scss */
+/* line 66, ../src/common/defaults/_defaults.scss */
 .success {
   background-color: #d6f0e4;
   color: #33b679;
 }
 
-/* line 71, ../src/common/_defaults.scss */
+/* line 71, ../src/common/defaults/_defaults.scss */
 .warning {
   background-color: #fef5d9;
   color: #f4b400;
 }
 
-/* line 76, ../src/common/_defaults.scss */
+/* line 76, ../src/common/defaults/_defaults.scss */
 .danger {
   background-color: #fadbd8;
   color: #e74c3c;
 }
 
-/* line 81, ../src/common/_defaults.scss */
+/* line 81, ../src/common/defaults/_defaults.scss */
 .progress-bar-success {
   background-color: #33b679;
   color: #d6f0e4;
 }
 
-/* line 86, ../src/common/_defaults.scss */
+/* line 86, ../src/common/defaults/_defaults.scss */
 .progress-bar-warning {
   background-color: #f4b400;
   color: #fef5d9;
 }
 
-/* line 91, ../src/common/_defaults.scss */
+/* line 91, ../src/common/defaults/_defaults.scss */
 .progress-bar-danger {
   background-color: #e74c3c;
   color: #fadbd8;
@@ -13281,6 +13281,10 @@ a:focus {
 /*end pseudo element*/
 /* line 34, ../src/common/components/_button.scss */
 .btn-default {
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #e6e6e6), color-stop(100%, #cccccc));
+  background-image: -webkit-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: -moz-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: -o-linear-gradient(to bottom, #e6e6e6, #cccccc);
   background-image: linear-gradient(to bottom, #e6e6e6, #cccccc);
   background: -webkit-linear-gradient(#e6e6e6, #cccccc);
   -webkit-box-shadow: 0px 2px 0px #b3b3b3;
@@ -13747,7 +13751,7 @@ body.modal-open,
 }
 /* line 30, ../src/common/components/_navigation.scss */
 .nav-pills a:hover {
-  background-color: #f1f1f2;
+  background-color: #f1f1f1;
   color: #4496d8;
 }
 /* line 36, ../src/common/components/_navigation.scss */
@@ -13782,7 +13786,7 @@ body.modal-open,
 /* Skill Navigation */
 /* line 63, ../src/common/components/_navigation.scss */
 ul.skill-nav {
-  background-color: #f1f1f2;
+  background-color: #f1f1f1;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -13947,7 +13951,7 @@ ul.skill-nav a {
 /* line 2, ../src/common/components/_side-navigation.scss */
 .sidenav,
 #side-navigation {
-  background-color: #f1f1f2;
+  background-color: #f1f1f1;
 }
 /* line 7, ../src/common/components/_side-navigation.scss */
 .sidenav .nav > .active > a,
@@ -14189,7 +14193,7 @@ body {
   background-image: -o-linear-gradient(#252525, #333333);
   background-image: linear-gradient(#252525, #333333);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525', endColorstr='#ff333333', GradientType=0);
-  color: #f1f1f2;
+  color: #f1f1f1;
   height: 26px;
   line-height: 26px;
   min-height: 26px;
@@ -14204,7 +14208,7 @@ body {
 }
 /* line 20, ../src/common/layout/_environment.scss */
 #environment a:hover {
-  color: #f1f1f2;
+  color: #f1f1f1;
 }
 /* line 28, ../src/common/layout/_environment.scss */
 #environment .active.localhost {
@@ -15063,16 +15067,16 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   .employee-guard-information {
     margin: 0px;
   }
-  /* line 3, ../src/common/components/mixins/_clearfix.scss */
+  /* line 3, ../src/common/mixins/_clearfix.scss */
   .employee-guard-information:after, .employee-guard-information:before {
     content: "";
     display: table;
   }
-  /* line 8, ../src/common/components/mixins/_clearfix.scss */
+  /* line 8, ../src/common/mixins/_clearfix.scss */
   .employee-guard-information:after {
     clear: both;
   }
-  /* line 12, ../src/common/components/mixins/_clearfix.scss */
+  /* line 12, ../src/common/mixins/_clearfix.scss */
   .employee-guard-information {
     *zoom: 1;
   }
@@ -15165,7 +15169,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 4, ../src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section > h1 {
-  background-color: #f1f1f2;
+  background-color: #f1f1f1;
   color: #808285;
   font-size: 14px;
   font-weight: bold;
@@ -15219,7 +15223,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 5, ../src/app/employeeguard/mixins/_employee-guard-section-full.scss */
 .employee-guard-section-full > h1 {
-  background-color: #f1f1f2;
+  background-color: #f1f1f1;
   color: #808285;
   font-size: 14px;
   font-weight: bold;
@@ -15339,6 +15343,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 27, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .skill-list .success:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #0f9d58), color-stop(100%, #33b679));
+  background-image: -webkit-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -moz-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -o-linear-gradient(to top, #0f9d58, #33b679);
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
 /* line 31, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15352,6 +15360,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 40, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .skill-list .warning:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #f4b400), color-stop(100%, #fbcb43));
+  background-image: -webkit-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -moz-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -o-linear-gradient(to top, #f4b400, #fbcb43);
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
 /* line 44, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15365,6 +15377,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 53, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .skill-list .danger:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #c0392b), color-stop(100%, #e74c3c));
+  background-image: -webkit-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -moz-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -o-linear-gradient(to top, #c0392b, #e74c3c);
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
 /* line 57, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15590,6 +15606,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 27, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .employee_guard_contractor_employee-page .skill-list .success:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #0f9d58), color-stop(100%, #33b679));
+  background-image: -webkit-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -moz-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -o-linear-gradient(to top, #0f9d58, #33b679);
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
 /* line 31, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15603,6 +15623,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 40, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .employee_guard_contractor_employee-page .skill-list .warning:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #f4b400), color-stop(100%, #fbcb43));
+  background-image: -webkit-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -moz-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -o-linear-gradient(to top, #f4b400, #fbcb43);
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
 /* line 44, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15616,6 +15640,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 53, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .employee_guard_contractor_employee-page .skill-list .danger:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #c0392b), color-stop(100%, #e74c3c));
+  background-image: -webkit-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -moz-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -o-linear-gradient(to top, #c0392b, #e74c3c);
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
 /* line 57, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15801,6 +15829,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 27, ../src/app/employeeguard/mixins/_employee-skills.scss */
 #employee_guard_employee_skills_list_page .skill-list .success:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #0f9d58), color-stop(100%, #33b679));
+  background-image: -webkit-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -moz-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -o-linear-gradient(to top, #0f9d58, #33b679);
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
 /* line 31, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15814,6 +15846,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 40, ../src/app/employeeguard/mixins/_employee-skills.scss */
 #employee_guard_employee_skills_list_page .skill-list .warning:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #f4b400), color-stop(100%, #fbcb43));
+  background-image: -webkit-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -moz-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -o-linear-gradient(to top, #f4b400, #fbcb43);
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
 /* line 44, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15827,6 +15863,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 53, ../src/app/employeeguard/mixins/_employee-skills.scss */
 #employee_guard_employee_skills_list_page .skill-list .danger:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #c0392b), color-stop(100%, #e74c3c));
+  background-image: -webkit-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -moz-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -o-linear-gradient(to top, #c0392b, #e74c3c);
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
 /* line 57, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15928,6 +15968,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 27, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .employee_guard_employee_profile-page .skill-list .success:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #0f9d58), color-stop(100%, #33b679));
+  background-image: -webkit-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -moz-linear-gradient(to top, #0f9d58, #33b679);
+  background-image: -o-linear-gradient(to top, #0f9d58, #33b679);
   background-image: linear-gradient(to top, #0f9d58, #33b679);
 }
 /* line 31, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15941,6 +15985,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 40, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .employee_guard_employee_profile-page .skill-list .warning:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #f4b400), color-stop(100%, #fbcb43));
+  background-image: -webkit-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -moz-linear-gradient(to top, #f4b400, #fbcb43);
+  background-image: -o-linear-gradient(to top, #f4b400, #fbcb43);
   background-image: linear-gradient(to top, #f4b400, #fbcb43);
 }
 /* line 44, ../src/app/employeeguard/mixins/_employee-skills.scss */
@@ -15954,6 +16002,10 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 53, ../src/app/employeeguard/mixins/_employee-skills.scss */
 .employee_guard_employee_profile-page .skill-list .danger:hover {
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #c0392b), color-stop(100%, #e74c3c));
+  background-image: -webkit-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -moz-linear-gradient(to top, #c0392b, #e74c3c);
+  background-image: -o-linear-gradient(to top, #c0392b, #e74c3c);
   background-image: linear-gradient(to top, #c0392b, #e74c3c);
 }
 /* line 57, ../src/app/employeeguard/mixins/_employee-skills.scss */

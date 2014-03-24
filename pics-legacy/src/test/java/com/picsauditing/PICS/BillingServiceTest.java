@@ -1114,4 +1114,15 @@ public class BillingServiceTest extends PicsTranslationTest {
         assertEquals(InvoiceType.Upgrade_Tier, type);
     }
 
+    @Test
+    public void testApplyFinancialCalculationsAndType() throws Exception {
+        setupInvoiceAndItems();
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+        Invoice invoice = new Invoice();
+        invoice.setAccount(mockContractor);
+        invoice.setItems(invoiceItems);
+        invoice.setInvoiceType(InvoiceType.OtherFees);
+        billingService.applyFinancialCalculationsAndType(invoice);
+        assertEquals(InvoiceType.Activation, invoice.getInvoiceType());
+    }
 }

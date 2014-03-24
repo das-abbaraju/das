@@ -213,7 +213,7 @@
                         <s:textfield name="registrationForm.lastName" label="User.lastName"/>
 					</li>
 					<li>
-						<s:textfield name="registrationForm.email" label="User.email"/>
+						<s:textfield id="contact_email" name="registrationForm.email" label="User.email" />
 					</li>
 					<li>
 						<s:textfield name="registrationForm.phone" label="User.phone"/>
@@ -231,7 +231,7 @@
 
 				<ul>
 					<li>
-						<s:textfield name="registrationForm.username" label="global.Username" autocomplete="off" />
+						<s:textfield id="account_username" name="registrationForm.username" label="global.Username" autocomplete="off" />
 				 	</li>
 					<li>
 						<s:password name="registrationForm.password" label="global.Password" autocomplete="off"  />

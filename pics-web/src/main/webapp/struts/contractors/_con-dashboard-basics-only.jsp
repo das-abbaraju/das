@@ -11,9 +11,16 @@
 </h1>
 
 <s:if test="contractor.autoAddClientSite && contractor.status.active" >
-    <s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
-        <s:param name="contractor">${contractor.id}</s:param>
-    </s:url>
+    <s:if test="permissions.corporate">
+        <s:url action="ContractorFacilities" var="new_contractor_search_add">
+            <s:param name="id">${contractor.id}</s:param>
+        </s:url>
+    </s:if>
+    <s:else>
+        <s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
+            <s:param name="contractor">${contractor.id}</s:param>
+        </s:url>
+    </s:else>
     <s:text name="ContractorView.AddContractorToDatabase">
         <s:param>
             ${new_contractor_search_add}

@@ -1,149 +1,161 @@
 module.exports = function(grunt) {
+    var vendor_js_files = [
+        'vendor/jquery/jquery-1.9.1.js',
+        'vendor/angular/angular.js',
+        'vendor/angular/angular-route.js',
+        'vendor/angular/angular-resource.js',
+        'vendor/jquery/jquery-ui.js',
+        'vendor/bootstrap/bootstrap.js',
+        'vendor/d3/d3.js',
+        'vendor/bootstrap/bootstrap.tooltip.js',
+        'vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
+        'vendor/hogan-2.0.0.js',
+        'vendor/typeahead.js',
+        'vendor/jquery.hammer.js',
+        'vendor/mmenu/jquery.mmenu.js',
+        'vendor/mmenu/jquery.mmenu.searchfield.js',
+        'vendor/mmenu/jquery.mmenu.dragopen.js',
+        'vendor/pics/core.js',
+    ];
 
-  var vendor_js_files = [
-    'vendor/jquery/jquery-1.9.1.js',
-    'vendor/angular/angular.js',
-    'vendor/angular/angular-route.js',
-    'vendor/angular/angular-resource.js',
-    'vendor/jquery/jquery-ui.js',
-    'vendor/bootstrap/bootstrap.js',
-    'vendor/d3/d3.js',
-    'vendor/bootstrap/bootstrap.tooltip.js',
-    'vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
-    'vendor/hogan-2.0.0.js',
-    'vendor/typeahead.js',
-    'vendor/jquery.hammer.js',
-    'vendor/mmenu/jquery.mmenu.js',
-    'vendor/mmenu/jquery.mmenu.searchfield.js',
-    'vendor/mmenu/jquery.mmenu.dragopen.js',
-    'vendor/pics/core.js',
-  ];
+    var modules = [
+        'src/common/directives/directives.js',
+        'src/app/employeeguard/employeeguard.js'
+    ];
 
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+    var dependencies = vendor_js_files.concat(modules);
 
-    jshint: {
-      all: [
-        'Gruntfile.js',
-        'src/**/*.js'
-      ]
-    },
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
 
-    karma: {
-      unit: {
-        options: {
-          files: vendor_js_files.concat([
-            'vendor/angular/jasmine/*.js',
-            'src/**/*.js'
-          ]),
-          plugins:[
-            'karma-junit-reporter',
-            "karma-jasmine",
-            "karma-phantomjs-launcher"
-          ],
-          junitReporter: {
-            outputFile: 'unit.xml',
-            suite: 'unit'
-          },
-          frameworks:[
-            "jasmine"
-          ],
-          browsers:[
-            "PhantomJS"
-          ],
-          singleRun: true
-        }
-      }
-    },
-
-    concat: {
-      options: {
-        separator: ';',
-      },
-      dist: {
-        src: vendor_js_files.concat([
-            'src/**/*.js',
-            '!src/**/*.spec.js'
-        ]),
-        dest: 'build/script.js',
-      }
-    },
-
-    ngmin: {
-      controllers: {
-        src: 'build/script.js',
-        dest: 'build/script.js'
-      }
-    },
-
-    uglify: {
-      options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-      },
-      build: {
-        src: 'build/script.js',
-        dest: 'build/script.js'
-      }
-    },
-
-    compass: {
-      dist: {
-        options: {
-          sassDir: 'src',
-          cssDir: 'build'
-        }
-      }
-    },
-
-    watch: {
-      scripts: {
-        files: vendor_js_files.concat([
-            'src/**/*.js',
-        ]),
-        tasks: [
-          'jshint',
-          'karma:unit',
-          'concat'
-        ],
-        options: {
-          interrupt: true,
+        jshint: {
+            all: [
+                'Gruntfile.js',
+                'src/**/*.js'
+            ]
         },
-      },
 
-      styles: {
-        files: [
-          'src/common/**/*.scss',
-          'src/app/**/*.scss'
-        ], tasks: [
-          'compass'
-        ],
-        options: {
-          interrupt: true,
+        karma: {
+            unit: {
+                options: {
+                    files: dependencies.concat([
+                        'vendor/angular/jasmine/*.js',
+                        'src/**/*.js'
+                    ]),
+                    plugins:[
+                        'karma-junit-reporter',
+                        "karma-jasmine",
+                        "karma-phantomjs-launcher"
+                    ],
+                    junitReporter: {
+                        outputFile: 'unit.xml',
+                        suite: 'unit'
+                    },
+                    frameworks:[
+                        "jasmine"
+                    ],
+                    browsers:[
+                        "PhantomJS"
+                    ],
+                    singleRun: true
+                }
+            }
         },
-      }
-    }
-  });
 
-  require('load-grunt-tasks')(grunt);
+        concat: {
+            options: {
+                separator: ';',
+            },
+            dist: {
+                src: dependencies.concat([
+                    'src/**/*.js',
+                    '!src/**/*.spec.js'
+                ]),
+                dest: 'build/script.js'
+            }
+        },
 
-  grunt.registerTask('dev', [
-    'watch'
-  ]);
+        ngmin: {
+            controllers: {
+                src: 'build/script.js',
+                dest: 'build/script.js'
+            }
+        },
 
-grunt.registerTask('builddev', [
-    'jshint',
-    'karma:unit',
-    'concat',
-    'ngmin',
-    'compass'
-  ]);
+        uglify: {
+            options: {
+                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+            },
+            build: {
+                src: 'build/script.js',
+                dest: 'build/script.js'
+            }
+        },
 
-  grunt.registerTask('prod', [
-    'jshint',
-    'karma:unit',
-    'concat',
-    'ngmin',
-    'uglify',
-    'compass'
-  ]);
+        compass: {
+            dist: {
+                options: {
+                    sassDir: 'src',
+                    cssDir: 'build',
+                    noLineComments: false,
+                    force: true
+                }
+            },
+            prod: {
+                options: {
+                    sassDir: 'src',
+                    cssDir: 'build',
+                    outputStyle: 'compressed',
+                    noLineComments: true,
+                    force: true
+                }
+            }
+        },
+
+        watch: {
+            scripts: {
+                files: vendor_js_files.concat([
+                    'src/**/*.js',
+                ]),
+                tasks: [
+                    'jshint',
+                    'karma:unit',
+                    'concat'
+                ],
+                options: {
+                    interrupt: true
+                },
+            },
+
+            styles: {
+                files: [
+                    'src/**/*.scss'
+                ],
+                tasks: [
+                    'compass:dist'
+                ],
+                options: {
+                    interrupt: true
+                }
+            }
+        }
+    });
+
+    require('load-grunt-tasks')(grunt);
+
+    grunt.registerTask('dev', [
+        'jshint',
+        'karma:unit',
+        'concat',
+        'compass:dist'
+    ]);
+
+    grunt.registerTask('prod', [
+        'jshint',
+        'karma:unit',
+        'concat',
+        'ngmin',
+        'uglify',
+        'compass:prod'
+    ]);
 };

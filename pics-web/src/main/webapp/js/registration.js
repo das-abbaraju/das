@@ -7,14 +7,14 @@
 	REGISTRATION.autofill_username = {
 		init: function () {
 			if ($('.Registration-page').length) {
-				$('#Registration_user_email').bind('blur', this.events.autofill);
+				$('#contact_email').bind('blur', this.events.autofill);
 			}
 		},
 
 		events: {
 			autofill: function (event) {
 				var element = $(this);
-				var target = $('#Registration_user_username');
+				var target = $('#account_username');
 
 				if (!target.val()) {
 					target.val(element.val());
@@ -287,9 +287,6 @@
                 var company_information = $('.company-information'),
                     $country_select = $('.country select');
 
-                $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
-                $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
-
                 if ($('.Registration-page').length) {
                     $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
 
@@ -303,11 +300,32 @@
 
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
                     $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
+                    $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
+                    $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
+
+                    this.displaySsipFieldsBasedOnValues();
+
                 } else if ($('.RegistrationMakePayment-page').length) {
                     $('.modal-link:not(.contractor-agreement)').on('click', this.showBasicModal);
                     $('.contractor-agreement.modal-link').on('click', this.showContractorAgreementModal);
                 }
 	        },
+
+            displaySsipFieldsBasedOnValues: function() {
+                var isRegisteredWithSsip = $('#registeredWithSsipMemberScheme').is(':checked'),
+                    isReadyToProvideDetails = $('#readyToProvideDetails').is(':checked'),
+                    isNotReadyToProvideDetails = $('#notReadyToProvideDetails').is(':checked');
+
+                if (isRegisteredWithSsip) {
+                    $('.request-to-provide-ssip-details-container').show();
+
+                    if (isReadyToProvideDetails) {
+                        $('.ssip-details-container').show();
+                    } else if (isNotReadyToProvideDetails) {
+                        $('.provide-ssip-details-later-message').show();
+                    }
+                }
+            },
 
             autofillRegistrationFormForDev: function (event) {
                 var email = 'my.email' + new Date().getTime() + '@test.com';
@@ -433,9 +451,9 @@
 	        },
 
             toggleReadyToProvideSsipDetailsDisplay: function (event) {
-                var val = $('#registeredWithSsipMemberScheme:checked').val();
+                var isRegisteredWithSsip = $('#registeredWithSsipMemberScheme').is(':checked');
 
-                if (val == "Yes") {
+                if (isRegisteredWithSsip) {
                     $('.request-to-provide-ssip-details-container').slideDown(400);
                 } else {
                     $('.request-to-provide-ssip-details-container').slideUp(400, function () {
@@ -450,9 +468,9 @@
             },
 
             toggleSsipDetailsDisplay: function (event) {
-                var val = $('input[name=readyToProvideSsipDetails]:checked').val();
+                var isReadyToProvideDetails = $('#readyToProvideDetails').is(':checked');
 
-                if (val == "Yes") {
+                if (isReadyToProvideDetails) {
                     $('.provide-ssip-details-later-message').slideUp(400);
                     $('.ssip-details-container').slideDown(400);
                 } else {

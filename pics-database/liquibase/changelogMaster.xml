@@ -182,7 +182,6 @@
 	<include file="./liquibase/2014/Q1/kchase33_PICS-14757_UpdateAddress.sql"/>
 	<include file="./liquibase/2014/Q1/lkam8_US580_Add_EmployeeGUARD_Rules.sql"/>
 	<include file="./liquibase/2014/Q1/dalvarado10_US572_add_cdmScope.sql"/>
+	<include file="./liquibase/2014/Q1/dalvarado7_US318_SingleOperatorContactors.sql"/>
 
-	<!-- 7.2.3 -->
-	<include file="./liquibase/2014/Q1/jgriffith2_TA774_DDL_Remove_SSN_Column.sql"/>
 </databaseChangeLog>
