@@ -85,6 +85,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorNumberOfEmployees
 ContractorOfficeIn
+ContractorOriginalMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
 ContractorProductRisk

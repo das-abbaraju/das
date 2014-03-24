@@ -57,6 +57,7 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorNumberOfEmployees
 ContractorOfficeIn
+ContractorOriginalMembershipDate
 ContractorPQFCALicenseExpDateAnswer
 ContractorPQFCALicenseNumberAnswer
 ContractorPQFID

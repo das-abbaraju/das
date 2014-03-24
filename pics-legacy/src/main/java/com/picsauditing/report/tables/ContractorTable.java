@@ -39,6 +39,27 @@ public class ContractorTable extends AbstractTable {
         addContractorFee(FeeClass.AuditGUARD);
         addContractorFee(FeeClass.InsureGUARD);
         addContractorFee(FeeClass.EmployeeGUARD);
+
+        Field originalMemberSince = new Field("OriginalMembershipDate","(SELECT DATE(IFNULL(MAX(ip.creationDate),ii.paymentExpires))\n" +
+                "FROM invoice i\n" +
+                "JOIN invoice_item ii ON i.id = ii.invoiceID AND ii.paymentExpires IS NOT NULL \n" +
+                "AND ii.paymentExpires = (SELECT MIN(ii2.paymentExpires) \n" +
+                "FROM invoice i2 \n" +
+                "JOIN invoice_item ii2 ON i2.id = ii2.invoiceID  AND ii2.paymentExpires IS NOT NULL \n" +
+                "JOIN invoice_fee f ON ii2.feeID = f.id AND f.feeClass IN ('Activation','Reactivation') \n" +
+                "WHERE i.accountID = i2.accountID" +
+                " AND i2.status != 'Void'" +
+                " AND i2.totalAmount > 0)\n" +
+                "JOIN invoice_payment ip ON i.id = ip.invoiceID\n" +
+                "LEFT JOIN invoice_payment ic ON i.id = ic.invoiceID AND ic.paymentType = 'C' \n" +
+                "WHERE " + ReportOnClause.ToAlias + ".id = i.accountID\n" +
+                " AND ic.id IS NULL " +
+                " AND i.status != 'Void'" +
+                " AND i.totalAmount > 0" +
+                " GROUP BY i.accountID\n" +
+                ")",FieldType.Date);
+        originalMemberSince.setImportance(FieldImportance.Average);
+        addField(originalMemberSince);
     }
 
     private void addContractorFee(FeeClass feeClass) {

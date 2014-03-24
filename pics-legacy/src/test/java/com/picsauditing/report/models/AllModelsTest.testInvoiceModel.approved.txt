@@ -34,6 +34,7 @@ ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
+ContractorOriginalMembershipDate
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
