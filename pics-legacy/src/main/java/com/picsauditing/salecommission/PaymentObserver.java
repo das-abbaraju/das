@@ -1,9 +1,6 @@
 package com.picsauditing.salecommission;
 
-import java.util.HashSet;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
+import java.util.*;
 
 import com.picsauditing.salecommission.payment.strategy.PaymentStrategy;
 import org.slf4j.Logger;
@@ -20,6 +17,8 @@ public class PaymentObserver implements Observer {
 	@Autowired
 	private FeatureToggle featureToggle;
 
+    private static final Set<PaymentDataEvent.PaymentEventType> PAYMENT_EVENT_TYPES = new HashSet<>(Arrays.asList(PaymentDataEvent.PaymentEventType.values()));
+
 	private static final Logger logger = LoggerFactory.getLogger(PaymentObserver.class);
 
 	@Override
@@ -29,17 +28,11 @@ public class PaymentObserver implements Observer {
 			return;
 		}
 
-		try {
+        try {
 			PaymentDataEvent event = (PaymentDataEvent) arg;
 			logger.info("Got payment id = {}", event.getData().getId());
 
-			Set<PaymentDataEvent.PaymentEventType> paymentEventTypes = new HashSet<>();
-            paymentEventTypes.add(PaymentDataEvent.PaymentEventType.PAYMENT);
-            paymentEventTypes.add(PaymentDataEvent.PaymentEventType.SAVE);
-            paymentEventTypes.add(PaymentDataEvent.PaymentEventType.REFUND);
-            paymentEventTypes.add(PaymentDataEvent.PaymentEventType.REMOVE);
-
-            if (!paymentEventTypes.contains(event.getPaymentEventType())){
+            if (!PAYMENT_EVENT_TYPES.contains(event.getPaymentEventType())){
 				throw new IllegalArgumentException("Unhandled Payment Event Type.");
 			}
 
