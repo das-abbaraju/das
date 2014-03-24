@@ -49,6 +49,7 @@ public class CohsStatistics extends SafetyStatistics {
 				answerMap.put(OshaRateType.Fatalities, answer);
 			} else if (answer.getQuestion().getId() == QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR && categoryApplies) {
 				answerMap.put(OshaRateType.Hours, answer);
+                hoursWorked = answer;
 			} else if (answer.getQuestion().getId() == QUESTION_ID_DAYS_AWAY_CASES_FOR_THE_GIVEN_YEAR && categoryApplies) {
 				answerMap.put(OshaRateType.DaysAwayCases, answer);
 			} else if (answer.getQuestion().getId() == QUESTION_ID_DAYS_AWAY_FOR_THE_GIVEN_YEAR && categoryApplies) {

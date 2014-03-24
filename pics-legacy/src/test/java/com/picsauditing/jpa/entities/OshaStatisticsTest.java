@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.picsauditing.PicsTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,6 +30,26 @@ public class OshaStatisticsTest {
 
 		stat = new OshaStatistics(2012, list, true);
 	}
+
+    @Test
+    public void testGetCommentAuditData_ShaNotKept() {
+        setupShaCommentData(false);
+        stat.getCommentAuditData();
+        assertEquals(stat.getHoursWorked(), stat.getCommentAuditData());
+    }
+
+    @Test
+    public void testGetCommentAuditData_ShaKept() {
+        setupShaCommentData(true);
+        stat.getCommentAuditData();
+        assertEquals(stat.getFileUpload(), stat.getCommentAuditData());
+    }
+
+    private void setupShaCommentData(boolean shaKept) {
+        stat.setShaKept(shaKept);
+        PicsTestUtil.forceSetPrivateField(stat, "fileUpload", new AuditData());
+        PicsTestUtil.forceSetPrivateField(stat, "hoursWorked", new AuditData());
+    }
 
 	@Test
 	public void testGetStats() {
