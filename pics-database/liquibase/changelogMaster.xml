@@ -184,6 +184,4 @@
 	<include file="./liquibase/2014/Q1/dalvarado10_US572_add_cdmScope.sql"/>
 	<include file="./liquibase/2014/Q1/dalvarado7_US318_SingleOperatorContactors.sql"/>
 
-	<!-- 7.2.3 -->
-	<include file="./liquibase/2014/Q1/jgriffith2_TA774_DDL_Remove_SSN_Column.sql"/>
 </databaseChangeLog>
