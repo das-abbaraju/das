@@ -50,7 +50,7 @@ public class InvoiceModel {
 			return Collections.emptyList();
 		}
 
-		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
+		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findInvoiceCommissionsByInvoiceId(invoice.getId());
 		if (CollectionUtils.isEmpty(invoiceCommissions)) {
 			return Collections.emptyList();
 		}

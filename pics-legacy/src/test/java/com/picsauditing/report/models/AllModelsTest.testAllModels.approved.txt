@@ -1710,6 +1710,36 @@ PaymentID
 PaymentStatus
 PaymentTotalAmount
 
+Model: PaymentOperatorCommissions
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountID
+AccountName
+AccountStatus
+InvoiceAmountApplied
+InvoiceCreationDate
+InvoiceCurrency
+InvoiceDueDate
+InvoiceID
+InvoiceInvoiceType
+InvoicePaidDate
+InvoiceStatus
+InvoiceTax
+InvoiceTaxlessTotalAmount
+InvoiceTotalAmount
+OperatorCommissionID
+OperatorCommissionName
+OperatorCommissionOperatorReportingID
+OperatorCommissionOperatorReportingName
+OperatorCommissionOperatorReportingStatus
+OperatorCommissionStatus
+PaymentAmountApplied
+PaymentCreationDate
+PaymentCurrency
+PaymentID
+PaymentStatus
+PaymentTotalAmount
+
 Model: Payments
 Permission: Permissions{permissions=[]}
 ----------------------------------------

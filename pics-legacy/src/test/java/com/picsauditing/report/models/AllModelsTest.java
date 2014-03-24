@@ -95,7 +95,7 @@ public class AllModelsTest {
         filter.setOperator(QueryFilterOperator.In);
         filter.setValue("Deactivated");
         filters.add(filter);
-        assertEquals("Account.status IN ('Active','Deactivated')",model.getWhereClause(filters));
+        assertEquals("Account.status IN ('Active','Deactivated')", model.getWhereClause(filters));
     }
 
     @Test
@@ -197,6 +197,13 @@ public class AllModelsTest {
         permissions.setAccountType("Corporate");
         model = new ContractorOperatorsModel(permissions);
         assertEquals("Account.status IN ('Active') AND ContractorOperator.opID IN ()", model.getWhereClause(new ArrayList<Filter>()));
+    }
+
+    @Test
+    public void testPOCModel() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.SalesCommission);
+        model = new PaymentOperatorCommissionsModel(permissions);
+        Approvals.verify(getJoin());
     }
 
     private String getJoin() {
