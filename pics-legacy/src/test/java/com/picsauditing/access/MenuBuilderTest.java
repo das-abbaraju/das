@@ -147,6 +147,26 @@ public class MenuBuilderTest extends PicsActionTest {
         assertEquals("Company",companyMenu.getName());
     }
 
+    @Test
+    public void testBuildMenubar_ReportsMenu_GetStarted() throws Exception {
+        MenuBuilder.setUrlUtils(urlUtils);
+        when(urlUtils.getActionUrl(anyString(),anyString(),anyInt())).thenReturn("ActionLink");
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
+        when(permissions.isShowClientSitesLink()).thenReturn(true);
+        when(permissions.isAdmin()).thenReturn(true);
+
+        when(translationService.getText(eq("menu.Reports"), any(Locale.class))).thenReturn("Reports");
+        when(translationService.getText(eq("menu.ReportsManager.GettingStarted"), any(Locale.class))).thenReturn("Get Started");
+        MenuComponent menu = MenuBuilder.buildMenubar(permissions);
+        assertTrue(menu.getChildren().size() == 5);
+        MenuComponent companyMenu = menu.getChildren().get(1);
+        assertEquals("Reports",companyMenu.getName());
+        assertTrue(companyMenu.getChildren().size() == 1);
+        MenuComponent getStartedMenu = companyMenu.getChildren().get(0);
+        assertEquals("Get Started",getStartedMenu.getName());
+        assertEquals("/ManageReports!getStarted.action",getStartedMenu.getUrl());
+    }
+
     private void setupPermissionsForMibew() {
         when(permissions.isLoggedIn()).thenReturn(true);
         when(permissions.getName()).thenReturn("Name");
