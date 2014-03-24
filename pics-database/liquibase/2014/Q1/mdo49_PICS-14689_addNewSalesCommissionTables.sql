@@ -1,31 +1,35 @@
---liquibase formatted sql
-
---changeset mdo:49
---preConditions onFail MARK_RAN
---onUpdateSQL IGNORE
 CREATE TABLE invoice_operator_commission(
-	id INT(11) NOT NULL  AUTO_INCREMENT ,
-	invoiceID INT(11) NOT NULL  ,
-	opID INT(11) NOT NULL  ,
-	createdBy INT(11) NOT NULL  ,
-	creationDate DATETIME NOT NULL  ,
-	updatedBy INT(11) NOT NULL  ,
-	updateDate DATETIME NOT NULL  ,
-	revenue DECIMAL(11,7) NOT NULL  ,
+	id int(11) NOT NULL  auto_increment ,
+	invoiceID int(11) NOT NULL  ,
+	opID int(11) NOT NULL  ,
+	createdBy int(11) NOT NULL  ,
+	creationDate datetime NOT NULL  ,
+	updatedBy int(11) NOT NULL  ,
+	updateDate datetime NOT NULL  ,
+	revenue decimal(11,7) NOT NULL  ,
 	PRIMARY KEY (id) ,
-	KEY invoiceID(invoiceID)
-) ENGINE=INNODB DEFAULT CHARSET='utf8';
+	UNIQUE KEY invoiceOpID(invoiceID,opID) ,
+	KEY operator(opID) ,
+	CONSTRAINT invoice
+	FOREIGN KEY (invoiceID) REFERENCES invoice (id) ON DELETE CASCADE ON UPDATE CASCADE ,
+	CONSTRAINT operator
+	FOREIGN KEY (opID) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 CREATE TABLE payment_operator_commission(
-	id INT(11) NOT NULL  AUTO_INCREMENT ,
-	invoiceOperatorCommissionID INT(11) NOT NULL  ,
-	paymentID INT(11) NOT NULL  ,
-	createdBy INT(11) NOT NULL  ,
-	creationDate DATETIME NOT NULL  ,
-	updatedBy INT(11) NOT NULL  ,
-	updateDate DATETIME NOT NULL  ,
-	paymentAmount DECIMAL(9,2) NOT NULL  ,
+	id int(11) NOT NULL  auto_increment ,
+	invoiceOperatorCommissionID int(11) NOT NULL  ,
+	paymentID int(11) NOT NULL  ,
+	createdBy int(11) NOT NULL  ,
+	creationDate datetime NOT NULL  ,
+	updatedBy int(11) NOT NULL  ,
+	updateDate datetime NOT NULL  ,
+	paymentAmount decimal(9,2) NOT NULL  ,
 	PRIMARY KEY (id) ,
-	KEY payment_commission(paymentID,invoiceOperatorCommissionID) ,
-	KEY commission(invoiceOperatorCommissionID)
-) ENGINE=INNODB DEFAULT CHARSET='utf8';
+	UNIQUE KEY payment_commission(paymentID,invoiceOperatorCommissionID) ,
+	KEY invoiceOperatorCommission(invoiceOperatorCommissionID) ,
+	CONSTRAINT payment
+	FOREIGN KEY (paymentID) REFERENCES invoice (id) ON DELETE CASCADE ON UPDATE CASCADE ,
+	CONSTRAINT invoiceOperatorCommission
+	FOREIGN KEY (invoiceOperatorCommissionID) REFERENCES invoice_operator_commission (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
