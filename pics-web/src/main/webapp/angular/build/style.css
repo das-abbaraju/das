@@ -15780,19 +15780,43 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   }
 }
 
-/* line 4, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
-#employee_guard_employee_dashboard_index_page .hero-links {
-  list-style: none;
-  margin: 0;
+/* line 2, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment-container {
+  min-height: 140px;
 }
-/* line 9, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
-#employee_guard_employee_dashboard_index_page .hero-links li {
-  padding: 20px 0;
+/* line 6, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment-container:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }
 /* line 14, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
-#employee_guard_employee_dashboard_index_page .hero-links a {
-  font-size: 48px;
+.employee-dashboard .assignment .title {
   font-weight: bold;
+  margin-bottom: 0px;
+  margin-top: 10px;
+}
+/* line 20, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment .subtitle {
+  color: #808285;
+}
+/* line 24, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment i {
+  background: transparent;
+  font-size: 36px;
+}
+/* line 30, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment:hover i.success {
+  color: red;
+}
+/* line 33, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment:hover i.warning {
+  color: blue;
+}
+/* line 36, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment:hover i.danger {
+  color: green;
 }
 
 /* line 4, ../src/app/employeeguard/mixins/_employee-skills.scss */

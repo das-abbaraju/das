@@ -1,0 +1,59 @@
+<div class="employee-dashboard" ng-controller="employeeDashboardCtrl">
+    <div class="container">
+        <pagetitle title="{{ employee.firstName }} {{ employee.lastName }}" subtitle="{{ employee.slug }}"></pagetitle>
+
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked">
+                    <li>
+                        <a href="/employee-guard/employee/profile/{{ employee.id }}" target="_self">
+                            <i class="icon-user icon-large"></i>Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/employee/skills" target="_self">
+                            <i class="icon-certificate icon-large"></i>Skills
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/employee/file" target="_self">
+                            <i class="icon-picture icon-large"></i>My Files
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <section class="employee-guard-section">
+                    <h1>
+                        <i class="icon-map-marker icon-large"></i>Assignment Status
+                    </h1>
+                    <div class="content">
+                        <div class="col-md-4 text-center assignment-container" ng-repeat="site in assignment.sites">
+                            <div class="assignment">
+                                <skillstatusicon status="{{ site.status }}"></skillstatusicon>
+                                <p class="title">{{ site.name }}</p>
+                                <p class="subtitle">{{ site.roles }} Job Roles</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center assignment-container" ng-repeat="project in assignment.projects">
+                            <div class="assignment">
+                                <skillstatusicon status="{{ project.status }}"></skillstatusicon>
+                                <p class="title">{{ project.name }}</p>
+                                <p class="subtitle">{{ project.site }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center assignment-container" ng-repeat="employer in assignment.employers" ng-show="employer.groups > 0" >
+                            <div class="assignment">
+                                <skillstatusicon status="{{ employer.status }}"></skillstatusicon>
+                                <p class="title">{{ employer.name }}</p>
+                                <p class="subtitle">{{ employer.groups }} Employee
+                                    <ng-pluralize count="employer.groups" when="{'1': 'Group','other': 'Groups'}" />
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

@@ -64583,7 +64583,28 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     }()));
 
     PICS._init();
-}(jQuery, window, document));;angular.module('PICS.directives', []);;angular.module('PICSApp', [
+}(jQuery, window, document));;angular.module('PICS.directives', []);;angular.module('PICS.employeeguard', [
+    'ngRoute',
+    'ngResource',
+    'PICS.charts'
+])
+
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
+
+    $routeProvider
+        .when('/employee-guard/operators/employees/:id', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/employee/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
+        });
+
+});
+;angular.module('PICSApp', [
     'PICS.home',
     'PICS.employeeguard',
     'PICS.directives',
@@ -64601,24 +64622,21 @@ angular.module('admin-projects', [])
             $scope.project.teamMembers.splice(idx, 1);
         }
     };
-});;angular.module('PICS.employeeguard', [
-    'ngRoute',
-    'ngResource',
-    'PICS.charts'
-])
+});;angular.module('PICS.employeeguard')
 
-.config(function ($routeProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
+.factory('EmployeeAssignment', function($resource, $routeParams) {
+    // return $resource('/employee-guard/corporates/sites/:id');
+    return $resource('/angular/json/employee/assignments.json');
+});;angular.module('PICS.employeeguard')
 
-    $routeProvider
-        .when('/employee-guard/operators/employees/:id', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/dashboard', {
-            templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
-        });
-});
-;angular.module('PICS.employeeguard')
+.factory('EmployeeDashboard', function($resource, $routeParams) {
+    return $resource('/angular/json/employee/employee-info.json');
+});;angular.module('PICS.employeeguard')
+
+.controller('employeeDashboardCtrl', function ($scope, EmployeeDashboard, EmployeeAssignment) {
+    $scope.employee = EmployeeDashboard.get();
+    $scope.assignment = EmployeeAssignment.get();
+});;angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
     $scope.siteList = SiteList.query(function(site_list) {
@@ -64917,6 +64935,7 @@ angular.module('admin-projects', [])
         scope: {
             status: '@status'
         },
+        replace: true,
         templateUrl: '/angular/src/common/directives/skill-status-icon/_skill-status-icon.tpl.html'
     };
 });;angular.module('PICS.directives')
