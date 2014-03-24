@@ -1,3 +1,7 @@
+--liquibase formatted sql
+
+--changeset mdo:49
+
 CREATE TABLE invoice_operator_commission(
 	id int(11) NOT NULL  auto_increment ,
 	invoiceID int(11) NOT NULL  ,
