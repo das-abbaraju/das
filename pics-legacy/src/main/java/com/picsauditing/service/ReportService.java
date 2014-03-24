@@ -65,7 +65,7 @@ public class ReportService {
     @Autowired
     private EmailSubscriptionDAO emailSubscriptionDAO;
 
-    public static final int CONTRACTOR_IST_REPORT_ID = 1;
+    public static final int DUMMY_REPORT_ID = 2209;
 
     private TranslationService translationService;
     private static final int EXPORT_LIMIT = 65535;

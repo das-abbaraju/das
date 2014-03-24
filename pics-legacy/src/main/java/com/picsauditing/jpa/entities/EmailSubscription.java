@@ -102,7 +102,7 @@ public class EmailSubscription extends BaseTable {
     public Report getReport() {
         if (report == null) {
             report = new Report();
-            report.setId(ReportService.CONTRACTOR_IST_REPORT_ID);
+            report.setId(ReportService.DUMMY_REPORT_ID);
         }
         return report;
     }

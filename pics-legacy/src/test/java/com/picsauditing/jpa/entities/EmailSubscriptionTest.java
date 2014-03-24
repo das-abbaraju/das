@@ -19,7 +19,6 @@ public class EmailSubscriptionTest {
     @Test
     public void testGetReport_Creation() {
         EmailSubscription sub = new EmailSubscription();
-        assertNotNull(sub.getReport());
-        assertEquals(ReportService.CONTRACTOR_IST_REPORT_ID, sub.getReport().getId());
+        assertEquals(ReportService.DUMMY_REPORT_ID, sub.getReport().getId());
     }
 }
