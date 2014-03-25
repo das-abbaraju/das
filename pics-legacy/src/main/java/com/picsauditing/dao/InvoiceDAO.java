@@ -18,6 +18,7 @@ public class InvoiceDAO extends PicsDAO {
     private static final String SAP_WHERE_CLAUSE_SQL = " WHERE a.status NOT IN ('Pending','Declined','Demo','Requested') " +
             "AND i.status != 'Void' AND i.sapLastSync IS NULL AND i.sapSync = 0 AND i.creationDate >= '2013-12-01' " +
             "AND i.creationDate < DATE_SUB(NOW(), INTERVAL 1 DAY) " +
+            "AND i.totalAmount > 0 AND i.currency IN ('USD','CAD','GBP','EUR') AND i.tableType IN ('I','P','C') " +
             "AND rc.businessUnitID IN (select value FROM app_properties WHERE property = 'SAP.BusinessUnits.SetSyncTrue.Enabled')";
 
 	@Transactional(propagation = Propagation.NESTED)
