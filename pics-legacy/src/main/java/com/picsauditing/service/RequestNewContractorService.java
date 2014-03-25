@@ -1,5 +1,6 @@
 package com.picsauditing.service;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.RequestNewContractorAccount;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -58,6 +59,10 @@ public class RequestNewContractorService {
                 primaryContact.setUsername(primaryContact.getEmail());
             }
             primaryContact.setName(primaryContact.getFirstName() + " " + primaryContact.getLastName());
+            primaryContact.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
+            primaryContact.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
+            primaryContact.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
+            primaryContact.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 
             primaryContact.setAuditColumns(permissions);
 
