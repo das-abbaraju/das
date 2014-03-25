@@ -325,8 +325,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		request = ServletActionContext.getRequest();
 		if (request.getParameter("currentStatus") != null) {
 			if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
-				this.addNote(contractor, "Account Status changed from" + contractor.getStatus().toString() + " to "
-						+ request.getParameter("currentStatus"));
+				this.addNote(contractor, "Account Status changed from " + request.getParameter("currentStatus") + " to "
+						+ contractor.getStatus().toString());
 			}
 		}
 	}
