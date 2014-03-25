@@ -241,11 +241,18 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			if (auditType == null) {
 				return false;
 			}
-			if (auditType.getName() == null || auditType.getName().toString().length() == 0) {
+
+            if (auditType.getName() == null || auditType.getName().toString().length() == 0) {
 				addActionError("Audit name is required");
 				return false;
 			}
-			if (!Strings.isEmpty(operatorID)) {
+
+            if (slugService.slugHasDuplicate(AuditType.class, auditType.getSlug(), getId())) {
+                addActionError("Slug is not unique");
+                return false;
+            }
+
+            if (!Strings.isEmpty(operatorID)) {
 				auditType.setAccount(new Account());
 				auditType.getAccount().setId(Integer.parseInt(operatorID));
 			} else {
