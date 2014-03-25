@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.report.ReportContext;
 import com.picsauditing.service.PermissionService;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,4 +95,26 @@ public class ReportApiTest extends PicsActionTest {
         verify(emailSubscriptionDAO).save(emailSubscription);
         assertEquals(PicsActionSupport.PLAIN_TEXT, strutsResult);
     }
+
+    @Test
+    public void testBuildReportContext_NoUser() throws Exception {
+        reportApi.setUser(null);
+
+        ReportContext reportContext = reportApi.buildReportContext(null);
+
+        verify(permissions).getUserId();
+    }
+
+    @Test
+    public void testBuildReportContext_switchedUser() throws Exception {
+        reportApi.setUser(user);
+        when(user.getId()).thenReturn(USER_ID);
+        when(permissions.getUserId()).thenReturn(USER_ID);
+
+        ReportContext reportContext = reportApi.buildReportContext(null);
+
+        verify(permissions, never()).login(user);
+    }
+
+
 }
