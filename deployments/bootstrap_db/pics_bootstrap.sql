@@ -10183,6 +10183,7 @@ INSERT INTO `databasechangelog` VALUES ('45','mdo','./liquibase/2014/Q1/mdo45_PI
 INSERT INTO `databasechangelog` VALUES ('46','mdo','./liquibase/2014/Q1/mdo46_PICS-13646_tradeSS_DDL.sql','2014-02-27 11:25:16',187,'EXECUTED','3:64c302bdb5a445638b0cb0f28a90eb24','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('47','mdo','./liquibase/2014/Q1/mdo47_PICS-13646_tradeSS_DML.sql','2014-02-27 11:26:35',188,'EXECUTED','3:c8ece23924bf322c0de01204569c1719','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('48','mdo','./liquibase/2014/Q1/mdo48_PICS-14495_updateEmailTemplatesToHttps.sql','2014-03-03 08:35:02',192,'EXECUTED','3:d9f718a4992ab9a35fc40323ebbfa0e9','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('49','mdo','./liquibase/2014/Q1/mdo49_PICS-14689_addNewSalesCommissionTables.sql','2014-03-24 15:16:38',211,'EXECUTED','3:07f5dae92ea2c8dde7cc769fee5a0b7d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','lkam','./liquibase/2014/Q1/lkam5_US178_Add_Suncor_Discounts.sql','2014-03-18 12:01:26',197,'EXECUTED','3:ac5c59119df537d997d9c33c04e83cb1','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','mdo','./liquibase/2013/mdo5_PICS-12874_add_columns_to_ref_country.sql','2013-10-22 13:42:01',5,'EXECUTED','3:2ea7aea3f99ed0003c3f74a91561e676','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','pschlesinger','./liquibase/2013/pschlesinger5_PICS-12529_AddStartAndEndDateColumnsToInvoiceItem.sql','2013-11-13 15:10:21',23,'EXECUTED','3:7385ee7d5cc3d49e1bdf44329505ceee','Custom SQL','',NULL,'2.0.1');
@@ -10242,6 +10243,10 @@ INSERT INTO `databasechangelog` VALUES ('8z','sshacter','./liquibase/2013/sshact
 INSERT INTO `databasechangelog` VALUES ('9','mdo','./liquibase/2013/mdo9_PICS-13604_SS.sql','2013-11-26 13:57:34',49,'EXECUTED','3:9f0e538ff9783c8999aeae65f24df5a7','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('9','pschlesinger','./liquibase/2013/pschlesinger9_PICS-13683_CorrectDueDates.sql','2013-12-11 12:34:06',90,'EXECUTED','3:ca5bde4710103def8f8a84cd04704608','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('9','sshacter','./liquibase/2013/sshacter9_PICS-13547_EmployeeGUARDProjectTables.sql','2013-11-15 18:21:25',39,'EXECUTED','3:65741ecc9bf369369043af5adab7de20','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('CREATE1','dalvarado','./liquibase/2014/Q1/dalvarado7_US318_SingleOperatorContactors.sql','2014-03-24 15:15:47',210,'EXECUTED','3:37886ca1854ebd5841e167016142e5fd','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('DROP1','dalvarado','./liquibase/2014/Q1/dalvarado7_US318_SingleOperatorContactors.sql','2014-03-24 15:13:22',207,'EXECUTED','3:25540c149d8d90f0388da724e6f7b726','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('DROP2','dalvarado','./liquibase/2014/Q1/dalvarado7_US318_SingleOperatorContactors.sql','2014-03-24 15:13:22',208,'EXECUTED','3:cd1adee97e3517c1ad080464625e10a6','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('DROP3','dalvarado','./liquibase/2014/Q1/dalvarado7_US318_SingleOperatorContactors.sql','2014-03-24 15:13:22',209,'EXECUTED','3:9dc44c4f9a64e8c43ae599e4c5a9b823','Custom SQL','',NULL,'2.0.1');
 /*!40000 ALTER TABLE `databasechangelog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -20854,6 +20859,39 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Table structure for table `invoice_operator_commission`
+--
+
+DROP TABLE IF EXISTS `invoice_operator_commission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invoice_operator_commission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceID` int(11) NOT NULL,
+  `opID` int(11) NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `creationDate` datetime NOT NULL,
+  `updatedBy` int(11) NOT NULL,
+  `updateDate` datetime NOT NULL,
+  `revenue` decimal(11,7) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `invoiceOpID` (`invoiceID`,`opID`),
+  KEY `operator` (`opID`),
+  CONSTRAINT `invoice` FOREIGN KEY (`invoiceID`) REFERENCES `invoice` (`id`),
+  CONSTRAINT `operator` FOREIGN KEY (`opID`) REFERENCES `accounts` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice_operator_commission`
+--
+
+LOCK TABLES `invoice_operator_commission` WRITE;
+/*!40000 ALTER TABLE `invoice_operator_commission` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_operator_commission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `invoice_payment`
 --
 
@@ -22063,6 +22101,39 @@ CREATE TABLE `payment_commission` (
 LOCK TABLES `payment_commission` WRITE;
 /*!40000 ALTER TABLE `payment_commission` DISABLE KEYS */;
 /*!40000 ALTER TABLE `payment_commission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payment_operator_commission`
+--
+
+DROP TABLE IF EXISTS `payment_operator_commission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `payment_operator_commission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceOperatorCommissionID` int(11) NOT NULL,
+  `paymentID` int(11) NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `creationDate` datetime NOT NULL,
+  `updatedBy` int(11) NOT NULL,
+  `updateDate` datetime NOT NULL,
+  `paymentAmount` decimal(9,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `payment_commission` (`paymentID`,`invoiceOperatorCommissionID`),
+  KEY `invoiceOperatorCommission` (`invoiceOperatorCommissionID`),
+  CONSTRAINT `payment` FOREIGN KEY (`paymentID`) REFERENCES `invoice` (`id`),
+  CONSTRAINT `invoiceOperatorCommission` FOREIGN KEY (`invoiceOperatorCommissionID`) REFERENCES `invoice_operator_commission` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payment_operator_commission`
+--
+
+LOCK TABLES `payment_operator_commission` WRITE;
+/*!40000 ALTER TABLE `payment_operator_commission` DISABLE KEYS */;
+/*!40000 ALTER TABLE `payment_operator_commission` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -24077,6 +24148,23 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary table structure for view `vw_single_operator_contractors`
+--
+
+DROP TABLE IF EXISTS `vw_single_operator_contractors`;
+/*!50001 DROP VIEW IF EXISTS `vw_single_operator_contractors`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `vw_single_operator_contractors` (
+  `con_id` tinyint NOT NULL,
+  `con_name` tinyint NOT NULL,
+  `logo_account_id` tinyint NOT NULL,
+  `logo_account_name` tinyint NOT NULL,
+  `num_logos` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Temporary table structure for view `vwcurrentinvoicedate`
 --
 
@@ -25012,6 +25100,25 @@ DELIMITER ;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`pics_admin`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `v_audits` AS select `t`.`id` AS `auditID`,`translate`('AuditType',`t`.`id`) AS `auditName`,`t`.`classType` AS `auditClass`,`c`.`id` AS `categoryID`,`translate`('AuditCategory',`c`.`id`) AS `category`,`q`.`id` AS `questionID`,`translate`('AuditQuestion',`q`.`id`) AS `question` from ((`audit_type` `t` join `audit_category` `c` on((`c`.`auditTypeID` = `t`.`id`))) join `audit_question` `q` on((`q`.`categoryID` = `c`.`id`))) order by `t`.`classType`,`t`.`displayOrder`,`c`.`number`,`q`.`number` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `vw_single_operator_contractors`
+--
+
+/*!50001 DROP TABLE IF EXISTS `vw_single_operator_contractors`*/;
+/*!50001 DROP VIEW IF EXISTS `vw_single_operator_contractors`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`pics_admin`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `vw_single_operator_contractors` AS (select `con`.`id` AS `con_id`,`con`.`name` AS `con_name`,`logo`.`id` AS `logo_account_id`,`logo`.`name` AS `logo_account_name`,count(1) AS `num_logos` from (((`accounts` `con` join `contractor_operator` on((`con`.`id` = `contractor_operator`.`conID`))) join `operators` on((`contractor_operator`.`opID` = `operators`.`id`))) join `accounts` `logo` on((`operators`.`reportingID` = `logo`.`id`))) where (1 and (`operators`.`inPicsConsortium` = 0)) group by `con`.`id` having (`num_logos` = 1) order by `con`.`name`,`logo`.`id`) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
