@@ -5,13 +5,15 @@ angular.module('PICS.utility')
         convert: function(status) {
             var classname = '';
 
-            if (status === 'Expired') {
+            status = status.toLowerCase();
+
+            if (status === 'expired') {
                 classname = "danger";
-            } else if (status === 'Expiring') {
+            } else if (status === 'expiring') {
                 classname = 'warning';
-            } else if (status === 'Pending') {
+            } else if (status === 'pending') {
                 classname = 'success';
-            } else if (status === 'Complete') {
+            } else if (status === 'complete') {
                 classname = 'success';
             }
 
