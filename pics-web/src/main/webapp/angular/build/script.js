@@ -64637,9 +64637,15 @@ angular.module('admin-projects', [])
 .controller('employeeDashboardCtrl', function ($scope, EmployeeDashboard, EmployeeAssignment, SkillStatusConverter) {
     $scope.employee = EmployeeDashboard.get();
     $scope.assignment = EmployeeAssignment.get();
-    $scope.skillConvert = SkillStatusConverter.convert;
-    // console.log(SkillStatusConverter);
-    // $scope.skillConvert = SkillStatusConverter.convert('Expired');
+    $scope.getSkillClass = SkillStatusConverter.convert;
+
+    $scope.setSlug = function() {
+        if (!$scope.employee.slug) {
+            $scope.employee.slug = $scope.employee.email;
+        }
+    };
+
+    $scope.employee.$promise.then($scope.setSlug);
 });;angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
@@ -65376,13 +65382,15 @@ angular.module('admin-projects', [])
         convert: function(status) {
             var classname = '';
 
-            if (status === 'Expired') {
+            status = status.toLowerCase();
+
+            if (status === 'expired') {
                 classname = "danger";
-            } else if (status === 'Expiring') {
+            } else if (status === 'expiring') {
                 classname = 'warning';
-            } else if (status === 'Pending') {
+            } else if (status === 'pending') {
                 classname = 'success';
-            } else if (status === 'Complete') {
+            } else if (status === 'complete') {
                 classname = 'success';
             }
 
