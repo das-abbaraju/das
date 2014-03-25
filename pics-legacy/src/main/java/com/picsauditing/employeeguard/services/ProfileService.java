@@ -11,19 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
+@Deprecated
 public class ProfileService {
 
 	@Autowired
 	private ProfileDAO profileDAO;
 
+	@Deprecated
 	public Profile findById(String id) {
 		return profileDAO.find(NumberUtils.toInt(id));
 	}
 
+	@Deprecated
 	public Profile findByAppUserId(int appUserId) {
 		return profileDAO.findByAppUserId(appUserId);
 	}
 
+	@Deprecated
 	public Profile create(Profile profile) {
 		EntityHelper.setCreateAuditFields(profile, Identifiable.SYSTEM, new Date());
 
@@ -33,6 +37,7 @@ public class ProfileService {
 		return profileDAO.save(profile);
 	}
 
+	@Deprecated
 	public Profile update(EmployeeProfileEditForm employeeProfileEditForm, String profileID, int userId) {
 		Profile profile = profileDAO.find(NumberUtils.toInt(profileID));
 		profile.setFirstName(employeeProfileEditForm.getFirstName());

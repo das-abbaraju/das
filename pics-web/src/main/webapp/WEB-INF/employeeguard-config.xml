@@ -57,6 +57,7 @@
 
     <!-- Entity Services -->
     <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.EmployeeEntityService"/>
+    <bean id="ProfileEntityService" class="com.picsauditing.employeeguard.services.entity.ProfileEntityService"/>
     <bean id="ProjectEntityService" class="com.picsauditing.employeeguard.services.entity.ProjectEntityService"/>
     <bean id="RoleEntityService" class="com.picsauditing.employeeguard.services.entity.RoleEntityService"/>
     <bean id="SkillEntityService" class="com.picsauditing.employeeguard.services.entity.SkillEntityService"/>

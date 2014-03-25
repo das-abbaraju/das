@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +34,30 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return projectDAO.find(id);
 	}
 
+	public Map<Employee, Set<Project>> getProjectsForEmployees(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployees(employees),
+				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
+					@Override
+					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getEmployee();
+					}
+
+					@Override
+					public Project getValue(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getProjectRole().getProject();
+					}
+				});
+	}
+
 	public Map<Employee, Set<Project>> getProjectsForEmployees(final Collection<Employee> employees, final int siteId) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
 		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteId(employees, siteId),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
 					@Override
@@ -125,4 +149,5 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		Project project = find(id);
 		delete(project);
 	}
+
 }
