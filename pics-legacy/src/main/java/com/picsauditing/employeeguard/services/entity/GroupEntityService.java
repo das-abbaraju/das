@@ -1,19 +1,25 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
+import com.picsauditing.employeeguard.daos.AccountGroupEmployeeDAO;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GroupEntityService implements EntityService<Group, Integer>, Searchable<Group> {
 
 	@Autowired
 	private AccountGroupDAO accountGroupDAO;
+	@Autowired
+	private AccountGroupEmployeeDAO accountGroupEmployeeDAO;
 
 	/* All Find Methods */
 
@@ -24,6 +30,25 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 		}
 
 		return accountGroupDAO.find(id);
+	}
+
+	public Map<Employee, Set<Group>> getEmployeeGroups(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return Utilities.convertToMapOfSets(accountGroupEmployeeDAO.findByEmployees(employees),
+				new Utilities.EntityKeyValueConvertable<GroupEmployee, Employee, Group>() {
+					@Override
+					public Employee getKey(GroupEmployee entity) {
+						return entity.getEmployee();
+					}
+
+					@Override
+					public Group getValue(GroupEmployee entity) {
+						return entity.getGroup();
+					}
+				});
 	}
 
 	/* All Search Methods */

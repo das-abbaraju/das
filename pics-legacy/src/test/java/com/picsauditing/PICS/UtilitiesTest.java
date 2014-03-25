@@ -290,7 +290,7 @@ public class UtilitiesTest {
 		map2.put(2, new HashSet<>(Arrays.asList("Test 4")));
 		map2.put(3, new HashSet<>(Arrays.asList("Test 5")));
 
-		Map<Integer, Set<String>> mergedValues = Utilities.mergeValuesOfMapOfSets(map1, map2);
+		Map<Integer, Set<String>> mergedValues = Utilities.mergeMapOfSets(map1, map2);
 
 		performAssertionsOnTestMergeValuesOfMapOfSets(mergedValues);
 	}

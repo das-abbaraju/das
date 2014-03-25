@@ -17,7 +17,8 @@ import org.powermock.reflect.Whitebox;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -102,10 +103,10 @@ public class RoleEntityServiceTest {
 	@Test
 	public void testGetSiteRolesForEmployees() {
 		List<RoleEmployee> fakeRoleEmployees = buildFakeRoleEmployees();
-		when(roleEmployeeDAO.findByEmployeesAndSiteId(anyCollectionOf(Employee.class), anyInt()))
+		when(roleEmployeeDAO.findByEmployeesAndSiteIds(anyCollectionOf(Employee.class), anyListOf(Integer.class)))
 				.thenReturn(fakeRoleEmployees);
 
-		Map<Employee, Set<Role>> result = roleEntityService.getSiteRolesForEmployees(null, 0);
+		Map<Employee, Set<Role>> result = roleEntityService.getSiteRolesForEmployees(Arrays.asList(new Employee()), 0);
 
 		verifyTestGetSiteRolesForEmployees(result);
 	}
@@ -133,23 +134,24 @@ public class RoleEntityServiceTest {
 	@Test
 	public void testGetProjectRolesForEmployees() {
 		List<ProjectRoleEmployee> fakeProjectRoleEmployees = buildFakeProjectRoleEmployees();
-		when(projectRoleEmployeeDAO.findByEmployeesAndSiteId(anyCollectionOf(Employee.class), anyInt()))
+		when(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(anyCollectionOf(Employee.class), anyListOf(Integer.class)))
 				.thenReturn(fakeProjectRoleEmployees);
 
-		Map<Employee, Set<Role>> results = roleEntityService.getProjectRolesForEmployees(Collections.<Employee>emptyList(), 0);
+		Map<Employee, Set<Role>> results = roleEntityService
+				.getProjectRolesForEmployees(Arrays.asList(new Employee()), 0);
 
 		verifyTestGetProjectRolesForEmployees(results);
 	}
 
 	private List<ProjectRoleEmployee> buildFakeProjectRoleEmployees() {
 		return Arrays.asList(
-			new ProjectRoleEmployeeBuilder()
-					.projectRole(new ProjectRoleBuilder()
-							.project(new ProjectBuilder().accountId(ACCOUNT_ID).name("Building Renovation").build())
-							.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Lead Foreman").build())
-							.build())
-					.employee(new EmployeeBuilder().accountId(781).email("tester@something.com").build())
-					.build()
+				new ProjectRoleEmployeeBuilder()
+						.projectRole(new ProjectRoleBuilder()
+								.project(new ProjectBuilder().accountId(ACCOUNT_ID).name("Building Renovation").build())
+								.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Lead Foreman").build())
+								.build())
+						.employee(new EmployeeBuilder().accountId(781).email("tester@something.com").build())
+						.build()
 		);
 	}
 

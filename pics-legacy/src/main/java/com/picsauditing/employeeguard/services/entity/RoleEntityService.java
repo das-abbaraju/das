@@ -92,7 +92,6 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
 																final Collection<Integer> siteIds) {
-
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}

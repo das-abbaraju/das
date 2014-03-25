@@ -588,7 +588,7 @@ public class Utilities {
 		return uniqueCollection;
 	}
 
-	public static <E, V> Map<E, Set<V>> mergeValuesOfMapOfSets(final Map<E, Set<V>> map1, final Map<E, Set<V>> map2) {
+	public static <E, V> Map<E, Set<V>> mergeMapOfSets(final Map<E, Set<V>> map1, final Map<E, Set<V>> map2) {
 		Map<E, Set<V>> mergedValues = new HashMap<>(map1);
 
 		for (Map.Entry<E, Set<V>> entrySet : map2.entrySet()) {

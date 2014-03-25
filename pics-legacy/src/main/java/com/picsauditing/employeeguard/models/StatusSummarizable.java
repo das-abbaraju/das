@@ -2,15 +2,14 @@ package com.picsauditing.employeeguard.models;
 
 public interface StatusSummarizable {
 
-//	StatusSummary getStatus();
-//	void setStatus(StatusSummary summary);
-
 	int getCompleted();
 
 	void setCompleted(int completed);
 
+	@Deprecated
 	int getPending();
 
+	@Deprecated
 	void setPending(int completed);
 
 	int getExpiring();

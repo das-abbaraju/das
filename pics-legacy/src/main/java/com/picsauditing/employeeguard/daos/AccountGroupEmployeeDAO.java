@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.Profile;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,5 +46,16 @@ public class AccountGroupEmployeeDAO extends AbstractBaseEntityDAO<GroupEmployee
 		query.setParameter("employee", employee);
 		query.setParameter("group", group);
 		return query.getSingleResult();
+	}
+
+	public List<GroupEmployee> findByEmployees(final Collection<Employee> employees) {
+		TypedQuery<GroupEmployee> query = em.createQuery("SELECT age FROM GroupEmployee age " +
+				"JOIN age.employee e " +
+				"JOIN age.group g " +
+				"JOIN g.skills s " +
+				"WHERE e IN (:employees)", GroupEmployee.class);
+		query.setParameter("employees", employees);
+
+		return query.getResultList();
 	}
 }
