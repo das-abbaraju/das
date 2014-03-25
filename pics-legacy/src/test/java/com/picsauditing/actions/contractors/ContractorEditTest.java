@@ -11,6 +11,8 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.messaging.MessagePublisherService;
+import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.validator.ContractorValidator;
@@ -18,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
@@ -64,8 +67,11 @@ public class ContractorEditTest extends PicsActionTest {
 	private BusinessUnit businessUnit;
 	@Mock
 	private SapAppPropertyUtil sapAppPropertyUtil;
+    @Mock
+    private MessagePublisherService messageService;
 
-	// Recreating Test Class --BLatner
+
+    // Recreating Test Class --BLatner
 	private final static int TESTING_CONTACT_ID = 555;
 	private final static int TESTING_ACCOUNT_ID = 2323;
 	private final static int NON_MATCHING_ID = 23456;
@@ -83,6 +89,7 @@ public class ContractorEditTest extends PicsActionTest {
 
 		setInternalState(classUnderTest, "noteDao", mockNoteDao);
 		setInternalState(classUnderTest, "accountStatusChanges", accountStatusChanges);
+        setInternalState(classUnderTest, "messageService", messageService);
 
 		when(mockContractor.getCountry()).thenReturn(mockCountry);
 		when(mockContractor.getId()).thenReturn(TESTING_ACCOUNT_ID);
@@ -97,23 +104,47 @@ public class ContractorEditTest extends PicsActionTest {
 	}
 
     @Test
-    public void testSave_ChangeCsrAssignment() throws Exception {
-        Vector<String> errors = new Vector<String>();
-        when(permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)).thenReturn(true);
-        when(mockConValidator.validateContractor(mockContractor)).thenReturn(errors);
-        when(sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(mockContractor)).thenReturn(false);
+    public void testChangeCsrIfGoingActive_NotGoingActive() throws Exception {
+        setupChangeCsr(AccountStatus.Active, null);
+        Whitebox.invokeMethod(classUnderTest, "changeCsrIfGoingActive");
+        verify(messageService, never()).getCsrAssignmentSinglePublisher();
+    }
 
-        // test non-privledged account
-        classUnderTest.save();
-        verify(mockContractor, times(0)).setDontReassign(anyBoolean());
+    @Test
+    public void testChangeCsrIfGoingActive_NoCurrentCsr() throws Exception {
+        setupChangeCsr(AccountStatus.Deactivated, null);
+        Whitebox.invokeMethod(classUnderTest, "changeCsrIfGoingActive");
+        verify(messageService).getCsrAssignmentSinglePublisher();
+    }
 
-        // reset to auto assign
-        when(permissions.hasPermission(OpPerms.UserZipcodeAssignment)).thenReturn(true);
-        classUnderTest.setCsrId(0);
-        classUnderTest.save();
-        verify(mockContractor, times(1)).setDontReassign(false);
+    @Test
+    public void testChangeCsrIfGoingActive_NotActiveCurrentCsr() throws Exception {
+        User csr = mock(User.class);
+        when(csr.isActiveB()).thenReturn(false);
+        setupChangeCsr(AccountStatus.Deactivated, csr);
+        Whitebox.invokeMethod(classUnderTest, "changeCsrIfGoingActive");
+        verify(messageService).getCsrAssignmentSinglePublisher();
+    }
 
-        // manually set
+    @Test
+    public void testChangeCsrIfGoingActive_ActiveCurrentCsr() throws Exception {
+        User csr = mock(User.class);
+        when(csr.isActiveB()).thenReturn(true);
+        setupChangeCsr(AccountStatus.Deactivated, csr);
+        Whitebox.invokeMethod(classUnderTest, "changeCsrIfGoingActive");
+        verify(messageService, never()).getCsrAssignmentSinglePublisher();
+    }
+
+    private void setupChangeCsr(AccountStatus previousStatus, User activeCsr) {
+        setInternalState(classUnderTest, "previousStatus", previousStatus);
+        when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
+        when(messageService.getCsrAssignmentSinglePublisher()).thenReturn(mock(Publisher.class));
+        when(mockContractor.getCurrentCsr()).thenReturn(activeCsr);
+    }
+
+    @Test
+    public void testSave_ChangeCsrAssignment_ManuallySet() throws Exception {
+        setupChangeCsrAssignment();
         User csr = new User();
         csr.setId(200);
         when(permissions.hasPermission(OpPerms.UserZipcodeAssignment)).thenReturn(true);
@@ -121,6 +152,33 @@ public class ContractorEditTest extends PicsActionTest {
         classUnderTest.setCsrId(csr.getId());
         classUnderTest.save();
         verify(mockContractor, times(1)).setDontReassign(true);
+    }
+
+    @Test
+    public void testSave_ChangeCsrAssignment_NotPriviledged() throws Exception {
+        setupChangeCsrAssignment();
+
+        classUnderTest.save();
+        verify(mockContractor, times(0)).setDontReassign(anyBoolean());
+    }
+
+    @Test
+    public void testSave_ChangeCsrAssignment_AutoAssign() throws Exception {
+        setupChangeCsrAssignment();
+
+        when(permissions.hasPermission(OpPerms.UserZipcodeAssignment)).thenReturn(true);
+        classUnderTest.setCsrId(0);
+        classUnderTest.save();
+        verify(mockContractor, times(1)).setDontReassign(false);
+    }
+
+    private void setupChangeCsrAssignment() {
+        setInternalState(classUnderTest, "previousStatus", AccountStatus.Active);
+        when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
+        Vector<String> errors = new Vector<String>();
+        when(permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)).thenReturn(true);
+        when(mockConValidator.validateContractor(mockContractor)).thenReturn(errors);
+        when(sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(mockContractor)).thenReturn(false);
     }
 
 //    @Test
