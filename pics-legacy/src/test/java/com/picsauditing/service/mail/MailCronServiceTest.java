@@ -114,13 +114,6 @@ public class MailCronServiceTest extends PicsTranslationTest {
         mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
     }
 
-    @Test(expected = SubscriptionValidationException.class)
-    public void testValidateEmailSubscription_emailSubscriptionForDynamicReportsWithNullReportShouldThrowValidationError() throws Exception {
-        EmailSubscription invalidEmailSubscription = createEmailSubscription(Subscription.DynamicReports, null);
-
-        mailCronService.validateEmailSubscription(invalidEmailSubscription, subscriptionId);
-    }
-
 	@Test(expected = SubscriptionValidationException.class)
 	public void testValidateEmailSubscription_emailSubscriptionWithNullUserShouldThrowValidationError() throws Exception {
 		EmailSubscription invalidEmailSubscription = createEmailSubscription(Subscription.AmberFlags, null);
