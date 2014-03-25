@@ -64583,10 +64583,11 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     }()));
 
     PICS._init();
-}(jQuery, window, document));;angular.module('PICS.directives', []);;angular.module('PICS.employeeguard', [
+}(jQuery, window, document));;angular.module('PICS.directives', []);;angular.module('PICS.utility', []);;angular.module('PICS.employeeguard', [
     'ngRoute',
     'ngResource',
-    'PICS.charts'
+    'PICS.charts',
+    'PICS.utility'
 ])
 
 .config(function ($routeProvider, $locationProvider) {
@@ -64633,9 +64634,12 @@ angular.module('admin-projects', [])
     return $resource('/angular/json/employee/employee-info.json');
 });;angular.module('PICS.employeeguard')
 
-.controller('employeeDashboardCtrl', function ($scope, EmployeeDashboard, EmployeeAssignment) {
+.controller('employeeDashboardCtrl', function ($scope, EmployeeDashboard, EmployeeAssignment, SkillStatusConverter) {
     $scope.employee = EmployeeDashboard.get();
     $scope.assignment = EmployeeAssignment.get();
+    $scope.skillConvert = SkillStatusConverter.convert;
+    // console.log(SkillStatusConverter);
+    // $scope.skillConvert = SkillStatusConverter.convert('Expired');
 });;angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
@@ -65365,7 +65369,27 @@ angular.module('admin-projects', [])
             };
         }())
     });
-}(jQuery));;// Provides an alternative to Bootstrap 3's styling of table stripes,
+}(jQuery));;angular.module('PICS.utility')
+
+.factory('SkillStatusConverter', function() {
+    return {
+        convert: function(status) {
+            var classname = '';
+
+            if (status === 'Expired') {
+                classname = "danger";
+            } else if (status === 'Expiring') {
+                classname = 'warning';
+            } else if (status === 'Pending') {
+                classname = 'success';
+            } else if (status === 'Complete') {
+                classname = 'success';
+            }
+
+            return classname;
+        }
+    };
+});;// Provides an alternative to Bootstrap 3's styling of table stripes,
 // e.g., for ie8, because BS3 uses the unsupported nth-child selector.
 // Accepts an optional selector so that it may be used independently of Bootstrap 3
 // e.g., to stripe search results

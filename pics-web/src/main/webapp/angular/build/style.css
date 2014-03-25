@@ -15791,32 +15791,69 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   height: 100%;
   vertical-align: middle;
 }
-/* line 14, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+/* line 13, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment {
+  background: transparent;
+}
+/* line 16, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
 .employee-dashboard .assignment .title {
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 0px;
   margin-top: 10px;
 }
-/* line 20, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
-.employee-dashboard .assignment .subtitle {
-  color: #808285;
-}
-/* line 24, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+/* line 23, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
 .employee-dashboard .assignment i {
   background: transparent;
-  font-size: 36px;
+  font-size: 48px;
 }
-/* line 30, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
-.employee-dashboard .assignment:hover i.success {
-  color: red;
+/* line 28, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.success {
+  color: #0f9d58;
 }
-/* line 33, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
-.employee-dashboard .assignment:hover i.warning {
-  color: blue;
+/* line 31, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.success i {
+  color: #0f9d58;
 }
-/* line 36, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
-.employee-dashboard .assignment:hover i.danger {
-  color: green;
+/* line 35, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.success:hover {
+  color: #33b679;
+}
+/* line 38, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.success:hover i {
+  color: #33b679;
+}
+/* line 44, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.warning {
+  color: #f4b400;
+}
+/* line 47, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.warning i {
+  color: #f4b400;
+}
+/* line 51, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.warning:hover {
+  color: #fbcb43;
+}
+/* line 54, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.warning:hover i {
+  color: #fbcb43;
+}
+/* line 60, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.danger {
+  color: #c0392b;
+}
+/* line 63, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.danger i {
+  color: #c0392b;
+}
+/* line 67, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.danger:hover {
+  color: #e74c3c;
+}
+/* line 70, ../src/app/employeeguard/employee/dashboard/_dashboard.scss */
+.employee-dashboard .assignment.danger:hover i {
+  color: #e74c3c;
 }
 
 /* line 4, ../src/app/employeeguard/mixins/_employee-skills.scss */

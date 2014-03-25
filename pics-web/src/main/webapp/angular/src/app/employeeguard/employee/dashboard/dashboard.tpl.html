@@ -29,21 +29,21 @@
                     </h1>
                     <div class="content">
                         <div class="col-md-4 text-center assignment-container" ng-repeat="site in assignment.sites">
-                            <div class="assignment">
+                            <div class="assignment" ng-class="skillConvert(site.status)">
                                 <skillstatusicon status="{{ site.status }}"></skillstatusicon>
                                 <p class="title">{{ site.name }}</p>
                                 <p class="subtitle">{{ site.roles }} Job Roles</p>
                             </div>
                         </div>
                         <div class="col-md-4 text-center assignment-container" ng-repeat="project in assignment.projects">
-                            <div class="assignment">
+                            <div class="assignment" ng-class="skillConvert(project.status)">
                                 <skillstatusicon status="{{ project.status }}"></skillstatusicon>
                                 <p class="title">{{ project.name }}</p>
                                 <p class="subtitle">{{ project.site }}</p>
                             </div>
                         </div>
                         <div class="col-md-4 text-center assignment-container" ng-repeat="employer in assignment.employers" ng-show="employer.groups > 0" >
-                            <div class="assignment">
+                            <div class="assignment" ng-class="skillConvert(employer.status)">
                                 <skillstatusicon status="{{ employer.status }}"></skillstatusicon>
                                 <p class="title">{{ employer.name }}</p>
                                 <p class="subtitle">{{ employer.groups }} Employee
