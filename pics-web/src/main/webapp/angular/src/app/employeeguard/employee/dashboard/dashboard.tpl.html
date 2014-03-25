@@ -28,27 +28,17 @@
                         <i class="icon-map-marker icon-large"></i>Assignment Status
                     </h1>
                     <div class="content">
-                        <div class="col-md-4 text-center assignment-container" ng-repeat="site in assignment.sites">
-                            <div class="assignment" ng-class="getSkillClass(site.status)">
-                                <skillstatusicon status="{{ site.status }}"></skillstatusicon>
-                                <p class="title">{{ site.name }}</p>
-                                <p class="subtitle">{{ site.roles }} Job Roles</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center assignment-container" ng-repeat="project in assignment.projects">
-                            <div class="assignment" ng-class="getSkillClass(project.status)">
-                                <skillstatusicon status="{{ project.status }}"></skillstatusicon>
-                                <p class="title">{{ project.name }}</p>
-                                <p class="subtitle">{{ project.site }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center assignment-container" ng-repeat="employer in assignment.employers" ng-show="employer.groups > 0" >
-                            <div class="assignment" ng-class="getSkillClass(employer.status)">
-                                <skillstatusicon status="{{ employer.status }}"></skillstatusicon>
-                                <p class="title">{{ employer.name }}</p>
-                                <p class="subtitle">{{ employer.groups }} Employee
-                                    <ng-pluralize count="employer.groups" when="{'1': 'Group','other': 'Groups'}" />
+                        <div class="col-md-4 text-center assignment-container" ng-repeat="assignment in assignments | orderBy: 'name'">
+                            <div class="assignment" ng-class="getSkillClass(assignment.status)">
+                                <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
+                                <p class="title">{{ assignment.name }}</p>
+
+
+                                <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }} Employee
+                                    <ng-pluralize count="assignment.groups" when="{'1': 'Group','other': 'Groups'}" />
                                 </p>
+                                <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }} Job Roles</p>
+                                <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
                             </div>
                         </div>
                     </div>

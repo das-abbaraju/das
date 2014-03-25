@@ -64626,7 +64626,6 @@ angular.module('admin-projects', [])
 });;angular.module('PICS.employeeguard')
 
 .factory('EmployeeAssignment', function($resource, $routeParams) {
-    // return $resource('/employee-guard/corporates/sites/:id');
     return $resource('/angular/json/employee/assignments.json');
 });;angular.module('PICS.employeeguard')
 
@@ -64636,7 +64635,7 @@ angular.module('admin-projects', [])
 
 .controller('employeeDashboardCtrl', function ($scope, EmployeeDashboard, EmployeeAssignment, SkillStatusConverter) {
     $scope.employee = EmployeeDashboard.get();
-    $scope.assignment = EmployeeAssignment.get();
+    $scope.assignments = EmployeeAssignment.query();
     $scope.getSkillClass = SkillStatusConverter.convert;
 
     $scope.setSlug = function() {
