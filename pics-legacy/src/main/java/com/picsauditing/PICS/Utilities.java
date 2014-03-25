@@ -603,4 +603,30 @@ public class Utilities {
 
 		return mergedValues;
 	}
+
+	public interface PropertyExtractor<ENTITY, PROPERTY> {
+		PROPERTY getProperty(ENTITY entity);
+	}
+
+	public static <ENTITY, PROPERTY> Set<PROPERTY> extractPropertyToSet(final Collection<ENTITY> entities,
+	                                                                    final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+		Set<PROPERTY> properties = new HashSet<>();
+
+		for (ENTITY entity : entities) {
+			properties.add(propertyExtractor.getProperty(entity));
+		}
+
+		return properties;
+	}
+
+	public static <ENTITY, PROPERTY> List<PROPERTY> extractPropertyToList(final Collection<ENTITY> entities,
+	                                                                      final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+		List<PROPERTY> properties = new ArrayList<>();
+
+		for (ENTITY entity : entities) {
+			properties.add(propertyExtractor.getProperty(entity));
+		}
+
+		return properties;
+	}
 }
