@@ -14,10 +14,7 @@ import com.picsauditing.employeeguard.services.processor.ProjectAssignmentProces
 import com.picsauditing.employeeguard.services.processor.RoleAssignmentProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ProjectAssignmentService {
 
@@ -68,7 +65,7 @@ public class ProjectAssignmentService {
 	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId, final Collection<Project> projects) {
 		return new RoleAssignmentProcess().getCorporateRoleEmployees(
 				employeeEntityService.getEmployeesByProjectRoles(projects),
-				employeeEntityService.getEmployeesBySiteRoles(siteId),
+				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)),
 				roleEntityService.getSiteToCorporateRoles(siteId, accountService.getTopmostCorporateAccountIds(siteId)));
 	}
 }

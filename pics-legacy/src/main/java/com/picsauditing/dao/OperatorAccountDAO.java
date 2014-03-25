@@ -23,7 +23,7 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {
-	
+
 	@Transactional(propagation = Propagation.NESTED)
 	public OperatorAccount save(OperatorAccount o) {
 		if (o.getId() == 0) {
@@ -50,12 +50,12 @@ public class OperatorAccountDAO extends PicsDAO {
 	public OperatorAccount find(int id) {
 		return em.find(OperatorAccount.class, id);
 	}
-	
+
 	/**
 	 * Return a list of Operators and Corporates if necessary Depending on who
 	 * is asking (permissions), we may need to the return the Corporate list in
 	 * a special way
-	 * 
+	 *
 	 * @param includeCorporate
 	 * @param where
 	 * @param permissions
@@ -64,14 +64,14 @@ public class OperatorAccountDAO extends PicsDAO {
 	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, Permissions permissions) {
 		return findWhere(includeCorporate, where, permissions, NO_LIMIT);
 	}
-	
+
 	/**
 	 * Return a list of Operators and Corporates if necessary Depending on who
 	 * is asking (permissions), we may need to the return the Corporate list in
 	 * a special way.
-	 * 
+	 *
 	 * This method will limit the number of results returned.
-	 * 
+	 *
 	 * @param includeCorporate
 	 * @param where
 	 * @param permissions
@@ -142,11 +142,11 @@ public class OperatorAccountDAO extends PicsDAO {
 		}
 
 		return operatorList;
-	}	
+	}
 
 	/**
 	 * Alias a
-	 * 
+	 *
 	 * @param includeCorporate
 	 * @param where
 	 * @return
@@ -293,20 +293,22 @@ public class OperatorAccountDAO extends PicsDAO {
         return query.getResultList();
     }
 
-	public List<ContractorAccount> findAllContractorsForOperator(final OperatorAccount operator) {
-		List<ContractorAccount> contractors = Collections.emptyList();
+	public List<Integer> findAllOperatorsForContractor(final ContractorAccount contractor) {
+		List<Integer> operators = Collections.emptyList();
 		try {
-			Query query = em.createNativeQuery("select a.*, ci.* from contractor_info ci " +
-					"join accounts a on a.id = ci.id " +
-					"join contractor_operator co on co.conID = ci.id " +
-					"where co.opID = :operatorId", ContractorAccount.class);
-			query.setParameter("operatorId", operator.getId());
-			contractors = query.getResultList();
+			Query query = em.createNativeQuery("select a.id " +
+					"from operators o " +
+					"join accounts a on a.id = o.id " +
+					"join contractor_operator co on co.opID = o.id " +
+					"where co.conID = :contractorId", Integer.class);
+			query.setParameter("contractorId", contractor.getId());
+			operators = query.getResultList();
 		} catch (Exception e) {
 			e.printStackTrace();
 			// Ignore
 		}
 
-		return contractors;
+		return operators;
 	}
+
 }

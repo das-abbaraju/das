@@ -16,7 +16,7 @@ public final class RoleAssignmentProcess {
 															  final Map<Role, Set<Employee>> siteRoleEmployees,
 															  final Map<Role, Role> siteToCorporateRoles) {
 		Map<Role, Set<Employee>> corporateRoleToEmployees = mapSiteRolesToCorporateRoles(siteRoleEmployees, siteToCorporateRoles);
-		return Utilities.mergeValuesOfMapOfSets(projectEmployees, corporateRoleToEmployees);
+		return Utilities.mergeMapOfSets(projectEmployees, corporateRoleToEmployees);
 	}
 
 	private Map<Role, Set<Employee>> mapSiteRolesToCorporateRoles(final Map<Role, Set<Employee>> siteRoleEmployees,

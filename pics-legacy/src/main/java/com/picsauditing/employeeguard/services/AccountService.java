@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.Employee;
@@ -31,6 +32,8 @@ public class AccountService {
 	private AccountDAO accountDAO;
 	@Autowired
 	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
+	@Autowired
+	private ContractorAccountDAO contractorDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
 	@Autowired
@@ -197,7 +200,7 @@ public class AccountService {
 
 		List<ContractorAccount> contractors = new ArrayList<>();
 		if (!operator.isCorporate()) {
-			contractors = operatorDAO.findAllContractorsForOperator(operator);
+			contractors = contractorDAO.findAllContractorsForOperator(operator);
 		} else {
 			for (OperatorAccount site : operator.getChildOperators()) {
 				addContractorsFromOperator(site, contractors);
@@ -336,5 +339,14 @@ public class AccountService {
 		}
 
 		return accountIds;
+	}
+
+	public List<Integer> getOperatorIdsForContractor(final int contractorId) {
+		ContractorAccount contractor = contractorDAO.find(contractorId);
+		if (contractor == null) {
+			return Collections.emptyList();
+		}
+
+		return operatorDAO.findAllOperatorsForContractor(contractor);
 	}
 }

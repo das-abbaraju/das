@@ -1,10 +1,7 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.employeeguard.daos.AccountSkillDAO;
-import com.picsauditing.employeeguard.daos.AccountSkillRoleDAO;
-import com.picsauditing.employeeguard.daos.ProjectSkillDAO;
-import com.picsauditing.employeeguard.daos.SiteSkillDAO;
+import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.exceptions.NoCorporateForOperatorException;
@@ -21,6 +18,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
+	@Autowired
+	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired
@@ -77,6 +76,42 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 						return accountSkillRole.getSkill();
 					}
 				});
+	}
+
+	public Map<Employee, Set<AccountSkill>> getGroupSkillsForEmployees(final Map<Employee, Set<Group>> employeesToGroups) {
+		Map<Group, Set<AccountSkill>> groupSkills = getGroupSkills(employeesToGroups);
+
+		return getEmployeeSkillsByGroups(employeesToGroups, groupSkills);
+	}
+
+	private Map<Group, Set<AccountSkill>> getGroupSkills(Map<Employee, Set<Group>> employeesToGroups) {
+		return Utilities.convertToMapOfSets(
+				accountSkillGroupDAO.findByGroups(Utilities.flattenCollectionOfCollection(employeesToGroups.values())),
+				new Utilities.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
+					@Override
+					public Group getKey(AccountSkillGroup entity) {
+						return entity.getGroup();
+					}
+
+					@Override
+					public AccountSkill getValue(AccountSkillGroup entity) {
+						return entity.getSkill();
+					}
+				});
+	}
+
+	private Map<Employee, Set<AccountSkill>> getEmployeeSkillsByGroups(Map<Employee, Set<Group>> employeesToGroups, Map<Group, Set<AccountSkill>> groupSkills) {
+		Map<Employee, Set<AccountSkill>> employeeToSkills = new HashMap<>();
+		for (Employee employee : employeesToGroups.keySet()) {
+			for (Group group : employeesToGroups.get(employee)) {
+				if (!employeeToSkills.containsKey(employee)) {
+					employeeToSkills.put(employee, new HashSet<AccountSkill>());
+				}
+
+				employeeToSkills.get(employee).addAll(groupSkills.get(group));
+			}
+		}
+		return employeeToSkills;
 	}
 
 	/**

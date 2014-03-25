@@ -196,6 +196,27 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		return ListUtil.removeDuplicatesAndSort(employees);
 	}
 
+	public List<Employee> findEmployeesAssignedToSites(final Collection<Integer> siteIds) {
+		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.projectRoles pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE p.accountId IN (:siteIds)", Employee.class);
+		query.setParameter("siteIds", siteIds);
+
+		List<Employee> employees = query.getResultList();
+
+		query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
+				"JOIN e.roles re " +
+				"JOIN re.role r " +
+				"WHERE r.accountId IN (:siteIds)", Employee.class);
+		query.setParameter("siteIds", siteIds);
+
+		employees.addAll(query.getResultList());
+
+		return ListUtil.removeDuplicatesAndSort(employees);
+	}
+
 	public List<Employee> findEmployeesAssignedToSiteByProfile(final Collection<Integer> accountIds, final int siteId, final int profileId) {
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
 				"JOIN e.projectRoles pre " +
@@ -252,5 +273,20 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		employees.addAll(query.getResultList());
 
 		return ListUtil.removeDuplicatesAndSort(employees);
+	}
+
+	public int findRequestedEmployees(final int accountId) {
+		TypedQuery<Integer> query = em.createQuery("SELECT COUNT(e) " +
+				"FROM Employee e " +
+				"WHERE e.profile IS NULL " +
+				"AND e.accountId = :accountId", Integer.class);
+
+		query.setParameter("accountId", accountId);
+
+		try {
+			return query.getSingleResult();
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 }

@@ -142,15 +142,16 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		return query.getResultList();
 	}
 
-	public List<ProjectRoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees,
-															  final int siteId) {
+	public List<ProjectRoleEmployee> findByEmployeesAndSiteIds(final Collection<Employee> employees,
+															   final Collection<Integer> siteIds) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
-				"WHERE p.accountId = :siteId and pre.employee in (:employees)", ProjectRoleEmployee.class);
+				"WHERE p.accountId IN (:siteId) " +
+				"AND pre.employee in (:employees)", ProjectRoleEmployee.class);
 
 		query.setParameter("employees", employees);
-		query.setParameter("siteId", siteId);
+		query.setParameter("siteIds", siteIds);
 
 		return query.getResultList();
 	}

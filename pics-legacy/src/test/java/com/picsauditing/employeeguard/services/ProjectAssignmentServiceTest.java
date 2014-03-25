@@ -14,10 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyCollectionOf;
@@ -100,7 +97,7 @@ public class ProjectAssignmentServiceTest {
 
 	private void verifyCommonServiceCalls(final List<Project> projects) {
 		verify(employeeEntityService).getEmployeesByProjectRoles(projects);
-		verify(employeeEntityService).getEmployeesBySiteRoles(SITE_ID);
+		verify(employeeEntityService).getEmployeesBySiteRoles(Arrays.asList(SITE_ID));
 		verify(roleEntityService).getSiteToCorporateRoles(anyInt(), anyListOf(Integer.class));
 	}
 }
