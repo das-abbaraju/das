@@ -11,11 +11,11 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,13 +69,13 @@ public class OperatorAccountDAO extends PicsDAO {
 	 * Return a list of Operators and Corporates if necessary Depending on who
 	 * is asking (permissions), we may need to the return the Corporate list in
 	 * a special way.
-	 *
+	 * <p/>
 	 * This method will limit the number of results returned.
 	 *
 	 * @param includeCorporate
 	 * @param where
 	 * @param permissions
-	 * @param limit maximum number of results to return
+	 * @param limit            maximum number of results to return
 	 * @return
 	 */
 	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, Permissions permissions, int limit) {
@@ -218,7 +218,7 @@ public class OperatorAccountDAO extends PicsDAO {
 				.createQuery("SELECT count(c) FROM ContractorAccount c "
 						+ "WHERE c.status "
 						+ (permissions.getAccountStatus().equals(AccountStatus.Demo) ? "IN ('Active', 'Demo') "
-								: "= 'Active' ") + "AND c IN (SELECT contractorAccount FROM ContractorOperator WHERE "
+						: "= 'Active' ") + "AND c IN (SELECT contractorAccount FROM ContractorOperator WHERE "
 						+ where + ")");
 		query.setParameter(1, operator);
 		return Integer.parseInt(query.getSingleResult().toString());
@@ -277,21 +277,21 @@ public class OperatorAccountDAO extends PicsDAO {
 		Query query = em.createNativeQuery(select, OperatorAccount.class);
 
 		return query.getResultList();
-    }
+	}
 
-    public List<OperatorAccount> findAllTopLevelOperators(int contractorId) {
-        String queryString = "SELECT a.*, o.* FROM contractor_operator co " +
-        "JOIN operators o ON o.id = co.opID " +
-        "JOIN accounts a ON a.id = o.reportingID " +
-        "WHERE co.conID = :contractorId " +
-        "AND o.inPicsConsortium = 0 "+
-        "GROUP BY o.reportingID ";
+	public List<OperatorAccount> findAllTopLevelOperators(int contractorId) {
+		String queryString = "SELECT a.*, o.* FROM contractor_operator co " +
+				"JOIN operators o ON o.id = co.opID " +
+				"JOIN accounts a ON a.id = o.reportingID " +
+				"WHERE co.conID = :contractorId " +
+				"AND o.inPicsConsortium = 0 " +
+				"GROUP BY o.reportingID ";
 
-        Query query = em.createNativeQuery(queryString, OperatorAccount.class);
+		Query query = em.createNativeQuery(queryString, OperatorAccount.class);
 
-        query.setParameter("contractorId", contractorId);
-        return query.getResultList();
-    }
+		query.setParameter("contractorId", contractorId);
+		return query.getResultList();
+	}
 
 	public List<Integer> findAllOperatorsForContractor(final ContractorAccount contractor) {
 		List<Integer> operators = Collections.emptyList();
@@ -302,7 +302,15 @@ public class OperatorAccountDAO extends PicsDAO {
 					"join contractor_operator co on co.opID = o.id " +
 					"where co.conID = :contractorId", Integer.class);
 			query.setParameter("contractorId", contractor.getId());
-			operators = query.getResultList();
+			List<Long> operatorLongIds = query.getResultList();
+
+			if (CollectionUtils.isNotEmpty(operatorLongIds)) {
+				operators = new ArrayList<>();
+
+				for (long operatorLongId : operatorLongIds) {
+					operators.add((int) operatorLongId);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			// Ignore

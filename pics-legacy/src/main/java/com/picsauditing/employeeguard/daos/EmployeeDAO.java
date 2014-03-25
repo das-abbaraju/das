@@ -276,15 +276,16 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 	}
 
 	public int findRequestedEmployees(final int accountId) {
-		TypedQuery<Integer> query = em.createQuery("SELECT COUNT(e) " +
+		TypedQuery<Long> query = em.createQuery("SELECT COUNT(e) " +
 				"FROM Employee e " +
 				"WHERE e.profile IS NULL " +
-				"AND e.accountId = :accountId", Integer.class);
+				"AND e.accountId = :accountId", Long.class);
 
 		query.setParameter("accountId", accountId);
 
 		try {
-			return query.getSingleResult();
+			long result = query.getSingleResult();
+			return (int) result;
 		} catch (Exception e) {
 			return 0;
 		}
