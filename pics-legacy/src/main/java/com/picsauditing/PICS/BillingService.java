@@ -686,8 +686,9 @@ public class BillingService {
 	}
 
 	public void addRevRecInfoIfAppropriateToItems(Invoice invoice) throws Exception {
+		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
 		Date invoiceItemStartDate = calculateInvoiceItemRevRecStartDateFor(invoice);
-		Date invoiceItemEndDate = getRevRecFinishDateFromInvoice(invoice);
+		Date invoiceItemEndDate = calculateInvoiceItemRevRecFinishDateFor(invoice, contractor);
 		for (InvoiceItem invoiceItem : invoice.getItems()) {
 			if (!FeeService.isRevRecDeferred(invoiceItem.getInvoiceFee())) {
 				continue;
@@ -697,16 +698,70 @@ public class BillingService {
 		}
 	}
 
-	private Date getRevRecFinishDateFromInvoice(Invoice invoice) {
-        ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
+	public Date calculateInvoiceItemRevRecFinishDateFor(Invoice invoice, ContractorAccount contractor) throws Exception {
+		switch (invoice.getInvoiceType()) {
+			case Activation:
+				return calculateActivationRevRecFinishDate(invoice, contractor);
+			case Renewal:
+				return calculateRenewalRevRecFinishDate(invoice, contractor);
+			default:
+				return contractor.getPaymentExpires();
+		}
+	}
 
-        for (InvoiceItem invoiceItem : invoice.getItems()) {
-            if (invoiceItem.getInvoiceFee().isMembership() && invoiceItem.getPaymentExpires() != null) {
-                return invoiceItem.getPaymentExpires();
-            }
-        }
+	private Date calculateRenewalRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater;
+		oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrLessThanAYearFromNow(contractor)) {
+			oneYearLater = DateBean.addYears(contractor.getPaymentExpires(),1);
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
 
-        return contractor.getPaymentExpires();
+	private Date calculateActivationRevRecFinishDate(Invoice invoice, ContractorAccount contractor) {
+		Date oneYearLater = null;
+		if (contractorPaymentExpiresIsNullOrLessThanAYearFromNow(contractor)) {
+			oneYearLater = DateBean.addYears(invoice.getCreationDate(), 1);
+		} else {
+			oneYearLater = contractor.getPaymentExpires();
+		}
+		return oneYearLater;
+	}
+
+	private boolean contractorPaymentExpiresIsNullOrLessThanAYearFromNow(ContractorAccount contractor) {
+		return contractor.getPaymentExpires() == null || contractor.getPaymentExpires().before(DateBean.subtractDays(DateBean.addYears(new Date(),1),1));
+	}
+
+	private String generateExceptionStringForInabilityToCalculateRevRec(ContractorAccount contractor, Invoice invoice, Invoice previousInvoice) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Cannot calculate revenue recognition for contractor ");
+		stringBuilder.append(contractor.getId());
+		stringBuilder.append(" for invoice ");
+		stringBuilder.append(invoice.getId());
+		stringBuilder.append(" of type ");
+		stringBuilder.append(invoice.getInvoiceType());
+		if (previousInvoice == null) {
+			stringBuilder.append(" because cannot find a non-voided previous activation or renewal invoice");
+		} else {
+			stringBuilder.append(" because previous non-voided activation or renewal invoice ");
+			stringBuilder.append(+previousInvoice.getId());
+			stringBuilder.append(" doesn't have an invoice item with an end date");
+		}
+		return stringBuilder.toString();
+	}
+
+	public Date getInvoiceItemEndDateFrom(Invoice invoice) {
+		if (invoice == null) {
+			return null;
+		}
+		for (InvoiceItem invoiceItem : invoice.getItems()) {
+			if (invoiceItem.getRevenueFinishDate() != null) {
+				return invoiceItem.getRevenueFinishDate();
+			}
+		}
+		return null;
 	}
 
 	private Date calculateInvoiceItemRevRecStartDateFor(Invoice invoice) {
