@@ -14,6 +14,7 @@ import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class ManageAuditTypeTest extends PicsTranslationTest {
@@ -66,19 +67,29 @@ public class ManageAuditTypeTest extends PicsTranslationTest {
         Whitebox.setInternalState(manageAuditType, "slug", "manual-audit");
 
         String response = manageAuditType.validateSlug();
-        assertEquals("json",response);
-        assertEquals("{\"isURI\":true,\"isUnique\":false}",manageAuditType.getJson().toString());
+        assertEquals("json", response);
+        assertEquals("{\"isURI\":true,\"isUnique\":false}", manageAuditType.getJson().toString());
     }
 
     @Test
     public void testGenerateSlug() throws Exception {
-        when(slugService.generateSlug(AuditType.class,"Manual Audit",0)).thenReturn("manual-audit");
+        when(slugService.generateSlug(AuditType.class, "Manual Audit", 0)).thenReturn("manual-audit");
 
         Whitebox.setInternalState(manageAuditType, "stringToSlugify", "Manual Audit");
 
         String response = manageAuditType.generateSlug();
         assertEquals("json",response);
         assertEquals("{\"slug\":\"manual-audit\"}",manageAuditType.getJson().toString());
+    }
+
+    @Test
+    public void testSave_NoSlug() throws Exception {
+        when(slugService.slugHasDuplicate(AuditType.class,"manual-audit",0)).thenReturn(true);
+        when(auditType.getSlug()).thenReturn("manual-audit");
+
+        manageAuditType.save();
+
+        assertTrue(manageAuditType.hasActionErrors());
     }
 
     @Test
