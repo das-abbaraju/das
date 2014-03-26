@@ -67,7 +67,6 @@ public class OpenTasks extends TranslationActionSupport {
 		gatherTasksAboutAudits(); // uses hasImportPQF, importPQFComplete
 
 		if (!permissions.isOperatorCorporate()) {
-			gatherTasksAboutWebCamShipments();
 			gatherTasksAboutOperatorQualification();
 		}
 
@@ -94,7 +93,6 @@ public class OpenTasks extends TranslationActionSupport {
 		gatherTasksAboutAuditsEmail(); // uses hasImportPQF, importPQFComplete
 
 		if (!permissions.isOperatorCorporate()) {
-			gatherTasksAboutWebCamShipmentsEmail();
 			gatherTasksAboutOperatorQualificationEmail();
 		}
 
@@ -301,40 +299,6 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 
 		return false;
-	}
-
-	@Deprecated
-	private void gatherTasksAboutWebCamShipments() {
-		gatherTasksAboutWebCamShipments(getLocaleStatic());
-	}
-
-	@Deprecated
-	private void gatherTasksAboutWebCamShipmentsEmail() {
-		gatherTasksAboutWebCamShipments(user.getLocale());
-	}
-
-	@Deprecated
-	private void gatherTasksAboutWebCamShipments(Locale locale) {
-		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
-			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
-					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-
-				String carrier = contractor.getWebcam().getCarrier();
-
-				if (carrier != null) {
-					if (carrier.equals("FedEx")) {
-						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.WebcamHasShippedFedEx",
-								contractor.getWebcam().getTrackingNumber()));
-					} else if (carrier.equals("Purolator")) {
-						openTasks.add(getTextParameterized(locale,
-								"ContractorWidget.message.WebcamHasShippedPurolator", contractor.getWebcam()
-								.getTrackingNumber()));
-					} else {
-						openTasks.add(getText(locale, "ContractorWidget.message.WebcamHasShippedGeneric"));
-					}
-				}
-			}
-		}
 	}
 
 	private void gatherTasksAboutOperatorQualification() {
