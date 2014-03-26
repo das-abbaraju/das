@@ -10,10 +10,16 @@ public class InvoiceFeeTable extends AbstractTable {
 	public InvoiceFeeTable() {
 		super("invoice_fee");
 		addFields(InvoiceFee.class);
-		
-		Field feeName;
-		feeName = new Field("Name", "id", FieldType.String);
+
+        Field feeID = new Field("Id","id", FieldType.Integer);
+        feeID.setVisible(false);
+        feeID.setFilterable(false);
+        feeID.setImportance(FieldImportance.Required);
+        addField(feeID);
+
+        Field feeName = new Field("Name", "id", FieldType.String);
 		feeName.setTranslationPrefixAndSuffix("InvoiceFee", "fee");
+        feeName.setDrillDownField(feeID.getName());
         feeName.setImportance(FieldImportance.Required);
 		feeName.setWidth(200);
 		addField(feeName);

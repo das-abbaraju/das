@@ -67,12 +67,20 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
+        Field flagCriteriaID = new Field("FlagCriteriaID", "FlagCriteria.id", FieldType.Integer);
+        flagCriteriaID.setFilterable(false);
+        flagCriteriaID.setVisible(false);
+        flagCriteriaID.setImportance(FieldImportance.Required);
+        fields.put(flagCriteriaID.getName().toUpperCase(), flagCriteriaID);
+
 		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.String);
 		flagCriteriaLabel.setTranslationPrefixAndSuffix("FlagCriteria", "label");
+        flagCriteriaLabel.setDrillDownField(flagCriteriaID.getName());
 		fields.put(FLAG_CRITERIA_LABEL.toUpperCase(), flagCriteriaLabel);
 
 		Field flagCriteriaDescription = new Field(FLAG_CRITERIA_DESCRIPTION, "FlagCriteria.id", FieldType.String);
 		flagCriteriaDescription.setTranslationPrefixAndSuffix("FlagCriteria", "description");
+        flagCriteriaDescription.setDrillDownField(flagCriteriaID.getName());
 		flagCriteriaDescription.setWidth(500);
 		fields.put(FLAG_CRITERIA_DESCRIPTION.toUpperCase(), flagCriteriaDescription);
 

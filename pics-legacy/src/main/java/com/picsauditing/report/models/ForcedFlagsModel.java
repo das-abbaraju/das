@@ -55,8 +55,15 @@ public class ForcedFlagsModel extends AbstractModel {
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
+        Field accountTypeString = new Field("ContractorOperatorOperatorTypeString", "ContractorOperatorOperator.type", FieldType.String);
+        accountTypeString.setFilterable(false);
+        accountTypeString.setVisible(false);
+        accountTypeString.setImportance(FieldImportance.Required);
+        fields.put(accountTypeString.getName().toUpperCase(), accountTypeString);
+
         Field accountType = new Field("ContractorOperatorOperatorType", "ContractorOperatorOperator.type", FieldType.AccountType);
         accountType.setTranslationPrefixAndSuffix("AccountType", "");
+        accountType.setDrillDownField(accountTypeString.getName());
         fields.put("ContractorOperatorOperatorType".toUpperCase(), accountType);
 
         return fields;

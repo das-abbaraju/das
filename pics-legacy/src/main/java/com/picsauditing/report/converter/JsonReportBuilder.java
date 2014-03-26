@@ -95,7 +95,11 @@ public class JsonReportBuilder {
 		json.put(REPORT_COLUMNS, jsonArray);
 	}
 
-    private static void setDrillDownURL(List<Column> columns) {
+    public static void setDrillDownURL(List<Column> columns) {
+        if (columns == null) {
+            return;
+        }
+
         List <Column> aggregateColumns = new ArrayList<Column>();
         JSONArray dynamicParameters = new JSONArray();
 
@@ -103,7 +107,7 @@ public class JsonReportBuilder {
             if (column.getSqlFunction() != null && column.getSqlFunction().isAggregate()) {
                 aggregateColumns.add(column);
             }
-            else {
+            else if (column.getField().isFilterable()) {
                 JSONObject param = new JSONObject();
                 param.put(REPORT_ELEMENT_FIELD_ID,column.getName());
                 FilterType filterType = column.getField().getFilterType();
@@ -118,7 +122,12 @@ public class JsonReportBuilder {
                     param.put(FILTER_SQL_FUNCTION, column.getSqlFunction().toString());
                 }
 
-                param.put(FILTER_VALUE,"{" + column.getName() + "}");
+                if (column.getField().getDrillDownField() != null) {
+                    param.put(FILTER_VALUE,"{" + column.getField().getDrillDownField() + "}");
+                }
+                else {
+                    param.put(FILTER_VALUE,"{" + column.getName() + "}");
+                }
                 dynamicParameters.add(param);
             }
         }

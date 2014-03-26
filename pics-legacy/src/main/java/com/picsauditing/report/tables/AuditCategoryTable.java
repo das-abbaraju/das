@@ -9,15 +9,15 @@ public class AuditCategoryTable extends AbstractTable {
 	public AuditCategoryTable() {
 		super("audit_category");
 		addFields(AuditCategory.class);
-		addPrimaryKey();
+		Field auditCategoryID = addPrimaryKey();
 
-		Field auditQuestionName;
-		auditQuestionName = new Field("Name", "id", FieldType.AuditCategory);
-		auditQuestionName.setTranslationPrefixAndSuffix("AuditCategory", "name");
-		auditQuestionName.setUrl("ManageCategory.action?id={" + ReportOnClause.ToAlias + "ID}");
-		auditQuestionName.setImportance(FieldImportance.Required);
-		auditQuestionName.setWidth(200);
-		addField(auditQuestionName);
+        Field auditCategoryName = new Field("Name", "id", FieldType.AuditCategory);
+		auditCategoryName.setTranslationPrefixAndSuffix("AuditCategory", "name");
+        auditCategoryName.setDrillDownField(auditCategoryID.getName());
+		auditCategoryName.setUrl("ManageCategory.action?id={" + ReportOnClause.ToAlias + "ID}");
+		auditCategoryName.setImportance(FieldImportance.Required);
+		auditCategoryName.setWidth(200);
+		addField(auditCategoryName);
 	}
 
 	public void addJoins() {

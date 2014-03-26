@@ -109,6 +109,10 @@ public class ReportJoin {
 				// TODO This is scary, we should find a better way to update
 				// this
 				fieldCopy.setName(alias + fieldCopy.getName());
+
+                if (fieldCopy.getDrillDownField() != null)
+                    fieldCopy.setDrillDownField(alias + fieldCopy.getDrillDownField());
+
 				// if you have the report on clause aliases in string, then
 				// don't put the leading toAlias. Instead, replace the existing
 				// locations throughout the string
