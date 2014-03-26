@@ -23,7 +23,9 @@ table.report {
 </head>
 <body>
 <h1>Audit Management</h1>
-<a class="add" href="?button=Add New" id="addNewAuditType">Add New Audit Type</a>
+<pics:permission perm="ManageAudits" type="Edit" >
+    <a class="add" href="?button=Add New" id="addNewAuditType">Add New Audit Type</a>
+</pics:permission>
 
 <table class="report">
 <thead>
