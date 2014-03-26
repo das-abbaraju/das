@@ -481,38 +481,15 @@ public class AuditPercentCalculator {
             float score = 0;
 
             for (AuditCatData data : conAudit.getCategories()) {
-                boolean applies = false;
-                if (data.isOverride())
-                    applies = data.isApplies();
-                else {
-                    if (data.isApplies()) {
-                        if (conAudit.getAuditType().isDesktop() && cao.getStatus().after(AuditStatus.Incomplete))
-                            applies = true;
-                        else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
-                            // Import PQF and Welcome Call don't have any
-                            // operators, so just always assume the
-                            // categories apply
-                            applies = true;
-                        else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
-                            applies = true;
-                        else {
-                            applies = builder.isCategoryApplicable(data.getCategory(), cao);
-                            AuditCategory parent = data.getCategory().getParent();
-                            while (parent != null && applies) {
-                                applies = builder.isCategoryApplicable(parent, cao);
-                                parent = parent.getParent();
-                            }
-                        }
-                    }
-                }
+                boolean applies = doesCategoryApply(conAudit, builder, cao, data);
 
                 if (applies) {
                     required += data.getNumRequired();
                     answered += data.getRequiredCompleted();
                     verified += data.getNumVerified();
 
-                    if (conAudit.getAuditType().getScoreType() == ScoreType.Percent
-                            || conAudit.getAuditType().getScoreType() == ScoreType.Actual) {
+                    // NOTE: Scoreable audits presupposes only one visible cao
+                    if (shouldAdjustAuditScore(conAudit, cao)) {
                         if (data.getScorePossible() > 0) {
                             score += data.getScore();
                             scoreWeight += data.getScorePossible();
@@ -521,10 +498,12 @@ public class AuditPercentCalculator {
                 }
             }
 
-            if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
-                conAudit.setScore((int) Math.min(Math.round(score), 100L));
-            else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
-                conAudit.setScore((int) Math.round(score));
+            if (shouldAdjustAuditScore(conAudit, cao)) {
+                if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
+                    conAudit.setScore((int) Math.min(Math.round(score), 100L));
+                else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
+                    conAudit.setScore((int) Math.round(score));
+            }
 
             int percentComplete = 0;
             int percentVerified = 0;
@@ -564,6 +543,44 @@ public class AuditPercentCalculator {
         if (conAudit.getAuditType().getScoreType() == ScoreType.Aggregate) {
             calculateStraightAggregate(conAudit);
         }
+    }
+
+    private boolean doesCategoryApply(ContractorAudit conAudit, AuditCategoriesBuilder builder, ContractorAuditOperator cao, AuditCatData data) {
+        boolean applies = false;
+        if (data.isOverride())
+            applies = data.isApplies();
+        else {
+            if (data.isApplies()) {
+                if (conAudit.getAuditType().isDesktop() && cao.getStatus().after(AuditStatus.Incomplete))
+                    applies = true;
+                else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
+                    // Import PQF and Welcome Call don't have any
+                    // operators, so just always assume the
+                    // categories apply
+                    applies = true;
+                else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
+                    applies = true;
+                else {
+                    applies = builder.isCategoryApplicable(data.getCategory(), cao);
+                    AuditCategory parent = data.getCategory().getParent();
+                    while (parent != null && applies) {
+                        applies = builder.isCategoryApplicable(parent, cao);
+                        parent = parent.getParent();
+                    }
+                }
+            }
+        }
+        return applies;
+    }
+
+    private boolean shouldAdjustAuditScore(ContractorAudit conAudit, ContractorAuditOperator cao) {
+        if (!cao.isVisible())
+            return false;
+        if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
+            return true;
+        if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
+            return true;
+        return false;
     }
 
     private boolean isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(ContractorAudit conAudit, ContractorAuditOperator cao) {
