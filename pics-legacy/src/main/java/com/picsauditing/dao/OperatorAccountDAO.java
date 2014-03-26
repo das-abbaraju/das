@@ -17,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {
@@ -294,14 +292,16 @@ public class OperatorAccountDAO extends PicsDAO {
 	}
 
 	public List<Integer> findAllOperatorsForContractor(final ContractorAccount contractor) {
+		return findAllOperatorsForContractors(Arrays.asList(contractor));
+	}
+
+	public List<Integer> findAllOperatorsForContractors(final Collection<ContractorAccount> contractors) {
 		List<Integer> operators = Collections.emptyList();
 		try {
-			Query query = em.createNativeQuery("select a.id " +
-					"from operators o " +
-					"join accounts a on a.id = o.id " +
-					"join contractor_operator co on co.opID = o.id " +
-					"where co.conID = :contractorId", Integer.class);
-			query.setParameter("contractorId", contractor.getId());
+			Query query = em.createQuery("SELECT DISTINCT co.operatorAccount.id " +
+					"FROM ContractorOperator co " +
+					"WHERE co.contractorAccount IN (:contractors)", Long.class);
+			query.setParameter("contractors", contractors);
 			List<Long> operatorLongIds = query.getResultList();
 
 			if (CollectionUtils.isNotEmpty(operatorLongIds)) {

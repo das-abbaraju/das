@@ -2,15 +2,14 @@ package com.picsauditing.employeeguard.controllers.employee;
 
 import com.google.gson.Gson;
 import com.picsauditing.controller.PicsRestActionSupport;
+import com.picsauditing.employeeguard.engine.SkillEngine;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ModelFactory;
+import com.picsauditing.employeeguard.models.ProfileAssignmentModel;
 import com.picsauditing.employeeguard.models.ProfileModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
-import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
-import com.picsauditing.employeeguard.services.entity.RoleEntityService;
+import com.picsauditing.employeeguard.services.entity.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.MapUtils;
@@ -26,11 +25,15 @@ public class SummaryAction extends PicsRestActionSupport {
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
 	@Autowired
+	private GroupEntityService groupEntityService;
+	@Autowired
 	private ProfileEntityService profileEntityService;
 	@Autowired
 	private ProjectEntityService projectEntityService;
 	@Autowired
 	private RoleEntityService roleEntityService;
+	@Autowired
+	private SkillEngine skillEngine;
 
 	/* pages */
 
@@ -51,33 +54,28 @@ public class SummaryAction extends PicsRestActionSupport {
 	public String assignments() {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 
-		// project to accounts
-		Map<Project, AccountModel> projectAccounts = getProjectAccounts(profile);
+		Map<Project, SkillStatus> projectStatuses = calculateProjectStatuses(profile);
 
-		// foreach project
-		// project to roles
-		// project to skills
-		// role to skills
-		// employee to skills
-		// employee to status
-		// worstof all statuses
+		Map<Integer, AccountModel> contractors = accountService.getContractorMapForProfile(profile);
+		Map<Integer, AccountModel> sites = accountService.getOperatorMapForContractors(contractors.keySet());
+		Map<Integer, AccountModel> allAccounts = new HashMap<>(contractors);
+		allAccounts.putAll(sites);
 
-		Map<Project, SkillStatus> projectStatuses = calculateProjectStatuses(projectAccounts, profile.getEmployees());
+		// Site IDs
+		Map<Integer, Set<Role>> siteRoles = roleEntityService.getRolesForSites(sites.keySet());
+		// Contractor IDs
+		Map<Integer, Set<Group>> contractorGroups = groupEntityService.getGroupsByContractorId(profile.getEmployees());
 
-		Map<AccountModel, Set<Role>> siteRoles;
-		Map<AccountModel, Set<Group>> contractorGroups;
+		Map<Integer, Set<AccountSkill>> skills = Collections.emptyMap(); // all the skills for contractors/sites
+		Map<Integer, SkillStatus> siteStatus = Collections.emptyMap(); // the roll-up of skills for contractors/sites
 
-		Map<AccountModel, Set<AccountSkill>> skills; // all the skills for contractors/sites
-		Map<AccountModel, SkillStatus> siteStatus; // the roll-up of skills for contractors/sites
+		Map<Project, Set<AccountSkill>> allProjectSkills = Collections.emptyMap();
+		Map<Project, Set<Role>> projectRoles = Collections.emptyMap();
 
-		Map<Project, Set<AccountSkill>> allProjectSkills;
-		Map<Project, Set<Role>> projectRoles;
+		List<ProfileAssignmentModel> models = ModelFactory.getProfileAssignmentModelFactory()
+				.create(allAccounts, siteRoles, contractorGroups, siteStatus, projectStatuses);
 
-		// TODO: Use this information to build the model
-		// Map<AccountModel, Set<Role>>,
-		// Map<AccountModel, Set<Group>>,
-		// Map<AccountModel, SkillStatus>,
-		// Map<Project, SkillStatus>
+		jsonString = new Gson().toJson(models);
 
 		return JSON_STRING;
 	}
@@ -99,8 +97,9 @@ public class SummaryAction extends PicsRestActionSupport {
 		return projectAccounts;
 	}
 
-	private Map<Project, SkillStatus> calculateProjectStatuses(final Map<Project, AccountModel> projectAccounts,
-	                                                           final List<Employee> employees) {
+	private Map<Project, SkillStatus> calculateProjectStatuses(final Profile profile) {
+		Map<Project, AccountModel> projectAccounts = getProjectAccounts(profile);
+
 		return null;
 	}
 

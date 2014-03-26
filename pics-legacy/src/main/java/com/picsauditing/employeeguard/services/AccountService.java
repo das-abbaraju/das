@@ -31,15 +31,11 @@ public class AccountService {
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
-	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
-	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
 	@Autowired
 	private BillingService billingService;
-	@Autowired
-	private ProductSubscriptionService productSubscriptionService;
 
 	public AccountModel getAccountById(int accountId) {
 		Account account = accountDAO.find(accountId);
@@ -157,10 +153,6 @@ public class AccountService {
 
 	public List<Integer> getChildOperatorIds(final List<Integer> accountIds) {
 		return extractIdFromAccountModel(getChildOperators(accountIds).toArray(new AccountModel[0]));
-	}
-
-	public AccountType getAccountTypeByUserID(int userID) {
-		return getAccountByUserID(userID).getAccountType();
 	}
 
 	public AccountModel getAccountByUserID(int userID) {
@@ -284,27 +276,35 @@ public class AccountService {
 		return ids;
 	}
 
-	public boolean doesContractorStillNeedEmployeeGuard(final int contractorID) {
-		return doesContractorStillNeedEmployeeGuard(accountDAO.find(contractorID));
-	}
-
-	private boolean doesContractorStillNeedEmployeeGuard(final Account account) {
-		return productSubscriptionService.hasEmployeeGUARD(account);
-	}
-
 	public Map<Integer, AccountModel> getContractorsForEmployee(final Employee employee) {
 		if (employee == null) {
 			return Collections.emptyMap();
 		}
 
 		if (employee.getProfile() != null) {
-			return getContractorsForProfile(employee.getProfile());
+			return getContractorMapForProfile(employee.getProfile());
 		}
 
 		return getIdToAccountModelMap(Arrays.asList(employee.getAccountId()));
 	}
 
-	public Map<Integer, AccountModel> getContractorsForProfile(final Profile profile) {
+	public Collection<AccountModel> getContractorsForProfile(final Profile profile) {
+		if (profile == null) {
+			return Collections.emptyList();
+		}
+
+		List<Integer> contractorIds = ExtractorUtil.extractList(profile.getEmployees(),
+				new Extractor<Employee, Integer>() {
+					@Override
+					public Integer extract(Employee employee) {
+						return employee.getAccountId();
+					}
+				});
+
+		return getAccountsByIds(contractorIds);
+	}
+
+	public Map<Integer, AccountModel> getContractorMapForProfile(final Profile profile) {
 		if (profile == null) {
 			return Collections.emptyMap();
 		}
@@ -324,14 +324,6 @@ public class AccountService {
 		return getIdToAccountModelMap(getAccountIds(employees));
 	}
 
-	public List<AccountModel> getContractorsForEmployees(final List<Employee> employees) {
-		if (CollectionUtils.isEmpty(employees)) {
-			return Collections.emptyList();
-		}
-
-		return getAccountsByIds(getAccountIds(employees));
-	}
-
 	private List<Integer> getAccountIds(final List<Employee> employees) {
 		List<Integer> accountIds = new ArrayList<>();
 		for (Employee employee : employees) {
@@ -339,6 +331,23 @@ public class AccountService {
 		}
 
 		return accountIds;
+	}
+
+	public Map<Integer, AccountModel> getOperatorMapForContractors(final Collection<Integer> contractorIds) {
+		return getIdToAccountModelMap(getOperatorIdsForContractors(contractorIds));
+	}
+
+	public List<AccountModel> getOperatorsForContractors(final Collection<Integer> contractorIds) {
+		return getAccountsByIds(getOperatorIdsForContractors(contractorIds));
+	}
+
+	public List<Integer> getOperatorIdsForContractors(final Collection<Integer> contractorIds) {
+		List<ContractorAccount> contractors = contractorDAO.findByIDs(ContractorAccount.class, contractorIds);
+		if (CollectionUtils.isEmpty(contractors)) {
+			return Collections.emptyList();
+		}
+
+		return operatorDAO.findAllOperatorsForContractors(contractors);
 	}
 
 	public List<Integer> getOperatorIdsForContractor(final int contractorId) {

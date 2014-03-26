@@ -134,6 +134,17 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return employeeDAO.findEmployeesAssignedToSiteForContractors(contractorIds, siteId);
 	}
 
+	public Map<Integer, Employee> getEmployeesByContractorId(final Profile profile) {
+		return PicsCollectionUtil.convertToMap(employeeDAO.findByProfile(profile),
+				new PicsCollectionUtil.MapConvertable<Integer, Employee>() {
+
+					@Override
+					public Integer getKey(Employee employee) {
+						return employee.getAccountId();
+					}
+				});
+	}
+
 	/**
 	 * Returns the count of Employees with no profile.
 	 *

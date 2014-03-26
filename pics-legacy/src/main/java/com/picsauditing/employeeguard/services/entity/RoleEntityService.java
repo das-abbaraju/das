@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
@@ -111,8 +112,17 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	@Deprecated
 	public Map<Role, Role> getSiteToCorporateRoles(final int siteId, final List<Integer> corporateIds) {
 		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+	}
+
+	public Map<Integer, Set<Role>> getRolesForSites(final Collection<Integer> sites) {
+		if (CollectionUtils.isEmpty(sites)) {
+			return Collections.emptyMap();
+		}
+
+		return Collections.emptyMap();
 	}
 
 	/* All Search Methods */

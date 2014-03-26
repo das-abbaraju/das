@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-public class ProfileAssignmentModel {
+public class ProfileAssignmentModel implements Comparable<ProfileAssignmentModel> {
 
 	private String name;
 	private SkillStatus status;
@@ -48,5 +48,10 @@ public class ProfileAssignmentModel {
 
 	public void setSite(String site) {
 		this.site = site;
+	}
+
+	@Override
+	public int compareTo(ProfileAssignmentModel that) {
+		return this.getName().compareToIgnoreCase(that.getName());
 	}
 }

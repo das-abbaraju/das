@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.util.ListUtil;
@@ -289,5 +290,15 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		} catch (Exception e) {
 			return 0;
 		}
+	}
+
+	public List<Employee> findByProfile(final Profile profile) {
+		TypedQuery<Employee> query = em.createQuery("SELECT e FROM Employee e " +
+				"JOIN e.profile p " +
+				"WHERE p = :profile", Employee.class);
+
+		query.setParameter("profile", profile);
+
+		return query.getResultList();
 	}
 }

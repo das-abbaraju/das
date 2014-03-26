@@ -29,13 +29,25 @@ public class SkillEngine {
 	@Autowired
 	private SkillEntityService skillEntityService;
 
-	public Set<AccountSkill> getEmployeeSkillsForSite(final int siteId, final Collection<Employee> employees) {
-		return Collections.emptySet();
+	public Map<Integer, Set<AccountSkill>> getEmployeeSkillsForSites(final Collection<AccountModel> sites,
+																	 final Map<Integer, Set<Employee>> siteAssignments,
+																	 final Map<Integer, Employee> contractorEmployee) {
+//		if (CollectionUtils.isEmpty(sites) || CollectionUtils.isEmpty(employees)) {
+//			return Collections.emptyMap();
+//		}
+//
+//		Map<Integer, Set<AccountSkill>> employeeSiteSkills = new HashMap<>();
+//		for (Integer siteId : sites) {
+//			employeeSiteSkills.put(siteId, getEmployeeSkillsForSite(siteId, employees));
+//		}
+//
+//		return employeeSiteSkills;
+
+		return Collections.emptyMap();
 	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsMapForAccount(final Collection<Employee> employees,
 																		   final AccountModel accountModel) {
-
 		Map<Employee, Set<AccountSkill>> employeeGroupSkills =
 				skillEntityService.getGroupSkillsForEmployees(groupEntityService.getEmployeeGroups(employees));
 		Map<Employee, Set<AccountSkill>> employeeRoleSkills = getRoleSkillsForEmployees(employees, accountModel);
