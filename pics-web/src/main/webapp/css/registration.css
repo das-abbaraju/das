@@ -1145,15 +1145,16 @@ footer .footer-menu a {
 }
 
 .registration-form .company-information input,
+.registration-form .company-information textarea,
 .registration-form .contact-information input,
-.registration-form .account-information input
-	{
+.registration-form .account-information input {
 	-webkit-box-shadow: inset 0px 2px 3px -1px #878787;
 	-moz-box-shadow: inset 0px 2px 3px -1px #878787;
 	box-shadow: inset 0px 2px 3px -1px #878787;
 }
 
 .registration-form input,
+.registration-form textarea,
 .registration-form .select2-container {
 	float: left;
 }
@@ -1176,6 +1177,7 @@ footer .footer-menu a {
 }
 
 .registration-form input[type=text],
+.registration-form textarea,
 .client-site-form input[type=text],
 .service-evaluation-form input[type=text],
 .make-payment-form input[type=text],
@@ -1189,10 +1191,13 @@ footer .footer-menu a {
 .registration-form input,
 .client-site-form input,
 .service-evaluation-form input,
-.make-payment-form input
-	{
+.make-payment-form input {
 	height: 20px;
 	padding: 1px 5px;
+}
+
+.registration-form textarea {
+	padding: 5px;
 }
 
 .service-evaluation-form ul.text-input-list li input.year
