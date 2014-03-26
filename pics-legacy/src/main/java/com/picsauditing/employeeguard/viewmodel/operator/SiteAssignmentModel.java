@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.viewmodel.operator;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 
 import java.util.List;
@@ -15,10 +15,10 @@ public class SiteAssignmentModel {
 	private final List<EntityInfo> skills;
 
 	public SiteAssignmentModel(final Builder builder) {
-		this.employeeSiteAssignmentModels = Utilities.unmodifiableList(builder.employeeSiteAssignmentModels);
-		this.roleEmployee = Utilities.unmodifiableMap(builder.roleEmployee);
+		this.employeeSiteAssignmentModels = PicsCollectionUtil.unmodifiableList(builder.employeeSiteAssignmentModels);
+		this.roleEmployee = PicsCollectionUtil.unmodifiableMap(builder.roleEmployee);
 		this.totalEmployeesAssignedToSite = builder.totalEmployeesAssignedToSite;
-		this.skills = Utilities.unmodifiableList(builder.skills);
+		this.skills = PicsCollectionUtil.unmodifiableList(builder.skills);
 	}
 
 	public List<EmployeeSiteAssignmentModel> getEmployeeSiteAssignmentModels() {

@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.engine;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
@@ -8,6 +7,7 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.entity.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,9 @@ public class SkillEngine {
 	@Autowired
 	private SkillEntityService skillEntityService;
 
+	public Set<AccountSkill> getEmployeeSkillsForSite(final int siteId, final Collection<Employee> employees) {
+		return Collections.emptySet();
+	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsMapForAccount(final Collection<Employee> employees,
 																		   final AccountModel accountModel) {
@@ -38,15 +41,15 @@ public class SkillEngine {
 		Map<Employee, Set<AccountSkill>> employeeRoleSkills = getRoleSkillsForEmployees(employees, accountModel);
 		Map<Employee, Set<AccountSkill>> employeeProjectSkills = getProjectSkillsForEmployees(employees, accountModel);
 
-		Map<Employee, Set<AccountSkill>> employeeGroupRoleSkills = Utilities.mergeMapOfSets(employeeGroupSkills, employeeRoleSkills);
-		return Utilities.mergeMapOfSets(employeeGroupRoleSkills, employeeProjectSkills);
+		Map<Employee, Set<AccountSkill>> employeeGroupRoleSkills = PicsCollectionUtil.mergeMapOfSets(employeeGroupSkills, employeeRoleSkills);
+		return PicsCollectionUtil.mergeMapOfSets(employeeGroupRoleSkills, employeeProjectSkills);
 	}
 
 	private Map<Employee, Set<AccountSkill>> getProjectSkillsForEmployees(final Collection<Employee> employees,
 																		  final AccountModel accountModel) {
 		Map<Employee, Set<Project>> employeeProjects = getProjectSkills(employees, accountModel);
 		Map<Project, Set<AccountSkill>> projectRequiredSkills =
-				skillEntityService.getRequiredSkillsForProjects(Utilities.extractAndFlattenValuesFromMap(employeeProjects));
+				skillEntityService.getRequiredSkillsForProjects(PicsCollectionUtil.extractAndFlattenValuesFromMap(employeeProjects));
 
 		return getEmployeeSkillsMap(employees, employeeProjects, projectRequiredSkills);
 	}
@@ -54,7 +57,7 @@ public class SkillEngine {
 	private Map<Employee, Set<AccountSkill>> getRoleSkillsForEmployees(Collection<Employee> employees, AccountModel accountModel) {
 		Map<Employee, Set<Role>> employeeRoles = getEmployeeSiteAssignments(employees, accountModel);
 		Map<Role, Set<AccountSkill>> roleRequiredSkills =
-				skillEntityService.getSkillsForRoles(Utilities.extractAndFlattenValuesFromMap(employeeRoles));
+				skillEntityService.getSkillsForRoles(PicsCollectionUtil.extractAndFlattenValuesFromMap(employeeRoles));
 
 		return getEmployeeSkillsMap(employees, employeeRoles, roleRequiredSkills);
 	}
@@ -129,7 +132,7 @@ public class SkillEngine {
 		Collection<Project> projects = projectEntityService.getProjectsBySiteIds(siteIds);
 		Map<Role, Set<Employee>> projectRolesToEmployees = employeeEntityService.getEmployeesByProjectRoles(projects);
 
-		Map<Role, Set<Employee>> allRolesToEmployees = Utilities.mergeMapOfSets(rolesToEmployees, projectRolesToEmployees);
-		return Utilities.invertMapOfSet(allRolesToEmployees);
+		Map<Role, Set<Employee>> allRolesToEmployees = PicsCollectionUtil.mergeMapOfSets(rolesToEmployees, projectRolesToEmployees);
+		return PicsCollectionUtil.invertMapOfSet(allRolesToEmployees);
 	}
 }

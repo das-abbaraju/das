@@ -5,7 +5,6 @@ import com.google.common.collect.TreeBasedTable;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.AuthenticationAware;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
@@ -22,6 +21,7 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator;
 import com.picsauditing.employeeguard.validators.employee.EmployeeFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
@@ -215,7 +215,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	private void loadEmployeeAssignments(Employee employee) {
 		List<ProjectRole> projectRoles = projectRoleService.getRolesForEmployee(employee);
-		Set<Integer> accountIds = Utilities.getIdsFromCollection(projectRoles, new Utilities.Identitifable<ProjectRole, Integer>() {
+		Set<Integer> accountIds = PicsCollectionUtil.getIdsFromCollection(projectRoles, new PicsCollectionUtil.Identitifable<ProjectRole, Integer>() {
 
 			@Override
 			public Integer getId(ProjectRole projectRole) {

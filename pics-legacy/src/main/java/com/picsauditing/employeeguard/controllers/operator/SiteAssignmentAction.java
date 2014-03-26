@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.common.collect.Table;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
@@ -12,6 +11,7 @@ import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ListUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
@@ -58,9 +58,9 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		site = accountService.getAccountById(siteId);
 
 		List<AccountModel> contractors = accountService.getContractors(siteId);
-		Set<Integer> contractorIds = Utilities.getIdsFromCollection(
+		Set<Integer> contractorIds = PicsCollectionUtil.getIdsFromCollection(
 				contractors,
-				new Utilities.Identitifable<AccountModel, Integer>() {
+				new PicsCollectionUtil.Identitifable<AccountModel, Integer>() {
 					@Override
 					public Integer getId(AccountModel element) {
 						return element.getId();

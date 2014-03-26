@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
@@ -66,7 +65,7 @@ public class StatusCalculatorService {
 	}
 
 	private Map<Employee, Set<AccountSkillEmployee>> convertToMap(final List<AccountSkillEmployee> accountSkillEmployees) {
-		return Utilities.convertToMapOfSets(accountSkillEmployees, new Utilities.MapConvertable<Employee, AccountSkillEmployee>() {
+		return PicsCollectionUtil.convertToMapOfSets(accountSkillEmployees, new PicsCollectionUtil.MapConvertable<Employee, AccountSkillEmployee>() {
 			@Override
 			public Employee getKey(AccountSkillEmployee accountSkillEmployee) {
 				return accountSkillEmployee.getEmployee();
@@ -179,8 +178,8 @@ public class StatusCalculatorService {
 	private Map<AccountSkill, AccountSkillEmployee> buildAccountSkillToAccountSkillEmployeeMap(
 			final List<AccountSkillEmployee> accountSkillEmployees) {
 
-		return Utilities.convertToMap(accountSkillEmployees,
-				new Utilities.MapConvertable<AccountSkill, AccountSkillEmployee>() {
+		return PicsCollectionUtil.convertToMap(accountSkillEmployees,
+				new PicsCollectionUtil.MapConvertable<AccountSkill, AccountSkillEmployee>() {
 					@Override
 					public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
 						return accountSkillEmployee.getSkill();
@@ -211,8 +210,8 @@ public class StatusCalculatorService {
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
 				.findByEmployeeAndSkills(employee, skills);
 
-		return Utilities.convertToMap(accountSkillEmployees,
-				new Utilities.EntityKeyValueConvertable<AccountSkillEmployee, AccountSkill, SkillStatus>() {
+		return PicsCollectionUtil.convertToMap(accountSkillEmployees,
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, AccountSkill, SkillStatus>() {
 					@Override
 					public AccountSkill getKey(AccountSkillEmployee entity) {
 						return entity.getSkill();

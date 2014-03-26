@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
@@ -9,6 +8,7 @@ import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -94,7 +94,7 @@ public class SkillService {
 	}
 
 	private Map<Integer, List<SiteSkill>> extractSiteIdToSiteSkills(List<SiteSkill> requiredByAccounts) {
-		return Utilities.convertToMapOfLists(requiredByAccounts, new Utilities.MapConvertable<Integer, SiteSkill>() {
+		return PicsCollectionUtil.convertToMapOfLists(requiredByAccounts, new PicsCollectionUtil.MapConvertable<Integer, SiteSkill>() {
 			@Override
 			public Integer getKey(SiteSkill entity) {
 				return entity.getSiteId();
@@ -261,7 +261,7 @@ public class SkillService {
 
 	public Map<AccountSkill, Set<Role>> getProjectRoleSkillsMap(final Employee employee) {
 		List<AccountSkillRole> projectSkillRoles = accountSkillRoleDAO.findProjectRoleSkillsByEmployee(employee);
-		return Utilities.convertToMapOfSets(projectSkillRoles, new Utilities.EntityKeyValueConvertable<AccountSkillRole, AccountSkill, Role>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectSkillRoles, new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillRole, AccountSkill, Role>() {
 			@Override
 			public AccountSkill getKey(AccountSkillRole entity) {
 				return entity.getSkill();
@@ -286,7 +286,7 @@ public class SkillService {
 	public Map<AccountSkill, Set<Project>> getProjectRequiredSkillsMap(final List<Project> projects) {
 		List<ProjectSkill> projectSkills = projectSkillDAO.findByProjects(projects);
 
-		return Utilities.convertToMapOfSets(projectSkills, new Utilities.EntityKeyValueConvertable<ProjectSkill, AccountSkill, Project>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectSkills, new PicsCollectionUtil.EntityKeyValueConvertable<ProjectSkill, AccountSkill, Project>() {
 			@Override
 			public AccountSkill getKey(ProjectSkill entity) {
 				return entity.getSkill();
@@ -301,7 +301,7 @@ public class SkillService {
 
 	public Map<AccountSkill, Set<Group>> getSkillGroups(final List<Group> groups) {
 		List<AccountSkillGroup> accountSkillGroups = accountSkillGroupDAO.findByGroups(groups);
-		return Utilities.convertToMapOfSets(accountSkillGroups, new Utilities.EntityKeyValueConvertable<AccountSkillGroup, AccountSkill, Group>() {
+		return PicsCollectionUtil.convertToMapOfSets(accountSkillGroups, new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, AccountSkill, Group>() {
 			@Override
 			public AccountSkill getKey(AccountSkillGroup accountSkillGroup) {
 				return accountSkillGroup.getSkill();
@@ -320,7 +320,7 @@ public class SkillService {
 	}
 
 	private Set<Integer> getAccountIds(List<Project> projects) {
-		return Utilities.getIdsFromCollection(projects, new Utilities.Identitifable<Project, Integer>() {
+		return PicsCollectionUtil.getIdsFromCollection(projects, new PicsCollectionUtil.Identitifable<Project, Integer>() {
 
 			@Override
 			public Integer getId(Project element) {
@@ -343,7 +343,7 @@ public class SkillService {
 	}
 
 	private Map<AccountSkill, Set<Integer>> getSkillMapFromSiteSkills(List<SiteSkill> siteSkills) {
-		return Utilities.convertToMapOfSets(siteSkills, new Utilities.EntityKeyValueConvertable<SiteSkill, AccountSkill, Integer>() {
+		return PicsCollectionUtil.convertToMapOfSets(siteSkills, new PicsCollectionUtil.EntityKeyValueConvertable<SiteSkill, AccountSkill, Integer>() {
 			@Override
 			public AccountSkill getKey(SiteSkill siteSkill) {
 				return siteSkill.getSkill();
@@ -367,8 +367,8 @@ public class SkillService {
 			List<AccountSkill> corporateSkills = ExtractorUtil.extractList(corporateRole.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
 
 			for (AccountSkill accountSkill : corporateSkills) {
-				Utilities.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, siteRole.getAccountId());
-				Utilities.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, corporateRole.getAccountId());
+				PicsCollectionUtil.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, siteRole.getAccountId());
+				PicsCollectionUtil.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, corporateRole.getAccountId());
 			}
 		}
 
@@ -402,7 +402,7 @@ public class SkillService {
 		}
 
 		Map<Role, Set<AccountSkill>> roleSkillMap = getSkillsForRoles(siteId,
-				Utilities.extractAndFlattenValuesFromMap(projectRoleMap));
+				PicsCollectionUtil.extractAndFlattenValuesFromMap(projectRoleMap));
 
 		Map<Project, Set<AccountSkill>> projectSkillMap = new HashMap<>();
 
@@ -426,8 +426,8 @@ public class SkillService {
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
-				new Utilities.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
 					@Override
 					public Project getKey(ProjectSkill projectSkill) {
 						return projectSkill.getProject();
@@ -467,8 +467,8 @@ public class SkillService {
 			return Collections.emptyMap();
 		}
 
-		Map<Role, Set<AccountSkill>> roleSkillsMap = Utilities.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(corporateRoles),
-				new Utilities.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
+		Map<Role, Set<AccountSkill>> roleSkillsMap = PicsCollectionUtil.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(corporateRoles),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
 
 					@Override
 					public Role getKey(AccountSkillRole accountSkillRole) {

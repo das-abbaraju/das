@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
@@ -8,6 +7,7 @@ import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +45,8 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Project, Set<Role>> getRolesForProjects(final Collection<Project> projects) {
-		return Utilities.convertToMapOfSets(projectRoleDAO.findByProjects(projects),
-				new Utilities.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleDAO.findByProjects(projects),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
 					@Override
 					public Project getKey(ProjectRole projectRole) {
 						return projectRole.getProject();
@@ -70,8 +70,8 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(roleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
-				new Utilities.EntityKeyValueConvertable<RoleEmployee, Employee, Role>() {
+		return PicsCollectionUtil.convertToMapOfSets(roleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
+				new PicsCollectionUtil.EntityKeyValueConvertable<RoleEmployee, Employee, Role>() {
 					@Override
 					public Employee getKey(RoleEmployee roleEmployee) {
 						return roleEmployee.getEmployee();
@@ -96,8 +96,8 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
-				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
 
 					@Override
 					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {

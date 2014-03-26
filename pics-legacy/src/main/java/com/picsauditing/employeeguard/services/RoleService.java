@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
@@ -12,6 +11,7 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -229,12 +229,12 @@ public class RoleService {
 		for (RoleEmployee roleEmployee : roleEmployees) {
 			Role corporateRole = siteToCorporateRoles.get(roleEmployee.getRole());
 
-			Utilities.addToMapOfKeyToSet(roleAssignments, corporateRole, roleEmployee.getEmployee());
+			PicsCollectionUtil.addToMapOfKeyToSet(roleAssignments, corporateRole, roleEmployee.getEmployee());
 		}
 
 		for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
 			Role role = projectRoleEmployee.getProjectRole().getRole();
-			Utilities.addToMapOfKeyToSet(roleAssignments, role, projectRoleEmployee.getEmployee());
+			PicsCollectionUtil.addToMapOfKeyToSet(roleAssignments, role, projectRoleEmployee.getEmployee());
 		}
 
 		return roleAssignments;
@@ -247,7 +247,7 @@ public class RoleService {
 	}
 
 	public Map<Role, Role> getCorporateToSiteRoles(int siteId) {
-		return Utilities.invertMap(getSiteToCorporateRoles(siteId));
+		return PicsCollectionUtil.invertMap(getSiteToCorporateRoles(siteId));
 	}
 
 	public void assignEmployeeToRole(final int siteId, final int corporateRoleId, final Employee employee,
@@ -335,7 +335,7 @@ public class RoleService {
 		Role corporateRole = roleDAO.find(roleId);
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 		Map<Role, Role> siteToCorporateRoles = roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
-		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
+		Map<Role, Role> corporateToSiteRoles = PicsCollectionUtil.invertMap(siteToCorporateRoles);
 
 		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee, corporateRole);
 		roleAssignmentHelper.deleteSiteRoleFromEmployee(employee, corporateRole, corporateToSiteRoles);
@@ -346,8 +346,8 @@ public class RoleService {
 		List<AccountSkillEmployee> employeeSkillsToKeep = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, new ArrayList<>(skillUsage.allSkills()));
 		employeeSkillsToRemove.removeAll(employeeSkillsToKeep);
 
-		accountSkillEmployeeDAO.deleteByIds(Utilities.getIdsFromCollection(employeeSkillsToRemove,
-				new Utilities.Identitifable<AccountSkillEmployee, Integer>() {
+		accountSkillEmployeeDAO.deleteByIds(PicsCollectionUtil.getIdsFromCollection(employeeSkillsToRemove,
+				new PicsCollectionUtil.Identitifable<AccountSkillEmployee, Integer>() {
 					@Override
 					public Integer getId(AccountSkillEmployee accountSkillEmployee) {
 						return accountSkillEmployee.getId();
@@ -374,8 +374,8 @@ public class RoleService {
 			Set<AccountSkill> requiredSkills = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(projectCompanies, employee, siteToCorporateRoles);
 			Set<AccountSkillEmployee> deletableSkills = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, contractorId, requiredSkills);
 
-			accountSkillEmployeeDAO.deleteByIds(Utilities.getIdsFromCollection(deletableSkills,
-					new Utilities.Identitifable<AccountSkillEmployee, Integer>() {
+			accountSkillEmployeeDAO.deleteByIds(PicsCollectionUtil.getIdsFromCollection(deletableSkills,
+					new PicsCollectionUtil.Identitifable<AccountSkillEmployee, Integer>() {
 						@Override
 						public Integer getId(AccountSkillEmployee accountSkillEmployee) {
 							return accountSkillEmployee.getId();

@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
@@ -15,6 +14,7 @@ import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -91,8 +91,8 @@ public class EmployeeService {
 			final Employee employee) {
 
 		List<Employee> employees = getEmployeesAssignedToSiteByEmployeeProfile(contractorIds, siteId, employee);
-		return Utilities.convertToMap(employees,
-				new Utilities.MapConvertable<Integer, Employee>() {
+		return PicsCollectionUtil.convertToMap(employees,
+				new PicsCollectionUtil.MapConvertable<Integer, Employee>() {
 
 					@Override
 					public Integer getKey(Employee employee) {

@@ -2,13 +2,13 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.contractor.ContractorProjectForm;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentStatisticsModel;
@@ -39,9 +39,9 @@ public class SiteAssignmentsAndProjectsFactory {
 			List<SiteAssignmentStatisticsModel> siteAssignmentStatistics,
 			List<ProjectStatisticsModel> projectStatistics) {
 
-		Map<Integer, List<ProjectStatisticsModel>> siteNameToProjectStatistics = Utilities.convertToMapOfLists(
+		Map<Integer, List<ProjectStatisticsModel>> siteNameToProjectStatistics = PicsCollectionUtil.convertToMapOfLists(
 				projectStatistics,
-				new Utilities.MapConvertable<Integer, ProjectStatisticsModel>() {
+				new PicsCollectionUtil.MapConvertable<Integer, ProjectStatisticsModel>() {
 					@Override
 					public Integer getKey(ProjectStatisticsModel entity) {
 						return entity.getProject().getSiteId();
@@ -197,13 +197,13 @@ public class SiteAssignmentsAndProjectsFactory {
 
 			for (Map.Entry<Employee, Set<Role>> roleEntry : employeeRoles.entrySet()) {
 				for (Role role : roleEntry.getValue()) {
-					Utilities.addAllToMapOfKeyToSet(employeeSkillsPerSite, site, employeeSkillsPerRole.get(roleEntry.getKey(), role));
+					PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkillsPerSite, site, employeeSkillsPerRole.get(roleEntry.getKey(), role));
 				}
 			}
 
 			Map<AccountSkill, Set<AccountSkillEmployee>> requiredSkills = siteAndCorporateRequiredSkills.row(site);
-			Set<AccountSkillEmployee> flattenedRequiredSkills = Utilities.extractAndFlattenValuesFromMap(requiredSkills);
-			Utilities.addAllToMapOfKeyToSet(employeeSkillsPerSite, site, flattenedRequiredSkills);
+			Set<AccountSkillEmployee> flattenedRequiredSkills = PicsCollectionUtil.extractAndFlattenValuesFromMap(requiredSkills);
+			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkillsPerSite, site, flattenedRequiredSkills);
 
 			if (!employeeSkillsPerSite.containsKey(site)) {
 				employeeSkillsPerSite.put(site, Collections.<AccountSkillEmployee>emptySet());
@@ -272,7 +272,7 @@ public class SiteAssignmentsAndProjectsFactory {
 	private List<ProjectStatisticsModel> buildProjectStatistics(final Map<AccountModel, Set<Project>> accountsToProjects,
 	                                                            final Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole) {
 
-		Set<Project> projects = Utilities.extractAndFlattenValuesFromMap(accountsToProjects);
+		Set<Project> projects = PicsCollectionUtil.extractAndFlattenValuesFromMap(accountsToProjects);
 		List<ContractorProjectForm> contractorProjects = ViewModelFactory.getContractorProjectFormFactory().build(accountsToProjects.keySet(), projects);
 
 		List<ProjectStatisticsModel> projectStatistics = new ArrayList<>();
@@ -285,7 +285,7 @@ public class SiteAssignmentsAndProjectsFactory {
 			for (ProjectRole projectRole : project.getRoles()) {
 				Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills = employeeSkillsByRole.column(projectRole.getRole());
 
-				allSkills.addAll(Utilities.extractAndFlattenValuesFromMap(employeesAndSkills));
+				allSkills.addAll(PicsCollectionUtil.extractAndFlattenValuesFromMap(employeesAndSkills));
 				allRoles.addAll(filterProjectRoleEmployees(projectRole, employeesAndSkills));
 			}
 

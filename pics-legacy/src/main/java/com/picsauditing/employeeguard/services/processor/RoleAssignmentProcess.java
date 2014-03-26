@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.services.processor;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.MapUtils;
 
 import java.util.Collections;
@@ -16,7 +16,7 @@ public final class RoleAssignmentProcess {
 															  final Map<Role, Set<Employee>> siteRoleEmployees,
 															  final Map<Role, Role> siteToCorporateRoles) {
 		Map<Role, Set<Employee>> corporateRoleToEmployees = mapSiteRolesToCorporateRoles(siteRoleEmployees, siteToCorporateRoles);
-		return Utilities.mergeMapOfSets(projectEmployees, corporateRoleToEmployees);
+		return PicsCollectionUtil.mergeMapOfSets(projectEmployees, corporateRoleToEmployees);
 	}
 
 	private Map<Role, Set<Employee>> mapSiteRolesToCorporateRoles(final Map<Role, Set<Employee>> siteRoleEmployees,

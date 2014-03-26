@@ -1,12 +1,12 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectRoleAssignment;
 
 import java.util.ArrayList;
@@ -50,8 +50,8 @@ public class EmployeeProjectRoleAssignmentFactory {
 	}
 
 	private Map<AccountSkill, AccountSkillEmployee> buildEmployeeAccountSkillMap(List<AccountSkillEmployee> employeeSkills) {
-		return Utilities.convertToMap(employeeSkills,
-				new Utilities.MapConvertable<AccountSkill, AccountSkillEmployee>() {
+		return PicsCollectionUtil.convertToMap(employeeSkills,
+				new PicsCollectionUtil.MapConvertable<AccountSkill, AccountSkillEmployee>() {
 
 					@Override
 					public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {

@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
@@ -10,6 +9,7 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PhotoUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
@@ -64,8 +64,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByProjects(projects),
-				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Project, Employee>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleEmployeeDAO.findByProjects(projects),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Project, Employee>() {
 
 					@Override
 					public Project getKey(ProjectRoleEmployee projectRoleEmployee) {
@@ -84,9 +84,9 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(
+		return PicsCollectionUtil.convertToMapOfSets(
 				projectRoleEmployeeDAO.findByProjects(projects),
-				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Role, Employee>() {
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Role, Employee>() {
 					@Override
 					public Role getKey(ProjectRoleEmployee entity) {
 						return entity.getProjectRole().getRole();
@@ -110,9 +110,9 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(
+		return PicsCollectionUtil.convertToMapOfSets(
 				roleEmployeeDAO.findByEmployeesAndSiteIds(employeesAssignedToSite, siteIds),
-				new Utilities.EntityKeyValueConvertable<RoleEmployee, Role, Employee>() {
+				new PicsCollectionUtil.EntityKeyValueConvertable<RoleEmployee, Role, Employee>() {
 					@Override
 					public Role getKey(RoleEmployee entity) {
 						return entity.getRole();

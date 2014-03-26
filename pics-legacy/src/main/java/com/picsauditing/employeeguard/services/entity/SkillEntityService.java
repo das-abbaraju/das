@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -8,6 +7,7 @@ import com.picsauditing.employeeguard.exceptions.NoCorporateForOperatorException
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
-				new Utilities.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
 
 					@Override
 					public Project getKey(ProjectSkill projectSkill) {
@@ -63,8 +63,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(roles),
-				new Utilities.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
+		return PicsCollectionUtil.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(roles),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
 
 					@Override
 					public Role getKey(AccountSkillRole accountSkillRole) {
@@ -85,9 +85,9 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	}
 
 	private Map<Group, Set<AccountSkill>> getGroupSkills(Map<Employee, Set<Group>> employeesToGroups) {
-		return Utilities.convertToMapOfSets(
-				accountSkillGroupDAO.findByGroups(Utilities.flattenCollectionOfCollection(employeesToGroups.values())),
-				new Utilities.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
+		return PicsCollectionUtil.convertToMapOfSets(
+				accountSkillGroupDAO.findByGroups(PicsCollectionUtil.flattenCollectionOfCollection(employeesToGroups.values())),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
 					@Override
 					public Group getKey(AccountSkillGroup entity) {
 						return entity.getGroup();

@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -12,6 +11,7 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -62,7 +62,7 @@ public class AccountService {
 	}
 
 	public Map<Integer, AccountModel> getIdToAccountModelMap(final Collection<Integer> accountIds) {
-		return Utilities.convertToMap(getAccountsByIds(accountIds), new Utilities.MapConvertable<Integer, AccountModel>() {
+		return PicsCollectionUtil.convertToMap(getAccountsByIds(accountIds), new PicsCollectionUtil.MapConvertable<Integer, AccountModel>() {
 
 			@Override
 			public Integer getKey(AccountModel accountModel) {
@@ -168,7 +168,7 @@ public class AccountService {
 	}
 
 	public Map<Integer, AccountModel> getContractorMapForSite(final int siteId) {
-		return Utilities.convertToMap(getContractors(siteId), new Utilities.MapConvertable<Integer, AccountModel>() {
+		return PicsCollectionUtil.convertToMap(getContractors(siteId), new PicsCollectionUtil.MapConvertable<Integer, AccountModel>() {
 			@Override
 			public Integer getKey(AccountModel accountModel) {
 				return accountModel.getId();

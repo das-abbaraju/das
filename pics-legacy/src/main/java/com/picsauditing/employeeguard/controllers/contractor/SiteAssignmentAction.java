@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
@@ -9,6 +8,7 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
@@ -65,7 +65,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
     private Map<RoleInfo, Integer> getRoleEmployeeCounts(List<Employee> employees) {
         Map<Role, Role> siteToCorporateRoles = roleService.getSiteToCorporateRoles(site.getId());
-        Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
+        Map<Role, Role> corporateToSiteRoles = PicsCollectionUtil.invertMap(siteToCorporateRoles);
 
         List<Role> corporateRoles = getCorporateRoles();
         List<RoleInfo> corporateRoleInfo = ViewModelFactory.getRoleInfoFactory().build(corporateRoles);

@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.controllers.employee;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Profile;
@@ -18,6 +17,7 @@ import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
@@ -131,13 +131,13 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
     private void loadProfileAssignments(Profile profile) {
         List<ProjectRole> projectRoles = projectRoleService.getRolesForProfile(profile);
-        Set<Integer> accountIds = Utilities.getIdsFromCollection(projectRoles, new Utilities.Identitifable<ProjectRole, Integer>() {
+        Set<Integer> accountIds = PicsCollectionUtil.getIdsFromCollection(projectRoles, new PicsCollectionUtil.Identitifable<ProjectRole, Integer>() {
 
-            @Override
-            public Integer getId(ProjectRole projectRole) {
-                return projectRole.getProject().getAccountId();
-            }
-        });
+			@Override
+			public Integer getId(ProjectRole projectRole) {
+				return projectRole.getProject().getAccountId();
+			}
+		});
 
         Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
 

@@ -1,10 +1,10 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -148,7 +148,7 @@ public class RoleServiceTest {
 		HashMap<Role, Role> siteToCorporateRoles = new HashMap<>();
 		siteToCorporateRoles.put(siteRole, corporateRole);
 
-		Map<Role, Role> corporateToSiteRoles = Utilities.invertMap(siteToCorporateRoles);
+		Map<Role, Role> corporateToSiteRoles = PicsCollectionUtil.invertMap(siteToCorporateRoles);
 
 		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(corporateIds);
 		when(accountSkillEmployeeDAO.findByAccountAndEmployee(employee)).thenReturn(Collections.<AccountSkillEmployee>emptyList());

@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -11,6 +10,7 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorProjectAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.util.Strings;
@@ -188,7 +188,7 @@ public class ContractorProjectService {
 		Map<AccountModel, Set<Project>> siteToProjectMap = new HashMap<>();
 
 		for (ProjectCompany projectCompany : projectCompanies) {
-			Utilities.addToMapOfKeyToSet(siteToProjectMap, siteModels.get(projectCompany.getProject().getAccountId()), projectCompany.getProject());
+			PicsCollectionUtil.addToMapOfKeyToSet(siteToProjectMap, siteModels.get(projectCompany.getProject().getAccountId()), projectCompany.getProject());
 		}
 
 		return siteToProjectMap;

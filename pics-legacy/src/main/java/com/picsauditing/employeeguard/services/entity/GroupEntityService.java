@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.AccountGroupEmployeeDAO;
 import com.picsauditing.employeeguard.entities.Employee;
@@ -8,6 +7,7 @@ import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,8 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(accountGroupEmployeeDAO.findByEmployees(employees),
-				new Utilities.EntityKeyValueConvertable<GroupEmployee, Employee, Group>() {
+		return PicsCollectionUtil.convertToMapOfSets(accountGroupEmployeeDAO.findByEmployees(employees),
+				new PicsCollectionUtil.EntityKeyValueConvertable<GroupEmployee, Employee, Group>() {
 					@Override
 					public Employee getKey(GroupEmployee entity) {
 						return entity.getEmployee();

@@ -1,11 +1,8 @@
 package com.picsauditing.employeeguard.controllers.employee;
 
 import com.google.gson.Gson;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProfileModel;
 import com.picsauditing.employeeguard.services.AccountService;
@@ -15,6 +12,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -63,7 +61,23 @@ public class SummaryAction extends PicsRestActionSupport {
 		// employee to skills
 		// employee to status
 		// worstof all statuses
+
 		Map<Project, SkillStatus> projectStatuses = calculateProjectStatuses(projectAccounts, profile.getEmployees());
+
+		Map<AccountModel, Set<Role>> siteRoles;
+		Map<AccountModel, Set<Group>> contractorGroups;
+
+		Map<AccountModel, Set<AccountSkill>> skills; // all the skills for contractors/sites
+		Map<AccountModel, SkillStatus> siteStatus; // the roll-up of skills for contractors/sites
+
+		Map<Project, Set<AccountSkill>> allProjectSkills;
+		Map<Project, Set<Role>> projectRoles;
+
+		// TODO: Use this information to build the model
+		// Map<AccountModel, Set<Role>>,
+		// Map<AccountModel, Set<Group>>,
+		// Map<AccountModel, SkillStatus>,
+		// Map<Project, SkillStatus>
 
 		return JSON_STRING;
 	}
@@ -74,7 +88,7 @@ public class SummaryAction extends PicsRestActionSupport {
 			return Collections.emptyMap();
 		}
 
-		Set<Project> allProjectsForEmployees = Utilities.mergeCollectionOfCollections(employeeProjects.values());
+		Set<Project> allProjectsForEmployees = PicsCollectionUtil.mergeCollectionOfCollections(employeeProjects.values());
 		Map<Integer, AccountModel> accountIdToModel = getAccountIdToModelMapForProjects(allProjectsForEmployees);
 
 		Map<Project, AccountModel> projectAccounts = new HashMap<>();
@@ -91,9 +105,9 @@ public class SummaryAction extends PicsRestActionSupport {
 	}
 
 	private Map<Integer, AccountModel> getAccountIdToModelMapForProjects(final Set<Project> allProjectsForEmployees) {
-		Set<Integer> projectAccountIds = Utilities.extractPropertyToSet(
+		Set<Integer> projectAccountIds = PicsCollectionUtil.extractPropertyToSet(
 				allProjectsForEmployees,
-				new Utilities.PropertyExtractor<Project, Integer>() {
+				new PicsCollectionUtil.PropertyExtractor<Project, Integer>() {
 					@Override
 					public Integer getProperty(Project project) {
 						return project.getAccountId();
