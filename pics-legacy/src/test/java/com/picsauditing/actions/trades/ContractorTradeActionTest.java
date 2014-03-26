@@ -66,6 +66,7 @@ public class ContractorTradeActionTest extends PicsActionTest {
     public void testSaveTradeAjax_NullTrade() {
         contractorTradeAction.setTrade(newConTrade);
 
+        when(contractorAccount.getSafetyRisk()).thenReturn(LowMedHigh.None);
         when(contractorAccount.getTradeSafetyRisk()).thenReturn(LowMedHigh.None);
         when(trade.getSafetySensitiveI()).thenReturn(null);
 
@@ -76,6 +77,7 @@ public class ContractorTradeActionTest extends PicsActionTest {
     public void testSaveTradeAjax_UpdateSafetySensitivity() {
         contractorTradeAction.setTrade(newConTrade);
 
+        when(contractorAccount.getSafetyRisk()).thenReturn(LowMedHigh.None);
         when(contractorAccount.getTradeSafetyRisk()).thenReturn(LowMedHigh.None);
         when(contractorAccount.isTradeSafetySensitive()).thenReturn(true);
         when(trade.getSafetySensitiveI()).thenReturn(YesNo.Yes);
