@@ -64583,7 +64583,27 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     }()));
 
     PICS._init();
-}(jQuery, window, document));;angular.module('PICS.directives', []);;angular.module('PICSApp', [
+}(jQuery, window, document));;angular.module('PICS.directives', []);;angular.module('PICS.employeeguard', [
+    'ngRoute',
+    'ngResource',
+    'PICS.charts'
+])
+
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
+
+    $routeProvider
+        .when('/employee-guard/operators/employees/:id', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/contractor/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
+        });
+});
+;angular.module('PICSApp', [
     'PICS.home',
     'PICS.employeeguard',
     'PICS.directives',
@@ -64601,24 +64621,15 @@ angular.module('admin-projects', [])
             $scope.project.teamMembers.splice(idx, 1);
         }
     };
-});;angular.module('PICS.employeeguard', [
-    'ngRoute',
-    'ngResource',
-    'PICS.charts'
-])
+});;angular.module('PICS.employeeguard')
 
-.config(function ($routeProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
+.controller('contractorDashboardCtrl', function ($scope, ContractorStatus) {
+    $scope.status = ContractorStatus.get();
+});;angular.module('PICS.employeeguard')
 
-    $routeProvider
-        .when('/employee-guard/operators/employees/:id', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/dashboard', {
-            templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
-        });
-});
-;angular.module('PICS.employeeguard')
+.factory('ContractorStatus', function($resource, $routeParams) {
+    return $resource('/employee-guard/contractor/summary');
+});;angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
     $scope.siteList = SiteList.query(function(site_list) {

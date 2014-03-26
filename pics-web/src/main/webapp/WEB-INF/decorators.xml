@@ -45,6 +45,7 @@
     <decorator name="index" page="index.jsp">
         <pattern>/employee-guard/operators/employees/*</pattern>
         <pattern>/employee-guard/operators/dashboard</pattern>
+        <pattern>/employee-guard/contractor/dashboard</pattern>
     </decorator>
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>

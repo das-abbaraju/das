@@ -13094,18 +13094,24 @@ a:focus {
 }
 
 /* line 81, ../src/common/defaults/_defaults.scss */
+.primary {
+  background-color: #d6eaf8;
+  color: #3498db;
+}
+
+/* line 86, ../src/common/defaults/_defaults.scss */
 .progress-bar-success {
   background-color: #33b679;
   color: #d6f0e4;
 }
 
-/* line 86, ../src/common/defaults/_defaults.scss */
+/* line 91, ../src/common/defaults/_defaults.scss */
 .progress-bar-warning {
   background-color: #f4b400;
   color: #fef5d9;
 }
 
-/* line 91, ../src/common/defaults/_defaults.scss */
+/* line 96, ../src/common/defaults/_defaults.scss */
 .progress-bar-danger {
   background-color: #e74c3c;
   color: #fadbd8;
@@ -15519,6 +15525,98 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 /* line 49, ../src/app/employeeguard/assignments/_assignments.scss */
 .table-assignment tr td a {
   display: inline;
+}
+
+/* line 2, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile-container {
+  min-height: 140px;
+}
+/* line 5, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile-container:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+/* line 13, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile {
+  background: transparent;
+}
+/* line 16, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile .title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 0px;
+  margin-top: 10px;
+}
+/* line 23, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile i {
+  background: transparent;
+  font-size: 48px;
+}
+/* line 28, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.success {
+  color: #0f9d58;
+}
+/* line 31, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.success i {
+  color: #0f9d58;
+}
+/* line 35, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.success:hover {
+  color: #33b679;
+}
+/* line 38, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.success:hover i {
+  color: #33b679;
+}
+/* line 44, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.warning {
+  color: #f4b400;
+}
+/* line 47, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.warning i {
+  color: #f4b400;
+}
+/* line 51, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.warning:hover {
+  color: #fbcb43;
+}
+/* line 54, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.warning:hover i {
+  color: #fbcb43;
+}
+/* line 60, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.danger {
+  color: #c0392b;
+}
+/* line 63, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.danger i {
+  color: #c0392b;
+}
+/* line 67, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.danger:hover {
+  color: #e74c3c;
+}
+/* line 70, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.danger:hover i {
+  color: #e74c3c;
+}
+/* line 76, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.primary {
+  color: #2980b9;
+}
+/* line 79, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.primary i {
+  color: #2980b9;
+}
+/* line 83, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.primary:hover {
+  color: #3498db;
+}
+/* line 86, ../src/app/employeeguard/contractor/dashboard/_dashboard.scss */
+.contractor-dashboard .tile.primary:hover i {
+  color: #3498db;
 }
 
 /* line 2, ../src/app/employeeguard/mixins/_employee-image.scss */
