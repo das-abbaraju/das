@@ -109,6 +109,11 @@ public class ContractorCertificate {
         return DateBean.format(expirationDate, "yyyy-MM-dd");
     }
 
+    @Transient
+    public String getCertificationMethodDescription() {
+        return certificationMethod.getDescription();
+    }
+
     @Override
     public String toString() {
         return "ContractorCertificate{" +
