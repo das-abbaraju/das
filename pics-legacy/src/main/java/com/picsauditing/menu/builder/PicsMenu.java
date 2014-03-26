@@ -286,10 +286,6 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("Customer Service");
 
-		if (permissions.hasPermission(OpPerms.ManageWebcam)) {
-			subMenu.addChild("Manage Webcams", "ManageWebcams.action?button=out", "ManageWebcams");
-			subMenu.addChild("Assign Webcams", "AssignWebcams.action", "AssignWebcams");
-		}
 		if (permissions.hasPermission(OpPerms.AuditVerification)) {
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending", "ReportCompletePQF");
 		}

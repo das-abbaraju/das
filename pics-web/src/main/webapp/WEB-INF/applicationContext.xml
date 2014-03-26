@@ -125,7 +125,6 @@
     <bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO"/>
     <bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>
     <bean id="UserSwitchDAO" class="com.picsauditing.dao.UserSwitchDAO"/>
-    <bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO"/>
     <bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
     <bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
     <bean id="ContractorCertificateDao" class="com.picsauditing.dao.contractor.ContractorCertificateDao"/>

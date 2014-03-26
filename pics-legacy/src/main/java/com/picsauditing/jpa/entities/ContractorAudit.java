@@ -71,7 +71,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	private Date auditorConfirm;
 	private Date scheduledDate;
 	private String auditLocation;
-	private boolean needsCamera = false;
 	private String contractorContact;
 	private String address;
 	private String address2;
@@ -274,14 +273,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setAuditLocation(String auditLocation) {
 		this.auditLocation = auditLocation;
-	}
-
-	public boolean isNeedsCamera() {
-		return needsCamera;
-	}
-
-	public void setNeedsCamera(boolean needsCamera) {
-		this.needsCamera = needsCamera;
 	}
 
 	/**

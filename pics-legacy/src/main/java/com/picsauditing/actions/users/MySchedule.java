@@ -116,8 +116,6 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						scheduledAudit.put("url", "ScheduleAudit.action?auditID=" + row.getId());
 						if (row.isConductedOnsite())
 							scheduledAudit.put("className", "cal-onsite");
-						else if (row.getContractorAccount().getWebcam() != null)
-							scheduledAudit.put("className", "cal-webcam");
 						events.add(scheduledAudit);
 					}
 				}
