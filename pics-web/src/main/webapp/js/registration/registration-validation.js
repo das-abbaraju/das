@@ -7,7 +7,7 @@
             return {
                 init: function () {
                     if ($('.Registration-page').length) {
-                        var form_fields = '.registration-form input[type=text], .registration-form input[type=password]',
+                        var form_fields = '.registration-form input[type=text], .registration-form input[type=password], .registration-form textarea',
                             form_selects = '.registration-form select',
                             threshold = 250;
 

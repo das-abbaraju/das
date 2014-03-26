@@ -51,3 +51,4 @@
 <@s.property value="parameters.nameValue"/><#t/>
 </#if>
 </textarea>
+<@s.fielderror fieldName="${parameters.name}" />
