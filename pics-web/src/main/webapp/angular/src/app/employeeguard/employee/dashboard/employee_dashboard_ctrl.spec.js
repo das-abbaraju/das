@@ -14,31 +14,28 @@ describe('An Employee', function() {
             "email": "thelennyleonard@gmail.com"
         };
 
-        var assignments = {
-            "sites": [{
-                "name": "BASF Houston Texas",
-                "roles": 2,
-                "status": "Expired"
-            }],
-            "projects": [{
-                "name": "Dynamic Reporting",
-                "status": "Expired",
-                "site": "BASF Houston Texas"
-            }, {
-                "name": "Ninja Dojo",
-                "status": "Expiring",
-                "site": "BASF Houston Texas"
-            }, {
-                "name": "BP Oil",
-                "status": "Complete",
-                "site": "BASF Raleigh"
-            }],
-            "employers": [{
-                "name": "PICS",
-                "status": "Expired",
-                "groups": 1
-            }]
-        };
+        var assignments = [{
+            "name": "BASF Houston Texas",
+            "roles": 2,
+            "status": "Expired"
+        }, {
+            "name": "Dynamic Reporting",
+            "status": "Expired",
+            "site": "BASF Houston Texas"
+        }, {
+            "name": "Ninja Dojo",
+            "status": "Expiring",
+            "site": "BASF Houston Texas"
+        }, {
+            "name": "BP Oil",
+            "status": "Complete",
+            "site": "BASF Raleigh"
+        }, {
+            "name": "PICS",
+            "status": "Expired",
+            "groups": 2}
+        ];
+
 
         //Backend definition common for all tests
         $httpBackend.when('GET', '/angular/json/employee/assignments.json').respond(assignments);
