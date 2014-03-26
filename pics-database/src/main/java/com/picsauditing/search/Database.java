@@ -329,4 +329,14 @@ public class Database {
 		}
 	}
 
+    public RowMapper<Integer> buildIntegerRowMapper(final String columnName) {
+        RowMapper<Integer> rowMapper = new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(columnName);
+            }
+        };
+        return rowMapper;
+    }
+
 }

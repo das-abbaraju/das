@@ -9,9 +9,7 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class AccountActionSupport extends PicsActionSupport {
@@ -279,4 +277,9 @@ public class AccountActionSupport extends PicsActionSupport {
 	public AccountStatus[] getStatusList() {
 		return AccountStatus.values();
 	}
+
+    public String getAccountLastLogin() {
+        Date lastLogin = accountDAO.findLastAccountLogin(account.getId());
+        return getFuzzyDate(lastLogin);
+    }
 }

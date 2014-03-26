@@ -348,7 +348,7 @@
 
 	<p>
 		<s:text name="ContractorView.LastLogin"/>:
-		<s:property value="getFuzzyDate(contractor.lastLogin)"/>
+		<s:property value="getAccountLastLogin()"/>
 	</p>
 
 	<s:if test="activeOperators.size() > 1">

@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class AccountDAO extends PicsDAO {
@@ -107,4 +105,12 @@ public class AccountDAO extends PicsDAO {
 
 		return (Integer) q.getSingleResult();
 	}
+
+    public Date findLastAccountLogin(int accountID) {
+        Query q = em.createNativeQuery("SELECT MAX(u.lastLogin) FROM users u LEFT JOIN accounts a ON u.accountID = a.id WHERE a.id = :accountID");
+        q.setParameter("accountID", accountID);
+
+        return (Date) q.getSingleResult();
+    }
+
 }
