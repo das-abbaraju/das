@@ -28,8 +28,8 @@
                         <i class="icon-map-marker icon-large"></i>Assignment Status
                     </h1>
                     <div class="content">
-                        <div class="col-md-4 text-center assignment-container" ng-repeat="assignment in assignments | orderBy: 'name'">
-                            <div class="assignment" ng-class="getSkillClass(assignment.status)">
+                        <div class="col-md-4 text-center tile-container" ng-repeat="assignment in assignments | orderBy: 'name'">
+                            <div class="tile" ng-class="getSkillClass(assignment.status)">
                                 <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
                                 <p class="title">{{ assignment.name }}</p>
 
