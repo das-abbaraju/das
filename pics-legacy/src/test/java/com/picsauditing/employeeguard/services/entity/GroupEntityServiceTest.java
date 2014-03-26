@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
@@ -11,10 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +28,8 @@ public class GroupEntityServiceTest {
 	public static final int ACCOUNT_ID = 465;
 	public static final int USER_ID = 78;
 	public static final int GROUP_ID_78 = 78;
+	public static final Group WELDER_GROUP = new AccountGroupBuilder().id(12).accountId(123).name("Welders").build();
+	public static final Group SHOP_WORKERS_GROUP = new AccountGroupBuilder().id(11).accountId(123).name("Shop Workers").build();
 
 	GroupEntityService groupEntityService;
 
@@ -55,6 +58,34 @@ public class GroupEntityServiceTest {
 	@Test(expected = NullPointerException.class)
 	public void testFind_NullId() throws Exception {
 		groupEntityService.find(null);
+	}
+
+	@Test
+	public void testGetGroupsByContractorId_NoContractorIds() {
+		Map<Integer, Set<Group>> result = groupEntityService.getGroupsByContractorId(null);
+
+		assertNotNull(result);
+		assertEquals(0, result.size());
+	}
+
+	@Test
+	public void testGetGroupsByContractorId() {
+		setupTestGetGroupsByContractorId();
+
+		Map<Integer, Set<Group>> result = groupEntityService.getGroupsByContractorId(Arrays.asList(new Employee()));
+
+		verifyTestGetGroupsByContractorId(result);
+	}
+
+	private void setupTestGetGroupsByContractorId() {
+		when(accountGroupDAO.findGroupsByEmployees(anyCollectionOf(Employee.class)))
+				.thenReturn(Arrays.asList(WELDER_GROUP, SHOP_WORKERS_GROUP));
+	}
+
+	private void verifyTestGetGroupsByContractorId(final Map<Integer, Set<Group>> result) {
+		Set<Group> groups = result.get(123);
+		assertEquals(2, groups.size());
+		assertTrue(groups.containsAll(Arrays.asList(WELDER_GROUP, SHOP_WORKERS_GROUP)));
 	}
 
 	@Test

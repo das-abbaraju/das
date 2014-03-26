@@ -13,8 +13,19 @@ public class AccountGroupBuilder {
 		group = new Group();
 	}
 
+	@Deprecated
 	public AccountGroupBuilder(int id, int accountId) {
 		group = new Group(id, accountId);
+	}
+
+	public AccountGroupBuilder id(int id) {
+		group.setId(id);
+		return this;
+	}
+
+	public AccountGroupBuilder accountId(int accountId) {
+		group.setAccountId(accountId);
+		return this;
 	}
 
 	public AccountGroupBuilder name(String name) {

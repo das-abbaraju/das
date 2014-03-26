@@ -52,6 +52,10 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 	}
 
 	public Map<Integer, Set<Group>> getGroupsByContractorId(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
 		List<Group> groups = accountGroupDAO.findGroupsByEmployees(employees);
 		if (CollectionUtils.isEmpty(groups)) {
 			return Collections.emptyMap();
@@ -61,7 +65,7 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 				new PicsCollectionUtil.MapConvertable<Integer, Group>() {
 					@Override
 					public Integer getKey(Group group) {
-						return group.getId();
+						return group.getAccountId();
 					}
 				});
 	}
