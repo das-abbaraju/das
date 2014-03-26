@@ -19,6 +19,7 @@ public class PaymentOperatorCommission extends BaseTable {
     private InvoiceOperatorCommission invoiceOperatorCommission;
     private Payment payment;
     private BigDecimal paymentAmount = BigDecimal.ZERO;
+    private BigDecimal points = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "invoiceOperatorCommissionID", nullable = false, updatable = false)
@@ -47,5 +48,14 @@ public class PaymentOperatorCommission extends BaseTable {
 
     public void setPaymentAmount(BigDecimal paymentAmount) {
         this.paymentAmount = paymentAmount;
+    }
+
+    @ReportField(type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
+    public BigDecimal getPoints() {
+        return points;
+    }
+
+    public void setPoints(BigDecimal points) {
+        this.points = points;
     }
 }
