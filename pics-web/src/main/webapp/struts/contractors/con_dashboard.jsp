@@ -815,7 +815,7 @@
 				</s:if>
 
 				<s:set name="contactNumber" value="1"/>
-				<s:iterator step="1" value="contractor.getUsersByRole('ContractorAdmin')">
+				<s:iterator step="1" value="getAccountContactsByRole('ContractorAdmin')">
 					<s:if test="contractor.primaryContact.id != id">
 						<p class="contact">
 							<s:text name="global.Contact"/>

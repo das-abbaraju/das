@@ -1,9 +1,13 @@
 package com.picsauditing.dao;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.mapper.AccountContactMapper;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.model.contractor.AccountContact;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -11,14 +15,21 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class AccountDAO extends PicsDAO {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AccountDAO.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountDAO.class);
+    private static final String ACCOUNT_CONTACTS_BY_ROLE_SQL =
+            "select u.id, u.name, u.email, u.phone, u.fax from users u " +
+            "join useraccess ua on ua.userID = u.id " +
+            "where ua.accessType = '%s' " +
+            "and u.isActive = 'Yes' " +
+            "and u.accountID = %d";
 
-	public Account find(int id) {
+    public Account find(int id) {
 		Account a = em.find(Account.class, id);
 		return a;
 	}
@@ -111,6 +122,18 @@ public class AccountDAO extends PicsDAO {
         q.setParameter("accountID", accountID);
 
         return (Date) q.getSingleResult();
+    }
+
+    public List<AccountContact> findAccountContactsByRole(int accountID, OpPerms opPerms) {
+        String sql = String.format(ACCOUNT_CONTACTS_BY_ROLE_SQL, opPerms.toString(), accountID);
+        List<AccountContact> results = new ArrayList<>();
+        Database db = new Database();
+        try {
+            results = db.select(sql, new AccountContactMapper());
+        } catch (SQLException e) {
+            logger.error("Unable to run the query {} for account contacts: {}", sql, e.getMessage());
+        }
+        return results;
     }
 
 }
