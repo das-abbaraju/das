@@ -25,7 +25,7 @@
             </fieldset>
         </form>
         <div class="table-responsive">
-            <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'location'; reverseSort = false;" >
+            <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
                 <thead>
                         <th ng-class="{'sort-active' : orderByField=='name'}" ng-click="orderByField='name'; reverseSort = !reverseSort">Name
                             <i ng-show="orderByField == 'name'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
