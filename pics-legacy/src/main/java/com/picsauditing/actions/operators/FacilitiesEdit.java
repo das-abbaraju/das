@@ -224,15 +224,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
             operatorDao.clear();
             operator = operatorDao.find(operator.getId());
 
-            if (operator != null) {
-                List<Facility> operatorFacilities = operator.getOperatorFacilities();
-                for (Facility facility : operatorFacilities) {
-                    if (!operatorFacilities.contains(facility)) {
-                        facilities.add(facility.getOperator().getId());
-                    }
-                }
-            }
-
             for (String error : errors) {
 				addActionError(error);
 			}
