@@ -1,3 +1,7 @@
+--liquibase formatted sql
+
+--changeset lkam:9
+--preConditions onFail MARK_RAN
 CREATE TABLE address_verification (
   id INT(11) NOT NULL AUTO_INCREMENT,
   createdBy INT(11) NULL DEFAULT null,
