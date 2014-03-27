@@ -66,7 +66,7 @@ public class InvoiceModelTest {
 	@Test
 	public void testGetCommissionDetails_NoInvoiceCommissionsFound() {
 		when(invoice.getId()).thenReturn(90);
-		when(invoiceCommissionDAO.findByInvoiceId(90)).thenReturn(null);
+		when(invoiceCommissionDAO.findInvoiceCommissionsByInvoiceId(90)).thenReturn(null);
 
 		List<CommissionDetail> results = invoiceModel.getCommissionDetails(invoice);
 

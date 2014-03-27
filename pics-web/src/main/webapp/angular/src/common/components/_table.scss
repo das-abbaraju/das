@@ -116,13 +116,24 @@
     }
 }
 
-
-
-
 .table-hover tbody tr:hover td {
     background-color: $primary-tint;
 }
 
 .table td a {
     display: block;
+}
+
+.table-sort {
+    i {
+        color: $default_aluminum;
+
+        &.icon-sort-up {
+            margin-top: 6px;
+        }
+    }
+
+    th.sort-active {
+        background-color: $default_iron;
+    }
 }

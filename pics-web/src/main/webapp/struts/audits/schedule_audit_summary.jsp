@@ -45,11 +45,6 @@
                         <s:text name="ScheduleAudit.help.WhatIsThis" />
                     </a>
                 </li>
-        		<li>
-                    <label><s:text name="ScheduleAudit.label.VideoCamera" />:</label>
-                    
-					<s:text name="ScheduleAudit.message.WebcamSummary" />
-        		</li>
         	</s:else>
             
         	<li>

@@ -47,8 +47,6 @@ public class AuditCalendar extends PicsActionSupport {
 				o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());
 			if (audit.isConductedOnsite())
 				o.put("className", "cal-onsite");
-			else if (audit.getContractorAccount().getWebcam() != null)
-				o.put("className", "cal-webcam");
 			events.add(o);
 		}
 

@@ -2,6 +2,7 @@ package com.picsauditing.service;
 
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.RequestNewContractorAccount;
 import com.picsauditing.dao.*;
@@ -147,6 +148,11 @@ public class RequestNewContractorServiceTest extends PicsTest {
         verify(primaryContact).setUsername(CONTACT_EMAIL);
         verify(primaryContact).setName(CONTACT_FIRST_NAME + " " + CONTACT_LAST_NAME);
         verify(primaryContact).setPhoneIndex(anyString());
+        verify(primaryContact).addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
+        verify(primaryContact).addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
+        verify(primaryContact).addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
+        verify(primaryContact).addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
+
         verify(contractor).setPrimaryContact(primaryContact);
         assertThat(contractorUsers, hasItem(primaryContact));
     }

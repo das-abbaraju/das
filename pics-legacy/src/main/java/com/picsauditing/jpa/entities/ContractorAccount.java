@@ -73,7 +73,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 	private boolean ccOnFile = false;
 	private Date ccExpiration;
-	private Webcam webcam;
 	private boolean soleProprietor;
 	private Boolean competitorMembership;
 	private boolean showInDirectory = true;
@@ -578,15 +577,6 @@ public class ContractorAccount extends Account implements JSONable {
 		expires.add(Calendar.DAY_OF_MONTH, -1);
 
 		return expires.getTime().after(new Date());
-	}
-
-	@OneToOne(mappedBy = "contractor", fetch = FetchType.LAZY)
-	public Webcam getWebcam() {
-		return webcam;
-	}
-
-	public void setWebcam(Webcam webcam) {
-		this.webcam = webcam;
 	}
 
 	/**

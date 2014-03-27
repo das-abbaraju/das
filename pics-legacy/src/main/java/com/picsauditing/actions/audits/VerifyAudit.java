@@ -171,9 +171,11 @@ public class VerifyAudit extends AuditActionSupport {
     public List<AuditData> getVisibleOshaQuestions(OshaType oshaType) {
         List<AuditData> visibleList = new ArrayList<AuditData>();
         for (AuditData data:oshaAudit.getQuestionsToVerify(oshaType)) {
-            AnswerMap answerMap = auditDataService.loadAnswerMap(data);
-            if (data.getQuestion().isVisible(answerMap)) {
-                visibleList.add(data);
+            if (data.getQuestion() != null) {
+                AnswerMap answerMap = auditDataService.loadAnswerMap(data);
+                if (data.getQuestion().isVisible(answerMap)) {
+                    visibleList.add(data);
+                }
             }
         }
 

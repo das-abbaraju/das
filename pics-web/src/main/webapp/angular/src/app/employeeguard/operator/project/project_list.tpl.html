@@ -1,0 +1,57 @@
+<div ng-controller="operatorProjectListCtrl">
+    <div class="container">
+        <pagetitle title="Projects"></pagetitle>
+        <div class="page-subheader">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb">
+                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
+                        <li class="active">Assignments and Projects</li>
+                    </ol>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-actions">
+                        <a href="/employee-guard/operators/project/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form name="operator_project_search" action="#" class="search-query" role="form">
+            <fieldset>
+                <div class="search-wrapper col-md-4">
+                    <input name="searchTerm" type="text" class="form-control" ng-model="search" placeholder="Search Projects" />
+                    <i class="icon-search"></i>
+                </div>
+            </fieldset>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
+                <thead>
+                        <th ng-class="{'sort-active' : orderByField=='name'}" ng-click="orderByField='name'; reverseSort = !reverseSort">Name
+                            <i ng-show="orderByField == 'name'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
+                        </th>
+                        <th ng-class="{'sort-active' : orderByField=='location'}" ng-click="orderByField='location'; reverseSort = !reverseSort">Location
+                            <i ng-show="orderByField == 'location'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
+                        </th>
+                        <th ng-class="{'sort-active' : orderByField=='startDate'}" ng-click="orderByField='startDate'; reverseSort = !reverseSort">Start Date
+                            <i ng-show="orderByField == 'startDate'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
+                        </th>
+                        <th ng-class="{'sort-active' : orderByField=='endDate'}" ng-click="orderByField='endDate'; reverseSort = !reverseSort">End Date
+                            <i ng-show="orderByField == 'endDate'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="project in projects | orderBy:orderByField:reverseSort | filter:search ">
+                        <td>
+                            <a href="/employee-guard/operators/project/{{ project.id }}" target="_s">{{ project.name }}</a>
+                        </td>
+                        <td>{{ project.location }}</td>
+                        <td>{{ project.startDate | date:'yyyy-MM-dd' }}</td>
+                        <td>{{ project.endDate | date:'yyyy-MM-dd' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

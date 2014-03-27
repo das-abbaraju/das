@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.util.Strings;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +16,7 @@ public abstract class SafetyStatistics {
 	protected OshaType oshaType;
 	protected int year;
 	protected AuditData fileUpload = null;
+    protected AuditData hoursWorked = null;
 	protected boolean verified;
 	protected boolean applicable;
 	protected boolean display;
@@ -62,7 +65,11 @@ public abstract class SafetyStatistics {
 	public AuditData getFileUpload() {
 		return fileUpload;
 	}
-	
+
+    public AuditData getHoursWorked() {
+        return hoursWorked;
+    }
+
 	public boolean isVerified() {
 		return verified;
 	}
@@ -102,6 +109,12 @@ public abstract class SafetyStatistics {
 	public void setShaKept(boolean shaKept) {
 		this.shaKept = shaKept;
 	}
+
+    public AuditData getCommentAuditData() {
+        if (shaKept)
+            return fileUpload;
+        return hoursWorked;
+    }
 
 	abstract public List<AuditData> getQuestionsToVerify();
 		

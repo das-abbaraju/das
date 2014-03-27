@@ -171,26 +171,31 @@
 		            	</div>
 		            </li>
 
-					<%-- Hack to override company address for UK and AU (Step 2 of the Rule of Three) --%>
-					<div id="company_address_fields">
-						<s:if test="#country_iso_code == 'GB'">
-                            <s:include value="/struts/contractors/united-kingdom/_registration-company-address.jsp">
-                                <s:param name="country_iso_code" value="#country_iso_code" />
-                            </s:include>
-						</s:if>
-                        <s:elseif test="#country_iso_code == 'AU'">
-                            <s:include value="/struts/contractors/australia/_registration-company-address.jsp">
-                                <s:param name="country_iso_code" value="#country_iso_code" />
-                                <s:param name="country_subdivision_iso_code" value="#country_subdivision_iso_code" />
-                            </s:include>
-                        </s:elseif>
-						<s:else>
-                            <s:include value="/struts/contractors/_registration-company-address.jsp">
-                            	<s:param name="country_subdivision_iso_code" value="#country_subdivision_iso_code" />
-                            </s:include>
-						</s:else>
-					</div>
-					<%-- End hack --%>
+		            <s:if test="addressVerificationEnabled">
+	            		<s:include value="/struts/contractors/_registration-address-postal-code.jsp" />
+		            </s:if>
+		            <s:else>
+		            	<%-- Hack to override company address for UK and AU (Step 2 of the Rule of Three) --%>
+						<div id="company_address_fields">
+							<s:if test="#country_iso_code == 'GB'">
+	                            <s:include value="/struts/contractors/united-kingdom/_registration-company-address.jsp">
+	                                <s:param name="country_iso_code" value="#country_iso_code" />
+	                            </s:include>
+							</s:if>
+	                        <s:elseif test="#country_iso_code == 'AU'">
+	                            <s:include value="/struts/contractors/australia/_registration-company-address.jsp">
+	                                <s:param name="country_iso_code" value="#country_iso_code" />
+	                                <s:param name="country_subdivision_iso_code" value="#country_subdivision_iso_code" />
+	                            </s:include>
+	                        </s:elseif>
+							<s:else>
+	                            <s:include value="/struts/contractors/_registration-company-address.jsp">
+	                            	<s:param name="country_subdivision_iso_code" value="#country_subdivision_iso_code" />
+	                            </s:include>
+							</s:else>
+						</div>
+						<%-- End hack --%>
+		            </s:else>
 
 					<li id="tax_id" class="${tax_id_class}">
 						<s:textfield label="taxIdLabel" name="registrationForm.vatId" />

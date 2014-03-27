@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
+import com.picsauditing.salecommission.payment.strategy.PaymentStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -21,8 +22,6 @@ import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy;
-import com.picsauditing.salecommission.payment.strategy.PaymentStrategy;
 import com.picsauditing.toggle.FeatureToggle;
 
 public class PaymentObserverTest {
@@ -37,8 +36,6 @@ public class PaymentObserverTest {
 	private PaymentDataEvent paymentDataEvent;
 	@Mock
 	private PaymentStrategy paymentStrategy;
-	@Mock
-	private PaymentRemoveStrategy paymentRemoveStrategy;
     @Mock
     PaymentAppliedToInvoice paymentApplied;
 
@@ -50,7 +47,8 @@ public class PaymentObserverTest {
 
 		Whitebox.setInternalState(paymentObserver, "featureToggle", featureToggle);
 		Whitebox.setInternalState(paymentObserver, "paymentStrategy", paymentStrategy);
-		Whitebox.setInternalState(paymentObserver, "paymentRemoveStrategy", paymentRemoveStrategy);
+
+        when(paymentDataEvent.getData()).thenReturn(paymentApplied);
 	}
 
 	@Test
@@ -85,7 +83,7 @@ public class PaymentObserverTest {
 
 		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
-		verify(paymentStrategy, times(1)).processPaymentCommission(any(PaymentApplied.class));
+		verify(paymentStrategy, times(1)).processPaymentCommission(paymentApplied, PaymentEventType.PAYMENT);
 	}
 
 	@Test
@@ -94,7 +92,7 @@ public class PaymentObserverTest {
 
 		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
-		verify(paymentStrategy, times(1)).processPaymentCommission(any(PaymentApplied.class));
+		verify(paymentStrategy, times(1)).processPaymentCommission(paymentApplied, PaymentEventType.SAVE);
 	}
 
 	@Test
@@ -103,7 +101,7 @@ public class PaymentObserverTest {
 
 		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
-		verify(paymentRemoveStrategy, times(1)).processPaymentCommission(any(PaymentApplied.class));
+		verify(paymentStrategy, times(1)).processPaymentCommission(paymentApplied, PaymentEventType.REMOVE);
 	}
 
 	@Test
@@ -112,7 +110,7 @@ public class PaymentObserverTest {
 
 		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
-		verify(paymentRemoveStrategy, times(1)).processPaymentCommission(any(PaymentApplied.class));
+		verify(paymentStrategy, times(1)).processPaymentCommission(paymentApplied, PaymentEventType.REFUND);
 	}
 
 	@Test
@@ -121,8 +119,7 @@ public class PaymentObserverTest {
 
 		paymentObserver.update(new DataObservable(), paymentDataEvent);
 
-		verify(paymentStrategy, never()).processPaymentCommission(any(PaymentApplied.class));
-		verify(paymentRemoveStrategy, never()).processPaymentCommission(any(PaymentApplied.class));
+		verify(paymentStrategy, never()).processPaymentCommission(any(PaymentApplied.class), any(PaymentEventType.class));
 	}
 
 	private void setupDataEvent(PaymentEventType paymentEventType) {

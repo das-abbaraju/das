@@ -2,6 +2,7 @@ package com.picsauditing.salecommission.invoice.strategy;
 
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.dao.InvoiceCommissionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -13,6 +14,8 @@ import com.picsauditing.jpa.entities.Invoice;
  */
 public abstract class AbstractInvoiceCommissionStrategy implements InvoiceCommissionStrategy<Invoice> {
 
+    @Autowired
+    protected InvoiceCommissionDAO invoiceCommissionDAO;
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired

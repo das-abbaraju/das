@@ -183,5 +183,12 @@
 	<include file="./liquibase/2014/Q1/lkam8_US580_Add_EmployeeGUARD_Rules.sql"/>
 	<include file="./liquibase/2014/Q1/dalvarado10_US572_add_cdmScope.sql"/>
 	<include file="./liquibase/2014/Q1/dalvarado7_US318_SingleOperatorContactors.sql"/>
+	
+	<!-- 7.2.3 -->
+	<include file="./liquibase/2014/Q1/mdo49_PICS-14689_addNewSalesCommissionTables.sql"/>
 
+	<!-- 7.2.4 -->
+	<include file="./liquibase/2014/Q1/jgriffith2_TA774_DDL_Remove_SSN_Column.sql"/>
+	<include file="./liquibase/2014/Q1/kchase34_PICS-14731_UpdateReportId.sql"/>
+	<include file="./liquibase/2014/Q1/mdo50_PICS-14932_addPoints.sql"/>
 </databaseChangeLog>

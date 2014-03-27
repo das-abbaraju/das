@@ -78,6 +78,45 @@ public class AuditPercentCalculatorTest {
 	}
 
     @Test
+    public void testShouldAdjustAuditScore_NonVisibleCao() throws Exception {
+        ContractorAuditOperator cao = mock(ContractorAuditOperator.class);
+        ContractorAudit audit = mock(ContractorAudit.class);
+
+        when(cao.isVisible()).thenReturn(false);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "shouldAdjustAuditScore", audit, cao);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testShouldAdjustAuditScore_NonScoring() throws Exception {
+        ContractorAuditOperator cao = mock(ContractorAuditOperator.class);
+        ContractorAudit audit = mock(ContractorAudit.class);
+        AuditType auditType = mock(AuditType.class);
+
+        when(cao.isVisible()).thenReturn(true);
+        when(audit.getAuditType()).thenReturn(auditType);
+        when(auditType.getScoreType()).thenReturn(null);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "shouldAdjustAuditScore", audit, cao);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testShouldAdjustAuditScore_Scoring() throws Exception {
+        ContractorAuditOperator cao = mock(ContractorAuditOperator.class);
+        ContractorAudit audit = mock(ContractorAudit.class);
+        AuditType auditType = mock(AuditType.class);
+
+        when(cao.isVisible()).thenReturn(true);
+        when(audit.getAuditType()).thenReturn(auditType);
+        when(auditType.getScoreType()).thenReturn(ScoreType.Percent);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "shouldAdjustAuditScore", audit, cao);
+        assertTrue(result);
+    }
+
+    @Test
     public void testIsVisibleToRecalculate_NoAnswerYet() throws Exception {
         AuditData data = null;
         List<AuditData> responses = new ArrayList<>();

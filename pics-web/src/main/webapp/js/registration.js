@@ -124,8 +124,6 @@
             var language = $('[name=language]').val(),
                 dialect = $('[name=dialect]').val();
 
-            console.log(language);
-            console.log(dialect);
             return dialect ? language + '_' + dialect : language;
         },
 

@@ -4,23 +4,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.dao.InvoiceCommissionDAO;
-import com.picsauditing.dao.PaymentCommissionDAO;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.PaymentCommission;
 import com.picsauditing.jpa.entities.User;
 
 public class VoidInvoiceCommissionStrategy extends AbstractInvoiceCommissionStrategy {
-
-	@Autowired
-	private InvoiceCommissionDAO invoiceCommissionDAO;
-	@Autowired
-	private PaymentCommissionDAO paymentCommissionDAO;
-
 	@Override
 	protected boolean hasStrategyAlreadyProcessed(Invoice invoice) {
 		List<InvoiceCommission> invoiceCommissionNotVoid = invoiceCommissionDAO.findInvoiceCommissionNotVoid(invoice
@@ -30,7 +21,7 @@ public class VoidInvoiceCommissionStrategy extends AbstractInvoiceCommissionStra
 
 	@Override
 	protected void buildInvoiceCommissions(Invoice invoice) {
-		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
+		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findInvoiceCommissionsByInvoiceId(invoice.getId());
 		zeroOutInvoiceCommission(invoiceCommissions);
 	}
 
@@ -59,7 +50,7 @@ public class VoidInvoiceCommissionStrategy extends AbstractInvoiceCommissionStra
 			paymentCommission.setUpdatedBy(new User(User.SYSTEM));
 			paymentCommission.setActivationPoints(BigDecimal.ZERO);
 			paymentCommission.setPaymentAmount(BigDecimal.ZERO);
-			paymentCommissionDAO.save(paymentCommission);
+            invoiceCommissionDAO.save(paymentCommission);
 		}
 	}
 

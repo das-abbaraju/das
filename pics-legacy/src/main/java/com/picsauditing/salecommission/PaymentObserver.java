@@ -1,18 +1,13 @@
 package com.picsauditing.salecommission;
 
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
-import com.picsauditing.jpa.entities.PaymentApplied;
+import com.picsauditing.salecommission.payment.strategy.PaymentStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.data.PaymentDataEvent;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.salecommission.payment.strategy.PaymentCommissionStrategy;
-import com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy;
-import com.picsauditing.salecommission.payment.strategy.PaymentStrategy;
 import com.picsauditing.toggle.FeatureToggle;
 
 public class PaymentObserver implements Observer {
@@ -20,9 +15,9 @@ public class PaymentObserver implements Observer {
 	@Autowired
 	private PaymentStrategy paymentStrategy;
 	@Autowired
-	private PaymentRemoveStrategy paymentRemoveStrategy;
-	@Autowired
 	private FeatureToggle featureToggle;
+
+    private static final Set<PaymentDataEvent.PaymentEventType> PAYMENT_EVENT_TYPES = new HashSet<>(Arrays.asList(PaymentDataEvent.PaymentEventType.values()));
 
 	private static final Logger logger = LoggerFactory.getLogger(PaymentObserver.class);
 
@@ -33,27 +28,15 @@ public class PaymentObserver implements Observer {
 			return;
 		}
 
-		try {
+        try {
 			PaymentDataEvent event = (PaymentDataEvent) arg;
 			logger.info("Got payment id = {}", event.getData().getId());
 
-			PaymentCommissionStrategy<PaymentApplied> strategy = null;
-			switch (event.getPaymentEventType()) {
-			case PAYMENT:
-			case SAVE:
-				strategy = paymentStrategy;
-				break;
-
-			case REFUND:
-			case REMOVE:
-				strategy = paymentRemoveStrategy;
-				break;
-
-			default:
+            if (!PAYMENT_EVENT_TYPES.contains(event.getPaymentEventType())){
 				throw new IllegalArgumentException("Unhandled Payment Event Type.");
 			}
 
-			strategy.processPaymentCommission(event.getData());
+            paymentStrategy.processPaymentCommission(event.getData(), event.getPaymentEventType());
 		} catch (Exception e) {
 			logger.error("An error occured during processing in PaymentObserver", e);
 		}

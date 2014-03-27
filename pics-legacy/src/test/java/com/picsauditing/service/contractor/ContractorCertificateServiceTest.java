@@ -3,6 +3,7 @@ package com.picsauditing.service.contractor;
 import com.picsauditing.dao.contractor.ContractorCertificateDao;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.model.contractor.CertificateType;
+import com.picsauditing.model.contractor.CertificationMethod;
 import com.picsauditing.model.contractor.ContractorCertificate;
 import org.junit.After;
 import org.junit.Before;
@@ -57,6 +58,29 @@ public class ContractorCertificateServiceTest {
         ContractorCertificate ssipCertificate = contractorCertificateService.getSsipCertificate(contractor);
 
         assertEquals("", ssipCertificate.getFormattedCdmScope());
+    }
+
+    @Test
+    public void testGetSsipCertificate_certificationMethodDescriptionShouldBePresent() throws Exception {
+        // CertificationMethod.INTERNAL
+        ContractorCertificate contractorCertificate = ContractorCertificate.builder()
+                .certificationMethod(CertificationMethod.INTERNAL)
+                .build();
+        when(contractorCertificateDao.findMostRecentByContractor(contractor, CertificateType.SSIP)).thenReturn(contractorCertificate);
+
+        ContractorCertificate ssipCertificate = contractorCertificateService.getSsipCertificate(contractor);
+
+        assertEquals("PICS Manual Audit SSiP Approval", ssipCertificate.getCertificationMethodDescription());
+
+        // CertificationMethod.DEEMS_TO_SATISFY
+        contractorCertificate = ContractorCertificate.builder()
+                .certificationMethod(CertificationMethod.DEEMS_TO_SATISFY)
+                .build();
+        when(contractorCertificateDao.findMostRecentByContractor(contractor, CertificateType.SSIP)).thenReturn(contractorCertificate);
+
+        ssipCertificate = contractorCertificateService.getSsipCertificate(contractor);
+
+        assertEquals("SSiP Forum Deemed to Satisfy", ssipCertificate.getCertificationMethodDescription());
     }
 
 

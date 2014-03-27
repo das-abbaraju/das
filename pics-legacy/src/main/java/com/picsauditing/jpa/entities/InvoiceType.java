@@ -1,9 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 public enum InvoiceType {
-    Activation,Upgrade,Renewal,LateFee,OtherFees;
+    Activation,Reactivation,Upgrade,Upgrade_Service,Upgrade_Tier,Renewal,LateFee,OtherFees;
 
     public boolean isMembershipType() {
-        return this == Activation || this == Upgrade || this == Renewal;
+        return this == Activation || this == Reactivation || this == Upgrade || this == Upgrade_Service || this == Upgrade_Tier || this == Renewal;
     }
 }

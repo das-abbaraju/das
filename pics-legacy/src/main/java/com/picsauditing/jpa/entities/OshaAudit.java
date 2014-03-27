@@ -251,11 +251,14 @@ public class OshaAudit implements OshaVisitable {
     }
 
     public String getComment(OshaType oshaType) {
-        if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getFileUpload() == null) {
+        if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getCommentAuditData() == null) {
             return Strings.EMPTY_STRING;
         }
 
-        return getSafetyStatistics(oshaType).getFileUpload().getComment();
+        String comment = getSafetyStatistics(oshaType).getCommentAuditData().getComment();
+        if (Strings.isEmpty(comment))
+            comment = Strings.EMPTY_STRING;
+        return comment;
     }
 
     public AuditData stampOshaComment(OshaType oshaType, String comment) {
@@ -263,12 +266,12 @@ public class OshaAudit implements OshaVisitable {
             return null;
         }
 
-        AuditData fileUpload = getSafetyStatistics(oshaType).getFileUpload();
-        if (fileUpload != null) {
-            fileUpload.setComment(comment);
+        AuditData data = getSafetyStatistics(oshaType).getCommentAuditData();
+        if (data != null) {
+            data.setComment(comment);
         }
 
-        return fileUpload;
+        return data;
     }
 
     @Override

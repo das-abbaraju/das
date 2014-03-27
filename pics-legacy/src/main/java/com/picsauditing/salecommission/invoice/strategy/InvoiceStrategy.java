@@ -11,25 +11,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.dao.InvoiceCommissionDAO;
-import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceCommission;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.model.billing.helper.ContractorInvoiceState;
 import com.picsauditing.model.billing.helper.ContractorResetter;
 import com.picsauditing.model.billing.helper.InvoiceHelper;
@@ -38,25 +27,14 @@ import com.picsauditing.search.Database;
 
 public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
-	@Autowired
-	private InvoiceCommissionDAO invoiceCommissionDAO;
-
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceStrategy.class);
 
 	@Override
 	protected boolean hasStrategyAlreadyProcessed(Invoice invoice) {
-		List<InvoiceCommission> invoiceCommission = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
+		List<InvoiceCommission> invoiceCommission = invoiceCommissionDAO.findInvoiceCommissionsByInvoiceId(invoice.getId());
 		return CollectionUtils.isNotEmpty(invoiceCommission);
 	}
 
-	/**
-	 * Steps:
-	 *
-	 * (1) Calculate the service level for each Client Site (2) Calculate the
-	 * total number of sites that use each service level (3) Determine total
-	 * dollar amount for each service level (4) Calculate the Client Site
-	 * Revenue weight
-	 */
 	@Override
 	public void buildInvoiceCommissions(Invoice invoice) {
 		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
@@ -66,9 +44,39 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		Map<ContractorOperator, Double> clientRevenueWeights = calculateAllClientRevenueWeights(invoice,
 				clientSiteServiceLevels, totalSites, fees);
 		generateInvoiceCommissions(invoice, clientRevenueWeights);
-	}
+        generateInvoiceOperatorCommissions(invoice, clientRevenueWeights);
+    }
 
-	private void generateInvoiceCommissions(Invoice invoice, Map<ContractorOperator, Double> clientRevenueWeights) {
+    private void generateInvoiceOperatorCommissions(Invoice invoice, Map<ContractorOperator, Double> clientRevenueWeights) {
+        if (MapUtils.isEmpty(clientRevenueWeights)) {
+            return;
+        }
+
+        List<InvoiceOperatorCommission> invoiceOperatorCommissions = new ArrayList<>();
+        for (Map.Entry<ContractorOperator, Double> individualClientRevenueWeight : clientRevenueWeights.entrySet()) {
+            InvoiceOperatorCommission invoiceOperatorCommission = new InvoiceOperatorCommission();
+            invoiceOperatorCommission.setOperatorAccount(individualClientRevenueWeight.getKey().getOperatorAccount());
+            invoiceOperatorCommission.setAuditColumns(invoice.getUpdatedBy());
+            invoiceOperatorCommission.setInvoice(invoice);
+
+            invoiceOperatorCommission.setRevenuePercent(BigDecimal.valueOf(individualClientRevenueWeight.getValue()));
+            invoiceOperatorCommissions.add(invoiceOperatorCommission);
+        }
+
+        saveInvoiceOperatorCommissions(invoiceOperatorCommissions);
+    }
+
+    private void saveInvoiceOperatorCommissions(List<InvoiceOperatorCommission> invoiceOperatorCommissions) {
+        if (CollectionUtils.isEmpty(invoiceOperatorCommissions)) {
+            return;
+        }
+
+        for (InvoiceOperatorCommission invoiceOperatorCommission : invoiceOperatorCommissions) {
+            invoiceCommissionDAO.save(invoiceOperatorCommission);
+        }
+    }
+
+    private void generateInvoiceCommissions(Invoice invoice, Map<ContractorOperator, Double> clientRevenueWeights) {
 		if (MapUtils.isEmpty(clientRevenueWeights)) {
 			return;
 		}
@@ -85,7 +93,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 				BigDecimal revenuePercent = calculateRevenueSplit(accountUser, individualClientRevenueWeight.getValue());
 
-				invoiceCommission.setPoints((isActivationInvoice(invoice)) ? revenuePercent : BigDecimal.ZERO);
+				invoiceCommission.setPoints(revenuePercent);
 				invoiceCommission.setRevenuePercent(revenuePercent);
 				invoiceCommissions.add(invoiceCommission);
 			}
@@ -107,20 +115,6 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	private BigDecimal calculateRevenueSplit(AccountUser accountUser, double weight) {
 		BigDecimal result = BigDecimal.valueOf(accountUser.getOwnerPercent() / 100.0);
 		return result.multiply(BigDecimal.valueOf(weight));
-	}
-
-	private boolean isActivationInvoice(Invoice invoice) {
-		if (invoice == null || CollectionUtils.isEmpty(invoice.getItems())) {
-			return false;
-		}
-
-		for (InvoiceItem invoiceItem : invoice.getItems()) {
-			if (invoiceItem.getInvoiceFee().isActivation()) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private Map<ContractorOperator, Double> calculateAllClientRevenueWeights(Invoice invoice,
