@@ -6,7 +6,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.service.registration.RegistrationSubmission;
 import com.picsauditing.struts.validator.constraints.*;
-import com.picsauditing.util.DataScrubber;
+import com.picsauditing.util.Strings;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -311,7 +311,10 @@ public class RegistrationForm {
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
             .setVatID(this.getVatId())
-            .setCountrySubdivision(this.getCountrySubdivision())
+            .setCountrySubdivision(
+                    Strings.isEmpty(this.getCountrySubdivision())
+                            ? null
+                            : this.getCountrySubdivision())
             .setCountryISO(this.getCountryISOCode());
 
         return submission;
