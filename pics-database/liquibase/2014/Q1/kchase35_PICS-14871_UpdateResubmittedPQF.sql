@@ -11,7 +11,7 @@ join contractor_audit_operator as cao on cao.`auditID` = ca.id
 where ca.auditTypeID=1
 and ca.`expiresDate` > NOW()
 and cao.visible = 1
-and cao.status in ('Resubmitted', 'Resubmitted')
+and cao.status in ('Resubmit', 'Resubmitted')
 ;
 
 -- Update cao status
