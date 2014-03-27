@@ -147,7 +147,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
-				"WHERE p.accountId IN (:siteId) " +
+				"WHERE p.accountId IN (:siteIds) " +
 				"AND pre.employee in (:employees)", ProjectRoleEmployee.class);
 
 		query.setParameter("employees", employees);
