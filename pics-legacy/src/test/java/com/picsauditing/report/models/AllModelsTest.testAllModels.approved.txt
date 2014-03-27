@@ -627,9 +627,7 @@ ContractorTransportationRisk
 ContractorWatchCreationDate
 ContractorWatchwatch
 CustomerServiceEndDate
-CustomerServiceOwnerPercent
 CustomerServiceRole
-CustomerServiceServiceLevel
 CustomerServiceStartDate
 CustomerServiceUserID
 CustomerServiceUserIsActive
@@ -844,9 +842,7 @@ AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorCustomerServiceEndDate
-ContractorCustomerServiceOwnerPercent
 ContractorCustomerServiceRole
-ContractorCustomerServiceServiceLevel
 ContractorCustomerServiceStartDate
 ContractorDocuGUARD
 ContractorDontReassign
@@ -948,9 +944,7 @@ ContractorTransportationRisk
 ContractorWatchCreationDate
 ContractorWatchwatch
 CustomerServiceEndDate
-CustomerServiceOwnerPercent
 CustomerServiceRole
-CustomerServiceServiceLevel
 CustomerServiceStartDate
 CustomerServiceUserID
 CustomerServiceUserIsActive
@@ -1197,9 +1191,7 @@ AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorCustomerServiceEndDate
-ContractorCustomerServiceOwnerPercent
 ContractorCustomerServiceRole
-ContractorCustomerServiceServiceLevel
 ContractorCustomerServiceStartDate
 ContractorDocuGUARD
 ContractorDontReassign
@@ -1679,9 +1671,7 @@ AccountID
 AccountName
 AccountStatus
 CommissionUserEndDate
-CommissionUserOwnerPercent
 CommissionUserRole
-CommissionUserServiceLevel
 CommissionUserStartDate
 CommissionUserUserID
 CommissionUserUserIsActive
@@ -1737,6 +1727,12 @@ PaymentAmountApplied
 PaymentCreationDate
 PaymentCurrency
 PaymentID
+PaymentOperatorCommissionAccountEndDate
+PaymentOperatorCommissionAccountRole
+PaymentOperatorCommissionAccountStartDate
+PaymentOperatorCommissionAccountUserID
+PaymentOperatorCommissionAccountUserIsActive
+PaymentOperatorCommissionAccountUserName
 PaymentStatus
 PaymentTotalAmount
 

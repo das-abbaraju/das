@@ -93,7 +93,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 				BigDecimal revenuePercent = calculateRevenueSplit(accountUser, individualClientRevenueWeight.getValue());
 
-				invoiceCommission.setPoints((isActivationInvoice(invoice)) ? revenuePercent : BigDecimal.ZERO);
+				invoiceCommission.setPoints(revenuePercent);
 				invoiceCommission.setRevenuePercent(revenuePercent);
 				invoiceCommissions.add(invoiceCommission);
 			}
@@ -115,20 +115,6 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	private BigDecimal calculateRevenueSplit(AccountUser accountUser, double weight) {
 		BigDecimal result = BigDecimal.valueOf(accountUser.getOwnerPercent() / 100.0);
 		return result.multiply(BigDecimal.valueOf(weight));
-	}
-
-	private boolean isActivationInvoice(Invoice invoice) {
-		if (invoice == null || CollectionUtils.isEmpty(invoice.getItems())) {
-			return false;
-		}
-
-		for (InvoiceItem invoiceItem : invoice.getItems()) {
-			if (invoiceItem.getInvoiceFee().isActivation()) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private Map<ContractorOperator, Double> calculateAllClientRevenueWeights(Invoice invoice,

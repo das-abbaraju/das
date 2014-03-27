@@ -80,7 +80,7 @@ public class AccountUser extends BaseTable {
 		this.endDate = endDate;
 	}
 
-	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Integer, importance = FieldImportance.Low)
 	public int getOwnerPercent() {
 		return ownerPercent;
 	}
@@ -89,7 +89,7 @@ public class AccountUser extends BaseTable {
 		this.ownerPercent = ownerPercent;
 	}
 
-	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Low)
 	public String getServiceLevel() {
 		return serviceLevel;
 	}
