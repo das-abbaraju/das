@@ -192,6 +192,6 @@
 	<include file="./liquibase/2014/Q1/kchase34_PICS-14731_UpdateReportId.sql"/>
 	<include file="./liquibase/2014/Q1/mdo50_PICS-14932_addPoints.sql"/>
 	<include file="./liquibase/2014/Q1/lkam9_US191_Add_Address_Verifcation_Status.sql"/>
-	<include file="./liquibase/2014/Q1/kchase35_PICS-14871_UpdateResubmittedPQF.sql"/>
+	<include file="./liquibase/2014/Q1/kchase35_PICS-14871_UpdateResubmittedPQF_DDL.sql"/>
 	<include file="./liquibase/2014/Q1/kchase37_PICS-14871_UpdateResubmittedPQF_DML.sql"/>
 </databaseChangeLog>
