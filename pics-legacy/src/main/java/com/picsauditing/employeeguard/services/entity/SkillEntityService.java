@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -136,6 +137,49 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		});
 	}
 
+	public Map<Integer, Set<AccountSkill>> getSiteRequiredSkills(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(
+				siteSkillDAO.findByAccountIds(accountIds),
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteSkill, Integer, AccountSkill>() {
+					@Override
+					public Integer getKey(SiteSkill entity) {
+						return entity.getSiteId();
+					}
+
+					@Override
+					public AccountSkill getValue(SiteSkill entity) {
+						return entity.getSkill();
+					}
+				});
+	}
+
+	/**
+	 * Corporate and site required skills. Not including project skills.
+	 *
+	 * @param projects
+	 * @param siteToCorporates
+	 * @return
+	 */
+	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
+	                                                                       final Map<Integer, Set<Integer>> siteToCorporates) {
+		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Project, Set<AccountSkill>> siteRequiredSkills = new HashMap<>();
+		for (Project project : projects) {
+			int siteId = project.getAccountId();
+
+			siteRequiredSkills.put(project, getSiteRequiredSkills(siteId, siteToCorporates.get(siteId)));
+		}
+
+		return siteRequiredSkills;
+	}
+
 	/* All search related methods */
 
 	@Override
@@ -193,4 +237,5 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		AccountSkill accountSkill = find(id);
 		delete(accountSkill);
 	}
+
 }

@@ -155,6 +155,26 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return employeeDAO.findRequestedEmployees(accountId);
 	}
 
+	public Map<Project, Set<Employee>> getAllProjectsByEmployees(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(
+				projectRoleEmployeeDAO.findByEmployees(employees),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Project, Employee>() {
+					@Override
+					public Project getKey(ProjectRoleEmployee entity) {
+						return entity.getProjectRole().getProject();
+					}
+
+					@Override
+					public Employee getValue(ProjectRoleEmployee entity) {
+						return entity.getEmployee();
+					}
+				});
+	}
+
 	/* All Search Methods */
 
 	@Override
@@ -245,7 +265,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-								final int accountId) throws Exception {
+	                            final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 
@@ -258,4 +278,5 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 		return find(id, accountId);
 	}
+
 }

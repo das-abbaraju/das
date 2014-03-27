@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.external.BillingService;
@@ -16,7 +15,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +93,28 @@ public class AccountService {
 		}
 
 		return new ArrayList<>(corporates);
+	}
+
+	public Map<Integer, Set<Integer>> getSiteToCorporatesMap(final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		List<OperatorAccount> sites = operatorDAO.findOperators(new ArrayList<>(siteIds));
+
+		Map<Integer, Set<Integer>> siteToCorporates = new HashMap<>();
+		for (OperatorAccount site : sites) {
+			ArrayList<Integer> visited = new ArrayList<>();
+			List<OperatorAccount> topmostCorporates = getTopmostCorporates(site, visited);
+
+			siteToCorporates.put(site.getId(), new HashSet<Integer>());
+
+			for (OperatorAccount corporate : topmostCorporates) {
+				siteToCorporates.get(site).add(corporate.getId());
+			}
+		}
+
+		return siteToCorporates;
 	}
 
 	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<Integer> visited) {
