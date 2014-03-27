@@ -63,8 +63,8 @@ public class SummaryAction extends PicsRestActionSupport {
 		// Contractor IDs
 		Map<Integer, Set<Group>> contractorGroups = groupEntityService.getGroupsByContractorId(profile.getEmployees());
 
-		Map<Integer, SkillStatus> siteStatus = Collections.emptyMap();
 		Map<Project, SkillStatus> projectStatuses = getProjectStatuses(profile);
+		Map<Integer, SkillStatus> siteStatus = getSiteStatuses(projectStatuses);
 
 		List<ProfileAssignmentModel> models = ModelFactory.getProfileAssignmentModelFactory()
 				.create(allAccounts, siteRoles, contractorGroups, siteStatus, projectStatuses);
@@ -79,7 +79,24 @@ public class SummaryAction extends PicsRestActionSupport {
 				skillEngine.getProjectEmployeeSkills(profile.getEmployees());
 		Map<Project, List<SkillStatus>> projectStatusList =
 				statusCalculatorService.getAllSkillStatusesForEntity(projectEmployeeSkills);
+
 		return statusCalculatorService.getOverallStatusPerEntity(projectStatusList);
+	}
+
+	private Map<Integer, SkillStatus> getSiteStatuses(final Map<Project, SkillStatus> projectStatuses) {
+		Map<Integer, List<SkillStatus>> siteStatusList = new HashMap<>();
+		// include site assignments as well???
+		for (Map.Entry<Project, SkillStatus> entry : projectStatuses.entrySet()) {
+			Project project = entry.getKey();
+
+			if (!siteStatusList.containsKey(project.getAccountId())) {
+				siteStatusList.put(project.getAccountId(), new ArrayList<SkillStatus>());
+			}
+
+			siteStatusList.get(project.getAccountId()).add(entry.getValue());
+		}
+
+		return statusCalculatorService.getOverallStatusPerEntity(siteStatusList);
 	}
 
 	/* other methods */
