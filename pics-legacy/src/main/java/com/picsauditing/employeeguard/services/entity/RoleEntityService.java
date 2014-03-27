@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
@@ -23,7 +23,7 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	@Autowired
 	private RoleDAO roleDAO;
 	@Autowired
-	private RoleEmployeeDAO roleEmployeeDAO;
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	/* All Find Methods */
 
@@ -45,6 +45,10 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Project, Set<Role>> getRolesForProjects(final Collection<Project> projects) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
 		return PicsCollectionUtil.convertToMapOfSets(projectRoleDAO.findByProjects(projects),
 				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
 					@Override
@@ -60,38 +64,34 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees, final int siteId) {
-		return getSiteRolesForEmployees(employees, Arrays.asList(siteId));
-	}
-
-	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees,
-	                                                         final Collection<Integer> siteIds) {
-
-		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
+		if (CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyMap();
 		}
 
-		return PicsCollectionUtil.convertToMapOfSets(roleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
-				new PicsCollectionUtil.EntityKeyValueConvertable<RoleEmployee, Employee, Role>() {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployeesAndSiteId(employees, siteId);
+
+		return PicsCollectionUtil.convertToMapOfSets(siteAssignments,
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Employee, Role>() {
 					@Override
-					public Employee getKey(RoleEmployee roleEmployee) {
-						return roleEmployee.getEmployee();
+					public Employee getKey(SiteAssignment siteAssignment) {
+						return siteAssignment.getEmployee();
 					}
 
 					@Override
-					public Role getValue(RoleEmployee roleEmployee) {
-						return roleEmployee.getRole();
+					public Role getValue(SiteAssignment siteAssignment) {
+						return siteAssignment.getRole();
 					}
 				});
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-	                                                            final int siteId) {
+																final int siteId) {
 
 		return getProjectRolesForEmployees(employees, Arrays.asList(siteId));
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-	                                                            final Collection<Integer> siteIds) {
+																final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}
@@ -112,11 +112,6 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
-	@Deprecated
-	public Map<Role, Role> getSiteToCorporateRoles(final int siteId, final List<Integer> corporateIds) {
-		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
-	}
-
 	public Map<Integer, Set<Role>> getRolesForSites(final Collection<Integer> sites) {
 		if (CollectionUtils.isEmpty(sites)) {
 			return Collections.emptyMap();
@@ -126,7 +121,7 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> findByProjectsAndEmployees(final Collection<Project> projects,
-	                                                           final Collection<Employee> employees) {
+															   final Collection<Employee> employees) {
 
 		if (CollectionUtils.isEmpty(projects) || CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyMap();
@@ -208,5 +203,4 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		Role role = findByIdAndAccountId(id, accountId);
 		delete(role);
 	}
-
 }

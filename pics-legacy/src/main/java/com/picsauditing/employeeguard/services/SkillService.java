@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
@@ -42,7 +43,7 @@ public class SkillService {
 	@Autowired
 	private ProjectSkillDAO projectSkillDAO;
 	@Autowired
-	private RoleDAO roleDAO;
+	private SiteAssignmentDAO siteAssignmentDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 	@Autowired
@@ -357,32 +358,16 @@ public class SkillService {
 	}
 
 	public Map<AccountSkill, Set<Integer>> getSiteAssignmentSkills(final Employee employee) {
-		Map<Role, Role> siteToCorporateRoles = getSiteToCorporateRoles(employee);
+		List<SiteAssignment> siteAssignmentsForEmployee = siteAssignmentDAO.findByEmployee(employee);
 
 		Map<AccountSkill, Set<Integer>> siteAssignmentSkills = new HashMap<>();
-		for (Map.Entry<Role, Role> entry : siteToCorporateRoles.entrySet()) {
-			Role siteRole = entry.getKey();
-			Role corporateRole = entry.getValue();
-
-			List<AccountSkill> corporateSkills = ExtractorUtil.extractList(corporateRole.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
-
-			for (AccountSkill accountSkill : corporateSkills) {
-				PicsCollectionUtil.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, siteRole.getAccountId());
-				PicsCollectionUtil.addToMapOfKeyToSet(siteAssignmentSkills, accountSkill, corporateRole.getAccountId());
+		for (SiteAssignment siteAssignment : siteAssignmentsForEmployee) {
+			for (AccountSkillRole accountSkillRole : siteAssignment.getRole().getSkills()) {
+				PicsCollectionUtil.addToMapOfKeyToSet(siteAssignmentSkills, accountSkillRole.getSkill(), siteAssignment.getSiteId());
 			}
 		}
 
 		return siteAssignmentSkills;
-	}
-
-	private Map<Role, Role> getSiteToCorporateRoles(Employee employee) {
-		Set<Integer> siteIds = new HashSet<>();
-		for (RoleEmployee roleEmployee : employee.getRoles()) {
-			siteIds.add(roleEmployee.getRole().getAccountId());
-		}
-
-		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteIds);
-		return roleDAO.findSiteToCorporateRoles(corporateIds, siteIds);
 	}
 
 	public List<AccountSkill> getParentSiteRequiredSkills(int accountId) {

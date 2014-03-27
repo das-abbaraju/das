@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
@@ -65,7 +66,6 @@ public class ProjectAssignmentService {
 	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId, final Collection<Project> projects) {
 		return new RoleAssignmentProcess().getCorporateRoleEmployees(
 				employeeEntityService.getEmployeesByProjectRoles(projects),
-				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)),
-				roleEntityService.getSiteToCorporateRoles(siteId, accountService.getTopmostCorporateAccountIds(siteId)));
+				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)));
 	}
 }

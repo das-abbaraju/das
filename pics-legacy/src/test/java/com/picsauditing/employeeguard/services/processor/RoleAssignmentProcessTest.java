@@ -21,8 +21,7 @@ public class RoleAssignmentProcessTest {
 	public void testGetCorporateRoleEmployees() {
 		Map<Role, Set<Employee>> result = new RoleAssignmentProcess().getCorporateRoleEmployees(
 				getProjectEmployeeRoles(),
-				getSiteRoleEmployees(),
-				getSiteToCorporateRoleMap()
+				getSiteRoleEmployees()
 		);
 
 		verifyResult(result);
@@ -46,7 +45,7 @@ public class RoleAssignmentProcessTest {
 		return new HashMap<Role, Set<Employee>>() {{
 			put(new RoleBuilder()
 					.accountId(SITE_ID)
-					.name("Site Role")
+					.name("Role")
 					.build(),
 
 					new HashSet<>(Arrays.asList(
@@ -62,26 +61,12 @@ public class RoleAssignmentProcessTest {
 		}};
 	}
 
-	private Map<Role, Role> getSiteToCorporateRoleMap() {
-		return new HashMap<Role, Role>() {{
-			put(new RoleBuilder()
-					.accountId(SITE_ID)
-					.name("Site Role")
-					.build(),
-
-					new RoleBuilder()
-							.accountId(CORPORATE_ID)
-							.name("Corporate Role")
-							.build());
-		}};
-	}
-
 	private void verifyResult(final Map<Role, Set<Employee>> roleEmployeeAssignmentsForSite) {
 		assertEquals(2, roleEmployeeAssignmentsForSite.size());
 
 		for (Role role : roleEmployeeAssignmentsForSite.keySet()) {
 			switch (role.getName()) {
-				case "Corporate Role":
+				case "Role":
 					verifyEmployeeEmails(roleEmployeeAssignmentsForSite.get(role),
 							"test@test.com", "another_employee@test.com");
 					break;

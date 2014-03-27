@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
-import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.daos.RoleDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
@@ -18,6 +15,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,6 +40,8 @@ public class RoleEntityServiceTest {
 	private RoleDAO roleDAO;
 	@Mock
 	private RoleEmployeeDAO roleEmployeeDAO;
+	@Mock
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -52,7 +52,7 @@ public class RoleEntityServiceTest {
 		Whitebox.setInternalState(roleEntityService, "projectRoleDAO", projectRoleDAO);
 		Whitebox.setInternalState(roleEntityService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 		Whitebox.setInternalState(roleEntityService, "roleDAO", roleDAO);
-		Whitebox.setInternalState(roleEntityService, "roleEmployeeDAO", roleEmployeeDAO);
+		Whitebox.setInternalState(roleEntityService, "siteAssignmentDAO", siteAssignmentDAO);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class RoleEntityServiceTest {
 		List<ProjectRole> fakeProjectRoles = buildFakeProjectRoles();
 		when(projectRoleDAO.findByProjects(anyListOf(Project.class))).thenReturn(fakeProjectRoles);
 
-		Map<Project, Set<Role>> results = roleEntityService.getRolesForProjects(Collections.<Project>emptyList());
+		Map<Project, Set<Role>> results = roleEntityService.getRolesForProjects(Arrays.asList(new Project()));
 
 		verifyTestGetRolesForProjects(results);
 	}
@@ -102,18 +102,17 @@ public class RoleEntityServiceTest {
 
 	@Test
 	public void testGetSiteRolesForEmployees() {
-		List<RoleEmployee> fakeRoleEmployees = buildFakeRoleEmployees();
-		when(roleEmployeeDAO.findByEmployeesAndSiteIds(anyCollectionOf(Employee.class), anyListOf(Integer.class)))
-				.thenReturn(fakeRoleEmployees);
+		when(siteAssignmentDAO.findByEmployeesAndSiteId(anyCollectionOf(Employee.class), anyInt()))
+				.thenReturn(buildFakeSiteAssignments());
 
 		Map<Employee, Set<Role>> result = roleEntityService.getSiteRolesForEmployees(Arrays.asList(new Employee()), 0);
 
 		verifyTestGetSiteRolesForEmployees(result);
 	}
 
-	private List<RoleEmployee> buildFakeRoleEmployees() {
+	private List<SiteAssignment> buildFakeSiteAssignments() {
 		return Arrays.asList(
-				new RoleEmployeeBuilder()
+				new SiteAssignmentBuilder()
 						.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Test RoleEmployee").build())
 						.employee(new EmployeeBuilder().accountId(456).email("test.employee@test.com").build())
 						.build()
@@ -133,25 +132,23 @@ public class RoleEntityServiceTest {
 
 	@Test
 	public void testGetProjectRolesForEmployees() {
-		List<ProjectRoleEmployee> fakeProjectRoleEmployees = buildFakeProjectRoleEmployees();
-		when(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(anyCollectionOf(Employee.class), anyListOf(Integer.class)))
-				.thenReturn(fakeProjectRoleEmployees);
+		when(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(anyCollectionOf(Employee.class), anyCollectionOf(Integer.class)))
+				.thenReturn(buildFakeProjectRoleEmployees());
 
-		Map<Employee, Set<Role>> results = roleEntityService
-				.getProjectRolesForEmployees(Arrays.asList(new Employee()), 0);
+		Map<Employee, Set<Role>> results = roleEntityService.getProjectRolesForEmployees(Arrays.asList(new Employee()), 12);
 
 		verifyTestGetProjectRolesForEmployees(results);
 	}
 
 	private List<ProjectRoleEmployee> buildFakeProjectRoleEmployees() {
 		return Arrays.asList(
-				new ProjectRoleEmployeeBuilder()
-						.projectRole(new ProjectRoleBuilder()
-								.project(new ProjectBuilder().accountId(ACCOUNT_ID).name("Building Renovation").build())
-								.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Lead Foreman").build())
-								.build())
-						.employee(new EmployeeBuilder().accountId(781).email("tester@something.com").build())
-						.build()
+			new ProjectRoleEmployeeBuilder()
+					.projectRole(new ProjectRoleBuilder()
+							.project(new ProjectBuilder().accountId(ACCOUNT_ID).name("Building Renovation").build())
+							.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Lead Foreman").build())
+							.build())
+					.employee(new EmployeeBuilder().accountId(781).email("tester@something.com").build())
+					.build()
 		);
 	}
 

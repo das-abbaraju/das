@@ -4,6 +4,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.PhotoForm;
@@ -26,7 +27,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
-	private RoleEmployeeDAO roleEmployeeDAO;
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	/* All Find Methods */
 
@@ -101,25 +102,16 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public Map<Role, Set<Employee>> getEmployeesBySiteRoles(final Collection<Integer> siteIds) {
-		if (CollectionUtils.isEmpty(siteIds)) {
-			return Collections.emptyMap();
-		}
-
-		List<Employee> employeesAssignedToSite = employeeDAO.findEmployeesAssignedToSites(siteIds);
-		if (CollectionUtils.isEmpty(employeesAssignedToSite)) {
-			return Collections.emptyMap();
-		}
-
 		return PicsCollectionUtil.convertToMapOfSets(
-				roleEmployeeDAO.findByEmployeesAndSiteIds(employeesAssignedToSite, siteIds),
-				new PicsCollectionUtil.EntityKeyValueConvertable<RoleEmployee, Role, Employee>() {
+				siteAssignmentDAO.findBySiteIds(siteIds),
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Role, Employee>() {
 					@Override
-					public Role getKey(RoleEmployee entity) {
+					public Role getKey(SiteAssignment entity) {
 						return entity.getRole();
 					}
 
 					@Override
-					public Employee getValue(RoleEmployee entity) {
+					public Employee getValue(SiteAssignment entity) {
 						return entity.getEmployee();
 					}
 				}
@@ -265,7 +257,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-	                            final int accountId) throws Exception {
+								final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 
@@ -278,5 +270,4 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 		return find(id, accountId);
 	}
-
 }

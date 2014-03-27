@@ -20,12 +20,3 @@ CREATE TABLE IF NOT EXISTS `site_assignment` (
   CONSTRAINT `fk2_site_assignment` FOREIGN KEY (`siteID`) REFERENCES `accountemployeeguard` (`accountID`),
   CONSTRAINT `fk3_site_assignment` FOREIGN KEY (`employeeID`) REFERENCES `account_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-insert into site_assignment (roleID, siteID, employeeID, createdBy, createdDate)
-(select corporate_role.id, site_role.accountID, site_role_employee.employeeID, site_role.createdBy, site_role.createdDate from account_group corporate_role
-	join account_group site_role on corporate_role.name = site_role.name
-	join accounts a on corporate_role.accountID = a.id and a.type = 'Corporate'
-	join account_group_employee site_role_employee on site_role_employee.groupID = site_role.id
-	where corporate_role.accountID != site_role.accountID)
-on duplicate key update site_assignment.createdBy = site_role.createdBy;

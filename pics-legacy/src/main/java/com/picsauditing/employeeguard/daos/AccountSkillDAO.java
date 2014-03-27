@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -105,15 +106,15 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
-    public List<AccountSkill> findByRoles(final List<Role> roles) {
-        if (CollectionUtils.isEmpty(roles)) {
-            return Collections.emptyList();
-        }
+	public List<AccountSkill> findByRoles(final List<Role> roles) {
+		if (CollectionUtils.isEmpty(roles)) {
+			return Collections.emptyList();
+		}
 
-        TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT asr.skill FROM AccountSkillRole asr WHERE asr.role IN ( :roles ) ", AccountSkill.class);
-        query.setParameter("roles", roles);
-        return query.getResultList();
-    }
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT asr.skill FROM AccountSkillRole asr WHERE asr.role IN ( :roles ) ", AccountSkill.class);
+		query.setParameter("roles", roles);
+		return query.getResultList();
+	}
 
 	public List<AccountSkill> search(final String searchTerm, final int accountId) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId = :accountId " +
@@ -141,23 +142,23 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
-    public List<AccountSkill> findByCorporateRoleId(final int corporateRoleId) {
-        TypedQuery<AccountSkill> query = em.createQuery("SELECT s FROM Role r " +
-                "JOIN r.skills asr " +
-                "JOIN asr.skill s " +
-                "WHERE r.id = :corporateRoleId", AccountSkill.class);
-        query.setParameter("corporateRoleId", corporateRoleId);
-        return query.getResultList();
-    }
+	public List<AccountSkill> findByCorporateRoleId(final int corporateRoleId) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT s FROM Role r " +
+				"JOIN r.skills asr " +
+				"JOIN asr.skill s " +
+				"WHERE r.id = :corporateRoleId", AccountSkill.class);
+		query.setParameter("corporateRoleId", corporateRoleId);
+		return query.getResultList();
+	}
 
-    public List<AccountSkill> findByEmployee(final Employee employee) {
-        TypedQuery<AccountSkill> query = em.createQuery("SELECT s FROM Employee e " +
-                "JOIN e.skills ase " +
-                "JOIN ase.skill s " +
-                "WHERE e = :employee", AccountSkill.class);
-        query.setParameter("employee", employee);
-        return query.getResultList();
-    }
+	public List<AccountSkill> findByEmployee(final Employee employee) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT s FROM Employee e " +
+				"JOIN e.skills ase " +
+				"JOIN ase.skill s " +
+				"WHERE e = :employee", AccountSkill.class);
+		query.setParameter("employee", employee);
+		return query.getResultList();
+	}
 
 	public List<AccountSkill> search(final String searchTerm, final List<Integer> accountIds) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId IN (:accountIds) " +
@@ -167,4 +168,39 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}
+
+	public List<AccountSkill> findBySiteAssignments(final Collection<Integer> siteIds, final Employee employee) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT rs.skill " +
+				"FROM SiteAssignment sa " +
+				"JOIN sa.role r " +
+				"JOIN r.skills rs " +
+				"WHERE sa.siteId IN (:siteIds) " +
+				"AND sa.employee = :employee", AccountSkill.class);
+		query.setParameter("siteIds", siteIds);
+		query.setParameter("employee", employee);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> findSiteAndCorporateRequiredSkills(final Collection<Integer> siteAndCorporateIds) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT skill FROM SiteSkill siteSkill " +
+				"JOIN siteSkill.skill skill " +
+				"WHERE siteSkill.siteId IN (:siteAndCorporateIds)", AccountSkill.class);
+
+		query.setParameter("siteAndCorporateIds", siteAndCorporateIds);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> findProjectRequiredSkills(final Collection<Project> projects) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT skill FROM ProjectSkill projectSkill " +
+				"JOIN projectSkill.project project " +
+				"JOIN projectSkill.skill skill " +
+				"WHERE project IN (:projects)", AccountSkill.class);
+
+		query.setParameter("projects", projects);
+
+		return query.getResultList();
+	}
+
 }

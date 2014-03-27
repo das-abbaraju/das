@@ -95,6 +95,7 @@
         <class>com.picsauditing.employeeguard.entities.ProjectSkillRole</class>
         <class>com.picsauditing.employeeguard.entities.Role</class>
         <class>com.picsauditing.employeeguard.entities.RoleEmployee</class>
+        <class>com.picsauditing.employeeguard.entities.SiteAssignment</class>
         <class>com.picsauditing.employeeguard.entities.SiteSkill</class>
         <class>com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee</class>
 
