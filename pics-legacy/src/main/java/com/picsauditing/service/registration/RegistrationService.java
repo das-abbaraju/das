@@ -25,11 +25,11 @@ public class RegistrationService {
 
     private final RegistrationBillingBean billingBean;
     private final AccountService accountService;
-    private final AppUserService appUserService;
-    private final AppUserDAO appUserDAO;
     private final LanguageModel supportedLanguages;
     private final UserService userService;
     private final RegistrationRequestService regReqService;
+    private final AppUserDAO appUserDAO;
+    private final AppUserService appUserService;
 
     public RegistrationService(
             RegistrationBillingBean bean,
@@ -43,12 +43,12 @@ public class RegistrationService {
             AppUserService service
     ) {
         this.billingBean = bean;
-        this.appUserService = service;
-        this.appUserDAO = appUserDAO;
         this.accountService = accountService;
         this.supportedLanguages = supportedLanguages;
         this.userService = userService;
         this.regReqService = regReqService;
+        this.appUserDAO = appUserDAO;
+        this.appUserService = service;
     }
 
     public RegistrationSubmission newRegistration() {
@@ -109,7 +109,10 @@ public class RegistrationService {
         registrant.setAddress2(form.getAddress2());
         registrant.setVatId(form.getVatID());
         registrant.setCountry(new Country(form.getCountryISO()));
-        registrant.setCountrySubdivision(new CountrySubdivision(form.getCountrySubdivision()));
+
+        if (form.getCountrySubdivision() != null)
+            registrant.setCountrySubdivision(new CountrySubdivision(form.getCountrySubdivision()));
+
         registrant.setStatus(AccountStatus.Pending);
         registrant.setLocale(form.getLocale());
         registrant.setPhone(form.getPhoneNumber());
