@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.services.factory;
 
 import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
+import com.picsauditing.employeeguard.entities.builders.GroupBuilder;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.services.GroupService;
@@ -19,8 +19,8 @@ public class GroupServiceFactory {
 	public static GroupService getGroupService() {
 		Mockito.reset(groupService);
 
-		Group group = new AccountGroupBuilder().name("Group 1").build();
-		List<Group> groups = Arrays.asList(group, new AccountGroupBuilder().name("Group 2").build());
+		Group group = new GroupBuilder().name("Group 1").build();
+		List<Group> groups = Arrays.asList(group, new GroupBuilder().name("Group 2").build());
 		when(groupService.getGroupsForAccount(anyInt())).thenReturn(groups);
 		when(groupService.getGroup(anyString(), anyInt())).thenReturn(group);
 		when(groupService.search(anyString(), anyInt())).thenReturn(groups);
