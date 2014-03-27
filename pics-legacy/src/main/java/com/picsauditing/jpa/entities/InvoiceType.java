@@ -6,4 +6,8 @@ public enum InvoiceType {
     public boolean isMembershipType() {
         return this == Activation || this == Reactivation || this == Upgrade || this == Upgrade_Service || this == Upgrade_Tier || this == Renewal;
     }
+
+    public boolean isUpgrade() {
+        return this == Upgrade || this == Upgrade_Service || this == Upgrade_Tier;
+    }
 }
