@@ -73,6 +73,7 @@ ContractorOfficeIn
 ContractorOriginalMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
+ContractorPQFTypeNameString
 ContractorPayingFacilities
 ContractorPaymentExpires
 ContractorProductRisk
@@ -108,10 +109,13 @@ ContractorWelcomeCallCaoID
 ContractorWelcomeCallCaoStatus
 ContractorWelcomeCallID
 ContractorWelcomeCallTypeName
+ContractorWelcomeCallTypeNameString
 ContractorWorkersCompWCEachAccidentAnswer
 ContractorWorksAtClientSite
 ContractorWorksForReportingClient
 ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
+DirectTradeId
 DirectTradeName
+TradeId
 TradeName

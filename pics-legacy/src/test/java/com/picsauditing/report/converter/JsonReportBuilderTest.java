@@ -352,6 +352,7 @@ public class JsonReportBuilderTest {
         columns.add(column2);
         when(column.getSqlFunction()).thenReturn(SqlFunction.Count);
         when(field.getFilterType()).thenReturn(FilterType.String);
+        when(field.isFilterable()).thenReturn(true);
         when(field.getDrillDownField()).thenReturn("AlphaBeta");
 
         JsonReportBuilder.setDrillDownURL(columns);

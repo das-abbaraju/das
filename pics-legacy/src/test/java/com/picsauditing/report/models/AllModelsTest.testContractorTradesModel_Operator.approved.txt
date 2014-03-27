@@ -22,4 +22,5 @@ ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
 ContractorWorksAtClientSite
+TradeId
 TradeName

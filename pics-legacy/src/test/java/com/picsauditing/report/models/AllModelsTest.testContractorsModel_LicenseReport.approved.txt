@@ -62,6 +62,7 @@ ContractorPQFCALicenseExpDateAnswer
 ContractorPQFCALicenseNumberAnswer
 ContractorPQFID
 ContractorPQFTypeName
+ContractorPQFTypeNameString
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorProfessionalIndemnityPROILimitAnswer
@@ -87,5 +88,7 @@ ContractorWorksAtClientSite
 ContractorWorksForReportingClient
 ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
+DirectTradeId
 DirectTradeName
+TradeId
 TradeName
