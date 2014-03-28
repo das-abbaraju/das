@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class AccountGroupBuilderTest {
+public class GroupBuilderTest {
 
 	private static final int ID = 123;
 	private static final int ACCOUNT_ID = 1100;
@@ -23,7 +23,7 @@ public class AccountGroupBuilderTest {
 
 	@Test
 	public void testBuild() {
-		Group group = new AccountGroupBuilder(ID, ACCOUNT_ID).description(DESCRIPTION).name(NAME).employees(EMPLOYEE_LIST).skills(SKILL_LIST).build();
+		Group group = new GroupBuilder(ID, ACCOUNT_ID).description(DESCRIPTION).name(NAME).employees(EMPLOYEE_LIST).skills(SKILL_LIST).build();
 
 		verifyAccountGroup(group);
 	}
