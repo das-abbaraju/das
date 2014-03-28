@@ -34,10 +34,12 @@
     <s:include value="../actionMessages.jsp"/>
     
     <s:include value="../config_environment.jsp" />
-    
-    <div>
-    	<a href="ManageFlagCriteria!edit.action" class="add">New Criteria</a>
-    </div>
+
+    <pics:permission perm="EditFlagCriteria" type="Edit" >
+        <div>
+            <a href="ManageFlagCriteria!edit.action" class="add">New Criteria</a>
+        </div>
+    </pics:permission>
     
     <table id="criterialist" class="report">
     	<thead>
