@@ -78,6 +78,11 @@ a:focus {
     color: $danger_light;
 }
 
+.primary {
+    background-color: $primary_tint;
+    color: $primary_light;
+}
+
 .progress-bar-success {
     background-color: $success_light;
     color: $success_tint;

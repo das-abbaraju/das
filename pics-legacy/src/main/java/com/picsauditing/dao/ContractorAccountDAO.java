@@ -555,4 +555,21 @@ public class ContractorAccountDAO extends PicsDAO {
         return conIdsAndCsrIds;
     }
 
+	public List<ContractorAccount> findAllContractorsForOperator(final OperatorAccount operator) {
+		List<ContractorAccount> contractors = Collections.emptyList();
+		try {
+			Query query = em.createNativeQuery("select a.*, ci.* from contractor_info ci " +
+					"join accounts a on a.id = ci.id " +
+					"join contractor_operator co on co.conID = ci.id " +
+					"where co.opID = :operatorId", ContractorAccount.class);
+			query.setParameter("operatorId", operator.getId());
+			contractors = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Ignore
+		}
+
+		return contractors;
+	}
+
 }

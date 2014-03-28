@@ -25,7 +25,7 @@ public class GroupEmployee implements BaseEntity {
 	@Column(nullable = false)
 	private int id;
 
-	@ManyToOne
+	@ManyToOne(targetEntity = Group.class)
 	@JoinColumn(name = "groupID", nullable = false)
 	private Group group;
 

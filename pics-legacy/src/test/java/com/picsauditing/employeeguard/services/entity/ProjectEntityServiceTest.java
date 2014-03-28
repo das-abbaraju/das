@@ -63,10 +63,10 @@ public class ProjectEntityServiceTest {
 	public void testGetProjectsForEmployees() {
 		Project fakeProject = buildFakeProject(null);
 		List<Employee> fakeEmployees = buildFakeEmployees();
-		when(projectRoleEmployeeDAO.findByEmployeesAndSiteId(anyListOf(Employee.class), anyInt()))
+		when(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(anyListOf(Employee.class), anyListOf(Integer.class)))
 				.thenReturn(buildFakeProjectRoleEmployees(fakeEmployees.get(0), fakeProject));
 
-		Map<Employee, Set<Project>> result = projectEntityService.getProjectsForEmployees(new ArrayList<Employee>(),
+		Map<Employee, Set<Project>> result = projectEntityService.getProjectsForEmployeesBySiteId(Arrays.asList(new Employee()),
 				ACCOUNT_ID);
 
 		verifyTestGetProjectsForEmployees(result);

@@ -61,12 +61,13 @@ public class RoleEmployeeDAO extends AbstractBaseEntityDAO<RoleEmployee> {
 		return query.getResultList();
 	}
 
-	public List<RoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees, final int siteId) {
+	public List<RoleEmployee> findByEmployeesAndSiteIds(final Collection<Employee> employees,
+														final Collection<Integer> siteIds) {
 		TypedQuery<RoleEmployee> query = em.createQuery("SELECT re FROM RoleEmployee re " +
 				"WHERE re.employee IN (:employees) " +
-				"AND re.role.accountId = :siteId", RoleEmployee.class);
+				"AND re.role.accountId IN (:siteIds)", RoleEmployee.class);
 		query.setParameter("employees", employees);
-		query.setParameter("siteId", siteId);
+		query.setParameter("siteIds", siteIds);
 		return query.getResultList();
 	}
 

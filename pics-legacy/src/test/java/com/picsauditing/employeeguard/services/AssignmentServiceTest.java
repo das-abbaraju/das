@@ -82,7 +82,7 @@ public class AssignmentServiceTest {
 		setupGetEmployeesAssignedToSite(employees);
 		setupGetAllEmployeeRolesForSite(employees, roles);
 
-		when(projectEntityService.getProjectsForEmployees(anySetOf(Employee.class), eq(SITE_ID)))
+		when(projectEntityService.getProjectsForEmployeesBySiteId(anySetOf(Employee.class), eq(SITE_ID)))
 				.thenReturn(new HashMap<Employee, Set<Project>>() {{
 					Set<Project> projectSet = new HashSet<>(projects);
 					put(employees.get(0), projectSet);
@@ -135,7 +135,7 @@ public class AssignmentServiceTest {
 
 		when(employeeEntityService.getEmployeesAssignedToSite(CONTRACTOR_IDS, SITE_ID))
 				.thenReturn(employees);
-		when(projectEntityService.getProjectsForEmployees(employees, SITE_ID))
+		when(projectEntityService.getProjectsForEmployeesBySiteId(employees, SITE_ID))
 				.thenReturn(new HashMap<Employee, Set<Project>>() {{
 					put(employees.get(0), new HashSet<>(Arrays.asList(projects.get(0))));
 				}});

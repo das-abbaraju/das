@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -59,7 +60,17 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees, final int siteId) {
-		return Utilities.convertToMapOfSets(roleEmployeeDAO.findByEmployeesAndSiteId(employees, siteId),
+		return getSiteRolesForEmployees(employees, Arrays.asList(siteId));
+	}
+
+	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees,
+															 final Collection<Integer> siteIds) {
+
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		return Utilities.convertToMapOfSets(roleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
 				new Utilities.EntityKeyValueConvertable<RoleEmployee, Employee, Role>() {
 					@Override
 					public Employee getKey(RoleEmployee roleEmployee) {
@@ -76,7 +87,16 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
 																final int siteId) {
 
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteId(employees, siteId),
+		return getProjectRolesForEmployees(employees, Arrays.asList(siteId));
+	}
+
+	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
+																final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
 
 					@Override

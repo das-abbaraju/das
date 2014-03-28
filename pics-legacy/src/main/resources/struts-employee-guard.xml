@@ -109,8 +109,10 @@
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <!-- Dashboard -->
-        <action name="dashboard" class="com.picsauditing.employeeguard.controllers.contractor.DashboardAction">
-            <result name="dashboard">/struts/employee-guard/contractor/dashboard.jsp</result>
+        <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="summary" class="com.picsauditing.employeeguard.controllers.contractor.SummaryAction">
         </action>
 
         <!-- Employee -->

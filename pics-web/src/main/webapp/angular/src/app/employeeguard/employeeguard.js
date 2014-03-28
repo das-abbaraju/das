@@ -16,5 +16,8 @@ angular.module('PICS.employeeguard', [
         })
         .when('/employee-guard/operators/projects', {
             templateUrl: '/angular/src/app/employeeguard/operator/project/project_list.tpl.html'
+        })
+        .when('/employee-guard/contractor/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
         });
 });

@@ -1,27 +1,29 @@
 angular.module('PICS.directives')
 
-.directive('chart', function (AnimatedArcChart) {
+//overrides to drawConfig be added to the template or the controller file.  If not defined, drawConfig uses default values
+.directive('chart', function (TypeToChart) {
     return {
         restrict: 'E',
         scope: {
             data: '=',
-            width: '@',
-            height: '@',
-            colors: "=",
+            type: '@',
+            drawConfig: '='
         },
         link: function (scope, element, attrs) {
             scope.$watch('data', function(newValue) {
                 if (newValue) {
-                    var chartData = extractChartData(newValue),
-                        chart = new AnimatedArcChart(chartData);
+                    var chart, chartConfig,
+                        chartData = newValue,
+                        Chart = TypeToChart[scope.type],
+                        drawConfig = scope.drawConfig || {};
 
-                    chart.draw(element[0], scope.width, scope.height, scope.colors);
+                    chart = new Chart(chartData);
+
+                    drawConfig.element = element[0];
+
+                    chart.draw(drawConfig);
                 }
             });
-
-            function extractChartData(data) {
-                return [data.completed + data.pending, data.expiring, data.expired];
-            }
         }
     };
 });

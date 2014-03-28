@@ -80,6 +80,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public Map<Role, Set<Employee>> getEmployeesByProjectRoles(final Collection<Project> projects) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
 		return Utilities.convertToMapOfSets(
 				projectRoleEmployeeDAO.findByProjects(projects),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Role, Employee>() {
@@ -96,10 +100,18 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		);
 	}
 
-	public Map<Role, Set<Employee>> getEmployeesBySiteRoles(final int siteId) {
-		List<Employee> employeesAssignedToSite = employeeDAO.findEmployeesAssignedToSite(siteId);
+	public Map<Role, Set<Employee>> getEmployeesBySiteRoles(final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		List<Employee> employeesAssignedToSite = employeeDAO.findEmployeesAssignedToSites(siteIds);
+		if (CollectionUtils.isEmpty(employeesAssignedToSite)) {
+			return Collections.emptyMap();
+		}
+
 		return Utilities.convertToMapOfSets(
-				roleEmployeeDAO.findByEmployeesAndSiteId(employeesAssignedToSite, siteId),
+				roleEmployeeDAO.findByEmployeesAndSiteIds(employeesAssignedToSite, siteIds),
 				new Utilities.EntityKeyValueConvertable<RoleEmployee, Role, Employee>() {
 					@Override
 					public Role getKey(RoleEmployee entity) {
@@ -115,7 +127,21 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
+		if (CollectionUtils.isEmpty(contractorIds)) {
+			return Collections.emptyList();
+		}
+
 		return employeeDAO.findEmployeesAssignedToSiteForContractors(contractorIds, siteId);
+	}
+
+	/**
+	 * Returns the count of Employees with no profile.
+	 *
+	 * @param accountId
+	 * @return
+	 */
+	public int getRequestedEmployeeCount(final int accountId) {
+		return employeeDAO.findRequestedEmployees(accountId);
 	}
 
 	/* All Search Methods */

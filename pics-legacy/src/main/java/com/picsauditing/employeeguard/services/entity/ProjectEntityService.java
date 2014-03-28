@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,8 +34,16 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return projectDAO.find(id);
 	}
 
-	public Map<Employee, Set<Project>> getProjectsForEmployees(final Collection<Employee> employees, final int siteId) {
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteId(employees, siteId),
+	public Map<Employee, Set<Project>> getProjectsForEmployeesBySiteId(final Collection<Employee> employees, final int siteId) {
+		return getProjectsForEmployeesBySiteIds(employees, Arrays.asList(siteId));
+	}
+
+	public Map<Employee, Set<Project>> getProjectsForEmployeesBySiteIds(final Collection<Employee> employees, final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
 					@Override
 					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
@@ -44,6 +53,25 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 					@Override
 					public Project getValue(ProjectRoleEmployee projectRoleEmployee) {
 						return projectRoleEmployee.getProjectRole().getProject();
+					}
+				});
+	}
+
+	public Map<Employee, Set<Project>> getProjectsForEmployees(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployees(employees),
+				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
+					@Override
+					public Employee getKey(ProjectRoleEmployee entity) {
+						return entity.getEmployee();
+					}
+
+					@Override
+					public Project getValue(ProjectRoleEmployee entity) {
+						return entity.getProjectRole().getProject();
 					}
 				});
 	}
@@ -124,5 +152,13 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 
 		Project project = find(id);
 		delete(project);
+	}
+
+	public Set<Project> getProjectsBySiteIds(List<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptySet();
+		}
+
+		return new HashSet<>(projectDAO.findByAccounts(siteIds));
 	}
 }

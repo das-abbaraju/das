@@ -25,7 +25,7 @@ public class RoleEmployee implements BaseEntity {
 	@Column(nullable = false)
 	private int id;
 
-	@ManyToOne
+	@ManyToOne(targetEntity = Role.class)
 	@JoinColumn(name = "groupID", nullable = false)
 	private Role role;
 

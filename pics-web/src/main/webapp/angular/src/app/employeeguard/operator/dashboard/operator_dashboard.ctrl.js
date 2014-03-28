@@ -7,7 +7,12 @@ angular.module('PICS.employeeguard')
             $scope.updateSelectedSite();
         } else {
             $scope.selected_site_details = requestSiteDetailsForSiteOperator().then(function(site_details) {
-               $scope.selected_site_details = site_details;
+                $scope.selected_site_details = site_details;
+                $scope.chartData = [
+                    site_details.completed + site_details.pending,
+                    site_details.expiring,
+                    site_details.expired
+                ];
             });
         }
     });
@@ -27,6 +32,11 @@ angular.module('PICS.employeeguard')
     $scope.updateSelectedSite = function() {
         $scope.requestSiteDetailsById($scope.site_list_select).then(function(site_details) {
             $scope.selected_site_details = site_details;
+            $scope.chartData = [
+                site_details.completed + site_details.pending,
+                site_details.expiring,
+                site_details.expired
+            ];
         });
     };
 

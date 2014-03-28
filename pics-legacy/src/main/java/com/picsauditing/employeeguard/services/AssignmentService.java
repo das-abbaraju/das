@@ -33,7 +33,7 @@ public class AssignmentService {
 		Map<Employee, Set<AccountSkill>> employeeSkillsForProjects = getEmployeeSkillsForProjects(siteId, employeesAssignedToSite);
 		Map<Employee, Set<AccountSkill>> employeeSkillsForRole = getEmployeeSkillsForRoles(siteId);
 
-		Map<Employee, Set<AccountSkill>> allEmployeeRequiredSkills = Utilities.mergeValuesOfMapOfSets(employeeSkillsForProjects, employeeSkillsForRole);
+		Map<Employee, Set<AccountSkill>> allEmployeeRequiredSkills = Utilities.mergeMapOfSets(employeeSkillsForProjects, employeeSkillsForRole);
 		List<Integer> accountIdsInHierarchy = accountService.getTopmostCorporateAccountIds(siteId);
 
 		return appendSiteAndCorporateSkills(allEmployeeRequiredSkills,
@@ -41,7 +41,7 @@ public class AssignmentService {
 	}
 
 	private Map<Employee, Set<AccountSkill>> getEmployeeSkillsForProjects(int siteId, Set<Employee> employeesAssignedToSite) {
-		Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployees(employeesAssignedToSite, siteId);
+		Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployeesBySiteId(employeesAssignedToSite, siteId);
 		Set<Project> allProjects = Utilities.extractAndFlattenValuesFromMap(employeeProjects);
 		Map<Project, Set<AccountSkill>> projectSkills = skillEntityService.getRequiredSkillsForProjects(allProjects);
 		return getKeyToSetOfValues(employeeProjects, projectSkills);
@@ -89,7 +89,7 @@ public class AssignmentService {
 	public Set<Employee> getEmployeesAssignedToSite(final int siteId) {
 		List<Employee> employeesAssignedToSite = getSiteContractorEmployees(siteId);
 
-		final Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployees(employeesAssignedToSite, siteId);
+		final Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployeesBySiteId(employeesAssignedToSite, siteId);
 		final Map<Employee, Set<Role>> employeeRoles = roleEntityService.getSiteRolesForEmployees(employeesAssignedToSite, siteId);
 
 		return new HashSet<Employee>() {{
@@ -109,7 +109,7 @@ public class AssignmentService {
 		final Map<Employee, Set<Role>> employeeProjectRoles = roleEntityService.getProjectRolesForEmployees(employeesAssignedToSite, siteId);
 		final Map<Employee, Set<Role>> employeeRoles = roleEntityService.getSiteRolesForEmployees(employeesAssignedToSite, siteId);
 
-		return Utilities.mergeValuesOfMapOfSets(employeeProjectRoles, employeeRoles);
+		return Utilities.mergeMapOfSets(employeeProjectRoles, employeeRoles);
 	}
 
 	public Map<Project, Set<Employee>> getEmployeesAssignedToProjects(final int siteId) {

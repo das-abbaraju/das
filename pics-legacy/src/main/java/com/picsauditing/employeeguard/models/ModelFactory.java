@@ -7,6 +7,7 @@ public class ModelFactory {
 	private static CompanyEmployeeModelFactory companyEmployeeModelFactory = new CompanyEmployeeModelFactory();
 	private static CompanyEmployeeStatusModelFactory companyEmployeeStatusModelFactory = new CompanyEmployeeStatusModelFactory();
 	private static CompanyModelFactory companyModelFactory = new CompanyModelFactory();
+	private static ContractorSummaryFactory contractorSummaryFactory = new ContractorSummaryFactory();
 	private static EmploymentInfoModelFactory employmentInfoModelFactory = new EmploymentInfoModelFactory();
 	private static OperatorSiteAssignmentStatusFactory operatorSiteAssignmentStatusFactory = new OperatorSiteAssignmentStatusFactory();
 	private static ProjectAssignmentModelFactory projectAssignmentModelFactory = new ProjectAssignmentModelFactory();
@@ -28,6 +29,10 @@ public class ModelFactory {
 
 	public static CompanyModelFactory getCompanyModelFactory() {
 		return companyModelFactory;
+	}
+
+	public static ContractorSummaryFactory getContractorSummaryFactory() {
+		return contractorSummaryFactory;
 	}
 
 	public static EmploymentInfoModelFactory getEmploymentInfoModelFactory() {
