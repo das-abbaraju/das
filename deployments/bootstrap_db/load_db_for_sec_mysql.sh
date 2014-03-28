@@ -14,15 +14,15 @@ GREP=`which grep`
 DATE="/bin/date"
 
 ## Sanity check commands
-check_bootstrap=`$MYSQL -e "show databases"|$GREP pics_bootstrap`
-check_log_archive=`$MYSQL -e "show databases"|$GREP log_archive`
+check_bootstrap=`$MYSQL -e -p "show databases"|$GREP pics_bootstrap`
+check_log_archive=`$MYSQL -e -p "show databases"|$GREP log_archive`
 ## Commented out the translation database check for the time being
 #check_translations=`$MYSQL -e "show databases"|$GREP pics_translations`
-check_pics_user=`$MYSQL -D mysql -e "select user from user"|$GREP pics`
-check_picsro_user=`$MYSQL -D mysql -e "select user from user"|$GREP picsro`
+check_pics_user=`$MYSQL -D mysql -e -p "select user from user"|$GREP pics`
+check_picsro_user=`$MYSQL -D mysql -e -p "select user from user"|$GREP picsro`
 ## Commented out the translation user for the time being
 #check_trans_user=`$MYSQL -D mysql -e "select user from user"|$GREP pics_translations`
-check_pics_admin_user=`$MYSQL -D mysql -e "select user from user"|$GREP pics_admin`
+check_pics_admin_user=`$MYSQL -D mysql -e -p "select user from user"|$GREP pics_admin`
 
 # File variables
 bootstrap_dump="pics_bootstrap.sql"
