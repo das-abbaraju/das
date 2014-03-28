@@ -1,9 +1,8 @@
-<section class="employee-guard-section">
+<section class="employee-guard-section chart-section">
     <h1>
         <i class="icon-map-marker icon-large"></i>Current Assignments
     </h1>
     <div class="content">
-
         <div class="row">
             <div class="col-md-4">
                 <div class="current-assignments">
@@ -35,7 +34,7 @@
             </div>
             <div class="col-md-8">
                 <div class="chart-container text-center">
-                    <chart data="selected_site_details" width="420" height="200" colors="['#33b679', '#f4b400', '#e74c3c']"></chart>
+                    <chart type="arc" data="chartData"></chart>
                     <div class="col-xs-6 col-xs-offset-3 number-of-employees">
                         <i class="icon-user icon-large"></i>
                         <a href="#" class="employees">

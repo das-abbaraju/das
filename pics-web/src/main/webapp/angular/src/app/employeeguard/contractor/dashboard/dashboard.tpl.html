@@ -1,4 +1,4 @@
-<div class="operator-dashboard" ng-controller="contractorDashboardCtrl">
+<div class="contractor-dashboard" ng-controller="contractorDashboardCtrl">
     <div class="container">
         <pagetitle title="EmployeeGUARD" subtitle="Summary"></pagetitle>
 
@@ -32,7 +32,7 @@
                 </ul>
             </div>
             <div class="col-md-9">
-                <section class="employee-guard-section">
+                <section class="employee-guard-section chart-section">
                     <h1>
                         <i class="icon-map-marker icon-large"></i>Assignment Status
                     </h1>
@@ -101,81 +101,3 @@
         </div>
     </div>
 </div>
-
-<!-- <div class="contractor-dashboard" ng-controller="contractorDashboardCtrl">
-    <div class="container">
-        <pagetitle title="EmployeeGUARD" subtitle="Summary"></pagetitle>
-
-        <div class="row">
-            <div class="col-md-3">
-                <ul class="nav nav-pills nav-stacked">
-                    <li>
-                        <a href="/employee-guard/contractor/employee" target="_self">
-                            <i class="icon-user icon-large"></i>Employees
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/employee-guard/contractor/project" target="_self">
-                            <i class="icon-map-marker icon-large"></i>Employee tiles
-                        </a>
-                    </li>
-                    <li class="nav-divider"></li>
-                    <li>
-                        <span class="nav-title">Training Tracker</span>
-                    </li>
-                    <li>
-                        <a href="/employee-guard/contractor/employee-group" target="_self">
-                            <i class="icon-group icon-large"></i>Employee Groups
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/employee-guard/contractor/skill" target="_self">
-                            <i class="icon-certificate icon-large"></i>Skills
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-9">
-                <section class="employee-guard-section">
-                    <h1>
-                        <i class="icon-exclamation icon-large"></i>Status Alerts
-                    </h1>
-                    <div class="content">
-                        <div class="row">
-                            <div class="col-md-4 text-center tile-container">
-                                <div class="tile danger">
-                                    <i class="icon-minus-sign-alt"></i>
-                                    <p class="title">{{ status.expired }}</p>
-                                    <p class="subtitle">Expired of Incomplete Employees</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-center tile-container">
-                                <div class="tile warning">
-                                    <i class="icon-warning-sign"></i>
-                                    <p class="title">{{ status.expiring }}</p>
-                                    <p class="subtitle">Expiring Soon Employees</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-center tile-container">
-                                <div class="tile success">
-                                    <i class="icon-ok-circle"></i>
-                                    <p class="title">{{ status.completed + status.pending }}</p>
-                                    <p class="subtitle">Skills to Approve</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 text-center tile-container">
-                                <div class="tile primary">
-                                    <i class="icon-envelope"></i>
-                                    <p class="title">{{ status.requested }}</p>
-                                    <p class="subtitle">Requested Employees</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </div>
-</div> -->
