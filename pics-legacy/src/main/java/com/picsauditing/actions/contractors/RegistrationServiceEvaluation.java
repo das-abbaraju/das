@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -102,16 +103,64 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		loadPqfQuestionsAndAudit();
 		loadSsipAudit();
 
+        loadPqfAnswers();
+
+        loadSsipAnswers();
+        determineReadyToProvideSsipDetails();
+
+        parseSsipDates();
 		buildAndLoadSsipDatesIntoAnswerMap();
-
-		loadPqfAnswers();
-
-		loadSsipAnswers();
 
 		return SUCCESS;
 	}
 
-	public void setRequiredContractorTypes() {
+    private void determineReadyToProvideSsipDetails() {
+        if (ssipAnswerMap.get(QUESTION_ID_SSIP_AUDIT_DATE).isAnswered()) {
+            readyToProvideSsipDetails = YesNo.Yes.toString();
+        } else if (answerMap.get(QUESTION_ID_REGISTERED_WITH_SSIP) != null && YesNo.Yes.toString().equals(answerMap.get(QUESTION_ID_REGISTERED_WITH_SSIP).getAnswer())) {
+            readyToProvideSsipDetails = YesNo.No.toString();
+        } else {
+            readyToProvideSsipDetails = null;
+        }
+    }
+
+    private void parseSsipDates() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        AuditData data;
+
+        data = ssipAnswerMap.get(QUESTION_ID_SSIP_AUDIT_DATE);
+        if (data != null && data.isAnswered()) {
+            yearOfLastSsipMemberAudit = getFieldValueFromAnswer(data.getAnswer(), Calendar.YEAR);
+            monthOfLastSsipMemberAudit = getFieldValueFromAnswer(data.getAnswer(), Calendar.MONTH);
+            dayOfLastSsipMemberAudit = getFieldValueFromAnswer(data.getAnswer(), Calendar.DAY_OF_MONTH);
+        }
+
+        data = ssipAnswerMap.get(QUESTION_ID_SSIP_EXPIRATION_DATE);
+        if (data != null && data.isAnswered()) {
+            yearOfSsipMembershipExpiration = getFieldValueFromAnswer(data.getAnswer(), Calendar.YEAR);
+            monthOfSsipMembershipExpiration = getFieldValueFromAnswer(data.getAnswer(), Calendar.MONTH);
+            dayOfSsipMembershipExpiration = getFieldValueFromAnswer(data.getAnswer(), Calendar.DAY_OF_MONTH);
+        }
+    }
+
+    private int getFieldValueFromAnswer(String answer, int field) {
+        int value = 0;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = format.parse(answer);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            value = cal.get(field);
+            if (field == Calendar.MONTH)
+                value++;
+        } catch (Exception e) {
+            // ignore
+        }
+
+        return value;
+    }
+
+    public void setRequiredContractorTypes() {
 		requireOnsite = contractor.isContractorTypeRequired(ContractorType.Onsite);
 		requireOffsite = contractor.isContractorTypeRequired(ContractorType.Offsite);
 		requireMaterialSupplier = contractor.isContractorTypeRequired(ContractorType.Supplier);
@@ -188,9 +237,6 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 			auditDao.remove(ssipAudit);
 			for (AuditData data : ssipAnswerMap.values()) {
 				auditDataDAO.remove(data);
-
-
-
 			}
 		}
 
@@ -644,7 +690,6 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 
 		// find the answers to the pqf questions
 		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
-
 		for (AuditQuestion question : infoQuestions) {
 			if (answerMap.get(question.getId()) == null) {
 				AuditData auditData = new AuditData();
@@ -666,7 +711,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		// find the answers to the ssip questions
 		ssipAnswerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
-		for (int questionId : questionIds) {
+        for (int questionId : questionIds) {
 			if (ssipAnswerMap.get(questionId) != null) {
 				continue;
 			}
@@ -721,17 +766,10 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	}
 
 	private boolean shouldPersistSsipQuestions() {
-		AuditData registeredWithSsip = answerMap.get(QUESTION_ID_REGISTERED_WITH_SSIP);
-
-		if (registeredWithSsip != null && YesNo.No.name().equals(registeredWithSsip.getAnswer())) {
-			return false;
-		}
-
-		if (readyToProvideSsipDetails != null && YesNo.No.name().equals(readyToProvideSsipDetails)) {
-			return false;
-		}
-
-		return true;
+        AuditData ssipAuditDate = ssipAnswerMap.get(QUESTION_ID_SSIP_AUDIT_DATE);
+        if (ssipAuditDate != null && ssipAuditDate.isAnswered())
+            return true;
+        return false;
 	}
 
 	private void buildAndLoadSsipDatesIntoAnswerMap() {

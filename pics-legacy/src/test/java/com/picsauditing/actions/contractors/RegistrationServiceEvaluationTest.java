@@ -10,6 +10,7 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.PermissionToViewContractor;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
@@ -74,6 +75,96 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "auditTypeRuleCache", auditTypeRuleCache);
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "serviceRiskCalculator", serviceRiskCalculator);
 	}
+
+    @Test
+    public void testParseSsipDates_LastSsipMemberAudit() throws Exception {
+        Map<Integer, AuditData> ssipAnswers = createSsipAnswerMap();
+
+        ssipAnswers.get(RegistrationServiceEvaluation.QUESTION_ID_SSIP_AUDIT_DATE).setAnswer("2015-11-01");
+        Whitebox.setInternalState(serviceEvaluation, "ssipAnswerMap", ssipAnswers);
+
+        Whitebox.invokeMethod(serviceEvaluation, "parseSsipDates");
+        assertEquals(2015, serviceEvaluation.getYearOfLastSsipMemberAudit());
+        assertEquals("11", serviceEvaluation.getMonthOfLastSsipMemberAudit());
+        assertEquals("01", serviceEvaluation.getDayOfLastSsipMemberAudit());
+    }
+
+    @Test
+    public void testParseSsipDates_SsipMembershipExpiration() throws Exception {
+        Map<Integer, AuditData> ssipAnswers = createSsipAnswerMap();
+
+        ssipAnswers.get(RegistrationServiceEvaluation.QUESTION_ID_SSIP_EXPIRATION_DATE).setAnswer("2015-01-31");
+        Whitebox.setInternalState(serviceEvaluation, "ssipAnswerMap", ssipAnswers);
+
+        Whitebox.invokeMethod(serviceEvaluation, "parseSsipDates");
+        assertEquals(2015, serviceEvaluation.getYearOfSsipMembershipExpiration());
+        assertEquals("01", serviceEvaluation.getMonthOfSsipMembershipExpiration());
+        assertEquals("31", serviceEvaluation.getDayOfSsipMembershipExpiration());
+    }
+
+    @Test
+    public void testDetermineReadyToProvideSsipDetails_Null() throws Exception {
+        Map<Integer, AuditData> pqfAnswers = createPqfAnswerMap();
+        Map<Integer, AuditData> ssipAnswers = createSsipAnswerMap();
+
+        Whitebox.setInternalState(serviceEvaluation, "answerMap", pqfAnswers);
+        Whitebox.setInternalState(serviceEvaluation, "ssipAnswerMap", ssipAnswers);
+
+        Whitebox.invokeMethod(serviceEvaluation, "determineReadyToProvideSsipDetails");
+        assertNull(serviceEvaluation.isReadyToProvideSsipDetails());
+    }
+
+    @Test
+    public void testDetermineReadyToProvideSsipDetails_No() throws Exception {
+        Map<Integer, AuditData> pqfAnswers = createPqfAnswerMap();
+        Map<Integer, AuditData> ssipAnswers = createSsipAnswerMap();
+
+        pqfAnswers.get(RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP).setAnswer(YesNo.Yes.toString());
+
+        Whitebox.setInternalState(serviceEvaluation, "answerMap", pqfAnswers);
+        Whitebox.setInternalState(serviceEvaluation, "ssipAnswerMap", ssipAnswers);
+
+        Whitebox.invokeMethod(serviceEvaluation, "determineReadyToProvideSsipDetails");
+        assertEquals(YesNo.No.toString(), serviceEvaluation.isReadyToProvideSsipDetails());
+    }
+
+    @Test
+    public void testDetermineReadyToProvideSsipDetails_Yes() throws Exception {
+        Map<Integer, AuditData> pqfAnswers = createPqfAnswerMap();
+        Map<Integer, AuditData> ssipAnswers = createSsipAnswerMap();
+
+        ssipAnswers.get(RegistrationServiceEvaluation.QUESTION_ID_SSIP_AUDIT_DATE).setAnswer("2015-01-01");
+
+        Whitebox.setInternalState(serviceEvaluation, "answerMap", pqfAnswers);
+        Whitebox.setInternalState(serviceEvaluation, "ssipAnswerMap", ssipAnswers);
+
+        Whitebox.invokeMethod(serviceEvaluation, "determineReadyToProvideSsipDetails");
+        assertEquals(YesNo.Yes.toString(), serviceEvaluation.isReadyToProvideSsipDetails());
+    }
+
+    private Map<Integer, AuditData> createSsipAnswerMap() {
+        Map<Integer, AuditData> map = new HashMap<>();
+        AuditData data;
+
+        data = EntityFactory.makeAuditData("", RegistrationServiceEvaluation.QUESTION_ID_SSIP_AUDIT_DATE);
+        map.put(data.getQuestion().getId(), data);
+        data = EntityFactory.makeAuditData("", RegistrationServiceEvaluation.QUESTION_ID_SSIP_EXPIRATION_DATE);
+        map.put(data.getQuestion().getId(), data);
+        data = EntityFactory.makeAuditData("", RegistrationServiceEvaluation.QUESTION_ID_SSIP_SCHEME);
+        map.put(data.getQuestion().getId(), data);
+
+        return map;
+    }
+
+    private Map<Integer, AuditData> createPqfAnswerMap() {
+        Map<Integer, AuditData> map = new HashMap<>();
+        AuditData data;
+
+        data = EntityFactory.makeAuditData("", RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP);
+        map.put(data.getQuestion().getId(), data);
+
+        return map;
+    }
 
     @Test
     public void testNextStepListOnly() throws Exception {
