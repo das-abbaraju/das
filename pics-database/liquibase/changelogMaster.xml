@@ -194,4 +194,5 @@
 	<include file="./liquibase/2014/Q1/lkam9_US191_Add_Address_Verifcation_Status.sql"/>
 	<include file="./liquibase/2014/Q1/kchase35_PICS-14871_UpdateResubmittedPQF_DDL.sql"/>
 	<include file="./liquibase/2014/Q1/kchase37_PICS-14871_UpdateResubmittedPQF_DML.sql"/>
+	<include file="./2014/Q1/rbeaini1_DE503_removing_webcam_useraccess_records.sql"/>
 </databaseChangeLog>
