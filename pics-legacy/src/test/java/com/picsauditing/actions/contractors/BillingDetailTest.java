@@ -236,7 +236,7 @@ public class BillingDetailTest extends PicsActionTest {
     @Test
 	public void testExecute_Create_HappyPath_NewInvoiceIsAddedToContractorInvoices() throws Exception {
 		setupForCreate();
-
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Upgrade_Tier);
 		billingDetail.execute();
 
 		assertThat(contractor.getInvoices(), hasItem(invoice));
@@ -245,7 +245,7 @@ public class BillingDetailTest extends PicsActionTest {
 	@Test
 	public void testExecute_Create_HappyPath_NewInvoiceSyncsBalance() throws Exception {
 		setupForCreate();
-
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Upgrade_Tier);
 		billingDetail.execute();
 
 		verify(billingService).syncBalance(contractor);
@@ -254,7 +254,7 @@ public class BillingDetailTest extends PicsActionTest {
 	@Test
 	public void testExecute_Create_HappyPath_ContractorIsSaved() throws Exception {
 		setupForCreate();
-
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Upgrade_Tier);
 		billingDetail.execute();
 
 		verify(accountDAO).save(contractor);
@@ -263,7 +263,7 @@ public class BillingDetailTest extends PicsActionTest {
 	@Test
 	public void testExecute_Create_PositiveInvoiceTotalAddsNoteToContractor() throws Exception {
 		setupForCreate();
-
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Upgrade_Tier);
 		billingDetail.execute();
 
 		verify(noteDao).save(noteCaptor.capture());
@@ -292,7 +292,7 @@ public class BillingDetailTest extends PicsActionTest {
 		invoiceItems.clear();
 		when(billingService.calculateInvoiceTotal(invoiceItems)).thenReturn(BigDecimal.ZERO);
 		when(permissions.hasPermission(OpPerms.Billing)).thenReturn(true);
-
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Upgrade_Tier);
 		String actionResult = billingDetail.execute();
 
 		verify(billingService).createInvoiceWithItems(eq(contractor), eq(invoiceItems), any(User.class));
