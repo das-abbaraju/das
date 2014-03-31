@@ -83,7 +83,7 @@ public class SummaryAction extends PicsRestActionSupport {
 		Map<Employee, SkillStatus> employeeStatusForSites = statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeSiteSkills);
 		Map<Employee, SkillStatus> employeeStatusForContractors = statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeSiteSkills);
 
-		Map<Integer, List<SkillStatus>> siteStatuses = PicsCollectionUtil.reduceMap(employeeSiteAssignments, employeeStatusForSites);
+		Map<Integer, List<SkillStatus>> siteStatuses = PicsCollectionUtil.reduceMaps(employeeSiteAssignments, employeeStatusForSites);
 		Map<Integer, SkillStatus> siteStatus = statusCalculatorService.getOverallStatusPerEntity(siteStatuses);
 		Map<Integer, Employee> contractorEmployees = employeeEntityService.getContractorEmployees(profile);
 		Map<Integer, List<SkillStatus>> contractorStatuses = PicsCollectionUtil.reduceMap(contractorEmployees, employeeStatusForContractors);

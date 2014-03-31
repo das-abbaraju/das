@@ -428,11 +428,11 @@ public class PicsCollectionUtil {
 		}
 
 		Map<K, List<V>> result = new HashMap<>();
-		Map<K, List<V>> result = new HashMap<>();
 		for (K key : keyEntityMap.keySet()) {
 			if (!result.containsKey(key)) {
 				result.put(key, new ArrayList<V>());
 			}
+		}
 
 		return result;
 	}
@@ -463,66 +463,66 @@ public class PicsCollectionUtil {
 		return values;
 	}
 
-	public static <E, K, V> Map<K, Set<V>> reduceMapOfCollections(final Map<K, ? extends Collection<E>> keyEntityMap,
-																  final Map<E, ? extends Collection<V>> entityValueMap) {
+//	public static <E, K, V> Map<K, Set<V>> reduceMapOfCollections(final Map<K, ? extends Collection<E>> keyEntityMap,
+//																  final Map<E, ? extends Collection<V>> entityValueMap) {
+//
+//		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+//			return Collections.emptyMap();
+//		}
+//
+//		Map<K, Set<V>> result = new HashMap<>();
+//		for (K key : keyEntityMap.keySet()) {
+//			if (!result.containsKey(key)) {
+//				result.put(key, new HashSet<V>());
+//			}
+//
+//			result.get(key).addAll(getAllEntityValues(keyEntityMap.get(key), entityValueMap));
+//		}
+//
+//		return result;
+//	}
+//
+//	public static <E, K, V> Map<K, List<V>> reduceMaps(final Map<K, ? extends Collection<E>> keyEntityMap,
+//													   final Map<E, V> entityValueMap) {
+//		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+//			return Collections.emptyMap();
+//		}
+//
+//		Map<K, List<V>> result = new HashMap<>();
+//		for (K key : keyEntityMap.keySet()) {
+//			if (!result.containsKey(key)) {
+//				result.put(key, new ArrayList<V>());
+//			}
+//
+//			result.get(key).addAll(getEntityValues(keyEntityMap.get(key), entityValueMap));
+//		}
+//
+//		return result;
+//	}
 
-		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
-			return Collections.emptyMap();
-		}
+//	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
+//														   final Map<E, ? extends Collection<V>> entityValueMap) {
+//		Collection<V> values = new ArrayList<>();
+//
+//		for (E entity : entities) {
+//			if (entityValueMap.containsKey(entity)) {
+//				values.addAll(entityValueMap.get(entity));
+//			}
+//		}
+//
+//		return values;
+//	}
 
-		Map<K, Set<V>> result = new HashMap<>();
-		for (K key : keyEntityMap.keySet()) {
-			if (!result.containsKey(key)) {
-				result.put(key, new HashSet<V>());
-			}
-
-			result.get(key).addAll(getAllEntityValues(keyEntityMap.get(key), entityValueMap));
-		}
-
-		return result;
-	}
-
-	public static <E, K, V> Map<K, List<V>> reduceMaps(final Map<K, ? extends Collection<E>> keyEntityMap,
-													   final Map<E, V> entityValueMap) {
-		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
-			return Collections.emptyMap();
-		}
-
-		Map<K, List<V>> result = new HashMap<>();
-		for (K key : keyEntityMap.keySet()) {
-			if (!result.containsKey(key)) {
-				result.put(key, new ArrayList<V>());
-			}
-
-			result.get(key).addAll(getEntityValues(keyEntityMap.get(key), entityValueMap));
-		}
-
-		return result;
-	}
-
-	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
-														   final Map<E, ? extends Collection<V>> entityValueMap) {
-		Collection<V> values = new ArrayList<>();
-
-		for (E entity : entities) {
-			if (entityValueMap.containsKey(entity)) {
-				values.addAll(entityValueMap.get(entity));
-			}
-		}
-
-		return values;
-	}
-
-	private static <E, V> Collection<V> getEntityValues(final Collection<E> entities,
-														final Map<E, V> entityValueMap) {
-		Collection<V> values = new ArrayList<>();
-
-		for (E entity : entities) {
-			if (entityValueMap.containsKey(entity)) {
-				values.add(entityValueMap.get(entity));
-			}
-		}
-
-		return values;
-	}
+//	private static <E, V> Collection<V> getEntityValues(final Collection<E> entities,
+//														final Map<E, V> entityValueMap) {
+//		Collection<V> values = new ArrayList<>();
+//
+//		for (E entity : entities) {
+//			if (entityValueMap.containsKey(entity)) {
+//				values.add(entityValueMap.get(entity));
+//			}
+//		}
+//
+//		return values;
+//	}
 }
