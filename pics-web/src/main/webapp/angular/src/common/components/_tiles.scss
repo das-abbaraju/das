@@ -1,0 +1,91 @@
+.tile-container {
+    min-height: 140px;
+
+    &:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+    }
+}
+
+.tile {
+    background: transparent;
+
+    .title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 0px;
+        margin-top: 10px;
+    }
+
+    i {
+        background: transparent;
+        font-size: 48px;
+    }
+
+    &.success {
+        color: $success_light;
+
+        i {
+            color: $success_light;
+
+        }
+
+        &:hover {
+            color: $success_med;
+
+            i {
+                color: $success_med;
+            }
+        }
+    }
+
+    &.warning {
+        color: $warning_light;
+
+        i {
+            color: $warning_light;
+        }
+
+        &:hover {
+            color: $warning_med;
+
+            i {
+                color: $warning_med;
+            }
+        }
+    }
+
+    &.danger {
+        color: $danger_light;
+
+        i {
+            color: $danger_light;
+        }
+
+        &:hover {
+            color: $danger_med;
+
+            i {
+                color: $danger_med;
+            }
+        }
+    }
+
+    &.primary {
+        color: $primary_light;
+
+        i {
+            color: $primary_light;
+        }
+
+        &:hover {
+            color: $primary_med;
+
+            i {
+                color: $primary_med;
+            }
+        }
+    }
+}

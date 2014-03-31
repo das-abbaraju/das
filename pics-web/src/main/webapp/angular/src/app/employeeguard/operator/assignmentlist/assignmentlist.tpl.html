@@ -1,0 +1,27 @@
+<div class="operator-assignmentlist" ng-controller="operatorAssignmentsCtrl">
+    <div class="container">
+        <pagetitle title="Assignments"></pagetitle>
+        <div class="page-subheader">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb">
+                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
+                        <li class="active">Assignments</li>
+                    </ol>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-actions">
+                        <a href="/employee-guard/operators/project/site-assignment" class="btn btn-warning pull-right" target="_self">
+                            <i class="icon-map-marker icon-large"></i> View Site Assignments
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <select ng-show="siteList.length > 0" ng-model="site_list_select" ng-options="value.id as value.name for value in siteList | orderBy:'name'" ng-change="updateSelectedSite()"></select>
+
+        <ng-include src="'/angular/src/app/employeeguard/operator/assignmentlist/_site_assignments.tpl.html'"></ng-include>
+    </div>
+</div>
