@@ -205,11 +205,21 @@ public class FacilitiesEdit extends OperatorActionSupport {
             }
         }
 
-        if (country != null && !country.equals(operator.getCountry())) {
+        if (country == null || country.getIsoCode().isEmpty())
+        {
+            addActionError(getText("FacilitiesEdit.SelectCountry"));
+            return REDIRECT;
+        }
+        if (countrySubdivision == null || countrySubdivision.getIsoCode().isEmpty()) {
+            addActionError("Please select a subdivision");
+            return REDIRECT;
+        }
+
+        if (!country.equals(operator.getCountry())) {
             operator.setCountry(country);
         }
 
-        if ((countrySubdivision != null && !countrySubdivision.equals(operator.getCountrySubdivision()))
+        if ((!countrySubdivision.equals(operator.getCountrySubdivision()))
                 || (operator.getCountrySubdivision() == null && countrySubdivision != null)) {
             CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
             operator.setCountrySubdivision(contractorCountrySubdivision);
