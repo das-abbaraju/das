@@ -258,7 +258,10 @@ public class SkillEngine {
 				requiredSkills.addAll(projectRequiredSkills.get(project));
 
 				for (Role role : projectRoles.get(project)) {
-					if (CollectionUtils.isNotEmpty(rolesForEmployee) && rolesForEmployee.contains(role)) {
+					if (CollectionUtils.isNotEmpty(rolesForEmployee)
+							&& rolesForEmployee.contains(role)
+							&& MapUtils.isNotEmpty(roleSkills)
+							&& roleSkills.containsKey(role)) {
 						requiredSkills.addAll(roleSkills.get(role));
 					}
 				}
