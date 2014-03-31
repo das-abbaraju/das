@@ -125,7 +125,7 @@ public class PicsCollectionUtil {
 	 * @return
 	 */
 	public static <E, K, V> Map<K, Set<V>> convertToMapOfSets(final Collection<E> entities,
-	                                                          final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+															  final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (org.springframework.util.CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -150,7 +150,7 @@ public class PicsCollectionUtil {
 	 * @return
 	 */
 	public static <E, K, V> Map<K, List<V>> convertToMapOfLists(final Collection<E> entities,
-	                                                            final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+																final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (org.springframework.util.CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -165,7 +165,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <E, K, V> Map<K, V> convertToMap(final Collection<E> entities,
-	                                               final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+												   final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (org.springframework.util.CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -333,8 +333,28 @@ public class PicsCollectionUtil {
 		return mergedValues;
 	}
 
+	public static <E, V> Map<E, V> mergeMaps(final Map<E, V> map1, final Map<E, V> map2) {
+		if (MapUtils.isEmpty(map1) && MapUtils.isEmpty(map2)) {
+			return Collections.emptyMap();
+		}
+
+		if (MapUtils.isEmpty(map1)) {
+			return map2;
+		}
+
+		if (MapUtils.isEmpty(map2)) {
+			return map1;
+		}
+
+		Map<E, V> mergedValues = new HashMap<>(map1);
+
+		mergedValues.putAll(map2);
+
+		return mergedValues;
+	}
+
 	public static <ENTITY, PROPERTY> Set<PROPERTY> extractPropertyToSet(final Collection<ENTITY> entities,
-	                                                                    final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+																		final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
 		Set<PROPERTY> properties = new HashSet<>();
 
 		for (ENTITY entity : entities) {
@@ -345,7 +365,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <ENTITY, PROPERTY> List<PROPERTY> extractPropertyToList(final Collection<ENTITY> entities,
-	                                                                      final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+																		  final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
 		List<PROPERTY> properties = new ArrayList<>();
 
 		for (ENTITY entity : entities) {
@@ -364,7 +384,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <R, C, V> Map<R, Map<C, V>> convertToMapOfMaps(final Collection<V> values,
-	                                                             final CollectionToMapConverter<R, C, V> converter) {
+																 final CollectionToMapConverter<R, C, V> converter) {
 		if (CollectionUtils.isEmpty(values) || converter == null) {
 			return Collections.emptyMap();
 		}
@@ -385,7 +405,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <E, K, V> Map<K, Set<V>> reduceMapOfCollections(final Map<K, ? extends Collection<E>> keyEntityMap,
-	                                                              final Map<E, ? extends Collection<V>> entityValueMap) {
+																  final Map<E, ? extends Collection<V>> entityValueMap) {
 
 		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
 			return Collections.emptyMap();
@@ -404,7 +424,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <E, K, V> Map<K, List<V>> reduceMaps(final Map<K, ? extends Collection<E>> keyEntityMap,
-	                                                   final Map<E, V> entityValueMap) {
+													   final Map<E, V> entityValueMap) {
 		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
 			return Collections.emptyMap();
 		}
@@ -422,7 +442,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <E, K, V> Map<K, List<V>> reduceMap(final Map<K, E> keyEntityMap,
-	                                                  final Map<E, V> entityValueMap) {
+													  final Map<E, V> entityValueMap) {
 		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
 			return Collections.emptyMap();
 		}
@@ -432,13 +452,15 @@ public class PicsCollectionUtil {
 			if (!result.containsKey(key)) {
 				result.put(key, new ArrayList<V>());
 			}
+
+			result.get(key).add(entityValueMap.get(keyEntityMap.get(key)));
 		}
 
 		return result;
 	}
 
 	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
-	                                                       final Map<E, ? extends Collection<V>> entityValueMap) {
+														   final Map<E, ? extends Collection<V>> entityValueMap) {
 		Collection<V> values = new ArrayList<>();
 
 		for (E entity : entities) {
@@ -451,7 +473,7 @@ public class PicsCollectionUtil {
 	}
 
 	private static <E, V> Collection<V> getEntityValues(final Collection<E> entities,
-	                                                    final Map<E, V> entityValueMap) {
+														final Map<E, V> entityValueMap) {
 		Collection<V> values = new ArrayList<>();
 
 		for (E entity : entities) {

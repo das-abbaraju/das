@@ -81,12 +81,15 @@ public class SummaryAction extends PicsRestActionSupport {
 				.getAllContractorRequiredSkillsForEmployees(siteAssignments, profile.getEmployees());
 
 		Map<Employee, SkillStatus> employeeStatusForSites = statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeSiteSkills);
-		Map<Employee, SkillStatus> employeeStatusForContractors = statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeSiteSkills);
+		Map<Employee, SkillStatus> employeeStatusForContractors = statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeContractorSkills);
 
 		Map<Integer, List<SkillStatus>> siteStatuses = PicsCollectionUtil.reduceMaps(employeeSiteAssignments, employeeStatusForSites);
 		Map<Integer, SkillStatus> siteStatus = statusCalculatorService.getOverallStatusPerEntity(siteStatuses);
 		Map<Integer, Employee> contractorEmployees = employeeEntityService.getContractorEmployees(profile);
 		Map<Integer, List<SkillStatus>> contractorStatuses = PicsCollectionUtil.reduceMap(contractorEmployees, employeeStatusForContractors);
+		Map<Integer, SkillStatus> contractStatusSummary = statusCalculatorService.getOverallStatusPerEntity(contractorStatuses);
+
+		siteStatus = PicsCollectionUtil.mergeMaps(siteStatus, contractStatusSummary);
 
 		List<ProfileAssignmentModel> models = ModelFactory.getProfileAssignmentModelFactory()
 				.create(allAccounts, employeeSiteRoles, contractorGroups, siteStatus, projectStatuses);

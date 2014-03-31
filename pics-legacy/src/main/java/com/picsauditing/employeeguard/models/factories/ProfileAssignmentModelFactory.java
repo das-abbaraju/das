@@ -21,13 +21,13 @@ public class ProfileAssignmentModelFactory {
 		for (Map.Entry<Integer, Set<Role>> entry : accountToRoles.entrySet()) {
 			Integer accountId = entry.getKey();
 			AccountModel account = accountModels.get(accountId);
-			models.add(createModelForOperator(account, entry.getValue().size(), accountToStatus.get(account)));
+			models.add(createModelForOperator(account, entry.getValue().size(), accountToStatus.get(account.getId())));
 		}
 
 		for (Map.Entry<Integer, Set<Group>> entry : accountToGroups.entrySet()) {
 			Integer accountId = entry.getKey();
 			AccountModel account = accountModels.get(accountId);
-			models.add(createModelForContractor(account, entry.getValue().size(), accountToStatus.get(account)));
+			models.add(createModelForContractor(account, entry.getValue().size(), accountToStatus.get(account.getId())));
 		}
 
 		for (Map.Entry<Project, SkillStatus> entry : projectToStatus.entrySet()) {

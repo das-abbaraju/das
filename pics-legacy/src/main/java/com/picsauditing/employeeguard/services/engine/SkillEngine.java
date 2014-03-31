@@ -121,7 +121,7 @@ public class SkillEngine {
 		Map<Employee, Set<AccountSkill>> skills = new HashMap<>();
 		for (AccountModel accountModel : siteAssignments.keySet()) {
 			Map<Employee, Set<AccountSkill>> employeeSkillsMapForAccount =
-					getEmployeeSkillsMapForAccount(siteAssignments.get(accountModel.getId()), accountModel);
+					getEmployeeSkillsMapForAccount(siteAssignments.get(accountModel), accountModel);
 
 			skills = PicsCollectionUtil.mergeMapOfSets(skills, employeeSkillsMapForAccount);
 		}
@@ -220,7 +220,9 @@ public class SkillEngine {
 				return roleEntityService.getProjectRolesForEmployees(employees, siteIds);
 
 			case OPERATOR:
-				return roleEntityService.getProjectRolesForEmployees(employees, id);
+				Map<Employee, Set<Role>> projectRoles = roleEntityService.getProjectRolesForEmployees(employees, id);
+				Map<Employee, Set<Role>> siteAssignmentRoles = roleEntityService.getSiteRolesForEmployees(employees, id);
+				return PicsCollectionUtil.mergeMapOfSets(projectRoles, siteAssignmentRoles);
 
 			default:
 				throw new IllegalArgumentException("Invalid account type");

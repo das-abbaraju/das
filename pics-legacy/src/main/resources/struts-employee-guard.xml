@@ -246,7 +246,7 @@
         <action name="summary/assignments" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="assignments">
         </action>
 
-        <action name="summary" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction">
+        <action name="summary/employee-info" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="employeeInfo">
         </action>
 
         <!-- Profile -->
