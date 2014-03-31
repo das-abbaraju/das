@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -163,6 +162,38 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 					@Override
 					public Employee getValue(ProjectRoleEmployee entity) {
 						return entity.getEmployee();
+					}
+				});
+	}
+
+	public Map<Employee, Set<Integer>> getEmployeeSiteAssignments(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(siteAssignmentDAO.findByEmployees(employees),
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Employee, Integer>() {
+
+					@Override
+					public Employee getKey(SiteAssignment siteAssignment) {
+						return siteAssignment.getEmployee();
+					}
+
+					@Override
+					public Integer getValue(SiteAssignment siteAssignment) {
+						return siteAssignment.getSiteId();
+					}
+				});
+	}
+
+	public Map<Integer, Employee> getContractorEmployees(final Profile profile) {
+		return PicsCollectionUtil.convertToMap(
+				profile.getEmployees(),
+				new PicsCollectionUtil.MapConvertable<Integer, Employee>() {
+
+					@Override
+					public Integer getKey(Employee entity) {
+						return entity.getAccountId();
 					}
 				});
 	}

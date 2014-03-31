@@ -110,7 +110,7 @@ public class AccountService {
 			siteToCorporates.put(site.getId(), new HashSet<Integer>());
 
 			for (OperatorAccount corporate : topmostCorporates) {
-				siteToCorporates.get(site).add(corporate.getId());
+				siteToCorporates.get(site.getId()).add(corporate.getId());
 			}
 		}
 

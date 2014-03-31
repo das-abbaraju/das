@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.controllers.employee;
 
 import com.google.gson.Gson;
 import com.picsauditing.controller.PicsRestActionSupport;
+import com.picsauditing.employeeguard.controllers.helper.AccountHelper;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProfileAssignmentModel;
@@ -10,10 +11,12 @@ import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.GroupEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -23,6 +26,8 @@ public class SummaryAction extends PicsRestActionSupport {
 
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private GroupEntityService groupEntityService;
 	@Autowired
@@ -52,6 +57,7 @@ public class SummaryAction extends PicsRestActionSupport {
 
 	public String assignments() {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
+		List<Employee> employees = profile.getEmployees();
 
 		Map<Integer, AccountModel> contractors = accountService.getContractorMapForProfile(profile);
 		Map<Integer, AccountModel> sites = accountService.getOperatorMapForContractors(contractors.keySet());
@@ -59,22 +65,38 @@ public class SummaryAction extends PicsRestActionSupport {
 		allAccounts.putAll(sites);
 
 		// Site IDs
-		Map<Integer, Set<Role>> siteRoles = roleEntityService.getRolesForSites(sites.keySet());
+		Map<Integer, Set<Role>> employeeSiteRoles = roleEntityService.getSiteRolesForEmployees(employees);
+
 		// Contractor IDs
-		Map<Integer, Set<Group>> contractorGroups = groupEntityService.getGroupsByContractorId(profile.getEmployees());
+		Map<Integer, Set<Group>> contractorGroups = groupEntityService.getGroupsByContractorId(employees);
 
 		Map<Project, SkillStatus> projectStatuses = getProjectStatuses(profile);
-		Map<Integer, SkillStatus> siteStatus = getSiteStatuses(projectStatuses);
+
+		Map<Integer, Set<Employee>> employeeSiteAssignments = PicsCollectionUtil
+				.invertMapOfSet(employeeEntityService.getEmployeeSiteAssignments(employees));
+
+		Map<AccountModel, Set<Employee>> siteAssignments = AccountHelper.convertMap(allAccounts, employeeSiteAssignments);
+		Map<Employee, Set<AccountSkill>> employeeSiteSkills = skillEngine.getEmployeeSkillsForSites(siteAssignments);
+		Map<Employee, Set<AccountSkill>> employeeContractorSkills = skillEngine
+				.getAllContractorRequiredSkillsForEmployees(siteAssignments, profile.getEmployees());
+
+		Map<Employee, SkillStatus> employeeStatusForSites = statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeSiteSkills);
+		Map<Employee, SkillStatus> employeeStatusForContractors = statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeSiteSkills);
+
+		Map<Integer, List<SkillStatus>> siteStatuses = PicsCollectionUtil.reduceMap(employeeSiteAssignments, employeeStatusForSites);
+		Map<Integer, SkillStatus> siteStatus = statusCalculatorService.getOverallStatusPerEntity(siteStatuses);
+		Map<Integer, Employee> contractorEmployees = employeeEntityService.getContractorEmployees(profile);
+		Map<Integer, List<SkillStatus>> contractorStatuses = PicsCollectionUtil.reduceMap(contractorEmployees, employeeStatusForContractors);
 
 		List<ProfileAssignmentModel> models = ModelFactory.getProfileAssignmentModelFactory()
-				.create(allAccounts, siteRoles, contractorGroups, siteStatus, projectStatuses);
+				.create(allAccounts, employeeSiteRoles, contractorGroups, siteStatus, projectStatuses);
 
 		jsonString = new Gson().toJson(models);
 
 		return JSON_STRING;
 	}
 
-	private Map<Project, SkillStatus> getProjectStatuses(Profile profile) {
+	private Map<Project, SkillStatus> getProjectStatuses(final Profile profile) {
 		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills =
 				skillEngine.getProjectEmployeeSkills(profile.getEmployees());
 		Map<Project, List<SkillStatus>> projectStatusList =
@@ -82,25 +104,4 @@ public class SummaryAction extends PicsRestActionSupport {
 
 		return statusCalculatorService.getOverallStatusPerEntity(projectStatusList);
 	}
-
-	private Map<Integer, SkillStatus> getSiteStatuses(final Map<Project, SkillStatus> projectStatuses) {
-		Map<Integer, List<SkillStatus>> siteStatusList = new HashMap<>();
-		// include site assignments as well???
-		for (Map.Entry<Project, SkillStatus> entry : projectStatuses.entrySet()) {
-			Project project = entry.getKey();
-
-			if (!siteStatusList.containsKey(project.getAccountId())) {
-				siteStatusList.put(project.getAccountId(), new ArrayList<SkillStatus>());
-			}
-
-			siteStatusList.get(project.getAccountId()).add(entry.getValue());
-		}
-
-		return statusCalculatorService.getOverallStatusPerEntity(siteStatusList);
-	}
-
-	/* other methods */
-
-	/* getters + setters */
-
 }

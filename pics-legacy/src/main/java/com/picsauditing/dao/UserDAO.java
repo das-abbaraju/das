@@ -265,7 +265,7 @@ public class UserDAO extends PicsDAO {
 		try {
 			return (User) query.getSingleResult();
 		} catch (Exception e) {
-            System.out.println(e.getStackTrace());
+            logger.info("Exception finding app user by ID {} ", appUserID, e);
 		}
 
 		return null;

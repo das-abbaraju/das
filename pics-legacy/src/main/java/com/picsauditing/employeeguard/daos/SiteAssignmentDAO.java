@@ -67,9 +67,13 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 	}
 
 	public List<SiteAssignment> findByEmployee(final Employee employee) {
+		return findByEmployees(Arrays.asList(employee));
+	}
+
+	public List<SiteAssignment> findByEmployees(final Collection<Employee> employees) {
 		TypedQuery<SiteAssignment> query = em.createQuery("FROM SiteAssignment sa " +
-				"WHERE sa.employee = :employee", SiteAssignment.class);
-		query.setParameter("employee", employee);
+				"WHERE sa.employee IN (:employees)", SiteAssignment.class);
+		query.setParameter("employees", employees);
 
 		return query.getResultList();
 	}
@@ -81,4 +85,5 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 
 		return query.getResultList();
 	}
+
 }

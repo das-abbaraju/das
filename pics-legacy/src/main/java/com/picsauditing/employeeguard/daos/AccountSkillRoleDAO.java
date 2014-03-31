@@ -53,4 +53,5 @@ public class AccountSkillRoleDAO extends AbstractBaseEntityDAO<AccountSkillRole>
 
 		return query.getResultList();
 	}
+
 }

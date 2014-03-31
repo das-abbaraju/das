@@ -11,7 +11,8 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {
+	private static final Logger LOG = LoggerFactory.getLogger(OperatorAccountDAO.class);
 
 	@Transactional(propagation = Propagation.NESTED)
 	public OperatorAccount save(OperatorAccount o) {
@@ -300,20 +302,11 @@ public class OperatorAccountDAO extends PicsDAO {
 		try {
 			Query query = em.createQuery("SELECT DISTINCT co.operatorAccount.id " +
 					"FROM ContractorOperator co " +
-					"WHERE co.contractorAccount IN (:contractors)", Long.class);
+					"WHERE co.contractorAccount IN (:contractors)", Integer.class);
 			query.setParameter("contractors", contractors);
-			List<Long> operatorLongIds = query.getResultList();
-
-			if (CollectionUtils.isNotEmpty(operatorLongIds)) {
-				operators = new ArrayList<>();
-
-				for (long operatorLongId : operatorLongIds) {
-					operators.add((int) operatorLongId);
-				}
-			}
+			return query.getResultList();
 		} catch (Exception e) {
-			e.printStackTrace();
-			// Ignore
+			LOG.info("Error finding operator IDs for contractors", e);
 		}
 
 		return operators;

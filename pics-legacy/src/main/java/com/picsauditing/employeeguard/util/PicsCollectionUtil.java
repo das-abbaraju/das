@@ -7,6 +7,29 @@ import java.util.*;
 
 public class PicsCollectionUtil {
 
+	public interface MapConvertable<K, E> {
+
+		K getKey(E entity);
+
+	}
+
+	public interface Identitifable<E, ID> {
+
+		ID getId(E element);
+
+	}
+
+	public interface EntityKeyValueConvertable<E, K, V> {
+
+		K getKey(E entity);
+
+		V getValue(E entity);
+	}
+
+	public interface PropertyExtractor<ENTITY, PROPERTY> {
+		PROPERTY getProperty(ENTITY entity);
+	}
+
 	/**
 	 * Takes any collection of objects and returns a map based on the Key retrieved from the MapConvertable<K, E>
 	 * implementation.
@@ -361,27 +384,83 @@ public class PicsCollectionUtil {
 		return result;
 	}
 
-	public interface MapConvertable<K, E> {
+	public static <E, K, V> Map<K, Set<V>> reduceMapOfCollections(final Map<K, ? extends Collection<E>> keyEntityMap,
+																  final Map<E, ? extends Collection<V>> entityValueMap) {
 
-		K getKey(E entity);
+		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+			return Collections.emptyMap();
+		}
 
+		Map<K, Set<V>> result = new HashMap<>();
+		for (K key : keyEntityMap.keySet()) {
+			if (!result.containsKey(key)) {
+				result.put(key, new HashSet<V>());
+			}
+
+			result.get(key).addAll(getAllEntityValues(keyEntityMap.get(key), entityValueMap));
+		}
+
+		return result;
 	}
 
-	public interface Identitifable<E, ID> {
+	public static <E, K, V> Map<K, List<V>> reduceMaps(final Map<K, ? extends Collection<E>> keyEntityMap,
+													   final Map<E, V> entityValueMap) {
+		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+			return Collections.emptyMap();
+		}
 
-		ID getId(E element);
+		Map<K, List<V>> result = new HashMap<>();
+		for (K key : keyEntityMap.keySet()) {
+			if (!result.containsKey(key)) {
+				result.put(key, new ArrayList<V>());
+			}
 
+			result.get(key).addAll(getEntityValues(keyEntityMap.get(key), entityValueMap));
+		}
+
+		return result;
 	}
 
-	public interface EntityKeyValueConvertable<E, K, V> {
+	public static <E, K, V> Map<K, List<V>> reduceMap(final Map<K, E> keyEntityMap,
+													  final Map<E, V> entityValueMap) {
+		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+			return Collections.emptyMap();
+		}
 
-		K getKey(E entity);
+		Map<K, List<V>> result = new HashMap<>();
+		Map<K, List<V>> result = new HashMap<>();
+		for (K key : keyEntityMap.keySet()) {
+			if (!result.containsKey(key)) {
+				result.put(key, new ArrayList<V>());
+			}
 
-		V getValue(E entity);
+		return result;
 	}
 
-	public interface PropertyExtractor<ENTITY, PROPERTY> {
-		PROPERTY getProperty(ENTITY entity);
+	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
+														   final Map<E, ? extends Collection<V>> entityValueMap) {
+		Collection<V> values = new ArrayList<>();
+
+		for (E entity : entities) {
+			if (entityValueMap.containsKey(entity)) {
+				values.addAll(entityValueMap.get(entity));
+			}
+		}
+
+		return values;
+	}
+
+	private static <E, V> Collection<V> getEntityValues(final Collection<E> entities,
+														final Map<E, V> entityValueMap) {
+		Collection<V> values = new ArrayList<>();
+
+		for (E entity : entities) {
+			if (entityValueMap.containsKey(entity)) {
+				values.add(entityValueMap.get(entity));
+			}
+		}
+
+		return values;
 	}
 
 	public static <E, K, V> Map<K, Set<V>> reduceMapOfCollections(final Map<K, ? extends Collection<E>> keyEntityMap,

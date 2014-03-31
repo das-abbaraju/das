@@ -3,9 +3,9 @@ package com.picsauditing.employeeguard.services.calculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 public class SkillStatusCalculator {
 
@@ -51,4 +51,52 @@ public class SkillStatusCalculator {
 
         return lowestStatus;
     }
+
+	public static <E> Map<E, SkillStatus> calculateStatusRollUp(final Map<E, ? extends Collection<SkillStatus>> statusList) {
+		if (MapUtils.isEmpty(statusList)) {
+			return Collections.emptyMap();
+		}
+
+		SkillStatus lowestStatus = SkillStatus.Complete;
+
+		Map<E, SkillStatus> result = new HashMap<>();
+		for (E entity : statusList.keySet()) {
+
+		}
+
+		return result;
+	}
+
+	public static <E> Map<E, SkillStatus> getOverallStatusPerEntity(final Map<E, ? extends Collection<SkillStatus>> entitySkillStatusMap) {
+		if (MapUtils.isEmpty(entitySkillStatusMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<E, SkillStatus> overallSkillStatusMap = new HashMap<>();
+		for (E entity : entitySkillStatusMap.keySet()) {
+			overallSkillStatusMap.put(entity, calculateOverallStatus(entitySkillStatusMap.get(entity)));
+		}
+
+		return overallSkillStatusMap;
+	}
+
+	public static SkillStatus calculateOverallStatus(final Collection<SkillStatus> skillStatuses) {
+		if (CollectionUtils.isEmpty(skillStatuses)) {
+			throw new IllegalArgumentException("skillStatuses should not be empty or null.");
+		}
+
+		SkillStatus worstStatus = SkillStatus.Complete;
+		for (SkillStatus skillStatus : skillStatuses) {
+			// exit early if any status is "Expired", because we have already hit the lowest status
+			if (skillStatus.isExpired()) {
+				return SkillStatus.Expired;
+			}
+
+			if (skillStatus.compareTo(worstStatus) < 0) {
+				worstStatus = skillStatus;
+			}
+		}
+
+		return worstStatus;
+	}
 }

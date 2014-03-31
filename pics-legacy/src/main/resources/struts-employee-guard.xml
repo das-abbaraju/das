@@ -243,6 +243,9 @@
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <action name="summary/assignments" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="assignments">
+        </action>
+
         <action name="summary" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction">
         </action>
 

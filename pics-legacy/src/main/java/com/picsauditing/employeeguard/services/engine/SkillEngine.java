@@ -17,7 +17,9 @@ import java.util.*;
 public class SkillEngine {
 
 	@Autowired
+	@Deprecated // This should not be used here
 	private AccountService accountService;
+
 	@Autowired
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 	@Autowired
@@ -29,9 +31,9 @@ public class SkillEngine {
 	@Autowired
 	private ProjectEntityService projectEntityService;
 	@Autowired
-	private SkillAssignmentHelper skillAssignmentHelper;
-	@Autowired
 	private RoleEntityService roleEntityService;
+	@Autowired
+	private SkillAssignmentHelper skillAssignmentHelper;
 	@Autowired
 	private SkillEntityService skillEntityService;
 
@@ -97,20 +99,34 @@ public class SkillEngine {
 		return false;
 	}
 
-	public Map<Integer, Set<AccountSkill>> getEmployeeSkillsForSites(final Map<Integer, Set<Employee>> siteAssignments,
-																	 final Map<Integer, Employee> contractorEmployee) {
-//		if (CollectionUtils.isEmpty(sites) || CollectionUtils.isEmpty(employeeProjects)) {
-//			return Collections.emptyMap();
-//		}
-//
-//		Map<Integer, Set<AccountSkill>> employeeSiteSkills = new HashMap<>();
-//		for (Integer siteId : sites) {
-//			employeeSiteSkills.put(siteId, getEmployeeSkillsForSite(siteId, employeeProjects));
-//		}
-//
-//		return employeeSiteSkills;
+	public Map<Employee, Set<AccountSkill>> getAllContractorRequiredSkillsForEmployees(
+			final Map<AccountModel, Set<Employee>> siteAssignments,
+			final Collection<Employee> contractorEmployees) {
 
-		return Collections.emptyMap();
+		Map<Employee, Set<AccountSkill>> allEmployeeSkillsForSites = getEmployeeSkillsForSites(siteAssignments);
+
+		return PicsCollectionUtil.mergeMapOfSets(allEmployeeSkillsForSites,
+				getGroupSkillsForEmployees(contractorEmployees));
+	}
+
+	private Map<Employee, Set<AccountSkill>> getGroupSkillsForEmployees(Collection<Employee> contractorEmployees) {
+		Map<Employee, Set<Group>> employeeGroups = groupEntityService.getEmployeeGroups(contractorEmployees);
+		Map<Group, Set<AccountSkill>> groupSkills = skillEntityService
+				.getSkillsForGroups(PicsCollectionUtil.mergeCollectionOfCollections(employeeGroups.values()));
+
+		return PicsCollectionUtil.reduceMapOfCollections(employeeGroups, groupSkills);
+	}
+
+	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSites(final Map<AccountModel, Set<Employee>> siteAssignments) {
+		Map<Employee, Set<AccountSkill>> skills = new HashMap<>();
+		for (AccountModel accountModel : siteAssignments.keySet()) {
+			Map<Employee, Set<AccountSkill>> employeeSkillsMapForAccount =
+					getEmployeeSkillsMapForAccount(siteAssignments.get(accountModel.getId()), accountModel);
+
+			skills = PicsCollectionUtil.mergeMapOfSets(skills, employeeSkillsMapForAccount);
+		}
+
+		return skills;
 	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsMapForAccount(final Collection<Employee> employees,
@@ -121,23 +137,24 @@ public class SkillEngine {
 		Map<Employee, Set<AccountSkill>> employeeRoleSkills = getRoleSkillsForEmployees(employees, accountModel);
 		Map<Employee, Set<AccountSkill>> employeeProjectSkills = getProjectSkillsForEmployees(employees, accountModel);
 
-		Map<Employee, Set<AccountSkill>> employeeGroupRoleSkills = PicsCollectionUtil.mergeMapOfSets(employeeGroupSkills, employeeRoleSkills);
+		Map<Employee, Set<AccountSkill>> employeeGroupRoleSkills = PicsCollectionUtil
+				.mergeMapOfSets(employeeGroupSkills, employeeRoleSkills);
+
 		return PicsCollectionUtil.mergeMapOfSets(employeeGroupRoleSkills, employeeProjectSkills);
 	}
 
 	private Map<Employee, Set<AccountSkill>> getProjectSkillsForEmployees(final Collection<Employee> employees,
 																		  final AccountModel accountModel) {
-
 		Map<Employee, Set<Project>> employeeProjects = getProjectSkills(employees, accountModel);
 		Map<Project, Set<AccountSkill>> projectRequiredSkills =
-				skillEntityService.getRequiredSkillsForProjects(PicsCollectionUtil.extractAndFlattenValuesFromMap(employeeProjects));
+				skillEntityService.getRequiredSkillsForProjects(PicsCollectionUtil
+						.extractAndFlattenValuesFromMap(employeeProjects));
 
 		return getEmployeeSkillsMap(employees, employeeProjects, projectRequiredSkills);
 	}
 
 	private Map<Employee, Set<AccountSkill>> getRoleSkillsForEmployees(final Collection<Employee> employees,
 																	   final AccountModel accountModel) {
-
 		Map<Employee, Set<Role>> employeeRoles = getEmployeeSiteAssignments(employees, accountModel);
 		Map<Role, Set<AccountSkill>> roleRequiredSkills =
 				skillEntityService.getSkillsForRoles(PicsCollectionUtil.extractAndFlattenValuesFromMap(employeeRoles));
@@ -246,6 +263,10 @@ public class SkillEngine {
 					}
 				}
 
+				if (!projectEmployeeSkills.containsKey(project)) {
+					projectEmployeeSkills.put(project, new HashMap<Employee, Set<AccountSkill>>());
+				}
+
 				projectEmployeeSkills.get(project).put(employee, requiredSkills);
 			}
 		}
@@ -274,5 +295,4 @@ public class SkillEngine {
 					}
 				});
 	}
-
 }
