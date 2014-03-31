@@ -72,7 +72,7 @@ public class BillingDetail extends ContractorActionSupport {
             invoice = billingService.verifyAndSaveInvoice(invoice);
 
 
-            if (invoice.getInvoiceType() == InvoiceType.Upgrade) {
+            if (invoice.getInvoiceType().isUpgrade()) {
                 contractor.setLastUpgradeDate(null);
             }
 
