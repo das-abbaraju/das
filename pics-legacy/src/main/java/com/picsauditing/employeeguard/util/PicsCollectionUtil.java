@@ -102,7 +102,7 @@ public class PicsCollectionUtil {
 	 * @return
 	 */
 	public static <E, K, V> Map<K, Set<V>> convertToMapOfSets(final Collection<E> entities,
-	                                                          final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+															  final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (org.springframework.util.CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -127,7 +127,7 @@ public class PicsCollectionUtil {
 	 * @return
 	 */
 	public static <E, K, V> Map<K, List<V>> convertToMapOfLists(final Collection<E> entities,
-	                                                            final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+																final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (org.springframework.util.CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -142,7 +142,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <E, K, V> Map<K, V> convertToMap(final Collection<E> entities,
-	                                               final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
+												   final EntityKeyValueConvertable<E, K, V> entityKeyValueConvertable) {
 		if (org.springframework.util.CollectionUtils.isEmpty(entities)) {
 			return Collections.emptyMap();
 		}
@@ -311,7 +311,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <ENTITY, PROPERTY> Set<PROPERTY> extractPropertyToSet(final Collection<ENTITY> entities,
-	                                                                    final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+																		final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
 		Set<PROPERTY> properties = new HashSet<>();
 
 		for (ENTITY entity : entities) {
@@ -322,7 +322,7 @@ public class PicsCollectionUtil {
 	}
 
 	public static <ENTITY, PROPERTY> List<PROPERTY> extractPropertyToList(final Collection<ENTITY> entities,
-	                                                                      final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+																		  final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
 		List<PROPERTY> properties = new ArrayList<>();
 
 		for (ENTITY entity : entities) {
@@ -382,5 +382,68 @@ public class PicsCollectionUtil {
 
 	public interface PropertyExtractor<ENTITY, PROPERTY> {
 		PROPERTY getProperty(ENTITY entity);
+	}
+
+	public static <E, K, V> Map<K, Set<V>> reduceMapOfCollections(final Map<K, ? extends Collection<E>> keyEntityMap,
+																  final Map<E, ? extends Collection<V>> entityValueMap) {
+
+		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, Set<V>> result = new HashMap<>();
+		for (K key : keyEntityMap.keySet()) {
+			if (!result.containsKey(key)) {
+				result.put(key, new HashSet<V>());
+			}
+
+			result.get(key).addAll(getAllEntityValues(keyEntityMap.get(key), entityValueMap));
+		}
+
+		return result;
+	}
+
+	public static <E, K, V> Map<K, List<V>> reduceMaps(final Map<K, ? extends Collection<E>> keyEntityMap,
+													   final Map<E, V> entityValueMap) {
+		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, List<V>> result = new HashMap<>();
+		for (K key : keyEntityMap.keySet()) {
+			if (!result.containsKey(key)) {
+				result.put(key, new ArrayList<V>());
+			}
+
+			result.get(key).addAll(getEntityValues(keyEntityMap.get(key), entityValueMap));
+		}
+
+		return result;
+	}
+
+	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
+														   final Map<E, ? extends Collection<V>> entityValueMap) {
+		Collection<V> values = new ArrayList<>();
+
+		for (E entity : entities) {
+			if (entityValueMap.containsKey(entity)) {
+				values.addAll(entityValueMap.get(entity));
+			}
+		}
+
+		return values;
+	}
+
+	private static <E, V> Collection<V> getEntityValues(final Collection<E> entities,
+														final Map<E, V> entityValueMap) {
+		Collection<V> values = new ArrayList<>();
+
+		for (E entity : entities) {
+			if (entityValueMap.containsKey(entity)) {
+				values.add(entityValueMap.get(entity));
+			}
+		}
+
+		return values;
 	}
 }
