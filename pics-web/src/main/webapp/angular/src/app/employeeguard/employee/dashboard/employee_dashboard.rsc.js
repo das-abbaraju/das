@@ -1,5 +1,5 @@
 angular.module('PICS.employeeguard')
 
 .factory('EmployeeDashboard', function($resource, $routeParams) {
-    return $resource('/angular/json/employee/employee-info.json');
+    return $resource('/employee-guard/employee/summary/employee-info');
 });
