@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.controllers.employee;
 
 import com.google.gson.Gson;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.engine.SkillEngine;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProfileAssignmentModel;
@@ -10,6 +9,7 @@ import com.picsauditing.employeeguard.models.ProfileModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.services.entity.GroupEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
