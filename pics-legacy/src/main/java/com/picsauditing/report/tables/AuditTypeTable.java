@@ -11,12 +11,12 @@ public class AuditTypeTable extends AbstractTable {
 
 	public AuditTypeTable() {
 		super("audit_type");
-		addPrimaryKey();
+		Field auditTypeID = addPrimaryKey();
 		addFields(AuditType.class);
 
-		Field auditTypeName;
-		auditTypeName = new Field("Name", "id", FieldType.AuditType);
+		Field auditTypeName = new Field("Name", "id", FieldType.AuditType);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
+        auditTypeName.setDrillDownField(auditTypeID.getName());
 		auditTypeName.setUrl("ManageAuditType.action?id={" + ReportOnClause.ToAlias + "ID}");
 		auditTypeName.setImportance(FieldImportance.Low);
 		auditTypeName.setWidth(200);

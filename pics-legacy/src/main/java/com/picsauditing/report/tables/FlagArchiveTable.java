@@ -14,8 +14,15 @@ public class FlagArchiveTable extends AbstractTable {
 
         addCreationDate();
 
+        Field flagString = new Field("FlagColorString","flag", FieldType.String);
+        flagString.setFilterable(false);
+        flagString.setVisible(false);
+        flagString.setImportance(FieldImportance.Required);
+        addField(flagString);
+
         Field flag = new Field("FlagColor","flag", FieldType.FlagColor);
         flag.setTranslationPrefixAndSuffix("FlagColor","");
+        flag.setDrillDownField(flagString.getName());
         addField(flag);
 	}
 

@@ -123,9 +123,15 @@ public class ContractorAuditTable extends AbstractTable {
         Field creationDate = addCreationDate();
         creationDate.setImportance(FieldImportance.Low);
 
-		Field auditTypeName;
-		auditTypeName = new Field("TypeName", "auditTypeID", FieldType.AuditType);
+        Field auditTypeID = new Field("TypeNameString", "auditTypeID", FieldType.Integer);
+        auditTypeID.setFilterable(false);
+        auditTypeID.setVisible(false);
+        auditTypeID.setImportance(FieldImportance.Required);
+        addField(auditTypeID);
+
+        Field auditTypeName = new Field("TypeName", "auditTypeID", FieldType.AuditType);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
+        auditTypeName.setDrillDownField(auditTypeID.getName());
 		auditTypeName.setUrl("Audit.action?auditID={" + ReportOnClause.ToAlias + "ID}");
 		auditTypeName.setImportance(FieldImportance.Required);
 		auditTypeName.setWidth(200);

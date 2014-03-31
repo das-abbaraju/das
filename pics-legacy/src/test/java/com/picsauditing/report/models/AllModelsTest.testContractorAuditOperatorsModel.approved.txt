@@ -46,6 +46,7 @@ AuditTypeClassType
 AuditTypeID
 AuditTypeMonthsToExpire
 AuditTypeName
+AuditTypeNameString
 AuditTypeRenewable
 AuditUsLwcrAnswer
 AuditUsTrirAnswer
@@ -74,6 +75,7 @@ EmrAnswer
 FatalitiesAnswer
 PQFID
 PQFTypeName
+PQFTypeNameString
 PQFVerification
 PreviousAuditAuditFor
 PreviousAuditEffectiveDate
@@ -81,5 +83,6 @@ PreviousAuditExpiresDate
 PreviousAuditID
 PreviousAuditScore
 PreviousAuditTypeName
+PreviousAuditTypeNameString
 SafetyManualAnswer
 SafetyManualComment

@@ -24,8 +24,16 @@ public class ForcedFlagView extends AbstractTable {
 		addField(new Field("ForceBegin", "forceBegin", FieldType.Date));
         addField(new Field("ForceEnd", "forceEnd", FieldType.Date));
         addField(new Field("ForceFlag", "forceFlag", FieldType.FlagColor));
+
+        Field labelString = new Field("LabelString", "label", FieldType.String);
+        labelString.setFilterable(false);
+        labelString.setVisible(false);
+        labelString.setImportance(FieldImportance.Required);
+        addField(labelString);
+
         Field label = new Field("Label", "label", FieldType.String);
         label.setTranslationPrefixAndSuffix("FlagCriteria","");
+        labelString.setDrillDownField(labelString.getName());
         addField(label);
 	}
 

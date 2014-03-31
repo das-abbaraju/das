@@ -144,6 +144,7 @@ AuditTypeClassType
 AuditTypeID
 AuditTypeMonthsToExpire
 AuditTypeName
+AuditTypeNameString
 AuditTypeRenewable
 ContractorAccountLevel
 ContractorAuditGUARD
@@ -195,6 +196,7 @@ AuditScore
 AuditTypeClassType
 AuditTypeID
 AuditTypeName
+AuditTypeNameString
 CategoryID
 CategoryName
 CategoryNumQuestions
@@ -245,6 +247,7 @@ AuditOperatorID
 AuditOperatorStatus
 AuditScore
 AuditTypeName
+AuditTypeNameString
 ContractorAuditFileDescription
 ContractorAuditFileFileType
 ContractorAuditFileID
@@ -295,6 +298,7 @@ ContractorSuncorDrugAlcoholPolicyContractSubcontractorsAnswer
 ContractorSuncorDrugAlcoholPolicyGreaterADPolicyAnswer
 ContractorSuncorDrugAlcoholPolicyID
 ContractorSuncorDrugAlcoholPolicyTypeName
+ContractorSuncorDrugAlcoholPolicyTypeNameString
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 
@@ -384,6 +388,7 @@ ContractorCemexPostEvalScore
 ContractorCemexPostEvalSiteAnswer
 ContractorCemexPostEvalTitleAnswer
 ContractorCemexPostEvalTypeName
+ContractorCemexPostEvalTypeNameString
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
@@ -448,6 +453,7 @@ AuditTypeClassType
 AuditTypeID
 AuditTypeMonthsToExpire
 AuditTypeName
+AuditTypeNameString
 AuditTypeRenewable
 AuditUsLwcrAnswer
 AuditUsTrirAnswer
@@ -472,6 +478,7 @@ EmrAnswer
 FatalitiesAnswer
 PQFID
 PQFTypeName
+PQFTypeNameString
 PQFVerification
 PreviousAuditAuditFor
 PreviousAuditEffectiveDate
@@ -479,6 +486,7 @@ PreviousAuditExpiresDate
 PreviousAuditID
 PreviousAuditScore
 PreviousAuditTypeName
+PreviousAuditTypeNameString
 SafetyManualAnswer
 SafetyManualComment
 
@@ -532,6 +540,7 @@ AuditTypeClassType
 AuditTypeID
 AuditTypeMonthsToExpire
 AuditTypeName
+AuditTypeNameString
 AuditTypeRenewable
 ContractorAccountLevel
 ContractorAuditGUARD
@@ -578,7 +587,9 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenId
 ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeId
 ContractorContractorTradeTradeName
 ContractorCorporationBaselineFlag
 ContractorCorporationCreationDate
@@ -610,6 +621,7 @@ ContractorCorporationOperatorStatus
 ContractorCorporationOperatorTimezone
 ContractorCorporationOperatorTransportationServices
 ContractorCorporationOperatorType
+ContractorCorporationOperatorTypeString
 ContractorCorporationProcessCompletion
 ContractorCorporationTag
 ContractorCorporationWaitingOn
@@ -672,6 +684,7 @@ ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 FeeFeeClass
+FeeId
 FeeMaxFacilities
 FeeName
 
@@ -727,6 +740,7 @@ FlagCriteriaDefaultValue
 FlagCriteriaDescription
 FlagCriteriaDisplayOrder
 FlagCriteriaFlaggableWhenMissing
+FlagCriteriaID
 FlagCriteriaInsurance
 FlagCriteriaLabel
 FlagCriteriaMultiYearScope
@@ -786,6 +800,7 @@ ContractorOperatorOperatorTimezone
 ContractorOperatorOperatorTransportationServices
 FlagCriteriaCategory
 FlagCriteriaDescription
+FlagCriteriaID
 FlagCriteriaLabel
 FlagCriteriaMultiYearScope
 FlagCriteriaOshaRateType
@@ -895,7 +910,9 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenId
 ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeId
 ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
@@ -931,6 +948,7 @@ ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
 ContractorOperatorOperatorTransportationServices
 ContractorOperatorOperatorType
+ContractorOperatorOperatorTypeString
 ContractorOperatorProcessCompletion
 ContractorOperatorTag
 ContractorOperatorWaitingOn
@@ -1095,6 +1113,7 @@ ContractorOfficeIn
 ContractorOriginalMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
+ContractorPQFTypeNameString
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorProfessionalIndemnityPROILimitAnswer
@@ -1120,7 +1139,9 @@ ContractorWorksAtClientSite
 ContractorWorksForReportingClient
 ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
+DirectTradeId
 DirectTradeName
+TradeId
 TradeName
 
 Model: ContractorSearch
@@ -1256,6 +1277,7 @@ ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
 ContractorWorksAtClientSite
+TradeId
 TradeName
 
 Model: ContractorUsers
@@ -1289,6 +1311,7 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 AccountType
+AccountTypeString
 GroupsID
 GroupsIsActive
 GroupsName
@@ -1367,6 +1390,7 @@ ContractorOperatorOperatorName
 ContractorOperatorOperatorStatus
 FlagArchiveCreationDate
 FlagArchiveFlagColor
+FlagArchiveFlagColorString
 
 Model: ForcedFlags
 Permission: Permissions{permissions=[]}
@@ -1381,6 +1405,7 @@ ContractorFlagForceBegin
 ContractorFlagForceEnd
 ContractorFlagForceFlag
 ContractorFlagLabel
+ContractorFlagLabelString
 ContractorOperatorForcedByUserID
 ContractorOperatorForcedByUserIsActive
 ContractorOperatorForcedByUserName
@@ -1388,6 +1413,7 @@ ContractorOperatorOperatorID
 ContractorOperatorOperatorName
 ContractorOperatorOperatorStatus
 ContractorOperatorOperatorType
+ContractorOperatorOperatorTypeString
 ForcedFlagPercentPercent
 
 Model: ForcedFlagPercents
@@ -1418,6 +1444,7 @@ FeeCountryCountry
 FeeCountryRatePercent
 FeeCountrySubdivision
 FeeFeeClass
+FeeId
 FeeMaxFacilities
 FeeName
 FeeRatePercent
@@ -1458,6 +1485,7 @@ InvoiceInvoiceType
 InvoiceItemAmount
 InvoiceItemDescription
 InvoiceItemFeeFeeClass
+InvoiceItemFeeId
 InvoiceItemFeeMaxFacilities
 InvoiceItemFeeName
 InvoicePaidDate
@@ -1524,7 +1552,9 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenId
 ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeId
 ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
@@ -1582,6 +1612,7 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 AccountType
+AccountTypeString
 AccountWebUrl
 AccountZip
 OperatorAutoApproveInsurance
@@ -1609,6 +1640,7 @@ AccountID
 AccountName
 AccountStatus
 AccountType
+AccountTypeString
 AccountUserEndDate
 AccountUserOwnerPercent
 AccountUserRole
@@ -1635,6 +1667,7 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 AccountType
+AccountTypeString
 GroupsID
 GroupsIsActive
 GroupsName
@@ -1956,6 +1989,7 @@ ContractorSoleProprietor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 FeeFeeClass
+FeeId
 FeeMaxFacilities
 FeeName
 InvoiceAmountApplied
@@ -2002,6 +2036,7 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 AccountType
+AccountTypeString
 ReportingClientID
 ReportingClientName
 ReportingClientStatus
@@ -2046,6 +2081,7 @@ AccountStatus
 AccountTimezone
 AccountTransportationServices
 AccountType
+AccountTypeString
 ReportingClientID
 ReportingClientName
 ReportingClientStatus

@@ -31,11 +31,14 @@ import static com.picsauditing.util.Assert.assertContains;
 import static com.picsauditing.util.Assert.assertJson;
 import static com.picsauditing.util.Assert.assertJsonNoQuotes;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.dr.domain.fields.FilterType;
 import com.picsauditing.jpa.entities.*;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -55,6 +58,12 @@ import com.picsauditing.service.ReportPreferencesService;
 
 public class JsonReportBuilderTest {
 
+    @Mock
+    private Column column;
+    @Mock
+    private Column column2;
+    @Mock
+    private Field field;
 	@Mock
 	private Report report;
 	@Mock
@@ -70,6 +79,8 @@ public class JsonReportBuilderTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
+        when(column.getField()).thenReturn(field);
+        when(column2.getField()).thenReturn(field);
 		JsonReportBuilder.permissionService = permissionService;
 		JsonReportBuilder.reportPreferencesService = reportPreferencesService;
 	}
@@ -299,7 +310,57 @@ public class JsonReportBuilderTest {
 		assertEquals(columns.get(4).getColumnId(), COLUMN_ID_PREFIX + "4");
 	}
 
-	private List<Column> buildTestColumns(String[] columnNames) {
+    @Test
+    public void testSetDrillDownURL_nullColumnsList() {
+        JsonReportBuilder.setDrillDownURL(null);
+    }
+
+    @Test
+    public void testSetDrillDownURL_Empty() {
+        List<Column> columns = new ArrayList<>();
+        JsonReportBuilder.setDrillDownURL(columns);
+        assertEquals(0, columns.size());
+    }
+
+    @Test
+    public void testSetDrillDownURL_NoFunction() {
+        List<Column> columns = new ArrayList<>();
+        columns.add(column);
+        when(field.getFilterType()).thenReturn(FilterType.String);
+
+        JsonReportBuilder.setDrillDownURL(columns);
+        assertEquals(1, columns.size());
+        assertNull(columns.get(0).getField().getUrl());
+    }
+
+    @Test
+    public void testSetDrillDownURL_NoAggregateFunction() {
+        List<Column> columns = new ArrayList<>();
+        columns.add(column);
+        when(column.getSqlFunction()).thenReturn(SqlFunction.Round);
+        when(field.getFilterType()).thenReturn(FilterType.String);
+
+        JsonReportBuilder.setDrillDownURL(columns);
+        assertEquals(1, columns.size());
+        assertNull(columns.get(0).getField().getUrl());
+    }
+
+    @Test
+    public void testSetDrillDownURL_DrillDownField() {
+        List<Column> columns = new ArrayList<>();
+        columns.add(column);
+        columns.add(column2);
+        when(column.getSqlFunction()).thenReturn(SqlFunction.Count);
+        when(field.getFilterType()).thenReturn(FilterType.String);
+        when(field.isFilterable()).thenReturn(true);
+        when(field.getDrillDownField()).thenReturn("AlphaBeta");
+
+        JsonReportBuilder.setDrillDownURL(columns);
+        assertEquals(2, columns.size());
+        verify(field).setUrl("Report.action?report=0&removeAggregates=true&dynamicParameters=[{\"value\":\"{AlphaBeta}\",\"field_id\":null,\"operator\":\"Contains\"}]");
+    }
+
+    private List<Column> buildTestColumns(String[] columnNames) {
 		List<Column> columns = new ArrayList<Column>();
 
 		for (String columnName : columnNames) {
