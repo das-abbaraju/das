@@ -41,12 +41,6 @@ public class SummaryAction extends PicsRestActionSupport {
 
 	/* pages */
 
-	public String index() {
-//		profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
-
-		return "dashboard";
-	}
-
 	public String employeeInfo() {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 		ProfileModel profileModel = ModelFactory.getProfileModelFactory().create(profile);

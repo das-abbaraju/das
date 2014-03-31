@@ -64,11 +64,16 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees, final int siteId) {
-		if (CollectionUtils.isEmpty(employees)) {
+		return getSiteRolesForEmployees(employees, Arrays.asList(siteId));
+	}
+
+	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees,
+															 final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}
 
-		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployeesAndSiteId(employees, siteId);
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployeesAndSiteIds(employees, siteIds);
 
 		return PicsCollectionUtil.convertToMapOfSets(siteAssignments,
 				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Employee, Role>() {
@@ -223,4 +228,5 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		Role role = findByIdAndAccountId(id, accountId);
 		delete(role);
 	}
+
 }

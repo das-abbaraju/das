@@ -105,11 +105,11 @@ public class ContractorProjectService {
 
 	private List<String> buildSkillNames(List<AccountSkill> requiredSkills) {
 		return ExtractorUtil.extractList(requiredSkills, new Extractor<AccountSkill, String>() {
-            @Override
-            public String extract(AccountSkill accountSkill) {
-                return accountSkill.getName();
-            }
-        });
+			@Override
+			public String extract(AccountSkill accountSkill) {
+				return accountSkill.getName();
+			}
+		});
 	}
 
 	private List<Employee> getAssignedEmployees(final Project project, final int accountId) {
@@ -167,7 +167,11 @@ public class ContractorProjectService {
 		List<Employee> employees = employeeDAO.findByAccount(accountId);
 		Collections.sort(employees);
 
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
+		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
+		if (CollectionUtils.isNotEmpty(requiredSkills)) {
+			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
+		}
+
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByEmployeesAndProjectRole(employees, projectRole);
 
 		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory().buildListForRole(employees, requiredSkills, accountSkillEmployees, projectRoleEmployees);

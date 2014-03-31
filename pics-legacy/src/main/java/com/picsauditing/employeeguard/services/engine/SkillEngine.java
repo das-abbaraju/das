@@ -210,6 +210,8 @@ public class SkillEngine {
 	private Map<Employee, Set<Role>> getEmployeeSiteAssignments(final Collection<Employee> employees,
 																final AccountModel accountModel) {
 		int id = accountModel.getId();
+		Map<Employee, Set<Role>> projectRoles;
+		Map<Employee, Set<Role>> siteAssignmentRoles;
 
 		switch (accountModel.getAccountType()) {
 			case CONTRACTOR:
@@ -217,11 +219,13 @@ public class SkillEngine {
 
 			case CORPORATE:
 				Collection<Integer> siteIds = accountService.getChildOperatorIds(id);
-				return roleEntityService.getProjectRolesForEmployees(employees, siteIds);
+				projectRoles = roleEntityService.getProjectRolesForEmployees(employees, siteIds);
+				siteAssignmentRoles = roleEntityService.getSiteRolesForEmployees(employees, siteIds);
+				return PicsCollectionUtil.mergeMapOfSets(projectRoles, siteAssignmentRoles);
 
 			case OPERATOR:
-				Map<Employee, Set<Role>> projectRoles = roleEntityService.getProjectRolesForEmployees(employees, id);
-				Map<Employee, Set<Role>> siteAssignmentRoles = roleEntityService.getSiteRolesForEmployees(employees, id);
+				projectRoles = roleEntityService.getProjectRolesForEmployees(employees, id);
+				siteAssignmentRoles = roleEntityService.getSiteRolesForEmployees(employees, id);
 				return PicsCollectionUtil.mergeMapOfSets(projectRoles, siteAssignmentRoles);
 
 			default:
