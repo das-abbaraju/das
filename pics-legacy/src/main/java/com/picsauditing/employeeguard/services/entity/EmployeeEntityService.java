@@ -79,6 +79,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 				});
 	}
 
+	public Map<Role, Set<Employee>> getEmployeesByProjectRoles(final Project project) {
+		return getEmployeesByProjectRoles(Arrays.asList(project));
+	}
+
 	public Map<Role, Set<Employee>> getEmployeesByProjectRoles(final Collection<Project> projects) {
 		if (CollectionUtils.isEmpty(projects)) {
 			return Collections.emptyMap();

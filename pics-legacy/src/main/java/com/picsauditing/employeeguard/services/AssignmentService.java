@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
@@ -9,6 +8,10 @@ import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.services.processor.ProjectAssignmentDataSet;
+import com.picsauditing.employeeguard.services.processor.ProjectAssignmentProcess;
+import com.picsauditing.employeeguard.services.processor.RoleAssignmentProcess;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,13 +30,52 @@ public class AssignmentService {
 	@Autowired
 	private SkillEntityService skillEntityService;
 
+	public Map<Project, Map<Employee, Set<AccountSkill>>> getEmployeeSkillsForProjectsUnderSite(final int siteId) {
+
+		List<Project> siteProjects = projectEntityService.getAllProjectsForSite(siteId);
+		Map<Project, Set<Employee>> projectEmployees = employeeEntityService.getEmployeesByProject(siteProjects);
+		Map<Role, Set<Employee>> roleEmployees = getEmployeesByRole(siteId, siteProjects);
+		Map<Project, Set<AccountSkill>> projectRequiredSkill = skillEntityService
+				.getRequiredSkillsForProjects(siteProjects);
+		Map<Project, Set<Role>> projectRoles = roleEntityService.getRolesForProjects(siteProjects);
+		Map<Role, Set<AccountSkill>> projectRoleSkills = skillEntityService
+				.getSkillsForRoles(PicsCollectionUtil.mergeCollectionOfCollections(projectRoles.values()));
+		Set<AccountSkill> siteAndCorporateRequiredSkills = skillEntityService
+				.getSiteRequiredSkills(siteId, accountService.getTopmostCorporateAccountIds(siteId));
+
+		ProjectAssignmentDataSet dataSet = new ProjectAssignmentDataSet.Builder()
+				.projectEmployees(projectEmployees)
+				.projectRequiredSkills(projectRequiredSkill)
+				.projectRoles(projectRoles)
+				.projectRoleSkills(projectRoleSkills)
+				.projects(siteProjects)
+				.roleEmployees(roleEmployees)
+				.siteAndCorporateRequiredSkills(siteAndCorporateRequiredSkills)
+				.build();
+
+		return new ProjectAssignmentProcess().getProjectSkillsForEmployees(dataSet);
+	}
+
+	/**
+	 * Retrieves a map of employees to both site and project roles for the specific site
+	 *
+	 * @param siteId
+	 * @param projects
+	 * @return
+	 */
+	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId, final Collection<Project> projects) {
+		return new RoleAssignmentProcess().getCorporateRoleEmployees(
+				employeeEntityService.getEmployeesByProjectRoles(projects),
+				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)));
+	}
+
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSite(final int siteId) {
 		Set<Employee> employeesAssignedToSite = getEmployeesAssignedToSite(siteId);
 
 		Map<Employee, Set<AccountSkill>> employeeSkillsForProjects = getEmployeeSkillsForProjects(siteId, employeesAssignedToSite);
 		Map<Employee, Set<AccountSkill>> employeeSkillsForRole = getEmployeeSkillsForRoles(siteId);
 
-		Map<Employee, Set<AccountSkill>> allEmployeeRequiredSkills = Utilities.mergeMapOfSets(employeeSkillsForProjects, employeeSkillsForRole);
+		Map<Employee, Set<AccountSkill>> allEmployeeRequiredSkills = PicsCollectionUtil.mergeMapOfSets(employeeSkillsForProjects, employeeSkillsForRole);
 		List<Integer> accountIdsInHierarchy = accountService.getTopmostCorporateAccountIds(siteId);
 
 		return appendSiteAndCorporateSkills(allEmployeeRequiredSkills,
@@ -42,14 +84,14 @@ public class AssignmentService {
 
 	private Map<Employee, Set<AccountSkill>> getEmployeeSkillsForProjects(int siteId, Set<Employee> employeesAssignedToSite) {
 		Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployeesBySiteId(employeesAssignedToSite, siteId);
-		Set<Project> allProjects = Utilities.extractAndFlattenValuesFromMap(employeeProjects);
+		Set<Project> allProjects = PicsCollectionUtil.extractAndFlattenValuesFromMap(employeeProjects);
 		Map<Project, Set<AccountSkill>> projectSkills = skillEntityService.getRequiredSkillsForProjects(allProjects);
 		return getKeyToSetOfValues(employeeProjects, projectSkills);
 	}
 
 	private Map<Employee, Set<AccountSkill>> getEmployeeSkillsForRoles(int siteId) {
 		Map<Employee, Set<Role>> employeeRoles = getAllEmployeeRolesForSite(siteId);
-		Set<Role> allRoles = Utilities.extractAndFlattenValuesFromMap(employeeRoles);
+		Set<Role> allRoles = PicsCollectionUtil.extractAndFlattenValuesFromMap(employeeRoles);
 		Map<Role, Set<AccountSkill>> roleSkills = skillEntityService.getSkillsForRoles(allRoles);
 		return getKeyToSetOfValues(employeeRoles, roleSkills);
 	}
@@ -109,7 +151,7 @@ public class AssignmentService {
 		final Map<Employee, Set<Role>> employeeProjectRoles = roleEntityService.getProjectRolesForEmployees(employeesAssignedToSite, siteId);
 		final Map<Employee, Set<Role>> employeeRoles = roleEntityService.getSiteRolesForEmployees(employeesAssignedToSite, siteId);
 
-		return Utilities.mergeMapOfSets(employeeProjectRoles, employeeRoles);
+		return PicsCollectionUtil.mergeMapOfSets(employeeProjectRoles, employeeRoles);
 	}
 
 	public Map<Project, Set<Employee>> getEmployeesAssignedToProjects(final int siteId) {

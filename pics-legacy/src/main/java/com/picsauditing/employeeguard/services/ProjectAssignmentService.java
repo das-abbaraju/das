@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+@Deprecated
 public class ProjectAssignmentService {
 
 	@Autowired
@@ -65,7 +66,6 @@ public class ProjectAssignmentService {
 	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId, final Collection<Project> projects) {
 		return new RoleAssignmentProcess().getCorporateRoleEmployees(
 				employeeEntityService.getEmployeesByProjectRoles(projects),
-				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)),
-				roleEntityService.getSiteToCorporateRoles(siteId, accountService.getTopmostCorporateAccountIds(siteId)));
+				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)));
 	}
 }

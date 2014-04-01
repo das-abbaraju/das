@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.controllers.operator;
+package com.picsauditing.employeeguard.controllers.corporate;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.NoRightsException;
@@ -6,12 +6,9 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
-import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.ProjectAssignmentService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.factory.AccountServiceFactory;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
@@ -32,15 +29,14 @@ import static org.mockito.Mockito.when;
 
 @UseReporter(DiffReporter.class)
 public class SummaryActionTest extends PicsActionTest {
+
 	public static final int CONTRACTOR_ID = 234;
 	public static final int SITE_ID = 123;
 
-	private SummaryAction summaryAction;
+	SummaryAction summaryAction;
 
 	@Mock
 	private AssignmentService assignmentService;
-	@Mock
-	private ProjectAssignmentService projectAssignmentService;
 	@Mock
 	private StatusCalculatorService statusCalculatorService;
 
@@ -55,17 +51,32 @@ public class SummaryActionTest extends PicsActionTest {
 		when(permissions.getAccountName()).thenReturn("Site Name");
 
 		Whitebox.setInternalState(summaryAction, "assignmentService", assignmentService);
-		Whitebox.setInternalState(summaryAction, "projectAssignmentService", projectAssignmentService);
 		Whitebox.setInternalState(summaryAction, "statusCalculatorService", statusCalculatorService);
 	}
 
+	@Test(expected = NoRightsException.class)
+	public void testSummary_Site() throws Exception {
+		when(permissions.isOperator()).thenReturn(true);
+
+		summaryAction.summary();
+	}
+
 	@Test
-	public void testIndex() throws Exception {
+	public void testSummary_Corporate() throws Exception {
+		setupTestSummary_Corporate();
+
+		String result = summaryAction.summary();
+
+		verifyTestSummary_Corporate(result);
+	}
+
+	private void setupTestSummary_Corporate() {
 		setupForIndex();
 
-		assertEquals(PicsActionSupport.JSON_STRING, summaryAction.index());
-		assertNotNull(summaryAction.getJsonString());
-		Approvals.verify(summaryAction.getJsonString());
+		when(permissions.isCorporate()).thenReturn(true);
+		when(permissions.getOperatorChildren()).thenReturn(new HashSet<>(Arrays.asList(SITE_ID)));
+
+		summaryAction.setId(Integer.toString(SITE_ID));
 	}
 
 	private void setupForIndex() {
@@ -83,6 +94,7 @@ public class SummaryActionTest extends PicsActionTest {
 							.slug("EmployeeTest")
 							.build(),
 							SkillStatus.Complete);
+
 					put(new EmployeeBuilder()
 							.accountId(CONTRACTOR_ID)
 							.firstName("Employee 2")
@@ -92,5 +104,12 @@ public class SummaryActionTest extends PicsActionTest {
 							.build(),
 							SkillStatus.Expired);
 				}});
+	}
+
+	private void verifyTestSummary_Corporate(String result) throws Exception {
+		assertEquals(PicsActionSupport.JSON_STRING, result);
+		assertNotNull(summaryAction.getJsonString());
+
+		Approvals.verify(summaryAction.getJsonString());
 	}
 }

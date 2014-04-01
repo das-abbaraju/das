@@ -36,8 +36,14 @@
         </action>
 
         <!-- Project -->
+        <action name="projects/summary" class="com.picsauditing.employeeguard.controllers.operator.ProjectSummaryAction"
+                method="summary">
+        </action>
+
+        <!-- Project -->
         <action name="projects" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
+
         <action name="project" class="com.picsauditing.employeeguard.controllers.operator.ProjectAction">
             <result name="create">/struts/employee-guard/operator/project/create.jsp</result>
             <result name="name-skills-form">/struts/employee-guard/operator/project/_name-skills-form.jsp</result>
@@ -95,11 +101,14 @@
         </action>
     </package>
 
-    <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard" namespace="/employee-guard/corporates">
-        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="summary">
+    <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"
+             namespace="/employee-guard/corporates">
+        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.corporate.SummaryAction"
+                method="summary">
         </action>
 
-        <action name="sites" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="list">
+        <action name="sites" class="com.picsauditing.employeeguard.controllers.corporate.SitesListAction"
+                method="list">
         </action>
     </package>
 

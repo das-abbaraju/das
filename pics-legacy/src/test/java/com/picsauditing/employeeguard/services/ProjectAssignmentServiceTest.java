@@ -73,7 +73,6 @@ public class ProjectAssignmentServiceTest {
 		verify(roleEntityService).getRolesForProjects(projects);
 		verify(skillEntityService).getSkillsForRoles(anyCollectionOf(Role.class));
 		verify(skillEntityService).getSiteRequiredSkills(anyInt(), anyListOf(Integer.class));
-		verify(accountService, times(2)).getTopmostCorporateAccountIds(SITE_ID);
 
 		verifyCommonServiceCalls(projects);
 	}
@@ -90,14 +89,11 @@ public class ProjectAssignmentServiceTest {
 	private void verifyTestGetEmployeesByRole(final List<Project> projects, final Map<Role, Set<Employee>> result) {
 		assertNotNull(result);
 
-		verify(accountService).getTopmostCorporateAccountIds(SITE_ID);
-
 		verifyCommonServiceCalls(projects);
 	}
 
 	private void verifyCommonServiceCalls(final List<Project> projects) {
 		verify(employeeEntityService).getEmployeesByProjectRoles(projects);
 		verify(employeeEntityService).getEmployeesBySiteRoles(Arrays.asList(SITE_ID));
-		verify(roleEntityService).getSiteToCorporateRoles(anyInt(), anyListOf(Integer.class));
 	}
 }

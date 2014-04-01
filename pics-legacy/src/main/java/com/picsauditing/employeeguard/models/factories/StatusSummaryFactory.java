@@ -8,6 +8,18 @@ import java.util.Map;
 
 public class StatusSummaryFactory {
 
+	public <T> StatusSummary create(final Map<T, SkillStatus> statusMap) {
+		StatusSummary statusSummary = new StatusSummary();
+
+		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
+		statusSummary.setCompleted(statusCountMap.get(SkillStatus.Complete));
+		statusSummary.setPending(statusCountMap.get(SkillStatus.Pending));
+		statusSummary.setExpiring(statusCountMap.get(SkillStatus.Expiring));
+		statusSummary.setExpired(statusCountMap.get(SkillStatus.Expired));
+
+		return statusSummary;
+	}
+
 	public <M extends StatusSummary, T> M addStatusSummary(final M model, final Map<T, SkillStatus> statusMap) {
 		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
 

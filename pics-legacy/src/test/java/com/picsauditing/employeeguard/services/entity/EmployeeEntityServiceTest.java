@@ -99,7 +99,8 @@ public class EmployeeEntityServiceTest {
 
 	@Test
 	public void testGetEmployeesByProjectRoles_NullOrEmpty() {
-		Map<Role, Set<Employee>> result = employeeEntityService.getEmployeesByProjectRoles(null);
+		Map<Role, Set<Employee>> result = employeeEntityService
+				.getEmployeesByProjectRoles(Collections.<Project>emptyList());
 
 		assertNotNull(result);
 		assertTrue(result.isEmpty());
