@@ -390,6 +390,7 @@ CREATE TABLE `accounts` (
   `sessionTimeout` tinyint(3) unsigned DEFAULT '60',
   `rememberMeTimeEnabled` tinyint(4) DEFAULT '1',
   `passwordSecurityLevelId` tinyint(4) DEFAULT '0',
+  `addressVerificationId` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `qbListID` (`qbListID`),
   KEY `name` (`name`),
@@ -407,15 +408,44 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES (1,'Admin','Everyone',1000,'2008-10-15 00:00:00',1000,'2009-02-02 11:33:50',NULL,NULL,'Pending',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'EVERYONE',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_1','NOLOAD_1',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0);
-INSERT INTO `accounts` VALUES (2,'Admin','Private',1000,'2009-02-02 11:33:50',1000,'2009-02-02 11:33:50',NULL,NULL,'Pending',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'PRIVATE',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_2','NOLOAD_2',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0);
-INSERT INTO `accounts` VALUES (14,'Contractor','Contractor Basic 1',1000,'2003-12-17 00:00:00',1000,'2013-09-04 12:36:51',NULL,NULL,'Active','1905 Still Street','',NULL,'Port Clinton','US-OH','43452','US','419-635-5715','310-901-2163','419-635-5715',NULL,'tester@picsauditing.com','www.test.com',NULL,NULL,'Petrochemical','56299',1,NULL,'CONTRACTORBASIC1',NULL,0,'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',0,0,0,1,0,0,0,0,1,NULL,NULL,'USD','1D50000-1116618078',NULL,NULL,NULL,1,'2013-09-24 00:00:00',0,'en_US','US/Mountain',7,60,1,0);
-INSERT INTO `accounts` VALUES (100,'Contractor','Contractor Basic 2',1000,'2014-02-13 18:28:42',1000,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'CON',NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0);
-INSERT INTO `accounts` VALUES (500,'Operator','Operator Basic 1',1000,NULL,1000,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,NULL,NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,NULL,NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0);
-INSERT INTO `accounts` VALUES (1100,'Admin','PICS Auditing, LLC',1000,'2006-04-21 00:00:00',1000,'2009-02-02 11:33:50',NULL,NULL,'Active','',NULL,NULL,'','US-CA','','US','','','',NULL,'','',NULL,NULL,NULL,'0',0,NULL,'PICS',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_1100','NOLOAD_1100',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0);
-INSERT INTO `accounts` VALUES (1101,'Operator','Skyscraper Buildings',1000,'2014-03-07 12:00:39',1000,'2014-03-07 12:00:39',NULL,NULL,'Active','1234 Main Street ','Ste 100',NULL,'Big City','US-NJ','01234','US','(555) 555-5555',NULL,'',98471,NULL,'skyline.example.com',NULL,NULL,NULL,'0',0,'The Skyscraper Building Manufacturing Company','SKYSCRAPERBUILDINGS',NULL,1,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Eastern',7,60,1,0);
-INSERT INTO `accounts` VALUES (2723,'Operator','a. Audited - Unspecified Facility (US Only)',1000,'2007-03-23 00:00:00',1000,'2013-02-12 17:00:44',NULL,NULL,'Active','P.O. Box 51387','',NULL,'Irvine','US-CA','92619','US','800-506-7427','','',1000,'tester@picsauditing.com','',NULL,NULL,'Petrochemical','0',0,'','AAUDITEDUNSPECIFIEDFACILITYUSONLY','',0,'',0,0,0,1,1,1,1,0,1,NULL,NULL,'USD','NOLOAD2723','NOLOAD2723',NULL,NULL,0,NULL,0,'en_US','America/Chicago',7,60,1,0);
+INSERT INTO `accounts` VALUES (1,'Admin','Everyone',1000,'2008-10-15 00:00:00',1000,'2009-02-02 11:33:50',NULL,NULL,'Pending',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'EVERYONE',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_1','NOLOAD_1',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,0);
+INSERT INTO `accounts` VALUES (2,'Admin','Private',1000,'2009-02-02 11:33:50',1000,'2009-02-02 11:33:50',NULL,NULL,'Pending',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'PRIVATE',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_2','NOLOAD_2',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,0);
+INSERT INTO `accounts` VALUES (14,'Contractor','Contractor Basic 1',1000,'2003-12-17 00:00:00',1000,'2013-09-04 12:36:51',NULL,NULL,'Active','1905 Still Street','',NULL,'Port Clinton','US-OH','43452','US','419-635-5715','310-901-2163','419-635-5715',NULL,'tester@picsauditing.com','www.test.com',NULL,NULL,'Petrochemical','56299',1,NULL,'CONTRACTORBASIC1',NULL,0,'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',0,0,0,1,0,0,0,0,1,NULL,NULL,'USD','1D50000-1116618078',NULL,NULL,NULL,1,'2013-09-24 00:00:00',0,'en_US','US/Mountain',7,60,1,0,0);
+INSERT INTO `accounts` VALUES (100,'Contractor','Contractor Basic 2',1000,'2014-02-13 18:28:42',1000,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'CON',NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0,0);
+INSERT INTO `accounts` VALUES (500,'Operator','Operator Basic 1',1000,NULL,1000,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,NULL,NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,NULL,NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0,0);
+INSERT INTO `accounts` VALUES (1100,'Admin','PICS Auditing, LLC',1000,'2006-04-21 00:00:00',1000,'2009-02-02 11:33:50',NULL,NULL,'Active','',NULL,NULL,'','US-CA','','US','','','',NULL,'','',NULL,NULL,NULL,'0',0,NULL,'PICS',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_1100','NOLOAD_1100',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,0);
+INSERT INTO `accounts` VALUES (1101,'Operator','Skyscraper Buildings',1000,'2014-03-07 12:00:39',1000,'2014-03-07 12:00:39',NULL,NULL,'Active','1234 Main Street ','Ste 100',NULL,'Big City','US-NJ','01234','US','(555) 555-5555',NULL,'',98471,NULL,'skyline.example.com',NULL,NULL,NULL,'0',0,'The Skyscraper Building Manufacturing Company','SKYSCRAPERBUILDINGS',NULL,1,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Eastern',7,60,1,0,0);
+INSERT INTO `accounts` VALUES (2723,'Operator','a. Audited - Unspecified Facility (US Only)',1000,'2007-03-23 00:00:00',1000,'2013-02-12 17:00:44',NULL,NULL,'Active','P.O. Box 51387','',NULL,'Irvine','US-CA','92619','US','800-506-7427','','',1000,'tester@picsauditing.com','',NULL,NULL,'Petrochemical','0',0,'','AAUDITEDUNSPECIFIEDFACILITYUSONLY','',0,'',0,0,0,1,1,1,1,0,1,NULL,NULL,'USD','NOLOAD2723','NOLOAD2723',NULL,NULL,0,NULL,0,'en_US','America/Chicago',7,60,1,0,0);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `address_verification`
+--
+
+DROP TABLE IF EXISTS `address_verification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `address_verification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updatedBy` int(11) DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `verificationDate` datetime DEFAULT NULL,
+  `status` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `entityType` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `address_verification`
+--
+
+LOCK TABLES `address_verification` WRITE;
+/*!40000 ALTER TABLE `address_verification` DISABLE KEYS */;
+/*!40000 ALTER TABLE `address_verification` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -6553,6 +6583,7 @@ CREATE TABLE `app_user` (
 LOCK TABLES `app_user` WRITE;
 /*!40000 ALTER TABLE `app_user` DISABLE KEYS */;
 INSERT INTO `app_user` VALUES (31,'pics-admin1','77b7741fc02bd30dea152e788a049cefd31abe29','927',NULL,NULL);
+INSERT INTO `app_user` VALUES (32,'AETestv7','629f930a9cac8a698fcda9a529ef9e2f133a9838',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (171,'pics-csr1','6d311be89fb8848a8dfa84a7f9bd45e3658f59ae','82286',NULL,NULL);
 INSERT INTO `app_user` VALUES (181,'pics-auditor1','ff06c33770f1ab6c7f300fc437409657a89e5ebd','90574',NULL,NULL);
 INSERT INTO `app_user` VALUES (41081,'GROUP1100PICS Group1','',NULL,NULL,NULL);
@@ -10148,14 +10179,17 @@ INSERT INTO `databasechangelog` VALUES ('33','kchase','./liquibase/2014/Q1/kchas
 INSERT INTO `databasechangelog` VALUES ('33','mdo','./liquibase/2014/Q1/mdo33_PICS-14211_changeEndDateForRevRec.sql','2014-02-05 17:56:35',166,'EXECUTED','3:f72f8d00bcb6b133b1bad73d3a775e2b','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('33CREATE','sshacter','./liquibase/2014/Q1/sshacter33_PICS13868_InvoiceItemInsertTrigger.sql','2013-12-28 11:13:38',127,'EXECUTED','3:6d8526ca49b78dd0f7da7e63ccbd9cda','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('33DROP','sshacter','./liquibase/2014/Q1/sshacter33_PICS13868_InvoiceItemInsertTrigger.sql','2013-12-28 11:13:37',126,'EXECUTED','3:40184f6d617d6620d3ab6d4aed4cd61b','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('34','kchase','./liquibase/2014/Q1/kchase34_PICS-14731_UpdateReportId.sql','2014-03-27 12:29:06',212,'EXECUTED','3:e440b68768c803b38ee600117e596967','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('34CREATE','sshacter','./liquibase/2014/Q1/sshacter34_PICS13868_InvoiceItemUpdateTrigger.sql','2013-12-28 11:13:38',129,'EXECUTED','3:cd7d28ee365899580e960681dd26eec5','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('34DROP','sshacter','./liquibase/2014/Q1/sshacter34_PICS13868_InvoiceItemUpdateTrigger.sql','2013-12-28 11:13:38',128,'EXECUTED','3:125860a717e3d10e7edfe59e83e0de9c','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('35','kchase','./liquibase/2014/Q1/kchase35_PICS-14871_UpdateResubmittedPQF_DDL.sql','2014-03-27 16:50:05',215,'EXECUTED','3:15a30b121dd0a014727c71b21e9882ee','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('35','mdo','./liquibase/2014/Q1/mdo35_PICS-14251_ChangeAUDNZDBackTo2013Pricing.sql','2014-01-23 15:19:12',152,'EXECUTED','3:f7e53af5ce8639c7896300b42233b104','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('35CREATE','sshacter','./liquibase/2014/Q1/sshacter35_PICS13868_InvoiceItemDeleteTrigger.sql','2013-12-28 11:13:39',131,'EXECUTED','3:2bb70519ef20bc8ca05e4d8956a47de1','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('35DROP','sshacter','./liquibase/2014/Q1/sshacter35_PICS13868_InvoiceItemDeleteTrigger.sql','2013-12-28 11:13:38',130,'EXECUTED','3:0d3a030fda13f2c5fa98a7b8e8afe0cc','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('36','mdo','./liquibase/2014/Q1/mdo36_PICS-13858_switchFavoriteReports.sql','2014-01-29 19:00:10',155,'EXECUTED','3:3aa0d8c7015695eb213daf417368a119','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('36CREATE','sshacter','./liquibase/2014/Q1/sshacter36_PICS13868_InvoicePaymentInsertTrigger.sql','2013-12-28 11:13:39',133,'EXECUTED','3:b4c2ade23b3ad94b643ede280f2d2571','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('36DROP','sshacter','./liquibase/2014/Q1/sshacter36_PICS13868_InvoicePaymentInsertTrigger.sql','2013-12-28 11:13:39',132,'EXECUTED','3:9f71eec8cc414fde537ad5167c125ae7','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('37','kchase','./liquibase/2014/Q1/kchase37_PICS-14871_UpdateResubmittedPQF_DML.sql','2014-03-27 16:50:06',216,'EXECUTED','3:e84d52789339cff74f6a8a93daed592e','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('37','mdo','./liquibase/2014/Q1/mdo37_PICS-13742_ERMResubmit.sql','2014-01-29 19:00:12',156,'EXECUTED','3:94a69dd20775456ee17ad51bc57e31b8','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('37CREATE','sshacter','./liquibase/2014/Q1/sshacter37_PICS13868_InvoicePaymentUpdateTrigger.sql','2013-12-28 11:13:40',135,'EXECUTED','3:b303aab8e67d61862ab20eb4c7cf994f','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('37DROP','sshacter','./liquibase/2014/Q1/sshacter37_PICS13868_InvoicePaymentUpdateTrigger.sql','2013-12-28 11:13:39',134,'EXECUTED','3:ef42c8101b2e2f05fb183b68a81dc17d','Custom SQL','',NULL,'2.0.1');
@@ -10188,6 +10222,7 @@ INSERT INTO `databasechangelog` VALUES ('5','lkam','./liquibase/2014/Q1/lkam5_US
 INSERT INTO `databasechangelog` VALUES ('5','mdo','./liquibase/2013/mdo5_PICS-12874_add_columns_to_ref_country.sql','2013-10-22 13:42:01',5,'EXECUTED','3:2ea7aea3f99ed0003c3f74a91561e676','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','pschlesinger','./liquibase/2013/pschlesinger5_PICS-12529_AddStartAndEndDateColumnsToInvoiceItem.sql','2013-11-13 15:10:21',23,'EXECUTED','3:7385ee7d5cc3d49e1bdf44329505ceee','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('5','sshacter','./liquibase/2013/sshacter5_PICS-12402_EmployeeGUARDTables.sql','2013-11-13 15:11:36',33,'EXECUTED','3:2b2fea049fd8c7fff34ae079f7b62c62','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('50','mdo','./liquibase/2014/Q1/mdo50_PICS-14932_addPoints.sql','2014-03-27 12:29:08',213,'EXECUTED','3:b11065087dbd0ed5ea6ac3765a65bf84','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('6','dalvarado','./liquibase/2013/dalvarado6_PICS-13611_Add_rules_for_SS.sql','2013-11-25 07:24:57',52,'EXECUTED','3:399100adf5413d791df60fa4a402f725','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('6','kchase','./liquibase/2013/kchase5_PICS-13054_RemoveTags.sql','2013-11-13 15:10:02',21,'EXECUTED','3:0a9c44756b1331598eaed4233f9ecac2','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('6','lkam','./liquibase/2014/Q1/lkam6_US284_Update_PQF_Workflow.sql','2014-03-03 12:52:39',196,'EXECUTED','3:4f6fbf27b7d606573882f5cf4b804636','Custom SQL','',NULL,'2.0.1');
@@ -10240,6 +10275,7 @@ INSERT INTO `databasechangelog` VALUES ('8w','sshacter','./liquibase/2013/sshact
 INSERT INTO `databasechangelog` VALUES ('8x','sshacter','./liquibase/2013/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql','2013-12-03 12:45:14',76,'EXECUTED','3:74fb07f766ffd625cfe8cedfe8a3b030','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('8y','sshacter','./liquibase/2013/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql','2013-12-03 12:45:15',77,'EXECUTED','3:c21ea02ef700d3c2a74e94aaf5221e0d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('8z','sshacter','./liquibase/2013/sshacter8_PICS-13247_CreateInvoiceArchiveTriggers.sql','2013-12-03 12:45:15',78,'EXECUTED','3:e2ba701c9fec3fa4d00e62656921d7b8','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('9','lkam','./liquibase/2014/Q1/lkam9_US191_Add_Address_Verifcation_Status.sql','2014-03-27 16:50:05',214,'EXECUTED','3:1d4d60036a0ee4d841f8bb496ee9eafd','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('9','mdo','./liquibase/2013/mdo9_PICS-13604_SS.sql','2013-11-26 13:57:34',49,'EXECUTED','3:9f0e538ff9783c8999aeae65f24df5a7','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('9','pschlesinger','./liquibase/2013/pschlesinger9_PICS-13683_CorrectDueDates.sql','2013-12-11 12:34:06',90,'EXECUTED','3:ca5bde4710103def8f8a84cd04704608','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('9','sshacter','./liquibase/2013/sshacter9_PICS-13547_EmployeeGUARDProjectTables.sql','2013-11-15 18:21:25',39,'EXECUTED','3:65741ecc9bf369369043af5adab7de20','Custom SQL','',NULL,'2.0.1');
@@ -22119,11 +22155,12 @@ CREATE TABLE `payment_operator_commission` (
   `updatedBy` int(11) NOT NULL,
   `updateDate` datetime NOT NULL,
   `paymentAmount` decimal(9,2) NOT NULL,
+  `points` decimal(11,7) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payment_commission` (`paymentID`,`invoiceOperatorCommissionID`),
   KEY `invoiceOperatorCommission` (`invoiceOperatorCommissionID`),
-  CONSTRAINT `payment` FOREIGN KEY (`paymentID`) REFERENCES `invoice` (`id`),
-  CONSTRAINT `invoiceOperatorCommission` FOREIGN KEY (`invoiceOperatorCommissionID`) REFERENCES `invoice_operator_commission` (`id`)
+  CONSTRAINT `invoiceOperatorCommission` FOREIGN KEY (`invoiceOperatorCommissionID`) REFERENCES `invoice_operator_commission` (`id`),
+  CONSTRAINT `payment` FOREIGN KEY (`paymentID`) REFERENCES `invoice` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -23740,6 +23777,28 @@ LOCK TABLES `stats_gco_count` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `temp_caos_to_update`
+--
+
+DROP TABLE IF EXISTS `temp_caos_to_update`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `temp_caos_to_update` (
+  `caoID` int(11) NOT NULL DEFAULT '0',
+  `caoStatus` varchar(30) CHARACTER SET latin1 DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `temp_caos_to_update`
+--
+
+LOCK TABLES `temp_caos_to_update` WRITE;
+/*!40000 ALTER TABLE `temp_caos_to_update` DISABLE KEYS */;
+/*!40000 ALTER TABLE `temp_caos_to_update` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `togglz`
 --
 
@@ -23975,7 +24034,7 @@ CREATE TABLE `useraccess` (
   PRIMARY KEY (`accessID`),
   UNIQUE KEY `user_type` (`userID`,`accessType`),
   KEY `access_type` (`accessType`)
-) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -24004,6 +24063,8 @@ INSERT INTO `useraccess` VALUES (161,98441,'ContractorBilling',1,NULL,NULL,1,'20
 INSERT INTO `useraccess` VALUES (171,98441,'ContractorSafety',1,NULL,NULL,1,'2014-02-14 19:25:25',1000);
 INSERT INTO `useraccess` VALUES (181,98441,'ContractorAdmin',1,NULL,NULL,1,'2014-02-14 19:25:25',1000);
 INSERT INTO `useraccess` VALUES (191,10,'SwitchUser',1,NULL,NULL,1,'2014-02-14 19:32:29',NULL);
+INSERT INTO `useraccess` VALUES (201,5000,'InvoiceEdit',1,1,1,1,'2014-01-21 19:24:46',1000);
+INSERT INTO `useraccess` VALUES (211,5000,'RestApi',1,NULL,NULL,1,'2013-07-17 20:29:14',1000);
 /*!40000 ALTER TABLE `useraccess` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -24027,7 +24088,7 @@ CREATE TABLE `usergroup` (
   KEY `roleID` (`groupID`),
   CONSTRAINT `FK_usergroup_group` FOREIGN KEY (`groupID`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_usergroup_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -24041,6 +24102,10 @@ INSERT INTO `usergroup` VALUES (11,1000,9,'2014-02-13 17:52:06',1000,1000,'2014-
 INSERT INTO `usergroup` VALUES (21,1001,10,NULL,NULL,NULL,NULL);
 INSERT INTO `usergroup` VALUES (41,1002,10,NULL,NULL,NULL,NULL);
 INSERT INTO `usergroup` VALUES (51,98461,10,'2014-02-19 18:43:30',1000,1000,'2014-02-19 18:43:30');
+INSERT INTO `usergroup` VALUES (61,5000,9,'2014-01-21 13:25:08',1000,1000,'2014-01-21 13:25:08');
+INSERT INTO `usergroup` VALUES (71,5000,10,'2014-01-21 13:25:08',1000,1000,'2014-01-21 13:25:08');
+INSERT INTO `usergroup` VALUES (81,5000,20,'2014-01-21 13:25:08',1000,1000,'2014-01-21 13:25:08');
+INSERT INTO `usergroup` VALUES (91,5000,21,'2013-07-17 15:18:27',1000,1000,'2013-07-17 15:18:27');
 /*!40000 ALTER TABLE `usergroup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -24118,9 +24183,12 @@ INSERT INTO `users` VALUES (1,NULL,NULL,'No',NULL,'PICS','System','PICS System',
 INSERT INTO `users` VALUES (9,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Super User','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,10976,10976,'2008-09-11 18:05:06','2010-04-06 11:33:22',NULL,'America/Chicago',0,0,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (10,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Employee Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,27160,38048,'2008-01-11 00:00:00','2013-03-04 11:01:36',NULL,'America/Chicago',0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (12,NULL,NULL,'Yes',NULL,NULL,NULL,'Contractor Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,'en',NULL,NULL,1,NULL,1,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
-INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-03-07 11:53:41',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
+INSERT INTO `users` VALUES (20,'GROUP1100PICS Developer',NULL,'Yes',NULL,'First','Last','PICS Developer','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2011-03-03 16:40:34','2011-03-03 16:40:34',NULL,'America/Chicago',0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
+INSERT INTO `users` VALUES (21,'GROUP1100PICS API User',NULL,'Yes',NULL,'First','Last','PICS API User','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-03-26 17:30:43','2013-03-26 17:30:43',NULL,NULL,0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
+INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-03-28 08:49:54',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
 INSERT INTO `users` VALUES (1001,NULL,NULL,'No','tester@picsauditing.com','PICS','CSR','PICS CSR','Yes',NULL,1100,NULL,2,NULL,NULL,NULL,NULL,'',NULL,37951,23157,'2012-11-19 18:58:25','2013-04-12 10:50:56',NULL,NULL,0,0,'en','PICS',NULL,1,'2013-05-13 19:20:34',1,'2013-05-13 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,171);
 INSERT INTO `users` VALUES (1002,NULL,NULL,'No','tester@picsauditing.com','PICS','Auditor','PICS Auditor','Yes','2014-02-13 16:54:58',1100,NULL,0,NULL,'',NULL,NULL,NULL,NULL,941,90574,'2013-02-19 16:32:06','2013-09-09 12:02:45',NULL,'America/Los_Angeles',0,0,'en_US','Technology',NULL,1,'2013-02-19 00:00:00',1,'2013-02-19 00:00:00','2013-08-06 00:00:00',0,8,16,'xMTWTFx',0,NULL,181);
+INSERT INTO `users` VALUES (5000,'AETestv7',NULL,'No','aetest0ebdfea6@picsauditing.com','AETest','v7Menus','AETest v7Menus','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-07-17 15:17:42','2014-03-18 11:54:22',NULL,'America/Los_Angeles',0,1,'en_US','Selenium Test',NULL,1,'2013-12-20 00:00:00',1,'2013-12-20 00:00:00','2013-07-25 00:00:00',0,8,16,'xMTWTFx',0,'1eyndgv4iddubsry9u9kheniab7r4cvb',32);
 INSERT INTO `users` VALUES (98431,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Group1','Yes',NULL,1100,NULL,0,NULL,NULL,'123-456-7890','123-456-7890','1234567890','2014-02-14',1000,1000,'2014-02-14 10:15:43','2014-02-14 10:15:43',NULL,NULL,0,1,'en',NULL,NULL,1,'2014-02-14 10:15:43',1,'2014-02-14 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41081);
 INSERT INTO `users` VALUES (98441,NULL,NULL,'No','tester@picsauditing.com','Jeffrey','Stewart','Jeffrey Stewart','Yes','2014-02-14 11:32:50',14,NULL,0,NULL,NULL,NULL,NULL,NULL,'2014-02-14',1000,1000,'2014-02-14 11:25:26','2014-02-14 11:25:26',NULL,'US/Arizona',0,1,'en_US',NULL,NULL,1,'2014-02-14 11:25:25',1,'2014-02-14 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41091);
 INSERT INTO `users` VALUES (98461,NULL,NULL,'No','tester@picsauditing.com','PICS','No Permissions','PICS No Permissions','Yes','2014-02-19 21:02:45',1100,NULL,0,NULL,NULL,'9495559584',NULL,'9495559584','2014-02-19',1000,1000,'2014-02-19 18:40:03','2014-02-19 18:40:03',NULL,'US/Pacific',0,1,'en_US','Technology',NULL,1,'2014-02-19 18:40:01',1,'2014-02-19 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41101);

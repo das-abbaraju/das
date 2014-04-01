@@ -11,10 +11,12 @@ import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import javax.persistence.Column;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -152,18 +154,28 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		return false;
 	}
 
-	@Transient
-	private Set<Integer> getFacilityOperatorIds() {
-		Set<Integer> idList = new HashSet<Integer>();
-		for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
-			if (facility.getOperator().getStatus().isActiveOrDemo()
-					&& !facility.getOperator().isAutoApproveRelationships()) {
-				idList.add(facility.getOperator().getId());
-			}
-		}
+    // TODO: this should be moved 1. out of this domain entity to a service class and 2. converted to a slick DAO
+    @Transient
+    private Set<Integer> getFacilityOperatorIds() {
+        Set<Integer> idList = new HashSet<>();
 
-		return idList;
-	}
+        String where = "a.status in ('Active', 'Demo') and a.autoApproveRelationships = 0 and facilities.corporateID = " +
+                getOperatorAccount().getId();
+        SelectSQL sql = new SelectSQL("facilities", where);
+        sql.setDistinct(true);
+        sql.addField("facilities.opID");
+        sql.addJoin("join accounts a on a.id = facilities.opID");
+
+        try {
+            Database db = new Database();
+            List<Integer> results = db.select(sql.toString(), db.buildIntegerRowMapper("opID"));
+            idList.addAll(results);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return idList;
+    }
 
 	@Enumerated(EnumType.STRING)
 	@ReportField(type = FieldType.FlagColor, importance = FieldImportance.Average)

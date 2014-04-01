@@ -218,13 +218,6 @@ public class ContractorAuditDAO extends PicsDAO {
         return query.getResultList();
     }
 
-    public List<ContractorAudit> findAuditsNeedingWebcams() {
-		Query q = em
-				.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() AND needsCamera = TRUE AND auditLocation = 'Web' ORDER BY scheduledDate");
-
-		return q.getResultList();
-	}
-
 	public List<ContractorAudit> findWhere(int limit, String where, String orderBy) {
 		String hql = "FROM ContractorAudit";
 		if (where.length() > 0) {

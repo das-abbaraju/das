@@ -68,8 +68,15 @@ public class OperatorsModel extends AbstractModel {
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("FacilitiesEdit.action?operator={AccountID}");
 
+        Field accountTypeString = new Field(ACCOUNT_TYPE+"String", "Account.type", FieldType.String);
+        accountTypeString.setFilterable(false);
+        accountTypeString.setVisible(false);
+        accountTypeString.setImportance(FieldImportance.Required);
+        fields.put(accountTypeString.getName().toUpperCase(), accountTypeString);
+
 		Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
 		accountType.setTranslationPrefixAndSuffix(ACCOUNT_TYPE, "");
+        accountType.setDrillDownField(accountTypeString.getName());
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 
 		return fields;

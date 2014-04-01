@@ -255,8 +255,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 		if (availabilitySelectedID > 0) {
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
-			conAudit.setNeedsCamera(true); // Assume yes until they say
-			// otherwise
 			return "confirm";
 		}
 		addActionError(getText("ScheduleAudit.message.TimeSlotNotAvailable"));
@@ -341,30 +339,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				.getAuditType().getName());
 
 		createInvoice(expedite, notes);
-
-		if (conAudit.isNeedsCamera()) {
-			List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.WebcamNotification);
-			List<String> emails = new ArrayList<String>();
-			for (UserAccess ua : webcamUsers) {
-				if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail())) {
-					emails.add("\"" + ua.getUser().getName() + "\" <" + ua.getUser().getEmail() + ">");
-				}
-			}
-
-			// TODO We should pull this out into an email template.
-			EmailQueue email = new EmailQueue();
-			email.setSubject("Webcam needed for Rush " + conAudit.getAuditType().getName() + " for "
-					+ conAudit.getContractorAccount().getName());
-			email.setBody(conAudit.getContractorContact() + " from " + conAudit.getContractorAccount().getName()
-					+ " has requested a Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " on "
-					+ DateBean.format(startTime, "MMM dd h:mm a, z")
-					+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
-			email.setToAddresses(Strings.implode(emails));
-			email.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
-			email.setSubjectViewableById(Account.PicsID);
-			email.setBodyViewableById(Account.PicsID);
-			emailSender.send(email);
-		}
 	}
 
 	public class AvailableSet {

@@ -93,6 +93,8 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
 
         facilitiesEdit = new FacilitiesEdit();
         super.setUp(facilitiesEdit);
+        facilitiesEdit.setCountry(country);
+        facilitiesEdit.setCountrySubdivision(countrySubdivision);
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(facilitiesEdit, this);
 
@@ -120,6 +122,8 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(false);
         when(countrySubdivision.getCountry()).thenReturn(country);
         when(newCountrySubdivision.toString()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
+        when(country.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
+        when(countrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
 
         Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
         Whitebox.setInternalState(facilitiesEdit, "contractorOperatorService", contractorOperatorService);
@@ -209,6 +213,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     @Test
     public void testSave_CountryChangeIsCopiedToOperator() {
         facilitiesEdit.setCountry(country2);
+        when(country2.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
 
         facilitiesEdit.save();
 
@@ -255,6 +260,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     public void testSave_ChangeOfCountrySubdivisionFindsAndSetsResultOfFindOnOperator() {
         facilitiesEdit.setCountrySubdivision(newCountrySubdivision);
         when(countrySubdivisionDAO.find(newCountrySubdivision.toString())).thenReturn(newCountrySubdivision);
+        when(newCountrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
 
         facilitiesEdit.save();
 
@@ -267,6 +273,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         facilitiesEdit.setCountrySubdivision(newCountrySubdivision);
         when(operator.getCountrySubdivision()).thenReturn(null);
         when(countrySubdivisionDAO.find(newCountrySubdivision.toString())).thenReturn(newCountrySubdivision);
+        when(newCountrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
 
         facilitiesEdit.save();
 
@@ -644,5 +651,4 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         verify(operator).setQbListID("NOLOAD" + NON_ZERO_OPERATOR_ID);
         verify(operator).setQbListCAID("NOLOAD" + NON_ZERO_OPERATOR_ID);
     }
-
 }

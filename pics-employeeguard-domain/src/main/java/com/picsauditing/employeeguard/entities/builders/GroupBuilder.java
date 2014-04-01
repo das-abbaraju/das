@@ -5,40 +5,40 @@ import org.apache.commons.lang.ArrayUtils;
 
 import java.util.List;
 
-public class AccountGroupBuilder {
+public class GroupBuilder {
 
 	private Group group;
 
-	public AccountGroupBuilder() {
+	public GroupBuilder() {
 		group = new Group();
 	}
 
-	@Deprecated
-	public AccountGroupBuilder(int id, int accountId) {
-		group = new Group(id, accountId);
-	}
-
-	public AccountGroupBuilder id(int id) {
+	public GroupBuilder id(int id) {
 		group.setId(id);
 		return this;
 	}
 
-	public AccountGroupBuilder accountId(int accountId) {
+	public GroupBuilder accountId(int accountId) {
 		group.setAccountId(accountId);
 		return this;
 	}
 
-	public AccountGroupBuilder name(String name) {
+    @Deprecated
+	public GroupBuilder(int id, int accountId) {
+		group = new Group(id, accountId);
+	}
+
+	public GroupBuilder name(String name) {
 		group.setName(name);
 		return this;
 	}
 
-	public AccountGroupBuilder description(String description) {
+	public GroupBuilder description(String description) {
 		group.setDescription(description);
 		return this;
 	}
 
-	public AccountGroupBuilder skills(int[] skills) {
+	public GroupBuilder skills(int[] skills) {
 		if (!ArrayUtils.isEmpty(skills)) {
 			group.getSkills().clear();
 
@@ -54,7 +54,7 @@ public class AccountGroupBuilder {
 		return this;
 	}
 
-	public AccountGroupBuilder employees(int[] employees) {
+	public GroupBuilder employees(int[] employees) {
 		if (!ArrayUtils.isEmpty(employees)) {
 			group.getEmployees().clear();
 
@@ -70,7 +70,7 @@ public class AccountGroupBuilder {
 		return this;
 	}
 
-	public AccountGroupBuilder skills(List<AccountSkill> skills) {
+	public GroupBuilder skills(List<AccountSkill> skills) {
 		group.getSkills().clear();
 
 		for (AccountSkill accountSkill : skills) {
@@ -81,7 +81,7 @@ public class AccountGroupBuilder {
 		return this;
 	}
 
-	public AccountGroupBuilder employees(List<Employee> employees) {
+	public GroupBuilder employees(List<Employee> employees) {
 		group.getEmployees().clear();
 
 		for (Employee employee : employees) {

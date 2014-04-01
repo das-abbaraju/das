@@ -72,6 +72,7 @@ ContractorOfficeIn
 ContractorOriginalMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
+ContractorPQFTypeNameString
 ContractorPaymentMethod
 ContractorProductRisk
 ContractorProductRiskVerified
@@ -99,5 +100,7 @@ ContractorWorksAtClientSite
 ContractorWorksForReportingClient
 ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
+DirectTradeId
 DirectTradeName
+TradeId
 TradeName

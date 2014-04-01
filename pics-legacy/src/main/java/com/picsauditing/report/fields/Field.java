@@ -36,6 +36,7 @@ public class Field {
 	private String preTranslation;
 	private String postTranslation;
 	private String separator;
+	private String drillDownField;
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
 
@@ -109,6 +110,8 @@ public class Field {
 				dependent.add(urlFieldMatcher.group(1));
 			}
 		}
+        if (drillDownField != null)
+            dependent.add(drillDownField);
 
 		return dependent;
 	}
@@ -294,6 +297,14 @@ public class Field {
         this.suffixValue = suffixValue;
     }
 
+    public String getDrillDownField() {
+        return drillDownField;
+    }
+
+    public void setDrillDownField(String drillDownField) {
+        this.drillDownField = drillDownField;
+    }
+
     public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, type);
 		copiedField.text = text;
@@ -308,6 +319,7 @@ public class Field {
 		copiedField.preTranslation = preTranslation;
 		copiedField.postTranslation = postTranslation;
         copiedField.separator = separator;
+        copiedField.drillDownField = drillDownField;
 		copiedField.requiredPermission = requiredPermission;
 		copiedField.importance = importance;
         copiedField.prefixValue = prefixValue;

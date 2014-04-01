@@ -8,6 +8,7 @@ import com.picsauditing.access.*;
 import com.picsauditing.actions.contractors.RegistrationAction;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
@@ -290,5 +291,9 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
     @Override
     public void prepare() throws Exception {
         localeForm = getLocaleFromRequestData();
+    }
+
+    public boolean isAddressVerificationEnabled() {
+        return Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive();
     }
 }

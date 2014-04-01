@@ -109,19 +109,16 @@ public class PaymentStrategyTest {
 
     @Test
     public void testCalculateActivationPoints_zeroPoints() throws Exception {
-        when(invoiceCommission.getPoints()).thenReturn(BigDecimal.ZERO);
-        BigDecimal value = Whitebox.invokeMethod(paymentStrategy, "calculateActivationPoints", invoiceCommission, paymentApplied);
+        BigDecimal value = Whitebox.invokeMethod(paymentStrategy, "calculatePoints", invoice, BigDecimal.ZERO, paymentApplied);
         assertEquals(BigDecimal.ZERO, value);
     }
 
     @Test
     public void testCalculateActivationPoints_tenPoints() throws Exception {
         Whitebox.setInternalState(paymentStrategy,"eventType", PaymentDataEvent.PaymentEventType.SAVE);
-        when(invoiceCommission.getPoints()).thenReturn(BigDecimal.TEN);
-        when(invoiceCommission.getInvoice()).thenReturn(invoice);
         when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
         when(paymentApplied.getAmount()).thenReturn(BigDecimal.TEN);
-        BigDecimal value = Whitebox.invokeMethod(paymentStrategy, "calculateActivationPoints", invoiceCommission, paymentApplied);
+        BigDecimal value = Whitebox.invokeMethod(paymentStrategy, "calculatePoints", invoice, BigDecimal.TEN, paymentApplied);
         BigDecimal expected = BigDecimal.valueOf(BigDecimal.TEN.doubleValue() / BigDecimal.TEN.doubleValue()).multiply(BigDecimal.TEN);
         assertEquals(expected, value);
     }
@@ -129,11 +126,9 @@ public class PaymentStrategyTest {
     @Test
     public void testCalculateActivationPoints_negTenPoints() throws Exception {
         Whitebox.setInternalState(paymentStrategy,"eventType", PaymentDataEvent.PaymentEventType.REMOVE);
-        when(invoiceCommission.getPoints()).thenReturn(BigDecimal.TEN);
-        when(invoiceCommission.getInvoice()).thenReturn(invoice);
         when(invoice.getTotalAmount()).thenReturn(BigDecimal.TEN);
         when(paymentApplied.getAmount()).thenReturn(BigDecimal.TEN);
-        BigDecimal value = Whitebox.invokeMethod(paymentStrategy, "calculateActivationPoints", invoiceCommission, paymentApplied);
+        BigDecimal value = Whitebox.invokeMethod(paymentStrategy, "calculatePoints", invoice, BigDecimal.TEN, paymentApplied);
         BigDecimal expected = BigDecimal.valueOf(BigDecimal.TEN.doubleValue() / BigDecimal.TEN.doubleValue()).multiply(BigDecimal.TEN).negate();
         assertEquals(expected, value);
     }

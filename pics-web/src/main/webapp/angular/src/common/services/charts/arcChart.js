@@ -1,15 +1,32 @@
-angular.module('PICS.charts', [])
+angular.module('PICS.charts')
 
 .factory('AnimatedArcChart', function() {
     var chart = function (data) {
         this.data = data;
     };
 
+    var DRAW_OPTION_DEFAULTS = {
+        colors: ['#33b679', '#f4b400', '#e74c3c'],
+        height: 200,
+        width: 420
+    };
+
     chart.prototype.getData = function () {
         return this.data;
     };
 
-    chart.prototype.draw = function (element, width, height, colors) {
+    chart.prototype.draw = function (options) {
+        options = angular.extend({}, DRAW_OPTION_DEFAULTS, options);
+
+        if (!options.element) {
+            throw 'No element found';
+        }
+
+        var width = options.width,
+            height = options.height,
+            colors = options.colors,
+            element = options.element;
+
         var arcStartAngle = -0.5 * Math.PI,
             arcEndAngle = 0.5 * Math.PI,
             data = this.getData();

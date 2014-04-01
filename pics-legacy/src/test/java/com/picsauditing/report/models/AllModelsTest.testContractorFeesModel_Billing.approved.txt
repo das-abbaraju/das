@@ -35,5 +35,6 @@ ContractorSafetySensitive
 ContractorSoleProprietor
 ContractorTransportationRisk
 FeeFeeClass
+FeeId
 FeeMaxFacilities
 FeeName

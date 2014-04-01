@@ -43,6 +43,7 @@ public class PaymentStrategy implements PaymentCommissionStrategy<PaymentApplied
             paymentOperatorCommission.setInvoiceOperatorCommission(invoiceOperatorCommission);
             paymentOperatorCommission.setPayment(paymentApplied.getPayment());
             paymentOperatorCommission.setAuditColumns(paymentApplied.getPayment().getUpdatedBy());
+            paymentOperatorCommission.setPoints(calculatePoints(invoiceOperatorCommission.getInvoice(), invoiceOperatorCommission.getRevenuePercent(), paymentAppliedToInvoice));
             paymentOperatorCommission.setPaymentAmount(calculateRevenueAmount(invoiceOperatorCommission.getInvoice(), invoiceOperatorCommission.getRevenuePercent(), paymentAppliedToInvoice));
 
             invoiceCommissionDAO.save(paymentOperatorCommission);
@@ -57,20 +58,20 @@ public class PaymentStrategy implements PaymentCommissionStrategy<PaymentApplied
             paymentCommission.setInvoiceCommission(invoiceCommission);
             paymentCommission.setPayment(paymentApplied.getPayment());
             paymentCommission.setAuditColumns(paymentApplied.getPayment().getUpdatedBy());
-            paymentCommission.setActivationPoints(calculateActivationPoints(invoiceCommission, paymentAppliedToInvoice));
+            paymentCommission.setActivationPoints(calculatePoints(invoiceCommission.getInvoice(), invoiceCommission.getPoints(), paymentAppliedToInvoice));
             paymentCommission.setPaymentAmount(calculateRevenueAmount(invoiceCommission.getInvoice(), invoiceCommission.getRevenuePercent(), paymentAppliedToInvoice));
 
             invoiceCommissionDAO.save(paymentCommission);
         }
     }
 
-    private BigDecimal calculateActivationPoints(InvoiceCommission invoiceCommission, PaymentAppliedToInvoice paymentApplied) {
-        if (invoiceCommission.getPoints().equals(BigDecimal.ZERO))
+    private BigDecimal calculatePoints(Invoice invoice, BigDecimal commissionPoints, PaymentAppliedToInvoice paymentApplied) {
+        if (commissionPoints.equals(BigDecimal.ZERO))
             return BigDecimal.ZERO;
 
-        BigDecimal activationPoints = calculatePaymentPercentOfInvoice(invoiceCommission.getInvoice(), paymentApplied).multiply(invoiceCommission.getPoints());
+        BigDecimal paidPoints = calculatePaymentPercentOfInvoice(invoice, paymentApplied).multiply(commissionPoints);
 
-        return negateIfRemovingPayment(activationPoints);
+        return negateIfRemovingPayment(paidPoints);
     }
 
     private BigDecimal calculateRevenueAmount(Invoice invoice, BigDecimal revenuePercent, PaymentAppliedToInvoice paymentApplied) {

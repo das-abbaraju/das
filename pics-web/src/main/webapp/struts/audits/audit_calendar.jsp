@@ -79,11 +79,6 @@ $(function() {
 span.fc-event-time {
 	display: block;
 }
-.cal-webcam a span.fc-event-time {
-	background-image: url('images/icon_webcam.png');
-	background-repeat: no-repeat;
-	text-indent: 24px;
-}
 .cal-onsite, .cal-onsite a, .cal-onsite .fc-event-time {
 	background-color: #A74D0F;
 	border-color: #A74D0F;

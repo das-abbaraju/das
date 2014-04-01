@@ -2,15 +2,11 @@ package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.*;
-import com.picsauditing.util.Strings;
-import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class PaymentOperatorCommissionsModel extends AbstractModel {
 
@@ -20,6 +16,7 @@ public class PaymentOperatorCommissionsModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec paymentOperatorCommission = new ModelSpec(null, "PaymentOperatorCommission");
+        paymentOperatorCommission.thirdAlias = "InvoiceOperatorCommission";
 
         ModelSpec invoiceOperatorCommission = paymentOperatorCommission.join(PaymentOperatorCommissionTable.Commission);
         invoiceOperatorCommission.alias = "InvoiceOperatorCommission";
@@ -41,6 +38,11 @@ public class PaymentOperatorCommissionsModel extends AbstractModel {
 
         operator.join(OperatorTable.Reporting);
 
+        ModelSpec recipient = paymentOperatorCommission.join(PaymentOperatorCommissionTable.Recipient);
+        recipient.minimumImportance = FieldImportance.Average;
+
+        recipient.join(AccountUserTable.User);
+
 		return paymentOperatorCommission;
 	}
 
@@ -49,7 +51,7 @@ public class PaymentOperatorCommissionsModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 		setUrlForField(fields, "InvoiceID", "InvoiceDetail.action?invoice.id={InvoiceID}");
 		setUrlForField(fields, "AccountName", "ContractorView.action?id={AccountID}");
-        setUrlForField(fields, "OperatorName", "FacilitiesEdit.action?id={OperatorID}");
+        setUrlForField(fields, "OperatorCommissionName", "FacilitiesEdit.action?id={OperatorCommissionID}");
 
 		return fields;
 	}

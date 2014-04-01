@@ -4,7 +4,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
+import com.picsauditing.employeeguard.entities.builders.GroupBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
@@ -58,7 +58,7 @@ public class OperatorJobRoleForm extends GroupNameSkillsForm implements AddAnoth
 		List<AccountSkill> accountSkills = accountSkillDAO.findByIds(Utilities.primitiveArrayToList(skills));
 		List<Employee> accountEmployees = employeeDAO.findByIds(Utilities.primitiveArrayToList(employees));
 
-		return new AccountGroupBuilder(id, accountId).name(name).description(description).skills(accountSkills).employees(accountEmployees).build();
+		return new GroupBuilder(id, accountId).name(name).description(description).skills(accountSkills).employees(accountEmployees).build();
 	}
 
 	public static class Builder {

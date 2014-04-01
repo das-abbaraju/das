@@ -13,8 +13,15 @@ public class TradeTable extends AbstractTable {
 		super("ref_trade");
 		addFields(Trade.class);
 
+        Field tradeID = new Field("Id","id", FieldType.Integer);
+        tradeID.setVisible(false);
+        tradeID.setFilterable(false);
+        tradeID.setImportance(FieldImportance.Required);
+        addField(tradeID);
+
         Field tradeName = new Field("Name","id", FieldType.Trade);
         tradeName.setTranslationPrefixAndSuffix("Trade","name");
+        tradeName.setDrillDownField(tradeID.getName());
         tradeName.setImportance(FieldImportance.Required);
         tradeName.setVisible(false);
         addField(tradeName);

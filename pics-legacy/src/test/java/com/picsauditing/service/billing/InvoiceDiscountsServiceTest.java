@@ -38,7 +38,25 @@ public class InvoiceDiscountsServiceTest {
 
     @Test
     public void testApplyDiscounts_WorksForOnlySuncor() throws Exception {
-        ContractorAccount contractor = new ContractorAccount();
+        ContractorAccount contractor = ContractorAccount.builder().country(new Country(Country.CANADA_ISO_CODE)).build();
+        List<InvoiceItem> invoiceItems = buildInvoiceItems();
+
+
+        when(topLevelOperatorFinder.findAllTopLevelOperators(contractor)).thenReturn(Arrays.asList(SUNCOR));
+
+        List<InvoiceItem> discounts = invoiceDiscountsService.applyDiscounts(contractor, invoiceItems);
+
+        assertEquals(3, discounts.size());
+
+        for (InvoiceItem discount: discounts) {
+            assertEquals(TEST_AMOUNT.negate(), discount.getAmount());
+            assertEquals(ZERO, discount.getOriginalAmount());
+        }
+    }
+
+    @Test
+    public void testApplyDiscounts_WorksForOnlySuncor_LocatedInUs() throws Exception {
+        ContractorAccount contractor = ContractorAccount.builder().country(new Country(Country.US_ISO_CODE)).build();
         List<InvoiceItem> invoiceItems = buildInvoiceItems();
 
 
@@ -56,7 +74,7 @@ public class InvoiceDiscountsServiceTest {
 
     @Test
     public void testApplyDiscounts_DoesNotWorkForSuncor() throws Exception {
-        ContractorAccount contractor = new ContractorAccount();
+        ContractorAccount contractor = ContractorAccount.builder().country(new Country(Country.CANADA_ISO_CODE)).build();
         List<InvoiceItem> invoiceItems = buildInvoiceItems();
 
 
@@ -69,11 +87,24 @@ public class InvoiceDiscountsServiceTest {
 
     @Test
     public void testApplyDiscounts_WorksForSuncorAndAnotherCompany() throws Exception {
-        ContractorAccount contractor = new ContractorAccount();
+        ContractorAccount contractor = ContractorAccount.builder().country(new Country(Country.CANADA_ISO_CODE)).build();
         List<InvoiceItem> invoiceItems = buildInvoiceItems();
 
 
         when(topLevelOperatorFinder.findAllTopLevelOperators(contractor)).thenReturn(Arrays.asList(SUNCOR, NOT_SUNCOR));
+
+        List<InvoiceItem> discounts = invoiceDiscountsService.applyDiscounts(contractor, invoiceItems);
+
+        assertEquals(0, discounts.size());
+    }
+
+    @Test
+    public void testApplyDiscounts_WorksForOnlySuncor_LocatedOutsideNorthAmerica() throws Exception {
+        ContractorAccount contractor = ContractorAccount.builder().country(new Country(Country.UK_ISO_CODE)).build();
+        List<InvoiceItem> invoiceItems = buildInvoiceItems();
+
+
+        when(topLevelOperatorFinder.findAllTopLevelOperators(contractor)).thenReturn(Arrays.asList(SUNCOR));
 
         List<InvoiceItem> discounts = invoiceDiscountsService.applyDiscounts(contractor, invoiceItems);
 
@@ -91,8 +122,8 @@ public class InvoiceDiscountsServiceTest {
             @Override
             public InvoiceFee answer(InvocationOnMock invocation) throws Throwable {
                 FeeClass feeClass = (FeeClass) invocation.getArguments()[0];
-                int minFacilities = (int) invocation.getArguments()[1];
-                int operatorId = (int) invocation.getArguments()[2];
+                int minFacilities = (Integer) invocation.getArguments()[1];
+                int operatorId = (Integer) invocation.getArguments()[2];
 
                 InvoiceFee invoiceFee = null;
 

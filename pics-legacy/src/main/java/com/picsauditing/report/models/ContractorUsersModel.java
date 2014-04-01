@@ -53,8 +53,15 @@ public class ContractorUsersModel extends AbstractModel {
     public Map<String, Field> getAvailableFields() {
         Map<String, Field> fields = super.getAvailableFields();
 
+        Field accountTypeString = new Field(ACCOUNT_TYPE+"String", "Account.type", FieldType.String);
+        accountTypeString.setFilterable(false);
+        accountTypeString.setVisible(false);
+        accountTypeString.setImportance(FieldImportance.Required);
+        fields.put(accountTypeString.getName().toUpperCase(), accountTypeString);
+
         Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
+        accountType.setDrillDownField(accountTypeString.getName());
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 
 		Field userName = fields.get("UserName".toUpperCase());

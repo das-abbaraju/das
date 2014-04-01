@@ -1197,21 +1197,6 @@
 		</action>
 
 		<!-- Customer Service -->
-		<action name="ManageWebcams"
-		        class="com.picsauditing.actions.customerservice.ManageWebcams">
-			<result>struts/customerservice/manage_webcams.jsp</result>
-		</action>
-
-		<action name="ManageWebcamsAjax"
-		        class="com.picsauditing.actions.customerservice.ManageWebcams">
-			<result>struts/customerservice/manage_webcams_form.jsp</result>
-		</action>
-
-		<action name="AssignWebcams"
-		        class="com.picsauditing.actions.customerservice.AssignWebcams">
-			<result>struts/customerservice/assign_webcams.jsp</result>
-		</action>
-
 		<action name="PICS10116" class="com.picsauditing.actions.PICS10116">
 			<result>struts/pics10116.jsp</result>
 		</action>

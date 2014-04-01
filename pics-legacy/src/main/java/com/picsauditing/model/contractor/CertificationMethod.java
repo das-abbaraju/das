@@ -1,15 +1,17 @@
 package com.picsauditing.model.contractor;
 
 public enum CertificationMethod {
-    INTERNAL("Internal", "INTERNAL"),
-    DEEMS_TO_SATISFY("Deems To Satisfy", "DEEMS_TO_SATISFY");
+    INTERNAL("Internal", "INTERNAL", "PICS Manual Audit SSiP Approval"),
+    DEEMS_TO_SATISFY("Deems To Satisfy", "DEEMS_TO_SATISFY", "SSiP Forum Deemed to Satisfy");
 
     private final String displayValue;
     private final String dbValue;
+    private final String description;
 
-    private CertificationMethod(final String displayValue, final String dbValue) {
+    private CertificationMethod(final String displayValue, final String dbValue, final String description) {
         this.displayValue = displayValue;
         this.dbValue = dbValue;
+        this.description = description;
     }
 
     public static CertificationMethod fromDbValue(final String dbValue) {
@@ -33,5 +35,9 @@ public enum CertificationMethod {
 
     public String getDbValue() {
         return dbValue;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

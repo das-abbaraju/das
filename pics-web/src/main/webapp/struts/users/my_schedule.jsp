@@ -35,11 +35,6 @@
 		span.fc-event-time {
 			display: block;
 		}
-		.cal-webcam a span.fc-event-time {
-			background-image: url('images/icon_webcam.png');
-			background-repeat: no-repeat;
-			text-indent: 24px;
-		}
 		table.modal_form {
 			font-size: 14px;
 		}

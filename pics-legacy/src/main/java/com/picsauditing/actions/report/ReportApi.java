@@ -290,7 +290,8 @@ public class ReportApi extends PicsApiSupport {
         if (this.user != null) {
             currentUser = this.user;
             loadPermissions(true);
-            permissions.login(user);
+            if (permissions.getUserId() != user.getId())
+                permissions.login(user);
         }
         else {
             currentUser = super.getUser();

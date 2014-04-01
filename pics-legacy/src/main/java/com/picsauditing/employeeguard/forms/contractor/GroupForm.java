@@ -4,7 +4,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
+import com.picsauditing.employeeguard.entities.builders.GroupBuilder;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -46,7 +46,7 @@ public class GroupForm extends GroupNameSkillsForm implements AddAnotherForm {
 	}
 
 	public Group buildAccountGroup() {
-		return new AccountGroupBuilder().name(name).description(description).skills(skills).employees(employees).build();
+		return new GroupBuilder().name(name).description(description).skills(skills).employees(employees).build();
 	}
 
 	public Group buildAccountGroup(int id, int accountId) {
@@ -56,7 +56,7 @@ public class GroupForm extends GroupNameSkillsForm implements AddAnotherForm {
 		List<AccountSkill> accountSkills = accountSkillDAO.findByIds(Utilities.primitiveArrayToList(skills));
 		List<Employee> accountEmployees = employeeDAO.findByIds(Utilities.primitiveArrayToList(employees));
 
-		return new AccountGroupBuilder(id, accountId).name(name).description(description).skills(accountSkills).employees(accountEmployees).build();
+		return new GroupBuilder(id, accountId).name(name).description(description).skills(accountSkills).employees(accountEmployees).build();
 	}
 
 	public static class Builder {

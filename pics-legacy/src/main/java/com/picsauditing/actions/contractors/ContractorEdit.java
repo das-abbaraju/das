@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.util.*;
 import com.picsauditing.validator.ContractorValidator;
@@ -53,6 +54,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
     protected BillingService billingService;
     @Autowired
     protected FeeService feeService;
+    @Autowired
+    private MessagePublisherService messageService;
 
 	private SapAppPropertyUtil sapAppPropertyUtil;
 
@@ -73,6 +76,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	private String contractorTypeHelpText = "";
 	private HttpServletRequest request;
+    private AccountStatus previousStatus;
 
 	public void prepare() throws Exception {
 		if (sapAppPropertyUtil == null) {
@@ -88,6 +92,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			if (conID > 0) {
 				contractor = contractorAccountDao.find(conID);
+
+                previousStatus = contractor.getStatus();
 
 				feeService.calculateContractorInvoiceFees(contractor);
                 billingService.syncBalance(contractor);
@@ -197,6 +203,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
                     contractor.setCurrentCsr(userDAO.find(csrId), permissions.getUserId());
                     contractor.setDontReassign(true);
                 }
+                changeCsrIfGoingActive();
 
                 if (insideSalesId > 0) {
                     User newRep = userDAO.find(insideSalesId);
@@ -214,6 +221,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		return SUCCESS;
 	}
+
+    private void changeCsrIfGoingActive() {
+        if (contractor.getStatus().isActive() && !contractor.getStatus().equals(previousStatus))
+            if (contractor.getCurrentCsr() == null || !contractor.getCurrentCsr().isActiveB()) {
+                messageService.getCsrAssignmentSinglePublisher().publish(contractor.getId());
+            }
+    }
 
     protected void checkListOnlyAcceptability() {
 		if (AccountLevel.ListOnly == contractor.getAccountLevel()) {
@@ -325,8 +339,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		request = ServletActionContext.getRequest();
 		if (request.getParameter("currentStatus") != null) {
 			if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
-				this.addNote(contractor, "Account Status changed from" + contractor.getStatus().toString() + " to "
-						+ request.getParameter("currentStatus"));
+				this.addNote(contractor, "Account Status changed from " + request.getParameter("currentStatus") + " to "
+						+ contractor.getStatus().toString());
 			}
 		}
 	}

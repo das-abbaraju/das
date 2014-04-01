@@ -66,12 +66,12 @@ function create_users {
 }
 
 function load_databases {
-	$ECHO -e "Loading $archive_db $(date +"%b %d %H:%M:%S")  \n"
+	$ECHO "Loading $archive_db $(date +"%b %d %H:%M:%S")  \n"
 	$MYSQL $archive_db < $archive_dump
-	$ECHO -e "Done loading $archive_db $(date +"%b %d %H:%M:%S") \n"
-	$ECHO -e "Loading $bootstrap_db $(date +"%b %d %H:%M:%S") \n"
+	$ECHO "Done loading $archive_db $(date +"%b %d %H:%M:%S") \n"
+	$ECHO "Loading $bootstrap_db $(date +"%b %d %H:%M:%S") \n"
 	$MYSQL $bootstrap_db < $bootstrap_dump
-	$ECHO -e "Done loading $bootstrap_db $(date +"%b %d %H:%M:%S") \n"
+	$ECHO "Done loading $bootstrap_db $(date +"%b %d %H:%M:%S") \n"
 }
 
 case "$1" in

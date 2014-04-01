@@ -439,9 +439,12 @@
                 		</s:iterator>
             		</table>
                 </s:if>
-                <s:if test="id != 0">
-                    <a href="ManageQuestionFunction.action?questionId=<s:property value="id" />" class="add">Add Function</a>
-                </s:if>
+                <pics:permission perm="ManageAudits" type="Edit" >
+                    <s:if test="id != 0">
+                        <a href="ManageQuestionFunction.action?questionId=<s:property value="id" />" class="add">Add Function</a>
+                    </s:if>
+                </pics:permission >
+
             </fieldset>
 
             <fieldset>
@@ -498,9 +501,12 @@
                 		</s:iterator>
             		</table>
                 </s:if>
-                <s:if test="id != 0">
-                    <a class="add" href="ManageQuestionFunctionWatcher.action?questionId=<s:property value="id" />"/>Add Function Watcher</a>
-                </s:if>
+                <pics:permission perm="ManageAudits" type="Edit" >
+                    <s:if test="id != 0">
+                        <a class="add" href="ManageQuestionFunctionWatcher.action?questionId=<s:property value="id" />"/>Add Function Watcher</a>
+                    </s:if>
+                </pics:permission >
+
             </fieldset>
 
         	<fieldset class="form">
@@ -687,6 +693,7 @@
         		</fieldset>
         	</s:if>
         	<fieldset class="form submit">
+                <pics:permission perm="ManageAudits" type="Edit" >
         		<div>
         			<button id="save" class="picsbutton positive" name="button" type="submit" value="save">Save</button>
         			<input type="button" id="copyQuestion" class="picsbutton" value="Copy" onclick="copyQuestion(<s:property value="id"/>)"/>
@@ -696,7 +703,9 @@
         				onclick="return confirm('Are you sure you want to delete this question?');" />
         		</s:if>
         		</div>
-        	</fieldset>
+                </pics:permission >
+
+            </fieldset>
         </s:form>
 
         <ul id="allCategories" style="display: none" class="mcdropdown_menu">
@@ -715,7 +724,9 @@
 
         <h3>Related Flag Criteria</h3>
         <div id="flags"></div>
-        <a href="ManageFlagCriteria!edit.action?criteria.displayOrder=999&criteria.question=<s:property value="question.id" />&criteria.requiredStatus=Submitted&criteria.category=Paperwork<s:if test="question.columnHeader" >&criteria.label=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" />&criteria.description=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" /></s:if>" class="add">Add New Question Flag Criteria</a>
+        <pics:permission perm="EditFlagCriteria" type="Edit" >
+            <a href="ManageFlagCriteria!edit.action?criteria.displayOrder=999&criteria.question=<s:property value="question.id" />&criteria.requiredStatus=Submitted&criteria.category=Paperwork<s:if test="question.columnHeader" >&criteria.label=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" />&criteria.description=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" /></s:if>" class="add">Add New Question Flag Criteria</a>
+        </pics:permission >
 
         <br />
         <br />

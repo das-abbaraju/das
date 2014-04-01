@@ -99,6 +99,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	private int passwordSecurityLevelId;
 	private Date deactivationDate;
 	private User deactivatedBy;
+    private AddressVerification addressVerification;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -1155,5 +1156,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
     @Transient
     public boolean isActiveDemoPending() {
         return (status != null && status.isActiveDemoPending());
+    }
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "addressVerificationId")
+    public AddressVerification getAddressVerification() {
+        return addressVerification;
+    }
+
+    public void setAddressVerification(AddressVerification addressVerification) {
+        this.addressVerification = addressVerification;
     }
 }

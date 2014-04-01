@@ -186,6 +186,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
         updateTradeSafetyRiskSensitive();
         updateSafetySensitivity();
+        updateSafetyRisk();
     }
 
     private void updateTradeSafetyRiskSensitive() {
@@ -209,6 +210,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
         if (!contractor.isSafetySensitive()) {
             if (contractor.isTradeSafetySensitive()) {
                 contractor.setSafetySensitive(true);
+            }
+        }
+    }
+
+    private void updateSafetyRisk() {
+        if (contractor.getSafetyRisk() != LowMedHigh.High) {
+            if (contractor.getTradeSafetyRisk().isGreaterThan(contractor.getSafetyRisk())) {
+                contractor.setSafetyRisk(contractor.getTradeSafetyRisk());
             }
         }
     }

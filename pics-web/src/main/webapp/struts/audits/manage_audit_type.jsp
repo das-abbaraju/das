@@ -105,7 +105,7 @@
         </pics:toggle>
     </pics:toggleElse>
 
-    <s:if test="auditType.id > 0">
+    <s:if test="auditType.id > 0 && permissions.hasPermission(@com.picsauditing.access.OpPerms@ManageAudits, 'Edit')">
         <a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
     </s:if>
 
@@ -519,13 +519,15 @@
             </fieldset>
 
             <fieldset class="form submit">
-                <input type="submit" class="picsbutton positive" name="button" value="Save" id="save" />
+                <pics:permission perm="ManageAudits" type="Edit" >
+                    <input type="submit" class="picsbutton positive" name="button" value="Save" id="save" />
 
-                <s:if test="auditType.id > 0 && auditType.categories.size == 0">
-                    <input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete" id="delete" />
-                </s:if>
+                    <s:if test="auditType.id > 0 && auditType.categories.size == 0">
+                        <input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete" id="delete" />
+                    </s:if>
 
-                <input type="submit" class="picsbutton" name="button" value="UpdateAllAudits" id="updateAllAudits" />
+                    <input type="submit" class="picsbutton" name="button" value="UpdateAllAudits" id="updateAllAudits" />
+                </pics:permission>
             </fieldset>
         </div>
     </s:form>
@@ -548,16 +550,19 @@
                 </s:iterator>
             </ul>
 
+            <pics:permission perm="ManageAudits" type="Edit" >
             <a
                 id="manage_audit_types_add_new_category"
                 class="add"
                 href="ManageCategory.action?button=AddNew&auditType=<s:property value="auditType.id"/>&category.auditType.id=<s:property value="auditType.id"/>">
                 Add New Category
             </a>
+            </pics:permission >
 
             <div id="list-info"></div>
         </div>
 
+        <pics:permission perm="ManageAudits" type="Edit" >
         <s:if test="auditType.categories.size > 1">
             <div class="info">
                 Drag and drop categories to change their order
@@ -565,6 +570,7 @@
 
             <br clear="all" />
         </s:if>
+        </pics:permission>
 
         <br/>
 
@@ -574,7 +580,7 @@
 
         <div id="flags"></div>
 
-        <pics:permission perm="EditFlagCriteria">
+        <pics:permission perm="EditFlagCriteria" type="Edit" >
             <a href="ManageFlagCriteria!edit.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />&criteria.description=<s:property value="auditType.name" />%20is%20missing"
                 class="add" id="manageFlagCriteria">
                 Add New Audit Type Flag Criteria

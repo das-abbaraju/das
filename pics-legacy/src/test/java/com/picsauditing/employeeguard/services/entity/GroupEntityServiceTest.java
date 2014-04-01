@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.entities.builders.AccountGroupBuilder;
+import com.picsauditing.employeeguard.entities.builders.GroupBuilder;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,7 +175,7 @@ public class GroupEntityServiceTest {
 	}
 
 	private Group buildFakeGroup(final int id, final int accountId, final String name) {
-		return new AccountGroupBuilder(id, accountId)
+		return new GroupBuilder(id, accountId)
 				.name(name)
 				.build();
 	}

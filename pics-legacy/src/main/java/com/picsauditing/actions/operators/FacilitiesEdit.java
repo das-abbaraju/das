@@ -205,11 +205,21 @@ public class FacilitiesEdit extends OperatorActionSupport {
             }
         }
 
-        if (country != null && !country.equals(operator.getCountry())) {
+        if (country == null || country.getIsoCode().isEmpty())
+        {
+            addActionError(getText("FacilitiesEdit.SelectCountry"));
+            return REDIRECT;
+        }
+        if (countrySubdivision == null || countrySubdivision.getIsoCode().isEmpty()) {
+            addActionError("Please select a subdivision");
+            return REDIRECT;
+        }
+
+        if (!country.equals(operator.getCountry())) {
             operator.setCountry(country);
         }
 
-        if ((countrySubdivision != null && !countrySubdivision.equals(operator.getCountrySubdivision()))
+        if ((!countrySubdivision.equals(operator.getCountrySubdivision()))
                 || (operator.getCountrySubdivision() == null && countrySubdivision != null)) {
             CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
             operator.setCountrySubdivision(contractorCountrySubdivision);
@@ -223,15 +233,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
         if (errors.size() > 0) {
             operatorDao.clear();
             operator = operatorDao.find(operator.getId());
-
-            if (operator != null) {
-                List<Facility> operatorFacilities = operator.getOperatorFacilities();
-                for (Facility facility : operatorFacilities) {
-                    if (!operatorFacilities.contains(facility)) {
-                        facilities.add(facility.getOperator().getId());
-                    }
-                }
-            }
 
             for (String error : errors) {
 				addActionError(error);
