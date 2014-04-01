@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.google.gson.Gson;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.engine.SkillEngine;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.models.ContractorSummary;

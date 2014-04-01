@@ -28,8 +28,8 @@ public class GroupEntityServiceTest {
 	public static final int ACCOUNT_ID = 465;
 	public static final int USER_ID = 78;
 	public static final int GROUP_ID_78 = 78;
-	public static final Group WELDER_GROUP = new AccountGroupBuilder().id(12).accountId(123).name("Welders").build();
-	public static final Group SHOP_WORKERS_GROUP = new AccountGroupBuilder().id(11).accountId(123).name("Shop Workers").build();
+	public static final Group WELDER_GROUP = new GroupBuilder().id(12).accountId(123).name("Welders").build();
+	public static final Group SHOP_WORKERS_GROUP = new GroupBuilder().id(11).accountId(123).name("Shop Workers").build();
 
 	GroupEntityService groupEntityService;
 

@@ -101,36 +101,6 @@ public class RoleEntityServiceTest {
 	}
 
 	@Test
-	public void testGetSiteRolesForEmployees() {
-		when(siteAssignmentDAO.findByEmployeesAndSiteId(anyCollectionOf(Employee.class), anyInt()))
-				.thenReturn(buildFakeSiteAssignments());
-
-		Map<Employee, Set<Role>> result = roleEntityService.getSiteRolesForEmployees(Arrays.asList(new Employee()), 0);
-
-		verifyTestGetSiteRolesForEmployees(result);
-	}
-
-	private List<SiteAssignment> buildFakeSiteAssignments() {
-		return Arrays.asList(
-				new SiteAssignmentBuilder()
-						.role(new RoleBuilder().accountId(ACCOUNT_ID).name("Test RoleEmployee").build())
-						.employee(new EmployeeBuilder().accountId(456).email("test.employee@test.com").build())
-						.build()
-		);
-	}
-
-	private void verifyTestGetSiteRolesForEmployees(final Map<Employee, Set<Role>> employeeRoleMap) {
-		assertEquals(1, employeeRoleMap.size());
-
-		for (Employee employee : employeeRoleMap.keySet()) {
-			assertEquals("test.employee@test.com", employee.getEmail());
-			for (Role role : employeeRoleMap.get(employee)) {
-				assertEquals("Test RoleEmployee", role.getName());
-			}
-		}
-	}
-
-	@Test
 	public void testGetProjectRolesForEmployees() {
 		when(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(anyCollectionOf(Employee.class), anyCollectionOf(Integer.class)))
 				.thenReturn(buildFakeProjectRoleEmployees());
