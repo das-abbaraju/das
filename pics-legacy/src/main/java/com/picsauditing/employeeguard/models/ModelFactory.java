@@ -11,12 +11,8 @@ public class ModelFactory {
 	private static EmploymentInfoModelFactory employmentInfoModelFactory = new EmploymentInfoModelFactory();
 	private static OperatorSiteAssignmentStatusFactory operatorSiteAssignmentStatusFactory = new OperatorSiteAssignmentStatusFactory();
 	private static ProfileAssignmentModelFactory profileAssignmentModelFactory = new ProfileAssignmentModelFactory();
-	private static ProfileEmployerModelFactory profileEmployerModelFactory = new ProfileEmployerModelFactory();
 	private static ProfileModelFactory profileModelFactory = new ProfileModelFactory();
-	private static ProfileProjectModelFactory profileProjectModelFactory = new ProfileProjectModelFactory();
-	private static ProfileSiteModelFactory profileSiteModelFactory = new ProfileSiteModelFactory();
 	private static ProjectAssignmentModelFactory projectAssignmentModelFactory = new ProjectAssignmentModelFactory();
-	private static ProjectModelFactory projectModelFactory = new ProjectModelFactory();
 	private static ProjectStatusModelFactory projectStatusModelFactory = new ProjectStatusModelFactory();
 	private static RoleModelFactory roleModelFactory = new RoleModelFactory();
 	private static RoleStatusModelFactory roleStatusModelFactory = new RoleStatusModelFactory();
@@ -52,28 +48,12 @@ public class ModelFactory {
 		return profileAssignmentModelFactory;
 	}
 
-	public static ProfileEmployerModelFactory getProfileEmployerModelFactory() {
-		return profileEmployerModelFactory;
-	}
-
 	public static ProfileModelFactory getProfileModelFactory() {
 		return profileModelFactory;
 	}
 
-	public static ProfileProjectModelFactory getProfileProjectModelFactory() {
-		return profileProjectModelFactory;
-	}
-
-	public static ProfileSiteModelFactory getProfileSiteModelFactory() {
-		return profileSiteModelFactory;
-	}
-
 	public static ProjectAssignmentModelFactory getProjectAssignmentModelFactory() {
 		return projectAssignmentModelFactory;
-	}
-
-	public static ProjectModelFactory getProjectModelFactory() {
-		return projectModelFactory;
 	}
 
 	public static ProjectStatusModelFactory getProjectStatusModelFactory() {

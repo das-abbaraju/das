@@ -7,9 +7,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 	private static final Logger LOG = LoggerFactory.getLogger(RoleDAO.class);
@@ -74,63 +75,6 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
 		return query.getResultList();
 	}
-
-//	public Map<Role, Role> findSiteToCorporateRoles(List<Integer> corporateIds, int siteId) {
-//		return findSiteToCorporateRoles(corporateIds, Arrays.asList(siteId));
-//	}
-
-//	public Map<Role, Role> findSiteToCorporateRoles(final Collection<Integer> corporateIds, final Collection<Integer> siteIds) {
-//		try {
-//			List<Role> siteRoles = findByAccounts(siteIds);
-//
-//			Query query = em.createNativeQuery("SELECT corp.* FROM account_group site " +
-//					"JOIN account_group corp ON corp.name = site.name " +
-//					"WHERE site.accountId IN (:siteIds) " +
-//					"AND corp.accountId IN (:corporateIds) " +
-//					"AND site.type = 'Role' " +
-//					"AND corp.type = 'Role'", Role.class);
-//
-//			query.setParameter("siteIds", siteIds);
-//			query.setParameter("corporateIds", corporateIds);
-//
-//			List<Role> corporateRoles = query.getResultList();
-//
-//			Map<Role, Role> siteToCorporateRoles = new HashMap<>();
-//			for (Role siteRole : siteRoles) {
-//				for (Role corpRole : corporateRoles) {
-//					if (siteRole.getName().equals(corpRole.getName())) {
-//						siteToCorporateRoles.put(siteRole, corpRole);
-//					}
-//				}
-//			}
-//
-//			return siteToCorporateRoles;
-//		} catch (Exception e) {
-//			return Collections.emptyMap();
-//		}
-//	}
-
-//	public Role findSiteRoleByCorporateRole(final List<Integer> corporateIds, final int siteId, final int corporateRoleId) {
-//		try {
-//			Query query = em.createNativeQuery("SELECT site.* FROM account_group site " +
-//					"JOIN account_group corp ON corp.name = site.name " +
-//					"WHERE site.accountId = :siteId " +
-//					"AND corp.accountId IN (:corporateIds) " +
-//					"AND site.type = 'Role' " +
-//					"AND corp.type = 'Role' " +
-//					"AND corp.id = :corporateRoleId", Role.class);
-//
-//			query.setParameter("siteId", siteId);
-//			query.setParameter("corporateIds", corporateIds);
-//			query.setParameter("corporateRoleId", corporateRoleId);
-//
-//			return (Role) query.getSingleResult();
-//		} catch (Exception e) {
-//			LOG.error("Error finding site role for corporate role {}", corporateRoleId, e);
-//		}
-//
-//		return null;
-//	}
 
 	public List<Role> findSiteRolesForEmployee(final int siteId, final Employee employee) {
 		TypedQuery<Role> query = em.createQuery("SELECT r FROM SiteAssignment sa " +
