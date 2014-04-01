@@ -176,12 +176,15 @@ public class AccountSkillEmployeeService {
 		List<AccountSkillEmployee> skillEmployees = new ArrayList<>();
 
 		Date now = new Date();
-		for (AccountSkillRole skillRole : skills) {
-			for (RoleEmployee groupEmployee : employees) {
-				AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(skillRole.getSkill(), groupEmployee.getEmployee());
-				accountSkillEmployee.setStartDate(now);
 
-				skillEmployees.add(accountSkillEmployee);
+		if (CollectionUtils.isNotEmpty(skills) && CollectionUtils.isNotEmpty(employees)) {
+			for (AccountSkillRole skillRole : skills) {
+				for (RoleEmployee groupEmployee : employees) {
+					AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(skillRole.getSkill(), groupEmployee.getEmployee());
+					accountSkillEmployee.setStartDate(now);
+
+					skillEmployees.add(accountSkillEmployee);
+				}
 			}
 		}
 
