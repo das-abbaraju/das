@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         'vendor/mmenu/jquery.mmenu.js',
         'vendor/mmenu/jquery.mmenu.searchfield.js',
         'vendor/mmenu/jquery.mmenu.dragopen.js',
-        'vendor/pics/core.js',
+        'vendor/pics/core.js'
     ];
 
     var modules = [
@@ -117,6 +117,7 @@ module.exports = function(grunt) {
             scripts: {
                 files: vendor_js_files.concat([
                     'src/**/*.js',
+                    'src/common/*.js',
                 ]),
                 tasks: [
                     'jshint',
@@ -130,7 +131,8 @@ module.exports = function(grunt) {
 
             styles: {
                 files: [
-                    'src/**/*.scss'
+                    'src/**/*.scss',
+                    'vendor/**/*.scss',
                 ],
                 tasks: [
                     'compass:dist'

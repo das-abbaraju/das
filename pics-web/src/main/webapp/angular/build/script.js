@@ -64651,18 +64651,39 @@ angular.module('admin-projects', [])
     return $resource('/employee-guard/contractor/summary');
 });;angular.module('PICS.employeeguard')
 
-.controller('operatorAssignmentsCtrl', function ($scope, SiteAssignments, ProjectAssignments) {
-    $scope.site_assignments = SiteAssignments.get();
-    $scope.project_assignments = ProjectAssignments.query();
+.controller('operatorAssignmentsCtrl', function ($scope, SiteList, SiteAssignments, ProjectAssignments) {
+    $scope.siteList = SiteList.query(function(sites) {
+        if ($scope.hasSites(sites)) {
+            $scope.loadSelectedSiteData(sites[0].id);
+        }
+    });
+
+    $scope.hasSites = function(sites) {
+        return sites.length > 0;
+    };
+
+    $scope.loadSelectedSiteData = function(site_id) {
+        $scope.selected_site = site_id;
+        $scope.site_assignments = SiteAssignments.get({id: site_id});
+        $scope.project_assignments = ProjectAssignments.query({id: site_id});
+    };
+
+    $scope.updateSelectedSite = function() {
+        $scope.loadSelectedSiteData($scope.selected_site);
+    };
 });;angular.module('PICS.employeeguard')
 
 .factory('ProjectAssignments', function($resource, $routeParams) {
     // return $resource('/employee-guard/corporates/sites');
-    return $resource('/angular/json/operator/assignmentlist/project_assignments.json');
+    return $resource('/angular/json/operator/assignmentlist/project_assignments:id.json');
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteAssignments', function($resource, $routeParams) {
-    return $resource('/angular/json/operator/assignmentlist/site_assignments.json');
+    return $resource('/angular/json/operator/assignmentlist/site_assignments:id.json');
+});;angular.module('PICS.employeeguard')
+
+.factory('SiteAssignmentDetails', function($resource, $routeParams) {
+    return $resource('/employee-guard/corporates/sites/:id');
 });;angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
@@ -65485,7 +65506,8 @@ angular.module('admin-projects', [])
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteList', function($resource, $routeParams) {
-    return $resource('/employee-guard/corporates/sites');
+    // return $resource('/employee-guard/corporates/sites');
+    return $resource('/angular/json/corp_dashboard_sites.json');
 });;// Provides an alternative to Bootstrap 3's styling of table stripes,
 // e.g., for ie8, because BS3 uses the unsupported nth-child selector.
 // Accepts an optional selector so that it may be used independently of Bootstrap 3

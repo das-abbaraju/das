@@ -99,7 +99,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="project in project_assignments | orderBy:orderByField:reverseSort | filter:search ">
-                        <td class="text-center">{{ project.employees }}</td>
+                        <td class="text-center">{{ project.completed + project.pending + project.expiring + project.expired }}</td>
                         <td class="text-center" ng-class="{'success' : project.completed > 0}">{{ project.completed }}</td>
                         <td class="text-center" ng-class="{'success' : project.pending > 0}">{{ project.pending }}</td>
                         <td class="text-center" ng-class="{'warning' : project.expiring > 0}">{{ project.expiring }}</td>

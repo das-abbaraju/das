@@ -19,8 +19,7 @@
             </div>
         </div>
 
-
-        <select ng-show="siteList.length > 0" ng-model="site_list_select" ng-options="value.id as value.name for value in siteList | orderBy:'name'" ng-change="updateSelectedSite()"></select>
+        <select ng-show="siteList.length > 0" ng-model="selected_site" ng-options="value.id as value.name for value in siteList | orderBy:'name'" ng-change="updateSelectedSite()"></select>
 
         <ng-include src="'/angular/src/app/employeeguard/operator/assignmentlist/_site_assignments.tpl.html'"></ng-include>
     </div>
