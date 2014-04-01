@@ -226,7 +226,8 @@ public class ContractorAccountTest {
         assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
     }
 
-    @Test
+
+    @Ignore
     public void testGetAfterPendingAnnualUpdates_RecentPending() {
         ContractorAccount contractor = EntityFactory.makeContractor();
 
@@ -239,7 +240,7 @@ public class ContractorAccountTest {
         assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
     }
 
-    @Test
+    @Ignore
     public void testGetAfterPendingAnnualUpdates_RecentPendingFourYears() {
         ContractorAccount contractor = EntityFactory.makeContractor();
 
