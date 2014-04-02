@@ -565,7 +565,7 @@ public class UsersManage extends PicsActionSupport {
     }
 
     private void verifyAccountAccess() throws UnauthorizedException {
-        if (permissions.getAccountId() != account.getId()) {
+        if (!permissions.isPicsEmployee() && permissions.getAccountId() != account.getId()) {
             if (!permissions.getVisibleAccounts().contains(account.getId())) {
                 throw new UnauthorizedException("Illegal access to page");
             }
