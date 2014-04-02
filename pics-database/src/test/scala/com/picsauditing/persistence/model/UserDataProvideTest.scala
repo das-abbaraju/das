@@ -9,7 +9,7 @@ class UserDataProvideTest extends BaseTestSetup {
   "UserDataProvider" should "return a list of User Contact Info objects based on the account ID and role provided." in new UserDataTest {
     queryTest { (session, service) =>
       prepareDatabase(session, service)
-        val expect = resultsFor(BAR_PERMISSION, samKinison.accountID)(service)
+        val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, samKinison.accountID))
         expect(samKinison, false)
         expect(joePeschi, true)
     }
@@ -18,7 +18,7 @@ class UserDataProvideTest extends BaseTestSetup {
   it should "return no users that are inactive." in new UserDataTest {
     queryTest { (session, service) =>
       prepareDatabase(session, service)
-        val expect = resultsFor(BAR_PERMISSION, samKinison.accountID)(service)
+        val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, samKinison.accountID))
         expect(samKinison, false)
         expect(georgeCarlin, false)
         expect(joePeschi, true)
@@ -28,7 +28,7 @@ class UserDataProvideTest extends BaseTestSetup {
   it should "return users only relevant to the account specified." in new UserDataTest {
     queryTest { (session, service) =>
       prepareDatabase(session, service)
-        val expect = resultsFor(BAR_PERMISSION, georgeCarlin.accountID)(service)
+        val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, georgeCarlin.accountID))
         expect(joePeschi, true)
         expect(robinWilliams, false)
     }
@@ -37,9 +37,15 @@ class UserDataProvideTest extends BaseTestSetup {
   it should "return users only with the specified permission type." in new UserDataTest {
     queryTest { (session, service) =>
       prepareDatabase(session, service)
-        val expect = resultsFor(FOO_PERMISSION, robinWilliams.accountID)(service)
+        val expect = evaluateResultsFor(service.findAccountContactByRole(FOO_PERMISSION, robinWilliams.accountID))
         expect(robinWilliams, false)
     }
+  }
+
+  
+  def evaluateResultsFor(f: => List[UserContactInfo]) = {
+    val result = f
+    (ud: UserData, expect: Boolean) => result exists( _.username == ud.username ) shouldBe expect
   }
 
 
@@ -79,12 +85,6 @@ class UserDataProvideTest extends BaseTestSetup {
         permission <- permissionTypes
         if comedian.username != robinWilliams.username && permission != FOO_PERMISSION
       } { userAccess += UserAccessInfo(None, comedian.id.get, permission) }
-
-    }
-
-    def resultsFor(permission: String, account: Long)(service: UserDataProvider) = {
-      val result = service.findAccountContactByRole(permission , account)
-      (ud: UserData, expect: Boolean) => result exists( _.username == ud.username ) shouldBe expect
     }
 
   }
