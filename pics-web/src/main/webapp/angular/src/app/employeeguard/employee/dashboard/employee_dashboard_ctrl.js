@@ -1,9 +1,9 @@
 angular.module('PICS.employeeguard')
 
-.controller('employeeDashboardCtrl', function ($scope, EmployeeDashboard, EmployeeAssignment, SkillStatusConverter) {
-    $scope.employee = EmployeeDashboard.get();
+.controller('employeeDashboardCtrl', function ($scope, EmployeeInfo, EmployeeAssignment, SkillStatus) {
+    $scope.employee = EmployeeInfo.get();
     $scope.assignments = EmployeeAssignment.query();
-    $scope.getSkillClass = SkillStatusConverter.convert;
+    $scope.getSkillClass = SkillStatus.toClassName;
 
     $scope.setSlug = function() {
         if (!$scope.employee.slug) {

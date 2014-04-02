@@ -2,7 +2,7 @@ angular.module('PICS.employeeguard', [
     'ngRoute',
     'ngResource',
     'PICS.charts',
-    'PICS.utility'
+    'PICS.skills'
 ])
 
 .config(function ($routeProvider, $locationProvider) {
