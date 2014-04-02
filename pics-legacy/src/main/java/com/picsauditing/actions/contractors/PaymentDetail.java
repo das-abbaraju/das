@@ -364,7 +364,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			unapplyAll();
 
-			paymentDAO.remove(payment); // per Aaron's request
+			paymentDAO.save(payment);
 
 			updateAmountAppliedOnPaymentInvoices();
 			updateAmountAppliedOnPaymentRefunds();
