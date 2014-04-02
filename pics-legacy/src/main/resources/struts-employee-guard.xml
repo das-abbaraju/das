@@ -115,12 +115,8 @@
 
     <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"
              namespace="/employee-guard/corporates">
-        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.corporate.AssignmentAction"
+        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction"
                 method="summary">
-        </action>
-
-        <action name="projects" class="com.picsauditing.employeeguard.controllers.corporate.AssignmentAction"
-                method="projects">
         </action>
 
         <action name="sites" class="com.picsauditing.employeeguard.controllers.corporate.SitesListAction"
