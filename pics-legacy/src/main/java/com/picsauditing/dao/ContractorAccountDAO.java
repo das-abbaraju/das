@@ -573,12 +573,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<Integer> findAllContractorIdsForOperatorIds(final Collection<Integer> operatorIds) {
-		List<ContractorAccount> contractors = Collections.emptyList();
 		try {
-			Query query = em.createNativeQuery("select a.id contractor_info ci " +
-					"join accounts a on a.id = ci.id " +
-					"join contractor_operator co on co.conID = ci.id " +
-					"where co.opID IN (:operatorIds)", Integer.class);
+			Query query = em.createQuery("SELECT co.contractorAccount.id FROM ContractorOperator co " +
+					"WHERE co.operatorAccount.id IN (:operatorIds)", Integer.class);
 			query.setParameter("operatorIds", operatorIds);
 			return query.getResultList();
 		} catch (Exception e) {

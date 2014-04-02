@@ -104,7 +104,7 @@
 
         <!-- Operator Assignments Page -->
         <action name="assignments/projects"
-                class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction" method="projects">
+                class="com.picsauditing.employeeguard.controllers.operator.ProjectSummaryAction" method="summary">
         </action>
 
         <action name="assignments/summary" class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction" method="summary">

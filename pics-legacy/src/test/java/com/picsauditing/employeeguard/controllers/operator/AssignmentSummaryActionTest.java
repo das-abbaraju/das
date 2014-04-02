@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.controllers.corporate;
+package com.picsauditing.employeeguard.controllers.operator;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.NoRightsException;
@@ -28,12 +28,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @UseReporter(DiffReporter.class)
-public class SummaryActionTest extends PicsActionTest {
+public class AssignmentSummaryActionTest extends PicsActionTest {
 
 	public static final int CONTRACTOR_ID = 234;
 	public static final int SITE_ID = 123;
 
-	SummaryAction summaryAction;
+	AssignmentSummaryAction summaryAction;
 
 	@Mock
 	private AssignmentService assignmentService;
@@ -44,7 +44,7 @@ public class SummaryActionTest extends PicsActionTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		summaryAction = new SummaryAction();
+		summaryAction = new AssignmentSummaryAction();
 		super.setUp(summaryAction);
 
 		when(permissions.getAccountId()).thenReturn(SITE_ID);
