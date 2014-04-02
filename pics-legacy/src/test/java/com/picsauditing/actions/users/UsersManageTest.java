@@ -713,6 +713,24 @@ public class UsersManageTest extends PicsActionTest {
         assertTrue(result);
     }
 
+    @Test(expected = UnauthorizedException.class)
+    public void testVerifyAccountAccess() throws Exception {
+        usersManage.setAccount(account);
+        when(permissions.isPicsEmployee()).thenReturn(false);
+        when(permissions.getAccountId()).thenReturn(1);
+        when(account.getId()).thenReturn(2);
+        Whitebox.invokeMethod(usersManage, "verifyAccountAccess");
+    }
+
+    @Test()
+    public void testVerifyAccountAccess_PICSBypass() throws Exception {
+        usersManage.setAccount(account);
+        when(permissions.isPicsEmployee()).thenReturn(true);
+        when(permissions.getAccountId()).thenReturn(1);
+        when(account.getId()).thenReturn(2);
+        Whitebox.invokeMethod(usersManage, "verifyAccountAccess");
+    }
+
     private void setUpUserAndAccount() {
 		// Just seed some data so we don't get NPEs when calling functions
 		User user = new User(123);
