@@ -8,7 +8,7 @@ trait UserAccessDAO { this: Profile =>
    val userAccessTableName = "useraccess"
 
    class UserAccessSchema(tag: Tag) extends Table[UserAccessInfo](tag, userAccessTableName) {
-     def id = column[Long]("id", O.PrimaryKey)
+     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
      def userID = column[Long]("userID")
      def accessType = column[String]("accessType")
 

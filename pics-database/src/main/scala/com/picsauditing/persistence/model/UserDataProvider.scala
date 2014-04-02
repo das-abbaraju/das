@@ -8,7 +8,7 @@ class UserDataProvider(db: Database) extends UserDAO with UserAccessDAO { this: 
 
    def findAccountContactByRole(role: String, accountID: Long) = db withSession { implicit session =>
      (for {
-         user <- users if user.isActive === "Yes"
+         user <- users if user.isActive === "Yes" && user.accountID === accountID
          ua <- userAccess  if user.id === ua.userID  && ua.accessType === role
        } yield user.contactinfo ).list
    }
