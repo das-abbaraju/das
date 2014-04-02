@@ -422,7 +422,7 @@ INSERT INTO `accounts` VALUES (2723,'Operator','a. Audited - Unspecified Facilit
 INSERT INTO `accounts` VALUES (2731,'Corporate','Corporate Operator (US) 1',1000,'2014-04-01 10:44:02',1000,'2014-04-01 11:23:51',NULL,NULL,'Demo','555 Main Street','',NULL,'Fake City','US-CA','WV10 6QJ','US','07155555555',NULL,'',NULL,NULL,'',NULL,NULL,NULL,'0',0,'Corporate Operator (US) 1','CORPORATEOPERATOR(US)1',NULL,0,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Pacific',7,60,1,0,NULL);
 INSERT INTO `accounts` VALUES (2741,'Corporate','Corporate Operator (US) 2',1000,'2014-04-01 10:45:45',1000,'2014-04-01 11:21:22',NULL,NULL,'Demo','555 Main Street','',NULL,'Fake City','US-CA','WV10 6QJ','US','07155555555',NULL,'',NULL,NULL,'',NULL,NULL,NULL,'0',0,'Corporate Operator (US) 2','CORPORATEOPERATOR(US)2',NULL,0,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Pacific',7,60,1,0,NULL);
 INSERT INTO `accounts` VALUES (2761,'Operator','Site Operator (US) 1',1000,'2014-04-01 13:26:24',1000,'2014-04-01 13:26:24',NULL,NULL,'Active','555 Main Street','',NULL,'Fake City','US-CA','WV10 6QJ','US','07155555555',NULL,'',NULL,NULL,'',NULL,NULL,NULL,'0',0,'Site Operator (US) 1','SITEOPERATOR(US)1',NULL,0,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD','NOLOAD2761','NOLOAD2761',NULL,NULL,0,NULL,0,'en','US/Pacific',7,60,1,0,NULL);
-INSERT INTO `accounts` VALUES (2771,'Contractor','US Contractor 1',12,'2014-04-01 13:48:57',12,'2014-04-01 13:48:57',NULL,NULL,'Active','555 Main Street',NULL,NULL,NULL,'US-CA','99999','US','447147777777',NULL,NULL,98481,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'USCONTRACTOR1',NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,NULL);
+INSERT INTO `accounts` VALUES (2771,'Contractor','US Contractor 1',12,'2014-04-01 13:48:57',12,'2014-04-01 13:48:57',NULL,NULL,'Demo','555 Main Street','',NULL,'Irvine','US-CA','99999','US','447147777777',NULL,'',98481,NULL,'',NULL,NULL,NULL,'0',0,'','USCONTRACTOR1','',0,'',0,0,1,1,1,1,1,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en_US',NULL,7,60,1,0,NULL);
 INSERT INTO `accounts` VALUES (2781,'Corporate','CorporateAccount',1000,'2014-04-01 16:30:59',1000,'2014-04-01 16:30:59',NULL,NULL,'Pending','','',NULL,'','US-CA','','US','',NULL,'',98491,NULL,'',NULL,NULL,NULL,'0',0,'Corporate Account','CORPORATEACCOUNT',NULL,0,'',1,1,1,1,1,1,1,0,0,NULL,NULL,'USD','NOLOAD2781','NOLOAD2781',NULL,NULL,0,NULL,0,'en',NULL,7,60,1,0,NULL);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -6141,6 +6141,8 @@ CREATE TABLE `app_index` (
 
 LOCK TABLES `app_index` WRITE;
 /*!40000 ALTER TABLE `app_index` DISABLE KEYS */;
+INSERT INTO `app_index` VALUES ('AU',1,'1',10);
+INSERT INTO `app_index` VALUES ('AU',11,'11',10);
 INSERT INTO `app_index` VALUES ('C',14,'1',7);
 INSERT INTO `app_index` VALUES ('C',14,'14',10);
 INSERT INTO `app_index` VALUES ('C',14,'4196355715',2);
@@ -6152,6 +6154,7 @@ INSERT INTO `app_index` VALUES ('C',14,'TESTCOM',4);
 INSERT INTO `app_index` VALUES ('C',14,'UNITED STATES',3);
 INSERT INTO `app_index` VALUES ('C',14,'US',3);
 INSERT INTO `app_index` VALUES ('C',14,'US-OH',4);
+INSERT INTO `app_index` VALUES ('AU',21,'21',10);
 INSERT INTO `app_index` VALUES ('O',500,'1',7);
 INSERT INTO `app_index` VALUES ('O',500,'500',10);
 INSERT INTO `app_index` VALUES ('O',500,'BASIC',7);
@@ -6273,6 +6276,7 @@ INSERT INTO `app_index` VALUES ('C',2771,'2771',10);
 INSERT INTO `app_index` VALUES ('C',2771,'4471477777',2);
 INSERT INTO `app_index` VALUES ('C',2771,'99999',3);
 INSERT INTO `app_index` VALUES ('C',2771,'CONTRACTOR',7);
+INSERT INTO `app_index` VALUES ('C',2771,'IRVINE',3);
 INSERT INTO `app_index` VALUES ('C',2771,'UNITED STATES',3);
 INSERT INTO `app_index` VALUES ('C',2771,'US',7);
 INSERT INTO `app_index` VALUES ('C',2771,'US-CA',4);
@@ -6503,6 +6507,10 @@ INSERT INTO `app_index_stats` VALUES ('U','BASIC',1);
 INSERT INTO `app_index_stats` VALUES ('U','OPERATOR',1);
 INSERT INTO `app_index_stats` VALUES ('U','OPUSER',1);
 INSERT INTO `app_index_stats` VALUES ('U','98501',1);
+INSERT INTO `app_index_stats` VALUES ('C','IRVINE',1);
+INSERT INTO `app_index_stats` VALUES ('AU','1',1);
+INSERT INTO `app_index_stats` VALUES ('AU','11',1);
+INSERT INTO `app_index_stats` VALUES ('AU','21',1);
 /*!40000 ALTER TABLE `app_index_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6591,7 +6599,7 @@ LOCK TABLES `app_properties` WRITE;
 /*!40000 ALTER TABLE `app_properties` DISABLE KEYS */;
 INSERT INTO `app_properties` VALUES ('AuthServiceHost','localhost','location of auth rest service, eventually moving to api.piscorganizer',NULL);
 INSERT INTO `app_properties` VALUES ('brainTree.payment_url','https://secure.braintreepaymentgateway.com/api/transact.php','The url to our braintree payment gateway',NULL);
-INSERT INTO `app_properties` VALUES ('PICS.clear_cache','1',NULL,NULL);
+INSERT INTO `app_properties` VALUES ('PICS.clear_cache','2014-04-02 10:27:27',NULL,NULL);
 INSERT INTO `app_properties` VALUES ('Toggle.TranslationServiceAdapter','true',NULL,NULL);
 /*!40000 ALTER TABLE `app_properties` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -6621,6 +6629,8 @@ CREATE TABLE `app_session` (
 
 LOCK TABLES `app_session` WRITE;
 /*!40000 ALTER TABLE `app_session` DISABLE KEYS */;
+INSERT INTO `app_session` VALUES ('72A2F19568D4902C12E0D751E550B52D.wolfram-alpha1','1',3600,1396459829151,'/Catalina/localhost/','¨Ì\0sr\0java.lang.Long;ã‰êÃè#ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî‡ã\0\0xp\0\0E#}]‹sq\0~\0\0\0\0E#}˜üsr\0java.lang.Integer‚†§˜Åá8\0I\0valuexq\0~\0\0\0sr\0java.lang.BooleanÕ rÄ’ú˙Ó\0Z\0valuexp\0sq\0~\0sq\0~\0\0\0\0E#}˜üt\0/72A2F19568D4902C12E0D751E550B52D.wolfram-alpha1sq\0~\0\0\0\0t\0permissionssr\0#com.picsauditing.access.Permissions‘≤~ís`µÁ\0,I\0	accountIDZ\0activeI\0adminIDI\0	appUserIDZ\0approvesRelationshipsZ\0canSeeInsuranceZ\0forcePasswordResetZ\0gcFreeZ\0generalContractorZ\0loggedInI\0primaryCorporateAccountIDI\0rememberMeTimeInSecondsZ\0requiresCompetencyReviewZ\0\nrequiresOQJ\0sessionCookieTimeoutInSecondsI\0shadowedUserIDZ\0showClientSitesLinkI\0topAccountIDI\0userIDZ\0usingVersion7MenusL\0accountNamet\0Ljava/lang/String;L\0\raccountStatust\0-Lcom/picsauditing/jpa/entities/AccountStatus;L\0accountTypeq\0~\0L\0allInheritedGroupIdst\0Ljava/util/Set;L\0corporateParentq\0~\0L\0countryq\0~\0L\0countrySubdivisionq\0~\0L\0emailq\0~\0L\0faxq\0~\0L\0groupIdsq\0~\0L\0\rlinkedClientsq\0~\0L\0linkedGeneralContractorsq\0~\0L\0localet\0Ljava/util/Locale;L\0nameq\0~\0L\0operatorChildrenq\0~\0L\0permissionsq\0~\0L\0phoneq\0~\0L\0\ZreportsManagerTutorialDatet\0Ljava/util/Date;L\0shadowedUserNameq\0~\0L\0switchedToUserNameq\0~\0L\0timezonet\0Ljava/util/TimeZone;L\0usernameq\0~\0L\0usingVersion7MenusDateq\0~\0L\0visibleAuditTypesq\0~\0xp\0\0L\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0	:Ä\0\0\0\0\0\0\0\0\0\0Ë\0\0L\0\0Ët\0PICS Auditing, LLC~r\0+com.picsauditing.jpa.entities.AccountStatus\0\0\0\0\0\0\0\0\0\0xr\0java.lang.Enum\0\0\0\0\0\0\0\0\0\0xpt\0Activet\0Adminsr\0java.util.HashSet∫DÖïñ∏∑4\0\0xpw\0\0\0?@\0\0\0\0\0sq\0~\0\0\0\0sq\0~\0\0\0\0	sq\0~\0\0\0\0\nxsq\0~\0w\0\0\0\0?@\0\0\0\0\0\0xt\0USt\0US-CAt\0tester@picsauditing.comt\0949-269-9177sq\0~\0w\0\0\0?@\0\0\0\0\0q\0~\0q\0~\0q\0~\0xsq\0~\0w\0\0\0\0?@\0\0\0\0\0\0xsq\0~\0w\0\0\0\0?@\0\0\0\0\0\0xsr\0java.util.Locale~¯`ú0˘Ï\0I\0hashcodeL\0countryq\0~\0L\0\nextensionsq\0~\0L\0languageq\0~\0L\0scriptq\0~\0L\0variantq\0~\0xpˇˇˇˇt\0USt\0\0t\0enq\0~\0+q\0~\0+xt\0\nPICS Adminsq\0~\0w\0\0\0\0?@\0\0\0\0\0\0xsq\0~\0w\0\0\0Ä?@\0\0\0\0\0^sr\0\"com.picsauditing.access.UserAccess‹ÌJ÷ó	z\0Z\0\ndeleteFlagZ\0editFlagZ\0	grantFlagZ\0viewFlagL\0opPermt\0!Lcom/picsauditing/access/OpPerms;xp\0\0\0~r\0com.picsauditing.access.OpPerms\0\0\0\0\0\0\0\0\0\0xq\0~\0t\0AuditorPaymentssq\0~\00\0\0\0~q\0~\03t\0EditContractorSafeHarborsq\0~\00\0\0~q\0~\03t\0ContractorLicenseReportsq\0~\00~q\0~\03t\0InsuranceCertssq\0~\00\0~q\0~\03t\0EditAccountDetailssq\0~\00\0\0\0~q\0~\03t\0EditForcedFlagssq\0~\00\0\0\0~q\0~\03t\0ContractorSafetysq\0~\00\0\0~q\0~\03t\0	EMRReportsq\0~\00~q\0~\03t\0DevelopmentEnvironmentsq\0~\00~q\0~\03t\0ManageCorporatesq\0~\00\0\0\0~q\0~\03t\0ManageAssessmentsq\0~\00~q\0~\03t\0ManageEmployeessq\0~\00\0\0\0~q\0~\03t\0Nonesq\0~\00\0\0\0~q\0~\03t\0RestApisq\0~\00\0\0~q\0~\03t\0AllContractorssq\0~\00~q\0~\03t\0ContractorTagssq\0~\00\0\0~q\0~\03t\0ForcedFlagsReportsq\0~\00\0~q\0~\03t\0AuditRuleAdminsq\0~\00\0\0\0~q\0~\03t\0RiskRanksq\0~\00\0\0~q\0~\03t\0ViewUnApprovedsq\0~\00\0\0\0~q\0~\03t\0ContractorActivationsq\0~\00\0\0\0~q\0~\03t\0ContractorAdminsq\0~\00\0\0~q\0~\03t\0\nSwitchUsersq\0~\00~q\0~\03t\0	AuditEditsq\0~\00~q\0~\03t\0ManageTradessq\0~\00~q\0~\03t\0	EditUserssq\0~\00\0~q\0~\03t\0AssignAuditssq\0~\00\0\0~q\0~\03t\0ManageCsrAssignmentsq\0~\00\0\0\0~q\0~\03t\0EmailAnnualUpdatesq\0~\00\0\0\0~q\0~\03t\0AuditDocumentReviewsq\0~\00\0\0\0~q\0~\03t\0DefineRolessq\0~\00~q\0~\03t\0ManageProjectssq\0~\00\0\0\0~q\0~\03t\0ManageCalendarssq\0~\00~q\0~\03t\0\nEmailQueuesq\0~\00\0\0\0~q\0~\03t\0BillingUpgradessq\0~\00\0\0~q\0~\03t\0AllOperatorssq\0~\00\0\0\0~q\0~\03t\0WatchListManagersq\0~\00\0\0\0~q\0~\03t\0Holidayssq\0~\00\0\0\0~q\0~\03t\0SalesCommissionsq\0~\00\0\0\0~q\0~\03t\0ContractorWatchsq\0~\00\0\0~q\0~\03t\0ContractorSimulatorsq\0~\00~q\0~\03t\0ManageAuditssq\0~\00\0~q\0~\03t\0RequestNewContractorsq\0~\00\0\0\0~q\0~\03t\0ManageJobTaskssq\0~\00\0\0~q\0~\03t\0Debugsq\0~\00\0\0\0~q\0~\03t\0InvoiceEditsq\0~\00~q\0~\03t\0\nTranslatorsq\0~\00\0\0~q\0~\03t\0\nTRIRReportsq\0~\00\0~q\0~\03t\0AuditVerificationsq\0~\00~q\0~\03t\0	EditNotessq\0~\00~q\0~\03t\0\rEditUsersPicssq\0~\00\0\0\0~q\0~\03t\0EmailVelocityHtmlsq\0~\00\0~q\0~\03t\0	Dashboardsq\0~\00\0\0\0~q\0~\03t\0EmailOperatorssq\0~\00\0\0\0~q\0~\03t\0ContractorInsurancesq\0~\00\0\0~q\0~\03t\0DelinquentAccountssq\0~\00\0\0\0~q\0~\03t\0UserZipcodeAssignmentsq\0~\00~q\0~\03t\0ManageCategoryRulessq\0~\00\0\0\0~q\0~\03t\0CreateTestUsersq\0~\00\0\0\0~q\0~\03t\0SeleniumTestsq\0~\00\0\0~q\0~\03t\0OfficeAuditCalendarsq\0~\00\0\0~q\0~\03t\0ContractorDetailssq\0~\00\0\0\0~q\0~\03t\0Billingsq\0~\00~q\0~\03t\0EmailTemplatessq\0~\00~q\0~\03t\0\nMyCalendarsq\0~\00\0\0~q\0~\03t\0AddContractorssq\0~\00\0~q\0~\03t\0InsuranceVerificationsq\0~\00\0\0\0~q\0~\03t\0DefineCompetenciessq\0~\00\0\0\0~q\0~\03t\0	ImportPQFsq\0~\00~q\0~\03t\0ContractorAccountssq\0~\00\0\0\0~q\0~\03t\0ReferNewClientSitesq\0~\00\0\0\0~q\0~\03t\0OperatorFlagMatrixsq\0~\00\0\0~q\0~\03t\0FatalitiesReportsq\0~\00~q\0~\03t\0ManageAuditTypeRulessq\0~\00\0~q\0~\03t\0EditProfilesq\0~\00\0\0\0~q\0~\03t\0	PicsScoresq\0~\00\0\0~q\0~\03t\0CaoEditsq\0~\00~q\0~\03t\0FormsAndDocssq\0~\00\0\0\0~q\0~\03t\0UserRolePicsOperatorsq\0~\00\0\0\0~q\0~\03t\0ViewFullPQFsq\0~\00\0\0\0~q\0~\03t\0ViewTrialAccountssq\0~\00~q\0~\03t\0ManageAuditWorkFlowsq\0~\00\0\0\0~q\0~\03t\0InsuranceApprovalsq\0~\00\0\0\0~q\0~\03t\0ContractorApprovalsq\0~\00~q\0~\03t\0Reportsq\0~\00\0\0~q\0~\03t\0RemoveContractorssq\0~\00\0~q\0~\03t\0EditFlagCriteriasq\0~\00\0\0\0~q\0~\03t\0UploadEmployeeDocumentationsq\0~\00~q\0~\03t\0EmployeeListsq\0~\00~q\0~\03t\0EditTagssq\0~\00~q\0~\03t\0ManageOperatorssq\0~\00\0\0\0~q\0~\03t\0	AuditCopysq\0~\00\0\0\0~q\0~\03t\0SearchContractorssq\0~\00\0\0\0~q\0~\03t\0ClientSiteReferralsxt\0949-936-4504sr\0\rjava.sql.Date˙Fh?5fó\0\0xr\0java.util.DatehjÅKYt\0\0xpw\0\0?<UqÄxt\0pics-admin1psr\0\Zsun.util.calendar.ZoneInfo$—”Œ\0qõ\0I\0checksumI\0\ndstSavingsI\0	rawOffsetI\0\rrawOffsetDiffZ\0willGMTOffsetChange[\0offsetst\0[I[\0simpleTimeZoneParamsq\0~S[\0transitionst\0[Jxr\0java.util.TimeZone1≥ÈıwD¨°\0L\0IDq\0~\0xpt\0America/Los_AngelesÅ‰Ò\06ÓÄ˛Hå\0\0\0\0\0\0ur\0[IM∫`&vÍ≤•\0\0xp\0\0\0˛Hå\0˛zÄ\06ÓÄuq\0~X\0\0\0\0\0\0\0\0\0ˇˇˇˇ\0m›\0\0\0\0\n\0\0\0ˇˇˇˇ\0m›\0ur\0[Jx µ±uì\0\0xp\0\0\0πˇﬂ⁄‡¿\0\0ˇË;òª\0!ˇË,√®\0\0ˇË∞¡h\0!ˇËÙUp®\0\0ˇÛ0˘\0\0!ˇÙ‹∑ Ë\0\0ˇı˝Y–\0!ˇˆ[j_®\0\0ˇˆ˜6-ê\0!ˇ˜&É+Ë\0\0ˇ˜l^⁄ê\0!ˇ˜ùÏ°(\0\0ˇ˜·ááê\0!ˇ¯N(\0\0ˇ¯V∞4ê\0!ˇ¯à=˚(\0\0ˇ¯Àÿ·ê\0!ˇ¯˝f®(\0\0ˇ˘Aéê\0!ˇ˘rèU(\0\0ˇ˘∏k–\0!ˇ˘È¯ h\0\0ˇ˙-ì∞–\0!ˇ˙_!wh\0\0ˇ˙¢º]–\0!ˇ˙‘J$h\0\0ˇ˚Â\n–\0!ˇ˚Ir—h\0\0ˇ˚ç\r∑–\0!ˇ˚æõ~h\0\0ˇ¸w-\0!ˇ¸3ƒ+h\0\0ˇ¸yü⁄\0!ˇ¸¥0¡®\0\0ˇ¸Ó»á\0!ˇ˝)Yn®\0\0ˇ˝cÒ4\0!ˇ˝ûÇ®\0\0ˇ˝Ÿ·\0!ˇ˛ÎêË\0\0ˇ˛NBé\0!ˇ˛ã=Ë\0\0ˇ˛≈¨P\0!ˇˇ\0<ÍË\0\0ˇˇ:‘∞P\0!ˇˇueóË\0\0ˇˇØ˝]P\0!ˇˇÍéDË\0\0\0\0%&\nP\0!\0\0_∂ÒË\0\0\0\0öN∑P\0!\0\0◊ g(\0\0\0∏,ê\0!\0LI(\0\0\0Ü‡Ÿê\0!\0¡q¡(\0\0\0◊˝ê\0!\06ön(\0\0\0\\Î)P\0!\0´√(\0\0\0ÊZ‡ê\0!\0#,êh\0\0\0[Éçê\0!\0òU=h\0\0\0“Ì–\0!\0\r}Íh\0\0\0HØ–\0!\0Ç¶óh\0\0\0Ω>\\–\0!\0˜œDh\0\0\02g	–\0!\0l˜Òh\0\0\0ßè∂–\0!\0‰af®\0\0\0∏c–\0!\0Yä®\0\0\0î!Ÿ\0!\0Œ≤¿®\0\0\0	JÜ\0!\0C€m®\0\0\0~s3\0!\0π\Z®\0\0\0ÏŸáP\0!\0.,«®\0\0\0b4P\0!\0•ñ<Ë\0\0\0◊*·P\0!\0	\ZæÈË\0\0\0	LSéP\0!\0	èÁñË\0\0\0	√Ωê\0!\0\nCË\0\0\0\n8Â∞ê\0!\0\nz8Ë\0\0\0\nÆ]ê\0!\0\nÒ¢f(\0\0\0#7\nê\0!\0fÀ(\0\0\0ò_∑ê\0!\0€Û¿(\0\0\0…,–\0!\0Qm(\0\0\0ÑÒŸ–\0!\0∆E\Z(\0\0\0˙\ZÜ–\0!\0\r;m«(\0\0\0\roC3–\0!\0\r≤◊<h\0\0\0\r‰k‡–\0!\0\'ˇÈh\0\0\0Yîç–\0!\0ù(ñh\0\0\0–˛\0!\0QCh\0\0\0F&∞\0!\0áyh\0\0\0ªO]\0!\0˛„e®\0\0\00x\n\0!\0t®\0\0\0•†∑\0!\0È4ø®\0\0\0P\0!\0`û4Ë\0\0\0â/∏P\0!\0’∆·Ë\0\0\0˛XeP\0!\0JÔéË\0\0\0u¡⁄ê\0!\0¬Y(\0\0\0ÍÍáê\0!\07Å±(\0\0\0`4ê\0!\0¨™^(\0\0\0’;·ê\0!\0!”(\0\0\0Jdéê\0!\0ñ˚∏(\0\0\0øç;ê\0!\0$e(\0\0\06ˆ∞–\0!\0Éç⁄h\0\0\0¨]–\0!\0¯∂áh\0\0\0!H\n–\0!\0mﬂ4h\0\0\0ñp∑–\0!\0„·h\0\0\0ôd–\0!\0X0éh\0\0\0É⁄\0!\0œö®\0\0\0¯+á\0!\0D¬∞®\0\0\0mT4\0!\0πÎ]®\0\0\0‚|·\0!\0/\n®\0\0\0W•é\0!\0§<∑®\0\0\0ÃŒ;\0!\0\Zed®\0\0\0\ZD7∞P\0!\0\ZêŒŸË\0\0\0\Zπ`]P\0!\0˜ÜË\0\0\0.â\nP\0!\0{ 3Ë\0\0\0£±∑P\0!\0H‡Ë\0\0\0⁄dP\0!\0eqçË\0\0\0êCŸê\0!\0‹€(\0\0\0lÜê\0!\0R∞(\0\0\0zï3ê\0!\0«,](\0\0\0ÔΩ‡ê\0!\0<U\n(\0\0\0dÊçê\0!\0±}∑(\0\0\0⁄:ê\0!\0&¶d(\0\0q\0~Qsr\0java.sql.Timestamp&’»Søe\0I\0nanosxq\0~Ow\0\0BâÕx\0\0\0\0sq\0~\0w\0\0\0\0?@\0\0\0\0\0\0x');
+INSERT INTO `app_session` VALUES ('F1CC1CD5FC266283B955F7DEE40740F7.wolfram-alpha1','1',3600,1396457286492,'/Catalina/localhost/','¨Ì\0sr\0java.lang.Long;ã‰êÃè#ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî‡ã\0\0xp\0\0E#6é¿sq\0~\0\0\0\0E#W+\\sr\0java.lang.Integer‚†§˜Åá8\0I\0valuexq\0~\0\0\0sr\0java.lang.BooleanÕ rÄ’ú˙Ó\0Z\0valuexp\0sq\0~\0sq\0~\0\0\0\0E#W+\\t\0/F1CC1CD5FC266283B955F7DEE40740F7.wolfram-alpha1sq\0~\0\0\0\0\0');
 /*!40000 ALTER TABLE `app_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9561,7 +9571,7 @@ CREATE TABLE `contractor_audit` (
   KEY `auditorID` (`auditorID`),
   KEY `previousAudit` (`previousAuditID`),
   CONSTRAINT `previousAudit` FOREIGN KEY (`previousAuditID`) REFERENCES `contractor_audit` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9570,6 +9580,9 @@ CREATE TABLE `contractor_audit` (
 
 LOCK TABLES `contractor_audit` WRITE;
 /*!40000 ALTER TABLE `contractor_audit` DISABLE KEYS */;
+INSERT INTO `contractor_audit` VALUES (1,1,2771,NULL,'2014-04-02 10:02:29',1,'2014-04-02 10:02:29',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,NULL,NULL,NULL);
+INSERT INTO `contractor_audit` VALUES (11,14,2771,NULL,'2014-04-02 10:02:29',1,'2014-04-02 10:02:29',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,NULL,NULL,NULL);
+INSERT INTO `contractor_audit` VALUES (21,13,2771,NULL,'2014-04-02 10:02:29',1,'2014-04-02 10:02:29',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `contractor_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9785,7 +9798,7 @@ CREATE TABLE `contractor_fee` (
   `newFacilityCount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `conFee` (`conID`,`feeClass`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9796,10 +9809,11 @@ LOCK TABLES `contractor_fee` WRITE;
 /*!40000 ALTER TABLE `contractor_fee` DISABLE KEYS */;
 INSERT INTO `contractor_fee` VALUES (1,2771,'BidOnly',299,299,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
 INSERT INTO `contractor_fee` VALUES (11,2771,'ListOnly',297,297,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
-INSERT INTO `contractor_fee` VALUES (21,2771,'DocuGUARD',301,301,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
-INSERT INTO `contractor_fee` VALUES (31,2771,'InsureGUARD',309,309,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
+INSERT INTO `contractor_fee` VALUES (21,2771,'DocuGUARD',302,301,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',199.00,0.00,0,1);
+INSERT INTO `contractor_fee` VALUES (31,2771,'InsureGUARD',310,309,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',99.00,0.00,0,1);
 INSERT INTO `contractor_fee` VALUES (41,2771,'AuditGUARD',317,317,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
 INSERT INTO `contractor_fee` VALUES (51,2771,'EmployeeGUARD',325,325,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
+INSERT INTO `contractor_fee` VALUES (61,2771,'ImportFee',343,343,12,12,'2014-04-02 10:02:19','2014-04-02 10:02:19',0.00,0.00,0,0);
 /*!40000 ALTER TABLE `contractor_fee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9906,7 +9920,7 @@ LOCK TABLES `contractor_info` WRITE;
 /*!40000 ALTER TABLE `contractor_info` DISABLE KEYS */;
 INSERT INTO `contractor_info` VALUES (14,'123456789','Environmental Management/Remediation','logo_14.gif',NULL,'Ecology  Control  Industries, Inc. (ECI) is a turnkey environmental services company   with proven environmental projects experience and a solid reputation  for  customer  service.  ECI was founded in 1977, providing transportation and  industrial services  \r\nto  commercial  clients  in  Southern California.  Through  recent  acquisitions  and  internal  growth,  ECI  has expanded services  throughout  the  western  United  States.  This expansion  has  provided   ECI  the  opportunity  to  strengthen  its   position   in  the environmental industry because of a large array of service capabilities.  \r\nECI  understands the issues that face our customers and our goal is to provide  the  most efficient and cost-effective environmental services available by demonstrating   business  oriented  recommendations  and  environmentally  responsible  solutions. \r\nECI\'s  client  list includes  Fortune 500 customers  from  the aerospace,  chemical, petroleum, manufacturing, and pharmaceutical industries as   well  as  major  prime  contractors  to United States Government Agencies.  \r\n\r\n','Yes','2003-12-17',500,'Sal Fernandez','310-354-9999','sfernandez@ecologycontrol.com','Jeanne Delperdang','310-354-9999','jdelperdang@ecologycontrol.com','','',NULL,'',NULL,NULL,0,NULL,NULL,0,0,1,3,NULL,0,NULL,0,NULL,3,'2014-02-14 11:26:20','Check','Missing',7,7,1,'2012-09-13',NULL,NULL,NULL,NULL,0,0,NULL,0.00,0,'2014-02-15 11:37:59',0,NULL,NULL,0.900,1.004,0.787,'Cleaning (Industrial);Demolition contractor;Environmental engineering;Environmental remediation services;Excavation contractors;Field Maintenance;Hazardous waste collection services;Hydroblasting;Rental and Leasing Services;Specialized Freight (except Used Goods) Trucking, Long-Distance;Tank cleaning and disposal services, commercial or industrial;Waste collection services, nonhazardous liquid;Waste management program administration','','2010-09-09 10:54:17',NULL,860,'2011-08-05 11:15:42',0,NULL,'Full',NULL,1,0,NULL,NULL,'',NULL,1001,0,1,NULL,0,NULL);
 INSERT INTO `contractor_info` VALUES (100,NULL,NULL,NULL,NULL,NULL,'Yes',NULL,500,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,2,NULL,2,NULL,2,NULL,2,NULL,'CreditCard',NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0,0,NULL,0.00,1,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'Full',NULL,1,0,NULL,NULL,NULL,NULL,1001,0,1,NULL,0,NULL);
-INSERT INTO `contractor_info` VALUES (2771,NULL,NULL,NULL,NULL,NULL,'Yes','2014-04-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,0,0,NULL,0,NULL,0,NULL,2,NULL,'CreditCard',NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0,0,NULL,0.00,0,'2014-04-01 13:54:04',0,NULL,NULL,NULL,NULL,NULL,'','','2014-04-01 13:48:59',98481,500,NULL,0,NULL,'Full',NULL,1,0,NULL,NULL,'',NULL,NULL,0,1,NULL,0,NULL);
+INSERT INTO `contractor_info` VALUES (2771,'',NULL,NULL,NULL,NULL,'Yes','2014-04-01',2761,NULL,NULL,NULL,NULL,NULL,NULL,'','',NULL,'',NULL,NULL,1,NULL,0,0,0,0,0,NULL,0,NULL,0,NULL,2,NULL,'CreditCard',NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0,0,NULL,0.00,0,'2014-04-03 10:02:29',0,NULL,NULL,NULL,NULL,NULL,'','','2014-04-01 13:48:59',98481,500,NULL,0,NULL,'Full',NULL,1,0,NULL,NULL,'',NULL,NULL,0,1,NULL,0,NULL);
 /*!40000 ALTER TABLE `contractor_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9954,7 +9968,7 @@ CREATE TABLE `contractor_operator` (
   KEY `opID` (`opID`),
   CONSTRAINT `FK_contractor_operator_con` FOREIGN KEY (`conID`) REFERENCES `accounts` (`id`),
   CONSTRAINT `FK_contractor_operator_op` FOREIGN KEY (`opID`) REFERENCES `accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9965,6 +9979,7 @@ LOCK TABLES `contractor_operator` WRITE;
 /*!40000 ALTER TABLE `contractor_operator` DISABLE KEYS */;
 INSERT INTO `contractor_operator` VALUES (1,500,14,NULL,'ContractorOperator',NULL,NULL,NULL,NULL,'Y','Red',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Onsite',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `contractor_operator` VALUES (11,500,100,NULL,'ContractorOperator',NULL,NULL,NULL,NULL,'Y','Red',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Onsite',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `contractor_operator` VALUES (21,2761,2771,NULL,NULL,1000,'2014-04-02 10:02:18',1000,'2014-04-02 10:02:18','P','Red',NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Onsite',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `contractor_operator` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -21955,7 +21970,7 @@ CREATE TABLE `note` (
   KEY `creationDate` (`creationDate`,`accountID`),
   KEY `employee` (`employeeID`),
   CONSTRAINT `FK_note` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -21966,6 +21981,8 @@ LOCK TABLES `note` WRITE;
 /*!40000 ALTER TABLE `note` DISABLE KEYS */;
 INSERT INTO `note` VALUES (1,14,'2014-02-14 11:29:17',1,'2014-02-14 11:29:17',1,'The contractor\'s address has been updated in the Contact Info section.','General',2,1,1,2,NULL,NULL,'Office Location',NULL);
 INSERT INTO `note` VALUES (11,2771,'2014-04-01 13:53:43',1000,'2014-04-01 13:53:43',1000,'Activated the account','Billing',1,1100,1,2,NULL,NULL,NULL,NULL);
+INSERT INTO `note` VALUES (21,2771,'2014-04-02 10:01:56',1000,'2014-04-02 10:01:56',1000,'Account Status changed from Active to Demo','General',1,1,1,2,NULL,NULL,NULL,NULL);
+INSERT INTO `note` VALUES (31,2771,'2014-04-02 10:02:18',1000,'2014-04-02 10:02:18',1000,'Linked contractor to Site Operator (US) 1 by PICS Admin of PICS Auditing, LLC','OperatorChanges',2,2731,1,2,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `note` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -24218,7 +24235,7 @@ CREATE TABLE `useraccess` (
   PRIMARY KEY (`accessID`),
   UNIQUE KEY `user_type` (`userID`,`accessType`),
   KEY `access_type` (`accessType`)
-) ENGINE=InnoDB AUTO_INCREMENT=411 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=831 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -24231,17 +24248,15 @@ INSERT INTO `useraccess` VALUES (1,10,'Report',1,1,1,1,'2014-02-14 01:53:40',1);
 INSERT INTO `useraccess` VALUES (11,10,'Dashboard',1,1,NULL,0,'2014-02-14 01:58:24',1);
 INSERT INTO `useraccess` VALUES (21,10,'EditUsers',1,1,1,0,'2014-02-14 02:10:56',1);
 INSERT INTO `useraccess` VALUES (31,1000,'EditUsersPics',1,1,1,1,'2014-02-14 02:23:14',1);
-INSERT INTO `useraccess` VALUES (41,10,'AllContractors',1,NULL,NULL,0,'2014-02-14 02:39:23',1);
 INSERT INTO `useraccess` VALUES (51,1000,'Debug',1,NULL,NULL,1,'2014-02-14 19:03:24',1);
 INSERT INTO `useraccess` VALUES (61,10,'EditProfile',1,1,NULL,1,'2014-02-14 19:04:28',1);
 INSERT INTO `useraccess` VALUES (71,1000,'Translator',1,1,1,1,'2014-02-14 19:06:18',NULL);
-INSERT INTO `useraccess` VALUES (81,10,'AllOperators',1,NULL,NULL,1,'2014-02-14 19:06:44',NULL);
 INSERT INTO `useraccess` VALUES (91,1000,'DevelopmentEnvironment',1,1,1,1,'2014-02-14 19:07:40',NULL);
 INSERT INTO `useraccess` VALUES (101,1000,'EditAccountDetails',1,1,NULL,1,'2014-02-14 19:07:55',NULL);
 INSERT INTO `useraccess` VALUES (111,10,'ContractorDetails',1,NULL,NULL,1,'2014-02-14 19:08:11',NULL);
 INSERT INTO `useraccess` VALUES (121,10,'ManageOperators',1,1,1,1,'2014-02-14 19:08:56',NULL);
 INSERT INTO `useraccess` VALUES (131,1000,'ManageAudits',1,1,1,1,'2014-02-14 19:09:20',NULL);
-INSERT INTO `useraccess` VALUES (141,1002,'AssignAudits',1,1,1,0,'2014-02-14 19:09:42',NULL);
+INSERT INTO `useraccess` VALUES (141,1002,'AssignAudits',1,1,NULL,0,'2014-02-14 19:09:42',NULL);
 INSERT INTO `useraccess` VALUES (151,98441,'ContractorInsurance',1,NULL,NULL,1,'2014-02-14 19:25:25',1000);
 INSERT INTO `useraccess` VALUES (161,98441,'ContractorBilling',1,NULL,NULL,1,'2014-02-14 19:25:25',1000);
 INSERT INTO `useraccess` VALUES (171,98441,'ContractorSafety',1,NULL,NULL,1,'2014-02-14 19:25:25',1000);
@@ -24256,8 +24271,6 @@ INSERT INTO `useraccess` VALUES (251,20,'ManageAudits',1,1,1,1,'2014-04-01 18:36
 INSERT INTO `useraccess` VALUES (261,20,'ManageCategoryRules',1,1,1,1,'2014-04-01 18:36:24',1000);
 INSERT INTO `useraccess` VALUES (271,20,'ManageCorporate',1,1,1,1,'2014-04-01 18:36:29',1000);
 INSERT INTO `useraccess` VALUES (281,20,'EditFlagCriteria',1,1,NULL,1,'2014-04-01 18:36:38',1000);
-INSERT INTO `useraccess` VALUES (301,20,'AllContractors',1,NULL,NULL,1,'2014-04-01 18:36:55',1000);
-INSERT INTO `useraccess` VALUES (311,20,'AllOperators',1,NULL,NULL,1,'2014-04-01 18:37:00',1000);
 INSERT INTO `useraccess` VALUES (321,20,'AuditRuleAdmin',1,1,NULL,1,'2014-04-01 18:37:07',1000);
 INSERT INTO `useraccess` VALUES (331,20,'ManageOperators',1,1,1,1,'2014-04-01 18:37:55',1000);
 INSERT INTO `useraccess` VALUES (341,20,'FormsAndDocs',1,1,1,1,'2014-04-01 18:38:02',1000);
@@ -24266,6 +24279,48 @@ INSERT INTO `useraccess` VALUES (371,98481,'ContractorSafety',1,NULL,NULL,1,'201
 INSERT INTO `useraccess` VALUES (381,98481,'ContractorInsurance',1,NULL,NULL,1,'2014-04-01 20:48:57',12);
 INSERT INTO `useraccess` VALUES (391,98481,'ContractorBilling',1,NULL,NULL,1,'2014-04-01 20:48:57',12);
 INSERT INTO `useraccess` VALUES (401,98501,'EditProfile',1,1,NULL,1,'2014-04-02 05:28:31',1000);
+INSERT INTO `useraccess` VALUES (411,10,'FormsAndDocs',1,1,1,1,'2014-04-02 16:36:16',1000);
+INSERT INTO `useraccess` VALUES (421,10,'AddContractors',1,NULL,NULL,1,'2014-04-02 16:38:37',1000);
+INSERT INTO `useraccess` VALUES (431,10,'RemoveContractors',1,NULL,NULL,1,'2014-04-02 16:38:52',1000);
+INSERT INTO `useraccess` VALUES (441,10,'ViewUnApproved',1,NULL,NULL,1,'2014-04-02 16:39:10',1000);
+INSERT INTO `useraccess` VALUES (451,10,'EditFlagCriteria',1,0,NULL,0,'2014-04-02 16:39:45',1000);
+INSERT INTO `useraccess` VALUES (461,10,'EditNotes',1,1,1,1,'2014-04-02 16:40:16',1000);
+INSERT INTO `useraccess` VALUES (471,10,'AllOperators',1,NULL,NULL,1,'2014-04-02 16:40:54',1000);
+INSERT INTO `useraccess` VALUES (481,10,'AllContractors',1,NULL,NULL,1,'2014-04-02 16:41:00',1000);
+INSERT INTO `useraccess` VALUES (491,10,'ManageCorporate',1,1,1,1,'2014-04-02 16:41:27',1000);
+INSERT INTO `useraccess` VALUES (501,10,'ContractorAccounts',1,1,1,1,'2014-04-02 16:42:10',1000);
+INSERT INTO `useraccess` VALUES (511,10,'AssignAudits',1,1,NULL,1,'2014-04-02 16:43:16',1000);
+INSERT INTO `useraccess` VALUES (521,10,'AuditEdit',1,1,1,1,'2014-04-02 16:43:25',1000);
+INSERT INTO `useraccess` VALUES (531,10,'AuditVerification',1,1,NULL,1,'2014-04-02 16:43:37',1000);
+INSERT INTO `useraccess` VALUES (541,10,'ContractorLicenseReport',1,NULL,NULL,1,'2014-04-02 16:43:53',1000);
+INSERT INTO `useraccess` VALUES (551,10,'ContractorSimulator',1,NULL,NULL,1,'2014-04-02 16:44:00',1000);
+INSERT INTO `useraccess` VALUES (561,10,'DelinquentAccounts',1,NULL,NULL,1,'2014-04-02 16:44:08',1000);
+INSERT INTO `useraccess` VALUES (571,10,'EmailTemplates',1,1,1,1,'2014-04-02 16:44:20',1000);
+INSERT INTO `useraccess` VALUES (581,10,'EmailQueue',1,1,1,1,'2014-04-02 16:44:26',1000);
+INSERT INTO `useraccess` VALUES (591,10,'ForcedFlagsReport',1,NULL,NULL,1,'2014-04-02 16:44:45',1000);
+INSERT INTO `useraccess` VALUES (601,10,'InsuranceCerts',1,1,1,1,'2014-04-02 16:44:53',1000);
+INSERT INTO `useraccess` VALUES (611,10,'InsuranceVerification',1,1,NULL,1,'2014-04-02 16:45:04',1000);
+INSERT INTO `useraccess` VALUES (621,10,'RequestNewContractor',1,1,NULL,1,'2014-04-02 16:45:38',1000);
+INSERT INTO `useraccess` VALUES (631,10,'OfficeAuditCalendar',1,NULL,NULL,1,'2014-04-02 16:45:47',1000);
+INSERT INTO `useraccess` VALUES (641,10,'MyCalendar',1,1,1,1,'2014-04-02 16:45:54',1000);
+INSERT INTO `useraccess` VALUES (651,10,'CaoEdit',1,NULL,NULL,1,'2014-04-02 16:46:22',1000);
+INSERT INTO `useraccess` VALUES (661,1000,'ContractorTags',1,1,1,1,'2014-04-02 16:50:18',1000);
+INSERT INTO `useraccess` VALUES (671,1000,'EditNotes',1,1,1,1,'2014-04-02 16:50:30',1000);
+INSERT INTO `useraccess` VALUES (681,1000,'EditProfile',1,1,NULL,1,'2014-04-02 16:50:46',1000);
+INSERT INTO `useraccess` VALUES (691,1000,'EditTags',1,1,1,1,'2014-04-02 16:51:03',1000);
+INSERT INTO `useraccess` VALUES (701,1000,'EmailQueue',1,1,1,1,'2014-04-02 16:51:26',1000);
+INSERT INTO `useraccess` VALUES (711,1000,'EmployeeList',1,1,1,1,'2014-04-02 16:51:34',1000);
+INSERT INTO `useraccess` VALUES (721,1000,'EMRReport',1,NULL,NULL,1,'2014-04-02 16:51:44',1000);
+INSERT INTO `useraccess` VALUES (731,1000,'FatalitiesReport',1,NULL,NULL,1,'2014-04-02 16:51:55',1000);
+INSERT INTO `useraccess` VALUES (741,1000,'ManageProjects',1,1,1,1,'2014-04-02 16:52:07',1000);
+INSERT INTO `useraccess` VALUES (751,1000,'TRIRReport',1,NULL,NULL,1,'2014-04-02 16:52:14',1000);
+INSERT INTO `useraccess` VALUES (761,1000,'SwitchUser',1,NULL,NULL,1,'2014-04-02 16:52:20',1000);
+INSERT INTO `useraccess` VALUES (771,20,'Debug',1,NULL,NULL,1,'2014-04-02 16:53:53',1000);
+INSERT INTO `useraccess` VALUES (781,20,'DevelopmentEnvironment',1,1,1,1,'2014-04-02 16:54:19',1000);
+INSERT INTO `useraccess` VALUES (791,20,'ManageCsrAssignment',1,NULL,NULL,1,'2014-04-02 16:54:40',1000);
+INSERT INTO `useraccess` VALUES (801,20,'ManageEmployees',1,1,1,1,'2014-04-02 16:54:55',1000);
+INSERT INTO `useraccess` VALUES (811,20,'ManageTrades',1,1,1,1,'2014-04-02 16:55:06',1000);
+INSERT INTO `useraccess` VALUES (821,20,'Translator',1,1,1,1,'2014-04-02 16:55:12',1000);
 /*!40000 ALTER TABLE `useraccess` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -24289,7 +24344,7 @@ CREATE TABLE `usergroup` (
   KEY `roleID` (`groupID`),
   CONSTRAINT `FK_usergroup_group` FOREIGN KEY (`groupID`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_usergroup_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -24307,6 +24362,7 @@ INSERT INTO `usergroup` VALUES (61,5000,9,'2014-01-21 13:25:08',1000,1000,'2014-
 INSERT INTO `usergroup` VALUES (71,5000,10,'2014-01-21 13:25:08',1000,1000,'2014-01-21 13:25:08');
 INSERT INTO `usergroup` VALUES (81,5000,20,'2014-01-21 13:25:08',1000,1000,'2014-01-21 13:25:08');
 INSERT INTO `usergroup` VALUES (91,5000,21,'2013-07-17 15:18:27',1000,1000,'2013-07-17 15:18:27');
+INSERT INTO `usergroup` VALUES (101,1000,20,'2014-04-02 10:29:45',1000,1000,'2014-04-02 10:29:45');
 /*!40000 ALTER TABLE `usergroup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -24386,7 +24442,7 @@ INSERT INTO `users` VALUES (10,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Employee Gro
 INSERT INTO `users` VALUES (12,NULL,NULL,'Yes',NULL,NULL,NULL,'Contractor Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,'en',NULL,NULL,1,NULL,1,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (20,'GROUP1100PICS Developer',NULL,'Yes',NULL,'First','Last','PICS Developer','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2011-03-03 16:40:34','2011-03-03 16:40:34',NULL,'America/Chicago',0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (21,'GROUP1100PICS API User',NULL,'Yes',NULL,'First','Last','PICS API User','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-03-26 17:30:43','2013-03-26 17:30:43',NULL,NULL,0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
-INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-04-01 22:23:29',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
+INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-04-02 10:29:59',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
 INSERT INTO `users` VALUES (1001,NULL,NULL,'No','tester@picsauditing.com','PICS','CSR','PICS CSR','Yes',NULL,1100,NULL,2,NULL,NULL,NULL,NULL,'',NULL,37951,23157,'2012-11-19 18:58:25','2013-04-12 10:50:56',NULL,NULL,0,0,'en','PICS',NULL,1,'2013-05-13 19:20:34',1,'2013-05-13 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,171);
 INSERT INTO `users` VALUES (1002,NULL,NULL,'No','tester@picsauditing.com','PICS','Auditor','PICS Auditor','Yes','2014-02-13 16:54:58',1100,NULL,0,NULL,'',NULL,NULL,NULL,NULL,941,90574,'2013-02-19 16:32:06','2013-09-09 12:02:45',NULL,'America/Los_Angeles',0,0,'en_US','Technology',NULL,1,'2013-02-19 00:00:00',1,'2013-02-19 00:00:00','2013-08-06 00:00:00',0,8,16,'xMTWTFx',0,NULL,181);
 INSERT INTO `users` VALUES (5000,'AETestv7',NULL,'No','aetest0ebdfea6@picsauditing.com','AETest','v7Menus','AETest v7Menus','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-07-17 15:17:42','2014-03-18 11:54:22',NULL,'America/Los_Angeles',0,1,'en_US','Selenium Test',NULL,1,'2013-12-20 00:00:00',1,'2013-12-20 00:00:00','2013-07-25 00:00:00',0,8,16,'xMTWTFx',0,'1eyndgv4iddubsry9u9kheniab7r4cvb',32);
