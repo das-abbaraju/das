@@ -138,6 +138,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private InputValidator inputValidator;
 	private VATValidator vatValidator;
 	private CountryDAO countryDAO;
+    private YearList yearList;
 
 	private static Logger logger = LoggerFactory.getLogger(ContractorAccount.class);
 
@@ -1006,10 +1007,21 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
     @Transient
+    public YearList getYearList() {
+        if (yearList == null)
+            return new YearList();
+        return yearList;
+    }
+
+    public void setYearList(YearList yearList) {
+        this.yearList = yearList;
+    }
+
+    @Transient
     public Map<MultiYearScope, ContractorAudit> getAfterPendingAnnualUpdates() {
         Map<MultiYearScope, ContractorAudit> annualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
         Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
-        YearList years = new YearList();
+        YearList years = getYearList();
 
         for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
             if (annualUpdate.hasCaoStatusAfter(AuditStatus.Pending)) {
@@ -1033,7 +1045,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
 		Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
-		YearList years = new YearList();
+		YearList years = getYearList();
 
 		for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
 			if (annualUpdate.hasCaoStatus(AuditStatus.Complete)) {
