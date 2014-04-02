@@ -10,7 +10,7 @@
 	</span>
 </h1>
 
-<s:if test="contractor.autoAddClientSite && contractor.status.active" >
+<s:if test="canAddContractor()" >
     <s:if test="permissions.corporate">
         <s:url action="ContractorFacilities" var="new_contractor_search_add">
             <s:param name="id">${contractor.id}</s:param>

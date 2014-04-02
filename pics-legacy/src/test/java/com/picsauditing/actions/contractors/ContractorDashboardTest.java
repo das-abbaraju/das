@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -94,6 +95,57 @@ public class ContractorDashboardTest extends PicsTranslationTest {
 
 		permissions = EntityFactory.makePermission();
 	}
+
+    @Test
+    public void testCanAddContractor_No_NonActiveContractor() {
+        ContractorAccount contractor = mock(ContractorAccount.class);
+        Whitebox.setInternalState(dashboard, "contractor", contractor);
+
+        when(contractor.isActive()).thenReturn(false);
+
+        assertFalse(dashboard.canAddContractor());
+    }
+
+    @Test
+    public void testCanAddContractor_No_NonAutoAddContractor() {
+        ContractorAccount contractor = mock(ContractorAccount.class);
+        Whitebox.setInternalState(dashboard, "contractor", contractor);
+
+        when(contractor.isActive()).thenReturn(true);
+        when(contractor.isAutoAddClientSite()).thenReturn(false);
+
+        assertFalse(dashboard.canAddContractor());
+    }
+
+    @Test
+    public void testCanAddContractor_No_NonAddPernOperator() {
+        ContractorAccount contractor = mock(ContractorAccount.class);
+        Whitebox.setInternalState(dashboard, "contractor", contractor);
+        Permissions permissions = mock(Permissions.class);
+        Whitebox.setInternalState(dashboard, "permissions", permissions);
+
+        when(contractor.isActive()).thenReturn(true);
+        when(contractor.isAutoAddClientSite()).thenReturn(true);
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.AddContractors)).thenReturn(false);
+
+        assertFalse(dashboard.canAddContractor());
+    }
+
+    @Test
+    public void testCanAddContractor_Yes_PermittedOperator() {
+        ContractorAccount contractor = mock(ContractorAccount.class);
+        Whitebox.setInternalState(dashboard, "contractor", contractor);
+        Permissions permissions = mock(Permissions.class);
+        Whitebox.setInternalState(dashboard, "permissions", permissions);
+
+        when(contractor.isActive()).thenReturn(true);
+        when(contractor.isAutoAddClientSite()).thenReturn(true);
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.AddContractors)).thenReturn(true);
+
+        assertTrue(dashboard.canAddContractor());
+    }
 
     @Test
     public void canSeeAudit_NoVisibleCaos() throws Exception {
