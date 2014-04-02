@@ -1,8 +1,16 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.google.gson.Gson;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.controller.PicsRestActionSupport;
+import com.picsauditing.employeeguard.engine.SkillEngine;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.exceptions.NoOperatorForCorporateException;
+import com.picsauditing.employeeguard.models.ModelFactory;
+import com.picsauditing.employeeguard.models.StatusSummary;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.factory.RoleFactory;
 import com.picsauditing.employeeguard.viewmodel.factory.SkillFactory;
@@ -23,9 +31,15 @@ public class AssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private EmployeeService employeeService;
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
-	private GroupService groupService;
+	private SkillEngine skillEngine;
+	@Autowired
+	private StatusCalculatorService statusCalculatorService;
+
+	// Old services
+	@Autowired
+	private EmployeeService employeeService;
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
@@ -45,6 +59,43 @@ public class AssignmentAction extends PicsRestActionSupport {
 	private int projectId;
 	private int roleId;
 	private int siteId;
+
+	public String summary() throws NoRightsException {
+		if (!permissions.isOperatorCorporate()) {
+			throw new NoRightsException("Must be an client site or corporate user");
+		}
+
+		StatusSummary statusSummary = buildStatusSummary(getSiteIdForSummary());
+		jsonString = new Gson().toJson(statusSummary);
+
+		return JSON_STRING;
+	}
+
+	private StatusSummary buildStatusSummary(final int siteId) {
+		AccountModel accountModel = accountService.getAccountById(siteId);
+		List<Integer> contractorIds = accountService.getContractorIds(siteId);
+		List<Employee> employees = employeeEntityService.getEmployeesAssignedToSite(contractorIds, siteId);
+
+		Map<Employee, Set<AccountSkill>> employeeSkills = skillEngine.getEmployeeSkillsMapForAccount(employees, accountModel);
+		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService.getEmployeeStatusRollUpForSkills(employees, employeeSkills);
+
+		return ModelFactory.getStatusSummaryFactory().create(employeeStatuses);
+	}
+
+	private int getSiteIdForSummary() throws NoOperatorForCorporateException {
+		if (permissions.isOperator()) {
+			return permissions.getAccountId();
+		}
+
+		List<Integer> siteIds = accountService.getChildOperatorIds(permissions.getAccountId());
+		int siteId = NumberUtils.toInt(id);
+
+		if (siteIds.contains(siteId)) {
+			return siteId;
+		}
+
+		throw new NoOperatorForCorporateException("Site " + siteId + " not viewable by Corporate " + permissions.getAccountId());
+	}
 
 	public String assignments() {
 		assignmentId = NumberUtils.toInt(id);
