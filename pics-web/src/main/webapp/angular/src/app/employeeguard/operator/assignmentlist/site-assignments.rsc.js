@@ -1,5 +1,5 @@
 angular.module('PICS.employeeguard')
 
 .factory('SiteAssignments', function($resource, $routeParams) {
-    return $resource('/angular/json/operator/assignmentlist/site_assignments:id.json');
+    return $resource('/employee-guard/operators/assignments/summary/:id');
 });

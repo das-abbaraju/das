@@ -6,8 +6,8 @@
         "pending": 2,
         "expiring": 0,
         "expired": 0,
-        "name": "Not Dynamic Reports",
-        "location": "Somewhere in the South Pacify",
+        "name": "Static Reports",
+        "location": "Smoke Monster's Light Cave",
         "startDate": "06/17/2011",
         "endDate": "09/13/2012"
     },

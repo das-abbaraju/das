@@ -68252,8 +68252,7 @@ angular.module('admin-projects', [])
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteList', function($resource, $routeParams) {
-    // return $resource('/employee-guard/corporates/sites');
-    return $resource('/angular/json/corp_dashboard_sites.json');
+    return $resource('/employee-guard/corporates/sites');
 });;angular.module('PICS.employeeguard')
 
 .controller('contractorDashboardCtrl', function ($scope, ContractorStatus) {
@@ -68320,7 +68319,7 @@ angular.module('admin-projects', [])
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteAssignments', function($resource, $routeParams) {
-    return $resource('/angular/json/operator/assignmentlist/site_assignments:id.json');
+    return $resource('/employee-guard/operators/assignments/summary/:id');
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteAssignmentDetails', function($resource, $routeParams) {

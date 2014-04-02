@@ -102,13 +102,15 @@
         <action name="employees" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <!-- Operator Assignments Page -->
         <action name="assignments/projects"
                 class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction" method="projects">
         </action>
 
-        <action name="assignments" class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction"
-                method="summary">
+        <action name="assignments/summary" class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction" method="summary">
         </action>
+
+        <action name="assignments" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load" />
     </package>
 
     <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"
