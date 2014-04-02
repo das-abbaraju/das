@@ -64,7 +64,7 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees,
-															 final Collection<Integer> siteIds) {
+	                                                         final Collection<Integer> siteIds) {
 
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
@@ -85,18 +85,39 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-																final int siteId) {
+	                                                            final int siteId) {
 
 		return getProjectRolesForEmployees(employees, Arrays.asList(siteId));
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-																final Collection<Integer> siteIds) {
+	                                                            final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}
 
 		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
+				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
+
+					@Override
+					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getEmployee();
+					}
+
+					@Override
+					public Role getValue(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getProjectRole().getRole();
+					}
+				});
+	}
+
+	public Map<Employee, Set<Role>> getProjectRolesForEmployeesByProjects(final Collection<Employee> employees,
+	                                                                      final Collection<Project> projects) {
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
+		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndProjects(employees, projects),
 				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
 
 					@Override

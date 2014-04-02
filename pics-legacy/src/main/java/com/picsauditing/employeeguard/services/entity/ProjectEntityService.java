@@ -38,7 +38,8 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return getProjectsForEmployeesBySiteIds(employees, Arrays.asList(siteId));
 	}
 
-	public Map<Employee, Set<Project>> getProjectsForEmployeesBySiteIds(final Collection<Employee> employees, final Collection<Integer> siteIds) {
+	public Map<Employee, Set<Project>> getProjectsForEmployeesBySiteIds(final Collection<Employee> employees,
+	                                                                    final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}

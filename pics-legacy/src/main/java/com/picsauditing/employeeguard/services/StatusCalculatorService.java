@@ -21,7 +21,7 @@ public class StatusCalculatorService {
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 
 	public Map<Employee, SkillStatus> getEmployeeStatusRollUpForSkills(final Collection<Employee> employees,
-																	   final Map<Employee, Set<AccountSkill>> employeeRequiredSkills) {
+	                                                                   final Map<Employee, Set<AccountSkill>> employeeRequiredSkills) {
 		if (CollectionUtils.isEmpty(employees) || MapUtils.isEmpty(employeeRequiredSkills)) {
 			return Collections.emptyMap();
 		}
@@ -58,7 +58,7 @@ public class StatusCalculatorService {
 	 * @return
 	 */
 	public Map<Employee, List<SkillStatus>> getEmployeeStatusRollUpForSkills(final Collection<Employee> employees,
-																			 final List<AccountSkill> orderedSkills) {
+	                                                                         final List<AccountSkill> orderedSkills) {
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
 				.findByEmployeesAndSkills(employees, orderedSkills);
 		Map<Employee, Set<AccountSkillEmployee>> employeeSetMap = convertToMap(accountSkillEmployees);
@@ -75,8 +75,8 @@ public class StatusCalculatorService {
 	}
 
 	private Map<Employee, List<SkillStatus>> buildSkillStatusMap(final Set<Employee> employees,
-																 final Map<Employee, Set<AccountSkillEmployee>> employeeMap,
-																 final List<AccountSkill> orderedSkills) {
+	                                                             final Map<Employee, Set<AccountSkillEmployee>> employeeMap,
+	                                                             final List<AccountSkill> orderedSkills) {
 		if (MapUtils.isEmpty(employeeMap) || CollectionUtils.isEmpty(orderedSkills)) {
 			return Collections.emptyMap();
 		}
@@ -96,7 +96,7 @@ public class StatusCalculatorService {
 	}
 
 	private List<SkillStatus> buildOrderedSkillStatusList(final Set<AccountSkillEmployee> accountSkillEmployees,
-														  final List<AccountSkill> orderedSkills) {
+	                                                      final List<AccountSkill> orderedSkills) {
 		List<SkillStatus> skillStatusList = fillWithExpiredStatus(orderedSkills.size());
 		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
 			int index = orderedSkills.indexOf(accountSkillEmployee.getSkill());
@@ -189,7 +189,7 @@ public class StatusCalculatorService {
 	}
 
 	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
-																final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
+	                                                            final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
 		}
@@ -241,17 +241,19 @@ public class StatusCalculatorService {
 
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, skills);
 
-		Map<Employee, Map<AccountSkill, AccountSkillEmployee>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(accountSkillEmployees, new PicsCollectionUtil.CollectionToMapConverter<Employee, AccountSkill, AccountSkillEmployee>() {
-			@Override
-			public Employee getRow(AccountSkillEmployee value) {
-				return value.getEmployee();
-			}
+		Map<Employee, Map<AccountSkill, AccountSkillEmployee>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(
+				accountSkillEmployees,
+				new PicsCollectionUtil.CollectionToMapConverter<Employee, AccountSkill, AccountSkillEmployee>() {
+					@Override
+					public Employee getRow(AccountSkillEmployee value) {
+						return value.getEmployee();
+					}
 
-			@Override
-			public AccountSkill getColumn(AccountSkillEmployee value) {
-				return value.getSkill();
-			}
-		});
+					@Override
+					public AccountSkill getColumn(AccountSkillEmployee value) {
+						return value.getSkill();
+					}
+				});
 
 		Map<E, List<SkillStatus>> skillStatusPerEntityEmployee = new HashMap<>();
 		for (final E entity : entityEmployeeSkillMap.keySet()) {

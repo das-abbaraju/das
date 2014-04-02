@@ -31,10 +31,12 @@ public class OperatorSiteAssignmentStatus implements StatusSummarizable {
 		this.name = name;
 	}
 
+	@Override
 	public int getEmployees() {
 		return employees;
 	}
 
+	@Override
 	public void setEmployees(int employees) {
 		this.employees = employees;
 	}
