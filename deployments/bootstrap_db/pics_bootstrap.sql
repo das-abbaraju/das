@@ -321,6 +321,8 @@ CREATE TABLE `accountemployeeguard` (
 
 LOCK TABLES `accountemployeeguard` WRITE;
 /*!40000 ALTER TABLE `accountemployeeguard` DISABLE KEYS */;
+INSERT INTO `accountemployeeguard` VALUES (14);
+INSERT INTO `accountemployeeguard` VALUES (500);
 /*!40000 ALTER TABLE `accountemployeeguard` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -399,7 +401,7 @@ CREATE TABLE `accounts` (
   KEY `type` (`type`,`status`),
   KEY `fk1_accounts` (`contactID`),
   CONSTRAINT `fk1_accounts` FOREIGN KEY (`contactID`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2731 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2791 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -410,12 +412,18 @@ LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 INSERT INTO `accounts` VALUES (1,'Admin','Everyone',1000,'2008-10-15 00:00:00',1000,'2009-02-02 11:33:50',NULL,NULL,'Pending',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'EVERYONE',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_1','NOLOAD_1',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,0);
 INSERT INTO `accounts` VALUES (2,'Admin','Private',1000,'2009-02-02 11:33:50',1000,'2009-02-02 11:33:50',NULL,NULL,'Pending',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'PRIVATE',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_2','NOLOAD_2',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,0);
+INSERT INTO `accounts` VALUES (4,'Admin','PICS Global',1000,'2014-04-01 11:20:10',1000,'2014-04-01 11:20:20',NULL,NULL,'Pending',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'PICSGLOBAL',NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_4','NOLOAD_4',NULL,NULL,0,NULL,0,'en',NULL,-1,60,1,0,0);
 INSERT INTO `accounts` VALUES (14,'Contractor','Contractor Basic 1',1000,'2003-12-17 00:00:00',1000,'2013-09-04 12:36:51',NULL,NULL,'Active','1905 Still Street','',NULL,'Port Clinton','US-OH','43452','US','419-635-5715','310-901-2163','419-635-5715',NULL,'tester@picsauditing.com','www.test.com',NULL,NULL,'Petrochemical','56299',1,NULL,'CONTRACTORBASIC1',NULL,0,'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',0,0,0,1,0,0,0,0,1,NULL,NULL,'USD','1D50000-1116618078',NULL,NULL,NULL,1,'2013-09-24 00:00:00',0,'en_US','US/Mountain',7,60,1,0,0);
 INSERT INTO `accounts` VALUES (100,'Contractor','Contractor Basic 2',1000,'2014-02-13 18:28:42',1000,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,'US-CA',NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'CON',NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0,0);
-INSERT INTO `accounts` VALUES (500,'Operator','Operator Basic 1',1000,NULL,1000,NULL,NULL,NULL,'Active',NULL,NULL,NULL,NULL,NULL,NULL,'US',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,NULL,NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,1,0,0);
+INSERT INTO `accounts` VALUES (500,'Operator','Operator Basic 1',1000,'2014-04-01 22:24:35',1000,'2014-04-01 22:24:35',NULL,NULL,'Active','','',NULL,'','US-CA','','US','',NULL,'',98501,NULL,'',NULL,NULL,NULL,'0',0,'','OPERATORBASIC1',NULL,0,'',0,0,1,0,0,0,0,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,1,NULL,0,'en',NULL,-1,60,0,0,0);
 INSERT INTO `accounts` VALUES (1100,'Admin','PICS Auditing, LLC',1000,'2006-04-21 00:00:00',1000,'2009-02-02 11:33:50',NULL,NULL,'Active','',NULL,NULL,'','US-CA','','US','','','',NULL,'','',NULL,NULL,NULL,'0',0,NULL,'PICS',NULL,0,NULL,0,0,0,0,0,0,0,0,1,NULL,NULL,'USD','NOLOAD_1100','NOLOAD_1100',NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,0);
 INSERT INTO `accounts` VALUES (1101,'Operator','Skyscraper Buildings',1000,'2014-03-07 12:00:39',1000,'2014-03-07 12:00:39',NULL,NULL,'Active','1234 Main Street ','Ste 100',NULL,'Big City','US-NJ','01234','US','(555) 555-5555',NULL,'',98471,NULL,'skyline.example.com',NULL,NULL,NULL,'0',0,'The Skyscraper Building Manufacturing Company','SKYSCRAPERBUILDINGS',NULL,1,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Eastern',7,60,1,0,0);
 INSERT INTO `accounts` VALUES (2723,'Operator','a. Audited - Unspecified Facility (US Only)',1000,'2007-03-23 00:00:00',1000,'2013-02-12 17:00:44',NULL,NULL,'Active','P.O. Box 51387','',NULL,'Irvine','US-CA','92619','US','800-506-7427','','',1000,'tester@picsauditing.com','',NULL,NULL,'Petrochemical','0',0,'','AAUDITEDUNSPECIFIEDFACILITYUSONLY','',0,'',0,0,0,1,1,1,1,0,1,NULL,NULL,'USD','NOLOAD2723','NOLOAD2723',NULL,NULL,0,NULL,0,'en_US','America/Chicago',7,60,1,0,0);
+INSERT INTO `accounts` VALUES (2731,'Corporate','Corporate Operator (US) 1',1000,'2014-04-01 10:44:02',1000,'2014-04-01 11:23:51',NULL,NULL,'Demo','555 Main Street','',NULL,'Fake City','US-CA','WV10 6QJ','US','07155555555',NULL,'',NULL,NULL,'',NULL,NULL,NULL,'0',0,'Corporate Operator (US) 1','CORPORATEOPERATOR(US)1',NULL,0,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Pacific',7,60,1,0,NULL);
+INSERT INTO `accounts` VALUES (2741,'Corporate','Corporate Operator (US) 2',1000,'2014-04-01 10:45:45',1000,'2014-04-01 11:21:22',NULL,NULL,'Demo','555 Main Street','',NULL,'Fake City','US-CA','WV10 6QJ','US','07155555555',NULL,'',NULL,NULL,'',NULL,NULL,NULL,'0',0,'Corporate Operator (US) 2','CORPORATEOPERATOR(US)2',NULL,0,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en','US/Pacific',7,60,1,0,NULL);
+INSERT INTO `accounts` VALUES (2761,'Operator','Site Operator (US) 1',1000,'2014-04-01 13:26:24',1000,'2014-04-01 13:26:24',NULL,NULL,'Active','555 Main Street','',NULL,'Fake City','US-CA','WV10 6QJ','US','07155555555',NULL,'',NULL,NULL,'',NULL,NULL,NULL,'0',0,'Site Operator (US) 1','SITEOPERATOR(US)1',NULL,0,'',0,0,1,1,1,1,1,0,0,NULL,NULL,'USD','NOLOAD2761','NOLOAD2761',NULL,NULL,0,NULL,0,'en','US/Pacific',7,60,1,0,NULL);
+INSERT INTO `accounts` VALUES (2771,'Contractor','US Contractor 1',12,'2014-04-01 13:48:57',12,'2014-04-01 13:48:57',NULL,NULL,'Active','555 Main Street',NULL,NULL,NULL,'US-CA','99999','US','447147777777',NULL,NULL,98481,NULL,NULL,NULL,NULL,NULL,'0',0,NULL,'USCONTRACTOR1',NULL,0,NULL,0,0,1,0,0,0,0,0,1,NULL,NULL,'USD',NULL,NULL,NULL,NULL,0,NULL,0,'en_US',NULL,7,60,1,0,NULL);
+INSERT INTO `accounts` VALUES (2781,'Corporate','CorporateAccount',1000,'2014-04-01 16:30:59',1000,'2014-04-01 16:30:59',NULL,NULL,'Pending','','',NULL,'','US-CA','','US','',NULL,'',98491,NULL,'',NULL,NULL,NULL,'0',0,'Corporate Account','CORPORATEACCOUNT',NULL,0,'',1,1,1,1,1,1,1,0,0,NULL,NULL,'USD','NOLOAD2781','NOLOAD2781',NULL,NULL,0,NULL,0,'en',NULL,7,60,1,0,NULL);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6144,6 +6152,13 @@ INSERT INTO `app_index` VALUES ('C',14,'TESTCOM',4);
 INSERT INTO `app_index` VALUES ('C',14,'UNITED STATES',3);
 INSERT INTO `app_index` VALUES ('C',14,'US',3);
 INSERT INTO `app_index` VALUES ('C',14,'US-OH',4);
+INSERT INTO `app_index` VALUES ('O',500,'1',7);
+INSERT INTO `app_index` VALUES ('O',500,'500',10);
+INSERT INTO `app_index` VALUES ('O',500,'BASIC',7);
+INSERT INTO `app_index` VALUES ('O',500,'OPERATOR',7);
+INSERT INTO `app_index` VALUES ('O',500,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('O',500,'US',3);
+INSERT INTO `app_index` VALUES ('O',500,'US-CA',4);
 INSERT INTO `app_index` VALUES ('U',927,'927',4);
 INSERT INTO `app_index` VALUES ('U',927,'9499364504',7);
 INSERT INTO `app_index` VALUES ('U',927,'COTA',7);
@@ -6204,6 +6219,70 @@ INSERT INTO `app_index` VALUES ('C',1131,'KIRKTREK',7);
 INSERT INTO `app_index` VALUES ('C',1131,'UNITED STATES',3);
 INSERT INTO `app_index` VALUES ('C',1131,'US',3);
 INSERT INTO `app_index` VALUES ('C',1131,'US-CA',4);
+INSERT INTO `app_index` VALUES ('O',2723,'2723',10);
+INSERT INTO `app_index` VALUES ('O',2723,'8005067427',2);
+INSERT INTO `app_index` VALUES ('O',2723,'92619',3);
+INSERT INTO `app_index` VALUES ('O',2723,'A',7);
+INSERT INTO `app_index` VALUES ('O',2723,'AUDITED',7);
+INSERT INTO `app_index` VALUES ('O',2723,'FACILITY',7);
+INSERT INTO `app_index` VALUES ('O',2723,'IRVINE',3);
+INSERT INTO `app_index` VALUES ('O',2723,'ONLY',7);
+INSERT INTO `app_index` VALUES ('O',2723,'OPERATOR',2);
+INSERT INTO `app_index` VALUES ('O',2723,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('O',2723,'UNSPECIFIED',7);
+INSERT INTO `app_index` VALUES ('O',2723,'US',7);
+INSERT INTO `app_index` VALUES ('O',2723,'US-CA',4);
+INSERT INTO `app_index` VALUES ('CO',2731,'1',7);
+INSERT INTO `app_index` VALUES ('CO',2731,'2731',10);
+INSERT INTO `app_index` VALUES ('CO',2731,'7155555555',2);
+INSERT INTO `app_index` VALUES ('CO',2731,'CORPORATE',7);
+INSERT INTO `app_index` VALUES ('CO',2731,'FAKE CITY',3);
+INSERT INTO `app_index` VALUES ('CO',2731,'OPERATOR',7);
+INSERT INTO `app_index` VALUES ('CO',2731,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('CO',2731,'US',7);
+INSERT INTO `app_index` VALUES ('CO',2731,'US-CA',4);
+INSERT INTO `app_index` VALUES ('CO',2731,'WV10 6QJ',3);
+INSERT INTO `app_index` VALUES ('CO',2741,'2',7);
+INSERT INTO `app_index` VALUES ('CO',2741,'2741',10);
+INSERT INTO `app_index` VALUES ('CO',2741,'7155555555',2);
+INSERT INTO `app_index` VALUES ('CO',2741,'CORPORATE',7);
+INSERT INTO `app_index` VALUES ('CO',2741,'FAKE CITY',3);
+INSERT INTO `app_index` VALUES ('CO',2741,'OPERATOR',7);
+INSERT INTO `app_index` VALUES ('CO',2741,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('CO',2741,'US',7);
+INSERT INTO `app_index` VALUES ('CO',2741,'US-CA',4);
+INSERT INTO `app_index` VALUES ('CO',2741,'WV10 6QJ',3);
+INSERT INTO `app_index` VALUES ('CO',2751,'2751',10);
+INSERT INTO `app_index` VALUES ('CO',2751,'CORPORATE',7);
+INSERT INTO `app_index` VALUES ('CO',2751,'TREVOR',7);
+INSERT INTO `app_index` VALUES ('CO',2751,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('CO',2751,'US',3);
+INSERT INTO `app_index` VALUES ('CO',2751,'US-CA',4);
+INSERT INTO `app_index` VALUES ('O',2761,'1',7);
+INSERT INTO `app_index` VALUES ('O',2761,'2761',10);
+INSERT INTO `app_index` VALUES ('O',2761,'7155555555',2);
+INSERT INTO `app_index` VALUES ('O',2761,'FAKE CITY',3);
+INSERT INTO `app_index` VALUES ('O',2761,'OPERATOR',7);
+INSERT INTO `app_index` VALUES ('O',2761,'SITE',7);
+INSERT INTO `app_index` VALUES ('O',2761,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('O',2761,'US',7);
+INSERT INTO `app_index` VALUES ('O',2761,'US-CA',4);
+INSERT INTO `app_index` VALUES ('O',2761,'WV10 6QJ',3);
+INSERT INTO `app_index` VALUES ('C',2771,'1',7);
+INSERT INTO `app_index` VALUES ('C',2771,'2771',10);
+INSERT INTO `app_index` VALUES ('C',2771,'4471477777',2);
+INSERT INTO `app_index` VALUES ('C',2771,'99999',3);
+INSERT INTO `app_index` VALUES ('C',2771,'CONTRACTOR',7);
+INSERT INTO `app_index` VALUES ('C',2771,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('C',2771,'US',7);
+INSERT INTO `app_index` VALUES ('C',2771,'US-CA',4);
+INSERT INTO `app_index` VALUES ('CO',2781,'2781',10);
+INSERT INTO `app_index` VALUES ('CO',2781,'ACCOUNT',7);
+INSERT INTO `app_index` VALUES ('CO',2781,'CORPORATE',7);
+INSERT INTO `app_index` VALUES ('CO',2781,'CORPORATEACCOUNT',7);
+INSERT INTO `app_index` VALUES ('CO',2781,'UNITED STATES',3);
+INSERT INTO `app_index` VALUES ('CO',2781,'US',3);
+INSERT INTO `app_index` VALUES ('CO',2781,'US-CA',4);
 INSERT INTO `app_index` VALUES ('U',82286,'82286',4);
 INSERT INTO `app_index` VALUES ('U',82286,'PICS',7);
 INSERT INTO `app_index` VALUES ('U',82286,'PICSAUDITINGCOM',5);
@@ -6244,6 +6323,29 @@ INSERT INTO `app_index` VALUES ('U',98471,'EXAMPLECOM',5);
 INSERT INTO `app_index` VALUES ('U',98471,'RBIGGS',6);
 INSERT INTO `app_index` VALUES ('U',98471,'ROBERT',7);
 INSERT INTO `app_index` VALUES ('U',98471,'USER',2);
+INSERT INTO `app_index` VALUES ('U',98481,'1',7);
+INSERT INTO `app_index` VALUES ('U',98481,'98481',4);
+INSERT INTO `app_index` VALUES ('U',98481,'EMAIL',5);
+INSERT INTO `app_index` VALUES ('U',98481,'EXAMPLECOM',5);
+INSERT INTO `app_index` VALUES ('U',98481,'FIRST',7);
+INSERT INTO `app_index` VALUES ('U',98481,'LAST',7);
+INSERT INTO `app_index` VALUES ('U',98481,'NAME',7);
+INSERT INTO `app_index` VALUES ('U',98481,'USER',2);
+INSERT INTO `app_index` VALUES ('U',98491,'234567890',7);
+INSERT INTO `app_index` VALUES ('U',98491,'98491',4);
+INSERT INTO `app_index` VALUES ('U',98491,'ACCOUNT',7);
+INSERT INTO `app_index` VALUES ('U',98491,'CORPORATE',7);
+INSERT INTO `app_index` VALUES ('U',98491,'CORPORATEUSER',5);
+INSERT INTO `app_index` VALUES ('U',98491,'EXAMPLECOM',5);
+INSERT INTO `app_index` VALUES ('U',98491,'USER',7);
+INSERT INTO `app_index` VALUES ('U',98501,'1',7);
+INSERT INTO `app_index` VALUES ('U',98501,'98501',4);
+INSERT INTO `app_index` VALUES ('U',98501,'BASIC',7);
+INSERT INTO `app_index` VALUES ('U',98501,'OPERATOR',7);
+INSERT INTO `app_index` VALUES ('U',98501,'OPUSER',6);
+INSERT INTO `app_index` VALUES ('U',98501,'PICSAUDITINGCOM',5);
+INSERT INTO `app_index` VALUES ('U',98501,'TESTER',5);
+INSERT INTO `app_index` VALUES ('U',98501,'USER',7);
 /*!40000 ALTER TABLE `app_index` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6348,6 +6450,59 @@ INSERT INTO `app_index_stats` VALUES ('C','92821',1);
 INSERT INTO `app_index_stats` VALUES ('C','BREA',1);
 INSERT INTO `app_index_stats` VALUES ('C','KIRKTREK',1);
 INSERT INTO `app_index_stats` VALUES ('C','1131',1);
+INSERT INTO `app_index_stats` VALUES ('CO','7155555555',1);
+INSERT INTO `app_index_stats` VALUES ('CO','US-CA',1);
+INSERT INTO `app_index_stats` VALUES ('CO','WV10 6QJ',1);
+INSERT INTO `app_index_stats` VALUES ('CO','FAKE CITY',1);
+INSERT INTO `app_index_stats` VALUES ('CO','CORPORATE',1);
+INSERT INTO `app_index_stats` VALUES ('CO','OPERATOR',1);
+INSERT INTO `app_index_stats` VALUES ('CO','US',1);
+INSERT INTO `app_index_stats` VALUES ('CO','1',1);
+INSERT INTO `app_index_stats` VALUES ('CO','2731',1);
+INSERT INTO `app_index_stats` VALUES ('CO','2741',1);
+INSERT INTO `app_index_stats` VALUES ('CO','TREVOR',1);
+INSERT INTO `app_index_stats` VALUES ('CO','2751',1);
+INSERT INTO `app_index_stats` VALUES ('CO','UNITED STATES',1);
+INSERT INTO `app_index_stats` VALUES ('O','7155555555',1);
+INSERT INTO `app_index_stats` VALUES ('O','US-CA',1);
+INSERT INTO `app_index_stats` VALUES ('O','WV10 6QJ',1);
+INSERT INTO `app_index_stats` VALUES ('O','FAKE CITY',1);
+INSERT INTO `app_index_stats` VALUES ('O','SITE',1);
+INSERT INTO `app_index_stats` VALUES ('O','1',1);
+INSERT INTO `app_index_stats` VALUES ('O','2761',1);
+INSERT INTO `app_index_stats` VALUES ('C','4471477777',1);
+INSERT INTO `app_index_stats` VALUES ('C','99999',1);
+INSERT INTO `app_index_stats` VALUES ('C','2771',1);
+INSERT INTO `app_index_stats` VALUES ('U','EMAIL',1);
+INSERT INTO `app_index_stats` VALUES ('U','FIRST',1);
+INSERT INTO `app_index_stats` VALUES ('U','NAME',1);
+INSERT INTO `app_index_stats` VALUES ('U','1',1);
+INSERT INTO `app_index_stats` VALUES ('U','LAST',1);
+INSERT INTO `app_index_stats` VALUES ('U','98481',1);
+INSERT INTO `app_index_stats` VALUES ('CO','ACCOUNT',1);
+INSERT INTO `app_index_stats` VALUES ('CO','CORPORATEACCOUNT',1);
+INSERT INTO `app_index_stats` VALUES ('CO','2781',1);
+INSERT INTO `app_index_stats` VALUES ('CO','2',1);
+INSERT INTO `app_index_stats` VALUES ('O','BASIC',1);
+INSERT INTO `app_index_stats` VALUES ('O','500',1);
+INSERT INTO `app_index_stats` VALUES ('O','8005067427',1);
+INSERT INTO `app_index_stats` VALUES ('O','92619',1);
+INSERT INTO `app_index_stats` VALUES ('O','IRVINE',1);
+INSERT INTO `app_index_stats` VALUES ('O','A',1);
+INSERT INTO `app_index_stats` VALUES ('O','AUDITED',1);
+INSERT INTO `app_index_stats` VALUES ('O','UNSPECIFIED',1);
+INSERT INTO `app_index_stats` VALUES ('O','FACILITY',1);
+INSERT INTO `app_index_stats` VALUES ('O','ONLY',1);
+INSERT INTO `app_index_stats` VALUES ('O','2723',1);
+INSERT INTO `app_index_stats` VALUES ('U','CORPORATEUSER',1);
+INSERT INTO `app_index_stats` VALUES ('U','234567890',1);
+INSERT INTO `app_index_stats` VALUES ('U','CORPORATE',1);
+INSERT INTO `app_index_stats` VALUES ('U','ACCOUNT',1);
+INSERT INTO `app_index_stats` VALUES ('U','98491',1);
+INSERT INTO `app_index_stats` VALUES ('U','BASIC',1);
+INSERT INTO `app_index_stats` VALUES ('U','OPERATOR',1);
+INSERT INTO `app_index_stats` VALUES ('U','OPUSER',1);
+INSERT INTO `app_index_stats` VALUES ('U','98501',1);
 /*!40000 ALTER TABLE `app_index_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6436,6 +6591,7 @@ LOCK TABLES `app_properties` WRITE;
 /*!40000 ALTER TABLE `app_properties` DISABLE KEYS */;
 INSERT INTO `app_properties` VALUES ('AuthServiceHost','localhost','location of auth rest service, eventually moving to api.piscorganizer',NULL);
 INSERT INTO `app_properties` VALUES ('brainTree.payment_url','https://secure.braintreepaymentgateway.com/api/transact.php','The url to our braintree payment gateway',NULL);
+INSERT INTO `app_properties` VALUES ('PICS.clear_cache','1',NULL,NULL);
 INSERT INTO `app_properties` VALUES ('Toggle.TranslationServiceAdapter','true',NULL,NULL);
 /*!40000 ALTER TABLE `app_properties` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -6573,7 +6729,7 @@ CREATE TABLE `app_user` (
   `lastLogin` datetime DEFAULT NULL COMMENT 'The last date and time this user logged in',
   PRIMARY KEY (`id`),
   UNIQUE KEY `akApp_User` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=41112 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41151 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6590,6 +6746,9 @@ INSERT INTO `app_user` VALUES (41081,'GROUP1100PICS Group1','',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41091,'contractor1','4d2ad9eab5440b47b2c8a292ceb07cf32e88b71d',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41101,'pics-noperm1','401114cfa3f40a93926d72d1ef64a28bbaf596ac',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41111,'rbiggs','',NULL,NULL,NULL);
+INSERT INTO `app_user` VALUES (41121,'email@example.com','6fa4a7b1df9a31a82e845ee1d69ca6b4440e77f7','41121',NULL,NULL);
+INSERT INTO `app_user` VALUES (41131,'corporateuser','',NULL,NULL,NULL);
+INSERT INTO `app_user` VALUES (41141,'op-user','',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `app_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6804,7 +6963,7 @@ CREATE TABLE `audit_category` (
   KEY `parent` (`parentID`),
   KEY `auditTypeCategory` (`auditTypeID`,`parentID`),
   CONSTRAINT `FK_audit_category` FOREIGN KEY (`auditTypeID`) REFERENCES `audit_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3733 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3751 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6822,6 +6981,7 @@ INSERT INTO `audit_category` VALUES (2355,1,2,41,3,7,'',1000,1000,'2012-01-30 01
 INSERT INTO `audit_category` VALUES (3251,1,400,4,0,4,NULL,1000,1000,'2012-12-18 10:41:25','2012-12-18 10:41:25','',0,0,0.000,1,'[\"en\",\"fr\",\"es\",\"de\",\"sv\",\"fi\",\"zh\",\"pt\",\"nl\",\"no\"]','2000-01-01','4000-01-01');
 INSERT INTO `audit_category` VALUES (3707,514,NULL,1,6,10,NULL,1000,1000,'2013-04-17 15:08:05','2013-05-28 12:51:23','',0,0,0.000,1,'[\"en\"]','2000-01-01','4000-01-01');
 INSERT INTO `audit_category` VALUES (3732,1,2355,1,0,0,NULL,1000,1000,'2013-04-22 09:54:27','2013-04-22 09:54:27','',0,0,0.000,1,'[\"en\"]','2000-01-01','4000-01-01');
+INSERT INTO `audit_category` VALUES (3741,13,NULL,1,0,0,NULL,1000,1000,'2014-04-01 13:47:24','2014-04-01 13:47:24','',0,0,0.000,1,'[\"en\"]','2001-01-01','4000-01-01');
 /*!40000 ALTER TABLE `audit_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6877,7 +7037,7 @@ CREATE TABLE `audit_category_rule` (
   CONSTRAINT `FK_audit_category_rule_question` FOREIGN KEY (`questionID`) REFERENCES `audit_question` (`id`),
   CONSTRAINT `FK_audit_category_rule_tag` FOREIGN KEY (`tagID`) REFERENCES `operator_tag` (`id`),
   CONSTRAINT `FK_audit_category_rule_trade` FOREIGN KEY (`tradeID`) REFERENCES `ref_trade` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6886,6 +7046,8 @@ CREATE TABLE `audit_category_rule` (
 
 LOCK TABLES `audit_category_rule` WRITE;
 /*!40000 ALTER TABLE `audit_category_rule` DISABLE KEYS */;
+INSERT INTO `audit_category_rule` VALUES (1,1,3,0,363,1,2,1,2731,NULL,NULL,'2014-04-01 13:40:31','4000-01-01 00:00:00',1000,1000,'2014-04-01 13:41:31','2014-04-01 13:41:31',NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `audit_category_rule` VALUES (11,1,3,0,363,1,400,1,2731,NULL,NULL,'2014-04-01 13:40:34','4000-01-01 00:00:00',1000,1000,'2014-04-01 13:41:34','2014-04-01 13:41:34',NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `audit_category_rule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9150,7 +9312,7 @@ CREATE TABLE `audit_type_rule` (
   CONSTRAINT `FK_audit_type_rule_question` FOREIGN KEY (`questionID`) REFERENCES `audit_question` (`id`),
   CONSTRAINT `FK_audit_type_rule_tag` FOREIGN KEY (`tagID`) REFERENCES `operator_tag` (`id`),
   CONSTRAINT `FK_audit_type_rule_trade` FOREIGN KEY (`tradeID`) REFERENCES `ref_trade` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9161,6 +9323,10 @@ LOCK TABLES `audit_type_rule` WRITE;
 /*!40000 ALTER TABLE `audit_type_rule` DISABLE KEYS */;
 INSERT INTO `audit_type_rule` VALUES (11,1,2,0,207,2,NULL,'Onsite',NULL,NULL,NULL,37745,37745,'2014-02-13 12:31:01','2014-02-13 12:31:01','2013-11-21 00:00:00','4000-01-01 00:00:00',NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,NULL,NULL,1,NULL);
 INSERT INTO `audit_type_rule` VALUES (21,0,2,0,210,2,NULL,'Onsite',1647,NULL,NULL,37745,37745,'2014-02-13 12:31:01','2014-02-13 12:31:01','2013-11-21 00:00:00','4000-01-01 00:00:00',NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,NULL,NULL,1,NULL);
+INSERT INTO `audit_type_rule` VALUES (31,1,2,0,243,1,2731,NULL,NULL,NULL,NULL,1000,1000,'2014-04-01 13:28:29','2014-04-01 13:29:05','2014-04-01 13:27:29','2014-04-01 13:24:05',NULL,NULL,'',0,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `audit_type_rule` VALUES (41,1,2,0,243,1,2731,NULL,NULL,NULL,NULL,1000,1000,'2014-04-01 13:41:17','2014-04-01 13:41:17','2014-04-01 13:40:17','4000-01-01 00:00:00',NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `audit_type_rule` VALUES (51,1,2,0,243,13,2731,NULL,NULL,NULL,NULL,1000,1000,'2014-04-01 13:41:21','2014-04-01 13:41:21','2014-04-01 13:40:21','4000-01-01 00:00:00',NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `audit_type_rule` VALUES (61,1,2,0,243,14,2731,NULL,NULL,NULL,NULL,1000,1000,'2014-04-01 13:41:26','2014-04-01 13:41:26','2014-04-01 13:40:26','4000-01-01 00:00:00',NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `audit_type_rule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9619,7 +9785,7 @@ CREATE TABLE `contractor_fee` (
   `newFacilityCount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `conFee` (`conID`,`feeClass`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9628,6 +9794,12 @@ CREATE TABLE `contractor_fee` (
 
 LOCK TABLES `contractor_fee` WRITE;
 /*!40000 ALTER TABLE `contractor_fee` DISABLE KEYS */;
+INSERT INTO `contractor_fee` VALUES (1,2771,'BidOnly',299,299,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
+INSERT INTO `contractor_fee` VALUES (11,2771,'ListOnly',297,297,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
+INSERT INTO `contractor_fee` VALUES (21,2771,'DocuGUARD',301,301,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
+INSERT INTO `contractor_fee` VALUES (31,2771,'InsureGUARD',309,309,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
+INSERT INTO `contractor_fee` VALUES (41,2771,'AuditGUARD',317,317,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
+INSERT INTO `contractor_fee` VALUES (51,2771,'EmployeeGUARD',325,325,12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',0.00,0.00,0,0);
 /*!40000 ALTER TABLE `contractor_fee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9734,6 +9906,7 @@ LOCK TABLES `contractor_info` WRITE;
 /*!40000 ALTER TABLE `contractor_info` DISABLE KEYS */;
 INSERT INTO `contractor_info` VALUES (14,'123456789','Environmental Management/Remediation','logo_14.gif',NULL,'Ecology  Control  Industries, Inc. (ECI) is a turnkey environmental services company   with proven environmental projects experience and a solid reputation  for  customer  service.  ECI was founded in 1977, providing transportation and  industrial services  \r\nto  commercial  clients  in  Southern California.  Through  recent  acquisitions  and  internal  growth,  ECI  has expanded services  throughout  the  western  United  States.  This expansion  has  provided   ECI  the  opportunity  to  strengthen  its   position   in  the environmental industry because of a large array of service capabilities.  \r\nECI  understands the issues that face our customers and our goal is to provide  the  most efficient and cost-effective environmental services available by demonstrating   business  oriented  recommendations  and  environmentally  responsible  solutions. \r\nECI\'s  client  list includes  Fortune 500 customers  from  the aerospace,  chemical, petroleum, manufacturing, and pharmaceutical industries as   well  as  major  prime  contractors  to United States Government Agencies.  \r\n\r\n','Yes','2003-12-17',500,'Sal Fernandez','310-354-9999','sfernandez@ecologycontrol.com','Jeanne Delperdang','310-354-9999','jdelperdang@ecologycontrol.com','','',NULL,'',NULL,NULL,0,NULL,NULL,0,0,1,3,NULL,0,NULL,0,NULL,3,'2014-02-14 11:26:20','Check','Missing',7,7,1,'2012-09-13',NULL,NULL,NULL,NULL,0,0,NULL,0.00,0,'2014-02-15 11:37:59',0,NULL,NULL,0.900,1.004,0.787,'Cleaning (Industrial);Demolition contractor;Environmental engineering;Environmental remediation services;Excavation contractors;Field Maintenance;Hazardous waste collection services;Hydroblasting;Rental and Leasing Services;Specialized Freight (except Used Goods) Trucking, Long-Distance;Tank cleaning and disposal services, commercial or industrial;Waste collection services, nonhazardous liquid;Waste management program administration','','2010-09-09 10:54:17',NULL,860,'2011-08-05 11:15:42',0,NULL,'Full',NULL,1,0,NULL,NULL,'',NULL,1001,0,1,NULL,0,NULL);
 INSERT INTO `contractor_info` VALUES (100,NULL,NULL,NULL,NULL,NULL,'Yes',NULL,500,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,2,NULL,2,NULL,2,NULL,2,NULL,'CreditCard',NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0,0,NULL,0.00,1,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'Full',NULL,1,0,NULL,NULL,NULL,NULL,1001,0,1,NULL,0,NULL);
+INSERT INTO `contractor_info` VALUES (2771,NULL,NULL,NULL,NULL,NULL,'Yes','2014-04-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,0,0,NULL,0,NULL,0,NULL,2,NULL,'CreditCard',NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0,0,NULL,0.00,0,'2014-04-01 13:54:04',0,NULL,NULL,NULL,NULL,NULL,'','','2014-04-01 13:48:59',98481,500,NULL,0,NULL,'Full',NULL,1,0,NULL,NULL,'',NULL,NULL,0,1,NULL,0,NULL);
 /*!40000 ALTER TABLE `contractor_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -11013,7 +11186,7 @@ CREATE TABLE `facilities` (
   KEY `corporateID` (`corporateID`),
   CONSTRAINT `FK_facilities_corporateID` FOREIGN KEY (`corporateID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_facilities_opID` FOREIGN KEY (`opID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=271 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -11022,6 +11195,12 @@ CREATE TABLE `facilities` (
 
 LOCK TABLES `facilities` WRITE;
 /*!40000 ALTER TABLE `facilities` DISABLE KEYS */;
+INSERT INTO `facilities` VALUES (51,4,2741,NULL,1000,1000,'2014-04-01 11:21:22','2014-04-01 11:21:22');
+INSERT INTO `facilities` VALUES (71,4,2731,NULL,1000,1000,'2014-04-01 11:23:51','2014-04-01 11:23:51');
+INSERT INTO `facilities` VALUES (81,4,2761,NULL,1000,1000,'2014-04-01 13:26:24','2014-04-01 13:26:24');
+INSERT INTO `facilities` VALUES (91,2731,2761,NULL,1000,1000,'2014-04-01 13:26:53','2014-04-01 13:26:53');
+INSERT INTO `facilities` VALUES (151,4,2781,NULL,1000,1000,'2014-04-01 16:30:59','2014-04-01 16:30:59');
+INSERT INTO `facilities` VALUES (251,4,500,NULL,1000,1000,'2014-04-01 22:24:35','2014-04-01 22:24:35');
 /*!40000 ALTER TABLE `facilities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -21776,7 +21955,7 @@ CREATE TABLE `note` (
   KEY `creationDate` (`creationDate`,`accountID`),
   KEY `employee` (`employeeID`),
   CONSTRAINT `FK_note` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -21786,6 +21965,7 @@ CREATE TABLE `note` (
 LOCK TABLES `note` WRITE;
 /*!40000 ALTER TABLE `note` DISABLE KEYS */;
 INSERT INTO `note` VALUES (1,14,'2014-02-14 11:29:17',1,'2014-02-14 11:29:17',1,'The contractor\'s address has been updated in the Contact Info section.','General',2,1,1,2,NULL,NULL,'Office Location',NULL);
+INSERT INTO `note` VALUES (11,2771,'2014-04-01 13:53:43',1000,'2014-04-01 13:53:43',1000,'Activated the account','Billing',1,1100,1,2,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `note` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -22045,9 +22225,13 @@ CREATE TABLE `operators` (
 
 LOCK TABLES `operators` WRITE;
 /*!40000 ALTER TABLE `operators` DISABLE KEYS */;
-INSERT INTO `operators` VALUES (500,'No','No','No','No',NULL,'No',0,NULL,NULL,NULL,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,NULL,0);
+INSERT INTO `operators` VALUES (500,'No','No','No','No',NULL,'No',0,NULL,500,500,'OSHA',0,0,NULL,0.00,'',NULL,NULL,0,'',0);
 INSERT INTO `operators` VALUES (1101,'No','Yes','No','No',NULL,'No',1,NULL,1101,1101,'OSHA',0,0,NULL,0.00,NULL,NULL,NULL,0,'',0);
 INSERT INTO `operators` VALUES (2723,'No','Yes','No','No',NULL,'No',0,NULL,2723,2723,'OSHA',0,0,199,0.00,'',4,NULL,0,'0017000000uswWSAAY',0);
+INSERT INTO `operators` VALUES (2731,'No','Yes','Yes','No',NULL,'No',1,NULL,2731,2731,'OSHA',0,1,NULL,0.00,'',NULL,NULL,0,'',0);
+INSERT INTO `operators` VALUES (2741,'No','Yes','Yes','No',NULL,'No',1,NULL,2741,2741,'OSHA',0,1,NULL,0.00,'',NULL,NULL,0,'',0);
+INSERT INTO `operators` VALUES (2761,'No','Yes','Yes','No',NULL,'No',1,2731,2761,2761,'OSHA',0,1,NULL,0.00,'',NULL,NULL,0,'',0);
+INSERT INTO `operators` VALUES (2781,'No','Yes','Yes','No',NULL,'No',1,NULL,2781,2781,'OSHA',1,1,NULL,0.00,'',NULL,NULL,0,'',0);
 /*!40000 ALTER TABLE `operators` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -24034,7 +24218,7 @@ CREATE TABLE `useraccess` (
   PRIMARY KEY (`accessID`),
   UNIQUE KEY `user_type` (`userID`,`accessType`),
   KEY `access_type` (`accessType`)
-) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=411 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -24065,6 +24249,23 @@ INSERT INTO `useraccess` VALUES (181,98441,'ContractorAdmin',1,NULL,NULL,1,'2014
 INSERT INTO `useraccess` VALUES (191,10,'SwitchUser',1,NULL,NULL,1,'2014-02-14 19:32:29',NULL);
 INSERT INTO `useraccess` VALUES (201,5000,'InvoiceEdit',1,1,1,1,'2014-01-21 19:24:46',1000);
 INSERT INTO `useraccess` VALUES (211,5000,'RestApi',1,NULL,NULL,1,'2013-07-17 20:29:14',1000);
+INSERT INTO `useraccess` VALUES (221,1000,'ManageCorporate',1,1,1,1,'2014-04-01 17:39:57',1000);
+INSERT INTO `useraccess` VALUES (231,20,'ManageAuditWorkFlow',1,1,1,1,'2014-04-01 18:36:05',1000);
+INSERT INTO `useraccess` VALUES (241,20,'ManageAuditTypeRules',1,1,1,1,'2014-04-01 18:36:10',1000);
+INSERT INTO `useraccess` VALUES (251,20,'ManageAudits',1,1,1,1,'2014-04-01 18:36:18',1000);
+INSERT INTO `useraccess` VALUES (261,20,'ManageCategoryRules',1,1,1,1,'2014-04-01 18:36:24',1000);
+INSERT INTO `useraccess` VALUES (271,20,'ManageCorporate',1,1,1,1,'2014-04-01 18:36:29',1000);
+INSERT INTO `useraccess` VALUES (281,20,'EditFlagCriteria',1,1,NULL,1,'2014-04-01 18:36:38',1000);
+INSERT INTO `useraccess` VALUES (301,20,'AllContractors',1,NULL,NULL,1,'2014-04-01 18:36:55',1000);
+INSERT INTO `useraccess` VALUES (311,20,'AllOperators',1,NULL,NULL,1,'2014-04-01 18:37:00',1000);
+INSERT INTO `useraccess` VALUES (321,20,'AuditRuleAdmin',1,1,NULL,1,'2014-04-01 18:37:07',1000);
+INSERT INTO `useraccess` VALUES (331,20,'ManageOperators',1,1,1,1,'2014-04-01 18:37:55',1000);
+INSERT INTO `useraccess` VALUES (341,20,'FormsAndDocs',1,1,1,1,'2014-04-01 18:38:02',1000);
+INSERT INTO `useraccess` VALUES (361,98481,'ContractorAdmin',1,NULL,NULL,1,'2014-04-01 20:48:57',12);
+INSERT INTO `useraccess` VALUES (371,98481,'ContractorSafety',1,NULL,NULL,1,'2014-04-01 20:48:57',12);
+INSERT INTO `useraccess` VALUES (381,98481,'ContractorInsurance',1,NULL,NULL,1,'2014-04-01 20:48:57',12);
+INSERT INTO `useraccess` VALUES (391,98481,'ContractorBilling',1,NULL,NULL,1,'2014-04-01 20:48:57',12);
+INSERT INTO `useraccess` VALUES (401,98501,'EditProfile',1,1,NULL,1,'2014-04-02 05:28:31',1000);
 /*!40000 ALTER TABLE `useraccess` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -24170,7 +24371,7 @@ CREATE TABLE `users` (
   KEY `fk1_Users` (`appUserID`),
   CONSTRAINT `fk1_Users` FOREIGN KEY (`appUserID`) REFERENCES `app_user` (`id`),
   CONSTRAINT `FK_userAccount` FOREIGN KEY (`accountID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=98472 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=98511 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -24185,7 +24386,7 @@ INSERT INTO `users` VALUES (10,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Employee Gro
 INSERT INTO `users` VALUES (12,NULL,NULL,'Yes',NULL,NULL,NULL,'Contractor Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,'en',NULL,NULL,1,NULL,1,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (20,'GROUP1100PICS Developer',NULL,'Yes',NULL,'First','Last','PICS Developer','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2011-03-03 16:40:34','2011-03-03 16:40:34',NULL,'America/Chicago',0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (21,'GROUP1100PICS API User',NULL,'Yes',NULL,'First','Last','PICS API User','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-03-26 17:30:43','2013-03-26 17:30:43',NULL,NULL,0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
-INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-03-31 07:59:38',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
+INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-04-01 22:23:29',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
 INSERT INTO `users` VALUES (1001,NULL,NULL,'No','tester@picsauditing.com','PICS','CSR','PICS CSR','Yes',NULL,1100,NULL,2,NULL,NULL,NULL,NULL,'',NULL,37951,23157,'2012-11-19 18:58:25','2013-04-12 10:50:56',NULL,NULL,0,0,'en','PICS',NULL,1,'2013-05-13 19:20:34',1,'2013-05-13 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,171);
 INSERT INTO `users` VALUES (1002,NULL,NULL,'No','tester@picsauditing.com','PICS','Auditor','PICS Auditor','Yes','2014-02-13 16:54:58',1100,NULL,0,NULL,'',NULL,NULL,NULL,NULL,941,90574,'2013-02-19 16:32:06','2013-09-09 12:02:45',NULL,'America/Los_Angeles',0,0,'en_US','Technology',NULL,1,'2013-02-19 00:00:00',1,'2013-02-19 00:00:00','2013-08-06 00:00:00',0,8,16,'xMTWTFx',0,NULL,181);
 INSERT INTO `users` VALUES (5000,'AETestv7',NULL,'No','aetest0ebdfea6@picsauditing.com','AETest','v7Menus','AETest v7Menus','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-07-17 15:17:42','2014-03-18 11:54:22',NULL,'America/Los_Angeles',0,1,'en_US','Selenium Test',NULL,1,'2013-12-20 00:00:00',1,'2013-12-20 00:00:00','2013-07-25 00:00:00',0,8,16,'xMTWTFx',0,'1eyndgv4iddubsry9u9kheniab7r4cvb',32);
@@ -24193,6 +24394,9 @@ INSERT INTO `users` VALUES (98431,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Group1','
 INSERT INTO `users` VALUES (98441,NULL,NULL,'No','tester@picsauditing.com','Jeffrey','Stewart','Jeffrey Stewart','Yes','2014-02-14 11:32:50',14,NULL,0,NULL,NULL,NULL,NULL,NULL,'2014-02-14',1000,1000,'2014-02-14 11:25:26','2014-02-14 11:25:26',NULL,'US/Arizona',0,1,'en_US',NULL,NULL,1,'2014-02-14 11:25:25',1,'2014-02-14 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41091);
 INSERT INTO `users` VALUES (98461,NULL,NULL,'No','tester@picsauditing.com','PICS','No Permissions','PICS No Permissions','Yes','2014-02-19 21:02:45',1100,NULL,0,NULL,NULL,'9495559584',NULL,'9495559584','2014-02-19',1000,1000,'2014-02-19 18:40:03','2014-02-19 18:40:03',NULL,'US/Pacific',0,1,'en_US','Technology',NULL,1,'2014-02-19 18:40:01',1,'2014-02-19 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41101);
 INSERT INTO `users` VALUES (98471,NULL,NULL,'No','biggs@example.com','Robert','Biggs','Robert Biggs','Yes',NULL,1101,NULL,0,NULL,NULL,'(555) 555-5555',NULL,'5555555555','2014-03-07',1000,1000,'2014-03-07 12:04:14','2014-03-07 12:04:14',NULL,'US/Eastern',0,1,'en_US','Project Management',NULL,0,'2014-03-07 12:04:13',0,'2014-03-07 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41111);
+INSERT INTO `users` VALUES (98481,NULL,NULL,'No','email@example.com','First Name 1','Last Name 1','First Name 1 Last Name 1','Yes','2014-04-01 13:48:57',2771,NULL,0,NULL,'eade29a4704255d67ef9cbc93c75008c479ccf88','447147777777',NULL,NULL,'2014-04-01',12,12,'2014-04-01 13:48:57','2014-04-01 13:48:57',NULL,'America/Los_Angeles',0,1,'en_US',NULL,NULL,1,'2014-04-01 13:48:57',1,'2014-04-01 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41121);
+INSERT INTO `users` VALUES (98491,NULL,NULL,'No','corporateuser@example.com','Corporate','Account User','Corporate Account User','Yes',NULL,2781,NULL,0,NULL,'4b76716c7981bc4c16a05e0a24f481dd0e7f2ea9','1234567890',NULL,'234567890','2014-04-01',1000,1000,'2014-04-01 16:34:35','2014-04-01 16:34:50',NULL,'US/Pacific',0,1,'en_US',NULL,NULL,0,'2014-04-01 16:34:35',0,'2014-04-01 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41131);
+INSERT INTO `users` VALUES (98501,NULL,NULL,'No','tester@picsauditing.com','Basic Operator User','1','Basic Operator User 1','Yes',NULL,500,NULL,0,NULL,NULL,NULL,NULL,NULL,'2014-04-01',1000,1000,'2014-04-01 22:25:34','2014-04-01 22:28:41',NULL,'US/Pacific',0,1,'en_US',NULL,NULL,0,'2014-04-01 22:25:34',0,'2014-04-01 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41141);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
