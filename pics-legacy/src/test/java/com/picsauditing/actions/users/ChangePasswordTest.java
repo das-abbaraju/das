@@ -1,30 +1,26 @@
 package com.picsauditing.actions.users;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.PasswordSecurityLevel;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.validator.PasswordValidator;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.User;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.util.Locale;
 import java.util.Vector;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class ChangePasswordTest extends PicsActionTest {
 
@@ -84,6 +80,7 @@ public class ChangePasswordTest extends PicsActionTest {
         changePassword.changePassword();
 
         assertNotNull(changePassword.getUser().getPasswordChanged());
+        assertNotNull(changePassword.getUser().getAppUser().getHashSalt());
     }
 
     @Test
