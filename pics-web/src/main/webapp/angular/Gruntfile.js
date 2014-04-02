@@ -15,6 +15,8 @@ module.exports = function(grunt) {
         'vendor/mmenu/jquery.mmenu.js',
         'vendor/mmenu/jquery.mmenu.searchfield.js',
         'vendor/mmenu/jquery.mmenu.dragopen.js',
+        'vendor/select2/select2.js',
+        'vendor/angular/angular-ui-select2.js',
         'vendor/pics/core.js'
     ];
 
@@ -41,6 +43,7 @@ module.exports = function(grunt) {
                 options: {
                     files: dependencies.concat([
                         'vendor/angular/jasmine/*.js',
+                        'vendor/angular/**/*.js',
                         'src/**/*.js'
                     ]),
                     plugins:[
