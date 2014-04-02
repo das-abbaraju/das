@@ -5,7 +5,7 @@ describe('An Employee', function() {
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller, $http, $httpBackend, $routeParams) {
+    beforeEach(inject(function($rootScope, $controller, $http, $httpBackend, $routeParams, EmployeeInfo) {
         employee = {
             "id": 1,
             "firstName": "John",
@@ -14,15 +14,11 @@ describe('An Employee', function() {
             "email": "thelennyleonard@gmail.com"
         };
 
-        //To capture assignment call only
-        $httpBackend.when('GET', '/employee-guard/employee/summary/assignments').respond('');
-
         scope = $rootScope.$new();
-        $controller("employeeDashboardCtrl", {
-            $scope: scope
-        });
 
         httpMock = $httpBackend;
+
+        scope.employee = EmployeeInfo.get();
     }));
 
     afterEach(function() {
@@ -30,18 +26,16 @@ describe('An Employee', function() {
         httpMock.verifyNoOutstandingRequest();
     });
 
-    it('should use the email as a slug if no one defined', function() {
-        var employee = {
-            "id": 1,
-            "firstName": "John",
-            "lastName": "Smith",
-            "email": "thelennyleonard@gmail.com"
-        };
-
+    it('should have an id', function() {
         httpMock.when('GET', employee_info_url).respond(employee);
         httpMock.flush();
 
+        expect(scope.employee.id).toBeDefined();
+    });
+
+    it('should have a slug', function() {
+        httpMock.when('GET', employee_info_url).respond(employee);
+        httpMock.flush();
         expect(scope.employee.slug).toBeDefined();
-        expect(scope.employee.slug).toEqual(scope.employee.email);
     });
 });
