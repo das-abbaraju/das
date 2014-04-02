@@ -6,6 +6,7 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.IdNameModel;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -35,11 +36,13 @@ public class SitesListAction extends PicsRestActionSupport {
 		List<AccountModel> childOperators = accountService.getChildOperators(permissions.getAccountId());
 
 		List<IdNameModel> idNameModels = new ArrayList<>();
-		for (AccountModel childOperator : childOperators) {
-			idNameModels.add(new IdNameModel.Builder()
-					.id(Integer.toString(childOperator.getId()))
-					.name(childOperator.getName())
-					.build());
+		if (CollectionUtils.isNotEmpty(childOperators)) {
+			for (AccountModel childOperator : childOperators) {
+				idNameModels.add(new IdNameModel.Builder()
+						.id(Integer.toString(childOperator.getId()))
+						.name(childOperator.getName())
+						.build());
+			}
 		}
 
 		return idNameModels;

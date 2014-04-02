@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.exceptions.NoCorporateForOperatorException
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +133,28 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 			@Override
 			public AccountSkill extract(SiteSkill siteSkill) {
 				return siteSkill.getSkill();
+			}
+		});
+	}
+
+	public Map<Integer, Set<AccountSkill>> getSiteRequiredSkills(final List<Integer> siteIds, final int corporateId) {
+		if (CollectionUtils.isEmpty(siteIds) || corporateId == 0) {
+			return Collections.emptyMap();
+		}
+
+		Set<SiteSkill> allSiteSkills = new HashSet<>();
+		allSiteSkills.addAll(siteSkillDAO.findByAccountIds(siteIds));
+		allSiteSkills.addAll(siteSkillDAO.findByAccountId(corporateId));
+
+		return PicsCollectionUtil.convertToMapOfSets(allSiteSkills, new PicsCollectionUtil.EntityKeyValueConvertable<SiteSkill, Integer, AccountSkill>() {
+			@Override
+			public Integer getKey(SiteSkill entity) {
+				return entity.getSiteId();
+			}
+
+			@Override
+			public AccountSkill getValue(SiteSkill entity) {
+				return entity.getSkill();
 			}
 		});
 	}

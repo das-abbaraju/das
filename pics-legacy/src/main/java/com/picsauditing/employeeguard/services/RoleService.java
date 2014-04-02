@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+@Deprecated
 public class RoleService {
 
 	@Autowired

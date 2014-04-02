@@ -17,10 +17,9 @@ import org.mockito.internal.util.reflection.Whitebox;
 import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ProjectAssignmentServiceTest {
 
@@ -68,7 +67,7 @@ public class ProjectAssignmentServiceTest {
 		assertNotNull(result);
 
 		verify(projectEntityService).getAllProjectsForSite(SITE_ID);
-		verify(employeeEntityService).getEmployeesByProject(projects);
+		verify(employeeEntityService).getEmployeesByProjects(projects);
 		verify(skillEntityService).getRequiredSkillsForProjects(projects);
 		verify(roleEntityService).getRolesForProjects(projects);
 		verify(skillEntityService).getSkillsForRoles(anyCollectionOf(Role.class));

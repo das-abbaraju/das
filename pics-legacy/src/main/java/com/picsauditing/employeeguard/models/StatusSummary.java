@@ -2,10 +2,19 @@ package com.picsauditing.employeeguard.models;
 
 public class StatusSummary {
 
+	private int employees;
 	private int completed;
 	private int pending;
 	private int expiring;
 	private int expired;
+
+	public int getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(int employees) {
+		this.employees = employees;
+	}
 
 	public int getCompleted() {
 		return completed;
@@ -38,4 +47,5 @@ public class StatusSummary {
 	public void setExpired(int expired) {
 		this.expired = expired;
 	}
+
 }

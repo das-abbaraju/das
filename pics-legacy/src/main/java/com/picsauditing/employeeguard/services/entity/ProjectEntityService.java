@@ -154,7 +154,7 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		delete(project);
 	}
 
-	public Set<Project> getProjectsBySiteIds(List<Integer> siteIds) {
+	public Set<Project> getProjectsBySiteIds(final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptySet();
 		}

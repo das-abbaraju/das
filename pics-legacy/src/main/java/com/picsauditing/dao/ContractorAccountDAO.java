@@ -191,29 +191,29 @@ public class ContractorAccountDAO extends PicsDAO {
 			return new ArrayList<ContractorAccount>();
 		}
 
-        SelectSQL sql = new SelectSQL("accounts a");
-        sql.addField("a.*");
-        sql.addField("c.*");
-        sql.addJoin("JOIN contractor_info c ON a.id = c.id");
+		SelectSQL sql = new SelectSQL("accounts a");
+		sql.addField("a.*");
+		sql.addField("c.*");
+		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 
 		if (permissions.hasDirectlyRelatedGroup(User.GROUP_CSR)) {
-            sql.addJoin("JOIN account_user au ON a.id = au.accountID");
-            sql.addWhere(" au.role = '" + UserAccountRole.PICSCustomerServiceRep + "'");
-            sql.addWhere(" au.startDate < NOW()");
-            sql.addWhere(" au.endDate > NOW()");
-            sql.addWhere(" au.userID = " + permissions.getShadowedUserID());
+			sql.addJoin("JOIN account_user au ON a.id = au.accountID");
+			sql.addWhere(" au.role = '" + UserAccountRole.PICSCustomerServiceRep + "'");
+			sql.addWhere(" au.startDate < NOW()");
+			sql.addWhere(" au.endDate > NOW()");
+			sql.addWhere(" au.userID = " + permissions.getShadowedUserID());
 		}
 
-        sql.addWhere("a.status IN ('Active', 'Pending', 'Demo')");
+		sql.addWhere("a.status IN ('Active', 'Pending', 'Demo')");
 
-        PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions);
-        sql.addWhere(qb.buildWhereClause());
+		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions);
+		sql.addWhere(qb.buildWhereClause());
 
-        sql.addOrderBy("creationDate DESC");
-        sql.setLimit(limit);
+		sql.addOrderBy("creationDate DESC");
+		sql.setLimit(limit);
 
-        Query query = em.createNativeQuery(sql.toString(), ContractorAccount.class);
-        List<ContractorAccount> ca = query.getResultList();
+		Query query = em.createNativeQuery(sql.toString(), ContractorAccount.class);
+		List<ContractorAccount> ca = query.getResultList();
 		return ca;
 	}
 
@@ -497,63 +497,63 @@ public class ContractorAccountDAO extends PicsDAO {
 		em.detach(contractor);
 	}
 
-    @Transactional(propagation = Propagation.NESTED)
-    public int expireCurrentCSRAssignment(int conID) {
-        if (conID < 1) {
-            return 0;
-        } else {
-            String sql = "UPDATE account_user SET endDate = NOW() WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID = :accountID";
-            Query q = em.createNativeQuery(sql);
-            q.setParameter("accountID", conID);
-            return q.executeUpdate();
-        }
-    }
+	@Transactional(propagation = Propagation.NESTED)
+	public int expireCurrentCSRAssignment(int conID) {
+		if (conID < 1) {
+			return 0;
+		} else {
+			String sql = "UPDATE account_user SET endDate = NOW() WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID = :accountID";
+			Query q = em.createNativeQuery(sql);
+			q.setParameter("accountID", conID);
+			return q.executeUpdate();
+		}
+	}
 
-    @Transactional(propagation = Propagation.NESTED)
-    public int rejectRecommendedAssignmentForList(String conIDs) {
-        String sql = "UPDATE contractor_info SET recommendedCsrID = null WHERE id IN (" + conIDs + ")";
+	@Transactional(propagation = Propagation.NESTED)
+	public int rejectRecommendedAssignmentForList(String conIDs) {
+		String sql = "UPDATE contractor_info SET recommendedCsrID = null WHERE id IN (" + conIDs + ")";
 
-        Query q = em.createNativeQuery(sql);
-        return q.executeUpdate();
-    }
+		Query q = em.createNativeQuery(sql);
+		return q.executeUpdate();
+	}
 
-    @Transactional(propagation = Propagation.NESTED)
-    public int expireCurrentCsrForContractors(String contractorIds, int acceptedByUserId) {
-        String sql = "UPDATE account_user SET endDate = DATE(NOW()), updatedBy = " + acceptedByUserId + " WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID IN (" + contractorIds + ")";
-        Query q = em.createNativeQuery(sql);
-        return q.executeUpdate();
-    }
+	@Transactional(propagation = Propagation.NESTED)
+	public int expireCurrentCsrForContractors(String contractorIds, int acceptedByUserId) {
+		String sql = "UPDATE account_user SET endDate = DATE(NOW()), updatedBy = " + acceptedByUserId + " WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID IN (" + contractorIds + ")";
+		Query q = em.createNativeQuery(sql);
+		return q.executeUpdate();
+	}
 
-    @Transactional(propagation = Propagation.NESTED)
-    public int acceptRecommendedCsrForList(String contractorIds, int acceptedByUserId) throws SQLException {
-        String sql = "INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, creationDate) VALUES ";
+	@Transactional(propagation = Propagation.NESTED)
+	public int acceptRecommendedCsrForList(String contractorIds, int acceptedByUserId) throws SQLException {
+		String sql = "INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, creationDate) VALUES ";
 
-        List<String> valuesToBeInserted = new ArrayList<String>();
+		List<String> valuesToBeInserted = new ArrayList<String>();
 
-        for (Map.Entry<Integer, Integer> entry : getRecommendedCsrIdsForContractorList(contractorIds).entrySet()) {
-            valuesToBeInserted.add("(" + entry.getKey() + ", " + entry.getValue()+ " , 'PICSCustomerServiceRep', DATE(NOW()), '4000-01-01', 100, " + acceptedByUserId + ", NOW())");
-        }
+		for (Map.Entry<Integer, Integer> entry : getRecommendedCsrIdsForContractorList(contractorIds).entrySet()) {
+			valuesToBeInserted.add("(" + entry.getKey() + ", " + entry.getValue() + " , 'PICSCustomerServiceRep', DATE(NOW()), '4000-01-01', 100, " + acceptedByUserId + ", NOW())");
+		}
 
-        sql += StringUtils.join(valuesToBeInserted, ",");
+		sql += StringUtils.join(valuesToBeInserted, ",");
 
-        Query q = em.createNativeQuery(sql);
-        return q.executeUpdate();
-    }
+		Query q = em.createNativeQuery(sql);
+		return q.executeUpdate();
+	}
 
-    public Map<Integer, Integer> getRecommendedCsrIdsForContractorList(String contractorIds) throws SQLException {
-        Database db = new Database();
-        Map<Integer, Integer> conIdsAndCsrIds = new HashMap<>();
+	public Map<Integer, Integer> getRecommendedCsrIdsForContractorList(String contractorIds) throws SQLException {
+		Database db = new Database();
+		Map<Integer, Integer> conIdsAndCsrIds = new HashMap<>();
 
-        String sql = "SELECT id, recommendedCsrId FROM contractor_info where id IN (" + contractorIds + ")";
+		String sql = "SELECT id, recommendedCsrId FROM contractor_info where id IN (" + contractorIds + ")";
 
-        List<BasicDynaBean> results = db.select(sql, false);
+		List<BasicDynaBean> results = db.select(sql, false);
 
-        for(BasicDynaBean row : results){
-            conIdsAndCsrIds.put(Integer.parseInt(row.get("id").toString()), Integer.parseInt(row.get("recommendedCsrId").toString()));
-        }
+		for (BasicDynaBean row : results) {
+			conIdsAndCsrIds.put(Integer.parseInt(row.get("id").toString()), Integer.parseInt(row.get("recommendedCsrId").toString()));
+		}
 
-        return conIdsAndCsrIds;
-    }
+		return conIdsAndCsrIds;
+	}
 
 	public List<ContractorAccount> findAllContractorsForOperator(final OperatorAccount operator) {
 		List<ContractorAccount> contractors = Collections.emptyList();
@@ -570,6 +570,22 @@ public class ContractorAccountDAO extends PicsDAO {
 		}
 
 		return contractors;
+	}
+
+	public List<Integer> findAllContractorIdsForOperatorIds(final Collection<Integer> operatorIds) {
+		List<ContractorAccount> contractors = Collections.emptyList();
+		try {
+			Query query = em.createNativeQuery("select a.id contractor_info ci " +
+					"join accounts a on a.id = ci.id " +
+					"join contractor_operator co on co.conID = ci.id " +
+					"where co.opID IN (:operatorIds)", Integer.class);
+			query.setParameter("operatorIds", operatorIds);
+			return query.getResultList();
+		} catch (Exception e) {
+			logger.info("Error finding contractor IDs for operators");
+		}
+
+		return Collections.emptyList();
 	}
 
 }

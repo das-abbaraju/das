@@ -99,12 +99,19 @@
 
         <action name="employees" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
+
+        <action name="assignments" class="com.picsauditing.employeeguard.controllers.operator.AssignmentAction" method="summary">
+        </action>
     </package>
 
     <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"
              namespace="/employee-guard/corporates">
-        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.corporate.SummaryAction"
+        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.corporate.AssignmentAction"
                 method="summary">
+        </action>
+
+        <action name="projects" class="com.picsauditing.employeeguard.controllers.corporate.AssignmentAction"
+                method="projects">
         </action>
 
         <action name="sites" class="com.picsauditing.employeeguard.controllers.corporate.SitesListAction"
