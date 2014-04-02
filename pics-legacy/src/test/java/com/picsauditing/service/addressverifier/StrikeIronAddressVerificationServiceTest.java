@@ -2,7 +2,6 @@ package com.picsauditing.service.addressverifier;
 
 
 import com.picsauditing.featuretoggle.Features;
-import com.picsauditing.toggle.FeatureToggle;
 import com.strikeiron.www.Address;
 import com.strikeiron.www.GlobalAddressVerifier;
 import org.junit.Before;
@@ -16,7 +15,6 @@ import org.togglz.junit.TogglzRule;
 import javax.xml.rpc.ServiceException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class StrikeIronAddressVerificationServiceTest {
@@ -37,7 +35,7 @@ public class StrikeIronAddressVerificationServiceTest {
 
     @Test
     public void testVerify_UsAddress() throws AddressVerificationException, ServiceException {
-        AddressHolder picsIrvine = createIrvineAddress();
+        AddressRequestHolder picsIrvine = createIrvineAddress();
 
         Address verified = new Address();
         verified.setStreetAddressLines("17701 Cowan Ste 140");
@@ -50,7 +48,7 @@ public class StrikeIronAddressVerificationServiceTest {
 
         when(globalAddressVerifier.execute()).thenReturn(verified);
 
-        AddressHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
+        AddressResponseHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
 
         assertEquals("17701 Cowan Ste 140", correctedAddress.getAddressLine1());
         assertEquals("Irvine", correctedAddress.getCity());
@@ -64,7 +62,7 @@ public class StrikeIronAddressVerificationServiceTest {
     @Test
     public void testVerify_UsAddress_FeatureDisabled() throws AddressVerificationException, ServiceException {
         togglzRule.disable(Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE);
-        AddressHolder picsIrvine = createIrvineAddress();
+        AddressRequestHolder picsIrvine = createIrvineAddress();
 
         Address verified = new Address();
         verified.setStreetAddressLines("17701 Cowan Ste 140");
@@ -75,15 +73,15 @@ public class StrikeIronAddressVerificationServiceTest {
 
         when(globalAddressVerifier.execute()).thenReturn(verified);
 
-        AddressHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
+        AddressResponseHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
 
         assertEquals(ResultStatus.SUCCESS, correctedAddress.getResultStatus());
         assertEquals(StrikeIronAddressVerificationService.FEATURE_DISABLED_MESSAGE, correctedAddress.getStatusDescription());
     }
 
-    @Test(expected = AddressVerificationException.class)
+    @Test
     public void testVerify_InternalError() throws AddressVerificationException, ServiceException {
-        AddressHolder picsIrvine = createIrvineAddress();
+        AddressRequestHolder picsIrvine = createIrvineAddress();
 
         Address verified = new Address();
         verified.setStatusNbr(500);
@@ -91,14 +89,14 @@ public class StrikeIronAddressVerificationServiceTest {
 
         when(globalAddressVerifier.execute()).thenReturn(verified);
 
-        AddressHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
+        AddressResponseHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
 
         assertEquals("Internal Error", correctedAddress.getStatusDescription());
     }
 
     @Test(expected = AddressVerificationException.class)
     public void testVerify_ConnectionError() throws AddressVerificationException, ServiceException {
-        AddressHolder picsIrvine = createIrvineAddress();
+        AddressRequestHolder picsIrvine = createIrvineAddress();
 
         when(globalAddressVerifier.execute()).thenThrow(ServiceException.class);
 
@@ -114,12 +112,9 @@ public class StrikeIronAddressVerificationServiceTest {
         assertEquals(ResultStatus.INTERNAL_ERROR, StrikeIronAddressVerificationService.parseResultCode(199));
     }
 
-    private AddressHolder createIrvineAddress() {
-        AddressHolder picsIrvine = new AddressHolder();
-        picsIrvine.setAddressLine1("17701 Cowan St.");
-        picsIrvine.setAddressLine2("Suite 140");
-        picsIrvine.setCity("Irvine");
-        picsIrvine.setStateOrProvince("CA");
+    private AddressRequestHolder createIrvineAddress() {
+        AddressRequestHolder picsIrvine = new AddressRequestHolder();
+        picsIrvine.setAddressBlob("17701 Cowan St.\nSuite 140\nIrvine, CA");
         picsIrvine.setZipOrPostalCode("92612");
         picsIrvine.setCountry("US");
         return picsIrvine;

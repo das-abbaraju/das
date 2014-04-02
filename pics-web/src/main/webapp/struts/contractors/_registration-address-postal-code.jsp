@@ -5,7 +5,7 @@
 
 <li class="address">
     <label><s:text name="ContractorAccount.address" /></label>
-    <s:textarea name="registrationForm.address" rows="3" />
+    <s:textarea name="registrationForm.addressBlob" rows="3" />
 </li>
 
 <s:if test="#country_iso_code != 'AE'">

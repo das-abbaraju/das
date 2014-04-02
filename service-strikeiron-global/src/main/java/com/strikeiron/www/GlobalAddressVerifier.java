@@ -20,15 +20,13 @@ public class GlobalAddressVerifier extends HystrixCommand<Address> {
     private static final String HYSTRIX_COMMAND_GROUP = "GlobalAddressVerifier";
     private static final int THREAD_TIMEOUT_MS = 5000;
     private static final int THREAD_POOL_SIZE = 20;
+    private final String addressBlob;
+    private final String zipOrPostalCode;
 
     private GlobalAddressVerificationLocator locator;
-    private String streetAddressLines;
-    private String locality;
-    private String province;
     private String country;
-    private String postalCode;
 
-    public GlobalAddressVerifier(String streetAddressLines, String locality, String province, String country, String postalCode) {
+    public GlobalAddressVerifier(String addressBlob, String country, String zipOrPostalCode) {
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(HYSTRIX_COMMAND_GROUP))
                 .andCommandPropertiesDefaults(
                         HystrixCommandProperties.Setter().withExecutionIsolationThreadTimeoutInMilliseconds(THREAD_TIMEOUT_MS)
@@ -36,48 +34,51 @@ public class GlobalAddressVerifier extends HystrixCommand<Address> {
                         HystrixThreadPoolProperties.Setter().withCoreSize(THREAD_POOL_SIZE)
                 )
         );
-
-        this.streetAddressLines = streetAddressLines;
-        this.locality = locality;
-        this.province = province;
+        this.addressBlob = addressBlob;
         this.country = country;
-        this.postalCode = postalCode;
+        this.zipOrPostalCode = zipOrPostalCode;
         this.locator = new GlobalAddressVerificationLocator();
     }
 
     @Override
     protected Address run() throws ServiceException, RemoteException {
-        Address result = new Address();
+        Address responseAddress = new Address();
 
         SIWsOutputOfListingHolder siResponse = new SIWsOutputOfListingHolder();
         SISubscriptionInfoHolder subInfo = new SISubscriptionInfoHolder();
 
-
         GlobalAddressVerificationSoap siService = locator.getGlobalAddressVerificationSoap();
-        Address address = new Address();
-        address.setStreetAddressLines(streetAddressLines);
-        address.setLocality(locality);
-        address.setProvince(province);
-        address.setCountry(country);
-        address.setPostalCode(postalCode);
+        Address requestAddress = buildRequestAddress();
 
-        siService.advancedVerify(null, USER_NAME, PASSWORD, address, true, true, true,
+        siService.advancedVerify(null, USER_NAME, PASSWORD, requestAddress, true, true, true,
                 CountryOfOriginType.COO_USA, CountryType.ISO_2, LineSeparatorType.LST_NO_SEPARATOR, ParsedInputType.ONLY_FOR_P,
                 PreferredLanguageType.PFL_LANG_EN, CapitalizationType.MIXED_CASE, siResponse, subInfo
         );
 
-        Listing serviceResult = siResponse.value.getServiceResult();
-        result.setStreetAddressLines(serviceResult.getStreetName());
-        result.setLocality(serviceResult.getLocality());
-        result.setProvince(serviceResult.getProvince());
-        result.setCountry(serviceResult.getCountry());
-        result.setPostalCode(serviceResult.getPostalCode());
-        result.setConfidencePercentage(serviceResult.getResultPercentage());
+        buildResponseAddress(responseAddress, siResponse.value);
 
-        result.setStatusNbr(siResponse.value.getServiceStatus().getStatusNbr());
-        result.setStatusDescription(siResponse.value.getServiceStatus().getStatusDescription());
+        return responseAddress;
+    }
 
-        return result;
+    private Address buildRequestAddress() {
+        Address requestAddress = new Address();
+        requestAddress.setFormattedAddressLines(addressBlob);
+        requestAddress.setCountry(country);
+        requestAddress.setPostalCode(zipOrPostalCode);
+        return requestAddress;
+    }
+
+    private void buildResponseAddress(Address responseAddress, SIWsOutputOfListing response) {
+        Listing serviceResult = response.getServiceResult();
+        responseAddress.setStreetAddressLines(serviceResult.getStreetName());
+        responseAddress.setLocality(serviceResult.getLocality());
+        responseAddress.setProvince(serviceResult.getProvince());
+        responseAddress.setCountry(serviceResult.getCountry());
+        responseAddress.setPostalCode(serviceResult.getPostalCode());
+        responseAddress.setConfidencePercentage(serviceResult.getResultPercentage());
+
+        responseAddress.setStatusNbr(response.getServiceStatus().getStatusNbr());
+        responseAddress.setStatusDescription(response.getServiceStatus().getStatusDescription());
     }
 
     @Override
