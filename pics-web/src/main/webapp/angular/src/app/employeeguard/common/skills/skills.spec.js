@@ -8,9 +8,9 @@ describe('Skill Status', function() {
     }));
 
     it('should return the correct css class based on a skill status', function() {
-        expect(skillConvert.toClassName('expired')).toEqual('danger');
-        expect(skillConvert.toClassName('expiring')).toEqual('warning');
-        expect(skillConvert.toClassName('pending')).toEqual('success');
-        expect(skillConvert.toClassName('completed')).toEqual('success');
+        expect(skillConvert.getClassNameFromStatus('expired')).toEqual('danger');
+        expect(skillConvert.getClassNameFromStatus('expiring')).toEqual('warning');
+        expect(skillConvert.getClassNameFromStatus('pending')).toEqual('success');
+        expect(skillConvert.getClassNameFromStatus('completed')).toEqual('success');
     });
 });
