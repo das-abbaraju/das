@@ -11,7 +11,7 @@ import com.picsauditing.persistence.model.UserData
 class UserDataProviderTest extends BaseTestSetup {
 
   "UserDataProvider" should "return a list of User Contact Info objects based on the account ID and role provided." in new UserDataTest {
-    queryTest { prepareDatabase { (session, service) =>
+    queryTest { prepareDatabase { service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, samKinison.accountID))
         expect(samKinison, false)
         expect(joePeschi, true)
@@ -20,7 +20,7 @@ class UserDataProviderTest extends BaseTestSetup {
   }
 
   it should "return no users that are inactive." in new UserDataTest {
-    queryTest { prepareDatabase { (session, service) =>
+    queryTest { prepareDatabase { service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, samKinison.accountID))
         expect(samKinison, false)
         expect(georgeCarlin, false)
@@ -30,7 +30,7 @@ class UserDataProviderTest extends BaseTestSetup {
   }
 
   it should "return users only relevant to the account specified." in new UserDataTest {
-    queryTest { prepareDatabase { (session, service) =>
+    queryTest { prepareDatabase { service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, georgeCarlin.accountID))
         expect(joePeschi, true)
         expect(robinWilliams, false)
@@ -39,7 +39,7 @@ class UserDataProviderTest extends BaseTestSetup {
   }
 
   it should "return users only with the specified permission type." in new UserDataTest {
-    queryTest { prepareDatabase { (session, service) =>
+    queryTest { prepareDatabase { service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(FOO_PERMISSION, robinWilliams.accountID))
         expect(robinWilliams, false)
       }
@@ -69,7 +69,7 @@ class UserDataProviderTest extends BaseTestSetup {
     val BAR_PERMISSION = "Bar"
     val permissionTypes = Seq(FOO_PERMISSION, BAR_PERMISSION)
 
-    def prepareDatabase(f: (Session, UserDataProvider) => Unit) = {
+    def prepareDatabase(f: (UserDataProvider) => Unit) = {
       (session: Session, provider: UserDataProvider) =>
 
         implicit val s = session
@@ -94,7 +94,7 @@ class UserDataProviderTest extends BaseTestSetup {
           if comedian.username != robinWilliams.username && permission != FOO_PERMISSION
         } { userAccess += UserAccessInfo(None, comedian.id.get, permission) }
 
-        f(session, provider)
+        f(provider)
     }
 
   }

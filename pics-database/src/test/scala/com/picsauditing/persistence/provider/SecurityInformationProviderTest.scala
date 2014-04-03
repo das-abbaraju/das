@@ -9,7 +9,7 @@ import java.util.Date
 class SecurityInformationProviderTest extends BaseTestSetup {
 
   "SecurityInformationProvider" should "return the latest login date for a specified account." in new SecurityDataTest {
-    queryTest { prepareDatabase { (session, provider) =>
+    queryTest { prepareDatabase { provider =>
           val foundDate = provider.findLastAccountLogin(TEST_ACCOUNT_ID)
           foundDate shouldEqual LATEST_DATE
           foundDate shouldNot be(IMPOSSIBLE_DATE)
@@ -31,7 +31,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
     val testUser3 = UserData(None, TEST_ACCOUNT_ID, "Still Nobody Special", "email", "phone", "fax", "Yes", EARLIER_DATE)
     val dontFindThis = UserData(None, SOME_OTHER_ID, "Still Nobody Special", "email", "phone", "fax", "Yes", IMPOSSIBLE_DATE)
 
-    def prepareDatabase(f: (Session, SecurityInformationProvider) => Unit) = {
+    def prepareDatabase(f: (SecurityInformationProvider) => Unit) = {
       (session: Session, provider: SecurityInformationProvider) =>
         implicit val s = session
         val p = provider.asInstanceOf[SecurityInformationProvider with H2TestingProfile]
@@ -42,7 +42,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
 
         users ++= Seq(findThis, testUser2, testUser3, dontFindThis)
 
-        f(session, provider)
+        f(provider)
     }
   }
 
