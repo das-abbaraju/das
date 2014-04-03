@@ -31,7 +31,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
     val testUser3 = UserData(None, TEST_ACCOUNT_ID, "Still Nobody Special", "email", "phone", "fax", "Yes", EARLIER_DATE)
     val dontFindThis = UserData(None, SOME_OTHER_ID, "Still Nobody Special", "email", "phone", "fax", "Yes", IMPOSSIBLE_DATE)
 
-    def prepareDatabase(f: (SecurityInformationProvider) => Unit) = {
+    def prepareDatabase(testFunction: (SecurityInformationProvider) => Unit) = {
       (session: Session, provider: SecurityInformationProvider) =>
         implicit val s = session
         val p = provider.asInstanceOf[SecurityInformationProvider with H2TestingProfile]
@@ -42,7 +42,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
 
         users ++= Seq(findThis, testUser2, testUser3, dontFindThis)
 
-        f(provider)
+        testFunction(provider)
     }
   }
 

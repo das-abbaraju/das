@@ -69,7 +69,7 @@ class UserDataProviderTest extends BaseTestSetup {
     val BAR_PERMISSION = "Bar"
     val permissionTypes = Seq(FOO_PERMISSION, BAR_PERMISSION)
 
-    def prepareDatabase(f: (UserDataProvider) => Unit) = {
+    def prepareDatabase(testFunction: (UserDataProvider) => Unit) = {
       (session: Session, provider: UserDataProvider) =>
 
         implicit val s = session
@@ -94,7 +94,7 @@ class UserDataProviderTest extends BaseTestSetup {
           if comedian.username != robinWilliams.username && permission != FOO_PERMISSION
         } { userAccess += UserAccessInfo(None, comedian.id.get, permission) }
 
-        f(provider)
+        testFunction(provider)
     }
 
   }
