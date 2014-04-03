@@ -215,7 +215,7 @@ public class ContractorCronTest extends PicsActionTest {
     }
 
     @Test
-	public void testManualAuditSlaReset() throws Exception {
+	public void testManualAuditSlaReset_NeitherPQForSafetyManual() throws Exception {
 		contractor = EntityFactory.makeContractor();
 
 		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
@@ -236,30 +236,120 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() == null);
 
-		// safety manual not complete, reset any existing SLA date
-		audit.setSlaDate(new Date());
-		needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
-		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
-		assertTrue(audit.getSlaDate() == null);
-
-		// pqf not complete, reset any existing SLA date
-		audit.setSlaDate(new Date());
-		needManualAuditCao1.changeStatus(AuditStatus.Pending, null);
-		data.setAnswer("doc");
-		data.setDateVerified(new Date());
-		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
-		assertTrue(audit.getSlaDate() == null);
-
-		// non-audit manual pqf complete, reset any existing SLA date
-		audit.setSlaDate(new Date());
-		noNeedManualAuditCao.changeStatus(AuditStatus.Complete, null);
-		data.setAnswer("doc");
-		data.setDateVerified(new Date());
-		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
-		assertTrue(audit.getSlaDate() == null);
 	}
 
-	@Test
+    @Test
+    public void testManualAuditSlaReset_SafetyManualNotVerified() throws Exception {
+        contractor = EntityFactory.makeContractor();
+
+        ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+
+        ContractorAuditOperator noNeedManualAuditCao = addCaoCaop(pqf, EntityFactory.makeOperator());
+        ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
+        ContractorAuditOperator needManualAuditCao2 = addCaoCaop(pqf, EntityFactory.makeOperator());
+        addCaoCaop(audit, needManualAuditCao1.getOperator());
+        addCaoCaop(audit, needManualAuditCao2.getOperator());
+
+        AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
+        data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+        pqf.getData().add(data);
+
+        audit.setSlaDate(new Date());
+        needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
+        Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+        assertTrue(audit.getSlaDate() == null);
+    }
+
+    @Test
+    public void testManualAuditSlaReset_PQFCompletButNotManualAuditOperatorOverlap() throws Exception {
+        contractor = EntityFactory.makeContractor();
+
+        ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+
+        ContractorAuditOperator noNeedManualAuditCao = addCaoCaop(pqf, EntityFactory.makeOperator());
+        ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
+        ContractorAuditOperator needManualAuditCao2 = addCaoCaop(pqf, EntityFactory.makeOperator());
+        addCaoCaop(audit, needManualAuditCao1.getOperator());
+        addCaoCaop(audit, needManualAuditCao2.getOperator());
+
+        AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
+        data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+        pqf.getData().add(data);
+
+        audit.setSlaDate(new Date());
+        noNeedManualAuditCao.changeStatus(AuditStatus.Complete, null);
+        data.setAnswer("doc");
+        data.setDateVerified(new Date());
+        Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+        assertTrue(audit.getSlaDate() == null);
+    }
+
+    @Test
+    public void testManualAuditSlaReset_NoManualAuditCaos() throws Exception {
+        contractor = EntityFactory.makeContractor();
+
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+
+        AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
+        data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+
+        audit.setSlaDate(new Date());
+        Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+        assertTrue(audit.getSlaDate() == null);
+    }
+
+    @Test
+    public void testManualAuditSla_AdjustDate() throws Exception {
+        contractor = EntityFactory.makeContractor();
+
+        ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+
+        ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
+        addCaoCaop(audit, needManualAuditCao1.getOperator());
+
+        AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
+        data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+        pqf.getData().add(data);
+
+        Date currentSlaDate = new Date();
+        audit.setSlaDate(currentSlaDate);
+        data.setAnswer("doc");
+        data.setDateVerified(new Date());
+        needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
+        Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+        assertTrue(currentSlaDate.before(audit.getSlaDate()));
+    }
+
+    @Test
+    public void testManualAuditSlaReset_PqfNotComplete() throws Exception {
+        contractor = EntityFactory.makeContractor();
+
+        ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+
+        ContractorAuditOperator noNeedManualAuditCao = addCaoCaop(pqf, EntityFactory.makeOperator());
+        ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
+        ContractorAuditOperator needManualAuditCao2 = addCaoCaop(pqf, EntityFactory.makeOperator());
+        addCaoCaop(audit, needManualAuditCao1.getOperator());
+        addCaoCaop(audit, needManualAuditCao2.getOperator());
+
+        AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
+        data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+        pqf.getData().add(data);
+
+        // pqf not complete, reset any existing SLA date
+        audit.setSlaDate(new Date());
+        needManualAuditCao1.changeStatus(AuditStatus.Pending, null);
+        data.setAnswer("doc");
+        data.setDateVerified(new Date());
+        Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+        assertTrue(audit.getSlaDate() == null);
+    }
+
+    @Test
 	public void testManualAuditSlaValidPqfSafetyManual() throws Exception {
 		contractor = EntityFactory.makeContractor();
 
@@ -277,7 +367,9 @@ public class ContractorCronTest extends PicsActionTest {
 		pqf.getData().add(data);
 
 		// pqf & safety manual complete, don't reset any existing SLA date
-		Date currentSlaData = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 30);
+		Date currentSlaData = cal.getTime();
 		audit.setSlaDate(currentSlaData);
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate().equals(currentSlaData));

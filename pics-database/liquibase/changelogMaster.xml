@@ -195,4 +195,7 @@
 	<include file="./liquibase/2014/Q1/kchase35_PICS-14871_UpdateResubmittedPQF_DDL.sql"/>
 	<include file="./liquibase/2014/Q1/kchase37_PICS-14871_UpdateResubmittedPQF_DML.sql"/>
 	<include file="./liquibase/2014/Q1/rbeaini1_DE503_removing_webcam_useraccess_records.sql"/>
+
+	<!-- 7.2.5 -->
+	<include file="./liquibase/2014/Q2/kchase38_PICS-14983_ExtendExpDate.sql"/>
 </databaseChangeLog>

@@ -8,6 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -106,6 +107,14 @@ public class AccountGroupDAO extends AbstractBaseEntityDAO<Group> {
 				"WHERE age.employee = :employee AND age.group.accountId = :accountId", Group.class);
 		query.setParameter("employee", employee);
 		query.setParameter("accountId", employee.getAccountId());
+		return query.getResultList();
+	}
+
+	public List<Group> findGroupsByEmployees(final Collection<Employee> employees) {
+		TypedQuery<Group> query = em.createQuery("SELECT age.group FROM GroupEmployee age " +
+				"JOIN age.employee e " +
+				"WHERE e IN (:employees)", Group.class);
+		query.setParameter("employees", employees);
 		return query.getResultList();
 	}
 

@@ -1,5 +1,5 @@
 package com.picsauditing.service.addressverifier;
 
 public abstract class AddressVerificationService {
-    abstract public AddressHolder verify(AddressHolder address) throws AddressVerificationException;
+    public abstract AddressResponseHolder verify(AddressRequestHolder addressRequestHolder) throws AddressVerificationException;
 }

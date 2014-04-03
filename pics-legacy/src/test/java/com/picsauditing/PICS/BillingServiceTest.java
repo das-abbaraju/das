@@ -118,6 +118,7 @@ public class BillingServiceTest extends PicsTranslationTest {
 		setupInvoiceAndItems();
 		setupStandardFees(true, true);
 		calculateInvoiceTotal();
+        when(mockInvoice.getAccount()).thenReturn(mockContractor);
 		when(mockContractor.getCountry()).thenReturn(country);
         when(country.getBusinessUnit()).thenReturn(businessUnit);
 		when(businessUnit.getId()).thenReturn(2);
@@ -578,21 +579,95 @@ public class BillingServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void testConvertBillingStatusToInvoiceType_ActivationItem() throws Exception {
+    public void testCalculateInvoiceType_ActivationItem() throws Exception {
         when(mockInvoice.getItems()).thenReturn(invoiceItems);
         when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
-        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", mockInvoice, BillingStatus.Renewal);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "calculateInvoiceType", mockInvoice);
 
         assertEquals(InvoiceType.Activation, invoiceType);
     }
 
     @Test
-    public void testConvertBillingStatusToInvoiceType_ReactivationItem() throws Exception {
+    public void testCalculateInvoiceType_ReactivationItem() throws Exception {
         when(mockInvoice.getItems()).thenReturn(invoiceItems);
         when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Reactivation);
-        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "convertBillingStatusToInvoiceType", mockInvoice, BillingStatus.Renewal);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "calculateInvoiceType", mockInvoice);
 
         assertEquals(InvoiceType.Reactivation, invoiceType);
+    }
+
+    @Test
+    public void testCalculateInvoiceType_Renewal() throws Exception {
+        setupCreateInvoiceWithItemsTestsCommon();
+        when(mockInvoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
+        when(invoiceItem.getPaymentExpires()).thenReturn(new Date());
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "calculateInvoiceType", mockInvoice);
+
+        assertEquals(InvoiceType.Renewal, invoiceType);
+    }
+
+    @Test
+    public void testCalculateInvoiceType_Upgrade() throws Exception {
+        invoices.add(mockInvoice);
+        invoices.add(invoice);
+        when(mockInvoice.getAccount()).thenReturn(mockContractor);
+        when(mockInvoice.getId()).thenReturn(101);
+        when(invoice.getId()).thenReturn(10);
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Void);
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Renewal);
+        when(mockInvoice.getPayingFacilities()).thenReturn(5);
+        when(invoice.getPayingFacilities()).thenReturn(3);
+        when(mockContractor.getSortedInvoices()).thenReturn(invoices);
+
+        when(mockInvoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
+        when(invoiceItem.getPaymentExpires()).thenReturn(null);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "calculateInvoiceType", mockInvoice);
+
+        assertEquals(InvoiceType.Upgrade, invoiceType);
+    }
+
+    @Test
+    public void testCalculateInvoiceType_UpgradeTier() throws Exception {
+        invoices.add(mockInvoice);
+        invoices.add(invoice);
+        when(mockInvoice.getAccount()).thenReturn(mockContractor);
+        when(mockInvoice.getId()).thenReturn(101);
+        when(invoice.getId()).thenReturn(10);
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Paid);
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Renewal);
+        when(mockInvoice.getPayingFacilities()).thenReturn(5);
+        when(invoice.getPayingFacilities()).thenReturn(3);
+        when(mockContractor.getSortedInvoices()).thenReturn(invoices);
+
+        when(mockInvoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
+        when(invoiceItem.getPaymentExpires()).thenReturn(null);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "calculateInvoiceType", mockInvoice);
+
+        assertEquals(InvoiceType.Upgrade_Tier, invoiceType);
+    }
+
+    @Test
+    public void testCalculateInvoiceType_UpgradeService() throws Exception {
+        invoices.add(mockInvoice);
+        invoices.add(invoice);
+        when(mockInvoice.getAccount()).thenReturn(mockContractor);
+        when(mockInvoice.getId()).thenReturn(101);
+        when(invoice.getId()).thenReturn(10);
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Paid);
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Renewal);
+        when(mockInvoice.getPayingFacilities()).thenReturn(3);
+        when(invoice.getPayingFacilities()).thenReturn(3);
+        when(mockContractor.getSortedInvoices()).thenReturn(invoices);
+
+        when(mockInvoice.getItems()).thenReturn(invoiceItems);
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.DocuGUARD);
+        when(invoiceItem.getPaymentExpires()).thenReturn(null);
+        InvoiceType invoiceType = Whitebox.invokeMethod(billingService, "calculateInvoiceType", mockInvoice);
+
+        assertEquals(InvoiceType.Upgrade_Service, invoiceType);
     }
 
     @Test
@@ -960,60 +1035,36 @@ public class BillingServiceTest extends PicsTranslationTest {
 
     @Test
     public void testInvoiceTypeSetUpgradeType_ServiceUpgrade() throws Exception {
-        setupStandardFees(false,false);
-        fees.put(FeeClass.AuditGUARD,contractorFee);
+        invoices.add(mockInvoice);
+        invoices.add(invoice);
+        when(mockInvoice.getAccount()).thenReturn(mockContractor);
+        when(mockInvoice.getId()).thenReturn(101);
+        when(invoice.getId()).thenReturn(10);
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Paid);
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Renewal);
+        when(mockInvoice.getPayingFacilities()).thenReturn(3);
+        when(invoice.getPayingFacilities()).thenReturn(3);
+        when(mockContractor.getSortedInvoices()).thenReturn(invoices);
 
-        Set<FeeClass> feeClasses = new HashSet<>();
-        feeClasses.add(FeeClass.Activation);
-        feeClasses.add(FeeClass.DocuGUARD);
-        feeClasses.add(FeeClass.InsureGUARD);
-        feeClasses.add(FeeClass.AuditGUARD);
-        when(mockContractor.getFees()).thenReturn(fees);
-        when(contractorFee.getCurrentFacilityCount()).thenReturn(0);
-        when(contractorFee.getNewFacilityCount()).thenReturn(1);
-
-        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockContractor, feeClasses);
+        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockInvoice);
         assertNotSame(InvoiceType.Upgrade, type);
         assertEquals(InvoiceType.Upgrade_Service, type);
     }
 
     @Test
-    public void testInvoiceTypeSetUpgradeType_ServiceTierUpgrade() throws Exception {
-        setupStandardFees(false,false);
-        fees.put(FeeClass.AuditGUARD,contractorFee);
-
-        Set<FeeClass> feeClasses = new HashSet<>();
-        feeClasses.add(FeeClass.Activation);
-        feeClasses.add(FeeClass.DocuGUARD);
-        feeClasses.add(FeeClass.InsureGUARD);
-        feeClasses.add(FeeClass.AuditGUARD);
-        when(mockContractor.getFees()).thenReturn(fees);
-        when(contractorFee.getCurrentFacilityCount()).thenReturn(1);
-        when(contractorFee.getNewFacilityCount()).thenReturn(2);
-
-        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockContractor, feeClasses);
-        assertNotSame(InvoiceType.Upgrade, type);
-        assertEquals(InvoiceType.Upgrade_Tier, type);
-    }
-
-    @Test
     public void testInvoiceTypeSetUpgradeType_TierUpgrade() throws Exception {
-        setupStandardFees(false,false);
-        fees.put(FeeClass.AuditGUARD,upgradeFee);
-        fees.put(FeeClass.DocuGUARD,contractorFee);
+        invoices.add(mockInvoice);
+        invoices.add(invoice);
+        when(mockInvoice.getAccount()).thenReturn(mockContractor);
+        when(mockInvoice.getId()).thenReturn(101);
+        when(invoice.getId()).thenReturn(10);
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Paid);
+        when(invoice.getInvoiceType()).thenReturn(InvoiceType.Renewal);
+        when(mockInvoice.getPayingFacilities()).thenReturn(5);
+        when(invoice.getPayingFacilities()).thenReturn(3);
+        when(mockContractor.getSortedInvoices()).thenReturn(invoices);
 
-        Set<FeeClass> feeClasses = new HashSet<>();
-        feeClasses.add(FeeClass.Activation);
-        feeClasses.add(FeeClass.DocuGUARD);
-        feeClasses.add(FeeClass.InsureGUARD);
-        feeClasses.add(FeeClass.AuditGUARD);
-        when(mockContractor.getFees()).thenReturn(fees);
-        when(contractorFee.getCurrentFacilityCount()).thenReturn(0);
-        when(contractorFee.getNewFacilityCount()).thenReturn(1);
-        when(contractorFee.getCurrentFacilityCount()).thenReturn(1);
-        when(contractorFee.getNewFacilityCount()).thenReturn(2);
-
-        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockContractor, feeClasses);
+        InvoiceType type = Whitebox.invokeMethod(billingService, "setUpgradeType", mockInvoice);
         assertNotSame(InvoiceType.Upgrade, type);
         assertEquals(InvoiceType.Upgrade_Tier, type);
     }

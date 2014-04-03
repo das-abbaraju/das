@@ -1,91 +1,90 @@
 .tile-container {
-    min-height: 140px;
+  min-height: 140px;
 
-    &:before {
-        content: '';
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
-    }
+  &:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
 }
 
 .tile {
-    background: transparent;
+  background: transparent;
 
-    .title {
-        font-size: 28px;
-        font-weight: bold;
-        margin-bottom: 0px;
-        margin-top: 10px;
-    }
+  .title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 0px;
+    margin-top: 10px;
+  }
+
+  i {
+    background: transparent;
+    font-size: 48px;
+  }
+
+  &.success {
+    color: $success_med;
 
     i {
-        background: transparent;
-        font-size: 48px;
+      color: $success_med;
     }
 
-    &.success {
+    &:hover {
+      color: $success_light;
+
+      i {
         color: $success_light;
+      }
+    }
+  }
 
-        i {
-            color: $success_light;
+  &.warning {
+    color: $warning_med;
 
-        }
-
-        &:hover {
-            color: $success_med;
-
-            i {
-                color: $success_med;
-            }
-        }
+    i {
+      color: $warning_med;
     }
 
-    &.warning {
+    &:hover {
+      color: $warning_light;
+
+      i {
         color: $warning_light;
+      }
+    }
+  }
 
-        i {
-            color: $warning_light;
-        }
+  &.danger {
+    color: $danger_med;
 
-        &:hover {
-            color: $warning_med;
-
-            i {
-                color: $warning_med;
-            }
-        }
+    i {
+      color: $danger_med;
     }
 
-    &.danger {
+    &:hover {
+      color: $danger_light;
+
+      i {
         color: $danger_light;
+      }
+    }
+  }
 
-        i {
-            color: $danger_light;
-        }
+  &.primary {
+    color: $primary_med;
 
-        &:hover {
-            color: $danger_med;
-
-            i {
-                color: $danger_med;
-            }
-        }
+    i {
+      color: $primary_med;
     }
 
-    &.primary {
+    &:hover {
+      color: $primary_light;
+
+      i {
         color: $primary_light;
-
-        i {
-            color: $primary_light;
-        }
-
-        &:hover {
-            color: $primary_med;
-
-            i {
-                color: $primary_med;
-            }
-        }
+      }
     }
+  }
 }

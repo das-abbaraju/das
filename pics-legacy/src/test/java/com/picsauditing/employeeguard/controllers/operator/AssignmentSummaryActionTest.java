@@ -74,6 +74,7 @@ public class AssignmentSummaryActionTest extends PicsActionTest {
 		setupForIndex();
 
 		when(permissions.isCorporate()).thenReturn(true);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(permissions.getOperatorChildren()).thenReturn(new HashSet<>(Arrays.asList(SITE_ID)));
 
 		summaryAction.setId(Integer.toString(SITE_ID));

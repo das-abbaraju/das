@@ -13,6 +13,17 @@ public class GroupBuilder {
 		group = new Group();
 	}
 
+	public GroupBuilder id(int id) {
+		group.setId(id);
+		return this;
+	}
+
+	public GroupBuilder accountId(int accountId) {
+		group.setAccountId(accountId);
+		return this;
+	}
+
+    @Deprecated
 	public GroupBuilder(int id, int accountId) {
 		group = new Group(id, accountId);
 	}

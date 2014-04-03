@@ -9,56 +9,61 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
 
     private GlobalAddressVerifier globalAddressVerifier;
 
-    public AddressHolder verify(AddressHolder address) throws AddressVerificationException {
-        Address verified = null;
-        AddressHolder correctedAddress = new AddressHolder();
+    @Override
+    public AddressResponseHolder verify(AddressRequestHolder addressRequest) throws AddressVerificationException {
+        Address verifiedAddress = null;
 
         if (featureEnabled()) {
             try {
-                globalAddressVerifier = getGlobalAddressVerifier(address);
-                verified = globalAddressVerifier.execute();
+                globalAddressVerifier = getGlobalAddressVerifier(addressRequest);
+                verifiedAddress = globalAddressVerifier.execute();
             } catch (Exception e) {
-                throw new AddressVerificationException(e.getMessage(), e, address);
+                throw new AddressVerificationException(e.getMessage(), e, addressRequest);
             }
-            if (verified.getStatusNbr() >= 500) {
-                throw new AddressVerificationException(verified.getStatusDescription(), address);
-            }
-
-            correctedAddress.setAddressLine1(verified.getStreetAddressLines());
-            correctedAddress.setCity(verified.getLocality());
-            correctedAddress.setStateOrProvince(verified.getProvince());
-            correctedAddress.setZipOrPostalCode(verified.getPostalCode());
-            correctedAddress.setCountry(verified.getCountry());
-
-            correctedAddress.setResultStatus(parseResultCode(verified.getStatusNbr()));
-            correctedAddress.setStatusDescription(verified.getStatusDescription());
-            correctedAddress.setConfidencePercent(verified.getConfidencePercentage());
+            return buildAddressResponse(verifiedAddress);
         }
         else {
-            address.setResultStatus(ResultStatus.SUCCESS);
-            address.setStatusDescription(FEATURE_DISABLED_MESSAGE);
-            return address;
+            return buildFeatureDisabledResponse();
         }
+    }
 
-        return correctedAddress;
+    private AddressResponseHolder buildAddressResponse(Address verifiedAddress) {
+
+        return AddressResponseHolder.builder()
+                .addressLine1(verifiedAddress.getStreetAddressLines())
+                .city(verifiedAddress.getLocality())
+                .stateOrProvince(verifiedAddress.getProvince())
+                .zipOrPostalCode(verifiedAddress.getPostalCode())
+                .country(verifiedAddress.getCountry())
+                .resultStatus(parseResultCode(verifiedAddress.getStatusNbr()))
+                .statusDescription(verifiedAddress.getStatusDescription())
+                .confidencePercentage(verifiedAddress.getConfidencePercentage())
+                .build();
+    }
+
+    private AddressResponseHolder buildFeatureDisabledResponse() {
+        AddressResponseHolder addressResponse = new AddressResponseHolder();
+        addressResponse.setResultStatus(ResultStatus.SUCCESS);
+        addressResponse.setStatusDescription(FEATURE_DISABLED_MESSAGE);
+        return addressResponse;
     }
 
     private boolean featureEnabled() {
         try {
             return Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive();
         } catch (Exception e) {
-            return true;
+            return false;
         }
     }
 
-    private GlobalAddressVerifier getGlobalAddressVerifier(AddressHolder address) {
+    private GlobalAddressVerifier getGlobalAddressVerifier(AddressRequestHolder address) {
         if (globalAddressVerifier == null) {
             return new GlobalAddressVerifier(
-                    address.getAddressLine1() + " " + address.getAddressLine2(),
-                    address.getCity(),
-                    address.getStateOrProvince(),
+                    address.getAddressBlob(),
                     address.getCountry(),
-                    address.getZipOrPostalCode());
+                    address.getZipOrPostalCode()
+            );
+
         } else {
             return globalAddressVerifier;
         }

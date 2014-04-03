@@ -109,7 +109,7 @@ public class BillingService {
     public void applyFinancialCalculationsAndType(Invoice invoice) throws Exception {
         taxService.applyTax(invoice);
         addRevRecInfoIfAppropriateToItems(invoice);
-        invoice.setInvoiceType(convertBillingStatusToInvoiceType(invoice, billingStatus((ContractorAccount)invoice.getAccount())));
+        invoice.setInvoiceType(calculateInvoiceType(invoice));
     }
 
     public Invoice verifyAndSaveInvoice(Invoice invoice) throws Exception {
@@ -238,13 +238,13 @@ public class BillingService {
 		invoice.setTotalAmount(invoiceTotal);
 		invoice.setCommissionableAmount(invoiceCommissionable);
 		invoice.setAuditColumns(auditUser);
-		invoice.setInvoiceType(convertBillingStatusToInvoiceType(invoice, billingStatus));
+		invoice.setInvoiceType(calculateInvoiceType(invoice));
         invoice.setPayingFacilities(contractor.getPayingFacilities());
 
 		return invoice;
 	}
 
-	private InvoiceType convertBillingStatusToInvoiceType(Invoice invoice, BillingStatus billingStatus) {
+	private InvoiceType calculateInvoiceType(Invoice invoice) {
         Set<FeeClass> invoiceFeeClasses = getInvoiceFeeClasses(invoice);
 
         if (invoiceFeeClasses.contains(FeeClass.Activation)) {
@@ -254,34 +254,30 @@ public class BillingService {
             return InvoiceType.Reactivation;
         }
 
-        switch (billingStatus) {
-            case Upgrade:
-                return setUpgradeType((ContractorAccount)invoice.getAccount(),invoiceFeeClasses);
-            case Renewal:
-            case RenewalOverdue:
-                return InvoiceType.Renewal;
-            case Activation:
-                return InvoiceType.Activation;
-            case Reactivation:
-                return InvoiceType.Reactivation;
-            default:
-                return InvoiceType.OtherFees;
+        Date paymentExpires = getPaymentExpirationFromLineItem(invoice.getItems());
+        if (paymentExpires != null) {
+            return InvoiceType.Renewal;
+        }
+        else {
+            return setUpgradeType(invoice);
         }
     }
 
-    private InvoiceType setUpgradeType(ContractorAccount contractorAccount, Set<FeeClass> feeClasses) {
+    private InvoiceType setUpgradeType(Invoice invoice) {
         InvoiceType returnType = InvoiceType.Upgrade;
 
-        for (FeeClass feeClass : feeClasses) {
-            ContractorFee fee = contractorAccount.getFees().get(feeClass);
-            if (fee == null)
-                continue;
+        ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
 
-            if (fee.getCurrentFacilityCount() == 0 && fee.getNewFacilityCount() > 0) {
-                returnType = InvoiceType.Upgrade_Service;
-            }
-            else if (fee.getCurrentFacilityCount() > 0 && fee.getNewFacilityCount() > fee.getCurrentFacilityCount()) {
-                return InvoiceType.Upgrade_Tier;
+        for (Invoice previousInvoice : contractor.getSortedInvoices()) {
+            if (previousInvoice.getId() != invoice.getId() && !previousInvoice.getStatus().isVoid() &&
+                    !BillingService.hasCreditMemosForFullAmount(previousInvoice) && previousInvoice.getInvoiceType().isMembershipType()) {
+                int previousFacilityCount = previousInvoice.getPayingFacilities();
+                if (previousFacilityCount < invoice.getPayingFacilities()) {
+                    return InvoiceType.Upgrade_Tier;
+                }
+                else if (previousFacilityCount >= invoice.getPayingFacilities()) {
+                    return InvoiceType.Upgrade_Service;
+                }
             }
         }
 
@@ -700,16 +696,26 @@ public class BillingService {
 	private Date getRevRecFinishDateFromInvoice(Invoice invoice) {
         ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
 
-        for (InvoiceItem invoiceItem : invoice.getItems()) {
+        Date paymentExpires = getPaymentExpirationFromLineItem(invoice.getItems());
+
+        if (paymentExpires == null) {
+            paymentExpires = contractor.getPaymentExpires();
+        }
+
+        return paymentExpires;
+	}
+
+    private Date getPaymentExpirationFromLineItem(List<InvoiceItem> items) {
+        for (InvoiceItem invoiceItem : items) {
             if (invoiceItem.getInvoiceFee().isMembership() && invoiceItem.getPaymentExpires() != null) {
                 return invoiceItem.getPaymentExpires();
             }
         }
 
-        return contractor.getPaymentExpires();
-	}
+        return null;
+    }
 
-	private Date calculateInvoiceItemRevRecStartDateFor(Invoice invoice) {
+    private Date calculateInvoiceItemRevRecStartDateFor(Invoice invoice) {
 		switch (invoice.getInvoiceType()) {
 			case Activation:
 				if (invoice.getDueDate() == null) {

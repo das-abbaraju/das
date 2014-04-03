@@ -1,6 +1,8 @@
 package com.picsauditing.service.addressverifier;
 
-public class AddressHolder {
+import com.picsauditing.service.addressverifier.builder.AddressResponseHolderBuilder;
+
+public class AddressResponseHolder {
     private String addressLine1;
     private String addressLine2;
     private String city;
@@ -11,13 +13,19 @@ public class AddressHolder {
     public String statusDescription;
     private String confidencePercent;
 
+    @Override
     public String toString() {
-        return addressLine1
-                + " " + addressLine2
-                + " " + city
-                + " " + stateOrProvince
-                + " " + zipOrPostalCode
-                + " " + country;
+        return "AddressResponseHolder{" +
+                "addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
+                ", city='" + city + '\'' +
+                ", stateOrProvince='" + stateOrProvince + '\'' +
+                ", zipOrPostalCode='" + zipOrPostalCode + '\'' +
+                ", country='" + country + '\'' +
+                ", resultStatus=" + resultStatus +
+                ", statusDescription='" + statusDescription + '\'' +
+                ", confidencePercentage='" + confidencePercent + '\'' +
+                '}';
     }
 
     public void setAddressLine1(String addressLine1) {
@@ -90,5 +98,9 @@ public class AddressHolder {
 
     public String getConfidencePercent() {
         return confidencePercent;
+    }
+
+    public static AddressResponseHolderBuilder builder() {
+        return new AddressResponseHolderBuilder();
     }
 }

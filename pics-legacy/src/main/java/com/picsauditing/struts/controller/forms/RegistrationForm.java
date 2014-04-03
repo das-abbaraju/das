@@ -71,6 +71,10 @@ public class RegistrationForm {
     private String address2;
 
     @NotBlank(message = REQUIRED_KEY)
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
+    private String addressBlob;
+
+    @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
     @Pattern(regexp = SPECIAL_CHAR_REGEX, flags = Pattern.Flag.CASE_INSENSITIVE, message = NO_SPECIAL_CHARS_KEY)
     private String firstName;
@@ -267,6 +271,14 @@ public class RegistrationForm {
 
     public void setAddress2(String address2) {
         this.address2 = address2;
+    }
+
+    public String getAddressBlob() {
+        return addressBlob;
+    }
+
+    public void setAddressBlob(String addressBlob) {
+        this.addressBlob = addressBlob;
     }
 
     public static RegistrationForm fromContractor(final ContractorAccount input) {

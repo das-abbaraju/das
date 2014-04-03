@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.employee;
 
-import com.picsauditing.PICS.Utilities;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class EmployeeModel {
 		this.accountId = builder.accountId;
 		this.name = builder.name;
 		this.title = builder.title;
-		this.companyNames = Utilities.unmodifiableList(builder.companyNames);
+		this.companyNames = PicsCollectionUtil.unmodifiableList(builder.companyNames);
 	}
 
 	public int getId() {

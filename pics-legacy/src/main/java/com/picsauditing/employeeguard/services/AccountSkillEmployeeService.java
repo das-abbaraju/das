@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.services;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
@@ -12,6 +11,7 @@ import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.services.calculator.ExpirationCalculator;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -264,7 +264,7 @@ public class AccountSkillEmployeeService {
 
 		Map<Employee, Set<AccountSkillEmployee>> skillMap = new HashMap<>();
 		for (AccountSkillEmployee accountSkillEmployee : roleSkills) {
-			Utilities.addToMapOfKeyToSet(skillMap, accountSkillEmployee.getEmployee(), accountSkillEmployee);
+			PicsCollectionUtil.addToMapOfKeyToSet(skillMap, accountSkillEmployee.getEmployee(), accountSkillEmployee);
 		}
 
 		return skillMap;
@@ -283,7 +283,7 @@ public class AccountSkillEmployeeService {
 
 		Map<Employee, Set<AccountSkillEmployee>> employeeSkills = new HashMap<>();
 		for (AccountSkillEmployee accountSkillEmployee : allSiteSkills) {
-			Utilities.addToMapOfKeyToSet(employeeSkills, accountSkillEmployee.getEmployee(), accountSkillEmployee);
+			PicsCollectionUtil.addToMapOfKeyToSet(employeeSkills, accountSkillEmployee.getEmployee(), accountSkillEmployee);
 		}
 
 		return employeeSkills;

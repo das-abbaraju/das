@@ -364,13 +364,13 @@ public class ContractorCron extends PicsActionSupport {
 					return;
 				}
 
-				if (audit.getSlaDate() != null)
-					return;
+                Calendar date = Calendar.getInstance();
+                date.setTime(beginDate);
+                date.add(Calendar.DATE, 14);
+                beginDate = DateBean.setToEndOfDay(date.getTime());
 
-				Calendar date = Calendar.getInstance();
-				date.setTime(beginDate);
-				date.add(Calendar.DATE, 14);
-				beginDate = DateBean.setToEndOfDay(date.getTime());
+                if (audit.getSlaDate() != null && audit.getSlaDate().after(beginDate))
+					return;
 
 				Date previousManualExpirationDate = previousManualAudit(contractor, audit);
 				if (previousManualExpirationDate != null) {
@@ -392,11 +392,25 @@ public class ContractorCron extends PicsActionSupport {
 
 				audit.setSlaDate(beginDate);
 				dao.save(audit);
-			}
+			} else if (shouldResetSla(audit)) {
+                audit.setSlaDate(null);
+                dao.save(audit);
+            }
 		}
 	}
 
-	private Date previousManualAudit(ContractorAccount contractor, ContractorAudit manualAudit) {
+    private boolean shouldResetSla(ContractorAudit audit) {
+        if (!audit.getAuditType().isDesktop())
+            return false;
+
+        for (ContractorAuditOperator cao:audit.getOperatorsVisible()) {
+            if (cao.getCaoPermissions().size() != 0)
+                return false;
+        }
+        return true;
+    }
+
+    private Date previousManualAudit(ContractorAccount contractor, ContractorAudit manualAudit) {
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isDesktop() && audit.getId() != manualAudit.getId() && audit.getExpiresDate() != null) {
 				return audit.getExpiresDate();

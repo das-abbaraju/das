@@ -1,0 +1,49 @@
+<div class="employee-dashboard" ng-controller="employeeDashboardCtrl">
+    <div class="container">
+        <pagetitle title="{{ employee.firstName }} {{ employee.lastName }}" subtitle="{{ employee.slug }}"></pagetitle>
+
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked">
+                    <li>
+                        <a href="/employee-guard/employee/profile/{{ employee.id }}" target="_self">
+                            <i class="icon-user icon-large"></i>Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/employee/skills" target="_self">
+                            <i class="icon-certificate icon-large"></i>Skills
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/employee/file" target="_self">
+                            <i class="icon-picture icon-large"></i>My Files
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <section class="employee-guard-section">
+                    <h1>
+                        <i class="icon-map-marker icon-large"></i>Assignment Status
+                    </h1>
+                    <div class="content">
+                        <div class="col-md-4 text-center tile-container" ng-repeat="assignment in assignments | orderBy: 'name'">
+                            <div class="tile" ng-class="getSkillClass(assignment.status)">
+                                <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
+                                <p class="title">{{ assignment.name }}</p>
+
+
+                                <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }} Employee
+                                    <ng-pluralize count="assignment.groups" when="{'1': 'Group','other': 'Groups'}" />
+                                </p>
+                                <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }} Job Roles</p>
+                                <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

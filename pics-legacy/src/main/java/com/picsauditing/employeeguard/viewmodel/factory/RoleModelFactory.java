@@ -1,9 +1,9 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.RoleModel;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class RoleModelFactory {
 	}
 
 	public RoleModel create(final Role role, final SkillStatus skillStatus) {
-		Set<Integer> skillIds = Utilities.getIdsFromCollection(role.getSkills(), new Utilities.Identitifable<AccountSkillRole, Integer>() {
+		Set<Integer> skillIds = PicsCollectionUtil.getIdsFromCollection(role.getSkills(), new PicsCollectionUtil.Identitifable<AccountSkillRole, Integer>() {
 			@Override
 			public Integer getId(AccountSkillRole element) {
 				return element.getSkill().getId();

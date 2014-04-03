@@ -1,22 +1,20 @@
 package com.picsauditing.actions;
 
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.picsauditing.dao.IndexableDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.Indexable;
-import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractIndexerEngine implements IndexerEngine {
 
+    @Autowired
 	protected IndexableDAO indexableDao;
 
 	protected Database db = new Database();

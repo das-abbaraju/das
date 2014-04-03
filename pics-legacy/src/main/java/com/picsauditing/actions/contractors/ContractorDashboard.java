@@ -399,6 +399,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return "pendingGcOperators";
 	}
 
+    public boolean canAddContractor() {
+        if (!contractor.isActive())
+            return false;
+        if (!contractor.isAutoAddClientSite())
+            return false;
+        if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.AddContractors))
+            return true;
+        return false;
+    }
+
     public String sendContractorNotificationEmail() throws Exception {
         try {
             findContractor();

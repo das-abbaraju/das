@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
-import com.picsauditing.service.addressverifier.AddressHolder;
+import com.picsauditing.service.addressverifier.AddressRequestHolder;
+import com.picsauditing.service.addressverifier.AddressResponseHolder;
 import com.picsauditing.service.addressverifier.AddressVerificationException;
 import com.picsauditing.service.addressverifier.AddressVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,26 +10,36 @@ public class AddressVerificationTest extends PicsActionSupport {
     @Autowired
     private AddressVerificationService addressVerificationService;
 
-    private AddressHolder address;
+    private AddressRequestHolder addressRequest;
+
+    private AddressResponseHolder addressResponse;
 
     public String execute() throws Exception {
 
-        if (address != null) {
+        if (addressRequest != null) {
             try {
-                address = addressVerificationService.verify(address);
+                addressResponse = addressVerificationService.verify(addressRequest);
             } catch (AddressVerificationException e) {
                 throw new Exception("Cannot verify address: " + e.getAddress() + " because " + e.getMessage(), e);
             }
+            return "address-response";
         }
-
         return SUCCESS;
     }
 
-    public AddressHolder getAddress() {
-        return address;
+    public AddressRequestHolder getAddressRequest() {
+        return addressRequest;
     }
 
-    public void setAddress(AddressHolder address) {
-        this.address = address;
+    public void setAddressRequest(AddressRequestHolder addressRequest) {
+        this.addressRequest = addressRequest;
+    }
+
+    public AddressResponseHolder getAddressResponse() {
+        return addressResponse;
+    }
+
+    public void setAddressResponse(AddressResponseHolder addressResponse) {
+        this.addressResponse = addressResponse;
     }
 }

@@ -1,10 +1,10 @@
 package com.picsauditing.employeeguard.forms.factory;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.forms.contractor.ContractorProjectForm;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Set;
 public class ContractorProjectFormFactory {
 
 	public List<ContractorProjectForm> build(List<ProjectCompany> projectCompanies, List<AccountModel> accountModels) {
-		Map<Integer, AccountModel> accountModelMap = Utilities.convertToMap(accountModels, new Utilities.MapConvertable<Integer, AccountModel>() {
+		Map<Integer, AccountModel> accountModelMap = PicsCollectionUtil.convertToMap(accountModels, new PicsCollectionUtil.MapConvertable<Integer, AccountModel>() {
 			@Override
 			public Integer getKey(AccountModel entity) {
 				return entity.getId();
@@ -65,7 +65,7 @@ public class ContractorProjectFormFactory {
 	}
 
 	public List<ContractorProjectForm> build(final Set<AccountModel> sites, final Set<Project> projects) {
-		Map<Integer, AccountModel> siteById = Utilities.convertToMap(sites, new Utilities.MapConvertable<Integer, AccountModel>() {
+		Map<Integer, AccountModel> siteById = PicsCollectionUtil.convertToMap(sites, new PicsCollectionUtil.MapConvertable<Integer, AccountModel>() {
 			@Override
 			public Integer getKey(AccountModel entity) {
 				return entity.getId();

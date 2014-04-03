@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
@@ -13,6 +12,7 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericPredicate;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
@@ -333,8 +333,8 @@ public class ProjectService {
 	}
 
 	public Map<Project, Set<Role>> getProjectRolesForEmployee(final int siteId, final Employee employee) {
-		return Utilities.convertToMapOfSets(projectRoleDAO.findBySiteAndEmployee(siteId, employee),
-				new Utilities.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleDAO.findBySiteAndEmployee(siteId, employee),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
 					@Override
 					public Project getKey(ProjectRole projectRole) {
 						return projectRole.getProject();

@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -142,6 +143,11 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		query.setParameter("projects", projects);
 
 		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees,
+	                                                          final int siteId) {
+		return findByEmployeesAndSiteIds(employees, Arrays.asList(siteId));
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteIds(final Collection<Employee> employees,

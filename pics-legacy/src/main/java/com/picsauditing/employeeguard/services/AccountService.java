@@ -1,10 +1,8 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.external.BillingService;
@@ -12,11 +10,11 @@ import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +29,11 @@ public class AccountService {
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
-	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
-	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
 	@Autowired
 	private BillingService billingService;
-	@Autowired
-	private ProductSubscriptionService productSubscriptionService;
 
 	public AccountModel getAccountById(int accountId) {
 		Account account = accountDAO.find(accountId);
@@ -62,7 +56,7 @@ public class AccountService {
 	}
 
 	public Map<Integer, AccountModel> getIdToAccountModelMap(final Collection<Integer> accountIds) {
-		return Utilities.convertToMap(getAccountsByIds(accountIds), new Utilities.MapConvertable<Integer, AccountModel>() {
+		return PicsCollectionUtil.convertToMap(getAccountsByIds(accountIds), new PicsCollectionUtil.MapConvertable<Integer, AccountModel>() {
 
 			@Override
 			public Integer getKey(AccountModel accountModel) {
@@ -99,6 +93,28 @@ public class AccountService {
 		}
 
 		return new ArrayList<>(corporates);
+	}
+
+	public Map<Integer, Set<Integer>> getSiteToCorporatesMap(final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		List<OperatorAccount> sites = operatorDAO.findOperators(new ArrayList<>(siteIds));
+
+		Map<Integer, Set<Integer>> siteToCorporates = new HashMap<>();
+		for (OperatorAccount site : sites) {
+			ArrayList<Integer> visited = new ArrayList<>();
+			List<OperatorAccount> topmostCorporates = getTopmostCorporates(site, visited);
+
+			siteToCorporates.put(site.getId(), new HashSet<Integer>());
+
+			for (OperatorAccount corporate : topmostCorporates) {
+				siteToCorporates.get(site.getId()).add(corporate.getId());
+			}
+		}
+
+		return siteToCorporates;
 	}
 
 	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<Integer> visited) {
@@ -159,16 +175,12 @@ public class AccountService {
 		return extractIdFromAccountModel(getChildOperators(accountIds).toArray(new AccountModel[0]));
 	}
 
-	public AccountType getAccountTypeByUserID(int userID) {
-		return getAccountByUserID(userID).getAccountType();
-	}
-
 	public AccountModel getAccountByUserID(int userID) {
 		return getAccountById(accountDAO.findByUserID(userID));
 	}
 
 	public Map<Integer, AccountModel> getContractorMapForSite(final int siteId) {
-		return Utilities.convertToMap(getContractors(siteId), new Utilities.MapConvertable<Integer, AccountModel>() {
+		return PicsCollectionUtil.convertToMap(getContractors(siteId), new PicsCollectionUtil.MapConvertable<Integer, AccountModel>() {
 			@Override
 			public Integer getKey(AccountModel accountModel) {
 				return accountModel.getId();
@@ -292,27 +304,35 @@ public class AccountService {
 		return ids;
 	}
 
-	public boolean doesContractorStillNeedEmployeeGuard(final int contractorID) {
-		return doesContractorStillNeedEmployeeGuard(accountDAO.find(contractorID));
-	}
-
-	private boolean doesContractorStillNeedEmployeeGuard(final Account account) {
-		return productSubscriptionService.hasEmployeeGUARD(account);
-	}
-
 	public Map<Integer, AccountModel> getContractorsForEmployee(final Employee employee) {
 		if (employee == null) {
 			return Collections.emptyMap();
 		}
 
 		if (employee.getProfile() != null) {
-			return getContractorsForProfile(employee.getProfile());
+			return getContractorMapForProfile(employee.getProfile());
 		}
 
 		return getIdToAccountModelMap(Arrays.asList(employee.getAccountId()));
 	}
 
-	public Map<Integer, AccountModel> getContractorsForProfile(final Profile profile) {
+	public Collection<AccountModel> getContractorsForProfile(final Profile profile) {
+		if (profile == null) {
+			return Collections.emptyList();
+		}
+
+		List<Integer> contractorIds = ExtractorUtil.extractList(profile.getEmployees(),
+				new Extractor<Employee, Integer>() {
+					@Override
+					public Integer extract(Employee employee) {
+						return employee.getAccountId();
+					}
+				});
+
+		return getAccountsByIds(contractorIds);
+	}
+
+	public Map<Integer, AccountModel> getContractorMapForProfile(final Profile profile) {
 		if (profile == null) {
 			return Collections.emptyMap();
 		}
@@ -332,14 +352,6 @@ public class AccountService {
 		return getIdToAccountModelMap(getAccountIds(employees));
 	}
 
-	public List<AccountModel> getContractorsForEmployees(final List<Employee> employees) {
-		if (CollectionUtils.isEmpty(employees)) {
-			return Collections.emptyList();
-		}
-
-		return getAccountsByIds(getAccountIds(employees));
-	}
-
 	private List<Integer> getAccountIds(final List<Employee> employees) {
 		List<Integer> accountIds = new ArrayList<>();
 		for (Employee employee : employees) {
@@ -347,6 +359,23 @@ public class AccountService {
 		}
 
 		return accountIds;
+	}
+
+	public Map<Integer, AccountModel> getOperatorMapForContractors(final Collection<Integer> contractorIds) {
+		return getIdToAccountModelMap(getOperatorIdsForContractors(contractorIds));
+	}
+
+	public List<AccountModel> getOperatorsForContractors(final Collection<Integer> contractorIds) {
+		return getAccountsByIds(getOperatorIdsForContractors(contractorIds));
+	}
+
+	public List<Integer> getOperatorIdsForContractors(final Collection<Integer> contractorIds) {
+		List<ContractorAccount> contractors = contractorDAO.findByIDs(ContractorAccount.class, contractorIds);
+		if (CollectionUtils.isEmpty(contractors)) {
+			return Collections.emptyList();
+		}
+
+		return operatorDAO.findAllOperatorsForContractors(contractors);
 	}
 
 	public List<Integer> getOperatorIdsForContractor(final int contractorId) {

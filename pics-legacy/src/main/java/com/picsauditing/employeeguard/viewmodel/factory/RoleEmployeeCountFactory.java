@@ -1,72 +1,40 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.entities.RoleEmployee;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 
 import java.util.*;
 
 public class RoleEmployeeCountFactory {
 
-	public Map<RoleInfo, Integer> create(final List<RoleInfo> corporateRoles,
-	                                     final Map<Role, Role> corporateToSiteRoles,
-	                                     final Collection<Employee> employees) {
-		if (CollectionUtils.isEmpty(corporateRoles)) {
+	public Map<RoleInfo, Integer> create(final List<RoleInfo> roles,
+	                                     final Collection<Employee> employeesAtSite,
+	                                     final Map<Role, Set<Employee>> employeeRoles) {
+		if (CollectionUtils.isEmpty(roles)) {
 			return Collections.emptyMap();
 		}
 
 		Map<RoleInfo, Integer> roleEmployeeCount = new TreeMap<>();
-		for (RoleInfo corporateRole : corporateRoles) {
-			int roleCount = 0;
-			Role siteRole = getSiteRole(corporateToSiteRoles, corporateRole);
-
-			if (CollectionUtils.isNotEmpty(employees)) {
-				for (Employee employee : employees) {
-					if (employeeHasRole(employee, corporateRole, siteRole)) {
-						roleCount++;
-					}
-				}
-			}
-
-			roleEmployeeCount.put(corporateRole, roleCount);
+		for (RoleInfo role : roles) {
+			roleEmployeeCount.put(role, getEmployeeCount(role, employeeRoles, employeesAtSite));
 		}
 
 		return Collections.unmodifiableMap(roleEmployeeCount);
 	}
 
-	private Role getSiteRole(Map<Role, Role> corporateToSiteRoles, RoleInfo corporateRole) {
-		if (MapUtils.isEmpty(corporateToSiteRoles)) {
-			return null;
-		}
+	private int getEmployeeCount(final RoleInfo roleInfo, final Map<Role, Set<Employee>> employeeRoles,
+	                             final Collection<Employee> employeesAtSite) {
+		for (Role role : employeeRoles.keySet()) {
+			if (role.getId() == roleInfo.getId()) {
+				Set<Employee> employees = new HashSet<>(employeeRoles.get(role));
+				employees.retainAll(employeesAtSite);
 
-		for (Map.Entry<Role, Role> corporateToSite : corporateToSiteRoles.entrySet()) {
-			if (corporateToSite.getKey().getId() == corporateRole.getId()) {
-				return corporateToSite.getValue();
+				return employees.size();
 			}
 		}
 
-		return null;
-	}
-
-	private boolean employeeHasRole(Employee employee, RoleInfo corporateRole, Role siteRole) {
-		for (RoleEmployee roleEmployee : employee.getRoles()) {
-			int roleId = roleEmployee.getRole().getId();
-
-			if (siteRole != null && siteRole.getId() == roleId) {
-				return true;
-			}
-		}
-
-		for (ProjectRoleEmployee projectRoleEmployee : employee.getProjectRoles()) {
-			if (corporateRole.getId() == projectRoleEmployee.getProjectRole().getRole().getId()) {
-				return true;
-			}
-		}
-
-		return false;
+		return 0;
 	}
 }

@@ -3,26 +3,30 @@ package com.picsauditing.struts.controller;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
-
-import com.picsauditing.access.*;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.ExtractBrowserLanguage;
+import com.picsauditing.access.PermissionBuilder;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.RegistrationAction;
 import com.picsauditing.actions.validation.AjaxValidator;
-import com.picsauditing.dao.*;
+import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.featuretoggle.Features;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.account.AddressService;
+import com.picsauditing.service.addressverifier.AddressRequestHolder;
+import com.picsauditing.service.addressverifier.AddressResponseHolder;
+import com.picsauditing.service.addressverifier.AddressVerificationService;
+import com.picsauditing.service.registration.RegistrationRequestService;
+import com.picsauditing.service.registration.RegistrationResult;
+import com.picsauditing.service.registration.RegistrationResult.RegistrationFailure;
+import com.picsauditing.service.registration.RegistrationResult.RegistrationSuccess;
+import com.picsauditing.service.registration.RegistrationService;
 import com.picsauditing.struts.controller.forms.RegistrationForm;
 import com.picsauditing.struts.controller.forms.RegistrationLocaleForm;
-import com.picsauditing.service.registration.RegistrationRequestService;
-import com.picsauditing.service.registration.RegistrationService;
-import com.picsauditing.service.registration.RegistrationResult;
-import com.picsauditing.service.registration.RegistrationResult.*;
 import com.picsauditing.struts.validator.RegistrationFormValidationWrapper;
-import com.picsauditing.util.*;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.Validator;
-
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +40,9 @@ import java.util.*;
 @SuppressWarnings({"deprecation", "serial"})
 public class Registration extends RegistrationAction implements AjaxValidator, Preparable {
 
-	private String registrationKey;
+    public static final String COUNTRY_SUBDIVISION_FIELD_KEY = "registrationForm.countrySubdivision";
+
+    private String registrationKey;
     private RegistrationForm registrationForm = new RegistrationForm();
     private RegistrationLocaleForm localeForm = new RegistrationLocaleForm();
 
@@ -50,6 +56,10 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
     private RegistrationService registrationService;
     @Autowired
     private ValidatorFactory validatorFactory;
+    @Autowired
+    private AddressVerificationService addressVerificationService;
+    @Autowired
+    private AddressService addressService;
 
 
 	@Anonymous
@@ -95,6 +105,11 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
             // they don't have an account yet so they won't get this as a default
             permissions.setSessionCookieTimeoutInSeconds(3600);
 
+            if (Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
+                AddressResponseHolder addressResponseHolder = addressVerificationService.verify(buildAddressRequestHolder());
+                addressService.saveAddressFieldsFromVerifiedAddress(contractor, addressResponseHolder, user);
+            }
+
             return setUrlForRedirect(getRegistrationStep().getUrl());
 
         } else {
@@ -102,6 +117,15 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
             throw new Exception(((RegistrationFailure) result).getProblem());
         }
 
+    }
+
+
+    private AddressRequestHolder buildAddressRequestHolder() {
+        return AddressRequestHolder.builder()
+                .addressBlob(registrationForm.getAddressBlob())
+                .country(registrationForm.getCountryISOCode())
+                .zipCode(registrationForm.getZip())
+                .build();
     }
 
     //TODO: Extract this logic to an Interceptor Annotation
@@ -194,10 +218,24 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
 	// For server-side validation
 	@Override
 	public void validate() {
-        new RegistrationFormValidationWrapper(this, validatorFactory.getValidator()).validate(
-                getActionContext().getValueStack(),
-                new DelegatingValidatorContext(this)
-        );
+        RegistrationFormValidationWrapper registrationFormValidationWrapper = new RegistrationFormValidationWrapper(this, validatorFactory.getValidator());
+        registrationFormValidationWrapper.validate(getActionContext().getValueStack(), new DelegatingValidatorContext(this));
+        Map<String, List<String>> fieldErrors = this.getFieldErrors();
+
+        if (Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
+            removeFieldError(fieldErrors, COUNTRY_SUBDIVISION_FIELD_KEY);
+        }
+    }
+
+    private void removeFieldError(Map<String, List<String>> fieldErrors, String fieldName) {
+        Iterator<Map.Entry<String, List<String>>> iterator = fieldErrors.entrySet().iterator();
+        while(iterator.hasNext()) {
+            Map.Entry<String, List<String>> entry = iterator.next();
+            if (fieldName.equals(entry.getKey())) {
+                iterator.remove();
+            }
+        }
+        this.setFieldErrors(fieldErrors);
 	}
 
 	public Map<String, String> getTimezones() {

@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.SkillUsage;
@@ -9,6 +8,7 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.util.generic.GenericPredicate;
@@ -46,10 +46,10 @@ public class SiteAssignmentModelFactory {
 		for (SkillUsage skillUsage : skillUsages) {
 			Employee employee = skillUsage.getEmployee();
 
-			Utilities.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getSiteAssignmentSkills().keySet());
-			Utilities.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getProjectJobRoleSkills().keySet());
-			Utilities.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getSiteRequiredSkills().keySet());
-			Utilities.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getCorporateRequiredSkills().keySet());
+			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getSiteAssignmentSkills().keySet());
+			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getProjectJobRoleSkills().keySet());
+			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getSiteRequiredSkills().keySet());
+			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getCorporateRequiredSkills().keySet());
 		}
 		return employeeSkills;
 	}
@@ -71,7 +71,7 @@ public class SiteAssignmentModelFactory {
 				Role role = roleEmployee.getRole();
 
 				if (role.getAccountId() == siteId) {
-					Utilities.addToMapOfKeyToSet(employeeRoles, employee, role);
+					PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, role);
 				}
 			}
 
@@ -79,7 +79,7 @@ public class SiteAssignmentModelFactory {
 				Project project = projectRoleEmployee.getProjectRole().getProject();
 
 				if (project.getAccountId() == siteId) {
-					Utilities.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
+					PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
 				}
 			}
 		}
@@ -97,7 +97,7 @@ public class SiteAssignmentModelFactory {
 	}
 
 	private Map<Integer, AccountModel> getIdToAccountModel(List<AccountModel> employeeAccounts) {
-		return Utilities.convertToMap(employeeAccounts, new Utilities.MapConvertable<Integer, AccountModel>() {
+		return PicsCollectionUtil.convertToMap(employeeAccounts, new PicsCollectionUtil.MapConvertable<Integer, AccountModel>() {
 			@Override
 			public Integer getKey(AccountModel entity) {
 				return entity.getId();

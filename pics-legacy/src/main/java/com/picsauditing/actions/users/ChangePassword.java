@@ -103,8 +103,13 @@ public class ChangePassword extends PicsActionSupport {
 					return SUCCESS;
 				}
 
+                if (user.getAppUser().getHashSalt() == null) {
+                    String newHashSalt = "" + user.getAppUser().getId();
+                    user.getAppUser().setHashSalt(newHashSalt);
+                }
+
 				// Set password to the encrypted version
-				String oldPassword = user.getPassword();
+                String oldPassword = user.getPassword();
 				user.setEncryptedPassword(password1);
                 user.setPasswordChanged(new Date());
                 savePasswordHistory(oldPassword);

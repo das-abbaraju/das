@@ -1,10 +1,10 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectAssignment;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -70,14 +70,14 @@ public class EmployeeProjectAssignmentFactory {
                                         final List<AccountSkill> projectSkills,
                                         final List<AccountSkill> siteRequiredSkills,
                                         final List<AccountSkill> corporateRequiredSkills) {
-        Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap = Utilities.convertToMap(employeeSkills,
-                new Utilities.MapConvertable<AccountSkill, AccountSkillEmployee>() {
+        Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap = PicsCollectionUtil.convertToMap(employeeSkills,
+				new PicsCollectionUtil.MapConvertable<AccountSkill, AccountSkillEmployee>() {
 
-                    @Override
-                    public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
-                        return accountSkillEmployee.getSkill();
-                    }
-                });
+					@Override
+					public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
+						return accountSkillEmployee.getSkill();
+					}
+				});
 
         SkillStatus lowestRoleSkillStatus = getLowestSkillStatus(employeeSkillsMap, roleSkills);
         if (lowestRoleSkillStatus == SkillStatus.Expired) {

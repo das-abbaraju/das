@@ -1332,6 +1332,7 @@
         </action>
         <action name="AddressVerificationTest" class="com.picsauditing.actions.AddressVerificationTest">
             <result>/struts/address-verification-test.jsp</result>
+            <result name="address-response">/struts/address-verification-test-response.jsp</result>
         </action>
 
 	</package>

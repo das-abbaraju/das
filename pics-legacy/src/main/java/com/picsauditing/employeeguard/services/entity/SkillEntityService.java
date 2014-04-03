@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -11,6 +10,7 @@ import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -44,8 +44,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
-				new Utilities.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectSkillDAO.findByProjects(projects),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectSkill, Project, AccountSkill>() {
 
 					@Override
 					public Project getKey(ProjectSkill projectSkill) {
@@ -64,8 +64,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(roles),
-				new Utilities.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
+		return PicsCollectionUtil.convertToMapOfSets(accountSkillRoleDAO.findSkillsByRoles(roles),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillRole, Role, AccountSkill>() {
 
 					@Override
 					public Role getKey(AccountSkillRole accountSkillRole) {
@@ -86,9 +86,9 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	}
 
 	private Map<Group, Set<AccountSkill>> getGroupSkills(Map<Employee, Set<Group>> employeesToGroups) {
-		return Utilities.convertToMapOfSets(
-				accountSkillGroupDAO.findByGroups(Utilities.flattenCollectionOfCollection(employeesToGroups.values())),
-				new Utilities.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
+		return PicsCollectionUtil.convertToMapOfSets(
+				accountSkillGroupDAO.findByGroups(PicsCollectionUtil.flattenCollectionOfCollection(employeesToGroups.values())),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
 					@Override
 					public Group getKey(AccountSkillGroup entity) {
 						return entity.getGroup();
@@ -137,26 +137,94 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		});
 	}
 
-	public Map<Integer, Set<AccountSkill>> getSiteRequiredSkills(final List<Integer> siteIds, final int corporateId) {
-		if (CollectionUtils.isEmpty(siteIds) || corporateId == 0) {
+	public Map<Integer, Set<AccountSkill>> getSiteRequiredSkills(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.emptyMap();
 		}
 
-		Set<SiteSkill> allSiteSkills = new HashSet<>();
-		allSiteSkills.addAll(siteSkillDAO.findByAccountIds(siteIds));
-		allSiteSkills.addAll(siteSkillDAO.findByAccountId(corporateId));
+		return PicsCollectionUtil.convertToMapOfSets(
+				siteSkillDAO.findByAccountIds(accountIds),
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteSkill, Integer, AccountSkill>() {
+					@Override
+					public Integer getKey(SiteSkill entity) {
+						return entity.getSiteId();
+					}
 
-		return PicsCollectionUtil.convertToMapOfSets(allSiteSkills, new PicsCollectionUtil.EntityKeyValueConvertable<SiteSkill, Integer, AccountSkill>() {
-			@Override
-			public Integer getKey(SiteSkill entity) {
-				return entity.getSiteId();
+					@Override
+					public AccountSkill getValue(SiteSkill entity) {
+						return entity.getSkill();
+					}
+				});
+	}
+
+	public Map<Integer, Set<AccountSkill>> getSiteAssignmentSkills(final Map<Integer, Set<Role>> siteRoles) {
+		if (MapUtils.isEmpty(siteRoles)) {
+			return Collections.emptyMap();
+		}
+
+		Set<Role> roles = PicsCollectionUtil.mergeCollectionOfCollections(siteRoles.values());
+
+		Map<Role, Set<AccountSkill>> roleSkills = getSkillsForRoles(roles);
+
+		Map<Integer, Set<AccountSkill>> siteAssignmentSkills = new HashMap<>();
+		for (Map.Entry<Integer, Set<Role>> entry : siteRoles.entrySet()) {
+			int siteId = entry.getKey();
+
+			if (!siteAssignmentSkills.containsKey(siteId)) {
+				siteAssignmentSkills.put(siteId, new HashSet<AccountSkill>());
 			}
 
-			@Override
-			public AccountSkill getValue(SiteSkill entity) {
-				return entity.getSkill();
+			for (Role role : entry.getValue()) {
+				if (roleSkills.containsKey(role)) {
+					siteAssignmentSkills.get(siteId).addAll(roleSkills.get(role));
+				}
 			}
-		});
+		}
+
+		return siteAssignmentSkills;
+	}
+
+	/**
+	 * Corporate and site required skills. Not including project skills.
+	 *
+	 * @param projects
+	 * @param siteToCorporates
+	 * @return
+	 */
+	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
+																		   final Map<Integer, Set<Integer>> siteToCorporates) {
+		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Project, Set<AccountSkill>> siteRequiredSkills = new HashMap<>();
+		for (Project project : projects) {
+			int siteId = project.getAccountId();
+
+			siteRequiredSkills.put(project, getSiteRequiredSkills(siteId, siteToCorporates.get(siteId)));
+		}
+
+		return siteRequiredSkills;
+	}
+
+	public Map<Group, Set<AccountSkill>> getSkillsForGroups(final Set<Group> groups) {
+		if (CollectionUtils.isEmpty(groups)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(
+				accountSkillGroupDAO.findByGroups(groups),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
+					@Override
+					public Group getKey(AccountSkillGroup entity) {
+						return entity.getGroup();
+					}
+
+					@Override
+					public AccountSkill getValue(AccountSkillGroup entity) {
+						return entity.getSkill();
+					}
+				});
 	}
 
 	/* All search related methods */
@@ -216,4 +284,5 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		AccountSkill accountSkill = find(id);
 		delete(accountSkill);
 	}
+
 }

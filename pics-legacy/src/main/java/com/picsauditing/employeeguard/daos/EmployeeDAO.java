@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.util.ListUtil;
@@ -11,10 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 
@@ -225,33 +223,37 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		return ListUtil.removeDuplicatesAndSort(employees);
 	}
 
-	public List<Employee> findEmployeesAssignedToSiteRole(final Collection<Integer> accountIds, final int siteId,
-														  final Role siteRole, final Role corporateRole) {
+	public List<Employee> findEmployeesAssignedToSiteRole(final Collection<Integer> accountIds,
+	                                                      final int siteId,
+	                                                      final Role role) {
+		Set<Employee> employees = new HashSet<>();
+
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
 				"JOIN e.projectRoles pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.role r " +
 				"JOIN pr.project p " +
 				"WHERE e.accountId IN (:accountIds) " +
-				"AND r = :corporateRole " +
+				"AND r = :role " +
 				"AND p.accountId = :siteId", Employee.class);
 		query.setParameter("accountIds", accountIds);
-		query.setParameter("corporateRole", corporateRole);
+		query.setParameter("role", role);
 		query.setParameter("siteId", siteId);
-
-		List<Employee> employees = query.getResultList();
-
-		query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
-				"JOIN e.roles re " +
-				"JOIN re.role r " +
-				"WHERE e.accountId IN (:accountIds) " +
-				"AND r = :siteRole", Employee.class);
-		query.setParameter("accountIds", accountIds);
-		query.setParameter("siteRole", siteRole);
 
 		employees.addAll(query.getResultList());
 
-		return ListUtil.removeDuplicatesAndSort(employees);
+		query = em.createQuery("SELECT DISTINCT e FROM SiteAssignment sa " +
+				"JOIN sa.employee e " +
+				"WHERE sa.siteId = :siteId " +
+				"AND sa.role = :role " +
+				"AND e.accountId IN (:accountIds)", Employee.class);
+		query.setParameter("accountIds", accountIds);
+		query.setParameter("siteId", siteId);
+		query.setParameter("role", role);
+
+		employees.addAll(query.getResultList());
+
+		return new ArrayList<>(employees);
 	}
 
 	public int findRequestedEmployees(final int accountId) {
@@ -268,5 +270,15 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		} catch (Exception e) {
 			return 0;
 		}
+	}
+
+	public List<Employee> findByProfile(final Profile profile) {
+		TypedQuery<Employee> query = em.createQuery("SELECT e FROM Employee e " +
+				"JOIN e.profile p " +
+				"WHERE p = :profile", Employee.class);
+
+		query.setParameter("profile", profile);
+
+		return query.getResultList();
 	}
 }

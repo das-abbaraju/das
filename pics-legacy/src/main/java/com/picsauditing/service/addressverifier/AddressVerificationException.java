@@ -4,19 +4,19 @@ import com.picsauditing.exception.PicsException;
 
 
 public class AddressVerificationException extends PicsException {
-    private AddressHolder address;
+    private AddressRequestHolder address;
 
-    public AddressVerificationException(String message, Throwable cause, AddressHolder address) {
+    public AddressVerificationException(String message, Throwable cause, AddressRequestHolder address) {
         super(message, cause);
         this.address = address;
     }
 
-    public AddressVerificationException(String statusDescription, AddressHolder address) {
+    public AddressVerificationException(String statusDescription, AddressRequestHolder address) {
         super(statusDescription);
         this.address = address;
     }
 
-    public AddressHolder getAddress() {
+    public AddressRequestHolder getAddress() {
         return address;
     }
 }

@@ -1,9 +1,9 @@
 package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,8 +66,8 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 		initializeMocks();
 
 		Map<Employee, List<SkillStatus>> employeeSkills = new HashMap<>();
-		Utilities.addToMapOfKeyToList(employeeSkills, employee1, SkillStatus.Complete);
-		Utilities.addToMapOfKeyToList(employeeSkills, employee2, SkillStatus.Expired);
+		PicsCollectionUtil.addToMapOfKeyToList(employeeSkills, employee1, SkillStatus.Complete);
+		PicsCollectionUtil.addToMapOfKeyToList(employeeSkills, employee2, SkillStatus.Expired);
 
 		List<ContractorEmployeeRoleAssignment> assignments = factory.build(
 				Arrays.asList(employee1, employee2),

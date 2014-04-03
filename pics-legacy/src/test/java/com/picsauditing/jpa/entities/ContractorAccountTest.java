@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.util.YearList;
 import com.picsauditing.validator.InputValidator;
 import com.picsauditing.validator.VATValidator;
 import org.junit.After;
@@ -226,31 +227,49 @@ public class ContractorAccountTest {
         assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
     }
 
+
     @Test
     public void testGetAfterPendingAnnualUpdates_RecentPending() {
         ContractorAccount contractor = EntityFactory.makeContractor();
+
+        contractor.setYearList(createTestYearList());
 
         ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
         ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
         ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
 
-        assertEquals(twoYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
-        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+        Map<MultiYearScope, ContractorAudit> annualUpdates = contractor.getAfterPendingAnnualUpdates();
+
+        assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
+        assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
+        assertEquals(null, annualUpdates.get(MultiYearScope.ThreeYearsAgo));
     }
 
     @Test
     public void testGetAfterPendingAnnualUpdates_RecentPendingFourYears() {
         ContractorAccount contractor = EntityFactory.makeContractor();
 
+        contractor.setYearList(createTestYearList());
+
         ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
         ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
         ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
         ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
 
-        assertEquals(twoYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
-        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-        assertEquals(fourYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+        Map<MultiYearScope, ContractorAudit> annualUpdates = contractor.getAfterPendingAnnualUpdates();
+
+        assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
+        assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
+        assertEquals(fourYears, annualUpdates.get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    private YearList createTestYearList() {
+        YearList yearlist = new YearList();
+        Calendar d = Calendar.getInstance();
+        d.set(d.get(Calendar.YEAR), 0, 1);
+        yearlist.setToday(d.getTime());
+
+        return yearlist;
     }
 
     @Test
