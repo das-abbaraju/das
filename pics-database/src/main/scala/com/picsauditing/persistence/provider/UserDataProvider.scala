@@ -1,6 +1,7 @@
-package com.picsauditing.persistence.model
+package com.picsauditing.persistence.provider
 
 import scala.slick.driver.JdbcDriver.simple.Database
+import com.picsauditing.persistence.model.{Profile, UserAccessDAO, UserDAO}
 
 
 class UserDataProvider(db: Database) extends UserDAO with UserAccessDAO { this: Profile =>
