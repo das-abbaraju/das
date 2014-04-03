@@ -15,15 +15,11 @@ angular.module('PICS.employeeguard')
     };
 
     $scope.loadSelectedSiteData = function(site_id) {
-        $scope.selected_site = site_id;
-        $scope.selected_site_name = $scope.getSiteNameFromSiteList(site_id);
-        $scope.site_assignments = SiteAssignments.get({id: site_id});
-        $scope.project_assignments = ProjectAssignments.query({id: site_id});
-    };
-
-    $scope.updateSelectedSite = function() {
-        if ($scope.selected_site !== 'null') {
-            $scope.loadSelectedSiteData($scope.selected_site);
+        if (site_id !== 'null') {
+            $scope.selected_site = site_id;
+            $scope.selected_site_name = $scope.getSiteNameFromSiteList(site_id);
+            $scope.site_assignments = SiteAssignments.get({id: site_id});
+            $scope.project_assignments = ProjectAssignments.query({id: site_id});
         }
     };
 
