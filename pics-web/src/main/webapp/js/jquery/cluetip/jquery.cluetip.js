@@ -365,6 +365,20 @@
     $(document).bind('hideCluetip', function(e) {
       cluetipClose();
     });
+
+    $('body').on('click', function(){
+        var $cluetip = $('#cluetip');
+        if ($cluetip.length) {
+            if ($cluetip.css("display")=="block") {
+                cluetipClose();
+            }
+        }
+    });
+
+    $('#cluetip-outer').click(function(event){
+        event.stopPropagation();
+    });
+
 /***************************************
    =BIND EVENTS
 -------------------------------------- */
@@ -431,7 +445,7 @@
         });
         if (opts.stayOpenHover) {
           $('#cluetip').bind('mouseenter.cluetipBox', function() {
-        	clearTimeout(closeOnDelay); 
+        	clearTimeout(blahOnDelay);
           });
           $('#cluetip').bind('mouseleave.cluetipBox', function() {
         	closeOnDelay = setTimeout(cluetipClose, opts.delayedClose); 
