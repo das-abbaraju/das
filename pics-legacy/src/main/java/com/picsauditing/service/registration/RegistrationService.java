@@ -107,6 +107,7 @@ public class RegistrationService {
         registrant.setType("Contractor");
         registrant.setAddress(form.getAddress());
         registrant.setAddress2(form.getAddress2());
+        registrant.setCity(form.getCity());
         registrant.setVatId(form.getVatID());
         registrant.setCountry(new Country(form.getCountryISO()));
 
