@@ -105,9 +105,10 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
             // they don't have an account yet so they won't get this as a default
             permissions.setSessionCookieTimeoutInSeconds(3600);
 
-            AddressResponseHolder addressResponseHolder = addressVerificationService.verify(buildAddressRequestHolder());
-
-            addressService.saveAddressFieldsFromVerifiedAddress(contractor, addressResponseHolder, user);
+            if (Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
+                AddressResponseHolder addressResponseHolder = addressVerificationService.verify(buildAddressRequestHolder());
+                addressService.saveAddressFieldsFromVerifiedAddress(contractor, addressResponseHolder, user);
+            }
 
             return setUrlForRedirect(getRegistrationStep().getUrl());
 
