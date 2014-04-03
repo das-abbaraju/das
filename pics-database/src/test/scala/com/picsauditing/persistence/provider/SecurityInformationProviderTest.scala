@@ -11,7 +11,6 @@ class SecurityInformationProviderTest extends BaseTestSetup {
   "SecurityInformationProvider" should "return the latest login date for a specified account." in new SecurityDataTest {
     queryTest { prepareDatabase { (session, provider) =>
           val foundDate = provider.findLastAccountLogin(TEST_ACCOUNT_ID)
-          println( s"""!!! $foundDate  ==> $LATEST_DATE  ==> $IMPOSSIBLE_DATE""")
           foundDate shouldEqual LATEST_DATE
           foundDate shouldNot be(IMPOSSIBLE_DATE)
       }
