@@ -224,16 +224,16 @@ public class SiteAssignmentsAndProjectsFactory {
 	}
 
 	private <K> void initializeCountOfSkillStatus(Table<K, SkillStatus, Integer> countOfSkillStatus, K key) {
-		countOfSkillStatus.put(key, SkillStatus.Complete, 0);
+		countOfSkillStatus.put(key, SkillStatus.Completed, 0);
 		countOfSkillStatus.put(key, SkillStatus.Expiring, 0);
 		countOfSkillStatus.put(key, SkillStatus.Expired, 0);
 	}
 
 	private <K> void incrementSkillStatusCount(Table<K, SkillStatus, Integer> countOfSkillStatus, K key, AccountSkillEmployee employeeSkill) {
 		switch (SkillStatusCalculator.calculateStatusFromSkill(employeeSkill)) {
-			case Complete:
+			case Completed:
 			case Pending:
-				countOfSkillStatus.put(key, SkillStatus.Complete, countOfSkillStatus.get(key, SkillStatus.Complete) + 1);
+				countOfSkillStatus.put(key, SkillStatus.Completed, countOfSkillStatus.get(key, SkillStatus.Completed) + 1);
 				break;
 			case Expiring:
 				countOfSkillStatus.put(key, SkillStatus.Expiring, countOfSkillStatus.get(key, SkillStatus.Expiring) + 1);
@@ -251,7 +251,7 @@ public class SiteAssignmentsAndProjectsFactory {
 
 			SiteAssignmentStatisticsModel siteStatistics = new SiteAssignmentStatisticsModel.Builder()
 					.site(entry.getKey())
-					.completed(statusCount.get(SkillStatus.Complete))
+					.completed(statusCount.get(SkillStatus.Completed))
 					.expiring(statusCount.get(SkillStatus.Expiring))
 					.expired(statusCount.get(SkillStatus.Expired))
 					.build();

@@ -127,11 +127,11 @@ public class StatusCalculatorServiceTest {
 		assertEquals(3, result.size());
 
 		// first skill is complete, second and third skill is expired
-		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Complete, SkillStatus.Expired, SkillStatus.Expired),
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Completed, SkillStatus.Expired, SkillStatus.Expired),
 				result.get(fakeEmployees.get(0))));
 
 		// first skill is expired, second skill is expiring, third skill is complete
-		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expiring, SkillStatus.Complete),
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expiring, SkillStatus.Completed),
 				result.get(fakeEmployees.get(1))));
 
 		// all skills are expired

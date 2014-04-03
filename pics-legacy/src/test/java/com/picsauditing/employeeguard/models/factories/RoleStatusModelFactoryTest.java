@@ -5,7 +5,6 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.ProjectBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.RoleStatusModel;
-import com.picsauditing.employeeguard.models.SkillModel;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.junit.Before;
@@ -29,11 +28,11 @@ public class RoleStatusModelFactoryTest {
 
 		List<SkillStatusModel> skills = Arrays.asList(new SkillStatusModel());
 
-		RoleStatusModel roleStatusModel = factory.create(role, skills, SkillStatus.Complete);
+		RoleStatusModel roleStatusModel = factory.create(role, skills, SkillStatus.Completed);
 
 		assertEquals(role.getId(), roleStatusModel.getId());
 		assertEquals(role.getName(), roleStatusModel.getName());
-		assertEquals(SkillStatus.Complete, roleStatusModel.getStatus());
+		assertEquals(SkillStatus.Completed, roleStatusModel.getStatus());
 		assertEquals(skills, roleStatusModel.getSkills());
 	}
 
@@ -55,7 +54,7 @@ public class RoleStatusModelFactoryTest {
 					put(role.getId(), new ArrayList<SkillStatusModel>());
 				}},
 				new HashMap<Role, SkillStatus>() {{
-					put(role, SkillStatus.Complete);
+					put(role, SkillStatus.Completed);
 				}}
 		);
 
@@ -63,7 +62,7 @@ public class RoleStatusModelFactoryTest {
 		assertFalse(roleStatusModels.isEmpty());
 		assertNotNull(roleStatusModels.get(0));
 		assertEquals(role.getId(), roleStatusModels.get(0).getId());
-		assertEquals(SkillStatus.Complete, roleStatusModels.get(0).getStatus());
+		assertEquals(SkillStatus.Completed, roleStatusModels.get(0).getStatus());
 	}
 
 	@Test

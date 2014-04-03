@@ -45,7 +45,7 @@ public class StatusCalculatorService {
 
 	@Deprecated
 	public Map<Employee, SkillStatus> getEmployeeStatusRollUpForSkills(final Collection<Employee> employees,
-																	   final Map<Employee, Set<AccountSkill>> employeeRequiredSkills) {
+	                                                                   final Map<Employee, Set<AccountSkill>> employeeRequiredSkills) {
 		if (CollectionUtils.isEmpty(employees) || MapUtils.isEmpty(employeeRequiredSkills)) {
 			return Collections.emptyMap();
 		}
@@ -82,7 +82,7 @@ public class StatusCalculatorService {
 	 * @return
 	 */
 	public Map<Employee, List<SkillStatus>> getEmployeeStatusRollUpForSkills(final Collection<Employee> employees,
-																			 final List<AccountSkill> orderedSkills) {
+	                                                                         final List<AccountSkill> orderedSkills) {
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
 				.findByEmployeesAndSkills(employees, orderedSkills);
 		Map<Employee, Set<AccountSkillEmployee>> employeeSetMap = convertToMap(accountSkillEmployees);
@@ -99,8 +99,8 @@ public class StatusCalculatorService {
 	}
 
 	private Map<Employee, List<SkillStatus>> buildSkillStatusMap(final Set<Employee> employees,
-																 final Map<Employee, Set<AccountSkillEmployee>> employeeMap,
-																 final List<AccountSkill> orderedSkills) {
+	                                                             final Map<Employee, Set<AccountSkillEmployee>> employeeMap,
+	                                                             final List<AccountSkill> orderedSkills) {
 		if (MapUtils.isEmpty(employeeMap) || CollectionUtils.isEmpty(orderedSkills)) {
 			return Collections.emptyMap();
 		}
@@ -120,7 +120,7 @@ public class StatusCalculatorService {
 	}
 
 	private List<SkillStatus> buildOrderedSkillStatusList(final Set<AccountSkillEmployee> accountSkillEmployees,
-														  final List<AccountSkill> orderedSkills) {
+	                                                      final List<AccountSkill> orderedSkills) {
 		List<SkillStatus> skillStatusList = fillWithExpiredStatus(orderedSkills.size());
 		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
 			int index = orderedSkills.indexOf(accountSkillEmployee.getSkill());
@@ -188,7 +188,7 @@ public class StatusCalculatorService {
 	}
 
 	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
-																final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
+	                                                            final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
 		}
@@ -263,22 +263,24 @@ public class StatusCalculatorService {
 					continue;
 				}
 
-				Collection<AccountSkillEmployee> aseForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
-				CollectionUtils.filter(aseForStatusCalculation, new GenericPredicate<AccountSkillEmployee>() {
-					@Override
-					public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
-						return entityEmployeeSkillMap.get(entity).get(employee).contains(accountSkillEmployee.getSkill());
+				if (employeeSkillMap.containsKey(employee)) {
+					Collection<AccountSkillEmployee> aseForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
+					CollectionUtils.filter(aseForStatusCalculation, new GenericPredicate<AccountSkillEmployee>() {
+						@Override
+						public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
+							return entityEmployeeSkillMap.get(entity).get(employee).contains(accountSkillEmployee.getSkill());
+						}
+					});
+
+					if (!aseForStatusCalculation.isEmpty()) {
+						SkillStatus skillStatus = SkillStatusCalculator.calculateStatusRollUp(aseForStatusCalculation);
+
+						if (!skillStatusPerEntityEmployee.containsKey(entity)) {
+							skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
+						}
+
+						skillStatusPerEntityEmployee.get(entity).add(skillStatus);
 					}
-				});
-
-				if (!aseForStatusCalculation.isEmpty()) {
-					SkillStatus skillStatus = SkillStatusCalculator.calculateStatusRollUp(aseForStatusCalculation);
-
-					if (!skillStatusPerEntityEmployee.containsKey(entity)) {
-						skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
-					}
-
-					skillStatusPerEntityEmployee.get(entity).add(skillStatus);
 				}
 			}
 		}

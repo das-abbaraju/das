@@ -36,7 +36,7 @@ public class ProjectAssignmentBreakdownFactory {
     }
 
     private SkillStatus getWorstStatus(Employee employee, Set<AccountSkill> accountSkills, Table<Employee, AccountSkill, AccountSkillEmployee> table) {
-        SkillStatus worst = SkillStatus.Complete;
+        SkillStatus worst = SkillStatus.Completed;
         for (AccountSkill accountSkill : accountSkills) {
             AccountSkillEmployee accountSkillEmployee = table.get(employee, accountSkill);
             SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);

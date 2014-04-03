@@ -32,7 +32,7 @@ class StatusSummaryDecorator {
 	}
 
 	private static <M extends StatusSummarizable> M addStatusSummaryFromCounts(final M model, final Map<SkillStatus, Integer> statusCountMap) {
-		model.setCompleted(statusCountMap.get(SkillStatus.Complete));
+		model.setCompleted(statusCountMap.get(SkillStatus.Completed));
 		model.setPending(statusCountMap.get(SkillStatus.Pending));
 		model.setExpiring(statusCountMap.get(SkillStatus.Expiring));
 		model.setExpired(statusCountMap.get(SkillStatus.Expired));
@@ -53,7 +53,7 @@ class StatusSummaryDecorator {
 
 	private static Map<SkillStatus, Integer> buildMapPrepopulatedWithKeys() {
 		return new HashMap<SkillStatus, Integer>() {{
-			put(SkillStatus.Complete, 0);
+			put(SkillStatus.Completed, 0);
 			put(SkillStatus.Pending, 0);
 			put(SkillStatus.Expiring, 0);
 			put(SkillStatus.Expired, 0);

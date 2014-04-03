@@ -59,7 +59,7 @@ public class CompanySkillsFormBuilder {
 
 			CompanySkillInfo companySkillInfo = new CompanySkillInfo();
 			companySkillInfo.setName(accountModel.getName());
-			companySkillInfo.setCompletedSkills(getSkillInfoForEmployee(employee, SkillStatus.Complete));
+			companySkillInfo.setCompletedSkills(getSkillInfoForEmployee(employee, SkillStatus.Completed));
 			companySkillInfo.setAboutToExpireSkills(getSkillInfoForEmployee(employee, SkillStatus.Expiring));
 			companySkillInfo.setExpiredSkills(getSkillInfoForEmployee(employee, SkillStatus.Expired));
 			companySkillInfo.sortSkills();
@@ -113,7 +113,7 @@ public class CompanySkillsFormBuilder {
 		for (Map.Entry<AccountModel, List<AccountSkillEmployee>> entry : accountToEmployeeSkills.entrySet()) {
 			CompanySkillInfo companySkillInfo = new CompanySkillInfo();
 			companySkillInfo.setName(entry.getKey().getName());
-			companySkillInfo.setCompletedSkills(buildSkillInfoFilteredOnStatus(entry.getValue(), SkillStatus.Complete));
+			companySkillInfo.setCompletedSkills(buildSkillInfoFilteredOnStatus(entry.getValue(), SkillStatus.Completed));
 			companySkillInfo.setAboutToExpireSkills(buildSkillInfoFilteredOnStatus(entry.getValue(), SkillStatus.Expiring));
 			companySkillInfo.setExpiredSkills(buildSkillInfoFilteredOnStatus(entry.getValue(), SkillStatus.Expired));
 
@@ -129,7 +129,7 @@ public class CompanySkillsFormBuilder {
 			CompanySkillInfo companySkillInfo = new CompanySkillInfo();
 
 			companySkillInfo.setName(projectAccounts.get(project).getName() + ": " + project.getName());
-			companySkillInfo.setCompletedSkills(buildSkillInfoFilteredOnStatus(accountSkillEmployees, SkillStatus.Complete));
+			companySkillInfo.setCompletedSkills(buildSkillInfoFilteredOnStatus(accountSkillEmployees, SkillStatus.Completed));
 			companySkillInfo.setAboutToExpireSkills(buildSkillInfoFilteredOnStatus(accountSkillEmployees, SkillStatus.Expiring));
 			companySkillInfo.setExpiredSkills(buildSkillInfoFilteredOnStatus(accountSkillEmployees, SkillStatus.Expired));
 			companySkillInfo.sortSkills();
@@ -272,7 +272,7 @@ public class CompanySkillsFormBuilder {
 		SkillInfo skillInfo = new SkillInfo();
 		skillInfo.setId(accountSkill.getId());
 		skillInfo.setName(accountSkill.getName());
-		skillInfo.setSkillStatus(SkillStatus.Complete);
+		skillInfo.setSkillStatus(SkillStatus.Completed);
 		return skillInfo;
 	}
 }

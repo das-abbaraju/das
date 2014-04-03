@@ -11,7 +11,7 @@ public enum SkillStatus implements JSONable {
     Expired("expired"),
     Expiring("expiring"),
     Pending("pending"),
-    Complete("complete");
+    Completed("complete");
 
     private String displayValue;
 
@@ -31,8 +31,8 @@ public enum SkillStatus implements JSONable {
         return this == Pending;
     }
 
-    public boolean isComplete() {
-        return this == Complete;
+    public boolean isCompleted() {
+        return this == Completed;
     }
 
     public String getDisplayValue() {

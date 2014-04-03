@@ -11,7 +11,7 @@ public class StatusSummaryFactory {
 	public <M extends StatusSummary, T> M addStatusSummary(final M model, final Map<T, SkillStatus> statusMap) {
 		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
 
-		model.setCompleted(statusCountMap.get(SkillStatus.Complete));
+		model.setCompleted(statusCountMap.get(SkillStatus.Completed));
 		model.setPending(statusCountMap.get(SkillStatus.Pending));
 		model.setExpiring(statusCountMap.get(SkillStatus.Expiring));
 		model.setExpired(statusCountMap.get(SkillStatus.Expired));
@@ -32,7 +32,7 @@ public class StatusSummaryFactory {
 
 	private Map<SkillStatus, Integer> buildMapPrepopulatedWithKeys() {
 		return new HashMap<SkillStatus, Integer>() {{
-			put(SkillStatus.Complete, 0);
+			put(SkillStatus.Completed, 0);
 			put(SkillStatus.Pending, 0);
 			put(SkillStatus.Expiring, 0);
 			put(SkillStatus.Expired, 0);

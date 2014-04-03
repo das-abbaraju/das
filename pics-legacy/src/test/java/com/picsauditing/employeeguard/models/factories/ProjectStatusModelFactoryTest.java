@@ -71,13 +71,13 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 					put(project.getId(), new ArrayList<SkillStatusModel>());
 				}},
 				new HashMap<Project, SkillStatus>() {{
-					put(project, SkillStatus.Complete);
+					put(project, SkillStatus.Completed);
 				}}
 		);
 
 		verifyTestCreateList(project, projectStatusModels);
 
-		assertEquals(SkillStatus.Complete, projectStatusModels.get(0).getStatus());
+		assertEquals(SkillStatus.Completed, projectStatusModels.get(0).getStatus());
 	}
 
 	protected void verifyTestCreateList(Project project, List<ProjectStatusModel> projectModels) {

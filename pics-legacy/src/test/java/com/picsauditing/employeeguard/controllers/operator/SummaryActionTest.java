@@ -84,7 +84,7 @@ public class SummaryActionTest extends PicsActionTest {
 							.email("employee@test.com")
 							.slug("EmployeeTest")
 							.build(),
-							SkillStatus.Complete);
+							SkillStatus.Completed);
 					put(new EmployeeBuilder()
 							.accountId(CONTRACTOR_ID)
 							.firstName("Employee 2")

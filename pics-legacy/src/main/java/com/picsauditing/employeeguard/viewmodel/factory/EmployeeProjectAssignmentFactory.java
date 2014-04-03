@@ -102,7 +102,7 @@ public class EmployeeProjectAssignmentFactory {
 
     private SkillStatus getLowestSkillStatus(final Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap,
                                              final List<AccountSkill> roleSkills) {
-        SkillStatus lowestStatus = SkillStatus.Complete;
+        SkillStatus lowestStatus = SkillStatus.Completed;
         for (AccountSkill skill : roleSkills) {
             if (employeeSkillsMap.containsKey(skill)) {
                 SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
