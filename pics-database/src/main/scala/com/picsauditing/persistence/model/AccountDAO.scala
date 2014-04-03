@@ -1,6 +1,6 @@
 package com.picsauditing.persistence.model
 
-case class AccountData(id: Option[Long], name: String, status: String)
+case class AccountData(id: Option[Long], name: String, status: String, autoApproveRelationships: Boolean = true)
 
 trait AccountDAO { this: Profile =>
   import profile.simple._
@@ -11,7 +11,11 @@ trait AccountDAO { this: Profile =>
     def name = column[String]("name")
     def status = column[String]("status")
 
-    def * = (id.?, name, status) <> (AccountData.tupled, AccountData.unapply)
+    def autoApproveRelationships = column[Boolean]("autoApproveRelationships")(MappedColumnType.base[Boolean, Int](
+      { if (_) 1 else 0 }, { _ == 1 } // Convert TinyInt to Boolean
+    ))
+
+    def * = (id.?, name, status, autoApproveRelationships) <> (AccountData.tupled, AccountData.unapply)
 
   }
 
