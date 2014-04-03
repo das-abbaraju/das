@@ -38,7 +38,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
         import p._
         import p.profile.simple._
 
-        if (!MTable.getTables.mapResult(_.name.name).list.contains(userTableName)) users.ddl.create
+        createTable(userTableName, users.ddl.create)
 
         users ++= Seq(findThis, testUser2, testUser3, dontFindThis)
 

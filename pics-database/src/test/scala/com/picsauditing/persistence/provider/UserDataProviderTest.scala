@@ -77,14 +77,8 @@ class UserDataProviderTest extends BaseTestSetup {
         import p._
         import p.profile.simple._
 
-        val tableList = MTable.getTables.mapResult( _.name.name ).list
-
-        def createTable(tableName: String, table: profile.SchemaDescription) = {
-          if (!tableList.contains(tableName)) table.create
-        }
-
-        createTable(userTableName, users.ddl)
-        createTable(userAccessTableName, userAccess.ddl)
+        createTable(userTableName, users.ddl.create)
+        createTable(userAccessTableName, userAccess.ddl.create)
 
         users ++= comedians
 

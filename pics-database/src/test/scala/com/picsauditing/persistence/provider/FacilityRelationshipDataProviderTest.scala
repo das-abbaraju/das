@@ -85,9 +85,6 @@ class FacilityRelationshipDataProviderTest extends BaseTestSetup {
         import p._
         import p.profile.simple._
 
-        def createTable(tableName: String, tableFunction: => Unit ) =
-          if (!MTable.getTables.list.exists( _.name.name == tableName)) tableFunction
-
         createTable(accountTableName, accounts.ddl.create)
         createTable(facilitiesTableName, facilities.ddl.create)
 
