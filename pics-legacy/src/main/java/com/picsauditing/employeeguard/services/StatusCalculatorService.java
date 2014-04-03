@@ -265,22 +265,24 @@ public class StatusCalculatorService {
 					continue;
 				}
 
-				Collection<AccountSkillEmployee> aseForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
-				CollectionUtils.filter(aseForStatusCalculation, new GenericPredicate<AccountSkillEmployee>() {
-					@Override
-					public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
-						return entityEmployeeSkillMap.get(entity).get(employee).contains(accountSkillEmployee.getSkill());
+				if (employeeSkillMap.containsKey(employee)) {
+					Collection<AccountSkillEmployee> aseForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
+					CollectionUtils.filter(aseForStatusCalculation, new GenericPredicate<AccountSkillEmployee>() {
+						@Override
+						public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
+							return entityEmployeeSkillMap.get(entity).get(employee).contains(accountSkillEmployee.getSkill());
+						}
+					});
+
+					if (!aseForStatusCalculation.isEmpty()) {
+						SkillStatus skillStatus = SkillStatusCalculator.calculateStatusRollUp(aseForStatusCalculation);
+
+						if (!skillStatusPerEntityEmployee.containsKey(entity)) {
+							skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
+						}
+
+						skillStatusPerEntityEmployee.get(entity).add(skillStatus);
 					}
-				});
-
-				if (!aseForStatusCalculation.isEmpty()) {
-					SkillStatus skillStatus = SkillStatusCalculator.calculateStatusRollUp(aseForStatusCalculation);
-
-					if (!skillStatusPerEntityEmployee.containsKey(entity)) {
-						skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
-					}
-
-					skillStatusPerEntityEmployee.get(entity).add(skillStatus);
 				}
 			}
 		}

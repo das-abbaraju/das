@@ -158,7 +158,9 @@ public class RoleService {
 			}
 
 			for (Role role : employeeSiteRoles.get(employee)) {
-				employeeSkills.get(employee).addAll(roleSkills.get(role));
+				if (roleSkills.containsKey(role)) {
+					employeeSkills.get(employee).addAll(roleSkills.get(role));
+				}
 			}
 		}
 
@@ -203,7 +205,7 @@ public class RoleService {
 	}
 
 	private void updateEmployeeSkillsForRole(final int siteId, final List<Integer> corporateIds,
-											 final int corporateRoleId, final Employee employee, final EntityAuditInfo auditInfo) {
+	                                         final int corporateRoleId, final Employee employee, final EntityAuditInfo auditInfo) {
 		Set<AccountSkill> allSkillsForJobRole = new HashSet<>();
 		allSkillsForJobRole.addAll(accountSkillDAO.findByCorporateRoleId(corporateRoleId));
 		allSkillsForJobRole.addAll(accountSkillDAO.findRequiredByAccounts(corporateIds));
@@ -216,9 +218,9 @@ public class RoleService {
 	}
 
 	private List<AccountSkillEmployee> buildAccountSkillEmployee(final Employee employee,
-																 final Set<AccountSkill> allSkillsForJobRole,
-																 final List<AccountSkill> employeeSkills,
-																 final EntityAuditInfo auditInfo) {
+	                                                             final Set<AccountSkill> allSkillsForJobRole,
+	                                                             final List<AccountSkill> employeeSkills,
+	                                                             final EntityAuditInfo auditInfo) {
 		if (CollectionUtils.isEmpty(allSkillsForJobRole)) {
 			return Collections.emptyList();
 		}

@@ -38,6 +38,10 @@ public class AccountSkillEmployeeService {
 	}
 
 	public List<AccountSkillEmployee> findByEmployeesAndSkills(final List<Employee> employees, final List<AccountSkill> accountSkills) {
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(accountSkills)) {
+			return Collections.emptyList();
+		}
+
 		return accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, accountSkills);
 	}
 
