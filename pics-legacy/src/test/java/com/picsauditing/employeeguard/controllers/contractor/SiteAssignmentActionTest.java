@@ -1,10 +1,10 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.RoleService;
+import com.picsauditing.jpa.entities.User;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +38,8 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
         Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
         Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
+
+	    when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
     }
 
     @Test

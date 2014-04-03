@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.gson.Gson;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
@@ -11,7 +10,7 @@ import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.util.UrlUtils;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -51,7 +50,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 		Map<Role, SkillStatus> roleStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, roleSkillMap);
 		Map<Project, SkillStatus> projectStatusMap = statusCalculatorService.getSkillStatusPerEntity(employee, projectSkillMap);
-		SkillStatus overallStatus = statusCalculatorService.calculateOverallStatus(Utilities.mergeCollections(roleStatusMap.values(),
+		SkillStatus overallStatus = statusCalculatorService.calculateOverallStatus(PicsCollectionUtil.mergeCollections(roleStatusMap.values(),
 				projectStatusMap.values()));
 
 		Map<Integer, Employee> employeesAssignedToSite = employeeService
@@ -59,7 +58,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 						siteId, employee);
 		Map<Integer, AccountModel> accounts = accountService.getContractorsForEmployeesMap(new ArrayList<>(employeesAssignedToSite.values()));
 
-		Set<AccountSkill> skills = Utilities.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
+		Set<AccountSkill> skills = PicsCollectionUtil.mergeCollectionOfCollections(roleSkillMap.values(), projectSkillMap.values());
 		Map<AccountSkill, SkillStatus> skillStatusMap = statusCalculatorService.getSkillStatuses(employee, skills);
 
 		Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap = getRoleIdToSkillStatusModelMap(roleSkillMap, skillStatusMap);
@@ -119,7 +118,7 @@ public class EmployeeAction extends PicsRestActionSupport {
 
 	private Map<Role, Set<AccountSkill>> getRoleSkillMap(int siteId, Employee employeeEntity, Map<Project, Set<Role>> projectRoleMap) {
 		Set<Role> employeeRoles = roleService.getEmployeeRolesForSite(siteId, employeeEntity);
-		employeeRoles.addAll(Utilities.flattenCollectionOfCollection(projectRoleMap.values()));
+		employeeRoles.addAll(PicsCollectionUtil.flattenCollectionOfCollection(projectRoleMap.values()));
 		return skillService.getSkillsForRoles(siteId, employeeRoles);
 	}
 

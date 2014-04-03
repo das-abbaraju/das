@@ -242,8 +242,13 @@
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <!-- Dashboard -->
-        <action name="dashboard" class="com.picsauditing.employeeguard.controllers.employee.DashboardAction">
-            <result name="dashboard">/struts/employee-guard/employee/dashboard.jsp</result>
+        <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="summary/assignments" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="assignments">
+        </action>
+
+        <action name="summary/employee-info" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="employeeInfo">
         </action>
 
         <!-- Profile -->

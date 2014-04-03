@@ -109,14 +109,15 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 		return query.getResultList();
 	}
 
-	public List<AccountSkillEmployee> findByEmployeesAndSkills(final Collection<Employee> employees, final Collection<AccountSkill> accountSkills) {
-		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(accountSkills)) {
-			return Collections.emptyList();
-		}
+	public List<AccountSkillEmployee> findByEmployeesAndSkills(final Collection<Employee> employees,
+															   final Collection<AccountSkill> accountSkills) {
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
+				"WHERE ase.employee IN (:employees) " +
+				"AND ase.skill IN (:skills)", AccountSkillEmployee.class);
 
-		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee IN (:employees) AND ase.skill IN (:skills)", AccountSkillEmployee.class);
 		query.setParameter("employees", employees);
 		query.setParameter("skills", accountSkills);
+
 		return query.getResultList();
 	}
 
@@ -182,7 +183,7 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 	}
 
 	public List<AccountSkillEmployee> getProjectRoleSkillsForContractorsAndSite(final Set<Integer> contractorIds,
-	                                                                            final int siteId) {
+																				final int siteId) {
 		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
 				"FROM AccountSkillEmployee ase " +
 				"JOIN ase.employee e " +
@@ -200,7 +201,7 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 	}
 
 	public List<AccountSkillEmployee> getProjectSkillsForContractorsAndSite(final Set<Integer> contractorIds,
-	                                                                        final int siteId) {
+																			final int siteId) {
 		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
 				"FROM AccountSkillEmployee ase " +
 				"JOIN ase.employee e " +
@@ -216,7 +217,7 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 	}
 
 	public List<AccountSkillEmployee> getRoleSkillsForContractorsAndRoles(final Set<Integer> contractorIds,
-	                                                                      final Collection<Role> roles) {
+																		  final Collection<Role> roles) {
 		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
 				"FROM AccountSkillEmployee ase " +
 				"JOIN ase.employee e " +
@@ -231,7 +232,7 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 	}
 
 	public List<AccountSkillEmployee> getSiteSkillsForContractorsAndSites(final Set<Integer> contractorIds,
-	                                                                      final Set<Integer> siteAndCorporateIds) {
+																		  final Set<Integer> siteAndCorporateIds) {
 		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
 				"FROM AccountSkillEmployee ase " +
 				"JOIN ase.employee e " +

@@ -34,9 +34,9 @@ public class SkillDocumentFormBuilder {
 
 	// TODO: Change to enum value for front-end
 	private String getProof(SkillInfo skillInfo, ProfileDocument profileDocument) {
-		if (skillInfo.getSkillType().isCertification() && profileDocument != null) {
+		if (skillInfo.getSkillType() != null && skillInfo.getSkillType().isCertification() && profileDocument != null) {
 			return profileDocument.getFileName();
-		} else if (skillInfo.getSkillType().isTraining() && skillInfo.getEndDate() != null) {
+		} else if (skillInfo.getSkillType() != null && skillInfo.getSkillType().isTraining() && skillInfo.getEndDate() != null) {
 			return "I certify that I have met all requirements.";
 		}
 

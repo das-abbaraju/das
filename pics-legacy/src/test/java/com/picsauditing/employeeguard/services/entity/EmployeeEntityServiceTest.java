@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.util.Strings;
@@ -28,8 +29,8 @@ public class EmployeeEntityServiceTest {
 	private EmployeeDAO employeeDAO;
 	@Mock
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-	@Mock
-	private RoleEmployeeDAO roleEmployeeDAO;
+    @Mock
+    private SiteAssignmentDAO siteAssignmentDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -39,7 +40,7 @@ public class EmployeeEntityServiceTest {
 
 		Whitebox.setInternalState(employeeEntityService, "employeeDAO", employeeDAO);
 		Whitebox.setInternalState(employeeEntityService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
-		Whitebox.setInternalState(employeeEntityService, "roleEmployeeDAO", roleEmployeeDAO);
+		Whitebox.setInternalState(employeeEntityService, "siteAssignmentDAO", siteAssignmentDAO);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -141,50 +142,6 @@ public class EmployeeEntityServiceTest {
 		assertTrue(result.isEmpty());
 
 		result = employeeEntityService.getEmployeesBySiteRoles(new ArrayList<Integer>());
-
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-	}
-
-	@Test
-	public void testGetEmployeesBySiteRoles_NullOrEmptyEmployees() {
-		List<Integer> siteIds = Arrays.asList(ACCOUNT_ID);
-		when(employeeDAO.findEmployeesAssignedToSites(siteIds)).thenReturn(null);
-
-		Map<Role, Set<Employee>> result = employeeEntityService.getEmployeesBySiteRoles(siteIds);
-
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-
-		verify(employeeDAO).findEmployeesAssignedToSites(siteIds);
-	}
-
-	@Test
-	public void testGetEmployeesBySiteRoles() {
-		Employee employee = buildFakeEmployee();
-		List<Employee> employees = Arrays.asList(employee);
-		List<Integer> siteIds = Arrays.asList(ACCOUNT_ID);
-
-		RoleEmployee roleEmployee = buildFakeRoleEmployee();
-		List<RoleEmployee> roleEmployees = Arrays.asList(roleEmployee);
-
-		when(employeeDAO.findEmployeesAssignedToSites(siteIds)).thenReturn(employees);
-		when(roleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds)).thenReturn(roleEmployees);
-
-		Map<Role, Set<Employee>> result = employeeEntityService.getEmployeesBySiteRoles(siteIds);
-
-		assertNotNull(result);
-		assertFalse(result.isEmpty());
-		assertEquals(1, result.keySet().size());
-		assertNotNull(result.values());
-
-		verify(employeeDAO).findEmployeesAssignedToSites(siteIds);
-		verify(roleEmployeeDAO).findByEmployeesAndSiteIds(employees, siteIds);
-	}
-
-	@Test
-	public void testGetEmployeesAssignedToSite_NullOrEmpty() {
-		List<Employee> result = employeeEntityService.getEmployeesAssignedToSite(null, ACCOUNT_ID);
 
 		assertNotNull(result);
 		assertTrue(result.isEmpty());

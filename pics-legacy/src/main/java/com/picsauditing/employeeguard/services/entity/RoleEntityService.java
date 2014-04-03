@@ -1,13 +1,13 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	@Autowired
 	private RoleDAO roleDAO;
 	@Autowired
-	private RoleEmployeeDAO roleEmployeeDAO;
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	/* All Find Methods */
 
@@ -45,8 +45,12 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Project, Set<Role>> getRolesForProjects(final Collection<Project> projects) {
-		return Utilities.convertToMapOfSets(projectRoleDAO.findByProjects(projects),
-				new Utilities.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleDAO.findByProjects(projects),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
 					@Override
 					public Project getKey(ProjectRole projectRole) {
 						return projectRole.getProject();
@@ -65,21 +69,22 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees,
 															 final Collection<Integer> siteIds) {
-
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(roleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
-				new Utilities.EntityKeyValueConvertable<RoleEmployee, Employee, Role>() {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployeesAndSiteIds(employees, siteIds);
+
+		return PicsCollectionUtil.convertToMapOfSets(siteAssignments,
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Employee, Role>() {
 					@Override
-					public Employee getKey(RoleEmployee roleEmployee) {
-						return roleEmployee.getEmployee();
+					public Employee getKey(SiteAssignment siteAssignment) {
+						return siteAssignment.getEmployee();
 					}
 
 					@Override
-					public Role getValue(RoleEmployee roleEmployee) {
-						return roleEmployee.getRole();
+					public Role getValue(SiteAssignment siteAssignment) {
+						return siteAssignment.getRole();
 					}
 				});
 	}
@@ -96,8 +101,9 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
-				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
+		return PicsCollectionUtil.convertToMapOfSets(
+				projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
 
 					@Override
 					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
@@ -111,8 +117,54 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
-	public Map<Role, Role> getSiteToCorporateRoles(final int siteId, final List<Integer> corporateIds) {
-		return roleDAO.findSiteToCorporateRoles(corporateIds, siteId);
+	public Map<Employee, Set<Role>> findByProjectsAndEmployees(final Collection<Project> projects,
+															   final Collection<Employee> employees) {
+
+		if (CollectionUtils.isEmpty(projects) || CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(
+				projectRoleEmployeeDAO.findByEmployeesAndProjects(employees, projects),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
+
+					@Override
+					public Employee getKey(ProjectRoleEmployee entity) {
+						return entity.getEmployee();
+					}
+
+					@Override
+					public Role getValue(ProjectRoleEmployee entity) {
+						return entity.getProjectRole().getRole();
+					}
+				});
+	}
+
+	/**
+	 * Returns a map of SiteID to a set of Roles that the Employee has on that site.
+	 *
+	 * @param employees
+	 * @return
+	 */
+	public Map<Integer, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(
+				siteAssignmentDAO.findByEmployees(employees),
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Integer, Role>() {
+
+					@Override
+					public Integer getKey(SiteAssignment entity) {
+						return entity.getSiteId();
+					}
+
+					@Override
+					public Role getValue(SiteAssignment entity) {
+						return entity.getRole();
+					}
+				});
 	}
 
 	/* All Search Methods */
@@ -176,4 +228,5 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		Role role = findByIdAndAccountId(id, accountId);
 		delete(role);
 	}
+
 }

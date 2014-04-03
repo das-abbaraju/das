@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -142,8 +143,13 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		return query.getResultList();
 	}
 
+	public List<ProjectRoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees,
+	                                                          final int siteId) {
+		return findByEmployeesAndSiteIds(employees, Arrays.asList(siteId));
+	}
+
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteIds(final Collection<Employee> employees,
-															   final Collection<Integer> siteIds) {
+	                                                           final Collection<Integer> siteIds) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -162,6 +168,21 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 				"JOIN pr.project p " +
 				"WHERE p IN (:projects)", ProjectRoleEmployee.class);
 
+		query.setParameter("projects", projects);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByEmployeesAndProjects(final Collection<Employee> employees,
+	                                                            final Collection<Project> projects) {
+
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE p IN (:projects) " +
+				"AND pre.employee IN (:employees)", ProjectRoleEmployee.class);
+
+		query.setParameter("employees", employees);
 		query.setParameter("projects", projects);
 
 		return query.getResultList();

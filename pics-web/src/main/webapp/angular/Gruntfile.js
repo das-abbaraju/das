@@ -21,6 +21,7 @@ module.exports = function(grunt) {
     var modules = [
         'src/common/directives/directives.js',
         'src/common/services/charts/charts.js',
+        'src/app/employeeguard/common/skills/skills.js',
         'src/app/employeeguard/employeeguard.js'
     ];
 

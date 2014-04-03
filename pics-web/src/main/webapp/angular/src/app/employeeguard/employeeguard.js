@@ -1,7 +1,8 @@
 angular.module('PICS.employeeguard', [
     'ngRoute',
     'ngResource',
-    'PICS.charts'
+    'PICS.charts',
+    'PICS.skills'
 ])
 
 .config(function ($routeProvider, $locationProvider) {
@@ -19,5 +20,8 @@ angular.module('PICS.employeeguard', [
         })
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/employee/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
         });
 });

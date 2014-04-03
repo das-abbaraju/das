@@ -1,9 +1,9 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillGroup;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.SkillModel;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -45,7 +45,7 @@ public class SkillModelFactory {
 	private int getEmployeeCount(List<AccountSkillGroup> accountSkillGroups) {
 		Set<Integer> employeeIds = new HashSet<>();
 		for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
-			employeeIds.addAll(Utilities.getIdsFromCollection(accountSkillGroup.getGroup().getEmployees(), new Utilities.Identitifable<GroupEmployee, Integer>() {
+			employeeIds.addAll(PicsCollectionUtil.getIdsFromCollection(accountSkillGroup.getGroup().getEmployees(), new PicsCollectionUtil.Identitifable<GroupEmployee, Integer>() {
 
 				@Override
 				public Integer getId(GroupEmployee groupEmployee) {

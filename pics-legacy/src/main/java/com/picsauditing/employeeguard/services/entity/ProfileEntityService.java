@@ -22,6 +22,10 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 		return profileDAO.find(id);
 	}
 
+	public Profile findByAppUserId(final int appUserId) {
+		return profileDAO.findByAppUserId(appUserId);
+	}
+
 	/* All Save Methods */
 
 	@Override

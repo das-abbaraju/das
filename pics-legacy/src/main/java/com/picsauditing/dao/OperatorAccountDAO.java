@@ -11,18 +11,18 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {
+	private static final Logger LOG = LoggerFactory.getLogger(OperatorAccountDAO.class);
 
 	@Transactional(propagation = Propagation.NESTED)
 	public OperatorAccount save(OperatorAccount o) {
@@ -294,26 +294,19 @@ public class OperatorAccountDAO extends PicsDAO {
 	}
 
 	public List<Integer> findAllOperatorsForContractor(final ContractorAccount contractor) {
+		return findAllOperatorsForContractors(Arrays.asList(contractor));
+	}
+
+	public List<Integer> findAllOperatorsForContractors(final Collection<ContractorAccount> contractors) {
 		List<Integer> operators = Collections.emptyList();
 		try {
-			Query query = em.createNativeQuery("select a.id " +
-					"from operators o " +
-					"join accounts a on a.id = o.id " +
-					"join contractor_operator co on co.opID = o.id " +
-					"where co.conID = :contractorId", Integer.class);
-			query.setParameter("contractorId", contractor.getId());
-			List<Long> operatorLongIds = query.getResultList();
-
-			if (CollectionUtils.isNotEmpty(operatorLongIds)) {
-				operators = new ArrayList<>();
-
-				for (long operatorLongId : operatorLongIds) {
-					operators.add((int) operatorLongId);
-				}
-			}
+			Query query = em.createQuery("SELECT DISTINCT co.operatorAccount.id " +
+					"FROM ContractorOperator co " +
+					"WHERE co.contractorAccount IN (:contractors)", Integer.class);
+			query.setParameter("contractors", contractors);
+			return query.getResultList();
 		} catch (Exception e) {
-			e.printStackTrace();
-			// Ignore
+			LOG.info("Error finding operator IDs for contractors", e);
 		}
 
 		return operators;

@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services.entity;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.ProjectDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.entities.Employee;
@@ -9,6 +8,7 @@ import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -43,8 +43,8 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
-				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(employees, siteIds),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
 					@Override
 					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
 						return projectRoleEmployee.getEmployee();
@@ -62,8 +62,8 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 			return Collections.emptyMap();
 		}
 
-		return Utilities.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployees(employees),
-				new Utilities.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleEmployeeDAO.findByEmployees(employees),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Project>() {
 					@Override
 					public Employee getKey(ProjectRoleEmployee entity) {
 						return entity.getEmployee();

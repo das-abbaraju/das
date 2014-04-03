@@ -12,6 +12,7 @@ import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.processor.ProjectAssignmentDataSet;
 import com.picsauditing.employeeguard.services.processor.ProjectAssignmentProcess;
 import com.picsauditing.employeeguard.services.processor.RoleAssignmentProcess;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -38,7 +39,7 @@ public class ProjectAssignmentService {
 				.getRequiredSkillsForProjects(siteProjects);
 		Map<Project, Set<Role>> projectRoles = roleEntityService.getRolesForProjects(siteProjects);
 		Map<Role, Set<AccountSkill>> projectRoleSkills = skillEntityService
-				.getSkillsForRoles(Utilities.mergeCollectionOfCollections(projectRoles.values()));
+				.getSkillsForRoles(PicsCollectionUtil.mergeCollectionOfCollections(projectRoles.values()));
 		Set<AccountSkill> siteAndCorporateRequiredSkills = skillEntityService
 				.getSiteRequiredSkills(siteId, accountService.getTopmostCorporateAccountIds(siteId));
 
@@ -65,7 +66,6 @@ public class ProjectAssignmentService {
 	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId, final Collection<Project> projects) {
 		return new RoleAssignmentProcess().getCorporateRoleEmployees(
 				employeeEntityService.getEmployeesByProjectRoles(projects),
-				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)),
-				roleEntityService.getSiteToCorporateRoles(siteId, accountService.getTopmostCorporateAccountIds(siteId)));
+				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)));
 	}
 }

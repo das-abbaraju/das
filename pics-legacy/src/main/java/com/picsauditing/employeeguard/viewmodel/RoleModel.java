@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.viewmodel;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 
 import java.util.Collection;
 
@@ -13,7 +13,7 @@ public class RoleModel {
 
 	public RoleModel(Builder builder) {
 		this.id = builder.id;
-		this.skills = Utilities.unmodifiableCollection(builder.skills);
+		this.skills = PicsCollectionUtil.unmodifiableCollection(builder.skills);
 		this.name = builder.name;
 		this.status = builder.status;
 	}

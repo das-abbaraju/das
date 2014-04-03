@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
@@ -20,6 +19,31 @@ public class StatusCalculatorService {
 	@Autowired
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
 
+	public Map<Employee, SkillStatus> getEmployeeStatusRollUpForSkills(final Map<Employee, Set<AccountSkill>> employeeSkills) {
+		if (MapUtils.isEmpty(employeeSkills)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Employee, Set<AccountSkillEmployee>> accountSkillEmployeeMap =
+				convertToMap(accountSkillEmployeeDAO.findByEmployeesAndSkills(employeeSkills.keySet(),
+						PicsCollectionUtil.mergeCollectionOfCollections(employeeSkills.values())));
+
+		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
+		for (Employee employee : employeeSkills.keySet()) {
+			SkillStatus rollUp = SkillStatus.Expired;
+
+			Set<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeMap.get(employee);
+			if (CollectionUtils.isNotEmpty(accountSkillEmployees)) {
+				rollUp = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
+			}
+
+			employeeStatuses.put(employee, rollUp);
+		}
+
+		return employeeStatuses;
+	}
+
+	@Deprecated
 	public Map<Employee, SkillStatus> getEmployeeStatusRollUpForSkills(final Collection<Employee> employees,
 																	   final Map<Employee, Set<AccountSkill>> employeeRequiredSkills) {
 		if (CollectionUtils.isEmpty(employees) || MapUtils.isEmpty(employeeRequiredSkills)) {
@@ -66,7 +90,7 @@ public class StatusCalculatorService {
 	}
 
 	private Map<Employee, Set<AccountSkillEmployee>> convertToMap(final List<AccountSkillEmployee> accountSkillEmployees) {
-		return Utilities.convertToMapOfSets(accountSkillEmployees, new Utilities.MapConvertable<Employee, AccountSkillEmployee>() {
+		return PicsCollectionUtil.convertToMapOfSets(accountSkillEmployees, new PicsCollectionUtil.MapConvertable<Employee, AccountSkillEmployee>() {
 			@Override
 			public Employee getKey(AccountSkillEmployee accountSkillEmployee) {
 				return accountSkillEmployee.getEmployee();
@@ -112,37 +136,12 @@ public class StatusCalculatorService {
 		return Arrays.asList(skillStatusArray);
 	}
 
-	public SkillStatus calculateOverallStatus(Collection<SkillStatus> skillStatuses) {
-		if (CollectionUtils.isEmpty(skillStatuses)) {
-			throw new IllegalArgumentException("skillStatuses should not be empty or null.");
-		}
-
-		SkillStatus worstStatus = SkillStatus.Complete;
-		for (SkillStatus skillStatus : skillStatuses) {
-			// exit early if any status is "Expired", because we have already hit the lowest status
-			if (skillStatus.isExpired()) {
-				return SkillStatus.Expired;
-			}
-
-			if (skillStatus.compareTo(worstStatus) < 0) {
-				worstStatus = skillStatus;
-			}
-		}
-
-		return worstStatus;
+	public SkillStatus calculateOverallStatus(final Collection<SkillStatus> skillStatuses) {
+		return SkillStatusCalculator.calculateOverallStatus(skillStatuses);
 	}
 
 	public <E> Map<E, SkillStatus> getOverallStatusPerEntity(final Map<E, List<SkillStatus>> entitySkillStatusMap) {
-		if (MapUtils.isEmpty(entitySkillStatusMap)) {
-			return Collections.emptyMap();
-		}
-
-		Map<E, SkillStatus> overallSkillStatusMap = new HashMap<>();
-		for (E entity : entitySkillStatusMap.keySet()) {
-			overallSkillStatusMap.put(entity, calculateOverallStatus(entitySkillStatusMap.get(entity)));
-		}
-
-		return overallSkillStatusMap;
+		return SkillStatusCalculator.getOverallStatusPerEntity(entitySkillStatusMap);
 	}
 
 	public <E> Map<E, List<SkillStatus>> getSkillStatusListPerEntity(final Employee employee, final Map<E, Set<AccountSkill>> skillMap) {
@@ -179,8 +178,8 @@ public class StatusCalculatorService {
 	private Map<AccountSkill, AccountSkillEmployee> buildAccountSkillToAccountSkillEmployeeMap(
 			final List<AccountSkillEmployee> accountSkillEmployees) {
 
-		return Utilities.convertToMap(accountSkillEmployees,
-				new Utilities.MapConvertable<AccountSkill, AccountSkillEmployee>() {
+		return PicsCollectionUtil.convertToMap(accountSkillEmployees,
+				new PicsCollectionUtil.MapConvertable<AccountSkill, AccountSkillEmployee>() {
 					@Override
 					public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
 						return accountSkillEmployee.getSkill();
@@ -211,8 +210,8 @@ public class StatusCalculatorService {
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
 				.findByEmployeeAndSkills(employee, skills);
 
-		return Utilities.convertToMap(accountSkillEmployees,
-				new Utilities.EntityKeyValueConvertable<AccountSkillEmployee, AccountSkill, SkillStatus>() {
+		return PicsCollectionUtil.convertToMap(accountSkillEmployees,
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, AccountSkill, SkillStatus>() {
 					@Override
 					public AccountSkill getKey(AccountSkillEmployee entity) {
 						return entity.getSkill();
@@ -285,18 +284,5 @@ public class StatusCalculatorService {
 		}
 
 		return skillStatusPerEntityEmployee;
-	}
-
-	private Map<Employee, SkillStatus> calculateAndReduce(final Map<Employee, Collection<AccountSkillEmployee>> employeeAccountSkillEmployees) {
-		if (MapUtils.isEmpty(employeeAccountSkillEmployees)) {
-			return Collections.emptyMap();
-		}
-
-		Map<Employee, SkillStatus> employeeSkillStatus = new HashMap<>();
-		for (Employee employee : employeeAccountSkillEmployees.keySet()) {
-			employeeSkillStatus.put(employee, SkillStatusCalculator.calculateStatusRollUp(employeeAccountSkillEmployees.get(employee)));
-		}
-
-		return employeeSkillStatus;
 	}
 }

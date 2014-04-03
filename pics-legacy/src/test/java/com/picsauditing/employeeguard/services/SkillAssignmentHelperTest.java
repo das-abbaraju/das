@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.*;
@@ -10,11 +10,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.when;
 
 public class SkillAssignmentHelperTest {
@@ -28,7 +30,7 @@ public class SkillAssignmentHelperTest {
 	@Mock
 	private AccountService accountService;
 	@Mock
-	private RoleEmployeeDAO roleEmployeeDAO;
+	private AccountSkillDAO accountSkillDAO;
 	@Mock
 	private SiteSkillDAO siteSkillDAO;
 
@@ -39,13 +41,12 @@ public class SkillAssignmentHelperTest {
 		skillAssignmentHelper = new SkillAssignmentHelper();
 
 		Whitebox.setInternalState(skillAssignmentHelper, "accountService", accountService);
-		Whitebox.setInternalState(skillAssignmentHelper, "roleEmployeeDAO", roleEmployeeDAO);
-		Whitebox.setInternalState(skillAssignmentHelper, "siteSkillDAO", siteSkillDAO);
+		Whitebox.setInternalState(skillAssignmentHelper, "accountSkillDAO", accountSkillDAO);
 	}
 
 	@Test
 	public void testGetRequiredSkillsFromProjectsAndSiteRoles_NoProjectCompanies() throws Exception {
-		Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(null, null, null);
+		Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(null, null);
 		assertTrue(result.isEmpty());
 	}
 
@@ -54,38 +55,12 @@ public class SkillAssignmentHelperTest {
 				new ProjectCompanyBuilder()
 						.project(
 								new ProjectBuilder()
-										.skills(Arrays.asList(
-												new ProjectSkillBuilder()
-														.skill(
-																new AccountSkillBuilder()
-																		.name("Project Skill")
-																		.build())
-														.build()))
-										.roles(Arrays.asList(
-												new ProjectRoleBuilder()
-														.role(new RoleBuilder()
-																.skills(Arrays.asList(
-																		new AccountSkillBuilder()
-																				.name("Project Role Skill")
-																				.build()))
-																.build())
-														.build()
-										))
 										.accountId(SITE_ID)
 										.build())
 						.build(),
 				new ProjectCompanyBuilder()
 						.project(
 								new ProjectBuilder()
-										.roles(Arrays.asList(
-												new ProjectRoleBuilder()
-														.role(new RoleBuilder()
-																.skills(Arrays.asList(
-																		new AccountSkillBuilder()
-																				.name("Project Role Skill")
-																				.build()))
-																.build())
-														.build()))
 										.accountId(OTHER_SITE_ID)
 										.build()
 						)
@@ -94,50 +69,23 @@ public class SkillAssignmentHelperTest {
 
 	@Test
 	public void testGetRequiredSkillsFromProjectsAndSiteRoles_WithSiteRolesAndSkillsToRemove() throws Exception {
-		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(Arrays.asList(CORPORATE_ID, 45));
+		setupTestGetRequiredSkillsFromProjectsAndSiteRoles_WithSiteRolesAndSkillsToRemove();
 
-		SiteSkill siteSkill = new SiteSkill();
-		siteSkill.setSkill(
-				new AccountSkillBuilder()
-						.name("Site Skill")
-						.build());
-
-		when(siteSkillDAO.findByAccountIds(anyListOf(Integer.class))).thenReturn(Arrays.asList(siteSkill));
-
-		Role siteRole = new RoleBuilder()
-				.accountId(OTHER_SITE_ID)
-				.name("Other Site Role")
-				.build();
-
-		RoleEmployee roleEmployee = new RoleEmployee();
-		roleEmployee.setRole(siteRole);
-
-		when(roleEmployeeDAO.findByEmployeeAndSiteIds(anyInt(), anyListOf(Integer.class))).thenReturn(Arrays.asList(roleEmployee));
-
-		Map<Role, Role> siteToCorporateRoles = initializeSiteToCorporateRoles(siteRole);
 		Set<AccountSkill> result = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(
 				getFakeProjectCompanies(),
-				new EmployeeBuilder().build(),
-				siteToCorporateRoles);
+				new EmployeeBuilder().build());
 
 		assertFalse(result.isEmpty());
-		assertEquals(4, result.size());
+		assertEquals(3, result.size());
 	}
 
-	private Map<Role, Role> initializeSiteToCorporateRoles(Role siteRole) {
-		Role corporateRole = new RoleBuilder()
-				.accountId(CORPORATE_ID)
-				.name("Corporate Role")
-				.skills(Arrays.asList(
-						new AccountSkillBuilder()
-								.name("Corporate Role Skill")
-								.build()))
-				.build();
-
-		Map<Role, Role> siteToCorporateRoles = new HashMap<>();
-		siteToCorporateRoles.put(siteRole, corporateRole);
-
-		return siteToCorporateRoles;
+	private void setupTestGetRequiredSkillsFromProjectsAndSiteRoles_WithSiteRolesAndSkillsToRemove() {
+		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(Arrays.asList(CORPORATE_ID, 45));
+		when(accountSkillDAO.findSiteAndCorporateRequiredSkills(anyCollectionOf(Integer.class)))
+				.thenReturn(Arrays.asList(new AccountSkillBuilder().accountId(SITE_ID).name("Site Skill").build(),
+						new AccountSkillBuilder().accountId(CORPORATE_ID).name("Corporate Skill").build()));
+		when(accountSkillDAO.findProjectRequiredSkills(anyCollectionOf(Project.class)))
+				.thenReturn(Arrays.asList(new AccountSkillBuilder().accountId(SITE_ID).name("Project Skill").build()));
 	}
 
 	@Test
@@ -164,7 +112,10 @@ public class SkillAssignmentHelperTest {
 
 		Set<AccountSkillEmployee> result = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, 12345, requiredSkills);
 
-		assertNotNull(result);
+		verifyTestFilterNoLongerNeededEmployeeSkills(result);
+	}
+
+	private void verifyTestFilterNoLongerNeededEmployeeSkills(Set<AccountSkillEmployee> result) {
 		assertFalse(result.isEmpty());
 		assertEquals(1, result.size());
 
