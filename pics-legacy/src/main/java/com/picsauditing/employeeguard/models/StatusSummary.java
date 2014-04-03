@@ -2,13 +2,22 @@ package com.picsauditing.employeeguard.models;
 
 public class StatusSummary {
 
+    private int id;
 	private int employees;
 	private int completed;
 	private int pending;
 	private int expiring;
 	private int expired;
 
-	public int getEmployees() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getEmployees() {
 		return employees;
 	}
 

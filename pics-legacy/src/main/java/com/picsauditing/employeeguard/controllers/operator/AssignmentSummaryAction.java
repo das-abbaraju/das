@@ -35,7 +35,10 @@ public class AssignmentSummaryAction extends PicsRestActionSupport {
 		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService
 				.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite.keySet(), allEmployeeSkillsForSite);
 
-		return ModelFactory.getStatusSummaryFactory().create(employeeStatuses);
+		StatusSummary summary = ModelFactory.getStatusSummaryFactory().create(employeeStatuses);
+        summary.setId(siteId);
+
+        return summary;
 	}
 
 	private int getSiteIdForSummary() throws NoOperatorForCorporateException, NoRightsException {
