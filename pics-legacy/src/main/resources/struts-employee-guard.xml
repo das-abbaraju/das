@@ -40,6 +40,9 @@
                 method="summary">
         </action>
 
+        <action name="projects/list" class="com.picsauditing.employeeguard.controllers.operator.ProjectAction">
+        </action>
+
         <!-- Project -->
         <action name="projects" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
@@ -233,9 +236,6 @@
         <action name="project" class="com.picsauditing.employeeguard.controllers.contractor.ProjectAction">
             <result name="list">/struts/employee-guard/contractor/project/list.jsp</result>
             <result name="show">/struts/employee-guard/contractor/project/show.jsp</result>
-        </action>
-
-        <action name="projects/list" class="com.picsauditing.employeeguard.controllers.contractor.ProjectAction">
         </action>
 
         <!-- Assignments: Need to be kept in this order because of the way URLs are matched -->

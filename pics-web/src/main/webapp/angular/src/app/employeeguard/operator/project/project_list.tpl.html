@@ -27,7 +27,7 @@
         <div class="table-responsive">
             <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
                 <thead>
-                        <th ng-show="operator_corp" ng-class="{'sort-active' : orderByField=='site'}" ng-click="orderByField='site'; reverseSort = !reverseSort">Site
+                        <th ng-show="user.type == 'CORPORATE'" ng-class="{'sort-active' : orderByField=='site'}" ng-click="orderByField='site'; reverseSort = !reverseSort">Site
                             <i ng-show="orderByField == 'site'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
                         </th>
                         <th ng-class="{'sort-active' : orderByField=='name'}" ng-click="orderByField='name'; reverseSort = !reverseSort">Name
@@ -46,9 +46,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="project in projects | orderBy:orderByField:reverseSort | filter:search ">
-                        <td ng-show="operator_corp">
-                            <a href="/employee-guard/operators/project/{{ project.id }}" target="_self">{{ project.site }}</a>
-                        </td>
+                        <td ng-show="user.type == 'CORPORATE'">{{ project.site }}</td>
                         <td>
                             <a href="/employee-guard/operators/project/{{ project.id }}" target="_self">{{ project.name }}</a>
                         </td>

@@ -1,14 +1,15 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorProjectListCtrl', function ($scope, ProjectList) {
-    $scope.projects = ProjectList.query(function(projects) {
-        if ($scope.hasSites(projects)) {
-            $scope.operator_corp = true;
-            $scope.orderByField = 'site';
-        }
-    });
+.controller('operatorProjectListCtrl', function ($scope, ProjectList, WhoAmI) {
+    $scope.projects = ProjectList.query();
 
-    $scope.hasSites = function(projects) {
-        return projects[0].siteName;
+    $scope.setUserType = function () {
+        $scope.user = WhoAmI.get(function(user){
+            if (user.type === 'CORPORATE') {
+                $scope.orderByField = 'site';
+            }
+        });
     };
+
+    $scope.setUserType();
 });

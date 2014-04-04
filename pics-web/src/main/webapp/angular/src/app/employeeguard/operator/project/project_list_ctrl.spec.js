@@ -1,16 +1,24 @@
 describe('An Operator Project List', function() {
     var scope;
 
-    var projects_url = '/angular/json/operator/project_list_corp.json';
+    var projects_url = '/employee-guard/operators/projects/list';
+    var whoami_url = '/employee-guard/operators/who-am-i';
 
     var corporate_projects = [{
         "id": 4,
-        "siteName": "BASF",
+        "site": "BASF",
         "name": "Install new oven",
         "location": "Bob's Burgers",
         "startDate": "2012-05-01",
         "endDate": "2012-06-23"
     }];
+
+    var corporate_user = {
+       "userId":116679,
+       "accountId":55653,
+       "name":"Lydia Rodarte-Quayle",
+       "type":"CORPORATE"
+    };
 
     var operator_projects = [{
         "id": 4,
@@ -19,6 +27,13 @@ describe('An Operator Project List', function() {
         "startDate": "2012-05-01",
         "endDate": "2012-06-23"
     }];
+
+    var operator_user = {
+        "userId":116680,
+        "accountId":55654,
+        "name":"EmployeeGUARD User",
+        "type":"OPERATOR"
+    };
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
@@ -35,30 +50,25 @@ describe('An Operator Project List', function() {
     describe('for a corporate user', function() {
         beforeEach(function () {
             httpMock.when('GET', projects_url).respond(corporate_projects);
+            httpMock.when('GET', whoami_url).respond(corporate_user);
             httpMock.flush();
         });
 
         it("should set orderByField to 'site'", function() {
+            scope.setUserType();
             expect(scope.orderByField).toEqual('site');
-        });
-
-        it("should set operator_corp to true", function() {
-            expect(scope.operator_corp).toBeTruthy();
         });
     });
 
     describe('for a operator user', function() {
         beforeEach(function () {
             httpMock.when('GET', projects_url).respond(operator_projects);
+            httpMock.when('GET', whoami_url).respond(operator_user);
             httpMock.flush();
         });
 
         it("should have the default orderByField", function() {
             expect(scope.orderByField).not.toBeDefined();
-        });
-
-        it("should not have operator_corp value", function() {
-            expect(scope.operator_corp).not.toBeDefined();
         });
     });
 });
