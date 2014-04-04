@@ -17,7 +17,28 @@ public class UtilitiesTest {
 		assertTrue(Utilities.isEmptyArray(null));
 	}
 
-	@Test
+    @Test
+    public void testGetLocalesInOrderOfPreference_LanguageAndCountry() {
+        Locale current = new Locale("es", "AU");
+        Set<String> locales = Utilities.getLocalesInOrderOfPreference(current);
+        assertEquals(3, locales.size());
+        Iterator<String> iterator = locales.iterator();
+        assertEquals("es_AU", iterator.next());
+        assertEquals("es", iterator.next());
+        assertEquals("en", iterator.next());
+    }
+
+    @Test
+    public void testGetLocalesInOrderOfPreference_LanguageOnly() {
+        Locale current = new Locale("es");
+        Set<String> locales = Utilities.getLocalesInOrderOfPreference(current);
+        assertEquals(2, locales.size());
+        Iterator<String> iterator = locales.iterator();
+        assertEquals("es", iterator.next());
+        assertEquals("en", iterator.next());
+    }
+
+    @Test
 	public void testEscapeHTML() throws Exception {
 		assertEquals("", Utilities.escapeHTML(""));
 		assertEquals("hello", Utilities.escapeHTML("hello"));

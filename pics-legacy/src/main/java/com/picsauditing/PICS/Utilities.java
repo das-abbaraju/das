@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
@@ -281,5 +282,19 @@ public class Utilities {
 
 		return result;
 	}
+
+    public static Set<String> getLocalesInOrderOfPreference(Locale current) {
+        Set<String> locales = new LinkedHashSet<>();
+
+        locales.add(current.toString());
+        if (!Strings.isEmpty(current.getCountry())) {
+            locales.add(new Locale(current.getLanguage(), current.getCountry()).toString());
+        }
+        locales.add(new Locale(current.getLanguage()).toString());
+        locales.add(Locale.ENGLISH.toString());
+
+        return locales;
+    }
+
 
 }
