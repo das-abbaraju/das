@@ -66,7 +66,7 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 		initializeMocks();
 
 		Map<Employee, List<SkillStatus>> employeeSkills = new HashMap<>();
-		PicsCollectionUtil.addToMapOfKeyToList(employeeSkills, employee1, SkillStatus.Complete);
+		PicsCollectionUtil.addToMapOfKeyToList(employeeSkills, employee1, SkillStatus.Completed);
 		PicsCollectionUtil.addToMapOfKeyToList(employeeSkills, employee2, SkillStatus.Expired);
 
 		List<ContractorEmployeeRoleAssignment> assignments = factory.build(
@@ -102,7 +102,7 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 			assertEquals(1, assignment.getSkillStatuses().size());
 		}
 
-		assertEquals(SkillStatus.Complete, assignments.get(0).getSkillStatuses().get(0));
+		assertEquals(SkillStatus.Completed, assignments.get(0).getSkillStatuses().get(0));
 		assertEquals(SkillStatus.Expired, assignments.get(1).getSkillStatuses().get(0));
 	}
 }

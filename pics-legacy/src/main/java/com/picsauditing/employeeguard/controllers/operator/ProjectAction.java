@@ -1,8 +1,10 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
@@ -13,6 +15,8 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.*;
+import com.picsauditing.employeeguard.models.ModelFactory;
+import com.picsauditing.employeeguard.models.ProjectModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.RoleService;
@@ -26,10 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ProjectAction extends PicsRestActionSupport implements AjaxValidator {
@@ -72,19 +73,33 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 
 	/* pages */
 
-	public String index() {
-		List<Project> projectsFromDatabase;
-		if (isSearch(searchForm)) {
-			projectsFromDatabase = projectService.search(searchForm.getSearchTerm(), permissions.getAccountId());
-		} else {
-			projectsFromDatabase = projectService.getProjectsForAccount(permissions.getAccountId());
+	public String index() throws NoRightsException {
+		if (!permissions.isOperatorCorporate()) {
+			throw new NoRightsException("Operator or Corporate");
 		}
 
-		Collections.sort(projectsFromDatabase);
+		int accountId = permissions.getAccountId();
+		List<Project> projectsFromDatabase = projectService.getProjectsForAccount(accountId);
 
-		projects = formBuilderFactory.getProjectInfoFactory().build(projectsFromDatabase);
+		Map<Integer, AccountModel> accountModels;
+		if (permissions.isCorporate()) {
+			List<Integer> childOperators = accountService.getChildOperatorIds(accountId);
+			accountModels = accountService.getIdToAccountModelMap(childOperators);
+		} else {
+			accountModels = accountService.getIdToAccountModelMap(Arrays.asList(accountId));
+		}
 
-		return LIST;
+		List<ProjectModel> projectModels = ModelFactory.getProjectModelFactory().createWithSiteNames(
+				projectsFromDatabase,
+				null,
+				null,
+				accountModels);
+
+		Collections.sort(projectModels);
+
+		jsonString = new Gson().toJson(projectModels);
+
+		return JSON_STRING;
 	}
 
 	public String show() throws PageNotFoundException {

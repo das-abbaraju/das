@@ -25,6 +25,6 @@ public class ProjectAssignmentBreakdown {
     }
 
     public int getComplete() {
-        return statusRollup.containsKey(SkillStatus.Complete) ? statusRollup.get(SkillStatus.Complete) : 0;
+        return statusRollup.containsKey(SkillStatus.Completed) ? statusRollup.get(SkillStatus.Completed) : 0;
     }
 }

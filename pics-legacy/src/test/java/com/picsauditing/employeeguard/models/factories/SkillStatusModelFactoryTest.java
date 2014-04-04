@@ -52,7 +52,7 @@ public class SkillStatusModelFactoryTest {
 				.build();
 
 		Map<AccountSkill, SkillStatus> skillStatusMap = new HashMap<>();
-		skillStatusMap.put(accountSkill, SkillStatus.Complete);
+		skillStatusMap.put(accountSkill, SkillStatus.Completed);
 		skillStatusMap.put(secondSkill, SkillStatus.Expired);
 
 		List<SkillStatusModel> skillStatusModels = factory.create(Arrays.asList(accountSkill, secondSkill), skillStatusMap);
@@ -60,7 +60,7 @@ public class SkillStatusModelFactoryTest {
 		assertEquals(2, skillStatusModels.size());
 		assertEquals(accountSkill.getId(), skillStatusModels.get(0).getId());
 		assertEquals(accountSkill.getName(), skillStatusModels.get(0).getName());
-		assertEquals(SkillStatus.Complete, skillStatusModels.get(0).getStatus());
+		assertEquals(SkillStatus.Completed, skillStatusModels.get(0).getStatus());
 		assertEquals(secondSkill.getId(), skillStatusModels.get(1).getId());
 		assertEquals(secondSkill.getName(), skillStatusModels.get(1).getName());
 		assertEquals(SkillStatus.Expired, skillStatusModels.get(1).getStatus());
@@ -86,7 +86,7 @@ public class SkillStatusModelFactoryTest {
 	public void testCreateProjectIdToSkillStatusModelMap_WithData() {
 		final AccountSkill accountSkill = getFakeAccountSkill();
 		Map<AccountSkill, SkillStatus> skillStatusMap = new HashMap<AccountSkill, SkillStatus>() {{
-			put(accountSkill, SkillStatus.Complete);
+			put(accountSkill, SkillStatus.Completed);
 		}};
 
 		final Project project = getFakeProject();
@@ -97,7 +97,7 @@ public class SkillStatusModelFactoryTest {
 		Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap =
 				factory.createProjectIdToSkillStatusModelMap(projectSkillsMap, skillStatusMap);
 
-		assertSkillStatusModelMapData(projectIdToSkillStatusModelMap, PROJECT_ID, SkillStatus.Complete);
+		assertSkillStatusModelMapData(projectIdToSkillStatusModelMap, PROJECT_ID, SkillStatus.Completed);
 	}
 
 	@Test

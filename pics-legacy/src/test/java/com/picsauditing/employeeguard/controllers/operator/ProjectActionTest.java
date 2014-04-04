@@ -5,7 +5,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.factory.ProjectInfoFactory;
 import com.picsauditing.employeeguard.forms.operator.ProjectForm;
@@ -22,6 +21,9 @@ import com.picsauditing.employeeguard.services.factory.RoleServiceFactory;
 import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.jpa.entities.Account;
+import org.approvaltests.Approvals;
+import org.approvaltests.reporters.DiffReporter;
+import org.approvaltests.reporters.UseReporter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,6 +39,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@UseReporter(DiffReporter.class)
 public class ProjectActionTest extends PicsActionTest {
 	public static final String ID = "id";
 	public static final String LIST_URL = "/employee-guard/operators/project";
@@ -73,6 +76,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(formBuilderFactory.getProjectInfoFactory()).thenReturn(projectInfoFactory);
 	}
 
@@ -81,28 +85,11 @@ public class ProjectActionTest extends PicsActionTest {
 		ProjectInfo projectInfo = new ProjectInfo.Builder().id(1).name("Project").build();
 		when(projectInfoFactory.build(anyList())).thenReturn(Arrays.asList(projectInfo));
 
-		assertEquals(PicsRestActionSupport.LIST, projectAction.index());
+		assertEquals(PicsRestActionSupport.JSON_STRING, projectAction.index());
 
 		verify(projectService).getProjectsForAccount(Account.PicsID);
-		assertNotNull(projectAction.getProjects());
-		assertFalse(projectAction.getProjects().isEmpty());
-	}
 
-	@Test
-	public void testIndex_Search() throws Exception {
-		ProjectInfo projectInfo = new ProjectInfo.Builder().id(1).name("Project").build();
-		when(projectInfoFactory.build(anyList())).thenReturn(Arrays.asList(projectInfo));
-
-		SearchForm searchForm = new SearchForm();
-		searchForm.setSearchTerm("search");
-
-		projectAction.setSearchForm(searchForm);
-
-		assertEquals(PicsRestActionSupport.LIST, projectAction.index());
-
-		verify(projectService).search("search", Account.PicsID);
-		assertNotNull(projectAction.getProjects());
-		assertFalse(projectAction.getProjects().isEmpty());
+		Approvals.verify(projectAction.getJsonString());
 	}
 
 	@Test

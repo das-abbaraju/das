@@ -53,7 +53,7 @@
                             <s:set var="skill_icon">icon-ok-circle</s:set>
                             <s:set var="skill_status_class">success</s:set>
                         </s:elseif>
-                        <s:elseif test="#skill_info.skillStatus.complete">
+                        <s:elseif test="#skill_info.skillStatus.completed">
                             <s:set var="skill_icon">icon-ok-sign</s:set>
                             <s:set var="skill_status_class">success</s:set>
                         </s:elseif>

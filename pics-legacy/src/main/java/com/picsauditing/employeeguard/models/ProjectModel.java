@@ -7,6 +7,7 @@ public class ProjectModel implements Identifiable, Nameable, Comparable<ProjectM
 
 	private int id;
 	private String name;
+	private String site;
 	private List<? extends RoleModel> roles;
 	private List<? extends SkillModel> skills;
 	private String location;
@@ -31,6 +32,14 @@ public class ProjectModel implements Identifiable, Nameable, Comparable<ProjectM
 	@Override
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getSite() {
+		return site;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
 	}
 
 	public List<? extends RoleModel> getRoles() {
@@ -75,6 +84,10 @@ public class ProjectModel implements Identifiable, Nameable, Comparable<ProjectM
 
 	@Override
 	public int compareTo(ProjectModel that) {
+		if (this.name.equalsIgnoreCase(that.name) && this.site != null && that.site != null) {
+			return this.site.compareToIgnoreCase(that.site);
+		}
+
 		return this.name.compareToIgnoreCase(that.name);
 	}
 }

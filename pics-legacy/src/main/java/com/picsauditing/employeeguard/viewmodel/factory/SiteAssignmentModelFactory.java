@@ -132,7 +132,7 @@ public class SiteAssignmentModelFactory {
 	}
 
 	private SkillStatus calculateWorstStatusOf(List<AccountSkillEmployee> employeeSkills) {
-		SkillStatus worst = SkillStatus.Complete;
+		SkillStatus worst = SkillStatus.Completed;
 
 		for (AccountSkillEmployee employeeSkill : employeeSkills) {
 			SkillStatus current = SkillStatusCalculator.calculateStatusFromSkill(employeeSkill);

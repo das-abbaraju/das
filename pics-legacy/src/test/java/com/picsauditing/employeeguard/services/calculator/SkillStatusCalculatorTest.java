@@ -42,7 +42,7 @@ public class SkillStatusCalculatorTest {
 
         SkillStatus result = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
 
-		assertEquals(SkillStatus.Complete, result);
+		assertEquals(SkillStatus.Completed, result);
 	}
 
     @Test(expected = IllegalArgumentException.class)
@@ -76,7 +76,7 @@ public class SkillStatusCalculatorTest {
 
         SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
 
-        assertEquals(SkillStatus.Complete, result);
+        assertEquals(SkillStatus.Completed, result);
     }
 
     private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList() {

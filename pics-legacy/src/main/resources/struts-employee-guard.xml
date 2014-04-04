@@ -40,6 +40,9 @@
                 method="summary">
         </action>
 
+        <action name="projects/list" class="com.picsauditing.employeeguard.controllers.operator.ProjectAction">
+        </action>
+
         <!-- Project -->
         <action name="projects" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
@@ -111,6 +114,8 @@
         </action>
 
         <action name="assignments" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load" />
+        <!-- Who Am I -->
+        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="whoAmI" />
     </package>
 
     <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"

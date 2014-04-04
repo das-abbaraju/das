@@ -25,7 +25,7 @@ public class SkillStatusCalculator {
         } else if (endDate.before(DateBean.addMonths(today, 1))) {
             return SkillStatus.Expiring;
         } else {
-            return SkillStatus.Complete;
+            return SkillStatus.Completed;
         }
     }
 
@@ -35,7 +35,7 @@ public class SkillStatusCalculator {
         }
 
         Date today = DateBean.today();
-        SkillStatus lowestStatus = SkillStatus.Complete;
+        SkillStatus lowestStatus = SkillStatus.Completed;
         for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
             SkillStatus calculatedStatus = calculateStatus(accountSkillEmployee, today);
 
@@ -57,7 +57,7 @@ public class SkillStatusCalculator {
 			return Collections.emptyMap();
 		}
 
-		SkillStatus lowestStatus = SkillStatus.Complete;
+		SkillStatus lowestStatus = SkillStatus.Completed;
 
 		Map<E, SkillStatus> result = new HashMap<>();
 		for (E entity : statusList.keySet()) {
@@ -85,7 +85,7 @@ public class SkillStatusCalculator {
 			throw new IllegalArgumentException("skillStatuses should not be empty or null.");
 		}
 
-		SkillStatus worstStatus = SkillStatus.Complete;
+		SkillStatus worstStatus = SkillStatus.Completed;
 		for (SkillStatus skillStatus : skillStatuses) {
 			// exit early if any status is "Expired", because we have already hit the lowest status
 			if (skillStatus.isExpired()) {
