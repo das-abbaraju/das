@@ -78,13 +78,8 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 			throw new NoRightsException("Operator or Corporate");
 		}
 
-		List<Project> projectsFromDatabase;
 		int accountId = permissions.getAccountId();
-		if (isSearch(searchForm)) {
-			projectsFromDatabase = projectService.search(searchForm.getSearchTerm(), accountId);
-		} else {
-			projectsFromDatabase = projectService.getProjectsForAccount(accountId);
-		}
+		List<Project> projectsFromDatabase = projectService.getProjectsForAccount(accountId);
 
 		Map<Integer, AccountModel> accountModels;
 		if (permissions.isCorporate()) {
