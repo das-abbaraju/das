@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.*;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.toggle.FeatureToggle;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,22 +49,19 @@ public class TranslateJS2 extends PicsActionSupport {
 	}
 
 	private Set<String> buildLocales() {
-        Set<String> locales = new HashSet<>();
+        Set<String> locales = new LinkedHashSet<>();
+
         Locale current = getLocale();
+
         if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER)) {
             locales.add(current.toString());
         } else {
-            locales.add(Locale.ENGLISH.toString());
-            locales.add(current.toString());
-            locales.add(new Locale(current.getLanguage()).toString());
-            if (!Strings.isEmpty(current.getCountry())) {
-                locales.add(new Locale(current.getLanguage(), current.getCountry()).toString());
-            }
+            locales = Utilities.getLocalesInOrderOfPreference(current);
         }
 		return locales;
 	}
 
-	public JSONObject getTranslations() {
+    public JSONObject getTranslations() {
 		return translations;
 	}
 
