@@ -13,7 +13,18 @@ import static org.junit.Assert.*;
 
 public class StringsTest {
 
-	@Test
+    @Test
+    public void testFormatDecimalComma_CommaOnInput() {
+        assertEquals("2,000", Strings.formatDecimalComma("2,000"));
+        assertEquals("2,000,000", Strings.formatDecimalComma("2,0,0,0,000"));
+    }
+
+    @Test
+    public void testFormatDecimalComma_EmptyOnInput() {
+        assertEquals("", Strings.formatDecimalComma(""));
+    }
+
+    @Test
 	public void testInsertSpaceNull() {
 		assertEquals(null, Strings.insertSpaces(null));
 	}
