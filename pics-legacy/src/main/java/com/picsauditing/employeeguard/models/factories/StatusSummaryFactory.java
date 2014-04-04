@@ -8,6 +8,19 @@ import java.util.Map;
 
 public class StatusSummaryFactory {
 
+	public <T> StatusSummary create(final Map<T, SkillStatus> statusMap) {
+		StatusSummary statusSummary = new StatusSummary();
+
+		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
+		statusSummary.setCompleted(statusCountMap.get(SkillStatus.Complete));
+		statusSummary.setPending(statusCountMap.get(SkillStatus.Pending));
+		statusSummary.setExpiring(statusCountMap.get(SkillStatus.Expiring));
+		statusSummary.setExpired(statusCountMap.get(SkillStatus.Expired));
+		statusSummary.setEmployees(getTotal(statusCountMap));
+
+		return statusSummary;
+	}
+
 	public <M extends StatusSummary, T> M addStatusSummary(final M model, final Map<T, SkillStatus> statusMap) {
 		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
 
@@ -15,6 +28,7 @@ public class StatusSummaryFactory {
 		model.setPending(statusCountMap.get(SkillStatus.Pending));
 		model.setExpiring(statusCountMap.get(SkillStatus.Expiring));
 		model.setExpired(statusCountMap.get(SkillStatus.Expired));
+		model.setEmployees(getTotal(statusCountMap));
 
 		return model;
 	}
@@ -37,6 +51,16 @@ public class StatusSummaryFactory {
 			put(SkillStatus.Expiring, 0);
 			put(SkillStatus.Expired, 0);
 		}};
+	}
+
+	private int getTotal(final Map<SkillStatus, Integer> statusCountMap) {
+		int total = 0;
+
+		for (SkillStatus status : statusCountMap.keySet()) {
+			total += statusCountMap.get(status);
+		}
+
+		return total;
 	}
 
 }

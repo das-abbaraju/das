@@ -1,43 +1,30 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteResource, SiteList, SiteDetails) {
-    $scope.siteList = SiteList.query(function(site_list) {
-        if ($scope.isCorporateSiteList(site_list)) {
-            $scope.site_list_select = site_list[0].id;
-            $scope.updateSelectedSite();
+.controller('operatorDashboardCtrl', function ($scope, SiteList, SiteAssignments, ProjectAssignments) {
+    $scope.siteList = SiteList.query(function(sites) {
+        if ($scope.hasSites(sites)) {
+            $scope.loadSelectedSiteData(sites[0].id);
         } else {
-            $scope.selected_site_details = requestSiteDetailsForSiteOperator().then(function(site_details) {
-                $scope.selected_site_details = site_details;
+            $scope.loadSelectedSiteData();
+        }
+    });
+
+    $scope.hasSites = function(sites) {
+        return sites.length > 0;
+    };
+
+    $scope.loadSelectedSiteData = function(site_id) {
+        if (site_id !== 'null') {
+            $scope.selected_site = site_id;
+            $scope.site_assignments = SiteAssignments.get({id: site_id}, function(site_details){
                 $scope.chartData = [
                     site_details.completed + site_details.pending,
                     site_details.expiring,
                     site_details.expired
                 ];
             });
+            $scope.project_assignments = ProjectAssignments.query({id: site_id});
         }
-    });
-
-    $scope.isCorporateSiteList = function(site_list) {
-        return site_list.length > 0;
-    };
-
-    $scope.requestSiteDetailsById = function(site_id) {
-        return SiteDetails.get({id: site_id}).$promise;
-    };
-
-    function requestSiteDetailsForSiteOperator() {
-        return SiteResource.get().$promise;
-    }
-
-    $scope.updateSelectedSite = function() {
-        $scope.requestSiteDetailsById($scope.site_list_select).then(function(site_details) {
-            $scope.selected_site_details = site_details;
-            $scope.chartData = [
-                site_details.completed + site_details.pending,
-                site_details.expiring,
-                site_details.expired
-            ];
-        });
     };
 
     $scope.calculateStatusPercentage = function (amount, total) {

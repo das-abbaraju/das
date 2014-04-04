@@ -67,12 +67,11 @@ public class ProjectAssignmentServiceTest {
 		assertNotNull(result);
 
 		verify(projectEntityService).getAllProjectsForSite(SITE_ID);
-		verify(employeeEntityService).getEmployeesByProject(projects);
+		verify(employeeEntityService).getEmployeesByProjects(projects);
 		verify(skillEntityService).getRequiredSkillsForProjects(projects);
 		verify(roleEntityService).getRolesForProjects(projects);
 		verify(skillEntityService).getSkillsForRoles(anyCollectionOf(Role.class));
 		verify(skillEntityService).getSiteRequiredSkills(anyInt(), anyListOf(Integer.class));
-		verify(accountService).getTopmostCorporateAccountIds(SITE_ID);
 
 		verifyCommonServiceCalls(projects);
 	}

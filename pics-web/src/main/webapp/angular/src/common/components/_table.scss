@@ -27,6 +27,14 @@
             color: $danger_light;
         }
     }
+
+    &.primary {
+        background-color: $default_steel;
+
+        i {
+            color: $primary_light;
+        }
+    }
 }
 
 .table-striped > tbody > tr:nth-child(odd) td {
@@ -135,5 +143,12 @@
 
     th.sort-active {
         background-color: $default_iron;
+
+        &.success,
+        &.warning,
+        &.danger,
+        &.primary {
+            background-color: $default_iron;
+        }
     }
 }

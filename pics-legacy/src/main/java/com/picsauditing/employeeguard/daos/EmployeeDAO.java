@@ -137,7 +137,7 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		super.delete(employee);
 	}
 
-	public List<Employee> findByProjects(final List<Project> projects) {
+	public List<Employee> findByProjects(final Collection<Project> projects) {
 		if (CollectionUtils.isEmpty(projects)) {
 			return Collections.emptyList();
 		}
@@ -166,27 +166,6 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 				"WHERE e.accountId IN (:accountIds) " +
 				"AND r.accountId = :siteId", Employee.class);
 		query.setParameter("accountIds", accountIds);
-		query.setParameter("siteId", siteId);
-
-		employees.addAll(query.getResultList());
-
-		return ListUtil.removeDuplicatesAndSort(employees);
-	}
-
-	public List<Employee> findEmployeesAssignedToSite(final int siteId) {
-		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
-				"JOIN e.projectRoles pre " +
-				"JOIN pre.projectRole pr " +
-				"JOIN pr.project p " +
-				"WHERE p.accountId = :siteId", Employee.class);
-		query.setParameter("siteId", siteId);
-
-		List<Employee> employees = query.getResultList();
-
-		query = em.createQuery("SELECT DISTINCT e FROM Employee e " +
-				"JOIN e.roles re " +
-				"JOIN re.role r " +
-				"WHERE r.accountId = :siteId", Employee.class);
 		query.setParameter("siteId", siteId);
 
 		employees.addAll(query.getResultList());

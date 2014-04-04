@@ -36,8 +36,14 @@
         </action>
 
         <!-- Project -->
+        <action name="projects/summary" class="com.picsauditing.employeeguard.controllers.operator.ProjectSummaryAction"
+                method="summary">
+        </action>
+
+        <!-- Project -->
         <action name="projects" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
+
         <action name="project" class="com.picsauditing.employeeguard.controllers.operator.ProjectAction">
             <result name="create">/struts/employee-guard/operator/project/create.jsp</result>
             <result name="name-skills-form">/struts/employee-guard/operator/project/_name-skills-form.jsp</result>
@@ -48,10 +54,12 @@
         </action>
 
         <!-- Assignments -->
-        <action name="project/site-assignment" class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction" method="status">
+        <action name="project/site-assignment"
+                class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction" method="status">
             <result name="status">/struts/employee-guard/operator/assignments/site/status.jsp</result>
         </action>
-        <action name="project/site-assignment/{siteId}/role/{id}" class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction" method="role">
+        <action name="project/site-assignment/{siteId}/role/{id}"
+                class="com.picsauditing.employeeguard.controllers.operator.SiteAssignmentAction" method="role">
             <result name="role">/struts/employee-guard/operator/assignments/site/role.jsp</result>
         </action>
 
@@ -61,7 +69,7 @@
             <result name="show">/struts/employee-guard/operator/role/show.jsp</result>
             <result name="name-skills-form">/struts/employee-guard/operator/role/_name-skills-form.jsp</result>
             <result name="list">/struts/employee-guard/operator/role/list.jsp</result>
-	        <result name="role-project-form">/struts/employee-guard/operator/role/_projects-form.jsp</result>
+            <result name="role-project-form">/struts/employee-guard/operator/role/_projects-form.jsp</result>
         </action>
 
         <!-- Skill -->
@@ -93,13 +101,26 @@
 
         <action name="employees" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
-    </package>
 
-    <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard" namespace="/employee-guard/corporates">
-        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="summary">
+        <!-- Operator Assignments Page -->
+        <action name="assignments/projects"
+                class="com.picsauditing.employeeguard.controllers.operator.ProjectSummaryAction" method="summary">
         </action>
 
-        <action name="sites" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="list">
+        <action name="assignments/summary" class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction" method="summary">
+        </action>
+
+        <action name="assignments" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load" />
+    </package>
+
+    <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"
+             namespace="/employee-guard/corporates">
+        <action name="sites/{id}" class="com.picsauditing.employeeguard.controllers.operator.AssignmentSummaryAction"
+                method="summary">
+        </action>
+
+        <action name="sites" class="com.picsauditing.employeeguard.controllers.corporate.SitesListAction"
+                method="list">
         </action>
     </package>
 
@@ -196,11 +217,13 @@
         <action name="project/site-assignment/{siteId}/employee/{id}/unassign"
                 class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="unassignAll">
         </action>
-        <action name="project/site-assignment/{siteId}/role/{id}" class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="role">
+        <action name="project/site-assignment/{siteId}/role/{id}"
+                class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="role">
             <result name="role">/struts/employee-guard/contractor/assignments/site/role.jsp</result>
         </action>
 
-        <action name="project/site-assignment/{id}" class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="status">
+        <action name="project/site-assignment/{id}"
+                class="com.picsauditing.employeeguard.controllers.contractor.SiteAssignmentAction" method="status">
             <result name="status">/struts/employee-guard/contractor/assignments/site/status.jsp</result>
         </action>
 
@@ -257,11 +280,13 @@
             <result name="personal-form">/struts/employee-guard/employee/employee/_personal-form.jsp</result>
         </action>
 
-        <action name="contractor/{contractorId}/employee-photo/{id}" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="employeePhoto">
+        <action name="contractor/{contractorId}/employee-photo/{id}"
+                class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="employeePhoto">
             <result name="photo" type="stream"></result>
         </action>
 
-        <action name="profile-photo" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction" method="profilePhoto">
+        <action name="profile-photo" class="com.picsauditing.employeeguard.controllers.employee.PhotoAction"
+                method="profilePhoto">
             <result name="photo" type="stream"></result>
         </action>
 

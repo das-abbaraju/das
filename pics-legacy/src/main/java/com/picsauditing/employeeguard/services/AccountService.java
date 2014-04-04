@@ -198,6 +198,14 @@ public class AccountService {
 		return extractIdFromAccountModel(getContractors(siteId).toArray(new AccountModel[0]));
 	}
 
+	public List<Integer> getContractorIds(final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyList();
+		}
+
+		return contractorDAO.findAllContractorIdsForOperatorIds(siteIds);
+	}
+
 	/**
 	 * Retrieve the list of Contractors that work under this Operator/Corporate hierarchy and have EmployeeGUARD.
 	 *
@@ -270,7 +278,7 @@ public class AccountService {
 		}
 	}
 
-	public List<Integer> extractIdFromAccountModel(AccountModel... accountModels) {
+	public List<Integer> extractIdFromAccountModel(final AccountModel... accountModels) {
 		if (ArrayUtils.isEmpty(accountModels)) {
 			return Collections.emptyList();
 		}

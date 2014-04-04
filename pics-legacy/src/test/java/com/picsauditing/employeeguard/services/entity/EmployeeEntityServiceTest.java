@@ -60,7 +60,7 @@ public class EmployeeEntityServiceTest {
 
 	@Test
 	public void testGetEmployeesByProject_NullArgument() {
-		Map<Project, Set<Employee>> result = employeeEntityService.getEmployeesByProject(null);
+		Map<Project, Set<Employee>> result = employeeEntityService.getEmployeesByProjects(null);
 
 		assertTrue(result.isEmpty());
 	}
@@ -70,7 +70,7 @@ public class EmployeeEntityServiceTest {
 		List<ProjectRoleEmployee> fakeProjectRoleEmployees = buildFakeProjectRoleEmployees();
 		when(projectRoleEmployeeDAO.findByProjects(anyCollectionOf(Project.class))).thenReturn(fakeProjectRoleEmployees);
 
-		Map<Project, Set<Employee>> result = employeeEntityService.getEmployeesByProject(Arrays.asList(new Project()));
+		Map<Project, Set<Employee>> result = employeeEntityService.getEmployeesByProjects(Arrays.asList(new Project()));
 
 		verifyTestGetEmployeesByProject(result);
 	}
@@ -100,7 +100,8 @@ public class EmployeeEntityServiceTest {
 
 	@Test
 	public void testGetEmployeesByProjectRoles_NullOrEmpty() {
-		Map<Role, Set<Employee>> result = employeeEntityService.getEmployeesByProjectRoles(null);
+		Map<Role, Set<Employee>> result = employeeEntityService
+				.getEmployeesByProjectRoles(Collections.<Project>emptyList());
 
 		assertNotNull(result);
 		assertTrue(result.isEmpty());
@@ -150,11 +151,12 @@ public class EmployeeEntityServiceTest {
 	@Test
 	public void testGetEmployeesAssignedToSite() {
 		Employee employee = buildFakeEmployee();
+		employee.setAccountId(ACCOUNT_ID);
+
 		List<Employee> employees = Arrays.asList(employee);
 		List<Integer> contractorIds = Arrays.asList(ACCOUNT_ID);
 
-		when(employeeDAO.findEmployeesAssignedToSiteForContractors(contractorIds, ACCOUNT_ID))
-				.thenReturn(employees);
+		when(employeeDAO.findEmployeesAssignedToSites(Arrays.asList(ACCOUNT_ID))).thenReturn(employees);
 
 		List<Employee> result = employeeEntityService.getEmployeesAssignedToSite(contractorIds, ACCOUNT_ID);
 

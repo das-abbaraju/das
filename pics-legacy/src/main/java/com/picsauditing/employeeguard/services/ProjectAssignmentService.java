@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+@Deprecated
 public class ProjectAssignmentService {
 
 	@Autowired
@@ -33,7 +34,7 @@ public class ProjectAssignmentService {
 	public Map<Project, Map<Employee, Set<AccountSkill>>> getEmployeeSkillsForProjectsUnderSite(final int siteId) {
 
 		List<Project> siteProjects = projectEntityService.getAllProjectsForSite(siteId);
-		Map<Project, Set<Employee>> projectEmployees = employeeEntityService.getEmployeesByProject(siteProjects);
+		Map<Project, Set<Employee>> projectEmployees = employeeEntityService.getEmployeesByProjects(siteProjects);
 		Map<Role, Set<Employee>> roleEmployees = getEmployeesByRole(siteId, siteProjects);
 		Map<Project, Set<AccountSkill>> projectRequiredSkill = skillEntityService
 				.getRequiredSkillsForProjects(siteProjects);

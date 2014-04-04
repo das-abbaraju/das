@@ -28,8 +28,6 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	@Autowired
 	private ProjectSkillDAO projectSkillDAO;
 	@Autowired
-	private SiteAssignmentDAO siteAssignmentDAO;
-	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
 	/* All Find Methods */

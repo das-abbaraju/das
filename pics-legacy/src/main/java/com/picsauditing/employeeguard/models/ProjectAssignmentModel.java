@@ -2,11 +2,21 @@ package com.picsauditing.employeeguard.models;
 
 public class ProjectAssignmentModel extends ProjectModel implements StatusSummarizable {
 
-	// private StatusSummary status;
+	private int employees;
 	private int completed;
 	private int pending;
 	private int expiring;
 	private int expired;
+
+	@Override
+	public int getEmployees() {
+		return employees;
+	}
+
+	@Override
+	public void setEmployees(int employees) {
+		this.employees = employees;
+	}
 
 	@Override
 	public int getCompleted() {

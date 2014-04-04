@@ -2,6 +2,10 @@ package com.picsauditing.employeeguard.models;
 
 public interface StatusSummarizable {
 
+	int getEmployees();
+
+	void setEmployees(int employees);
+
 	int getCompleted();
 
 	void setCompleted(int completed);
