@@ -71,7 +71,7 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
             return SUCCESS;
 		}
 
-        getActionContext().setLocale(localeForm.getLocale());
+        getActionContext().setLocale(createLocaleFromForms());
 
         registrationForm = (Strings.isNotEmpty(registrationKey))
             ? RegistrationForm.fromContractor(regReqService.preRegistrationFromKey(registrationKey))
@@ -80,6 +80,14 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
 
         return SUCCESS;
 	}
+
+    private Locale createLocaleFromForms() {
+        String isoCode = (localeForm.getDialect() != null)? localeForm.getDialect() : registrationForm.getCountryISOCode();
+        if (isoCode != null)
+            return new Locale(localeForm.getLanguage(), isoCode);
+        else
+            return new Locale(localeForm.getLanguage());
+    }
 
     @Anonymous
     public String createAccount() throws Exception {
@@ -90,7 +98,7 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
         }
 
         final RegistrationResult result = registrationForm.createSubmission(registrationService)
-                .setLocale(localeForm.getLocale())
+                .setLocale(createLocaleFromForms())
                 .setRegistrationRequestHash(registrationKey)
                 .submit();
 
