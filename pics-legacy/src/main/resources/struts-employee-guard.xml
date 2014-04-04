@@ -111,6 +111,8 @@
         </action>
 
         <action name="assignments" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load" />
+        <!-- Who Am I -->
+        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="whoAmI" />
     </package>
 
     <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"
@@ -231,6 +233,9 @@
         <action name="project" class="com.picsauditing.employeeguard.controllers.contractor.ProjectAction">
             <result name="list">/struts/employee-guard/contractor/project/list.jsp</result>
             <result name="show">/struts/employee-guard/contractor/project/show.jsp</result>
+        </action>
+
+        <action name="projects/list" class="com.picsauditing.employeeguard.controllers.contractor.ProjectAction">
         </action>
 
         <!-- Assignments: Need to be kept in this order because of the way URLs are matched -->

@@ -12,7 +12,7 @@ public class StatusSummaryFactory {
 		StatusSummary statusSummary = new StatusSummary();
 
 		Map<SkillStatus, Integer> statusCountMap = getCount(statusMap);
-		statusSummary.setCompleted(statusCountMap.get(SkillStatus.Complete));
+		statusSummary.setCompleted(statusCountMap.get(SkillStatus.Completed));
 		statusSummary.setPending(statusCountMap.get(SkillStatus.Pending));
 		statusSummary.setExpiring(statusCountMap.get(SkillStatus.Expiring));
 		statusSummary.setExpired(statusCountMap.get(SkillStatus.Expired));

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.gson.Gson;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
@@ -8,11 +9,12 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.OperatorSiteAssignmentStatus;
 import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.models.UserModel;
 import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.ProjectAssignmentService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.models.AccountType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -33,6 +35,27 @@ public class SummaryAction extends PicsRestActionSupport {
 
 	public String index() {
 		jsonString = new Gson().toJson(buildOperatorSiteAssignmentStatus(permissions.getAccountId()));
+
+		return JSON_STRING;
+	}
+
+	public String whoAmI() throws NoRightsException {
+		if (!permissions.isOperatorCorporate()) {
+			throw new NoRightsException("Operator or Corporate");
+		}
+
+		AccountType accountType = AccountType.OPERATOR;
+		if (permissions.isCorporate()) {
+			accountType = AccountType.CORPORATE;
+		}
+
+		UserModel userModel = ModelFactory.getUserModelFactory().create(
+				permissions.getAppUserID(),
+				permissions.getAccountId(),
+				permissions.getName(),
+				accountType);
+
+		jsonString = new Gson().toJson(userModel);
 
 		return JSON_STRING;
 	}
