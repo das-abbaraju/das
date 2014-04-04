@@ -1066,7 +1066,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					permittedUsers.add(user);
 				}
 			} catch (Exception e) {
-				logger.error("Cannot login user", e);
+				logger.error("Cannot login user: {}", user.getId() + " " + e.getMessage());
 			}
             if (permittedUsers.size() > limit) {
                 break;
