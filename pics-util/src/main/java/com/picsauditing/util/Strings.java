@@ -407,24 +407,26 @@ public class Strings {
 	}
 
 	public static String formatDecimalComma(String decimalNumber) {
-		try {
-			Double value = Double.parseDouble(decimalNumber);
-			DecimalFormat df;
+        if (!Strings.isEmpty(decimalNumber)) {
+            try {
+                Double value = Double.parseDouble(decimalNumber.replace(",", ""));
+                DecimalFormat df;
 
-			if (value >= 100)
-				df = new DecimalFormat("#,##0");
-			else
-				df = new DecimalFormat("0.00");
+                if (value >= 100)
+                    df = new DecimalFormat("#,##0");
+                else
+                    df = new DecimalFormat("0.00");
 
-			if (value != 0)
-				decimalNumber = df.format(value);
-			else
-				return "0";
-		} catch (Exception e) {
-			logger.error("Could not parse number: {}", decimalNumber);
-		}
+                if (value != 0)
+                    decimalNumber = df.format(value);
+                else
+                    return "0";
+            } catch (Exception e) {
+                logger.error("Could not parse number: {}", decimalNumber);
+            }
+        }
 
-		return decimalNumber;
+        return decimalNumber;
 	}
 
 	public static String formatNumber(String number) {
